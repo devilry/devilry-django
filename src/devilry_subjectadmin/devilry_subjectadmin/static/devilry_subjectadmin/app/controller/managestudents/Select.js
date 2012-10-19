@@ -42,13 +42,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
                 beforeselect: this._onSelectGroupInSummaryGrid
             },
 
-            'viewport managestudentsoverview #selectButton #selectall': {
+            'viewport managestudentsoverview #selectall': {
                 click: this._onSelectAll
             },
-            'viewport managestudentsoverview #selectButton #deselectall': {
+            'viewport managestudentsoverview #deselectall': {
                 click: this._onDeselectAll
             },
-            'viewport managestudentsoverview #selectButton #invertselection': {
+            'viewport managestudentsoverview #invertselection': {
                 click: this._onInvertselection
             },
             

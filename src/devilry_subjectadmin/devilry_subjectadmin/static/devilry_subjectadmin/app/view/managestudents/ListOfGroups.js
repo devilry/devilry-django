@@ -74,14 +74,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 },
                 items: [{
                     xtype: 'button',
-                    itemId: 'selectButton',
-                    cls: 'selectButton',
                     text: gettext('Select'),
-                    menu: this._createSelectMenu({
-                        itemId: 'replaceSelectionMenu',
-                        cls: 'replaceSelectionMenu',
-                        title: gettext('Replace current selection'),
-                        prefixItems: [{
+                    cls: 'selectButton',
+                    menu: {
+                        xtype: 'menu',
+                        cls: 'selectMenu',
+                        items: [{
                             itemId: 'selectall',
                             text: gettext('Select all') + ' <small>(CTRL-a)</small>'
                         }, {
@@ -90,17 +88,27 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                         }, {
                             itemId: 'invertselection',
                             text: gettext('Invert selection')
-                        }, '-']
-                    })
-                }, {
-                    xtype: 'button',
-                    itemId: 'addToSelectionButton',
-                    cls: 'addToSelectionButton',
-                    text: gettext('Add to selection'),
-                    menu: this._createSelectMenu({
-                        title: gettext('Add to current selection'),
-                        itemId: 'addToSelectionMenu'
-                    })
+                        }, '-', {
+                            text: gettext('Replace current selection'),
+                            cls: 'replaceSelectionButton',
+                            itemId: 'replaceSelectionButton',
+                            hideOnClick: false,
+                            menu: this._createSelectMenu({
+                                itemId: 'replaceSelectionMenu',
+                                cls: 'replaceSelectionMenu',
+                                title: gettext('Replace current selection')
+                            })
+                        }, {
+                            itemId: 'addToSelectionButton',
+                            cls: 'addToSelectionButton',
+                            text: gettext('Add to selection'),
+                            hideOnClick: false,
+                            menu: this._createSelectMenu({
+                                title: gettext('Add to current selection'),
+                                itemId: 'addToSelectionMenu'
+                            })
+                        }]
+                    }
                 }, '->', {
                     xtype: 'primarybutton',
                     itemId: 'addstudents',

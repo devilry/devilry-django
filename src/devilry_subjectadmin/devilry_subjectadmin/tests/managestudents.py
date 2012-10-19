@@ -51,8 +51,7 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self.testhelper.add_feedback('uni;sub.p1.a1.g5', verdict=failVerdict)
 
     def _browseToManagestudentsAs(self, username, assignment):
-        self.login(username)
-        self.browseTo('/assignment/{0}/@@manage-students/'.format(assignment.id))
+        self.loginTo(username, '/assignment/{0}/@@manage-students/'.format(assignment.id))
 
     def test_listlength(self):
         self.setUpStudentsBasic()
@@ -92,42 +91,41 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         button = parent.find_element_by_css_selector('.{0} a'.format(buttoncls))
         button.click()
 
-    def _get_number_of_selected(self, rootbutton, rootmenu, subbutton, submenu, selection, select_menu=None):
+    def _get_number_of_selected(self, lvl0_link_cls, lvl1_menu_cls, lvl1_button_cls, lvl2_menu_cls, selection, select_menu=None):
+        """
+        :param lvl0_link_cls: The css class of the link in the root of the selectMenu to click. We click this link first.
+        :param lvl1_menu_cls: The css class of the first lvl2_menu_cls (the menu opened by clicking ``lvl0_link_cls``.
+        """
         self._setupStudentsFull()
         self._browseToManagestudentsAs('a1admin', self.testhelper.sub_p1_a1)
         self.waitForCssSelector('.devilry_subjectadmin_managestudentsoverview', timeout=20)
 
         self.waitForCssSelector('.devilry_subjectadmin_listofgroups')
         self.waitForCssSelector('.groupInfoWrapper')
-        self._clickButton(self.selenium, rootbutton)
 
-        self.waitForCssSelector('.{0}'.format(rootmenu))
-        menu = self.selenium.find_element_by_css_selector('.{0}'.format(rootmenu))
+        self._clickButton(self.selenium, 'selectButton')
+        selectMenu = self.waitForAndFindElementByCssSelector('.selectMenu')
+        self._clickLink(selectMenu, lvl0_link_cls)
 
-        self.waitForCssSelector('.{0}'.format(subbutton))
-        self._clickLink(menu, subbutton)
+        lvl1_menu = self.waitForAndFindElementByCssSelector('.{0}'.format(lvl1_menu_cls))
+        self.waitForCssSelector('.{0}'.format(lvl1_button_cls))
+        self._clickLink(lvl1_menu, lvl1_button_cls)
 
-        self.waitForCssSelector('.{0}'.format(submenu))
-        submenu = self.selenium.find_element_by_css_selector('.{0}'.format(submenu))
-
+        lvl2_menu = self.waitForAndFindElementByCssSelector('.{0}'.format(lvl2_menu_cls))
         self.waitForCssSelector('.{0}'.format(selection))
-        self._clickLink(submenu, selection)
+        self._clickLink(lvl2_menu, selection)
 
-        if not select_menu == None:
-            self.waitForCssSelector('.{0}'.format(select_menu[0]))
-            specificmenu=self.selenium.find_element_by_css_selector('.{0}'.format(select_menu[0]))
-            elements=specificmenu.find_elements_by_css_selector('.x-menu-item')
-
+        if select_menu != None:
+            specificmenu = self.waitForAndFindElementByCssSelector('.{0}'.format(select_menu[0]))
+            elements = specificmenu.find_elements_by_css_selector('.x-menu-item')
             elements[select_menu[1]].click()
 
-
-        selected=self.selenium.find_elements_by_css_selector('.x-grid-row-selected')
-
+        selected = self.selenium.find_elements_by_css_selector('.x-grid-row-selected')
         return len(selected)
 
 
     def test_select_by_status(self):
-        count=self._get_number_of_selected('selectButton',
+        count=self._get_number_of_selected('replaceSelectionButton',
                                            'replaceSelectionMenu',
                                            'byStatusButton',
                                            'byStatusMenu',
@@ -136,7 +134,7 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self.assertEquals(count, 4)
 
     def test_select_by_feedback(self):
-        count=self._get_number_of_selected('selectButton',
+        count=self._get_number_of_selected('replaceSelectionButton',
                                            'replaceSelectionMenu',
                                            'byFeedbackButton',
                                            'byFeedbackMenu',
@@ -145,7 +143,7 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self.assertEquals(count, 3)
 
     def test_select_by_deliveries(self):
-        count=self._get_number_of_selected('selectButton',
+        count=self._get_number_of_selected('replaceSelectionButton',
                                            'replaceSelectionMenu',
                                            'byDeliveryNumButton',
                                            'byDeliveryMenu',
@@ -154,7 +152,7 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self.assertEquals(count, 6)
 
     def test_select_by_examiner(self):
-        count=self._get_number_of_selected('selectButton',
+        count=self._get_number_of_selected('replaceSelectionButton',
                                            'replaceSelectionMenu',
                                            'byExaminerButton',
                                            'byExaminerMenu',
@@ -163,7 +161,7 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self.assertEquals(count, 2)
 
     def test_select_by_tag(self):
-        count=self._get_number_of_selected('selectButton',
+        count=self._get_number_of_selected('replaceSelectionButton',
                                            'replaceSelectionMenu',
                                            'byTagButton',
                                            'byTagMenu',
@@ -172,7 +170,7 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self.assertEquals(count, 8)
 
     def test_select_by_specific_examiner(self):
-        count=self._get_number_of_selected('selectButton',
+        count=self._get_number_of_selected('replaceSelectionButton',
                                            'replaceSelectionMenu',
                                            'byExaminerButton',
                                            'byExaminerMenu',
@@ -182,7 +180,7 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self.assertEquals(count, 4)
 
     def test_select_by_specific_num_delivery(self):
-        count=self._get_number_of_selected('selectButton',
+        count=self._get_number_of_selected('replaceSelectionButton',
                                            'replaceSelectionMenu',
                                            'byDeliveryNumButton',
                                            'byDeliveryMenu',
@@ -192,7 +190,7 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self.assertEquals(count, 2)
 
     def test_select_by_specific_feedback_grade(self):
-        count=self._get_number_of_selected('selectButton',
+        count=self._get_number_of_selected('replaceSelectionButton',
                                            'replaceSelectionMenu',
                                            'byFeedbackButton',
                                            'byFeedbackMenu',
@@ -202,7 +200,7 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self.assertEquals(count, 1)
 
     def test_select_by_specific_feedback_points(self):
-        count=self._get_number_of_selected('selectButton',
+        count=self._get_number_of_selected('replaceSelectionButton',
                                            'replaceSelectionMenu',
                                            'byFeedbackButton',
                                            'byFeedbackMenu',
