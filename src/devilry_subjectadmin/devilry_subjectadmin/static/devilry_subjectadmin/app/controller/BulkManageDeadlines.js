@@ -72,6 +72,9 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             },
             'viewport bulkmanagedeadlinespanel #createmodeSpecificGroups': {
                 change: this._onCreatemodeSpecificGroupsChange
+            },
+            'viewport bulkmanagedeadlinespanel #createmodeSpecificGroupsSelectpanel bulkmanagedeadlines_allgroupsgrid': {
+                selectionchange: this._onCreatemodeSpecificGroupsGridSelectionChange
             }
         });
         
@@ -413,8 +416,10 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
     _onCreatemodeSpecificGroupsDeSelect: function(formpanel) {
         formpanel.down('#createmodeSpecificGroupsSelectpanel').hide();
+        formpanel.down('#saveDeadlineButton').enable();
     },
     _onCreatemodeSpecificGroupsSelect: function(formpanel) {
+        formpanel.down('#saveDeadlineButton').disable();
         var selectPanel = formpanel.down('#createmodeSpecificGroupsSelectpanel');
         selectPanel.show();
         if(!this.getGroupsStore().isLoading()) {
@@ -451,5 +456,14 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             title: gettext('Failed to load groups'),
             bodyHtml: errormessage
         }).show();
+    },
+
+    _onCreatemodeSpecificGroupsGridSelectionChange: function(selModel, selected) {
+        var saveButton = this.getAddDeadlineBodyContainer().down('#saveDeadlineButton')
+        if(selected.length === 0) {
+            saveButton.disable();
+        } else {
+            saveButton.enable();
+        }
     }
 });
