@@ -11,6 +11,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
     requires: [
         'devilry_subjectadmin.view.managestudents.DynamicLoadMenu',
         'devilry_subjectadmin.view.managestudents.SelectGroupsBySearchWidget',
+        'devilry_subjectadmin.view.managestudents.SelectedGroupsButton',
         'devilry_subjectadmin.view.managestudents.SortByButton',
         'devilry_extjsextras.PrimaryButton',
         'Ext.grid.feature.Grouping',
@@ -44,20 +45,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 xtype: 'toolbar',
                 dock: 'top',
                 items: [{
-                    xtype: 'sortgroupsbybutton',
-                    grid: this,
-                }, {
                     xtype: 'selectgroupsbysearch',
                     grid: this,
-                    flex: 6
+                    flex: 1
                 }]
             }, {
                 xtype: 'toolbar',
-                ui: 'footer',
-                dock: 'bottom',
-                defaults: {
-                    scale: 'large'
-                },
+                dock: 'top',
                 items: [{
                     xtype: 'button',
                     text: gettext('Select'),
@@ -98,7 +92,21 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                             })
                         }]
                     }
+                }, {
+                    xtype: 'sortgroupsbybutton',
+                    grid: this,
                 }, '->', {
+                    xtype: 'selectedgroupsbutton',
+                    grid: this
+                }]
+            }, {
+                xtype: 'toolbar',
+                ui: 'footer',
+                dock: 'bottom',
+                defaults: {
+                    scale: 'large'
+                },
+                items: ['->', {
                     xtype: 'primarybutton',
                     itemId: 'addstudents',
                     cls: 'addstudents',
