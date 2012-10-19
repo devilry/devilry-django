@@ -21,8 +21,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
     initComponent: function() {
         var defaultmargin = '15 0 0 0';
         var numSelectedMessage = interpolate(gettext('%(numselected)s/%(total)s %(groups_term)s selected'), {
-            numselected: this.numSelected,
-            total: this.totalGroups,
             groups_term: gettext('groups')
         }, true);
 
@@ -57,11 +55,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                 region: 'south',
                 height: 300,
                 minHeight: 100, // Prevent it from beeing completely hidden (this should show at least most of the first selected item)
-                //collapsible: true,
-                title: [
-                    numSelectedMessage,
-                    gettext('(click group to deselect it)')
-                ].join(' '),
+                collapsible: true,
+                collapsed: true,
+                title: gettext('Summary of selected groups'),
                 frame: false,
                 border: '1 0 0 0',
 
