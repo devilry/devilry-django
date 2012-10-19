@@ -13,6 +13,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsButton', {
         gettext('{selected}/{total} selected')
     ],
 
+    menuAlign: 'tr-br?',
+
     /**
      * @cfg {Object} [grid]
      * The grid to show selection for.
