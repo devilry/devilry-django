@@ -119,6 +119,10 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         return len(selected)
 
 
+    def test_select_all(self):
+        count=self._get_number_of_selected('selectAllButton')
+        self.assertEquals(count, 8)
+
     def test_select_by_status(self):
         count=self._get_number_of_selected('replaceSelectionButton',
                                            ('replaceSelectionMenu', 'byStatusButton'),

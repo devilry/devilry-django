@@ -81,12 +81,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                         cls: 'selectMenu',
                         items: [{
                             itemId: 'selectall',
+                            cls: 'selectAllButton',
                             text: gettext('Select all') + ' <small>(CTRL-a)</small>'
                         }, {
                             itemId: 'deselectall',
+                            cls: 'deselectAllButton',
                             text: gettext('Deselect all')
                         }, {
                             itemId: 'invertselection',
+                            cls: 'invertSelectionButton',
                             text: gettext('Invert selection')
                         }, '-', {
                             text: gettext('Replace current selection'),
