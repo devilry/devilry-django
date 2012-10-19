@@ -91,7 +91,7 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         button = parent.find_element_by_css_selector('.{0} a'.format(buttoncls))
         button.click()
 
-    def _get_number_of_selected(self, lvl0_link_cls, lvl1_menu_cls, lvl1_button_cls, lvl2_menu_cls, selection, select_menu=None):
+    def _get_number_of_selected(self, lvl0_link_cls, *clickchain):
         """
         :param lvl0_link_cls: The css class of the link in the root of the selectMenu to click. We click this link first.
         :param lvl1_menu_cls: The css class of the first lvl2_menu_cls (the menu opened by clicking ``lvl0_link_cls``.
@@ -99,112 +99,80 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self._setupStudentsFull()
         self._browseToManagestudentsAs('a1admin', self.testhelper.sub_p1_a1)
         self.waitForCssSelector('.devilry_subjectadmin_managestudentsoverview', timeout=20)
-
         self.waitForCssSelector('.devilry_subjectadmin_listofgroups')
         self.waitForCssSelector('.groupInfoWrapper')
-
         self._clickButton(self.selenium, 'selectButton')
         selectMenu = self.waitForAndFindElementByCssSelector('.selectMenu')
         self._clickLink(selectMenu, lvl0_link_cls)
 
-        lvl1_menu = self.waitForAndFindElementByCssSelector('.{0}'.format(lvl1_menu_cls))
-        self.waitForCssSelector('.{0}'.format(lvl1_button_cls))
-        self._clickLink(lvl1_menu, lvl1_button_cls)
-
-        lvl2_menu = self.waitForAndFindElementByCssSelector('.{0}'.format(lvl2_menu_cls))
-        self.waitForCssSelector('.{0}'.format(selection))
-        self._clickLink(lvl2_menu, selection)
-
-        if select_menu != None:
-            specificmenu = self.waitForAndFindElementByCssSelector('.{0}'.format(select_menu[0]))
-            elements = specificmenu.find_elements_by_css_selector('.x-menu-item')
-            elements[select_menu[1]].click()
-
+        for menucls, link_cls_or_index in clickchain:
+            menu = self.waitForAndFindElementByCssSelector('.{0}'.format(menucls))
+            if isinstance(link_cls_or_index, int):
+                linkindex = link_cls_or_index
+                links = menu.find_elements_by_css_selector('.x-menu-item')
+                link = links[linkindex]
+            else:
+                linkcls = link_cls_or_index
+                link = self.waitForAndFindElementByCssSelector('.{0}'.format(linkcls))
+            link.find_element_by_css_selector('a').click()
         selected = self.selenium.find_elements_by_css_selector('.x-grid-row-selected')
         return len(selected)
 
 
     def test_select_by_status(self):
         count=self._get_number_of_selected('replaceSelectionButton',
-                                           'replaceSelectionMenu',
-                                           'byStatusButton',
-                                           'byStatusMenu',
-                                           'selectStatusOpen')
-
+                                           ('replaceSelectionMenu', 'byStatusButton'),
+                                           ('byStatusMenu', 'selectStatusOpen'))
         self.assertEquals(count, 4)
 
     def test_select_by_feedback(self):
         count=self._get_number_of_selected('replaceSelectionButton',
-                                           'replaceSelectionMenu',
-                                           'byFeedbackButton',
-                                           'byFeedbackMenu',
-                                           'selectGradePassed')
-
+                                           ('replaceSelectionMenu', 'byFeedbackButton'),
+                                           ('byFeedbackMenu', 'selectGradePassed'))
         self.assertEquals(count, 3)
 
     def test_select_by_deliveries(self):
         count=self._get_number_of_selected('replaceSelectionButton',
-                                           'replaceSelectionMenu',
-                                           'byDeliveryNumButton',
-                                           'byDeliveryMenu',
-                                           'selectHasDeliveries')
-
+                                           ('replaceSelectionMenu', 'byDeliveryNumButton'),
+                                           ('byDeliveryMenu', 'selectHasDeliveries'))
         self.assertEquals(count, 6)
 
     def test_select_by_examiner(self):
         count=self._get_number_of_selected('replaceSelectionButton',
-                                           'replaceSelectionMenu',
-                                           'byExaminerButton',
-                                           'byExaminerMenu',
-                                           'selectNoExaminer')
-
+                                           ('replaceSelectionMenu', 'byExaminerButton'),
+                                           ('byExaminerMenu', 'selectNoExaminer'))
         self.assertEquals(count, 2)
 
     def test_select_by_tag(self):
         count=self._get_number_of_selected('replaceSelectionButton',
-                                           'replaceSelectionMenu',
-                                           'byTagButton',
-                                           'byTagMenu',
-                                           'selectNoTag')
-
+                                           ('replaceSelectionMenu', 'byTagButton'),
+                                           ('byTagMenu', 'selectNoTag'))
         self.assertEquals(count, 8)
 
     def test_select_by_specific_examiner(self):
         count=self._get_number_of_selected('replaceSelectionButton',
-                                           'replaceSelectionMenu',
-                                           'byExaminerButton',
-                                           'byExaminerMenu',
-                                           'selectBySpecificExaminer',
-                                           ['devilry_subjectadmin_dynamicloadmenu', 0])
-
+                                           ('replaceSelectionMenu', 'byExaminerButton'),
+                                           ('byExaminerMenu', 'selectBySpecificExaminer'),
+                                           ('devilry_subjectadmin_dynamicloadmenu', 0))
         self.assertEquals(count, 4)
 
     def test_select_by_specific_num_delivery(self):
         count=self._get_number_of_selected('replaceSelectionButton',
-                                           'replaceSelectionMenu',
-                                           'byDeliveryNumButton',
-                                           'byDeliveryMenu',
-                                           'selectByDeliveryExactNum',
-                                           ['devilry_subjectadmin_dynamicloadmenu', 0])
-
+                                           ('replaceSelectionMenu', 'byDeliveryNumButton'),
+                                           ('byDeliveryMenu', 'selectByDeliveryExactNum'),
+                                           ('devilry_subjectadmin_dynamicloadmenu', 0))
         self.assertEquals(count, 2)
 
     def test_select_by_specific_feedback_grade(self):
         count=self._get_number_of_selected('replaceSelectionButton',
-                                           'replaceSelectionMenu',
-                                           'byFeedbackButton',
-                                           'byFeedbackMenu',
-                                           'selectByFeedbackWithGrade',
-                                           ['devilry_subjectadmin_dynamicloadmenu', 0])
-
+                                           ('replaceSelectionMenu', 'byFeedbackButton'),
+                                           ('byFeedbackMenu', 'selectByFeedbackWithGrade'),
+                                           ('devilry_subjectadmin_dynamicloadmenu', 0))
         self.assertEquals(count, 1)
 
     def test_select_by_specific_feedback_points(self):
         count=self._get_number_of_selected('replaceSelectionButton',
-                                           'replaceSelectionMenu',
-                                           'byFeedbackButton',
-                                           'byFeedbackMenu',
-                                           'selectByFeedbackWithPoints',
-                                           ['devilry_subjectadmin_dynamicloadmenu', 0])
-
+                                           ('replaceSelectionMenu', 'byFeedbackButton'),
+                                           ('byFeedbackMenu', 'selectByFeedbackWithPoints'),
+                                           ('devilry_subjectadmin_dynamicloadmenu', 0))
         self.assertEquals(count, 1)
