@@ -46,6 +46,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
 
     group_summarygrid_size_cookiename: 'devilry_subjectadmin.managestudents.MultipleGroupsSelectedViewPlugin.groupsummary.height',
+    group_summarygrid_collapse_cookiename: 'devilry_subjectadmin.managestudents.MultipleGroupsSelectedViewPlugin.groupsummary.collapse',
 
     refs: [{
         ref: 'scrollableBodyContainer',
@@ -110,6 +111,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
             'viewport multiplegroupsview selectedgroupssummarygrid': {
                 resize: this._onGroupSummaryGridResize,
+                collapse: this._onGroupSummaryGridCollapse,
+                expand: this._onGroupSummaryGridExpand,
                 boxready: this._onGroupsSummaryBoxReady
             },
 
@@ -261,10 +264,22 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             }
         }
     },
+
+    _onGroupSummaryGridCollapse: function() {
+        Ext.util.Cookies.set(this.group_summarygrid_collapse_cookiename, 'collapsed');
+    },
+    _onGroupSummaryGridExpand: function() {
+        Ext.util.Cookies.set(this.group_summarygrid_collapse_cookiename, 'expanded');
+    },
+
     _onGroupsSummaryBoxReady: function(groupsummarygrid) {
         var height = Ext.util.Cookies.get(this.group_summarygrid_size_cookiename);
         if(height) {
             groupsummarygrid.setHeight(parseInt(height));
+        }
+        var collapseOrExpanded = Ext.util.Cookies.get(this.group_summarygrid_collapse_cookiename);
+        if(collapseOrExpanded === 'expanded') {
+            groupsummarygrid.expand();
         }
     },
 
