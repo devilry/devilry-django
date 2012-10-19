@@ -26,7 +26,7 @@ class RelatedUsersUITestMixin(object):
         raise ValueError('Could not find any rows matching the following username: {0}.'.format(username))
 
     def click_row_by_username(self, username, add_to_selection=True):
-        self.get_row_by_username(username).click()
+        self.get_row_by_username(username).find_element_by_css_selector('.x-grid-row-checker').click()
 
     def get_row_data(self, row):
         result = {}
