@@ -11,6 +11,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
     requires: [
         'devilry_subjectadmin.view.managestudents.DynamicLoadMenu',
         'devilry_subjectadmin.view.managestudents.SelectGroupsBySearchWidget',
+        'devilry_subjectadmin.view.managestudents.SortByButton',
         'devilry_extjsextras.PrimaryButton',
         'Ext.grid.feature.Grouping',
         'Ext.grid.column.Action',
@@ -43,23 +44,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 xtype: 'toolbar',
                 dock: 'top',
                 items: [{
-                    xtype: 'combobox',
-                    itemId: 'sortby',
-                    queryMode: 'local',
-                    valueField: 'value',
-                    displayField: 'label',
-                    forceSelection: true,
-                    editable: false,
-                    value: 'fullname', // NOTE: This must match the argument to _sortBy in _onRenderListOfGroups in the controller
-                    flex: 4,
-                    store: Ext.create('Ext.data.Store', {
-                        fields: ['value', 'label'],
-                        data : [
-                            {value:'fullname', label:"Sort by: Full name"},
-                            {value:'lastname', label:"Sort by: Last name"},
-                            {value:'username', label:"Sort by: Username"}
-                        ]
-                    })
+                    xtype: 'sortgroupsbybutton',
+                    grid: this,
                 }, {
                     xtype: 'selectgroupsbysearch',
                     grid: this,

@@ -108,12 +108,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
                 resize: this._onListOfGroupsResize,
                 boxready: this._onListOfGroupsBoxReady
             },
-            'viewport managestudentsoverview #sortby': {
-                select: this._onSelectSortBy
+            'viewport managestudentsoverview sortgroupsbybutton': {
+                afterSortBy: this._onAfterSortBy
             }
-            //'viewport managestudentsoverview #viewselect': {
-                //select: this._onSelectViewSelect
-            //}
         });
     },
 
@@ -210,10 +207,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      *
      ****************************************/
 
-
-    _onSelectSortBy: function(combo, records) {
-        this.currentGroupsStoreSorter = records[0].get('value');
-        this.getGroupsStore().sortBySpecialSorter(this.currentGroupsStoreSorter);
+    _onAfterSortBy: function(sorter) {
+        this.currentGroupsStoreSorter = sorter;
         this.application.fireEvent('managestudentsGroupSorterChanged', this.currentGroupsStoreSorter);
     },
 
