@@ -51,7 +51,8 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self.testhelper.add_feedback('uni;sub.p1.a1.g5', verdict=failVerdict)
 
     def _browseToManagestudentsAs(self, username, assignment):
-        self.loginTo(username, '/assignment/{0}/@@manage-students/'.format(assignment.id))
+        path = '/assignment/{0}/@@manage-students/'.format(assignment.id)
+        self.loginTo(username, path)
 
     def test_listlength(self):
         self.setUpStudentsBasic()
@@ -94,7 +95,12 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
     def _get_number_of_selected(self, lvl0_link_cls, *clickchain):
         """
         :param lvl0_link_cls: The css class of the link in the root of the selectMenu to click. We click this link first.
-        :param lvl1_menu_cls: The css class of the first lvl2_menu_cls (the menu opened by clicking ``lvl0_link_cls``.
+        :param clickchain:
+            List of (menu-css-class, link-cssclass-or-index). We
+            wait for the menu-css-class to become available before clicking the
+            link. If the link is a string, we select by css class, if it is an int,
+            we select by index in the menu.
+        :return: The number of selected items after clicking the entire linkchain.
         """
         self._setupStudentsFull()
         self._browseToManagestudentsAs('a1admin', self.testhelper.sub_p1_a1)
@@ -120,6 +126,10 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
 
 
     def test_select_all(self):
+        count=self._get_number_of_selected('selectAllButton')
+        self.assertEquals(count, 8)
+
+    def test_deselect_all(self):
         count=self._get_number_of_selected('selectAllButton')
         self.assertEquals(count, 8)
 
