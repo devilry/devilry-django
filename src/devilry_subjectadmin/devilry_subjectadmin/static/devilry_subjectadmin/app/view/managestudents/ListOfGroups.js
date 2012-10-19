@@ -13,6 +13,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
         'devilry_subjectadmin.view.managestudents.SelectGroupsBySearchWidget',
         'devilry_subjectadmin.view.managestudents.SelectedGroupsButton',
         'devilry_subjectadmin.view.managestudents.SortByButton',
+        'devilry_extjsextras.GridBigButtonCheckboxModel',
         'devilry_extjsextras.PrimaryButton',
         'Ext.grid.feature.Grouping',
         'Ext.grid.column.Action',
@@ -25,7 +26,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
 
     initComponent: function() {
         Ext.apply(this, {
-            selModel: Ext.create('Ext.selection.CheckboxModel'),
+            //selModel: Ext.create('Ext.selection.CheckboxModel'),
+            selModel: Ext.create('devilry_extjsextras.GridBigButtonCheckboxModel'),
             dockedItems: [{
                 xtype: 'toolbar',
                 dock: 'top',
