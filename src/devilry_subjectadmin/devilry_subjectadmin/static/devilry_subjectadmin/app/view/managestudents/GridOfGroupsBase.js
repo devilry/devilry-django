@@ -7,7 +7,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
     frame: true,
 
     groupInfoColTemplateString: [
-        '<div class="groupInfoWrapper" style="white-space:normal !important;">',
+        '<div class="groupInfoWrapper groupInfoWrapper_{id}" style="white-space:normal !important;">',
             '<div class="name"><strong>',
                 '<tpl if="groupUrlPrefix">',
                     '<a href="{groupUrlPrefix}{id}">',

@@ -16,20 +16,20 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
     def _loginTo(self, username, assignmentid):
         self.loginTo(username, '/assignment/{id}/@@bulk-manage-deadlines/'.format(id=assignmentid))
 
-    #def _find_gridrows(self):
-        #return self.selenium.find_elements_by_css_selector('.relatedstudentsgrid .x-grid-row')
+    def _find_gridrows(self, grid):
+        return grid.find_elements_by_css_selector('.x-grid-row')
 
-    #def _get_row_by_username(self, username):
-        #cssselector = '.relatedstudentsgrid .x-grid-row .userinfo_{username}'.format(username=username)
-        #self.waitForCssSelector(cssselector)
-        #for row in self._find_gridrows():
-            #matches = row.find_elements_by_css_selector(cssselector)
-            #if len(matches) > 0:
-                #return row
-        #raise ValueError('Could not find any rows matching the following username: {0}.'.format(username))
+    def _get_row_by_group(self, grid, group):
+        cssselector = '.groupInfoWrapper_{id}'.format(id=group.id)
+        self.waitFor(grid, lambda g: len(grid.find_elements_by_css_selector(cssselector)) == 1)
+        for row in self._find_gridrows(grid):
+            matches = row.find_elements_by_css_selector(cssselector)
+            if len(matches) > 0:
+                return row
+        raise ValueError('Could not find any rows matching the following group: {0}.'.format(group))
 
-    #def _click_row_by_username(self, username):
-        #self._get_row_by_username(username).click()
+    def _click_row_by_group(self, grid, group):
+        self._get_row_by_group(grid, group).find_element_by_css_selector('.x-grid-row-checker').click()
 
     def _get_addbutton(self):
         return self.waitForAndFindElementByCssSelector('.add_deadline_button')
@@ -82,6 +82,12 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self.testhelper.add_delivery(nofeedbackgroup, {'a.py': ['print ', 'yess']})
         return nofeedbackgroup
 
+
+    #
+    #
+    # Add deadline tests
+    #
+    #
 
     def test_add_deadline_failed(self):
         nodeadlinegroup = self._create_nodeadlinegroup()
@@ -172,3 +178,37 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self.assertEquals(len(nofeedbackgroup.deadlines.all()), 1)
         self.assertEquals(len(badgroup.deadlines.all()), 1)
         self.assertEquals(len(goodgroup.deadlines.all()), 1)
+
+    def test_add_deadline_specific_groups(self):
+        nodeadlinegroup = self._create_nodeadlinegroup()
+        nofeedbackgroup = self._create_nofeedbackgroup()
+        badgroup = self._create_badgroup()
+        goodgroup = self._create_goodgroup()
+
+        self._loginTo('a1admin', self.assignment.id)
+        addform = self._open_addform()
+        savebutton = addform.find_element_by_css_selector('.savedeadlinebutton button')
+        self.assertTrue(savebutton.is_enabled())
+        self._fill_form(addform, date=self._create_datestring_from_offset(2),
+                        time='12:00', text='Hello', createmodecls='createmode_specific_groups')
+        self.waitForDisabled(savebutton)
+
+        grid = addform.find_element_by_css_selector('.devilry_subjectadmin_bulkmanagedeadlines_allgroupsgrid')
+        self._click_row_by_group(grid, goodgroup)
+        self._click_row_by_group(grid, badgroup)
+
+        url = self.selenium.current_url
+        savebutton.click()
+        self.waitFor(self.selenium, lambda s: s.current_url != url) # Wait for the page to be reloaded with the new deadline URL
+
+        nofeedbackgroup = self.testhelper.reload_from_db(nofeedbackgroup)
+        badgroup = self.testhelper.reload_from_db(badgroup)
+        goodgroup = self.testhelper.reload_from_db(goodgroup)
+
+        # Has new deadline:
+        self.assertEquals(len(badgroup.deadlines.all()), 2)
+        self.assertEquals(len(goodgroup.deadlines.all()), 2)
+
+        # Unchanged:
+        self.assertEquals(len(nofeedbackgroup.deadlines.all()), 1)
+        self.assertEquals(len(nodeadlinegroup.deadlines.all()), 0)
