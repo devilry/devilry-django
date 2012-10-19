@@ -55,17 +55,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.HelpPanel', {
         '<p>',
             gettext('The <em>Select</em>-button in the lower left corner lets you select groups using a good set of pre-defined filters.'),
         '</p>',
-        '<p>',
-            gettext('The <em>Add to selection</em>-button contains the same filters. Instead of replacing the current selection, filters in that menu keeps the currently selected groups, and adds any matching groups to the selection.'),
-        '</p>',
         '<h4 id="select-by-search-help">', gettext('Select by search'), '</h4>',
         '<p>',
-            gettext('The search field at the bottom of the window allows you to search for groups. The results is displayed in a menu, and when you select a group from the menu, the group is selected.'),
+            gettext('The search field at the bottom of the top of the group-list allows you to search for groups. The results is displayed in a menu, and when you select a group from the menu, the group is selected.'),
         '</p>',
 
-        '<h3>', gettext('On a small or huge display?'), '</h3>',
+        '<h3>', gettext('Using a small or huge display?'), '</h3>',
         '<p>',
-            gettext('The scale of the group-list, and the selection-grid (when multiple groups are selected), is not perfect for all displays. To amend this, we allow you to resize these lists. Move your cursor over the inner border of one of these lists, and a resize-indicator will apear. Your selected sizes is saved as a cookie in your browser, which means that they will be remembered when you return to this view in your current browser.'),
+            gettext('The width of the group-list, and the height of the <em>Summary of selected groups</em> panel (when multiple groups are selected), is not perfect for all displays. To amend this, we allow you to resize these panels. Move your cursor over the inner border of one of these lists, and a resize-indicator will apear. Your selected sizes is saved as a cookie in your browser, which means that they will be remembered when you return to this view in your current browser.'),
         '</p>'
     ],
 
