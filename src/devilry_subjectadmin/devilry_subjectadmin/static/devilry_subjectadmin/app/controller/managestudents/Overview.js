@@ -23,8 +23,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     views: [
         'managestudents.Overview',
-        'managestudents.ListOfGroups',
-        'managestudents.AutocompleteGroupWidget'
+        'managestudents.ListOfGroups'
     ],
 
     /**

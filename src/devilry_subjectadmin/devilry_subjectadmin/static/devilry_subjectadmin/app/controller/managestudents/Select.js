@@ -5,8 +5,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'managestudents.ListOfGroups',
-        'managestudents.AutocompleteGroupWidget'
+        'managestudents.ListOfGroups'
     ],
 
     requires: [
@@ -41,9 +40,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             },
             'viewport multiplegroupsview selectedgroupssummarygrid': {
                 beforeselect: this._onSelectGroupInSummaryGrid
-            },
-            'viewport #selectUsersByAutocompleteWidget': {
-                userSelected: this._onUserSelectedBySearch
             },
 
             'viewport managestudentsoverview #selectButton #selectall': {
@@ -178,54 +174,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         }, 10, this);
         return false;
     },
-
-
-
-    /**************************************************
-     *
-     * Select by search
-     *
-     **************************************************/
-
-    _showSelectSearchErrorMessage: function(combo, options) {
-        Ext.MessageBox.show({
-            title: options.title,
-            msg: options.msg,
-            buttons: Ext.MessageBox.OK,
-            icon: Ext.MessageBox.ERROR,
-            fn: function() {
-                Ext.defer(function() {
-                    combo.focus();
-                }, 100);
-            }
-        });
-    },
-
-    _onUserSelectedBySearch: function(combo, searchGroupRecord) {
-        // NOTE: This searchGroupRecord is not from the same proxy as the records in the
-        //       "regular" list, so their internal IDs do not match. Therefore,
-        //       we use _getGroupRecordById() to get the correct receord.
-        combo.clearValue();
-        combo.focus();
-        var groupId = searchGroupRecord.get('id');
-        var groupRecord = this._getGroupRecordById(groupId);
-        if(groupRecord) {
-            if(this._groupRecordIsSelected(groupRecord)) {
-                this._showSelectSearchErrorMessage(combo, {
-                    title: gettext('Already selected'),
-                    msg: gettext('The group is already selected')
-                });
-            } else {
-                this._selectGroupRecords([groupRecord], true);
-            }
-        } else {
-            this._showSelectSearchErrorMessage(combo, {
-                title: gettext('Selected group not loaded'),
-                msg: gettext('The group you selected is not loaded. This is probably because someone else added a group after you loaded this page. Try reloading the page.')
-            });
-        }
-    },
-
 
 
 
@@ -630,10 +578,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
             return undefined;
         }
         return this.getGroupsStore().getAt(index);
-    },
+    }
 
     /** Return ``true`` if ``groupRecord`` is selected. */
-    _groupRecordIsSelected: function(groupRecord) {
-        return this.getListOfGroups().getSelectionModel().isSelected(groupRecord);
-    }
+    //_groupRecordIsSelected: function(groupRecord) {
+        //return this.getListOfGroups().getSelectionModel().isSelected(groupRecord);
+    //}
 });

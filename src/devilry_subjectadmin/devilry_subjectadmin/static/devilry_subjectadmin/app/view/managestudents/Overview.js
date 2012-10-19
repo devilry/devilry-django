@@ -61,13 +61,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 width: 400,
                 collapsible: true,   // make collapsible
                 collapsed: true
-            }],
-
-            bbar: [{
-                xtype: 'autocompletegroupwidget',
-                flex: 1,
-                hideTrigger: true,
-                itemId: 'selectUsersByAutocompleteWidget'
             }]
         });
         this.callParent(arguments);
