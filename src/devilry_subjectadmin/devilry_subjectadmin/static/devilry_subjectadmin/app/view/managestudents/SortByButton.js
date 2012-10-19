@@ -52,5 +52,5 @@ Ext.define('devilry_subjectadmin.view.managestudents.SortByButton', {
     _sortBy: function(sorter) {
         this.grid.getStore().sortBySpecialSorter(sorter);
         this.fireEvent('afterSortBy', sorter);
-    },
+    }
 });
