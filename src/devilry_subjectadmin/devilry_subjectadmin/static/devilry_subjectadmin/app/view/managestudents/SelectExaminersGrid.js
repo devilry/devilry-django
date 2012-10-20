@@ -4,8 +4,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectExaminersGrid', {
     cls: 'devilry_subjectadmin_selectexaminersgrid bootstrap',
     requires: [
         'Ext.XTemplate',
-        'devilry_extjsextras.GridMultiSelectModel',
         'devilry_usersearch.ManageUsersGridModel',
+        'devilry_subjectadmin.view.managestudents.SelectGroupsBySearchWidget',
         'Ext.selection.CheckboxModel'
     ],
 
@@ -32,7 +32,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectExaminersGrid', {
     initComponent: function() {
         this.col1TplCompiled = Ext.create('Ext.XTemplate', this.col1Tpl);
         Ext.apply(this, {
-            selModel: Ext.create('devilry_extjsextras.GridMultiSelectModel'),
+            selModel: Ext.create('devilry_extjsextras.GridBigButtonCheckboxModel'),
             columns: [{
                 dataIndex: 'id',
                 flex: 1,
