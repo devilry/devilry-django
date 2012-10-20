@@ -43,7 +43,7 @@ Ext.define('devilry_subjectadmin.model.DeadlineBulk', {
     formatTextOneline: function() {
         var maxlength = 50;
         var text = this.get('text');
-        if(text == null || text.length == 0) {
+        if(text === null || text.length === 0) {
             return null;
         }
         text = text.replace(/(\r\n|\n|\r)/gm, " ");
