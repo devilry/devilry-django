@@ -312,7 +312,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
             this.getTagsColumn().show();
             this.getAutomapExaminersCheckbox().enable();
         } else {
-            if(this.getAutomapExaminersCheckbox().getValue() == true) {
+            if(this.getAutomapExaminersCheckbox().getValue() === true) {
                 this.getAutomapExaminersCheckbox().setValue(false);
                 // NOTE: we do nothing more because changing automapExaminersCheckbox will trigger _onAutomapExaminersChange
             } else {
@@ -328,7 +328,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         } else {
             //this.getTagsColumn().show();
             this.getTagsAndExaminersColumn().hide();
-            if(this.getIncludeTagsCheckbox().getValue() == true) {
+            if(this.getIncludeTagsCheckbox().getValue() === true) {
                 this.getTagsColumn().show();
             }
         }
@@ -347,7 +347,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     },
 
     _getIgnoredCount: function() {
-        var ignoredcount = this.getRelatedStudentsRoStore().getTotalCount() - this.getRelatedStudentsRoStore().getCount()
+        var ignoredcount = this.getRelatedStudentsRoStore().getTotalCount() - this.getRelatedStudentsRoStore().getCount();
         return ignoredcount;
     },
 
@@ -415,7 +415,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     _syncGroupsStore: function() {
         this.getGroupsStore().sync({
             scope: this,
-            success: this._onSyncGroupsStoreSuccess,
+            success: this._onSyncGroupsStoreSuccess
             // NOTE: Failure is handled in _onGroupsProxyError
         });
     },
