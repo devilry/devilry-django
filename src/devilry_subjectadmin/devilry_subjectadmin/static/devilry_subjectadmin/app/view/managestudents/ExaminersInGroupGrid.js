@@ -9,8 +9,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
     disableSelection: true,
     border: false,
     requires: [
-        'Ext.XTemplate',
-        'devilry_theme.Icons'
+        'Ext.XTemplate'
     ],
 
     rowTpl: [
