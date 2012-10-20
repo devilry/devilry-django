@@ -181,7 +181,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
 
 
     _isInAddToSelectionMenu: function(button) {
-        return button.up('#replaceSelectionMenu') == undefined;
+        return button.up('#replaceSelectionMenu') === undefined;
     },
 
 
@@ -191,12 +191,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
 
     _onSelectStatusOpen: function(button) {
         this._selectBy(function(groupRecord) {
-            return groupRecord.get('is_open') == true;
+            return groupRecord.get('is_open') === true;
         }, this, this._isInAddToSelectionMenu(button));
     },
     _onSelectStatusClosed: function(button) {
         this._selectBy(function(groupRecord) {
-            return groupRecord.get('is_open') == false;
+            return groupRecord.get('is_open') === false;
         }, this, this._isInAddToSelectionMenu(button));
     },
 
@@ -221,14 +221,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     _onSelectHasFeedback: function(button) {
         this._selectBy(function(groupRecord) {
             var feedback = groupRecord.get('feedback');
-            return feedback != null;
+            return feedback !== null;
         }, this, this._isInAddToSelectionMenu(button));
     },
 
     _onSelectNoFeedback: function(button) {
         this._selectBy(function(groupRecord) {
             var feedback = groupRecord.get('feedback');
-            return feedback == null;
+            return feedback === null;
         }, this, this._isInAddToSelectionMenu(button));
     },
 
@@ -340,7 +340,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     },
     _onSelectNoDeliveries: function(button) {
         this._selectBy(function(groupRecord) {
-            return groupRecord.get('num_deliveries') == 0;
+            return groupRecord.get('num_deliveries') === 0;
         }, this, this._isInAddToSelectionMenu(button));
     },
 
@@ -354,7 +354,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         
         // Sort
         var num_deliveriesArray = Ext.Object.getKeys(num_deliveriesMap);
-        var num_deliveriesArray = Ext.Array.sort(num_deliveriesArray);
+        num_deliveriesArray = Ext.Array.sort(num_deliveriesArray);
 
         // Create and set items
         var items = [];
@@ -386,7 +386,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     },
     _onSelectNoExaminer: function(button) {
         this._selectBy(function(groupRecord) {
-            return groupRecord.get('examiners').length == 0;
+            return groupRecord.get('examiners').length === 0;
         }, this, this._isInAddToSelectionMenu(button));
     },
 
@@ -450,7 +450,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     },
     _onSelectNoTag: function(button) {
         this._selectBy(function(groupRecord) {
-            return groupRecord.get('tags').length == 0;
+            return groupRecord.get('tags').length === 0;
         }, this, this._isInAddToSelectionMenu(button));
     },
 
