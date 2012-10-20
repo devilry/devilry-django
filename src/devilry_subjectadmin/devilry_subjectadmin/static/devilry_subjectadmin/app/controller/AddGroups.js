@@ -164,9 +164,6 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     _onGroupsProxyError: function(proxy, response, operation) {
         this._onProxyError(response, operation);
     },
-    _onAssignmentProxyError: function(proxy, response, operation) {
-        this._onProxyError(response, operation);
-    },
     _onRelatedStudentsProxyError: function(proxy, response, operation) {
         this._onProxyError(response, operation);
     },
