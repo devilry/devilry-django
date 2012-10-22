@@ -236,9 +236,9 @@ class TestGradeEditorMixin(SetConfigMixin):
         self.loginTo('week2admin', '/assignment/{id}/@@grade-editor/'.format(id=self.assignment.id))
         self.waitForCssSelector('.devilry_subjectadmin_gradeeditoredit')
 
-    def find_element(self, cssselector):
-        cssselector = '.devilry_subjectadmin_gradeeditoredit .devilry_gradeconfigeditor {0}'.format(cssselector)
-        return self.selenium.find_element_by_css_selector(cssselector)
+    def wait_for_element(self, cssselector):
+        configeditor = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_gradeeditoredit .devilry_gradeconfigeditor')
+        return self.waitForAndFindElementByCssSelector(cssselector, within=configeditor)
 
     def perform_save(self):
         savebutton = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_gradeeditoredit .devilry_extjsextras_savebutton')
@@ -246,7 +246,7 @@ class TestGradeEditorMixin(SetConfigMixin):
         self.waitFor(self.selenium, lambda s: not s.current_url.endswith('@@grade-editor/'))
 
     def waitForConfigEditor(self):
-        self.waitForCssSelector('.devilry_gradeconfigeditor')
+        self.waitForCssSelector('.devilry_subjectadmin_gradeeditoredit .devilry_gradeconfigeditor')
 
 
 class TestAsMinimalAsPossibleGradeEditor(TestGradeEditorMixin, SubjectAdminSeleniumTestCase):
@@ -255,8 +255,7 @@ class TestAsMinimalAsPossibleGradeEditor(TestGradeEditorMixin, SubjectAdminSelen
                              {'defaultvalue': True,
                               'fieldlabel': 'This is a test'})
         self.loginAndLoad()
-        self.waitForConfigEditor()
-        textinput = self.find_element('input[type=text]')
+        textinput = self.wait_for_element('input[type=text]')
         self.assertEquals(textinput.get_attribute('value'), 'This is a test')
         textinput.clear()
         textinput.send_keys('Updated')
