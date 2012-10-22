@@ -82,6 +82,6 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
     _onProxyError: function(proxy, response, operation) {
         this.handleProxyErrorNoForm(this.application.getAlertmessagelist(),
             response, operation);
-    },
+    }
 });
 
