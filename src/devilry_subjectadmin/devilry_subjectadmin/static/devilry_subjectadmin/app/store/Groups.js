@@ -45,13 +45,13 @@ Ext.define('devilry_subjectadmin.store.Groups', {
         return this._sortByUserlistProperty('candidates', 'full_name', a, b);
     },
 
-    _sortByUserlistProperty: function(listproperty, attribute, a, b) {
-        var listA = a.get(listproperty);
-        var listB = b.get(listproperty);
-        if(listA.length == 0) {
+    _sortByUserlistProperty: function(listproperty, attribute, recordA, recordB) {
+        var listA = recordA.get(listproperty);
+        var listB = recordB.get(listproperty);
+        if(listA.length === 0) {
             return -1;
         }
-        if(listB.length == 0) {
+        if(listB.length === 0) {
             return 1;
         }
         var a = listA[0].user[attribute];
@@ -70,13 +70,13 @@ Ext.define('devilry_subjectadmin.store.Groups', {
         return split[split.length-1];
     },
 
-    _sortByLastname: function(a, b) {
-        var listA = a.get('candidates');
-        var listB = b.get('candidates');
-        if(listA.length == 0) {
+    _sortByLastname: function(recordA, recordB) {
+        var listA = recordA.get('candidates');
+        var listB = recordB.get('candidates');
+        if(listA.length === 0) {
             return -1;
         }
-        if(listB.length == 0) {
+        if(listB.length === 0) {
             return 1;
         }
         var attribute = 'full_name';
