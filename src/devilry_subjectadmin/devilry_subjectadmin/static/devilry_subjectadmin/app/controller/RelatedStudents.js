@@ -106,7 +106,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedStudents', {
             },
             'viewport relatedstudents selectrelateduserpanel autocompleteuserwidget': {
                 userSelected: this._onAddSelectedUser
-            },
+            }
         });
 
         this.mon(this.getRelatedStudentsStore().proxy, {
