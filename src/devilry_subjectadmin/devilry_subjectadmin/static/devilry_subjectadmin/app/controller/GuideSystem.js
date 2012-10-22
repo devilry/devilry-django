@@ -27,7 +27,7 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
 
     init: function() {
         this.pointer = Ext.widget('guidesystem_pointer', {
-            hidden: true,
+            hidden: true
         });
         this.invalidPageTask = new Ext.util.DelayedTask(this._onInvalidPage, this);
         this.application.addListener({
