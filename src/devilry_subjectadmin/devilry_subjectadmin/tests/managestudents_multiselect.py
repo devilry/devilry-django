@@ -277,6 +277,10 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
             if len(matches) > 0:
                 return row
 
+    def _click_rowchecker_by_username(self, username):
+        self._get_row_by_username(username).find_element_by_css_selector('.x-grid-row-checker').click()
+
+
     #
     # SET
     #
@@ -296,8 +300,8 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
         self.waitFor(panel, lambda p: p.is_displayed())
         self.waitForCssSelector('.examiner_username_newexaminer')
         self.waitForCssSelector('.examiner_username_newexaminer2')
-        self._get_row_by_username('newexaminer').click()
-        self._get_row_by_username('newexaminer2').click()
+        self._click_rowchecker_by_username('newexaminer')
+        self._click_rowchecker_by_username('newexaminer2')
         okbutton = panel.find_element_by_css_selector('.okbutton button')
         self.waitFor(okbutton, lambda b: b.is_enabled())
         okbutton.click()
@@ -342,7 +346,7 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
         self.waitForCssSelector('.examiner_username_newexaminer')
         self.waitForCssSelector('.examiner_username_newexaminer2')
         for username in usernames:
-            self._get_row_by_username(username).click()
+            self._click_rowchecker_by_username(username)
         okbutton = panel.find_element_by_css_selector('.okbutton button')
         self.waitFor(okbutton, lambda b: b.is_enabled())
         okbutton.click()
@@ -422,8 +426,8 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
         self.waitFor(panel, lambda p: p.is_displayed())
         self.waitForCssSelector('.examiner_username_newexaminer')
         self.waitForCssSelector('.examiner_username_newexaminer2')
-        self._get_row_by_username('newexaminer').click()
-        self._get_row_by_username('newexaminer2').click()
+        self._click_rowchecker_by_username('newexaminer')
+        self._click_rowchecker_by_username('newexaminer2')
         okbutton = panel.find_element_by_css_selector('.okbutton button')
         self.waitFor(okbutton, lambda b: b.is_enabled())
         okbutton.click()
