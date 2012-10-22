@@ -142,8 +142,10 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                     border: false,
                     width: 250,
                     margin: '6 0 0 40',
+                    layout: 'anchor',
                     defaults: {
-                        margin: '20 0 0 0'
+                        margin: '20 0 0 0',
+                        anchor: '100%'
                     },
                     items: [{
                         margin: '0 0 0 0',
