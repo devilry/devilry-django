@@ -105,7 +105,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     _onLongNameBlur: function(field) {
         var shortnamefield = this.getShortNameField();
-        if(shortnamefield.getValue() == '') {
+        if(shortnamefield.getValue() === '') {
             var value = field.getValue();
             var short_name = devilry_subjectadmin.utils.AutoGenShortname.autogenShortname(value);
             shortnamefield.setValue(short_name);
@@ -276,7 +276,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     },
 
     _mask: function() {
-        this.getCreateNewAssignmentForm().getEl().mask(gettext('Saving...'))
+        this.getCreateNewAssignmentForm().getEl().mask(gettext('Saving...'));
     },
     _unmask: function() {
         this.getCreateNewAssignmentForm().getEl().unmask();
