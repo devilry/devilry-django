@@ -31,7 +31,7 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.ChooseGradeEditorGrid', {
                 menuDisabled: true,
                 renderer: this.renderCol1,
                 sortable: false
-            }],
+            }]
         });
         this.callParent(arguments);
     },

@@ -42,7 +42,7 @@ Ext.define('devilry_subjectadmin.view.guidesystem.GuideList', {
         });
         this.data = {
             guides: this.guides
-        }
+        };
         this.callParent(arguments);
     },
 

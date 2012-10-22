@@ -123,7 +123,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
     _updateView: function() {
         this.removeAll();
         var sorted_admins = Ext.clone(this.basenodeRecord.get('admins'));
-        var sorted_admins = sorted_admins.sort(function(a, b) {
+        sorted_admins = sorted_admins.sort(function(a, b) {
             var aKey = a.full_name || a.username;
             var bKey = b.full_name || b.username;
             return aKey.localeCompare(bKey);

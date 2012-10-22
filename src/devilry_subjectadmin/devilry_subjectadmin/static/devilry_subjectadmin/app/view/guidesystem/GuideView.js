@@ -22,7 +22,7 @@ Ext.define('devilry_subjectadmin.view.guidesystem.GuideView', {
             xtype: 'box',
             itemId: 'progress',
             cls: 'guidesystem_progress',
-            tpl: gettext('Step {current} of {total}'),
+            tpl: gettext('Step {current} of {total}')
         }, {
             xtype: 'container',
             padding: 10,

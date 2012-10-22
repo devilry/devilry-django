@@ -171,7 +171,6 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                 bodyPadding: '0 40 0 0',
                 layout: 'anchor',
                 items: [{
-                    xtype: 'box',
                     anchor: '100%',
                     region: 'center',
                     xtype: 'markupmoreinfobox',
@@ -227,7 +226,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
         if(includeTags && automapExaminers) {
             showTagsAndExaminersCol = true;
         } else if(includeTags) {
-            showTagsCol = true
+            showTagsCol = true;
         }
 
         var columns = [{

@@ -246,7 +246,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                         tpl: [
                             '<p>',
                                 gettext('If none of the options below suite your needs, uncheck all the checkboxes, and set up {students_term} and {examiners_term} manually later.'),
-                            '</p>',
+                            '</p>'
                         ],
                         data: {
                             students_term: gettext('students'),
@@ -341,7 +341,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                         disabled: true
                     }]
                 }]
-            }],
+            }]
         });
         this.callParent(arguments);
     }

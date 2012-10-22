@@ -33,7 +33,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.SelectUserPanel', {
                         scope: this,
                         click: this._onCancelButtonClick
                     }
-                }],
+                }]
             }],
             layout: 'anchor',
             items: [{

@@ -26,6 +26,6 @@ Ext.define('devilry_subjectadmin.view.shortcut.List', {
             '<a href="#/" class="btn">',
                 gettext('Browse all your subjects (including old/archived)'),
             '<a>',
-        '</p>',
+        '</p>'
     ])
 });

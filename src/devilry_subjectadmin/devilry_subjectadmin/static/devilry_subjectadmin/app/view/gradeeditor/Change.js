@@ -33,7 +33,7 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.Change' ,{
                 margin: '10 0 0 0', // Align it better with the top of the "Select a grade editor" title.
                 items: [{
                     xtype: 'gradeeditorchoosegrid',
-                    anchor: '100%',
+                    anchor: '100%'
                 }, {
                     xtype: 'container',
                     anchor: '100%',
