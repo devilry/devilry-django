@@ -205,6 +205,9 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
             if len(matches) > 0:
                 return row
 
+    def _click_relatedexaminerchecker_by_username(self, username):
+        self._get_relatedexaminer_row_by_username(username).find_element_by_css_selector('.x-grid-row-checker').click()
+
     def _has_reloaded(self, ignored):
         # Since the #single_examiners_help_and_buttons_container is invisible on the
         # save, it will not become visible again until reloaded
@@ -231,7 +234,7 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
         for examiner in click_examiners:
             self.waitForCssSelector('.examiner_username_{0}'.format(examiner))
         for examiner in click_examiners:
-            self._get_relatedexaminer_row_by_username(examiner).click()
+            self._click_relatedexaminerchecker_by_username(examiner)
         okbutton = panel.find_element_by_css_selector('.okbutton button')
         self.waitFor(okbutton, lambda b: b.is_enabled())
         okbutton.click()
