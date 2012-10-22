@@ -59,5 +59,5 @@ Ext.define('devilry_subjectadmin.controller.guides.CreateNewAssignment', {
 
     _onCreateAssignmentClick: function() {
         this.guideSystem.endGuide();
-    },
+    }
 });
