@@ -274,12 +274,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
 
     _onGroupsSummaryBoxReady: function(groupsummarygrid) {
         var height = Ext.util.Cookies.get(this.group_summarygrid_size_cookiename);
-        if(height) {
-            groupsummarygrid.setHeight(parseInt(height));
-        }
         var collapseOrExpanded = Ext.util.Cookies.get(this.group_summarygrid_collapse_cookiename);
         if(collapseOrExpanded === 'expanded') {
             groupsummarygrid.expand();
+        }
+        if(height) {
+            groupsummarygrid.setHeight(parseInt(height, 10));
         }
     },
 
