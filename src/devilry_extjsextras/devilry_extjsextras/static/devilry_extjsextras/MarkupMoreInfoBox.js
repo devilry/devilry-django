@@ -126,7 +126,7 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
     _setTplAttrs: function(data) {
         data.MORE_BUTTON = this.morebutton;
         data.MORE_ATTRS = Ext.String.format('class="more {0}" style="display: none;"', this.moreCls);
-        data.MORE_STYLE = 'style="display: none;"'
+        data.MORE_STYLE = 'style="display: none;"';
     },
 
     update: function(data) {
