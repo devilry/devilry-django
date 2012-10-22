@@ -61,6 +61,16 @@ Ext.define('devilry_extjsextras.ContainerWithEditTitle', {
     },
 
     initComponent: function() {
+        var titleInnerTpl = [
+            '{title}',
+            '&nbsp;',
+            '<a class="edit_link btn btn-mini" style="margin-top: -6px;" href="{editurl}">',
+                this.buttonText,
+                this.buttonSuffix,
+            '</a>'
+        ];
+        var titletpl = Ext.String.format('<{0}>{1}</{2}>',
+            this.titleTag, titleInnerTpl.join(''), this.titleTag);
         Ext.apply(this, {
             layout: 'anchor',
             items: [{
@@ -68,16 +78,7 @@ Ext.define('devilry_extjsextras.ContainerWithEditTitle', {
                 itemId: 'title',
                 anchor: '100%',
                 cls: this.titleCls,
-                tpl: Ext.String.format([
-                    '<{0}>',
-                        '{title}',
-                        '&nbsp;',
-                        '<a class="edit_link btn btn-mini" style="margin-top: -6px;" href="{editurl}">',
-                            this.buttonText,
-                            this.buttonSuffix,
-                        '</a>',
-                    '</{1}>'
-                ].join(''), this.titleTag),
+                tpl: titletpl,
                 data: {
                     title: this.title,
                     editurl: '#'
