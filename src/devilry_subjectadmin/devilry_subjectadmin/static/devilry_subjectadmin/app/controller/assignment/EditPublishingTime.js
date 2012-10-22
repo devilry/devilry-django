@@ -64,7 +64,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
             },
             'editpublishingtime-widget editpublishingtimepanel #cancelbutton': {
                 click: this._onCancel
-            },
+            }
         });
     },
 
