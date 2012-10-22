@@ -276,15 +276,16 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
     _onDeadlinesBulkStoreProxyError: function(proxy, response, operation) {
+        var alertmessagelist;
         if(this.activeDeadlineFormPanel) {
-            var alertmessagelist = this.activeDeadlineFormPanel.down('alertmessagelist');
+            alertmessagelist = this.activeDeadlineFormPanel.down('alertmessagelist');
             alertmessagelist.removeAll();
             this.handleProxyError(alertmessagelist, this.activeDeadlineFormPanel, response, operation);
             this._scrollTo(alertmessagelist);
         } else {
             // NOTE: This should only trigger on load and DELETE error, since saves are
             //       done with _setActiveDeadlineFormPanel()
-            var alertmessagelist = this.getGlobalAlertmessagelist();
+            alertmessagelist = this.getGlobalAlertmessagelist();
             alertmessagelist.removeAll();
             if(this.showNextProxyErrorInWindow) {
                 this._unsetShowNextProxyErrorInWindow();
@@ -459,7 +460,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
     _onCreatemodeSpecificGroupsGridSelectionChange: function(selModel, selected) {
-        var saveButton = this.getAddDeadlineBodyContainer().down('#saveDeadlineButton')
+        var saveButton = this.getAddDeadlineBodyContainer().down('#saveDeadlineButton');
         if(selected.length === 0) {
             saveButton.disable();
         } else {
