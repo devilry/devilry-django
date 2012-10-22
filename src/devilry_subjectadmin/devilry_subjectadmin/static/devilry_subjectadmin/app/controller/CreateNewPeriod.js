@@ -51,7 +51,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewPeriod', {
             'viewport createnewperiod textfield[name=long_name]': {
                 render: this._onRenderLongName,
                 blur: this._onLongNameBlur
-            },
+            }
         });
     },
 
@@ -102,7 +102,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewPeriod', {
     },
     _onLongNameBlur: function(field) {
         var shortnamefield = this.getShortNameField();
-        if(shortnamefield.getValue() == '') {
+        if(shortnamefield.getValue() === '') {
             var value = field.getValue();
             var short_name = devilry_subjectadmin.utils.AutoGenShortname.autogenShortname(value);
             shortnamefield.setValue(short_name);
@@ -110,7 +110,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewPeriod', {
     },
 
     _mask: function() {
-        this.getOverview().getEl().mask(gettext('Saving...'))
+        this.getOverview().getEl().mask(gettext('Saving...'));
     },
     _unmask: function() {
         this.getOverview().getEl().unmask();
