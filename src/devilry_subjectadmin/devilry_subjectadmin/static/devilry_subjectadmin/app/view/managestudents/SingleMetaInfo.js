@@ -81,7 +81,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
         });
 
         this.data = {
-            hasFeedback: this.groupRecord.get('feedback') != null,
+            hasFeedback: this.groupRecord.get('feedback') !== null,
             group: this.groupRecord.data,
             delivery_link_prefix: devilry_subjectadmin.utils.UrlLookup.manageGroupAndShowDeliveryPrefix(
                 this.assignment_id,

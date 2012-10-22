@@ -7,7 +7,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
         'devilry_subjectadmin.view.managestudents.SelectExaminersGrid',
         'devilry_subjectadmin.view.managestudents.ExaminersHelp',
         'devilry_subjectadmin.utils.UrlLookup',
-        'devilry_extjsextras.OkCancelPanel',
+        'devilry_extjsextras.OkCancelPanel'
     ],
 
     /**
@@ -33,7 +33,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                     '</h3>'
                 ],
                 data: {
-                    heading: gettext('Examiners'),
+                    heading: gettext('Examiners')
                 }
             }, {
                 xtype: 'container',

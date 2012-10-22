@@ -81,7 +81,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                     }
                 }, {
                     xtype: 'sortgroupsbybutton',
-                    grid: this,
+                    grid: this
                 }, '->', {
                     xtype: 'selectedgroupsbutton',
                     grid: this
@@ -264,7 +264,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
             itemId: config.itemId,
             cls: config.cls,
             items: menuitems
-        }
+        };
         return menu;
     }
 });

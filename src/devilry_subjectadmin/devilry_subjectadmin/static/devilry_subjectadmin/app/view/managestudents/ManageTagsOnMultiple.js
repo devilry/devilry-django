@@ -23,7 +23,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnMultiple', {
                     '</h3>'
                 ],
                 data: {
-                    heading: gettext('Tags'),
+                    heading: gettext('Tags')
                 }
             }, {
                 xtype: 'container',

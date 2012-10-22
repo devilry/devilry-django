@@ -25,7 +25,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                 devilry_subjectadmin.view.managestudents.ExaminersHelp.getIntroText(),
             '</p>',
             devilry_subjectadmin.view.managestudents.ExaminersHelp.getDetailsUl()
-        ]
+        ];
     },
 
     constructor: function(config) {
@@ -62,7 +62,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                     '</h4>'
                 ],
                 data: {
-                    heading: gettext('Examiners'),
+                    heading: gettext('Examiners')
                 },
                 listeners: {
                     scope: this,

@@ -37,7 +37,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle', {
                     '</h4>'
                 ],
                 data: {
-                    heading: gettext('Students'),
+                    heading: gettext('Students')
                 }
             }, {
                 xtype: 'container',

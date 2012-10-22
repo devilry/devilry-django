@@ -79,7 +79,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsMenu', {
 
     _onClickGroup: function(e) {
         var element = Ext.get(e.target);
-        var id = parseInt(element.getAttribute('data-groupid'));
+        var id = parseInt(element.getAttribute('data-groupid'), 10);
         var groupRecord = this._getGroupRecordById(id);
         var selModel = this.grid.getSelectionModel();
         selModel.deselect([groupRecord]);

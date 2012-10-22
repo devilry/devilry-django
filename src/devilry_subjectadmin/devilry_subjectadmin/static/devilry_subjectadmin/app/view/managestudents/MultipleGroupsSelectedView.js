@@ -43,7 +43,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
                     margin: defaultmargin
                 }, {
                     xtype: 'managetagsonmultiple',
-                    margin: defaultmargin,
+                    margin: defaultmargin
                 }, {
                     xtype: 'multigroupdangerous',
                     margin: defaultmargin,

@@ -166,7 +166,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
             groupname: groupname,
             usernames: this.getUsernames(record),
             notApprovedText: this.notApprovedText,
-            hasFeedback: record.get('feedback') != null,
+            hasFeedback: record.get('feedback') !== null,
             approvedText: this.approvedText,
             groupUrlPrefix: this.groupUrlPrefix
         };
@@ -206,7 +206,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
      * */
     getFullnames: function(record) {
         var candidates = record.get('candidates');
-        if(candidates.length == 0) {
+        if(candidates.length === 0) {
             return Ext.String.format('{0}(groupID={1})', gettext('No-students'), record.get('id'));
         }
         var names = [];
@@ -231,7 +231,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
      * */
     getUsernames: function(record) {
         var candidates = record.get('candidates');
-        if(candidates.length == 0) {
+        if(candidates.length === 0) {
             return '';
         }
         var usernames = [];

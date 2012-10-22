@@ -47,7 +47,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
                     '</h4>'
                 ],
                 data: {
-                    heading: gettext('Tags'),
+                    heading: gettext('Tags')
                 },
                 listeners: {
                     scope: this,

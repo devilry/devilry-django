@@ -39,7 +39,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectExaminersGrid', {
                 menuDisabled: true,
                 renderer: this.renderCol1,
                 sortable: false
-            }],
+            }]
         });
         this.callParent(arguments);
     },

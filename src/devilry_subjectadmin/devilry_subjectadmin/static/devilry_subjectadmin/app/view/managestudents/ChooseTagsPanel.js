@@ -103,7 +103,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
         var form = this.down('form').getForm();
         var tags = form.getFieldValues().tags.split(/\s*,\s*/);
         var nonEmptyTags = Ext.Array.filter(tags, function(tag) {
-            return tag != '';
+            return tag !== '';
         });
         return Ext.Array.unique(nonEmptyTags);
     },
