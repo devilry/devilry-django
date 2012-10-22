@@ -172,7 +172,7 @@ class TestGradeEditorChange(SubjectAdminSeleniumTestCase, SetConfigMixin):
     def test_render(self):
         self.set_config(self.assignment, 'asminimalaspossible', '')
         self._loginAndLoad()
-        self.assertTrue('Select a grade editor' in self.selenium.page_source)
+        self.assertTrue('Select a grading system' in self.selenium.page_source)
         selected = self._find_element('.devilry_subjectadmin_gradeeditorchoosegrid .x-grid-row-selected')
         self.assertEquals(len(selected.find_elements_by_css_selector('.gradeeditorid_asminimalaspossible')), 1)
         savebutton = self._get_savebutton()
