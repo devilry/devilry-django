@@ -150,7 +150,7 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
         this._getMoreButtonEl().hide(); // NOTE: Important that this comes before the other show()-calls below, because hide() on an element does not trigger re-rendering.
         this._getLessButtonEl().show();
         this._getMoreWidget().show();
-        this.fireEvent('moreclick', this)
+        this.fireEvent('moreclick', this);
     },
 
     _onLess: function(e) {
@@ -164,6 +164,6 @@ Ext.define('devilry_extjsextras.MoreInfoBox', {
         this._getMoreButtonEl().show();
         this._getLessButtonEl().hide();
         this._getMoreWidget().hide();
-        this.fireEvent('lessclick', this)
+        this.fireEvent('lessclick', this);
     }
 });
