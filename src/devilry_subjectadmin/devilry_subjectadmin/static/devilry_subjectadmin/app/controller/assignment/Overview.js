@@ -15,7 +15,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
     ],
 
     requires: [
-        'devilry_subjectadmin.utils.UrlLookup',
+        'devilry_subjectadmin.utils.UrlLookup'
     ],
 
     models: [
