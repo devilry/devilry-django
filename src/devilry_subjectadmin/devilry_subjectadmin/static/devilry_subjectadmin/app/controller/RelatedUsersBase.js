@@ -131,7 +131,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
     onTagSyncSuccess: function(selectedRelatedUserRecords, tagsArray) {
         this.resetToHelpView();
         var names = devilry_subjectadmin.model.RelatedUserBase.recordsAsDisplaynameArray(selectedRelatedUserRecords);
-        var msg = gettext('Tagged %(users)s with: %(tags)s')
+        var msg = gettext('Tagged %(users)s with: %(tags)s');
         this.showSyncSuccessMessage(interpolate(msg, {
             users: names.join(', '),
             tags: tagsArray.join(', ')
@@ -183,7 +183,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
             success: function() {
                 this.resetToHelpView();
                 var names = devilry_subjectadmin.model.RelatedUserBase.recordsAsDisplaynameArray(selectedRelatedUserRecords);
-                var msg = gettext('Cleared tags on %(users)s.')
+                var msg = gettext('Cleared tags on %(users)s.');
                 this.showSyncSuccessMessage(interpolate(msg, {
                     users: names.join(', ')
                 }, true));
