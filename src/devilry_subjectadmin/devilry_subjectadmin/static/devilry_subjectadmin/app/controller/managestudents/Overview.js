@@ -133,7 +133,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     _onRenderOverview: function() {
         this.assignment_id = this.getOverview().assignment_id;
         Ext.defer(function() { // Hack to work around the problem of the entire panel not completely loaded, which makes the loadmask render wrong
-            if(this.assignmentRecord == undefined) {
+            if(this.assignmentRecord === undefined) {
                 this.getOverview().setLoading(gettext('Loading assignment ...'));
             }
         }, 100, this);
@@ -164,7 +164,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     _onListOfGroupsBoxReady: function(listofgroups) {
         var width = Ext.util.Cookies.get(this.listofgroups_size_cookiename);
         if(width) {
-            listofgroups.setWidth(parseInt(width));
+            listofgroups.setWidth(parseInt(width, 10));
         }
     },
 
@@ -335,7 +335,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         }
         var groupIds = [];
         Ext.Array.each(select_groupids_on_load.split(','), function(strid) {
-            var id = parseInt(strid);
+            var id = parseInt(strid, 10);
             groupIds.push(id);
         }, this);
         this._selectByGroupIds(groupIds);
