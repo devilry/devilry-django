@@ -67,7 +67,7 @@ Ext.define('devilry_subjectadmin.controller.period.EditDuration', {
             },
             'editperiod_duration-widget editperiod_duration #cancelbutton': {
                 click: this._onCancel
-            },
+            }
         });
     },
 
