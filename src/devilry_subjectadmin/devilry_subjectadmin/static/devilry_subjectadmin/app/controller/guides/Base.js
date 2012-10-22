@@ -31,7 +31,7 @@ Ext.define('devilry_subjectadmin.controller.guides.Base', {
     },
 
     onRender: function() {
-        this.guideSystem = this.getGuideView().guideSystem
+        this.guideSystem = this.getGuideView().guideSystem;
         this.guideSystem.setTitle(this.title);
         Ext.defer(function() {
             this.onFirstStep();
