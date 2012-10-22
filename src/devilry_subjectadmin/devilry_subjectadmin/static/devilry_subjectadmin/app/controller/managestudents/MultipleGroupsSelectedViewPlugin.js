@@ -360,7 +360,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
             success: function() {
-                this._onRandomDistributeExaminersSuccess(resultsByExaminer)
+                this._onRandomDistributeExaminersSuccess(resultsByExaminer);
             }
         });
     },
