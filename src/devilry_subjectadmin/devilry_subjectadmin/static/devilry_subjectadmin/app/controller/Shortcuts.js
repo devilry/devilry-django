@@ -30,7 +30,7 @@ Ext.define('devilry_subjectadmin.controller.Shortcuts', {
     _postProcessActiveAssignmentsData: function() {
         var store = this.getActiveAssignmentsStore();
         var subjects = store.collect('parentnode__parentnode__short_name');
-        var results = []
+        var results = [];
         Ext.each(subjects, function(subject) {
             var recordsInSubject = store.queryBy(function(record) {
                 return record.get('parentnode__parentnode__short_name') == subject;
