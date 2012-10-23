@@ -88,7 +88,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             },
             'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_editdeadlineform bulkmanagedeadlines_groupsindeadlineselectgrid': {
                 selectionchange: this._onGroupsInDeadlineSelectionChange
-            },
+            }
         });
         
         this.mon(this.getDeadlinesBulkStore().proxy, {
