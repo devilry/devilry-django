@@ -78,9 +78,12 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
     #
     #
     def _fill_addform(self, form, date, time, text='', createmodecls=None):
-        datefield = form.find_element_by_css_selector('.deadlinefield .devilry_extjsextras_datefield input[type=text]')
-        timefield = form.find_element_by_css_selector('.deadlinefield .devilry_extjsextras_timefield input[type=text]')
-        textfield = form.find_element_by_css_selector('textarea[name="text"]')
+        datefield = self.waitForAndFindElementByCssSelector('.deadlinefield .devilry_extjsextras_datefield input[type=text]',
+                                                            within=form)
+        timefield = self.waitForAndFindElementByCssSelector('.deadlinefield .devilry_extjsextras_timefield input[type=text]',
+                                                            within=form)
+        textfield = self.waitForAndFindElementByCssSelector('textarea[name="text"]',
+                                                            within=form)
 
         for field in (datefield, timefield, textfield):
             field.clear()
@@ -181,6 +184,12 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self.assertEquals(len(badgroup.deadlines.all()), 1)
         self.assertEquals(len(goodgroup.deadlines.all()), 1)
 
+    def _click_specific_groups(self, addform, groups):
+        grid = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_bulkmanagedeadlines_allgroupsgrid',
+                                                       within=addform)
+        for group in groups:
+            self._click_row_by_group(grid, group)
+
     def test_add_deadline_specific_groups(self):
         nodeadlinegroup = self._create_nodeadlinegroup()
         nofeedbackgroup = self._create_nofeedbackgroup()
@@ -193,10 +202,8 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self._fill_addform(addform, date=self._create_datestring_from_offset(2),
                         time='12:00', text='Hello', createmodecls='createmode_specific_groups')
         self.waitForDisabled(savebutton)
-
-        grid = addform.find_element_by_css_selector('.devilry_subjectadmin_bulkmanagedeadlines_allgroupsgrid')
-        self._click_row_by_group(grid, goodgroup)
-        self._click_row_by_group(grid, badgroup)
+        self._click_specific_groups(addform, [goodgroup, badgroup])
+        self.waitForEnabled(savebutton)
 
         url = self.selenium.current_url
         savebutton.click()
@@ -213,6 +220,38 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         # Unchanged:
         self.assertEquals(len(nofeedbackgroup.deadlines.all()), 1)
         self.assertEquals(len(nodeadlinegroup.deadlines.all()), 0)
+
+    def test_add_deadline_enable_disable(self):
+        goodgroup = self._create_goodgroup()
+        self._loginTo('a1admin', self.assignment.id)
+
+        addform = self._open_addform()
+        savebutton = self._get_formsavebutton(addform)
+
+        self.waitForDisabled(savebutton) # Should start as disabled
+
+        self._fill_addform(addform, date=self._create_datestring_from_offset(2),
+                           time='12:00', text='Hello')
+        self.waitForEnabled(savebutton)
+
+        self._fill_addform(addform, date='',
+                           time='12:00', text='Hello')
+        self.waitForDisabled(savebutton)
+
+        self._fill_addform(addform, date=self._create_datestring_from_offset(2),
+                           time='12:00', text='Hello', createmodecls='createmode_specific_groups')
+        self.waitForDisabled(savebutton)
+
+        self._click_specific_groups(addform, [goodgroup]) # Select goodgroup
+        self.waitForEnabled(savebutton)
+
+        self._click_specific_groups(addform, [goodgroup]) # Deselect goodgroup
+        self.waitForDisabled(savebutton)
+
+        self._fill_addform(addform, date=self._create_datestring_from_offset(2),
+                           time='12:00', text='Hello', createmodecls='createmode_failed')
+        self.waitForEnabled(savebutton)
+
 
 
 
