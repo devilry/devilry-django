@@ -78,11 +78,16 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             // Edit
             'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_editdeadlineform': {
                 saveDeadline: this._onSaveExistingDeadline,
-                cancel: this._onCancelEditExistingDeadline
+                cancel: this._onCancelEditExistingDeadline,
+                fieldvaliditychange: this._onEditFormFieldValiditityChange
             },
             'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_editdeadlineform #editSpecificGroupsFieldset': {
-                expand: this._onExpandEditSpecificGroupsFieldset
-            }
+                expand: this._onExpandEditSpecificGroupsFieldset,
+                collapse: this._onCollapseEditSpecificGroupsFieldset
+            },
+            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_editdeadlineform bulkmanagedeadlines_groupsindeadlineselectgrid': {
+                selectionchange: this._onGroupsInDeadlineSelectionChange
+            },
         });
         
         this.mon(this.getDeadlinesBulkStore().proxy, {
@@ -242,6 +247,9 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
     _onSaveExistingDeadline: function(formpanel) {
+        if(!this._editFormIsValid(formpanel)) {
+            return;
+        }
         formpanel.setLoading(gettext('Saving') + ' ...');
         var deadlinePanel = formpanel.up('bulkmanagedeadlines_deadline');
         var deadlineRecord = deadlinePanel.deadlineRecord;
@@ -271,12 +279,51 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         });
     },
 
+    _onEditFormFieldValiditityChange: function(formpanel) {
+        this._enableOrDisableEditFormSavebutton(formpanel);
+    },
+
+    _editFormIsValid: function(formpanel) {
+        var form = formpanel.getForm();
+        if(!form.isValid()) {
+            return false;
+        }
+        if(form.getFieldValues().editSpecific) {
+            var grid = formpanel.down('bulkmanagedeadlines_groupsindeadlineselectgrid');
+            if(grid.getSelectionModel().getSelection().length === 0) {
+                return false;
+            }
+        }
+        return true;
+    },
+
+    _enableOrDisableEditFormSavebutton: function(formpanel) {
+        var saveButton = formpanel.down('#saveDeadlineButton');
+        if(this._editFormIsValid(formpanel)) {
+            saveButton.enable();
+        } else {
+            saveButton.disable();
+        }
+    },
+
+    _onCollapseEditSpecificGroupsFieldset: function(fieldset) {
+        var formpanel = fieldset.up('bulkmanagedeadlines_editdeadlineform');
+        this._enableOrDisableEditFormSavebutton(formpanel);
+    },
+
     _onExpandEditSpecificGroupsFieldset: function(fieldset) {
         var grid = fieldset.down('bulkmanagedeadlines_groupsindeadlineselectgrid');
         var bodysize = Ext.getBody().getViewSize();
         grid.setHeight(bodysize.height - 180);
         var formpanel = fieldset.up('bulkmanagedeadlines_editdeadlineform');
         this._scrollTo(formpanel.down('#saveDeadlineButton'));
+        grid.getSelectionModel().deselectAll();
+        this._enableOrDisableEditFormSavebutton(formpanel);
+    },
+
+    _onGroupsInDeadlineSelectionChange: function(selModel, selected) {
+        var formpanel = selModel.view.up('bulkmanagedeadlines_editdeadlineform');
+        this._enableOrDisableEditFormSavebutton(formpanel);
     },
 
 
