@@ -237,6 +237,9 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         var values = form.getFieldValues();
         deadlineRecord.set('deadline', values.deadline);
         deadlineRecord.set('text', values.text);
+        if(values.editSpecific) {
+            console.log('EditSpecific');
+        }
         deadlineRecord.save({
             scope: this,
             callback: function(updatedDeadlineRecord, operation) {
