@@ -41,7 +41,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsButton', {
             scope: this,
             load: this._onStoreLoad
         });
-        if(store.getTotalCount() > 0 && !store.isLoading()) {
+        if(!store.isLoading()) {
             this._updateText(this.grid.getSelectionModel().getSelection());
         }
     },
@@ -62,7 +62,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsButton', {
 
     _updateText: function(selectedGroupRecords) {
         var store = this.grid.getStore();
-        var total = store.getTotalCount();
+        var total = store.getCount();
         this.setText(this.textTplCompiled.apply({
             selected: selectedGroupRecords.length,
             total: total
