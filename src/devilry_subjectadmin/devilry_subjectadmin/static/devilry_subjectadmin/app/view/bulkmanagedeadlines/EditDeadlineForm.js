@@ -3,6 +3,15 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.EditDeadlineForm', {
     alias: 'widget.bulkmanagedeadlines_editdeadlineform',
     extraCls: 'editdeadlineform',
 
+    requires: [
+        'devilry_subjectadmin.view.bulkmanagedeadlines.GroupsInDeadlineSelectGrid'
+    ],
+
+    /**
+     * @cfg {Object} [groupsStore]
+     * The store to use for the specify groups grid.
+     */
+
     getItems: function() {
         var items = this.callParent();
         items.push({
@@ -19,9 +28,10 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.EditDeadlineForm', {
                 itemId: 'specifyGroupsContainer',
                 layout: 'column',
                 items: [{
-                    xtype: 'box',
+                    xtype: 'bulkmanagedeadlines_groupsindeadlineselectgrid',
                     columnWidth: 1,
-                    html: 'grid'
+                    store: this.groupsStore,
+                    height: 300
                 }, {
                     xtype: 'box',
                     width: 250,

@@ -186,6 +186,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
             }, {
                 xtype: 'bulkmanagedeadlines_editdeadlineform',
                 itemId: 'editDeadline',
+                groupsStore: this.groupsStore,
                 margin: '0 0 40 0'
             }]
         });
