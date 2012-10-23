@@ -236,7 +236,9 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         deadlineRecord.set('deadline', values.deadline);
         deadlineRecord.set('text', values.text);
         if(values.editSpecific) {
-            console.log('EditSpecific');
+            var grid = formpanel.down('bulkmanagedeadlines_groupsindeadlineselectgrid');
+            var group_ids = this._getGroupIdsFromGridSelection(grid);
+            deadlineRecord.set('group_ids', group_ids);
         }
         deadlineRecord.save({
             scope: this,
