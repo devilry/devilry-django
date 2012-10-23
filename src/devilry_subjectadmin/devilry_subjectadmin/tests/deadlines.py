@@ -243,6 +243,17 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         return self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_bulkmanagedeadlines_deadlineform.editdeadlineform',
                                                        within=deadlinepanelbody)
 
+    def _click_onlysomegroups_checkbox(self, editform):
+        checkbutton = editform.find_element_by_css_selector('.edit_specific_groups_fieldset .x-fieldset-header-checkbox input.x-form-checkbox')
+        checkbutton.click()
+
+    def _editform_clickgroups(self, editform, groups):
+        grid = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_bulkmanagedeadlines_groupsindeadlineselectgrid',
+                                                       within=editform)
+        for group in groups:
+            self._click_row_by_group(grid, group)
+
+
     def test_edit_deadline(self):
         badgroup = self._create_badgroup()
         goodgroup = self._create_goodgroup()
@@ -257,7 +268,103 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self.waitFor(self.selenium, lambda s: s.current_url != url) # Wait for the page to be reloaded with the new deadline URL
 
         for group in badgroup, goodgroup:
-            deadline = badgroup.deadlines.all()[0]
+            deadline = group.deadlines.all()[0]
             self.assertEquals(deadline.text, 'Hello')
             self.assertEquals(deadline.deadline.hour, 12)
             self.assertEquals(deadline.deadline.minute, 0)
+
+    def test_edit_deadline_afterperiod(self):
+        goodgroup = self._create_goodgroup()
+        self._loginTo('a1admin', self.assignment.id)
+
+        deadlinepanelbody = self._expand_deadline_by_index(index=0, expectedcount=1)
+        editform = self._open_editform(deadlinepanelbody)
+        alertmessagelist = editform.find_element_by_css_selector('.devilry_extjsextras_alertmessagelist')
+        self.assertEquals(alertmessagelist.find_elements_by_css_selector('.alert-error'), [])
+
+        year = goodgroup.deadlines.all()[0].deadline.year
+        self._fill_editform(editform, date='{0}-01-01'.format(year+3), time='12:00')
+        self._get_formsavebutton(editform).click()
+
+        def has_out_of_period_error(a):
+            if len(alertmessagelist.find_elements_by_css_selector('.alert-error')) == 1:
+                error = alertmessagelist.find_element_by_css_selector('.alert-error')
+                return 'Deadline must be within' in error.text
+            return False
+        self.waitFor(alertmessagelist, has_out_of_period_error)
+
+    def test_edit_deadline_beforepubtime(self):
+        goodgroup = self._create_goodgroup()
+        self._loginTo('a1admin', self.assignment.id)
+
+        deadlinepanelbody = self._expand_deadline_by_index(index=0, expectedcount=1)
+        editform = self._open_editform(deadlinepanelbody)
+        alertmessagelist = editform.find_element_by_css_selector('.devilry_extjsextras_alertmessagelist')
+        self.assertEquals(alertmessagelist.find_elements_by_css_selector('.alert-error'), [])
+
+        self._fill_editform(editform, date='2000-01-01', time='12:00')
+        self._get_formsavebutton(editform).click()
+
+        def has_out_of_period_error(a):
+            if len(alertmessagelist.find_elements_by_css_selector('.alert-error')) == 1:
+                error = alertmessagelist.find_element_by_css_selector('.alert-error')
+                return 'Deadline cannot be before publishing time' in error.text
+            return False
+        self.waitFor(alertmessagelist, has_out_of_period_error)
+
+    def test_edit_deadline_somegroups(self):
+        badgroup = self._create_badgroup()
+        goodgroup = self._create_goodgroup()
+        goodgroup_deadline = goodgroup.deadlines.all()[0].deadline
+        self._loginTo('a1admin', self.assignment.id)
+
+        deadlinepanelbody = self._expand_deadline_by_index(index=0, expectedcount=1)
+        editform = self._open_editform(deadlinepanelbody)
+        self._fill_editform(editform, date=self._create_datestring_from_offset(2),
+                            time='12:00', text='Hello')
+        self._click_onlysomegroups_checkbox(editform)
+        self._editform_clickgroups(editform, [badgroup])
+
+        url = self.selenium.current_url
+        self._get_formsavebutton(editform).click()
+        self.waitFor(self.selenium, lambda s: s.current_url != url) # Wait for the page to be reloaded with the new deadline URL
+
+        # Goodgroup is unchanged?
+        self.assertEquals(goodgroup.deadlines.all()[0].deadline, goodgroup_deadline)
+
+        # Badgroup was updated?
+        deadline = badgroup.deadlines.all()[0]
+        self.assertEquals(deadline.text, 'Hello')
+        self.assertEquals(deadline.deadline.hour, 12)
+        self.assertEquals(deadline.deadline.minute, 0)
+
+    def test_edit_deadline_enable_disable(self):
+        badgroup = self._create_badgroup()
+        goodgroup = self._create_goodgroup()
+        self._loginTo('a1admin', self.assignment.id)
+
+        deadlinepanelbody = self._expand_deadline_by_index(index=0, expectedcount=1)
+        editform = self._open_editform(deadlinepanelbody)
+        savebutton = self._get_formsavebutton(editform)
+
+        self.waitForEnabled(savebutton) # Should start as enabled since we load a valid deadline
+
+        self._fill_editform(editform, date='',
+                            time='12:00', text='Hello')
+        self.waitForDisabled(savebutton)
+
+        self._fill_editform(editform, date=self._create_datestring_from_offset(2),
+                            time='12:00', text='Hello')
+        self.waitForEnabled(savebutton)
+
+        self._click_onlysomegroups_checkbox(editform) # Expand only some groups panel
+        self.waitForDisabled(savebutton)
+
+        self._editform_clickgroups(editform, [badgroup]) # Select badgroup
+        self.waitForEnabled(savebutton)
+
+        self._editform_clickgroups(editform, [badgroup]) # Deselect badgroup
+        self.waitForDisabled(savebutton)
+
+        self._click_onlysomegroups_checkbox(editform) # Collapse only some groups panel
+        self.waitForEnabled(savebutton)
