@@ -16,7 +16,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.EditDeadlineForm', {
         var items = this.callParent();
         items.push({
             xtype: 'fieldset',
-            itemId: 'editSpecificGroupsContainer',
+            itemId: 'editSpecificGroupsFieldset',
             layout: 'anchor',
             title: gettext('Only apply these changes to some of the groups in the deadline.'),
             checkboxName: 'editSpecific',

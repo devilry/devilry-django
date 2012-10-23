@@ -59,22 +59,29 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
                 editDeadline: this._onEditDeadline,
                 deleteDeadline: this._onDeleteDeadline
             },
+
+            // Add
             'viewport bulkmanagedeadlinespanel #addDeadlineButton': {
                 click: this._onAddDeadline
-            },
-            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_deadline bulkmanagedeadlines_editdeadlineform': {
-                saveDeadline: this._onSaveExistingDeadline,
-                cancel: this._onCancelEditExistingDeadline
             },
             'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_createdeadlineform': {
                 saveDeadline: this._onSaveNewDeadline,
                 cancel: this._onCancelAddNewDeadline
             },
-            'viewport bulkmanagedeadlinespanel #createmodeSpecificGroups': {
+            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_createdeadlineform #createmodeSpecificGroups': {
                 change: this._onCreatemodeSpecificGroupsChange
             },
-            'viewport bulkmanagedeadlinespanel #createmodeSpecificGroupsSelectpanel bulkmanagedeadlines_allgroupsgrid': {
+            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_createdeadlineform #createmodeSpecificGroupsSelectpanel bulkmanagedeadlines_allgroupsgrid': {
                 selectionchange: this._onCreatemodeSpecificGroupsGridSelectionChange
+            },
+
+            // Edit
+            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_editdeadlineform': {
+                saveDeadline: this._onSaveExistingDeadline,
+                cancel: this._onCancelEditExistingDeadline
+            },
+            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_editdeadlineform #editSpecificGroupsFieldset': {
+                expand: this._onExpandEditSpecificGroupsFieldset
             }
         });
         
@@ -201,6 +208,13 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
 
+
+    //
+    //
+    // Edit deadline
+    //
+    //
+
     _onEditDeadline: function(deadlinePanel, deadlineRecord) {
         var formpanel = deadlinePanel.down('bulkmanagedeadlines_editdeadlineform');
         formpanel.down('alertmessagelist').removeAll(); // NOTE: Remove any error lingering from pressing cancel previously.
@@ -255,6 +269,14 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
                 }
             }
         });
+    },
+
+    _onExpandEditSpecificGroupsFieldset: function(fieldset) {
+        var grid = fieldset.down('bulkmanagedeadlines_groupsindeadlineselectgrid');
+        var bodysize = Ext.getBody().getViewSize();
+        grid.setHeight(bodysize.height - 180);
+        var formpanel = fieldset.up('bulkmanagedeadlines_editdeadlineform');
+        this._scrollTo(formpanel.down('#saveDeadlineButton'));
     },
 
 
