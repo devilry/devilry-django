@@ -1,10 +1,10 @@
 /**
  * The grid that shows groups within a deadline.
  */
-Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.GroupGrid', {
+Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.GroupsInDeadlineGrid', {
     extend: 'devilry_subjectadmin.view.managestudents.GridOfGroupsBase',
-    alias: 'widget.bulkmanagedeadlines_groupgrid',
-    cls: 'devilry_subjectadmin_bulkmanagedeadlines_groupgrid',
+    alias: 'widget.bulkmanagedeadlines_groupsindeadlinegrid',
+    cls: 'devilry_subjectadmin_bulkmanagedeadlines_groupsindeadlinegrid',
     store: 'SelectedGroups',
     disableSelection: true,
     hideHeaders: true,

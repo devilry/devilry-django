@@ -10,7 +10,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
 
     requires: [
         'devilry_subjectadmin.model.Group',
-        'devilry_subjectadmin.view.bulkmanagedeadlines.GroupGrid',
+        'devilry_subjectadmin.view.bulkmanagedeadlines.GroupsInDeadlineGrid',
         'devilry_subjectadmin.view.bulkmanagedeadlines.EditDeadlineForm',
         'devilry_extjsextras.PrimaryButton',
         'devilry_extjsextras.DeleteButton'
@@ -168,7 +168,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                 xtype: 'container',
                 layout: 'column',
                 items: [{
-                    xtype: 'bulkmanagedeadlines_groupgrid',
+                    xtype: 'bulkmanagedeadlines_groupsindeadlinegrid',
                     width: 300,
                     assignment_id: this.assignment_id,
                     store: this.groupsStore
