@@ -2,6 +2,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.bulkmanagedeadlines_deadline',
     cls: 'devilry_subjectadmin_bulkmanagedeadlines_deadline',
+    bodyCls: 'bulkmanagedeadlines_deadline_body',
     collapsible: true,
     collapsed: true,
     animCollapse: false,
@@ -144,6 +145,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                         items: [{
                             xtype: 'primarybutton',
                             itemId: 'editDeadlineButton',
+                            cls: 'edit_deadline_button',
                             width: 180,
                             margin: '0 0 10 0',
                             text: gettext('Edit/move'),
@@ -153,6 +155,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                             }
                         }, {
                             xtype: 'deletebutton',
+                            cls: 'delete_deadline_button',
                             itemId: 'deleteDeadlineButton',
                             width: 180,
                             listeners: {

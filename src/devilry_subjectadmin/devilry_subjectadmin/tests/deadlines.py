@@ -36,21 +36,7 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
 
     def _open_addform(self):
         self._get_addbutton().click()
-        return self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_bulkmanagedeadlines_deadlineform')
-
-    def _fill_form(self, form, date, time, text='', createmodecls=None):
-        datefield = form.find_element_by_css_selector('.deadlinefield .devilry_extjsextras_datefield input[type=text]')
-        timefield = form.find_element_by_css_selector('.deadlinefield .devilry_extjsextras_timefield input[type=text]')
-        textfield = form.find_element_by_css_selector('textarea[name="text"]')
-
-        for field in (datefield, timefield, textfield):
-            field.clear()
-        datefield.send_keys(date)
-        timefield.send_keys(time)
-        textfield.send_keys(text)
-        if createmodecls:
-            checkbox = form.find_element_by_css_selector('.{0} input[type=button]'.format(createmodecls))
-            checkbox.click()
+        return self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_bulkmanagedeadlines_deadlineform.createdeadlineform')
 
     def _create_datestring_from_offset(self, dayoffset=1):
         now = datetime.now()
@@ -82,12 +68,28 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self.testhelper.add_delivery(nofeedbackgroup, {'a.py': ['print ', 'yess']})
         return nofeedbackgroup
 
+    def _get_formsavebutton(self, form):
+        return form.find_element_by_css_selector('.savedeadlinebutton button')
+
 
     #
     #
     # Add deadline tests
     #
     #
+    def _fill_addform(self, form, date, time, text='', createmodecls=None):
+        datefield = form.find_element_by_css_selector('.deadlinefield .devilry_extjsextras_datefield input[type=text]')
+        timefield = form.find_element_by_css_selector('.deadlinefield .devilry_extjsextras_timefield input[type=text]')
+        textfield = form.find_element_by_css_selector('textarea[name="text"]')
+
+        for field in (datefield, timefield, textfield):
+            field.clear()
+        datefield.send_keys(date)
+        timefield.send_keys(time)
+        textfield.send_keys(text)
+        if createmodecls:
+            checkbox = form.find_element_by_css_selector('.{0} input[type=button]'.format(createmodecls))
+            checkbox.click()
 
     def test_add_deadline_failed(self):
         nodeadlinegroup = self._create_nodeadlinegroup()
@@ -101,11 +103,11 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
 
         self._loginTo('a1admin', self.assignment.id)
         addform = self._open_addform()
-        self._fill_form(addform, date=self._create_datestring_from_offset(2),
+        self._fill_addform(addform, date=self._create_datestring_from_offset(2),
                         time='12:00', text='Hello', createmodecls='createmode_failed')
 
         url = self.selenium.current_url
-        addform.find_element_by_css_selector('.savedeadlinebutton').click()
+        self._get_formsavebutton(addform).click()
         self.waitFor(self.selenium, lambda s: s.current_url != url) # Wait for the page to be reloaded with the new deadline URL
 
         nofeedbackgroup = self.testhelper.reload_from_db(nofeedbackgroup)
@@ -133,11 +135,11 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
 
         self._loginTo('a1admin', self.assignment.id)
         addform = self._open_addform()
-        self._fill_form(addform, date=self._create_datestring_from_offset(2),
+        self._fill_addform(addform, date=self._create_datestring_from_offset(2),
                         time='12:00', text='Hello', createmodecls='createmode_failed_or_no_feedback')
 
         url = self.selenium.current_url
-        addform.find_element_by_css_selector('.savedeadlinebutton').click()
+        self._get_formsavebutton(addform).click()
         self.waitFor(self.selenium, lambda s: s.current_url != url) # Wait for the page to be reloaded with the new deadline URL
 
         nofeedbackgroup = self.testhelper.reload_from_db(nofeedbackgroup)
@@ -160,11 +162,11 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
 
         self._loginTo('a1admin', self.assignment.id)
         addform = self._open_addform()
-        self._fill_form(addform, date=self._create_datestring_from_offset(2),
+        self._fill_addform(addform, date=self._create_datestring_from_offset(2),
                         time='12:00', text='Hello', createmodecls='createmode_no_deadlines')
 
         url = self.selenium.current_url
-        addform.find_element_by_css_selector('.savedeadlinebutton').click()
+        self._get_formsavebutton(addform).click()
         self.waitFor(self.selenium, lambda s: s.current_url != url) # Wait for the page to be reloaded with the new deadline URL
 
         nofeedbackgroup = self.testhelper.reload_from_db(nofeedbackgroup)
@@ -187,9 +189,8 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
 
         self._loginTo('a1admin', self.assignment.id)
         addform = self._open_addform()
-        savebutton = addform.find_element_by_css_selector('.savedeadlinebutton button')
-        self.assertTrue(savebutton.is_enabled())
-        self._fill_form(addform, date=self._create_datestring_from_offset(2),
+        savebutton = self._get_formsavebutton(addform)
+        self._fill_addform(addform, date=self._create_datestring_from_offset(2),
                         time='12:00', text='Hello', createmodecls='createmode_specific_groups')
         self.waitForDisabled(savebutton)
 
@@ -212,3 +213,51 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         # Unchanged:
         self.assertEquals(len(nofeedbackgroup.deadlines.all()), 1)
         self.assertEquals(len(nodeadlinegroup.deadlines.all()), 0)
+
+
+
+    #
+    #
+    # Edit deadline tests
+    #
+    #
+    def _fill_editform(self, form, date, time, text=''):
+        self._fill_addform(form, date, time, text)
+
+    def _get_deadlinepanels(self, expectedcount):
+        cssselector = '.devilry_subjectadmin_bulkmanagedeadlines_deadline'
+        self.waitFor(self.selenium, lambda s: len(s.find_elements_by_css_selector(cssselector)) == expectedcount)
+        return self.selenium.find_elements_by_css_selector(cssselector)
+
+    def _expand_deadlinepanel(self, deadlinepanel):
+        button = deadlinepanel.find_element_by_css_selector('.x-panel-header .x-tool-expand-bottom')
+        button.click()
+        return self.waitForAndFindElementByCssSelector('.bulkmanagedeadlines_deadline_body', within=deadlinepanel)
+
+    def _expand_deadline_by_index(self, index, expectedcount):
+        return self._expand_deadlinepanel(self._get_deadlinepanels(expectedcount)[index])
+
+    def _open_editform(self, deadlinepanelbody):
+        button = self.waitForAndFindElementByCssSelector('.edit_deadline_button', within=deadlinepanelbody)
+        button.click()
+        return self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_bulkmanagedeadlines_deadlineform.editdeadlineform',
+                                                       within=deadlinepanelbody)
+
+    def test_edit_deadline(self):
+        badgroup = self._create_badgroup()
+        goodgroup = self._create_goodgroup()
+        self._loginTo('a1admin', self.assignment.id)
+        deadlinepanelbody = self._expand_deadline_by_index(index=0, expectedcount=1)
+        editform = self._open_editform(deadlinepanelbody)
+        self._fill_editform(editform, date=self._create_datestring_from_offset(2),
+                            time='12:00', text='Hello')
+
+        url = self.selenium.current_url
+        self._get_formsavebutton(editform).click()
+        self.waitFor(self.selenium, lambda s: s.current_url != url) # Wait for the page to be reloaded with the new deadline URL
+
+        for group in badgroup, goodgroup:
+            deadline = badgroup.deadlines.all()[0]
+            self.assertEquals(deadline.text, 'Hello')
+            self.assertEquals(deadline.deadline.hour, 12)
+            self.assertEquals(deadline.deadline.minute, 0)
