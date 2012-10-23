@@ -77,6 +77,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
                 }, {
                     xtype: 'bulkmanagedeadlines_createdeadlineform',
                     assignment_id: this.assignment_id,
+                    saveButtonDisabled: true,
                     margin: '20 0 0 0'
                 }]
             }, {

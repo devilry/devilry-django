@@ -66,7 +66,8 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             },
             'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_createdeadlineform': {
                 saveDeadline: this._onSaveNewDeadline,
-                cancel: this._onCancelAddNewDeadline
+                cancel: this._onCancelAddNewDeadline,
+                fieldvaliditychange: this._onCreateFormFieldValiditityChange
             },
             'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_createdeadlineform #createmodeSpecificGroups': {
                 change: this._onCreatemodeSpecificGroupsChange
@@ -432,6 +433,9 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
     _onSaveNewDeadline: function(formpanel) {
+        if(!this._createFormIsValid(formpanel)) {
+            return;
+        }
         this._setActiveDeadlineFormPanel(formpanel);
         formpanel.setLoading(gettext('Saving') + ' ...');
         var form = formpanel.getForm();
@@ -474,14 +478,49 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
 
+    _onCreateFormFieldValiditityChange: function(formpanel) {
+        this._enableOrDisableCreateFormSavebutton(formpanel);
+    },
+
+    _createFormIsValid: function(formpanel) {
+        var form = formpanel.getForm();
+        if(!form.isValid()) {
+            return false;
+        }
+
+        var createmode = form.getFieldValues().createmode;
+        if(Ext.isArray(createmode)) {
+            // NOTE: createmode is an array of the old and new value when change-events on the radiogroup triggers. The new value is the second element in the array
+            createmode = createmode[1];
+        }
+        if(createmode === 'specific-groups') {
+            var grid = formpanel.down('bulkmanagedeadlines_allgroupsgrid');
+            if(grid.getSelectionModel().getSelection().length === 0) {
+                return false;
+            }
+        }
+        return true;
+    },
+
+    _enableOrDisableCreateFormSavebutton: function(formpanel) {
+        var saveButton = formpanel.down('#saveDeadlineButton');
+        if(this._createFormIsValid(formpanel)) {
+            saveButton.enable();
+        } else {
+            saveButton.disable();
+        }
+    },
+
+
     //
     //
     // Createmode specific-groups
     //
     //
-    _onCreatemodeSpecificGroupsChange: function(field, newValue) {
+    _onCreatemodeSpecificGroupsChange: function(field, isSelected) {
         var formpanel = field.up('bulkmanagedeadlines_createdeadlineform');
-        if(newValue) {
+        this._enableOrDisableCreateFormSavebutton(formpanel);
+        if(isSelected) {
             this._onCreatemodeSpecificGroupsSelect(formpanel);
         } else {
             this._onCreatemodeSpecificGroupsDeSelect(formpanel);
@@ -489,10 +528,8 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
     _onCreatemodeSpecificGroupsDeSelect: function(formpanel) {
         formpanel.down('#createmodeSpecificGroupsSelectpanel').hide();
-        formpanel.down('#saveDeadlineButton').enable();
     },
     _onCreatemodeSpecificGroupsSelect: function(formpanel) {
-        formpanel.down('#saveDeadlineButton').disable();
         var selectPanel = formpanel.down('#createmodeSpecificGroupsSelectpanel');
         selectPanel.show();
         if(!this.getGroupsStore().isLoading()) {
@@ -531,12 +568,8 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         }).show();
     },
 
-    _onCreatemodeSpecificGroupsGridSelectionChange: function(selModel, selected) {
-        var saveButton = this.getAddDeadlineBodyContainer().down('#saveDeadlineButton');
-        if(selected.length === 0) {
-            saveButton.disable();
-        } else {
-            saveButton.enable();
-        }
+    _onCreatemodeSpecificGroupsGridSelectionChange: function(selModel) {
+        var formpanel = selModel.view.up('bulkmanagedeadlines_createdeadlineform');
+        this._enableOrDisableCreateFormSavebutton(formpanel);
     }
 });

@@ -19,6 +19,12 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BaseDeadlineForm', {
      * Used to generate the students manager url in the createmodeContainer.
      */
 
+    /**
+     * @cfg {bool} [saveButtonDisabled=false]
+     * Disable the savebutton by default?
+     */
+    saveButtonDisabled: false,
+
     initComponent: function() {
         Ext.apply(this, {
             cls: this.cls + ' ' + this.extraCls,
@@ -35,6 +41,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BaseDeadlineForm', {
                 xtype: 'primarybutton',
                 text: gettext('Save'),
                 itemId: 'saveDeadlineButton',
+                disabled: this.saveButtonDisabled,
                 cls: 'savedeadlinebutton',
                 listeners: {
                     scope: this,
@@ -66,6 +73,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BaseDeadlineForm', {
             cls: 'deadlinefield',
             fieldLabel: gettext('Deadline'), // NOTE: we need labels for devilry_extjsextras.ErrorUtils
             hideLabel: true,
+            allowBlank: false,
             itemId: 'deadlineField',
             width: 300
 
