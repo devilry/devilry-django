@@ -119,7 +119,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
             }),
             items: [{
                 xtype: 'bulkmanagedeadlines_deadlineform',
-                margin: '0 40 40 40',
+                margin: '0 0 40 0',
                 hidden: true
             }, {
                 xtype: 'container',
