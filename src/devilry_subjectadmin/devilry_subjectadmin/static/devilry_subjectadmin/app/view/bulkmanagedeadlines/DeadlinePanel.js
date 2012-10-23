@@ -117,68 +117,76 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                 in_the_future: this.deadlineRecord.get('in_the_future'),
                 offset_from_now: this.deadlineRecord.formatOffsetFromNow()
             }),
+
+            layout: 'card',
             items: [{
-                xtype: 'bulkmanagedeadlines_editdeadlineform',
-                margin: '0 0 40 0',
-                hidden: true
-            }, {
                 xtype: 'container',
-                layout: 'column',
+                itemId: 'viewDeadline',
+                layout: 'anchor',
+                defaults: {anchor: '100%'},
                 items: [{
-                    xtype: 'box',
-                    itemId: 'deadlineText',
-                    cls: 'bootstrap',
-                    columnWidth: 1,
-                    tpl: this.deadlineTextTpl,
-                    data: {
-                        text: this.deadlineRecord.get('text')
-                    }
-                }, {
                     xtype: 'container',
-                    width: 180,
-                    itemId: 'deadlineButtonContainer',
-                    margin: '0 0 0 40',
+                    layout: 'column',
                     items: [{
-                        xtype: 'primarybutton',
-                        itemId: 'editDeadlineButton',
-                        width: 180,
-                        margin: '0 0 10 0',
-                        text: gettext('Edit/move'),
-                        listeners: {
-                            scope: this,
-                            click: this._onEdit
+                        xtype: 'box',
+                        itemId: 'deadlineText',
+                        cls: 'bootstrap',
+                        columnWidth: 1,
+                        tpl: this.deadlineTextTpl,
+                        data: {
+                            text: this.deadlineRecord.get('text')
                         }
                     }, {
-                        xtype: 'deletebutton',
-                        itemId: 'deleteDeadlineButton',
+                        xtype: 'container',
                         width: 180,
-                        listeners: {
-                            scope: this,
-                            click: this._onDelete
-                        }
+                        itemId: 'deadlineButtonContainer',
+                        margin: '0 0 0 40',
+                        items: [{
+                            xtype: 'primarybutton',
+                            itemId: 'editDeadlineButton',
+                            width: 180,
+                            margin: '0 0 10 0',
+                            text: gettext('Edit/move'),
+                            listeners: {
+                                scope: this,
+                                click: this._onEdit
+                            }
+                        }, {
+                            xtype: 'deletebutton',
+                            itemId: 'deleteDeadlineButton',
+                            width: 180,
+                            listeners: {
+                                scope: this,
+                                click: this._onDelete
+                            }
+                        }]
+                    }]
+                }, {
+                    xtype: 'box',
+                    margin: '20 0 0 0',
+                    cls: 'bootstrap',
+                    tpl: this.groupsHeaderTpl,
+                    data: {}
+                }, {
+                    xtype: 'container',
+                    layout: 'column',
+                    items: [{
+                        xtype: 'bulkmanagedeadlines_groupsindeadlinegrid',
+                        width: 300,
+                        assignment_id: this.assignment_id,
+                        store: this.groupsStore
+                    }, {
+                        xtype: 'box',
+                        columnWidth: 1,
+                        padding: '0 0 0 30',
+                        hidden: true
+                        //html: 'TODO: filter groups'
                     }]
                 }]
             }, {
-                xtype: 'box',
-                margin: '20 0 0 0',
-                cls: 'bootstrap',
-                tpl: this.groupsHeaderTpl,
-                data: {}
-            }, {
-                xtype: 'container',
-                layout: 'column',
-                items: [{
-                    xtype: 'bulkmanagedeadlines_groupsindeadlinegrid',
-                    width: 300,
-                    assignment_id: this.assignment_id,
-                    store: this.groupsStore
-                }, {
-                    xtype: 'box',
-                    columnWidth: 1,
-                    padding: '0 0 0 30',
-                    hidden: true
-                    //html: 'TODO: filter groups'
-                }]
+                xtype: 'bulkmanagedeadlines_editdeadlineform',
+                itemId: 'editDeadline',
+                margin: '0 0 40 0'
             }]
         });
         this.callParent(arguments);
