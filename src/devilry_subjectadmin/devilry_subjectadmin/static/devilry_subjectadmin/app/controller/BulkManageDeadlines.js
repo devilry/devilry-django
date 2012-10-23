@@ -62,11 +62,11 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
             'viewport bulkmanagedeadlinespanel #addDeadlineButton': {
                 click: this._onAddDeadline
             },
-            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_deadline bulkmanagedeadlines_deadlineform': {
+            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_deadline bulkmanagedeadlines_editdeadlineform': {
                 saveDeadline: this._onSaveExistingDeadline,
                 cancel: this._onCancelEditExistingDeadline
             },
-            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_deadlineform#addDeadlineForm': {
+            'viewport bulkmanagedeadlinespanel bulkmanagedeadlines_createdeadlineform': {
                 saveDeadline: this._onSaveNewDeadline,
                 cancel: this._onCancelAddNewDeadline
             },
@@ -202,7 +202,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
 
 
     _onEditDeadline: function(deadlinePanel, deadlineRecord) {
-        var formpanel = deadlinePanel.down('bulkmanagedeadlines_deadlineform');
+        var formpanel = deadlinePanel.down('bulkmanagedeadlines_editdeadlineform');
         formpanel.down('alertmessagelist').removeAll(); // NOTE: Remove any error lingering from pressing cancel previously.
         var hash = devilry_subjectadmin.utils.UrlLookup.bulkEditSpecificDeadline(this.assignment_id, deadlineRecord.get('bulkdeadline_id'));
         this.application.route.setHashWithoutEvent(hash);
@@ -408,7 +408,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     //
     //
     _onCreatemodeSpecificGroupsChange: function(field, newValue) {
-        var formpanel = field.up('bulkmanagedeadlines_deadlineform');
+        var formpanel = field.up('bulkmanagedeadlines_createdeadlineform');
         if(newValue) {
             this._onCreatemodeSpecificGroupsSelect(formpanel);
         } else {

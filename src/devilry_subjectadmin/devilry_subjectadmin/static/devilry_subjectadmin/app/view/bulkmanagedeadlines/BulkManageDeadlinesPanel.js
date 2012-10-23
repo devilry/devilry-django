@@ -5,6 +5,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
 
     requires: [
         'devilry_extjsextras.AlertMessageList',
+        'devilry_subjectadmin.view.bulkmanagedeadlines.CreateDeadlineForm',
         'devilry_extjsextras.PrimaryButton'
     ],
 
@@ -74,8 +75,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
                         ].join('')
                     }]
                 }, {
-                    xtype: 'bulkmanagedeadlines_deadlineform',
-                    itemId: 'addDeadlineForm',
+                    xtype: 'bulkmanagedeadlines_createdeadlineform',
                     assignment_id: this.assignment_id,
                     margin: '20 0 0 0'
                 }]
