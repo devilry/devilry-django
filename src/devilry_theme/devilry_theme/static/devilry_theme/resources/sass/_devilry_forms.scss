@@ -1,8 +1,9 @@
+@import "compass/css3/border-radius";
+
 .formhelp {
     font-size: $baseFontSize;
     line-height: $baseLineHeight;
     color: $grayLight;
-    //padding-left: 4px;
 }
 
 //label,
@@ -34,10 +35,14 @@ label {
 
 // Focus states
 input,
-textarea {
+textarea,
+input.x-form-text,
+textarea.x-form-field {
     $transition: border linear .2s, box-shadow linear .2s;
     @include transition($transition);
     @include box-shadow(inset 0 1px 3px rgba(0,0,0,.1));
+    @include border-radius(3px);
+    padding: 4px 6px;
 }
 input:focus,
 textarea:focus {
@@ -51,4 +56,13 @@ input[type=checkbox]:focus,
 select:focus {
     @include box-shadow(none); // override for file inputs
     outline: 1px dotted #666; // Select elements don't get box-shadow styles, so instead we do outline
+}
+
+
+.hugefield {
+    input[type=text] {
+        height: auto;
+        font-size: 25px;
+        line-height: normal;
+    }
 }

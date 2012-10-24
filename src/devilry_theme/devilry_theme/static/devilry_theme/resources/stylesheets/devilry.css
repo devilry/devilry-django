@@ -12670,40 +12670,42 @@ svg, vml {
   background-image: none !important;
 }
 
-/* line 1, ../sass/_forms-port.scss */
+/* line 3, ../sass/_devilry_forms.scss */
 .formhelp {
   font-size: 14px;
   line-height: 20px;
   color: #999999;
 }
 
-/* line 15, ../sass/_forms-port.scss */
+/* line 16, ../sass/_devilry_forms.scss */
 label {
   font-size: 14px;
   line-height: 20px;
   color: #444;
   cursor: pointer;
 }
-/* line 20, ../sass/_forms-port.scss */
+/* line 21, ../sass/_devilry_forms.scss */
 label:hover {
   color: #000;
 }
 
-/* line 26, ../sass/_forms-port.scss */
+/* line 27, ../sass/_devilry_forms.scss */
 .stronglabel label {
   font-weight: bold;
 }
 
-/* line 29, ../sass/_forms-port.scss */
+/* line 30, ../sass/_devilry_forms.scss */
 .extrastronglabel label {
   font-weight: bold;
   font-size: 17px;
   line-height: 23px;
 }
 
-/* line 37, ../sass/_forms-port.scss */
+/* line 40, ../sass/_devilry_forms.scss */
 input,
-textarea {
+textarea,
+input.x-form-text,
+textarea.x-form-field {
   -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
   -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
   -o-transition: border linear 0.2s, box-shadow linear 0.2s;
@@ -12712,9 +12714,16 @@ textarea {
   -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   -o-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -o-border-radius: 3px;
+  -ms-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px;
+  padding: 4px 6px;
 }
 
-/* line 43, ../sass/_forms-port.scss */
+/* line 48, ../sass/_devilry_forms.scss */
 input:focus,
 textarea:focus {
   outline: 0;
@@ -12725,7 +12734,7 @@ textarea:focus {
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
 }
 
-/* line 51, ../sass/_forms-port.scss */
+/* line 56, ../sass/_devilry_forms.scss */
 input[type=file]:focus,
 input[type=checkbox]:focus,
 select:focus {
@@ -12734,6 +12743,13 @@ select:focus {
   -o-box-shadow: none;
   box-shadow: none;
   outline: 1px dotted #666;
+}
+
+/* line 63, ../sass/_devilry_forms.scss */
+.hugefield input[type=text] {
+  height: auto;
+  font-size: 25px;
+  line-height: normal;
 }
 
 /* line 11, ../sass/_devilry_mixins.scss */
