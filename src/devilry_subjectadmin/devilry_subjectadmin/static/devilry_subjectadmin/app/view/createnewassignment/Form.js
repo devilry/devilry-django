@@ -139,7 +139,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 margin: '0 0 0 0',
                                 tpl: [
                                     '<p class="muted"><small>',
-                                        gettext('Students must submit their delivery before this time. This becomes their first deadline on this assignment, and it can be edited just like any other deadline.'),
+                                        gettext('Students must submit their delivery before this time.'),
                                     '</small></p>'
                                 ],
                                 data: {

@@ -82,7 +82,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                                             gettext('Deadlines'),
                                         '</a></strong>',
                                         '<small class="muted"> - ',
-                                            gettext('View, edit and add deadlines.'),
+                                            gettext('View, edit and add deadlines, including the submission date.'),
                                         '</small>',
                                     '</p></li>',
                                 '</ul>',
