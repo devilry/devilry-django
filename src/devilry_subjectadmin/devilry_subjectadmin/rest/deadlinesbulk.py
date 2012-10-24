@@ -67,7 +67,7 @@ class GroupsListResource(ModelResource):
         return int(deadline.assignment_group.id)
 
     def name(self, deadline):
-        return deadline.assignment_group.id
+        return deadline.assignment_group.name
 
     def is_open(self, deadline):
         return deadline.assignment_group.is_open
