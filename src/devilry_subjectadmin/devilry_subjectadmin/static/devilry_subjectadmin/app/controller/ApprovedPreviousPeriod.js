@@ -26,13 +26,21 @@ Ext.define('devilry_subjectadmin.controller.ApprovedPreviousPeriod', {
         selector: '#appAlertmessagelist'
     }, {
         ref: 'overview',
-        selector: 'approvedpreviousperiodoverview'
+        selector: 'approvedpreviousperiodoverview',
+
+    // Select assignments page
+    }, {
+        ref: 'nextButton',
+        selector: 'approvedpreviousperiodoverview #nextButton'
     }],
 
     init: function() {
         this.control({
             'approvedpreviousperiodoverview': {
                 render: this._onRender
+            },
+            'approvedpreviousperiodoverview selectassignmentsgrid': {
+                selectionchange: this._onAssignmentSelectionChange
             }
         });
     },
@@ -40,18 +48,18 @@ Ext.define('devilry_subjectadmin.controller.ApprovedPreviousPeriod', {
     _onRender: function() {
         this.setLoadingBreadcrumb();
         var period_id = this.getOverview().period_id;
-        this._loadAssignments(this.period_id);
+        this._loadAssignments(period_id);
     },
 
-    _onProxyError: function(response, operation) {
-        if(this.getOverview() && this.getOverview().isVisible()) { // NOTE: Some of the proxies are used in many views. We only want to handle them if we are in the AddGroups view
-            this.getOverview().setLoading(false);
-            this.handleProxyErrorNoForm(this.application.getAlertmessagelist(), response, operation);
-        }
-    },
-    _onAssignmentProxyError: function(proxy, response, operation) {
-        this._onProxyError(response, operation);
-    },
+    //_onProxyError: function(response, operation) {
+        //if(this.getOverview() && this.getOverview().isVisible()) { // NOTE: Some of the proxies are used in many views. We only want to handle them if we are in the AddGroups view
+            //this.getOverview().setLoading(false);
+            //this.handleProxyErrorNoForm(this.application.getAlertmessagelist(), response, operation);
+        //}
+    //},
+    //_onAssignmentProxyError: function(proxy, response, operation) {
+        //this._onProxyError(response, operation);
+    //},
 
 
     //
@@ -65,9 +73,22 @@ Ext.define('devilry_subjectadmin.controller.ApprovedPreviousPeriod', {
 
     _onLoadAssignments: function(records, operation) {
         if(operation.success) {
-            console.log(records);
         } else {
             this.onLoadFailure(operation);
+        }
+    },
+
+
+    //
+    //
+    // select assignments page
+    //
+    //
+    _onAssignmentSelectionChange: function(selModel, selected) {
+        if(selected.length === 0) {
+            this.getNextButton().disable();
+        } else {
+            this.getNextButton().enable();
         }
     }
 });
