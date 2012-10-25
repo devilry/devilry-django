@@ -1,4 +1,4 @@
-Ext.define('devilry_subjectadmin.view.approvedpreviousperiod.SelectAssignmentsGrid', {
+Ext.define('devilry_subjectadmin.view.passedpreviousperiod.SelectAssignmentsGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.selectassignmentsgrid',
     cls: 'devilry_subjectadmin_selectassignmentsgrid bootstrap',

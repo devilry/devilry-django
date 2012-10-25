@@ -1,13 +1,13 @@
-Ext.define('devilry_subjectadmin.view.approvedpreviousperiod.Overview' ,{
+Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
     extend: 'Ext.panel.Panel',
-    alias: 'widget.approvedpreviousperiodoverview',
-    cls: 'devilry_subjectadmin_approvedpreviousperiodoverview',
+    alias: 'widget.passedpreviousperiodoverview',
+    cls: 'devilry_subjectadmin_passedpreviousperiodoverview',
     requires: [
-        'devilry_subjectadmin.view.approvedpreviousperiod.SelectAssignmentsGrid'
+        //'devilry_subjectadmin.view.passedpreviousperiod.SelectAssignmentsGrid'
     ],
 
     /**
-     * @cfg {String} period_id (required)
+     * @cfg {String} assignment_id (required)
      */
 
 
@@ -31,7 +31,9 @@ Ext.define('devilry_subjectadmin.view.approvedpreviousperiod.Overview' ,{
                         '</h1>'
                     ].join('')
                 }, {
-                    xtype: 'selectassignmentsgrid',
+                    //xtype: 'selectassignmentsgrid',
+                    xtype: 'panel',
+                    html: 'hei',
                     region: 'center',
 
                     fbar: ['->', {

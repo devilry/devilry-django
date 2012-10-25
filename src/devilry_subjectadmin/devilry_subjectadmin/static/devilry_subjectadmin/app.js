@@ -64,7 +64,7 @@ Ext.application({
         'BulkManageDeadlines',
         'RelatedStudents',
         'RelatedExaminers',
-        'ApprovedPreviousPeriod',
+        'PassedPreviousPeriod',
 
         'GuideSystem',
         'guides.CreateNewAssignment'
@@ -230,7 +230,6 @@ Ext.application({
         this.route.add("/period/:period_id/@@relatedstudents", 'showRelatedStudents');
         this.route.add("/period/:period_id/@@relatedexaminers", 'showRelatedExaminers');
         this.route.add("/period/:period_id/@@create-new-assignment/", 'createNewAssignment');
-        this.route.add("/period/:period_id/@@approved-previous-period", 'approvedPreviousPeriod');
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
         this.route.add("/assignment/:assignment_id/@@manage-students/", 'manageStudents');
         this.route.add("/assignment/:assignment_id/@@manage-students/@@select-delivery/:group_id/:delivery_id", 'manageGroupsSelectDelivery');
@@ -242,6 +241,7 @@ Ext.application({
         this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/:bulkdeadline_id", 'bulkManageDeadlines');
         this.route.add("/assignment/:assignment_id/@@grade-editor/", 'gradeEditor');
         this.route.add("/assignment/:assignment_id/@@grade-editor/change", 'changeGradeEditor');
+        this.route.add("/assignment/:assignment_id/@@passed-previous-period", 'passedPreviousPeriod');
         this.route.start();
     },
 
@@ -308,10 +308,10 @@ Ext.application({
         });
     },
 
-    approvedPreviousPeriod: function(routeInfo, period_id) {
+    passedPreviousPeriod: function(routeInfo, assignment_id) {
         this.setPrimaryContent({
-            xtype: 'approvedpreviousperiodoverview',
-            period_id: period_id
+            xtype: 'passedpreviousperiodoverview',
+            assignment_id: assignment_id
         });
     },
 

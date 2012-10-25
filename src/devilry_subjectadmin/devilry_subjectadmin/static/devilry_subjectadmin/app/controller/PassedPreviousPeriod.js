@@ -1,7 +1,7 @@
 /**
- * Approved previous period wizard
+ * Passed previous period wizard
  */
-Ext.define('devilry_subjectadmin.controller.ApprovedPreviousPeriod', {
+Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     extend: 'Ext.app.Controller',
     mixins: [
         'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
@@ -12,13 +12,11 @@ Ext.define('devilry_subjectadmin.controller.ApprovedPreviousPeriod', {
     ],
 
     views: [
-        'approvedpreviousperiod.Overview'
+        'passedpreviousperiod.Overview'
     ],
 
-    models: [
-    ],
     stores: [
-        'Assignments'
+        'PassedPreviousPeriodItems'
     ],
 
     refs: [{
@@ -26,29 +24,29 @@ Ext.define('devilry_subjectadmin.controller.ApprovedPreviousPeriod', {
         selector: '#appAlertmessagelist'
     }, {
         ref: 'overview',
-        selector: 'approvedpreviousperiodoverview',
+        selector: 'passedpreviousperiodoverview',
 
-    // Select assignments page
-    }, {
-        ref: 'nextButton',
-        selector: 'approvedpreviousperiodoverview #nextButton'
+    //// Select assignments page
+    //}, {
+        //ref: 'nextButton',
+        //selector: 'passedpreviousperiodoverview #nextButton'
     }],
 
     init: function() {
         this.control({
-            'approvedpreviousperiodoverview': {
+            'passedpreviousperiodoverview': {
                 render: this._onRender
             },
-            'approvedpreviousperiodoverview selectassignmentsgrid': {
-                selectionchange: this._onAssignmentSelectionChange
-            }
+            //'passedpreviousperiodoverview selectassignmentsgrid': {
+                //selectionchange: this._onAssignmentSelectionChange
+            //}
         });
     },
 
     _onRender: function() {
         this.setLoadingBreadcrumb();
-        var period_id = this.getOverview().period_id;
-        this._loadAssignments(period_id);
+        var assignment_id = this.getOverview().assignment_id;
+        this._loadStore(assignment_id);
     },
 
     //_onProxyError: function(response, operation) {
@@ -64,15 +62,19 @@ Ext.define('devilry_subjectadmin.controller.ApprovedPreviousPeriod', {
 
     //
     //
-    // Load stores
+    // Load store
     //
     //
-    _loadAssignments: function(period_id) {
-        this.getAssignmentsStore().loadAssignmentsInPeriod(period_id, this._onLoadAssignments, this);
+    _loadStore: function(assignment_id) {
+        this.getPassedPreviousPeriodItemsStore().loadGroupsInAssignment(assignment_id, {
+            scope: this,
+            callback: this._onLoadStore
+        });
     },
 
-    _onLoadAssignments: function(records, operation) {
+    _onLoadStore: function(records, operation) {
         if(operation.success) {
+            console.log('success', records);
         } else {
             this.onLoadFailure(operation);
         }
@@ -84,11 +86,11 @@ Ext.define('devilry_subjectadmin.controller.ApprovedPreviousPeriod', {
     // select assignments page
     //
     //
-    _onAssignmentSelectionChange: function(selModel, selected) {
-        if(selected.length === 0) {
-            this.getNextButton().disable();
-        } else {
-            this.getNextButton().enable();
-        }
-    }
+    //_onAssignmentSelectionChange: function(selModel, selected) {
+        //if(selected.length === 0) {
+            //this.getNextButton().disable();
+        //} else {
+            //this.getNextButton().enable();
+        //}
+    //}
 });
