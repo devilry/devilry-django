@@ -56,15 +56,15 @@ class MarkAsPassedInPreviousPeriod(object):
         - ``marked``: List of marked group pairs (group, oldgroup), where
           ``group`` is the group from the current assignment.
         - ``ignored``: Ignored groups organized by the reason for the ignore (dict):
-            - ``multiple_students_groups``
-            - ``no_students_in_group``
-            - ``not_in_previous``
-            - ``only_failing_grade_in_previous``
-            - ``only_multicandidategroups_passed``: The group only matches old groups where there are more than one candidate with passing grade.
+            - ``multiple_candidates_in_group``: The group has multiple candidates.
+            - ``no_candidates_in_group``: The group has no candidates.
+            - ``not_in_previous``: Not found in any previous period.
+            - ``only_failing_grade_in_previous``: Found in previous period(s), but only with failing grade.
+            - ``only_multicandidategroups_passed``: The group only matches old groups with passing grade where there are more than one candidate.
             - ``has_feedback``: The group already has feedback.
         """
-        ignored = {'multiple_students_groups': [],
-                   'no_students_in_group': [],
+        ignored = {'multiple_candidates_in_group': [],
+                   'no_candidates_in_group': [],
                    'not_in_previous': [],
                    'only_failing_grade_in_previous': [],
                    'only_multicandidategroups_passed': [],
@@ -74,7 +74,7 @@ class MarkAsPassedInPreviousPeriod(object):
         for group in self.assignment.assignmentgroups.all():
             candidates = group.candidates.all()
             if len(candidates) == 0:
-                ignored['no_students_in_group'].append(group)
+                ignored['no_candidates_in_group'].append(group)
             elif len(candidates) == 1:
                 try:
                     if pretend:
@@ -92,7 +92,7 @@ class MarkAsPassedInPreviousPeriod(object):
                 else:
                     marked.append((group, oldgroup))
             else:
-                ignored['multiple_students_in_group'].append(group)
+                ignored['multiple_candidates_in_group'].append(group)
         return {'marked': marked,
                 'ignored': ignored}
 
