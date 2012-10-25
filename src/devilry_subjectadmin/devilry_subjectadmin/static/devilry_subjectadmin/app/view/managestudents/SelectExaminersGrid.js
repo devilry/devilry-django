@@ -18,7 +18,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectExaminersGrid', {
         '<div class="examinercell examinerid_{record.id} examiner_username_{record.user.username}">',
             '<div class="full_name">',
                 '<tpl if="record.user.full_name">',
-                    '<strong>{record.user.full_name}</strong></div>',
+                    '<strong>{record.user.full_name}</strong>',
                 '<tpl else>',
                     '<em class="nofullname">', gettext('Full name missing'), '</em>',
                 '</tpl>',
