@@ -10,6 +10,8 @@ class OnlyFailingInPrevious(Exception):
     pass
 class HasFeedback(Exception):
     pass
+class HasAliasFeedback(HasFeedback):
+    pass
 
 class PassingGradeOnlyInMultiCandidateGroups(Exception):
     def __init__(self, groups):
@@ -58,6 +60,7 @@ class MarkAsPassedInPreviousPeriod(object):
         - ``ignored``: Ignored groups organized by the reason for the ignore (dict):
             - ``multiple_candidates_in_group``: The group has multiple candidates.
             - ``no_candidates_in_group``: The group has no candidates.
+            - ``has_alias_feedback``: The active feedback is an alias delivery.
             - ``not_in_previous``: Not found in any previous period.
             - ``only_failing_grade_in_previous``: Found in previous period(s), but only with failing grade.
             - ``only_multicandidategroups_passed``: The group only matches old groups with passing grade where there are more than one candidate.
@@ -68,6 +71,7 @@ class MarkAsPassedInPreviousPeriod(object):
                    'not_in_previous': [],
                    'only_failing_grade_in_previous': [],
                    'only_multicandidategroups_passed': [],
+                   'has_alias_feedback': [],
                    'has_feedback': []}
         marked = []
 
@@ -87,6 +91,8 @@ class MarkAsPassedInPreviousPeriod(object):
                     ignored['not_in_previous'].append(group)
                 except PassingGradeOnlyInMultiCandidateGroups:
                     ignored['only_multicandidategroups_passed'].append(group)
+                except HasAliasFeedback:
+                    ignored['has_alias_feedback'].append(group)
                 except HasFeedback:
                     ignored['has_feedback'].append(group)
                 else:
@@ -114,7 +120,10 @@ class MarkAsPassedInPreviousPeriod(object):
         candidate = candidates[0]
 
         if StaticFeedback.objects.filter(delivery__deadline__assignment_group=group).exists():
-            raise HasFeedback()
+            if group.feedback and group.feedback.delivery.delivery_type == deliverytypes.ALIAS:
+                raise HasAliasFeedback()
+            else:
+                raise HasFeedback()
 
         candidates_from_previous = self._find_candidates_in_previous(candidate)
         if candidates_from_previous:
