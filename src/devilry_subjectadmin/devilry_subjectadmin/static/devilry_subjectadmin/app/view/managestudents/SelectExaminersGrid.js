@@ -6,7 +6,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectExaminersGrid', {
         'Ext.XTemplate',
         'devilry_usersearch.ManageUsersGridModel',
         'devilry_subjectadmin.view.managestudents.SelectGroupsBySearchWidget',
-        'Ext.selection.CheckboxModel'
+        'devilry_extjsextras.GridBigButtonCheckboxModel'
     ],
 
     store: 'RelatedExaminersRo',
