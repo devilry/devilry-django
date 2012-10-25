@@ -96,9 +96,11 @@ class MarkAsPassedInPreviousPeriod(object):
         return {'marked': marked,
                 'ignored': ignored}
 
-    def mark_group(self, group):
-        oldgroup = self.find_previously_passed_group(group)
-        self._mark_as_delivered_in_previous(group, oldgroup)
+    def mark_group(self, group, feedback=None):
+        oldgroup = None
+        if not feedback:
+            oldgroup = self.find_previously_passed_group(group)
+        self._mark_as_delivered_in_previous(group, oldgroup=oldgroup, feedback=feedback)
         return oldgroup
 
     def find_previously_passed_group(self, group):
@@ -131,17 +133,24 @@ class MarkAsPassedInPreviousPeriod(object):
         else:
             raise NotInPrevious()
 
-    def _mark_as_delivered_in_previous(self, group, oldgroup):
+    def _mark_as_delivered_in_previous(self, group, oldgroup=None, feedback=None):
         latest_deadline = group.deadlines.order_by('-deadline')[0]
-        oldfeedback = oldgroup.feedback
+        if oldgroup:
+            oldfeedback = oldgroup.feedback
+            alias_delivery = oldfeedback.delivery
+            feedback = {'grade': oldfeedback.grade,
+                        'is_passing_grade': oldfeedback.is_passing_grade,
+                        'points': oldfeedback.points,
+                        'rendered_view': oldfeedback.rendered_view,
+                        'saved_by': oldfeedback.saved_by}
+        elif feedback:
+            alias_delivery = None
+        else:
+            raise ValueError('oldgroup or feedback is required arguments.')
         delivery = latest_deadline.deliveries.create(successful=True,
                                                      delivery_type=deliverytypes.ALIAS,
-                                                     alias_delivery=oldfeedback.delivery)
-        delivery.feedbacks.create(grade=oldfeedback.grade,
-                                  is_passing_grade=oldfeedback.is_passing_grade,
-                                  points=oldfeedback.points,
-                                  rendered_view=oldfeedback.rendered_view,
-                                  saved_by=oldfeedback.saved_by)
+                                                     alias_delivery=alias_delivery)
+        delivery.feedbacks.create(**feedback)
 
     def _find_candidates_in_previous(self, candidate):
         matches = []

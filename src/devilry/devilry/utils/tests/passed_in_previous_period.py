@@ -125,6 +125,30 @@ class TestMarkAsPassedInPrevious(TestCase):
         with self.assertRaises(PassingGradeOnlyInMultiCandidateGroups):
             marker.mark_group(group)
 
+    def test_mark_group_manually(self):
+        self.testhelper.add(nodes="uni",
+                            subjects=["sub"],
+                            periods=["p3:begins(-2):ends(6)"],
+                            assignments=["a1"],
+                            assignmentgroups=["g1:candidate(student1):examiner(examiner1)"],
+                            deadlines=['d1:ends(1)'])
+        assignment = self.testhelper.sub_p3_a1
+        marker = MarkAsPassedInPreviousPeriod(assignment)
+        group = self.testhelper.sub_p3_a1_g1
+        marker.mark_group(group, feedback={'grade': 'A',
+                                           'is_passing_grade': True,
+                                           'points': 100,
+                                           'rendered_view': 'Test',
+                                           'saved_by': self.testhelper.examiner1})
+        delivery = group.deadlines.all()[0].deliveries.all()[0]
+        self.assertEquals(delivery.alias_delivery, None)
+        self.assertEquals(delivery.delivery_type, 2) # Alias
+        feedback = delivery.feedbacks.all()[0]
+        self.assertTrue(feedback.is_passing_grade)
+        self.assertEquals(feedback.grade, 'A')
+        self.assertEquals(feedback.points, 100)
+        self.assertEquals(feedback.rendered_view, 'Test')
+
     def test_has_feedback(self):
         assignment = self.testhelper.sub_p2_a1
         marker = MarkAsPassedInPreviousPeriod(assignment)
