@@ -94,7 +94,7 @@ class TestListGroupRest(TestCase):
         self.assertEquals(set(content[0]['candidates'][0].keys()),
                           set(['id', 'candidate_id', 'user']))
         self.assertEquals(set(content[0]['candidates'][0]['user'].keys()),
-                          set(['email', 'full_name', 'id', 'username']))
+                          set(['email', 'full_name', 'id', 'username', 'displayname']))
 
         # Examiners
         self.assertEquals(len(content[0]['examiners']), 2)
@@ -103,7 +103,7 @@ class TestListGroupRest(TestCase):
         self.assertEquals(set(content[0]['examiners'][0].keys()),
                           set(['id', 'user']))
         self.assertEquals(set(content[0]['examiners'][0]['user'].keys()),
-                          set(['email', 'full_name', 'id', 'username']))
+                          set(['email', 'full_name', 'id', 'username', 'displayname']))
 
         # Deadlines
         self.assertEquals(len(content[0]['deadlines']), 1)
@@ -433,7 +433,7 @@ class TestGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(set(examiner.keys()),
                           set(['id', 'user']))
         self.assertEquals(set(examiner['user'].keys()),
-                          set(['email', 'full_name', 'id', 'username']))
+                          set(['email', 'full_name', 'id', 'username', 'displayname']))
         self.assertEquals(examiner['user']['id'], self.testhelper.examiner1.id)
         self.assertEquals(examiner['user']['username'], 'examiner1')
 
@@ -443,7 +443,7 @@ class TestGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(set(candidate.keys()),
                           set(['id', 'user', 'candidate_id']))
         self.assertEquals(set(candidate['user'].keys()),
-                          set(['email', 'full_name', 'id', 'username']))
+                          set(['email', 'full_name', 'id', 'username', 'displayname']))
         self.assertEquals(candidate['user']['id'], self.testhelper.candidate1.id)
         self.assertEquals(candidate['candidate_id'], '')
         self.assertEquals(candidate['user']['username'], 'candidate1')
@@ -560,7 +560,7 @@ class TestGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(set(examiner.keys()),
                           set(['id', 'user']))
         self.assertEquals(set(examiner['user'].keys()),
-                          set(['email', 'full_name', 'id', 'username']))
+                          set(['email', 'full_name', 'id', 'username', 'displayname']))
         self.assertEquals(examiner['user']['id'], self.testhelper.examiner1.id)
         self.assertEquals(examiner['user']['username'], 'examiner1')
 
@@ -570,7 +570,7 @@ class TestGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(set(candidate.keys()),
                           set(['id', 'user', 'candidate_id']))
         self.assertEquals(set(candidate['user'].keys()),
-                          set(['email', 'full_name', 'id', 'username']))
+                          set(['email', 'full_name', 'id', 'username', 'displayname']))
         self.assertEquals(candidate['user']['id'], self.testhelper.candidate1.id)
         self.assertEquals(candidate['candidate_id'], '')
         self.assertEquals(candidate['user']['username'], 'candidate1')

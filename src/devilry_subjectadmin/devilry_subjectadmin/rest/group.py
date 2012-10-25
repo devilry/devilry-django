@@ -169,10 +169,12 @@ class GroupSerializer(object):
             return None
 
     def _serialize_user(self, user):
+        full_name = user.devilryuserprofile.full_name
         return {'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'full_name': user.devilryuserprofile.full_name}
+                'displayname': full_name or user.username,
+                'full_name': full_name}
 
     def _serialize_examiner(self, examiner):
         return {'id': examiner.id,
