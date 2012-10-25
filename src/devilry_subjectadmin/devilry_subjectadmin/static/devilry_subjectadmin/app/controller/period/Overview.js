@@ -23,7 +23,7 @@ Ext.define('devilry_subjectadmin.controller.period.Overview', {
 
     refs: [{
         ref: 'globalAlertmessagelist',
-        selector: 'periodoverview>alertmessagelist'
+        selector: '#appAlertmessagelist'
     }, {
         ref: 'header',
         selector: 'periodoverview #header'
