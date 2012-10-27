@@ -1,7 +1,8 @@
 Ext.define('devilry_subjectadmin.model.PassedPreviousPeriodItem', {
     extend: 'Ext.data.Model',
-    idProperty: 'group',
+    idProperty: 'id',
     fields: [
+        {name: 'id', type: 'int'},
         {name: 'group', type: 'auto'},
         {name: 'oldgroup', type: 'auto', persist: false},
         {name: 'whyignored', type: 'string', persist: false},

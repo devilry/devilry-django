@@ -60,6 +60,7 @@ class ResultSerializer(object):
     def _serialize_group(self, group):
         groupserializer = GroupSerializer(group)
         return {'id': group.id,
+                'name': group.name,
                 'candidates': groupserializer.serialize_candidates()}
 
     def _serialize_oldgroup(self, oldgroup):
@@ -83,7 +84,8 @@ class ResultSerializer(object):
     def _add(self, group, oldgroup=None, whyignored=None):
         if oldgroup != None:
             oldgroup = self._serialize_oldgroup(oldgroup)
-        self.serialized.append({'group': self._serialize_group(group),
+        self.serialized.append({'id': group.id, # Included because ExtJS requires an id-property, and group.id does not work.
+                                'group': self._serialize_group(group),
                                 'oldgroup': oldgroup,
                                 'whyignored': whyignored})
 

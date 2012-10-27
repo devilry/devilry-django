@@ -25,11 +25,17 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     }, {
         ref: 'overview',
         selector: 'passedpreviousperiodoverview',
+    }, {
+        ref: 'cardContainer',
+        selector: 'passedpreviousperiodoverview #cardContainer',
 
-    //// Select assignments page
-    //}, {
-        //ref: 'nextButton',
-        //selector: 'passedpreviousperiodoverview #nextButton'
+    // Select groups page
+    }, {
+        ref: 'groupsGrid',
+        selector: 'passedpreviousperiodoverview #pageOne selectpassedpreviousgroupsgrid'
+    }, {
+        ref: 'nextButton',
+        selector: 'passedpreviousperiodoverview #pageOne #nextButton'
     }],
 
     init: function() {
@@ -37,9 +43,12 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
             'passedpreviousperiodoverview': {
                 render: this._onRender
             },
-            //'passedpreviousperiodoverview selectassignmentsgrid': {
-                //selectionchange: this._onAssignmentSelectionChange
-            //}
+            'passedpreviousperiodoverview #pageOne selectpassedpreviousgroupsgrid': {
+                selectionchange: this._onGroupsSelectionChange
+            },
+            'passedpreviousperiodoverview #pageOne #nextButton': {
+                click: this._onNextButton
+            }
         });
     },
 
@@ -74,7 +83,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
 
     _onLoadStore: function(records, operation) {
         if(operation.success) {
-            console.log('success', records);
+            this.getGroupsGrid().selectWithPassingGradeInPrevious();
         } else {
             this.onLoadFailure(operation);
         }
@@ -83,14 +92,27 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
 
     //
     //
-    // select assignments page
+    // Page 1
     //
     //
-    //_onAssignmentSelectionChange: function(selModel, selected) {
-        //if(selected.length === 0) {
-            //this.getNextButton().disable();
-        //} else {
-            //this.getNextButton().enable();
-        //}
-    //}
+    _onGroupsSelectionChange: function(selModel, selected) {
+        if(selected.length === 0) {
+            this.getNextButton().disable();
+        } else {
+            this.getNextButton().enable();
+        }
+    },
+
+    _onNextButton: function() {
+        this.getCardContainer().getLayout().setActiveItem('pageTwo');
+    },
+
+    //
+    //
+    // Page 2
+    //
+    //
+    _onBackButton: function() {
+        this.getCardContainer().getLayout().setActiveItem('pageOne');
+    },
 });
