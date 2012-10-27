@@ -5,7 +5,9 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     extend: 'Ext.app.Controller',
     mixins: [
         'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
-        'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
+        'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin',
+        'devilry_subjectadmin.utils.LoadAssignmentMixin',
+        'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin'
     ],
 
     requires: [
@@ -15,9 +17,8 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
         'passedpreviousperiod.Overview'
     ],
 
-    stores: [
-        'PassedPreviousPeriodItems'
-    ],
+    models: ['Assignment'],
+    stores: ['PassedPreviousPeriodItems'],
 
     refs: [{
         ref: 'globalAlertmessagelist',
@@ -54,19 +55,30 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
 
     _onRender: function() {
         this.setLoadingBreadcrumb();
-        var assignment_id = this.getOverview().assignment_id;
-        this._loadStore(assignment_id);
+        this.getOverview().setLoading(true);
+        this.assignment_id = this.getOverview().assignment_id;
+        this.loadAssignment(this.assignment_id);
     },
 
-    //_onProxyError: function(response, operation) {
-        //if(this.getOverview() && this.getOverview().isVisible()) { // NOTE: Some of the proxies are used in many views. We only want to handle them if we are in the AddGroups view
-            //this.getOverview().setLoading(false);
-            //this.handleProxyErrorNoForm(this.application.getAlertmessagelist(), response, operation);
-        //}
-    //},
-    //_onAssignmentProxyError: function(proxy, response, operation) {
-        //this._onProxyError(response, operation);
-    //},
+    _onAssignmentProxyError: function(proxy, response, operation) {
+        this._onProxyError(response, operation);
+    },
+    onLoadAssignmentSuccess: function(record) {
+        this.assignmentRecord = record;
+
+        var text = interpolate(gettext('Passed in previous %(period_term)s'), {
+            period_term: gettext('period')
+        }, true);
+        this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], text);
+        var path = this.getPathFromBreadcrumb(this.assignmentRecord);
+        this.application.setTitle(Ext.String.format('{0}.{1}', path, text));
+
+        this._loadStore(this.assignment_id);
+    },
+    onLoadAssignmentFailure: function(operation) {
+        this.getOverview().setLoading(false);
+        this.onLoadFailure(operation);
+    },
 
 
     //
@@ -82,6 +94,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     },
 
     _onLoadStore: function(records, operation) {
+        this.getOverview().setLoading(false);
         if(operation.success) {
             this.getGroupsGrid().selectWithPassingGradeInPrevious();
         } else {

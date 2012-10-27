@@ -24,7 +24,9 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
                 cls: 'bootstrap',
                 html: [
                     '<h1>',
-                    gettext('Select groups:'),
+                        interpolate(gettext('Passed in previous %(period_term)s'), {
+                            period_term: gettext('period')
+                        }, true),
                     '</h1>'
                     ].join('')
             }, {
@@ -54,8 +56,11 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
                         cls: 'bootstrap',
                         padding: '0 0 0 30',
                         html: [
+                            '<p class="muted">',
+                                gettext('Select one or more groups. Groups that we belive have passed this assignment before has been selected automatically, and they are marked with the name of the old assignment.'),
+                            '</p>',
                             '<p class="muted"><small>',
-                                gettext('Select one or more assignments. We will search all previous semesters in this subject for assignments matching the short name of the selected assignments, and detect any students that have passing grades on those semesters.'),
+                                gettext('The search for previously passed students match the short name of old assignments against the short name of this assignment. Only groups with exactly one student in both the old and the current assignment is matched.'),
                             '</small></p>'
                         ].join('')
                     }]
