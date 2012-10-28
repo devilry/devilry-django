@@ -16,7 +16,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
 
     frame: false,
     border: false,
-    bodyPadding: 20,
+    bodyPadding: '20 40 20 40',
 
 
     /**
@@ -41,12 +41,13 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
 
     initComponent: function() {
         Ext.apply(this, {
-            layout: 'anchor',
+            layout: 'border',
             items: [{
                 xtype: 'box',
                 columnWidth: 1,
                 cls: 'bootstrap',
-                anchor: '100%',
+                region: 'north',
+                height: 50,
                 itemId: 'heading',
                 tpl: [
                     '<h1 style="margin-top: 0; padding-top: 0;">',
@@ -67,7 +68,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                 xtype: 'panel',
                 border: false,
                 layout: 'border',
-                anchor: '100% -80',
+                region: 'center',
                 items: [{
                     xtype: 'relatedexaminersgrid',
                     region: 'center',
