@@ -5,7 +5,8 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
     requires: [
         'devilry_subjectadmin.view.passedpreviousperiod.SelectGroupsGrid',
         'devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid',
-        'devilry_extjsextras.PrimaryButton'
+        'devilry_extjsextras.PrimaryButton',
+        'devilry_extjsextras.AlertMessage'
     ],
 
     /**
@@ -99,6 +100,12 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
                             itemId: 'saveButton'
                         }]
                     }]
+                }, {
+                    itemId: 'unsupportedGradeEditor',
+                    xtype: 'alertmessage',
+                    type: 'error',
+                    title: 'Unsupported grading system',
+                    message: 'The passed previously functionality only supports the <em>Approved/not approved</em> grading system. We will fix this before the version you are testing is released.'
                 }]
             }]
         });

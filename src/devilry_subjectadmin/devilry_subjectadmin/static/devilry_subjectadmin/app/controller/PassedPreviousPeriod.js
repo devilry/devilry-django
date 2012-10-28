@@ -106,6 +106,10 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
         this.onLoadFailure(operation);
     },
 
+    _setPage: function(itemId) {
+        this.getCardContainer().getLayout().setActiveItem(itemId);
+    },
+
     //
     //
     // Load grade editor
@@ -115,7 +119,13 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     onLoadGradeEditorSuccess: function(gradeEditorConfigRecord, gradeEditorRegistryItemRecord) {
         this.gradeEditorConfigRecord = gradeEditorConfigRecord;
         this.gradeEditorRegistryItemRecord = gradeEditorRegistryItemRecord;
-        this._loadStore();
+        var gradeeditorid = this.gradeEditorConfigRecord.get('gradeeditorid');
+        if(gradeeditorid !== 'approved') {
+            this.getOverview().setLoading(false);
+            this._setPage('unsupportedGradeEditor');
+        } else {
+            this._loadStore();
+        }
     },
 
 
@@ -182,7 +192,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
         store.filterBy(function(record) {
             return selModel.isSelected(record);
         });
-        this.getCardContainer().getLayout().setActiveItem('pageTwo');
+        this._setPage('pageTwo');
     },
 
     //
@@ -192,7 +202,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     //
     _onBackButton: function() {
         this._applyPageOneFilters();
-        this.getCardContainer().getLayout().setActiveItem('pageOne');
+        this._setPage('pageOne');
     },
 
     _onSave: function() {
