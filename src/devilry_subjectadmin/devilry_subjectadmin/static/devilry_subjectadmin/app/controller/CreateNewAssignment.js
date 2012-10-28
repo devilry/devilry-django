@@ -26,6 +26,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     ],
 
     refs: [{
+        ref: 'globalAlertmessagelist',
+        selector: '#appAlertmessagelist'
+    }, {
         ref: 'createNewAssignmentForm',
         selector: 'createnewassignmentform'
     }, {
@@ -34,9 +37,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     }, {
         ref: 'createNewAssignment',
         selector: 'createnewassignment'
-    }, {
-        ref: 'globalAlertmessagelist',
-        selector: 'createnewassignment alertmessagelist'
     }, {
         ref: 'pageHeading',
         selector: 'createnewassignment #pageHeading'
@@ -185,14 +185,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this.setSubviewBreadcrumb(this.periodRecord, 'Period', [], gettext('Create new assignment'));
     },
     _onLoadPeriodFailure: function(operation) {
-        var message = Ext.create('Ext.XTemplate',
-            gettext('Period {period_id} could not be loaded.')
-        ).apply({period_id: this.period_id});
         this.onLoadFailure(operation);
-        this.getGlobalAlertmessagelist().add({
-            message: message,
-            type: 'error'
-        });
     },
 
     _updateHeader: function() {
