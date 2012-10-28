@@ -37,7 +37,7 @@ Ext.define('devilry_extjsextras.ProxyErrorHandler', {
                 url: request.url
             });
         } else {
-            message = this._formatTpl('The server responded with error message "{status}: {statusText}" when we did a {method}-request to URL "{url}".', {
+            message = this._formatTpl('The server responded with error message <em>{status}: {statusText}</em> when we made a {method}-request to URL <a href="{url}" target="_blank">{url}</a>.', {
                 status: error.status,
                 statusText: error.statusText,
                 method: request.method,
