@@ -10,7 +10,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
     hideHeaders: true,
 
     col1Tpl: [
-        '<div class="groupinfo groupinfo_{id}">',
+        '<div class="groupinfo groupinfo_{id}" style="white-space:normal !important;">',
             '<div class="names"><strong>',
                 '{displaynames}',
             '</strong></div>',
@@ -22,10 +22,21 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
     ],
 
     col2Tpl: [
-        '<div class="oldgroupinfo oldgroupinfo_{id}">',
+        '<div class="oldgroup_or_ignoredinfo oldgroup_or_ignoredinfo_{id}" style="white-space:normal !important;">',
             '<tpl if="oldgroup">',
-                '<span class="label label-success">',
-                    '{oldgroup.period.short_name}.{oldgroup.assignment.short_name}',
+                '<span class="oldgroupinfo success">',
+                    gettext('Passed in {oldperiodname}.'),
+                '</span>',
+            '<tpl else>',
+                '<span class="danger">',
+                    '<tpl switch="whyignored">',
+                        '<tpl case="has_alias_feedback">',
+                            gettext('Is already marked as previously passed.'),
+                        '<tpl case="only_failing_grade_in_previous">',
+                            gettext('Student have delivered this assignment previously, but never achieved a passing grade.'),
+                        '<tpl case="has_feedback">',
+                            gettext('Group has feedback for this assignment.'),
+                    '</tpl>',
                 '</span>',
             '</tpl>',
         '</div>'
@@ -80,6 +91,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
         return this.col2TplCompiled.apply({
             id: record.get('id'),
             oldgroup: oldgroup,
+            oldperiodname: oldgroup? oldgroup.period.long_name: null,
             whyignored: whyignored
         });
     }
