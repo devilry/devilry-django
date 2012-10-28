@@ -25,10 +25,10 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
         selector: '#appAlertmessagelist'
     }, {
         ref: 'overview',
-        selector: 'passedpreviousperiodoverview',
+        selector: 'passedpreviousperiodoverview'
     }, {
         ref: 'cardContainer',
-        selector: 'passedpreviousperiodoverview #cardContainer',
+        selector: 'passedpreviousperiodoverview #cardContainer'
 
     // Select groups page
     }, {
@@ -147,5 +147,5 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     //
     _onBackButton: function() {
         this.getCardContainer().getLayout().setActiveItem('pageOne');
-    },
+    }
 });

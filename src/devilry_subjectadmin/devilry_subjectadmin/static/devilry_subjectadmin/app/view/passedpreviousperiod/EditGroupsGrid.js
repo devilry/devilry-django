@@ -10,8 +10,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.EditGroupsGrid', {
 
     initComponent: function() {
         var cellEditing = Ext.create('Ext.grid.plugin.CellEditing', {
-            clicksToEdit: 1,
-            //errorSummary: false
+            clicksToEdit: 1
         });
         Ext.apply(this, {
             selModel: {
