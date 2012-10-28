@@ -3,7 +3,8 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
     alias: 'widget.passedpreviousperiodoverview',
     cls: 'devilry_subjectadmin_passedpreviousperiodoverview',
     requires: [
-        'devilry_subjectadmin.view.passedpreviousperiod.SelectGroupsGrid'
+        'devilry_subjectadmin.view.passedpreviousperiod.SelectGroupsGrid',
+        'devilry_subjectadmin.view.passedpreviousperiod.EditGroupsGrid'
     ],
 
     /**
@@ -24,9 +25,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
                 cls: 'bootstrap',
                 html: [
                     '<h1>',
-                        interpolate(gettext('Passed in previous %(period_term)s'), {
-                            period_term: gettext('period')
-                        }, true),
+                        gettext('Passed previously'),
                     '</h1>'
                     ].join('')
             }, {
@@ -65,12 +64,11 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
                         ].join('')
                     }]
                 }, {
-                    xtype: 'container',
+                    //xtype: 'panel',
                     itemId: 'pageTwo',
-                    items: [{
-                        xtype: 'box',
-                        html: 'Hello world'
-                    }]
+                    xtype: 'editpassedpreviousgroupsgrid'
+                    //items: [{
+                    //}]
                 }]
             }]
         });

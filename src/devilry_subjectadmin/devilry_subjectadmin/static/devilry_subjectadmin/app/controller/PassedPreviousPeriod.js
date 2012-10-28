@@ -65,10 +65,9 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     },
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
+        console.log(record.data);
 
-        var text = interpolate(gettext('Passed in previous %(period_term)s'), {
-            period_term: gettext('period')
-        }, true);
+        var text = gettext('Passed previously');
         this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], text);
         var path = this.getPathFromBreadcrumb(this.assignmentRecord);
         this.application.setTitle(Ext.String.format('{0}.{1}', path, text));
@@ -97,6 +96,12 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
         this.getOverview().setLoading(false);
         if(operation.success) {
             this.getGroupsGrid().selectWithPassingGradeInPrevious();
+            var selModel = this.getGroupsGrid().getSelectionModel();
+            selModel.select(0, true);
+            selModel.select(1, true);
+            Ext.defer(function() {
+                this._onNextButton();
+            }, 300, this);
         } else {
             this.onLoadFailure(operation);
         }
@@ -117,6 +122,21 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     },
 
     _onNextButton: function() {
+        var store = this.getPassedPreviousPeriodItemsStore();
+        var selModel = this.getGroupsGrid().getSelectionModel();
+        store.filterBy(function(record) {
+            return selModel.isSelected(record);
+        });
+        store.each(function(record) {
+            var oldgroup = record.get('oldgroup');
+            if(Ext.isEmpty(oldgroup)) {
+                
+            } else {
+                record.set('comment', Ext.String.format('Devilry autodetected that you passed this assignment {0}.',
+                    oldgroup.period.long_name));
+                record.set('grade', oldgroup.feedback.grade);
+            }
+        });
         this.getCardContainer().getLayout().setActiveItem('pageTwo');
     },
 
