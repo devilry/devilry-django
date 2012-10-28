@@ -34,7 +34,7 @@ Ext.define('devilry_subjectadmin.controller.guides.CreateNewAssignment', {
                 show: this.ifActiveInterceptor(this._onCreateNewAssignmentPageTwo)
             },
             'viewport createnewassignment #createButton': {
-                click: this._onCreateAssignmentClick
+                click: this.ifActiveInterceptor(this._onCreateAssignmentClick)
             }
         });
     },
