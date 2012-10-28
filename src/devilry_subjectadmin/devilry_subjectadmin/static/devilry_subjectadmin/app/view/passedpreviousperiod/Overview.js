@@ -4,7 +4,8 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
     cls: 'devilry_subjectadmin_passedpreviousperiodoverview',
     requires: [
         'devilry_subjectadmin.view.passedpreviousperiod.SelectGroupsGrid',
-        'devilry_subjectadmin.view.passedpreviousperiod.EditGroupsGrid'
+        'devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid',
+        'devilry_extjsextras.PrimaryButton'
     ],
 
     /**
@@ -64,11 +65,36 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
                         ].join('')
                     }]
                 }, {
-                    //xtype: 'panel',
+                    xtype: 'container',
                     itemId: 'pageTwo',
-                    xtype: 'editpassedpreviousgroupsgrid'
-                    //items: [{
-                    //}]
+                    layout: 'border',
+                    items: [{
+                        xtype: 'box',
+                        region: 'east',
+                        width: 300,
+                        cls: 'bootstrap',
+                        padding: '0 0 0 30',
+                        html: [
+                            '<p class="muted">',
+                                gettext('Make sure you really want to mark these groups as previously passed before saving.'),
+                            '</p>',
+                            '<p class="muted"><small>',
+                                gettext('This will create a new delivery on each of the groups, mark the delivery as a placeholder for a previously approved delivery, and create a feedback with passing grade on the delivery.'),
+                            '</small></p>'
+                        ].join('')
+                    }, {
+                        xtype: 'confirmpassedpreviousgroupsgrid',
+                        region: 'center',
+                        fbar: [{
+                            xtype: 'button',
+                            text: gettext('Back'),
+                            itemId: 'backButton'
+                        }, '->', {
+                            xtype: 'primarybutton',
+                            text: gettext('Save'),
+                            itemId: 'saveButton'
+                        }]
+                    }]
                 }]
             }]
         });

@@ -6,24 +6,9 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.SelectGroupsGrid', {
         'devilry_extjsextras.GridBigButtonCheckboxModel'
     ],
 
-    hideHeaders: true,
-
     initComponent: function() {
         Ext.apply(this, {
             selModel: Ext.create('devilry_extjsextras.GridBigButtonCheckboxModel'),
-            columns: [{
-                dataIndex: 'id',
-                flex: 7,
-                menuDisabled: true,
-                renderer: this.renderCol1,
-                sortable: false
-            }, {
-                dataIndex: 'id',
-                flex: 3,
-                menuDisabled: true,
-                renderer: this.renderCol2,
-                sortable: false
-            }],
             tbar: [{
                 text: gettext('Select'),
                 menu: [{

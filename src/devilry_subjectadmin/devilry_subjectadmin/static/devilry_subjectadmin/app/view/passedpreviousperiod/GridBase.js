@@ -7,6 +7,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
     store: 'PassedPreviousPeriodItems',
     border: 1,
     frame: false,
+    hideHeaders: true,
 
     col1Tpl: [
         '<div class="groupinfo groupinfo_{id}">',
@@ -33,6 +34,21 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
     initComponent: function() {
         this.col1TplCompiled = Ext.create('Ext.XTemplate', this.col1Tpl);
         this.col2TplCompiled = Ext.create('Ext.XTemplate', this.col2Tpl);
+        Ext.apply(this, {
+            columns: [{
+                dataIndex: 'id',
+                flex: 7,
+                menuDisabled: true,
+                renderer: this.renderCol1,
+                sortable: false
+            }, {
+                dataIndex: 'id',
+                flex: 3,
+                menuDisabled: true,
+                renderer: this.renderCol2,
+                sortable: false
+            }]
+        });
         this.callParent(arguments);
     },
 

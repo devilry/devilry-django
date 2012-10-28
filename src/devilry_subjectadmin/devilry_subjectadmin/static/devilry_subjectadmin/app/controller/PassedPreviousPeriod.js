@@ -7,17 +7,24 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
         'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
         'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin',
         'devilry_subjectadmin.utils.LoadAssignmentMixin',
-        'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin'
+        'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin',
+        'devilry_subjectadmin.utils.LoadGradeEditorMixin'
     ],
 
     requires: [
+        'devilry.gradeeditors.EditManyDraftEditorWindow',
+        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler'
     ],
 
     views: [
         'passedpreviousperiod.Overview'
     ],
 
-    models: ['Assignment'],
+    models: [
+        'Assignment',
+        'GradeEditorConfig',
+        'GradeEditorRegistryItem'
+    ],
     stores: ['PassedPreviousPeriodItems'],
 
     refs: [{
@@ -30,13 +37,18 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
         ref: 'cardContainer',
         selector: 'passedpreviousperiodoverview #cardContainer'
 
-    // Select groups page
+    // Page one
     }, {
         ref: 'groupsGrid',
         selector: 'passedpreviousperiodoverview #pageOne selectpassedpreviousgroupsgrid'
     }, {
         ref: 'nextButton',
         selector: 'passedpreviousperiodoverview #pageOne #nextButton'
+
+    // Page two
+    }, {
+        ref: 'pageTwo',
+        selector: 'passedpreviousperiodoverview #pageTwo'
     }],
 
     init: function() {
@@ -49,6 +61,12 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
             },
             'passedpreviousperiodoverview #pageOne #nextButton': {
                 click: this._onNextButton
+            },
+            'passedpreviousperiodoverview #pageTwo #backButton': {
+                click: this._onBackButton
+            },
+            'passedpreviousperiodoverview #pageTwo #saveButton': {
+                click: this._onSave
             }
         });
     },
@@ -65,18 +83,29 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     },
     onLoadAssignmentSuccess: function(record) {
         this.assignmentRecord = record;
-        console.log(record.data);
 
         var text = gettext('Passed previously');
         this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], text);
         var path = this.getPathFromBreadcrumb(this.assignmentRecord);
         this.application.setTitle(Ext.String.format('{0}.{1}', path, text));
 
-        this._loadStore(this.assignment_id);
+        this.loadGradeEditorRecords(this.assignmentRecord.get('id'));
     },
     onLoadAssignmentFailure: function(operation) {
         this.getOverview().setLoading(false);
         this.onLoadFailure(operation);
+    },
+
+    //
+    //
+    // Load grade editor
+    //
+    //
+
+    onLoadGradeEditorSuccess: function(gradeEditorConfigRecord, gradeEditorRegistryItemRecord) {
+        this.gradeEditorConfigRecord = gradeEditorConfigRecord;
+        this.gradeEditorRegistryItemRecord = gradeEditorRegistryItemRecord;
+        this._loadStore();
     },
 
 
@@ -85,8 +114,8 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     // Load store
     //
     //
-    _loadStore: function(assignment_id) {
-        this.getPassedPreviousPeriodItemsStore().loadGroupsInAssignment(assignment_id, {
+    _loadStore: function() {
+        this.getPassedPreviousPeriodItemsStore().loadGroupsInAssignment(this.assignment_id, {
             scope: this,
             callback: this._onLoadStore
         });
@@ -96,12 +125,6 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
         this.getOverview().setLoading(false);
         if(operation.success) {
             this.getGroupsGrid().selectWithPassingGradeInPrevious();
-            var selModel = this.getGroupsGrid().getSelectionModel();
-            selModel.select(0, true);
-            selModel.select(1, true);
-            Ext.defer(function() {
-                this._onNextButton();
-            }, 300, this);
         } else {
             this.onLoadFailure(operation);
         }
@@ -127,16 +150,6 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
         store.filterBy(function(record) {
             return selModel.isSelected(record);
         });
-        store.each(function(record) {
-            var oldgroup = record.get('oldgroup');
-            if(Ext.isEmpty(oldgroup)) {
-                
-            } else {
-                record.set('comment', Ext.String.format('Devilry autodetected that you passed this assignment {0}.',
-                    oldgroup.period.long_name));
-                record.set('grade', oldgroup.feedback.grade);
-            }
-        });
         this.getCardContainer().getLayout().setActiveItem('pageTwo');
     },
 
@@ -146,6 +159,60 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     //
     //
     _onBackButton: function() {
+        var store = this.getPassedPreviousPeriodItemsStore();
+        store.clearFilter();
         this.getCardContainer().getLayout().setActiveItem('pageOne');
+    },
+
+    _onSave: function() {
+        var store = this.getPassedPreviousPeriodItemsStore();
+        store.each(function(record) {
+            var oldgroup = record.get('oldgroup');
+            if(Ext.isEmpty(oldgroup)) {
+                var feedback = {
+                    grade: 'Approved',
+                    points: 1,
+                    is_passing_grade: true,
+                    rendered_view: ''
+                };
+                record.set('feedback', feedback);
+            } else {
+                record.set('feedback', null);
+                record.setDirty();
+            }
+        }, this);
+        this.getOverview().setLoading(gettext('Saving') + ' ...');
+        store.sync({
+            scope: this,
+            success: function(batch, options) {
+                this._onSyncSuccess(batch, options);
+            },
+            failure: function(batch, options) {
+                this._onSyncFailure(batch, options);
+            }
+        });
+    },
+
+    _onSyncSuccess: function(batch, options, callbackconfig) {
+        this.getOverview().setLoading(false);
+        var store = this.getPassedPreviousPeriodItemsStore();
+        var count = store.getCount();
+        this.application.getAlertmessagelist().add({
+            type: 'success',
+            autoclose: true,
+            message: interpolate(gettext('Marked %(count)s groups as previously passed.'), {
+                count: count
+            }, true)
+        });
+        this._onBackButton();
+        this._loadStore();
+    },
+
+    _onSyncFailure: function(batch, options) {
+        this.getOverview().setLoading(false);
+        var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
+        error.addBatchErrors(batch);
+        var messages = error.asArrayOfStrings();
+        this.application.getAlertmessagelist().addMany(messages, 'error');
     }
 });

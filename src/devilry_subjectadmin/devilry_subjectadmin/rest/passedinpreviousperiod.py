@@ -36,6 +36,7 @@ class FeedbackField(DictField):
         #period = forms.CharField(required=False) # Ignored
 
 class PassedInPreviousPeriodForm(forms.Form):
+    id = forms.IntegerField(required=False) # Ignored - see node about ExtJS further down
     group = GroupField(required=True)
     feedback = FeedbackField(required=False)
     oldgroup = forms.CharField(required=False) # Ignored
