@@ -42,6 +42,9 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
         ref: 'groupsGrid',
         selector: 'passedpreviousperiodoverview #pageOne selectpassedpreviousgroupsgrid'
     }, {
+        ref: 'showUnRecommendedCheckbox',
+        selector: 'passedpreviousperiodoverview #pageOne #showUnRecommendedCheckbox'
+    }, {
         ref: 'nextButton',
         selector: 'passedpreviousperiodoverview #pageOne #nextButton'
 
@@ -56,12 +59,19 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
             'passedpreviousperiodoverview': {
                 render: this._onRender
             },
+
+            // Page one
             'passedpreviousperiodoverview #pageOne selectpassedpreviousgroupsgrid': {
                 selectionchange: this._onGroupsSelectionChange
+            },
+            'passedpreviousperiodoverview #pageOne #showUnRecommendedCheckbox': {
+                change: this._onShowUnRecommendedCheckbox
             },
             'passedpreviousperiodoverview #pageOne #nextButton': {
                 click: this._onNextButton
             },
+
+            // Page two
             'passedpreviousperiodoverview #pageTwo #backButton': {
                 click: this._onBackButton
             },
@@ -124,6 +134,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     _onLoadStore: function(records, operation) {
         this.getOverview().setLoading(false);
         if(operation.success) {
+            this._applyPageOneFilters();
             this.getGroupsGrid().selectWithPassingGradeInPrevious();
         } else {
             this.onLoadFailure(operation);
@@ -144,6 +155,27 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
         }
     },
 
+    _applyPageOneFilters: function() {
+        var store = this.getPassedPreviousPeriodItemsStore();
+        store.clearFilter();
+        if(!this.getShowUnRecommendedCheckbox().getValue()) {
+            store.filterBy(function(record) {
+                var whyignored = record.get('whyignored');
+                if(!Ext.isEmpty(whyignored)) {
+                    return !(whyignored === 'has_alias_feedback' ||
+                        whyignored === 'has_feedback' ||
+                        whyignored === 'only_failing_grade_in_previous');
+                } else {
+                    return true;
+                }
+            });
+        }
+    },
+
+    _onShowUnRecommendedCheckbox: function() {
+        this._applyPageOneFilters();
+    },
+
     _onNextButton: function() {
         var store = this.getPassedPreviousPeriodItemsStore();
         var selModel = this.getGroupsGrid().getSelectionModel();
@@ -159,8 +191,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     //
     //
     _onBackButton: function() {
-        var store = this.getPassedPreviousPeriodItemsStore();
-        store.clearFilter();
+        this._applyPageOneFilters();
         this.getCardContainer().getLayout().setActiveItem('pageOne');
     },
 

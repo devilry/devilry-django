@@ -42,7 +42,11 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
                         xtype: 'selectpassedpreviousgroupsgrid',
                         region: 'center',
 
-                        fbar: ['->', {
+                        fbar: [{
+                            xtype: 'checkbox',
+                            boxLabel: gettext('Show groups that Devilry believes should not be marked as previously passed?'),
+                            itemId: 'showUnRecommendedCheckbox'
+                        }, '->', {
                             xtype: 'button',
                             scale: 'large',
                             text: gettext('Next'),
