@@ -89,9 +89,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                             padding: '0 40 20 0',
                             items: [{
                                 xtype: 'radiogroup',
-                                fieldLabel: interpolate(gettext('How do %(students_term)s add deliveries?'), {
-                                    students_term: gettext('students')
-                                }, true),
+                                fieldLabel: gettext('How do students add deliveries?'),
                                 vertical: true,
                                 itemId: 'deliveryTypesRadioGroup',
                                 cls: 'delivery_types-radiogroup',
@@ -110,14 +108,11 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 xtype: 'box',
                                 cls: 'bootstrap',
                                 margin: '0 0 0 3',
-                                tpl: [
+                                html: [
                                     '<p class="muted"><small>',
-                                        gettext('If you only use Devilry to give feedback, and {students_term} deliver paper copies or through an alternative channel (oral presentation, email, ...), choose <em>Not using Devilry</em>.'),
+                                        gettext('If you only use Devilry to give feedback, and students deliver paper copies or through an alternative channel (oral presentation, email, ...), choose <em>Not using Devilry</em>.'),
                                     '</small></p>'
-                                ],
-                                data: {
-                                    students_term: 'students'
-                                }
+                                ].join('')
                             }]
 
                         }, {
@@ -138,14 +133,11 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 cls: 'bootstrap',
                                 itemId: 'firstDeadlineHelp',
                                 margin: '0 0 0 0',
-                                tpl: [
+                                html: [
                                     '<p class="muted"><small>',
                                         gettext('Students must submit their delivery before this time.'),
                                     '</small></p>'
-                                ],
-                                data: {
-                                    students_term: 'students'
-                                }
+                                ].join('')
                             }]
                         }]
 
@@ -185,16 +177,11 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 xtype: 'box',
                                 cls: 'bootstrap',
                                 margin: '0 0 0 0',
-                                tpl: [
+                                html: [
                                     '<p class="muted"><small>',
-                                        gettext('For exams, this should normally be checked. If an {assignment_term} is anonymous, {examiners_term} see candidate-id instead of any personal information about the {students_term}.'),
+                                        gettext('For exams, this should normally be checked. If an assignment is anonymous, examiners see candidate-id instead of any personal information about the students.'),
                                     '</small></p>'
-                                ],
-                                data: {
-                                    students_term: gettext('students'),
-                                    assignment_term: gettext('assignment'),
-                                    examiners_term: gettext('examiners')
-                                }
+                                ].join('')
 
                                 // Publishing time
                             }, {
@@ -208,16 +195,11 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 cls: 'bootstrap',
                                 margin: '0 0 0 0',
                                 itemId: 'publishingTimeHelp',
-                                tpl: [
+                                html: [
                                     '<p class="muted"><small>',
-                                        gettext('Choose a time when {students_term} will be able to start adding {deliveries_term} on the {assignment_term}. The default is <em>now</em>. Note that {students_term} must be registered on the {assignment_term} as well before they can add any {deliveries_term}.'),
+                                        gettext('Choose a time when students will be able to start adding deliveries on the assignment. The default is <em>now</em>. Note that students must be registered on the assignment as well before they can add any deliveries.'),
                                     '</small></p>'
-                                ],
-                                data: {
-                                    students_term: gettext('students'),
-                                    deliveries_term: gettext('deliveries'),
-                                    assignment_term: gettext('assignment')
-                                }
+                                ].join('')
                             }]
                         }]
                     }],
@@ -244,24 +226,18 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                         xtype: 'box',
                         cls: 'metainfo bootstrap',
                         itemId: 'metainfo',
-                        tpl: [
+                        html: [
                             '<p>',
-                                gettext('If none of the options below suite your needs, uncheck all the checkboxes, and set up {students_term} and {examiners_term} manually later.'),
+                                gettext('If none of the options below suite your needs, uncheck all the checkboxes, and set up students and examiners manually later.'),
                             '</p>'
-                        ],
-                        data: {
-                            students_term: gettext('students'),
-                            examiners_term: gettext('examiners')
-                        }
+                        ].join('')
                     }, {
                         // Add all related students
                         xtype: 'checkboxfield',
                         name:'add_all_relatedstudents',
                         cls: 'extrastronglabel',
                         margin: '20 0 0 0',
-                        boxLabel: interpolate(gettext('Add all %(students_term)s registered on the %(period_term)s to this %(assignment_term)s?'), {
-                            students_term: gettext('students'),
-                            assignment_term: gettext('assignment'),
+                        boxLabel: interpolate(gettext('Add all students registered on the %(period_term)s to this assignment?'), {
                             period_term: gettext('period')
                         }, true),
                         checked: true,
@@ -272,17 +248,15 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                         margin: '0 0 10 0',
                         tpl: [
                             '<p class="muted">',
-                                gettext('Select this to add all {students_term} registered on the {period_term} to the {assignment_term} when it is created.'),
+                                gettext('Select this to add all students registered on the {period_term} to the assignment when it is created.'),
                                 ' ',
-                                gettext('You may want to view and edit <a {relatedstudents_link}>{students_term}</a>.'),
+                                gettext('You may want to view and edit <a {relatedstudents_link}>students</a>.'),
                             '</p>',
                             '<p class="muted">',
                                 gettext('If you plan for students to work in project groups, you should still add them to the assignment now. You can organize them in project groups at any time, even after they have made deliveries.'),
                             '</p>'
                         ],
                         data: {
-                            students_term: gettext('students'),
-                            assignment_term: gettext('assignment'),
                             period_term: gettext('period'),
                             relatedstudents_link: Ext.String.format('href="{0}" target="_blank"',
                                 devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id))
@@ -296,9 +270,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                         checked: true,
                         labelAlign: 'left',
                         cls: 'extrastronglabel',
-                        boxLabel: interpolate(gettext('Automatically setup %(examiners_term)s?'), {
-                            examiners_term: gettext('examiners')
-                        }, true)
+                        boxLabel: gettext('Automatically setup examiners?')
                     }, {
                         xtype: 'box',
                         cls: 'bootstrap',
@@ -306,19 +278,15 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                         margin: '0 0 0 0',
                         tpl: [
                             '<p class="muted">',
-                                gettext('Set {examiners_term} on {students_term} that have at least one {tag_term} in common with the {examiner_term}.'),
+                                gettext('Set examiners on students that have at least one tag in common with the examiner.'),
                                 ' ',
                                 gettext('E.g.: If you tag two examiners and 20 students with <em>group1</em>, those two examiners will be set up to correct those 20 students.'),
                             '</p>',
                             '<p class="muted">',
-                                gettext('You may want to view and edit <a {relatedstudents_link}>{students_term}</a> or <a {relatedexaminers_link}>{examiners_term}</a>. The links open in a new window, so just close the windows and come back to this window when you are ready to create the assignment.'),
+                                gettext('You may want to view and edit <a {relatedstudents_link}>students</a> or <a {relatedexaminers_link}>examiners</a>. The links open in a new window, so just close the windows and come back to this window when you are ready to create the assignment.'),
                             '</p>'
                         ],
                         data: {
-                            students_term: gettext('students'),
-                            examiners_term: gettext('examiners'),
-                            tag_term: gettext('tag'),
-                            examiner_term: gettext('examiner'),
                             relatedstudents_link: Ext.String.format('href="{0}" target="_blank"',
                                 devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id)),
                             relatedexaminers_link: Ext.String.format('href="{0}" target="_blank"',
@@ -333,9 +301,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                     }, '->', {
                         xtype: 'createbutton',
                         minWidth: 200,
-                        text: interpolate(gettext('Create %(assignment_term)s'), {
-                            assignment_term: gettext('assignment')
-                        }, true),
+                        text: gettext('Create assignment'),
                         itemId: 'createButton',
                         scale: 'large',
                         formBind: true, //only enabled once the form is valid
