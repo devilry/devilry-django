@@ -26,7 +26,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
         Ext.apply(this, {
             frame: false,
             border: 0,
-            bodyPadding: 40,
+            bodyPadding: '20 40 20 40',
             autoScroll: true,
 
             items: [{

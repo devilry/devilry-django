@@ -21,7 +21,7 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.Overview' ,{
 
     frame: false,
     border: 0,
-    bodyPadding: 40,
+    bodyPadding: '20 40 20 40',
     autoScroll: true, // Autoscroll on overflow
 
 

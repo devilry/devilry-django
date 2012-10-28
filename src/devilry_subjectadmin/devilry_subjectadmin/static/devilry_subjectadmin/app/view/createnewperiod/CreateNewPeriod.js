@@ -17,7 +17,7 @@ Ext.define('devilry_subjectadmin.view.createnewperiod.CreateNewPeriod', {
         Ext.apply(this, {
             frame: false,
             border: false,
-            bodyPadding: 40,
+            bodyPadding: '20 40 20 40',
             autoScroll: true,
             oktext: gettext('Create'),
             layout: 'anchor',

@@ -10,7 +10,7 @@ Ext.define('devilry_subjectadmin.view.allwhereisadmin.AllWhereIsAdminPanel' ,{
     layout: 'fit',
     frame: false,
     border: 0,
-    bodyPadding: 40,
+    bodyPadding: '20 40 20 40',
     autoScroll: true,
 
     items: {
