@@ -37,7 +37,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
     def test_invalid_period(self):
         self._load('1001666')
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
-        self.assertTrue('Period 1001666 could not be loaded.' in self.selenium.page_source)
+        self.assertTrue('The server responded with error message <em>403' in self.selenium.page_source)
 
     def test_form_render_advanced_fieldset(self):
         self._load()
