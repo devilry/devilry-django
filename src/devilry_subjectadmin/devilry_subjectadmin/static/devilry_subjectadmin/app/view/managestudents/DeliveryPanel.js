@@ -62,10 +62,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
             '</p>',
         '</div>',
 
-        '<div class="deliverymadebyblock">',
-            '<h4>', gettext('Delivery made by'), '</h4>',
-            '<p class="madeby_displayname">{delivery.delivered_by.user.displayname}</p>',
-        '</div>',
+        '<tpl if="delivery.delivered_by">',
+            '<div class="deliverymadebyblock">',
+                '<h4>', gettext('Delivery made by'), '</h4>',
+                '<p class="madeby_displayname">{delivery.delivered_by.user.displayname}</p>',
+            '</div>',
+        '</tpl>',
 
         '<div class="fileblock">',
             '<h4>', gettext('Files'), '</h4>',
@@ -84,11 +86,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
     ],
 
     feedbackTpl: [
-        '<tpl if="latest_feedback">',
+        '<tpl if="this.hasFeedback(latest_feedback)">',
             '<div class="feedback_rendered_view">{latest_feedback.rendered_view}</div>',
         '<tpl else>',
-            '<p><small class="muted no_feedback">', gettext('No feedback'), '</small></p>',
-        '</tpl>'
+            '<p><small class="muted no_feedback">', gettext('No detailed feedback'), '</small></p>',
+        '</tpl>', {
+            hasFeedback: function(latest_feedback) {
+                return latest_feedback && !Ext.isEmpty(latest_feedback.rendered_view);
+            }
+        }
     ],
 
     headerTpl: [
