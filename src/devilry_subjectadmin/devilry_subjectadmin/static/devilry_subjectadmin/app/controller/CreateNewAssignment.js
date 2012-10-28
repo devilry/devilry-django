@@ -73,7 +73,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this.control({
             'viewport createnewassignmentform': {
                 render: this._onRenderCreateNewAssignmentForm
-                //validitychange: this._onFormValidityChange
             },
             'viewport createnewassignmentform textfield[name=long_name]': {
                 render: this._onRenderLongName,
@@ -103,25 +102,60 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         });
     },
 
-    _onLongNameBlur: function(field) {
-        var shortnamefield = this.getShortNameField();
-        if(shortnamefield.getValue() === '') {
-            var value = field.getValue();
-            var short_name = devilry_subjectadmin.utils.AutoGenShortname.autogenShortname(value);
-            shortnamefield.setValue(short_name);
+    _mask: function() {
+        this.getCreateNewAssignmentForm().getEl().mask(gettext('Saving...'));
+    },
+    _unmask: function() {
+        this.getCreateNewAssignmentForm().getEl().unmask();
+    },
+
+
+    _onHitEnter: function() {
+        var itemId = this.getCardPanel().getLayout().getActiveItem().itemId;
+        if(this._isValid()) {
+            if(itemId == 'pageOne') {
+                this._onNext();
+            } else {
+                this._onCreate();
+            }
         }
     },
-    //_onShortNameBlur: function() {
-    //},
 
-    //_onFirstDeadlineChange: function(field, newValue, oldValue) {
-        //console.log(newValue, oldValue);
-    //},
 
-    //_onFormValidityChange: function(basicform, valid) {
-        //console.log(valid);
-    //},
+    // 
+    //
+    // Load
+    //
+    //
 
+    _loadPeriod: function(period_id) {
+        this.getPeriodModel().load(period_id, {
+            scope: this,
+            callback: function(record, operation) {
+                if(operation.success) {
+                    this._onLoadPeriodSuccess(record);
+                } else {
+                    this._onLoadPeriodFailure(operation);
+                }
+            }
+        });
+    },
+    _onLoadPeriodSuccess: function(record) {
+        this.periodRecord = record;
+        this.periodpath = this.getPathFromBreadcrumb(this.periodRecord);
+        this._updateHeader();
+        this.setSubviewBreadcrumb(this.periodRecord, 'Period', [], gettext('Create new assignment'));
+    },
+    _onLoadPeriodFailure: function(operation) {
+        this.onLoadFailure(operation);
+    },
+
+
+    //
+    //
+    // Render
+    //
+    //
     _onRenderLongName: function(field) {
         Ext.defer(function() {
             // NOTE: Using defer avoids that the text style remains
@@ -147,47 +181,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this._loadPeriod(this.period_id);
     },
 
-    _onHitEnter: function() {
-        var itemId = this.getCardPanel().getLayout().getActiveItem().itemId;
-        if(this._isValid()) {
-            if(itemId == 'pageOne') {
-                this._onNext();
-            } else {
-                this._onCreate();
-            }
-        }
-    },
-
-    _onNext: function() {
-        this.getGlobalAlertmessagelist().removeAll(); // NOTE: If we fail validation, we redirect to page one. If users fix errors there, it would seem strange when they continue to display on page2.
-        this.getCardPanel().getLayout().setActiveItem(1);
-    },
-    _onBack: function() {
-        this.getCardPanel().getLayout().setActiveItem(0);
-    },
-
-    _loadPeriod: function(period_id) {
-        this.getPeriodModel().load(period_id, {
-            scope: this,
-            callback: function(record, operation) {
-                if(operation.success) {
-                    this._onLoadPeriodSuccess(record);
-                } else {
-                    this._onLoadPeriodFailure(operation);
-                }
-            }
-        });
-    },
-    _onLoadPeriodSuccess: function(record) {
-        this.periodRecord = record;
-        this.periodpath = this.getPathFromBreadcrumb(this.periodRecord);
-        this._updateHeader();
-        this.setSubviewBreadcrumb(this.periodRecord, 'Period', [], gettext('Create new assignment'));
-    },
-    _onLoadPeriodFailure: function(operation) {
-        this.onLoadFailure(operation);
-    },
-
     _updateHeader: function() {
         var periodpath = this.getPathFromBreadcrumb(this.periodRecord);
         this.getPageHeading().update({
@@ -195,6 +188,13 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             subheading: periodpath
         });
     },
+
+
+    //
+    //
+    // Page one
+    //
+    //
 
     _onDeliveryTypesSelect: function(radio, records) {
         var is_electronic = radio.getGroupValue() === 0;
@@ -222,6 +222,46 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             this.getAutoSetupExaminersHelp().hide();
         }
     },
+
+    _onLongNameBlur: function(field) {
+        var shortnamefield = this.getShortNameField();
+        if(shortnamefield.getValue() === '') {
+            var value = field.getValue();
+            var short_name = devilry_subjectadmin.utils.AutoGenShortname.autogenShortname(value);
+            shortnamefield.setValue(short_name);
+        }
+    },
+    //_onShortNameBlur: function() {
+    //},
+
+    //_onFirstDeadlineChange: function(field, newValue, oldValue) {
+        //console.log(newValue, oldValue);
+    //},
+
+    _onNext: function() {
+        this.getGlobalAlertmessagelist().removeAll(); // NOTE: If we fail validation, we redirect to page one. If users fix errors there, it would seem strange when they continue to display on page2.
+        this.getCardPanel().getLayout().setActiveItem(1);
+    },
+
+
+
+    //
+    //
+    // Page two
+    //
+    //
+
+    _onBack: function() {
+        this.getCardPanel().getLayout().setActiveItem(0);
+    },
+
+
+
+    //
+    //
+    // Save
+    //
+    //
 
     _isValid: function() {
         return this.getCreateNewAssignmentForm().getForm().isValid();
@@ -266,13 +306,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this.handleProxyError(this.getGlobalAlertmessagelist(), this.getCreateNewAssignmentForm(),
             response, operation);
         this.getCardPanel().getLayout().setActiveItem(0);
-    },
-
-    _mask: function() {
-        this.getCreateNewAssignmentForm().getEl().mask(gettext('Saving...'));
-    },
-    _unmask: function() {
-        this.getCreateNewAssignmentForm().getEl().unmask();
     },
 
     _setInitialValues: Ext.emptyFn
