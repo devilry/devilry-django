@@ -46,6 +46,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         ref: 'shortNameField',
         selector: 'createnewassignmentform textfield[name=short_name]'
     }, {
+        ref: 'longNameField',
+        selector: 'createnewassignmentform textfield[name=long_name]'
+    }, {
         ref: 'deliveryTypesRadioGroup',
         selector: 'createnewassignmentform #deliveryTypesRadioGroup'
     }, {
@@ -73,9 +76,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     init: function() {
         this.control({
-            'viewport createnewassignmentform': {
-                render: this._onRenderCreateNewAssignmentForm
-            },
             'viewport createnewassignmentform textfield[name=long_name]': {
                 render: this._onRenderLongName,
                 blur: this._onLongNameBlur
@@ -104,11 +104,11 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         });
     },
 
-    _mask: function() {
-        this.getCreateNewAssignmentForm().getEl().mask(gettext('Saving...'));
+    _mask: function(text) {
+        this.getCreateNewAssignmentForm().setLoading(text);
     },
     _unmask: function() {
-        this.getCreateNewAssignmentForm().getEl().unmask();
+        this.getCreateNewAssignmentForm().setLoading(false);
     },
 
 
@@ -130,6 +130,11 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     //
     //
 
+    _onLoadFailure: function(operation) {
+        this._unmask();
+        this.onLoadFailure(operation);
+    },
+
     _loadPeriod: function(period_id) {
         this.getPeriodModel().load(period_id, {
             scope: this,
@@ -147,37 +152,74 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this.periodpath = this.getPathFromBreadcrumb(this.periodRecord);
         this._updateHeader();
         this.setSubviewBreadcrumb(this.periodRecord, 'Period', [], gettext('Create new assignment'));
+        this._loadAssignments();
     },
     _onLoadPeriodFailure: function(operation) {
-        this.onLoadFailure(operation);
+        this._onLoadFailure(operation);
     },
 
     _loadAssignments: function() {
         this.getAssignmentsStore().loadAssignmentsInPeriod(this.periodRecord.get('id'), this._onLoadAssignments, this);
     },
-    _onLoadAssignments: function(records, operation) {
+    _onLoadAssignments: function(assignmentRecords, operation) {
         if(operation.success) {
+            this._onLoadAssignmentsSuccess(assignmentRecords);
         } else {
-            this.onLoadFailure(operation);
+            this._onLoadFailure(operation);
         }
     },
+    _onLoadAssignmentsSuccess: function(assignmentRecords) {
+        this._autosetNamesFromLastAssignment(assignmentRecords);
+        this._unmask();
+    },
+
+    _autosetNamesFromLastAssignment: function(assignmentRecords) {
+        var lastAssignment = assignmentRecords[0];
+        var short_name = lastAssignment.get('short_name');
+        var long_name = lastAssignment.get('long_name');
+        var shortname_number = this._getNumberInName(short_name);
+        var longname_number = this._getNumberInName(long_name);
+        if(shortname_number === longname_number && shortname_number !== null) {
+            var oldnumber = parseInt(shortname_number, 10);
+            var number = oldnumber + 1;
+            short_name = short_name.replace(oldnumber.toString(), number.toString());
+            long_name = long_name.replace(oldnumber.toString(), number.toString());
+            this.getCreateNewAssignmentForm().getForm().setValues({
+                long_name: long_name,
+                short_name: short_name
+            });
+        }
+        Ext.defer(function() {
+            // NOTE: Using defer to clear the error-marks added when we setValues above
+            this.getFirstDeadlineField().down('devilry_extjsextras_datefield').clearInvalid();
+
+            // NOTE: Using defer avoids that the text style remains
+            // emptyText-gray (I assume it does no because render is fired
+            // before the style is applied).
+            //this.getLongNameField().focus();
+            this.getLongNameField().selectText();
+        }, 200, this);
+    },
+
+
+    _getNumberInName: function(name) {
+        var numbers = name.match(/\d+/);
+        if(numbers !== null && numbers.length === 1) {
+            return numbers[0];
+        } else {
+            return null;
+        }
+    },
+
 
     //
     //
     // Render
     //
     //
-    _onRenderLongName: function(field) {
-        Ext.defer(function() {
-            // NOTE: Using defer avoids that the text style remains
-            // emptyText-gray (I assume it does no because render is fired
-            // before the style is applied).
-            field.focus();
-        }, 100);
-    },
-
-    _onRenderCreateNewAssignmentForm: function() {
+    _onRenderLongName: function() {
         this.setLoadingBreadcrumb();
+        this._mask(gettext('Loading') + ' ...');
         this.getCreateNewAssignmentForm().keyNav = Ext.create('Ext.util.KeyNav', this.getCreateNewAssignmentForm().el, {
             enter: this._onHitEnter,
             scope: this
@@ -304,7 +346,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
         var assignment = new CreateNewAssignmentModel(values);
-        this._mask();
+        this._mask(gettext('Saving') + ' ...');
         assignment.save({
             scope: this,
             success: this._onSuccessfulSave
