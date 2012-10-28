@@ -67,15 +67,20 @@ class RegistryItem(object):
         raise NotImplementedError()
 
     @classmethod
-    def draft_to_staticfeedback_kwargs(cls, draftstring):
+    def draft_to_staticfeedback_kwargs(cls, draftstring, configstring):
         """
         Convert ``draftstring`` into a dictionary of keyword arguments for StaticFeedback.
-        The returned dict should only contain the following keys:
 
-            - is_passing_grade
-            - grade
-            - points
-            - rendered_view
+        :param draftstring: The draft as a string. Will usually be encoded in a structured format like XML or JSON.
+        :param configstring: The grade editor config as a string. Will usually be encoded in a structured format like XML or JSON.
+
+        :return:
+            The returned dict should only contain the following keys:
+
+                - is_passing_grade
+                - grade
+                - points
+                - rendered_view
         """
         raise NotImplementedError()
 
