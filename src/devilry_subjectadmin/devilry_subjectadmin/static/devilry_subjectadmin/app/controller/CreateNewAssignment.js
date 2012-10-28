@@ -25,6 +25,8 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         'Period'
     ],
 
+    stores: ['Assignments'],
+
     refs: [{
         ref: 'globalAlertmessagelist',
         selector: '#appAlertmessagelist'
@@ -150,6 +152,15 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this.onLoadFailure(operation);
     },
 
+    _loadAssignments: function() {
+        this.getAssignmentsStore().loadAssignmentsInPeriod(this.periodRecord.get('id'), this._onLoadAssignments, this);
+    },
+    _onLoadAssignments: function(records, operation) {
+        if(operation.success) {
+        } else {
+            this.onLoadFailure(operation);
+        }
+    },
 
     //
     //
@@ -203,13 +214,17 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             this.getFirstDeadlineHelp().show();
             this.getPublishingTimeField().show();
             this.getPublishingTimeHelp().show();
-            this.getFirstDeadlineField().setValue(null); // NOTE: See note in the else section below
+            if(!this.getFirstDeadlineField().isValid()) {
+                this.getFirstDeadlineField().setValue(null); // NOTE: See note in the else section below
+            }
         } else {
             this.getFirstDeadlineField().hide();
             this.getFirstDeadlineHelp().hide();
             this.getPublishingTimeField().hide();
             this.getPublishingTimeHelp().hide();
-            this.getFirstDeadlineField().setValue(new Date()); // NOTE: Set datetime to make sure the field validates - we clear it when we show the field again, and the value is not submitted as long as the type is non-electronic.
+            if(!this.getFirstDeadlineField().isValid()) {
+                this.getFirstDeadlineField().setValue(new Date()); // NOTE: Set datetime to make sure the field validates - we clear it when we show the field again, and the value is not submitted as long as the type is non-electronic.
+            }
         }
     },
 
