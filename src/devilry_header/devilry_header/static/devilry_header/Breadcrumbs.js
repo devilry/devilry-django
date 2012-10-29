@@ -53,7 +53,7 @@ Ext.define('devilry_header.Breadcrumbs', {
             this.addMany(this.defaultBreadcrumbs);
         }
         this.addMany(breadcrumbs);
-        this.add('', current)
+        this.add('', current);
         this.draw();
     },
 
