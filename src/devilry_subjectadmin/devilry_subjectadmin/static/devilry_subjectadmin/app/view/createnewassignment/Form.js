@@ -13,7 +13,8 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.form.Help',
-        'devilry_subjectadmin.utils.BaseNodeHelp'
+        'devilry_subjectadmin.utils.BaseNodeHelp',
+        'devilry_subjectadmin.view.createnewassignment.SelectSingleAssignment'
     ],
 
     /**
@@ -222,76 +223,127 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                         margin: '20 0 0 0'
                     },
                     items: [{
+
+                        // Setup students
                         margin: 0,
                         xtype: 'box',
-                        cls: 'metainfo bootstrap',
-                        itemId: 'metainfo',
+                        margin: 0,
+                        cls: 'bootstrap',
                         html: [
-                            '<p>',
-                                gettext('If none of the options below suite your needs, uncheck all the checkboxes, and set up students and examiners manually later.'),
-                            '</p>'
+                            '<h2>',
+                                gettext('Setup students?'),
+                            '</h2>'
                         ].join('')
                     }, {
-                        // Add all related students
-                        xtype: 'checkboxfield',
-                        name:'add_all_relatedstudents',
-                        cls: 'extrastronglabel',
-                        margin: '20 0 0 0',
-                        boxLabel: interpolate(gettext('Add all students registered on the %(period_term)s to this assignment?'), {
-                            period_term: gettext('period')
-                        }, true),
-                        checked: true,
-                        labelAlign: 'left'
-                    }, {
-                        xtype: 'box',
-                        cls: 'bootstrap',
-                        margin: '0 0 10 0',
-                        tpl: [
-                            '<p class="muted">',
-                                gettext('Select this to add all students registered on the {period_term} to the assignment when it is created.'),
-                                ' ',
-                                gettext('You may want to view and edit <a {relatedstudents_link}>students</a>.'),
-                            '</p>',
-                            '<p class="muted">',
-                                gettext('If you plan for students to work in project groups, you should still add them to the assignment now. You can organize them in project groups at any time, even after they have made deliveries.'),
-                            '</p>'
-                        ],
-                        data: {
-                            period_term: gettext('period'),
-                            relatedstudents_link: Ext.String.format('href="{0}" target="_blank"',
-                                devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id))
-                        }
+
+                        xtype: 'radiogroup',
+                        itemId: 'studentsSetupRadiogroup',
+                        vertical: true,
+                        columns: 1,
+                        margin: 0,
+                        items: [{
+                            boxLabel: interpolate(gettext('Add all students registered on the %(period_term)s to this assignment.'), {
+                                period_term: gettext('period')
+                            }, true),
+                            checked: true,
+                            name: 'setupstudents_mode',
+                            cls: 'extrastronglabel',
+                            inputValue: 'allrelated'
+                        }, {
+                            xtype: 'box',
+                            cls: 'bootstrap',
+                            tpl: [
+                                '<p class="muted"><small>',
+                                    gettext('Select this to add all students registered on the {period_term} to the assignment when it is created.'),
+                                    ' ',
+                                    gettext('You may want to view and edit <a {relatedstudents_link}>students</a>.'),
+                                '</small></p>'
+                            ],
+                            data: {
+                                period_term: gettext('period'),
+                                relatedstudents_link: Ext.String.format('href="{0}" target="_blank"',
+                                    devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id))
+                            }
+
+                        }, {
+                            boxLabel: gettext('Copy from another assignment.'),
+                            cls: 'extrastronglabel',
+                            margin: '10 0 0 0',
+                            name: 'setupstudents_mode',
+                            itemId: 'copyFromAnotherAssignmentRadio',
+                            hidden: true,
+                            inputValue: 'copyfromassignment'
+                        }, {
+                            xtype: 'container',
+                            itemId: 'selectAssignmentToCopyStudentsFrom',
+                            layout: 'column',
+                            hidden: true,
+                            margin: '5 0 0 17',
+                            items: [{
+                                xtype: 'selectsingleassignment',
+                                name: 'assignment_to_copy_students_from',
+                                width: 300
+                            }, {
+                                xtype: 'checkboxfield',
+                                name: 'only_copy_passing_students',
+                                columnWidth: 1,
+                                margin: '0 0 0 10',
+                                checked: false,
+                                boxLabel: gettext('Only copy students with passing grade?')
+                            }]
+
+                        }, {
+                            boxLabel: gettext('Do not add students at this time.'),
+                            cls: 'extrastronglabel',
+                            margin: '10 0 0 0',
+                            name: 'setupstudents_mode',
+                            inputValue: 'do_not_setup'
+                        }, {
+                            xtype: 'box',
+                            cls: 'bootstrap',
+                            html: [
+                                '<p class="muted"><small>',
+                                    gettext('If you choose not to add students at this time, you will have to add them manually to the assignment later. If you plan for students to work in project groups, you should still add them to the assignment now. You can organize them in project groups at any time, even after they have made deliveries.'),
+                                '</small></p>'
+                            ].join('')
+                        }]
 
                         // Autosetup examiners
                     }, {
-                        xtype: 'checkboxfield',
-                        margin: '20 0 0 0',
-                        name: 'autosetup_examiners',
-                        checked: true,
-                        labelAlign: 'left',
-                        cls: 'extrastronglabel',
-                        boxLabel: gettext('Automatically setup examiners?')
-                    }, {
-                        xtype: 'box',
-                        cls: 'bootstrap',
-                        itemId: 'autosetup_examiners-help',
-                        margin: '0 0 0 0',
-                        tpl: [
-                            '<p class="muted">',
-                                gettext('Set examiners on students that have at least one tag in common with the examiner.'),
-                                ' ',
-                                gettext('E.g.: If you tag two examiners and 20 students with <em>group1</em>, those two examiners will be set up to correct those 20 students.'),
-                            '</p>',
-                            '<p class="muted">',
-                                gettext('You may want to view and edit <a {relatedstudents_link}>students</a> or <a {relatedexaminers_link}>examiners</a>. The links open in a new window, so just close the windows and come back to this window when you are ready to create the assignment.'),
-                            '</p>'
-                        ],
-                        data: {
-                            relatedstudents_link: Ext.String.format('href="{0}" target="_blank"',
-                                devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id)),
-                            relatedexaminers_link: Ext.String.format('href="{0}" target="_blank"',
-                                devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id))
-                        }
+                        xtype: 'container',
+                        itemId: 'setupExaminersContainer',
+                        layout: 'anchor',
+                        defaults: {anchor: '100%'},
+                        items: [{
+                            xtype: 'checkboxfield',
+                            margin: '20 0 0 0',
+                            name: 'autosetup_examiners',
+                            checked: true,
+                            labelAlign: 'left',
+                            cls: 'extrastronglabel',
+                            boxLabel: gettext('Automatically setup examiners?')
+                        }, {
+                            xtype: 'box',
+                            cls: 'bootstrap',
+                            itemId: 'autosetup_examiners-help',
+                            margin: '0 0 0 0',
+                            tpl: [
+                                '<p class="muted">',
+                                    gettext('Set examiners on students that have at least one tag in common with the examiner.'),
+                                    ' ',
+                                    gettext('E.g.: If you tag two examiners and 20 students with <em>group1</em>, those two examiners will be set up to correct those 20 students.'),
+                                '</p>',
+                                '<p class="muted">',
+                                    gettext('You may want to view and edit <a {relatedstudents_link}>students</a> or <a {relatedexaminers_link}>examiners</a>. The links open in a new window, so just close the windows and come back to this window when you are ready to create the assignment.'),
+                                '</p>'
+                            ],
+                            data: {
+                                relatedstudents_link: Ext.String.format('href="{0}" target="_blank"',
+                                    devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id)),
+                                relatedexaminers_link: Ext.String.format('href="{0}" target="_blank"',
+                                    devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id))
+                            }
+                        }]
                     }],
                     fbar: [{
                         xtype: 'button',

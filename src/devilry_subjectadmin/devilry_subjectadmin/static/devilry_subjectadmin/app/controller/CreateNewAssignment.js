@@ -64,14 +64,16 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         ref: 'publishingTimeHelp',
         selector: 'createnewassignmentform #publishingTimeHelp'
     }, {
-        ref: 'autoSetupExaminersField',
-        selector: 'createnewassignmentform checkboxfield[name=autosetup_examiners]'
+
+    // Page two
+        ref: 'setupExaminersContainer',
+        selector: 'createnewassignmentform #setupExaminersContainer'
     }, {
-        ref: 'addAllRelatedStudentsField',
-        selector: 'createnewassignmentform checkboxfield[name=add_all_relatedstudents]'
+        ref: 'copyFromAnotherAssignmentRadio',
+        selector: 'createnewassignmentform #copyFromAnotherAssignmentRadio'
     }, {
-        ref: 'autoSetupExaminersHelp',
-        selector: 'createnewassignmentform #autosetup_examiners-help'
+        ref: 'selectAssignmentToCopyStudentsFrom',
+        selector: 'createnewassignmentform #selectAssignmentToCopyStudentsFrom'
     }],
 
     init: function() {
@@ -80,27 +82,25 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
                 render: this._onRenderLongName,
                 blur: this._onLongNameBlur
             },
-            //'viewport createnewassignmentform textfield[name=short_name]': {
-                //blur: this._onShortNameBlur
-            //},
-            'viewport createnewassignmentform #createButton': {
-                click: this._onCreate
-            },
+
+            // Page one
             'viewport createnewassignmentform #nextButton': {
                 click: this._onNext
-            },
-            'viewport createnewassignmentform #backButton': {
-                click: this._onBack
             },
             'viewport createnewassignmentform radiogroup radio': {
                 change: this._onDeliveryTypesSelect
             },
-            'viewport createnewassignmentform checkboxfield[name=add_all_relatedstudents]': {
-                change: this._onAddRelatedStudentChange
+
+            // Page 2
+            'viewport createnewassignmentform #backButton': {
+                click: this._onBack
+            },
+            'viewport createnewassignmentform #createButton': {
+                click: this._onCreate
+            },
+            'viewport createnewassignmentform #studentsSetupRadiogroup': {
+                change: this._onStudentsSetupRadiogroupChange
             }
-            //'viewport createnewassignmentform #firstDeadlineField': {
-                //change: this._onFirstDeadlineChange
-            //}
         });
     },
 
@@ -169,26 +169,16 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         }
     },
     _onLoadAssignmentsSuccess: function(assignmentRecords) {
-        this._autosetNamesFromLastAssignment(assignmentRecords);
-        this._unmask();
-    },
+        var initialValues = {};
+        var names = this._autocreateNamesFromLastAssignment(assignmentRecords);
+        Ext.apply(initialValues, names);
 
-    _autosetNamesFromLastAssignment: function(assignmentRecords) {
-        var lastAssignment = assignmentRecords[0];
-        var short_name = lastAssignment.get('short_name');
-        var long_name = lastAssignment.get('long_name');
-        var shortname_number = this._getNumberInName(short_name);
-        var longname_number = this._getNumberInName(long_name);
-        if(shortname_number === longname_number && shortname_number !== null) {
-            var oldnumber = parseInt(shortname_number, 10);
-            var number = oldnumber + 1;
-            short_name = short_name.replace(oldnumber.toString(), number.toString());
-            long_name = long_name.replace(oldnumber.toString(), number.toString());
-            this.getCreateNewAssignmentForm().getForm().setValues({
-                long_name: long_name,
-                short_name: short_name
-            });
+        //initialValues.first_deadline = new Date();
+        if(assignmentRecords.length > 0) {
+            this.getCopyFromAnotherAssignmentRadio().show();
+            initialValues.assignment_to_copy_students_from = assignmentRecords[0].get('id');
         }
+        this.getCreateNewAssignmentForm().getForm().setValues(initialValues);
         Ext.defer(function() {
             // NOTE: Using defer to clear the error-marks added when we setValues above
             this.getFirstDeadlineField().down('devilry_extjsextras_datefield').clearInvalid();
@@ -199,6 +189,26 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             //this.getLongNameField().focus();
             this.getLongNameField().selectText();
         }, 200, this);
+        this._unmask();
+    },
+
+    _autocreateNamesFromLastAssignment: function(assignmentRecords) {
+        var lastAssignment = assignmentRecords[0];
+        var short_name = lastAssignment.get('short_name');
+        var long_name = lastAssignment.get('long_name');
+        var shortname_number = this._getNumberInName(short_name);
+        var longname_number = this._getNumberInName(long_name);
+        if(shortname_number === longname_number && shortname_number !== null) {
+            var oldnumber = parseInt(shortname_number, 10);
+            var number = oldnumber + 1;
+            short_name = short_name.replace(oldnumber.toString(), number.toString());
+            long_name = long_name.replace(oldnumber.toString(), number.toString());
+            return {
+                long_name: long_name,
+                short_name: short_name
+            }
+        }
+        return {};
     },
 
 
@@ -224,7 +234,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             enter: this._onHitEnter,
             scope: this
         });
-        this._setInitialValues();
 
         this.getCreateNewAssignmentForm().mon(this.getCreateNewAssignmentModel().proxy, {
             scope: this,
@@ -270,16 +279,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         }
     },
 
-    _onAddRelatedStudentChange: function(field, addAllRelatedStudents) {
-        if(addAllRelatedStudents) {
-            this.getAutoSetupExaminersField().show();
-            this.getAutoSetupExaminersHelp().show();
-        } else {
-            this.getAutoSetupExaminersField().hide();
-            this.getAutoSetupExaminersHelp().hide();
-        }
-    },
-
     _onLongNameBlur: function(field) {
         var shortnamefield = this.getShortNameField();
         if(shortnamefield.getValue() === '') {
@@ -288,12 +287,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             shortnamefield.setValue(short_name);
         }
     },
-    //_onShortNameBlur: function() {
-    //},
-
-    //_onFirstDeadlineChange: function(field, newValue, oldValue) {
-        //console.log(newValue, oldValue);
-    //},
 
     _onNext: function() {
         this.getGlobalAlertmessagelist().removeAll(); // NOTE: If we fail validation, we redirect to page one. If users fix errors there, it would seem strange when they continue to display on page2.
@@ -310,6 +303,21 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     _onBack: function() {
         this.getCardPanel().getLayout().setActiveItem(0);
+    },
+
+    _onStudentsSetupRadiogroupChange: function(unused, newValue) {
+        var setupstudents_mode = newValue.setupstudents_mode;
+        console.log(setupstudents_mode);
+        if(setupstudents_mode === 'copyfromassignment') {
+            this.getSelectAssignmentToCopyStudentsFrom().show();
+        } else {
+            this.getSelectAssignmentToCopyStudentsFrom().hide();
+        }
+        if(setupstudents_mode === 'do_not_setup') {
+            this.getSetupExaminersContainer().hide();
+        } else {
+            this.getSetupExaminersContainer().show();
+        }
     },
 
 
@@ -346,11 +354,12 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
         var assignment = new CreateNewAssignmentModel(values);
-        this._mask(gettext('Saving') + ' ...');
-        assignment.save({
-            scope: this,
-            success: this._onSuccessfulSave
-        });
+        console.log(values);
+        //this._mask(gettext('Saving') + ' ...');
+        //assignment.save({
+            //scope: this,
+            //success: this._onSuccessfulSave
+        //});
     },
 
     _onSuccessfulSave: function(record) {
@@ -363,17 +372,5 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this.handleProxyError(this.getGlobalAlertmessagelist(), this.getCreateNewAssignmentForm(),
             response, operation);
         this.getCardPanel().getLayout().setActiveItem(0);
-    },
-
-    _setInitialValues: Ext.emptyFn
-
-    //_setInitialValues: function() {
-        //Ext.defer(function() {
-            //this.getCreateNewAssignmentForm().getForm().setValues({
-                //long_name: 'A2',
-                //short_name: 'a2',
-                //first_deadline: new Date()
-            //});
-        //}, 300, this);
-    //}
+    }
 });
