@@ -116,7 +116,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             'viewport createnewassignmentform #studentsSetupRadiogroup': {
                 change: this._onStudentsSetupRadiogroupChange
             },
-            'viewport createnewassignmentform selectsingleassignment[name=assignment_to_copy_students_from]': {
+            'viewport createnewassignmentform selectsingleassignment[name=copyfromassignment_id]': {
                 change: this._onSelectAssignmentToCopyFromChange
             }
         });
@@ -194,7 +194,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         initialValues.first_deadline = new Date();
         if(assignmentRecords.length > 0) {
             this.getSetupStudentsCopyRadio().show();
-            initialValues.assignment_to_copy_students_from = assignmentRecords[0].get('id');
+            initialValues.copyfromassignment_id = assignmentRecords[0].get('id');
         }
         this.getCreateNewAssignmentForm().getForm().setValues(initialValues);
         Ext.defer(function() {
@@ -426,11 +426,11 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
         var assignment = new CreateNewAssignmentModel(values);
-        //this._mask(gettext('Saving') + ' ...');
-        //assignment.save({
-            //scope: this,
-            //success: this._onSuccessfulSave
-        //});
+        this._mask(gettext('Saving') + ' ...');
+        assignment.save({
+            scope: this,
+            success: this._onSuccessfulSave
+        });
     },
 
     _onSuccessfulSave: function(record) {

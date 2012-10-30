@@ -13,9 +13,10 @@ Ext.define('devilry_subjectadmin.model.CreateNewAssignment', {
         {name: 'anonymous',  type: 'boolean'},
 
         // Properties that affect automatically created groups
-        {name: 'add_all_relatedstudents',  type: 'boolean'},
         {name: 'first_deadline',  type: 'date'},
-        {name: 'autosetup_examiners',  type: 'boolean'}
+        {name: 'setupstudents_mode',  type: 'string'},
+        {name: 'copyfromassignment_id',  type: 'int'},
+        {name: 'setupexaminers_mode',  type: 'string'}
     ],
 
     proxy: {

@@ -287,7 +287,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 margin: '5 0 0 17',
                                 items: [{
                                     xtype: 'selectsingleassignment',
-                                    name: 'assignment_to_copy_students_from',
+                                    name: 'copyfromassignment_id',
                                     width: 300
                                 }, {
                                     xtype: 'checkboxfield',
@@ -324,7 +324,6 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                         items: [{
                             margin: 0,
                             xtype: 'box',
-                            margin: 0,
                             cls: 'bootstrap',
                             width: sideheading_width,
                             padding: '0 30 0 0',
