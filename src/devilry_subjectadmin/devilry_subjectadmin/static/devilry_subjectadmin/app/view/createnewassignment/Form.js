@@ -386,7 +386,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 cls: 'extrastronglabel',
                                 margin: '10 0 0 0',
                                 name: 'setupexaminers_mode',
-                                inputValue: 'make_me_examiner'
+                                inputValue: 'make_authenticated_user_examiner'
                             }, {
                                 xtype: 'box',
                                 cls: 'bootstrap',
