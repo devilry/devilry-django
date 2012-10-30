@@ -396,7 +396,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 cls: 'bootstrap',
                                 html: [
                                     '<p class="muted"><small>',
-                                        gettext('If you plan to provide feedback to all students yourself, this is a good option.'),
+                                        gettext('I.E.: you plan to provide feedback to all students yourself.'),
                                     '</small></p>'
                                 ].join('')
 
