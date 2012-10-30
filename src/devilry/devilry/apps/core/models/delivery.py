@@ -210,8 +210,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         super(Delivery, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return u'%s - %s (%s)' % (self.deadline.assignment_group, self.number,
-                                  self.time_of_delivery.isoformat())
+        return (u'Delivery(id={id}, number={number}, group={group}, '
+                u'time_of_delivery={time_of_delivery})').format(id=self.id,
+                                                                group=self.deadline.assignment_group,
+                                                                number=self.number,
+                                                                time_of_delivery=self.time_of_delivery.isoformat())
 
     def copy(self, newdeadline):
         """

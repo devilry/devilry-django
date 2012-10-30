@@ -273,10 +273,8 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManager', {
             var assignmentGroupStore = Ext.create('Ext.data.Store', {
                 model: model,
                 remoteFilter: true,
-                remoteSort: true,
-                proxy: model.proxy.copy()
+                remoteSort: true
             });
-            assignmentGroupStore.proxy.setDevilryResultFieldgroups(['users', 'tags']);
 
             assignmentGroupStore.proxy.setDevilryFilters([{
                 field: 'parentnode',
