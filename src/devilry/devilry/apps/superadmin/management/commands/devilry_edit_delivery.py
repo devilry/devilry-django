@@ -100,11 +100,10 @@ class Command(BaseCommand):
                     return '{fullname}({username})'.format(username=candidate.student.username,
                                                            fullname=candidate.student.devilryuserprofile.full_name)
                 candidates = map(strcandidate, group.candidates.all())
-                print (' - [{path} groupID={groupid} deliveryID={id}]: '
+                print (' - [{path} deliveryID={id}]: '
                        'students=[{candidates}], deadline={deadline}, '
                        'has-feedback={has_feedback}, '
                        'successful={successful}').format(path=group.parentnode.get_path(),
-                                                         groupid=group.id,
                                                          id=delivery.id,
                                                          candidates=', '.join(candidates),
                                                          deadline=delivery.deadline.deadline,
