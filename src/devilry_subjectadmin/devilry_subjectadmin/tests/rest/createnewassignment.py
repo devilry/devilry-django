@@ -183,6 +183,25 @@ class TestRestCreateNewAssignmentDao(TestCase):
                                 setupstudents_mode='copyfromassignment',
                                 setupexaminers_mode='copyfromassignment')
 
+    def test_setupstudents_copyfromassignment_make_authuser_examiner(self):
+        dao = CreateNewAssignmentDao()
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+        self.testhelper.add_to_path('uni;sub.p1.a2')
+        deadline = self.testhelper.sub_p1_a1.publishing_time + timedelta(days=1)
+
+        user = self.testhelper.create_user('superhero')
+        dao._setup_students(self.testhelper.sub_p1_a2,
+                            first_deadline=deadline,
+                            copyfromassignment_id=self.testhelper.sub_p1_a1.id,
+                            setupstudents_mode='copyfromassignment',
+                            setupexaminers_mode='make_authenticated_user_examiner',
+                            user=user)
+        self.assertEquals(self.testhelper.sub_p1_a2.assignmentgroups.count(), 1)
+
+        group = self.testhelper.sub_p1_a2.assignmentgroups.all()[0]
+        self.assertEquals(set([c.user.username for c in group.examiners.all()]),
+                          set(['superhero']))
+
 
 class TestRestCreateNewAssignmentIntegration(TestCase):
     def setUp(self):

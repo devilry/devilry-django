@@ -87,7 +87,7 @@ class CreateNewAssignmentDao(object):
 
     def _copy_students_from_assignment(self, assignment, first_deadline,
                                        copyfromassignment,
-                                       include_examiners=False):
+                                       copy_examiners=False):
         for copysourcegroup in copyfromassignment.assignmentgroups.all():
             group = assignment.assignmentgroups.create(name=copysourcegroup.name)
             for candidate in copysourcegroup.candidates.all():
@@ -95,14 +95,15 @@ class CreateNewAssignmentDao(object):
                                         candidate_id=candidate.candidate_id)
             for tag in copysourcegroup.tags.all():
                 group.tags.create(tag=tag.tag)
-            if include_examiners:
+            if copy_examiners:
                 for examiner in copysourcegroup.examiners.all():
                     group.examiners.create(user=examiner.user)
             if assignment.delivery_types != NON_ELECTRONIC:
                 self._create_deadline(group, first_deadline)
 
     def _setup_students(self, assignment, first_deadline, setupstudents_mode,
-                        setupexaminers_mode, copyfromassignment_id=None):
+                        setupexaminers_mode, copyfromassignment_id=None,
+                        user=None):
         if setupstudents_mode == 'do_not_setup':
             return
         if not first_deadline and assignment.delivery_types != NON_ELECTRONIC:
@@ -121,13 +122,20 @@ class CreateNewAssignmentDao(object):
             except Assignment.DoesNotExist:
                 raise BadRequestFieldError('copyfromassignment_id', 'Assignment with id={0} does not exist in this period.'.format(copyfromassignment_id))
             else:
-                include_examiners = setupexaminers_mode == 'copyfromassignment'
+                copy_examiners = False
+                if setupexaminers_mode == 'copyfromassignment':
+                    copy_examiners = True
+
                 self._copy_students_from_assignment(assignment, first_deadline,
                                                     copyfromassignment,
-                                                    include_examiners)
+                                                    copy_examiners=copy_examiners)
 
         else:
-            raise ValueError('Invalid setupstudents_mode: {0}'.format(setupstudents_mode))
+            raise BadRequestFieldError('setupexaminers_mode', 'Invalid value: {0}'.format(setupstudents_mode))
+
+        if setupexaminers_mode == 'make_authenticated_user_examiner':
+            for group in assignment.assignmentgroups.all():
+                group.examiners.create(user=user)
 
     def create(self, user, period,
                short_name, long_name, first_deadline, publishing_time,
@@ -138,7 +146,9 @@ class CreateNewAssignmentDao(object):
                                              delivery_types, anonymous)
         if setupstudents_mode != 'do_not_setup':
             self._setup_students(assignment, first_deadline,
-                                 setupstudents_mode, setupexaminers_mode)
+                                 setupstudents_mode=setupstudents_mode,
+                                 setupexaminers_mode=setupexaminers_mode,
+                                 user=user)
         return assignment
 
     def lookup_period_create(self, user, period_id, *args, **kwargs):
