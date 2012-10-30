@@ -69,11 +69,23 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         ref: 'setupExaminersContainer',
         selector: 'createnewassignmentform #setupExaminersContainer'
     }, {
-        ref: 'copyFromAnotherAssignmentRadio',
-        selector: 'createnewassignmentform #copyFromAnotherAssignmentRadio'
-    }, {
         ref: 'selectAssignmentToCopyStudentsFrom',
         selector: 'createnewassignmentform #selectAssignmentToCopyStudentsFrom'
+    }, {
+        ref: 'selectAssignmentToCopyStudentsFromCombo',
+        selector: 'createnewassignmentform #selectAssignmentToCopyStudentsFrom selectsingleassignment'
+    }, {
+        ref: 'setupStudentsCopyRadio',
+        selector: 'createnewassignmentform #setupStudentsCopyRadio'
+    }, {
+        ref: 'setupStudentsAllRelatedRadio',
+        selector: 'createnewassignmentform #setupStudentsAllRelatedRadio'
+    }, {
+        ref: 'setupExaminersCopyFromAssignmentRadio',
+        selector: 'createnewassignmentform #setupExaminersCopyFromAssignmentRadio'
+    }, {
+        ref: 'setupExaminersByTagsRadio',
+        selector: 'createnewassignmentform #setupExaminersByTagsRadio'
     }],
 
     init: function() {
@@ -100,6 +112,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             },
             'viewport createnewassignmentform #studentsSetupRadiogroup': {
                 change: this._onStudentsSetupRadiogroupChange
+            },
+            'viewport createnewassignmentform selectsingleassignment[name=assignment_to_copy_students_from]': {
+                change: this._onSelectAssignmentToCopyFromChange
             }
         });
     },
@@ -173,9 +188,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         var names = this._autocreateNamesFromLastAssignment(assignmentRecords);
         Ext.apply(initialValues, names);
 
-        //initialValues.first_deadline = new Date();
+        initialValues.first_deadline = new Date();
         if(assignmentRecords.length > 0) {
-            this.getCopyFromAnotherAssignmentRadio().show();
+            this.getSetupStudentsCopyRadio().show();
             initialValues.assignment_to_copy_students_from = assignmentRecords[0].get('id');
         }
         this.getCreateNewAssignmentForm().getForm().setValues(initialValues);
@@ -206,7 +221,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             return {
                 long_name: long_name,
                 short_name: short_name
-            }
+            };
         }
         return {};
     },
@@ -305,19 +320,69 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this.getCardPanel().getLayout().setActiveItem(0);
     },
 
-    _onStudentsSetupRadiogroupChange: function(unused, newValue) {
+    _labelExaminerCopyFromAssignment: function() {
+        var assignmentId = this.getSelectAssignmentToCopyStudentsFromCombo().getValue();
+        var store = this.getAssignmentsStore();
+        var index = store.findExact('id', assignmentId);
+        var assignmentRecord = store.getAt(index);
+        var label = interpolate(gettext('Copy from %(assignment)s.'), {
+            assignment: assignmentRecord.get('long_name')
+        }, true);
+        var radio = this.getSetupExaminersCopyFromAssignmentRadio();
+        radio.boxLabelEl.setHTML(label);
+    },
+
+    _hilight: function(component) {
+        Ext.create('Ext.fx.Animator', {
+            target: component.getEl(),
+            duration: 2000,
+            keyframes: {
+                0: {
+                    backgroundColor: '#FFFFFF'
+                },
+                20: {
+                    backgroundColor: '#FBEED5'
+                },
+                50: {
+                    backgroundColor: '#FBEED5'
+                },
+                100: {
+                    backgroundColor: '#FFFFFF'
+                }
+            }
+        });
+    },
+
+    _onStudentsSetupRadiogroupChange: function(unused, newValue, oldValue) {
         var setupstudents_mode = newValue.setupstudents_mode;
-        console.log(setupstudents_mode);
+        var old_setupstudents_mode = oldValue.setupstudents_mode;
         if(setupstudents_mode === 'copyfromassignment') {
             this.getSelectAssignmentToCopyStudentsFrom().show();
+            this.getSetupExaminersCopyFromAssignmentRadio().show();
+            this._labelExaminerCopyFromAssignment();
+
+            // NOTE: Autoselect the copy from assignment option for examiners when it is selected for students.
+            this.getSetupExaminersCopyFromAssignmentRadio().setValue(true);
+            this._hilight(this.getSetupExaminersCopyFromAssignmentRadio());
         } else {
             this.getSelectAssignmentToCopyStudentsFrom().hide();
+            this.getSetupExaminersCopyFromAssignmentRadio().hide();
+
+            if(old_setupstudents_mode === 'copyfromassignment' && this.getSetupExaminersCopyFromAssignmentRadio().getValue()) {
+                // NOTE: Make sure copy from assignment is not selected for examiners when it is hidden
+                this.getSetupExaminersByTagsRadio().setValue(true);
+                this._hilight(this.getSetupExaminersByTagsRadio());
+            }
         }
         if(setupstudents_mode === 'do_not_setup') {
             this.getSetupExaminersContainer().hide();
         } else {
             this.getSetupExaminersContainer().show();
         }
+    },
+
+    _onSelectAssignmentToCopyFromChange: function(combo, newValue) {
+        this._labelExaminerCopyFromAssignment();
     },
 
 
@@ -354,7 +419,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
         var CreateNewAssignmentModel = this.getCreateNewAssignmentModel();
         var assignment = new CreateNewAssignmentModel(values);
-        console.log(values);
         //this._mask(gettext('Saving') + ' ...');
         //assignment.save({
             //scope: this,
