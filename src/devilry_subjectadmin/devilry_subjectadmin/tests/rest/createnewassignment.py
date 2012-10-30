@@ -121,6 +121,54 @@ class TestRestCreateNewAssignmentDao(TestCase):
         group = self.testhelper.sub_p1_a1.assignmentgroups.all()[0]
         self.assertEquals(group.examiners.all().count(), 1)
 
+    def test_setupstudents_copyfromassignment(self):
+        dao = CreateNewAssignmentDao()
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1;secret):tags(good,super)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g2:candidate(student2,student3)')
+        self.testhelper.add_to_path('uni;sub.p1.a2')
+        deadline = self.testhelper.sub_p1_a1.publishing_time + timedelta(days=1)
+
+        self.assertEquals(self.testhelper.sub_p1_a1.assignmentgroups.count(), 2)
+        self.assertEquals(self.testhelper.sub_p1_a2.assignmentgroups.count(), 0)
+        dao._setup_students(self.testhelper.sub_p1_a2,
+                            first_deadline=deadline,
+                            copyfromassignment_id=self.testhelper.sub_p1_a1.id,
+                            setupstudents_mode='copyfromassignment',
+                            setupexaminers_mode='do_not_setup')
+        self.assertEquals(self.testhelper.sub_p1_a2.assignmentgroups.count(), 2)
+
+        groups = list(self.testhelper.sub_p1_a2.assignmentgroups.all().order_by('candidates__student__username'))
+        self.assertEquals(groups[0].name, 'g1')
+        self.assertEquals(groups[0].candidates.all()[0].student.username, 'student1')
+        self.assertEquals(groups[0].candidates.all()[0].candidate_id, 'secret')
+        self.assertEquals(set([t.tag for t in groups[0].tags.all()]),
+                          set(['good', 'super']))
+        self.assertEquals(groups[1].name, 'g2')
+        self.assertEquals(set([c.student.username for c in groups[1].candidates.all()]),
+                          set(['student2', 'student3']))
+        self.assertEquals(groups[1].tags.count(), 0)
+
+        self.assertEquals(groups[0].deadlines.all().count(), 1)
+        self.assertEquals(groups[1].deadlines.all().count(), 1)
+        self.assertEquals(groups[0].deadlines.all()[0].deadline, deadline)
+
+    def test_setupstudents_copyfromassignment_withexaminers(self):
+        dao = CreateNewAssignmentDao()
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1,examiner2)')
+        self.testhelper.add_to_path('uni;sub.p1.a2')
+        deadline = self.testhelper.sub_p1_a1.publishing_time + timedelta(days=1)
+
+        dao._setup_students(self.testhelper.sub_p1_a2,
+                            first_deadline=deadline,
+                            copyfromassignment_id=self.testhelper.sub_p1_a1.id,
+                            setupstudents_mode='copyfromassignment',
+                            setupexaminers_mode='copyfromassignment')
+        self.assertEquals(self.testhelper.sub_p1_a2.assignmentgroups.count(), 1)
+
+        group = self.testhelper.sub_p1_a2.assignmentgroups.all()[0]
+        self.assertEquals(set([c.user.username for c in group.examiners.all()]),
+                          set(['examiner1', 'examiner2']))
+
 
 
 class TestRestCreateNewAssignmentIntegration(TestCase):

@@ -74,9 +74,6 @@ class CreateNewAssignmentDao(object):
 
     def _add_all_relatedstudents(self, assignment, first_deadline,
                                  autosetup_examiners):
-        if not first_deadline and assignment.delivery_types != NON_ELECTRONIC:
-            raise BadRequestFieldError('first_deadline',
-                                       _('Required when adding all students registered on the {period_term}.').format(period_term=_('period')))
         if autosetup_examiners:
             relatedexaminers = assignment.parentnode.relatedexaminer_set.all()
         else:
@@ -88,21 +85,53 @@ class CreateNewAssignmentDao(object):
             if assignment.delivery_types != NON_ELECTRONIC:
                 self._create_deadline(group, first_deadline)
 
+    def _copy_students_from_assignment(self, assignment, first_deadline,
+                                       copyfromassignment,
+                                       include_examiners=False):
+        for copysourcegroup in copyfromassignment.assignmentgroups.all():
+            group = assignment.assignmentgroups.create(name=copysourcegroup.name)
+            for candidate in copysourcegroup.candidates.all():
+                group.candidates.create(student=candidate.student,
+                                        candidate_id=candidate.candidate_id)
+            for tag in copysourcegroup.tags.all():
+                group.tags.create(tag=tag.tag)
+            if include_examiners:
+                for examiner in copysourcegroup.examiners.all():
+                    group.examiners.create(user=examiner.user)
+            if assignment.delivery_types != NON_ELECTRONIC:
+                self._create_deadline(group, first_deadline)
+
     def _setup_students(self, assignment, first_deadline, setupstudents_mode,
-                        setupexaminers_mode):
+                        setupexaminers_mode, copyfromassignment_id=None):
         if setupstudents_mode == 'do_not_setup':
             return
-        elif setupstudents_mode == 'allrelated':
+        if not first_deadline and assignment.delivery_types != NON_ELECTRONIC:
+            raise BadRequestFieldError('first_deadline',
+                                       _('Required when adding students.'))
+        if setupstudents_mode == 'allrelated':
             autosetup_examiners = setupexaminers_mode == 'bytags'
             self._add_all_relatedstudents(assignment, first_deadline,
                                           autosetup_examiners)
+        elif setupstudents_mode == 'copyfromassignment':
+            if not isinstance(copyfromassignment_id, int):
+                raise BadRequestFieldError('copyfromassignment_id', 'Must be an int.')
+            try:
+                copyfromassignment = Assignment.objects.get(id=copyfromassignment_id)
+            except Assignment.DoesNotExist:
+                raise BadRequestFieldError('copyfromassignment_id', 'Assignment with id={0} does not exist.'.format(copyfromassignment_id))
+            else:
+                include_examiners = setupexaminers_mode == 'copyfromassignment'
+                self._copy_students_from_assignment(assignment, first_deadline,
+                                                    copyfromassignment,
+                                                    include_examiners)
+
         else:
             raise ValueError('Invalid setupstudents_mode: {0}'.format(setupstudents_mode))
 
     def create(self, user, period,
                short_name, long_name, first_deadline, publishing_time,
                delivery_types, anonymous, setupstudents_mode,
-               setupexaminers_mode, copy_from_assignment_id):
+               setupexaminers_mode, copyfromassignment_id):
         assignment = self._create_assignment(period, short_name, long_name,
                                              first_deadline, publishing_time,
                                              delivery_types, anonymous)
@@ -132,17 +161,17 @@ class RestCreateNewAssignmentForm(forms.Form):
     delivery_types = forms.IntegerField(required=True,
                                         help_text=', '.join(['{0}: {1}'.format(*choice) for choice in as_choices_tuple()]))
     anonymous = forms.BooleanField(required=False)
-    copy_from_assignment_id = forms.IntegerField(required=False,
-                                                 help_text='Copy from this assignment if ``setupstudents_mode=="copyfromassignment"``.')
+    copyfromassignment_id = forms.IntegerField(required=False,
+                                               help_text='Copy from this assignment if ``setupstudents_mode=="copyfromassignment"``.')
     setupstudents_mode = forms.ChoiceField(required=False,
                                            choices=(('do_not_setup', 'Do not setup'),
                                                     ('allrelated', 'Add all related students.'),
-                                                    ('copyfromassignment', 'Copy from ``copy_from_assignment_id``.')),
+                                                    ('copyfromassignment', 'Copy from ``copyfromassignment_id``.')),
                                            help_text='Specifies how to setup examiners. Ignored if ``setupstudents_mode=="do_not_setup"``.')
     setupexaminers_mode = forms.ChoiceField(required=False,
                                             choices=(('do_not_setup', 'Do not setup'),
                                                      ('bytags', 'Setup examiners by tags. If ``setupstudents_mode!="allrelated"``, this option is the same as selecting ``do_not_setup``.'),
-                                                     ('copyfromassignment', 'Copy from ``copy_from_assignment_id``. If ``setupstudents_mode!="copyfromassignment"``, this option is the same as selecting ``do_not_setup``.'),
+                                                     ('copyfromassignment', 'Copy from ``copyfromassignment_id``. If ``setupstudents_mode!="copyfromassignment"``, this option is the same as selecting ``do_not_setup``.'),
                                                      ('make_authenticated_user_examiner', 'Make the authenticated user examiner on all groups.')),
                                             help_text='Specifies how to setup examiners. Ignored if ``setupstudents_mode=="do_not_setup"``.')
 
