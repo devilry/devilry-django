@@ -518,6 +518,9 @@ class TestHelper(object):
         for examiner in extras['examiner']:
             group.examiners.create(user=self._create_or_add_user(examiner))
 
+        for tag in extras['tags']:
+            group.tags.create(tag=tag)
+
         group.full_clean()
         group.save()
 
@@ -550,8 +553,8 @@ class TestHelper(object):
                     group_name = group
                     extras_arg = None
 
-                users = self._parse_extras(extras_arg, ['examiner', 'candidate', 'candidate_id'])
-                new_group = self._create_or_add_assignmentgroup(group_name, assignment, users)
+                extras = self._parse_extras(extras_arg, ['examiner', 'candidate', 'candidate_id', 'tags'])
+                new_group = self._create_or_add_assignmentgroup(group_name, assignment, extras)
                 created_groups.append(new_group)
         return created_groups
 
