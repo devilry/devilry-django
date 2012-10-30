@@ -3,6 +3,7 @@ from django.test import TestCase
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry_subjectadmin.rest.createnewassignment import CreateNewAssignmentDao
+from devilry_subjectadmin.rest.errors import BadRequestFieldError
 from devilry.utils.rest_testclient import RestClient
 from devilry.apps.core.models.deliverytypes import NON_ELECTRONIC
 from devilry.apps.core.models.deliverytypes import ELECTRONIC
@@ -169,6 +170,18 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(set([c.user.username for c in group.examiners.all()]),
                           set(['examiner1', 'examiner2']))
 
+    def test_setupstudents_copyfromassignment_outofperiod(self):
+        dao = CreateNewAssignmentDao()
+        self.testhelper.add_to_path('uni;sub.p1.a1')
+        self.testhelper.add_to_path('uni;sub.p2.a1')
+        deadline = self.testhelper.sub_p1_a1.publishing_time + timedelta(days=1)
+
+        with self.assertRaises(BadRequestFieldError):
+            dao._setup_students(self.testhelper.sub_p1_a1,
+                                first_deadline=deadline,
+                                copyfromassignment_id=self.testhelper.sub_p2_a1.id,
+                                setupstudents_mode='copyfromassignment',
+                                setupexaminers_mode='copyfromassignment')
 
 
 class TestRestCreateNewAssignmentIntegration(TestCase):

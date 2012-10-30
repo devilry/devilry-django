@@ -116,9 +116,10 @@ class CreateNewAssignmentDao(object):
             if not isinstance(copyfromassignment_id, int):
                 raise BadRequestFieldError('copyfromassignment_id', 'Must be an int.')
             try:
-                copyfromassignment = Assignment.objects.get(id=copyfromassignment_id)
+                copyfromassignment = Assignment.objects.get(id=copyfromassignment_id,
+                                                            parentnode=assignment.parentnode)
             except Assignment.DoesNotExist:
-                raise BadRequestFieldError('copyfromassignment_id', 'Assignment with id={0} does not exist.'.format(copyfromassignment_id))
+                raise BadRequestFieldError('copyfromassignment_id', 'Assignment with id={0} does not exist in this period.'.format(copyfromassignment_id))
             else:
                 include_examiners = setupexaminers_mode == 'copyfromassignment'
                 self._copy_students_from_assignment(assignment, first_deadline,
