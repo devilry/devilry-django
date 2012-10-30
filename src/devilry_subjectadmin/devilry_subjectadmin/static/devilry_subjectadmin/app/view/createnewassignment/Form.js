@@ -262,8 +262,6 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 cls: 'bootstrap',
                                 tpl: [
                                     '<p class="muted"><small>',
-                                        gettext('Select this to add all students registered on the {period_term} to the assignment when it is created.'),
-                                        ' ',
                                         gettext('You may want to view and edit <a {relatedstudents_link}>students</a>.'),
                                     '</small></p>'
                                 ],
@@ -329,10 +327,16 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                             margin: 0,
                             cls: 'bootstrap',
                             width: sideheading_width,
+                            padding: '0 30 0 0',
                             tpl: [
                                 '<h2 {sideheading_attrs}>',
                                     gettext('Examiners?'),
-                                '</h2>'
+                                '</h2>',
+                                '<p class="muted">',
+                                    '<small><em>',
+                                        gettext('The people that provide feedback to students'),
+                                    '</em></small>',
+                                '</p>'
                             ],
                             data: {
                                 sideheading_attrs: sideheading_attrs
@@ -358,7 +362,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 itemId: 'setupExaminersByTagsHelp',
                                 tpl: [
                                     '<p class="muted"><small>',
-                                        gettext('Set examiners on students that have at least one tag in common with the examiner.'),
+                                        gettext('Add examiners to students that have at least one tag in common with the examiner.'),
                                         ' ',
                                         gettext('E.g.: If you tag two examiners and 20 students with <em>group1</em>, those two examiners will be set up to correct those 20 students.'),
                                         ' ',
