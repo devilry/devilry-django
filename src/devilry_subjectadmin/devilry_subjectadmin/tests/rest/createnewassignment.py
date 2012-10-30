@@ -83,7 +83,7 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(group.deadlines.count(), 1)
 
 
-    def test_add_all_relatedstudents(self):
+    def test_setupstudents_allrelated(self):
         self._create_related_student('louie')
         self._create_related_student('dewey', candidate_id='dew123')
         dao = CreateNewAssignmentDao()
@@ -91,7 +91,10 @@ class TestRestCreateNewAssignmentDao(TestCase):
 
         self.assertEquals(self.testhelper.sub_p1_a1.assignmentgroups.count(), 0)
         deadline = self.testhelper.sub_p1_a1.publishing_time + timedelta(days=1)
-        dao._add_all_relatedstudents(self.testhelper.sub_p1_a1, deadline, False)
+        dao._setup_students(self.testhelper.sub_p1_a1,
+                            first_deadline=deadline,
+                            setupstudents_mode='allrelated',
+                            setupexaminers_mode='do_not_setup')
         self.assertEquals(self.testhelper.sub_p1_a1.assignmentgroups.count(), 2)
 
         groups = list(self.testhelper.sub_p1_a1.assignmentgroups.all().order_by('candidates__student__username'))
@@ -104,15 +107,17 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(groups[1].deadlines.all().count(), 1)
         self.assertEquals(groups[0].deadlines.all()[0].deadline, deadline)
 
-    def test_add_all_relatedstudents_autosetup_examiners(self):
+    def test_setupstudents_allrelated_examiners_bytags(self):
         self._create_related_student('louie', tags='bb,aa')
         self._create_related_examiner('examiner2', tags='aa,cc')
         dao = CreateNewAssignmentDao()
         self.testhelper.add_to_path('uni;sub.p1.a1')
 
         deadline = self.testhelper.sub_p1_a1.publishing_time + timedelta(days=1)
-        dao._add_all_relatedstudents(self.testhelper.sub_p1_a1, deadline,
-                                     autosetup_examiners=True)
+        dao._setup_students(self.testhelper.sub_p1_a1,
+                            first_deadline=deadline,
+                            setupstudents_mode='allrelated',
+                            setupexaminers_mode='bytags')
         group = self.testhelper.sub_p1_a1.assignmentgroups.all()[0]
         self.assertEquals(group.examiners.all().count(), 1)
 
@@ -139,8 +144,8 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
                     first_deadline=isoformat_datetime(first_deadline),
                     publishing_time=isoformat_datetime(publishing_time),
                     delivery_types=ELECTRONIC, anonymous=False,
-                    add_all_relatedstudents=False,
-                    autosetup_examiners=False)
+                    setupstudents_mode='do_not_setup',
+                    setupexaminers_mode='do_not_setup')
 
     def test_create(self):
         self._login_p1admin()
@@ -177,8 +182,7 @@ class TestRestCreateNewAssignmentIntegration(TestCase):
         self._login_p1admin()
         data = self._get_testdata()
         data['first_deadline'] = None
-        data['add_all_relatedstudents'] = True
+        data['setupstudents_mode'] = 'allrelated'
         content, response = self.client.rest_post(self.url, data)
         self.assertEquals(response.status_code, 400)
-        self.assertEquals(content['field_errors']['first_deadline'],
-                          [u'Required when automatically adding related students'])
+        self.assertTrue(content['field_errors']['first_deadline'][0].startswith('Required when adding'))
