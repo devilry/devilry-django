@@ -86,6 +86,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     }, {
         ref: 'setupExaminersByTagsRadio',
         selector: 'createnewassignmentform #setupExaminersByTagsRadio'
+    }, {
+        ref: 'setupExaminersByTagsHelp',
+        selector: 'createnewassignmentform #setupExaminersByTagsHelp'
     }],
 
     init: function() {
@@ -356,24 +359,28 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     _onStudentsSetupRadiogroupChange: function(unused, newValue, oldValue) {
         var setupstudents_mode = newValue.setupstudents_mode;
         var old_setupstudents_mode = oldValue.setupstudents_mode;
+
+        
+        this.getSelectAssignmentToCopyStudentsFrom().hide();
+        this.getSetupExaminersCopyFromAssignmentRadio().hide();
+
+        this.getSetupExaminersByTagsRadio().hide();
+        this.getSetupExaminersByTagsHelp().hide();
+
         if(setupstudents_mode === 'copyfromassignment') {
             this.getSelectAssignmentToCopyStudentsFrom().show();
             this.getSetupExaminersCopyFromAssignmentRadio().show();
             this._labelExaminerCopyFromAssignment();
-
-            // NOTE: Autoselect the copy from assignment option for examiners when it is selected for students.
             this.getSetupExaminersCopyFromAssignmentRadio().setValue(true);
             this._hilight(this.getSetupExaminersCopyFromAssignmentRadio());
-        } else {
-            this.getSelectAssignmentToCopyStudentsFrom().hide();
-            this.getSetupExaminersCopyFromAssignmentRadio().hide();
-
-            if(old_setupstudents_mode === 'copyfromassignment' && this.getSetupExaminersCopyFromAssignmentRadio().getValue()) {
-                // NOTE: Make sure copy from assignment is not selected for examiners when it is hidden
-                this.getSetupExaminersByTagsRadio().setValue(true);
-                this._hilight(this.getSetupExaminersByTagsRadio());
-            }
+        } else if(setupstudents_mode === 'allrelated') {
+            this.getSetupExaminersByTagsRadio().show();
+            this.getSetupExaminersByTagsHelp().show();
+            this.getSetupExaminersByTagsRadio().setValue(true);
+            this._hilight(this.getSetupExaminersByTagsRadio());
         }
+
+        // Hide examiner setup panel if not setting up students
         if(setupstudents_mode === 'do_not_setup') {
             this.getSetupExaminersContainer().hide();
         } else {

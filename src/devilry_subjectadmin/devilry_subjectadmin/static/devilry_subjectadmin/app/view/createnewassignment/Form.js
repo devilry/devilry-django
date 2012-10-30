@@ -248,7 +248,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                             columns: 1,
                             margin: 0,
                             items: [{
-                                boxLabel: interpolate(gettext('Add all students registered on the %(period_term)s to this assignment.'), {
+                                boxLabel: interpolate(gettext('Add all students registered on the %(period_term)s.'), {
                                     period_term: gettext('period')
                                 }, true),
                                 checked: true,
@@ -355,6 +355,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                             }, {
                                 xtype: 'box',
                                 cls: 'bootstrap',
+                                itemId: 'setupExaminersByTagsHelp',
                                 tpl: [
                                     '<p class="muted"><small>',
                                         gettext('Set examiners on students that have at least one tag in common with the examiner.'),
@@ -381,7 +382,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 boxLabel: 'X' // Set by the controller
 
                             }, {
-                                boxLabel: gettext('Make me examiner.'),
+                                boxLabel: gettext('Make me examiner for all students.'),
                                 cls: 'extrastronglabel',
                                 margin: '10 0 0 0',
                                 name: 'setupexaminers_mode',
