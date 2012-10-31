@@ -64,7 +64,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         hidden: true,
                         type: 'error',
                         title: gettext('No students'),
-                        message: interpolate(gettext('This %(period_term)s has no students. Go to the <a href="%(relatedstudents_url)s">manage related students</a> page and add some students. You will not be able to add any assignments until you have at least one student.'), {
+                        message: interpolate(gettext('This %(period_term)s has no students. Go to the <a href="%(relatedstudents_url)s">students</a> page and add some students. You will not be able to add any assignments until you have at least one student.'), {
                             period_term: gettext('period'),
                             relatedstudents_url: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id)
                         }, true)
@@ -74,7 +74,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         hidden: true,
                         type: 'warning',
                         title: gettext('No examiners'),
-                        message: interpolate(gettext('This %(period_term)s has no examiners. Go to the <a href="%(relatedexaminers_url)s">manage related examiners</a> page and add some examiners.'), {
+                        message: interpolate(gettext('This %(period_term)s has no examiners. Go to the <a href="%(relatedexaminers_url)s">examiners</a> page and add some examiners.'), {
                             period_term: gettext('period'),
                             relatedexaminers_url: devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id)
                         }, true)
