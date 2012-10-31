@@ -217,10 +217,10 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             initialValues.copyfromassignment_id = parseInt(qry.copyfromassignment_id, 10);
         }
         if(!Ext.isEmpty(qry.only_copy_passing_groups)) {
-            initialValues.only_copy_passing_groups = qry.only_copy_passing_groups == 'true';
+            initialValues.only_copy_passing_groups = qry.only_copy_passing_groups === 'true';
         }
         if(!Ext.isEmpty(qry.anonymous)) {
-            initialValues.anonymous = qry.anonymous == 'true';
+            initialValues.anonymous = qry.anonymous === 'true';
         }
     },
     _onLoadAssignmentsSuccess: function(assignmentRecords) {
@@ -298,6 +298,10 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
                 var nextDeadlineTimestamp = previous_first_deadline.getTime() + daysDiff*millisecInDay;
 
                 var first_deadline = new Date(nextDeadlineTimestamp);
+                var now = new Date();
+                if(first_deadline < now) {
+                    return;
+                }
                 initialValues.first_deadline = first_deadline;
                 this.application.getAlertmessagelist().add({
                     type: 'info',
@@ -520,6 +524,26 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     _onSuccessfulSave: function(record) {
         this._unmask();
+        this.application.addOnNextRouteMessage({
+            type: 'success',
+            messagetpl: [
+                gettext('Created {name}.'),
+                ' <a href="{url}">',
+                    gettext('Create another assignment'),
+                '</a>.'
+            ],
+            messagedata: {
+                name: Ext.String.format('<em>{0}</em>', record.get('long_name')),
+                url: devilry_subjectadmin.utils.UrlLookup.createNewAssignment(this.periodRecord.get('id'), {
+                    anonymous: record.get('anonymous'),
+                    delivery_types: record.get('delivery_types'),
+                    setupstudents_mode: record.get('setupstudents_mode'),
+                    setupexaminers_mode: record.get('setupexaminers_mode'),
+                    copyfromassignment_id: record.get('copyfromassignment_id'),
+                    only_copy_passing_groups: record.get('only_copy_passing_groups')
+                })
+            }
+        });
         this.application.route.navigate(devilry_subjectadmin.utils.UrlLookup.assignmentOverview(record.get('id')));
     },
 
