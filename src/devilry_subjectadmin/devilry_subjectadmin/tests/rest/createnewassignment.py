@@ -153,6 +153,36 @@ class TestRestCreateNewAssignmentDao(TestCase):
         self.assertEquals(groups[1].deadlines.all().count(), 1)
         self.assertEquals(groups[0].deadlines.all()[0].deadline, deadline)
 
+    def test_setupstudents_copyfromassignment_onlypassing(self):
+        dao = CreateNewAssignmentDao()
+        self.testhelper.add_to_path('uni;sub.p1.a1.awesome:candidate(student1):examiner(examiner1).d1')
+        self.testhelper.add_to_path('uni;sub.p1.a1.failer:candidate(student2):examiner(examiner2).d1')
+        self.testhelper.add_to_path('uni;sub.p1.a1.nofeedback:candidate(student3)')
+        self.testhelper.add_delivery(self.testhelper.sub_p1_a1_awesome,
+                                     {'f.py': ['print ', 'yeh']})
+        self.testhelper.add_feedback(self.testhelper.sub_p1_a1_awesome,
+                                     verdict={'grade': 'A', 'points': 100, 'is_passing_grade': True})
+        self.testhelper.add_delivery(self.testhelper.sub_p1_a1_failer,
+                                     {'f.py': ['print ', 'meh']})
+        self.testhelper.add_feedback(self.testhelper.sub_p1_a1_failer,
+                                     verdict={'grade': 'F', 'points': 1, 'is_passing_grade': False})
+
+        self.testhelper.add_to_path('uni;sub.p1.a2')
+        deadline = self.testhelper.sub_p1_a1.publishing_time + timedelta(days=1)
+        self.assertEquals(self.testhelper.sub_p1_a1.assignmentgroups.count(), 3)
+        self.assertEquals(self.testhelper.sub_p1_a2.assignmentgroups.count(), 0)
+
+        dao._setup_students(self.testhelper.sub_p1_a2,
+                            first_deadline=deadline,
+                            copyfromassignment_id=self.testhelper.sub_p1_a1.id,
+                            only_copy_passing_groups=True,
+                            setupstudents_mode='copyfromassignment',
+                            setupexaminers_mode='do_not_setup')
+        self.assertEquals(self.testhelper.sub_p1_a2.assignmentgroups.count(), 1)
+
+        group = self.testhelper.sub_p1_a2.assignmentgroups.all()[0]
+        self.assertEquals(group.name, 'awesome')
+
     def test_setupstudents_copyfromassignment_withexaminers(self):
         dao = CreateNewAssignmentDao()
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1,examiner2)')

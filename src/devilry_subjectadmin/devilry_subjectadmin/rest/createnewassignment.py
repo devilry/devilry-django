@@ -87,8 +87,12 @@ class CreateNewAssignmentDao(object):
 
     def _copy_students_from_assignment(self, assignment, first_deadline,
                                        copyfromassignment,
-                                       copy_examiners=False):
+                                       copy_examiners=False,
+                                       only_copy_passing_groups=False):
         for copysourcegroup in copyfromassignment.assignmentgroups.all():
+            if only_copy_passing_groups:
+                if not copysourcegroup.feedback or not copysourcegroup.feedback.is_passing_grade:
+                    continue
             group = assignment.assignmentgroups.create(name=copysourcegroup.name)
             for candidate in copysourcegroup.candidates.all():
                 group.candidates.create(student=candidate.student,
@@ -103,7 +107,7 @@ class CreateNewAssignmentDao(object):
 
     def _setup_students(self, assignment, first_deadline, setupstudents_mode,
                         setupexaminers_mode, copyfromassignment_id=None,
-                        user=None):
+                        user=None, only_copy_passing_groups=False):
         if setupstudents_mode == 'do_not_setup':
             return
         if not first_deadline and assignment.delivery_types != NON_ELECTRONIC:
@@ -115,7 +119,7 @@ class CreateNewAssignmentDao(object):
                                           autosetup_examiners)
         elif setupstudents_mode == 'copyfromassignment':
             if not isinstance(copyfromassignment_id, int):
-                raise BadRequestFieldError('copyfromassignment_id', 'Must be an int.')
+                raise BadRequestFieldError('copyfromassignment_id', 'Must be an int, got {0!r}'.format(copyfromassignment_id))
             try:
                 copyfromassignment = Assignment.objects.get(id=copyfromassignment_id,
                                                             parentnode=assignment.parentnode)
@@ -128,7 +132,8 @@ class CreateNewAssignmentDao(object):
 
                 self._copy_students_from_assignment(assignment, first_deadline,
                                                     copyfromassignment,
-                                                    copy_examiners=copy_examiners)
+                                                    copy_examiners=copy_examiners,
+                                                    only_copy_passing_groups=only_copy_passing_groups)
 
         else:
             raise BadRequestFieldError('setupexaminers_mode', 'Invalid value: {0}'.format(setupstudents_mode))
@@ -140,7 +145,8 @@ class CreateNewAssignmentDao(object):
     def create(self, user, period,
                short_name, long_name, first_deadline, publishing_time,
                delivery_types, anonymous, setupstudents_mode,
-               setupexaminers_mode, copyfromassignment_id):
+               setupexaminers_mode, copyfromassignment_id,
+               only_copy_passing_groups):
         assignment = self._create_assignment(period, short_name, long_name,
                                              first_deadline, publishing_time,
                                              delivery_types, anonymous)
@@ -148,7 +154,9 @@ class CreateNewAssignmentDao(object):
             self._setup_students(assignment, first_deadline,
                                  setupstudents_mode=setupstudents_mode,
                                  setupexaminers_mode=setupexaminers_mode,
-                                 user=user)
+                                 copyfromassignment_id=copyfromassignment_id,
+                                 user=user,
+                                 only_copy_passing_groups=only_copy_passing_groups)
         return assignment
 
     def lookup_period_create(self, user, period_id, *args, **kwargs):
@@ -185,6 +193,7 @@ class RestCreateNewAssignmentForm(forms.Form):
                                                      ('copyfromassignment', 'Copy from ``copyfromassignment_id``. If ``setupstudents_mode!="copyfromassignment"``, this option is the same as selecting ``do_not_setup``.'),
                                                      ('make_authenticated_user_examiner', 'Make the authenticated user examiner on all groups.')),
                                             help_text='Specifies how to setup examiners. Ignored if ``setupstudents_mode=="do_not_setup"``.')
+    only_copy_passing_groups = forms.BooleanField(required=False)
 
 
 class RestCreateNewAssignmentResource(FormResource):
