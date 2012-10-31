@@ -44,6 +44,19 @@ Ext.define('devilry_extjsextras.AlertMessage', {
      */
     message: '',
 
+    /**
+     * @cfg {string|array} [messagetpl]
+     * An XTemplate string or array to use instead of ``message``.
+     * Requires that you specify ``messagedata``.
+     */
+    messagetpl: null,
+
+    /**
+     * @cfg {Object} [messagedata]
+     * Data for ``messagetpl``.
+     */
+    messagedata: undefined,
+
 
     /**
      * @cfg {bool} [closable=false]
@@ -72,7 +85,7 @@ Ext.define('devilry_extjsextras.AlertMessage', {
         }
         this.cls = cls;
         this.callParent(arguments);
-        this.update(this.message, this.type);
+        this.update(this.messagetpl || this.message, this.type, this.messagedata);
 
         this.addListener({
             scope: this,
@@ -150,12 +163,22 @@ Ext.define('devilry_extjsextras.AlertMessage', {
     /**
      * Update the message and optionally the type. If the type is not
      * specified, the type will not be changed.
+     *
+     * @param messageOrTpl Message string, or XTemplate array/string if ``data`` is specified.
+     * @param type The message type. Defaults to ``this.type`` if ``undefined``.
+     * @param data If this is specified, ``message`` is an XTemplate config
+     *    (see the ``messagetpl`` config), and ``data`` is the data for the
+     *    template.
      * */
-    update: function(message, type) {
+    update: function(messageOrTpl, type, data) {
         if(type) {
             this.type = type;
         }
-        this.message = message;
+        if(data) {
+            this.message = Ext.create('Ext.XTemplate', messageOrTpl).apply(data);
+        } else {
+            this.message = messageOrTpl;
+        }
         var style = '';
         if(!Ext.isEmpty(this.boxMargin)) {
             style = Ext.String.format('margin: {0};', this.boxMargin);
