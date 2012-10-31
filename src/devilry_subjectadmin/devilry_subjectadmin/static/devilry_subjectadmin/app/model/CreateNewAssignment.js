@@ -16,6 +16,7 @@ Ext.define('devilry_subjectadmin.model.CreateNewAssignment', {
         {name: 'first_deadline',  type: 'date'},
         {name: 'setupstudents_mode',  type: 'string'},
         {name: 'copyfromassignment_id',  type: 'int'},
+        {name: 'only_copy_passing_groups',  type: 'boolean'},
         {name: 'setupexaminers_mode',  type: 'string'}
     ],
 

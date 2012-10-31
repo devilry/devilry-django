@@ -230,6 +230,7 @@ Ext.application({
         this.route.add("/period/:period_id/@@relatedstudents", 'showRelatedStudents');
         this.route.add("/period/:period_id/@@relatedexaminers", 'showRelatedExaminers');
         this.route.add("/period/:period_id/@@create-new-assignment/", 'createNewAssignment');
+        this.route.add("/period/:period_id/@@create-new-assignment/:defaults", 'createNewAssignment');
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
         this.route.add("/assignment/:assignment_id/@@manage-students/", 'manageStudents');
         this.route.add("/assignment/:assignment_id/@@manage-students/@@select-delivery/:group_id/:delivery_id", 'manageGroupsSelectDelivery');
@@ -315,10 +316,11 @@ Ext.application({
         });
     },
 
-    createNewAssignment: function(routeInfo, period_id) {
+    createNewAssignment: function(routeInfo, period_id, defaults) {
         this.setPrimaryContent({
             xtype: 'createnewassignment',
-            period_id: period_id
+            period_id: period_id,
+            defaults: defaults
         });
     },
 

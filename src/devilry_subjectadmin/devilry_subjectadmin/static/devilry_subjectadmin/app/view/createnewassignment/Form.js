@@ -291,11 +291,11 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                     width: 300
                                 }, {
                                     xtype: 'checkboxfield',
-                                    name: 'only_copy_passing_students',
+                                    name: 'only_copy_passing_groups',
                                     columnWidth: 1,
                                     margin: '0 0 0 10',
                                     checked: false,
-                                    boxLabel: gettext('Only copy students with passing grade?')
+                                    boxLabel: gettext('Only copy groups with passing grade?')
                                 }]
 
                             }, {

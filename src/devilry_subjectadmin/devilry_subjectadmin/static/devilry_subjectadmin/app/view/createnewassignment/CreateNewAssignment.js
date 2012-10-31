@@ -6,7 +6,14 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.CreateNewAssignment' ,
     ],
 
     /**
-     * @cfg period_id
+     * @cfg {int} [period_id]
+     * The ID of the period. Used by the controller.
+     */
+
+    /**
+     * @cfg {string} [defaults]
+     * Default values for the form, urlencoded. Used by the controller.
+     * Example: ``"first_deadline=2012-12-24T18:00&anonymous=true&delivery_types=1"``
      */
 
     border: 0,

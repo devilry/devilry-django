@@ -64,6 +64,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         ref: 'publishingTimeHelp',
         selector: 'createnewassignmentform #publishingTimeHelp'
     }, {
+        ref: 'advancedOptionsPanel',
+        selector: 'createnewassignmentform #advancedOptionsPanel'
+    }, {
 
     // Page two
         ref: 'setupExaminersContainer',
@@ -186,16 +189,44 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             this._onLoadFailure(operation);
         }
     },
+
+    _applyInitialValues: function(initialValues) {
+        //initialValues.first_deadline = new Date();
+        //var qry = Ext.Object.fromQueryString(window.location.search);
+        var defaults = this.getCreateNewAssignment().defaults;
+        var qry = Ext.Object.fromQueryString(defaults);
+        if(!Ext.isEmpty(qry.first_deadline)) {
+            initialValues.first_deadline = Ext.Date.parse(qry, 'Y-m-dTH:i');
+        }
+        if(!Ext.isEmpty(qry.delivery_types)) {
+            initialValues.delivery_types = parseInt(qry.delivery_types, 10);
+        }
+        if(!Ext.isEmpty(qry.setupstudents_mode)) {
+            initialValues.setupstudents_mode = qry.setupstudents_mode
+        }
+        if(!Ext.isEmpty(qry.setupexaminers_mode)) {
+            initialValues.setupexaminers_mode = qry.setupexaminers_mode
+        }
+        if(!Ext.isEmpty(qry.copyfromassignment_id)) {
+            initialValues.copyfromassignment_id = parseInt(qry.copyfromassignment_id, 10);
+        }
+        if(!Ext.isEmpty(qry.only_copy_passing_groups)) {
+            initialValues.only_copy_passing_groups = qry.only_copy_passing_groups == 'true';
+        }
+        if(!Ext.isEmpty(qry.anonymous)) {
+            initialValues.anonymous = qry.anonymous == 'true';
+        }
+    },
     _onLoadAssignmentsSuccess: function(assignmentRecords) {
         var initialValues = {};
         var names = this._autocreateNamesFromLastAssignment(assignmentRecords);
         Ext.apply(initialValues, names);
 
-        initialValues.first_deadline = new Date();
         if(assignmentRecords.length > 0) {
             this.getSetupStudentsCopyRadio().show();
             initialValues.copyfromassignment_id = assignmentRecords[0].get('id');
         }
+        this._applyInitialValues(initialValues);
         this.getCreateNewAssignmentForm().getForm().setValues(initialValues);
         Ext.defer(function() {
             // NOTE: Using defer to clear the error-marks added when we setValues above
@@ -206,6 +237,10 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             // before the style is applied).
             //this.getLongNameField().focus();
             this.getLongNameField().selectText();
+
+            if(initialValues.anonymous) {
+                this.getAdvancedOptionsPanel().expand();
+            }
         }, 200, this);
         this._unmask();
     },
