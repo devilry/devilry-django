@@ -250,15 +250,24 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
     _autocreateNamesFromLastAssignment: function(assignmentRecords) {
         var lastAssignment = assignmentRecords[0];
-        var short_name = lastAssignment.get('short_name');
-        var long_name = lastAssignment.get('long_name');
-        var shortname_number = this._getNumberInName(short_name);
-        var longname_number = this._getNumberInName(long_name);
-        if(shortname_number === longname_number && shortname_number !== null) {
-            var oldnumber = parseInt(shortname_number, 10);
+        var last_short_name = lastAssignment.get('short_name');
+        var last_long_name = lastAssignment.get('long_name');
+        var last_shortname_number = this._getNumberInName(last_short_name);
+        var last_longname_number = this._getNumberInName(last_long_name);
+        if(last_shortname_number === last_longname_number && last_shortname_number !== null) {
+            var oldnumber = parseInt(last_shortname_number, 10);
             var number = oldnumber + 1;
-            short_name = short_name.replace(oldnumber.toString(), number.toString());
-            long_name = long_name.replace(oldnumber.toString(), number.toString());
+            short_name = last_short_name.replace(oldnumber.toString(), number.toString());
+            long_name = last_long_name.replace(oldnumber.toString(), number.toString());
+            this.application.getAlertmessagelist().add({
+                type: 'info',
+                autoclose: true,
+                messagetpl: gettext('Detected that the previous assignment, {last_long_name}, contains a number, so we suggested {long_name} as the name for this assignment.'),
+                messagedata: {
+                    last_long_name: Ext.String.format('<em>{0}</em>', last_long_name),
+                    long_name: Ext.String.format('<em>{0}</em>', long_name),
+                }
+            });
             return {
                 long_name: long_name,
                 short_name: short_name
