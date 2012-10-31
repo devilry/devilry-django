@@ -62,5 +62,18 @@ Ext.define('devilry_extjsextras.AlertMessageList', {
                 type: type
             });
         }, this);
+    },
+
+    /** Add many messages by array.
+     *
+     * Functionally the same as looping over ``configs``, and calling ``add()``
+     * for each config.
+     *
+     * @param configs Array of configuration objects for ``add()``.
+     * */
+    addArray: function(configs) {
+        Ext.Array.each(configs, function(config) {
+            this.add(config);
+        }, this);
     }
 });
