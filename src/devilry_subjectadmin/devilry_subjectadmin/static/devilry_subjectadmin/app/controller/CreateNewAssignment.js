@@ -108,7 +108,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             'viewport createnewassignmentform #nextButton': {
                 click: this._onNext
             },
-            'viewport createnewassignmentform radiogroup radio': {
+            'viewport createnewassignmentform #deliveryTypesRadioGroup radio': {
                 change: this._onDeliveryTypesSelect
             },
 
