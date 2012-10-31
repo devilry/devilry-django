@@ -194,6 +194,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         //initialValues.first_deadline = new Date();
         //var qry = Ext.Object.fromQueryString(window.location.search);
         var defaults = this.getCreateNewAssignment().defaults;
+        if(Ext.isEmpty(defaults)) {
+            return;
+        }
         var qry = Ext.Object.fromQueryString(defaults);
         if(!Ext.isEmpty(qry.first_deadline)) {
             initialValues.first_deadline = Ext.Date.parse(qry, 'Y-m-dTH:i');
@@ -202,10 +205,10 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             initialValues.delivery_types = parseInt(qry.delivery_types, 10);
         }
         if(!Ext.isEmpty(qry.setupstudents_mode)) {
-            initialValues.setupstudents_mode = qry.setupstudents_mode
+            initialValues.setupstudents_mode = qry.setupstudents_mode;
         }
         if(!Ext.isEmpty(qry.setupexaminers_mode)) {
-            initialValues.setupexaminers_mode = qry.setupexaminers_mode
+            initialValues.setupexaminers_mode = qry.setupexaminers_mode;
         }
         if(!Ext.isEmpty(qry.copyfromassignment_id)) {
             initialValues.copyfromassignment_id = parseInt(qry.copyfromassignment_id, 10);
