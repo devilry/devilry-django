@@ -197,6 +197,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         //initialValues.first_deadline = new Date();
         //var qry = Ext.Object.fromQueryString(window.location.search);
         var defaults = this.getCreateNewAssignment().defaults;
+        initialValues.publishing_time = new Date();
         if(Ext.isEmpty(defaults)) {
             return;
         }
@@ -225,10 +226,8 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     },
     _onLoadAssignmentsSuccess: function(assignmentRecords) {
         var initialValues = {};
-        var names = this._autocreateNamesFromLastAssignment(assignmentRecords);
-        Ext.apply(initialValues, names);
-
-        var first_deadline = this._autoapplyFirstDeadline(initialValues);
+        this._autoapplyNamesFromLastAssignment(initialValues, assignmentRecords);
+        this._autoapplyFirstDeadline(initialValues);
 
         if(assignmentRecords.length > 0) {
             this.getSetupStudentsCopyRadio().show();
@@ -249,11 +248,15 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             if(initialValues.anonymous) {
                 this.getAdvancedOptionsPanel().expand();
             }
+            var assignmentId = this.getSelectAssignmentToCopyStudentsFromCombo().getValue();
+            this._unmask();
         }, 200, this);
-        this._unmask();
     },
 
-    _autocreateNamesFromLastAssignment: function(assignmentRecords) {
+    _autoapplyNamesFromLastAssignment: function(initialValues, assignmentRecords) {
+        if(assignmentRecords.length === 0) {
+            return;
+        }
         var lastAssignment = assignmentRecords[0];
         var last_short_name = lastAssignment.get('short_name');
         var last_long_name = lastAssignment.get('long_name');
@@ -273,10 +276,10 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
                     long_name: Ext.String.format('<em>{0}</em>', long_name)
                 }
             });
-            return {
+            Ext.apply(initialValues, {
                 long_name: long_name,
                 short_name: short_name
-            };
+            });
         }
         return {};
     },
@@ -416,6 +419,14 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         var assignmentId = this.getSelectAssignmentToCopyStudentsFromCombo().getValue();
         var store = this.getAssignmentsStore();
         var index = store.findExact('id', assignmentId);
+        if(index === -1) {
+            // NOTE: If an invalid assignment is selected (typically from
+            // defaults), we autoselect the first assignment in the store,
+            // which should trigger _onSelectAssignmentToCopyFromChange, which
+            // re-triggers this function.
+            this.getSelectAssignmentToCopyStudentsFromCombo().setValue(store.first().get('id'));
+            return;
+        }
         var assignmentRecord = store.getAt(index);
         var label = interpolate(gettext('Copy from %(assignment)s.'), {
             assignment: assignmentRecord.get('long_name')

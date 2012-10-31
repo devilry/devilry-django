@@ -191,8 +191,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 xtype: 'devilry_extjsextras-datetimefield',
                                 width: 300,
                                 fieldLabel: gettext('Publishing time'),
-                                name: "publishing_time",
-                                value: new Date()
+                                name: "publishing_time"
                             }, {
                                 xtype: 'box',
                                 cls: 'bootstrap',
