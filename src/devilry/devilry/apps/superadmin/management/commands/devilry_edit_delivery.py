@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from optparse import make_option
 
 from devilry.apps.core.models import Delivery
+from devilry.utils.management import make_output_encoding_option
 
 
 
@@ -35,9 +36,11 @@ class Command(BaseCommand):
         make_option('--user',
                     dest='username', default=None,
                     help='Show all deliveries made by this user (username).'),
+        make_output_encoding_option()
     )
 
     def handle(self, *args, **kwargs):
+        self.outputencoding = kwargs['outputencoding']
         if kwargs['list']:
             if not (kwargs['unsuccessful_with_feedback'] or kwargs['username']):
                 raise CommandError('--unsuccessful-with-feedback or --user is required when using --list.')
@@ -97,18 +100,19 @@ class Command(BaseCommand):
             for delivery in matches:
                 group = delivery.deadline.assignment_group
                 def strcandidate(candidate):
-                    return '{fullname}({username})'.format(username=candidate.student.username,
-                                                           fullname=candidate.student.devilryuserprofile.full_name)
+                    return u'{fullname}({username})'.format(username=candidate.student.username,
+                                                            fullname=candidate.student.devilryuserprofile.full_name)
                 candidates = map(strcandidate, group.candidates.all())
-                print (' - [{path} deliveryID={id}]: '
-                       'students=[{candidates}], deadline={deadline}, '
-                       'has-feedback={has_feedback}, '
-                       'successful={successful}').format(path=group.parentnode.get_path(),
-                                                         id=delivery.id,
-                                                         candidates=', '.join(candidates),
-                                                         deadline=delivery.deadline.deadline,
-                                                         has_feedback=delivery.feedback_count>0,
-                                                         successful=delivery.successful)
+                msg = (u' - [{path} deliveryID={id}]: '
+                       u'students=[{candidates}], deadline={deadline}, '
+                       u'has-feedback={has_feedback}, '
+                       u'successful={successful}').format(path=group.parentnode.get_path(),
+                                                          id=delivery.id,
+                                                          candidates=', '.join(candidates),
+                                                          deadline=delivery.deadline.deadline,
+                                                          has_feedback=delivery.feedback_count>0,
+                                                          successful=delivery.successful)
+                print msg.encode(self.outputencoding)
 
 
     def _get_or_error(self, cls, **qry):
