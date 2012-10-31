@@ -94,6 +94,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         selector: 'createnewassignmentform #setupExaminersByTagsHelp'
     }],
 
+    ui_datetimeformat: 'Y-m-d H:i',
+    transport_datetimeformat: 'Y-m-dTH:i',
+
     init: function() {
         this.control({
             'viewport createnewassignmentform textfield[name=long_name]': {
@@ -199,7 +202,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         }
         var qry = Ext.Object.fromQueryString(defaults);
         if(!Ext.isEmpty(qry.first_deadline)) {
-            initialValues.first_deadline = Ext.Date.parse(qry, 'Y-m-dTH:i');
+            initialValues.first_deadline = Ext.Date.parse(qry, this.transport_datetimeformat);
         }
         if(!Ext.isEmpty(qry.delivery_types)) {
             initialValues.delivery_types = parseInt(qry.delivery_types, 10);
@@ -224,6 +227,8 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         var initialValues = {};
         var names = this._autocreateNamesFromLastAssignment(assignmentRecords);
         Ext.apply(initialValues, names);
+
+        var first_deadline = this._autoapplyFirstDeadline(initialValues);
 
         if(assignmentRecords.length > 0) {
             this.getSetupStudentsCopyRadio().show();
@@ -262,10 +267,10 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             this.application.getAlertmessagelist().add({
                 type: 'info',
                 autoclose: true,
-                messagetpl: gettext('Detected that the previous assignment, {last_long_name}, contains a number, so we suggested {long_name} as the name for this assignment.'),
+                messagetpl: gettext('Suggested {long_name} as the name, based on {last_long_name}.'),
                 messagedata: {
                     last_long_name: Ext.String.format('<em>{0}</em>', last_long_name),
-                    long_name: Ext.String.format('<em>{0}</em>', long_name),
+                    long_name: Ext.String.format('<em>{0}</em>', long_name)
                 }
             });
             return {
@@ -274,6 +279,39 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             };
         }
         return {};
+    },
+
+    _em: function(string) {
+        return Ext.String.format('<em>{0}</em>', string);
+    },
+
+    _autoapplyFirstDeadline: function(initialValues) {
+        if(this.getAssignmentsStore().getCount() < 2) {
+            return;
+        }
+        var daysDiff = this.getAssignmentsStore().findMostCommonFirstDeadlineDayDifference();
+        if(daysDiff !== null) {
+            var lastAssignment = this.getAssignmentsStore().getFirstRecordWithFirstDeadline();
+            if(lastAssignment) {
+                var millisecInDay = 86400000;
+                previous_first_deadline = lastAssignment.get('first_deadline');
+                var nextDeadlineTimestamp = previous_first_deadline.getTime() + daysDiff*millisecInDay;
+
+                var first_deadline = new Date(nextDeadlineTimestamp);
+                initialValues.first_deadline = first_deadline;
+                this.application.getAlertmessagelist().add({
+                    type: 'info',
+                    autoclose: true,
+                    messagetpl: gettext('Suggested {first_deadline} as the submission date. Calculated by adding the most common timespan between submission dates ({daysDiff} days) to the submission date of the last published assignment, {previous_assignment} ({previous_first_deadline}).'),
+                    messagedata: {
+                        first_deadline: this._em(Ext.Date.format(first_deadline, this.ui_datetimeformat)),
+                        daysDiff: daysDiff,
+                        previous_assignment: this._em(lastAssignment.get('short_name')),
+                        previous_first_deadline: Ext.Date.format(previous_first_deadline, this.ui_datetimeformat)
+                    }
+                });
+            }
+        }
     },
 
 
