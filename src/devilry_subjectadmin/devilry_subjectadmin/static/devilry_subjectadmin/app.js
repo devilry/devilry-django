@@ -208,6 +208,25 @@ Ext.application({
         window.document.title = Ext.String.format('{0} - Devilry', title);
     },
 
+    /**
+     * Controllers can use this to add alertmessages that will be shown on the
+     * next route, right after the ``beforeroute`` event has fired.
+     * */
+    addOnNextRouteMessage: function(config) {
+        if(!this._hasOnNextRouteMessages()) {
+            this.onNextRouteMessages = [];
+        }
+        this.onNextRouteMessages.push(config);
+    },
+
+    _hasOnNextRouteMessages: function() {
+        return !Ext.isEmpty(this.onNextRouteMessages);
+    },
+    _showOnNextRouteMessages: function() {
+        this.getAlertmessagelist().addArray(this.onNextRouteMessages);
+        this.onNextRouteMessages = undefined;
+    },
+
 
     /*********************************************
      * Routing
@@ -249,6 +268,9 @@ Ext.application({
     _beforeRoute: function(route, routeInfo) {
         this.getAlertmessagelist().removeAll();
         this.fireEvent('beforeroute', route, routeInfo);
+        if(this._hasOnNextRouteMessages()) {
+            this._showOnNextRouteMessages();
+        }
     },
     _afterRoute: function(route, routeInfo) {
         this.fireEvent('afterroute', route, routeInfo);
