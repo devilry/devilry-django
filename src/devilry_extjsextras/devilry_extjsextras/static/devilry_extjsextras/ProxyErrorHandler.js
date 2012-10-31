@@ -30,18 +30,22 @@ Ext.define('devilry_extjsextras.ProxyErrorHandler', {
         return Ext.create('Ext.XTemplate', tpl).apply(data);
     },
 
+    _formatUrl: function(url) {
+        return Ext.String.format('<a href="{0}" target="_blank">{0}</a>', url);
+    },
+
     parseHttpError: function(error, request) {
         var message;
         if(error.status === 0) {
             message = this._formatTpl(gettext('Could not connect to server at URL "{url}".'), {
-                url: request.url
+                url: this._formatUrl(request.url)
             });
         } else {
-            message = this._formatTpl('The server responded with error message <em>{status}: {statusText}</em> when we made a {method}-request to URL <a href="{url}" target="_blank">{url}</a>.', {
+            message = this._formatTpl('The server responded with error message <em>{status}: {statusText}</em> when we made a {method}-request to URL {url}.', {
                 status: error.status,
                 statusText: error.statusText,
                 method: request.method,
-                url: request.url
+                url: this._formatUrl(request.url)
             });
         }
         return message;
