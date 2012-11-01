@@ -173,7 +173,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def _clean_first_deadline(self):
         self.first_deadline = self.first_deadline.replace(microsecond=0, tzinfo=None) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
         datetimeformat = '%Y-%m-%d %H:%M'
-        if self.first_deadline < self.publishing_time:
+        if self.first_deadline <= self.publishing_time:
             msg = _('Submission date can not be before the publishing time ({publishing_time}) of the assignment.')
             raise ValidationError(msg.format(publishing_time = self.publishing_time.strftime(datetimeformat)))
         if self.first_deadline > self.parentnode.end_time:
