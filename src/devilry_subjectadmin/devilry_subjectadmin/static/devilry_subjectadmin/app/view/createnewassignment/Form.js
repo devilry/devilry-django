@@ -6,13 +6,10 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         'Ext.form.field.Text',
         'Ext.form.field.Hidden',
         'Ext.toolbar.Toolbar',
-        //'devilry_extjsextras.form.DateField',
-        //'devilry_extjsextras.form.TimeField',
         'devilry_extjsextras.form.DateTimeField',
         'devilry_extjsextras.CreateButton',
         'devilry_extjsextras.AlertMessageList',
         'devilry_subjectadmin.utils.UrlLookup',
-        'devilry_extjsextras.form.Help',
         'devilry_subjectadmin.utils.BaseNodeHelp',
         'devilry_subjectadmin.view.createnewassignment.SelectSingleAssignment'
     ],
@@ -126,7 +123,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                             width: 300,
                             items: [{
                                 xtype: 'devilry_extjsextras-datetimefield',
-                                cls: 'first_deadline',
+                                cls: 'firstDeadlineField',
                                 itemId: 'firstDeadlineField',
                                 name: 'first_deadline',
                                 allowBlank: false,
@@ -175,6 +172,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 xtype: 'checkboxfield',
                                 margin: '0 0 0 0',
                                 name: 'anonymous',
+                                cls: 'anonymousField',
                                 labelAlign: 'left',
                                 boxLabel: gettext('Anonymous?')
                             }, {
@@ -192,7 +190,8 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 xtype: 'devilry_extjsextras-datetimefield',
                                 width: 300,
                                 fieldLabel: gettext('Publishing time'),
-                                name: "publishing_time"
+                                name: "publishing_time",
+                                cls: 'publishingTimeField'
                             }, {
                                 xtype: 'box',
                                 cls: 'bootstrap',
