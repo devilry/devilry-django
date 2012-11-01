@@ -3,7 +3,41 @@ from seleniumhelpers import SeleniumTestCase
 from django.test.utils import override_settings
 from django.conf import settings
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import TimeoutException
+
+
+class ExtJsTestMixin(object):
+    def extjs_set_checkbox_value(self, cssselector, select=False, within=None):
+        fieldwrapper = self.waitForAndFindElementByCssSelector('{0}'.format(cssselector), within=within)
+        self.waitForDisplayed(fieldwrapper)
+        checked = 'x-form-cb-checked' in fieldwrapper.get_attribute('class').split()
+        if (select and not checked) or (not select and checked):
+            fieldwrapper.find_element_by_css_selector('input[type=button]').click()
+
+    def extjs_expand_panel(self, panel):
+        """
+        :param panel: An ExtJS panel node.
+        :return: The body node for the expanded panel.
+        """
+        button = self.waitForAndFindElementByCssSelector('.x-panel-header .x-tool-expand-bottom', within=panel)
+        button.click()
+        body = self.waitForAndFindElementByCssSelector('.x-panel-body', within=panel)
+        self.waitForDisplayed(body)
+        return body
+
+    def extjs_set_single_datetime_value(self, cssselector, field, value, within=None):
+        if not field in ('date', 'time'):
+            raise ValueError('field must be one of: "field", "value"')
+        selector = '{cssselector} .devilry_extjsextras_{field}field input[type=text]'.format(cssselector=cssselector,
+                                                                                             field=field)
+        field = self.waitForAndFindElementByCssSelector(selector, within=within)
+        field.clear()
+        field.send_keys(value)
+        field.send_keys(Keys.TAB)
+
+    def extjs_set_datetime_values(self, cssselector, date, time, within=None):
+        self.extjs_set_single_datetime_value(cssselector, 'date', date, within=None)
+        self.extjs_set_single_datetime_value(cssselector, 'time', time, within=None)
+
 
 
 @override_settings(EXTJS4_DEBUG=False)
