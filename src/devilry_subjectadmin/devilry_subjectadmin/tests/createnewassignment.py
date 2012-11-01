@@ -4,13 +4,15 @@ from devilry.apps.core.models import Assignment, AssignmentGroup
 from selenium.webdriver.common.keys import Keys
 
 from .base import SubjectAdminSeleniumTestCase
+from .base import ExtJsTestMixin
 
 
-class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
+class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.create_superuser('grandma')
         self.tomorrow = date.today() + timedelta(days=1)
+        self.valid_first_deadline = (self.tomorrow.isoformat(), '15:00')
 
         self.testhelper.add(nodes='uni',
                             subjects=['duck1100'],
@@ -57,7 +59,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
 
 
     def _set_value(self, fieldname, value):
-        field = self.selenium.find_element_by_css_selector('input[name={0}]'.format(fieldname))
+        field = self.waitForAndFindElementByCssSelector('input[name={0}]'.format(fieldname))
         field.clear()
         field.send_keys(value)
         field.send_keys(Keys.TAB)
@@ -67,15 +69,52 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self._set_value('long_name', long_name)
         self._set_value('short_name', short_name)
 
-    def _set_datetime_value(self, fieldclass, field, value):
-        field = self.selenium.find_element_by_css_selector('.{fieldclass} .devilry_extjsextras_{field}field input[type=text]'.format(fieldclass=fieldclass,
-                                                                                                                          field=field))
-        field.send_keys(value)
-        field.send_keys(Keys.TAB)
-
     def _set_first_deadline(self, date, time):
-        self._set_datetime_value('first_deadline', 'date', date)
-        self._set_datetime_value('first_deadline', 'time', time)
+        self.extjs_set_datetime_values('.firstDeadlineField', date, time)
+
+    def _expand_advanced(self):
+        panel = self.waitForAndFindElementByCssSelector('#advancedOptionsPanel')
+        return self.extjs_expand_panel(panel)
+
+    def _set_page1_values(self, short_name='', long_name='',
+                          delivery_types='', first_deadline=None,
+                          anonymous=None, publishing_time=None):
+        self._set_names(short_name, long_name)
+        if first_deadline:
+            self._set_first_deadline(first_deadline[0], first_deadline[1])
+        if anonymous != None or publishing_time!=None:
+            self._expand_advanced()
+            if anonymous != None:
+                self.extjs_set_checkbox_value('.anonymousField', select=anonymous)
+            if publishing_time != None:
+                self.extjs_set_datetime_values('.publishingTimeField',
+                                               date=publishing_time[0],
+                                               time=publishing_time[1])
+
+    def _set_values(self, short_name='', long_name='',
+                    delivery_types='', first_deadline=None,
+                    anonymous=None, publishing_time=None):
+        self._set_page1_values(short_name=short_name, long_name=long_name,
+                               delivery_types=delivery_types,
+                               first_deadline=first_deadline,
+                               anonymous=anonymous,
+                               publishing_time=publishing_time)
+        self._click_nextbutton_and_wait_for_pagechange()
+
+
+    def _click_createbutton_and_wait_for_reload(self):
+        createbutton = self.selenium.find_element_by_css_selector('.devilry_extjsextras_createbutton button')
+        self.waitForEnabled(createbutton)
+        createbutton.click()
+        self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
+
+    def _click_nextbutton_and_wait_for_pagechange(self):
+        nextbutton = self.selenium.find_element_by_css_selector('.createnewassignmentform_nextbutton button')
+        self.waitForEnabled(nextbutton)
+        nextbutton.click()
+        p2 = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_createnewassignmentform .page2')
+        self.waitForDisplayed(p2)
+
 
     def test_form_nextbutton(self):
         self._load()
@@ -90,21 +129,8 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
         self.waitForEnabled(nextbutton)
 
-    def _click_createbutton_and_wait_for_reload(self):
-        createbutton = self.selenium.find_element_by_css_selector('.devilry_extjsextras_createbutton button')
-        self.waitForEnabled(createbutton)
-        createbutton.click()
-        self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
-
-    def _click_nextbutton(self):
-        nextbutton = self.selenium.find_element_by_css_selector('.createnewassignmentform_nextbutton button')
-        self.waitForEnabled(nextbutton)
-        nextbutton.click()
-        p2 = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_createnewassignmentform .page2')
-        self.waitForDisplayed(p2)
-
     def _save_directly_from_pageone(self):
-        self._click_nextbutton()
+        self._click_nextbutton_and_wait_for_pagechange()
         self._click_createbutton_and_wait_for_reload()
 
     def test_duplicate(self):
@@ -133,13 +159,6 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
             relatedexaminer.save()
         return relatedexaminer
 
-    def _set_values(self, short_name='', long_name='',
-                    delivery_types='', first_deadline=None):
-        self._set_names(short_name, long_name)
-        if first_deadline:
-            self._set_first_deadline(first_deadline[0], first_deadline[1])
-        self._click_nextbutton()
-
     def test_create_with_related(self):
         self._create_related_student('student0', tags=['group1'])
         self._create_related_student('student1', tags=['group1'])
@@ -154,6 +173,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
         self.assertEquals(created.long_name, 'Test')
 
+        self.assertFalse(created.anonymous)
         self.assertEquals(created.assignmentgroups.all().count(), 4)
         student0group = AssignmentGroup.where_is_candidate(self.testhelper.student0).get(parentnode=created.id)
         self.assertEquals(student0group.examiners.all()[0].user, self.testhelper.examiner0)
@@ -161,3 +181,12 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.assertEquals(student0group.deadlines.all()[0].deadline.date(), self.tomorrow)
         self.assertEquals(student0group.deadlines.all()[0].deadline.time().hour, 15)
         self.assertEquals(student0group.deadlines.all()[0].deadline.time().minute, 0)
+
+    def test_create_anonymous(self):
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=self.valid_first_deadline,
+                         anonymous=True)
+        self._click_createbutton_and_wait_for_reload()
+        created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
+        self.assertTrue(created.anonymous)
