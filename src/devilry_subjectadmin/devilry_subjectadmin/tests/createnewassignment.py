@@ -123,11 +123,13 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
                                only_copy_passing=only_copy_passing,
                                copy_from_label=copy_from_label)
 
-
-    def _click_createbutton_and_wait_for_reload(self):
+    def _click_createbutton(self):
         createbutton = self.selenium.find_element_by_css_selector('.devilry_extjsextras_createbutton button')
         self.waitForEnabled(createbutton)
         createbutton.click()
+
+    def _click_createbutton_and_wait_for_reload(self):
+        self._click_createbutton()
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
 
     def _click_nextbutton_and_wait_for_pagechange(self):
@@ -151,18 +153,14 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
         self.waitForEnabled(nextbutton)
 
-    def _save_directly_from_pageone(self):
-        self._click_nextbutton_and_wait_for_pagechange()
-        self._click_createbutton_and_wait_for_reload()
-
     def test_duplicate(self):
         self.testhelper.add_to_path('uni;sub.p1.a1')
         self._load()
         self._set_names('a1', 'A1')
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
-        self._save_directly_from_pageone()
-        self.waitForCssSelector('.devilry_extjsextras_alertmessagelist')
-        self.assertTrue('Assignment with this Short name and Period already exists' in self.selenium.page_source)
+        self._click_nextbutton_and_wait_for_pagechange()
+        self._click_createbutton()
+        self.waitForText('Assignment with this Short name and Period already exists')
 
     def _create_related_student(self, username, candidate_id=None, tags=None):
         user = self.testhelper.create_user(username)
