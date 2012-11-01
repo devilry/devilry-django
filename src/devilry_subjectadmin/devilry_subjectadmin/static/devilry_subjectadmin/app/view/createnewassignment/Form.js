@@ -47,6 +47,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                 items: [{
                     xtype: 'panel',
                     itemId: 'pageOne',
+                    cls: 'page1',
                     bodyPadding: 20,
                     items: [{
 
@@ -219,6 +220,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                 }, {
                     xtype: 'panel',
                     itemId: 'pageTwo',
+                    cls: 'page2',
                     bodyPadding: 20,
                     items: [{
 
