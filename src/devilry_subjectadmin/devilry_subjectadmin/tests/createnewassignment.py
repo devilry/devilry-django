@@ -22,6 +22,11 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.loginTo('periodoneadmin', '/period/{0}/@@create-new-assignment/'.format(period_id))
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
 
+    def test_breadcrumb(self):
+        self._load()
+        breadcrumbtext = self.get_breadcrumbstring('Create new assignment')
+        self.assertEquals(breadcrumbtext, ['All subjects', 'duck1100.periodone', 'Create new assignment'])
+
     def test_form_render(self):
         self._load()
 
@@ -85,19 +90,22 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
         self.waitForEnabled(nextbutton)
 
-    def _click_createbutton(self):
+    def _click_createbutton_and_wait_for_reload(self):
         createbutton = self.selenium.find_element_by_css_selector('.devilry_extjsextras_createbutton button')
         self.waitForEnabled(createbutton)
         createbutton.click()
+        self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
 
     def _click_nextbutton(self):
         nextbutton = self.selenium.find_element_by_css_selector('.createnewassignmentform_nextbutton button')
         self.waitForEnabled(nextbutton)
         nextbutton.click()
+        p2 = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_createnewassignmentform .page2')
+        self.waitForDisplayed(p2)
 
     def _save_directly_from_pageone(self):
         self._click_nextbutton()
-        self._click_createbutton()
+        self._click_createbutton_and_wait_for_reload()
 
     def test_duplicate(self):
         self.testhelper.add_to_path('uni;duck1100.periodone.a1')
@@ -107,19 +115,6 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self._save_directly_from_pageone()
         self.waitForCssSelector('.devilry_extjsextras_alertmessagelist')
         self.assertTrue('Assignment with this Short name and Period already exists' in self.selenium.page_source)
-
-    def test_success(self):
-        self._load()
-
-        self._set_names('sometest', 'Test')
-        self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
-        self._save_directly_from_pageone()
-
-        self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
-        created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
-        self.assertEquals(created.long_name, 'Test')
-        return created
-
 
     def _create_related_student(self, username, candidate_id=None, tags=None):
         user = self.testhelper.create_user(username)
@@ -138,13 +133,27 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
             relatedexaminer.save()
         return relatedexaminer
 
+    def _set_values(self, short_name='', long_name='',
+                    delivery_types='', first_deadline=None):
+        self._set_names(short_name, long_name)
+        if first_deadline:
+            self._set_first_deadline(first_deadline[0], first_deadline[1])
+        self._click_nextbutton()
+
     def test_create_with_related(self):
         self._create_related_student('student0', tags=['group1'])
         self._create_related_student('student1', tags=['group1'])
         self._create_related_student('student2', tags=['group1'])
         self._create_related_student('student3', tags=['group2'])
         self._create_related_examiner('examiner0', tags=['group1'])
-        created = self.test_success()
+
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=(self.tomorrow.isoformat(), '15:00'))
+        self._click_createbutton_and_wait_for_reload()
+        created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
+        self.assertEquals(created.long_name, 'Test')
+
         self.assertEquals(created.assignmentgroups.all().count(), 4)
         student0group = AssignmentGroup.where_is_candidate(self.testhelper.student0).get(parentnode=created.id)
         self.assertEquals(student0group.examiners.all()[0].user, self.testhelper.examiner0)
@@ -152,8 +161,3 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase):
         self.assertEquals(student0group.deadlines.all()[0].deadline.date(), self.tomorrow)
         self.assertEquals(student0group.deadlines.all()[0].deadline.time().hour, 15)
         self.assertEquals(student0group.deadlines.all()[0].deadline.time().minute, 0)
-
-    def test_breadcrumb(self):
-        self._load()
-        breadcrumbtext = self.get_breadcrumbstring('Create new assignment')
-        self.assertEquals(breadcrumbtext, ['All subjects', 'duck1100.periodone', 'Create new assignment'])
