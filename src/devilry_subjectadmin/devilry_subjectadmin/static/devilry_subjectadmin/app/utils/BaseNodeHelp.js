@@ -13,7 +13,7 @@ Ext.define('devilry_subjectadmin.utils.BaseNodeHelp', {
     getShortAndLongNameHelp: function() {
         return [
             gettext('Choose a long and a short name. Short name is used in places where long name takes too much space, such as table headers and navigation.'),
-            gettext("The short name can have max 20 letters, and it can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>.")
+            gettext("The short name can contain up to 20 letters, and it can only contain lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</em>.")
         ].join(' ');
     }
 });
