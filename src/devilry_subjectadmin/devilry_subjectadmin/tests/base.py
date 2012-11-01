@@ -41,6 +41,24 @@ class ExtJsTestMixin(object):
         self.extjs_set_single_datetime_value(cssselector, 'date', date, within=None)
         self.extjs_set_single_datetime_value(cssselector, 'time', time, within=None)
 
+    def extjs_boundlist_select(self, cssselector, label):
+        boundlist = self.waitForAndFindElementByCssSelector(cssselector)
+        items = boundlist.find_elements_by_css_selector('.x-boundlist-item')
+        labels = []
+        for item in items:
+            itemlabel = item.text.strip()
+            if itemlabel == label:
+                item.click()
+                return
+            labels.append(itemlabel)
+        raise ValueError('Label "{0}" not found in: {1!r}'.format(label, labels))
+
+    def extjs_combobox_select(self, cssselector, boundlist_cssselector, label,
+                              within=None):
+        combo = self.waitForAndFindElementByCssSelector(cssselector, within=within)
+        trigger = combo.find_element_by_css_selector('.x-form-trigger')
+        trigger.click()
+        self.extjs_boundlist_select(boundlist_cssselector, label)
 
 
 @override_settings(EXTJS4_DEBUG=False)

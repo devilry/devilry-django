@@ -10,7 +10,10 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.SelectSingleAssignment
     editable: false,
     displayField: 'long_name',
     valueField: 'id',
-    hideLabel: true
+    hideLabel: true,
+    listConfig: {
+        cls: 'selectsingleassignment_boundlist'
+    }
     //labelWidth: 200,
     //fieldLabel: gettext('Select an assignment')
 });

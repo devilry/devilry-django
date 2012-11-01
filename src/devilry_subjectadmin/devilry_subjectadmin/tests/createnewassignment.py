@@ -94,19 +94,24 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
                                                time=publishing_time[1])
     def _set_page2_values(self, setupstudents_cls=None,
                           setupexaminers_cls=None,
-                          only_copy_passing=False):
+                          only_copy_passing=False,
+                          copy_from_label=None):
         if setupstudents_cls:
             self.extjs_click_radiobutton(setupstudents_cls)
         if setupexaminers_cls:
             self.extjs_click_radiobutton(setupexaminers_cls)
         if only_copy_passing:
             self.extjs_set_checkbox_value('.onlyCopyPassingGroupsField', select=True)
+        if copy_from_label:
+            self.extjs_combobox_select('.copyFromAssignmentIdField',
+                                       boundlist_cssselector='.selectsingleassignment_boundlist',
+                                       label=copy_from_label)
 
     def _set_values(self, short_name='', long_name='',
                     delivery_types='', first_deadline=None,
                     anonymous=None, publishing_time=None,
                     setupstudents_cls=None, setupexaminers_cls=None,
-                    only_copy_passing=False):
+                    only_copy_passing=False, copy_from_label=None):
         self._set_page1_values(short_name=short_name, long_name=long_name,
                                delivery_types=delivery_types,
                                first_deadline=first_deadline,
@@ -115,7 +120,8 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self._click_nextbutton_and_wait_for_pagechange()
         self._set_page2_values(setupstudents_cls=setupstudents_cls,
                                setupexaminers_cls=setupexaminers_cls,
-                               only_copy_passing=only_copy_passing)
+                               only_copy_passing=only_copy_passing,
+                               copy_from_label=copy_from_label)
 
 
     def _click_createbutton_and_wait_for_reload(self):
@@ -256,7 +262,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self._click_createbutton_and_wait_for_reload()
         created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
         self.assertEquals(created.assignmentgroups.count(), 1)
-        group = AssignmentGroup.where_is_candidate(self.testhelper.student1).get(parentnode=created.id)
+        group = created.assignmentgroups.all()[0]
         self.assertEquals(group.examiners.count(), 0)
 
     def test_setup_copy_from_another_onlypassing(self):
@@ -278,23 +284,22 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self._click_createbutton_and_wait_for_reload()
         created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
         self.assertEquals(created.assignmentgroups.count(), 1)
-        group = AssignmentGroup.where_is_candidate(self.testhelper.student1).get(parentnode=created.id)
+        group = created.assignmentgroups.all()[0]
         self.assertEquals(group.candidates.all()[0].student, self.testhelper.student1)
 
     def test_setup_copy_from_another_specify_other(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1:ln(Assignment One):pub(2).g1:candidate(student1).d1')
-        self.testhelper.add_to_path('uni;sub.p1.a2:ln(Assignment Two):pub(3).g1:candidate(student1).d1')
+        self.testhelper.add_to_path('uni;sub.p1.a1:ln(Assignment One):pub(2).g1:candidate(selectedstud).d1')
+        self.testhelper.add_to_path('uni;sub.p1.a2:ln(Assignment Two):pub(3).g1:candidate(ignored).d1')
         self._load()
         self._set_values(short_name='sometest', long_name='Test',
                          first_deadline=self.valid_first_deadline,
                          setupstudents_cls='.setupStudentsCopyRadio',
-                         copy_from='Assignment One')
-        raw_input('1')
-        #self._click_createbutton_and_wait_for_reload()
-        #created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
-        #self.assertEquals(created.assignmentgroups.count(), 1)
-        #group = AssignmentGroup.where_is_candidate(self.testhelper.student1).get(parentnode=created.id)
-        #self.assertEquals(group.examiners.all()[0].user, self.testhelper.examiner1)
+                         copy_from_label='Assignment One')
+        self._click_createbutton_and_wait_for_reload()
+        created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
+        self.assertEquals(created.assignmentgroups.count(), 1)
+        group = created.assignmentgroups.all()[0]
+        self.assertEquals(group.candidates.all()[0].student, self.testhelper.selectedstud)
 
 
     #def test_setup_nonelectronic(self):
