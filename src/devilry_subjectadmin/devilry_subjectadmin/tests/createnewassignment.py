@@ -1,6 +1,8 @@
 from datetime import date, timedelta
 from devilry.apps.core.testhelper import TestHelper
-from devilry.apps.core.models import Assignment, AssignmentGroup
+from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Examiner
 from selenium.webdriver.common.keys import Keys
 
 from .base import SubjectAdminSeleniumTestCase
@@ -15,19 +17,19 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self.valid_first_deadline = (self.tomorrow.isoformat(), '15:00')
 
         self.testhelper.add(nodes='uni',
-                            subjects=['duck1100'],
-                            periods=['periodone:begins(-1):ends(6):admin(periodoneadmin)'])
-        self.period_id = self.testhelper.duck1100_periodone.id
+                            subjects=['sub'],
+                            periods=['p1:begins(-1):ends(6):admin(p1admin)'])
+        self.period_id = self.testhelper.sub_p1.id
 
     def _load(self, period_id=None):
         period_id = period_id or self.period_id
-        self.loginTo('periodoneadmin', '/period/{0}/@@create-new-assignment/'.format(period_id))
+        self.loginTo('p1admin', '/period/{0}/@@create-new-assignment/'.format(period_id))
         self.waitForCssSelector('.devilry_subjectadmin_createnewassignmentform')
 
     def test_breadcrumb(self):
         self._load()
         breadcrumbtext = self.get_breadcrumbstring('Create new assignment')
-        self.assertEquals(breadcrumbtext, ['All subjects', 'duck1100.periodone', 'Create new assignment'])
+        self.assertEquals(breadcrumbtext, ['All subjects', 'sub.p1', 'Create new assignment'])
 
     def test_form_render(self):
         self._load()
@@ -90,16 +92,30 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
                 self.extjs_set_datetime_values('.publishingTimeField',
                                                date=publishing_time[0],
                                                time=publishing_time[1])
+    def _set_page2_values(self, setupstudents_cls=None,
+                          setupexaminers_cls=None,
+                          only_copy_passing=False):
+        if setupstudents_cls:
+            self.extjs_click_radiobutton(setupstudents_cls)
+        if setupexaminers_cls:
+            self.extjs_click_radiobutton(setupexaminers_cls)
+        if only_copy_passing:
+            self.extjs_set_checkbox_value('.onlyCopyPassingGroupsField', select=True)
 
     def _set_values(self, short_name='', long_name='',
                     delivery_types='', first_deadline=None,
-                    anonymous=None, publishing_time=None):
+                    anonymous=None, publishing_time=None,
+                    setupstudents_cls=None, setupexaminers_cls=None,
+                    only_copy_passing=False):
         self._set_page1_values(short_name=short_name, long_name=long_name,
                                delivery_types=delivery_types,
                                first_deadline=first_deadline,
                                anonymous=anonymous,
                                publishing_time=publishing_time)
         self._click_nextbutton_and_wait_for_pagechange()
+        self._set_page2_values(setupstudents_cls=setupstudents_cls,
+                               setupexaminers_cls=setupexaminers_cls,
+                               only_copy_passing=only_copy_passing)
 
 
     def _click_createbutton_and_wait_for_reload(self):
@@ -134,7 +150,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self._click_createbutton_and_wait_for_reload()
 
     def test_duplicate(self):
-        self.testhelper.add_to_path('uni;duck1100.periodone.a1')
+        self.testhelper.add_to_path('uni;sub.p1.a1')
         self._load()
         self._set_names('a1', 'A1')
         self._set_first_deadline(self.tomorrow.isoformat(), '15:00')
@@ -144,7 +160,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
 
     def _create_related_student(self, username, candidate_id=None, tags=None):
         user = self.testhelper.create_user(username)
-        relatedstudent = self.testhelper.duck1100_periodone.relatedstudent_set.create(user=user,
+        relatedstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user,
                                                                           candidate_id=candidate_id)
         if tags:
             relatedstudent.tags = tags
@@ -153,7 +169,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
 
     def _create_related_examiner(self, username, tags=None):
         user = self.testhelper.create_user(username)
-        relatedexaminer = self.testhelper.duck1100_periodone.relatedexaminer_set.create(user=user)
+        relatedexaminer = self.testhelper.sub_p1.relatedexaminer_set.create(user=user)
         if tags:
             relatedexaminer.tags = tags
             relatedexaminer.save()
@@ -190,3 +206,96 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self._click_createbutton_and_wait_for_reload()
         created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
         self.assertTrue(created.anonymous)
+
+    def test_setup_no_students(self):
+        self._create_related_student('student0', tags=['group1'])
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=self.valid_first_deadline,
+                         setupstudents_cls='.setupStudentsDoNotSetupRadio')
+        self._click_createbutton_and_wait_for_reload()
+        created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
+        self.assertEquals(created.assignmentgroups.count(), 0)
+        self.assertEquals(Examiner.objects.filter(assignmentgroup__parentnode=created).count(), 0)
+
+    def test_setup_no_examiners(self):
+        self._create_related_student('student0', tags=['group1'])
+        self._create_related_examiner('examiner0', tags=['group1'])
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=self.valid_first_deadline,
+                         setupexaminers_cls='.setupExaminersDoNotSetupRadio')
+        self._click_createbutton_and_wait_for_reload()
+        created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
+        self.assertEquals(created.assignmentgroups.count(), 1)
+        self.assertEquals(Examiner.objects.filter(assignmentgroup__parentnode=created).count(), 0)
+
+
+    def test_setup_copy_from_another(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1:pub(1).g1:candidate(notused)')
+        self.testhelper.add_to_path('uni;sub.p1.a2:ln(Assignment Two):pub(2).g1:candidate(student1):examiner(examiner1).d1')
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=self.valid_first_deadline,
+                         setupstudents_cls='.setupStudentsCopyRadio')
+        self._click_createbutton_and_wait_for_reload()
+        created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
+        self.assertEquals(created.assignmentgroups.count(), 1)
+        group = created.assignmentgroups.all()[0]
+        self.assertEquals(group.candidates.all()[0].student, self.testhelper.student1)
+        self.assertEquals(group.examiners.all()[0].user, self.testhelper.examiner1)
+
+    def test_setup_copy_from_another_noexaminers(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1:ln(Assignment One).g1:candidate(student1):examiner(examiner1).d1')
+        g1 = self.testhelper.sub_p1_a1_g1
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=self.valid_first_deadline,
+                         setupstudents_cls='.setupStudentsCopyRadio',
+                         setupexaminers_cls='.setupExaminersDoNotSetupRadio')
+        self._click_createbutton_and_wait_for_reload()
+        created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
+        self.assertEquals(created.assignmentgroups.count(), 1)
+        group = AssignmentGroup.where_is_candidate(self.testhelper.student1).get(parentnode=created.id)
+        self.assertEquals(group.examiners.count(), 0)
+
+    def test_setup_copy_from_another_onlypassing(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1:ln(Assignment One).g1:candidate(student1):examiner(examiner1).d1')
+        g1 = self.testhelper.sub_p1_a1_g1
+        self.testhelper.add_delivery(g1, {'a.py': ['print ', 'yeh']})
+        self.testhelper.add_feedback(g1, verdict={'grade': 'A', 'points': 10, 'is_passing_grade': True})
+
+        self.testhelper.add_to_path('uni;sub.p1.a1.g2:candidate(student2):examiner(examiner1).d1')
+        g2 = self.testhelper.sub_p1_a1_g2
+        self.testhelper.add_delivery(g2, {'f.py': ['print ', 'meh']})
+        self.testhelper.add_feedback(g2, verdict={'grade': 'F', 'points': 1, 'is_passing_grade': False})
+
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=self.valid_first_deadline,
+                         setupstudents_cls='.setupStudentsCopyRadio',
+                         only_copy_passing=True)
+        self._click_createbutton_and_wait_for_reload()
+        created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
+        self.assertEquals(created.assignmentgroups.count(), 1)
+        group = AssignmentGroup.where_is_candidate(self.testhelper.student1).get(parentnode=created.id)
+        self.assertEquals(group.candidates.all()[0].student, self.testhelper.student1)
+
+    def test_setup_copy_from_another_specify_other(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1:ln(Assignment One):pub(2).g1:candidate(student1).d1')
+        self.testhelper.add_to_path('uni;sub.p1.a2:ln(Assignment Two):pub(3).g1:candidate(student1).d1')
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=self.valid_first_deadline,
+                         setupstudents_cls='.setupStudentsCopyRadio',
+                         copy_from='Assignment One')
+        raw_input('1')
+        #self._click_createbutton_and_wait_for_reload()
+        #created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
+        #self.assertEquals(created.assignmentgroups.count(), 1)
+        #group = AssignmentGroup.where_is_candidate(self.testhelper.student1).get(parentnode=created.id)
+        #self.assertEquals(group.examiners.all()[0].user, self.testhelper.examiner1)
+
+
+    #def test_setup_nonelectronic(self):
+        #pass

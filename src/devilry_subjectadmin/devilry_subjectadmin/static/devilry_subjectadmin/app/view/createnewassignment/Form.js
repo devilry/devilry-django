@@ -255,7 +255,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 margin: 0,
                                 name: 'setupstudents_mode',
                                 itemId: 'setupStudentsAllRelatedRadio',
-                                cls: 'extrastronglabel',
+                                cls: 'extrastronglabel setupStudentsAllRelatedRadio',
                                 inputValue: 'allrelated'
                             }, {
                                 xtype: 'box',
@@ -273,10 +273,10 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
 
                             }, {
                                 boxLabel: gettext('Copy from another assignment.'),
-                                cls: 'extrastronglabel',
                                 margin: '10 0 0 0',
                                 name: 'setupstudents_mode',
                                 itemId: 'setupStudentsCopyRadio',
+                                cls: 'extrastronglabel setupStudentsCopyRadio',
                                 hidden: true,
                                 inputValue: 'copyfromassignment'
                             }, {
@@ -288,10 +288,12 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 items: [{
                                     xtype: 'selectsingleassignment',
                                     name: 'copyfromassignment_id',
+                                    cls: 'copyFromAssignmentIdField',
                                     width: 300
                                 }, {
                                     xtype: 'checkboxfield',
                                     name: 'only_copy_passing_groups',
+                                    cls: 'onlyCopyPassingGroupsField',
                                     columnWidth: 1,
                                     margin: '0 0 0 10',
                                     checked: false,
@@ -300,9 +302,9 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
 
                             }, {
                                 boxLabel: gettext('Do not add students at this time.'),
-                                cls: 'extrastronglabel',
                                 margin: '10 0 0 0',
                                 name: 'setupstudents_mode',
+                                cls: 'extrastronglabel setupStudentsDoNotSetupRadio',
                                 inputValue: 'do_not_setup'
                             }, {
                                 xtype: 'box',
@@ -351,7 +353,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 margin: '0 0 0 0',
                                 name: 'setupexaminers_mode',
                                 checked: true,
-                                cls: 'extrastronglabel',
+                                cls: 'extrastronglabel setupExaminersByTagsRadio',
                                 inputValue: 'bytags',
                                 itemId: 'setupExaminersByTagsRadio',
                                 boxLabel: gettext('Setup examiners by tags.')
@@ -380,15 +382,15 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 name: 'setupexaminers_mode',
                                 hidden: true,
                                 itemId: 'setupExaminersCopyFromAssignmentRadio',
-                                cls: 'extrastronglabel',
+                                cls: 'extrastronglabel setupExaminersCopyFromAssignmentRadio',
                                 inputValue: 'copyfromassignment',
                                 boxLabel: 'X' // Set by the controller
 
                             }, {
                                 boxLabel: gettext('Make me examiner for all students.'),
-                                cls: 'extrastronglabel',
                                 margin: '10 0 0 0',
                                 name: 'setupexaminers_mode',
+                                cls: 'extrastronglabel setupExaminersMakeAuthuserExaminer',
                                 inputValue: 'make_authenticated_user_examiner'
                             }, {
                                 xtype: 'box',
@@ -401,9 +403,9 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
 
                             }, {
                                 boxLabel: gettext('Do not setup examiners at this time.'),
-                                cls: 'extrastronglabel',
                                 margin: '10 0 0 0',
                                 name: 'setupexaminers_mode',
+                                cls: 'extrastronglabel setupExaminersDoNotSetupRadio',
                                 inputValue: 'do_not_setup'
                             }]
                         }]

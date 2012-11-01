@@ -13,6 +13,9 @@ class ExtJsTestMixin(object):
         if (select and not checked) or (not select and checked):
             fieldwrapper.find_element_by_css_selector('input[type=button]').click()
 
+    def extjs_click_radiobutton(self, cssselector, within=None):
+        self.extjs_set_checkbox_value(cssselector, select=True, within=within)
+
     def extjs_expand_panel(self, panel):
         """
         :param panel: An ExtJS panel node.
