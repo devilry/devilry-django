@@ -452,6 +452,15 @@ class TestHelper(object):
         if extras['ln']:
             assignment.long_name = extras['ln'][0]
 
+        if extras['first_deadline']:
+            days = int(extras['first_deadline'][0])
+            assignment.first_deadline = assignment.publishing_time
+            if days == 0:
+                assignment.first_deadline += timedelta(seconds=1)
+            else:
+                assignment.first_deadline += timedelta(days=days)
+
+
         assignment.full_clean()
         assignment.save()
 
@@ -477,8 +486,8 @@ class TestHelper(object):
                     assignment_name = assignment
                     extras_arg = None
 
-                users = self._parse_extras(extras_arg, ['admin', 'pub', 'anon', 'ln'])
-                new_assignment = self._create_or_add_assignment(assignment_name, period, users)
+                extras = self._parse_extras(extras_arg, ['admin', 'pub', 'anon', 'ln', 'first_deadline'])
+                new_assignment = self._create_or_add_assignment(assignment_name, period, extras)
                 created_assignments.append(new_assignment)
         return created_assignments
 
