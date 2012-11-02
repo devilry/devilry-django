@@ -17,7 +17,7 @@ Ext.define('devilry_student.view.dashboard.RecentDeliveriesGrid', {
             '{delivery.subject.short_name} - {delivery.assignment.short_name} - #{delivery.number}',
         '</a></div>',
         '<div class="metainfo">',
-            '<small class="offset_from_now">', gettext('Added {offset_from_now} ago'), '</small>',
+            '<small class="muted offset_from_now">', gettext('Added {offset_from_now} ago'), '</small>',
         '</div>'
     ],
 

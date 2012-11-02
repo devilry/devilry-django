@@ -20,14 +20,14 @@ Ext.define('devilry_student.view.dashboard.OpenGroupsDeadlineNotExpiredGrid', {
 
     metaTpl: [
         '<div class="metainfo">',
-            '<small class="deliveries"><em>{deliveries_term}:</em> {group.deliveries}</small>',
-            '<small class="divider">,&nbsp;&nbsp;</small>',
-            '<small class="deadline"><em>{deadline_term}:</em> {group.active_deadline.deadline}</small>',
+            '<small class="deliveries muted"><em>{deliveries_term}:</em> {group.deliveries}</small>',
+            '<small class="divider muted">,&nbsp;&nbsp;</small>',
+            '<small class="deadline muted"><em>{deadline_term}:</em> {group.active_deadline.deadline}</small>',
             ' ',
             '<tpl if="deadline_expired">',
-                '<small class="deadlinedelta danger">({offset_from_deadline})</small>',
+                '<small class="deadlinedelta text-warning">({offset_from_deadline})</small>',
             '<tpl else>',
-                '<small class="deadlinedelta success">({offset_from_deadline})</small>',
+                '<small class="deadlinedelta text-success">({offset_from_deadline})</small>',
             '</tpl>',
         '</div>'
     ],

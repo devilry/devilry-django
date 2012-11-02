@@ -17,14 +17,14 @@ Ext.define('devilry_student.view.dashboard.RecentFeedbacksGrid', {
             '{delivery.subject.short_name} - {delivery.assignment.short_name} - #{delivery.number}',
         '</a></div>',
         '<div class="metainfo">',
-            '<small class="offset_from_now">', gettext('Added {offset_from_now} ago'), '</small>',
-            '<small> - </small>',
+            '<small class="offset_from_now muted">', gettext('Added {offset_from_now} ago'), '</small>',
+            '<small class="muted"> - </small>',
             '<tpl if="delivery.last_feedback.is_passing_grade">',
-                '<small class="passing_grade success">', gettext('Passed'), '</small>',
+                '<small class="passing_grade text-success">', gettext('Passed'), '</small>',
             '<tpl else>',
-                '<small class="failing_grade danger">', gettext('Failed'), '</small>',
+                '<small class="failing_grade text-warning">', gettext('Failed'), '</small>',
             '</tpl>',
-            '<small class="grade"> ({delivery.last_feedback.grade})</small>',
+            '<small class="muted grade"> ({delivery.last_feedback.grade})</small>',
         '</div>'
     ],
 
@@ -39,7 +39,7 @@ Ext.define('devilry_student.view.dashboard.RecentFeedbacksGrid', {
                 sortable: false,
                 menuDisabled: true,
                 renderer: function(value, m, recentDeliveryRecord) {
-                    var offset_from_now = recentDeliveryRecord.get('last_feedback').save_offset_from_now
+                    var offset_from_now = recentDeliveryRecord.get('last_feedback').save_offset_from_now;
                     return col1TplCompiled.apply({
                         delivery: recentDeliveryRecord.data,
                         offset_from_now: devilry_extjsextras.DatetimeHelpers.formatTimedeltaShort(offset_from_now)
