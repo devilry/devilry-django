@@ -1,3 +1,4 @@
+from datetime import datetime
 import re
 from seleniumhelpers import SeleniumTestCase
 from django.test.utils import override_settings
@@ -27,19 +28,35 @@ class ExtJsTestMixin(object):
         self.waitForDisplayed(body)
         return body
 
-    def extjs_set_single_datetime_value(self, cssselector, field, value, within=None):
-        if not field in ('date', 'time'):
-            raise ValueError('field must be one of: "field", "value"')
-        selector = '{cssselector} .devilry_extjsextras_{field}field input[type=text]'.format(cssselector=cssselector,
-                                                                                             field=field)
-        field = self.waitForAndFindElementByCssSelector(selector, within=within)
+    def extjs_get_single_datetime_field(self, cssselector, fieldtype, within=None):
+        if not fieldtype in ('date', 'time'):
+            raise ValueError('fieldtype must be one of: "date", "time"')
+        selector = '{cssselector} .devilry_extjsextras_{fieldtype}field input[type=text]'.format(cssselector=cssselector,
+                                                                                                 fieldtype=fieldtype)
+        return self.waitForAndFindElementByCssSelector(selector, within=within)
+
+    def extjs_set_single_datetime_value(self, cssselector, fieldtype, value, within=None):
+        field = self.extjs_get_single_datetime_field(cssselector, fieldtype, within=within)
         field.clear()
         field.send_keys(value)
         field.send_keys(Keys.TAB)
 
-    def extjs_set_datetime_values(self, cssselector, date, time, within=None):
+    def extjs_set_datetime_value(self, cssselector, date, time, within=None):
         self.extjs_set_single_datetime_value(cssselector, 'date', date, within=None)
         self.extjs_set_single_datetime_value(cssselector, 'time', time, within=None)
+
+
+    def extjs_get_single_datetime_value(self, cssselector, fieldtype, within=None):
+        field = self.extjs_get_single_datetime_field(cssselector, fieldtype, within=within)
+        return field.get_attribute('value')
+
+    def extjs_get_datetime_value(self, cssselector, within=None):
+        date = self.extjs_get_single_datetime_value(cssselector, 'date', within=within)
+        time = self.extjs_get_single_datetime_value(cssselector, 'time', within=within)
+        if not date or not time:
+            return None
+        return datetime.strptime('{0} {1}'.format(date, time), '%Y-%m-%d %H:%M')
+
 
     def extjs_boundlist_select(self, cssselector, label):
         boundlist = self.waitForAndFindElementByCssSelector(cssselector)

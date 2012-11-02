@@ -3,6 +3,7 @@ from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Examiner
+from devilry.apps.core.models.deliverytypes import ELECTRONIC, NON_ELECTRONIC
 from selenium.webdriver.common.keys import Keys
 
 from .base import SubjectAdminSeleniumTestCase
@@ -10,7 +11,7 @@ from .base import ExtJsTestMixin
 
 
 class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
-    def setUp(self):
+    def _setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.create_superuser('grandma')
         self.tomorrow = date.today() + timedelta(days=1)
@@ -20,6 +21,17 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
                             subjects=['sub'],
                             periods=['p1:begins(-1):ends(6):admin(p1admin)'])
         self.period_id = self.testhelper.sub_p1.id
+
+    def setUp(self):
+        try:
+            self._setUp()
+        except Exception as e:
+            print
+            print
+            print e, type(e), e.__class__
+            print
+            print
+            raise
 
     def _load(self, period_id=None):
         period_id = period_id or self.period_id
@@ -72,14 +84,14 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self._set_value('short_name', short_name)
 
     def _set_first_deadline(self, date, time):
-        self.extjs_set_datetime_values('.firstDeadlineField', date, time)
+        self.extjs_set_datetime_value('.firstDeadlineField', date, time)
 
     def _expand_advanced(self):
         panel = self.waitForAndFindElementByCssSelector('#advancedOptionsPanel')
         return self.extjs_expand_panel(panel)
 
     def _set_page1_values(self, short_name='', long_name='',
-                          delivery_types='', first_deadline=None,
+                          delivery_types=None, first_deadline=None,
                           anonymous=None, publishing_time=None):
         self._set_names(short_name, long_name)
         if first_deadline:
@@ -89,9 +101,17 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
             if anonymous != None:
                 self.extjs_set_checkbox_value('.anonymousField', select=anonymous)
             if publishing_time != None:
-                self.extjs_set_datetime_values('.publishingTimeField',
-                                               date=publishing_time[0],
-                                               time=publishing_time[1])
+                self.extjs_set_datetime_value('.publishingTimeField',
+                                              date=publishing_time[0],
+                                              time=publishing_time[1])
+        if delivery_types != None:
+            if delivery_types == ELECTRONIC:
+                self.extjs_click_radiobutton('.deliveryTypesElectronic')
+            elif delivery_types == NON_ELECTRONIC:
+                self.extjs_click_radiobutton('.deliveryTypesNonElectronic')
+            else:
+                raise ValueError()
+
     def _set_page2_values(self, setupstudents_cls=None,
                           setupexaminers_cls=None,
                           only_copy_passing=False,
@@ -108,7 +128,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
                                        label=copy_from_label)
 
     def _set_values(self, short_name='', long_name='',
-                    delivery_types='', first_deadline=None,
+                    delivery_types=None, first_deadline=None,
                     anonymous=None, publishing_time=None,
                     setupstudents_cls=None, setupexaminers_cls=None,
                     only_copy_passing=False, copy_from_label=None):
@@ -194,6 +214,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self.assertEquals(created.long_name, 'Test')
 
         self.assertFalse(created.anonymous)
+        self.assertEquals(created.delivery_types, ELECTRONIC)
         self.assertEquals(created.assignmentgroups.all().count(), 4)
         student0group = AssignmentGroup.where_is_candidate(self.testhelper.student0).get(parentnode=created.id)
         self.assertEquals(student0group.examiners.all()[0].user, self.testhelper.examiner0)
@@ -241,7 +262,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self._load()
         self._set_values(short_name='sometest', long_name='Test',
                          first_deadline=self.valid_first_deadline,
-                         setupstudents_cls='.setupStudentsCopyRadio')
+                         setupstudents_cls='.setupStudentsCopyFromAssignmentRadio')
         self._click_createbutton_and_wait_for_reload()
         created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
         self.assertEquals(created.assignmentgroups.count(), 1)
@@ -255,7 +276,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self._load()
         self._set_values(short_name='sometest', long_name='Test',
                          first_deadline=self.valid_first_deadline,
-                         setupstudents_cls='.setupStudentsCopyRadio',
+                         setupstudents_cls='.setupStudentsCopyFromAssignmentRadio',
                          setupexaminers_cls='.setupExaminersDoNotSetupRadio')
         self._click_createbutton_and_wait_for_reload()
         created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
@@ -277,7 +298,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self._load()
         self._set_values(short_name='sometest', long_name='Test',
                          first_deadline=self.valid_first_deadline,
-                         setupstudents_cls='.setupStudentsCopyRadio',
+                         setupstudents_cls='.setupStudentsCopyFromAssignmentRadio',
                          only_copy_passing=True)
         self._click_createbutton_and_wait_for_reload()
         created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
@@ -291,7 +312,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self._load()
         self._set_values(short_name='sometest', long_name='Test',
                          first_deadline=self.valid_first_deadline,
-                         setupstudents_cls='.setupStudentsCopyRadio',
+                         setupstudents_cls='.setupStudentsCopyFromAssignmentRadio',
                          copy_from_label='Assignment One')
         self._click_createbutton_and_wait_for_reload()
         created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
@@ -299,6 +320,140 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         group = created.assignmentgroups.all()[0]
         self.assertEquals(group.candidates.all()[0].student, self.testhelper.selectedstud)
 
+    def test_setup_nonelectronic(self):
+        self._create_related_student('student0', tags=['group1'])
+        self._create_related_examiner('examiner0', tags=['group1'])
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         delivery_types=NON_ELECTRONIC)
+        self._click_createbutton_and_wait_for_reload()
+        created = Assignment.objects.get(parentnode__id=self.period_id, short_name='sometest')
+        self.assertEquals(created.long_name, 'Test')
 
-    #def test_setup_nonelectronic(self):
-        #pass
+        self.assertFalse(created.anonymous)
+        self.assertEquals(created.delivery_types, NON_ELECTRONIC)
+        self.assertEquals(created.assignmentgroups.all().count(), 1)
+        group = created.assignmentgroups.all()[0]
+        self.assertEquals(group.examiners.all()[0].user, self.testhelper.examiner0)
+        self.assertEquals(group.candidates.all()[0].student, self.testhelper.student0)
+
+    def test_nonelectronic_hide_first_deadline_field(self):
+        self._load()
+        firstDeadlineField = self.waitForAndFindElementByCssSelector('.firstDeadlineField')
+        self.waitForDisplayed(firstDeadlineField)
+        self._set_page1_values(short_name='sometest', long_name='Test',
+                               delivery_types=NON_ELECTRONIC)
+        self.waitForNotDisplayed(firstDeadlineField)
+        self._set_page1_values(short_name='sometest', long_name='Test',
+                               delivery_types=ELECTRONIC)
+        self.waitForDisplayed(firstDeadlineField)
+
+    def test_page2_nocopyfrom_when_firstinperiod(self):
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=self.valid_first_deadline)
+        copyFromPanel = self.waitForAndFindElementByCssSelector('.copyFromAssignmentIdField')
+        self.assertFalse(copyFromPanel.is_displayed())
+
+    def test_page2_showhide_setupexaminers(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1')
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=self.valid_first_deadline)
+        setupExaminersContainer = self.waitForAndFindElementByCssSelector('.setupExaminersContainer')
+        self.waitForDisplayed(setupExaminersContainer)
+        self._set_page2_values(setupstudents_cls='.setupStudentsDoNotSetupRadio')
+        self.waitForNotDisplayed(setupExaminersContainer)
+        self._set_page2_values(setupstudents_cls='.setupStudentsAllRelatedRadio')
+        self.waitForDisplayed(setupExaminersContainer)
+
+    def test_page2_toggle_allrelated_and_copyfromassignment(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1')
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=self.valid_first_deadline)
+
+        setupExaminersByTagsRadio = self.waitForAndFindElementByCssSelector('.setupExaminersByTagsRadio')
+        setupExaminersCopyFromAssignmentRadio = self.waitForAndFindElementByCssSelector('.setupExaminersCopyFromAssignmentRadio')
+        self.waitForDisplayed(setupExaminersByTagsRadio)
+        self.waitForNotDisplayed(setupExaminersCopyFromAssignmentRadio)
+
+        self._set_page2_values(setupstudents_cls='.setupStudentsCopyFromAssignmentRadio')
+        self.waitForDisplayed(setupExaminersCopyFromAssignmentRadio)
+        self.waitForNotDisplayed(setupExaminersByTagsRadio)
+
+        self._set_page2_values(setupstudents_cls='.setupStudentsAllRelatedRadio')
+        self.waitForDisplayed(setupExaminersByTagsRadio)
+        self.waitForNotDisplayed(setupExaminersCopyFromAssignmentRadio)
+
+    def test_page2_copyfromassignment_examinerlabelchange(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1:ln(Assignment One):pub(2)')
+        self.testhelper.add_to_path('uni;sub.p1.a2:ln(Assignment Two):pub(3)')
+        self._load()
+        self._set_values(short_name='sometest', long_name='Test',
+                         first_deadline=self.valid_first_deadline,
+                         setupstudents_cls='.setupStudentsCopyFromAssignmentRadio')
+
+        setupExaminersCopyFromAssignmentRadio = self.waitForAndFindElementByCssSelector('.setupExaminersCopyFromAssignmentRadio')
+        self.waitForText('Assignment Two', within=setupExaminersCopyFromAssignmentRadio)
+
+        self._set_page2_values(copy_from_label='Assignment One')
+        self.waitForText('Assignment One', within=setupExaminersCopyFromAssignmentRadio)
+
+    def test_autoset_names(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1:ln(Assignment 1)')
+        self._load()
+        info = self.waitForAndFindElementByCssSelector('.devilry_extjsextras_floatingalertmessagelist .alert-info')
+        self.assertIn('Suggested Assignment 2', info.text)
+
+
+    def _get_value(self, fieldname):
+        field = self.waitForAndFindElementByCssSelector('input[name={0}]'.format(fieldname))
+
+
+    def _minuteprecise_datetime(self, datetimeobj):
+        return datetimeobj.replace(second=0, microsecond=0, tzinfo=None)
+
+    def _waitForAndGetFirstDeadlineFieldValue(self):
+        self.waitFor(self.selenium, lambda s: self.extjs_get_datetime_value('.firstDeadlineField') != None)
+        deadline = self.extjs_get_datetime_value('.firstDeadlineField')
+        if deadline:
+            return self._minuteprecise_datetime(deadline)
+        else:
+            return deadline
+
+    def test_autoset_first_deadline(self):
+        self.testhelper.add_to_path('uni;sub.p1.a:first_deadline(25)')
+        self.testhelper.add_to_path('uni;sub.p1.b:first_deadline(35)')
+        expected_deadline = self._minuteprecise_datetime(self.testhelper.sub_p1_b.first_deadline + timedelta(days=10))
+
+        self._load()
+        info = self.waitForAndFindElementByCssSelector('.devilry_extjsextras_floatingalertmessagelist .alert-info')
+        self.assertIn('submission date', info.text)
+        first_deadline = self._waitForAndGetFirstDeadlineFieldValue()
+        self.assertEquals(expected_deadline, first_deadline)
+
+    def test_autoset_first_deadline_2weeks_off(self):
+        self.testhelper.add_to_path('uni;sub.p1.a:first_deadline(15)')
+        self.testhelper.add_to_path('uni;sub.p1.b:first_deadline(20)')
+        self.testhelper.add_to_path('uni;sub.p1.c:first_deadline(25)')
+        expected_deadline = self._minuteprecise_datetime(self.testhelper.sub_p1_c.first_deadline + timedelta(days=10))
+
+        self._load()
+        info = self.waitForAndFindElementByCssSelector('.devilry_extjsextras_floatingalertmessagelist .alert-info')
+        self.assertIn('submission date', info.text)
+        first_deadline = self._waitForAndGetFirstDeadlineFieldValue()
+        self.assertEquals(expected_deadline, first_deadline)
+
+
+    def test_autoset_first_deadline_ignore_empty(self):
+        self.testhelper.add_to_path('uni;sub.p1.a:first_deadline(25)')
+        self.testhelper.add_to_path('uni;sub.p1.b') # Should be ignored
+        self.testhelper.add_to_path('uni;sub.p1.c:first_deadline(35)')
+        expected_deadline = self._minuteprecise_datetime(self.testhelper.sub_p1_c.first_deadline + timedelta(days=10))
+
+        self._load()
+        info = self.waitForAndFindElementByCssSelector('.devilry_extjsextras_floatingalertmessagelist .alert-info')
+        self.assertIn('submission date', info.text)
+        first_deadline = self._waitForAndGetFirstDeadlineFieldValue()
+        self.assertEquals(expected_deadline, first_deadline)

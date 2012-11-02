@@ -98,11 +98,13 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 items: [{
                                     boxLabel: gettext('Using Devilry'),
                                     name: 'delivery_types',
+                                    cls: 'deliveryTypesElectronic',
                                     inputValue: 0,
                                     checked: true
                                 }, {
                                     boxLabel: gettext('Not using Devilry'),
                                     name: 'delivery_types',
+                                    cls: 'deliveryTypesNonElectronic',
                                     inputValue: 1
                                 }]
                             }, {
@@ -275,8 +277,8 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 boxLabel: gettext('Copy from another assignment.'),
                                 margin: '10 0 0 0',
                                 name: 'setupstudents_mode',
-                                itemId: 'setupStudentsCopyRadio',
-                                cls: 'extrastronglabel setupStudentsCopyRadio',
+                                itemId: 'setupStudentsCopyFromAssignmentRadio',
+                                cls: 'extrastronglabel setupStudentsCopyFromAssignmentRadio',
                                 hidden: true,
                                 inputValue: 'copyfromassignment'
                             }, {
@@ -321,6 +323,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                     }, {
                         xtype: 'container',
                         itemId: 'setupExaminersContainer',
+                        cls: 'setupExaminersContainer',
                         margin: '10 0 0 0',
                         layout: 'column',
                         items: [{
