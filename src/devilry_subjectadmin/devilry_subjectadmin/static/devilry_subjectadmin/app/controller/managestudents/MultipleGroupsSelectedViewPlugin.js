@@ -105,10 +105,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             managestudentsGroupSorterChanged: this._onGroupsSorterChanged
         });
         this.control({
-            'viewport multiplegroupsview': {
-                render: this._onRender
-            },
-
             'viewport multiplegroupsview selectedgroupssummarygrid': {
                 resize: this._onGroupSummaryGridResize,
                 collapse: this._onGroupSummaryGridCollapse,
@@ -217,10 +213,31 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     },
 
     _onMultipleGroupsSelected: function(manageStudentsController, groupRecords) {
+        this._fadeOut(this.getScrollableBodyContainer());
+        this._closeAllEditors();
         this.groupRecords = groupRecords;
         this.manageStudentsController = manageStudentsController;
         this.manageStudentsController.setBodyCard('multiplegroupsSelected');
         this._populateSelectedGroupsStore();
+        this._fadeIn(this.getScrollableBodyContainer());
+    },
+
+    _fadeOut: function(component) {
+        component.getEl().setOpacity(0.2);
+    },
+
+    _fadeIn: function(component) {
+        component.getEl().animate({
+            duration: 400,
+            from: {opacity: 0.1},
+            to: {opacity: 1.0}
+        });
+    },
+
+    _closeAllEditors: function() {
+        this._showExaminersDefaultView();
+        this._showMergeGroupsDefaultView();
+        this._showTagsDefaultView();
     },
 
     _populateSelectedGroupsStore: function() {
@@ -232,10 +249,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         store.removeAll();
         store.loadData(this.groupRecords);
         store.sortBySpecialSorter(this.manageStudentsController.getCurrentGroupsStoreSorter());
-    },
-
-    _onRender: function() {
-        //console.log('render MultipleGroupsSelectedView');
     },
 
     _scrollIntroView: function(widget) {
@@ -492,10 +505,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this._scrollIntroView(confirmContainer);
     },
 
-    _onMergeGroupsCancel: function() {
+    _showMergeGroupsDefaultView: function() {
         this.getConfirmMergeGroupsContainer().hide();
         this.getMergeGroupsHelp().show();
         this.getMergeGroupsButton().show();
+    },
+    _onMergeGroupsCancel: function() {
+        this._showMergeGroupsDefaultView();
         this._scrollIntroView(this.getMergeGroups());
     },
 
