@@ -1,59 +1,18 @@
-/* line 2, ../sass/devilry_subjectadmin.scss */
-.shortcutlist > ul {
-  margin: 0;
-}
-/* line 4, ../sass/devilry_subjectadmin.scss */
-.shortcutlist > ul a.subjectlink, .shortcutlist > ul a.assignmentlink {
-  color: #444;
-  text-decoration: underline;
-}
-/* line 8, ../sass/devilry_subjectadmin.scss */
-.shortcutlist > ul li {
-  list-style: none;
-  margin: 5px 0 5px 0;
-}
-/* line 12, ../sass/devilry_subjectadmin.scss */
-.shortcutlist > ul > li {
-  margin-top: 15px;
-}
-/* line 17, ../sass/devilry_subjectadmin.scss */
-.shortcutlist > ul > li > a {
-  font-size: 1.2em;
-}
-/* line 20, ../sass/devilry_subjectadmin.scss */
-.shortcutlist > ul > li ul {
-  margin-left: 20px;
-}
-
-/* line 28, ../sass/devilry_subjectadmin.scss */
-.devilry_subjectadmin_actionlist.bootstrap ul {
-  list-style: none;
-  margin: 0;
-}
-/* line 31, ../sass/devilry_subjectadmin.scss */
-.devilry_subjectadmin_actionlist.bootstrap ul li {
-  margin: 7px 0 7px 0;
-}
-/* line 33, ../sass/devilry_subjectadmin.scss */
-.devilry_subjectadmin_actionlist.bootstrap ul li strong {
-  font-size: 18px;
-}
-
-/* line 40, ../sass/devilry_subjectadmin.scss */
+/* line 1, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_navigation.bootstrap {
   margin: 20px 0 20px 0;
 }
-/* line 41, ../sass/devilry_subjectadmin.scss */
+/* line 2, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_navigation.bootstrap strong {
   font-size: 18px;
 }
 
-/* line 48, ../sass/devilry_subjectadmin.scss */
+/* line 9, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_dangerousactions .bootstrap h2, .devilry_subjectadmin_dangerousactions .bootstrap h3 {
   color: #900;
 }
 
-/* line 55, ../sass/devilry_subjectadmin.scss */
+/* line 16, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_allactivewhereisadminlist strong {
   font-size: 18px;
 }
