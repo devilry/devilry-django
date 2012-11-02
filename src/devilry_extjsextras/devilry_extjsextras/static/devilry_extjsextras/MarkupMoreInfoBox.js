@@ -64,7 +64,7 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
             '</a>'
         ].join('');
         if(!Ext.isEmpty(this.data)) {
-            this._setTplAttrs(this.data);
+            this.setTplAttrs(this.data);
         }
 
         this.addListener({
@@ -123,14 +123,14 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
         }, 200, this);
     },
 
-    _setTplAttrs: function(data) {
+    setTplAttrs: function(data) {
         data.MORE_BUTTON = this.morebutton;
         data.MORE_ATTRS = Ext.String.format('class="more {0}" style="display: none;"', this.moreCls);
         data.MORE_STYLE = 'style="display: none;"';
     },
 
     update: function(data) {
-        this._setTplAttrs(data);
+        this.setTplAttrs(data);
         return this.callParent([data]);
     }
 });
