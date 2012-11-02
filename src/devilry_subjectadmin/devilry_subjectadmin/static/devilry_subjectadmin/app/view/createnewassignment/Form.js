@@ -324,7 +324,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                         xtype: 'container',
                         itemId: 'setupExaminersContainer',
                         cls: 'setupExaminersContainer',
-                        margin: '10 0 0 0',
+                        margin: '30 0 0 0',
                         layout: 'column',
                         items: [{
                             margin: 0,
