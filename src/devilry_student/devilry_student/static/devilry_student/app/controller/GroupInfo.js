@@ -319,6 +319,8 @@ Ext.define('devilry_student.controller.GroupInfo', {
     },
 
     _onFeedbackRender: function(component) {
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, component.el.id]);
+        if(window.DevilrySettings.DEVILRY_ENABLE_MATHJAX) {
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, component.el.id]);
+        }
     }
 });
