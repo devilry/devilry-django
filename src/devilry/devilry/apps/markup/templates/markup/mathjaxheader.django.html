@@ -1,4 +1,5 @@
 <!-- ** MathJax -->
+{% if DEVILRY_ENABLE_MATHJAX %}
 <script type="text/javascript" src="{{ DEVILRY_MATHJAX_URL }}?config=TeX-AMS-MML_HTMLorMML"></script>
 <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
@@ -12,3 +13,4 @@
         }
     });
 </script>
+{% endif %}
