@@ -409,7 +409,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
     _onMakeMeExaminer: function() {
         devilry_authenticateduserinfo.UserInfo.load(function(authenticatedUser) {
-            console.log('user', authenticatedUser.data);
             devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeExaminers({
                 groupRecord: this.groupRecord,
                 userRecords: [authenticatedUser],
