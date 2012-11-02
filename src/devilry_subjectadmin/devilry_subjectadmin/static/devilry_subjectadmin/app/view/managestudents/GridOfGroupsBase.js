@@ -20,40 +20,50 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
             '<tpl if="groupname">',
                 '<div class="groupname">{groupname}</div>',
             '</tpl>',
-            '<div class="username"><small>{usernames}</small></div>',
+            '<div class="username"><small class="muted">{usernames}</small></div>',
             '<tpl if="hasFeedback">',
                 '<tpl if="feedback.is_passing_grade">',
                     '<div class="passinggrade">',
-                        '<small class="passingstatus success">{approvedText}</small>',
-                        ' <small class="grade success">({feedback.grade})</small>',
+                        '<small class="passingstatus text-success">{approvedText}</small>',
+                        ' <small class="grade text-success">({feedback.grade})</small>',
                     '</div>',
                 '</tpl>',
                 '<tpl if="!feedback.is_passing_grade">',
                     '<div class="notpassinggrade">',
-                    '<small class="passingstatus danger">{notApprovedText}</small>',
-                    ' <small class="grade danger">({feedback.grade})</small>',
+                    '<small class="passingstatus text-warning">{notApprovedText}</small>',
+                    ' <small class="grade text-warning">({feedback.grade})</small>',
                     '</div>',
                 '</tpl>',
             '<tpl else>',
-            '<div class="nofeedback"><small>', gettext('No feedback'), '</small></div>',
+            '<div class="nofeedback"><small class="muted">', gettext('No feedback'), '</small></div>',
             '</tpl>',
         '</div>'
     ],
     metadataColTemplateString: [
         '<div class="metadataWrapper">',
             '<tpl if="is_open">',
-                '<div class="open"><small class="success">{openText}</small></div>',
+                '<div class="open"><small class="text-info">{openText}</small></div>',
             '</tpl>',
             '<tpl if="!is_open">',
-                '<div class="closed"><small>{closedText}</small></div>',
+                '<div class="closed"><small class="muted">{closedText}</small></div>',
             '</tpl>',
             '<tpl if="num_deliveries != 0">',
-                '<div class="num_deliveries countbox">',
-                    '<tpl if="num_deliveries == 1">{num_deliveries} {deliveryText}</tpl>',
-                    '<tpl if="num_deliveries &gt; 1">{num_deliveries} {deliveriesText}</tpl>',
-                '<div>',
+                '<span class="num_deliveries badge" title="{num_deliveries} {[this.getDeliveriesLabel(values.num_deliveries)]}">',
+                    '{num_deliveries} {[this.ellipsis(this.getDeliveriesLabel(values.num_deliveries), 7)]}',
+                '</span>',
             '</tpl>',
-        '</div>'
+        '</div>', {
+            getDeliveriesLabel: function(num_deliveries) {
+                if(num_deliveries === 1) {
+                    return gettext('delivery');
+                } else {
+                    return gettext('deliveries');
+                }
+            },
+            ellipsis: function(s, max) {
+                return Ext.String.ellipsis(s, max);
+            }
+        }
     ],
     examinersListTemplateString: [
         '<div class="examinersWrapper">',
@@ -103,8 +113,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
         this.notApprovedText = pgettext('group', 'Failed');
         this.openText = pgettext('group', 'Open');
         this.closedText = pgettext('group', 'Closed');
-        this.deliveriesText = gettext('Deliveries');
-        this.deliveryText = gettext('Delivery');
 
     },
 
@@ -179,9 +187,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
             num_deliveries: record.get('num_deliveries'),
             is_open: record.get('is_open'),
             openText: this.openText,
-            closedText: this.closedText,
-            deliveriesText: this.deliveriesText,
-            deliveryText: this.deliveryText
+            closedText: this.closedText
         });
     },
 
