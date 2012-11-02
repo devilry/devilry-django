@@ -62,6 +62,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     }],
 
     init: function() {
+        this._createSingleInitializationItems();
         this.application.addListener({
             scope: this,
             managestudentsSingleGroupSelected: this._onSingleGroupSelected
@@ -124,6 +125,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         });
     },
 
+    _createSingleInitializationItems: function() {
+        this._createStudentsStore();
+        this._createExaminersStore();
+        this._createTagsStore();
+    },
+
+
     _onSingleGroupSelected: function(manageStudentsController, groupRecord) {
         this.manageStudentsController = manageStudentsController;
         this.groupRecord = groupRecord;
@@ -131,16 +139,20 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
 
     _refreshBody: function() {
+        this._loadStudentsIntoStore();
+        this._loadExaminersIntoStore();
+        this._loadTagsIntoStore();
         this.manageStudentsController.setBody({
             xtype: 'singlegroupview',
-            studentsStore: this._createStudentsStore(),
-            examinersStore: this._createExaminersStore(),
-            tagsStore: this._createTagsStore(),
+            studentsStore: this.studentsStore,
+            examinersStore: this.examinersStore,
+            tagsStore: this.tagsStore,
             assignment_id: this.manageStudentsController.assignmentRecord.get('id'),
             groupRecord: this.groupRecord,
             period_id: this.manageStudentsController.assignmentRecord.get('parentnode')
         });
     },
+
 
     _onRender: function() {
         //console.log('render SingleGroupSelectedView');
@@ -302,12 +314,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
 
     _createStudentsStore: function() {
-        var store = Ext.create('Ext.data.Store', {
-            model: this.getCandidateModel(),
-            data: this.groupRecord.get('candidates')
+        this.studentsStore = Ext.create('Ext.data.Store', {
+            model: this.getCandidateModel()
         });
-        return store;
     },
+    _loadStudentsIntoStore: function() {
+        this.studentsStore.loadData(this.groupRecord.get('candidates'));
+    },
+
     _onPopStudent: function(candidateRecord) {
         this.getStudentsCardBody().getLayout().setActiveItem('confirmPop');
         var confirmPanel = this.getStudentsCardBody().down('#confirmPop');
@@ -356,11 +370,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
 
     _createExaminersStore: function() {
-        var store = Ext.create('Ext.data.Store', {
-            model: this.getExaminerModel(),
-            data: this.groupRecord.get('examiners')
+        this.examinersStore = Ext.create('Ext.data.Store', {
+            model: this.getExaminerModel()
         });
-        return store;
+    },
+    _loadExaminersIntoStore: function() {
+        this.examinersStore.loadData(this.groupRecord.get('examiners'));
     },
     _onSetExaminers: function() {
         this.getExaminersCardBody().getLayout().setActiveItem('setExaminersPanel');
@@ -441,12 +456,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
 
     _createTagsStore: function() {
-        //console.log(this.groupRecord.data);
-        var store = Ext.create('Ext.data.Store', {
-            model: this.getTagModel(),
-            data: this.groupRecord.get('tags')
+        this.tagsStore = Ext.create('Ext.data.Store', {
+            model: this.getTagModel()
         });
-        return store;
+    },
+    _loadTagsIntoStore: function() {
+        this.tagsStore.loadData(this.groupRecord.get('tags'));
     },
 
     // Add tags
