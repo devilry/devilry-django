@@ -18,11 +18,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
                 cls: 'gradebox',
                 itemId: 'gradebox',
                 tpl: [
-                    '<tpl if="loading">',
-                        '<div class="well well-small muted">',
-                            gettext('Loading'), ' ...',
-                        '</div>',
-                    '<tpl else>',
+                    '<tpl if="!loading">',
                         '<tpl if="hasFeedback">',
                             '<div class="alert alert-{[this.getFeedbackCls(values.group.feedback)]}">',
                                 '<strong>', gettext('Grade') ,':</strong> ',
@@ -50,9 +46,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
                                 '</small>',
                             '</div>',
                         '<tpl else>',
-                            '<div class="well well-small nofeedback muted">',
+                            '<div class="well well-small nofeedback muted"><p style="margin: 0; padding: 0;">',
                                 gettext('No feedback'),
-                            '</div>',
+                            '</p></div>',
                         '</tpl>',
                     '</tpl>', {
                         getFeedbackCls: function(feedback) {
@@ -83,29 +79,23 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
                 cls: 'statusbox',
                 itemId: 'statusbox',
                 tpl: [
-                    '<tpl if="loading">',
-                        '<div class="well well-small muted">',
-                            gettext('Loading'), ' ...',
-                        '</div>',
-                    '<tpl else>',
-                        '<div class="alert alert-{[this.getStatusCls(values.group.is_open)]}">',
-                            '<tpl if="group.is_open">',
+                    '<tpl if="!loading">',
+                        '<tpl if="group.is_open">',
+                            '<div class="alert alert-info">',
                                 '<strong class="status_open">', gettext('Open'), '</strong>: ',
                                 '<small>',
                                     gettext('The group can add more deliveries.'),
                                 '</small>',
-                            '<tpl else>',
+                            '</div>',
+                        '<tpl else>',
+                            '<div class="well well-small muted"><p style="margin:0; padding:0;">',
                                 '<strong class="status_closed">', gettext('Closed'), '</strong>: ',
                                 '<small>',
                                     gettext('The group can <strong>not</strong> add more deliveries.'),
                                 '</small>',
-                            '</tpl>',
-                        '</div>',
-                    '</tpl>', {
-                        getStatusCls: function(is_open) {
-                            return is_open? 'success': 'warning';
-                        }
-                    }
+                            '</p></div>',
+                        '</tpl>',
+                    '</tpl>'
                 ],
                 data: {
                     loading: true
@@ -121,13 +111,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
      */
     setGroupRecord: function(groupRecord) {
         this.down('#gradebox').update({
+            loading: false,
             group: groupRecord.data,
             hasFeedback: groupRecord.get('feedback') !== null,
             delivery_link_prefix: devilry_subjectadmin.utils.UrlLookup.manageGroupAndShowDeliveryPrefix(
                 groupRecord.get('id'))
         });
         this.down('#statusbox').update({
-            group: groupRecord,
+            group: groupRecord.data,
             examinersHint: gettext('Examiners can open and close a group at any time to allow/prevent deliveries.'),
             loading: false
         });
