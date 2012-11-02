@@ -157,14 +157,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         return [
             this.getExaminersBox(),
             this.getTagsBox(),
-            this.getDeadlinesContainer()
+            this.getDeadlinesContainer(),
+            this.getExaminerRoleList()
         ];
     },
     _getHighPriComponents: function() {
         return [
             this.getSinglegroupmetainfo(),
-            this.getStudentsBox(),
-            this.getExaminerRoleList()
+            this.getStudentsBox()
         ];
     },
 
@@ -534,7 +534,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         Ext.Array.each(this.groupRecord.get('tags'), function(tagobj) {
             tags.push(tagobj.tag);
         }, this);
-        this.getChoosetagspanel().setInitialValue(tags.join(','));
+        if(typeof this.getChoosetagspanel() !== 'undefined') {
+            this.getChoosetagspanel().setInitialValue(tags.join(','));
+        }
     },
 
     // Add tags
