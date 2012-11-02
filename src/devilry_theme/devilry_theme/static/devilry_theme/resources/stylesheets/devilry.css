@@ -13191,7 +13191,7 @@ You only need something like this extjs code to make it work:
   font-size: 0;
 }
 
-/* line 1, ../sass/_devilry_maskstyles.scss */
+/* line 3, ../sass/_devilry_maskstyles.scss */
 .x-mask-msg.information-mask {
   padding: 20px !important;
   background-color: transparent !important;
@@ -13199,7 +13199,7 @@ You only need something like this extjs code to make it work:
   cursor: help;
   width: 100% !important;
 }
-/* line 8, ../sass/_devilry_maskstyles.scss */
+/* line 10, ../sass/_devilry_maskstyles.scss */
 .x-mask-msg.information-mask div {
   background-image: none !important;
   border-radius: 6px;
@@ -13209,6 +13209,13 @@ You only need something like this extjs code to make it work:
   cursor: help;
   color: #333 !important;
   font-size: 13px !important;
+}
+
+/* line 23, ../sass/_devilry_maskstyles.scss */
+.devilry-white-mask {
+  background-color: #fff !important;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
+  opacity: 0.8;
 }
 
 /* line 248, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */

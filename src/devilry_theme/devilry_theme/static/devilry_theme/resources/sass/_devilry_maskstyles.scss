@@ -1,3 +1,5 @@
+@import "compass/css3/opacity";
+
 .x-mask-msg.information-mask {
     padding: 20px !important;
     background-color: transparent !important;
@@ -15,4 +17,10 @@
         color: #333 !important;
         font-size: 13px !important;
     }
+}
+
+
+.devilry-white-mask{
+    background-color: #fff !important;
+    @include opacity(0.8);
 }
