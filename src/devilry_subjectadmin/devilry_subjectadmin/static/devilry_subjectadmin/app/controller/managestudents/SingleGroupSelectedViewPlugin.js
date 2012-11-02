@@ -220,7 +220,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
 
     _onFeedbackRender: function(component) {
-        MathJax.Hub.Queue(["Typeset", MathJax.Hub, component.el.id]);
+        if(window.DevilrySettings.DEVILRY_ENABLE_MATHJAX) {
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, component.el.id]);
+        }
     },
 
 
