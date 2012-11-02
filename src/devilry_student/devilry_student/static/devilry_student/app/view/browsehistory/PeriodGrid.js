@@ -15,7 +15,7 @@ Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
 
     col1Tpl: [
         '<div><strong>{period.parentnode__long_name}</strong></div>',
-        '<div><small>{period.parentnode__short_name}.{period.short_name}</small></div>',
+        '<div><small class="muted">{period.parentnode__short_name}.{period.short_name}</small></div>',
         '<div class="labels">',
             '<tpl for="labels">',
                 '<tpl if="label == \'unqualified-for-exam\'">',

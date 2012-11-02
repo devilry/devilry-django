@@ -41,13 +41,13 @@ Ext.define('devilry_student.view.browsehistory.AssignmentGrid', {
         '<div class="gradecolumn">',
             '<tpl if="feedback">',
                 '<span class="is_passing_grade">',
-                    '<tpl if="feedback__is_passing_grade"><span class="passing_grade success">',
+                    '<tpl if="feedback__is_passing_grade"><span class="passing_grade text-success">',
                         gettext('Passed'),
                     '</span></tpl>',
-                    '<tpl if="!feedback__is_passing_grade"><span class="not_passing_grade danger">',
+                    '<tpl if="!feedback__is_passing_grade"><span class="not_passing_grade text-warning">',
                         gettext('Failed'),
                     '</span></tpl>',
-                    '<small>',
+                    '<small class="muted">',
                         ' (<span class="grade">{feedback__grade}</span>)',
                     '</small>',
                 '</span>',
@@ -59,7 +59,7 @@ Ext.define('devilry_student.view.browsehistory.AssignmentGrid', {
                 //')</small>',
             '</tpl>',
             '<tpl if="!feedback">',
-                '<small class="nofeedback">',
+                '<small class="nofeedback muted">',
                     gettext('No feedback'),
                 '</small>',
             '</tpl>',
@@ -82,7 +82,7 @@ Ext.define('devilry_student.view.browsehistory.AssignmentGrid', {
             field: 'parentnode__parentnode',
             comp: 'exact',
             value: periodRecord.get('id')
-        }])
+        }]);
         var path = [periodRecord.get('parentnode__short_name'), periodRecord.get('short_name')].join('.');
         this.store.load({
             scope: this,
