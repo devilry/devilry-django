@@ -404,7 +404,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
         self.testhelper.add_to_path('uni;sub.p1.a1:ln(Assignment 1)')
         self._load()
         info = self.waitForAndFindElementByCssSelector('.devilry_extjsextras_floatingalertmessagelist .alert-info')
-        self.assertIn('Suggested Assignment 2', info.text)
+        self.assertIn('values for: Name', info.text)
 
 
     def _get_value(self, fieldname):
@@ -429,7 +429,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
 
         self._load()
         info = self.waitForAndFindElementByCssSelector('.devilry_extjsextras_floatingalertmessagelist .alert-info')
-        self.assertIn('submission date', info.text)
+        self.assertIn('Submission date', info.text)
         first_deadline = self._waitForAndGetFirstDeadlineFieldValue()
         self.assertEquals(expected_deadline, first_deadline)
 
@@ -441,7 +441,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
 
         self._load()
         info = self.waitForAndFindElementByCssSelector('.devilry_extjsextras_floatingalertmessagelist .alert-info')
-        self.assertIn('submission date', info.text)
+        self.assertIn('Submission date', info.text)
         first_deadline = self._waitForAndGetFirstDeadlineFieldValue()
         self.assertEquals(expected_deadline, first_deadline)
 
@@ -454,6 +454,6 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
 
         self._load()
         info = self.waitForAndFindElementByCssSelector('.devilry_extjsextras_floatingalertmessagelist .alert-info')
-        self.assertIn('submission date', info.text)
+        self.assertIn('Submission date', info.text)
         first_deadline = self._waitForAndGetFirstDeadlineFieldValue()
         self.assertEquals(expected_deadline, first_deadline)

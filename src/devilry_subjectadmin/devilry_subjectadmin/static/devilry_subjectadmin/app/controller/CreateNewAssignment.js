@@ -226,8 +226,8 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     },
     _onLoadAssignmentsSuccess: function(assignmentRecords) {
         var initialValues = {};
-        this._autoapplyNamesFromLastAssignment(initialValues, assignmentRecords);
-        this._autoapplyFirstDeadline(initialValues);
+
+        this._autoapplyIntialValues(initialValues);
 
         if(assignmentRecords.length > 0) {
             this.getSetupStudentsCopyFromAssignmentRadio().show();
@@ -253,11 +253,46 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         }, 200, this);
     },
 
-    _autoapplyNamesFromLastAssignment: function(initialValues, assignmentRecords) {
-        if(assignmentRecords.length === 0) {
+    _em: function(string) {
+        return Ext.String.format('<em>{0}</em>', string);
+    },
+
+    _autoapplyIntialValues: function(initialValues) {
+        var autoSummary = [];
+        this._autoapplyNamesFromLastAssignment(initialValues, autoSummary);
+        this._autoapplyFirstDeadline(initialValues, autoSummary);
+        if(autoSummary.length === 0) {
             return;
         }
-        var lastAssignment = assignmentRecords[0];
+
+        var labelsList = [];
+        var detailsList = [];
+        Ext.Array.each(autoSummary, function(summary) {
+            labelsList.push(this._em(summary.label));
+            detailsList.push(Ext.String.format('<h2>{0}</h2>', summary.label));
+            detailsList.push(Ext.create('Ext.XTemplate', summary.detailstpl).apply(summary.detailsdata));
+        }, this);
+
+        this.application.getAlertmessagelist().add({
+            type: 'info',
+            autoclose: true,
+            messagetpl: [
+                gettext('Devilry suggested values for: {labels}.'),
+                ' <small>{MORE_BUTTON}</small>',
+                '<div {MORE_ATTRS}>{details}</div>'
+            ],
+            messagedata: {
+                labels: labelsList.join(', '),
+                details: detailsList.join('')
+            }
+        });
+    },
+
+    _autoapplyNamesFromLastAssignment: function(initialValues, autoSummary) {
+        if(this.getAssignmentsStore().getCount() === 0) {
+            return;
+        }
+        var lastAssignment = this.getAssignmentsStore().first();
         var last_short_name = lastAssignment.get('short_name');
         var last_long_name = lastAssignment.get('long_name');
         var last_shortname_number = this._getNumberInName(last_short_name);
@@ -267,41 +302,50 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             var number = oldnumber + 1;
             short_name = last_short_name.replace(oldnumber.toString(), number.toString());
             long_name = last_long_name.replace(oldnumber.toString(), number.toString());
-            this.application.getAlertmessagelist().add({
-                type: 'info',
-                autoclose: true,
-                messagetpl: gettext('Suggested {long_name} as the name, based on {last_long_name}.'),
-                messagedata: {
-                    last_long_name: Ext.String.format('<em>{0}</em>', last_long_name),
-                    long_name: Ext.String.format('<em>{0}</em>', long_name)
-                }
-            });
             Ext.apply(initialValues, {
                 long_name: long_name,
                 short_name: short_name
             });
+
+            autoSummary.push({
+                label: gettext('Name'),
+                detailstpl: [
+                    '<p>',
+                        gettext('Suggested {long_name} as the name, based on {last_long_name}.'),
+                    '</p>'
+                ],
+                detailsdata: {
+                    last_long_name: Ext.String.format('<em>{0}</em>', last_long_name),
+                    long_name: Ext.String.format('<em>{0}</em>', long_name)
+                }
+            });
         }
-        return {};
     },
 
-    _em: function(string) {
-        return Ext.String.format('<em>{0}</em>', string);
-    },
-
-    _autoapplyFirstDeadline: function(initialValues) {
+    _autoapplyFirstDeadline: function(initialValues, autoSummary) {
         var result = this.getAssignmentsStore().smartAutodetectFirstDeadline();
         if(result !== null) {
             initialValues.first_deadline = result.first_deadline;
+
             var previous_first_deadline = result.lastAssignment.get('first_deadline');
-            this.application.getAlertmessagelist().add({
-                type: 'info',
-                autoclose: true,
-                messagetpl: gettext('Suggested {first_deadline} as the submission date. Calculated by adding the most common timespan between submission dates ({days} days) to the submission date of the last published assignment, {previous_assignment} ({previous_first_deadline}).'),
-                messagedata: {
-                    first_deadline: this._em(Ext.Date.format(result.first_deadline, this.ui_datetimeformat)),
+            autoSummary.push({
+                label: gettext('Submission date'),
+                detailstpl: [
+                    '<p>',
+                        gettext('Calculated by adding the most common timespan between submission dates ({days} days) to the submission date of the last published assignment, {previous_assignment} ({previous_first_deadline}).'),
+                    '</p>',
+                    '<tpl if="hasExtraDelay">',
+                        '<p>',
+                            gettext('You have a break in the regular timespan. Since you use a short interval between 1 day and 14 days, we assume this means you have skipped an interval or two, and suggested a submission date based on those assumptions.'),
+                        '</p>',
+                    '</tpl>'
+                ],
+                detailsdata: {
+                    //first_deadline: this._em(Ext.Date.format(result.first_deadline, this.ui_datetimeformat)),
                     days: result.mostCommonDayDiff.days,
                     previous_assignment: this._em(result.lastAssignment.get('short_name')),
-                    previous_first_deadline: Ext.Date.format(previous_first_deadline, this.ui_datetimeformat)
+                    previous_first_deadline: Ext.Date.format(previous_first_deadline, this.ui_datetimeformat),
+                    hasExtraDelay: result.delayCount > 1
                 }
             });
         }
