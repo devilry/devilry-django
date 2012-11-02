@@ -6,6 +6,9 @@ Ext.define('devilry_subjectadmin.view.DangerousActions', {
     title: gettext('Dangerous actions'),
     titleTpl: '<h2>{heading}</h2>',
 
+    defaultOpacity: 0.5,
+    hoverOpacity: 1,
+
     initComponent: function() {
         Ext.apply(this, {
             items: [{
@@ -29,6 +32,24 @@ Ext.define('devilry_subjectadmin.view.DangerousActions', {
                 items: this.items
             }]
         });
+        this.on('render', this._onRender, this);
         this.callParent(arguments);
+    },
+
+    _onRender: function() {
+        this.getEl().setOpacity(this.defaultOpacity);
+        this.getEl().on({
+            scope: this,
+            mouseenter: this._onMouseEnter,
+            mouseleave: this._onMouseLeave
+        });
+    },
+
+    _onMouseEnter: function() {
+        this.getEl().setOpacity(this.hoverOpacity);
+    },
+
+    _onMouseLeave: function() {
+        this.getEl().setOpacity(this.defaultOpacity);
     }
 });
