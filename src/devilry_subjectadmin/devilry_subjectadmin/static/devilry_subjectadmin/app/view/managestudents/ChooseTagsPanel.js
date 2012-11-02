@@ -17,12 +17,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
      */
 
     /**
-     * @cfg {String} [initialValue=""]
-     * The initial value of the tag-input field.
-     */
-    initialValue: '',
-
-    /**
      * @cfg {bool} [allowNoTags]
      */
     allowNoTags: false,
@@ -52,7 +46,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
                     anchor: '100%',
                     xtype: this.inputFieldType,
                     name: 'tags',
-                    value: this.initialValue,
                     allowBlank: this.allowNoTags,
                     emptyText: pgettext('tagsexample', 'Example: group3, needs_extra_help'),
                     regex: new RegExp('^[a-zA-Z0-9_, -]+$'),
@@ -134,7 +127,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
         this.down(this.inputFieldType).setValue(value);
     },
 
+    setInitialValue: function(initialValue) {
+        this.initialValue = initialValue;
+    },
+
     _onShow: function() {
+        if(typeof this.initialValue === 'undefined') {
+            throw "this.initialValue has not been set. It must be set using setInitialValue() before showing the ChooseTagsPanel.";
+        }
         this.setValue(this.initialValue);
         this.down(this.inputFieldType).focus();
     }

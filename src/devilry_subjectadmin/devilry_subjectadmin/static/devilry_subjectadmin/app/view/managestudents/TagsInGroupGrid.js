@@ -11,6 +11,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsInGroupGrid', {
     requires: [
         'Ext.XTemplate'
     ],
+    store: 'SingleGroupTags',
 
     rowTpl: [
         '<div class="tagsingroupgrid_tag tagsingroupgrid_tag_{tag}">',

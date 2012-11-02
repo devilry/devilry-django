@@ -26,6 +26,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         'AggregatedGroupInfo'
     ],
 
+    stores: [
+        'SingleGroupCandidates',
+        'SingleGroupExaminers',
+        'SingleGroupTags'
+    ],
+
     views: [
         'managestudents.SingleGroupSelectedView',
         'managestudents.SelectExaminersGrid'
@@ -50,6 +56,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         ref: 'studentsCardBody',
         selector: 'viewport singlegroupview managestudentsonsingle #cardBody'
     }, {
+        ref: 'studentsGrid',
+        selector: 'viewport singlegroupview managestudentsonsingle studentsingroupgrid'
+    }, {
 
     // Examiners
         ref: 'examinersCardBody',
@@ -61,11 +70,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
     // Tags
         ref: 'tagsCardBody',
-        selector: 'viewport singlegroupview managetagsonsingle #cardBody'
+        selector: 'viewport singlegroupview managetagsonsingle #cardBody',
+    }, {
+        ref: 'choosetagspanel',
+        selector: 'viewport singlegroupview managetagsonsingle choosetagspanel',
     }],
 
     init: function() {
-        this._createSingleInitializationItems();
         this.application.addListener({
             scope: this,
             managestudentsSingleGroupSelected: this._onSingleGroupSelected
@@ -128,13 +139,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         });
     },
 
-    _createSingleInitializationItems: function() {
-        this._createStudentsStore();
-        this._createExaminersStore();
-        this._createTagsStore();
-    },
-
-
     _onSingleGroupSelected: function(manageStudentsController, groupRecord) {
         this.manageStudentsController = manageStudentsController;
         this.groupRecord = groupRecord;
@@ -144,9 +148,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _refreshBody: function() {
         this.manageStudentsController.setBody({
             xtype: 'singlegroupview',
-            studentsStore: this.studentsStore,
-            examinersStore: this.examinersStore,
-            tagsStore: this.tagsStore,
+            studentsStore: this.getSingleGroupCandidatesStore(),
+            examinersStore: this.getSingleGroupExaminersStore(),
+            tagsStore: this.getSingleGroupTagsStore(),
             assignment_id: this.manageStudentsController.assignmentRecord.get('id'),
             groupRecord: this.groupRecord,
             period_id: this.manageStudentsController.assignmentRecord.get('parentnode')
@@ -321,13 +325,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.getStudentsCardBody().getLayout().setActiveItem('helpAndButtonsContainer');
     },
 
-    _createStudentsStore: function() {
-        this.studentsStore = Ext.create('Ext.data.Store', {
-            model: this.getCandidateModel()
-        });
-    },
     _loadStudentsIntoStore: function() {
-        this.studentsStore.loadData(this.groupRecord.get('candidates'));
+        this.getSingleGroupCandidatesStore().loadData(this.groupRecord.get('candidates'));
+        if(this.groupRecord.get('candidates').length < 2) {
+            this.getStudentsGrid().hideDeleteColumn();
+        } else {
+            this.getStudentsGrid().showDeleteColumn();
+        }
     },
 
     _onPopStudent: function(candidateRecord) {
@@ -377,13 +381,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.getExaminersCardBody().getLayout().setActiveItem('helpAndButtonsContainer');
     },
 
-    _createExaminersStore: function() {
-        this.examinersStore = Ext.create('Ext.data.Store', {
-            model: this.getExaminerModel()
-        });
-    },
     _loadExaminersIntoStore: function() {
-        this.examinersStore.loadData(this.groupRecord.get('examiners'));
+        this.getSingleGroupExaminersStore().loadData(this.groupRecord.get('examiners'));
     },
     _onSetExaminers: function() {
         this.getExaminersCardBody().getLayout().setActiveItem('setExaminersPanel');
@@ -463,13 +462,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.getTagsCardBody().getLayout().setActiveItem('helpAndButtonsContainer');
     },
 
-    _createTagsStore: function() {
-        this.tagsStore = Ext.create('Ext.data.Store', {
-            model: this.getTagModel()
-        });
-    },
     _loadTagsIntoStore: function() {
-        this.tagsStore.loadData(this.groupRecord.get('tags'));
+        this.getSingleGroupTagsStore().loadData(this.groupRecord.get('tags'));
+        var tags = [];
+        Ext.Array.each(this.groupRecord.get('tags'), function(tagobj) {
+            tags.push(tagobj.tag);
+        }, this);
+        console.log(tags);
+        this.getChoosetagspanel().setInitialValue(tags.join(','));
     },
 
     // Add tags

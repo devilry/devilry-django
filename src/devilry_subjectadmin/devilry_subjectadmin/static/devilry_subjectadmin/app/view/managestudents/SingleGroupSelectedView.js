@@ -24,18 +24,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
      */
 
     /**
-     * @cfg {Ext.data.Store} studentsStore (required)
-     */
-
-    /**
-     * @cfg {Ext.data.Store} examinersStore (required)
-     */
-
-    /**
-     * @cfg {Ext.data.Store} tagsStore (required)
-     */
-
-    /**
      * @cfg {int} [period_id]
      */
 
@@ -53,16 +41,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                 items: [{
                     xtype: 'managestudentsonsingle',
                     columnWidth: 0.30,
-                    margin: '0 10 0 0',
-                    studentsStore: this.studentsStore
+                    margin: '0 10 0 0'
                 }, {
                     xtype: 'managetagsonsingle',
                     columnWidth: 0.30,
-                    margin: '0 5 0 5',
-                    tagsStore: this.tagsStore
+                    margin: '0 5 0 5'
                 }, {
                     xtype: 'manageexaminersonsingle',
-                    examinersStore: this.examinersStore,
                     margin: '0 0 0 10',
                     columnWidth: 0.40,
                     period_id: this.period_id

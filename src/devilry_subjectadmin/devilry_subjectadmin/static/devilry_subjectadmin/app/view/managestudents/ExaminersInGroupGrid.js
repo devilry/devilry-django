@@ -11,6 +11,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
     requires: [
         'Ext.XTemplate'
     ],
+    store: 'SingleGroupExaminers',
 
     rowTpl: [
         '<div class="examinersingroupgrid_meta examinersingroupgrid_meta_{user.username}">',

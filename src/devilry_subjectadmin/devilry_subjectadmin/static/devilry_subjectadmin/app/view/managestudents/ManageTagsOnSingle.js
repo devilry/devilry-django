@@ -10,10 +10,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
         'devilry_subjectadmin.view.managestudents.TagsHelp'
     ],
 
-    /**
-     * @cfg {Ext.data.Store} tagsStore (required)
-     */
-
     constructor: function(config) {
         this.mixins.observable.constructor.call(this, config);
         this.addEvents(
@@ -28,10 +24,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
     },
 
     initComponent: function() {
-        var tags = [];
-        this.tagsStore.each(function(tagRecord) {
-            tags.push(tagRecord.get('tag'));
-        }, this);
         Ext.apply(this, {
             cls: 'bootstrap',
             layout: 'anchor',
@@ -73,7 +65,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
                     layout: 'anchor',
                     items: [{
                         xtype: 'tagsingroupgrid',
-                        store: this.tagsStore,
                         anchor: '100%'
                     }, {
                         xtype: 'moreinfobox',
@@ -95,7 +86,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
                 }, {
                     xtype: 'choosetagspanel',
                     itemId: 'setTagsPanel',
-                    initialValue: tags.join(','),
                     allowNoTags: true,
                     id: 'single_set_tags_panel',
                     buttonText: gettext('Save tags')

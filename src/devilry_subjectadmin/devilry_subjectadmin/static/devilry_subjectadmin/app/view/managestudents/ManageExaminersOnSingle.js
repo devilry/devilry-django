@@ -11,10 +11,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
     ],
 
     /**
-     * @cfg {Ext.data.Store} examinersStore (required)
-     */
-
-    /**
      * @cfg {int} [period_id]
      * The ID of the current period.
      */
@@ -88,8 +84,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                     layout: 'anchor',
                     items: [{
                         xtype: 'examinersingroupgrid',
-                        anchor: '100%',
-                        store: this.examinersStore
+                        anchor: '100%'
                     }, {
                         xtype: 'moreinfobox',
                         anchor: '100%',

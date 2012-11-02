@@ -12,6 +12,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
         'Ext.XTemplate',
         'devilry_theme.Icons'
     ],
+    store: 'SingleGroupCandidates',
 
     rowTpl: [
         '<div class="studentsingroupgrid_meta studentsingroupgrid_meta_{user.username}">',
@@ -36,10 +37,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
                 return Ext.create('Ext.XTemplate', this.rowTpl).apply(studentRecord.data);
             }
         }];
-        if(this.store.getCount() > 1) {
+        //if(this.getStore().getCount() > 1) {
             this.columns.push({
                 xtype: 'actioncolumn',
+                itemId: 'deleteColumn',
                 width: 20,
+                hidden: true,
                 items: [{
                     icon: devilry_theme.Icons.DELETE_SMALL,
                     tooltip: gettext('Move the student from this project group into a copy of this group. Copies deadlines, deliveries, feedback, tags and examiners.'),
@@ -53,8 +56,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.StudentsInGroupGrid', {
                     }
                 }]
             });
-        }
+        //}
         this.callParent(arguments);
+    },
+
+    hideDeleteColumn: function() {
+        this.down('#deleteColumn').hide();
+    },
+    showDeleteColumn: function() {
+        this.down('#deleteColumn').show();
     },
 
     _onRemove: function(rowIndex, colIndex) {

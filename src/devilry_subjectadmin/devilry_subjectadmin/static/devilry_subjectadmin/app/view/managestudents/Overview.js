@@ -7,7 +7,10 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
     cls: 'devilry_subjectadmin_managestudentsoverview',
     requires: [
         'devilry_subjectadmin.view.managestudents.HelpPanel',
-        'devilry_subjectadmin.view.managestudents.ListOfGroups'
+        'devilry_subjectadmin.view.managestudents.ListOfGroups',
+        'devilry_subjectadmin.view.managestudents.NoGroupSelectedView',
+        'devilry_subjectadmin.view.managestudents.SingleGroupSelectedView',
+        'devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
     ],
 
 
@@ -47,11 +50,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 resizable: true,
                 resizeHandles: 'e'
             }, {
-                xtype: 'panel',
+                xtype: 'container',
                 region: 'center',
-                border: false,
+                itemId: 'body',
                 layout: 'fit',
-                itemId: 'body'
+                //items: [{
+                    //xtype: 'nogroupselectedview'
+                //}]
             }, {
                 xtype: 'managestudents_help',
                 autoScroll: true,

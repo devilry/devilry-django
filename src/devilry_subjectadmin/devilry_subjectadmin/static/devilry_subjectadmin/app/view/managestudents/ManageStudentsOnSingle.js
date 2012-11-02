@@ -8,10 +8,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle', {
         'devilry_subjectadmin.view.managestudents.StudentsInGroupGrid'
     ],
 
-    /**
-     * @cfg {Ext.data.Store} studentsStore (required)
-     */
-
     more_text: [
         '<p>',
             gettext('A group can have one or more students.'), ' ',
@@ -54,8 +50,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle', {
                     layout: 'anchor',
                     items: [{
                         xtype: 'studentsingroupgrid',
-                        anchor: '100%',
-                        store: this.studentsStore
+                        anchor: '100%'
                     }, {
                         xtype: 'moreinfobox',
                         anchor: '100%',
