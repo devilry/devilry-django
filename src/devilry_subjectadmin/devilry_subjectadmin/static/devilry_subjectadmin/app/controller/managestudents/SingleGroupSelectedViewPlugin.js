@@ -155,10 +155,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         });
     },
 
-    //_setLoading: function(text) {
-        //this.manageStudentsController.getBody().setLoading(text);
-    //},
-
     _getLowPriComponents: function() {
         return [
             this.getExaminersBox(),
@@ -168,8 +164,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _getHighPriComponents: function() {
         return [
             this.getSinglegroupmetainfo(),
-            this.getStudentsBox(),
-            this.getDangerousactions() // This is only high-pri because we do not need to do anything with it.
+            this.getStudentsBox()
         ];
     },
 
