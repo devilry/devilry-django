@@ -39,6 +39,7 @@ def settings_view(request):
          'DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG': settings.DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG,
          'DEVILRY_SORT_FULL_NAME_BY_LASTNAME': settings.DEVILRY_SORT_FULL_NAME_BY_LASTNAME,
          'DEVILRY_DEFAULT_DEADLINE_HANDLING_METHOD': settings.DEFAULT_DEADLINE_HANDLING_METHOD,
+         'DEVILRY_ENABLE_MATHJAX': settings.DEVILRY_ENABLE_MATHJAX,
          'DEVILRY_SYNCSYSTEM': settings.DEVILRY_SYNCSYSTEM}
     settings_json = dumps(s, indent=4)
     # NOTE: Defining this as ``window.DevilrySettings``, and not as ``var

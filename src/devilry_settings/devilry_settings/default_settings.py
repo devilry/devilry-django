@@ -171,6 +171,10 @@ LANGUAGES = [('en', gettext_noop('English')),
              ('nb', gettext_noop('Norwegian Bokmal'))]
 
 
+#: Enable MathJax?
+DEVILRY_ENABLE_MATHJAX = True
+
+
 #################################################
 # Settings without a default value
 #################################################
