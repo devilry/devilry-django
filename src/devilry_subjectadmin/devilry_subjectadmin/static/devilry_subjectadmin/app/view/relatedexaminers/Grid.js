@@ -25,7 +25,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Grid', {
                 '</tpl>',
             '</div>',
             '<div class="username">',
-                '<small>{record.user.username}</small>',
+                '<small class="muted">{record.user.username}</small>',
             '</div>',
         '</div>'
     ],
