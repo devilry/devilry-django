@@ -186,7 +186,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             this._fadeOut(component);
         }, this);
 
-        // Load the most important stuff at once
+        // Load the most important stuff immediately
+        this._closeAllEditors();
         this.manageStudentsController.setBodyCard('singlegroupSelected');
         this.getSinglegroupmetainfo().setGroupRecord(this.groupRecord);
         Ext.Array.each(this._getHighPriComponents(), function(component) {
@@ -220,6 +221,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             from: {opacity: 0.1},
             to: {opacity: 1.0}
         });
+    },
+
+    _closeAllEditors: function() {
+        this._showExaminersDefaultView();
+        this._showStudentsDefaultView();
+        this._showTagsDefaultView();
     },
 
 
