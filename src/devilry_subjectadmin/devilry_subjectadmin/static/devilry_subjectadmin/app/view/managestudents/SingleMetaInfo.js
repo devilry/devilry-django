@@ -18,32 +18,32 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
 
     tpl: [
         '<div class="gradebox">',
-            '<h3>', gettext('Grade') ,'</h3> ',
             '<tpl if="hasFeedback">',
-                '<p>',
+                '<div class="alert alert-{[this.getFeedbackCls(values.group.feedback)]}">',
+                    '<strong>', gettext('Grade') ,':</strong> ',
+
                     '<tpl if="group.feedback.is_passing_grade">',
-                        '<span class="success passing_grade">',
+                        '<span class="passing_grade">',
                             gettext('Passed'),
                         '</span>',
                     '<tpl else>',
-                        '<span class="danger failing_grade">',
+                        '<span class="failing_grade">',
                             gettext('Failed'),
                         '</span>',
                     '</tpl>',
                     ' <span class="grade">({group.feedback.grade})</span>',
-                    ' <small class="muted points">(',
+                    ' <small class="points">(',
                         gettext('Points'), ': {group.feedback.points}',
                     ')</small>',
                     ' - <a class="active_feedback_link" href="{delivery_link_prefix}{group.feedback.delivery_id}">',
                         gettext('Details'),
                     '</a>',
 
-                    '<br/>',
-                    '<small class="muted">',
+                    '<br/><small>',
                         '<strong>', gettext('Note'), ':</strong> ',
                         gettext('Students can not see their points, only the grade, and if it is failed or passed.'),
                     '</small>',
-                '</p>',
+                '</div>',
             '<tpl else>',
                 '<p>',
                     '<span class="label label-info nofeedback">',
@@ -53,19 +53,29 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleMetaInfo', {
             '</tpl>',
         '</div>',
 
-        '<div class="statusbox">',
-            '<h3>', gettext('Status'), '</h3>',
-            '<p>',
-                '<tpl if="group.is_open">',
-                    '<span class="label label-success status_open">', gettext('Open'), '</span> ',
-                    gettext('The student(s) can add more deliveries.'),
-                '<tpl else>',
-                    '<span class="label label-warning status_closed">', gettext('Closed'), '</span> ',
-                    gettext('The current grade is the final grade. The student(s) can <strong>not</strong> add more deliveries.'),
-                '</tpl>',
-                ' ', gettext('Examiners can open and close a group at any time to allow/prevent deliveries.'),
-            '</p>',
-        '</div>'
+        '<div class="statusbox alert alert-{[this.getStatusCls(values.group.is_open)]}">',
+            '<tpl if="group.is_open">',
+                '<strong class="status_open">', gettext('Open'), ':</strong> ',
+                gettext('The student(s) can add more deliveries.'),
+            '<tpl else>',
+                '<strong class="status_closed">', gettext('Closed'), '</strong> ',
+                gettext('The current grade is the final grade. The student(s) can <strong>not</strong> add more deliveries.'),
+            '</tpl>',
+            ' ',
+            gettext('Examiners can open and close a group at any time to allow/prevent deliveries.'),
+        '</div>', {
+
+            getFeedbackCls: function(feedback) {
+                if(feedback.is_passing_grade) {
+                    return 'success';
+                } else {
+                    return 'warning';
+                }
+            },
+            getStatusCls: function(is_open) {
+                return is_open? 'success': 'warning';
+            }
+        }
     ],
 
 

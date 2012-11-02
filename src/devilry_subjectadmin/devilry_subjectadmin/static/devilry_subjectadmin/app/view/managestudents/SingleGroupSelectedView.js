@@ -50,7 +50,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
             items: [{
                 xtype: 'container',
                 anchor: '100%',
-                layout: 'column',
+                layout: 'anchor',
                 items: [{
                     xtype: 'container',
                     layout: 'anchor',
@@ -65,24 +65,25 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     }]
                 }, {
                     xtype: 'container',
-                    width: 250,
-                    padding: '0 0 0 30',
-                    layout: 'anchor',
-                    defaults: {
-                        margin: '20 0 0 0',
-                        anchor: '100%'
-                    },
+                    padding: '0 0 0 0',
+                    margin: '20 0 0 0',
+                    layout: 'column',
                     items: [{
                         xtype: 'managestudentsonsingle',
-                        margin: '0 0 0 0',
+                        columnWidth: 0.30,
+                        margin: '0 10 0 0',
                         studentsStore: this.studentsStore
+                    }, {
+                        xtype: 'managetagsonsingle',
+                        columnWidth: 0.30,
+                        margin: '0 5 0 5',
+                        tagsStore: this.tagsStore
                     }, {
                         xtype: 'manageexaminersonsingle',
                         examinersStore: this.examinersStore,
+                        margin: '0 0 0 10',
+                        columnWidth: 0.40,
                         period_id: this.period_id
-                    }, {
-                        xtype: 'managetagsonsingle',
-                        tagsStore: this.tagsStore
                     }]
                 }]
             }, {
