@@ -68,7 +68,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
         this._populateTitleBox(groupInfoRecord);
 
         var delivery_id = this.getOverview().delivery_id;
-        if(delivery_id != undefined) {
+        if(delivery_id !== undefined) {
             this._hightlightSelectedDelivery(delivery_id);
         }
 
@@ -102,7 +102,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
     _populateDeadlinesContainer: function(deadlines, active_feedback) {
         var container = this.getDeadlinesContainer();
         container.removeAll();
-        if(deadlines.length == 0) {
+        if(deadlines.length === 0) {
             container.add({
                 xtype: 'alertmessage',
                 type: 'error',
@@ -290,7 +290,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
             panel.show();
             panel.collapse();
         }, this);
-        var deadlinePanel = this._getDeadlinePanelById(this._getLatestDeadline().id)
+        var deadlinePanel = this._getDeadlinePanelById(this._getLatestDeadline().id);
         deadlinePanel.down('#addDeliveryPanelContainer').removeAll();
         deadlinePanel.showDeliveries();
         this.getMetadataContainer().show();
@@ -306,7 +306,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
 
     _getLatestDeadline: function() {
         var deadlines = this.groupInfoRecord.get('deadlines');
-        if(deadlines.length == 0) {
+        if(deadlines.length === 0) {
             return undefined;
         } else {
             return deadlines[0];

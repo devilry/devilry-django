@@ -68,7 +68,7 @@ Ext.define('devilry_student.controller.Dashboard', {
             callback: function(records, operation) {
                 if(!operation.success) {
                     this._handleGroupLoadError(gettext('Failed to load your assignments. Please try to reload the page.'));
-                } else if(records.length == 0) {
+                } else if(records.length === 0) {
                     this.getNotExpired().hide();
                     this.getNotExpiredEmpty().show();
                 }
@@ -79,7 +79,7 @@ Ext.define('devilry_student.controller.Dashboard', {
             callback: function(records, operation) {
                 if(!operation.success) {
                     this._handleGroupLoadError(gettext('Failed to load your assignments. Please try to reload the page.'));
-                } else if(records.length == 0) {
+                } else if(records.length === 0) {
                     this.getExpired().hide();
                 }
             }
@@ -89,7 +89,7 @@ Ext.define('devilry_student.controller.Dashboard', {
             callback: function(records, operation) {
                 if(!operation.success) {
                     this._handleGroupLoadError(gettext('Failed to load your recent deliveries. Please try to reload the page.'));
-                } else if(records.length == 0) {
+                } else if(records.length === 0) {
                     this.getRecentDeliveries().hide();
                 }
             }
@@ -99,7 +99,7 @@ Ext.define('devilry_student.controller.Dashboard', {
             callback: function(records, operation) {
                 if(!operation.success) {
                     this._handleGroupLoadError(gettext('Failed to load your recent feedbacks. Please try to reload the page.'));
-                } else if(records.length == 0) {
+                } else if(records.length === 0) {
                     this.getRecentFeedbacks().hide();
                 }
             }

@@ -54,7 +54,7 @@ Ext.define('devilry_student.view.add_delivery.AddDeliveryPanel' ,{
         if(this.groupInfoRecord.deadline_expired()) {
             confirm_after_deadline = {
                 xtype: 'confirm_after_deadline'
-            }
+            };
         }
         Ext.apply(this, {
             cls: 'devilry_student_groupinfo_add_delivery',

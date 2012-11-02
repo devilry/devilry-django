@@ -88,7 +88,7 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
                         interpolate(gettext('Your %(deadline_term)s has expired. This %(assignment_term)s uses hard %(deadlines_term)s, so you can not add more %(deliveries_term)s.'), {
                             deadline_term: gettext('deadline'),
                             assignment_term: gettext('assignment'),
-                            deadline_term: gettext('deadlines'),
+                            deadlines_term: gettext('deadlines'),
                             deliveries_term: gettext('deliveries')
                         }, true),
                     '<tpl else>',

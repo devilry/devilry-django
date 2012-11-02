@@ -32,7 +32,7 @@ Ext.define('devilry_student.view.dashboard.RecentDeliveriesGrid', {
                 sortable: false,
                 menuDisabled: true,
                 renderer: function(value, m, recentDeliveryRecord) {
-                    var offset_from_now = recentDeliveryRecord.get('time_of_delivery').offset_from_now
+                    var offset_from_now = recentDeliveryRecord.get('time_of_delivery').offset_from_now;
                     return col1TplCompiled.apply({
                         delivery: recentDeliveryRecord.data,
                         offset_from_now: devilry_extjsextras.DatetimeHelpers.formatTimedeltaShort(offset_from_now)

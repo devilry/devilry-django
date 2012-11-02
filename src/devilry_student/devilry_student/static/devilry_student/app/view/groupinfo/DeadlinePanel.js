@@ -58,7 +58,7 @@ Ext.define('devilry_student.view.groupinfo.DeadlinePanel' ,{
     _formatDeadlineTextOneline: function() {
         var maxlength = 50;
         var text = this.deadline.text;
-        if(text == null || text.length == 0) {
+        if(text === null || text.length === 0) {
             return null;
         }
         text = text.replace(/(\r\n|\n|\r)/gm, " ");

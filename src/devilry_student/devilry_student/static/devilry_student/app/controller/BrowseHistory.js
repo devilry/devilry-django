@@ -42,7 +42,7 @@ Ext.define('devilry_student.controller.BrowseHistory', {
     },
 
     _selectPeriod: function(period_id) {
-        var index = this.periodStore.findExact('id', parseInt(period_id));
+        var index = this.periodStore.findExact('id', parseInt(period_id, 10));
         if(index == -1) {
             Ext.MessageBox.show({
                 title: gettext('Error'),
