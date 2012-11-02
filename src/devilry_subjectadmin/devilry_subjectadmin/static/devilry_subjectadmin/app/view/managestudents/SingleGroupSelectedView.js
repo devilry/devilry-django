@@ -74,21 +74,21 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     period_id: this.period_id
                 }]
             }, {
-                xtype: 'box',
-                cls: 'bootstrap',
-                itemId: 'header',
-                margin: '10 0 0 0',
-                tpl: '<h3 class="muted">{heading}</h3>',
-                data: {
-                    heading: gettext('Deadlines and deliveries')
-                }
-            }, {
-                xtype: 'admingroupinfo_deadlinescontainer'
-            }, {
                 xtype: 'alertmessagelist',
                 margin: '20 0 0 0',
                 itemId: 'examinerRoleList',
                 cls: 'examinerRoleList'
+            }, {
+                xtype: 'box',
+                cls: 'bootstrap',
+                itemId: 'header',
+                margin: '20 0 0 0',
+                tpl: '<h3 class="muted">{heading}</h3>',
+                data: {
+                    heading: gettext('Deadlines, deliveries and feedback')
+                }
+            }, {
+                xtype: 'admingroupinfo_deadlinescontainer'
             }, {
                 xtype: 'dangerousactions',
                 margin: '20 0 0 0',

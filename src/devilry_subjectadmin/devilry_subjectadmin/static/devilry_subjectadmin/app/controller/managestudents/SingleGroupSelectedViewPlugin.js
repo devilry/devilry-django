@@ -157,10 +157,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             this.getExaminerRoleList().add({
                 type: 'info',
                 messagetpl: [
-                    '<div class="pull-left" style="margin-right: 20px;">',
-                        '<h4 style="margin-bottom: 2px;">',
-                            gettext('Add feedback?'),
-                        '</h4>',
+                    '<div class="pull-left" style="margin-right: 10px;">',
                         '<tpl if="isExaminer">',
                             ' <a href="{examinerui_url}" target="_blank" class="btn btn-small btn-inverse">',
                                 gettext('Examiner interface'),
@@ -172,11 +169,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                             '</a>',
                         '</tpl>',
                     '</div>',
-                    '<tpl if="isExaminer">',
-                        gettext('You are examiner for this group, which means you can provide feedback yourself.'),
-                    '<tpl else>',
-                        gettext('You are not examiner for this group, which means you can not provide feedback yourself.'),
-                    '</tpl>',
+                    '<small style="display:block; padding-top: 3px;">', // Style to align text with button
+                        '<tpl if="isExaminer">',
+                            gettext('You are examiner for this group.'),
+                        '<tpl else>',
+                            gettext('You need to be examiner if you want to provide feedback.'),
+                        '</tpl>',
+                    '</small>',
                     '<div class="clearfix"></div>'
                 ],
                 messagedata: {
