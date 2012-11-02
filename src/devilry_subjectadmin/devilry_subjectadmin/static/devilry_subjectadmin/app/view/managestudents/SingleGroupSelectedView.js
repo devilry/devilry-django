@@ -19,11 +19,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
         'devilry_extjsextras.AlertMessageList'
     ],
 
-    /**
-     * @cfg {int} [period_id]
-     */
-
-
     initComponent: function() {
         Ext.apply(this, {
             layout: 'anchor',
@@ -45,8 +40,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                 }, {
                     xtype: 'manageexaminersonsingle',
                     margin: '0 0 0 10',
-                    columnWidth: 0.40,
-                    period_id: this.period_id
+                    columnWidth: 0.40
                 }]
             }, {
                 xtype: 'alertmessagelist',

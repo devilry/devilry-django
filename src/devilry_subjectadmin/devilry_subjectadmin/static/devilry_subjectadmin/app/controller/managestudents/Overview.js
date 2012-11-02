@@ -273,12 +273,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             this.getBody().setLoading(false);
             this.selectiontask.cancel();
         }
-        this.getBody().setLoading(true);
+        //this.getBody().setLoading(true);
         this.selectiontask = new Ext.util.DelayedTask(function() {
-            this.getBody().setLoading(false);
+            //this.getBody().setLoading(false);
             this._changeSelection(gridSelectionModel, selectedGroupRecords);
         }, this);
-        this.selectiontask.delay(300);
+        this.selectiontask.delay(40);
     },
 
     _changeSelection: function(gridSelectionModel, selectedGroupRecords) {
@@ -316,6 +316,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     setBody: function(component) {
         this.getBody().removeAll();
         this.getBody().add(component);
+    },
+    setBodyCard: function(itemId) {
+        this.getBody().getLayout().setActiveItem(itemId);
     },
 
 

@@ -39,8 +39,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
 
 
     initComponent: function() {
-        this.relatednote = interpolate(gettext('<strong>Note</strong>: Only %(examiners_term)s registered on the %(period_term)s are available.'), {
-            examiners_term: gettext('examiners'),
+        this.relatednote = interpolate(gettext('<strong>Note</strong>: Only examiners registered on the %(period_term)s are available.'), {
             period_term: gettext('period')
         }, true);
         Ext.apply(this, {
@@ -109,17 +108,21 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                     items: [{
                         xtype: 'box',
                         anchor: '100%',
+                        itemId: 'helpBox',
                         tpl: [
-                            '<p>{text}</p>',
+                            '<p>',
+                                gettext('The selected examiners will <strong>replace</strong> any examiners currently on the group when you confirm your selection. Removing an examiner from the group does not affect any feedback they have already made on the group.'),
+                            '</p>',
                             '{relatednote}'
                         ],
                         data: {
-                            text: interpolate(gettext('The selected %(examiners_term)s will <strong>replace</strong> any %(examiners_term)s currently on the %(group_term)s when you confirm your selection. Removing an %(examiner_term)s from the group does not affect any feedback they have already made on the group.'), {
-                                examiner_term: gettext('examiner'),
-                                examiners_term: gettext('examiners'),
-                                group_term: gettext('group')
-                            }, true),
-                            relatednote: devilry_subjectadmin.view.managestudents.ExaminersHelp.getRelatedNote(this.period_id)
+                            relatednote: gettext('Loading') + ' ...'
+                        },
+                        listeners: {
+                            scope: this,
+                            show: function() {
+                                console.log('SHOW');
+                            }
                         }
                     }, {
                         xtype: 'selectexaminersgrid',
@@ -129,5 +132,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
             }]
         });
         this.callParent(arguments);
+    },
+
+    setPeriodId: function(period_id) {
+        this.down('#helpBox').update({
+            relatednote: devilry_subjectadmin.view.managestudents.ExaminersHelp.getRelatedNote(period_id)
+        });
     }
 });

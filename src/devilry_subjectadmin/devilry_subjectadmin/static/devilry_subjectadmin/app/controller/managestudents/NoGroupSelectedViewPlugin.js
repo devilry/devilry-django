@@ -22,8 +22,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.NoGroupSelectedViewPl
 
     _onNoGroupSelected: function(manageStudentsController) {
         this.manageStudentsController = manageStudentsController;
-        this.manageStudentsController.setBody({
-            xtype: 'nogroupselectedview'
-        });
+        this.manageStudentsController.setBodyCard('nogroupsSelected');
     }
 });

@@ -53,10 +53,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 xtype: 'container',
                 region: 'center',
                 itemId: 'body',
-                layout: 'fit',
-                //items: [{
-                    //xtype: 'nogroupselectedview'
-                //}]
+                layout: 'card',
+                items: [{
+                    xtype: 'nogroupselectedview',
+                    itemId: 'nogroupsSelected'
+                }, {
+                    xtype: 'singlegroupview',
+                    itemId: 'singlegroupSelected'
+                }]
             }, {
                 xtype: 'managestudents_help',
                 autoScroll: true,

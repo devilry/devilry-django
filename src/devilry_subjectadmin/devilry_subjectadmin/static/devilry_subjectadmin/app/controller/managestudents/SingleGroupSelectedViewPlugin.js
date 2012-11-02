@@ -61,6 +61,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     }, {
 
     // Examiners
+        ref: 'examinersOnSingle',
+        selector: 'viewport singlegroupview manageexaminersonsingle'
+    }, {
         ref: 'examinersCardBody',
         selector: 'viewport singlegroupview manageexaminersonsingle #cardBody'
     }, {
@@ -91,10 +94,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             },
 
             'viewport singlegroupview admingroupinfo_deadlinescontainer': {
-                render: this._onRenderDeadlinesContainer
+                //render: this._onRenderDeadlinesContainer
             },
             'viewport singlegroupview admingroupinfo_delivery #feedback': {
-                render: this._onFeedbackRender
+                //render: this._onFeedbackRender
             },
 
             //'viewport singlegroupview #examinerRoleList': {
@@ -142,22 +145,16 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _onSingleGroupSelected: function(manageStudentsController, groupRecord) {
         this.manageStudentsController = manageStudentsController;
         this.groupRecord = groupRecord;
+        this.manageStudentsController.setBodyCard('singlegroupSelected');
         this._refreshBody();
     },
 
     _refreshBody: function() {
-        this.manageStudentsController.setBody({
-            xtype: 'singlegroupview',
-            period_id: this.manageStudentsController.assignmentRecord.get('parentnode')
-        });
-
-        Ext.defer(function() {
-            this._loadStudentsIntoStore();
-            this._loadExaminersIntoStore();
-            this._loadTagsIntoStore();
-            this._setupExaminerLinkBox();
-            this.getSinglegroupmetainfo().setGroupRecord(this.groupRecord);
-        }, 500, this);
+        this._loadStudentsIntoStore();
+        this._loadExaminersIntoStore();
+        this._loadTagsIntoStore();
+        this._setupExaminerLinkBox();
+        this.getSinglegroupmetainfo().setGroupRecord(this.groupRecord);
     },
 
 
@@ -380,6 +377,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.getSingleGroupExaminersStore().loadData(this.groupRecord.get('examiners'));
     },
     _onSetExaminers: function() {
+        this.getExaminersOnSingle().setPeriodId(this.manageStudentsController.assignmentRecord.get('parentnode'));
         this.getExaminersCardBody().getLayout().setActiveItem('setExaminersPanel');
         var userIds = [];
         Ext.Array.each(this.groupRecord.get('examiners'), function(examiner) {
