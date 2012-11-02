@@ -43,12 +43,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     }, {
         ref: 'singlegroupmetainfo',
         selector: 'viewport singlegroupview singlegroupmetainfo'
-    }, {
-        ref: 'deadlinesContainer',
-        selector: 'viewport singlegroupview admingroupinfo_deadlinescontainer'
-    }, {
-        ref: 'examinerRoleList',
-        selector: 'viewport singlegroupview #examinerRoleList'
 
     }, {
 
@@ -84,6 +78,16 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         ref: 'choosetagspanel',
         selector: 'viewport singlegroupview managetagsonsingle choosetagspanel'
 
+    // Examiner role box
+    }, {
+        ref: 'examinerRoleList',
+        selector: 'viewport singlegroupview #examinerRoleList'
+
+    // Deadlines and deliveries
+    }, {
+        ref: 'deadlinesContainer',
+        selector: 'viewport singlegroupview admingroupinfo_deadlinescontainer'
+
     // Dangerous actions
     }, {
         ref: 'dangerousactions',
@@ -105,17 +109,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             'viewport singlegroupview singlegroupmetainfo': {
                 active_feedback_link_clicked: this._onActiveFeedbackLink
             },
-
-            'viewport singlegroupview admingroupinfo_deadlinescontainer': {
-                //render: this._onRenderDeadlinesContainer
-            },
-            'viewport singlegroupview admingroupinfo_delivery #feedback': {
-                //render: this._onFeedbackRender
-            },
-
-            //'viewport singlegroupview #examinerRoleList': {
-                //render: this._onExaminerRoleListRender
-            //},
 
             // Students
             'viewport singlegroupview managestudentsonsingle studentsingroupgrid': {
@@ -144,6 +137,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                 savetags: this._onSetTagsConfirmed
             },
 
+            // Deadlines
+            'viewport singlegroupview admingroupinfo_delivery #feedback': {
+                render: this._onFeedbackRender
+            },
+
             // Delete
             'viewport singlegroupview #deleteButton': {
                 click: this._onDelete
@@ -158,13 +156,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _getLowPriComponents: function() {
         return [
             this.getExaminersBox(),
-            this.getTagsBox()
+            this.getTagsBox(),
+            this.getDeadlinesContainer()
         ];
     },
     _getHighPriComponents: function() {
         return [
             this.getSinglegroupmetainfo(),
-            this.getStudentsBox()
+            this.getStudentsBox(),
+            this.getExaminerRoleList()
         ];
     },
 
@@ -206,6 +206,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         Ext.Array.each(this._getLowPriComponents(), function(component) {
             component.setLoading(false);
         }, this);
+        this._populateDeadlinesContainer();
     },
 
     
@@ -312,8 +313,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
      * AggregatedGroupInfo views (deadlines and deliveries)
      *
      ********************************************************/
-    _onRenderDeadlinesContainer: function() {
+    _populateDeadlinesContainer: function() {
         this.getDeadlinesContainer().setLoading(gettext('Loading') + ' ...');
+        this.getDeadlinesContainer().removeAll();
         this.getAggregatedGroupInfoModel().load(this.groupRecord.get('id'), {
             scope: this,
             callback: function(aggregatedGroupInfoRecord, operation) {
