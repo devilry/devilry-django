@@ -24,10 +24,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
      */
 
     /**
-     * @cfg {devilry_subjectadmin.model.Group} groupRecord (required)
-     */
-
-    /**
      * @cfg {Ext.data.Store} studentsStore (required)
      */
 
@@ -48,9 +44,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
         Ext.apply(this, {
             layout: 'anchor',
             items: [{
-                xtype: 'singlegroupmetainfo',
-                groupRecord: this.groupRecord,
-                assignment_id: this.assignment_id
+                xtype: 'singlegroupmetainfo'
             }, {
                 xtype: 'container',
                 padding: '0 0 0 0',

@@ -35,6 +35,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         ref: 'scrollableBody',
         selector: 'viewport singlegroupview'
     }, {
+        ref: 'singlegroupmetainfo',
+        selector: 'viewport singlegroupview singlegroupmetainfo'
+    }, {
         ref: 'deadlinesContainer',
         selector: 'viewport singlegroupview admingroupinfo_deadlinescontainer'
     }, {
@@ -83,9 +86,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                 render: this._onFeedbackRender
             },
 
-            'viewport singlegroupview #examinerRoleList': {
-                render: this._onExaminerRoleListRender
-            },
+            //'viewport singlegroupview #examinerRoleList': {
+                //render: this._onExaminerRoleListRender
+            //},
 
             // Students
             'viewport singlegroupview managestudentsonsingle studentsingroupgrid': {
@@ -139,9 +142,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
 
     _refreshBody: function() {
-        this._loadStudentsIntoStore();
-        this._loadExaminersIntoStore();
-        this._loadTagsIntoStore();
         this.manageStudentsController.setBody({
             xtype: 'singlegroupview',
             studentsStore: this.studentsStore,
@@ -151,14 +151,22 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             groupRecord: this.groupRecord,
             period_id: this.manageStudentsController.assignmentRecord.get('parentnode')
         });
+
+        Ext.defer(function() {
+            this._loadStudentsIntoStore();
+            this._loadExaminersIntoStore();
+            this._loadTagsIntoStore();
+            this._setupExaminerLinkBox();
+            this.getSinglegroupmetainfo().setGroupRecord(this.groupRecord);
+        }, 500, this);
     },
 
 
     _onRender: function() {
-        //console.log('render SingleGroupSelectedView');
+        console.log('render SingleGroupSelectedView');
     },
 
-    _onExaminerRoleListRender: function() {
+    _setupExaminerLinkBox: function() {
         devilry_authenticateduserinfo.UserInfo.load(function(authenticatedUser) {
             var isExaminer = Ext.Array.some(this.groupRecord.get('examiners'), function(examiner) {
                 if(examiner.user.id === authenticatedUser.get('id')) {
