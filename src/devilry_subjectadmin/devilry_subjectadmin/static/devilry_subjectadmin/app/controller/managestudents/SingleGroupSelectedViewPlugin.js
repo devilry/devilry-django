@@ -83,6 +83,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     }, {
         ref: 'choosetagspanel',
         selector: 'viewport singlegroupview managetagsonsingle choosetagspanel'
+
+    // Dangerous actions
+    }, {
+        ref: 'dangerousactions',
+        selector: 'viewport singlegroupview dangerousactions'
     }],
 
     init: function() {
@@ -154,18 +159,45 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         //this.manageStudentsController.getBody().setLoading(text);
     //},
 
+    _getLowPriComponents: function() {
+        return [
+            this.getExaminersBox(),
+            this.getTagsBox()
+        ];
+    },
+    _getHighPriComponents: function() {
+        return [
+            this.getSinglegroupmetainfo(),
+            this.getStudentsBox(),
+            this.getDangerousactions() // This is only high-pri because we do not need to do anything with it.
+        ];
+    },
+
     _onSingleGroupSelected: function(manageStudentsController, groupRecord) {
         this.delayedLoadTask.cancel();
         this.manageStudentsController = manageStudentsController;
         this.groupRecord = groupRecord;
 
         var loadingText = gettext('Loading') + ' ...';
-        this.getExaminersBox().setLoading(loadingText);
-        this.getTagsBox().setLoading(loadingText);
+
+        // Fade out all components
+        Ext.Array.each(this._getLowPriComponents(), function(component) {
+            component.setLoading({
+                msg: loadingText,
+                maskCls: 'devilry-white-mask'
+            });
+        }, this);
+        Ext.Array.each(this._getHighPriComponents(), function(component) {
+            this._fadeOut(component);
+        }, this);
 
         // Load the most important stuff at once
         this.manageStudentsController.setBodyCard('singlegroupSelected');
         this.getSinglegroupmetainfo().setGroupRecord(this.groupRecord);
+        Ext.Array.each(this._getHighPriComponents(), function(component) {
+            this._fadeIn(component);
+        }, this);
+
         this._loadStudentsIntoStore();
 
         // Delayed loading of the less imporant stuff
@@ -176,8 +208,22 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this._loadExaminersIntoStore();
         this._loadTagsIntoStore();
         this._setupExaminerLinkBox();
-        this.getExaminersBox().setLoading(false);
-        this.getTagsBox().setLoading(false);
+        Ext.Array.each(this._getLowPriComponents(), function(component) {
+            component.setLoading(false);
+        }, this);
+    },
+
+    
+    _fadeOut: function(component) {
+        component.getEl().setOpacity(0.2);
+    },
+
+    _fadeIn: function(component) {
+        component.getEl().animate({
+            duration: 400,
+            from: {opacity: 0.1},
+            to: {opacity: 1.0}
+        });
     },
 
 
