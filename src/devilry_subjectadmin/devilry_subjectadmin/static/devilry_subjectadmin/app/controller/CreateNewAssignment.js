@@ -78,8 +78,8 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         ref: 'selectAssignmentToCopyStudentsFromCombo',
         selector: 'createnewassignmentform #selectAssignmentToCopyStudentsFrom selectsingleassignment'
     }, {
-        ref: 'setupStudentsCopyRadio',
-        selector: 'createnewassignmentform #setupStudentsCopyRadio'
+        ref: 'setupStudentsCopyFromAssignmentRadio',
+        selector: 'createnewassignmentform #setupStudentsCopyFromAssignmentRadio'
     }, {
         ref: 'setupStudentsAllRelatedRadio',
         selector: 'createnewassignmentform #setupStudentsAllRelatedRadio'
@@ -230,7 +230,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this._autoapplyFirstDeadline(initialValues);
 
         if(assignmentRecords.length > 0) {
-            this.getSetupStudentsCopyRadio().show();
+            this.getSetupStudentsCopyFromAssignmentRadio().show();
             initialValues.copyfromassignment_id = assignmentRecords[0].get('id');
         }
         this._applyInitialValues(initialValues);
@@ -289,35 +289,21 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     },
 
     _autoapplyFirstDeadline: function(initialValues) {
-        if(this.getAssignmentsStore().getCount() < 2) {
-            return;
-        }
-        var daysDiff = this.getAssignmentsStore().findMostCommonFirstDeadlineDayDifference();
-        if(daysDiff !== null) {
-            var lastAssignment = this.getAssignmentsStore().getFirstRecordWithFirstDeadline();
-            if(lastAssignment) {
-                var millisecInDay = 86400000;
-                previous_first_deadline = lastAssignment.get('first_deadline');
-                var nextDeadlineTimestamp = previous_first_deadline.getTime() + daysDiff*millisecInDay;
-
-                var first_deadline = new Date(nextDeadlineTimestamp);
-                var now = new Date();
-                if(first_deadline < now) {
-                    return;
+        var result = this.getAssignmentsStore().smartAutodetectFirstDeadline();
+        if(result !== null) {
+            initialValues.first_deadline = result.first_deadline;
+            var previous_first_deadline = result.lastAssignment.get('first_deadline');
+            this.application.getAlertmessagelist().add({
+                type: 'info',
+                autoclose: true,
+                messagetpl: gettext('Suggested {first_deadline} as the submission date. Calculated by adding the most common timespan between submission dates ({days} days) to the submission date of the last published assignment, {previous_assignment} ({previous_first_deadline}).'),
+                messagedata: {
+                    first_deadline: this._em(Ext.Date.format(result.first_deadline, this.ui_datetimeformat)),
+                    days: result.mostCommonDayDiff.days,
+                    previous_assignment: this._em(result.lastAssignment.get('short_name')),
+                    previous_first_deadline: Ext.Date.format(previous_first_deadline, this.ui_datetimeformat)
                 }
-                initialValues.first_deadline = first_deadline;
-                this.application.getAlertmessagelist().add({
-                    type: 'info',
-                    autoclose: true,
-                    messagetpl: gettext('Suggested {first_deadline} as the submission date. Calculated by adding the most common timespan between submission dates ({daysDiff} days) to the submission date of the last published assignment, {previous_assignment} ({previous_first_deadline}).'),
-                    messagedata: {
-                        first_deadline: this._em(Ext.Date.format(first_deadline, this.ui_datetimeformat)),
-                        daysDiff: daysDiff,
-                        previous_assignment: this._em(lastAssignment.get('short_name')),
-                        previous_first_deadline: Ext.Date.format(previous_first_deadline, this.ui_datetimeformat)
-                    }
-                });
-            }
+            });
         }
     },
 
