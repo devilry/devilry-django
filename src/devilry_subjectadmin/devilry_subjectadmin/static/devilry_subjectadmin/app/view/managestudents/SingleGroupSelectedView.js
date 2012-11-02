@@ -20,10 +20,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
     ],
 
     /**
-     * @cfg {String} [assignment_id]
-     */
-
-    /**
      * @cfg {int} [period_id]
      */
 

@@ -148,11 +148,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _refreshBody: function() {
         this.manageStudentsController.setBody({
             xtype: 'singlegroupview',
-            studentsStore: this.getSingleGroupCandidatesStore(),
-            examinersStore: this.getSingleGroupExaminersStore(),
-            tagsStore: this.getSingleGroupTagsStore(),
-            assignment_id: this.manageStudentsController.assignmentRecord.get('id'),
-            groupRecord: this.groupRecord,
             period_id: this.manageStudentsController.assignmentRecord.get('parentnode')
         });
 
@@ -167,7 +162,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
 
     _onRender: function() {
-        console.log('render SingleGroupSelectedView');
+        //console.log('render SingleGroupSelectedView');
     },
 
     _setupExaminerLinkBox: function() {
@@ -468,7 +463,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         Ext.Array.each(this.groupRecord.get('tags'), function(tagobj) {
             tags.push(tagobj.tag);
         }, this);
-        console.log(tags);
         this.getChoosetagspanel().setInitialValue(tags.join(','));
     },
 
