@@ -22,7 +22,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid', {
                     '<em class="nofullname">', gettext('Full name missing'), '</em>',
                 '</tpl>',
             '</div>',
-            '<div class="username"><small>{user.username}</small></div>',
+            '<div class="username"><small class="muted">{user.username}</small></div>',
         '</div>'
     ],
 

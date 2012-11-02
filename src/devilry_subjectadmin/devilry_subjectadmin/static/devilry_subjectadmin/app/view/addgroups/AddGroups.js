@@ -80,7 +80,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                         gettext('Full name missing'),
                     '</em></tpl>',
                 '</strong></div>',
-                '<div class="username"><small>{username}</small></div>',
+                '<div class="username"><small class="muted">{username}</small></div>',
             '</div>'
         );
         this.tagsAndExaminersCellTemplate = new Ext.XTemplate(
@@ -88,7 +88,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                 '<tpl for="tagsAndExaminers">',
                     '<li class="tag_{tag}">',
                         '<span class="tag">{tag}</span>: ',
-                        '<small class="examiners">',
+                        '<small class="examiners muted">',
                             '<tpl if="examiners">',
                                 '<tpl for="examiners">',
                                     '<tpl if="data.user.full_name">',
@@ -99,7 +99,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                                     '<tpl if="xindex != xcount">, </tpl>',
                                 '</tpl>',
                             '<tpl else>',
-                                '<span class="danger">', gettext('No matching examiners'), '</em>',
+                                '<span class="text-warning">', gettext('No matching examiners'), '</em>',
                             '</tpl>',
                         '</small>',
                     '</li>',
