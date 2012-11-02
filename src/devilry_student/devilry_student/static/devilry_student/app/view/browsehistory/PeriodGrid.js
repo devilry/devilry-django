@@ -7,7 +7,7 @@ Ext.syncRequire([
 Ext.require([
     'Ext.window.MessageBox',
     'Ext.grid.feature.Feature',
-    'Ext.grid.feature.Grouping',
+    'Ext.grid.feature.Grouping'
 ]);
 Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
     extend: 'Ext.grid.Panel',
@@ -19,9 +19,9 @@ Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
         '<div class="labels">',
             '<tpl for="labels">',
                 '<tpl if="label == \'unqualified-for-exam\'">',
-                    '<span class="label-{label} danger">{label}</span>',
+                    '<span class="label-{label} text-warning">{label}</span>',
                 '<tpl else>',
-                    '<span class="label-{label} success">{label}</span>',
+                    '<span class="label-{label} text-success">{label}</span>',
                 '</tpl>',
             '</tpl>',
         '</div>'
@@ -129,11 +129,12 @@ Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
     },
 
     _onLoadSuccess: function() {
-        this.fireEvent('allStoresLoadedSuccessfully', this.store, this.studentkeyvalue_store)
+        this.fireEvent('allStoresLoadedSuccessfully', this.store, this.studentkeyvalue_store);
     },
 
     _groupLabelsByPeriod: function() {
         var labelsGroupedByPeriod = {};
+        var labelRecordIndex;
         for(labelRecordIndex in this.studentkeyvalue_store.data.items) {
             var labelRecord = this.studentkeyvalue_store.getAt(labelRecordIndex);
             var periodid = labelRecord.get('relatedstudent__period');
@@ -146,7 +147,7 @@ Ext.define('devilry_student.view.browsehistory.PeriodGrid', {
     },
 
     _onFilterChange: function(textfield, newvalue, oldvalue) {
-        if(Ext.String.trim(newvalue) == '') {
+        if(Ext.String.trim(newvalue) === '') {
             this.store.clearFilter();
         } else {
             this._filterByValue(newvalue);
