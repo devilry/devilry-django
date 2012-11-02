@@ -48,49 +48,37 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
         Ext.apply(this, {
             layout: 'anchor',
             items: [{
+                xtype: 'singlegroupmetainfo',
+                groupRecord: this.groupRecord,
+                assignment_id: this.assignment_id
+            }, {
                 xtype: 'container',
-                anchor: '100%',
-                layout: 'anchor',
+                padding: '0 0 0 0',
+                margin: '10 0 0 0',
+                layout: 'column',
                 items: [{
-                    xtype: 'container',
-                    layout: 'anchor',
-                    defaults: {
-                        anchor: '100%'
-                    },
-                    columnWidth: 1,
-                    items: [{
-                        xtype: 'singlegroupmetainfo',
-                        groupRecord: this.groupRecord,
-                        assignment_id: this.assignment_id
-                    }]
+                    xtype: 'managestudentsonsingle',
+                    columnWidth: 0.30,
+                    margin: '0 10 0 0',
+                    studentsStore: this.studentsStore
                 }, {
-                    xtype: 'container',
-                    padding: '0 0 0 0',
-                    margin: '20 0 0 0',
-                    layout: 'column',
-                    items: [{
-                        xtype: 'managestudentsonsingle',
-                        columnWidth: 0.30,
-                        margin: '0 10 0 0',
-                        studentsStore: this.studentsStore
-                    }, {
-                        xtype: 'managetagsonsingle',
-                        columnWidth: 0.30,
-                        margin: '0 5 0 5',
-                        tagsStore: this.tagsStore
-                    }, {
-                        xtype: 'manageexaminersonsingle',
-                        examinersStore: this.examinersStore,
-                        margin: '0 0 0 10',
-                        columnWidth: 0.40,
-                        period_id: this.period_id
-                    }]
+                    xtype: 'managetagsonsingle',
+                    columnWidth: 0.30,
+                    margin: '0 5 0 5',
+                    tagsStore: this.tagsStore
+                }, {
+                    xtype: 'manageexaminersonsingle',
+                    examinersStore: this.examinersStore,
+                    margin: '0 0 0 10',
+                    columnWidth: 0.40,
+                    period_id: this.period_id
                 }]
             }, {
                 xtype: 'box',
                 cls: 'bootstrap',
                 itemId: 'header',
-                tpl: '<h3>{heading}</h3>',
+                margin: '10 0 0 0',
+                tpl: '<h3 class="muted">{heading}</h3>',
                 data: {
                     heading: gettext('Deadlines and deliveries')
                 }

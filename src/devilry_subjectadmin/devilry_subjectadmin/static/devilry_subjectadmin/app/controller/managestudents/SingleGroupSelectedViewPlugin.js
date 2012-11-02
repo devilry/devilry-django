@@ -173,9 +173,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                         '</tpl>',
                     '</div>',
                     '<tpl if="isExaminer">',
-                        gettext('You are examiner on this group, which means you can provide feedback yourself.'),
+                        gettext('You are examiner for this group, which means you can provide feedback yourself.'),
                     '<tpl else>',
-                        gettext('You are not examiner on this group, which means you can not provide feedback yourself.'),
+                        gettext('You are not examiner for this group, which means you can not provide feedback yourself.'),
                     '</tpl>',
                     '<div class="clearfix"></div>'
                 ],
