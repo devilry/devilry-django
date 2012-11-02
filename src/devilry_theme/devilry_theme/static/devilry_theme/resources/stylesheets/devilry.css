@@ -12761,17 +12761,8 @@ select:focus {
 /* line 16, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner small {
   font-size: 12px;
-  color: #555555;
 }
-/* line 2, ../sass/_devilry_mixins.scss */
-.x-grid-row .x-grid-cell-inner .success, .x-grid-row .x-grid-cell-inner small.success {
-  color: #468847;
-}
-/* line 5, ../sass/_devilry_mixins.scss */
-.x-grid-row .x-grid-cell-inner .danger, .x-grid-row .x-grid-cell-inner small.danger {
-  color: #c09853;
-}
-/* line 22, ../sass/_devilry_mixins.scss */
+/* line 21, ../sass/_devilry_mixins.scss */
 .x-grid-row .x-grid-cell-inner .countbox {
   background-color: #555555;
   color: white;
@@ -12791,16 +12782,12 @@ select:focus {
 .x-grid-row-selected .x-grid-cell-inner {
   color: #fff;
 }
-/* line 35, ../sass/_devilry_mixins.scss */
-.x-grid-row-selected .x-grid-cell-inner small {
-  color: #eee;
-}
-/* line 39, ../sass/_devilry_mixins.scss */
-.x-grid-row-selected .x-grid-cell-inner .success, .x-grid-row-selected .x-grid-cell-inner small.success {
-  color: #fff;
-}
-/* line 42, ../sass/_devilry_mixins.scss */
-.x-grid-row-selected .x-grid-cell-inner .danger, .x-grid-row-selected .x-grid-cell-inner small.danger {
+/* line 45, ../sass/_devilry_mixins.scss */
+.x-grid-row-selected .x-grid-cell-inner .muted,
+.x-grid-row-selected .x-grid-cell-inner .text-warning,
+.x-grid-row-selected .x-grid-cell-inner .text-error,
+.x-grid-row-selected .x-grid-cell-inner .text-info,
+.x-grid-row-selected .x-grid-cell-inner .text-success {
   color: #fff;
 }
 
@@ -12857,17 +12844,8 @@ select:focus {
 /* line 16, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item small {
   font-size: 12px;
-  color: #555555;
 }
-/* line 2, ../sass/_devilry_mixins.scss */
-.x-boundlist .x-boundlist-item .success, .x-boundlist .x-boundlist-item small.success {
-  color: #468847;
-}
-/* line 5, ../sass/_devilry_mixins.scss */
-.x-boundlist .x-boundlist-item .danger, .x-boundlist .x-boundlist-item small.danger {
-  color: #c09853;
-}
-/* line 22, ../sass/_devilry_mixins.scss */
+/* line 21, ../sass/_devilry_mixins.scss */
 .x-boundlist .x-boundlist-item .countbox {
   background-color: #555555;
   color: white;
