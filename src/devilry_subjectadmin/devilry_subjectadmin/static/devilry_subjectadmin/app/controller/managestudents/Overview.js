@@ -270,7 +270,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
     _onGroupSelectionChange: function(gridSelectionModel, selectedGroupRecords) {
         if(!Ext.isEmpty(this.selectiontask)) {
-            this.getBody().setLoading(false);
+            //this.getBody().setLoading(false);
             this.selectiontask.cancel();
         }
         //this.getBody().setLoading(true);
@@ -278,7 +278,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
             //this.getBody().setLoading(false);
             this._changeSelection(gridSelectionModel, selectedGroupRecords);
         }, this);
-        this.selectiontask.delay(40);
+        this.selectiontask.delay(50);
     },
 
     _changeSelection: function(gridSelectionModel, selectedGroupRecords) {

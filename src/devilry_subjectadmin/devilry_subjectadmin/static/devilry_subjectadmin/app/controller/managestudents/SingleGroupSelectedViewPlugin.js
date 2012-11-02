@@ -53,6 +53,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     }, {
 
     // Students
+        ref: 'studentsBox',
+        selector: 'viewport singlegroupview managestudentsonsingle'
+    }, {
         ref: 'studentsCardBody',
         selector: 'viewport singlegroupview managestudentsonsingle #cardBody'
     }, {
@@ -61,7 +64,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     }, {
 
     // Examiners
-        ref: 'examinersOnSingle',
+        ref: 'examinersBox',
         selector: 'viewport singlegroupview manageexaminersonsingle'
     }, {
         ref: 'examinersCardBody',
@@ -72,11 +75,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     }, {
 
     // Tags
+        ref: 'tagsBox',
+        selector: 'viewport singlegroupview managetagsonsingle'
+    }, {
         ref: 'tagsCardBody',
-        selector: 'viewport singlegroupview managetagsonsingle #cardBody',
+        selector: 'viewport singlegroupview managetagsonsingle #cardBody'
     }, {
         ref: 'choosetagspanel',
-        selector: 'viewport singlegroupview managetagsonsingle choosetagspanel',
+        selector: 'viewport singlegroupview managetagsonsingle choosetagspanel'
     }],
 
     init: function() {
@@ -84,6 +90,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             scope: this,
             managestudentsSingleGroupSelected: this._onSingleGroupSelected
         });
+        this.delayedLoadTask = new Ext.util.DelayedTask(this._delayedLoad, this);
+
         this.control({
             'viewport singlegroupview': {
                 render: this._onRender
@@ -142,19 +150,34 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         });
     },
 
+    //_setLoading: function(text) {
+        //this.manageStudentsController.getBody().setLoading(text);
+    //},
+
     _onSingleGroupSelected: function(manageStudentsController, groupRecord) {
+        this.delayedLoadTask.cancel();
         this.manageStudentsController = manageStudentsController;
         this.groupRecord = groupRecord;
+
+        var loadingText = gettext('Loading') + ' ...';
+        this.getExaminersBox().setLoading(loadingText);
+        this.getTagsBox().setLoading(loadingText);
+
+        // Load the most important stuff at once
         this.manageStudentsController.setBodyCard('singlegroupSelected');
-        this._refreshBody();
+        this.getSinglegroupmetainfo().setGroupRecord(this.groupRecord);
+        this._loadStudentsIntoStore();
+
+        // Delayed loading of the less imporant stuff
+        this.delayedLoadTask.delay(500);
     },
 
-    _refreshBody: function() {
-        this._loadStudentsIntoStore();
+    _delayedLoad: function() {
         this._loadExaminersIntoStore();
         this._loadTagsIntoStore();
         this._setupExaminerLinkBox();
-        this.getSinglegroupmetainfo().setGroupRecord(this.groupRecord);
+        this.getExaminersBox().setLoading(false);
+        this.getTagsBox().setLoading(false);
     },
 
 
@@ -377,7 +400,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.getSingleGroupExaminersStore().loadData(this.groupRecord.get('examiners'));
     },
     _onSetExaminers: function() {
-        this.getExaminersOnSingle().setPeriodId(this.manageStudentsController.assignmentRecord.get('parentnode'));
+        this.getExaminersBox().setPeriodId(this.manageStudentsController.assignmentRecord.get('parentnode'));
         this.getExaminersCardBody().getLayout().setActiveItem('setExaminersPanel');
         var userIds = [];
         Ext.Array.each(this.groupRecord.get('examiners'), function(examiner) {
