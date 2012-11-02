@@ -1,29 +1,3 @@
-.shortcutlist {
-    >ul {
-        margin: 0;
-        a.subjectlink, a.assignmentlink {
-            color: #444;
-            text-decoration: underline;
-        }
-        li {
-            list-style: none;
-            margin: 5px 0 5px 0;
-        }
-        >li {
-            margin-top: 15px;
-            &:first-child {
-                //margin-top: 0;
-            }
-            >a {
-                font-size: 1.2em;
-            }
-            ul {
-                margin-left: 20px;
-            }
-        }
-    }
-}
-
 .devilry_subjectadmin_navigation.bootstrap {
     strong {
         font-size: 18px;
