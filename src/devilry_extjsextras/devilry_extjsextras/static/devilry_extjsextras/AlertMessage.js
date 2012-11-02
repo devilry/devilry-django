@@ -3,7 +3,7 @@ Message for highlighting the failure, possible failure, or success of
 an action. Particularly useful for forms.
 */ 
 Ext.define('devilry_extjsextras.AlertMessage', {
-    extend: 'Ext.Component',
+    extend: 'devilry_extjsextras.MarkupMoreInfoBox',
     alias: 'widget.alertmessage',
 
     requires: [
@@ -77,6 +77,9 @@ Ext.define('devilry_extjsextras.AlertMessage', {
      * An optional title for the message.
      */
     title: null,
+
+    moretext: gettext('Details'),
+    lesstext: gettext('Details'),
 
     initComponent: function() {
         var cls = 'bootstrap devilry_extjsextras_alertmessage';
@@ -175,6 +178,7 @@ Ext.define('devilry_extjsextras.AlertMessage', {
             this.type = type;
         }
         if(data) {
+            this.setTplAttrs(data);
             this.message = Ext.create('Ext.XTemplate', messageOrTpl).apply(data);
         } else {
             this.message = messageOrTpl;
