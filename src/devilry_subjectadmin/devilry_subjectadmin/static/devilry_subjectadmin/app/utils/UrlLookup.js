@@ -86,5 +86,18 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
                 id: id
             });
         }
+    },
+
+
+    //
+    //
+    // In the examiner UI
+    //
+    //
+    //
+    examinerGroupOverview: function(group_id) {
+        return Ext.String.format('{0}/examiner/assignmentgroup/{1}',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
+            group_id);
     }
 });

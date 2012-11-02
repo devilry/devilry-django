@@ -15,12 +15,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
         'devilry_subjectadmin.view.managestudents.ManageTagsOnSingle',
         'devilry_subjectadmin.view.managestudents.SingleMetaInfo',
         'devilry_subjectadmin.view.DangerousActions',
-        'devilry_extjsextras.SingleActionBox'
+        'devilry_extjsextras.SingleActionBox',
+        'devilry_extjsextras.AlertMessageList'
     ],
-
-    /**
-     * @cfg {string} multiselectHowto (required)
-     */
 
     /**
      * @cfg {String} [assignment_id]
@@ -51,12 +48,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
         Ext.apply(this, {
             layout: 'anchor',
             items: [{
-                //xtype: 'alertmessage',
-                //anchor: '100%',
-                //cls: 'top_infobox',
-                //type: 'info',
-                //message: [this.multiselectHowto, this.multiselectWhy].join(' ')
-            //}, {
                 xtype: 'container',
                 anchor: '100%',
                 layout: 'column',
@@ -104,6 +95,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                 }
             }, {
                 xtype: 'admingroupinfo_deadlinescontainer'
+            }, {
+                xtype: 'alertmessagelist',
+                margin: '20 0 0 0',
+                itemId: 'examinerRoleList',
+                cls: 'examinerRoleList'
             }, {
                 xtype: 'dangerousactions',
                 margin: '20 0 0 0',

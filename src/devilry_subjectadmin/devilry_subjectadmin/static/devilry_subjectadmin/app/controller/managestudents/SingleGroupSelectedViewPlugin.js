@@ -14,7 +14,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         'devilry_extjsextras.AlertMessage',
         'devilry_subjectadmin.view.managestudents.DeadlinesContainer',
         'Ext.fx.Animator',
-        'devilry_subjectadmin.utils.UrlLookup'
+        'devilry_subjectadmin.utils.UrlLookup',
+        'devilry_authenticateduserinfo.UserInfo'
     ],
 
     models: [
@@ -36,6 +37,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     }, {
         ref: 'deadlinesContainer',
         selector: 'viewport singlegroupview admingroupinfo_deadlinescontainer'
+    }, {
+        ref: 'examinerRoleList',
+        selector: 'viewport singlegroupview #examinerRoleList'
+
     }, {
 
     // Students
@@ -75,6 +80,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             },
             'viewport singlegroupview admingroupinfo_delivery #feedback': {
                 render: this._onFeedbackRender
+            },
+
+            'viewport singlegroupview #examinerRoleList': {
+                render: this._onExaminerRoleListRender
             },
 
             // Students
@@ -124,8 +133,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     _refreshBody: function() {
         this.manageStudentsController.setBody({
             xtype: 'singlegroupview',
-            multiselectHowto: this.manageStudentsController.getMultiSelectHowto(),
-            multiselectWhy: this._getMultiSelectWhy(),
             studentsStore: this._createStudentsStore(),
             examinersStore: this._createExaminersStore(),
             tagsStore: this._createTagsStore(),
@@ -139,29 +146,56 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         //console.log('render SingleGroupSelectedView');
     },
 
-    _getMultiSelectWhy: function() {
-        return interpolate(gettext('Selecting multiple %(groups_term)s enables you to change %(examiners_term)s and %(tags_term)s on multiple %(groups_term)s, and merge multiple %(groups_term)s into a single %(group_term)s.'), {
-            groups_term: gettext('groups'),
-            examiners_term: gettext('examiners'),
-            tags_term: gettext('tags'),
-            group_term: gettext('group')
-        }, true);
+    _onExaminerRoleListRender: function() {
+        devilry_authenticateduserinfo.UserInfo.load(function(authenticatedUser) {
+            var isExaminer = Ext.Array.some(this.groupRecord.get('examiners'), function(examiner) {
+                if(examiner.user.id === authenticatedUser.get('id')) {
+                    return true;
+                }
+            }, this);
+            this.getExaminerRoleList().removeAll();
+            this.getExaminerRoleList().add({
+                type: 'info',
+                messagetpl: [
+                    '<div class="pull-left" style="margin-right: 20px;">',
+                        '<h4 style="margin-bottom: 2px;">',
+                            gettext('Add feedback?'),
+                        '</h4>',
+                        '<tpl if="isExaminer">',
+                            ' <a href="{examinerui_url}" target="_blank" class="btn btn-small btn-inverse">',
+                                gettext('Examiner interface'),
+                                ' <i class="icon-share-alt icon-white"></i>',
+                            '</a>',
+                        '<tpl else>',
+                            ' <a href="{make_examiner}" class="btn btn-small btn-inverse make_me_examiner">',
+                                gettext('Make me examiner'),
+                            '</a>',
+                        '</tpl>',
+                    '</div>',
+                    '<tpl if="isExaminer">',
+                        gettext('You are examiner on this group, which means you can provide feedback yourself.'),
+                    '<tpl else>',
+                        gettext('You are not examiner on this group, which means you can not provide feedback yourself.'),
+                    '</tpl>',
+                    '<div class="clearfix"></div>'
+                ],
+                messagedata: {
+                    isExaminer: isExaminer,
+                    examinerui_url: devilry_subjectadmin.utils.UrlLookup.examinerGroupOverview(this.groupRecord.get('id'))
+                },
+                listeners: {
+                    scope: this,
+                    element: 'el',
+                    delegate: '.make_me_examiner',
+                    click: function(e) {
+                        e.preventDefault();
+                        this._onMakeMeExaminer();
+                    }
+                }
+            });
+        }, this);
     },
 
-    _confirm: function(config) {
-        Ext.MessageBox.show({
-            title: config.title,
-            msg: config.msg,
-            buttons: Ext.MessageBox.YESNO,
-            icon: Ext.MessageBox.QUESTION,
-            scope: this,
-            fn: function(buttonid) {
-                if(buttonid == 'yes') {
-                    Ext.callback(config.callback, this);
-                }
-            }
-        });
-    },
 
 
     /*********************************************
@@ -336,6 +370,18 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         var grid = this.getSetExaminersGrid();
         grid.selectUsersById(userIds);
     },
+
+    _em: function(s) {
+        return Ext.String.format('<em>{0}</em>', s);
+    },
+    _getDisplaynamesFromUserStore: function(userStore) {
+        var displaynames = [];
+        userStore.each(function(userRecord) {
+            displaynames.push(this._em(userRecord.getDisplayName()));
+        }, this);
+        return displaynames;
+    },
+
     _onSetExaminersConfirmed: function() {
         var grid = this.getSetExaminersGrid();
         var userStore = grid.getSelectedAsUserStore();
@@ -347,7 +393,39 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.manageStudentsController.notifySingleGroupChange({
             scope: this,
             success: function() {
-                // TODO: Notify the user about the change
+                this.application.getAlertmessagelist().add({
+                    type: 'success',
+                    autoclose: true,
+                    messagetpl: gettext('Changed examiners of {group} to: {examiners}.'),
+                    messagedata: {
+                        group: this._em(this.groupRecord.getIdentString()),
+                        examiners: this._getDisplaynamesFromUserStore(userStore).join(', ')
+                    }
+                });
+            }
+        });
+    },
+
+    _onMakeMeExaminer: function() {
+        devilry_authenticateduserinfo.UserInfo.load(function(authenticatedUser) {
+            console.log('user', authenticatedUser.data);
+            devilry_subjectadmin.utils.managestudents.MergeDataIntoGroup.mergeExaminers({
+                groupRecord: this.groupRecord,
+                userRecords: [authenticatedUser],
+                doNotDeleteUsers: true // Add instead of replace
+            });
+        }, this);
+        this.manageStudentsController.notifySingleGroupChange({
+            scope: this,
+            success: function() {
+                this.application.getAlertmessagelist().add({
+                    type: 'success',
+                    autoclose: true,
+                    messagetpl: gettext('Added you as examiner for {group}.'),
+                    messagedata: {
+                        group: this._em(this.groupRecord.getIdentString())
+                    }
+                });
             }
         });
     },
