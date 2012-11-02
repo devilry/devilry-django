@@ -80,11 +80,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnMultiple', {
                     xtype: 'choosetagspanel',
                     itemId: 'setTagsPanel',
                     id: 'multi_set_tags_panel',
+                    initialValue: '',
                     buttonText: gettext('Set tags')
                 }, {
                     xtype: 'choosetagspanel',
                     itemId: 'addTagsPanel',
                     id: 'multi_add_tags_panel',
+                    initialValue: '',
                     buttonText: gettext('Add tags')
                 }, {
                     xtype: 'okcancelpanel',

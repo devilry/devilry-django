@@ -23,6 +23,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ChooseTagsPanel', {
 
     inputFieldType: 'textarea', // NOTE: textarea seems to be the best choice if we are going to use the same for single and multiple groups.
 
+    initialValue: undefined,
+
     constructor: function(config) {
         this.callParent([config]);
         this.addEvents(

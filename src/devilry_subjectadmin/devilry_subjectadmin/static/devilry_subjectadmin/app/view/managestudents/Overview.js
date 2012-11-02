@@ -60,6 +60,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
                 }, {
                     xtype: 'singlegroupview',
                     itemId: 'singlegroupSelected'
+                }, {
+                    xtype: 'multiplegroupsview',
+                    itemId: 'multiplegroupsSelected'
                 }]
             }, {
                 xtype: 'managestudents_help',

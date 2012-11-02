@@ -309,14 +309,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
 
-    /**
-     * Set the body component (the center area of the borderlayout). Removes
-     * all components in the body before adding the new component.
-     */
-    setBody: function(component) {
-        this.getBody().removeAll();
-        this.getBody().add(component);
-    },
     setBodyCard: function(itemId) {
         this.getBody().getLayout().setActiveItem(itemId);
     },
@@ -542,15 +534,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      */
     isProjectAssignment: function() {
         return false;
-    },
-
-    /**
-     * Get multiselect help message.
-     */
-    getMultiSelectHowto: function() {
-        return interpolate(gettext('Use the checkboxes to select more %(groups_term)s.'), {
-            groups_term: gettext('groups')
-        }, true);
     },
 
     /**
