@@ -106,17 +106,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                         anchor: '100%',
                         columnWidth: 0.5,
                         padding: '0 20 0 0',
+                        itemId: 'helpBox',
                         tpl: [
-                            '<p>{text}</p>',
+                            '<p>',
+                                gettext('Select one or more examiner. Any current examiners on the selected groups will be <strong>replaced</strong> when you confirm your selection.'),
+                            '</p>',
                             '{relatednote}'
                         ],
                         data: {
-                            text: interpolate(gettext('Select one or more %(examiner_term)s. Any current %(examiners_term)s on the selected %(groups_term)s will be <strong>replaced</strong> when you confirm your selection.'), {
-                                examiner_term: gettext('examiner'),
-                                examiners_term: gettext('examiners'),
-                                groups_term: gettext('groups')
-                            }, true),
-                            relatednote: devilry_subjectadmin.view.managestudents.ExaminersHelp.getRelatedNote(this.period_id)
+                            relatednote: ''
                         }
                     }, {
                         xtype: 'selectexaminersgrid',
@@ -137,17 +135,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                         anchor: '100%',
                         columnWidth: 0.5,
                         padding: '0 20 0 0',
+                        itemId: 'helpBox',
                         tpl: [
-                            '<p>{text}</p>',
+                            '<p>',
+                                gettext('Select one or more examiner. Any current examiners on the selected groups will be <strong>replaced</strong> when you confirm your selection.'),
+                            '</p>',
                             '{relatednote}'
                         ],
                         data: {
-                            text: interpolate(gettext('Select one or more %(examiner_term)s. Any current %(examiners_term)s on the selected %(groups_term)s will be <strong>replaced</strong> when you confirm your selection.'), {
-                                examiner_term: gettext('examiner'),
-                                examiners_term: gettext('examiners'),
-                                groups_term: gettext('groups')
-                            }, true),
-                            relatednote: devilry_subjectadmin.view.managestudents.ExaminersHelp.getRelatedNote(this.period_id)
+                            relatednote: ''
                         }
                     }, {
                         xtype: 'selectexaminersgrid',
@@ -168,17 +164,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
                         anchor: '100%',
                         columnWidth: 0.5,
                         padding: '0 20 0 0',
+                        itemId: 'helpBox',
                         tpl: [
-                            '<p>{text}</p>',
+                            '<p>',
+                                gettext('Select one or more examiner. The selected examiners will be <strong>added</strong> to the selected groups when you confirm your selection.'),
+                            '</p>',
                             '{relatednote}'
                         ],
                         data: {
-                            text: interpolate(gettext('Select one or more %(examiner_term)s. The selected %(examiners_term)s will be <strong>added</strong> to the selected %(groups_term)s when you confirm your selection.'), {
-                                examiner_term: gettext('examiner'),
-                                examiners_term: gettext('examiners'),
-                                groups_term: gettext('groups')
-                            }, true),
-                            relatednote: devilry_subjectadmin.view.managestudents.ExaminersHelp.getRelatedNote(this.period_id)
+                            relatednote: ''
                         }
                     }, {
                         xtype: 'selectexaminersgrid',
@@ -201,5 +195,18 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnMultiple',
             }]
         });
         this.callParent(arguments);
+    },
+
+    setPeriodId: function(period_id) {
+        if(this.period_id === period_id) {
+            return;
+        }
+        this.period_id = period_id;
+        var helpBoxes = this.query('#helpBox');
+        Ext.Array.each(helpBoxes, function(helpBox) {
+            helpBox.update({
+                relatednote: devilry_subjectadmin.view.managestudents.ExaminersHelp.getRelatedNote(period_id)
+            });
+        }, this);
     }
 });

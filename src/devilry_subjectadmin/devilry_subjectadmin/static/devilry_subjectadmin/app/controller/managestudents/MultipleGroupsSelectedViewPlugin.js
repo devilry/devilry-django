@@ -217,6 +217,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this._closeAllEditors();
         this.groupRecords = groupRecords;
         this.manageStudentsController = manageStudentsController;
+        this._setPeriodIdOnExaminerManager();
         this.manageStudentsController.setBodyCard('multiplegroupsSelected');
         this._populateSelectedGroupsStore();
         this._fadeIn(this.getScrollableBodyContainer());
@@ -232,6 +233,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             from: {opacity: 0.1},
             to: {opacity: 1.0}
         });
+    },
+
+    _setPeriodIdOnExaminerManager: function() {
+        this.getManageExaminers().setPeriodId(this.manageStudentsController.assignmentRecord.get('parentnode'));
     },
 
     _closeAllEditors: function() {
@@ -298,6 +303,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
      * Set examiners
      *
      ************************************************/
+
     _scrollExaminersIntoView: function() {
         this._scrollIntroView(this.getManageExaminers());
     },
