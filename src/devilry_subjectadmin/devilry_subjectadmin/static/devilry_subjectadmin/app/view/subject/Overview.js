@@ -28,13 +28,9 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
             items: [{
                 xtype: 'editsidebarcontainer',
                 layout: 'anchor',
-                border: false,
                 width: 250,
                 margin: '6 40 0 0',
                 padding: '0 10 0 10',
-                defaults: {
-                    margin: '10 0 0 0'
-                },
                 items: [{
                     xtype: 'adminsbox',
                     anchor: '100%',
@@ -52,7 +48,7 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                     cls: 'bootstrap',
                     margin: '0 0 20 0',
                     itemId: 'header',
-                    tpl: '<h1>{heading}</h1>',
+                    tpl: '<h1 style="margin-top: 0;">{heading}</h1>',
                     data: {
                         heading: gettext('Loading') + ' ...'
                     }

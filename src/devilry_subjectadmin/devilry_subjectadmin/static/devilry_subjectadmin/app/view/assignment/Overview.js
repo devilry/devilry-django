@@ -52,7 +52,6 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                 }]
             }, {
                 xtype: 'container',
-                //padding: '10 20 0 20',
                 columnWidth: 1,
                 items: [{
                     xtype: 'box',
