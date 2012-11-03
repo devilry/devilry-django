@@ -7,6 +7,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
         'devilry_extjsextras.OkCancelPanel',
         'devilry_subjectadmin.view.managestudents.ExaminersInGroupGrid',
         'devilry_subjectadmin.view.managestudents.ExaminersHelp',
+        'devilry_extjsextras.ContainerWithEditTitle',
         'devilry_subjectadmin.view.managestudents.SelectExaminersGrid'
     ],
 
@@ -46,25 +47,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
             cls: 'bootstrap',
             layout: 'anchor',
             items: [{
-                xtype: 'box',
+                xtype: 'containerwithedittitle',
                 anchor: '100%',
-                tpl: [
-                    '<h4>',
-                        '{heading}',
-                        ' <a href="#" class="edit_examiners_button">(',
-                            gettext('Edit'),
-                        ')</a>',
-                    '</h4>'
-                ],
-                data: {
-                    heading: gettext('Examiners')
-                },
+                title: gettext('Examiners'),
                 listeners: {
                     scope: this,
-                    element: 'el',
-                    delegate: 'a.edit_examiners_button',
-                    click: function(e) {
-                        e.preventDefault();
+                    edit: function() {
                         this.fireEvent('edit_examiners', this);
                     }
                 }

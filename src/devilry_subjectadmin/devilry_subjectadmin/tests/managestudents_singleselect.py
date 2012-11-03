@@ -21,7 +21,7 @@ class TestManageSingleGroupMixin(object):
         path = '/assignment/{0}/@@manage-students/@@select/{1}'.format(self.assignment.id,
                                                                        select_group.id)
         self.loginTo(username, path)
-        self.waitForCssSelector('.devilry_subjectadmin_singlegroupview')
+        return self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupview')
 
     def create_group(self, groupspec):
         self.testhelper.add_to_path('uni;sub.p1.a1.{0}'.format(groupspec))
@@ -215,8 +215,7 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
         return False
 
     def _click_edit_examiners_button(self):
-        self.waitForCssSelector('.devilry_subjectadmin_manageexaminersonsingle a.edit_examiners_button')
-        setbutton = self.find_element('a.edit_examiners_button')
+        setbutton = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_manageexaminersonsingle .containerwithedittitle a.edit_link')
         setbutton.click()
 
     def _set_examiners(self, group, click_examiners):
@@ -283,8 +282,7 @@ class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSelenium
         self.assertTrue(tag.text.strip(), 'a')
 
     def _click_edit_tags_button(self):
-        self.waitForCssSelector('.devilry_subjectadmin_managetagsonsingle a.edit_tags_button')
-        setbutton = self.find_element('a.edit_tags_button')
+        setbutton = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_managetagsonsingle .containerwithedittitle a.edit_link')
         setbutton.click()
 
     def _set_tags(self, group, tags):
@@ -314,14 +312,16 @@ class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSelenium
 
     def test_current_tags_present_on_show(self):
         g1 = self.create_group('g1:candidate(student1)')
-        g1.tags.create(tag='a')
-        g1.tags.create(tag='b')
-        self.browseToAndSelectAs('a1admin', g1)
+        g1.tags.create(tag='supertagone')
+        g1.tags.create(tag='supertagtwo')
+        panel = self.browseToAndSelectAs('a1admin', g1)
+        self.waitForText('supertagone', within=panel)
+        self.waitForText('supertagtwo', within=panel)
         self._click_edit_tags_button()
         panel = self.find_element('#single_set_tags_panel')
         self.waitFor(panel, lambda p: p.is_displayed())
         inputfield = panel.find_element_by_css_selector('textarea')
-        self.waitFor(inputfield, lambda i: i.get_attribute('value') == 'a,b')
+        self.waitFor(inputfield, lambda i: i.get_attribute('value') == 'supertagone,supertagtwo')
 
     def test_clear(self):
         g1 = self.create_group('g1:candidate(student1)')

@@ -7,7 +7,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
         'devilry_extjsextras.OkCancelPanel',
         'devilry_subjectadmin.view.managestudents.ChooseTagsPanel',
         'devilry_subjectadmin.view.managestudents.TagsInGroupGrid',
-        'devilry_subjectadmin.view.managestudents.TagsHelp'
+        'devilry_subjectadmin.view.managestudents.TagsHelp',
+        'devilry_extjsextras.ContainerWithEditTitle'
     ],
 
     constructor: function(config) {
@@ -28,25 +29,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageTagsOnSingle', {
             cls: 'bootstrap',
             layout: 'anchor',
             items: [{
-                xtype: 'box',
+                xtype: 'containerwithedittitle',
                 anchor: '100%',
-                tpl: [
-                    '<h4>',
-                        '{heading}',
-                        ' <a href="#" class="edit_tags_button">(',
-                            gettext('Edit'),
-                        ')</a>',
-                    '</h4>'
-                ],
-                data: {
-                    heading: gettext('Tags')
-                },
+                title: gettext('Tags'),
                 listeners: {
                     scope: this,
-                    element: 'el',
-                    delegate: 'a.edit_tags_button',
-                    click: function(e) {
-                        e.preventDefault();
+                    edit: function() {
                         this.fireEvent('edit_tags', this);
                     }
                 }
