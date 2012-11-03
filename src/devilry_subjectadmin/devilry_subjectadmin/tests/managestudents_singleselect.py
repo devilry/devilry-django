@@ -121,12 +121,6 @@ class TestManageSingleGroupStudents(TestManageSingleGroupMixin, SubjectAdminSele
         self.assertTrue(missing.text.strip(), 'Full name missing')
         self.assertTrue(username.text.strip(), 'student1')
 
-    def test_no_popbutton_on_single(self):
-        g1 = self.create_group('g1:candidate(student1)')
-        self.browseToAndSelectAs('a1admin', g1)
-        self.waitForCssSelector('.studentsingroupgrid_meta_student1')
-        self.assertEquals(len(self.find_elements('.studentsingroupgrid_pop')), 0)
-
     def _pop_by_username(self, username):
         cssselector = '.studentsingroupgrid_pop_{0}'.format(username)
         self.waitForCssSelector(cssselector)
