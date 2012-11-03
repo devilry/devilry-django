@@ -13,7 +13,8 @@ Ext.define('devilry_subjectadmin.model.Group', {
         {name: 'feedback',  type: 'auto'},
         {name: 'candidates', type: 'auto'},
         {name: 'examiners', type: 'auto'},
-        {name: 'deadlines', type: 'auto'}
+        {name: 'deadlines', type: 'auto'},
+        {name: 'status', type: 'string'}
     ],
 
     proxy: {
