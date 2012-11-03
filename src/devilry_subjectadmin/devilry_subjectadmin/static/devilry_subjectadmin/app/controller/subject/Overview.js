@@ -24,7 +24,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
 
     refs: [{
         ref: 'globalAlertmessagelist',
-        selector: 'subjectoverview>alertmessagelist'
+        selector: 'viewport floatingalertmessagelist#appAlertmessagelist'
     }, {
         ref: 'deleteButton',
         selector: 'subjectoverview #deleteButton'
