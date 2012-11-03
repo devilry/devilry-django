@@ -80,7 +80,7 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
 
         stat=self.selenium.find_elements_by_css_selector('.metadataWrapper')
         self.assertIn('Closed', stat[0].text)
-        self.assertIn('3 Deliveries', stat[0].text)
+        self.assertIn('3 del', stat[0].text)
 
         self.assertIn('Open', stat[6].text)
 
