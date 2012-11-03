@@ -2245,28 +2245,36 @@ span.collapsible-indicator {
   content: "";
 }
 
-/* line 10, ../sass/_devilry_bootstrap_extras.scss */
+/* line 2, ../sass/_devilry_rolealerts.scss */
+.bootstrap .alert-role-examiner {
+  background-color: #0077b3;
+  border-color: #00669a;
+  color: #000;
+  text-shadow: none;
+}
+
+/* line 11, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap p, .bootstrap .alert, .bootstrap li {
   font-size: 14px;
   line-height: 20px;
 }
-/* line 16, ../sass/_devilry_bootstrap_extras.scss */
+/* line 17, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap ul li {
   list-style: disc outside none;
 }
-/* line 21, ../sass/_devilry_bootstrap_extras.scss */
+/* line 22, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap ul.unstyled > li,
 .bootstrap ol.unstyled > li {
   margin-left: 0;
   list-style: none;
 }
-/* line 27, ../sass/_devilry_bootstrap_extras.scss */
+/* line 28, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .oneline_ellipsis {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* line 33, ../sass/_devilry_bootstrap_extras.scss */
+/* line 34, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view {
   border: 1px solid #ccc;
   background-color: #fafafa;
@@ -2278,53 +2286,53 @@ span.collapsible-indicator {
   -khtml-border-radius: 6px;
   border-radius: 6px;
 }
-/* line 39, ../sass/_devilry_bootstrap_extras.scss */
+/* line 40, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h1 {
   font-size: 26px;
   line-height: 35px;
 }
-/* line 40, ../sass/_devilry_bootstrap_extras.scss */
+/* line 41, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h2 {
   font-size: 20px;
   line-height: 30px;
 }
-/* line 41, ../sass/_devilry_bootstrap_extras.scss */
+/* line 42, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h3 {
   font-size: 14px;
   line-height: 20px;
 }
-/* line 42, ../sass/_devilry_bootstrap_extras.scss */
+/* line 43, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h4 {
   font-size: 12px;
   line-height: 24px;
 }
-/* line 43, ../sass/_devilry_bootstrap_extras.scss */
+/* line 44, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h5 {
   font-size: 10px;
   line-height: 15px;
 }
-/* line 44, ../sass/_devilry_bootstrap_extras.scss */
+/* line 45, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h6 {
   font-size: 10px;
   line-height: 15px;
 }
-/* line 46, ../sass/_devilry_bootstrap_extras.scss */
+/* line 47, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h1 small {
   font-size: 18px;
 }
-/* line 47, ../sass/_devilry_bootstrap_extras.scss */
+/* line 48, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h2 small {
   font-size: 15px;
 }
-/* line 48, ../sass/_devilry_bootstrap_extras.scss */
+/* line 49, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h3 small {
   font-size: 10px;
 }
-/* line 49, ../sass/_devilry_bootstrap_extras.scss */
+/* line 50, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .feedback_rendered_view h4 small {
   font-size: 8px;
 }
-/* line 52, ../sass/_devilry_bootstrap_extras.scss */
+/* line 53, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap .alert.closable:hover {
   border: 1px solid #888;
 }
