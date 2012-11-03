@@ -56,11 +56,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
             //'</tpl>',
             '<tpl if="num_deliveries != 0">',
                 '<div style="padding-top: 15px;">',
-                    //'<span class="num_deliveries badge" title="{num_deliveries} {[this.getDeliveriesLabel(values.num_deliveries)]}">',
-                        //'{num_deliveries} {[this.ellipsis(this.getDeliveriesLabel(values.num_deliveries), 7)]}',
-                    //'</span>',
                     '<span class="num_deliveries badge" title="{num_deliveries} {[this.getDeliveriesLabel(values.num_deliveries)]}">',
-                        '{num_deliveries}',
+                        '{num_deliveries} {[this.ellipsis(this.getDeliveriesLabel(values.num_deliveries), 7)]}',
                     '</span>',
                 '</div>',
             '</tpl>',
@@ -145,7 +142,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
         return {
             header: gettext('Metadata'),
             dataIndex: 'user',
-            width: 40,
+            width: 75,
             menuDisabled: true,
             renderer: this.renderMetadataCol,
             sortable: false
