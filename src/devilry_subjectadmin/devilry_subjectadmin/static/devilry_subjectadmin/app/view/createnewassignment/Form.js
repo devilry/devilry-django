@@ -299,7 +299,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                     columnWidth: 1,
                                     margin: '0 0 0 10',
                                     checked: false,
-                                    boxLabel: gettext('Only copy groups with passing grade?')
+                                    boxLabel: gettext('Only copy those with passing grade?')
                                 }]
 
                             }, {
