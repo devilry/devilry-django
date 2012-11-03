@@ -53,7 +53,7 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
                             periods=['period1'],
                             assignments=['week2:pub(2):admin(week2admin)'])
         self._loginToAssignment('week2admin', self.testhelper.sub_period1_week2.id)
-        self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime_widget .danger')
+        self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime_widget .text-warning')
 
     def test_published(self):
         self.testhelper.add(nodes='uni',
@@ -61,7 +61,7 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
                             periods=['period1:begins(-2)'],
                             assignments=['week2:admin(week2admin)'])
         self._loginToAssignment('week2admin', self.testhelper.sub_period1_week2.id)
-        self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime_widget .success')
+        self.waitForCssSelector('.devilry_subjectadmin_editpublishingtime_widget .text-success')
 
 
 class TestAssignmentDangerous(SubjectAdminSeleniumTestCase, RenameBasenodeTestMixin, DeleteBasenodeTestMixin):
