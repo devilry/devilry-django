@@ -588,3 +588,42 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(len(deadlines), 1)
         deliveries = deadlines[0].deliveries.all()
         self.assertEquals(len(deliveries), 3)
+
+
+
+class TestAssignmentGroupStatus(TestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes="uni",
+                            subjects=["sub"],
+                            periods=["p1:begins(-1)"], # 30days
+                            assignments=['a1:pub(25)'], # 5days ago
+                            assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
+        self.g1 = self.testhelper.sub_p1_a1_g1
+
+    def test_no_deadlines(self):
+        self.assertEquals(self.g1.get_status(), 'no-deadlines')
+
+    def test_waiting_for_deliveries(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)') # 1day after publishing time, with is 5days ago.
+        self.assertEquals(self.g1.get_status(), 'waiting-for-deliveries')
+
+    def test_waiting_for_feedback(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)') # 5day after publishing time, with is 5days ago.
+        self.assertEquals(self.g1.get_status(), 'waiting-for-feedback')
+
+    def test_corrected(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)')
+        delivery = self.testhelper.add_delivery('uni;sub.p1.a1.g1')
+        self.testhelper.add_feedback(delivery=delivery,
+                                     verdict={'grade': 'A', 'points':100, 'is_passing_grade':True})
+        g1 = self.testhelper.reload_from_db(self.g1)
+        g1.is_open = False
+        g1.save()
+        self.assertEquals(g1.get_status(), 'corrected')
+
+    def test_closed_without_feedback(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)')
+        self.g1.is_open = False
+        self.g1.save()
+        self.assertEquals(self.g1.get_status(), 'closed-without-feedback')

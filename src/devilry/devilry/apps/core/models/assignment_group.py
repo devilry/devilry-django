@@ -428,6 +428,46 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             source.merge_into(target) # Source is deleted after this
 
 
+    def get_status(self):
+        """
+        Get the status of the group. Calculated with this algorithm:
+
+        - If open:
+            - If before deadline:
+                - ``waiting-for-deliveries``
+            - If after deadline:
+                - ``waiting-for-feedback``
+            - If no deadlines
+                - ``no-deadlines``
+        If closed:
+            - If feedback:
+                - ``corrected``
+            If not:
+                - ``closed-without-feedback``
+
+        :return:
+            One of ``waiting-for-deliveries``, ``waiting-for-feedback``,
+            ``no-deadlines``, ``corrected`` or ``closed-without-feedback``.
+        """
+        if self.is_open:
+            deadlines = self.deadlines.all()
+            deadlinecount = len(deadlines)
+            if deadlinecount == 0:
+                return 'no-deadlines'
+            else:
+                active_deadline = deadlines[deadlinecount-1]
+                now = datetime.now()
+                if active_deadline.deadline > now:
+                    return 'waiting-for-feedback'
+                else:
+                    return 'waiting-for-deliveries'
+        else:
+            if self.feedback:
+                return 'corrected'
+            else:
+                return 'closed-without-feedback'
+
+
 class AssignmentGroupTag(models.Model):
     """
     An AssignmentGroup can be tagged with zero or more tags using this class.
