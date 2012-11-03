@@ -94,10 +94,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                     scale: 'large'
                 },
                 items: ['->', {
-                    xtype: 'primarybutton',
+                    xtype: 'button',
+                    scale: 'medium',
                     itemId: 'addstudents',
                     cls: 'addstudents',
-                    text: gettext('Add students')
+                    text: [
+                        '<i class="icon-plus"></i> ',
+                        gettext('Add students')
+                    ].join('')
                 }]
             }]
         });
