@@ -605,11 +605,11 @@ class TestAssignmentGroupStatus(TestCase):
         self.assertEquals(self.g1.get_status(), 'no-deadlines')
 
     def test_waiting_for_deliveries(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)') # 1day after publishing time, with is 5days ago.
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)') # 5day after publishing time, with is 5days ago.
         self.assertEquals(self.g1.get_status(), 'waiting-for-deliveries')
 
     def test_waiting_for_feedback(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)') # 5day after publishing time, with is 5days ago.
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)') # 1day after publishing time, with is 5days ago.
         self.assertEquals(self.g1.get_status(), 'waiting-for-feedback')
 
     def test_corrected(self):

@@ -458,9 +458,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                 active_deadline = deadlines[deadlinecount-1]
                 now = datetime.now()
                 if active_deadline.deadline > now:
-                    return 'waiting-for-feedback'
-                else:
                     return 'waiting-for-deliveries'
+                else:
+                    return 'waiting-for-feedback'
         else:
             if self.feedback:
                 return 'corrected'
