@@ -233,9 +233,7 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
         okbutton = panel.find_element_by_css_selector('.okbutton button')
         self.waitFor(okbutton, lambda b: b.is_enabled())
         okbutton.click()
-
-        # Wait for reload
-        self.waitFor(self.selenium, self._has_reloaded)
+        self.waitFor(self.selenium, lambda s: 'Changed examiners of' in self.selenium.page_source)
 
     def test_set(self):
         newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
@@ -283,17 +281,6 @@ class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSelenium
         self.waitForCssSelector('.tagsingroupgrid_tag_a')
         tag = self.find_element('.tagsingroupgrid_tag_a')
         self.assertTrue(tag.text.strip(), 'a')
-
-    def _has_reloaded(self, ignored):
-        # Since the #single_tags_help_and_buttons_container is invisible on the
-        # save, it will not become visible again until reloaded
-        panels = self.find_elements('#single_tags_help_and_buttons_container')
-        if panels:
-            try:
-                return panels[0].is_displayed()
-            except StaleElementReferenceException:
-                pass
-        return False
 
     def _click_edit_tags_button(self):
         self.waitForCssSelector('.devilry_subjectadmin_managetagsonsingle a.edit_tags_button')
