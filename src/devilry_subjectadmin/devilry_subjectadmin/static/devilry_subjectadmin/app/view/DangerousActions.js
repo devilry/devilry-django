@@ -1,5 +1,5 @@
 Ext.define('devilry_subjectadmin.view.DangerousActions', {
-    extend: 'Ext.container.Container',
+    extend: 'devilry_extjsextras.UnfocusedContainer',
     alias: 'widget.dangerousactions',
     cls: 'devilry_subjectadmin_dangerousactions',
 
@@ -13,16 +13,16 @@ Ext.define('devilry_subjectadmin.view.DangerousActions', {
         Ext.apply(this, {
             items: [{
                 xtype: 'box',
-                cls: 'bootstrap',
-                //margin: '0 0 2 0',
+                cls: 'bootstrap header',
                 itemId: 'header',
                 tpl: this.titleTpl,
                 data: {
                     heading: this.title
                 }
             }, {
-                xtype: 'panel',
-                bodyPadding: 10,
+                xtype: 'container',
+                padding: '10 10 0 10',
+                cls: 'body',
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%',
@@ -32,24 +32,6 @@ Ext.define('devilry_subjectadmin.view.DangerousActions', {
                 items: this.items
             }]
         });
-        this.on('render', this._onRender, this);
         this.callParent(arguments);
-    },
-
-    _onRender: function() {
-        this.getEl().setOpacity(this.defaultOpacity);
-        this.getEl().on({
-            scope: this,
-            mouseenter: this._onMouseEnter,
-            mouseleave: this._onMouseLeave
-        });
-    },
-
-    _onMouseEnter: function() {
-        this.getEl().setOpacity(this.hoverOpacity);
-    },
-
-    _onMouseLeave: function() {
-        this.getEl().setOpacity(this.defaultOpacity);
     }
 });

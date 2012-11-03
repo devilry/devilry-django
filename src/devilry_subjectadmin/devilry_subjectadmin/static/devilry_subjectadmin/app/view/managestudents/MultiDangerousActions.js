@@ -1,7 +1,7 @@
 Ext.define('devilry_subjectadmin.view.managestudents.MultiDangerousActions', {
     extend: 'devilry_subjectadmin.view.DangerousActions',
     alias: 'widget.multigroupdangerous',
-    cls: 'devilry_subjectadmin_multigroupdangerous',
+    cls: 'devilry_subjectadmin_dangerousactions devilry_subjectadmin_multigroupdangerous',
     requires: [
         'devilry_extjsextras.SingleActionBox'
     ],

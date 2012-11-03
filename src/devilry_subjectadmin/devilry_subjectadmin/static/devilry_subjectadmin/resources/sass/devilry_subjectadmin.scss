@@ -7,9 +7,22 @@
     margin: 20px 0 20px 0;
 }
 
-.devilry_subjectadmin_dangerousactions .bootstrap {
-    h2, h3 {
-        color: #900;
+.devilry_subjectadmin_dangerousactions {
+    .bootstrap.header {
+        h2, h3 {
+            color: #900;
+            margin: 0;
+            padding: 0;
+            font-size: 14px;
+            line-height: normal;
+        }
+    }
+    .body {
+        border: 1px solid #ccc !important;
+        @include border-top-left-radius(0);
+        @include border-top-right-radius(6px);
+        @include border-bottom-left-radius(6px);
+        @include border-bottom-right-radius(6px);
     }
 }
 

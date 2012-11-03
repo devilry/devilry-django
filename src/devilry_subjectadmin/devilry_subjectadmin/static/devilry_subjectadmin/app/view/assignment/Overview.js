@@ -110,7 +110,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                     }
                 }, {
                     xtype: 'dangerousactions',
-                    margin: '30 0 0 0',
+                    margin: '45 0 0 0',
                     items: [{
                         xtype: 'singleactionbox',
                         margin: 0,
