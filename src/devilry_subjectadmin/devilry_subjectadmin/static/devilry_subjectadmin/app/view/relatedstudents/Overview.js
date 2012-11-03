@@ -180,11 +180,13 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                             ].join('')
                         }, {
                             xtype: 'choosetagspanel',
+                            initialValue: '',
                             itemId: 'setTagsPanel',
                             cls: 'set_tags_panel',
                             buttonText: gettext('Set tags')
                         }, {
                             xtype: 'choosetagspanel',
+                            initialValue: '',
                             itemId: 'addTagsPanel',
                             cls: 'add_tags_panel',
                             buttonText: gettext('Add tags')

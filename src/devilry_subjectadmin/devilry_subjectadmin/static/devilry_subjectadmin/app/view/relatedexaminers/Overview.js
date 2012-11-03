@@ -169,10 +169,12 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                         }, {
                             xtype: 'choosetagspanel',
                             itemId: 'setTagsPanel',
+                            initialValue: '',
                             cls: 'set_tags_panel',
                             buttonText: gettext('Set tags')
                         }, {
                             xtype: 'choosetagspanel',
+                            initialValue: '',
                             itemId: 'addTagsPanel',
                             cls: 'add_tags_panel',
                             buttonText: gettext('Add tags')
