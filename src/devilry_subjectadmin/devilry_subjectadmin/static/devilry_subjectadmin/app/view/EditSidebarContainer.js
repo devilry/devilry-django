@@ -3,6 +3,6 @@ Ext.define('devilry_subjectadmin.view.EditSidebarContainer', {
     alias: 'widget.editsidebarcontainer',
     cls: 'devilry_subjectadmin_editsidebarcontainer',
 
-    defaultOpacity: 0.7,
-    hoverOpacity: 1,
+    defaultOpacity: 0.8,
+    hoverOpacity: 1
 });
