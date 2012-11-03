@@ -24,7 +24,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.Overview', {
 
     refs: [{
         ref: 'globalAlertmessagelist',
-        selector: 'assignmentoverview>alertmessagelist'
+        selector: 'viewport floatingalertmessagelist#appAlertmessagelist'
     }, {
         ref: 'header',
         selector: 'assignmentoverview #header'
