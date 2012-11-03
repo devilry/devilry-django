@@ -243,7 +243,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             }, this);
             this.getExaminerRoleList().removeAll();
             this.getExaminerRoleList().add({
-                type: 'info',
+                type: 'role-examiner',
                 messagetpl: [
                     '<div class="pull-left" style="margin-right: 10px;">',
                         '<tpl if="isExaminer">',
