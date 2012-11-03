@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.db.models import Q
 from django.db import transaction
 from django.db.models import Count
@@ -366,7 +367,7 @@ class GroupForm(forms.Form):
 class GroupResource(ModelResource):
     model = AssignmentGroup
     fields = ('id', 'name', 'etag', 'is_open', 'num_deliveries',
-              'parentnode', 'feedback',
+              'parentnode', 'feedback', 'status',
               'deadlines', 'examiners', 'candidates', 'tags')
 
     def serialize_model(self, instance):
@@ -376,6 +377,10 @@ class GroupResource(ModelResource):
             # (query) annotates this field instead of querying for each object
             data['num_deliveries'] = Delivery.objects.filter(deadline__assignment_group=instance).count()
         return data
+
+    def status(self, instance):
+        if isinstance(instance, self.model):
+            return instance.get_status()
 
     def parentnode(self, instance):
         if isinstance(instance, self.model):

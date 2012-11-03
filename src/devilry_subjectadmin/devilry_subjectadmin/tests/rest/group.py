@@ -61,7 +61,7 @@ class TestListGroupRest(TestCase):
 
         self.assertEquals(len(content), 3)
         self.assertEquals(set(content[0].keys()),
-                          set(['name', 'feedback', 'deadlines', 'id', 'etag',
+                          set(['name', 'feedback', 'deadlines', 'id', 'etag', 'status',
                                'is_open', 'parentnode', 'candidates', 'tags',
                                'examiners', 'num_deliveries']))
 
@@ -373,7 +373,7 @@ class TestGroupRest(TestCase, GroupManagerTestMixin):
         self.assertEquals(len(content), 1)
         first = content[0]
         self.assertEquals(set(first.keys()),
-                          set(['name', 'id', 'etag', 'is_open', 'parentnode',
+                          set(['name', 'id', 'etag', 'status', 'is_open', 'parentnode',
                                'feedback', 'deadlines', 'candidates', 'tags',
                                'examiners', 'num_deliveries']))
         self.assertEquals(first['name'], 'g1')
@@ -504,7 +504,7 @@ class TestGroupRest(TestCase, GroupManagerTestMixin):
         first = content[0]
 
         self.assertEquals(set(first.keys()),
-                          set(['name', 'id', 'etag', 'is_open', 'parentnode',
+                          set(['name', 'id', 'etag', 'status', 'is_open', 'parentnode',
                                'feedback', 'deadlines', 'candidates', 'tags',
                                'examiners', 'num_deliveries']))
         self.assertEquals(first['name'], 'changed')
@@ -708,7 +708,7 @@ class TestGroupRest(TestCase, GroupManagerTestMixin):
         #content, response = self._putas('a1admin', self.a1id, group.id, data)
         #self.assertEquals(response.status_code, 200)
         #self.assertEquals(set(content.keys()),
-                          #set(['name', 'id', 'etag', 'is_open', 'parentnode',
+                          #set(['name', 'id', 'etag', 'status', 'is_open', 'parentnode',
                                #'feedback', 'deadlines', 'candidates', 'tags',
                                #'examiners', 'num_deliveries']))
         #self.assertEquals(content['name'], 'changed')
@@ -834,7 +834,7 @@ class TestGroupRest(TestCase, GroupManagerTestMixin):
         ##pprint(content)
         #self.assertEquals(response.status_code, 200)
         #self.assertEquals(set(content.keys()),
-                          #set(['name', 'id', 'etag', 'is_open', 'parentnode',
+                          #set(['name', 'id', 'etag', 'status', 'is_open', 'parentnode',
                                #'feedback', 'deadlines', 'candidates', 'tags',
                                #'examiners', 'num_deliveries']))
         #self.assertEquals(content['name'], 'g1')
