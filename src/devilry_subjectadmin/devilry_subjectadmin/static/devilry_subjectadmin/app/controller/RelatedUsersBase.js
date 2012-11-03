@@ -15,6 +15,13 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
         this.getSidebarDeck().getLayout().setActiveItem('helpBox');
     },
 
+    //
+    //
+    // Must be implemented in subclasses
+    //
+    //
+
+    // NOTE: getOverview() must also be available (use ref)
 
     getRelatedUsersStore: function() {
         throw "Must be implemented in subclasses.";
