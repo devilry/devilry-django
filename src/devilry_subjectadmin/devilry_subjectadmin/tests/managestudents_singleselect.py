@@ -133,8 +133,9 @@ class TestManageSingleGroupStudents(TestManageSingleGroupMixin, SubjectAdminSele
         okbutton.click()
 
         # After pop, the original and the split group will be marked in the multi-view
-        self.waitForCssSelector('.devilry_subjectadmin_multiplegroupsview')
-        self.assertEquals(len(self.find_listofgroups_rows(selected_only=True)), 2)
+        def twoSelected(s):
+            return len(self.find_listofgroups_rows(selected_only=True)) == 2
+        self.waitFor(self.selenium, twoSelected)
 
     def test_pop(self):
         g1 = self.create_group('g1:candidate(student1,student2)')
@@ -309,7 +310,7 @@ class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSelenium
         okbutton = panel.find_element_by_css_selector('.choosetags_savebutton button')
         self.waitFor(okbutton, lambda b: b.is_enabled())
         okbutton.click()
-        self.waitFor(self.selenium, self._has_reloaded) # Wait for reload
+        self.waitFor(self.selenium, lambda s: 'Saved the following tags for' in self.selenium.page_source)
 
     def test_set(self):
         g1 = self.create_group('g1:candidate(student1)')
@@ -333,7 +334,7 @@ class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSelenium
         panel = self.find_element('#single_set_tags_panel')
         self.waitFor(panel, lambda p: p.is_displayed())
         inputfield = panel.find_element_by_css_selector('textarea')
-        self.assertEquals(inputfield.get_attribute('value'), 'a,b')
+        self.waitFor(inputfield, lambda i: i.get_attribute('value') == 'a,b')
 
     def test_clear(self):
         g1 = self.create_group('g1:candidate(student1)')
@@ -365,7 +366,7 @@ class TestManageSingleGroupDeadlinesAndDeliveries(TestManageSingleGroupMixin, Su
         return int(deliverycount_el.text.strip())
 
     def _isInTheFuture(self, deadline):
-        return len(deadline.find_elements_by_css_selector('.deadlineheader .in_the_future .success')) == 1
+        return len(deadline.find_elements_by_css_selector('.deadlineheader .in_the_future .text-success')) == 1
 
     def _waitForDeadlineCount(self, count):
         deadlinescontainer = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_admingroupinfo_deadlinescontainer')
@@ -442,7 +443,7 @@ class TestManageSingleGroupDeadlinesAndDeliveries(TestManageSingleGroupMixin, Su
         self.assertEquals(len(delivery.find_elements_by_css_selector('.no_feedback')), 0)
         feedback = delivery.find_element_by_css_selector('.feedback_rendered_view').text.strip()
         self.assertEquals(feedback, 'Hello world')
-        self.assertEquals(delivery.find_element_by_css_selector('.gradeblock p .success').text.strip(),
+        self.assertEquals(delivery.find_element_by_css_selector('.gradeblock p .text-success').text.strip(),
                           'Passed')
         self.assertTrue('This is the active feedback' in delivery.text)
 
@@ -457,7 +458,7 @@ class TestManageSingleGroupDeadlinesAndDeliveries(TestManageSingleGroupMixin, Su
         self._show_deadline(deadline)
         delivery = self._get_deliveries(deadline)[0]
 
-        self.assertEquals(delivery.find_element_by_css_selector('.gradeblock p .danger').text.strip(),
+        self.assertEquals(delivery.find_element_by_css_selector('.gradeblock p .text-warning').text.strip(),
                           'Failed')
 
 

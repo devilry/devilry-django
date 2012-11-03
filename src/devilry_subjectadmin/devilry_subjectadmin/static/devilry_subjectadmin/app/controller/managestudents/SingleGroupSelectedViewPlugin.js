@@ -553,7 +553,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.manageStudentsController.notifySingleGroupChange({
             scope: this,
             success: function() {
-                // TODO: Notify the user about the change
+                this.application.getAlertmessagelist().add({
+                    type: 'success',
+                    autoclose: true,
+                    messagetpl: gettext('Saved the following tags for {group}: {tags}'),
+                    messagedata: {
+                        group: this._em(this.groupRecord.getIdentString()),
+                        tags: tags.length>0? tags.join(', '): this._em(gettext('No tags'))
+                    }
+                });
             }
         });
     },
