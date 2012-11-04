@@ -10,7 +10,6 @@ Ext.define('devilry_extjsextras.AlertMessageList', {
         'devilry_extjsextras.AlertMessage'
     ],
     alias: 'widget.alertmessagelist',
-    cls: 'devilry_extjsextras_alertmessagelist',
     hidden: true,
     frame: false,
     border: false,
@@ -19,6 +18,12 @@ Ext.define('devilry_extjsextras.AlertMessageList', {
     layout: 'anchor',
 
     initComponent: function() {
+        if(Ext.isEmpty(this.cls)) {
+            this.cls = [];
+        } else {
+            this.cls = Ext.toArray();
+        }
+        this.cls.push('devilry_extjsextras_alertmessagelist');
         this.on('remove', this._onRemove, this);
         this.callParent(arguments);
         this.addListener({
