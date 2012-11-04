@@ -8,12 +8,11 @@
       //text-shadow: none;
     }
 
-}
+    .alert.flat {
+        @include border-radius(0);
+    }
 
-.alertmessagelist-flat .bootstrap .alert {
-    @include border-radius(0);
-}
-
-.alertmessagelist-compact .bootstrap .alert {
-    padding: 4px 35px 4px 7px;
+    .alert.compact {
+        padding: 4px 35px 4px 7px;
+    }
 }
