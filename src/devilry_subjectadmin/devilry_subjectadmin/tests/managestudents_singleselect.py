@@ -45,27 +45,21 @@ class TestManageSingleGroupOverview(TestManageSingleGroupMixin, SubjectAdminSele
     def test_render(self):
         g1 = self.create_group('g1:candidate(student1)')
         g2 = self.create_group('g2:candidate(student2)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
         self.browseToAndSelectAs('a1admin', g1)
-        gradebox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo .gradebox')
-        self.assertEquals(gradebox.find_element_by_css_selector('.nofeedback').text.strip(), 'No feedback')
+        meta = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo')
+        self.assertEquals(meta.text.strip(), 'Waiting for deliveries')
+        self.assertEquals(len(meta.find_elements_by_css_selector('.status-waiting-for-deliveries')), 1)
 
-        statusbox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo .statusbox')
-        self.assertTrue(g1.is_open)
-        self.assertEquals(len(statusbox.find_elements_by_css_selector('.status_open')), 1)
-        self.assertEquals(len(statusbox.find_elements_by_css_selector('.status_closed')), 0)
-        self.assertEquals(statusbox.find_element_by_css_selector('.status_open').text.strip(), 'Open')
-
-    def test_render_closed_group(self):
+    def test_no_deadlines(self):
         g1 = self.create_group('g1:candidate(student1)')
-        g1.is_open = False
-        g1.save()
+        g2 = self.create_group('g2:candidate(student2)')
         self.browseToAndSelectAs('a1admin', g1)
-        statusbox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo .statusbox')
-        self.assertEquals(len(statusbox.find_elements_by_css_selector('.status_open')), 0)
-        self.assertEquals(len(statusbox.find_elements_by_css_selector('.status_closed')), 1)
-        self.assertEquals(statusbox.find_element_by_css_selector('.status_closed').text.strip(), 'Closed')
+        meta = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo')
+        self.assertEquals(meta.text.strip(), 'no-deadlines')
+        self.assertEquals(len(meta.find_elements_by_css_selector('.status-no-deadlines')), 1)
 
-    def test_render_graded_group_passed(self):
+    def test_passing_grade(self):
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
         self.testhelper.add_delivery(g1, {'b.py': ['print ', 'meh']})
@@ -73,14 +67,15 @@ class TestManageSingleGroupOverview(TestManageSingleGroupMixin, SubjectAdminSele
                                      rendered_view="Hello world")
 
         self.browseToAndSelectAs('a1admin', g1)
-        gradebox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo .gradebox')
-        self.assertEquals(len(gradebox.find_elements_by_css_selector('.passing_grade')), 1)
-        self.assertEquals(len(gradebox.find_elements_by_css_selector('.failing_grade')), 0)
-        self.assertEquals(gradebox.find_element_by_css_selector('.passing_grade').text.strip(), 'Passed')
-        self.assertEquals(gradebox.find_element_by_css_selector('.grade').text.strip(), '(C)')
-        self.assertEquals(gradebox.find_element_by_css_selector('.points').text.strip(), '(Points: 85)')
+        meta = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo')
+        self.assertEquals(len(meta.find_elements_by_css_selector('.status-corrected')), 1)
+        self.assertEquals(len(meta.find_elements_by_css_selector('.passing_grade')), 1)
+        self.assertEquals(len(meta.find_elements_by_css_selector('.failing_grade')), 0)
+        self.assertEquals(meta.find_element_by_css_selector('.passing_grade').text.strip(), 'Passed')
+        self.assertEquals(meta.find_element_by_css_selector('.grade').text.strip(), '(C)')
+        self.assertEquals(meta.find_element_by_css_selector('.points').text.strip(), '(Points: 85)')
 
-    def test_render_graded_group_failed(self):
+    def test_failing_grade(self):
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
         self.testhelper.add_delivery(g1, {'b.py': ['print ', 'meh']})
@@ -88,12 +83,13 @@ class TestManageSingleGroupOverview(TestManageSingleGroupMixin, SubjectAdminSele
                                      rendered_view="Hello world")
 
         self.browseToAndSelectAs('a1admin', g1)
-        gradebox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo .gradebox')
-        self.assertEquals(len(gradebox.find_elements_by_css_selector('.passing_grade')), 0)
-        self.assertEquals(len(gradebox.find_elements_by_css_selector('.failing_grade')), 1)
-        self.assertEquals(gradebox.find_element_by_css_selector('.failing_grade').text.strip(), 'Failed')
-        self.assertEquals(gradebox.find_element_by_css_selector('.grade').text.strip(), '(F)')
-        self.assertEquals(gradebox.find_element_by_css_selector('.points').text.strip(), '(Points: 2)')
+        meta = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo')
+        self.assertEquals(len(meta.find_elements_by_css_selector('.status-corrected')), 1)
+        self.assertEquals(len(meta.find_elements_by_css_selector('.passing_grade')), 0)
+        self.assertEquals(len(meta.find_elements_by_css_selector('.failing_grade')), 1)
+        self.assertEquals(meta.find_element_by_css_selector('.failing_grade').text.strip(), 'Failed')
+        self.assertEquals(meta.find_element_by_css_selector('.grade').text.strip(), '(F)')
+        self.assertEquals(meta.find_element_by_css_selector('.points').text.strip(), '(Points: 2)')
 
 
 class TestManageSingleGroupStudents(TestManageSingleGroupMixin, SubjectAdminSeleniumTestCase):
