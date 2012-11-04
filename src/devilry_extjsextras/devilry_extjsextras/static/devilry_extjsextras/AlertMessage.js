@@ -84,7 +84,7 @@ Ext.define('devilry_extjsextras.AlertMessage', {
     initComponent: function() {
         var cls = 'bootstrap devilry_extjsextras_alertmessage';
         if(this.cls) {
-            cls += Ext.String.format('{0} {1}', cls, this.cls);
+            cls = Ext.String.format('{0} {1}', cls, this.cls);
         }
         this.cls = cls;
         this.callParent(arguments);
