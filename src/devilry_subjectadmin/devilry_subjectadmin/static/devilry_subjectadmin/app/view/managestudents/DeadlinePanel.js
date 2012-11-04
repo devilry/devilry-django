@@ -53,7 +53,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinePanel' ,{
                 gettext('About this deadline'),
             '</h2>',
             '<p style="white-space: pre-wrap;">{deadline.text}</p>',
-        '</tpl>',
+        '</tpl>'
     ],
 
     _formatDeadlineTextOneline: function() {

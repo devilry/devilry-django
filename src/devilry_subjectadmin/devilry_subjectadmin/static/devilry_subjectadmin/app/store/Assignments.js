@@ -11,7 +11,7 @@ Ext.define('devilry_subjectadmin.store.Assignments', {
     },
 
     getFirstRecordWithFirstDeadline: function() {
-        var record = undefined;
+        var record;
         this.each(function(assignmentRecord) {
             var first_deadline = assignmentRecord.get('first_deadline');
             if(first_deadline) {
@@ -102,7 +102,7 @@ Ext.define('devilry_subjectadmin.store.Assignments', {
             }
             delayCount++;
         }
-        if(first_deadline == null) {
+        if(first_deadline === null) {
             return null;
         }
         
