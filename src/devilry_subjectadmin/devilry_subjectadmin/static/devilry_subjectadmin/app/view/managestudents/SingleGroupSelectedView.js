@@ -23,6 +23,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
         Ext.apply(this, {
             layout: 'anchor',
             items: [{
+                xtype: 'alertmessagelist',
+                cls: 'examinerRoleList alertmessagelist-flat alertmessagelist-compact',
+                margin: '-20 -20 20 -20',
+                itemId: 'examinerRoleList'
+            }, {
                 xtype: 'singlegroupmetainfo'
             }, {
                 xtype: 'container',
@@ -42,11 +47,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     margin: '0 0 0 10',
                     columnWidth: 0.40
                 }]
-            }, {
-                xtype: 'alertmessagelist',
-                margin: '20 0 0 0',
-                itemId: 'examinerRoleList',
-                cls: 'examinerRoleList'
             }, {
                 xtype: 'box',
                 cls: 'bootstrap',

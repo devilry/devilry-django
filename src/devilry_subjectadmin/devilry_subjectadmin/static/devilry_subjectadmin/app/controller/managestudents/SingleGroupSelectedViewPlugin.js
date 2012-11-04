@@ -245,26 +245,28 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             this.getExaminerRoleList().add({
                 type: 'role-examiner',
                 messagetpl: [
-                    '<div class="pull-left" style="margin-right: 10px;">',
-                        '<tpl if="isExaminer">',
-                            ' <a href="{examinerui_url}" target="_blank" class="btn btn-small btn-inverse">',
-                                gettext('Examiner interface'),
-                                ' <i class="icon-share-alt icon-white"></i>',
-                            '</a>',
-                        '<tpl else>',
-                            ' <a href="{make_examiner}" class="btn btn-small btn-inverse make_me_examiner">',
-                                gettext('Make me examiner'),
-                            '</a>',
-                        '</tpl>',
-                    '</div>',
-                    '<small style="display:block; padding-top: 3px;">', // Style to align text with button
-                        '<tpl if="isExaminer">',
-                            gettext('You are examiner for this group.'),
-                        '<tpl else>',
-                            gettext('You need to be examiner if you want to provide feedback.'),
-                        '</tpl>',
-                    '</small>',
-                    '<div class="clearfix"></div>'
+                    '<div style="padding-left: 13px">', // Pad to line up with the rest of the view
+                        '<div class="pull-left" style="margin-right: 10px;">',
+                            '<tpl if="isExaminer">',
+                                ' <a href="{examinerui_url}" target="_blank" class="btn btn-mini btn-inverse">',
+                                    gettext('Examiner interface'),
+                                    ' <i class="icon-share-alt icon-white"></i>',
+                                '</a>',
+                            '<tpl else>',
+                                ' <a href="{make_examiner}" class="btn btn-mini btn-inverse make_me_examiner">',
+                                    gettext('Make me examiner'),
+                                '</a>',
+                            '</tpl>',
+                        '</div>',
+                        '<small style="display:block; padding-top: 3px;">', // Style to align text with button
+                            '<tpl if="isExaminer">',
+                                gettext('You are examiner for this group.'),
+                            '<tpl else>',
+                                gettext('You need to be examiner if you want to provide feedback.'),
+                            '</tpl>',
+                        '</small>',
+                        '<div class="clearfix"></div>',
+                    '</div>'
                 ],
                 messagedata: {
                     isExaminer: isExaminer,
