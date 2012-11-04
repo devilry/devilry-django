@@ -1,3 +1,5 @@
+@import "compass/css3/border-radius";
+
 .bootstrap {
     .alert-role-examiner {
       background-color: $devilry_examinercolor_bg;
@@ -5,4 +7,13 @@
       color: #000;
       text-shadow: none;
     }
+
+}
+
+.alertmessagelist-flat .bootstrap .alert {
+    @include border-radius(0);
+}
+
+.alertmessagelist-compact .bootstrap .alert {
+    padding: 4px 35px 4px 7px;
 }
