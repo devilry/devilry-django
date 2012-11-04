@@ -4,8 +4,8 @@
     .alert-role-examiner {
       background-color: $devilry_examinercolor_bg;
       border-color: darken($devilry_examinercolor_bg, 5%);
-      color: #000;
-      text-shadow: none;
+      color: lighten($devilry_examinercolor_bg, 50%);
+      //text-shadow: none;
     }
 
 }

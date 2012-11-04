@@ -2249,8 +2249,7 @@ span.collapsible-indicator {
 .bootstrap .alert-role-examiner {
   background-color: #0077b3;
   border-color: #00669a;
-  color: #000;
-  text-shadow: none;
+  color: #b3e6ff;
 }
 
 /* line 13, ../sass/_devilry_alert.scss */
