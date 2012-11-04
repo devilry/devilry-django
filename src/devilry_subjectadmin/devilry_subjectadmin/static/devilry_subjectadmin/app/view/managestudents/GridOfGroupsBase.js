@@ -183,7 +183,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
             groupname: groupname,
             usernames: this.getUsernames(record),
             notApprovedText: this.notApprovedText,
-            hasFeedback: record.get('feedback') !== null,
             approvedText: this.approvedText,
             groupUrlPrefix: this.groupUrlPrefix
         };
