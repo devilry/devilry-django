@@ -23,10 +23,56 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
         Ext.apply(this, {
             layout: 'anchor',
             items: [{
-                xtype: 'alertmessagelist',
-                cls: 'examinerRoleList alertmessagelist-flat alertmessagelist-compact',
+                xtype: 'alertmessage',
+                type: 'role-examiner',
+                cls: 'examinerRoleBox',
+                extracls: 'flat compact',
+                itemId: 'examinerRoleBox',
                 margin: '-20 -20 20 -20',
-                itemId: 'examinerRoleList'
+                messagetpl: [
+                    '<tpl if="loading">',
+                        '<p><small>',
+                            gettext('Loading'), ' ...',
+                        '</small></p>',
+                    '<tpl else>',
+                        '<div style="padding-left: 13px">', // Pad to line up with the rest of the view
+                            '<div class="pull-left" style="margin-right: 10px;">',
+                                '<tpl if="isExaminer">',
+                                    ' <a href="{examinerui_url}" target="_blank" class="btn btn-mini btn-inverse">',
+                                        gettext('Create/edit feedback'),
+                                        ' <i class="icon-share-alt icon-white"></i>',
+                                    '</a>',
+                                '<tpl else>',
+                                    ' <a href="{make_examiner}" class="btn btn-mini btn-inverse make_me_examiner">',
+                                        gettext('Make me examiner'),
+                                    '</a>',
+                                '</tpl>',
+                            '</div>',
+                            '<div class="text" style="display:block; padding-top: 3px;">', // Style to align text with button
+                                '<small>',
+                                    '<tpl if="isExaminer">',
+                                        gettext('You are examiner for this group.'),
+                                    '<tpl else>',
+                                        gettext('You need to be examiner for this group if you want to provide feedback.'),
+                                    '</tpl>',
+                                '</small>',
+                            '</div>',
+                            '<div class="clearfix"></div>',
+                        '</div>',
+                    '</tpl>'
+                ],
+                messagedata: {
+                    loading: true
+                },
+                listeners: {
+                    scope: this,
+                    element: 'el',
+                    delegate: '.make_me_examiner',
+                    click: function(e) {
+                        e.preventDefault();
+                        this.fireEvent('make_me_examiner');
+                    }
+                }
             }, {
                 xtype: 'singlegroupmetainfo'
             }, {

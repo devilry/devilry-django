@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from selenium.common.exceptions import StaleElementReferenceException
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import AssignmentGroup
@@ -90,6 +91,43 @@ class TestManageSingleGroupOverview(TestManageSingleGroupMixin, SubjectAdminSele
         self.assertEquals(meta.find_element_by_css_selector('.failing_grade').text.strip(), 'Failed')
         self.assertEquals(meta.find_element_by_css_selector('.grade').text.strip(), '(F)')
         self.assertEquals(meta.find_element_by_css_selector('.points').text.strip(), '(Points: 2)')
+
+    def test_examinerbox_notexaminer(self):
+        g1 = self.create_group('g1:candidate(student1)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
+        self.browseToAndSelectAs('a1admin', g1)
+        examinerRoleBox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupview .examinerRoleBox')
+
+        text = self.waitForAndFindElementByCssSelector('.text', within=examinerRoleBox)
+        self.assertTrue(text.text.strip().startswith('You need to be examiner for this group if you want to provide feedback'))
+
+        button = self.waitForAndFindElementByCssSelector('a.btn', within=examinerRoleBox)
+        self.assertEquals(button.text.strip(), 'Make me examiner')
+        button.click()
+        self.waitForText('Added you as examiner for: student1')
+        self.assertEquals(g1.examiners.all()[0].user, self.testhelper.a1admin)
+
+    def test_examinerbox_isexaminer(self):
+        g1 = self.create_group('g1:candidate(student1):examiner(a1admin)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
+        self.browseToAndSelectAs('a1admin', g1)
+        examinerRoleBox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupview .examinerRoleBox')
+
+        text = self.waitForAndFindElementByCssSelector('.text', within=examinerRoleBox)
+        self.assertTrue(text.text.strip().startswith('You are examiner for this group'))
+        button = self.waitForAndFindElementByCssSelector('a.btn', within=examinerRoleBox)
+        self.assertEquals(button.text.strip(), 'Create/edit feedback')
+
+    #def test_examinerbox_isexaminer_notpublished(self):
+        #g1 = self.create_group('g1:candidate(student1):examiner(a1admin)')
+        #self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
+        #self.browseToAndSelectAs('a1admin', g1)
+        #examinerRoleBox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupview .examinerRoleBox')
+
+        #text = self.waitForAndFindElementByCssSelector('.text', within=examinerRoleBox)
+        #self.assertTrue(text.text.strip().startswith('You are examiner for this group'))
+        #button = self.waitForAndFindElementByCssSelector('a.btn', within=examinerRoleBox)
+        #self.assertEquals(button.text.strip(), 'Create/edit feedback')
 
 
 class TestManageSingleGroupStudents(TestManageSingleGroupMixin, SubjectAdminSeleniumTestCase):

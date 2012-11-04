@@ -80,8 +80,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
     // Examiner role box
     }, {
-        ref: 'examinerRoleList',
-        selector: 'viewport singlegroupview #examinerRoleList'
+        ref: 'examinerRoleBox',
+        selector: 'viewport singlegroupview #examinerRoleBox'
 
     // Deadlines and deliveries
     }, {
@@ -103,7 +103,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
 
         this.control({
             'viewport singlegroupview': {
-                render: this._onRender
+                render: this._onRender,
+                make_me_examiner: this._onMakeMeExaminer
             },
 
             'viewport singlegroupview singlegroupmetainfo': {
@@ -158,7 +159,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             this.getExaminersBox(),
             this.getTagsBox(),
             this.getDeadlinesContainer(),
-            this.getExaminerRoleList()
+            this.getExaminerRoleBox()
         ];
     },
     _getHighPriComponents: function() {
@@ -241,49 +242,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                     return true;
                 }
             }, this);
-            this.getExaminerRoleList().removeAll();
-            this.getExaminerRoleList().add({
-                type: 'role-examiner',
-                cls: 'examinerRoleBox',
-                messagetpl: [
-                    '<div style="padding-left: 13px">', // Pad to line up with the rest of the view
-                        '<div class="pull-left" style="margin-right: 10px;">',
-                            '<tpl if="isExaminer">',
-                                ' <a href="{examinerui_url}" target="_blank" class="btn btn-mini btn-inverse">',
-                                    gettext('Create/edit feedback'),
-                                    ' <i class="icon-share-alt icon-white"></i>',
-                                '</a>',
-                            '<tpl else>',
-                                ' <a href="{make_examiner}" class="btn btn-mini btn-inverse make_me_examiner">',
-                                    gettext('Make me examiner'),
-                                '</a>',
-                            '</tpl>',
-                        '</div>',
-                        '<div class="text" style="display:block; padding-top: 3px;">', // Style to align text with button
-                            '<small>',
-                                '<tpl if="isExaminer">',
-                                    gettext('You are examiner for this group.'),
-                                '<tpl else>',
-                                    gettext('You need to be examiner for this group if you want to provide feedback.'),
-                                '</tpl>',
-                            '</small>',
-                        '</div>',
-                        '<div class="clearfix"></div>',
-                    '</div>'
-                ],
-                messagedata: {
-                    isExaminer: isExaminer,
-                    examinerui_url: devilry_subjectadmin.utils.UrlLookup.examinerGroupOverview(this.groupRecord.get('id'))
-                },
-                listeners: {
-                    scope: this,
-                    element: 'el',
-                    delegate: '.make_me_examiner',
-                    click: function(e) {
-                        e.preventDefault();
-                        this._onMakeMeExaminer();
-                    }
-                }
+            this.getExaminerRoleBox().updateData({
+                loading: false,
+                isExaminer: isExaminer,
+                examinerui_url: devilry_subjectadmin.utils.UrlLookup.examinerGroupOverview(this.groupRecord.get('id'))
             });
         }, this);
     },
