@@ -105,12 +105,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
                         ],
                         data: {
                             relatednote: gettext('Loading') + ' ...'
-                        },
-                        listeners: {
-                            scope: this,
-                            show: function() {
-                                console.log('SHOW');
-                            }
                         }
                     }, {
                         xtype: 'selectexaminersgrid',
