@@ -244,12 +244,13 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             this.getExaminerRoleList().removeAll();
             this.getExaminerRoleList().add({
                 type: 'role-examiner',
+                cls: 'examinerRoleBox',
                 messagetpl: [
                     '<div style="padding-left: 13px">', // Pad to line up with the rest of the view
                         '<div class="pull-left" style="margin-right: 10px;">',
                             '<tpl if="isExaminer">',
                                 ' <a href="{examinerui_url}" target="_blank" class="btn btn-mini btn-inverse">',
-                                    gettext('Examiner interface'),
+                                    gettext('Create/edit feedback'),
                                     ' <i class="icon-share-alt icon-white"></i>',
                                 '</a>',
                             '<tpl else>',
@@ -258,13 +259,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                                 '</a>',
                             '</tpl>',
                         '</div>',
-                        '<small style="display:block; padding-top: 3px;">', // Style to align text with button
-                            '<tpl if="isExaminer">',
-                                gettext('You are examiner for this group.'),
-                            '<tpl else>',
-                                gettext('You need to be examiner if you want to provide feedback.'),
-                            '</tpl>',
-                        '</small>',
+                        '<div class="text" style="display:block; padding-top: 3px;">', // Style to align text with button
+                            '<small>',
+                                '<tpl if="isExaminer">',
+                                    gettext('You are examiner for this group.'),
+                                '<tpl else>',
+                                    gettext('You need to be examiner for this group if you want to provide feedback.'),
+                                '</tpl>',
+                            '</small>',
+                        '</div>',
                         '<div class="clearfix"></div>',
                     '</div>'
                 ],
