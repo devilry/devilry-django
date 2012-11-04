@@ -2251,7 +2251,16 @@ span.collapsible-indicator {
   border-color: #00669a;
   color: #b3e6ff;
 }
-/* line 11, ../sass/_devilry_alert.scss */
+/* line 9, ../sass/_devilry_alert.scss */
+.bootstrap .alert-role-examiner a.morebutton, .bootstrap .alert-role-examiner a.lessbutton {
+  color: #80d4ff;
+  text-decoration: underline;
+}
+/* line 12, ../sass/_devilry_alert.scss */
+.bootstrap .alert-role-examiner a.morebutton:hover, .bootstrap .alert-role-examiner a.lessbutton:hover {
+  color: #e6f7ff;
+}
+/* line 18, ../sass/_devilry_alert.scss */
 .bootstrap .alert.flat {
   -moz-border-radius: 0;
   -webkit-border-radius: 0;
@@ -2260,7 +2269,7 @@ span.collapsible-indicator {
   -khtml-border-radius: 0;
   border-radius: 0;
 }
-/* line 15, ../sass/_devilry_alert.scss */
+/* line 22, ../sass/_devilry_alert.scss */
 .bootstrap .alert.compact {
   padding: 4px 35px 4px 7px;
 }
