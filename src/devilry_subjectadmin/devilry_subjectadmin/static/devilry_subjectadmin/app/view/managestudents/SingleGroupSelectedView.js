@@ -113,16 +113,17 @@ Ext.define('devilry_subjectadmin.view.managestudents.SingleGroupSelectedView' ,{
                     margin: '0 0 0 10',
                     columnWidth: 0.40
                 }]
+            //}, {
+                //xtype: 'box',
+                //cls: 'bootstrap',
+                //itemId: 'header',
+                //margin: '20 0 0 0',
+                //tpl: '<h3 class="muted">{heading}</h3>',
+                //data: {
+                    //heading: gettext('Deadlines, deliveries and feedback')
+                //}
             }, {
-                xtype: 'box',
-                cls: 'bootstrap',
-                itemId: 'header',
                 margin: '20 0 0 0',
-                tpl: '<h3 class="muted">{heading}</h3>',
-                data: {
-                    heading: gettext('Deadlines, deliveries and feedback')
-                }
-            }, {
                 xtype: 'admingroupinfo_deadlinescontainer'
             }, {
                 xtype: 'dangerousactions',

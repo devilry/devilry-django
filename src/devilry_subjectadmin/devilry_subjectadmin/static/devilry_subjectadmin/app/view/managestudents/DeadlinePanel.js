@@ -53,7 +53,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinePanel' ,{
                 gettext('About this deadline'),
             '</h2>',
             '<p style="white-space: pre-wrap;">{deadline.text}</p>',
-        '</tpl>'
+        '</tpl>',
     ],
 
     _formatDeadlineTextOneline: function() {
@@ -96,8 +96,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinePanel' ,{
                     deadline: this.deadline
                 }
             }, {
-                xtype: 'container',
-                itemId: 'addDeliveryPanelContainer'
+                xtype: 'alertmessage',
+                cls: 'nodeliveries',
+                type: 'warning',
+                margin: '20 20 0 20',
+                hidden: this.deadline.deliveries.length > 0,
+                message: gettext('The group has no deliveries on this deadline.')
             }, {
                 xtype: 'container',
                 itemId: 'deliveriesContainer',

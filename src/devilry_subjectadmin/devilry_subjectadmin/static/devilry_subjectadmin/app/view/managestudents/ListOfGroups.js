@@ -88,7 +88,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                 }]
             }, {
                 xtype: 'toolbar',
-                ui: 'footer',
+                //ui: 'footer',
                 dock: 'bottom',
                 defaults: {
                     scale: 'large'

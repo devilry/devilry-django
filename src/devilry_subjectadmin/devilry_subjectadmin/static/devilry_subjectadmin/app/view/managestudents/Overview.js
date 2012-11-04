@@ -37,12 +37,13 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
     initComponent: function() {
         Ext.apply(this, {
             layout: 'border',
+            border: false,
             frame: false,
             items: [{
                 xtype: 'listofgroups',
                 region: 'west',
                 border: true,
-                frame: true,
+                frame: false,
                 width: 390, // Default width
                 minWidth: 260, // Wont be able to make it smaller than this
 
