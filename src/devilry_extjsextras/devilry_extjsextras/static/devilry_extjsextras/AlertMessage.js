@@ -12,7 +12,7 @@ Ext.define('devilry_extjsextras.AlertMessage', {
     ],
     
     tpl: [
-        '<div class="alert alert-{type} {extracls}" style="{style}">',
+        '<div class="alert alert-{type}{extracls}{closablecls}" style="{style}">',
             '<tpl if="closable">',
                 '<button type="button" class="close" data-dismiss="alert">×</button>',
             '</tpl>',
@@ -28,6 +28,12 @@ Ext.define('devilry_extjsextras.AlertMessage', {
      * Override the margin style of the alert DIV.
      */
     boxMargin: undefined,
+
+
+    /**
+     * @cfg {String} [extracls=undefined]
+     * Extra css classes. Example: ``"flat compact"``.
+     */
 
     /**
      * @cfg
@@ -193,7 +199,12 @@ Ext.define('devilry_extjsextras.AlertMessage', {
             title: this.title,
             style: style,
             closable: this.closable,
-            extracls: this.closable? 'closable': ''
+            extracls: Ext.isEmpty(this.extracls)? '': ' ' + this.extracls,
+            closablecls: this.closable? ' closable': ''
         }]);
+    },
+
+    updateData: function(data, type) {
+        this.update(this.messagetpl, type, data);
     }
 });
