@@ -6,7 +6,7 @@ Ext.define('devilry_subjectadmin.model.Group', {
     idProperty: 'id',
     fields: [
         {name: 'id', type: 'int'},
-        {name: 'num_deliveries', type: 'int'},
+        {name: 'num_deliveries', type: 'int', persist: false},
         {name: 'name',  type: 'string'},
         {name: 'is_open',  type: 'boolean'},
         {name: 'tags', type: 'auto'},
@@ -14,7 +14,7 @@ Ext.define('devilry_subjectadmin.model.Group', {
         {name: 'candidates', type: 'auto'},
         {name: 'examiners', type: 'auto'},
         {name: 'deadlines', type: 'auto'},
-        {name: 'status', type: 'string'}
+        {name: 'status', type: 'string', persist: false}
     ],
 
     proxy: {
