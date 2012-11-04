@@ -12,6 +12,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultiDangerousActions', {
             items: [{
                 xtype: 'singleactionbox',
                 itemId: 'multiDeleteButton',
+                margin: 0,
                 id: 'multi_group_delete_button',
                 titleText: gettext('Delete'),
                 bodyHtml: interpolate(gettext('Once you delete a %(group_term)s, there is no going back. Only superusers can delete a %(group_term)s with deliveries.'), {

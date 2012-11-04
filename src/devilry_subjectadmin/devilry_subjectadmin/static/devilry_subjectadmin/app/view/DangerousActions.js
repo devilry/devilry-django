@@ -21,7 +21,7 @@ Ext.define('devilry_subjectadmin.view.DangerousActions', {
                 }
             }, {
                 xtype: 'container',
-                padding: '10 10 0 10',
+                padding: '10 10 10 10',
                 cls: 'body',
                 layout: 'anchor',
                 defaults: {
