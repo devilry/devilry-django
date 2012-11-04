@@ -118,16 +118,14 @@ class TestManageSingleGroupOverview(TestManageSingleGroupMixin, SubjectAdminSele
         button = self.waitForAndFindElementByCssSelector('a.btn', within=examinerRoleBox)
         self.assertEquals(button.text.strip(), 'Create/edit feedback')
 
-    #def test_examinerbox_isexaminer_notpublished(self):
-        #g1 = self.create_group('g1:candidate(student1):examiner(a1admin)')
-        #self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
-        #self.browseToAndSelectAs('a1admin', g1)
-        #examinerRoleBox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupview .examinerRoleBox')
-
-        #text = self.waitForAndFindElementByCssSelector('.text', within=examinerRoleBox)
-        #self.assertTrue(text.text.strip().startswith('You are examiner for this group'))
-        #button = self.waitForAndFindElementByCssSelector('a.btn', within=examinerRoleBox)
-        #self.assertEquals(button.text.strip(), 'Create/edit feedback')
+    def test_examinerbox_notpublished(self):
+        self.testhelper.sub_p1_a1.publishing_time = datetime.now() + timedelta(days=2)
+        self.testhelper.sub_p1_a1.save()
+        g1 = self.create_group('g1:candidate(student1):examiner(a1admin)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
+        self.browseToAndSelectAs('a1admin', g1)
+        examinerRoleBox = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupview .examinerRoleBox')
+        self.waitForText('This assignment will be published in', within=examinerRoleBox)
 
 
 class TestManageSingleGroupStudents(TestManageSingleGroupMixin, SubjectAdminSeleniumTestCase):
