@@ -1,13 +1,13 @@
-/* line 3, ../sass/devilry_subjectadmin.scss */
+/* line 4, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_navigation.bootstrap {
   margin: 20px 0 20px 0;
 }
-/* line 4, ../sass/devilry_subjectadmin.scss */
+/* line 5, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_navigation.bootstrap strong {
   font-size: 18px;
 }
 
-/* line 12, ../sass/devilry_subjectadmin.scss */
+/* line 13, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_dangerousactions .bootstrap.header h2, .devilry_subjectadmin_dangerousactions .bootstrap.header h3 {
   color: #900;
   margin: 0;
@@ -15,7 +15,7 @@
   font-size: 14px;
   line-height: normal;
 }
-/* line 20, ../sass/devilry_subjectadmin.scss */
+/* line 21, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_dangerousactions .body {
   border: 1px solid #ccc !important;
   -moz-border-radius-topleft: 0;
@@ -44,20 +44,37 @@
   border-bottom-right-radius: 6px;
 }
 
-/* line 31, ../sass/devilry_subjectadmin.scss */
+/* line 32, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_allactivewhereisadminlist strong {
   font-size: 18px;
 }
 
-/* line 36, ../sass/devilry_subjectadmin.scss */
+/* line 37, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_editsidebarcontainer {
-  border: 1px dashed #ccc !important;
-  -moz-border-radius: 6px;
-  -webkit-border-radius: 6px;
-  -o-border-radius: 6px;
-  -ms-border-radius: 6px;
-  -khtml-border-radius: 6px;
+  border: 1px dotted #ccc;
+  border-right: none;
+  -moz-border-radius: 6px 0 0 6px;
+  -webkit-border-radius: 6px 0 0 6px;
+  -o-border-radius: 6px 0 0 6px;
+  -ms-border-radius: 6px 0 0 6px;
+  -khtml-border-radius: 6px 0 0 6px;
+  border-radius: 6px 0 0 6px;
+}
+
+/* line 43, ../sass/devilry_subjectadmin.scss */
+.devilry_subjectadmin_content {
+  background-image: url("../images/tiny_grid.png");
+}
+
+/* line 50, ../sass/devilry_subjectadmin.scss */
+.devilry_subjectadmin_focuscontainer {
+  background-color: #fff;
   border-radius: 6px;
+  border: 1px solid #ccc;
+  -moz-box-shadow: inset -1px -1px 1px 0px #888888;
+  -webkit-box-shadow: inset -1px -1px 1px 0px #888888;
+  -o-box-shadow: inset -1px -1px 1px 0px #888888;
+  box-shadow: inset -1px -1px 1px 0px #888888;
 }
 
 /* line 2, ../sass/_managestudents.scss */

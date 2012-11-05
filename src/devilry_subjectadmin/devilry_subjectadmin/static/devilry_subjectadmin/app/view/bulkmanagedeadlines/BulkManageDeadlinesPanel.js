@@ -1,5 +1,5 @@
 Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPanel' ,{
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.bulkmanagedeadlinespanel', // Define the widget xtype as allwhereisadminpanel
     cls: 'devilry_subjectadmin_bulkmanagedeadlinespanel',
 
@@ -31,7 +31,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
 
     frame: false,
     border: 0,
-    bodyPadding: 40,
+    padding: 20,
     autoScroll: true, // Autoscroll on overflow
 
 
@@ -120,6 +120,9 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
                     }]
                 }, {
                     xtype: 'panel',
+                    frame: false,
+                    style: 'background-color: transparent !important',
+                    bodyStyle: 'background-color: transparent !important',
                     itemId: 'deadlinesContainer',
                     layout: 'anchor',
                     defaults: {

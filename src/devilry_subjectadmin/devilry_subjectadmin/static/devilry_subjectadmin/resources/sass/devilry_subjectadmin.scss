@@ -40,9 +40,12 @@
     @include border-radius(6px 0 0 6px);
 }
 
-.devilry_subjectadmin_contentcontainer {
+.devilry_subjectadmin_content {
     background-image: url('../images/tiny_grid.png');
 }
+//.devilry_subjectadmin_contentcontainer {
+    //background-image: url('../images/tiny_grid.png');
+//}
 
 .devilry_subjectadmin_focuscontainer {
     background-color: #fff;
