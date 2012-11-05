@@ -1,5 +1,5 @@
 Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.dashboard',
     cls: 'dashboard',
 
@@ -8,14 +8,14 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
     ],
 
     layout: 'column',
-    frame: false,
-    border: 0,
-    bodyPadding: '20 40 20 40',
+    padding: '40',
     autoScroll: true,
 
     items: [{
         xtype: 'container',
         columnWidth: 1,
+        cls: 'devilry_subjectadmin_focuscontainer',
+        padding: '20',
         items: [{
             xtype: 'allactivewhereisadminlist'
         }, {
@@ -38,7 +38,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
     }, {
         xtype: 'container',
         width: 250,
-        margin: '6 0 0 50',
+        margin: '10 0 0 50',
         border: false,
         layout: 'anchor',
         items: [{

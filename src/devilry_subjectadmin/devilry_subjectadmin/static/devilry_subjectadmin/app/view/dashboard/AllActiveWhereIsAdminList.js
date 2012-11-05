@@ -4,9 +4,11 @@ Ext.define('devilry_subjectadmin.view.dashboard.AllActiveWhereIsAdminList' ,{
     cls: 'devilry_subjectadmin_allactivewhereisadminlist bootstrap',
     tpl: [
         '<tpl if="loadingtext">',
-            '<h2>{loadingtext}</h2>',
+            '<h1 style="margin-top: 0;">',
+                '{loadingtext}',
+            '</h1>',
         '<tpl else>',
-            '<h1>',
+            '<h1 style="margin-top: 0;">',
                 interpolate(gettext('Active %(subjects_term)s'), {
                     subjects_term: gettext('subjects')
                 }, true),
