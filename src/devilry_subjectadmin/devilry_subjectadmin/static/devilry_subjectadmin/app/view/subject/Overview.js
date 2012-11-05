@@ -23,13 +23,14 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
         Ext.apply(this, {
             padding: '20 20 20 20',
             autoScroll: true,
+            cls: 'devilry_subjectadmin_contentcontainer',
             layout: 'column',
 
             items: [{
                 xtype: 'editsidebarcontainer',
                 layout: 'anchor',
                 width: 250,
-                margin: '6 40 0 0',
+                margin: '6 0 0 0',
                 padding: '0 10 0 10',
                 items: [{
                     xtype: 'adminsbox',
@@ -38,7 +39,9 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                 }]
             }, {
                 xtype: 'container',
-                columnWidth: 1,
+                columnWidth: 1.0,
+                cls: 'devilry_subjectadmin_focuscontainer',
+                padding: '20',
                 layout: 'anchor',
                 defaults: {
                     anchor: '100%'

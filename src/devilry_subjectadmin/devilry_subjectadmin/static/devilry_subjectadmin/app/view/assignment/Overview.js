@@ -26,13 +26,14 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
     initComponent: function() {
         Ext.apply(this, {
             padding: '20 20 20 20',
+            cls: 'devilry_subjectadmin_contentcontainer',
             autoScroll: true,
             layout: 'column',
 
             items: [{
                 xtype: 'editsidebarcontainer',
                 width: 250,
-                margin: '6 40 0 0',
+                margin: '6 0 0 0',
                 padding: '0 10 0 10',
                 defaults: {
                     margin: '10 0 0 0'
@@ -51,7 +52,9 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                 }]
             }, {
                 xtype: 'container',
-                columnWidth: 1,
+                columnWidth: 1.0,
+                cls: 'devilry_subjectadmin_focuscontainer',
+                padding: '20',
                 items: [{
                     xtype: 'box',
                     cls: 'bootstrap',
@@ -108,21 +111,29 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                     }
                 }, {
                     xtype: 'dangerousactions',
-                    margin: '45 0 0 0',
+                    margin: '125 0 0 0',
                     items: [{
                         xtype: 'singleactionbox',
                         margin: 0,
                         itemId: 'renameButton',
                         id: 'assignmentRenameButton',
                         titleText: gettext('Loading ...'),
-                        bodyHtml: gettext('Renaming an assignment should not be done without a certain amount of consideration. The name of an assignment, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
+                        bodyHtml: [
+                            '<small>',
+                                gettext('Renaming an assignment should not be done without a certain amount of consideration. The name of an assignment, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
+                            '</small>'
+                        ].join(''),
                         buttonText: gettext('Rename') + ' ...'
                     }, {
                         xtype: 'singleactionbox',
                         itemId: 'deleteButton',
                         id: 'assignmentDeleteButton',
                         titleText: gettext('Loading ...'),
-                        bodyHtml: gettext('Once you delete an assignment, there is no going back. Only superusers can delete an assignment with deliveries.'),
+                        bodyHtml: [
+                            '<small>',
+                                gettext('Once you delete an assignment, there is no going back. Only superusers can delete an assignment with deliveries.'),
+                            '</small>'
+                        ].join(''),
                         buttonText: gettext('Delete') + ' ...',
                         buttonUi: 'danger'
                     }]

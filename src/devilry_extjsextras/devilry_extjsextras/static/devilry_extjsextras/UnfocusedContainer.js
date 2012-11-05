@@ -20,8 +20,17 @@ Ext.define('devilry_extjsextras.UnfocusedContainer', {
     },
     _onMouseEnter: function() {
         this.getEl().setOpacity(this.hoverOpacity);
+        this.mouseEnterExtras();
     },
     _onMouseLeave: function() {
         this.getEl().setOpacity(this.defaultOpacity);
+        this.mouseLeaveExtras();
+    },
+
+    mouseEnterExtras: function() {
+        
+    },
+    mouseLeaveExtras: function() {
+
     }
 });

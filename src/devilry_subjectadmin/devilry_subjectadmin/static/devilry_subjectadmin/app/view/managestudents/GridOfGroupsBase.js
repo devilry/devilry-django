@@ -233,7 +233,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GridOfGroupsBase' ,{
             }
             names.push(full_name);
         }
-        return names.join(', ');
+        return names.join('<br/>');
     },
 
     /**

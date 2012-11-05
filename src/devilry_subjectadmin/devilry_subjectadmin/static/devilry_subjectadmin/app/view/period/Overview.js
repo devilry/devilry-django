@@ -25,6 +25,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
     initComponent: function() {
         Ext.apply(this, {
             padding: '20 20 20 20',
+            cls: 'devilry_subjectadmin_contentcontainer',
             autoScroll: true,
             layout: 'column',
 
@@ -32,7 +33,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                 xtype: 'editsidebarcontainer',
                 layout: 'anchor',
                 width: 250,
-                margin: '6 40 0 0',
+                margin: '6 0 0 0',
                 padding: '0 10 0 10',
                 defaults: {
                     margin: '10 0 0 0',
@@ -47,6 +48,8 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
             }, {
                 xtype: 'container',
                 columnWidth: 1.0,
+                cls: 'devilry_subjectadmin_focuscontainer',
+                padding: '20',
                 items: [{
                     xtype: 'box',
                     cls: 'bootstrap',
