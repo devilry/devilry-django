@@ -39,7 +39,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                     anchor: '100%'
                 },
                 items: [{
-                    margin: '0 0 0 0',
+                    //margin: '0 0 0 0',
                     xtype: 'editperiod_duration-widget'
                 }, {
                     xtype: 'adminsbox'
@@ -121,9 +121,9 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         id: 'periodRenameButton',
                         titleText: gettext('Loading ...'),
                         bodyTpl: [
-                            '<p class="muted">',
-                                gettext('Renaming a {period_term} should not done without a certain amount of consideration. The name of a {period_term}, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
-                            '</p>'
+                            '<p class="muted"><small>',
+                                gettext('Renaming a {period_term} should not be done without a certain amount of consideration. The name of a {period_term}, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
+                            '</small></p>'
                         ],
                         bodyData: {
                             period_term: gettext('period')
@@ -136,9 +136,9 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         titleText: gettext('Loading ...'),
                         buttonUi: 'danger',
                         bodyTpl: [
-                            '<p class="muted">',
+                            '<p class="muted"><small>',
                                 gettext('Once you delete a {period_term}, there is no going back. Only superusers can delete a non-empty {period_term}.'),
-                            '</p>'
+                            '</small></p>'
                         ],
                         bodyData: {
                             period_term: gettext('period')

@@ -23,12 +23,12 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
             cls: 'bootstrap',
             margin: '40 0 0 0',
             html: [
-                '<h2>',
-                    interpolate(gettext('Inactive %(subjects_term)s and old data'), {
+                '<h3 style="font-size: 18px; margin-bottom: 0px;">',
+                    interpolate(gettext('Expired %(subjects_term)s'), {
                         subjects_term: gettext('subjects')
                     }, true),
-                '</h2>',
-                '<p>',
+                '</h3>',
+                '<p style="margin-top: 0px; padding-top: 0;">',
                     '<a href="#/">',
                         gettext('Browse everything where you are administrator'),
                     '</a>',

@@ -7,7 +7,9 @@ Ext.define('devilry_subjectadmin.view.dashboard.AllActiveWhereIsAdminList' ,{
             '<h2>{loadingtext}</h2>',
         '<tpl else>',
             '<h1>',
-                gettext('Adminster'), ':',
+                interpolate(gettext('Active %(subjects_term)s'), {
+                    subjects_term: gettext('subjects')
+                }, true),
             '</h1>',
             '<ul class="unstyled">',
                 '<tpl for="list">',

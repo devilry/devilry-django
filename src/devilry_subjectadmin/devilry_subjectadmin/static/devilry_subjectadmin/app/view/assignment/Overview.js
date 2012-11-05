@@ -39,7 +39,6 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                 },
                 items: [{
                     xtype: 'gradeeditorselect-widget',
-                    margin: '0 0 0 0',
                     disabled: true
                 }, {
                     xtype: 'editpublishingtime-widget'
@@ -116,7 +115,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                         itemId: 'renameButton',
                         id: 'assignmentRenameButton',
                         titleText: gettext('Loading ...'),
-                        bodyHtml: gettext('Renaming an assignment should not done without a certain amount of consideration. The name of an assignment, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
+                        bodyHtml: gettext('Renaming an assignment should not be done without a certain amount of consideration. The name of an assignment, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
                         buttonText: gettext('Rename') + ' ...'
                     }, {
                         xtype: 'singleactionbox',
