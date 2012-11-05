@@ -52,7 +52,8 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
                 if(period.can_administer) {
                     list.push({
                         text: subject.long_name,
-                        suffix: multipleActivePeriods? period.long_name: null,
+                        //suffix: multipleActivePeriods? period.long_name: null,
+                        suffix: period.long_name,
                         type: 'period',
                         id: period.id
                     });
@@ -61,7 +62,8 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
                         list.push({
                             text: Ext.String.format('{0} - {1}',
                                 subject.short_name, assignment.long_name),
-                                suffix: multipleActivePeriods? period.long_name: null,
+                                suffix: period.long_name,
+                                //suffix: multipleActivePeriods? period.long_name: null,
                             type: 'period',
                             id: period.id
                         });
