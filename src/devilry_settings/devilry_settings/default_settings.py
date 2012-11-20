@@ -70,7 +70,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry_student',
                   'devilry_i18n',
                   'devilry_settings',
-                  'devilry_subjectadmin'
+                  'devilry_subjectadmin',
                   'devilry_qualifiesforexam'
                  ]
 
