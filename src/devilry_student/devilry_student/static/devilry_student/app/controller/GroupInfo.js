@@ -61,11 +61,11 @@ Ext.define('devilry_student.controller.GroupInfo', {
     },
 
     _onGroupInfoLoadSuccess: function(groupInfoRecord) {
+        this.groupInfoRecord = groupInfoRecord;
         this._setBreadcrumbs(groupInfoRecord);
         this._populateDeadlinesContainer(groupInfoRecord.get('deadlines'), groupInfoRecord.get('active_feedback'));
         this._populateMetadata(groupInfoRecord);
         this._populateTitleBox(groupInfoRecord);
-        this.groupInfoRecord = groupInfoRecord;
 
         var delivery_id = this.getOverview().delivery_id;
         if(delivery_id != undefined) {
@@ -119,6 +119,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
                 container.add({
                     xtype: 'groupinfo_deadline',
                     deadline: deadline,
+                    delivery_types: this.groupInfoRecord.get('delivery_types'),
                     active_feedback: active_feedback
                 });
             }, this);
