@@ -1,5 +1,5 @@
-Ext.define('devilry_subjectadmin.view.createnewassignment.CreateNewAssignment' ,{
-    extend: 'Ext.panel.Panel',
+Ext.define('devilry_subjectadmin.view.createnewassignment.CreateNewAssignment', {
+    extend: 'Ext.container.Container',
     alias: 'widget.createnewassignment',
     requires: [
         'devilry_extjsextras.PrimaryButton'
@@ -17,7 +17,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.CreateNewAssignment' ,
      */
 
     border: 0,
-    bodyPadding: '20 40 20 40',
+    padding: '20 40 20 40',
     autoScroll: true,
 
     initComponent: function() {
@@ -41,6 +41,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.CreateNewAssignment' ,
             }, {
                 margin: '10 0 0 0',
                 xtype: 'container',
+                layout: 'fit',
                 items: { // Note: We wrap this in an extra container to avoid that the create button ends up at the bottom of the screen
                     xtype: 'createnewassignmentform',
                     period_id: this.period_id

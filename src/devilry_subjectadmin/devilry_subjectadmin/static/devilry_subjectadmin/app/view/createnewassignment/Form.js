@@ -29,15 +29,15 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
         var sideheading_width = 170;
 
         Ext.apply(this, {
-            border: false,
+            frame: false,
+            bodyCls: 'devilry_subjectadmin_focuscontainer',
+            bodyPadding: 20,
             layout: 'anchor',
             fieldDefaults: {
                 labelAlign: 'top',
                 labelStyle: 'font-weight: bold'
             },
             items: [{
-                xtype: 'alertmessagelist'
-            }, {
                 xtype: 'container',
                 layout: 'card',
                 itemId: 'cardPanel',
@@ -45,7 +45,8 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                     xtype: 'panel',
                     itemId: 'pageOne',
                     cls: 'page1',
-                    bodyPadding: 20,
+                    bodyPadding: '0 0 20 0',
+                    border: false,
                     items: [{
 
                         // Long name
@@ -222,7 +223,8 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                     xtype: 'panel',
                     itemId: 'pageTwo',
                     cls: 'page2',
-                    bodyPadding: 20,
+                    border: false,
+                    bodyPadding: '0 0 30 0',
                     items: [{
 
                         // Setup students
