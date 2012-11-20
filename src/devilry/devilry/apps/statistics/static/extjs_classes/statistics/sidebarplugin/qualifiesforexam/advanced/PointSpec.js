@@ -19,10 +19,10 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec
             tot_scaled_points += this._findAssignmentWithMostScaledPoints(student, assignment_ids);
         }, this);
         //console.log(student.username, this.assignments, tot_scaled_points);
-        if(this.min != undefined && tot_scaled_points < this.min) {
+        if(this.min !== undefined && tot_scaled_points < this.min) {
             return false;
         }
-        if(this.max != undefined && tot_scaled_points > this.max) {
+        if(this.max !== undefined && tot_scaled_points > this.max) {
             return false;
         }
         return true;
@@ -45,6 +45,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec
             assignments: this.assignments,
             min: this.min,
             max: this.max
-        }
+        };
     }
 });

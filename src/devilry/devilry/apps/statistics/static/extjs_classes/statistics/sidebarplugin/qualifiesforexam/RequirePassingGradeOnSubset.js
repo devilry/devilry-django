@@ -9,9 +9,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
         Ext.apply(this, {
             items: [{
                 xtype: 'statistics-chooseassignmentsgrid',
-                margin: {bottom: 10},
+                margin: '0 0 10 0',
                 store: this.loader.assignment_store,
-                selectedAssignmentIds: this.settings? this.settings.assignment_ids: undefined,
+                selectedAssignmentIds: this.settings? this.settings.assignment_ids: undefined
             }, this.defaultButtonPanel]
         });
         this.callParent(arguments);
@@ -34,6 +34,6 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGrad
         var assignment_ids = this._getGrid().getIdOfSelected();
         return {
             assignment_ids: assignment_ids
-        }
+        };
     }
 });

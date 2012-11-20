@@ -141,7 +141,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.ListO
     },
 
     _parseAssignmentSpec: function(assignmentShortNames) {
-        return assignmentShortNames.split(/\s*,\s*/);;
+        return assignmentShortNames.split(/\s*,\s*/);
     },
 
     _addToStore: function(assignmentIds) {

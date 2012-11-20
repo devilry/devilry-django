@@ -15,7 +15,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Manual', {
                 html: this.msgTpl.apply({
                     ctrlbutton: Ext.isMac? 'CMD/Command': 'CTRL/Control'
                 }),
-                margin: {bottom: 10},
+                margin: '0 0 10 0',
                 store: this.loader.assignment_store
             }, this.saveButton]
         });
