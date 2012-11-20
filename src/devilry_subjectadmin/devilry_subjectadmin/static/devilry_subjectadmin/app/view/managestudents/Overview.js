@@ -2,7 +2,7 @@
  * Manage students overview (overview of all students on an assignment).
  */
 Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.managestudentsoverview',
     cls: 'devilry_subjectadmin_managestudentsoverview',
     requires: [
@@ -39,6 +39,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
             layout: 'border',
             border: false,
             frame: false,
+            style: 'background-color: transparent !important;',
             items: [{
                 xtype: 'listofgroups',
                 region: 'west',
