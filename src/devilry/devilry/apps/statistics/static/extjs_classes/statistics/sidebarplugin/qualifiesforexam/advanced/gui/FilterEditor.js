@@ -17,7 +17,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
     },
 
     initComponent: function() {
-        var filter = undefined;
+        var filter;
         if(this.filterRecord) {
             filter = this.filterRecord.get('filter');
         }
@@ -50,8 +50,9 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
 
     getFilterArgs: function() {
         var must_pass = this.down('statistics-mustpasseditor').getResult();
+        var pointspec;
         try {
-            var pointspec = this.down('statistics-pointspeceditor').getResult();
+            pointspec = this.down('statistics-pointspeceditor').getResult();
         } catch(e) {
             this.down('statistics-pointspeceditor').show();
             Ext.MessageBox.alert('Error', e);
@@ -65,7 +66,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Filte
 
     _onAdd: function() {
         var filterArgs = this.getFilterArgs();
-        if(filterArgs != false) {
+        if(filterArgs !== false) {
             this.fireEvent('addFilter', filterArgs, this.filterRecord);
         }
     }

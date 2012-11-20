@@ -19,7 +19,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             flex: 1,
             tooltip: {
                 title: 'Save',
-                text: Ext.String.format('Adds labels to students according to your current settings, and marks this period (semester) as ready for export to {0}.', DevilrySettings.DEVILRY_SYNCSYSTEM),
+                text: Ext.String.format('Adds labels to students according to your current settings, and marks this period (semester) as ready for export to {0}.', DevilrySettings.DEVILRY_SYNCSYSTEM)
             },
             listeners: {
                 scope: this,
@@ -33,7 +33,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
             flex: 1,
             tooltip: {
                 title: 'Show matching students',
-                text: 'Adds a filter to the table that limits visible rows to the ones matching this rule.',
+                text: 'Adds a filter to the table that limits visible rows to the ones matching this rule.'
             },
             listeners: {
                 scope: this,

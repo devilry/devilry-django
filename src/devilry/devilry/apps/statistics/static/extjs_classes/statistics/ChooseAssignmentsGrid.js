@@ -8,14 +8,10 @@ Ext.define('devilry.statistics.ChooseAssignmentsGrid', {
         'devilry.extjshelpers.GridSelectionModel'
     ],
 
-    config: {
-        selectedAssignmentIds: undefined
-    },
+    /**
+     * @cfg {int[]} [selectedAssignmentIds=undefined]
+     */
     
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
     
     initComponent: function() {
         this.selModel = Ext.create('devilry.extjshelpers.GridSelectionModel', {
@@ -35,18 +31,20 @@ Ext.define('devilry.statistics.ChooseAssignmentsGrid', {
     },
 
     _selectByIds: function(assignmentIds) {
+        this.setLoading(true);
         var records = [];
         Ext.each(assignmentIds, function(assignmentId, index) {
             var record = this.store.getById(assignmentId);
             records.push(record);
         }, this);
-        try {
+        this._selectRecords(records);
+    },
+
+    _selectRecords: function(records) {
+        Ext.defer(function() { // NOTE: Defer to work around ExtJS rendering order issues.
             this.getSelectionModel().select(records);
-        } catch(e) {
-            Ext.defer(function() {
-                this._selectByIds(assignmentIds);
-            }, 300, this);
-        }
+            this.setLoading(false);
+        }, 500, this);
     },
 
     getIdOfSelected: function() {

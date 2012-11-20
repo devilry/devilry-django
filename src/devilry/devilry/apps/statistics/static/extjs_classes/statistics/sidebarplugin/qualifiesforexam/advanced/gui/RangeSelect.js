@@ -35,7 +35,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.Range
                 xtype: 'numberfield',
                 value: this.initialMax,
                 emptyText: 'Example: 1000. Not checked if not specified.'
-            }],
+            }]
         });
         this.callParent(arguments);
     }

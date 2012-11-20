@@ -9,7 +9,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSub
         Ext.apply(this, {
             items: [{
                 xtype: 'statistics-chooseassignmentsgrid',
-                margin: {bottom: 10},
+                margin: '0 0 10 0',
                 selectedAssignmentIds: this.settings? this.settings.assignment_ids: undefined,
                 store: this.loader.assignment_store
             }, {
@@ -17,7 +17,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnSub
                 fieldLabel: 'Minumum total points on selected',
                 minValue: 0,
                 value: this.settings? this.settings.minimumScaledPoints: '',
-                margin: {bottom: 10}
+                margin: '0 0 10 0'
             }, this.defaultButtonPanel]
         });
         this.callParent(arguments);

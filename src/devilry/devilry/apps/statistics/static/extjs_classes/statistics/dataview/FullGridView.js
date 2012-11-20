@@ -34,6 +34,7 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
             xtype: 'numbercolumn',
             format: '0.00',
             text: 'Total points',
+            menuDisabled: true,
             dataIndex: 'totalScaledPoints',
             minWidth: 80,
             sortable: true
@@ -47,17 +48,23 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
                 dataIndex: scaledPointdataIndex,
                 flex: 1,
                 minWidth: 140,
+                menuDisabled: true,
                 sortable: true,
                 renderer: function(scaled_points, p, studentRecord) {
                     var group = studentRecord.groupsByAssignmentId[assignment_id];
-                    if(group.assignmentGroupRecord) {
+                    if(group.groupInfo) {
                         var tpldata = {
                             scaled_points: scaled_points,
-                            has_feedback: group.assignmentGroupRecord.get('feedback') != null,
-                            is_passing_grade: group.assignmentGroupRecord.get('feedback__is_passing_grade'),
-                            is_open: group.assignmentGroupRecord.get('is_open'),
-                            grade: group.assignmentGroupRecord.get('feedback__grade')
+                            is_open: group.groupInfo.is_open,
+                            has_feedback: false
                         };
+                        if(group.groupInfo.feedback !== null) {
+                            Ext.apply(tpldata, {
+                                has_feedback: true,
+                                is_passing_grade: group.groupInfo.feedback.is_passing_grade,
+                                grade: group.groupInfo.feedback.grade
+                            });
+                        }
                         var result = me.cellTpl.apply(tpldata);
                         return result;
                     } else {
@@ -96,23 +103,21 @@ Ext.define('devilry.statistics.dataview.FullGridView', {
 
     _onSelectStudent: function(grid, record) {
         this._detailsPanel.removeAll();
-        this._detailsPanel.expand();
-        var assignmentgroups = [];
+        var groupInfos = [];
         Ext.Object.each(record.groupsByAssignmentId, function(assignmentid, group) {
-            if(group.assignmentGroupRecord != null) {
-                assignmentgroups.push(group.assignmentGroupRecord.data);
+            if(group.groupInfo !== null) {
+                groupInfos.push(group.groupInfo);
             }
         }, this);
         this._detailsPanel.setTitle(this.selectedStudentTitleTpl.apply(record.data));
         this._detailsPanel.add({
             xtype: 'statistics-overviewofsinglestudent',
             assignment_store: record.assignment_store,
-            assignmentgroups: assignmentgroups,
+            groupInfos: groupInfos,
             username: record.get('username'),
             full_name: record.get('full_name'),
-            labelKeys: record.get('labelKeys'),
-            border: false,
-            frame: false
+            labels: record.get('labels')
         });
+        this._detailsPanel.expand();
     }
 });

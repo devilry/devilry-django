@@ -16,7 +16,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.FilterCha
             Ext.each(this.filterArgsArray, function(filterArgs, index) {
                 this.addFilter(filterArgs);
             }, this);
-        };
+        }
     },
 
     addFilter: function(filterConf) {

@@ -1,0 +1,1 @@
+from .rest.aggregatedperiod import TestRestAggregatedPeriod

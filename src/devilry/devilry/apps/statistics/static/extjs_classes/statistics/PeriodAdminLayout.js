@@ -109,7 +109,7 @@ Ext.define('devilry.statistics.PeriodAdminLayout', {
                 region: 'east',
                 collapsible: true,
                 collapsed: this.hidesidebar,
-                width: 300,
+                width: 350,
                 autoScroll: true,
                 loader: loader,
                 sidebarplugins: this.sidebarplugins
