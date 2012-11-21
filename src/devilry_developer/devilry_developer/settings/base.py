@@ -42,7 +42,7 @@ ADMINS = (
 )
 MANAGERS = ADMINS
 MEDIA_ROOT = join(basedir, "filestore")
-ROOT_URLCONF = 'settings.dev_urls'
+ROOT_URLCONF = 'devilry_developer.dev_urls'
 
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
