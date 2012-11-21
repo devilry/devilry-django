@@ -18,6 +18,7 @@ DATABASES = {"default": {
 INSTALLED_APPS += ['devilry.apps.asminimalaspossible_gradeeditor',
                    'seleniumhelpers',
                    'djangosenchatools',
+                   'devilry_sandbox',
 
                    # Not apps, but here for the Django test system to discover them:
                    'devilry.utils',
