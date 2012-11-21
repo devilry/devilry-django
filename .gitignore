@@ -110,3 +110,7 @@ src/djangosenchatools/
 
 # npm installs
 node_modules/
+
+
+# vagrant/
+vagrant/.vagrant
