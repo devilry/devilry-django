@@ -19,9 +19,9 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
             '<p>',
                 gettext('Select an active {subject_term} from the list at the top of the left side of this page.'),
             '</p>',
-            '<p>',
+            '<p><small>',
                 gettext('For {subjects_term} where you only have admin rights for selected assignments, those assignments will be listed. If you only have assignments in your list, you do not have the required rights to create new assignments.'),
-            '</p>'
+            '</small></p>'
         ],
         data: {
             subject_term: gettext('subject'),
@@ -59,13 +59,21 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
         itemId: 'createnewassignment2',
         tpl: [
             '<p>',
-                gettext('Keep the defaults, or make sure you understand the consequence of unchecking the checkboxes.'),
+                gettext('Keeping the defaults is usually the best choice if you are uncertain.'),
             '</p>',
+
+            '<h3>', gettext('Need to edit students or examiners?'), '</h3>',
             '<p>',
-                gettext('This guide closes when you click Create assignment.'),
+                gettext('The links to view or edit students and examiners open a new browser window, so will not loose your progress when you click them.'),
+            '</p>',
+
+            '<h3>', gettext('Create another?'), '</h3>',
+            '<p>',
+                gettext('This guide closes when you click Create assignment. At the top of the next page, you will get a link to quickly create another assignment with the same settings that you used for this assignment.'),
             '</p>'
         ],
         data: {
+            subject_term: gettext('subject')
         }
     }]
 });
