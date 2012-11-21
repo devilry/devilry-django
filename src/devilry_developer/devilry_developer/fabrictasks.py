@@ -38,6 +38,17 @@ def syncdb():
     local('bin/django_dev.py syncdb -v0 --noinput')
 
 @task
+def reset_db():
+    """ Run ``remove_db`` followed by ``syncdb``. """
+    remove_db()
+    syncdb()
+
+@task
+def sandbox():
+    reset_db()
+    local('bin/django_dev.py devilry_sandboxcreate -s "duck1010" -l "DUCK1010 - Objektorientert programmering"')
+
+@task
 def autogen_extjsmodels():
     """
     Run ``bin/django_dev.py dev_autogen_extjsmodels``
@@ -49,8 +60,7 @@ def autodb():
     """
     Run ``remove_db``, ``syncdb`` and ``bin/django_dev.py dev_autodb -v2``
     """
-    remove_db()
-    syncdb()
+    reset_db()
     local('bin/django_dev.py dev_autodb -v2')
 
 
@@ -92,6 +102,8 @@ def _gunzip_file(gzipped_infile):
     outfile = gzipped_infile.replace('.gz', '')
     open(outfile, 'wb').write(unzipped)
     return outfile
+
+
 
 @task
 def unstash_db_and_deliveries():
