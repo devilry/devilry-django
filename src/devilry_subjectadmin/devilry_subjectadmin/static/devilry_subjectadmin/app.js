@@ -175,7 +175,7 @@ Ext.application({
             }, {
                 xtype: 'container',
                 region: 'center',
-                cls: 'devilry_subjectadmin_content',
+                cls: 'devilry_subtlebg',
                 layout: 'fit',
                 items: [{
                     xtype: 'floatingalertmessagelist',
