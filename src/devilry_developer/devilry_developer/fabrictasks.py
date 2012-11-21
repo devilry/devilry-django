@@ -6,7 +6,6 @@ from fabric.api import local, abort, task
 
 
 DB_FILE = 'db.sqlite3'
-STASH_DIR = 'db_and_deliveries_stash'
 
 
 @task
@@ -74,18 +73,32 @@ def _gzip_file(infile):
     f_in.close()
     remove(infile)
 
+
+def _get_stashdir(home):
+    from os.path import expanduser
+    from os import getcwd
+    if home == 'yes':
+        return join(expanduser('~'), '.devilry_db_and_deliveries_stash')
+    else:
+        return join(getcwd(), 'db_and_deliveries_stash')
+
 @task
-def stash_db_and_deliveries():
+def stash_db_and_deliveries(home=False):
     """
     Dump the database and deliveries into the
     ``db_and_deliveries_stash/``-directory.
+
+    :param home:
+        Use ``home=yes`` to stash to ``~/.devilry_db_and_deliveries_stash``
+        instead of ``<this dir>/db_and_deliveries_stash/``
     """
-    if exists(STASH_DIR):
-        rmtree(STASH_DIR)
-    mkdir(STASH_DIR)
+    stashdir = _get_stashdir(home)
+    if exists(stashdir):
+        rmtree(stashdir)
+    mkdir(stashdir)
 
     # DB
-    dbdumpfile = join(STASH_DIR, 'dbdump.sql')
+    dbdumpfile = join(stashdir, 'dbdump.sql')
     backup_db(dbdumpfile)
     _gzip_file(dbdumpfile)
 
@@ -93,7 +106,7 @@ def stash_db_and_deliveries():
     import logging
     logging.basicConfig(level=logging.INFO)
     log = logging.getLogger('files.zip')
-    make_archive(join(STASH_DIR, 'files'), 'zip', logger=log, base_dir="deliverystorehier")
+    make_archive(join(stashdir, 'files'), 'zip', logger=log, base_dir="deliverystorehier")
 
 
 def _gunzip_file(gzipped_infile):
@@ -106,19 +119,24 @@ def _gunzip_file(gzipped_infile):
 
 
 @task
-def unstash_db_and_deliveries():
+def unstash_db_and_deliveries(home=False):
     """
     Undo ``stash_db_and_deliveries``.
+
+    :param home:
+        Use ``home=yes`` to unstash from ``~/.devilry_db_and_deliveries_stash``
+        instead of ``<this dir>/db_and_deliveries_stash/``
     """
     # DB
-    dbfile = _gunzip_file(join(STASH_DIR, 'dbdump.sql.gz'))
+    stashdir = _get_stashdir(home)
+    dbfile = _gunzip_file(join(stashdir, 'dbdump.sql.gz'))
     restore_db(dbfile)
     remove(dbfile) # We remove the unzipped dbdump, but keep the .gz
 
     # Delivery files
     if exists('deliverystorehier'):
         rmtree('deliverystorehier')
-    zipfile = ZipFile(join(STASH_DIR, 'files.zip'))
+    zipfile = ZipFile(join(stashdir, 'files.zip'))
     zipfile.extractall()
 
 
