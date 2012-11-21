@@ -26,7 +26,6 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
     initComponent: function() {
         Ext.apply(this, {
             padding: '20 20 20 20',
-            cls: 'devilry_subjectadmin_contentcontainer',
             autoScroll: true,
             layout: 'column',
 
