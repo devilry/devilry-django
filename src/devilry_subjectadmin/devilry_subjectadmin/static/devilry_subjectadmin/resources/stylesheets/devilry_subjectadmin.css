@@ -61,6 +61,12 @@
   border-radius: 6px 0 0 6px;
 }
 
+/* line 45, ../sass/devilry_subjectadmin.scss */
+.devilry_subjectadmin_guidesystemview h3 {
+  font-size: 18px;
+  line-height: 24px;
+}
+
 /* line 2, ../sass/_managestudents.scss */
 .listofgroups .col2Wrapper {
   text-align: right;

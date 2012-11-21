@@ -40,4 +40,13 @@
     @include border-radius(6px 0 0 6px);
 }
 
+
+.devilry_subjectadmin_guidesystemview {
+    h3 {
+        font-size: 18px;
+        line-height: 24px;
+    }
+}
+
+
 @import "managestudents";
