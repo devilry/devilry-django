@@ -275,7 +275,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
 
         this.application.getAlertmessagelist().add({
             type: 'info',
-            autoclose: true,
+            autoclose: 6,
             messagetpl: [
                 gettext('Devilry suggested values for: {labels}.'),
                 ' <small>{MORE_BUTTON}</small>',
