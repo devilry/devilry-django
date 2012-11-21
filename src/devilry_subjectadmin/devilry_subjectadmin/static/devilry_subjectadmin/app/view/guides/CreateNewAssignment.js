@@ -17,11 +17,15 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
         itemId: 'dashboard',
         tpl: [
             '<p>',
-                gettext('Select an active {period_term} from the list at the top of the left side of this page.'),
+                gettext('Select an active {subject_term} from the list at the top of the left side of this page.'),
+            '</p>',
+            '<p>',
+                gettext('For {subjects_term} where you only have admin rights for selected assignments, those assignments will be listed. If you only have assignments in your list, you do not have the required rights to create new assignments.'),
             '</p>'
         ],
         data: {
-            period_term: gettext('period')
+            subject_term: gettext('subject'),
+            subjects_term: gettext('subjects')
         }
     }, {
         itemId: 'period',
