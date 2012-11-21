@@ -8,48 +8,39 @@ from random import randint
 
 
 
-STUDENT_SETS = {
-                'duckburgh': [('dewey', 'Dewey Duck', 'group1'),
-                              ('louie', 'Louie Duck', 'group1'),
-                              ('huey', 'Huey Duck', 'group1'),
-                              ('april', 'April Duck', 'group2'),
-                              ('june', 'June Duck', 'group2'),
-                              ('july', 'July Duck', 'group2')],
-                'nordicgods': [('baldr', 'God of Beauty', 'group1'),
-                               ('freyja', 'Goddess of Love', 'group1'),
-                               ('freyr', 'God of Fertility', 'group1'),
-                               ('kvasir', 'God of Inspiration', 'group1'),
-                               ('loki', 'Trickster and god of Mischief', 'group2'),
-                               ('thor', 'God of thunder and Battle', 'group2'),
-                               ('odin', 'The "All Father"', 'group2')]
-}
+class Sandbox(object):
+    STUDENTS = (('dewey', 'Dewey Duck', 'group1'),
+                ('louie', 'Louie Duck', 'group1'),
+                ('huey', 'Huey Duck', 'group1'),
+                ('april', 'April Duck', 'group2'),
+                ('june', 'June Duck', 'group2'),
+                ('july', 'July Duck', 'group2'),
+                ('baldr', 'God of Beauty', 'group1'),
+                ('freyja', 'Goddess of Love', 'group1'),
+                ('freyr', 'God of Fertility', 'group1'),
+                ('kvasir', 'God of Inspiration', 'group1'),
+                ('loki', 'Trickster and god of Mischief', 'group2'),
+                ('thor', 'God of thunder and Battle', 'group2'),
+                ('odin', 'The "All Father"', 'group2'))
 
+    EXAMINERS = (('donald', 'Donald Duck', 'group1'),
+                 ('scrooge', 'Scrooge McDuck', 'group2'))
 
-EXAMINER_SETS = {
-                'duckburgh': [('donald', 'Donald Duck', 'group1'),
-                              ('scrooge', 'Scrooge McDuck', 'group2')]
-}
+    def __init__(self, nodename='sandbox'):
+        self.nodename = nodename
 
+    def _rootnode_exists(self):
+        return Node.objects.filter(short_name=self.nodename).exists()
 
-
-class LiveSandbox(object):
-    def __init__(self, adminusername, adminfullname, prefix='sandbox'):
-        self.prefix = prefix
-        self.adminuser = self.createUser(adminusername, adminfullname)
-        self.unique_key = self.adminuser.id
-
-    def rootnode_exists(self):
-        return Node.objects.filter(short_name=self.prefix).exists()
-
-    def create_rootnode_if_not_exists(self):
-        if not self.rootnode_exists():
-            node = Node.objects.create(short_name=self.prefix,
-                                       long_name=self.prefix)
+    def _create_rootnode_if_not_exists(self):
+        if not self._rootnode_exists():
+            node = Node.objects.create(short_name=self.nodename,
+                                       long_name=self.nodename)
         else:
-            node = Node.objects.get(short_name=self.prefix)
+            node = Node.objects.get(short_name=self.nodename)
         return node
 
-    def createUser(self, username, fullname):
+    def create_user(self, username, fullname):
         user = User.objects.create(username=username,
                                    email='{0}@example.com'.format(username))
         user.devilryuserprofile.full_name = fullname
@@ -58,48 +49,37 @@ class LiveSandbox(object):
         user.save()
         return user
 
-    def uniquewrap(self, s):
-        return '{0}{1}_{2}'.format(self.prefix, self.unique_key, s)
-
-    def addOrGetUser(self, username, fullname):
+    def add_or_get_user(self, username, fullname):
         try:
-            username = self.uniquewrap(username)
-            user = self.createUser(username, fullname)
+            username = username
+            user = self.create_user(username, fullname)
         except IntegrityError:
             return User.objects.get(username=username)
         else:
             return user
 
-    def add_relatedstudents(self, period, *sets):
-        for setname in sets:
-            users = STUDENT_SETS[setname]
-            for username, fullname, tags in users:
-                period.relatedstudent_set.create(user=self.addOrGetUser(username, fullname),
-                                                 candidate_id=str(randint(0, 10000000)),
-                                                 tags=tags)
+    def add_relatedstudents(self, period):
+        for username, fullname, tags in self.STUDENTS:
+            period.relatedstudent_set.create(user=self.add_or_get_user(username, fullname),
+                                             candidate_id='sec-{0}'.format(randint(0, 10000000)),
+                                             tags=tags)
 
-    def add_relatedexaminers(self, period, *sets):
-        for setname in sets:
-            users = EXAMINER_SETS[setname]
-            for username, fullname, tags in users:
-                period.relatedexaminer_set.create(user=self.addOrGetUser(username, fullname),
-                                                  tags=tags)
-
+    def add_relatedexaminers(self, period):
+        for username, fullname, tags in self.EXAMINERS:
+            period.relatedexaminer_set.create(user=self.add_or_get_user(username, fullname),
+                                              tags=tags)
 
     def create_subject(self, short_name, long_name):
-        node = self.create_rootnode_if_not_exists()
+        node = self._create_rootnode_if_not_exists()
         subject = node.subjects.create(short_name=short_name,
                                       long_name=long_name)
         return subject
 
-    def create_period(self, subject, short_name, long_name,
-                      student_sets=['duckburgh', 'nordicgods'],
-                      examiner_sets=['duckburgh']):
-        period = subject.periods.create(short_name=self.uniquewrap(short_name),
+    def create_period(self, subject, short_name, long_name):
+        period = subject.periods.create(short_name=short_name,
                                         long_name=long_name,
                                         start_time=datetime.now() - timedelta(days=90),
                                         end_time=datetime.now() + timedelta(days=120))
-        period.admins.add(self.adminuser)
-        self.add_relatedstudents(period, *student_sets)
-        self.add_relatedexaminers(period, *examiner_sets)
+        self.add_relatedstudents(period)
+        self.add_relatedexaminers(period)
         return period
