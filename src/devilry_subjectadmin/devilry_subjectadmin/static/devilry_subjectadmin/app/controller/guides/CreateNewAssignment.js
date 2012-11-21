@@ -47,7 +47,9 @@ Ext.define('devilry_subjectadmin.controller.guides.CreateNewAssignment', {
     _onPeriodRender: function() {
         this.setStep('period', 2);
         var element = this.getCreateNewAssignmentBox().getEl().down('a');
-        this.guideSystem.pointAt(element);
+        Ext.defer(function() {
+            this.guideSystem.pointAt(element);
+        }, 500, this);
     },
 
     _onCreateNewAssignmentPageOne: function() {
