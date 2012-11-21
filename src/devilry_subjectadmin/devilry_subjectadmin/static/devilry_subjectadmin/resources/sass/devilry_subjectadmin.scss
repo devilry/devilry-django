@@ -40,18 +40,4 @@
     @include border-radius(6px 0 0 6px);
 }
 
-.devilry_subjectadmin_content {
-    background-image: url('../images/tiny_grid_light.png');
-}
-//.devilry_subjectadmin_contentcontainer {
-    //background-image: url('../images/tiny_grid.png');
-//}
-
-.devilry_subjectadmin_focuscontainer {
-    background-color: #fff;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    @include single-box-shadow(#888, -1px, -1px, 1px, 0px, 0);
-}
-
 @import "managestudents";

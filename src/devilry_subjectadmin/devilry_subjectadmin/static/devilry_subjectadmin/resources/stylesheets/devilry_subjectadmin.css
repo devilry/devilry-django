@@ -61,22 +61,6 @@
   border-radius: 6px 0 0 6px;
 }
 
-/* line 43, ../sass/devilry_subjectadmin.scss */
-.devilry_subjectadmin_content {
-  background-image: url("../images/tiny_grid_light.png");
-}
-
-/* line 50, ../sass/devilry_subjectadmin.scss */
-.devilry_subjectadmin_focuscontainer {
-  background-color: #fff;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  -moz-box-shadow: inset -1px -1px 1px 0px #888888;
-  -webkit-box-shadow: inset -1px -1px 1px 0px #888888;
-  -o-box-shadow: inset -1px -1px 1px 0px #888888;
-  box-shadow: inset -1px -1px 1px 0px #888888;
-}
-
 /* line 2, ../sass/_managestudents.scss */
 .listofgroups .col2Wrapper {
   text-align: right;

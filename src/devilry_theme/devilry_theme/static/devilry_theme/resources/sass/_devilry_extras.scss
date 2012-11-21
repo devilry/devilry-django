@@ -1,3 +1,15 @@
 .devilry_clickable_icon {
     cursor: pointer;
 }
+
+.devilry_subtlebg {
+    background-image: url('../bgimages/tiny_grid_light.png');
+}
+
+// Can be used as bodyCls for Ext.panel.Panel, or as cls for other components
+.devilry_focuscontainer {
+    background-color: #fff;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    @include single-box-shadow(#888, -1px, -1px, 1px, 0px, 0);
+}
