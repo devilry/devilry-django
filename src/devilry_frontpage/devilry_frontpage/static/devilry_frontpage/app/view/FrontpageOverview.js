@@ -1,7 +1,7 @@
 Ext.define('devilry_frontpage.view.FrontpageOverview' ,{
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.frontpage_overview',
-    cls: 'devilry_frontpage_overview',
+    cls: 'devilry_frontpage_overview devilry_subtlebg',
 
     requires: [
         'devilry_header.Roles',
@@ -10,7 +10,7 @@ Ext.define('devilry_frontpage.view.FrontpageOverview' ,{
 
     frame: false,
     border: 0,
-    bodyPadding: '30 0 0 0',
+    padding: '30 0 0 0',
     autoScroll: true,
     layout: 'column',
 
@@ -20,9 +20,10 @@ Ext.define('devilry_frontpage.view.FrontpageOverview' ,{
         html: '&nbsp;' // NOTE: We need content for the column to render correctly
     }, {
         xtype: 'container',
-        width: 560,
+        width: 600,
         items: [{
             xtype: 'box',
+            padding: '0 0 0 20',
             itemId: 'logo',
             tpl: [
                 '<img src="{staticprefix}/devilry_frontpage/resources/images/logoandtext.png"/>'
@@ -34,6 +35,8 @@ Ext.define('devilry_frontpage.view.FrontpageOverview' ,{
             xtype: 'container',
             margin: '40 0 0 0',
             layout: 'column',
+            cls: 'devilry_focuscontainer',
+            padding: 20,
             items: [{
                 xtype: 'box',
                 width: 280,
@@ -65,7 +68,7 @@ Ext.define('devilry_frontpage.view.FrontpageOverview' ,{
             items: [{
                 xtype: 'box',
                 cls: 'bootstrap',
-                html: ['<h3>', gettext('Language'), '</h3>'].join('')
+                html: ['<h4>', gettext('Language'), '</h4>'].join('')
             }, {
                 xtype: 'devilry_i18n_languageselect'
             }]
@@ -75,9 +78,9 @@ Ext.define('devilry_frontpage.view.FrontpageOverview' ,{
             itemId: 'needHelp',
             margin: '30 0 0 0',
             html: [
-                '<h3>',
+                '<h4>',
                     gettext('Need help?'),
-                '</h3>',
+                '</h4>',
                 '<p class="muted">',
                     gettext('Click on your name in the top right corner of the page.'),
                 '</p>'
@@ -88,9 +91,9 @@ Ext.define('devilry_frontpage.view.FrontpageOverview' ,{
             itemId: 'improveDevilry',
             margin: '30 0 0 0',
             tpl: [
-                '<h3>',
+                '<h4>',
                     gettext('Improve Devilry?'),
-                '</h3>',
+                '</h4>',
                 '<p class="muted">',
                     gettext('Devilry is an open source general purpose electronic assignment delivery and feedback system. Visit <a href="{devilryurl}">{devilryurl}</a> and help us make it better.'),
                 '</p>'
