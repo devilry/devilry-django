@@ -11,7 +11,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsOnAll
                 fieldLabel: 'Minumum total points',
                 minValue: 0,
                 value: this.settings? this.settings.minimumScaledPoints: '',
-                margin: {bottom: 10}
+                margin: '0 0 10 0'
             }, this.defaultButtonPanel]
         });
         this.callParent(arguments);

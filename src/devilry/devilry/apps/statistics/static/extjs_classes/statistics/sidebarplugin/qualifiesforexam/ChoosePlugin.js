@@ -21,7 +21,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.ChoosePlugin', {
         });
         var store = Ext.create('Ext.data.Store', {
             model: model,
-            data: this.availablePlugins,
+            data: this.availablePlugins
         });
 
         Ext.apply(this, {

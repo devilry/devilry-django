@@ -3,7 +3,7 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePointsBase'
 
     validPointInput: function() {
         var numberfield = this.down('numberfield');
-        if(numberfield.getValue() == null) {
+        if(numberfield.getValue() === null) {
             Ext.MessageBox.alert('Points required', Ext.String.format(
                 'Please specify "{0}".', numberfield.getFieldLabel())
             );

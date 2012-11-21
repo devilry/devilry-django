@@ -25,14 +25,14 @@ Ext.define('devilry.statistics.dataview.SelectViewCombo', {
         });
         Ext.apply(this, {
             store: selectViewStore,
-            emptyText: this._findDefaultViewInAvailableViews().label,
+            emptyText: this._findDefaultViewInAvailableViews().label
         });
         this.on('select', this._onSelectView, this);
         this.callParent(arguments);
     },
 
     _findDefaultViewInAvailableViews: function() {
-        var view = undefined;
+        var view;
         Ext.each(this.availableViews, function(availableView, index) {
             if(availableView.clsname === this.defaultViewClsname) {
                 view = availableView;

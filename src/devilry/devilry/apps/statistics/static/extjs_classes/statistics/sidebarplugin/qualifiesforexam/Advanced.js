@@ -18,14 +18,14 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.Advanced', {
             items: [{
                 xtype: 'box',
                 cls: 'readable-section',
-                html: Ext.String.format('Advanced filters have a dedicated guide in the Administrator section of the <a href="{0}" target="_blank">Help</a>.', DevilrySettings.DEVILRY_HELP_URL),
+                html: Ext.String.format('Advanced filters have a dedicated guide in the Administrator section of the <a href="{0}" target="_blank">Help</a>.', DevilrySettings.DEVILRY_HELP_URL)
             }, {
                 xtype: 'statistics-filterchaineditor',
                 title: 'Rules',
                 filterchain: this.filterchain,
                 assignment_store: this.loader.assignment_store,
                 flex: 1,
-                margin: {top: 10, bottom: 10}
+                margin: '10 0 10 0'
             }, this.defaultButtonPanel]
         });
 

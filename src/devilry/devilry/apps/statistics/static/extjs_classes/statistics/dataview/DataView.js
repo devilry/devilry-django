@@ -16,10 +16,10 @@ Ext.define('devilry.statistics.dataview.DataView', {
         loader: undefined,
         availableViews: [{
             clsname: 'devilry.statistics.dataview.MinimalGridView',
-            label: 'Minimal view'
+            label: 'View: Minimal'
         }, {
             clsname: 'devilry.statistics.dataview.FullGridView',
-            label: 'Detailed view'
+            label: 'View: Detailed'
         }],
         defaultViewClsname: 'devilry.statistics.dataview.FullGridView'
     },
@@ -43,7 +43,7 @@ Ext.define('devilry.statistics.dataview.DataView', {
                 listeners: {
                     scope: this,
                     newSearchValue: this._search,
-                    emptyInput: function() { this._search() }
+                    emptyInput: function() { this._search(); }
                 }
             }, {
                 xtype: 'button',
@@ -66,10 +66,16 @@ Ext.define('devilry.statistics.dataview.DataView', {
             }, {
                 xtype: 'button',
                 text: 'Change weight of assignments',
+                iconCls: 'icon-edit-16',
+                itemId: 'changeWeightButton',
+                hidden: true,
                 listeners: {
                     scope: this,
                     click: this._onScaleAssignments
                 }
+            }, {
+                xtype: 'tbseparator',
+                itemId: 'changeWeightButtonSeparator'
             }, {
                 xtype: 'statistics-dataview-selectviewcombo',
                 availableViews: this.availableViews,
@@ -99,6 +105,13 @@ Ext.define('devilry.statistics.dataview.DataView', {
 
     _setView: function(clsname) {
         this.removeAll();
+        if(clsname === 'devilry.statistics.dataview.FullGridView') {
+            this.down('#changeWeightButton').show();
+            this.down('#changeWeightButtonSeparator').show();
+        } else {
+            this.down('#changeWeightButton').hide();
+            this.down('#changeWeightButtonSeparator').hide();
+        }
         this._layout = Ext.create(clsname, {
             loader: this.loader
         });
