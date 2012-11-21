@@ -14,7 +14,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
     items: [{
         xtype: 'container',
         columnWidth: 1,
-        cls: 'devilry_subjectadmin_focuscontainer',
+        cls: 'devilry_focuscontainer',
         padding: '20',
         items: [{
             xtype: 'allactivewhereisadminlist'

@@ -30,7 +30,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
 
         Ext.apply(this, {
             frame: false,
-            bodyCls: 'devilry_subjectadmin_focuscontainer',
+            bodyCls: 'devilry_focuscontainer',
             bodyPadding: 20,
             layout: 'anchor',
             fieldDefaults: {

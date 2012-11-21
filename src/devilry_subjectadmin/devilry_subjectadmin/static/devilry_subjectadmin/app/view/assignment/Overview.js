@@ -52,7 +52,7 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
             }, {
                 xtype: 'container',
                 columnWidth: 1.0,
-                cls: 'devilry_subjectadmin_focuscontainer',
+                cls: 'devilry_focuscontainer',
                 padding: '20',
                 items: [{
                     xtype: 'box',
