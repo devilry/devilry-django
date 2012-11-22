@@ -35,6 +35,9 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     changeGradeEditor: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@grade-editor/change', assignment_id);
     },
+    passedPreviousPeriod: function(assignment_id) {
+        return Ext.String.format('#/assignment/{0}/@@passed-previous-period', assignment_id);
+    },
 
     manageStudents: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@manage-students/', assignment_id);

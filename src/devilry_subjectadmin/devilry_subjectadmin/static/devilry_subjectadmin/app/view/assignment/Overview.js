@@ -102,6 +102,14 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                                         gettext('View, edit and add deadlines, including the submission date.'),
                                     '</small>',
                                 '</p></li>',
+                                '<li><p>',
+                                    '<strong><a href="{passedpreviousperiod_url}">',
+                                        gettext('Passed previous {period_term}'),
+                                    '</strong></a>',
+                                    '<small class="muted"> - ',
+                                        gettext('Wizard with automatic and manual selection.'),
+                                    '</small>',
+                                '</p></li>',
                             '</ul>',
                         '</tpl>'
                     ],
@@ -109,6 +117,14 @@ Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
                         loading: true
                     }
                 }, {
+                    //xtype: 'box',
+                    //cls: 'bootstrap tools',
+                    //itemId: 'linkList',
+                    //tpl: [
+                        //'<h2'
+                    //],
+                    //data: {}
+                //}, {
                     xtype: 'dangerousactions',
                     margin: '125 0 0 0',
                     items: [{
