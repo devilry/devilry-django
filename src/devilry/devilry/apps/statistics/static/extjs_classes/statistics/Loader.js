@@ -42,6 +42,7 @@ Ext.define('devilry.statistics.Loader', {
             {name: 'username', type: 'string'},
             {name: 'full_name', type: 'string'},
             {name: 'labels', type: 'auto'},
+            {name: 'labelsSortKey', type: 'string'}, // Used for sorting - we pick the first label, or empty string (if labels.length==0)
             {name: 'relatedstudent_id', type: 'int'},
             {name: 'totalScaledPoints', type: 'int'}
         ];
@@ -230,7 +231,8 @@ Ext.define('devilry.statistics.Loader', {
                 username: user.username,
                 full_name: user.full_name,
                 relatedstudent_id: relatedStudent.id,
-                labels: relatedStudent.labels
+                labels: relatedStudent.labels,
+                labelsSortKey: relatedStudent.labels.length === 0? '': relatedStudent.labels[0].label
             });
             this.store.add(record);
             record.assignment_store = this.assignment_store;

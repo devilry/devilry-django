@@ -29,7 +29,7 @@ Ext.define('devilry.statistics.dataview.MinimalGridView', {
             minWidth: 140,
             flex: 2
         }, {
-            header: 'Labels', dataIndex: 'labels',
+            header: 'Labels', dataIndex: 'labelsSortKey',
             menuDisabled: true,
             width: 150,
             renderer: function(labels, p, record) {
