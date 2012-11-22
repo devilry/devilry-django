@@ -44,8 +44,7 @@ def reset_db():
 
 @task
 def sandbox():
-    reset_db()
-    local('bin/django_dev.py devilry_sandboxcreate -s "duck1010" -l "DUCK1010 - Objektorientert programmering"')
+    local('bin/django_dev.py devilry_sandboxcreate -s "duck2050" -l "DUCK2050 - Programmering uten grenser"')
 
 @task
 def autogen_extjsmodels():
