@@ -64,14 +64,17 @@ Ext.define("Ext.ux.grid.Printer", {
 			var headings = Ext.create('Ext.XTemplate', this.headerTpl).apply(columns);
 			var body     = Ext.create('Ext.XTemplate', this.bodyTpl).apply(data);
 			
+            var title = grid.title;
+            if(Ext.isEmpty(title)) {
+                title = 'Print';
+            }
 			var htmlMarkup = [
 				'<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
 				'<html>',
 				  '<head>',
 				    '<meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />',
-				    '<link href="' + DevilrySettings.DEVILRY_COMMON_CSS + '" rel="stylesheet" type="text/css" media="screen,print" />',
-				    '<link href="' + this.stylesheetPath + '" rel="stylesheet" type="text/css" media="screen,print" />',
-				    '<title>' + grid.title + '</title>',
+                    '<link href="' + this.stylesheetPath + '" rel="stylesheet" type="text/css" media="screen,print" />',
+				    '<title>' + title + '</title>',
 				  '</head>',
 				  '<body>',
 				    '<table>',
@@ -94,6 +97,8 @@ Ext.define("Ext.ux.grid.Printer", {
 			var win = window.open('', 'printgrid');
 
 			win.document.write(html);
+            win.document.close();
+            win.focus();
 
 			if (printAutomatically){
                 Ext.defer(function() {
@@ -118,7 +123,7 @@ Ext.define("Ext.ux.grid.Printer", {
 		headerTpl: [ 
 			'<tr>',
 				'<tpl for=".">',
-					'<th>{text}</th>',
+					'<th>{header}</th>',
 				'</tpl>',
 			'</tr>'
 		]
