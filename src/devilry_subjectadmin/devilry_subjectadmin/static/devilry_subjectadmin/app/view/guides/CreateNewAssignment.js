@@ -64,7 +64,7 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
 
             '<h3>', gettext('Need to edit students or examiners?'), '</h3>',
             '<p>',
-                gettext('The links to view or edit students and examiners open a new browser window, so will not loose your progress when you click them.'),
+                gettext('The links to view or edit students and examiners open a new browser window, so you will not loose your progress when you click them.'),
             '</p>',
 
             '<h3>', gettext('Create another?'), '</h3>',
