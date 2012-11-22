@@ -357,6 +357,12 @@ class Command(BaseCommand):
         elif username == 'scrooge':
             return ['group2']
 
+    def _unset_groupnames(self):
+        from devilry.apps.core.models import AssignmentGroup
+        for group in AssignmentGroup.objects.all():
+            group.name = None
+            group.save()
+
     def handle(self, *args, **options):
         verbosity = get_verbosity(options)
         setup_logging(verbosity)
@@ -364,23 +370,26 @@ class Command(BaseCommand):
         management.call_command('flush', verbosity=0, interactive=False)
 
         self.testhelper = TestHelper()
-        self.testhelper.create_superuser('grandma')
-        self.testhelper.grandma.is_staff = True
-        self.testhelper.grandma.save()
-        logging.info('Creating users')
-        self.create_users(bad_students)
-        self.create_users(medium_students)
-        self.create_users(good_students)
-        self.create_users([('donald', 'Donald Duck'),
-                           ('daisy', 'Daisy Duck'),
-                           ('clarabelle', 'Clarabelle Duck'),
-                           ('scrooge', 'Scrooge McDuck'),
-                           ('della', 'Duck'),
-                           ('gladstone', 'Gladstone Gander'),
-                           ('fethry', 'Fethry Duck')])
-        self._distributeStudentToExaminers()
-        logging.info('Generating data (nodes, periods, subjects, deliveries...). Run with -v3 for more details.')
-        self.create_duck4000()
-        self.create_duck6000()
-        self.create_duck1100()
-        self.create_duck1010()
+        from django.db import transaction
+        with transaction.commit_on_success():
+            self.testhelper.create_superuser('grandma')
+            self.testhelper.grandma.is_staff = True
+            self.testhelper.grandma.save()
+            logging.info('Creating users')
+            self.create_users(bad_students)
+            self.create_users(medium_students)
+            self.create_users(good_students)
+            self.create_users([('donald', 'Donald Duck'),
+                               ('daisy', 'Daisy Duck'),
+                               ('clarabelle', 'Clarabelle Duck'),
+                               ('scrooge', 'Scrooge McDuck'),
+                               ('della', 'Duck'),
+                               ('gladstone', 'Gladstone Gander'),
+                               ('fethry', 'Fethry Duck')])
+            self._distributeStudentToExaminers()
+            logging.info('Generating data (nodes, periods, subjects, deliveries...). Run with -v3 for more details.')
+            self.create_duck4000()
+            self.create_duck6000()
+            self.create_duck1100()
+            self.create_duck1010()
+            self._unset_groupnames()
