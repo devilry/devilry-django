@@ -111,6 +111,9 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
             'viewport createnewassignmentform #deliveryTypesRadioGroup radio': {
                 change: this._onDeliveryTypesSelect
             },
+            'viewport createnewassignmentform devilry_extjsextras-datetimefield[name=publishing_time] devilry_extjsextras_datefield': {
+                change: this._onPublishingTimeDateFieldChange
+            },
 
             // Page 2
             'viewport createnewassignmentform #backButton': {
@@ -237,20 +240,61 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         this.getCreateNewAssignmentForm().getForm().setValues(initialValues);
         Ext.defer(function() {
             // NOTE: Using defer to clear the error-marks added when we setValues above
-            this.getFirstDeadlineField().down('devilry_extjsextras_datefield').clearInvalid();
-
-            // NOTE: Using defer avoids that the text style remains
-            // emptyText-gray (I assume it does no because render is fired
-            // before the style is applied).
-            //this.getLongNameField().focus();
-            this.getLongNameField().selectText();
-
-            if(initialValues.anonymous) {
-                this.getAdvancedOptionsPanel().expand();
-            }
-            var assignmentId = this.getSelectAssignmentToCopyStudentsFromCombo().getValue();
-            this._unmask();
+            this._onFullyRenderedAndInitialized(initialValues);
         }, 200, this);
+    },
+
+    _onFullyRenderedAndInitialized: function(initialValues) {
+
+        var timefield = this.getFirstDeadlineField().down('devilry_extjsextras_timefield');
+        if(timefield.getValue() === null) {
+            timefield.setValue('23:59');
+        }
+
+        // this._syncPubtimeAndFirstDeadline(); // NOTE: not needed because this is triggered on load by _onPublishingTimeDateFieldChange when we set publishing_time
+        var datefield = this.getFirstDeadlineField().down('devilry_extjsextras_datefield');
+        datefield.clearInvalid(); // Important: this must come after we have set all values on the datetime field
+
+        // NOTE: Using defer avoids that the text style remains
+        // emptyText-gray (I assume it does no because render is fired
+        // before the style is applied).
+        //this.getLongNameField().focus();
+        this.getLongNameField().selectText();
+
+        if(initialValues.anonymous) {
+            this.getAdvancedOptionsPanel().expand();
+        }
+        var assignmentId = this.getSelectAssignmentToCopyStudentsFromCombo().getValue();
+        this._unmask();
+    },
+
+
+    _onPublishingTimeDateFieldChange: function() {
+        this._syncPubtimeAndFirstDeadline();
+    },
+
+    _syncPubtimeAndFirstDeadline: function() {
+        var pubtime_datefield = this.getPublishingTimeField().down('devilry_extjsextras_datefield');
+        pubtime_datefield.setMinValue(new Date());
+        pubtime_datefield.setMaxValue(this.periodRecord.get('end_time'));
+
+        var first_deadline_datefield = this.getFirstDeadlineField().down('devilry_extjsextras_datefield');
+        var pubdate = pubtime_datefield.getValue();
+        if(pubdate !== null) {
+            first_deadline_datefield.setMinValue(pubtime_datefield.getValue());
+            first_deadline_date = first_deadline_datefield.getValue();
+            if(first_deadline_date !== null) {
+                if(pubdate > first_deadline_date) {
+                    first_deadline_datefield.validate();
+                    this.application.getAlertmessagelist().add({
+                        type: 'warning',
+                        autoclose: true,
+                        message: gettext('The publishing time is set to a later date than the submission date.')
+                    });
+                }
+            }
+        }
+        first_deadline_datefield.setMaxValue(this.periodRecord.get('end_time'));
     },
 
     _em: function(string) {
