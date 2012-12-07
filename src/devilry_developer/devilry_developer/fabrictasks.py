@@ -21,6 +21,14 @@ def devclean():
 
 
 @task
+def postbootstrap():
+    """
+    Executed by the ``bootstrap`` task after it has created the virtualenv and run ``bin/buildout``.
+    """
+    syncdb()
+
+
+@task
 def remove_db():
     """ Remove ``db.sqlite3`` if it exists. """
     if exists('db.sqlite3'):
@@ -61,7 +69,8 @@ def sandbox():
 @task
 def autogen_extjsmodels():
     """
-    Run ``bin/django_dev.py dev_autogen_extjsmodels``
+    Run ``bin/django_dev.py dev_autogen_extjsmodels``. Note that
+    this is not needed for anyone but the developers anymore.
     """
     local('bin/django_dev.py dev_autogen_extjsmodels')
 

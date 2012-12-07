@@ -9,8 +9,9 @@ from fabric.api import local, task
 @task
 def bootstrap():
     """
-    Runs ``virtualenv --no-site-packages . && bin/easy_install zc.buildout && bin/buildout``.
+    Runs ``virtualenv --no-site-packages . && bin/easy_install zc.buildout && bin/buildout && bin/fab postbootstrap``.
     """
     local('virtualenv --no-site-packages .')
     local('bin/easy_install zc.buildout')
     local('bin/buildout')
+    local('bin/fab postbootstrap')
