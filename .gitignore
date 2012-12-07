@@ -70,6 +70,7 @@ docs/.Python
 docs/bin/
 docs/include/
 docs/lib/
+docs/venv*/
 
 
 # Intellij files
