@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-24 06:44+0200\n"
+"POT-Creation-Date: 2012-12-07 16:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,252 +18,370 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: static/devilry_subjectadmin/app.js:105
+#: static/devilry_subjectadmin/app.js:159
 msgid "Dashboard"
 msgstr ""
 
-#: static/devilry_subjectadmin/app.js:173
+#: static/devilry_subjectadmin/app.js:281
 msgid "Route not found"
 msgstr ""
 
-#: static/devilry_subjectadmin/app.js:188
+#: static/devilry_subjectadmin/app.js:296
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:9
-#: static/devilry_subjectadmin/app/view/subject/ListAll.js:30
+#: static/devilry_subjectadmin/app/view/subject/ListAll.js:29
 msgid "All subjects"
 msgstr "Alle kurs"
 
-#: static/devilry_subjectadmin/app/controller/AddGroups.js:123
-msgid "Failed to load students from the period"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/AddGroups.js:138
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:323
-msgid "Failed to load assignment"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/AddGroups.js:146
-msgid "Failed to load examiners from the period"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/AddGroups.js:154
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:339
-msgid "Failed to load groups"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/AddGroups.js:183
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:347
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:47
-#: static/devilry_subjectadmin/app/view/period/OverviewOfRelatedUsers.js:32
+#: static/devilry_subjectadmin/app/controller/AddGroups.js:264
+#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:132
 msgid "Manage students"
 msgstr "Studenter &mdash; Se på og rediger"
 
-#: static/devilry_subjectadmin/app/controller/AddGroups.js:185
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:119
+#: static/devilry_subjectadmin/app/controller/AddGroups.js:266
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:103
 #, fuzzy
 msgid "Add students"
 msgstr "Studenter &mdash; Se på og rediger"
 
-#: static/devilry_subjectadmin/app/controller/AddGroups.js:297
-#: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:90
-#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:88
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:363
+#: static/devilry_subjectadmin/app/controller/AddGroups.js:375
+#: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:126
+#: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:132
+#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:128
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:417
+#: static/devilry_subjectadmin/app/controller/period/EditDuration.js:128
 #: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:64
 #: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:93
 msgid "Saving ..."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:100
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:86
-msgid "Manage %(deadlines_term)s"
-msgstr "Administrer %(deadlines_term)s"
+#: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:36
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:10
+#, fuzzy
+msgid "All %(subjects_term)s"
+msgstr "Alle kurs"
 
-#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:101
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:65
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:87
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:112
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:122
-msgid "deadlines"
-msgstr ""
+#: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:37
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:11
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:16
+#: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:13
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:28
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:28
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:73
+#, fuzzy
+msgid "subjects"
+msgstr "Alle kurs"
 
-#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:224
-#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:310
-#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:354
-#: static/devilry_subjectadmin/app/view/RenameBaseNodeWindow.js:140
+#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:121
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:99
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:95
+#, fuzzy
+msgid "Deadlines"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:254
+#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:393
+#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:440
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:603
+#: static/devilry_subjectadmin/app/controller/GradeEditor.js:276
+#: static/devilry_subjectadmin/app/controller/GradeEditor.js:361
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriod.js:225
+#: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:198
+#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:192
+#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:223
+#: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:141
 msgid "Saving"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:183
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:199
-#: static/devilry_subjectadmin/app/view/createnewassignment/CreateNewAssignment.js:29
+#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:566
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:381
+msgid "Failed to load groups"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:181
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:433
+#: static/devilry_subjectadmin/app/controller/guides/CreateNewAssignment.js:9
+#: static/devilry_subjectadmin/app/view/createnewassignment/CreateNewAssignment.js:38
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:55
+#: static/devilry_subjectadmin/app/view/period/Overview.js:70
 msgid "Create new assignment"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:187
-msgid "Period {period_id} could not be loaded."
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:292
+msgid "The publishing time is set to a later date than the submission date."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:276
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:324
+msgid "Devilry suggested values for: {labels}."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:355
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:233
+msgid "Name"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:358
+msgid "Suggested {long_name} as the name, based on {last_long_name}."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:376
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:200
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:134
+msgid "Submission date"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:379
+msgid ""
+"Calculated by adding the most common timespan between submission dates "
+"({days} days) to the submission date of the last published assignment, "
+"{previous_assignment} ({previous_first_deadline})."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:383
+msgid ""
+"You have a break in the regular timespan. Since you use a short interval "
+"between 1 day and 14 days, we assume this means you have skipped an interval "
+"or two, and suggested a submission date based on those assumptions."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:416
+#: static/devilry_subjectadmin/app/controller/GradeEditor.js:90
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:177
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:294
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:109
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:58
+#: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:54
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:58
+#: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimeWidget.js:46
+#: static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:36
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:64
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:81
+#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:35
+#: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:34
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:31
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:15
+#: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:11
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:107
+#: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsButton.js:26
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:36
+#: static/devilry_subjectadmin/app/view/period/Overview.js:59
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:59
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:69
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:55
+msgid "Loading"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:505
+#, fuzzy
+msgid "Copy from %(assignment)s."
+msgstr "Administrer %(deadlines_term)s"
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:615
+msgid "Created {name}."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:617
+#, fuzzy
+msgid "Create another assignment"
+msgstr "Administrer %(deadlines_term)s"
+
+#: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:83
+#, fuzzy
+msgid "Create %(period_term)s"
+msgstr "Administrer %(deadlines_term)s"
+
+#: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:84
+#: static/devilry_subjectadmin/app/controller/assignment/Overview.js:99
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:20
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:256
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:273
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:63
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:44
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:22
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:28
+#: static/devilry_subjectadmin/app/view/period/Overview.js:79
+#: static/devilry_subjectadmin/app/view/period/Overview.js:89
+#: static/devilry_subjectadmin/app/view/period/Overview.js:131
+#: static/devilry_subjectadmin/app/view/period/Overview.js:146
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:28
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:147
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:165
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:29
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:158
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:177
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:66
+msgid "period"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:113
 msgid "Saving..."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:124
-#: static/devilry_subjectadmin/app/view/assignment/EditAnonymous.js:19
-#: static/devilry_subjectadmin/app/view/assignment/EditAnonymous.js:40
-msgid "Anonymous"
+#: static/devilry_subjectadmin/app/controller/GradeEditor.js:104
+#: static/devilry_subjectadmin/app/controller/assignment/EditGradeEditor.js:75
+#: static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:5
+#: static/devilry_subjectadmin/app/view/gradeeditor/Overview.js:41
+msgid "Grading system"
+msgstr "Karaktersystem"
+
+#: static/devilry_subjectadmin/app/controller/GradeEditor.js:110
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:23
+msgid "Change"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:125
+#: static/devilry_subjectadmin/app/controller/GradeEditor.js:206
+msgid "Configure grade editor"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/GradeEditor.js:210
 msgid ""
-"Examiners and students can not see each other and they can not communicate."
+"This grade editor requires configuration. Examiners can not provide feedback "
+"to students until you have provided configuration. Use the form below to "
+"configure the grade editor."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:127
-msgid "Not anonymous"
+#: static/devilry_subjectadmin/app/controller/GradeEditor.js:214
+msgid ""
+"This grade editor requires configuration, and configuration has already been "
+"provided by you or another administrator. Use the form below if you wish to "
+"change the configuration."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:128
-msgid "Examiners and students can see each other and communicate."
+#: static/devilry_subjectadmin/app/controller/GradeEditor.js:242
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:34
+#: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsPanel.js:75
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:89
+#: static/devilry_subjectadmin/app/view/relatedstudents/SelectUserPanel.js:31
+msgid "Cancel"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:126
-msgid "Published"
+#: static/devilry_subjectadmin/app/controller/GradeEditor.js:250
+msgid "Save and continue editing"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:127
-msgid "Publishing time was {publishing_time}."
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriod.js:97
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:30
+msgid "Passed previously"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:129
-msgid "Not published"
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriod.js:244
+msgid "Marked %(count)s groups as previously passed."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:130
-msgid "Will be published {publishing_time}."
+#: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:125
+#, fuzzy
+msgid "Manage examiners"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:202
+#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:227
+msgid "Removed: {0}"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/assignment/Overview.js:82
-#: static/devilry_subjectadmin/app/controller/period/Overview.js:114
-#: static/devilry_subjectadmin/app/controller/subject/Overview.js:78
-#: static/devilry_subjectadmin/app/view/RenameBaseNodeWindow.js:28
+#: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:239
+#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:264
+msgid "{0} is already in the table."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:248
+#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:273
+msgid "{0} added."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:196
+msgid "Updated candidate ID of {0} to {1}."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:12
+msgid "Showing {visiblecount}/{totalcount}"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:141
+msgid "Tagged %(users)s with: %(tags)s"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:193
+msgid "Cleared tags on %(users)s."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:92
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:32
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:71
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:21
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:148
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:159
+#, fuzzy
+msgid "students"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:93
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:30
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:62
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:72
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:6
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:20
+msgid "examiners"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:90
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:195
+#: static/devilry_subjectadmin/app/view/period/ListOfAssignments.js:24
+msgid "Publishing time"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/assignment/Overview.js:105
+#: static/devilry_subjectadmin/app/controller/period/Overview.js:83
+#: static/devilry_subjectadmin/app/controller/subject/Overview.js:71
+#: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:29
 msgid "Rename {something}"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/assignment/Overview.js:85
-#: static/devilry_subjectadmin/app/controller/period/Overview.js:111
-#: static/devilry_subjectadmin/app/controller/subject/Overview.js:81
+#: static/devilry_subjectadmin/app/controller/assignment/Overview.js:108
+#: static/devilry_subjectadmin/app/controller/period/Overview.js:80
+#: static/devilry_subjectadmin/app/controller/subject/Overview.js:74
 msgid "Delete {something}"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:123
-msgid "%(numselected)s/%(total)s %(groups_term)s selected."
+#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:35
+msgid "Examiners random distributed successfully"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:126
-#: static/devilry_subjectadmin/app/controller/managestudents/NoGroupSelectedViewPlugin.js:34
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:448
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:99
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:67
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:94
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:103
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:111
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:123
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:137
+msgid "Loading assignment ..."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:369
+msgid "Failed to load assignment"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:373
+msgid "Loading groups ..."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:399
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:86
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:91
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:69
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:74
-msgid "groups"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:141
-msgid "Set examiners"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:152
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:157
-msgid "Add examiners"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:162
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:184
-msgid "Confirm clear examiners"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:163
-msgid ""
-"Do you want to remove all examiners from the selected groups? Their existing "
-"feedback will not be removed, only their permission to give feedback on the "
-"groups."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:252
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:254
-msgid "Set tags"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:282
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:284
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:239
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:241
-msgid "Add tags"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:293
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:260
-msgid "Confirm clear tags"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:294
-msgid "Do you want to remove all tags from the selected groups?"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/NoGroupSelectedViewPlugin.js:32
-msgid ""
-"%(Students_term)s are is a group even when they work alone. No %(groups_term)"
-"s selected. Choose one or more %(groups_term)s to gain access to settings, "
-"such as %(examiners_term)s and %(tags_term)s."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/NoGroupSelectedViewPlugin.js:33
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:64
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:73
-#: static/devilry_subjectadmin/app/view/managestudents/StudentsInGroupGrid.js:27
-#: static/devilry_subjectadmin/app/view/period/OverviewOfRelatedUsers.js:31
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:70
+#: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:36
+#: static/devilry_subjectadmin/app/view/period/Overview.js:114
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:64
 #, fuzzy
 msgid "Students"
 msgstr "Studenter &mdash; Se på og rediger"
 
-#: static/devilry_subjectadmin/app/controller/managestudents/NoGroupSelectedViewPlugin.js:35
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:100
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:148
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:194
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:225
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:233
-msgid "examiners"
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:465
+msgid "Removed: {0}."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/NoGroupSelectedViewPlugin.js:36
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:101
-msgid "tags"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:124
-msgid "Loading assignment ..."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:327
-msgid "Loading groups ..."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:446
-msgid ""
-"Hold down <strong>%(shortcutkey)s</strong> to select more %(groups_term)s."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:463
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:550
 msgctxt "groupunit"
 msgid "project group"
 msgid_plural "project groups"
 msgstr[0] ""
 msgstr[1] ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:465
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:552
 #, fuzzy
 msgctxt "groupunit"
 msgid "student"
@@ -271,100 +389,161 @@ msgid_plural "students"
 msgstr[0] "Studenter &mdash; Se på og rediger"
 msgstr[1] "Studenter &mdash; Se på og rediger"
 
-#: static/devilry_subjectadmin/app/controller/managestudents/Select.js:36
+#: static/devilry_subjectadmin/app/controller/managestudents/Select.js:35
 msgid "{label} (Matching groups: {groupcount})"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/Select.js:215
-msgid "Already selected"
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:458
+msgid "Changed examiners of {group} to: {examiners}."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/Select.js:216
-msgid "The group is already selected"
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:482
+msgid "Added you as examiner for {group}."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/Select.js:223
-msgid "Selected group not loaded"
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:529
+msgid "Saved the following tags for {group}: {tags}"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/Select.js:224
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:532
+msgid "No tags"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:6
 msgid ""
-"The group you selected is not loaded. This is probably because someone else "
-"added a group after you loaded this page. Try reloading the page."
+"A short name with at most 20 letters. Can only contain lowercase english "
+"letters (a-z), numbers, underscore ('_') and hyphen ('-'). This is used the "
+"the regular name takes to much space."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:98
+#: static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:10
+msgid "May contain any characters, including language-specific characters."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:15
 msgid ""
-"Selecting multiple %(groups_term)s enables you to change %(examiners_term)s "
-"and %(tags_term)s on multiple %(groups_term)s, and merge multiple "
-"%(groups_term)s into a single %(group_term)s."
+"Choose a long and a short name. Short name is used in places where long name "
+"takes too much space, such as table headers and navigation."
 msgstr ""
+"Velg et langt og et kort navn. Det korte navnet brukes når det lange navnet "
+"er for langt, f.eks. i tabeller og navigasjon."
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:102
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:66
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:80
-msgid "group"
+#: static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:16
+#, fuzzy
+msgid ""
+"The short name can contain up to 20 letters, and it can only contain "
+"lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and "
+"<em>'-'</em>."
 msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:185
-msgid "Do you want to remove all examiners from this group?"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:199
-msgid "Confirm remove examiner"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:200
-msgid "Do you want to remove \"{0}\" from examiners?"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:261
-msgid "Do you want to remove all tags from this group?"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:275
-msgid "Confirm remove tag"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:276
-msgid "Do you want to remove \"{0}\" from tags?"
-msgstr ""
+"Det korte navnet kan inneholde maks 20 små bokstaver (<em>a-z</em>) fra det "
+"engelske alfabetet, samt <em>tall</em>, <em>'_'</em> og <em>'-'</em>."
 
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:46
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:72
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:42
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:89
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:96
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:135
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:146
 #: static/devilry_subjectadmin/app/view/managestudents/DynamicLoadMenu.js:17
-#: static/devilry_subjectadmin/app/view/period/ListOfRelatedUsers.js:31
-#: static/devilry_subjectadmin/app/view/period/Overview.js:24
-#: static/devilry_subjectadmin/app/view/period/Overview.js:25
-#: static/devilry_subjectadmin/app/view/period/Overview.js:76
-#: static/devilry_subjectadmin/app/view/period/Overview.js:83
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:63
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:70
+#: static/devilry_subjectadmin/app/view/period/Overview.js:124
+#: static/devilry_subjectadmin/app/view/period/Overview.js:138
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:79
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:86
 msgid "Loading ..."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:33
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:55
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:21
+msgid "Administrator rights"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:24
+msgid "{admincount} users have administrator rights on this item."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:29
+msgid "How administrator rights work"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:31
+msgid ""
+"Devilry has a very simple permission system for administrators. You are "
+"eighter administrator on an item, or you have no access to the administrator "
+"views for an item."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:34
+msgid ""
+"Administrators can be set anywhere in the hierarchy, from nodes on the top, "
+"to assignments at the bottom, and permissions propagate downwards in the "
+"hierarchy."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:37
+msgid "Administrators on this item"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:40
+msgid "These are the administrators on this item."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:58
+msgid "Add or edit administrators"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:63
 msgid "No administrators"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:97
-msgid "Administrators"
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:67
+msgid "Add administrators"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:110
-msgid "Inherited administrators"
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:73
+msgid "Other administrators"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:129
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:75
+msgid ""
+"These administrators are from items higher up in the hierarchy. The links in "
+"parenthesis is to the location where the administrator propagates from."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:136
+#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:31
+msgid "Details"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:137
+msgid "Hide details"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:163
 msgid "Edit administrators"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/BaseNodeHierLocation.js:8
-msgid "Location in hierarchy"
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:188
+msgid ""
+"Use the field at the bottom of this window to search for users. When you "
+"select a user from the search results, they are immediatly made "
+"administrator. Close the window or hit ESC when you are finished."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:191
+msgid ""
+"Select one or more users and click the remove-button to remove them from "
+"administrators."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:195
+msgid "You can remove yourself from administrators."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:198
+msgid ""
+"If you remove yourself by accident, you need to ask another administrator to "
+"re-add you. Close this window and use the list of administrators and "
+"inherited administrators to get in touch with them."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/DangerousActions.js:6
+msgid "Dangerous actions"
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/DeleteDjangoRestframeworkRecordDialog.js:16
@@ -378,43 +557,136 @@ msgstr ""
 msgid "Permission denied"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/RenameBaseNodeWindow.js:53
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:49
+#: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:54
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:68
+#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:68
 msgid "Short name"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/RenameBaseNodeWindow.js:67
-msgid ""
-"A short name with at most 20 letters. Can only contain lowercase english "
-"letters (a-z), numbers, underscore ('_') and hyphen ('-'). This is used the "
-"the regular name takes to much space."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/RenameBaseNodeWindow.js:71
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:41
+#: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:72
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:58
+#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:59
 msgid "Long name"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/RenameBaseNodeWindow.js:78
-msgid "May contain any characters, including language-specific characters."
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:31
+msgid ""
+"Choose the students you want to add to the assignment, and click "
+"{savebuttonlabel}."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:33
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:36
+msgid "Move your mouse over the checkboxes for help."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:38
+#, fuzzy
+msgid "Missing students?"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:40
+msgid "Only students registered on {periodpath} is available in the list."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:45
+msgid "Add or edit students on {periodpath}"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:49
+msgid "You need to reload this page when you return after adding students."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:53
+msgid ""
+"You do not have administrator rights on {periodpath}, so you need to ask "
+"someone with administrator rights if you need to add more students than the "
+"ones available in the list."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:58
+#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:24
+msgid "Allow duplicates?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:60
+msgid ""
+"<strong>{ignoredcount}</strong> students are not available in the list "
+"because they are already registered on the assignment. Select <em>Allow "
+"duplicates</em> if you want to allow students to be in multiple groups on "
+"the same assignment."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:64
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:249
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:167
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:26
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnSingle.js:34
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:5
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:17
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Grid.js:55
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:93
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:41
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:103
+msgid "Tags"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:68
+msgid ""
+"You can copy tags from {periodpath} when you add students. The tags on "
+"{periodpath} and tags on assignments in {periodpath} is not kept in sync "
+"after you add students to the assignment, so you can safely edit tags on the "
+"assignment without affecting any other assignments or {periodpath}."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:80
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersInGroupGrid.js:22
+#: static/devilry_subjectadmin/app/view/managestudents/SelectExaminersGrid.js:23
+#: static/devilry_subjectadmin/app/view/managestudents/StudentsInGroupGrid.js:23
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Grid.js:24
 msgid "Full name missing"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:72
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:102
+#, fuzzy
+msgid "No matching examiners"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:131
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/AllGroupsInAssignmentGrid.js:35
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/GroupsInDeadlineSelectGrid.js:23
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:44
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:13
+msgid "Select"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:133
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/AllGroupsInAssignmentGrid.js:37
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/GroupsInDeadlineSelectGrid.js:25
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:52
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:15
+msgid "Select all"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:136
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/AllGroupsInAssignmentGrid.js:43
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/GroupsInDeadlineSelectGrid.js:31
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:56
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:21
+msgid "Deselect all"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:148
 msgid "Include tags"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:73
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:149
 msgid ""
 "Check this to tag the added students with the tags they have on the period. "
 "Keep this checked if you are unsure of what to do. When this is checked, "
 "tags are displayed in the second column of the table."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:77
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:154
 msgid ""
 "Check this to automatically set examiners that have at least one tag in "
 "common with a student as their examiner on this assignment. When this is "
@@ -422,88 +694,83 @@ msgid ""
 "the table."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:79
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:156
 msgid "Autoset examiners by tags"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:84
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:187
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:162
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:186
 msgid "Add selected students"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:93
-#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:12
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:120
-msgid "Advanced options"
-msgstr "Avanserte valg"
-
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:102
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:89
-msgid "Select"
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:177
+msgid "More help"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:104
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:96
-msgid "Select all"
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:178
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:142
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:153
+msgid "Less help"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:107
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:99
-msgid "Deselect all"
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:211
+msgid ""
+"Students must submit their delivery before this time. This becomes their "
+"first deadline on this assignment, and it can be edited just like any other "
+"deadline."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:139
-msgid "Name"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:146
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:240
 msgid "Tags and matching examiners"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:155
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:148
-#: static/devilry_subjectadmin/app/view/managestudents/TagsInGroupGrid.js:18
-msgid "Tags"
-msgstr ""
+#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:19
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:158
+msgid "Advanced options"
+msgstr "Avanserte valg"
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:171
+#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:26
 msgid ""
-"Choose the students you want to add on the assignment, and click "
-"{savebuttonlabel}."
+"If you want to add the same student to more than one group on this "
+"assignment, click the button below. This will show the list of students "
+"without filtering out students already registered on the assignment."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:174
+#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:38
+msgid "No students available"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:41
+#, fuzzy
 msgid ""
-"<strong>{ignoredcount}</strong> students are not available in the list "
-"because they are already registered on the assignment."
+"All students registered on {periodpath} is already registered on the "
+"assignment."
 msgstr ""
+"Legg til alle %(students_term)s registrert på oppgavens %(period_term)s?"
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:177
+#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:45
 msgid ""
-"Only students registered on <em>{periodpath}</em> is available in the list."
+"There is no students on {periodpath}. Only students registered on "
+"{periodpath} can be added to this assignment."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:180
-msgid "Add or edit students on {periodpath}"
-msgstr ""
+#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:50
+#, fuzzy
+msgid "Add students to {periodpath}"
+msgstr "Studenter &mdash; Se på og rediger"
 
-#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:25
-msgid ""
-"All students registered on <strong>{periodpath}</strong> is already "
-"registered on the assignment. Use the link below to go to {periodpath} and "
-"add more students."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:28
-msgid "Add more students to {periodpath}"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:29
+#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:51
 msgid "Opens in new window"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:31
+#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:53
 msgid "When you return to this page, reload it to see newly added students."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:57
+msgid ""
+"You do not have administrator rights on {periodpath}, so you need to ask "
+"someone with administrator rights if you need to add more students."
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllowDuplicatesCheckbox.js:7
@@ -519,98 +786,307 @@ msgid ""
 "unchecked if you are unsure of what to do</strong>."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:22
-msgid "Loading"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/assignment/EditAnonymous.js:35
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:15
 msgid ""
-"For exams, this should normally be checked. If an assignment is anonymous, "
-"examiners see candidate-id instead of any personal information about the "
-"students."
+"These are all %(subjects_term)s, %(periods_term)s and %(assignments_term)s "
+"where you are administrator. Assignments are listed if you are administrator "
+"on the %(assignment_term)s, and not on the %(period_term)s or %(subject_term)"
+"s containing the assignment. The %(subject_term)s name is a link on if you "
+"are administrator on the subject."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/assignment/EditPublishingTime.js:19
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:155
-msgid "Publishing time"
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:17
+msgid "periods"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/assignment/EditPublishingTime.js:35
-msgid ""
-"Choose a time when time when students will be able to start adding "
-"deliveries on the assignment. Note that students must be registered on the "
-"assignment as well before they can add any deliveries. "
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:18
+msgid "assignments"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:50
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:19
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:27
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:76
 #, fuzzy
-msgid "Manage deadlines"
+msgid "subject"
+msgstr "Alle kurs"
+
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:21
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:43
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:23
+msgid "assignment"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/EditAnonymousPanel.js:12
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:12
+#: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimePanel.js:16
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:42
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:94
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:99
+#: static/devilry_subjectadmin/app/view/period/EditDurationPanel.js:13
+msgid "Save"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/EditAnonymousPanel.js:33
+#: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:34
+msgid "Anonymous"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:24
+#, fuzzy
+msgid "Anonymity"
+msgstr "Anonym?"
+
+#: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:36
+msgid "Not anonymous"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:42
+msgid ""
+"On anonymous assignments, examiners and students can NOT see each other and "
+"they can NOT communicate."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:45
+#, fuzzy
+msgid ""
+"If an assignment is anonymous, examiners see candidate-id instead of any "
+"personal information about the students."
+msgstr ""
+"På eksamensoppgaver er dette et naturlig valg. Nå en %(assignment_term)s er "
+"anonym, ser retterne kandidat-ID istedenfor personlig informasjon om "
+"studentene."
+
+#: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:48
+msgid ""
+"This means that anonymous assignments is perfect for exams, and for "
+"assignments where you do not want prior experiences with a student to affect "
+"results."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:28
+msgid ""
+"Enable hard deadlines if you want to make it impossible for {students_term} "
+"to add deliveries after their active deadline."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:37
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:36
+#, fuzzy
+msgid "Hard deadlines"
 msgstr "Studenter &mdash; Se på og rediger"
 
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:63
-msgid "Upcoming deadlines"
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:24
+msgid "Deadline handling"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:68
-msgid "Waiting for feedback"
-msgstr ""
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:34
+#, fuzzy
+msgid "Soft deadlines"
+msgstr "Studenter &mdash; Se på og rediger"
 
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:78
-#: static/devilry_subjectadmin/app/view/period/Overview.js:65
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:52
-msgid "Dangerous actions"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:90
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:46
 msgid ""
-"Renaming an assignment should not done without a certain amount of "
+"With HARD deadlines, {students_term} will be unable to make deliveries when "
+"a deadline has expired."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:49
+msgid ""
+"With SOFT deadlines {students_term} will be able to make deliveries after "
+"the deadline has expired. All deliveries after their deadline are clearly "
+"highligted."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:52
+msgid ""
+"NOTE: Devilry is designed from the bottom up to gracefully handle SOFT "
+"deadlines. Students have to perform an extra confirm-step when adding "
+"deliveries after their active deadline, and assignments where the deadline "
+"has expired is clearly marked for both {students_term} and {examiners_term}."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimePanel.js:32
+#, fuzzy
+msgid ""
+"Choose a time when students will be able to start adding deliveries on the "
+"assignment. Note that students must be registered on the assignment as well "
+"before they can add any deliveries."
+msgstr ""
+"Velg tidspunktet når %(students_term)s vil kunne begynne å levere. "
+"Standardverdien er <em>nå</em>. Merk at %(students_term)s også må være "
+"registrert på oppgaven før de kan levere %(deliveries_term)s."
+
+#: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimeWidget.js:42
+msgid ""
+"The time when students will be able to start adding deliveries on the "
+"assignment."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:26
+msgid ""
+"Click the edit button for more information about grading systems and your "
+"current grading system."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:30
+msgid ""
+"Missing grade editor config. You have to configure this grade editor before "
+"any feeback may be provided on this assignment."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:71
+#: static/devilry_subjectadmin/app/view/period/Overview.js:77
+#, fuzzy
+msgid "No students"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:72
+msgid ""
+"This assignment has no students. You need to <a href=\"%(addstudents_url)s"
+"\">add students</a>."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:89
+msgid "View, edit and add students on this assignment"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:92
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:71
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:114
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:9
+msgid "Groups"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:93
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:83
+msgid "Deliveries"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:102
+msgid "View, edit and add deadlines, including the submission date."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:107
+msgid "Passed previous {period_term}"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:110
+msgid "Wizard with automatic and manual selection."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:138
+msgid ""
+"Renaming an assignment should not be done without a certain amount of "
 "consideration. The name of an assignment, especially the short name, is "
 "often used as an identifier when integrating other systems with Devilry."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:91
-#: static/devilry_subjectadmin/app/view/period/Overview.js:78
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:65
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:141
+#: static/devilry_subjectadmin/app/view/period/Overview.js:133
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:81
 msgid "Rename"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:97
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:149
 msgid ""
 "Once you delete an assignment, there is no going back. Only superusers can "
 "delete an assignment with deliveries."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:98
-#: static/devilry_subjectadmin/app/view/period/Overview.js:85
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:72
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:152
+#: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:17
+#: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:21
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:137
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:141
+#: static/devilry_subjectadmin/app/view/period/Overview.js:148
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:88
 msgid "Delete"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:113
-msgid "Grading system"
-msgstr "Karaktersystem"
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:66
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:74
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:112
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:80
+msgid "Deadline"
+msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:53
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:109
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:67
+msgid "The time when the deadline expires"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:87
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:55
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:116
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:53
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:86
+msgid "About this deadline"
+msgstr "Om innleveringsfristen"
+
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:88
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:56
+msgid "Students see this when they add deliveries"
+msgstr "Studenter ser dette når de legger til innleveringer"
+
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:96
+msgid "Text"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:58
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:117
 msgid "Add %(deadline_term)s"
 msgstr "Legg til %(deadline_term)s"
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:54
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:110
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:79
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:89
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:62
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:59
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:118
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:18
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:28
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:63
 msgid "deadline"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:63
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:68
 msgid ""
 "%(Students_term)s are in a %(group_term)s even if they work alone. Each "
 "%(group_term)s has their own individual %(deadlines_term)s. Use the form "
 "below to add a deadline to many %(groups_term)s."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:102
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:70
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:46
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:54
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:26
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:29
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:25
+msgid "deadlines"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:71
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:81
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:29
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:34
+#: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:19
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:139
+msgid "group"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:72
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:33
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:43
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:53
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:61
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:75
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:16
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:21
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:26
+#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:24
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:7
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:18
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:33
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:36
+msgid "groups"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:109
 msgid ""
 "Students are in a group even if they work alone. Each group has their own "
 "individual deadlines. In this view, we have grouped deadlines with exactly "
@@ -621,299 +1097,443 @@ msgstr ""
 "innleveringsfrister med nøyaktig samme dato/tid og tekst, slik at du kan "
 "redigere de samlet."
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:35
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:42
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:111
-msgid "Deadline"
-msgstr ""
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:17
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:27
+#, fuzzy
+msgid "Add %(deadline_term)s to"
+msgstr "Legg til %(deadline_term)s"
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:36
-msgid "The time when the deadline expires"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:54
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:54
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:115
-msgid "About this deadline"
-msgstr "Om innleveringsfristen"
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:55
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:55
-msgid "Students see this when they add deliveries"
-msgstr "Studenter ser dette når de legger til innleveringer"
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:63
-msgid "Text"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:78
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:88
-msgid "Add %(deadline_term)s on"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:93
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:32
 msgid ""
 "%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:95
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:104
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:34
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:44
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:42
 msgid "grade"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:96
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:105
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:35
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:45
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:40
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:142
 msgid "feedback"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:102
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:42
 msgid ""
 "%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s, "
-"and on %(groups_term)s with no %(feedback_term)s."
+"%(groups_term)s with no %(feedback_term)s and groups with no "
+"%(deadlines_term)s."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:110
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:52
 msgid "%(groups_term)s with no %(deadlines_term)s."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:120
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:60
+msgid "specify %(groups_term)s manually."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:86
 msgid ""
-"Use the <a href=\"%(studentsmanager_url)s\">students manager</a> to add "
-"%(deadlines_term)s to individual %(groups_term)s or custom selections of "
-"%(groups_term)s."
+"Select one or more groups. The deadline will only be added to the selected "
+"groups."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:130
-msgid "Cancel"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlineForm.js:138
-msgid "Save"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:61
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:62
 msgid ""
 "This %(deadline_term)s has no text. Use the edit button if you want to set a "
 "text."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:70
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:113
-msgid "Groups"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:72
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:73
 msgid ""
 "%(Students_term)s are organized in %(groups_term)s, even when they work alone"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:79
-msgid "Select a %(group_term)s to view and edit it."
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:80
+msgid "Select a %(group_term)s to view or edit it in the group manager."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:146
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:151
 msgid "Edit/move"
 msgstr "Rediger/flytt"
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:43
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/EditDeadlineForm.js:22
+msgid "Only apply these changes to some of the groups in the deadline."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/EditDeadlineForm.js:43
+msgid ""
+"Applying deadline changes to only some groups will effectively split this "
+"deadline in two. Remember that groups have individual deadlines and that "
+"this view groups deadlines with the same timestamp and text. This means that "
+"editing a deadline actually updates a bunch of individual deadlines (one for "
+"each group). So when you select only some of the groups within the current "
+"deadline, you choose to change only some of the individual deadlines, which "
+"appears to split this deadline in two."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:61
 msgctxt "createnewassignment"
 msgid "Example: Obligatory assignment one"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:52
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:71
 msgctxt "createnewassignment"
 msgid "Example: oblig-1"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:58
-msgid ""
-"Choose a long and a short name. Short name is used in places where long name "
-"takes too much space, such as table headers and navigation."
-msgstr ""
-"Velg et langt og et kort navn. Det korte navnet brukes når det lange navnet "
-"er for langt, f.eks. i tabeller og navigasjon."
-
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:59
-msgid ""
-"The short name can have max 20 letters, and it can only contain lowercase "
-"english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and <em>'-'</"
-"em>."
-msgstr ""
-"Det korte navnet kan inneholde maks 20 små bokstaver (<em>a-z</em>) fra det "
-"engelske alfabetet, samt <em>tall</em>, <em>'_'</em> og <em>'-'</em>."
-
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:73
-msgid "How do %(students_term)s add deliveries?"
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:94
+#, fuzzy
+msgid "How do students add deliveries?"
 msgstr "Hvordan leverer %(students_term)s?"
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:74
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:146
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:162
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:193
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:202
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:212
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:232
-#, fuzzy
-msgid "students"
-msgstr "Studenter &mdash; Se på og rediger"
-
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:81
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:100
 msgid "Using Devilry"
 msgstr "Gjennom Devilry"
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:86
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:106
 msgid "Not using Devilry"
 msgstr "Ikke gjennom Devilry"
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:93
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:117
+#, fuzzy
 msgid ""
-"If you only use Devilry to give feedback, and %(students_term)s deliver "
-"paper copies or through an alternative channel (oral presentation, "
-"email, ...), choose <em>Not using Devilry</em>."
+"If you only use Devilry to give feedback, and students deliver paper copies "
+"or through an alternative channel (oral presentation, email, ...), choose "
+"<em>Not using Devilry</em>."
 msgstr ""
 "Velg <em>Ikke gjennom Devilry</em> hvis studenter leverer på papir, eller "
 "via alternative kanaler (muntlig presentasjon, epost, ...)."
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:106
-msgid "First deadline"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:123
-msgid "click to expand"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:141
-msgid "Anonymous?"
-msgstr "Anonym?"
-
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:145
-msgid ""
-"For exams, this should normally be checked. If an %(assignment_term)s is "
-"anonymous, %(examiners_term)s see candidate-id instead of any personal "
-"information about the %(students_term)s."
-msgstr ""
-"På eksamensoppgaver er dette et naturlig valg. Nå en %(assignment_term)s er "
-"anonym, ser retterne kandidat-ID istedenfor personlig informasjon om "
-"studentene."
-
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:147
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:164
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:203
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:213
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:247
-msgid "assignment"
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:142
+msgid "Students must submit their delivery before this time."
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:161
+msgid "click to expand"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:180
+msgid "Anonymous?"
+msgstr "Anonym?"
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:187
 msgid ""
-"Choose a time when time when %(students_term)s will be able to start adding "
-"%(deliveries_term)s on the %(assignment_term)s. The default is <em>now</em>. "
-"Note that %(students_term)s must be registered on the %(assignment_term)s as "
-"well before they can add any %(deliveries_term)s."
+"For exams, this should normally be checked. If an assignment is anonymous, "
+"examiners see candidate-id instead of any personal information about the "
+"students."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:205
+#, fuzzy
+msgid ""
+"Choose a time when students will be able to start adding deliveries on the "
+"assignment. The default is <em>now</em>. Note that students must be "
+"registered on the assignment as well before they can add any deliveries."
 msgstr ""
 "Velg tidspunktet når %(students_term)s vil kunne begynne å levere. "
 "Standardverdien er <em>nå</em>. Merk at %(students_term)s også må være "
 "registrert på oppgaven før de kan levere %(deliveries_term)s."
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:163
-msgid "deliveries"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:175
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:217
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:53
 msgid "Next"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:192
-msgid ""
-"Setup %(students_term)s and %(examiners_term)s? If none of the options below "
-"suite your needs, uncheck all the checkboxes, and set up %(students_term)s "
-"and %(examiners_term)s manually later."
-msgstr ""
-"Sett opp %(students_term)s og %(examiners_term)s? Hvis ingen av valgene "
-"nedenfor velg vekk alle valgene nedenfor, og sett opp %(students_term)s og "
-"%(examiners_term)s manuelt senere."
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:241
+#, fuzzy
+msgid "Students?"
+msgstr "Studenter &mdash; Se på og rediger"
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:201
-msgid ""
-"Add all %(students_term)s registered on the %(period_term)s to this "
-"%(assignment_term)s?"
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:255
+#, fuzzy
+msgid "Add all students registered on the %(period_term)s."
 msgstr ""
 "Legg til alle %(students_term)s registrert på oppgavens %(period_term)s?"
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:204
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:214
-msgid "period"
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:269
+msgid "You may want to view and edit <a {relatedstudents_link}>students</a>."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:211
-msgid ""
-"Select this to add all %(students_term)s registered on the %(period_term)s "
-"to the %(assignment_term)s when it is created."
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:279
+msgid "Copy from another assignment."
 msgstr ""
-"Alle %(students_term)s registrert på oppgavens %(period_term)s blir lagt til "
-"på oppgaven når den lages."
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:224
-msgid "Automatically setup %(examiners_term)s?"
-msgstr "Sett opp %(examiners_term)s automatisk?"
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:304
+msgid "Only copy those with passing grade?"
+msgstr ""
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:231
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:308
+msgid "Do not add students at this time."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:318
 msgid ""
-"Set %(examiners_term)s on %(students_term)s that have at least one "
-"%(tag_term)s in common with the %(examiner_term)s."
+"If you choose not to add students at this time, you will have to add them "
+"manually to the assignment later. If you plan for students to work in "
+"project groups, you should still add them to the assignment now. You can "
+"organize them in project groups at any time, even after they have made "
+"deliveries."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:339
+#, fuzzy
+msgid "Examiners?"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:343
+msgid "The people that provide feedback to students"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:364
+msgid "Setup examiners by tags."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:371
+#, fuzzy
+msgid ""
+"Add examiners to students that have at least one tag in common with the "
+"examiner."
 msgstr ""
 "Setter opp %(examiners_term)s på %(students_term)s som har minst en "
 "%(tag_term)s til felles med retteren."
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:234
-msgid "tag"
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:373
+msgid ""
+"E.g.: If you tag two examiners and 20 students with <em>group1</em>, those "
+"two examiners will be set up to correct those 20 students."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:235
-#, fuzzy
-msgid "examiner"
-msgstr "Studenter &mdash; Se på og rediger"
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:375
+msgid ""
+"You may want to view and edit tags for <a {relatedstudents_link}>students</"
+"a> and <a {relatedexaminers_link}>examiners</a>."
+msgstr ""
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:241
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:395
+msgid "Make me examiner for all students."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:405
+msgid "I.E.: you plan to provide feedback to all students yourself."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:410
+msgid "Do not setup examiners at this time."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:421
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:95
 msgid "Back"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:246
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:426
 #, fuzzy
-msgid "Create %(assignment_term)s"
+msgid "Create assignment"
 msgstr "Administrer %(deadlines_term)s"
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/SuccessPanel.js:51
-msgid "Created {assignmentpath}"
+#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:22
+#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:97
+msgid "Create"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/SuccessPanel.js:58
-msgid "Go to {assignmentpath}"
+#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:62
+msgctxt "createnewassignment"
+msgid "Example: Spring 1970"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/SuccessPanel.js:72
-msgid "Add another assignment"
+#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:71
+msgctxt "createnewassignment"
+msgid "Example: spring1970"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:17
+#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:80
+#: static/devilry_subjectadmin/app/view/period/EditDurationPanel.js:34
+msgid "Start time"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:87
+#: static/devilry_subjectadmin/app/view/period/EditDurationPanel.js:39
+msgid "End time"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:12
+msgid "Active %(subjects_term)s"
+msgstr "Aktive %(subjects_term)s"
+
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:27
+msgid "Expired %(subjects_term)s"
+msgstr "Gamle %(subjects_term)s"
+
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:33
+msgid "Browse everything where you are administrator"
+msgstr "Bla i alt der du er administrator"
+
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:49
+msgid "Interractive guides"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:24
 #, fuzzy
-msgctxt "subjectadmin dashboard"
-msgid "Active subjects"
-msgstr "Alle kurs"
+msgid "Select a grading system"
+msgstr "Karaktersystem"
 
-#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:30
-msgctxt "subjectadmin dashboard"
-msgid "Messages"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/AutocompleteGroupWidget.js:12
-msgid "Select by search"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/AutocompleteGroupWidget.js:14
+#: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:26
 msgid ""
-"Search for groups by username, full name, tags or email... (adds to current "
-"selection)"
+"Please select a grading system. If your selected grading system requires "
+"configuration, you will be able to do so after saving your choice."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:54
+msgid "If you change grade editor your current configuration will be lost."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:60
+msgid "I want to change grade editor and clear my current configuration."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:19
+msgid "Current grade editor"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:49
+msgid "Return to {assignmentname}"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:62
+#, fuzzy
+msgid "What is a grading system?"
+msgstr "Karaktersystem"
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:64
+msgid "A grading system is what examiners use to give feedback to students."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:67
+msgid "Internally in Devilry, a grade is stored as"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:69
+#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:28
+msgid "Points"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:71
+msgid ""
+"Any grade in Devilry is represented as a number. This number is used for "
+"statistics and to calculate final grades. Points is not available directly "
+"to students, but some grade editors make them available through the "
+"<em>Short text</em> (below)."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:74
+msgid "Short text"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:76
+msgid ""
+"A very short text that students view. Usually something like: <em>Approved</"
+"em>, <em>B</em> or <em>7/10</em>."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:79
+msgid "Long text"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:81
+msgid ""
+"A longer text that students can view. This is usually the detailed feedback "
+"text, however some grade editors also fill this with autogenerated "
+"information based on input from examiners. What a grade editor can display "
+"in the long text is virtually unlimited."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/gradeeditor/Overview.js:43
+msgid ""
+"To make it easy for examiners to create all the information related to a "
+"grade, Devilry has a plugin architecture for grading systems."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:20
+msgid ""
+"Select an active {subject_term} from the list at the top of the left side of "
+"this page."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:23
+msgid ""
+"For {subjects_term} where you only have admin rights for selected "
+"assignments, those assignments will be listed. If you only have assignments "
+"in your list, you do not have the required rights to create new assignments."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:34
+#, fuzzy
+msgid "Click <em>Create new assignment</em>."
+msgstr "Administrer %(deadlines_term)s"
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:43
+msgid "Fill out the visible fields in the form."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:46
+msgid "Exam?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:48
+msgid "Click Advanced, and choose Anonymous."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:51
+msgid "Paper deliveries?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:53
+msgid "If your students hand in deliveries on paper, choose Not using Devilry."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:62
+msgid "Keeping the defaults is usually the best choice if you are uncertain."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:65
+msgid "Need to edit students or examiners?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:67
+msgid ""
+"The links to view or edit students and examiners open a new browser window, "
+"so you will not loose your progress when you click them."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:70
+msgid "Create another?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:72
+msgid ""
+"This guide closes when you click Create assignment. At the top of the next "
+"page, you will get a link to quickly create another assignment with the same "
+"settings that you used for this assignment."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:25
+msgid "Step {current} of {total}"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:37
+msgid "Invalid guide step"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:38
+msgid ""
+"The current guide does not recognize this page. Please use your browser back "
+"button to return to the previous page, and read the instructions one more "
+"time."
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/AutocompleteRelatedUserWidget.js:12
@@ -922,347 +1542,1072 @@ msgid ""
 "email..."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ChooseExaminersPanel.js:52
-msgid "Add examiner"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsWindow.js:42
+#: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsPanel.js:52
 msgctxt "tagsexample"
 msgid "Example: group3, needs_extra_help"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsWindow.js:44
-#: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsWindow.js:58
+#: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsPanel.js:54
+#: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsPanel.js:68
 msgid "A tag can contain a-z, A-Z, 0-9 and \"_\"."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsWindow.js:57
+#: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsPanel.js:67
 msgid "Type tags separated by comma (,)"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersInGroupGrid.js:27
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:136
-#: static/devilry_subjectadmin/app/view/period/OverviewOfRelatedUsers.js:39
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:104
+msgid "The group has no deliveries on this deadline."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:25
+#, fuzzy
+msgid "No %(deadlines_term)s"
+msgstr "Legg til %(deadline_term)s"
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:28
+msgid ""
+"This group has no %(deadlines_term)s, so they can not add %(deliveries_term)"
+"s."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:30
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:7
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:69
+msgid "deliveries"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:23
+#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:15
+msgid "Grade"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:26
+#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:19
+msgid "Passed"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:28
+#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:23
+msgid "Failed"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:37
+msgid "Active feedback"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:39
+msgid ""
+"This is the active %(feedback_term)s on this %(assignment_term)s. Unless an "
+"%(examiner_term)s creates a new %(feedback_term)s, this will be the final "
+"%(grade_term)s on this %(assignment_term)s."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:41
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:143
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:17
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:20
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:24
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:33
+#, fuzzy
+msgid "examiner"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:50
+msgid "Time of delivery"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:54
+msgid "{offset} AFTER the deadline."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:58
+msgid "{offset} before the deadline."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:67
+msgid "Delivery made by"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:73
+msgid "Files"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:83
+msgid "Download all files"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:92
+msgid "No detailed feedback"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:124
+msgid "Delivery"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:5
+#, fuzzy
+msgid ""
+"%(Examiners_term)s are the ones that give feedback to students on their "
+"%(deliveries_term)s."
+msgstr ""
+"Setter opp %(examiners_term)s på %(students_term)s som har minst en "
+"%(tag_term)s til felles med retteren."
+
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:6
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:155
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:29
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:36
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:52
+#: static/devilry_subjectadmin/app/view/period/Overview.js:108
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:54
 msgid "Examiners"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersInGroupGrid.js:33
-#: static/devilry_subjectadmin/app/view/managestudents/TagsInGroupGrid.js:24
-msgid "Remove all"
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:15
+msgid ""
+"Administrators can not give feedback. If you want to give feedback to any "
+"%(groups_term)s, you have to make yourself %(examiner_term)s on those "
+"%(groups_term)s."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersInGroupGrid.js:50
-msgid "Remove examiner"
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:19
+msgid "An %(examiner_term)s can open/close their %(groups_term)s."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:36
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:55
-msgid "No feedback"
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:23
+msgid ""
+"An %(examiner_term)s can add new %(deadlines_term)s to their %(groups_term)s."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:100
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:167
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:45
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:126
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:28
+#, fuzzy
+msgid "A %(group_term)s can have multiple %(examiners_term)s."
+msgstr "Sett opp %(examiners_term)s automatisk?"
+
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:32
+msgid ""
+"Removing an %(examiner_term)s from a %(group_term)s does NOT remove any "
+"feedback already provided by that %(examiner_term)s."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:57
+msgid ""
+"Only <a {relatedexaminers_link}>{examiners_term} registered on the "
+"{period_term}</a> are available."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:40
+#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:42
+msgid "Waiting for deliveries"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:42
+#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:44
+msgid "Waiting for feedback"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:67
+msgid "delivery"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:121
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:152
 msgctxt "group"
 msgid "Passed"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:101
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:171
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:48
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:127
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:122
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:156
 msgctxt "group"
 msgid "Failed"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:102
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:148
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:65
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:123
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:133
 msgctxt "group"
 msgid "Open"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:103
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:152
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:69
-msgctxt "group"
-msgid "Closed"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:104
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:59
-msgid "Deliveries"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:105
-msgid "Delivery"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:112
-msgid "Group info"
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:124
-msgid "Metadata"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:225
-msgid "Group have no candidates"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:24
-msgid "Open"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:26
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:137
+msgctxt "group"
 msgid "Closed"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:93
-msgid "Replace current selection"
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:131
+msgid "Group info"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:102
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:143
+msgid "Metadata"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:224
+#, fuzzy
+msgid "No-students"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:232
+msgid "Missing-fullname"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:7
+#: static/devilry_subjectadmin/app/view/managestudents/Overview.js:72
+msgid "Help"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:11
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:31
+msgid "IMPORTANT"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:12
+msgid "{Students_term} are always in a group."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:14
+msgid ""
+"Even when {students_term} make individual deliveries, they are organized "
+"into groups. Each student is added to their own group when you add them to "
+"an assignment. This means that the list to your left is all groups "
+"registered on this assignment."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:18
+msgid "How to create project groups"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:20
+msgid "Select two or more groups, and choose <em>Create project group</em>."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:24
+msgid "TIP"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:26
+msgid "Use <em>Select by search</em> to efficiently select students."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:32
+msgid "You are administrator, which is NOT the same as examiner."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:34
+msgid ""
+"If you want to provide feedback to some groups, you have to make yourself "
+"examiner on those groups."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:41
+#, fuzzy
+msgid "How to set {examiners_term}"
+msgstr "Sett opp %(examiners_term)s automatisk?"
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:43
+msgid ""
+"To set {examiners_term} on a single group, select the group and use the edit "
+"button in the {examiner_term} heading on your right hand side."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:46
+msgid ""
+"To set {examiners_term} on multiple groups, select the groups and use the "
+"buttons in the <em>Manage {examiners_term}</em> section."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:50
+msgid "Find/select efficiently"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:52
+msgid ""
+"Selecting students from the list using the checkboxes works if you have few "
+"students. For huge {subjects_term}, manual selection is rarely useful."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:54
+msgid "Select by pre-defined filters"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:56
+msgid ""
+"The <em>Select</em>-button in the lower left corner lets you select groups "
+"using a good set of pre-defined filters."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:58
+msgid "Select by search"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:60
+msgid ""
+"The search field at the bottom of the top of the group-list allows you to "
+"search for groups. The results is displayed in a menu, and when you select a "
+"group from the menu, the group is selected."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:63
+msgid "Using a small or huge display?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:65
+msgid ""
+"The width of the group-list, and the height of the <em>Summary of selected "
+"groups</em> panel (when multiple groups are selected), is not perfect for "
+"all displays. To amend this, we allow you to resize these panels. Move your "
+"cursor over the inner border of one of these lists, and a resize-indicator "
+"will apear. Your selected sizes is saved as a cookie in your browser, which "
+"means that they will be remembered when you return to this view in your "
+"current browser."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:60
 msgid "Invert selection"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:109
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:62
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:69
+msgid "Replace current selection"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:74
 msgid "Add to selection"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:111
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:77
 msgid "Add to current selection"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:139
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:124
 msgctxt "group"
 msgid "By status"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:158
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:143
 msgctxt "group"
 msgid "By feedback"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:175
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:160
 msgctxt "group"
 msgid "Has feedback"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:179
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:164
 msgctxt "group"
 msgid "No feedback"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:181
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:40
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:166
 msgctxt "group"
 msgid "Grade"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:189
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:174
 msgctxt "points"
 msgid "Points"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:201
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:186
 msgid "By number of deliveries"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:210
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:195
 msgid "Has deliveries"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:214
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:199
 msgid "No deliveries"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:216
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:201
 msgctxt "numdeliveries"
 msgid "Exact number"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:228
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:213
 msgid "By examiner"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:237
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:222
 msgid "Has examiner(s)"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:241
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:226
 msgid "No examiner(s)"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:243
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:228
 msgid "Specific examiner"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:255
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:240
 msgid "By tag"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:264
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:249
 msgid "Has tag(s)"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:268
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:253
 msgid "No tag(s)"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:270
+#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:255
 msgid "Specific tag"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:47
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:61
 msgid "Set examiner(s)"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:50
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:64
+msgid ""
+"Replace the examiners on the selected groups with one or more new examiner"
+"(s)."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:66
 msgid "Add examiner(s)"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:52
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:69
 msgid "Add one or more examiner(s) to the selected groups."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:54
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:71
+#, fuzzy
+msgid "Advanced"
+msgstr "Avanserte valg"
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:74
+msgid "Random distribute"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:77
+msgid ""
+"Replace the examiners on the selected groups with a random examiner from a "
+"set of examiners that you select."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:80
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:186
 msgid "Clear examiners"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:57
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:84
 msgid "Remove/clear all examiners from the selected groups."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:62
-msgid ""
-"Assign one or more examiner(s) to the selected groups. Use the arrow button "
-"for methods of setting examiners, such as random and by tags. Setting "
-"examiners <strong>replaces</strong> the current examiners."
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:102
+msgid "Set selected examiners"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:69
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:112
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:141
+msgid ""
+"Select one or more examiner. Any current examiners on the selected groups "
+"will be <strong>replaced</strong> when you confirm your selection."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:131
+msgid "Random distribute selected examiners"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:160
+msgid "Add selected examiners"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:170
+msgid ""
+"Select one or more examiner. The selected examiners will be <strong>added</"
+"strong> to the selected groups when you confirm your selection."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:191
+msgid "Do you really want to clear all examiners on the selected groups?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:43
+msgid ""
+"<strong>Note</strong>: Only examiners registered on the %(period_term)s are "
+"available."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:78
+msgid "Examiners help ..."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:79
+#: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:58
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnSingle.js:61
+msgid "Hide help"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:102
+msgid ""
+"The selected examiners will <strong>replace</strong> any examiners currently "
+"on the group when you confirm your selection. Removing an examiner from the "
+"group does not affect any feedback they have already made on the group."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:13
+msgid "A group can have one or more students."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:14
+msgid ""
+"Feedback is given to a group as a whole, not to individual students on a "
+"group."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:57
+#, fuzzy
+msgid "Students help ..."
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:74
+msgid ""
+"Do you really want to split this group in two? This will move the selected "
+"student from this project group, into a copy of this group. Copies "
+"everything except the candidates (deadlines, deliveries, feedback, tags and "
+"examiners)."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:51
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:99
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:109
 msgid "Set tag(s)"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:72
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:54
+msgid "Replace the tags on the selected groups with one or more new tag(s)."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:56
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:103
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:113
 msgid "Add tag(s)"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:74
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:59
 msgid "Add one or more tag(s) to the selected groups."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:76
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:61
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:95
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:95
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:185
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:105
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:197
 msgid "Clear tags"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:79
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:65
 msgid "Remove/clear all tags from the selected groups."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:84
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:84
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:174
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:186
+msgid "Set tags"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:90
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:180
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:192
+msgid "Add tags"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:100
+msgid "Do you really want to clear all tags on the selected groups?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnSingle.js:60
+msgid "Tags help ..."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnSingle.js:79
+msgid "Save tags"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:10
 msgid ""
-"Assign one or more tag(s) to the selected groups. Use the arrow button for "
-"methods of setting tags, such as random and by tags. Setting tags "
-"<strong>replaces</strong> the current tags."
+"Multiple students on a single group is used when students cooperate on an "
+"assignment. Such project groups have the following properties:"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsSummaryGrid.js:11
-msgid "Selected groups (click group to deselect it)"
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:12
+msgid ""
+"Any student in the group will be able to make deliveries on behalf of the "
+"group."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:51
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:128
-msgctxt "group"
-msgid "Points"
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:13
+msgid ""
+"Feedback will be given to the group as a whole, not to individual students "
+"in the group."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:62
-msgid "Status"
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:14
+msgid ""
+"If any of the selected groups already have any deadlines, deliveries or "
+"feedback, they will be moved into the new group."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:15
+msgid ""
+"You can split up a group later, however any deliveries and feedback will "
+"follow all students on the group, even if they where made before you merged "
+"the groups into a single group in the first place."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:16
+msgid ""
+"The name of the group and open/closed status will be copied from the first "
+"group you selected."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:47
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:64
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:96
+msgid "Create project group"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:48
+msgid "Merge selected into one group"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:78
+msgid "Merge selected groups into a single group?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:18
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:138
+msgid ""
+"Once you delete a %(group_term)s, there is no going back. Only superusers "
+"can delete a %(group_term)s with deliveries."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:23
+msgid "%(numselected)s/%(total)s %(groups_term)s selected"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:62
+msgid "Summary of selected groups (click to show/hide)"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/NoGroupSelectedView.js:28
+msgid "Select GROUPS from the list to your left"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/NoGroupSelectedView.js:32
+msgid "Students are always in a (project) group even when they work alone."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/NoGroupSelectedView.js:42
+msgid "Click the help-column to your right if you need help"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/NoGroupSelectedView.js:46
+msgid ""
+"First time visitors should read the help to avoid common misconceptions."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:6
+msgid "Search (adds to selection)"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:31
+msgid "Already selected"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:32
+msgid "The group is already selected"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:39
+msgid "Selected group not loaded"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:40
+msgid ""
+"The group you selected is not loaded. This is probably because someone else "
+"added a group after you loaded this page. Try reloading the page."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsButton.js:13
+msgid "{selected}/{total} selected"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsMenu.js:10
+msgid "Selected groups"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsMenu.js:22
+msgid "(click group to deselect it)"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:44
+msgid "Create/edit feedback"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:49
+#, fuzzy
+msgid "Make me examiner"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:56
+msgid "You are examiner for this group."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:58
+msgid "You need to be examiner for this group if you want to provide feedback."
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:66
-msgid "The student(s) can add more deliveries."
+msgid "See the help to your right for information about setting examiners."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:70
-msgid ""
-"The current grade is the final grade. The student(s) can <strong>not</"
-"strong> add more deliveries."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:72
-msgid ""
-"Examiners can open and close a group at any time to allow/prevent deliveries."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/StudentsInGroupGrid.js:40
-msgid "Remove student from project group"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/TagsInGroupGrid.js:42
-msgid "Remove tag"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/period/ListOfRelatedUsers.js:18
-msgid "None"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/period/Overview.js:55
-msgid "Students and examiners on this period"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/period/Overview.js:77
-msgid ""
-"Renaming a period should not done without a certain amount of consideration. "
-"The name of an period, especially the short name, is often used as an "
-"identifier when integrating other systems with Devilry."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/period/Overview.js:84
-msgid ""
-"Once you delete a period, there is no going back. Only superusers can delete "
-"a non-empty period."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/period/OverviewOfRelatedUsers.js:24
-msgid "These users are available when creating/managing assignments."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/period/OverviewOfRelatedUsers.js:25
-msgid ""
-"Students and examiners can be tagged, and students can easily be assigned to "
-"an examiner on assignments as long as they have at least one tag in common."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/period/OverviewOfRelatedUsers.js:40
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:69
 #, fuzzy
-msgid "Manage examiners"
+msgid "About examiners"
 msgstr "Studenter &mdash; Se på og rediger"
 
-#: static/devilry_subjectadmin/app/view/shortcut/List.js:8
-msgid "Active your courses are shown below."
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:78
+msgid ""
+"This assignment will be published {pubtimeOffset}. Examiners and students "
+"can not see the assignment before it is published."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/shortcut/List.js:27
-msgid "Browse all your subjects (including old/archived)"
+#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:35
+msgid "Note"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:64
+#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:36
+msgid ""
+"Students can not see their points, only the grade, and if it is failed or "
+"passed."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:12
+msgid "Sort"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:18
+msgid "Full name"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:25
+msgid "Last name"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:32
+msgid "Username"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/StudentsInGroupGrid.js:48
+msgid ""
+"Move the student from this project group into a copy of this group. Copies "
+"deadlines, deliveries, feedback, tags and examiners."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:4
+msgid ""
+"%(Tags_term)s is a flexible method of organizing %(groups_term)s. Only "
+"administrators and %(examiners_term)s can see %(tags_term)s. You can search "
+"and select %(groups_term)s by their %(tags_term)s. Common use-cases are:"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:8
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:19
+msgid "tags"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:16
+msgid ""
+"<strong>NOTE:</strong> %(Tags_term)s on %(groups_term)s must not be confused "
+"with %(tags_term)s on %(students_term)s and %(examiners_term)s on a "
+"%(period_term)s. Those %(tags_term)s are used to automate assigning "
+"examiners to students. %(Tags_term)s from the %(period_term)s may have been "
+"included when you added %(groups_term)s to this %(assignment_term)s, however "
+"you can safely edit %(tags_term)s on %(groups_term)s without affecting the "
+"%(tags_term)s on the %(period_term)s."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:32
+msgid "Mark %(groups_term)s with special needs."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:35
+msgid "Organize %(groups_term)s attending the same classroom sessions."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:38
+msgid "Mark suspected cheaters."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:28
+msgid "Passed in {oldperiodname}."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:34
+msgid "Is already marked as previously passed."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:36
+msgid ""
+"Student have delivered this assignment previously, but never achieved a "
+"passing grade."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:38
+msgid "Group has feedback for this assignment."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:48
+msgid ""
+"Show groups that Devilry believes should not be marked as previously passed?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:65
+msgid ""
+"Select one or more groups. Groups that we belive have passed this assignment "
+"before has been selected automatically, and they are marked with the name of "
+"the old assignment."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:68
+msgid ""
+"The search for previously passed students match the short name of old "
+"assignments against the short name of this assignment. Only groups with "
+"exactly one student in both the old and the current assignment is matched."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:84
+msgid ""
+"Make sure you really want to mark these groups as previously passed before "
+"saving."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:87
+msgid ""
+"This will create a new delivery on each of the groups, mark the delivery as "
+"a placeholder for a previously approved delivery, and create a feedback with "
+"passing grade on the delivery."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:27
+msgid "Autodetected as previously passed"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/period/EditDurationWidget.js:20
+msgid "Duration"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/period/Overview.js:78
+msgid ""
+"This %(period_term)s has no students. Go to the <a href="
+"\"%(relatedstudents_url)s\">students</a> page and add some students. You "
+"will not be able to add any assignments until you have at least one student."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/period/Overview.js:87
+#, fuzzy
+msgid "No examiners"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/period/Overview.js:88
+msgid ""
+"This %(period_term)s has no examiners. Go to the <a href="
+"\"%(relatedexaminers_url)s\">examiners</a> page and add some examiners."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/period/Overview.js:99
+#, fuzzy
+msgid "{Students_term} and examiners"
+msgstr "Hvordan leverer %(students_term)s?"
+
+#: static/devilry_subjectadmin/app/view/period/Overview.js:127
+msgid ""
+"Renaming a {period_term} should not be done without a certain amount of "
+"consideration. The name of a {period_term}, especially the short name, is "
+"often used as an identifier when integrating other systems with Devilry."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/period/Overview.js:142
+msgid ""
+"Once you delete a {period_term}, there is no going back. Only superusers can "
+"delete a non-empty {period_term}."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Grid.js:48
+#, fuzzy
+msgid "Student"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:27
+msgid ""
+"These are the examiners that can be added to any assignments within the "
+"%(period_term)s."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:31
+#, fuzzy
+msgid "Removing examiners"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:33
+msgid ""
+"Removing an examiner from a {period_term} does not affect any groups, "
+"deliveries or feedback already registered on an assignment."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:36
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:46
+msgid "Accociate examiners with {students_term} using tags"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:38
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:48
+msgid ""
+"If you tag your {students_term} and examiners with the same tags, you can "
+"automatically assign examiners to {students_term} when creating a new "
+"assignment. E.g.: If you tag two examiners and 20 {students_term} with "
+"<em>group1</em>, those two examiners will be set up to correct those 20 "
+"{students_term} when you create a new assignment."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:86
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:158
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:96
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:170
+msgid "Remove selected"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:112
+msgid "Add examiner"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:119
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:129
+msgid "Filter (name, username, tags, candidate ID)"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:141
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:152
+msgid "More help ..."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:163
+msgid "Do you really want to remove all the selected related examiners?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:164
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:176
+msgid ""
+"They will not be removed from any existing assignments. You will not be able "
+"to add them on any new assignments, and they will not be available in "
+"statistics for the entire %(period_term)s."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:190
+msgid "Do you really want to clear all tags on the selected examiners?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/Grid.js:19
+msgid "Candidate ID"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:28
+msgid ""
+"These are the students that can be added to any assignments within this "
+"%(period_term)s."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:32
+msgid "Removing {students_term}"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:34
+msgid ""
+"When you remove a {student_term} from this list, Devilry assumes that the "
+"{student_term} is not planning on completing the {period_term}. This means "
+"that they will disappear from any {period_term} summaries, including "
+"calculation of final grade on the {period_term}."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:38
+msgid ""
+"Removing a {student_term} from a {period_term} does not affect any groups, "
+"deliveries or feedback already registered on an assignment."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:43
+msgid ""
+"Tags is a flexible way of organizing {students_term} and examiners. Since "
+"both {examiners_term} and administrators can see tags, they are a great way "
+"of marking students that needs special attention, such as students with "
+"special needs."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:122
+#, fuzzy
+msgid "Add student"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:160
+#, fuzzy
+msgid "student"
+msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:175
+msgid "Do you really want to remove all the selected related students?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:202
+msgid "Do you really want to clear all tags on the selected students?"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/SelectUserPanel.js:42
+msgid "Search by username, name or email ..."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:65
+#, fuzzy
+msgid "Create new %(period_term)s"
+msgstr "Administrer %(deadlines_term)s"
+
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:80
 msgid ""
 "Renaming a subject should not done without a certain amount of "
 "consideration. The name of a subject, especially the short name, is often "
 "used as an identifier when integrating other systems with Devilry."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:71
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:87
 msgid ""
 "Once you delete a subject, there is no going back. Only superusers can "
 "delete a non-empty subject."
 msgstr ""
 
-#, fuzzy
-#~ msgid "subjects"
-#~ msgstr "Alle kurs"
+#~ msgid "Manage %(deadlines_term)s"
+#~ msgstr "Administrer %(deadlines_term)s"
+
+#~ msgid ""
+#~ "Setup %(students_term)s and %(examiners_term)s? If none of the options "
+#~ "below suite your needs, uncheck all the checkboxes, and set up "
+#~ "%(students_term)s and %(examiners_term)s manually later."
+#~ msgstr ""
+#~ "Sett opp %(students_term)s og %(examiners_term)s? Hvis ingen av valgene "
+#~ "nedenfor velg vekk alle valgene nedenfor, og sett opp %(students_term)s "
+#~ "og %(examiners_term)s manuelt senere."
+
+#~ msgid ""
+#~ "Select this to add all %(students_term)s registered on the %(period_term)"
+#~ "s to the %(assignment_term)s when it is created."
+#~ msgstr ""
+#~ "Alle %(students_term)s registrert på oppgavens %(period_term)s blir lagt "
+#~ "til på oppgaven når den lages."
