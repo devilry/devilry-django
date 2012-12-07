@@ -17,7 +17,9 @@ file.
 
 Solution
 ########
-We use 
+We use the ``buildout.dumprequirements`` buldout recipe to generate a pip
+requirements file, store the generated file in the repo, and regenerate it when 
+the docs break.
 
 
 
