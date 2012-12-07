@@ -82,11 +82,11 @@ messages_local-*
 
 
 # Generated ExtJS classes
-src/devilry/devilry/apps/administrator/static/extjs_classes/apps/
-src/devilry/devilry/apps/examiner/static/extjs_classes/apps/
-src/devilry/devilry/apps/extjshelpers/templates/extjshelpers/restful-generated-models.django.js
-src/devilry/devilry/apps/gradeeditors/static/extjs_classes/apps/
-src/devilry/devilry/apps/student/static/extjs_classes/apps/
+#src/devilry/devilry/apps/administrator/static/extjs_classes/apps/
+#src/devilry/devilry/apps/examiner/static/extjs_classes/apps/
+#src/devilry/devilry/apps/extjshelpers/templates/extjshelpers/restful-generated-models.django.js
+#src/devilry/devilry/apps/gradeeditors/static/extjs_classes/apps/
+#src/devilry/devilry/apps/student/static/extjs_classes/apps/
 
 
 # Checked out from mr.developer
