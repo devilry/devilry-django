@@ -160,15 +160,6 @@ def unstash_db_and_deliveries(home=False):
     zipfile.extractall()
 
 
-
-@task
-def noextjsdebug_server():
-    """
-    Run ``bin/django_dev.py runserver --settings settings.noextjsdebug``
-    """
-    local('bin/django_dev.py runserver 0.0.0.0:8001 --settings settings.noextjsdebug')
-
-
 @task
 def backup_db(sqldumpfile):
     """
@@ -218,7 +209,5 @@ def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False):
             jsbuild(appname, nocompress, watch=False) # build one with no_jsbcreate=False
         extra_args.append('--no-jsbcreate')
     extra_args = ' '.join(extra_args)
-    local(('bin/django_dev.py senchatoolsbuild {extra_args} '
-           '--app {appname} '
-           '--settings settings.extjsbuild').format(appname=appname,
-                                                    extra_args=extra_args))
+    local(('bin/django_extjsbuild.py senchatoolsbuild {extra_args} '
+           '--app {appname}').format(appname=appname, extra_args=extra_args))

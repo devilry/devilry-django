@@ -1,3 +1,3 @@
-from .settings import *
+from .base import *
 
 EXTJS4_DEBUG = False

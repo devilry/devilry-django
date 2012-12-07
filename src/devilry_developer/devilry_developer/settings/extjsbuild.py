@@ -6,7 +6,7 @@
 # See the djangosenchatools docs (https://github.com/espenak/djangosenchatools)
 # for details.
 
-from .settings import *
+from .base import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
