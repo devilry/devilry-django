@@ -261,7 +261,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
         var breadcrumbtype = this.getOverview().breadcrumbtype;
         if(breadcrumbtype == 'managestudents') {
             this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [{
-                text: gettext('Manage students'),
+                text: gettext('Students'),
                 url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignmentRecord.get('id'))
             }], gettext('Add students'));
         }

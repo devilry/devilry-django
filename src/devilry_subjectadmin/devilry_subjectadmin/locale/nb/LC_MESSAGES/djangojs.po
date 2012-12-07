@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-07 16:01+0100\n"
+"POT-Creation-Date: 2012-12-07 16:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,28 +20,38 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app.js:159
 msgid "Dashboard"
-msgstr ""
+msgstr "Forsiden"
 
 #: static/devilry_subjectadmin/app.js:281
 msgid "Route not found"
-msgstr ""
+msgstr "Siden finnes ikke"
 
 #: static/devilry_subjectadmin/app.js:296
+#: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:36
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:9
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:10
 #: static/devilry_subjectadmin/app/view/subject/ListAll.js:29
-msgid "All subjects"
-msgstr "Alle kurs"
+msgid "All %(subjects_term)s"
+msgstr "Alle %(subjects_term)s"
 
-#: static/devilry_subjectadmin/app/controller/AddGroups.js:264
-#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:132
-msgid "Manage students"
-msgstr "Studenter &mdash; Se på og rediger"
+#: static/devilry_subjectadmin/app.js:297
+#: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:37
+#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:10
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:11
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:16
+#: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:13
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:28
+#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:28
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:73
+#: static/devilry_subjectadmin/app/view/subject/ListAll.js:30
+#, fuzzy
+msgid "subjects"
+msgstr ""
 
 #: static/devilry_subjectadmin/app/controller/AddGroups.js:266
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:103
-#, fuzzy
 msgid "Add students"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Legg til studenter"
 
 #: static/devilry_subjectadmin/app/controller/AddGroups.js:375
 #: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:126
@@ -52,31 +62,14 @@ msgstr "Studenter &mdash; Se på og rediger"
 #: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:64
 #: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:93
 msgid "Saving ..."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:36
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:10
-#, fuzzy
-msgid "All %(subjects_term)s"
-msgstr "Alle kurs"
-
-#: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:37
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:11
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:16
-#: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:13
-#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:28
-#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:28
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:73
-#, fuzzy
-msgid "subjects"
-msgstr "Alle kurs"
+msgstr "Lagrer ..."
 
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:121
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:99
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:95
 #, fuzzy
 msgid "Deadlines"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr ""
 
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:254
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:393
@@ -90,12 +83,12 @@ msgstr "Studenter &mdash; Se på og rediger"
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:223
 #: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:141
 msgid "Saving"
-msgstr ""
+msgstr "Lagrer"
 
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:566
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:381
 msgid "Failed to load groups"
-msgstr ""
+msgstr "Nedlasting av gruppedata feilet"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:181
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:433
@@ -104,30 +97,30 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:55
 #: static/devilry_subjectadmin/app/view/period/Overview.js:70
 msgid "Create new assignment"
-msgstr ""
+msgstr "Lag ny oppgave"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:292
 msgid "The publishing time is set to a later date than the submission date."
-msgstr ""
+msgstr "Publiseringstidspunktet er satt til et senere tidspunkt enn første innleveringsfrist."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:324
 msgid "Devilry suggested values for: {labels}."
-msgstr ""
+msgstr "Devilry foreslo følgende verdier for: {labels}."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:355
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:233
 msgid "Name"
-msgstr ""
+msgstr "Navn"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:358
 msgid "Suggested {long_name} as the name, based on {last_long_name}."
-msgstr ""
+msgstr "Foreslo {long_name} som nav, basert på {last_long_name}."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:376
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:200
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:134
 msgid "Submission date"
-msgstr ""
+msgstr "Innleveringsfrist"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:379
 msgid ""
@@ -135,6 +128,9 @@ msgid ""
 "({days} days) to the submission date of the last published assignment, "
 "{previous_assignment} ({previous_first_deadline})."
 msgstr ""
+"Beregnet ved å legge til det mest vanlige tidsrommet mellom innleveringsfrister "
+"({days} dager) til innleveringsfristen på den forrige publiserte oppgaven, "
+"{previous_assignment} ({previous_first_deadline})."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:383
 msgid ""
@@ -142,6 +138,10 @@ msgid ""
 "between 1 day and 14 days, we assume this means you have skipped an interval "
 "or two, and suggested a submission date based on those assumptions."
 msgstr ""
+"Du har en pause i det vanlige tidsrommet mellom innleveringsfrister. Siden "
+"du bruker et kort tidsintervall, mellom 1 og 14 dager, antar vi at det betyr at "
+"du har hoppet over et intervall eller to, og foreslo en innleveringsfrist basert "
+"på den antagelsen."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:416
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:90
@@ -168,26 +168,23 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:69
 #: static/devilry_subjectadmin/app/view/subject/Overview.js:55
 msgid "Loading"
-msgstr ""
+msgstr "Laster"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:505
-#, fuzzy
 msgid "Copy from %(assignment)s."
-msgstr "Administrer %(deadlines_term)s"
+msgstr "Kopier fra %(assignment)s."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:615
 msgid "Created {name}."
-msgstr ""
+msgstr "Laget {name}."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:617
-#, fuzzy
 msgid "Create another assignment"
-msgstr "Administrer %(deadlines_term)s"
+msgstr "Legg til en oppgave til"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:83
-#, fuzzy
 msgid "Create %(period_term)s"
-msgstr "Administrer %(deadlines_term)s"
+msgstr "Legg til %(period_term)s"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:84
 #: static/devilry_subjectadmin/app/controller/assignment/Overview.js:99
@@ -212,10 +209,6 @@ msgstr "Administrer %(deadlines_term)s"
 msgid "period"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:113
-msgid "Saving..."
-msgstr ""
-
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:104
 #: static/devilry_subjectadmin/app/controller/assignment/EditGradeEditor.js:75
 #: static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:5
@@ -226,11 +219,11 @@ msgstr "Karaktersystem"
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:110
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:23
 msgid "Change"
-msgstr ""
+msgstr "Endre"
 
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:206
-msgid "Configure grade editor"
-msgstr ""
+msgid "Configure grading system"
+msgstr "Konfigurer karaktersystem"
 
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:210
 msgid ""
@@ -438,7 +431,7 @@ msgstr ""
 "Det korte navnet kan inneholde maks 20 små bokstaver (<em>a-z</em>) fra det "
 "engelske alfabetet, samt <em>tall</em>, <em>'_'</em> og <em>'-'</em>."
 
-#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:46
+#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:48
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:135
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:146
 #: static/devilry_subjectadmin/app/view/managestudents/DynamicLoadMenu.js:17
@@ -2592,6 +2585,9 @@ msgid ""
 "Once you delete a subject, there is no going back. Only superusers can "
 "delete a non-empty subject."
 msgstr ""
+
+#~ msgid "All %(subjects)s"
+#~ msgstr "Alle kurs"
 
 #~ msgid "Manage %(deadlines_term)s"
 #~ msgstr "Administrer %(deadlines_term)s"

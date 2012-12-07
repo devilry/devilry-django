@@ -110,7 +110,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewPeriod', {
     },
 
     _mask: function() {
-        this.getOverview().getEl().mask(gettext('Saving...'));
+        this.getOverview().getEl().mask(gettext('Saving') + ' ...');
     },
     _unmask: function() {
         this.getOverview().getEl().unmask();

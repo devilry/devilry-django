@@ -203,7 +203,7 @@ Ext.define('devilry_subjectadmin.controller.GradeEditor', {
             cls: 'bootstrap',
             tpl: [
                 '<h2>',
-                    gettext('Configure grade editor'),
+                    gettext('Configure grading system'),
                 '</h2>',
                 '<tpl if="isMissingConfig">',
                     '<div class="alert alert-warning missing_config">',

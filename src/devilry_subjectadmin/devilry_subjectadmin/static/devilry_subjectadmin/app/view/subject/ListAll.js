@@ -26,7 +26,9 @@ Ext.define('devilry_subjectadmin.view.subject.ListAll' ,{
         Ext.apply(this, {
             items: {
                 xtype: 'panel',
-                title: gettext('All subjects'),
+                title: interpolate(gettext("All %(subjects_term)s"), {
+                    subjects_term: gettext('subjects')
+                }, true),
                 layout: 'fit',
                 items: [{
                     xtype: 'alertmessagelist'

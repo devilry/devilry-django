@@ -293,7 +293,9 @@ Ext.application({
     },
 
     allSubjects: function(routeInfo) {
-        this.breadcrumbs.set([], gettext("All subjects"));
+        this.breadcrumbs.set([], interpolate(gettext("All %(subjects_term)s"), {
+            subjects_term: gettext('subjects')
+        }, true));
         this.setPrimaryContent({
             xtype: 'subjectlistall'
         });
