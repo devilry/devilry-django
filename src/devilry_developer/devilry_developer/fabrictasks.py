@@ -9,6 +9,18 @@ DB_FILE = 'db.sqlite3'
 
 
 @task
+def devclean():
+    """
+    Runs ``git clean -dfx .`` followed by ``fab bootrap``.
+
+    Removes all untracked and ignored files in this directory, and resets the
+    development environemnt to a completely clean state.
+    """
+    local('git clean -dfx')
+    local('fab bootstrap')
+
+
+@task
 def remove_db():
     """ Remove ``db.sqlite3`` if it exists. """
     if exists('db.sqlite3'):
