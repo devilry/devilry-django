@@ -58,12 +58,16 @@ productionenv/
 devilry_all_uncompiled.js
 devilryrestfullib/build/
 db_and_deliveries_stash/
+.idea/
 
 # devenv
 devenv/deliverystorehier/
 devenv/static/
 devenv/bin/
 devenv/virtualenv/
+devenv/.Python
+devenv/include/
+devenv/lib/
 
 # Intellij files
 # see: http://devnet.jetbrains.net/docs/DOC-1186
