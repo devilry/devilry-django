@@ -125,7 +125,7 @@ Ext.define('devilry_subjectadmin.controller.period.EditDuration', {
         var form = this.getFormPanel().getForm();
         var periodRecord = this.periodRecord;
         form.updateRecord(periodRecord);
-        this._getMaskElement().mask(gettext('Saving ...'));
+        this._getMaskElement().mask(gettext('Saving') + ' ...');
 
         this.getPeriodModel().proxy.addListener({
             scope: this,

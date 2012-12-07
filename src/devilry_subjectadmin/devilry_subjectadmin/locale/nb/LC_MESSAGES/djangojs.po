@@ -53,17 +53,6 @@ msgstr ""
 msgid "Add students"
 msgstr "Legg til studenter"
 
-#: static/devilry_subjectadmin/app/controller/AddGroups.js:375
-#: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:126
-#: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:132
-#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:128
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:417
-#: static/devilry_subjectadmin/app/controller/period/EditDuration.js:128
-#: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:64
-#: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:93
-msgid "Saving ..."
-msgstr "Lagrer ..."
-
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:121
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:99
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:95

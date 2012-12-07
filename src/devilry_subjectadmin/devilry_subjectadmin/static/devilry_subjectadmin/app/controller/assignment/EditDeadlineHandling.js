@@ -129,7 +129,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditDeadlineHandling', {
         var assignmentRecord = this.assignmentRecord;
         var deadline_handling = form.getValues().deadline_handling;
         assignmentRecord.set('deadline_handling', deadline_handling);
-        this._getMaskElement().mask(gettext('Saving ...'));
+        this._getMaskElement().mask(gettext('Saving') + ' ...');
 
         this.getAssignmentModel().proxy.addListener({
             scope: this,

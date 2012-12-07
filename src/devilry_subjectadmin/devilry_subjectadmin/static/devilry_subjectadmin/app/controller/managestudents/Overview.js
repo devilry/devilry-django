@@ -414,7 +414,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
 
 
     _maskListOfGroups: function(message) {
-        message = message || gettext('Saving ...');
+        message = message || gettext('Saving') + ' ...';
         this.getListOfGroups().setLoading(message);
     },
 

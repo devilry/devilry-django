@@ -372,7 +372,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     //
     _onSave: function() {
         this.application.getAlertmessagelist().removeAll(); // Clear the list so we do not have to keep on removing errors manually.
-        this.getOverview().setLoading(gettext('Saving ...'));
+        this.getOverview().setLoading(gettext('Saving') + ' ...');
         this._saveFirstDeadline();
     },
 

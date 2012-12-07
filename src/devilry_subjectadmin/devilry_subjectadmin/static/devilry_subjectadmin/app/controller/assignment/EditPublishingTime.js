@@ -125,7 +125,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
         var form = this.getFormPanel().getForm();
         var assignmentRecord = this.assignmentRecord;
         form.updateRecord(assignmentRecord);
-        this._getMaskElement().mask(gettext('Saving ...'));
+        this._getMaskElement().mask(gettext('Saving') + ' ...');
 
         this.getAssignmentModel().proxy.addListener({
             scope: this,
