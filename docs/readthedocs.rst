@@ -26,8 +26,8 @@ Building the docs in a virtualenv
 ::
 
     $ cd docs/
-    $ virtualenv venv2
-    $ source venv2/bin/activate
+    $ virtualenv venv
+    $ source venv/bin/activate
     $ pip install -r requirements.txt && pip install sphinx && make html
 
 .. note::
@@ -42,7 +42,7 @@ Generating/updating requirements.txt
 First generate ``requirements.txt``::
 
     $ cd docs/
-    $ git clean -dfx . && virtualenv --no-site-packages venv && venv/bin/easy_install zc.buildout && venv/bin/buildout && venv/bin/buildout
+    $ git clean -dfx . && virtualenv --no-site-packages venv2 && venv2/bin/easy_install zc.buildout && venv2/bin/buildout && venv2/bin/buildout
 
 Then manually remove ``setuptools`` and ``distribute`` from
 ``requirements.txt``.
