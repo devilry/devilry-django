@@ -1,13 +1,25 @@
-from os.path import join
-from os import getcwd
 from devilry_settings.default_settings import *
+from .log import create_logging_conf
 
-basedir = getcwd()
+
+#########################################################
+# These settings must be set in the devenv/
+#########################################################
+#from os.path import abspath, dirname, join
+#basedir = abspath(dirname(__file__))
+#MEDIA_ROOT = join(basedir, "filestore")
+#DATABASES['default']['NAME'] = join(basedir, 'db.sqlite3')
+#DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(basedir, 'deliverystorehier')
+#LOGGING = create_logging_conf(basedir)
+
+
+
+
 
 
 DATABASES = {"default": {
                          'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-                         'NAME': join(basedir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
+                         'NAME': None,    # Or path to database file if using sqlite3.
                          'USER': '',             # Not used with sqlite3.
                          'PASSWORD': '',         # Not used with sqlite3.
                          'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
@@ -42,14 +54,11 @@ ADMINS = (
      ('Devilry admin', 'admin@example.com'),
 )
 MANAGERS = ADMINS
-MEDIA_ROOT = join(basedir, "filestore")
 ROOT_URLCONF = 'devilry_developer.dev_urls'
 
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
-#DELIVERY_STORE_ROOT = join(basedir, 'deliverystore')
-DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(basedir, 'deliverystorehier')
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 10
 DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 
@@ -77,8 +86,9 @@ DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry_university_translations',)
 # Email
 ##################################################################################
 DEVILRY_SEND_EMAIL_TO_USERS = True
-EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = join(basedir, 'email_log')
+#EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+#EMAIL_FILE_PATH = join(basedir, 'email_log')
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
 DEVILRY_DEFAULT_EMAIL_SUFFIX='@example.com'
@@ -127,7 +137,3 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
     'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
     #'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
 ]
-
-
-from .log import create_logging_conf
-LOGGING = create_logging_conf(basedir)

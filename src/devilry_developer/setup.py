@@ -15,6 +15,12 @@ setup(name = 'devilry_developer',
                           ],
       include_package_data=True,
       long_description = open('README.rst').read(),
+      entry_points = {
+          'zc.buildout': [
+              'settingsfile = devilry_developer.buildoutrecipes:DevSettingFile',
+              'staticfile = devilry_developer.buildoutrecipes:StaticFile',
+              ]
+          },
       zip_safe=False,
       classifiers=[
                    'Development Status :: 4 - Beta',
