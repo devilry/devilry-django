@@ -517,39 +517,5 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
      * */
     reloadGroups: function(groupIdsToSelectOnLoad) {
         this._loadGroupsStore(groupIdsToSelectOnLoad);
-    },
-
-
-
-
-    /************************************************
-     *
-     * Other stuff
-     *
-     ************************************************/
-
-
-    /**
-     * Return ``true`` if this assignment is a project assignment.
-     */
-    isProjectAssignment: function() {
-        return false;
-    },
-
-    /**
-     * Get translated group unit string. E.g.: One of ``"student"`` or ``"group"``.
-     * @param {boolean} pluralize Pluralize the group unit?
-     */
-    getTranslatedGroupUnit: function(pluralize) {
-        var translatekey;
-        var count = 0;
-        if(pluralize) {
-            count = 10;
-        }
-        if(this.isProjectAssignment()) {
-            return npgettext('groupunit', 'project group', 'project groups', count);
-        } else {
-            return npgettext('groupunit', 'student', 'students', count);
-        }
     }
 });

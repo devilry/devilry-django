@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-07 16:41+0100\n"
+"POT-Creation-Date: 2012-12-07 16:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -158,6 +158,8 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:416
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:90
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:137
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:373
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:177
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:294
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:109
@@ -245,8 +247,8 @@ msgid ""
 "below to configure the grading system."
 msgstr ""
 "Dette karaktersystemet krever konfigurasjon. Rettere kan ikke gi "
-"tilbakemelding til studentene før du har konfigurert karaktersystemet. "
-"Bruk skjemaet nedenfor for å konfigurere."
+"tilbakemelding til studentene før du har konfigurert karaktersystemet. Bruk "
+"skjemaet nedenfor for å konfigurere."
 
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:214
 msgid ""
@@ -278,6 +280,17 @@ msgstr "Bestått tidligere"
 #: static/devilry_subjectadmin/app/controller/PassedPreviousPeriod.js:244
 msgid "Marked %(count)s groups as previously passed."
 msgstr "Markerte %(count)s grupper som tidligere bestått."
+
+#: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:125
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:6
+#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:155
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:29
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:36
+#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:52
+#: static/devilry_subjectadmin/app/view/period/Overview.js:108
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:54
+msgid "Examiners"
+msgstr ""
 
 #: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:202
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:227
@@ -316,7 +329,6 @@ msgstr "Fjernet alle tags fra %(users)s"
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:21
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:148
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:159
-#, fuzzy
 msgid "students"
 msgstr ""
 
@@ -359,21 +371,6 @@ msgstr "Kunne ikke laste oppgave"
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:465
 msgid "Removed: {0}."
 msgstr "Slettet: {0}."
-
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:550
-msgctxt "groupunit"
-msgid "project group"
-msgid_plural "project groups"
-msgstr[0] ""
-msgstr[1] ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:552
-#, fuzzy
-msgctxt "groupunit"
-msgid "student"
-msgid_plural "students"
-msgstr[0] "Studenter &mdash; Se på og rediger"
-msgstr[1] "Studenter &mdash; Se på og rediger"
 
 #: static/devilry_subjectadmin/app/controller/managestudents/Select.js:35
 msgid "{label} (Matching groups: {groupcount})"
@@ -1640,16 +1637,6 @@ msgstr ""
 "Setter opp %(examiners_term)s på %(students_term)s som har minst en "
 "%(tag_term)s til felles med retteren."
 
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:6
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:155
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:29
-#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:36
-#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:52
-#: static/devilry_subjectadmin/app/view/period/Overview.js:108
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:54
-msgid "Examiners"
-msgstr ""
-
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:15
 msgid ""
 "Administrators can not give feedback. If you want to give feedback to any "
@@ -2578,6 +2565,13 @@ msgid ""
 "Once you delete a subject, there is no going back. Only superusers can "
 "delete a non-empty subject."
 msgstr ""
+
+#, fuzzy
+#~ msgctxt "groupunit"
+#~ msgid "student"
+#~ msgid_plural "students"
+#~ msgstr[0] "Studenter &mdash; Se på og rediger"
+#~ msgstr[1] "Studenter &mdash; Se på og rediger"
 
 #~ msgid "All %(subjects)s"
 #~ msgstr "Alle kurs"
