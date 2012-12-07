@@ -195,7 +195,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
                             gettext('You can remove yourself from administrators.'),
                         '</span> ',
                         '<small class="muted">',
-                            gettext('If you remove yourself by accident, you need to ask another administrator to re-add you. Close this window and use the list of administrators and inherited administrators to get in touch with them.'),
+                            gettext('If you remove yourself by accident, you need to ask another administrator to re-add you. Close this window and use the list of administrators and other administrators to get in touch with them.'),
                         '</small>',
                     '</p>'
                 ],

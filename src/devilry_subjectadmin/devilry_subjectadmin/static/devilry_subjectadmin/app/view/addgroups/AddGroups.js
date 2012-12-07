@@ -146,7 +146,9 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                     itemId: 'includeTagsCheckbox',
                     checked: true,
                     boxLabel: gettext('Include tags'),
-                    tooltip: gettext('Check this to tag the added students with the tags they have on the period. Keep this checked if you are unsure of what to do. When this is checked, tags are displayed in the second column of the table.')
+                    tooltip: interpolate(gettext('Check this to tag the added students with the tags they have on %(periodpath)s. Keep this checked if you are unsure of what to do. When this is checked, tags are displayed in the second column of the table.'), {
+                        periodpath: Ext.String.format('<em>{0}</em>', this.periodinfo.path)
+                    }, true)
                 }, {
                     xtype: 'checkbox',
                     cls: 'autosetexaminerscheckbox',
