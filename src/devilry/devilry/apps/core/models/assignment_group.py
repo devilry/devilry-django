@@ -439,10 +439,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                 - ``waiting-for-feedback``
             - If no deadlines
                 - ``no-deadlines``
-        If closed:
+        - If closed:
             - If feedback:
                 - ``corrected``
-            If not:
+            - If not:
                 - ``closed-without-feedback``
 
         :return:
