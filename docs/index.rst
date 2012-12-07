@@ -1,38 +1,3 @@
-.. toctree::
-    :hidden:
-    
-    core.models
-    userobj
-    core.deliverystore
-
-    testsuite
-    testhelper
-
-    plugins
-
-    simplified
-    restful
-    rest
-    extjshelpers
-
-    apps.gradeeditors
-    apps.subjectadmin
-
-    utils.assignmentgroup
-    utils.ordereddict
-    utils.delivery_collection
-    utils.groupnodes
-    utils.devilry_email
-
-    administrator.simplified
-    coreutils.simplified.metabases
-    examiner.simplified
-    student.simplified
-    public_restful_api
-    public_restful_api_examples
-
-
-
 ======================================================================
 Devilry developer documentation overview
 ======================================================================
@@ -47,7 +12,6 @@ Core
 
 Testing
 #######
-
 * :ref:`testsuite`
 * :ref:`testhelper`
 
@@ -59,35 +23,13 @@ Plugin development
 * **Grade editors:** :ref:`Overview <apps.gradeeditors>`
 
 
-Simplified API
-######################################################################
-
-* :ref:`simplified`
-* :ref:`Administrator <apps.administrator.simplified>`
-* :ref:`Examiner <apps.examiner.simplified>`
-* :ref:`Student <apps.student.simplified>`
-
-
 RESTful API
 ######################################################################
 
-* :ref:`restful`
-* :ref:`rest`
-* :ref:`public_restful_api`
-* :ref:`public_restful_api_examples`
-* Check out the Wiki_ for community docs such as:
-    * How to create a RESTful client in *your* programming language.
-    * How to set up a development environment to test/*play with* the RESTful
-      API on your local machine.
+* **Old rest APIs**: See the old docs: http://devilry.org/devilry-django/dev/
+* **New rest APIs**: Uses Djangorestframework, which generates docs that can be browsed. We are missing a
+  listing of the URLs of all our new APIs, so please contact us via Github if you need help finding them.
 
-.. _Wiki: https://github.com/devilry/devilry-django/wiki/RESTful-web-service-API---community-docs
-
-
-Integration with the ExtJS javascript library
-######################################################################
-
-* :ref:`extjshelpers`
-* `Javascript classes <javascript>`_
 
 
 Utils
@@ -99,10 +41,37 @@ Utils
 * :ref:`devilry.utils.groupnodes`
 * :ref:`devilry.utils.delivery_collection`
 
+
 Apps
 ######################################################################
 
-* :ref:`apps.subjectadmin`
+* :ref:`devilry_subjectadmin`
+
+.. note:: The apps listing is incomplete.
+
+
+Table of contents
+######################################################################
+.. toctree::
+
+    core.models
+    userobj
+    core.deliverystore
+
+    testsuite
+    testhelper
+
+    plugins
+
+    devilry_subjectadmin
+
+    apps.gradeeditors
+    utils.assignmentgroup
+    utils.ordereddict
+    utils.delivery_collection
+    utils.groupnodes
+    utils.devilry_email
+
 
 
 
