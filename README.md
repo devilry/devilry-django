@@ -37,50 +37,55 @@ semi-stable development version. The latest stable version is in the
 You should setup your [buildout cache](https://github.com/devilry/devilry-django/wiki/Use-a-global-buildout-config-to-speed-up-bin-buildout) if you plan to do any development. This will make any up re-run of buildout (the dependency/build system we use).
 
 
-## 4 - Create a demo database
+
+## 4 - Setup the development virtualenv
 
     $ cd devenv/
-    $ fab setup_demo
+    $ fab bootstrap
+
+
+## 4.1 - Create a demo database
+
+    $ cd devenv/
+    $ bin/fab autodb
 
 Note: Creating the testdata takes a lot of time, but you can start using the
 server as soon as the users have been created (one of the first things the
 script does).
 
 
-### Alternative step 4 - Setup an empty databse
+### Alternative step 4.1 - Setup an empty databse
 
     $ cd devenv/
-    $ fab reset syncdb
+    $ bin/fab syncdb
 
 
-### Alternative step 4 - From database dump
-Creating the demo database takes a lot of time (12mins on a macbook air with
+### Alternative step 4.1 - From database dump
+Creating the demo database takes a lot of time (~12mins on a 2012 macbook air with
 SSD disk). You may ask a developer to send you a *db_and_deliveries_stash*, and
-use it instead of ``setup_demo``:
+use it instead of ``autodb``:
 
     $ cd devenv/
-    $ fab reset
     $ cp -r /path/to/db_and_deliveries_stash/ ./
-    $ fab unstash_db_and_deliveries
+    $ bin/fab unstash_db_and_deliveries
 
 #### How to create a DB-stash
 Use this if you want to create a ``db_and_deliveries_stash/`` to send to other
 developers (which can follow the steps in the previous section):
 
     $ cd devenv/
-    $ fab autodb           (optional - resets your database)
-    $ fab stash_db_and_deliveries
+    $ bin/fab autodb           (optional - resets your database)
+    $ bin/fab stash_db_and_deliveries
 
 
-### Alternative step 4 - Manually (without fabric)
+## Alternative step 4 - Manually (without fabric)
 
 Create a clean development environment with an empty database:
 
     $ cd devenv/
-    $ virtualenv virtualenv
-    $ virtualenv/bin/python ../bootstrap.py
+    $ virtualenv --no-site-packages .
+    $ bin/easy_install zc.buildout
     $ bin/buildout
-    $ bin/django_dev.py dev_autogen_extjsmodels
     $ bin/django_dev.py syncdb
 
 Autocreate the demo-db:
