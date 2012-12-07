@@ -11,6 +11,38 @@ Devilry uses the Django localization platform/system. This means that:
 
 
 How we organize the translations
-================================
+################################
 Each app translate their own sources. For JavaScript sources, that means that each app hosts their own JavaScript
 translation catalog.
+
+
+
+.. _localflavor:
+
+Local flavor
+################################
+Devilry is a general purpose system, which means that we have to choose a default set of terms that fits lots of
+use cases. The problem with this is that we end up with certain *words* that can confuse regular users. We fix
+this by making these words translatable by themselves.
+
+The special terms that can be overridden are:
+
+- *node*:
+    - Very broad by definition, so it usually has to be adapted for the local environment.
+- *subject*:
+    - Often called a course
+- *period*:
+    - Common alternatives: Semester, year
+
+
+How to customize a translation and override certain words and phrases
+#####################################################################
+Create a Django app include your translations in it. Then add the translation to the
+``DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS``-setting. For example, we provide a university-friendly
+:ref:`localflavor` in the ``devilry_university_translations`` app::
+
+    INSTALLED_APPS += ['devilry_university_translations']
+    DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry_university_translations',)
+
+Refer to the ``devilry_university_translations``-sources (in ``REPOROOT/src/devilry_university_translations/``)
+for inspiration for your own costomizations.
