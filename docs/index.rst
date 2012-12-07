@@ -79,6 +79,7 @@ Table of contents
     utils.devilry_email
 
     readthedocs
+    i18n
 
 
 

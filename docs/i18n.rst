@@ -1,0 +1,16 @@
+.. _i18n:
+
+===================================
+Devilry localization
+===================================
+
+Devilry uses the Django localization platform/system. This means that:
+
+- Our translations are in the gettext ``.po`` format.
+- We mark translation strings in Python code, templates and in JavaScript.
+
+
+How we organize the translations
+================================
+Each app translate their own sources. For JavaScript sources, that means that each app hosts their own JavaScript
+translation catalog.
