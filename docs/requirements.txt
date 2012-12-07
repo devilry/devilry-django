@@ -6,7 +6,7 @@ django-errortemplates==1.0.1
 django-extjs4==1.1.2-extjs4.1.1
 django-seleniumhelpers==1.1
 djangorestframework==0.3.3
-djangosenchatools==1.0.4
+djangosenchatools==1.0.5
 flup==1.0.2
 gunicorn==0.14.6
 mr.developer==1.21
