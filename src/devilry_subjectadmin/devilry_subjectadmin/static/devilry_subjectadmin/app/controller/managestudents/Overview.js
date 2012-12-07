@@ -134,7 +134,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
         this.assignment_id = this.getOverview().assignment_id;
         Ext.defer(function() { // Hack to work around the problem of the entire panel not completely loaded, which makes the loadmask render wrong
             if(this.assignmentRecord === undefined) {
-                this.getOverview().setLoading(gettext('Loading assignment ...'));
+                this.getOverview().setLoading(gettext('Loading') + ' ...');
             }
         }, 100, this);
         this.setLoadingBreadcrumb();
@@ -370,7 +370,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     },
 
     _loadGroupsStore: function(groupIdsToSelectOnLoad) {
-        this.getOverview().setLoading(gettext('Loading groups ...'));
+        this.getOverview().setLoading(gettext('Loading') + ' ...');
         this.getGroupsStore().loadGroupsInAssignment(this.assignmentRecord.get('id'), {
             scope: this,
             callback: function(records, operation) {

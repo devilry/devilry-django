@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-07 16:15+0100\n"
+"POT-Creation-Date: 2012-12-07 16:41+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -44,35 +44,57 @@ msgstr "Alle %(subjects_term)s"
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:28
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:73
 #: static/devilry_subjectadmin/app/view/subject/ListAll.js:30
-#, fuzzy
 msgid "subjects"
 msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/AddGroups.js:264
+#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:132
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:399
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:86
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:91
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:69
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:74
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:70
+#: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:36
+#: static/devilry_subjectadmin/app/view/period/Overview.js:114
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:64
+#, fuzzy
+msgid "Students"
+msgstr "Studenter &mdash; Se på og rediger"
 
 #: static/devilry_subjectadmin/app/controller/AddGroups.js:266
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:103
 msgid "Add students"
 msgstr "Legg til studenter"
 
-#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:121
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:99
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:95
-#, fuzzy
-msgid "Deadlines"
-msgstr ""
-
+#: static/devilry_subjectadmin/app/controller/AddGroups.js:375
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:254
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:393
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:440
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:603
+#: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:113
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:276
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:361
 #: static/devilry_subjectadmin/app/controller/PassedPreviousPeriod.js:225
 #: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:198
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:192
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:223
+#: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:126
+#: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:132
+#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:128
+#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:417
+#: static/devilry_subjectadmin/app/controller/period/EditDuration.js:128
+#: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:64
+#: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:93
 #: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:141
 msgid "Saving"
 msgstr "Lagrer"
+
+#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:121
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:99
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:95
+msgid "Deadlines"
+msgstr ""
 
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:566
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:381
@@ -90,7 +112,9 @@ msgstr "Lag ny oppgave"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:292
 msgid "The publishing time is set to a later date than the submission date."
-msgstr "Publiseringstidspunktet er satt til et senere tidspunkt enn første innleveringsfrist."
+msgstr ""
+"Publiseringstidspunktet er satt til et senere tidspunkt enn første "
+"innleveringsfrist."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:324
 msgid "Devilry suggested values for: {labels}."
@@ -117,9 +141,9 @@ msgid ""
 "({days} days) to the submission date of the last published assignment, "
 "{previous_assignment} ({previous_first_deadline})."
 msgstr ""
-"Beregnet ved å legge til det mest vanlige tidsrommet mellom innleveringsfrister "
-"({days} dager) til innleveringsfristen på den forrige publiserte oppgaven, "
-"{previous_assignment} ({previous_first_deadline})."
+"Beregnet ved å legge til det mest vanlige tidsrommet mellom "
+"innleveringsfrister ({days} dager) til innleveringsfristen på den forrige "
+"publiserte oppgaven, {previous_assignment} ({previous_first_deadline})."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:383
 msgid ""
@@ -128,9 +152,9 @@ msgid ""
 "or two, and suggested a submission date based on those assumptions."
 msgstr ""
 "Du har en pause i det vanlige tidsrommet mellom innleveringsfrister. Siden "
-"du bruker et kort tidsintervall, mellom 1 og 14 dager, antar vi at det betyr at "
-"du har hoppet over et intervall eller to, og foreslo en innleveringsfrist basert "
-"på den antagelsen."
+"du bruker et kort tidsintervall, mellom 1 og 14 dager, antar vi at det betyr "
+"at du har hoppet over et intervall eller to, og foreslo en innleveringsfrist "
+"basert på den antagelsen."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:416
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:90
@@ -216,17 +240,23 @@ msgstr "Konfigurer karaktersystem"
 
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:210
 msgid ""
-"This grade editor requires configuration. Examiners can not provide feedback "
-"to students until you have provided configuration. Use the form below to "
-"configure the grade editor."
+"This grading system requires configuration. Examiners can not provide "
+"feedback to students until you have provided configuration. Use the form "
+"below to configure the grading system."
 msgstr ""
+"Dette karaktersystemet krever konfigurasjon. Rettere kan ikke gi "
+"tilbakemelding til studentene før du har konfigurert karaktersystemet. "
+"Bruk skjemaet nedenfor for å konfigurere."
 
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:214
 msgid ""
-"This grade editor requires configuration, and configuration has already been "
-"provided by you or another administrator. Use the form below if you wish to "
-"change the configuration."
+"This grading system requires configuration, and configuration has already "
+"been provided by you or another administrator. Use the form below if you "
+"wish to change the configuration."
 msgstr ""
+"Dette karaktersystemet krever konfigurasjon, og konfigurasjon har allerede "
+"blitt opprettet av deg eller en annen administrator. Bruk skjemaet nedenfor "
+"hvis du ønsker å endre konfigurasjonen."
 
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:242
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:34
@@ -234,56 +264,51 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:89
 #: static/devilry_subjectadmin/app/view/relatedstudents/SelectUserPanel.js:31
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:250
 msgid "Save and continue editing"
-msgstr ""
+msgstr "Lagre og fortsett å redigere"
 
 #: static/devilry_subjectadmin/app/controller/PassedPreviousPeriod.js:97
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:30
 msgid "Passed previously"
-msgstr ""
+msgstr "Bestått tidligere"
 
 #: static/devilry_subjectadmin/app/controller/PassedPreviousPeriod.js:244
 msgid "Marked %(count)s groups as previously passed."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:125
-#, fuzzy
-msgid "Manage examiners"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Markerte %(count)s grupper som tidligere bestått."
 
 #: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:202
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:227
 msgid "Removed: {0}"
-msgstr ""
+msgstr "Slettet: {0}"
 
 #: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:239
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:264
 msgid "{0} is already in the table."
-msgstr ""
+msgstr "{0} er allerede i tabellen."
 
 #: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:248
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:273
 msgid "{0} added."
-msgstr ""
+msgstr "{0} lagt til."
 
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:196
 msgid "Updated candidate ID of {0} to {1}."
-msgstr ""
+msgstr "Endret kantidat IDen til {0} til {1}."
 
 #: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:12
 msgid "Showing {visiblecount}/{totalcount}"
-msgstr ""
+msgstr "Viser {visiblecount}/{totalcount}"
 
 #: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:141
 msgid "Tagged %(users)s with: %(tags)s"
-msgstr ""
+msgstr "Tagget %(users)s med: %(tags)s"
 
 #: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:193
 msgid "Cleared tags on %(users)s."
-msgstr ""
+msgstr "Fjernet alle tags fra %(users)s"
 
 #: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:92
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:32
@@ -293,7 +318,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:159
 #, fuzzy
 msgid "students"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr ""
 
 #: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:93
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:30
@@ -308,53 +333,32 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:195
 #: static/devilry_subjectadmin/app/view/period/ListOfAssignments.js:24
 msgid "Publishing time"
-msgstr ""
+msgstr "Publiseringstidspunkt"
 
 #: static/devilry_subjectadmin/app/controller/assignment/Overview.js:105
 #: static/devilry_subjectadmin/app/controller/period/Overview.js:83
 #: static/devilry_subjectadmin/app/controller/subject/Overview.js:71
 #: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:29
 msgid "Rename {something}"
-msgstr ""
+msgstr "Endre navn på {something}"
 
 #: static/devilry_subjectadmin/app/controller/assignment/Overview.js:108
 #: static/devilry_subjectadmin/app/controller/period/Overview.js:80
 #: static/devilry_subjectadmin/app/controller/subject/Overview.js:74
 msgid "Delete {something}"
-msgstr ""
+msgstr "Slett {something}"
 
 #: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:35
 msgid "Examiners random distributed successfully"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:137
-msgid "Loading assignment ..."
-msgstr ""
-
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:369
 msgid "Failed to load assignment"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:373
-msgid "Loading groups ..."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:399
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:86
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:91
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:69
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:74
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:70
-#: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:36
-#: static/devilry_subjectadmin/app/view/period/Overview.js:114
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:64
-#, fuzzy
-msgid "Students"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Kunne ikke laste oppgave"
 
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:465
 msgid "Removed: {0}."
-msgstr ""
+msgstr "Slettet: {0}."
 
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:550
 msgctxt "groupunit"
