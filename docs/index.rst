@@ -72,6 +72,8 @@ Table of contents
     utils.groupnodes
     utils.devilry_email
 
+    readthedocs
+
 
 
 
