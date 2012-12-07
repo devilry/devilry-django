@@ -374,23 +374,23 @@ msgstr "Slettet: {0}."
 
 #: static/devilry_subjectadmin/app/controller/managestudents/Select.js:35
 msgid "{label} (Matching groups: {groupcount})"
-msgstr ""
+msgstr "{label} (Tilhørende grupper: {groupcount})"
 
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:458
 msgid "Changed examiners of {group} to: {examiners}."
-msgstr ""
+msgstr "Endret retter for {group} til: {examiners}."
 
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:482
 msgid "Added you as examiner for {group}."
-msgstr ""
+msgstr "La deg til som retter for {group}."
 
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:529
 msgid "Saved the following tags for {group}: {tags}"
-msgstr ""
+msgstr "Lagret følgende tags for {group}: {tags}"
 
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:532
 msgid "No tags"
-msgstr ""
+msgstr "Ingen tags"
 
 #: static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:6
 msgid ""
@@ -398,10 +398,13 @@ msgid ""
 "letters (a-z), numbers, underscore ('_') and hyphen ('-'). This is used the "
 "the regular name takes to much space."
 msgstr ""
+"Et kort navn med inntil 20 bokstaver. Kan kun inneholde små engelske "
+"bokstaver (a-z)m tall, understrek ('_') og bindestrek ('-'). Dette navnet "
+"brukes når det vanlige navet tar for mye plass."
 
 #: static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:10
 msgid "May contain any characters, including language-specific characters."
-msgstr ""
+msgstr "Kan inneholde alle mulige tegn, inkludert språkspesifikke tegn, slik som norske æ, ø og å."
 
 #: static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:15
 msgid ""
@@ -412,13 +415,12 @@ msgstr ""
 "er for langt, f.eks. i tabeller og navigasjon."
 
 #: static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:16
-#, fuzzy
 msgid ""
 "The short name can contain up to 20 letters, and it can only contain "
 "lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and "
 "<em>'-'</em>."
 msgstr ""
-"Det korte navnet kan inneholde maks 20 små bokstaver (<em>a-z</em>) fra det "
+"Det korte navnet kan inneholde inntil 20 små bokstaver (<em>a-z</em>) fra det "
 "engelske alfabetet, samt <em>tall</em>, <em>'_'</em> og <em>'-'</em>."
 
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:48
