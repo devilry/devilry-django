@@ -17,6 +17,13 @@ translation catalog.
 
 
 
+``Loading`` vs. ``Loading...`` vs ``Loading ...``
+#################################################
+Loading and saving is very common status messages. Make sure you only mark the word for
+translation. E.g.: ``gettext('Loading') + ' ...';``
+
+
+
 .. _localflavor:
 
 Local flavor
