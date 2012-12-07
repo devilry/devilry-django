@@ -34,7 +34,6 @@ deliverystore/
 exampledata-backup.tar.bz2
 \#*#
 .#*
-docs/restfulapi/
 .sass-cache/
 .mr.developer.cfg
 
@@ -65,6 +64,12 @@ devenv/*
 !devenv/fabfile.py
 !devenv/README.md
 !devenv/buildout.cfg
+
+# docs/
+docs/.Python
+docs/bin/
+docs/include/
+docs/lib/
 
 
 # Intellij files
