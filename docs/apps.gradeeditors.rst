@@ -74,7 +74,7 @@ First of all, we need to register the grade editor with :attr:`devilry.apps.grad
 To make the plugin register itself when the server starts, we put the registry code in
 ``devilry_plugin.py`` (see :ref:`plugins`):
 
-.. literalinclude:: /../devilry/apps/asminimalaspossible_gradeeditor/devilry_plugin.py
+.. literalinclude:: /../src/devilry/devilry/apps/asminimalaspossible_gradeeditor/devilry_plugin.py
 
 
 devilry_plugin.AsMinimalAsPossible code explained
@@ -132,7 +132,7 @@ Validation
 
 Example code
 ------------
-.. literalinclude:: /../devilry/apps/asminimalaspossible_gradeeditor/static/asminimalaspossible_gradeeditor/configeditor.js
+.. literalinclude:: /../src/devilry/devilry/apps/asminimalaspossible_gradeeditor/static/asminimalaspossible_gradeeditor/configeditor.js
     :language: javascript
 
 
@@ -154,7 +154,7 @@ The draft editor works almost like a config editor. The primary difference is:
 
 Example code
 ------------
-.. literalinclude:: /../devilry/apps/asminimalaspossible_gradeeditor/static/asminimalaspossible_gradeeditor/drafteditor.js
+.. literalinclude:: /../src/devilry/devilry/apps/asminimalaspossible_gradeeditor/static/asminimalaspossible_gradeeditor/drafteditor.js
     :language: javascript
 
 
