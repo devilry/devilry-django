@@ -66,7 +66,7 @@ SSD disk). You may ask a developer to send you a *db_and_deliveries_stash*, and
 use it instead of ``autodb``:
 
     $ cd devenv/
-    $ cp -r /path/to/db_and_deliveries_stash/ ./
+    $ cp -r /path/to/db_and_deliveries_stash ./
     $ bin/fab unstash_db_and_deliveries
 
 #### How to create a DB-stash
