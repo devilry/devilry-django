@@ -61,13 +61,11 @@ db_and_deliveries_stash/
 .idea/
 
 # devenv
-devenv/deliverystorehier/
-devenv/static/
-devenv/bin/
-devenv/virtualenv/
-devenv/.Python
-devenv/include/
-devenv/lib/
+devenv/*
+!devenv/fabfile.py
+!devenv/README.md
+!devenv/buildout.cfg
+
 
 # Intellij files
 # see: http://devnet.jetbrains.net/docs/DOC-1186
