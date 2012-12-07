@@ -76,14 +76,14 @@ Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
                         margin: '0 0 0 0',
                         itemId: 'renameButton',
                         id: 'subjectRenameButton',
-                        titleText: gettext('Loading ...'),
+                        titleText: gettext('Loading') + ' ...',
                         bodyHtml: gettext('Renaming a subject should not done without a certain amount of consideration. The name of a subject, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
                         buttonText: gettext('Rename') + ' ...'
                     }, {
                         xtype: 'singleactionbox',
                         itemId: 'deleteButton',
                         id: 'subjectDeleteButton',
-                        titleText: gettext('Loading ...'),
+                        titleText: gettext('Loading') + ' ...',
                         bodyHtml: gettext('Once you delete a subject, there is no going back. Only superusers can delete a non-empty subject.'),
                         buttonText: gettext('Delete') + ' ...',
                         buttonUi: 'danger'

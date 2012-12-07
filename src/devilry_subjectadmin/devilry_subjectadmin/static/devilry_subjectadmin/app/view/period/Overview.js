@@ -121,7 +121,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         margin: '0 0 0 0',
                         itemId: 'renameButton',
                         id: 'periodRenameButton',
-                        titleText: gettext('Loading ...'),
+                        titleText: gettext('Loading') + ' ...',
                         bodyTpl: [
                             '<p class="muted"><small>',
                                 gettext('Renaming a {period_term} should not be done without a certain amount of consideration. The name of a {period_term}, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
@@ -135,7 +135,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                         xtype: 'singleactionbox',
                         itemId: 'deleteButton',
                         id: 'periodDeleteButton',
-                        titleText: gettext('Loading ...'),
+                        titleText: gettext('Loading') + ' ...',
                         buttonUi: 'danger',
                         bodyTpl: [
                             '<p class="muted"><small>',

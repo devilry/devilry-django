@@ -45,7 +45,7 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
     },
 
     setLoadingBreadcrumb: function() {
-        this.application.breadcrumbs.set([], gettext('Loading ...'));
+        this.application.breadcrumbs.set([], gettext('Loading') + ' ...');
     },
 
     getPathFromBreadcrumb: function(basenodeRecord) {

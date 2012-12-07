@@ -14,7 +14,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.DynamicLoadMenu' ,{
 
     setLoadingString: function() {
         this.setItems([
-            gettext('Loading ...')
+            gettext('Loading') + ' ...'
         ]);
     },
 

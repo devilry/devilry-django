@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-07 16:52+0100\n"
+"POT-Creation-Date: 2012-12-07 16:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -162,6 +162,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:373
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:177
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:294
+#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:48
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:109
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:58
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:54
@@ -170,18 +171,25 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:36
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:64
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:81
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:135
+#: static/devilry_subjectadmin/app/view/assignment/Overview.js:146
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:35
 #: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:34
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:31
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:15
 #: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:11
+#: static/devilry_subjectadmin/app/view/managestudents/DynamicLoadMenu.js:17
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:107
 #: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsButton.js:26
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:36
 #: static/devilry_subjectadmin/app/view/period/Overview.js:59
+#: static/devilry_subjectadmin/app/view/period/Overview.js:124
+#: static/devilry_subjectadmin/app/view/period/Overview.js:138
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:59
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:69
 #: static/devilry_subjectadmin/app/view/subject/Overview.js:55
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:79
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:86
 msgid "Loading"
 msgstr "Laster"
 
@@ -404,7 +412,9 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:10
 msgid "May contain any characters, including language-specific characters."
-msgstr "Kan inneholde alle mulige tegn, inkludert språkspesifikke tegn, slik som norske æ, ø og å."
+msgstr ""
+"Kan inneholde alle mulige tegn, inkludert språkspesifikke tegn, slik som "
+"norske æ, ø og å."
 
 #: static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:15
 msgid ""
@@ -420,19 +430,8 @@ msgid ""
 "lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and "
 "<em>'-'</em>."
 msgstr ""
-"Det korte navnet kan inneholde inntil 20 små bokstaver (<em>a-z</em>) fra det "
-"engelske alfabetet, samt <em>tall</em>, <em>'_'</em> og <em>'-'</em>."
-
-#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:48
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:135
-#: static/devilry_subjectadmin/app/view/assignment/Overview.js:146
-#: static/devilry_subjectadmin/app/view/managestudents/DynamicLoadMenu.js:17
-#: static/devilry_subjectadmin/app/view/period/Overview.js:124
-#: static/devilry_subjectadmin/app/view/period/Overview.js:138
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:79
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:86
-msgid "Loading ..."
-msgstr ""
+"Det korte navnet kan inneholde inntil 20 små bokstaver (<em>a-z</em>) fra "
+"det engelske alfabetet, samt <em>tall</em>, <em>'_'</em> og <em>'-'</em>."
 
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:21
 msgid "Administrator rights"
