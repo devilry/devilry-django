@@ -16,6 +16,12 @@ Testing
 * :ref:`testhelper`
 
 
+How to document Devilry
+#####################################################################
+* `How to write API documentation - wiki page <https://github.com/devilry/devilry-django/wiki/How-to-write-API-documentation>`_
+* :ref:`readthedocs` --- If you need to debug build errors from readthedocs.org.
+
+
 Plugin development
 ######################################################################
 
