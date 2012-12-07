@@ -1375,7 +1375,7 @@ msgstr "Bla i alt der du er administrator"
 
 #: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:49
 msgid "Interractive guides"
-msgstr ""
+msgstr "Interraktive guider"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:24
 #, fuzzy
