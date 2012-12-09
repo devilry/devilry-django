@@ -55,9 +55,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
                         cls: 'bootstrap',
                         html: [
                             '<h1>',
-                                interpolate(gettext('Add %(deadline_term)s'), {
-                                    deadline_term: gettext('deadline')
-                                }, true),
+                                gettext('Add deadline'),
                             '</h1>'
                         ].join('')
                     }, {
@@ -65,12 +63,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
                         cls: 'bootstrap',
                         html: [
                             '<p class="muted">',
-                                interpolate(gettext('%(Students_term)s are in a %(group_term)s even if they work alone. Each %(group_term)s has their own individual %(deadlines_term)s. Use the form below to add a deadline to many %(groups_term)s.'), {
-                                    Students_term: gettext('Students'),
-                                    deadlines_term: gettext('deadlines'),
-                                    group_term: gettext('group'),
-                                    groups_term: gettext('groups')
-                                }, true),
+                                gettext('Students are in a group even if they work alone. Each group has their own individual deadlines. Use the form below to add a deadline to many groups.'),
                             '</p>'
                         ].join('')
                     }]
@@ -114,9 +107,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
                         itemId: 'addDeadlineButton',
                         cls: 'add_deadline_button',
                         width: 200,
-                        text: interpolate(gettext('Add %(deadline_term)s'), {
-                            deadline_term: gettext('deadline')
-                        }, true)
+                        text: gettext('Add deadline')
                     }]
                 }, {
                     xtype: 'panel',
