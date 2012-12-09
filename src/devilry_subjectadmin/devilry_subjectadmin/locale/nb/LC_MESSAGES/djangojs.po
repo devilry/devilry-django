@@ -760,26 +760,26 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:38
 msgid "No students available"
-msgstr ""
+msgstr "Ingen studenter tilgjengelige"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:41
-#, fuzzy
 msgid ""
 "All students registered on {periodpath} is already registered on the "
 "assignment."
 msgstr ""
-"Legg til alle %(students_term)s registrert på oppgavens %(period_term)s?"
+"Alle studenter registrert på {periodpath} er allerede registrert på oppgaven."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:45
 msgid ""
 "There is no students on {periodpath}. Only students registered on "
 "{periodpath} can be added to this assignment."
 msgstr ""
+"Det er ingen studenter på {periodpath}. Kun studenter registrert på "
+"{periodpath} kan legges til på denne oppgaven."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:50
-#, fuzzy
 msgid "Add students to {periodpath}"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Legg til studenter på {periodpath}"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:51
 msgid "Opens in new window"
