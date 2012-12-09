@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-09 17:26+0100\n"
+"POT-Creation-Date: 2012-12-09 18:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -164,7 +164,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:294
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:48
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:109
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:58
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:56
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:54
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:58
 #: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimeWidget.js:46
@@ -211,7 +211,7 @@ msgstr "Legg til %(period_term)s"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:84
 #: static/devilry_subjectadmin/app/controller/assignment/Overview.js:99
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:20
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:19
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:256
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:273
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:63
@@ -332,7 +332,6 @@ msgid "Cleared tags on %(users)s."
 msgstr "Fjernet alle tags fra %(users)s"
 
 #: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:92
-#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:32
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:71
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:21
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:148
@@ -759,16 +758,14 @@ msgstr "Avanserte valg"
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:26
 msgid ""
 "If you want to add the same student to more than one group on this "
-"assignment, click the button below. This will show the list of students "
-"without filtering out students already registered on the assignment. The use-"
-"case for this feature is if you have project assignments where students are "
-"in more than one project group. <strong>Keep this unchecked if you are "
-"unsure of what to do</strong>."
+"assignment, click the button below. The use-case for this feature is if you "
+"have project assignments where students are in more than one project group. "
+"<strong>Keep this unchecked if you are unsure of what to do</strong>."
 msgstr ""
-"Klikk på knappen nedenfor hvis du ønsker å tillate at studenter er i mer enn en gruppe. "
-"Bruksområdet for dette valget er prosjektoppgaver der samme student kan være "
-"med i mer enn en prosjektgruppe. <strong>Ikke bruk dette valget hvis du er "
-"usikker eller ikke forstår hva det innebærer</strong>."
+"Klikk på knappen nedenfor hvis du ønsker å tillate at studenter er i mer enn "
+"en gruppe. Bruksområdet for dette valget er prosjektoppgaver der samme "
+"student kan være med i mer enn en prosjektgruppe. <strong>Ikke bruk dette "
+"valget hvis du er usikker eller ikke forstår hva det innebærer</strong>."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:38
 msgid "No students available"
@@ -819,35 +816,32 @@ msgstr "Tillat duplikater"
 msgid ""
 "Uncheck this to hide any students already in a group from the list below."
 msgstr ""
+"Velg vekk denne for å utelate studenter som allerede er i en gruppe fra "
+"listen nedenfor."
 
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:15
+#, fuzzy
 msgid ""
-"These are all %(subjects_term)s, %(periods_term)s and %(assignments_term)s "
-"where you are administrator. Assignments are listed if you are administrator "
-"on the %(assignment_term)s, and not on the %(period_term)s or %(subject_term)"
+"These are all %(subjects_term)s, %(periods_term)s and assignments where you "
+"have administrator rights. Assignments are listed if you have administrator-"
+"rights on the assignments, and not on the %(period_term)s or %(subject_term)"
 "s containing the assignment. The %(subject_term)s name is a link on if you "
-"are administrator on the subject."
+"have administrator rights on the subject."
 msgstr ""
+"Dette er alle %(subjects_term)s, %(periods_term)s og %(assignments_term)s "
+"der du har administrator-rettigheter. Oppgaver er med i listen hvis du har "
+"administrator-rettigheter på en oppgave, men ikke på tilhørende "
+"%(period_term)s eller %(subject_term)s. Kursnavnet er en link hvis du har "
+"administrator-rettigheter på kurset."
 
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:17
 msgid "periods"
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:18
-msgid "assignments"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:19
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:27
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:76
-#, fuzzy
 msgid "subject"
-msgstr "Alle kurs"
-
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:21
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:43
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:23
-msgid "assignment"
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousPanel.js:12
@@ -858,37 +852,36 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:99
 #: static/devilry_subjectadmin/app/view/period/EditDurationPanel.js:13
 msgid "Save"
-msgstr ""
+msgstr "Lagre"
 
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousPanel.js:33
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:34
 msgid "Anonymous"
-msgstr ""
+msgstr "Anonym"
 
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:24
-#, fuzzy
 msgid "Anonymity"
-msgstr "Anonym?"
+msgstr "Anonymitet"
 
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:36
 msgid "Not anonymous"
-msgstr ""
+msgstr "Ikke anonym"
 
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:42
 msgid ""
 "On anonymous assignments, examiners and students can NOT see each other and "
 "they can NOT communicate."
 msgstr ""
+"Studenter og rettere kan IKKE se hverandre, og de kan IKKE kommunisere på "
+"anonyme oppgaver."
 
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:45
-#, fuzzy
 msgid ""
 "If an assignment is anonymous, examiners see candidate-id instead of any "
 "personal information about the students."
 msgstr ""
-"På eksamensoppgaver er dette et naturlig valg. Nå en %(assignment_term)s er "
-"anonym, ser retterne kandidat-ID istedenfor personlig informasjon om "
-"studentene."
+"Hvis en oppgave er anonym, ser rettere candidat-id istedenfor personlig "
+"informasjon om studentene."
 
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:48
 msgid ""
@@ -896,33 +889,37 @@ msgid ""
 "assignments where you do not want prior experiences with a student to affect "
 "results."
 msgstr ""
+"Dette betyr at anonyme oppgaver er perfekte for eksamener, og for oppgaver "
+"der du ikke ønsker at tidligere erfaringer med en student skal påvirke "
+"resultatet."
 
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:28
 msgid ""
-"Enable hard deadlines if you want to make it impossible for {students_term} "
-"to add deliveries after their active deadline."
+"Enable hard deadlines if you want to make it impossible for students to add "
+"deliveries after their active deadline."
 msgstr ""
+"Slå på harde innleveringsfrister hvis du ønsker å gjøre det umulig for "
+"studenter å legge til innlevering etter den aktive innleveringsfristen."
 
-#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:37
+#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:36
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:36
-#, fuzzy
 msgid "Hard deadlines"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Harde innleveringsfrister"
 
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:24
 msgid "Deadline handling"
-msgstr ""
+msgstr "Håndtering av innleveringsfrister"
 
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:34
-#, fuzzy
 msgid "Soft deadlines"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Myke innleveringsfrister"
 
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:46
 msgid ""
 "With HARD deadlines, {students_term} will be unable to make deliveries when "
 "a deadline has expired."
 msgstr ""
+""
 
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:49
 msgid ""
@@ -1646,6 +1643,11 @@ msgstr ""
 #, fuzzy
 msgid "examiner"
 msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:43
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:23
+msgid "assignment"
+msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:50
 msgid "Time of delivery"
