@@ -27,15 +27,16 @@ DATABASES = {"default": {
                         }
             }
 
-INSTALLED_APPS += ['devilry.apps.asminimalaspossible_gradeeditor',
-                   'seleniumhelpers',
-                   'djangosenchatools',
-                   'devilry_sandbox',
+INSTALLED_APPS += [
+    'devilry.apps.asminimalaspossible_gradeeditor',
+    'seleniumhelpers',
+    'djangosenchatools',
+    'devilry_sandbox',
 
-                   # Not apps, but here for the Django test system to discover them:
-                   'devilry.utils',
-                   'devilry.restful',
-                   'devilry.simplified']
+    # Not apps, but here for the Django test system to discover them:
+    'devilry.utils',
+    'devilry.restful',
+    'devilry.simplified']
 
 
 INTERNAL_IPS = ["127.0.0.1"]
@@ -137,3 +138,23 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
     'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
     #'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
 ]
+
+
+##############################################################
+#
+# Cache
+#
+##############################################################
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
+    }
+}
+
+##############################################################
+#
+# Rosetta
+# - see: https://github.com/mbi/django-rosetta
+#
+##############################################################
+INSTALLED_APPS += ['rosetta']
