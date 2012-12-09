@@ -23,7 +23,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AllIgnoredHelp', {
             html: [
                 '<h2>', gettext('Allow duplicates?'), '</h2>',
                 '<p>',
-                    gettext('If you want to add the same student to more than one group on this assignment, click the button below. This will show the list of students without filtering out students already registered on the assignment.'),
+                    gettext('If you want to add the same student to more than one group on this assignment, click the button below. This will show the list of students without filtering out students already registered on the assignment. The use-case for this feature is if you have project assignments where students are in more than one project group. <strong>Keep this unchecked if you are unsure of what to do</strong>.'),
                 '</p>'
             ].join('')
         }, {

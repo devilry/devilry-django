@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-07 17:09+0100\n"
+"POT-Creation-Date: 2012-12-09 17:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -121,7 +121,7 @@ msgid "Devilry suggested values for: {labels}."
 msgstr "Devilry foreslo følgende verdier for: {labels}."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:355
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:233
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:235
 msgid "Name"
 msgstr "Navn"
 
@@ -130,7 +130,7 @@ msgid "Suggested {long_name} as the name, based on {last_long_name}."
 msgstr "Foreslo {long_name} som nav, basert på {last_long_name}."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:376
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:200
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:202
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:134
 msgid "Submission date"
 msgstr "Innleveringsfrist"
@@ -553,8 +553,8 @@ msgid ""
 "are admin on an item higher up in the hierarchy."
 msgstr ""
 "Du har ikke rettighetene som kreves for å slette {short_description}. Kun "
-"superbrukere kan slette objekter med innhold. Du kan bare slette objekter der "
-"du er administrator et nivå høyere opp i hierarkiet."
+"superbrukere kan slette objekter med innhold. Du kan bare slette objekter "
+"der du er administrator et nivå høyere opp i hierarkiet."
 
 #: static/devilry_subjectadmin/app/view/DeleteDjangoRestframeworkRecordDialog.js:18
 msgid "Permission denied"
@@ -577,7 +577,8 @@ msgid ""
 "Choose the students you want to add to the assignment, and click "
 "{savebuttonlabel}."
 msgstr ""
-"Velg studentene du ønsker å legge til på oppgaven, og klikk {savebuttonlabel}."
+"Velg studentene du ønsker å legge til på oppgaven, og klikk "
+"{savebuttonlabel}."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:36
 msgid "Move your mouse over the checkboxes for help."
@@ -598,7 +599,9 @@ msgstr "Legg til eller rediger studenter på {periodpath}"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:49
 msgid "You need to reload this page when you return after adding students."
-msgstr "Du må laste denne siden på nytt når du returnerer etter å ha lagt til studenter."
+msgstr ""
+"Du må laste denne siden på nytt når du returnerer etter å ha lagt til "
+"studenter."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:53
 msgid ""
@@ -607,8 +610,8 @@ msgid ""
 "ones available in the list."
 msgstr ""
 "Du har ikke administrator-rettigheter på {periodpath}, så du må be noen med "
-"administrator-rettigheter om hjelp hvis du trenger å legge til flere studenter "
-"enn de som er tilgjengelig i listen."
+"administrator-rettigheter om hjelp hvis du trenger å legge til flere "
+"studenter enn de som er tilgjengelig i listen."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:58
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:24
@@ -624,10 +627,11 @@ msgid ""
 msgstr ""
 "<strong>{ignoredcount}</strong> studenter er ikke tilgjengelig i listen "
 "fordi de allerede er registrert på oppgaven. Velg <em>Tillat duplikater</em> "
-"hvis du ønsker å tillate samme student å være i flere grupper på samme oppgave."
+"hvis du ønsker å tillate samme student å være i flere grupper på samme "
+"oppgave."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:64
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:249
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:251
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:167
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:26
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnSingle.js:34
@@ -649,8 +653,8 @@ msgid ""
 msgstr ""
 "Du kan kopiere tags fra {periodpath} når du legget til studenter. Tags fra "
 "{periodpath} og tags på oppgavene i {periodpath} holdes ikke i synk etter at "
-"du legger til studenter på oppgavene. Det betyr at du trygt kan redigere tags "
-"på en oppgave uten at det på virker andre oppgaver eller {periodpath}."
+"du legger til studenter på oppgavene. Det betyr at du trygt kan redigere "
+"tags på en oppgave uten at det på virker andre oppgaver eller {periodpath}."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:80
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersInGroupGrid.js:22
@@ -694,55 +698,56 @@ msgstr "Inkluder tags"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:149
 msgid ""
-"Check this to tag the added students with the tags they have on %(periodpath)s. "
-"Keep this checked if you are unsure of what to do. When this is checked, "
+"Check this to tag the added students with the tags they have on %(periodpath)"
+"s. Keep this checked if you are unsure of what to do. When this is checked, "
 "tags are displayed in the second column of the table."
 msgstr ""
-"Velg denne for å tagge alle studenten som legges til med taggene de har på %(periodpath)s. "
-"Behold denne som valgt hvis du er usikker på hva du bør gjøre. Når denne er valgt, "
-"vises tags som vil kopieres fra %(periodpath)s i andre kolonne i tabellen."
+"Velg denne for å tagge alle studenten som legges til med taggene de har på "
+"%(periodpath)s. Behold denne som valgt hvis du er usikker på hva du bør "
+"gjøre. Når denne er valgt, vises tags som vil kopieres fra %(periodpath)s i "
+"andre kolonne i tabellen."
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:154
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:156
 msgid ""
 "Check this to automatically set examiners that have at least one tag in "
 "common with a student as their examiner on this assignment. When this is "
 "checked, the result of the tag-matching is displayed in the second column of "
 "the table."
 msgstr ""
-"Velg denne for å automatisk sette rettere som har minst en tag til felles med "
-"en student som studentens retter på denne oppgaven. Når denne er valgt, vises "
-"resultatet av i andre kolonne i tabellen."
+"Velg denne for å automatisk sette rettere som har minst en tag til felles "
+"med en student som studentens retter på denne oppgaven. Når denne er valgt, "
+"vises resultatet av i andre kolonne i tabellen."
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:156
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:158
 msgid "Autoset examiners by tags"
 msgstr "Sett opp rettere etter tags"
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:162
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:186
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:164
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:188
 msgid "Add selected students"
 msgstr "Legg til valgte studenter"
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:177
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:179
 msgid "More help"
 msgstr "Mer hjelp"
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:178
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:180
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:142
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:153
 msgid "Less help"
 msgstr "Mindre hjelp"
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:211
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:213
 msgid ""
 "Students must submit their delivery before this time. This becomes their "
 "first deadline on this assignment, and it can be edited just like any other "
 "deadline."
 msgstr ""
-"Studenter må laste opp sin innlevering før dette tidspunktet. Dette blir deres "
-"første innleveringsfrist på denne oppgaven, og den kan redigeres akkurat som "
-"alle andre innleveringsfrister."
+"Studenter må laste opp sin innlevering før dette tidspunktet. Dette blir "
+"deres første innleveringsfrist på denne oppgaven, og den kan redigeres "
+"akkurat som alle andre innleveringsfrister."
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:240
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:242
 msgid "Tags and matching examiners"
 msgstr "Tags og tilhørende rettere"
 
@@ -755,8 +760,15 @@ msgstr "Avanserte valg"
 msgid ""
 "If you want to add the same student to more than one group on this "
 "assignment, click the button below. This will show the list of students "
-"without filtering out students already registered on the assignment."
+"without filtering out students already registered on the assignment. The use-"
+"case for this feature is if you have project assignments where students are "
+"in more than one project group. <strong>Keep this unchecked if you are "
+"unsure of what to do</strong>."
 msgstr ""
+"Klikk på knappen nedenfor hvis du ønsker å tillate at studenter er i mer enn en gruppe. "
+"Bruksområdet for dette valget er prosjektoppgaver der samme student kan være "
+"med i mer enn en prosjektgruppe. <strong>Ikke bruk dette valget hvis du er "
+"usikker eller ikke forstår hva det innebærer</strong>."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:38
 msgid "No students available"
@@ -783,29 +795,29 @@ msgstr "Legg til studenter på {periodpath}"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:51
 msgid "Opens in new window"
-msgstr ""
+msgstr "Åpnes i et nytt vindu"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:53
 msgid "When you return to this page, reload it to see newly added students."
 msgstr ""
+"Oppdater (refresh) denne siden når du kommer tilbake etter å lagt til nye "
+"studenter."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:57
 msgid ""
 "You do not have administrator rights on {periodpath}, so you need to ask "
 "someone with administrator rights if you need to add more students."
 msgstr ""
+"Du har ikke administrator-rettigheter på {periodpath}, så du må be noen med "
+"administrator-rettigheter hvis du behøver å legge til flere studenter."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllowDuplicatesCheckbox.js:7
 msgid "Allow duplicates"
-msgstr ""
+msgstr "Tillat duplikater"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AllowDuplicatesCheckbox.js:8
 msgid ""
-"Check this to allow students to be in more than one group. Checking this "
-"stops hiding students that are already in a group on this assignment from "
-"the list. The use-case for this feature is if you have project assignments "
-"where students are in more than one project group. <strong>Keep this "
-"unchecked if you are unsure of what to do</strong>."
+"Uncheck this to hide any students already in a group from the list below."
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:15
