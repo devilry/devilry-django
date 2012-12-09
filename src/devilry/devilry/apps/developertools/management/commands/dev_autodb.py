@@ -259,6 +259,16 @@ class Command(BaseCommand):
                             periods=periods,
                             assignments=assignments)
         self.testhelper.duck1010.admins.add(self.testhelper.thor)
+
+        for year in range(2000, 2011): # Add some extra old semesters just to make it easier to test layouts with many semesters
+            logging.info('Creating duck1010 spring%s', year)
+            self.testhelper.duck1010.periods.create(
+                short_name='spring{0}'.format(year),
+                long_name='Spring {0}'.format(year),
+                start_time=datetime(year, 8, 1),
+                end_time=datetime(year, 12, 30)
+            )
+
         anotherTryVerdict = {'grade': 'Not approved', 'points': 0, 'is_passing_grade': False}
         failedVerdict = {'grade': 'Not approved', 'points': 0, 'is_passing_grade': False}
         okVerdict = {'grade': 'Approved', 'points': 1, 'is_passing_grade': True}
@@ -276,6 +286,7 @@ class Command(BaseCommand):
             self._addBadGroups(periodpath, assignmentnames, anotherTryVerdict, failedVerdict)
             self._addMediumGroups(periodpath, assignmentnames, anotherTryVerdict, okVerdict)
             self._addGoodGroups(periodpath, assignmentnames, goodVerdict)
+
 
     def create_duck6000(self):
         """
