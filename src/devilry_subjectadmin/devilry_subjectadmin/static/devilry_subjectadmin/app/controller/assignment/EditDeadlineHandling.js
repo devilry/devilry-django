@@ -88,9 +88,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditDeadlineHandling', {
         this.getReadOnlyViewBody().update({
             deadline_handling: deadline_handling,
             SOFT: SOFT,
-            HARD: HARD,
-            students_term: gettext('students'),
-            examiners_term: gettext('examiners')
+            HARD: HARD
         });
     },
 

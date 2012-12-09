@@ -25,11 +25,10 @@ Ext.define('devilry_subjectadmin.view.assignment.EditDeadlineHandlingPanel', {
                     xtype: 'box',
                     tpl: [
                         '<p>',
-                            gettext('Enable hard deadlines if you want to make it impossible for {students_term} to add deliveries after their active deadline.'),
+                            gettext('Enable hard deadlines if you want to make it impossible for students to add deliveries after their active deadline.'),
                         '</p>'
                     ],
                     data: {
-                        students_term: gettext('students')
                     },
                     margin: '0 0 10 0'
                 }, {

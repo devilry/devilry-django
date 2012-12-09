@@ -27,7 +27,7 @@ Ext.define('devilry_subjectadmin.view.assignment.GradeEditorSelectWidget', {
                 '</div>',
                 '<tpl if="isMissingConfig">',
                     '<div class="alert alert-error">',
-                        gettext('Missing grade editor config. You have to configure this grade editor before any feeback may be provided on this assignment.'),
+                        gettext('Missing grading system config. You have to configure this grading system before any feeback may be provided on this assignment.'),
                     '</div>',
                 '</tpl>',
             '</tpl>'

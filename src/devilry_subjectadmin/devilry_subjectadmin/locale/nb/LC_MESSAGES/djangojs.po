@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-09 18:19+0100\n"
+"POT-Creation-Date: 2012-12-09 18:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -80,7 +80,7 @@ msgstr "Legg til studenter"
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:192
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:223
 #: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:126
-#: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:132
+#: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:130
 #: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:128
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:417
 #: static/devilry_subjectadmin/app/controller/period/EditDuration.js:128
@@ -330,23 +330,6 @@ msgstr "Tagget %(users)s med: %(tags)s"
 #: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:193
 msgid "Cleared tags on %(users)s."
 msgstr "Fjernet alle tags fra %(users)s"
-
-#: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:92
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:71
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:21
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:148
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:159
-msgid "students"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:93
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:30
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:62
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:72
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:6
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:20
-msgid "examiners"
-msgstr ""
 
 #: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:90
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:195
@@ -916,94 +899,105 @@ msgstr "Myke innleveringsfrister"
 
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:46
 msgid ""
-"With HARD deadlines, {students_term} will be unable to make deliveries when "
-"a deadline has expired."
+"With HARD deadlines, students will be unable to make deliveries when a "
+"deadline has expired."
 msgstr ""
-""
+"Med HARDE innleveringsfrister, er det ikke mulig for studenter å levere "
+"etter innleveringsfristen."
 
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:49
 msgid ""
-"With SOFT deadlines {students_term} will be able to make deliveries after "
-"the deadline has expired. All deliveries after their deadline are clearly "
+"With SOFT deadlines students will be able to make deliveries after the "
+"deadline has expired. All deliveries after their deadline are clearly "
 "highligted."
 msgstr ""
+"Med MYKE innleveringsfrister kan studenter levere etter innleveringsfristen. "
+"Alle innleveringer etter fristen er tydelig markert."
 
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:52
 msgid ""
 "NOTE: Devilry is designed from the bottom up to gracefully handle SOFT "
 "deadlines. Students have to perform an extra confirm-step when adding "
 "deliveries after their active deadline, and assignments where the deadline "
-"has expired is clearly marked for both {students_term} and {examiners_term}."
+"has expired is clearly marked for both students and examiners."
 msgstr ""
+"MERK: Devilry er designet for å håndtere MYKE innleveringsfrister på en "
+"fornuftig måte. Studenter må gjennom et ekstra steg for å bekrefte at de "
+"ønsker å levere etter fristen, og oppgaver der innleveringsfristen har gått "
+"ut er tydelig markert for både rettere og studenter."
 
 #: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimePanel.js:32
-#, fuzzy
 msgid ""
 "Choose a time when students will be able to start adding deliveries on the "
 "assignment. Note that students must be registered on the assignment as well "
 "before they can add any deliveries."
 msgstr ""
-"Velg tidspunktet når %(students_term)s vil kunne begynne å levere. "
-"Standardverdien er <em>nå</em>. Merk at %(students_term)s også må være "
-"registrert på oppgaven før de kan levere %(deliveries_term)s."
+"Velg tidspunktet når studenter vil kunne begynne å levere. Merk at studenter "
+"også må være registrert på oppgaven før de kan levere."
 
 #: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimeWidget.js:42
 msgid ""
 "The time when students will be able to start adding deliveries on the "
 "assignment."
 msgstr ""
+"Tidspunktet da studenter vil få muligheten til å begynne å legge til "
+"innleveringer på oppgaven."
 
 #: static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:26
 msgid ""
 "Click the edit button for more information about grading systems and your "
 "current grading system."
 msgstr ""
+"Klikk rediger-kanppen for mer informasjon om karaktersystemer og ditt "
+"nåværende karaktersystem."
 
 #: static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:30
 msgid ""
-"Missing grade editor config. You have to configure this grade editor before "
-"any feeback may be provided on this assignment."
+"Missing grading system config. You have to configure this grading system "
+"before any feeback may be provided on this assignment."
 msgstr ""
+"Mangler karaktersystem konfigurasjon. Du må konfigurere dette karaktersystemet før tilbakemeldinger kan gis på denne oppgaven."
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:71
 #: static/devilry_subjectadmin/app/view/period/Overview.js:77
-#, fuzzy
 msgid "No students"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Ingen studenter"
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:72
 msgid ""
 "This assignment has no students. You need to <a href=\"%(addstudents_url)s"
 "\">add students</a>."
 msgstr ""
+"Denne oppgaven har ingen studenter. Du må <a href=\"%(addstudents_url)s"
+"\">legge til studenter</a>."
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:89
 msgid "View, edit and add students on this assignment"
-msgstr ""
+msgstr "Vis, rediger og legg til studenter på denne oppgaven"
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:92
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:71
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:114
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:9
 msgid "Groups"
-msgstr ""
+msgstr "Grupper"
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:93
 #: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:83
 msgid "Deliveries"
-msgstr ""
+msgstr "Innleveringer"
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:102
 msgid "View, edit and add deadlines, including the submission date."
-msgstr ""
+msgstr "Vis, rediger, og legg til innleveringsfrister."
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:107
 msgid "Passed previous {period_term}"
-msgstr ""
+msgstr "Bestått tidligere {period_term}"
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:110
 msgid "Wizard with automatic and manual selection."
-msgstr ""
+msgstr "Mulighet for automatisk og manuelt valg av studenter"
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:138
 msgid ""
@@ -1711,6 +1705,14 @@ msgstr ""
 msgid "A %(group_term)s can have multiple %(examiners_term)s."
 msgstr "Sett opp %(examiners_term)s automatisk?"
 
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:30
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:62
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:72
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:6
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:20
+msgid "examiners"
+msgstr ""
+
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:32
 msgid ""
 "Removing an %(examiner_term)s from a %(group_term)s does NOT remove any "
@@ -1887,6 +1889,13 @@ msgid ""
 "will apear. Your selected sizes is saved as a cookie in your browser, which "
 "means that they will be remembered when you return to this view in your "
 "current browser."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:71
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:21
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:148
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:159
+msgid "students"
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:60

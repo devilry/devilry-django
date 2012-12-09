@@ -43,13 +43,13 @@ Ext.define('devilry_subjectadmin.view.assignment.EditDeadlineHandlingWidget', {
                             '<div {MORE_ATTRS}>',
 
                                 '<p>',
-                                    gettext('With HARD deadlines, {students_term} will be unable to make deliveries when a deadline has expired.'),
+                                    gettext('With HARD deadlines, students will be unable to make deliveries when a deadline has expired.'),
                                 '</p>',
                                 '<p>',
-                                    gettext('With SOFT deadlines {students_term} will be able to make deliveries after the deadline has expired. All deliveries after their deadline are clearly highligted.'),
+                                    gettext('With SOFT deadlines students will be able to make deliveries after the deadline has expired. All deliveries after their deadline are clearly highligted.'),
                                 '</p>',
                                 '<p><small>',
-                                    gettext('NOTE: Devilry is designed from the bottom up to gracefully handle SOFT deadlines. Students have to perform an extra confirm-step when adding deliveries after their active deadline, and assignments where the deadline has expired is clearly marked for both {students_term} and {examiners_term}.'),
+                                    gettext('NOTE: Devilry is designed from the bottom up to gracefully handle SOFT deadlines. Students have to perform an extra confirm-step when adding deliveries after their active deadline, and assignments where the deadline has expired is clearly marked for both students and examiners.'),
                                 '</small></p>',
                             '</div>',
                         '</tpl>'
