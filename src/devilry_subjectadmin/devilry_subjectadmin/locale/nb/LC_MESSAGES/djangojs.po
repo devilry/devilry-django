@@ -1005,7 +1005,7 @@ msgid ""
 "often used as an identifier when integrating other systems with Devilry."
 msgstr ""
 "Å endre navn på en oppgave bør ikke gjøres uten nøye gjennomtanke. Navnet "
-"til en oppave, spesielt det korte navnet, brukes ofte som identifikator av "
+"til en oppgave, spesielt det korte navnet, brukes ofte som identifikator av "
 "systemer som integrerer seg med Devilry."
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:141
