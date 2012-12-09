@@ -6,7 +6,7 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
 
     _getBreadcrumbPrefix: function() {
         return [{
-            title: interpolate(gettext("All %(subjects_term)s"), {
+            text: interpolate(gettext("All %(subjects_term)s"), {
                 subjects_term: gettext('subjects')
             }, true),
             url: '#/'
