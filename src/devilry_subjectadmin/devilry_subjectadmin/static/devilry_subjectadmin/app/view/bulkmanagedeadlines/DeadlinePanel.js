@@ -59,9 +59,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
             '<p style="white-space: pre-wrap">{text}</p>',
         '<tpl else>',
             '<p class="muted"><small>',
-                interpolate(gettext('This %(deadline_term)s has no text. Use the edit button if you want to set a text.'), {
-                    deadline_term: gettext('deadline')
-                }, true),
+                gettext('This deadline has no text. Use the edit button if you want to set a text.'),
             '</small></p>',
         '</tpl>'   
     ],
@@ -70,16 +68,11 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
         '<h2 class="oneline_ellipsis">',
             gettext('Groups'),
             ' <small>- ',
-                interpolate(gettext('%(Students_term)s are organized in %(groups_term)s, even when they work alone'), {
-                    Students_term: gettext('Students'),
-                    groups_term: gettext('groups')
-                }, true),
+                gettext('Students are organized in groups, even when they work alone'),
             '</small>',
         '</h2>',
         '<p class="muted"><small>',
-            interpolate(gettext('Select a %(group_term)s to view or edit it in the group manager.'), {
-                group_term: gettext('group')
-            }, true),
+            gettext('Select a group to view or edit it.'),
         '</small></p>'
     ],
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-09 18:55+0100\n"
+"POT-Creation-Date: 2012-12-09 19:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,7 +52,6 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:399
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:86
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:91
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:74
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:70
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:36
 #: static/devilry_subjectadmin/app/view/period/Overview.js:114
@@ -976,8 +975,8 @@ msgid "View, edit and add students on this assignment"
 msgstr "Vis, rediger og legg til studenter på denne oppgaven"
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:92
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:71
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:114
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:69
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:107
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:9
 msgid "Groups"
 msgstr "Grupper"
@@ -1035,7 +1034,7 @@ msgstr "Slett"
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:66
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:74
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:112
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:105
 #: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:80
 msgid "Deadline"
 msgstr "Innleveringsfrist"
@@ -1046,7 +1045,7 @@ msgstr "Tidspunktet da innleveringsfristen går ut"
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:87
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:55
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:116
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:109
 #: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:53
 #: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:86
 msgid "About this deadline"
@@ -1092,102 +1091,55 @@ msgid "Add deadline to"
 msgstr "Legg til innleveringsfrist på"
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:28
-msgid ""
-"%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s."
-msgstr ""
+msgid "groups where active feedback is a failing grade."
+msgstr "grupper der den aktive tilbakemeldingen ikke er en bestått karakter"
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:29
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:34
+msgid ""
+"groups where active feedback is a failing grade, groups with no feedback and "
+"groups with no deadlines."
+msgstr ""
+"grupper der aktiv tilbakemelding ikke er en bestått karakter, grupper uten "
+"tilbakemelding og grupper uten innleveringsfrist."
+
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:39
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:49
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:57
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:75
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:16
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:21
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:26
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:24
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:7
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:18
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:33
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:36
-msgid "groups"
-msgstr ""
+msgid "groups with no deadlines."
+msgstr "grupper uten innleveringsfrist."
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:30
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:40
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:42
-msgid "grade"
-msgstr ""
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:44
+msgid "specify groups manually."
+msgstr "spesifiser grupper manuelt."
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:31
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:41
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:40
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:142
-msgid "feedback"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:38
-msgid ""
-"%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s, "
-"%(groups_term)s with no %(feedback_term)s and groups with no "
-"%(deadlines_term)s."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:42
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:50
-#: static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:26
-#: static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:29
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:25
-msgid "deadlines"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:48
-msgid "%(groups_term)s with no %(deadlines_term)s."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:56
-msgid "specify %(groups_term)s manually."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:82
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:68
 msgid ""
 "Select one or more groups. The deadline will only be added to the selected "
 "groups."
 msgstr ""
+"Velg en eller flere grupper. Innleveringsfristen legges bare til på de "
+"gruppene du velger."
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:62
 msgid ""
-"This %(deadline_term)s has no text. Use the edit button if you want to set a "
-"text."
+"This deadline has no text. Use the edit button if you want to set a text."
 msgstr ""
+"Denne innleveringsfristen har ikke noen tekst. Bruk rediger-knappen hvis du "
+"vil sette en tekst."
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:63
-msgid "deadline"
-msgstr "innleveringsfrist"
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:71
+msgid "Students are organized in groups, even when they work alone"
+msgstr "Studenter organiseres i grupper, også når de jobber alene"
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:73
-msgid ""
-"%(Students_term)s are organized in %(groups_term)s, even when they work alone"
-msgstr ""
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:75
+msgid "Select a group to view or edit it."
+msgstr "Velg en gruppe for å vise eller redigere den."
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:80
-msgid "Select a %(group_term)s to view or edit it in the group manager."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:81
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:29
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:34
-#: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:19
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:139
-msgid "group"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:151
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:144
 msgid "Edit/move"
 msgstr "Rediger/flytt"
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/EditDeadlineForm.js:22
 msgid "Only apply these changes to some of the groups in the deadline."
-msgstr ""
+msgstr "Gjør disse endrigene kun på noen av gruppene innenfor denne innleveringsfristen."
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/EditDeadlineForm.js:43
 msgid ""
@@ -1589,6 +1541,12 @@ msgstr ""
 msgid "No %(deadlines_term)s"
 msgstr "Legg til %(deadline_term)s"
 
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:26
+#: static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:29
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:25
+msgid "deadlines"
+msgstr ""
+
 #: static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:28
 msgid ""
 "This group has no %(deadlines_term)s, so they can not add %(deliveries_term)"
@@ -1627,6 +1585,11 @@ msgid ""
 "%(grade_term)s on this %(assignment_term)s."
 msgstr ""
 
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:40
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:142
+msgid "feedback"
+msgstr ""
+
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:41
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:143
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:17
@@ -1636,6 +1599,10 @@ msgstr ""
 #, fuzzy
 msgid "examiner"
 msgstr "Studenter &mdash; Se på og rediger"
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:42
+msgid "grade"
+msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:43
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:23
@@ -1690,6 +1657,17 @@ msgid ""
 "%(groups_term)s."
 msgstr ""
 
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:16
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:21
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:26
+#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:24
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:7
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:18
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:33
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:36
+msgid "groups"
+msgstr ""
+
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:19
 msgid "An %(examiner_term)s can open/close their %(groups_term)s."
 msgstr ""
@@ -1703,6 +1681,13 @@ msgstr ""
 #, fuzzy
 msgid "A %(group_term)s can have multiple %(examiners_term)s."
 msgstr "Sett opp %(examiners_term)s automatisk?"
+
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:29
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:34
+#: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:19
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:139
+msgid "group"
+msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:30
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:62
@@ -2626,6 +2611,9 @@ msgid ""
 "Once you delete a subject, there is no going back. Only superusers can "
 "delete a non-empty subject."
 msgstr ""
+
+#~ msgid "deadline"
+#~ msgstr "innleveringsfrist"
 
 #, fuzzy
 #~ msgid "Add %(deadline_term)s to"
