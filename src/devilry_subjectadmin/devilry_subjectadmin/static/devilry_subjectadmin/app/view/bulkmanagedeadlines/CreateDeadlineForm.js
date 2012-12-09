@@ -25,37 +25,23 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.CreateDeadlineForm', {
                 fieldLabel: gettext('Add deadline to'), // NOTE: We need the fieldLabel for error handling, even though it is hidden below.
                 hideLabel: true,
                 items: [{
-                    boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s.'), {
-                        groups_term: gettext('groups'),
-                        grade_term: gettext('grade'),
-                        feedback_term: gettext('feedback')
-                    }, true),
+                    boxLabel: gettext('groups where active feedback is a failing grade.'),
                     name: 'createmode',
                     inputValue: 'failed',
                     cls: 'createmode_failed',
                     checked: true
                 }, {
-                    boxLabel: interpolate(gettext('%(groups_term)s where active %(feedback_term)s is a failing %(grade_term)s, %(groups_term)s with no %(feedback_term)s and groups with no %(deadlines_term)s.'), {
-                        groups_term: gettext('groups'),
-                        grade_term: gettext('grade'),
-                        feedback_term: gettext('feedback'),
-                        deadlines_term: gettext('deadlines')
-                    }, true),
+                    boxLabel: gettext('groups where active feedback is a failing grade, groups with no feedback and groups with no deadlines.'),
                     name: 'createmode',
                     cls: 'createmode_failed_or_no_feedback',
                     inputValue: 'failed-or-no-feedback'
                 }, {
-                    boxLabel: interpolate(gettext('%(groups_term)s with no %(deadlines_term)s.'), {
-                        groups_term: gettext('groups'),
-                        deadlines_term: gettext('deadlines')
-                    }, true),
+                    boxLabel: gettext('groups with no deadlines.'),
                     name: 'createmode',
                     cls: 'createmode_no_deadlines',
                     inputValue: 'no-deadlines'
                 }, {
-                    boxLabel: interpolate(gettext('specify %(groups_term)s manually.'), {
-                        groups_term: gettext('groups')
-                    }, true),
+                    boxLabel: gettext('specify groups manually.'),
                     name: 'createmode',
                     itemId: 'createmodeSpecificGroups',
                     cls: 'createmode_specific_groups',
