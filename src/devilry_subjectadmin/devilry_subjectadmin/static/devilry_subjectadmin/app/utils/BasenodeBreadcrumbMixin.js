@@ -16,7 +16,7 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
     _addBasenodeBreadcrumbToBreadcrumb: function(breadcrumb, basenodeRecord, skipLast) {
         var breadcrumbList = basenodeRecord.get('breadcrumb');
         Ext.each(breadcrumbList, function(item, index) {
-            var isLast = index == breadcrumbList.length-1;
+            var isLast = index === breadcrumbList.length-1;
             if(isLast && skipLast) {
                 return false; // break;
             }
