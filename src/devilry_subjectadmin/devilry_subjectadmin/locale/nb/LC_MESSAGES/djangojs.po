@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-10 19:17+0100\n"
+"POT-Creation-Date: 2012-12-10 19:46+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1844,11 +1844,11 @@ msgstr "Velg via forhåndsdefinerte filtre"
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:56
 msgid ""
-"The Select-button in the upper left corner lets you select groups "
-"using a good set of pre-defined filters."
+"The Select-button in the upper left corner lets you select groups using a "
+"good set of pre-defined filters."
 msgstr ""
-"Velg-knappen i øvre venstre hjørne lar deg velge grupper ved hjelp av "
-"et godt utvalg av forhåndsdefinerte filtre."
+"Velg-knappen i øvre venstre hjørne lar deg velge grupper ved hjelp av et "
+"godt utvalg av forhåndsdefinerte filtre."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:58
 msgid "Select by search"
@@ -1856,18 +1856,38 @@ msgstr "Velg via søk"
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:60
 msgid ""
-"The search field at the top of the group-list allows you to "
-"search for groups. The results is displayed in a menu, and when you select a "
-"group from the menu, the group is selected."
+"The search field at the top of the group-list allows you to search for "
+"groups. The results is displayed in a menu, and when you select a group from "
+"the menu, the group is selected."
 msgstr ""
-"Søkefeltet på toppen av gruppelisten lar deg søke etter grupper. Resultatet vises i en meny, "
-"og når du velger en gruppe fra menyen blir gruppen valgt."
+"Søkefeltet på toppen av gruppelisten lar deg søke etter grupper. Resultatet "
+"vises i en meny, og når du velger en gruppe fra menyen blir gruppen valgt."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:63
-msgid "Using a small or huge display?"
+msgid ""
+"You can use the up and down keys on your keyboard to navigate the search "
+"results list, and the RETURN/ENTER key to select groups. After selecting a "
+"group, the focus is returned to the search field. This makes the following "
+"workflow very efficient:"
 msgstr ""
+"Du kan bruke opp og ned knappene på tastaturet ditt til å navigere "
+"søkeresultatlisten, og ENTER-knappen til å velge grupper. Etter at du har "
+"valgt en gruppe, returnerer fokuset til søkefeltet. Dette gjør følgende "
+"arbeidsfly veldig effektiv:"
 
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:65
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:66
+msgid ""
+"Select the search field, type a name, hit ENTER, type another name, hit "
+"ENTER, ..."
+msgstr ""
+"Velg søkefeltet, skriv inn et navn, trykk ENTER, skriv inn ett navn til, "
+"trykk ENTER, ..."
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:69
+msgid "Using a small or huge display?"
+msgstr "På et stor eller lite skjerm"
+
+#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:71
 msgid ""
 "The width of the group-list, and the height of the <em>Summary of selected "
 "groups</em> panel (when multiple groups are selected), is not perfect for "
@@ -1877,148 +1897,158 @@ msgid ""
 "means that they will be remembered when you return to this view in your "
 "current browser."
 msgstr ""
+"Bredden på gruppelisten, og høyden på <em>Oppsummering av valgte grupper</"
+"em> panelet (når flere grupper er valgt), er ikke perfekt for alle "
+"skjermoppløsninger. For å forbedre dette, tillater vi deg å endre størrelsen "
+"på disse panelene. Flytt musepekeren over den indre rammen på en av dissen "
+"listene, så vil du få en ramme som du kan bruke til å justere størrelsen på "
+"listene. Dine valgte størrelser lagres som en cookie i din nettleser, noe "
+"som betyr at de vil huskes hvis du returnerer til denne siden med denne "
+"nettleseren senere."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:60
 msgid "Invert selection"
-msgstr ""
+msgstr "Inverter valgene"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:62
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:69
 msgid "Replace current selection"
-msgstr ""
+msgstr "Erstatt nåværende valg"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:74
-msgid "Add to selection"
-msgstr ""
-
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:77
 msgid "Add to current selection"
-msgstr ""
+msgstr "Legg til nåverende valg"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:124
 msgctxt "group"
 msgid "By status"
-msgstr ""
+msgstr "Etter status"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:143
 msgctxt "group"
 msgid "By feedback"
-msgstr ""
+msgstr "Etter tilbakemelding"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:160
 msgctxt "group"
 msgid "Has feedback"
-msgstr ""
+msgstr "Har tilbakemelding"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:164
 msgctxt "group"
 msgid "No feedback"
-msgstr ""
+msgstr "Ingen tilbakemelding"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:166
 msgctxt "group"
 msgid "Grade"
-msgstr ""
+msgstr "Karakter"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:174
 msgctxt "points"
 msgid "Points"
-msgstr ""
+msgstr "Poeng"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:186
 msgid "By number of deliveries"
-msgstr ""
+msgstr "Etter antall innleveringer"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:195
 msgid "Has deliveries"
-msgstr ""
+msgstr "Har innleveringer"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:199
 msgid "No deliveries"
-msgstr ""
+msgstr "Ingen innleveringer"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:201
 msgctxt "numdeliveries"
 msgid "Exact number"
-msgstr ""
+msgstr "Nøyaktig antall"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:213
 msgid "By examiner"
-msgstr ""
+msgstr "Etter retter"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:222
 msgid "Has examiner(s)"
-msgstr ""
+msgstr "Har retter(e)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:226
 msgid "No examiner(s)"
-msgstr ""
+msgstr "Ingen retter(e)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:228
 msgid "Specific examiner"
-msgstr ""
+msgstr "Spesifikk retter"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:240
 msgid "By tag"
-msgstr ""
+msgstr "Etter tag"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:249
 msgid "Has tag(s)"
-msgstr ""
+msgstr "Har tag(s)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:253
 msgid "No tag(s)"
-msgstr ""
+msgstr "Ingen tag(s)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:255
 msgid "Specific tag"
-msgstr ""
+msgstr "Spesifikk tag"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:61
 msgid "Set examiner(s)"
-msgstr ""
+msgstr "Sett retter(e)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:64
 msgid ""
 "Replace the examiners on the selected groups with one or more new examiner"
 "(s)."
-msgstr ""
+msgstr "Erstatt retterne på valgte grupper med en eller flere nye retter(e)."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:66
 msgid "Add examiner(s)"
-msgstr ""
+msgstr "Legg til retter(e)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:69
 msgid "Add one or more examiner(s) to the selected groups."
-msgstr ""
+msgstr "Legg til en eller flere retter(e) på valgte grupper."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:71
-#, fuzzy
 msgid "Advanced"
-msgstr "Avanserte valg"
+msgstr "Avansert"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:74
 msgid "Random distribute"
-msgstr ""
+msgstr "Tilfeldig distribuering"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:77
+#, fuzzy
 msgid ""
 "Replace the examiners on the selected groups with a random examiner from a "
-"set of examiners that you select."
+"set of examiners that you select. The distribution of groups for each "
+"examiner is even, no examiners get more that one group more than any other "
+"examiner."
 msgstr ""
+"Erstatt retterne på de valgte gruppene med tilfeldige rettere fra et sett "
+"med rettere som du velger. Distribusjonen av studenter per retter er jevn, "
+"ingen rettere får mer enn en gruppe mer enn noen andre rettere."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:80
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:186
 msgid "Clear examiners"
-msgstr ""
+msgstr "Fjern rettere"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:84
 msgid "Remove/clear all examiners from the selected groups."
-msgstr ""
+msgstr "Fjern alle rettere fra de valgte gruppene."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:102
 msgid "Set selected examiners"
-msgstr ""
+msgstr "Sett valgte rettere"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:112
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:141
@@ -2026,40 +2056,46 @@ msgid ""
 "Select one or more examiner. Any current examiners on the selected groups "
 "will be <strong>replaced</strong> when you confirm your selection."
 msgstr ""
+"Velg en eller flere rettere. Alle nåverende rettere på valgte grupper vil "
+"bli <strong>erstattet</strong> når du bekrefter valget ditt."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:131
 msgid "Random distribute selected examiners"
-msgstr ""
+msgstr "Fordel valgte rettere tilfeldig"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:160
 msgid "Add selected examiners"
-msgstr ""
+msgstr "Legg til valgte rettere"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:170
 msgid ""
 "Select one or more examiner. The selected examiners will be <strong>added</"
 "strong> to the selected groups when you confirm your selection."
 msgstr ""
+"Velg en eller flere rette. De valgte retterne vil blir <strong>lagt til</"
+"strong> på de valgte gruppene når du bekrefter ditt valg."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:191
 msgid "Do you really want to clear all examiners on the selected groups?"
-msgstr ""
+msgstr "Vil du virkelig fjerne alle retterne fra de valgte gruppene?"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:43
 msgid ""
 "<strong>Note</strong>: Only examiners registered on the %(period_term)s are "
 "available."
 msgstr ""
+"<strong>Merk</strong>: Kun rettere registrert på oppgavens %(period_term)s "
+"er tilgjengelige."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:78
 msgid "Examiners help ..."
-msgstr ""
+msgstr "Om rettere ..."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:79
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:58
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnSingle.js:61
 msgid "Hide help"
-msgstr ""
+msgstr "Sjul hjelp"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:102
 msgid ""
