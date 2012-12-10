@@ -1155,17 +1155,16 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:61
 msgctxt "createnewassignment"
 msgid "Example: Obligatory assignment one"
-msgstr ""
+msgstr "Eksempel: Obligatorisk oppgave 1"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:71
 msgctxt "createnewassignment"
 msgid "Example: oblig-1"
-msgstr ""
+msgstr "Eksempel: oblig-1"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:94
-#, fuzzy
 msgid "How do students add deliveries?"
-msgstr "Hvordan leverer %(students_term)s?"
+msgstr "Hvordan leverer studentene?"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:100
 msgid "Using Devilry"
@@ -1176,7 +1175,6 @@ msgid "Not using Devilry"
 msgstr "Ikke gjennom Devilry"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:117
-#, fuzzy
 msgid ""
 "If you only use Devilry to give feedback, and students deliver paper copies "
 "or through an alternative channel (oral presentation, email, ...), choose "
@@ -1187,11 +1185,11 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:142
 msgid "Students must submit their delivery before this time."
-msgstr ""
+msgstr "Studenter må sende inn deres innlevering før dette tidspunktet."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:161
 msgid "click to expand"
-msgstr ""
+msgstr "klikk for å utvide"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:180
 msgid "Anonymous?"
@@ -1203,49 +1201,49 @@ msgid ""
 "examiners see candidate-id instead of any personal information about the "
 "students."
 msgstr ""
+"For eksamener bør denne være valgt. Hvis en oppgave er anonym, ser rettere "
+"kandidat-id istedenfor personlig informasjon om studentene."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:205
-#, fuzzy
 msgid ""
 "Choose a time when students will be able to start adding deliveries on the "
 "assignment. The default is <em>now</em>. Note that students must be "
 "registered on the assignment as well before they can add any deliveries."
 msgstr ""
-"Velg tidspunktet når %(students_term)s vil kunne begynne å levere. "
-"Standardverdien er <em>nå</em>. Merk at %(students_term)s også må være "
-"registrert på oppgaven før de kan levere %(deliveries_term)s."
+"Velg tidspunktet når studentene vil kunne begynne å levere. "
+"Standardverdien er <em>nå</em>. Merk at studentene også må være "
+"registrert på oppgaven før de kan levere."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:217
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:53
 msgid "Next"
-msgstr ""
+msgstr "Neste"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:241
-#, fuzzy
 msgid "Students?"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Studenter?"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:255
 #, fuzzy
 msgid "Add all students registered on the %(period_term)s."
 msgstr ""
-"Legg til alle %(students_term)s registrert på oppgavens %(period_term)s?"
+"Legg til alle studenter registrert på oppgavens %(period_term)s?"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:269
 msgid "You may want to view and edit <a {relatedstudents_link}>students</a>."
-msgstr ""
+msgstr "Du kan se på og redigere <a {relatedstudents_link}>studenter</a>."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:279
 msgid "Copy from another assignment."
-msgstr ""
+msgstr "Kopier fra en annen oppgave"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:304
 msgid "Only copy those with passing grade?"
-msgstr ""
+msgstr "Kun kopier de med bestått karakter?"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:308
 msgid "Do not add students at this time."
-msgstr ""
+msgstr "Ikke legg til studenter."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:318
 msgid ""
@@ -1255,62 +1253,64 @@ msgid ""
 "organize them in project groups at any time, even after they have made "
 "deliveries."
 msgstr ""
+"Hvis du velger å ikke legge til studenter, må du legge de til manuelt senere. "
+"Hvis du har planer om å la studentene jobbe i prosjektgrupper, bør du allikevel "
+"legge de til på oppgaven nå. Du organisere studentene i prosjektgrupper når som "
+"helsts, selv setter at de har levert."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:339
 #, fuzzy
 msgid "Examiners?"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Rettere?"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:343
 msgid "The people that provide feedback to students"
-msgstr ""
+msgstr "De som gir tilbakemelding til studentene"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:364
 msgid "Setup examiners by tags."
-msgstr ""
+msgstr "Sett opp rette etter tags."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:371
-#, fuzzy
 msgid ""
 "Add examiners to students that have at least one tag in common with the "
 "examiner."
 msgstr ""
-"Setter opp %(examiners_term)s på %(students_term)s som har minst en "
-"%(tag_term)s til felles med retteren."
+"Tildeler studenter til rettere som har minst en "
+"tag til felles med studenten."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:373
 msgid ""
 "E.g.: If you tag two examiners and 20 students with <em>group1</em>, those "
 "two examiners will be set up to correct those 20 students."
 msgstr ""
+"F.eks.: Hvis du tagger to rettere og 20 studenter med <em>group1</em>, vil "
+"de to retterne settes opp som rettere for de 20 studentene."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:375
 msgid ""
 "You may want to view and edit tags for <a {relatedstudents_link}>students</"
 "a> and <a {relatedexaminers_link}>examiners</a>."
 msgstr ""
+"Du kan se på og redigere tags for <a {relatedstudents_link}>studenter</a> "
+"og <a {relatedexaminers_link}>rettere</a>."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:395
 msgid "Make me examiner for all students."
-msgstr ""
+msgstr "Gjør meg til retter for alle studenten."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:405
-msgid "I.E.: you plan to provide feedback to all students yourself."
-msgstr ""
+msgid "I.e.: you plan to provide feedback to all students yourself."
+msgstr "Velg dette hvis du har planer om å gi tilbakemelding til alle studentene alene."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:410
 msgid "Do not setup examiners at this time."
-msgstr ""
+msgstr "Ikke sett opp rettere nå."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:421
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:95
 msgid "Back"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:426
-#, fuzzy
-msgid "Create assignment"
-msgstr "Administrer %(deadlines_term)s"
+msgstr "Tilbake"
 
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:22
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:97

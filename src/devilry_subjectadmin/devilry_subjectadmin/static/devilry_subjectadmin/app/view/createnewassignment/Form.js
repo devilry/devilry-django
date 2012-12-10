@@ -402,7 +402,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 cls: 'bootstrap',
                                 html: [
                                     '<p class="muted"><small>',
-                                        gettext('I.E.: you plan to provide feedback to all students yourself.'),
+                                        gettext('I.e.: you plan to provide feedback to all students yourself.'),
                                     '</small></p>'
                                 ].join('')
 
@@ -423,7 +423,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                     }, '->', {
                         xtype: 'createbutton',
                         minWidth: 200,
-                        text: gettext('Create assignment'),
+                        text: gettext('Create new assignment'),
                         itemId: 'createButton',
                         scale: 'large',
                         formBind: true, //only enabled once the form is valid
