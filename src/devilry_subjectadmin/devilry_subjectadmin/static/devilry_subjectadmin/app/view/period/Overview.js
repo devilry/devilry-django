@@ -95,12 +95,12 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                     xtype: 'box',
                     cls: 'bootstrap',
                     margin: '30 0 0 0',
-                    tpl: [
-                        '<h2>', gettext('{Students_term} and examiners'), '</h2>',
+                    html: [
+                        '<h2>', gettext('Students and examiners'), '</h2>',
                         '<ul class="unstyled">',
                             '<li><p>',
                                 '<a href="', devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id), '">',
-                                    '{Students_term}',
+                                    gettext('Students'),
                                 '</a>',
                             '</p></li>',
                             '<li><p>',
@@ -109,10 +109,7 @@ Ext.define('devilry_subjectadmin.view.period.Overview' ,{
                                 '</a>',
                             '</p></li>',
                         '</ul>'
-                    ],
-                    data: {
-                        Students_term: gettext('Students')
-                    }
+                    ].join('')
                 }, {
                     xtype: 'dangerousactions',
                     margin: '45 0 0 0',

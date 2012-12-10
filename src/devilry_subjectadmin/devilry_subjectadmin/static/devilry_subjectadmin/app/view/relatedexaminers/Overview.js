@@ -33,9 +33,9 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
             gettext('Removing an examiner from a {period_term} does not affect any groups, deliveries or feedback already registered on an assignment.'),
         '</p>',
 
-        '<h3>', gettext('Accociate examiners with {students_term} using tags'), '</h3>',
+        '<h3>', gettext('Accociate examiners with students using tags'), '</h3>',
         '<p>',
-            gettext('If you tag your {students_term} and examiners with the same tags, you can automatically assign examiners to {students_term} when creating a new assignment. E.g.: If you tag two examiners and 20 {students_term} with <em>group1</em>, those two examiners will be set up to correct those 20 {students_term} when you create a new assignment.'),
+            gettext('If you tag your students and examiners with the same tags, you can automatically assign examiners to students when creating a new assignment. E.g.: If you tag two examiners and 20 students with <em>group1</em>, those two examiners will be set up to correct those 20 students when you create a new assignment.'),
         '</p>'
     ],
 
@@ -144,8 +144,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                                 xtype: 'box',
                                 tpl: this.morehelptpl,
                                 data: {
-                                    period_term: gettext('period'),
-                                    students_term: gettext('students')
+                                    period_term: gettext('period')
                                 }
                             }
                         }, {

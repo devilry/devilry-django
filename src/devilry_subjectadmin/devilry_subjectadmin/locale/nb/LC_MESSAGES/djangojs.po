@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-10 21:16+0100\n"
+"POT-Creation-Date: 2012-12-10 21:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,7 +52,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:86
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:91
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:36
-#: static/devilry_subjectadmin/app/view/period/Overview.js:114
+#: static/devilry_subjectadmin/app/view/period/Overview.js:103
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:64
 #, fuzzy
 msgid "Students"
@@ -180,13 +180,13 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsButton.js:26
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:36
 #: static/devilry_subjectadmin/app/view/period/Overview.js:59
-#: static/devilry_subjectadmin/app/view/period/Overview.js:124
-#: static/devilry_subjectadmin/app/view/period/Overview.js:138
+#: static/devilry_subjectadmin/app/view/period/Overview.js:121
+#: static/devilry_subjectadmin/app/view/period/Overview.js:135
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:59
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:69
 #: static/devilry_subjectadmin/app/view/subject/Overview.js:55
 #: static/devilry_subjectadmin/app/view/subject/Overview.js:79
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:86
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:88
 msgid "Loading"
 msgstr "Laster"
 
@@ -217,8 +217,8 @@ msgstr "Legg til %(period_term)s"
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:28
 #: static/devilry_subjectadmin/app/view/period/Overview.js:79
 #: static/devilry_subjectadmin/app/view/period/Overview.js:89
-#: static/devilry_subjectadmin/app/view/period/Overview.js:131
-#: static/devilry_subjectadmin/app/view/period/Overview.js:146
+#: static/devilry_subjectadmin/app/view/period/Overview.js:128
+#: static/devilry_subjectadmin/app/view/period/Overview.js:143
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:28
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:147
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:165
@@ -818,6 +818,8 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:18
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:27
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:76
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:81
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:90
 msgid "subject"
 msgstr ""
 
@@ -1005,8 +1007,8 @@ msgstr ""
 "systemer som integrerer seg med Devilry."
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:141
-#: static/devilry_subjectadmin/app/view/period/Overview.js:133
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:81
+#: static/devilry_subjectadmin/app/view/period/Overview.js:130
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:83
 msgid "Rename"
 msgstr "Gi nytt navn"
 
@@ -1023,8 +1025,8 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:19
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:137
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:139
-#: static/devilry_subjectadmin/app/view/period/Overview.js:148
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:88
+#: static/devilry_subjectadmin/app/view/period/Overview.js:145
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:92
 msgid "Delete"
 msgstr "Slett"
 
@@ -2440,12 +2442,13 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:38
 msgid "Group has feedback for this assignment."
-msgstr ""
+msgstr "Gruppen har tilbakemelding på denne oppgaven."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:48
 msgid ""
 "Show groups that Devilry believes should not be marked as previously passed?"
 msgstr ""
+"Vis grupper som Devilry mener ikke burde markeres som tidligere bestått?"
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:65
 msgid ""
@@ -2453,6 +2456,9 @@ msgid ""
 "before has been selected automatically, and they are marked with the name of "
 "the old assignment."
 msgstr ""
+"Velg en eller flere grupper. Grupper som vi tror har bestått denne oppgaven "
+"tidligere har blitt valgt automatisk, og de er markert med navnet på den "
+"gamle oppgaven."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:68
 msgid ""
@@ -2460,12 +2466,17 @@ msgid ""
 "assignments against the short name of this assignment. Only groups with "
 "exactly one student in both the old and the current assignment is matched."
 msgstr ""
+"Søket etter studenter som tidligere har bestått matcher det korte navnet på "
+"gamle oppgaver mot det korte navnet på denne oppgaven. Kun oppgaver med "
+"nøyaktig en student i både det gamle og nåværende oppgave matches."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:84
 msgid ""
 "Make sure you really want to mark these groups as previously passed before "
 "saving."
 msgstr ""
+"Forsikre deg om at du virkelig ønsker å markere disse gruppene som bestått "
+"tidligere semester før du lagrer."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:87
 msgid ""
@@ -2473,14 +2484,17 @@ msgid ""
 "a placeholder for a previously approved delivery, and create a feedback with "
 "passing grade on the delivery."
 msgstr ""
+"Dette vil lage en ny innlevering for hver av gruppene, markere innleveringen "
+"som en link lit en tidligere bestått innlevering, og lage en tilbakemelding "
+"med bestått karakter på innleveringen."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:27
 msgid "Autodetected as previously passed"
-msgstr ""
+msgstr "De tidligere beståtte som Devilry finner automatisk"
 
 #: static/devilry_subjectadmin/app/view/period/EditDurationWidget.js:20
 msgid "Duration"
-msgstr ""
+msgstr "Tidsrom"
 
 #: static/devilry_subjectadmin/app/view/period/Overview.js:78
 msgid ""
@@ -2488,62 +2502,72 @@ msgid ""
 "\"%(relatedstudents_url)s\">students</a> page and add some students. You "
 "will not be able to add any assignments until you have at least one student."
 msgstr ""
+"Valgt %(period_term)s har ingen studenter. Gå til <a href="
+"\"%(relatedstudents_url)s\">studenter</a>-siden og legg til studenter. Du "
+"kan ikke legge til en oppgave før du har lagt til minst en student."
 
 #: static/devilry_subjectadmin/app/view/period/Overview.js:87
-#, fuzzy
 msgid "No examiners"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Ingen rettere"
 
 #: static/devilry_subjectadmin/app/view/period/Overview.js:88
 msgid ""
 "This %(period_term)s has no examiners. Go to the <a href="
 "\"%(relatedexaminers_url)s\">examiners</a> page and add some examiners."
 msgstr ""
+"Valgt %(period_term)s har ingen rettere. Gå til <a href="
+"\"%(relatedexaminers_url)s\">rettere</a>-siden og legg til rettere."
 
 #: static/devilry_subjectadmin/app/view/period/Overview.js:99
-#, fuzzy
-msgid "{Students_term} and examiners"
-msgstr "Hvordan leverer %(students_term)s?"
+msgid "Students and examiners"
+msgstr "Studenter og rettere"
 
-#: static/devilry_subjectadmin/app/view/period/Overview.js:127
+#: static/devilry_subjectadmin/app/view/period/Overview.js:124
 msgid ""
 "Renaming a {period_term} should not be done without a certain amount of "
 "consideration. The name of a {period_term}, especially the short name, is "
 "often used as an identifier when integrating other systems with Devilry."
 msgstr ""
+"Å endre navn på et {period_term} bør ikke gjøres uten nøye gjennomtanke. "
+"Navnet til et {period_term}, spesielt det korte navnet, brukes ofte som "
+"identifikator av systemer som integrerer seg med Devilry."
 
-#: static/devilry_subjectadmin/app/view/period/Overview.js:142
+#: static/devilry_subjectadmin/app/view/period/Overview.js:139
 msgid ""
 "Once you delete a {period_term}, there is no going back. Only superusers can "
 "delete a non-empty {period_term}."
 msgstr ""
+"Når du har slettet et {period_term} er det ingen mulighet for å angre. Kun "
+"superbrukere kan slette et {period_term} med innhold."
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Grid.js:48
-#, fuzzy
 msgid "Student"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Student"
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:27
 msgid ""
 "These are the examiners that can be added to any assignments within the "
 "%(period_term)s."
 msgstr ""
+"Dette er retterne som kan legges til på oppgaver i inneværende %(period_term)s."
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:31
-#, fuzzy
 msgid "Removing examiners"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Fjerne rettere"
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:33
 msgid ""
 "Removing an examiner from a {period_term} does not affect any groups, "
 "deliveries or feedback already registered on an assignment."
 msgstr ""
+"Å fjerne en retter fra et {period_term} påvirker ikke grupper, "
+"innleveringer eller tilbakemeldinger som allerede er registrert på "
+"en oppgave."
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:36
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:46
-msgid "Accociate examiners with {students_term} using tags"
-msgstr ""
+msgid "Accociate examiners with students using tags"
+msgstr "Assosier rettere med studenter via tags"
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:38
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:48
@@ -2662,16 +2686,21 @@ msgstr "Administrer %(deadlines_term)s"
 
 #: static/devilry_subjectadmin/app/view/subject/Overview.js:80
 msgid ""
-"Renaming a subject should not done without a certain amount of "
-"consideration. The name of a subject, especially the short name, is often "
-"used as an identifier when integrating other systems with Devilry."
+"Renaming a %(subject_term)s should not done without a certain amount of "
+"consideration. The name of a %(subject_term)s, especially the short name, is "
+"often used as an identifier when integrating other systems with Devilry."
 msgstr ""
+"Å endre navn på et %(subject_term)s bør ikke gjøres uten nøye gjennomtanke. "
+"Navnet til et %(subject_term)s, spesielt det korte navnet, brukes ofte som "
+"identifikator av systemer som integrerer seg med Devilry."
 
-#: static/devilry_subjectadmin/app/view/subject/Overview.js:87
+#: static/devilry_subjectadmin/app/view/subject/Overview.js:89
 msgid ""
-"Once you delete a subject, there is no going back. Only superusers can "
-"delete a non-empty subject."
+"Once you delete a %(subject_term)s, there is no going back. Only superusers "
+"can delete a non-empty %(subject_term)s."
 msgstr ""
+"Når du har slettet et %(subject_term)s er det ingen mulighet for å angre. "
+"Kun superbrukere kan slette et %(subject_term)s med innhold."
 
 #~ msgid "examiners"
 #~ msgstr "rettere"
