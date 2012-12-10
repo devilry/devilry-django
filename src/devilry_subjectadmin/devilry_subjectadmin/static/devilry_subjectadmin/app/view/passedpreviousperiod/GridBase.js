@@ -33,7 +33,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
                         '<tpl case="has_alias_feedback">',
                             gettext('Is already marked as previously passed.'),
                         '<tpl case="only_failing_grade_in_previous">',
-                            gettext('Student have delivered this assignment previously, but never achieved a passing grade.'),
+                            gettext('The student has delivered this assignment previously, but never achieved a passing grade.'),
                         '<tpl case="has_feedback">',
                             gettext('Group has feedback for this assignment.'),
                     '</tpl>',

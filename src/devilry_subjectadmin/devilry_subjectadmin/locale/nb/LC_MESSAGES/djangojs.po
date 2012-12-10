@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-10 21:02+0100\n"
+"POT-Creation-Date: 2012-12-10 21:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -213,7 +213,7 @@ msgstr "Legg til %(period_term)s"
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:273
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:43
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:44
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:22
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:12
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:28
 #: static/devilry_subjectadmin/app/view/period/Overview.js:79
 #: static/devilry_subjectadmin/app/view/period/Overview.js:89
@@ -613,8 +613,6 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:167
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:26
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnSingle.js:34
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:5
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:17
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Grid.js:55
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:93
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:41
@@ -2389,74 +2387,56 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:4
 msgid ""
-"%(Tags_term)s is a flexible method of organizing %(groups_term)s. Only "
-"administrators and %(examiners_term)s can see %(tags_term)s. You can search "
-"and select %(groups_term)s by their %(tags_term)s. Common use-cases are:"
+"Tags is a flexible method of organizing groups. Only administrators and "
+"examiners can see tags. You can search and select groups by their tags. "
+"Common use-cases are:"
 msgstr ""
+"Tag er en fleksibel metode for å organisere grupper. Kun administratorer og "
+"rettere kan se tags. Du kan søke og velge grupper etter deres tags. Vanlige "
+"bruksområder er:"
 
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:6
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:20
-msgid "examiners"
-msgstr "rettere"
-
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:7
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:18
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:33
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:36
-msgid "groups"
-msgstr "grupper"
-
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:8
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:19
-msgid "tags"
-msgstr "tags"
-
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:16
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:11
 msgid ""
-"<strong>NOTE:</strong> %(Tags_term)s on %(groups_term)s must not be confused "
-"with %(tags_term)s on %(students_term)s and %(examiners_term)s on a "
-"%(period_term)s. Those %(tags_term)s are used to automate assigning "
-"examiners to students. %(Tags_term)s from the %(period_term)s may have been "
-"included when you added %(groups_term)s to this %(assignment_term)s, however "
-"you can safely edit %(tags_term)s on %(groups_term)s without affecting the "
-"%(tags_term)s on the %(period_term)s."
+"<strong>NOTE:</strong> Tags on groups must not be confused with tags on "
+"students and examiners on a %(period_term)s. Those tags are used to automate "
+"assigning examiners to students. Tags from the %(period_term)s may have been "
+"included when you added groups to this assignment, however you can safely "
+"edit tags on groups without affecting the tags on the %(period_term)s."
 msgstr ""
+"<strong>NOTE:</strong> Tags på grupper må ikke forvirres med tags på "
+"studenter og rettere på et %(period_term)s. De taggene brukes fo rå "
+"automatisere å tildele rettere til studenter. Tags fra oppgavens "
+"%(period_term)s kan ha blitt inkludert når du la til grupper på denne "
+"oppgaven, men du kan trygt redigere tags på grupper uten å påvirke tag på "
+"oppgavens %(period_term)s."
 
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:21
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:148
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:159
-msgid "students"
-msgstr "studenter"
+msgid "Mark groups with special needs."
+msgstr "Marker grupper med spesielle behov."
+
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:22
+msgid "Organize groups attending the same classroom sessions."
+msgstr "Organiser grupper som går på samme gruppetimer eller i samme klasse."
 
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:23
-msgid "assignment"
-msgstr "oppgave"
-
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:32
-msgid "Mark %(groups_term)s with special needs."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:35
-msgid "Organize %(groups_term)s attending the same classroom sessions."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:38
 msgid "Mark suspected cheaters."
-msgstr ""
+msgstr "Marker grupper som mistenkes for juks."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:28
 msgid "Passed in {oldperiodname}."
-msgstr ""
+msgstr "Bestått i {oldperiodname}."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:34
 msgid "Is already marked as previously passed."
-msgstr ""
+msgstr "Er allerede markert som bestått tidligere."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:36
 msgid ""
-"Student have delivered this assignment previously, but never achieved a "
+"The student has delivered this assignment previously, but never achieved a "
 "passing grade."
 msgstr ""
+"Studenten har levert denne oppgaven tidligere, men aldri fått bestått "
+"karakter."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:38
 msgid "Group has feedback for this assignment."
@@ -2596,6 +2576,11 @@ msgstr ""
 msgid "More help ..."
 msgstr ""
 
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:148
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:159
+msgid "students"
+msgstr "studenter"
+
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:163
 msgid "Do you really want to remove all the selected related examiners?"
 msgstr ""
@@ -2687,6 +2672,18 @@ msgid ""
 "Once you delete a subject, there is no going back. Only superusers can "
 "delete a non-empty subject."
 msgstr ""
+
+#~ msgid "examiners"
+#~ msgstr "rettere"
+
+#~ msgid "groups"
+#~ msgstr "grupper"
+
+#~ msgid "tags"
+#~ msgstr "tags"
+
+#~ msgid "assignment"
+#~ msgstr "oppgave"
 
 #~ msgid "group"
 #~ msgstr "gruppe"
