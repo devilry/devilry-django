@@ -33,6 +33,26 @@ msgstr "institutt/fakultet"
 msgid "nodes"
 msgstr "institutter/fakulteter"
 
+
+#: static/devilry_core/terminology.js:10
+msgid "Subject"
+msgstr "Kurs"
+
+#: static/devilry_core/terminology.js:10
+msgid "Subjects"
+msgstr "Kurs"
+
+#: static/devilry_core/terminology.js:11
+msgid "subject"
+msgstr "kurs"
+
+#: static/devilry_core/terminology.js:11
+msgid "subjects"
+msgstr "kurs"
+
+
+
+
 #: static/devilry_core/terminology.js:9
 msgid "Period"
 msgstr "Semester"
