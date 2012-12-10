@@ -18,9 +18,9 @@ Ext.define('devilry_subjectadmin.view.managestudents.SelectedGroupsMenu', {
                 '</tpl>',
                 '.',
             '</p>',
-            '<p class="muted"><small>',
-                gettext('(click group to deselect it)'),
-            '</small></p>',
+            '<p class="muted"><small>(',
+                gettext('click group to deselect it'),
+            ')</small></p>',
         '</tpl>', {
             getGroupIdentString: function(groupRecord) {
                 return Ext.String.ellipsis(groupRecord.getIdentString(), 20);

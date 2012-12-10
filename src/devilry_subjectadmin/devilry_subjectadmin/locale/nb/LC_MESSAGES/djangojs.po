@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-10 21:58+0100\n"
+"POT-Creation-Date: 2012-12-10 22:12+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -89,7 +89,7 @@ msgstr "Lagrer"
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:99
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:88
 msgid "Deadlines"
-msgstr ""
+msgstr "Innleveringsfrister"
 
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:566
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:381
@@ -293,7 +293,7 @@ msgstr "Markerte %(count)s grupper som tidligere bestått."
 #: static/devilry_subjectadmin/app/view/period/Overview.js:108
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:54
 msgid "Examiners"
-msgstr ""
+msgstr "Rettere"
 
 #: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:202
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:227
@@ -347,7 +347,7 @@ msgstr "Slett {something}"
 
 #: static/devilry_subjectadmin/app/controller/managestudents/MultipleGroupsSelectedViewPlugin.js:35
 msgid "Examiners random distributed successfully"
-msgstr ""
+msgstr "Rettere tilfeldig distribuert uten feil"
 
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:369
 msgid "Failed to load assignment"
@@ -1148,6 +1148,15 @@ msgid ""
 "deadline, you choose to change only some of the individual deadlines, which "
 "appears to split this deadline in two."
 msgstr ""
+"Å lagre endringer på en innleveringsfrist til kun noen grupper vil splitte "
+"innleveringsfristen i to. Husk at grupper har individuelle "
+"innleveringsfrister og at denne siden grupperer innleveringsfrister med "
+"samme tidspunkt og tekst. Det betyr at redigering av en innleveringsfrist "
+"egentlig oppdaterer en mengde med individuelle innleveringsfrister (en for "
+"hver gruppe). Så når du velger bare noen av gruppen innenfor en "
+"innleveringsfrist, velger du bare å endre noen av de individuelle "
+"innleveringsfristene, noe som tilsynelatende splitter denne "
+"innleveringsfristen i to."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:61
 msgctxt "createnewassignment"
@@ -2280,41 +2289,43 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:6
 msgid "Search (adds to selection)"
-msgstr ""
+msgstr "Søk (søketreff velges i listen)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:31
 msgid "Already selected"
-msgstr ""
+msgstr "Allerede valgt"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:32
 msgid "The group is already selected"
-msgstr ""
+msgstr "Gruppen er allerede valgt"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:39
 msgid "Selected group not loaded"
-msgstr ""
+msgstr "Valgt gruppe er ikke lastet"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:40
 msgid ""
 "The group you selected is not loaded. This is probably because someone else "
 "added a group after you loaded this page. Try reloading the page."
 msgstr ""
+"Gruppen du valgte er ikke lastet. Det er sannsynligvis fordi noen andre la "
+"til grupper etter at du lastet denne siden. Prøv å laste siden på nytt."
 
 #: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsButton.js:13
 msgid "{selected}/{total} selected"
-msgstr ""
+msgstr "{selected}/{total} valgt"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsMenu.js:10
 msgid "Selected groups"
-msgstr ""
+msgstr "Valgte grupper"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsMenu.js:22
-msgid "(click group to deselect it)"
-msgstr ""
+msgid "click group to deselect it"
+msgstr "klikke p[ gruppen for fjerne markering"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:44
 msgid "Create/edit feedback"
-msgstr ""
+msgstr "Lag/rediger tilbakemelding"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:49
 msgid "Make me examiner"
@@ -2322,15 +2333,17 @@ msgstr "Gjør meg til retter"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:56
 msgid "You are examiner for this group."
-msgstr ""
+msgstr "Du er retter for denne gruppen"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:58
 msgid "You need to be examiner for this group if you want to provide feedback."
 msgstr ""
+"Du må være retter for denne gruppen hvis du ønsker å gi de tilbakemelding."
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:66
 msgid "See the help to your right for information about setting examiners."
 msgstr ""
+"Se hjelp på din høyre side for informasjon om hvordan du setter rettere."
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:69
 msgid "About examiners"
@@ -2341,38 +2354,45 @@ msgid ""
 "This assignment will be published {pubtimeOffset}. Examiners and students "
 "can not see the assignment before it is published."
 msgstr ""
+"Denne oppgaven vil publiseres {pubtimeOffset}. Rettere og studenter kan ikke "
+"se oppgaven før den er publisert."
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:35
 msgid "Note"
-msgstr ""
+msgstr "Merk"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:36
 msgid ""
 "Students can not see their points, only the grade, and if it is failed or "
 "passed."
 msgstr ""
+"Studenter kan ikke se deres poeng, kun karakter, og om den er feilet eller "
+"bestått."
 
 #: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:12
 msgid "Sort"
-msgstr ""
+msgstr "Sorter"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:18
 msgid "Full name"
-msgstr ""
+msgstr "Fullt navn"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:25
 msgid "Last name"
-msgstr ""
+msgstr "Etternavn"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:32
 msgid "Username"
-msgstr ""
+msgstr "Brukernavn"
 
 #: static/devilry_subjectadmin/app/view/managestudents/StudentsInGroupGrid.js:48
 msgid ""
 "Move the student from this project group into a copy of this group. Copies "
 "deadlines, deliveries, feedback, tags and examiners."
 msgstr ""
+"Flytt studenten fra denne prosjektgruppen til en kopi av denne gruppen. "
+"Kopierer innleveringsfrister, innleveringer, tilbakemeldinger, tags og "
+"rettere."
 
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:4
 msgid ""
