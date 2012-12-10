@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-10 21:53+0100\n"
+"POT-Creation-Date: 2012-12-10 21:58+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,9 +54,8 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:36
 #: static/devilry_subjectadmin/app/view/period/Overview.js:103
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:64
-#, fuzzy
 msgid "Students"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Students"
 
 #: static/devilry_subjectadmin/app/controller/AddGroups.js:266
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:103
@@ -563,7 +562,6 @@ msgid "Move your mouse over the checkboxes for help."
 msgstr "Flytt musen over checkboksene for hjelp."
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:38
-#, fuzzy
 msgid "Missing students?"
 msgstr "Mangler du noen studenter?"
 
@@ -797,7 +795,6 @@ msgstr ""
 "listen nedenfor."
 
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:15
-#, fuzzy
 msgid ""
 "These are all %(subjects_term)s, %(periods_term)s and assignments where you "
 "have administrator rights. Assignments are listed if you have administrator-"
@@ -805,11 +802,11 @@ msgid ""
 "s containing the assignment. The %(subject_term)s name is a link on if you "
 "have administrator rights on the subject."
 msgstr ""
-"Dette er alle %(subjects_term)s, %(periods_term)s og %(assignments_term)s "
-"der du har administrator-rettigheter. Oppgaver er med i listen hvis du har "
+"Dette er alle %(subjects_term)s, %(periods_term)s og oppgaver der du har "
+"administrator-rettigheter. Oppgaver er med i listen hvis du har "
 "administrator-rettigheter på en oppgave, men ikke på tilhørende "
-"%(period_term)s eller %(subject_term)s. Kursnavnet er en link hvis du har "
-"administrator-rettigheter på kurset."
+"%(period_term)s eller %(subject_term)s. Navn på %(subject_term)s er en link "
+"hvis du har administrator-rettigheter på det."
 
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:17
 msgid "periods"
@@ -1224,7 +1221,6 @@ msgid "Students?"
 msgstr "Studenter?"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:255
-#, fuzzy
 msgid "Add all students registered on the %(period_term)s."
 msgstr "Legg til alle studenter registrert på oppgavens %(period_term)s?"
 
@@ -1258,7 +1254,6 @@ msgstr ""
 "prosjektgrupper når som helsts, selv setter at de har levert."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:339
-#, fuzzy
 msgid "Examiners?"
 msgstr "Rettere?"
 
@@ -1738,7 +1733,6 @@ msgid "Metadata"
 msgstr "Metadata"
 
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:224
-#, fuzzy
 msgid "No-students"
 msgstr "Ingen-studenter"
 
@@ -1805,7 +1799,6 @@ msgstr ""
 "til retter på de gruppene."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:41
-#, fuzzy
 msgid "How to set examiners"
 msgstr "Hvordan sette opp rettere"
 
@@ -2026,7 +2019,6 @@ msgid "Random distribute"
 msgstr "Tilfeldig distribuering"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:77
-#, fuzzy
 msgid ""
 "Replace the examiners on the selected groups with a random examiner from a "
 "set of examiners that you select. The distribution of groups for each "
@@ -2119,7 +2111,6 @@ msgstr ""
 "Tilbakemelding gis til en gruppe, ikke til individuelle studenter på gruppen."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:57
-#, fuzzy
 msgid "Students help ..."
 msgstr "Om studenter ..."
 
@@ -2248,7 +2239,6 @@ msgid "Create project group"
 msgstr "Lag prosjektgruppe"
 
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:48
-#, fuzzy
 msgid "Merge selected groups into a single group"
 msgstr "Slå samme valgte grupper til en gruppe"
 
@@ -2258,7 +2248,6 @@ msgstr "Slå samme valgte grupper til en gruppe"
 
 #: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:18
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:138
-#, fuzzy
 msgid ""
 "Once you delete a group, there is no going back. Only superusers can delete "
 "a group with deliveries."
@@ -2328,9 +2317,8 @@ msgid "Create/edit feedback"
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:49
-#, fuzzy
 msgid "Make me examiner"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Gjør meg til retter"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:56
 msgid "You are examiner for this group."
@@ -2345,9 +2333,8 @@ msgid "See the help to your right for information about setting examiners."
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:69
-#, fuzzy
 msgid "About examiners"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Om rettere"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:78
 msgid ""
