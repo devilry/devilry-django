@@ -51,13 +51,13 @@ Ext.define('devilry_subjectadmin.view.gradeeditor.Change' ,{
                             anchor: '100%',
                             tpl: '<p>{text}</p>',
                             data: {
-                                text: gettext('If you change grade editor your current configuration will be lost.')
+                                text: gettext('If you change grading system your current configuration will be lost.')
                             }
                         }, {
                             xtype: 'checkbox',
                             anchor: '100%',
                             itemId: 'clearConfigConfirmCheckbox',
-                            boxLabel: gettext('I want to change grade editor and clear my current configuration.')
+                            boxLabel: gettext('I want to change grading system and clear my current configuration.')
                         }]
                     }
                 }]

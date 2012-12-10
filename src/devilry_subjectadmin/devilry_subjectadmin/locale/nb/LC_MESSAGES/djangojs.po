@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-09 19:05+0100\n"
+"POT-Creation-Date: 2012-12-10 18:25+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -103,6 +103,7 @@ msgstr "Nedlasting av gruppedata feilet"
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:433
 #: static/devilry_subjectadmin/app/controller/guides/CreateNewAssignment.js:9
 #: static/devilry_subjectadmin/app/view/createnewassignment/CreateNewAssignment.js:38
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:426
 #: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:55
 #: static/devilry_subjectadmin/app/view/period/Overview.js:70
 msgid "Create new assignment"
@@ -162,7 +163,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:294
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:48
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:109
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:56
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:55
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:54
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:58
 #: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimeWidget.js:46
@@ -1139,7 +1140,9 @@ msgstr "Rediger/flytt"
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/EditDeadlineForm.js:22
 msgid "Only apply these changes to some of the groups in the deadline."
-msgstr "Gjør disse endrigene kun på noen av gruppene innenfor denne innleveringsfristen."
+msgstr ""
+"Gjør disse endrigene kun på noen av gruppene innenfor denne "
+"innleveringsfristen."
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/EditDeadlineForm.js:43
 msgid ""
@@ -1210,9 +1213,9 @@ msgid ""
 "assignment. The default is <em>now</em>. Note that students must be "
 "registered on the assignment as well before they can add any deliveries."
 msgstr ""
-"Velg tidspunktet når studentene vil kunne begynne å levere. "
-"Standardverdien er <em>nå</em>. Merk at studentene også må være "
-"registrert på oppgaven før de kan levere."
+"Velg tidspunktet når studentene vil kunne begynne å levere. Standardverdien "
+"er <em>nå</em>. Merk at studentene også må være registrert på oppgaven før "
+"de kan levere."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:217
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:53
@@ -1226,8 +1229,7 @@ msgstr "Studenter?"
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:255
 #, fuzzy
 msgid "Add all students registered on the %(period_term)s."
-msgstr ""
-"Legg til alle studenter registrert på oppgavens %(period_term)s?"
+msgstr "Legg til alle studenter registrert på oppgavens %(period_term)s?"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:269
 msgid "You may want to view and edit <a {relatedstudents_link}>students</a>."
@@ -1253,10 +1255,10 @@ msgid ""
 "organize them in project groups at any time, even after they have made "
 "deliveries."
 msgstr ""
-"Hvis du velger å ikke legge til studenter, må du legge de til manuelt senere. "
-"Hvis du har planer om å la studentene jobbe i prosjektgrupper, bør du allikevel "
-"legge de til på oppgaven nå. Du organisere studentene i prosjektgrupper når som "
-"helsts, selv setter at de har levert."
+"Hvis du velger å ikke legge til studenter, må du legge de til manuelt "
+"senere. Hvis du har planer om å la studentene jobbe i prosjektgrupper, bør "
+"du allikevel legge de til på oppgaven nå. Du organisere studentene i "
+"prosjektgrupper når som helsts, selv setter at de har levert."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:339
 #, fuzzy
@@ -1276,8 +1278,7 @@ msgid ""
 "Add examiners to students that have at least one tag in common with the "
 "examiner."
 msgstr ""
-"Tildeler studenter til rettere som har minst en "
-"tag til felles med studenten."
+"Tildeler studenter til rettere som har minst en tag til felles med studenten."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:373
 msgid ""
@@ -1292,8 +1293,8 @@ msgid ""
 "You may want to view and edit tags for <a {relatedstudents_link}>students</"
 "a> and <a {relatedexaminers_link}>examiners</a>."
 msgstr ""
-"Du kan se på og redigere tags for <a {relatedstudents_link}>studenter</a> "
-"og <a {relatedexaminers_link}>rettere</a>."
+"Du kan se på og redigere tags for <a {relatedstudents_link}>studenter</a> og "
+"<a {relatedexaminers_link}>rettere</a>."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:395
 msgid "Make me examiner for all students."
@@ -1301,7 +1302,9 @@ msgstr "Gjør meg til retter for alle studenten."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:405
 msgid "I.e.: you plan to provide feedback to all students yourself."
-msgstr "Velg dette hvis du har planer om å gi tilbakemelding til alle studentene alene."
+msgstr ""
+"Velg dette hvis du har planer om å gi tilbakemelding til alle studentene "
+"alene."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:410
 msgid "Do not setup examiners at this time."
@@ -1315,27 +1318,27 @@ msgstr "Tilbake"
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:22
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:97
 msgid "Create"
-msgstr ""
+msgstr "Lag"
 
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:62
 msgctxt "createnewassignment"
 msgid "Example: Spring 1970"
-msgstr ""
+msgstr "Eksempel: Høst 1970"
 
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:71
 msgctxt "createnewassignment"
 msgid "Example: spring1970"
-msgstr ""
+msgstr "Eksempel: host1970"
 
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:80
 #: static/devilry_subjectadmin/app/view/period/EditDurationPanel.js:34
 msgid "Start time"
-msgstr ""
+msgstr "Start-tid"
 
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:87
 #: static/devilry_subjectadmin/app/view/period/EditDurationPanel.js:39
 msgid "End time"
-msgstr ""
+msgstr "Sluttid"
 
 #: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:12
 msgid "Active %(subjects_term)s"
@@ -1354,91 +1357,106 @@ msgid "Interractive guides"
 msgstr "Interraktive guider"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:24
-#, fuzzy
 msgid "Select a grading system"
-msgstr "Karaktersystem"
+msgstr "Velg ett karaktersystem"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:26
 msgid ""
 "Please select a grading system. If your selected grading system requires "
 "configuration, you will be able to do so after saving your choice."
 msgstr ""
+"Venligst velg et karaktersystem. Hvis du velger et karaktersystem som krever "
+"konfigurasjon, vil du få muligheten til å konfigurere systemet etter at du "
+"lagrer valget ditt."
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:54
-msgid "If you change grade editor your current configuration will be lost."
-msgstr ""
+msgid "If you change grading system your current configuration will be lost."
+msgstr "Hvis du endrer karaktersystem vil din nåværende konfigurasjon slettes."
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:60
-msgid "I want to change grade editor and clear my current configuration."
+msgid "I want to change grading system and clear my current configuration."
 msgstr ""
+"Jeg ønsker å endre karaktersystem, og slette konfigurasjonen for nåværende "
+"karaktersystem."
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:19
-msgid "Current grade editor"
-msgstr ""
+msgid "Current grading system"
+msgstr "Nåværende karaktersystem"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:49
 msgid "Return to {assignmentname}"
-msgstr ""
+msgstr "Returner til {assignmentname}"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:62
-#, fuzzy
 msgid "What is a grading system?"
-msgstr "Karaktersystem"
+msgstr "Hva er et karaktersystem?"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:64
 msgid "A grading system is what examiners use to give feedback to students."
-msgstr ""
+msgstr "Et karaktersystem er det retterne bruker for å gi tilbakemelding til studenter."
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:67
 msgid "Internally in Devilry, a grade is stored as"
-msgstr ""
+msgstr "Internt i Devilry lagres karakterer som"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:69
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:28
 msgid "Points"
-msgstr ""
+msgstr "Poeng"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:71
 msgid ""
 "Any grade in Devilry is represented as a number. This number is used for "
 "statistics and to calculate final grades. Points is not available directly "
-"to students, but some grade editors make them available through the "
+"to students, but some grading systems make them available through the "
 "<em>Short text</em> (below)."
 msgstr ""
+"Alle karakterer i Devilry representeres som et heltall. Dette heltallet brukes "
+"til statistikk og til å beregne avsluttende karakter. Poeng er ikke tilgjengelig "
+"direkte for studentene, men noen karaktersystemer gjør de tilgjengelige gjennom "
+"den <em>Kort tekst</em>-feltet (nedenfor)."
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:74
 msgid "Short text"
-msgstr ""
+msgstr "Kort tekst"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:76
 msgid ""
 "A very short text that students view. Usually something like: <em>Approved</"
 "em>, <em>B</em> or <em>7/10</em>."
 msgstr ""
+"En veldig kort tekst som studentene kan se på. Vanligvis noe slik som: <em>Godkjent</em>, "
+"<em>B</em> eller <em>7/10</em>."
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:79
 msgid "Long text"
-msgstr ""
+msgstr "Lang tekst"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:81
 msgid ""
 "A longer text that students can view. This is usually the detailed feedback "
-"text, however some grade editors also fill this with autogenerated "
-"information based on input from examiners. What a grade editor can display "
+"text, however some grading systems also fill this with autogenerated "
+"information based on input from examiners. What a grading system can display "
 "in the long text is virtually unlimited."
 msgstr ""
+"En lengre tekst som studentene kan se på. Dette er vanligvis den detaljerte tilbakemeldingsteksten, "
+"men noen karaktersystemer legger også til autogenerert informasjon basert på input fra retterne. "
+"Hva et karaktersystem kan vise i den lange teksten er nesten ubegrenset."
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Overview.js:43
 msgid ""
 "To make it easy for examiners to create all the information related to a "
 "grade, Devilry has a plugin architecture for grading systems."
 msgstr ""
+"For å gjøre det enkelt for rette å lagre all informasjon relatert til en "
+"karakter, har Devilry en pluginarkitektur for karaktersystemer."
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:20
 msgid ""
 "Select an active {subject_term} from the list at the top of the left side of "
 "this page."
 msgstr ""
+"Velg et aktivt {subject_term} fra listen på øvre venstre side av denne siden."
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:23
 msgid ""
@@ -1446,6 +1464,7 @@ msgid ""
 "assignments, those assignments will be listed. If you only have assignments "
 "in your list, you do not have the required rights to create new assignments."
 msgstr ""
+""
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:34
 #, fuzzy
