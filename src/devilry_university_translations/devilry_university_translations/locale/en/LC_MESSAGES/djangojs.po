@@ -52,7 +52,6 @@ msgid "subjects"
 msgstr "Courses"
 
 
-
 #: static/devilry_core/terminology.js:9
 msgid "Period"
 msgstr "Semester"

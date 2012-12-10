@@ -51,6 +51,10 @@ msgid "subjects"
 msgstr "kurs"
 
 
+#: static/devilry_header/Header.js:24 static/devilry_header/Roles.js:35
+msgid "%(Subject_term)s administrator"
+msgstr "Kursadministrator"
+
 
 
 #: static/devilry_core/terminology.js:9

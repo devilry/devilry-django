@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-26 17:13+0200\n"
+"POT-Creation-Date: 2012-12-10 22:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,7 @@ msgstr ""
 #: static/devilry_header/HelpLinksBox.js:15 static/devilry_header/Roles.js:8
 #: static/devilry_header/UserInfoBox.js:11
 msgid "Loading"
-msgstr ""
+msgstr "Laster"
 
 #: static/devilry_header/Header.js:21
 msgid "Select role"
@@ -30,23 +30,37 @@ msgstr "Velg rolle"
 
 #: static/devilry_header/Header.js:22 static/devilry_header/Roles.js:15
 msgid "Student"
-msgstr ""
+msgstr "Student"
 
-#: static/devilry_header/Header.js:23 static/devilry_header/Roles.js:27
+#: static/devilry_header/Header.js:23 static/devilry_header/Roles.js:25
 msgid "Examiner"
+msgstr "Retter"
+
+#: static/devilry_header/Header.js:24 static/devilry_header/Roles.js:35
+msgid "%(Subject_term)s administrator"
+msgstr "%(Subject_term)s administrator"
+
+#: static/devilry_header/Header.js:25 static/devilry_header/Roles.js:36
+#: static/devilry_header/Roles.js.c:41
+msgid "Subject"
 msgstr ""
 
-#: static/devilry_header/Header.js:24 static/devilry_header/Roles.js:40
-msgid "Administrator"
+#: static/devilry_header/Header.js:27 static/devilry_header/Roles.js:52
+msgid "%(Node_term)s administrator"
+msgstr "%(Node_term)s administrator"
+
+#: static/devilry_header/Header.js:28 static/devilry_header/Roles.js:53
+#: static/devilry_header/Roles.js.c:58
+msgid "Node"
 msgstr ""
 
-#: static/devilry_header/Header.js:25 static/devilry_header/Roles.js:55
+#: static/devilry_header/Header.js:30 static/devilry_header/Roles.js:67
 msgid "Superuser"
-msgstr ""
+msgstr "Superbruker"
 
-#: static/devilry_header/Header.js:61
+#: static/devilry_header/Header.js:66
 msgid "Dashboard"
-msgstr ""
+msgstr "Forside"
 
 #: static/devilry_header/HelpLinksBox.js:12
 msgid "Help"
@@ -80,71 +94,62 @@ msgid "Language"
 msgstr "Språk"
 
 #: static/devilry_header/Roles.js:18
-msgid ""
-"Students can make %(deliveres_term)s and browse their own feedback history."
+msgid "Students can make deliveres and browse their own feedback history."
 msgstr ""
-"Studenter kan legge til %(deliveres_term)s og bla i sin egen "
+"Studenter kan legge til innleveringer og bla i sin egen "
 "tilbakemeldingshistorikk."
 
-#: static/devilry_header/Roles.js:19 static/devilry_header/Roles.js.c:32
-msgid "deliveries"
-msgstr ""
+#: static/devilry_header/Roles.js:28
+#, fuzzy
+msgid "Examiners give students feedback on their deliveries."
+msgstr "Rettere gir studenter tilbakemeldinger på innleveringer."
 
-#: static/devilry_header/Roles.js:30
-msgid "Examiners give students %(feedback_term)s on their %(deliveries_term)s."
-msgstr "Rettere gir studenter %(feedback_term)s på innleveringer."
-
-#: static/devilry_header/Roles.js:31
-msgid "feedback"
-msgstr ""
-
-#: static/devilry_header/Roles.js:43
+#: static/devilry_header/Roles.js:40
 msgid ""
-"Administrators manage %(subjects_term)s, %(nodes_term)s, %(periods_term)s "
-"and %(assignments_term)s where they have been explicitly registered as "
-"administrator."
+"%(Subject_term)s administrators manage %(subjects_term)s, %(periods_term)s "
+"and assignments where they have been explicitly registered as administrator."
 msgstr ""
-"Administratorer jobber med %(subjects_term)s, %(nodes_term)s, %(periods_term)"
-"s og %(assignments_term)s hvor de er satt som administrator."
+"%(Subject_term)sadministratorer administrerer %(subjects_term)s, "
+"%(periods_term)s og oppgaver hvor de har administrator-rettigheter."
 
-#: static/devilry_header/Roles.js:44
+#: static/devilry_header/Roles.js:42
 msgid "subjects"
 msgstr ""
 
-#: static/devilry_header/Roles.js:45
+#: static/devilry_header/Roles.js:43 static/devilry_header/Roles.js.c:59
 msgid "nodes"
 msgstr ""
 
-#: static/devilry_header/Roles.js:46
+#: static/devilry_header/Roles.js:44
 msgid "periods"
 msgstr ""
 
-#: static/devilry_header/Roles.js:47
-msgid "assignments"
+#: static/devilry_header/Roles.js:57
+#, fuzzy
+msgid ""
+"%(Node_term)s administrators manage %(nodes_term)s where they have "
+"administrator-rights."
 msgstr ""
+"%(Node_term)s administratorer jobber med %(nodes_term)s, der de har "
+"administrator-rettigheter."
 
-#: static/devilry_header/Roles.js:58
-msgid "%(Superusers_term)s have complete access to all data stored in Devilry."
-msgstr "%(Superusers_term)s har full tilgang til all data i Devilry."
+#: static/devilry_header/Roles.js:70
+msgid "Superusers have complete access to all data stored in Devilry."
+msgstr "Superbrukere har full tilgang til all data i Devilry."
 
-#: static/devilry_header/Roles.js:59
-msgid "Superusers"
-msgstr ""
-
-#: static/devilry_header/Roles.js:66
+#: static/devilry_header/Roles.js:76
 msgid "I should have had more roles"
 msgstr "Jeg skulle ha hatt flere roller"
 
-#: static/devilry_header/Roles.js:71
+#: static/devilry_header/Roles.js:81
 msgid ""
-"You have no permissions on anything in Devilry. Click "
-"<a href=\"{no_permissions_url}\">this link</a> to go "
-"to a page explaining how to get access to Devilry."
+"You have no permissions on anything in Devilry. Click <a href="
+"\"{no_permissions_url}\">this link</a> to go to a page explaining how to get "
+"access to Devilry."
 msgstr ""
-"Du har ikke tilgang til noe i Devilry. Klikk <a "
-"<a href=\"{no_permissions_url}\">denne linken</a> for å "
-"gå til en side som forklarer hvordan du går frem for å "
-"få tilgang til Devilry."
+"Du har ikke tilgang til noe i Devilry. Klikk <a <a href="
+"\"{no_permissions_url}\">denne linken</a> for å gå til en side som forklarer "
+"hvordan du går frem for å få tilgang til Devilry."
 
 #: static/devilry_header/UserInfoBox.js:8
 msgid "About you"
