@@ -71,7 +71,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageStudentsOnSingle', {
                     bodyPadding: 10,
                     html: [
                         '<p>',
-                            gettext('Do you really want to split this group in two? This will move the selected student from this project group, into a copy of this group. Copies everything except the candidates (deadlines, deliveries, feedback, tags and examiners).'),
+                            gettext('Do you really want to split this group in two? This will move the selected student from this project group, into a copy of this group. Copies everything except the other students (deadlines, deliveries, feedback, tags and examiners).'),
                         '</p>'
                     ].join('')
                 }]

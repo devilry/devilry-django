@@ -9,11 +9,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.MergeGroups', {
 
     merge_introtext: gettext('Multiple students on a single group is used when students cooperate on an assignment. Such project groups have the following properties:'),
     merge_groups_explained: [
-        gettext('Any student in the group will be able to make deliveries on behalf of the group.'),
+        gettext('Any student in the group will be able to make deliveries on behalf of the group. Information about the student that made the delivery is available for each delivery.'),
         gettext('Feedback will be given to the group as a whole, not to individual students in the group.'),
         gettext('If any of the selected groups already have any deadlines, deliveries or feedback, they will be moved into the new group.'),
         gettext('You can split up a group later, however any deliveries and feedback will follow all students on the group, even if they where made before you merged the groups into a single group in the first place.'),
-        gettext('The name of the group and open/closed status will be copied from the first group you selected.')
+        gettext('The name of the group and status will be copied from the first group you selected.')
     ],
 
     _createMergeHelp: function() {
@@ -45,7 +45,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.MergeGroups', {
                 ],
                 data: {
                     heading: gettext('Create project group'),
-                    subheading: gettext('Merge selected into one group')
+                    subheading: gettext('Merge selected groups into a single group')
                 }
             }, {
                 xtype: 'moreinfobox',

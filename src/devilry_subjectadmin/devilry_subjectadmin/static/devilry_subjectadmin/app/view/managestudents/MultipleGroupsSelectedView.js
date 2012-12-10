@@ -20,10 +20,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.MultipleGroupsSelectedView'
 
     initComponent: function() {
         var defaultmargin = '15 0 0 0';
-        var numSelectedMessage = interpolate(gettext('%(numselected)s/%(total)s %(groups_term)s selected'), {
-            groups_term: gettext('groups')
-        }, true);
-
         Ext.apply(this, {
             layout: 'border',
             border: false,

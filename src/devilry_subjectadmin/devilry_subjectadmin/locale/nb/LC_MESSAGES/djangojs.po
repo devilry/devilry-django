@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-10 19:46+0100\n"
+"POT-Creation-Date: 2012-12-10 21:02+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1022,9 +1022,9 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:152
 #: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:17
-#: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:21
+#: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:19
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:137
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:141
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:139
 #: static/devilry_subjectadmin/app/view/period/Overview.js:148
 #: static/devilry_subjectadmin/app/view/subject/Overview.js:88
 msgid "Delete"
@@ -1885,7 +1885,7 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:69
 msgid "Using a small or huge display?"
-msgstr "På et stor eller lite skjerm"
+msgstr "På stor eller liten skjerm"
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:71
 msgid ""
@@ -2001,7 +2001,7 @@ msgstr "Spesifikk tag"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:61
 msgid "Set examiner(s)"
-msgstr "Sett retter(e)"
+msgstr "Erstatt retter(e)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:64
 msgid ""
@@ -2048,7 +2048,7 @@ msgstr "Fjern alle rettere fra de valgte gruppene."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:102
 msgid "Set selected examiners"
-msgstr "Sett valgte rettere"
+msgstr "Erstatt rettere"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:112
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:141
@@ -2103,49 +2103,57 @@ msgid ""
 "on the group when you confirm your selection. Removing an examiner from the "
 "group does not affect any feedback they have already made on the group."
 msgstr ""
+"De valgte retterne vil <strong>erstatte</strong> alle nåværende rettere på "
+"gruppen når du bekrefter ditt valg. Å fjerne en retter fra grupper påvirker "
+"ikke tilbakemeldinger som retteren allerede har gitt til gruppen."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:13
 msgid "A group can have one or more students."
-msgstr ""
+msgstr "En gruppe kan ha en eller flere studenter."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:14
 msgid ""
 "Feedback is given to a group as a whole, not to individual students on a "
 "group."
 msgstr ""
+"Tilbakemelding gis til en gruppe, ikke til individuelle studenter på gruppen."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:57
 #, fuzzy
 msgid "Students help ..."
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Om studenter ..."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:74
 msgid ""
 "Do you really want to split this group in two? This will move the selected "
 "student from this project group, into a copy of this group. Copies "
-"everything except the candidates (deadlines, deliveries, feedback, tags and "
-"examiners)."
+"everything except the other students (deadlines, deliveries, feedback, tags "
+"and examiners)."
 msgstr ""
+"Vil du virkelig delee denne gruppen i to? Dette vil fytte den valgte "
+"studenten fra denne prosjektgruppen til den kopi av denne gruppen. Kopierer "
+"alt bortsett fra de andre studentene (innleveringsfrister, innleveringer, "
+"tilbakemeldinger tags og rettere)."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:51
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:99
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:109
 msgid "Set tag(s)"
-msgstr ""
+msgstr "Erstatt tag(s)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:54
 msgid "Replace the tags on the selected groups with one or more new tag(s)."
-msgstr ""
+msgstr "Erstatt tags på valgte grupper med en eller flere nye tags."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:56
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:103
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:113
 msgid "Add tag(s)"
-msgstr ""
+msgstr "Legg til tag(s)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:59
 msgid "Add one or more tag(s) to the selected groups."
-msgstr ""
+msgstr "Legg til en eller flere tag(s) på de valgte gruppene."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:61
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:95
@@ -2154,59 +2162,68 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:105
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:197
 msgid "Clear tags"
-msgstr ""
+msgstr "Fjern tags"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:65
 msgid "Remove/clear all tags from the selected groups."
-msgstr ""
+msgstr "Fjern alle tags fra de valgte gruppene"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:84
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:174
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:186
 msgid "Set tags"
-msgstr ""
+msgstr "Erstatt tags"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:90
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:180
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:192
 msgid "Add tags"
-msgstr ""
+msgstr "Legg til tags"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:100
 msgid "Do you really want to clear all tags on the selected groups?"
-msgstr ""
+msgstr "Vil du virkelig fjerne alle tags fra de valgte gruppene?"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnSingle.js:60
 msgid "Tags help ..."
-msgstr ""
+msgstr "Om tags ..."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnSingle.js:79
 msgid "Save tags"
-msgstr ""
+msgstr "Lagre tags"
 
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:10
 msgid ""
 "Multiple students on a single group is used when students cooperate on an "
 "assignment. Such project groups have the following properties:"
 msgstr ""
+"Flere studenter på en enkelt gruppe brukes når studenter samarbeider på en "
+"oppgave. Slike prosjektgrupper har følgende egenskaper:"
 
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:12
 msgid ""
 "Any student in the group will be able to make deliveries on behalf of the "
-"group."
+"group. Information about the student that made the delivery is available for "
+"each delivery."
 msgstr ""
+"Alle studenter på gruppern kan legge til innleveringer på vegne av hele "
+"gruppen. Informasjon om hvem som leverte er tilgjengelig for hver "
+"innlevering."
 
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:13
 msgid ""
 "Feedback will be given to the group as a whole, not to individual students "
 "in the group."
 msgstr ""
+"Tilbakemelding gis til hele gruppen, ikke til inviduelle studenter i gruppen."
 
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:14
 msgid ""
 "If any of the selected groups already have any deadlines, deliveries or "
 "feedback, they will be moved into the new group."
 msgstr ""
+"Hvis noen av de valgte gruppene allerede har noen innleveringsfrister, "
+"innleveringer eller tilbakemelding, flyttes disse inn i den nye gruppen."
 
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:15
 msgid ""
@@ -2214,71 +2231,63 @@ msgid ""
 "follow all students on the group, even if they where made before you merged "
 "the groups into a single group in the first place."
 msgstr ""
+"Du kan spitte gruppen opp senere, men da vil alle innleveringer og "
+"tilbakemeldinger følge alle studentene på gruppen, selv om de ble lagt til "
+"før du slo gruppene sammen til en prosjektgruppe i første omgang."
 
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:16
 msgid ""
-"The name of the group and open/closed status will be copied from the first "
-"group you selected."
-msgstr ""
+"The name of the group and status will be copied from the first group you "
+"selected."
+msgstr "Navnet på gruppen og status kopieres fra den første gruppen du valgte."
 
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:47
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:64
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:96
 msgid "Create project group"
-msgstr ""
+msgstr "Lag prosjektgruppe"
 
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:48
-msgid "Merge selected into one group"
-msgstr ""
+#, fuzzy
+msgid "Merge selected groups into a single group"
+msgstr "Slå samme valgte grupper til en gruppe"
 
 #: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:78
 msgid "Merge selected groups into a single group?"
-msgstr ""
+msgstr "Slå samme valgte grupper til en gruppe"
 
 #: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:18
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:138
+#, fuzzy
 msgid ""
-"Once you delete a %(group_term)s, there is no going back. Only superusers "
-"can delete a %(group_term)s with deliveries."
+"Once you delete a group, there is no going back. Only superusers can delete "
+"a group with deliveries."
 msgstr ""
+"Når du har slettet en gruppe, er det ingen mulighet for å angre. Kun "
+"superbrukere kan slette grupper med innleveringer."
 
-#: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:19
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:139
-msgid "group"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:23
-msgid "%(numselected)s/%(total)s %(groups_term)s selected"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:24
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:7
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:18
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:33
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:36
-msgid "groups"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:62
+#: static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:58
 msgid "Summary of selected groups (click to show/hide)"
-msgstr ""
+msgstr "Oppsummering av valgte grupper"
 
 #: static/devilry_subjectadmin/app/view/managestudents/NoGroupSelectedView.js:28
 msgid "Select GROUPS from the list to your left"
-msgstr ""
+msgstr "Velg GRUPPER fra listen på din venstre side"
 
 #: static/devilry_subjectadmin/app/view/managestudents/NoGroupSelectedView.js:32
 msgid "Students are always in a (project) group even when they work alone."
-msgstr ""
+msgstr "Studenter er alltid i en (prosjekt) gruppe, selv når de jobber alene."
 
 #: static/devilry_subjectadmin/app/view/managestudents/NoGroupSelectedView.js:42
 msgid "Click the help-column to your right if you need help"
-msgstr ""
+msgstr "Klikk på hjelp-kolonnen på din høyre side hvis du trenger hjelp"
 
 #: static/devilry_subjectadmin/app/view/managestudents/NoGroupSelectedView.js:46
 msgid ""
 "First time visitors should read the help to avoid common misconceptions."
 msgstr ""
+"Førstegangs brukere bør skumme gjennom hjelp for å unngå vanlige "
+"misforståelser."
 
 #: static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:6
 msgid "Search (adds to selection)"
@@ -2390,10 +2399,17 @@ msgstr ""
 msgid "examiners"
 msgstr "rettere"
 
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:7
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:18
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:33
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:36
+msgid "groups"
+msgstr "grupper"
+
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:8
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:19
 msgid "tags"
-msgstr ""
+msgstr "tags"
 
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:16
 msgid ""
@@ -2410,11 +2426,11 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:148
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:159
 msgid "students"
-msgstr ""
+msgstr "studenter"
 
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:23
 msgid "assignment"
-msgstr ""
+msgstr "oppgave"
 
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:32
 msgid "Mark %(groups_term)s with special needs."
@@ -2671,6 +2687,9 @@ msgid ""
 "Once you delete a subject, there is no going back. Only superusers can "
 "delete a non-empty subject."
 msgstr ""
+
+#~ msgid "group"
+#~ msgstr "gruppe"
 
 #~ msgid "No %(deadlines_term)s"
 #~ msgstr "Legg til %(deadline_term)s"
