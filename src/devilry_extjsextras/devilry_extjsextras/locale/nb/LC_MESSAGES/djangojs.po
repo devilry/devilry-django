@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-08-23 21:49+0200\n"
+"POT-Creation-Date: 2012-12-10 22:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,16 +17,21 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: static/devilry_extjsextras/AlertMessage.js:87
+#: static/devilry_extjsextras/AlertMessage.js:88
+msgid "Details"
+msgstr "Detaljer"
+
 #: static/devilry_extjsextras/CancelButton.js:9
 msgctxt "uibutton"
 msgid "Cancel"
-msgstr ""
+msgstr "Avbryt"
 
-#: static/devilry_extjsextras/ConfirmDeleteDialog.js:19
+#: static/devilry_extjsextras/ConfirmDeleteDialog.js:22
 msgid "DELETE"
-msgstr ""
+msgstr "SLETT"
 
-#: static/devilry_extjsextras/ConfirmDeleteDialog.js:34
+#: static/devilry_extjsextras/ConfirmDeleteDialog.js:37
 msgid ""
 "Type {required_confirm_text} in the field below to confirm that you really "
 "intend to delete {short_description}."
@@ -34,18 +39,23 @@ msgstr ""
 "Skriv {required_confirm_text} i feltet nedenform for å bekrefte at du "
 "virkelig ønsker å slette {short_description}."
 
-#: static/devilry_extjsextras/ConfirmDeleteDialog.js:52
+#: static/devilry_extjsextras/ConfirmDeleteDialog.js:55
 msgid "Write \"{something}\""
-msgstr ""
+msgstr "Skriv \"{something}\""
 
-#: static/devilry_extjsextras/ConfirmDeleteDialog.js:62
+#: static/devilry_extjsextras/ConfirmDeleteDialog.js:63
 msgid "Delete {something}?"
-msgstr ""
+msgstr "Slett {something}?"
+
+#: static/devilry_extjsextras/ContainerWithEditTitle.js:30
+msgctxt "uibutton"
+msgid "edit"
+msgstr "rediger"
 
 #: static/devilry_extjsextras/CreateButton.js:5
 msgctxt "uibutton"
 msgid "Create"
-msgstr ""
+msgstr "Lag"
 
 #: static/devilry_extjsextras/DatetimeHelpers.js:6
 #, c-format
@@ -75,115 +85,101 @@ msgstr "Om %(delta)s"
 msgid "%(delta)s ago"
 msgstr "For %(delta)s siden"
 
-#: static/devilry_extjsextras/DeleteButton.js:9
+#: static/devilry_extjsextras/DeleteButton.js:10
 msgctxt "uibutton"
 msgid "Delete"
-msgstr ""
-
-#: static/devilry_extjsextras/DevilryHeader.js:37
-msgctxt "devilryheader"
-msgid "Student"
-msgstr ""
-
-#: static/devilry_extjsextras/DevilryHeader.js:40
-msgctxt "devilryheader"
-msgid "Examiner"
-msgstr ""
-
-#: static/devilry_extjsextras/DevilryHeader.js:43
-msgctxt "devilryheader"
-msgid "Subjectadmin"
-msgstr ""
-
-#: static/devilry_extjsextras/DevilryHeader.js:49
-msgctxt "devilryheader"
-msgid "Help"
-msgstr ""
-
-#: static/devilry_extjsextras/EditableSidebarBox.js:22
-msgid "Loading..."
-msgstr ""
-
-#: static/devilry_extjsextras/EditableSidebarBox.js:29
-msgctxt "uibutton"
-msgid "Edit"
-msgstr ""
+msgstr "Slett"
 
 #: static/devilry_extjsextras/HtmlErrorDialog.js:32
 msgid "Error"
-msgstr ""
+msgstr "Feil"
 
 #: static/devilry_extjsextras/ManageItemsPanel.js:94
 msgid "Select all"
-msgstr ""
+msgstr "Velg alle"
 
 #: static/devilry_extjsextras/ManageItemsPanel.js:102
 msgid "Remove"
-msgstr ""
+msgstr "Slett"
 
 #: static/devilry_extjsextras/ManageItemsPanel.js:116
 msgid "Filter ..."
-msgstr ""
+msgstr "Filtrer ..."
 
 #: static/devilry_extjsextras/ManageItemsPanel.js:132
 msgid "Saving ..."
-msgstr ""
+msgstr "Lagrer ..."
 
 #: static/devilry_extjsextras/ManageItemsPanel.js:148
 msgid "Already in list"
-msgstr ""
+msgstr "Allerede i listen"
 
 #: static/devilry_extjsextras/ManageItemsPanel.js:149
 msgid "The selected item is already in the list"
-msgstr ""
+msgstr "Det valgte elementet er allerede i listen"
 
 #: static/devilry_extjsextras/ManageItemsPanel.js:185
 msgid ""
 "Do you really want to remove the {numselected} selected items from the list?"
-msgstr ""
+msgstr "Vil du virkelig slette de {numselected} valgte elementene fra listen?"
 
 #: static/devilry_extjsextras/ManageItemsPanel.js:187
 msgid "Confirm remove"
-msgstr ""
+msgstr "Bekreft sletting"
+
+#: static/devilry_extjsextras/MarkupMoreInfoBox.js:43
+#: static/devilry_extjsextras/MoreInfoBox.js:41
+msgid "Less info"
+msgstr "Mindre info"
+
+#: static/devilry_extjsextras/MarkupMoreInfoBox.js:49
+#: static/devilry_extjsextras/MoreInfoBox.js:35
+msgid "More info"
+msgstr "Mer info"
 
 #: static/devilry_extjsextras/NextButton.js:5
 msgctxt "uibutton"
 msgid "Next"
-msgstr ""
+msgstr "Neste"
 
 #: static/devilry_extjsextras/OkButton.js:5
+#: static/devilry_extjsextras/OkCancelPanel.js:10
 msgctxt "uibutton"
 msgid "Ok"
-msgstr ""
+msgstr "Ok"
 
-#: static/devilry_extjsextras/ProxyErrorHandler.js:46
+#: static/devilry_extjsextras/OkCancelPanel.js:16
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: static/devilry_extjsextras/ProxyErrorHandler.js:40
 msgid "Could not connect to server at URL \"{url}\"."
-msgstr ""
-
-#: static/devilry_extjsextras/RouteNotFound.js:16
-msgid "Route not found"
-msgstr ""
+msgstr "Kunne ikke koble til servere på adressen \"{url}\"."
 
 #: static/devilry_extjsextras/RouteNotFound.js:17
+msgid "Route not found"
+msgstr "Side ikke funnet"
+
+#: static/devilry_extjsextras/RouteNotFound.js:18
 msgid "Return to dashboard"
-msgstr ""
+msgstr "Returner til forsiden"
 
 #: static/devilry_extjsextras/SaveButton.js:5
 msgctxt "uibutton"
 msgid "Save"
-msgstr ""
+msgstr "Lagre"
 
 #: static/devilry_extjsextras/form/DateField.js:5
 msgctxt "extjs date input format"
 msgid "Y-m-d"
 msgstr ""
 
-#: static/devilry_extjsextras/form/DateTimeField.js:33
+#: static/devilry_extjsextras/form/DateTimeField.js:37
 msgctxt "extjs date emptytext"
 msgid "YYYY-MM-DD"
 msgstr ""
 
-#: static/devilry_extjsextras/form/DateTimeField.js:38
+#: static/devilry_extjsextras/form/DateTimeField.js:42
 msgctxt "extjs time emptytext"
 msgid "hh:mm"
 msgstr ""

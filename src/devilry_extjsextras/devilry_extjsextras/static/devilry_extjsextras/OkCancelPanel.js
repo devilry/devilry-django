@@ -7,7 +7,7 @@ Ext.define('devilry_extjsextras.OkCancelPanel', {
      * @cfg {String} [oktext]
      * The text of the OK button. Defauls to "Ok" translated.
      */
-    oktext: gettext('Ok'),
+    oktext: pgettext('uibutton', 'Ok'),
 
     /**
      * @cfg {String} [canceltext]
