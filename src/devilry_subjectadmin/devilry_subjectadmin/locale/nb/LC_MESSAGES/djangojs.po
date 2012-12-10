@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-10 18:53+0100\n"
+"POT-Creation-Date: 2012-12-10 19:17+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,7 +42,6 @@ msgstr "Alle %(subjects_term)s"
 #: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:13
 #: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:28
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:28
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:73
 #: static/devilry_subjectadmin/app/view/subject/ListAll.js:30
 msgid "subjects"
 msgstr ""
@@ -52,7 +51,6 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:399
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:86
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:91
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:70
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:36
 #: static/devilry_subjectadmin/app/view/period/Overview.js:114
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:64
@@ -213,7 +211,7 @@ msgstr "Legg til %(period_term)s"
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:19
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:256
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:273
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:44
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:43
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:44
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:22
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:28
@@ -1657,8 +1655,9 @@ msgid ""
 "Administrators can not give feedback. If you want to give feedback to any "
 "groups, you have to make yourself examiner on those groups."
 msgstr ""
-"Administratorer kan ikke gi tilbakemelding. Hvis du ønsker å gi tilbakemelding "
-"til noen grupper, må du gjøre deg selv til retter på de gruppene."
+"Administratorer kan ikke gi tilbakemelding. Hvis du ønsker å gi "
+"tilbakemelding til noen grupper, må du gjøre deg selv til retter på de "
+"gruppene."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:13
 msgid "An examiner can open/close their groups."
@@ -1682,18 +1681,11 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:38
 msgid ""
-"Only <a {relatedexaminers_link}>examiners registered on the "
-"{period_term}</a> are available."
+"Only <a {relatedexaminers_link}>examiners registered on the {period_term}</"
+"a> are available."
 msgstr ""
-"Kun <a {relatedexaminers_link}>rettere registrert på oppgavens "
-"{period_term}</a> er tilgjengelige."
-
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:43
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:72
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:6
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:20
-msgid "examiners"
-msgstr "rettere"
+"Kun <a {relatedexaminers_link}>rettere registrert på oppgavens {period_term}"
+"</a> er tilgjengelige."
 
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:40
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:42
@@ -1765,90 +1757,111 @@ msgid "IMPORTANT"
 msgstr "VIKTIG"
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:12
-msgid "{Students_term} are always in a group."
-msgstr ""
+msgid "Students are always in a group."
+msgstr "Studenter er alltid i en gruppe."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:14
 msgid ""
-"Even when {students_term} make individual deliveries, they are organized "
-"into groups. Each student is added to their own group when you add them to "
-"an assignment. This means that the list to your left is all groups "
-"registered on this assignment."
+"Even when students make individual deliveries, they are organized into "
+"groups. Each student is added to their own group when you add them to an "
+"assignment. This means that the list to your left is all groups registered "
+"on this assignment."
 msgstr ""
+"Selv når studenter leverer individuelt, organiseres de i grupper, med en "
+"gruppe per student. Hver student legges til på sin egen gruppe når du legger "
+"de til på en oppgave. Dette betyr at listen på din venste side er alle "
+"gruppene registret på denne oppgaven."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:18
 msgid "How to create project groups"
-msgstr ""
+msgstr "Hvordan opprette prosjektgrupper"
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:20
 msgid "Select two or more groups, and choose <em>Create project group</em>."
-msgstr ""
+msgstr "Velg to eller flere grupper, og velg <em>Lag prosjektgruppe</em>."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:24
 msgid "TIP"
-msgstr ""
+msgstr "TIPS"
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:26
-msgid "Use <em>Select by search</em> to efficiently select students."
+msgid ""
+"Use <em>Select by search</em> (further down in the help) to efficiently "
+"select students."
 msgstr ""
+"Bruk <em>Select by search</em> (lenger ned på denne hjelpsiden) for å "
+"effektivt velge studenter."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:32
 msgid "You are administrator, which is NOT the same as examiner."
-msgstr ""
+msgstr "Du er administrator, noe som IKKE er det samme som å være retter."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:34
 msgid ""
 "If you want to provide feedback to some groups, you have to make yourself "
 "examiner on those groups."
 msgstr ""
+"Hvis du ønsker å gi tilbakemelding til noen grupper, må du gjøre deg selv "
+"til retter på de gruppene."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:41
 #, fuzzy
-msgid "How to set {examiners_term}"
-msgstr "Sett opp %(examiners_term)s automatisk?"
+msgid "How to set examiners"
+msgstr "Hvordan sette opp rettere"
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:43
 msgid ""
-"To set {examiners_term} on a single group, select the group and use the edit "
-"button in the {examiner_term} heading on your right hand side."
+"To set examiners on a single group, select the group and use the edit button "
+"in the examiner heading on your right hand side."
 msgstr ""
+"For å tilordne rettere til en enkel gruppe, velg gruppen og bruk rediger-"
+"knappen i rettere-overskriften på din høyre side."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:46
 msgid ""
-"To set {examiners_term} on multiple groups, select the groups and use the "
-"buttons in the <em>Manage {examiners_term}</em> section."
+"To set examiners on multiple groups, select the groups and use the buttons "
+"in the Examiners section."
 msgstr ""
+"For å tilordne rettere til flere gruper, velg gruppene, og bruk knappene i "
+"seksjonen Rettere."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:50
 msgid "Find/select efficiently"
-msgstr ""
+msgstr "Finn/velg effektivt"
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:52
 msgid ""
-"Selecting students from the list using the checkboxes works if you have few "
-"students. For huge {subjects_term}, manual selection is rarely useful."
+"Selecting groups from the list using the checkboxes works if you have few "
+"groups. With huge amounts of groups, manual selection is rarely useful."
 msgstr ""
+"Å velge studenter fra listen ved å bla i listen å klikke på grupper så lenge "
+"du har få grupper. Når du har store mengder grupper blir det upraktisk å "
+"velge grupper manuelt."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:54
 msgid "Select by pre-defined filters"
-msgstr ""
+msgstr "Velg via forhåndsdefinerte filtre"
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:56
 msgid ""
-"The <em>Select</em>-button in the lower left corner lets you select groups "
+"The Select-button in the upper left corner lets you select groups "
 "using a good set of pre-defined filters."
 msgstr ""
+"Velg-knappen i øvre venstre hjørne lar deg velge grupper ved hjelp av "
+"et godt utvalg av forhåndsdefinerte filtre."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:58
 msgid "Select by search"
-msgstr ""
+msgstr "Velg via søk"
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:60
 msgid ""
-"The search field at the bottom of the top of the group-list allows you to "
+"The search field at the top of the group-list allows you to "
 "search for groups. The results is displayed in a menu, and when you select a "
 "group from the menu, the group is selected."
 msgstr ""
+"Søkefeltet på toppen av gruppelisten lar deg søke etter grupper. Resultatet vises i en meny, "
+"og når du velger en gruppe fra menyen blir gruppen valgt."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:63
 msgid "Using a small or huge display?"
@@ -1863,13 +1876,6 @@ msgid ""
 "will apear. Your selected sizes is saved as a cookie in your browser, which "
 "means that they will be remembered when you return to this view in your "
 "current browser."
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:71
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:21
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:148
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:159
-msgid "students"
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:60
@@ -2343,6 +2349,11 @@ msgid ""
 "and select %(groups_term)s by their %(tags_term)s. Common use-cases are:"
 msgstr ""
 
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:6
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:20
+msgid "examiners"
+msgstr "rettere"
+
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:8
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:19
 msgid "tags"
@@ -2357,6 +2368,12 @@ msgid ""
 "included when you added %(groups_term)s to this %(assignment_term)s, however "
 "you can safely edit %(tags_term)s on %(groups_term)s without affecting the "
 "%(tags_term)s on the %(period_term)s."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:21
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:148
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:159
+msgid "students"
 msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:23
