@@ -3,15 +3,15 @@ Ext.define('devilry_subjectadmin.view.managestudents.HelpPanel', {
     alias: 'widget.managestudents_help',
     cls: 'bootstrap',
 
-    tpl: [
+    html: [
         '<h2>', gettext('Help'), '</h2>',
 
         '<h3>', gettext('Groups'), '</h3>',
         '<p>',
             '<strong class="text-warning">', gettext('IMPORTANT'), ': </strong>',
-            gettext('{Students_term} are always in a group.'),
+            gettext('Students are always in a group.'),
             ' <small class="muted">',
-            gettext('Even when {students_term} make individual deliveries, they are organized into groups. Each student is added to their own group when you add them to an assignment. This means that the list to your left is all groups registered on this assignment.'),
+            gettext('Even when students make individual deliveries, they are organized into groups. Each student is added to their own group when you add them to an assignment. This means that the list to your left is all groups registered on this assignment.'),
             '</small>',
         '</p>',
 
@@ -38,18 +38,18 @@ Ext.define('devilry_subjectadmin.view.managestudents.HelpPanel', {
         '<p>',
         '</p>',
 
-        '<h4>', gettext('How to set {examiners_term}'), '</h4>',
+        '<h4>', gettext('How to set examiners'), '</h4>',
         '<p>',
-            gettext('To set {examiners_term} on a single group, select the group and use the edit button in the {examiner_term} heading on your right hand side.'),
+            gettext('To set examiners on a single group, select the group and use the edit button in the examiner heading on your right hand side.'),
         '</p>',
         '<p>',
-            gettext('To set {examiners_term} on multiple groups, select the groups and use the buttons in the <em>Manage {examiners_term}</em> section.'),
+            gettext('To set examiners on multiple groups, select the groups and use the buttons in the <em>Manage examiners</em> section.'),
         '</p>',
 
 
         '<h3>', gettext('Find/select efficiently'), '</h3>',
         '<p>',
-            gettext('Selecting students from the list using the checkboxes works if you have few students. For huge {subjects_term}, manual selection is rarely useful.'),
+            gettext('Selecting students from the list using the checkboxes works if you have few students. For huge subjects, manual selection is rarely useful.'),
         '</p>',
         '<h4>', gettext('Select by pre-defined filters'), '</h4>',
         '<p>',
@@ -64,12 +64,5 @@ Ext.define('devilry_subjectadmin.view.managestudents.HelpPanel', {
         '<p>',
             gettext('The width of the group-list, and the height of the <em>Summary of selected groups</em> panel (when multiple groups are selected), is not perfect for all displays. To amend this, we allow you to resize these panels. Move your cursor over the inner border of one of these lists, and a resize-indicator will apear. Your selected sizes is saved as a cookie in your browser, which means that they will be remembered when you return to this view in your current browser.'),
         '</p>'
-    ],
-
-    data: {
-        Students_term: gettext('Students'),
-        students_term: gettext('students'),
-        examiners_term: gettext('examiners'),
-        subjects_term: gettext('subjects')
-    }
+    ].join('')
 });
