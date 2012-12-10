@@ -29,23 +29,23 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
         period_term: gettext('period')
     }, true),
     morehelptpl: [
-        '<h3>', gettext('Removing {students_term}'), '</h3>',
+        '<h3>', gettext('Removing students'), '</h3>',
         '<p>',
-            gettext('When you remove a {student_term} from this list, Devilry assumes that the {student_term} is not planning on completing the {period_term}. This means that they will disappear from any {period_term} summaries, including calculation of final grade on the {period_term}.'),
+            gettext('When you remove a student from this list, Devilry assumes that the student is not planning on completing the {period_term}. This means that they will disappear from any {period_term} summaries, including calculation of final grade on the {period_term}.'),
         '</p>',
         
         '<p>',
-            gettext('Removing a {student_term} from a {period_term} does not affect any groups, deliveries or feedback already registered on an assignment.'),
+            gettext('Removing a student from a {period_term} does not affect any groups, deliveries or feedback already registered on an assignment.'),
         '</p>',
 
         '<h3>', gettext('Tags'), '</h3>',
         '<p>',
-            gettext('Tags is a flexible way of organizing {students_term} and examiners. Since both {examiners_term} and administrators can see tags, they are a great way of marking students that needs special attention, such as students with special needs.'),
+            gettext('Tags is a flexible way of organizing students and examiners. Since both examiners and administrators can see tags, they are a great way of marking students that needs special attention, such as students with special needs.'),
         '</p>',
 
-        '<h4>', gettext('Accociate examiners with {students_term} using tags'), '</h4>',
+        '<h4>', gettext('Accociate examiners with students using tags'), '</h4>',
         '<p>',
-            gettext('If you tag your {students_term} and examiners with the same tags, you can automatically assign examiners to {students_term} when creating a new assignment. E.g.: If you tag two examiners and 20 {students_term} with <em>group1</em>, those two examiners will be set up to correct those 20 {students_term} when you create a new assignment.'),
+            gettext('If you tag your students and examiners with the same tags, you can automatically assign examiners to students when creating a new assignment. E.g.: If you tag two examiners and 20 students with <em>group1</em>, those two examiners will be set up to correct those 20 students when you create a new assignment.'),
         '</p>'
     ],
 
@@ -155,9 +155,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                                 xtype: 'box',
                                 tpl: this.morehelptpl,
                                 data: {
-                                    period_term: gettext('period'),
-                                    students_term: gettext('students'),
-                                    student_term: gettext('student')
+                                    period_term: gettext('period')
                                 }
                             }
                         }, {
@@ -172,7 +170,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                             bodyPadding: 10,
                             html: [
                                 '<p>',
-                                    gettext('Do you really want to remove all the selected related students?'),
+                                    gettext('Do you really want to remove all the selected students?'),
                                     interpolate(gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire %(period_term)s.'), {
                                         period_term: gettext('period')
                                     }, true),

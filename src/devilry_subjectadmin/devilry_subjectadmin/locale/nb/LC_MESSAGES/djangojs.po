@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-10 21:34+0100\n"
+"POT-Creation-Date: 2012-12-10 21:53+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -221,10 +221,10 @@ msgstr "Legg til %(period_term)s"
 #: static/devilry_subjectadmin/app/view/period/Overview.js:143
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:28
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:147
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:165
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:164
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:29
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:158
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:177
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:175
 #: static/devilry_subjectadmin/app/view/subject/Overview.js:66
 msgid "period"
 msgstr ""
@@ -2158,9 +2158,9 @@ msgstr "Legg til en eller flere tag(s) på de valgte gruppene."
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:61
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:95
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:95
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:185
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:184
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:105
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:197
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:195
 msgid "Clear tags"
 msgstr "Fjern tags"
 
@@ -2169,14 +2169,14 @@ msgid "Remove/clear all tags from the selected groups."
 msgstr "Fjern alle tags fra de valgte gruppene"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:84
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:174
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:186
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:173
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:184
 msgid "Set tags"
 msgstr "Erstatt tags"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:90
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:180
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:192
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:179
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:190
 msgid "Add tags"
 msgstr "Legg til tags"
 
@@ -2549,7 +2549,8 @@ msgid ""
 "These are the examiners that can be added to any assignments within the "
 "%(period_term)s."
 msgstr ""
-"Dette er retterne som kan legges til på oppgaver i inneværende %(period_term)s."
+"Dette er retterne som kan legges til på oppgaver i inneværende %(period_term)"
+"s."
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:31
 msgid "Removing examiners"
@@ -2560,9 +2561,8 @@ msgid ""
 "Removing an examiner from a {period_term} does not affect any groups, "
 "deliveries or feedback already registered on an assignment."
 msgstr ""
-"Å fjerne en retter fra et {period_term} påvirker ikke grupper, "
-"innleveringer eller tilbakemeldinger som allerede er registrert på "
-"en oppgave."
+"Å fjerne en retter fra et {period_term} påvirker ikke grupper, innleveringer "
+"eller tilbakemeldinger som allerede er registrert på en oppgave."
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:36
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:46
@@ -2570,119 +2570,140 @@ msgid "Accociate examiners with students using tags"
 msgstr "Assosier rettere med studenter via tags"
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:38
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:48
 msgid ""
-"If you tag your {students_term} and examiners with the same tags, you can "
-"automatically assign examiners to {students_term} when creating a new "
-"assignment. E.g.: If you tag two examiners and 20 {students_term} with "
-"<em>group1</em>, those two examiners will be set up to correct those 20 "
-"{students_term} when you create a new assignment."
+"If you tag your students and examiners with the same tags, you can "
+"automatically assign examiners to students when creating a new assignment. E."
+"g.: If you tag two examiners and 20 students with <em>group1</em>, those two "
+"examiners will be set up to correct those 20 students when you create a new "
+"assignment if you choose to use tags to set up examiners."
 msgstr ""
+"Hvis du tagger dine studenter og rettere med samme tags, kan du automatisk "
+"tilegne rettere til studenter når du lager en ny oppgave. F.eks.: Hvis du "
+"tagger to rettere og 20 studenter med <em>gruppe1</em>, vil de to retterne "
+"settes opp som rettere på de 20 studentene når du lager en ny oppgave hvis "
+"du velger å bruke tags for å sette opp rettere."
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:86
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:158
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:157
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:96
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:170
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:168
 msgid "Remove selected"
-msgstr ""
+msgstr "Fjern valgte"
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:112
 msgid "Add examiner"
-msgstr ""
+msgstr "Legg til retter"
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:119
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:129
 msgid "Filter (name, username, tags, candidate ID)"
-msgstr ""
+msgstr "Filter (navn, brukernavn, tags, candidat-ID"
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:141
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:152
 msgid "More help ..."
-msgstr ""
+msgstr "Mer hjelp ..."
 
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:148
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:159
-msgid "students"
-msgstr "studenter"
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:162
+msgid "Do you really want to remove all the selected examiners?"
+msgstr "Vil du virkelig fjerne alle de valgte retterne?"
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:163
-msgid "Do you really want to remove all the selected related examiners?"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:164
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:176
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:174
 msgid ""
 "They will not be removed from any existing assignments. You will not be able "
 "to add them on any new assignments, and they will not be available in "
 "statistics for the entire %(period_term)s."
 msgstr ""
+"De vil ikke fjernes fra eksisterende oppgaver. Du vil ikke kunne legge de "
+"til på nye oppgaver, og de vil ikke bli tilgjengelige statistikk over hele "
+"inneværende %(period_term)s."
 
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:190
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:189
 msgid "Do you really want to clear all tags on the selected examiners?"
-msgstr ""
+msgstr "Vi du virkelig fjerne alle tags på valgte rettere?"
 
 #: static/devilry_subjectadmin/app/view/relatedstudents/Grid.js:19
 msgid "Candidate ID"
-msgstr ""
+msgstr "Kandidat ID"
 
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:28
 msgid ""
 "These are the students that can be added to any assignments within this "
 "%(period_term)s."
 msgstr ""
+"Dette er studentene som kan legges til på oppgaver i inneværende "
+"%(period_term)s."
 
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:32
-msgid "Removing {students_term}"
-msgstr ""
+msgid "Removing students"
+msgstr "Fjerner studenter"
 
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:34
 msgid ""
-"When you remove a {student_term} from this list, Devilry assumes that the "
-"{student_term} is not planning on completing the {period_term}. This means "
-"that they will disappear from any {period_term} summaries, including "
-"calculation of final grade on the {period_term}."
+"When you remove a student from this list, Devilry assumes that the student "
+"is not planning on completing the {period_term}. This means that they will "
+"disappear from any {period_term} summaries, including calculation of final "
+"grade on the {period_term}."
 msgstr ""
+"Når du fjerner en student fra denne listen, regner Devilry med at studenten "
+"ikke har tenkt til å fullføre inneværende {period_term}. Dette betyr at de "
+"vil forsvinne fra alle oppsummeringer/statistikker over inneværende "
+"%(period_term)s, inkludert beregning av avsluttende karakter."
 
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:38
 msgid ""
-"Removing a {student_term} from a {period_term} does not affect any groups, "
+"Removing a student from a {period_term} does not affect any groups, "
 "deliveries or feedback already registered on an assignment."
 msgstr ""
+"Å fjerne en student fra et {period_term} påvirker ikke grupper, "
+"innleveringer eller tilbakemeldinger som allerede er registrert på en "
+"oppgave."
 
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:43
 msgid ""
-"Tags is a flexible way of organizing {students_term} and examiners. Since "
-"both {examiners_term} and administrators can see tags, they are a great way "
-"of marking students that needs special attention, such as students with "
-"special needs."
+"Tags is a flexible way of organizing students and examiners. Since both "
+"examiners and administrators can see tags, they are a great way of marking "
+"students that needs special attention, such as students with special needs."
 msgstr ""
+"Tags er en fleksibel metode for å organisere studenter og rettere. Siden "
+"både rettere og administratorer kan se tags, er de en flott måte å markere "
+"studenter som trenger spesiell oppmerksomhet, slik som studenter med "
+"spesielle behov."
+
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:48
+msgid ""
+"If you tag your students and examiners with the same tags, you can "
+"automatically assign examiners to students when creating a new assignment. E."
+"g.: If you tag two examiners and 20 students with <em>group1</em>, those two "
+"examiners will be set up to correct those 20 students when you create a new "
+"assignment."
+msgstr ""
+"Hvis du tagger dine studenter og rettere med samme tags, kan du automatisk "
+"tilegne rettere til studenter når du lager en ny oppgave. F.eks.: Hvis du "
+"tagger to rettere og 20 studenter med <em>gruppe1</em>, vil de to retterne "
+"settes opp som rettere på de 20 studentene når du lager en ny oppgave hvis "
+"du velger å bruke tags for å sette opp rettere."
 
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:122
-#, fuzzy
 msgid "Add student"
-msgstr "Studenter &mdash; Se på og rediger"
+msgstr "Legg til student"
 
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:160
-#, fuzzy
-msgid "student"
-msgstr "Studenter &mdash; Se på og rediger"
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:173
+msgid "Do you really want to remove all the selected students?"
+msgstr "Vil du virkelig fjerne alle de valgte studentene?"
 
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:175
-msgid "Do you really want to remove all the selected related students?"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:202
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:200
 msgid "Do you really want to clear all tags on the selected students?"
-msgstr ""
+msgstr "Vil du virkelig fjerne alle tags på de valgte studentene?"
 
 #: static/devilry_subjectadmin/app/view/relatedstudents/SelectUserPanel.js:42
 msgid "Search by username, name or email ..."
-msgstr ""
+msgstr "Søk etter brukernavn, navn eller epost ..."
 
 #: static/devilry_subjectadmin/app/view/subject/Overview.js:65
-#, fuzzy
 msgid "Create new %(period_term)s"
-msgstr "Administrer %(deadlines_term)s"
+msgstr "Lag nyt %(period_term)s"
 
 #: static/devilry_subjectadmin/app/view/subject/Overview.js:80
 msgid ""
@@ -2701,57 +2722,3 @@ msgid ""
 msgstr ""
 "Når du har slettet et %(subject_term)s er det ingen mulighet for å angre. "
 "Kun superbrukere kan slette et %(subject_term)s med innhold."
-
-#~ msgid "examiners"
-#~ msgstr "rettere"
-
-#~ msgid "groups"
-#~ msgstr "grupper"
-
-#~ msgid "tags"
-#~ msgstr "tags"
-
-#~ msgid "assignment"
-#~ msgstr "oppgave"
-
-#~ msgid "group"
-#~ msgstr "gruppe"
-
-#~ msgid "No %(deadlines_term)s"
-#~ msgstr "Legg til %(deadline_term)s"
-
-#~ msgid "deadline"
-#~ msgstr "innleveringsfrist"
-
-#, fuzzy
-#~ msgid "Add %(deadline_term)s to"
-#~ msgstr "Legg til %(deadline_term)s"
-
-#, fuzzy
-#~ msgctxt "groupunit"
-#~ msgid "student"
-#~ msgid_plural "students"
-#~ msgstr[0] "Studenter &mdash; Se på og rediger"
-#~ msgstr[1] "Studenter &mdash; Se på og rediger"
-
-#~ msgid "All %(subjects)s"
-#~ msgstr "Alle kurs"
-
-#~ msgid "Manage %(deadlines_term)s"
-#~ msgstr "Administrer %(deadlines_term)s"
-
-#~ msgid ""
-#~ "Setup %(students_term)s and %(examiners_term)s? If none of the options "
-#~ "below suite your needs, uncheck all the checkboxes, and set up "
-#~ "%(students_term)s and %(examiners_term)s manually later."
-#~ msgstr ""
-#~ "Sett opp %(students_term)s og %(examiners_term)s? Hvis ingen av valgene "
-#~ "nedenfor velg vekk alle valgene nedenfor, og sett opp %(students_term)s "
-#~ "og %(examiners_term)s manuelt senere."
-
-#~ msgid ""
-#~ "Select this to add all %(students_term)s registered on the %(period_term)"
-#~ "s to the %(assignment_term)s when it is created."
-#~ msgstr ""
-#~ "Alle %(students_term)s registrert på oppgavens %(period_term)s blir lagt "
-#~ "til på oppgaven når den lages."

@@ -35,7 +35,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
 
         '<h3>', gettext('Accociate examiners with students using tags'), '</h3>',
         '<p>',
-            gettext('If you tag your students and examiners with the same tags, you can automatically assign examiners to students when creating a new assignment. E.g.: If you tag two examiners and 20 students with <em>group1</em>, those two examiners will be set up to correct those 20 students when you create a new assignment.'),
+            gettext('If you tag your students and examiners with the same tags, you can automatically assign examiners to students when creating a new assignment. E.g.: If you tag two examiners and 20 students with <em>group1</em>, those two examiners will be set up to correct those 20 students when you create a new assignment if you choose to use tags to set up examiners.'),
         '</p>'
     ],
 
@@ -159,7 +159,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                             bodyPadding: 10,
                             html: [
                                 '<p>',
-                                    gettext('Do you really want to remove all the selected related examiners?'),
+                                    gettext('Do you really want to remove all the selected examiners?'),
                                     interpolate(gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire %(period_term)s.'), {
                                         period_term: gettext('period')
                                     }, true),
