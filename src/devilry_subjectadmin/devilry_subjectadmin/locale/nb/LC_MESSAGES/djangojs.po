@@ -1464,65 +1464,71 @@ msgid ""
 "assignments, those assignments will be listed. If you only have assignments "
 "in your list, you do not have the required rights to create new assignments."
 msgstr ""
-""
+"På {subjects_term} der du kun har administrator-rettigheter på utvalgte "
+"oppgaver, vil bare oppgavene listes. Hvis du kun har oppgaver i din liste, "
+"har du ikke de nødvendige rettighetene for å lage nye oppgaver."
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:34
-#, fuzzy
 msgid "Click <em>Create new assignment</em>."
-msgstr "Administrer %(deadlines_term)s"
+msgstr "Klikk <em>Lag ny oppgave</em>"
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:43
 msgid "Fill out the visible fields in the form."
-msgstr ""
+msgstr "Fyll ut de synlige feltene i skjemaet."
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:46
 msgid "Exam?"
-msgstr ""
+msgstr "Eksamen?"
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:48
 msgid "Click Advanced, and choose Anonymous."
-msgstr ""
+msgstr "Klikk Avansert, og velg Anonym."
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:51
 msgid "Paper deliveries?"
-msgstr ""
+msgstr "Papirinnleveringer?"
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:53
 msgid "If your students hand in deliveries on paper, choose Not using Devilry."
-msgstr ""
+msgstr "Hvis studenene dine leverer på papir, velg Ikke gjennom Devilry."
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:62
 msgid "Keeping the defaults is usually the best choice if you are uncertain."
-msgstr ""
+msgstr "Det er vanligvis best å beholde standardvalgene hvis du er usikker."
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:65
 msgid "Need to edit students or examiners?"
-msgstr ""
+msgstr "Behøver du å redigere studenter eller retter?"
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:67
 msgid ""
 "The links to view or edit students and examiners open a new browser window, "
 "so you will not loose your progress when you click them."
 msgstr ""
+"Linkene for å se på eller redigere studenter og rettere åpner et nytt nettleservindu, "
+"så du vil ikke miste det du har fylt inn til nå hvis du klikker på de."
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:70
 msgid "Create another?"
-msgstr ""
+msgstr "Lag en til?"
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:72
 msgid ""
-"This guide closes when you click Create assignment. At the top of the next "
+"This guide closes when you click Create new assignment. At the top of the next "
 "page, you will get a link to quickly create another assignment with the same "
 "settings that you used for this assignment."
 msgstr ""
+"Denne guiden lukkes når du klikker Lag ny oppgave. På toppen av neste side "
+"vil du få en link som lar deg raskt opprette en oppgave til med de samme "
+"innstillingene som du brukte på denne oppgaven."
 
 #: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:25
 msgid "Step {current} of {total}"
-msgstr ""
+msgstr "Steg {current} av {total}"
 
 #: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:37
 msgid "Invalid guide step"
-msgstr ""
+msgstr "Ugyldig side for denne guiden"
 
 #: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:38
 msgid ""
@@ -1530,17 +1536,20 @@ msgid ""
 "button to return to the previous page, and read the instructions one more "
 "time."
 msgstr ""
+"Denne guiden kjenner ikke igjen nåværende side. Venligst bruk tilbakeknappen "
+"for å returnere til forrige side, og les instruksjonene en gang til."
 
 #: static/devilry_subjectadmin/app/view/managestudents/AutocompleteRelatedUserWidget.js:12
 msgid ""
 "Click the arrow to select a user, or search for username, full name, tags or "
 "email..."
 msgstr ""
+"Klikk på pilen for å velge en bruker, eller søk etter et brukernavn, fullt navn, tags eller epost..."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsPanel.js:52
 msgctxt "tagsexample"
 msgid "Example: group3, needs_extra_help"
-msgstr ""
+msgstr "Eksempel: gruppe1, trenger_ekstra_hjelp"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsPanel.js:54
 #: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsPanel.js:68

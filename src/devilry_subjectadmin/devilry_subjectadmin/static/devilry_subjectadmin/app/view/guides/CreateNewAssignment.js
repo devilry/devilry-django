@@ -69,7 +69,7 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
 
             '<h3>', gettext('Create another?'), '</h3>',
             '<p>',
-                gettext('This guide closes when you click Create assignment. At the top of the next page, you will get a link to quickly create another assignment with the same settings that you used for this assignment.'),
+                gettext('This guide closes when you click Create new assignment. At the top of the next page, you will get a link to quickly create another assignment with the same settings that you used for this assignment.'),
             '</p>'
         ],
         data: {
