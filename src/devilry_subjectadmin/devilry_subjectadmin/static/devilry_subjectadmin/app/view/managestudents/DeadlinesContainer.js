@@ -22,13 +22,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinesContainer', {
             this.add({
                 xtype: 'alertmessage',
                 type: 'error',
-                title: interpolate(gettext('No %(deadlines_term)s'), {
-                    deadlines_term: gettext('deadlines')
-                }, true),
-                message: interpolate(gettext('This group has no %(deadlines_term)s, so they can not add %(deliveries_term)s.'), {
-                    deadlines_term: gettext('deadlines'),
-                    deliveries_term: gettext('deliveries')
-                }, true)
+                title: gettext('No deadlines'),
+                message: gettext('This group has no deadlines, so they can not add deliveries.')
             });
         } else {
             Ext.Array.each(deadlines, function(deadline) {

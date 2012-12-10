@@ -36,12 +36,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
             '<tpl if="has_active_feedback">',
                 '<h4>', gettext('Active feedback'), '</h4>',
                 '<p><small class="muted">',
-                    interpolate(gettext('This is the active %(feedback_term)s on this %(assignment_term)s. Unless an %(examiner_term)s creates a new %(feedback_term)s, this will be the final %(grade_term)s on this %(assignment_term)s.'), {
-                        feedback_term: gettext('feedback'),
-                        examiner_term: gettext('examiner'),
-                        grade_term: gettext('grade'),
-                        assignment_term: gettext('assignment')
-                    }, true),
+                    gettext('This is the active feedback on this assignment. Unless an examiner creates a new feedback, this will be the final grade on this assignment.'),
                 '</small></p>',
             '</tpl>',
         '</div>',
