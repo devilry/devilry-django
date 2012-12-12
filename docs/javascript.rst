@@ -50,6 +50,13 @@ Documentation
       of multiple controllers use it).
     - Properties and config parameters for ExtJS classes.
     - Events for ExtJS classes, especially if they are used outside their controller.
+File naming
+    Name controllers by what the control (E.g: ``controller/period/Period.js``), and the views after their
+    purpose (E.g.: ``view/period/PeriodOverview.js``). Try to use unique names instead of generic
+    names like ``Overview.js``. To see why, try to find (quick open) a file with tens of matches in
+    an IDE like PyCharm or Eclipse that only search for file names, not for folder names (hint: it
+    is not quick to open such files). We learned this when developing ``devilry_subjectadmin`` with
+    controllers and views named ``Overview.js``.
 
 
 
