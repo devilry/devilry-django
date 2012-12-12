@@ -44,6 +44,12 @@ class ListOrCreatePeriodRest(BaseNodeListOrCreateView):
     def authenticate_postrequest(self, user, parentnode_id):
         subjectadmin_required(user, parentnode_id)
 
+    def get_queryset(self):
+        qry = super(ListOrCreatePeriodRest, self).get_queryset()
+        qry = qry.order_by('-start_time')
+        return qry
+
+
 
 class InstancePeriodRest(BaseNodeInstanceModelView):
     """
