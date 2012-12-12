@@ -2710,7 +2710,7 @@ msgstr "Søk etter brukernavn, navn eller epost ..."
 
 #: static/devilry_subjectadmin/app/view/subject/Overview.js:65
 msgid "Create new %(period_term)s"
-msgstr "Lag nyt %(period_term)s"
+msgstr "Lag nytt %(period_term)s"
 
 #: static/devilry_subjectadmin/app/view/subject/Overview.js:80
 msgid ""
