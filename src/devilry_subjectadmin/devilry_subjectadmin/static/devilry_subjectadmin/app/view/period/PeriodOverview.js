@@ -1,7 +1,7 @@
 /**
  * Period overview (overview of an period).
  */
-Ext.define('devilry_subjectadmin.view.period.Overview' ,{
+Ext.define('devilry_subjectadmin.view.period.PeriodOverview' ,{
     extend: 'Ext.container.Container',
     alias: 'widget.periodoverview',
     cls: 'devilry_subjectadmin_periodoverview',

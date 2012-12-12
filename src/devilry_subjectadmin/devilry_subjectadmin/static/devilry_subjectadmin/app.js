@@ -45,7 +45,7 @@ Ext.application({
         'CreateNewAssignment',
         'subject.ListAll',
         'subject.Overview',
-        'period.Overview',
+        'period.Period',
         'period.EditDuration',
         'CreateNewPeriod',
         'assignment.Overview',
@@ -79,7 +79,7 @@ Ext.application({
         this.addEvents(
            /**
              * @event
-             * Fired when a period is successfully loaded by the period.Overview.
+             * Fired when a period is successfully loaded by the period.Period.
              * @param {devilry_subjectadmin.model.Period} periodRecord 
              */
             'periodSuccessfullyLoaded',
