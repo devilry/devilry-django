@@ -25,7 +25,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
         '<div class="oldgroup_or_ignoredinfo oldgroup_or_ignoredinfo_{id}" style="white-space:normal !important;">',
             '<tpl if="oldgroup">',
                 '<span class="oldgroupinfo text-success">',
-                    gettext('Passed in {oldperiodname}.'),
+                    gettext('Passed {oldperiodname}.'),
                 '</span>',
             '<tpl else>',
                 '<span class="text-warning">',

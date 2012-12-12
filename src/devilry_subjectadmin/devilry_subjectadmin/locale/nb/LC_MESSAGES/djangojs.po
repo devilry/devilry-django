@@ -2432,8 +2432,8 @@ msgid "Mark suspected cheaters."
 msgstr "Marker grupper som mistenkes for juks."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:28
-msgid "Passed in {oldperiodname}."
-msgstr "Bestått i {oldperiodname}."
+msgid "Passed {oldperiodname}."
+msgstr "Bestått {oldperiodname}."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:34
 msgid "Is already marked as previously passed."
