@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.db.models import Count
 from djangorestframework.permissions import IsAuthenticated
 
@@ -34,12 +35,22 @@ class PeriodInstanceResource(PeriodResourceMixin, BaseNodeInstanceResource):
                                       'number_of_relatedexaminers')
 
 
+
+class PeriodListResource(PeriodResource):
+    fields = PeriodResource.fields + ('url',)
+
+    def url(self, instance):
+        if isinstance(instance, self.model):
+            return reverse('devilry-subjectadmin-rest-period-instance', kwargs={'id': instance.pk})
+
+
+
 class ListOrCreatePeriodRest(BaseNodeListOrCreateView):
     """
     List the subjects where the authenticated user is admin.
     """
     permissions = (IsAuthenticated,)
-    resource = PeriodResource
+    resource = PeriodListResource
 
     def authenticate_postrequest(self, user, parentnode_id):
         subjectadmin_required(user, parentnode_id)

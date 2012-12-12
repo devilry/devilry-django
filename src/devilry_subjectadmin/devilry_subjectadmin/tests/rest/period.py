@@ -29,7 +29,7 @@ class TestRestListOrCreatePeriodRest(TestCase):
         self.assertEquals(len(content), 2)
         self.assertEquals(set(content[0].keys()),
                           set(['id', 'parentnode', 'etag', 'short_name', 'long_name',
-                               'start_time', 'end_time']))
+                               'start_time', 'end_time', 'url']))
 
     def test_list_nonadmin(self):
         self.testhelper.create_user('otheruser')
