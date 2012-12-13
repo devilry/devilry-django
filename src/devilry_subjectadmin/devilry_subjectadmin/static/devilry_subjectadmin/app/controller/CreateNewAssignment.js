@@ -142,7 +142,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     _onHitEnter: function() {
         var itemId = this.getCardPanel().getLayout().getActiveItem().itemId;
         if(this._isValid()) {
-            if(itemId == 'pageOne') {
+            if(itemId === 'pageOne') {
                 this._onNext();
             } else {
                 this._onCreate();
@@ -282,7 +282,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         var pubdate = pubtime_datefield.getValue();
         if(pubdate !== null) {
             first_deadline_datefield.setMinValue(pubtime_datefield.getValue());
-            first_deadline_date = first_deadline_datefield.getValue();
+            var first_deadline_date = first_deadline_datefield.getValue();
             if(first_deadline_date !== null) {
                 if(pubdate > first_deadline_date) {
                     first_deadline_datefield.validate();
@@ -344,8 +344,8 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         if(last_shortname_number === last_longname_number && last_shortname_number !== null) {
             var oldnumber = parseInt(last_shortname_number, 10);
             var number = oldnumber + 1;
-            short_name = last_short_name.replace(oldnumber.toString(), number.toString());
-            long_name = last_long_name.replace(oldnumber.toString(), number.toString());
+            var short_name = last_short_name.replace(oldnumber.toString(), number.toString());
+            var long_name = last_long_name.replace(oldnumber.toString(), number.toString());
             Ext.apply(initialValues, {
                 long_name: long_name,
                 short_name: short_name
