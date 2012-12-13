@@ -50,13 +50,13 @@ Ext.define('devilry_subjectadmin.store.Assignments', {
      * Find the most common timespan between first_deadline of all assignments
      * in the store.
      */
-    _findMostCommonFirstDeadlineDayDifference: function(assignments) {
+    _findMostCommonDayDifference: function(assignments, fieldname) {
         var previousAssignmentRecord = null;
         var diffs = new Ext.util.MixedCollection();
         assignments.each(function(assignmentRecord) {
-            var currentDeadline = assignmentRecord.get('first_deadline');
+            var currentDeadline = assignmentRecord.get(fieldname);
             if(previousAssignmentRecord) {
-                var previousDeadline = previousAssignmentRecord.get('first_deadline');
+                var previousDeadline = previousAssignmentRecord.get(fieldname);
                 var diff = currentDeadline.getTime() - previousDeadline.getTime();
                 var daysDiff = Math.round(diff / 86400000);
                 if(diffs.containsKey(daysDiff)) {
@@ -83,7 +83,7 @@ Ext.define('devilry_subjectadmin.store.Assignments', {
         if(assignments.length < 2) {
             return null;
         }
-        var mostCommonDayDiff = this._findMostCommonFirstDeadlineDayDifference(assignments);
+        var mostCommonDayDiff = this._findMostCommonDayDifference(assignments, 'first_deadline');
         var lastAssignment = assignments.last();
         var maxDelayCount = 1;
         if(mostCommonDayDiff.matchedAssignments > 1 && mostCommonDayDiff.days < 16) { // NOTE: matchedAssignments==2 means that we have 3 assignments (the first + the matches)
