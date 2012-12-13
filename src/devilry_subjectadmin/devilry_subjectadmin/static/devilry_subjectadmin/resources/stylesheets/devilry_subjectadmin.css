@@ -64,8 +64,13 @@
 .devilry_subjectadmin_editsidebarcontainer h4 {
   font-size: 14px;
 }
+/* line 45, ../sass/devilry_subjectadmin.scss */
+.devilry_subjectadmin_editsidebarcontainer h5 {
+  font-size: 12px;
+  font-weight: bold;
+}
 
-/* line 49, ../sass/devilry_subjectadmin.scss */
+/* line 53, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_guidesystemview h3 {
   font-size: 18px;
   line-height: 24px;
