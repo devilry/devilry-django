@@ -1,11 +1,12 @@
-/* line 4, ../sass/bootstrap.scss */
+@import url(http://fonts.googleapis.com/css?family=Ubuntu:300);
+/* line 7, ../sass/bootstrap.scss */
 .bootstrap {
   /* White icons with optional class, or on hover/active states of certain elements */
 }
 /* line 9, ../sass/bootstrap/_scaffolding.scss */
 .bootstrap body {
   margin: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 14px;
   line-height: 20px;
   color: #333333;

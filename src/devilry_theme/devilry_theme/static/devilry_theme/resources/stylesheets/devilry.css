@@ -287,7 +287,7 @@ input, textarea, select {
 .x-body {
   color: #333333;
   font-size: 14px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* line 7, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/core/_core.scss */
@@ -777,7 +777,7 @@ tr.x-container:before {
   border: 1px solid #d5d5d5;
   background-color: #eeeeee;
   color: #222222;
-  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /**
@@ -825,7 +825,7 @@ tr.x-container:before {
   padding-left: 20px;
   white-space: nowrap;
   color: #000;
-  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   border: 1px solid;
   border-color: #ddd #bbb #bbb #ddd;
   background-color: #fff;
@@ -2588,7 +2588,7 @@ tr.x-container:before {
 .x-btn-default-small .x-btn-inner {
   font-size: 13px;
   font-weight: normal;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   background-repeat: no-repeat;
   padding: 0 4px;
@@ -2976,7 +2976,7 @@ tr.x-container:before {
 .x-btn-default-medium .x-btn-inner {
   font-size: 13px;
   font-weight: normal;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   background-repeat: no-repeat;
   padding: 0 3px;
@@ -3361,7 +3361,7 @@ tr.x-container:before {
 .x-btn-default-large .x-btn-inner {
   font-size: 13px;
   font-weight: normal;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   background-repeat: no-repeat;
   padding: 0 3px;
@@ -3735,7 +3735,7 @@ tr.x-container:before {
 .x-btn-default-toolbar-small .x-btn-inner {
   font-size: 13px;
   font-weight: normal;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   background-repeat: no-repeat;
   padding: 0 4px;
@@ -4090,7 +4090,7 @@ tr.x-container:before {
 .x-btn-default-toolbar-medium .x-btn-inner {
   font-size: 13px;
   font-weight: normal;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   background-repeat: no-repeat;
   padding: 0 3px;
@@ -4445,7 +4445,7 @@ tr.x-container:before {
 .x-btn-default-toolbar-large .x-btn-inner {
   font-size: 13px;
   font-weight: normal;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   background-repeat: no-repeat;
   padding: 0 3px;
@@ -4860,7 +4860,7 @@ tr.x-container:before {
 
 /* line 80, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_btn-group.scss */
 .x-btn-group-header-text-default-framed {
-  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #666666;
 }
 
@@ -5006,7 +5006,7 @@ table.x-datepicker-inner th {
   height: 19px;
   padding: 0;
   color: #606060;
-  font: normal 10px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 10px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-align: right;
   border-bottom: 1px solid #d0d0d0;
   border-collapse: separate;
@@ -5042,7 +5042,7 @@ table.x-datepicker-inner a {
   padding-right: 4px;
   display: block;
   zoom: 1;
-  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: black;
   text-decoration: none;
   text-align: right;
@@ -5139,7 +5139,7 @@ table.x-datepicker-inner .x-datepicker-disabled a {
 .x-monthpicker-item {
   float: left;
   margin: 4px 0 5px 0;
-  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   text-align: center;
   vertical-align: middle;
   height: 18px;
@@ -5604,7 +5604,7 @@ table.x-datepicker-inner .x-datepicker-disabled a {
   border-bottom: 0 none;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
   color: null;
-  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-image: none;
   background-color: #c5c5c5;
   background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #f9f9f9), color-stop(100%, #e3e4e6));
@@ -5732,7 +5732,7 @@ table.x-datepicker-inner .x-datepicker-disabled a {
 /* line 199, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row .x-grid-cell {
   color: null;
-  font: normal 13px/17px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px/17px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: white;
   border-color: #ededed;
   border-style: solid;
@@ -5796,7 +5796,7 @@ table.x-datepicker-inner .x-datepicker-disabled a {
 
 /* line 265, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-rowbody {
-  font: normal 11px/13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 11px/13px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 4px;
 }
 /* line 270, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -6060,7 +6060,7 @@ browsers will do whacky things with it.
 /* line 515, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-group-title {
   color: #838383;
-  font: bold 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: bold 13px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* line 521, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -6300,7 +6300,7 @@ browsers will do whacky things with it.
 }
 /* line 738, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row-editor .x-form-display-field {
-  font: normal 13px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px/15px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding-top: 0;
   padding-left: 2px;
 }
@@ -6327,7 +6327,7 @@ browsers will do whacky things with it.
 
 /* line 768, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-editor .x-form-text, .x-grid-row-editor .x-form-text {
-  font: normal 13px/15px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px/15px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   height: 18px;
 }
 
@@ -6550,7 +6550,7 @@ browsers will do whacky things with it.
 .x-form-invalid-under {
   padding: 2px 2px 2px 18px;
   color: #c0272b;
-  font: normal 13px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 13px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 16px;
   background: no-repeat 0 2px;
   background-image: url('../images/form/exclamation.gif');
@@ -6584,7 +6584,7 @@ browsers will do whacky things with it.
 .x-form-field,
 .x-form-display-field {
   margin: 0 0 0 0;
-  font: normal 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 14px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: black;
 }
 
@@ -6661,7 +6661,7 @@ textarea.x-form-invalid-field {
 
 /* line 91, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/form/_field.scss */
 .x-form-item {
-  font: normal 14px "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal 14px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 /* line 95, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/form/_field.scss */
@@ -6744,7 +6744,7 @@ textarea.x-form-invalid-field {
 
 /* line 29, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/form/_fieldset.scss */
 .x-fieldset-header {
-  font: 13px/14px bold "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 13px/14px bold "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #333333;
   padding: 0 3px 1px;
   overflow: hidden;
@@ -7534,7 +7534,7 @@ textarea.x-form-invalid-field {
   color: #333333;
   font-size: 13px;
   font-weight: bold;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 17px;
 }
 
@@ -7768,7 +7768,7 @@ textarea.x-form-invalid-field {
   color: #333333;
   font-size: 13px;
   font-weight: bold;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 17px;
 }
 
@@ -9210,7 +9210,7 @@ textarea.x-form-invalid-field {
   white-space: nowrap;
   color: black;
   line-height: 16px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
   font-weight: normal;
 }
@@ -9560,7 +9560,7 @@ textarea.x-form-invalid-field {
   color: #333333;
   font-weight: bold;
   line-height: 17px;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 13px;
 }
 
@@ -10681,7 +10681,7 @@ textarea.x-form-invalid-field {
   -webkit-appearance: none;
   font-size: 13px;
   font-weight: bold;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: #6f6f6f;
   outline: 0 none;
   overflow-x: visible;
@@ -11631,7 +11631,7 @@ svg, vml {
 .x-btn-primary-large .x-btn-inner {
   font-size: 15px;
   font-weight: normal;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: white;
   background-repeat: no-repeat;
   padding: 0 25px;
@@ -12005,7 +12005,7 @@ svg, vml {
 .x-btn-danger-large .x-btn-inner {
   font-size: 15px;
   font-weight: normal;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: white;
   background-repeat: no-repeat;
   padding: 0 25px;
@@ -12374,7 +12374,7 @@ svg, vml {
 .x-btn-danger-medium .x-btn-inner {
   font-size: 15px;
   font-weight: normal;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   color: white;
   background-repeat: no-repeat;
   padding: 0 18px;
@@ -13220,7 +13220,7 @@ You only need something like this extjs code to make it work:
   color: #2c552d;
   font-size: 13px;
   font-weight: bold;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   line-height: 17px;
 }
 
