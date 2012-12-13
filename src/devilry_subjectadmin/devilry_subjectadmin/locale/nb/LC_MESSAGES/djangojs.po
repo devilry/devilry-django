@@ -123,7 +123,7 @@ msgstr "Navn"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:358
 msgid "Suggested {long_name} as the name, based on {last_long_name}."
-msgstr "Foreslo {long_name} som nav, basert på {last_long_name}."
+msgstr "Foreslo {long_name} som navn, basert på {last_long_name}."
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:376
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:202
