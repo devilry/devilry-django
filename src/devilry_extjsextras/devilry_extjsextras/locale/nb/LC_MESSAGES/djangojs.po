@@ -60,7 +60,7 @@ msgstr "Lag"
 #: static/devilry_extjsextras/DatetimeHelpers.js:14
 msgctxt "extjs short datetime"
 msgid "Y-m-d h:i"
-msgstr ""
+msgstr "D j. M Y h:i"
 
 #: static/devilry_extjsextras/DatetimeHelpers.js:24
 msgctxt "extjs long datetime"

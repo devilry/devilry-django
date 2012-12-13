@@ -23,7 +23,7 @@ Ext.define('devilry_subjectadmin.view.subject.ListOfPeriods', {
             '</tpl>',
         '<ul>', {
             formatDatetime: function(datetime) {
-                return Ext.Date.format(datetime, 'Y-m-d h:i');
+                return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(datetime);
             }
         }
     ],
