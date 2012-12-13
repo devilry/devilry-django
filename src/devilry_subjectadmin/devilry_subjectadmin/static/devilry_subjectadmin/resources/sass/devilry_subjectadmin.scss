@@ -38,6 +38,10 @@
     border: 1px dotted #ccc;
     border-right: none;
     @include border-radius(6px 0 0 6px);
+
+    h4 {
+        font-size: 14px;
+    }
 }
 
 
