@@ -33,7 +33,7 @@ Ext.define('devilry_subjectadmin.view.period.ListOfAssignments', {
             '</tpl>',
         '<ul>', {
             formatDatetime: function(datetime) {
-                return Ext.Date.format(datetime, 'Y-m-d h:i');
+                return devilry_extjsextras.DatetimeHelpers.formatDateTimeLong(datetime);
             },
             formatRelativeDatetime: function(publishing_time_offset_from_now, is_published) {
                 return devilry_extjsextras.DatetimeHelpers.formatTimedeltaRelative(

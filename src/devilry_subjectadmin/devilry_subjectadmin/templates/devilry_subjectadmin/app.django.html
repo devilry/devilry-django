@@ -20,8 +20,9 @@
 
 {{ block.super }}
 
+<script type="text/javascript" src="{% static "devilry_extjsextras/extjslocale.js" %}"></script>
 
-<script type="text/javascript">
+    <script type="text/javascript">
     {#NOTE: This is required for thee old restful API classes.#}
     Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
         'X_DEVILRY_USE_EXTJS': true
