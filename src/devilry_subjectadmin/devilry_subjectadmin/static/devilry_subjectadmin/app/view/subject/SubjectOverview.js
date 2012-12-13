@@ -1,7 +1,7 @@
 /**
  * Subject overview (overview of an subject).
  */
-Ext.define('devilry_subjectadmin.view.subject.Overview' ,{
+Ext.define('devilry_subjectadmin.view.subject.SubjectOverview' ,{
     extend: 'Ext.container.Container',
     alias: 'widget.subjectoverview',
     cls: 'devilry_subjectoverview',

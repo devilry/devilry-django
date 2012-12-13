@@ -1,7 +1,7 @@
 /**
  * Controller for the period overview.
  */
-Ext.define('devilry_subjectadmin.controller.period.Period', {
+Ext.define('devilry_subjectadmin.controller.period.PeriodController', {
     extend: 'Ext.app.Controller',
 
     mixins: {

@@ -1,7 +1,7 @@
 /**
  * Controller for the subject overview.
  */
-Ext.define('devilry_subjectadmin.controller.subject.Overview', {
+Ext.define('devilry_subjectadmin.controller.subject.SubjectController', {
     extend: 'Ext.app.Controller',
     mixins: {
         'setBreadcrumb': 'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
@@ -9,7 +9,7 @@ Ext.define('devilry_subjectadmin.controller.subject.Overview', {
     },
 
     views: [
-        'subject.Overview',
+        'subject.SubjectOverview',
         'subject.ListOfPeriods',
         'RenameBasenodeWindow',
         'DeleteDjangoRestframeworkRecordDialog'
