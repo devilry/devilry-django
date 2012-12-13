@@ -196,11 +196,17 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         }
     },
 
+    _sameDateTimeIgnoreSeconds: function(a, b) {
+        return a.getYear() === b.getYear() && a.getMonth() === b.getMonth() &&
+            a.getDay() === b.getDay() && a.getMinutes() === b.getMinutes();
+    },
+
+
     _applyInitialValues: function(initialValues) {
         //initialValues.first_deadline = new Date();
         //var qry = Ext.Object.fromQueryString(window.location.search);
         var defaults = this.getCreateNewAssignment().defaults;
-        initialValues.publishing_time = new Date();
+//        initialValues.publishing_time = this._detectSanePublishingTime();
         if(Ext.isEmpty(defaults)) {
             return;
         }
@@ -297,6 +303,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         first_deadline_datefield.setMaxValue(this.periodRecord.get('end_time'));
     },
 
+
     _em: function(string) {
         return Ext.String.format('<em>{0}</em>', string);
     },
@@ -305,6 +312,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         var autoSummary = [];
         this._autoapplyNamesFromLastAssignment(initialValues, autoSummary);
         this._autoapplyFirstDeadline(initialValues, autoSummary);
+        this._autoapplyPublishingTime(initialValues, autoSummary);
         if(autoSummary.length === 0) {
             return;
         }
@@ -330,6 +338,29 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
                 details: detailsList.join('')
             }
         });
+    },
+
+    _autoapplyPublishingTime:function (initialValues, autoSummary) {
+        var detected_pubtime = new Date();
+
+        var last_assignment = this.getAssignmentsStore().first();
+        if(last_assignment) {
+            var last_pubtime = last_assignment.get('publishing_time');
+            if(detected_pubtime < last_pubtime || this._sameDateTimeIgnoreSeconds(last_pubtime, detected_pubtime)) {
+                detected_pubtime = Ext.Date.add(last_pubtime, Ext.Date.MINUTE, 2); // NOTE: We add 2 minutes to avoid that this assignment gets the same pubtime as the last assignment when the seconds are removed.
+                autoSummary.push({
+                    label: gettext('Publishing time'),
+                    detailstpl: [
+                        '<p>',
+                        gettext('TODO.'),
+                        '</p>'
+                    ],
+                    detailsdata: {
+                    }
+                });
+            }
+        }
+        initialValues.publishing_time = detected_pubtime;
     },
 
     _autoapplyNamesFromLastAssignment: function(initialValues, autoSummary) {
