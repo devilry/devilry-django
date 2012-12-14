@@ -69,6 +69,7 @@ Table of contents
     userobj
     core.deliverystore
 
+    devenv
     testsuite
     testhelper
     plugins
