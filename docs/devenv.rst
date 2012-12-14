@@ -6,17 +6,15 @@
 
 
 ##########################################################################
-Setup a local development environment with testdata
+Setup a local development environment
 ##########################################################################
 
-1 - Check out from GIT
+Check out from GIT
 =================================================================
 
 If you plan to develop devilry, you should fork the devilry-django repo,
 changes to your own repo and request inclusion to the master repo using
-github pull requests. If you are just trying out devilry, use:
-
-::
+github pull requests. If you are just trying out Devilry, use::
 
     $ git clone https://github.com/devilry/devilry-django.git
 
@@ -24,27 +22,47 @@ The ``master`` branch, which git checks out by default, is usually the
 latest semi-stable development version. The latest stable version is in
 the ``latest-stable`` branch.
 
-2 - Install dependencies/requirements
+
+Install dependencies/requirements
 =================================================================
+
+.. note::
+    Devilry should work perfectly well with only Python 2.7 or later Python2 versions.
+    Devilry does not work with Python3 yet, but we will support it when Django and all
+    our dependencies gets good Python3 support.
+
+    Other dependencies than are not really required, but we recommend that you:
+
+    - use Virtualenv to avoid installing anything globally, and to get a clean environment
+    - use Fabric because we have a lot of useful scripts written for Fabric that will ease
+      setting up your development environment and building various components of Devilry.
+      See :ref:`fabric`.
+
+    Note that all instructions below assume you have and want to install Fabric and Virtualenv.
+
 
 Mac OSX
 ------------------------------------------------
 
-1. Install **XCode** (from app store)
-2. Install other dependencies/requirements:
+1. Install **XCode** (from app store).
+2. Install command line tools for XCode (includes Git and Python):
+    - Open XCode
+    - Choose ``XCode->Preferences`` (or ``CMD,``).
+    - Select the *Downloads*-tab.
+    - Install the *Command line tools* component.
+3. Install other dependencies/requirements::
 
-   ::
+    $ sudo easy_install fabric virtualenv
 
-       $ sudo easy_install fabric virtualenv
 
 Ubuntu Linux
 ------------------------------------------------
-
 ::
 
     $ sudo apt-get install fabric build-essential python-dev python-virtualenv
 
-3 - Setup a buildout cache (optional)
+
+Setup a buildout cache (optional)
 =================================================================
 
 You should setup your `buildout
@@ -52,16 +70,39 @@ cache <https://github.com/devilry/devilry-django/wiki/Use-a-global-buildout-conf
 if you plan to do any development. This will make any up re-run of
 buildout (the dependency/build system we use).
 
-4 - Setup the development virtualenv
-=================================================================
 
+Setup the development virtualenv
+=================================================================
 ::
 
     $ cd devenv/
     $ fab bootstrap
 
-4.1 - Create a demo database
+
+Next steps
 =================================================================
+You now have a complete development enviroment in ``devenv/``. You
+can use Devilry just like any other Django application, except that
+you have to use ``bin/django_dev.py`` instead of ``./manage.py``.
+
+You should:
+
+- :ref:`createdevenvdb`.
+- :ref:`devrunserver`.
+
+And you may want to read :ref:`managepy`.
+
+
+
+
+.. _createdevenvdb:
+
+#######################################################################
+Create a database
+#######################################################################
+We have several alternatives for setting up a demo database. They all
+use Fabric tasks. See :ref:`fabric`
+
 
 ::
 
@@ -85,9 +126,7 @@ Alternative step 4.1 - From database dump
 
 Creating the demo database takes a lot of time (~12mins on a 2012
 macbook air with SSD disk). You may ask a developer to send you a
-*db\_and\_deliveries\_stash*, and use it instead of ``autodb``:
-
-::
+*db\_and\_deliveries\_stash*, and use it instead of ``autodb``::
 
     $ cd devenv/
     $ cp -r /path/to/db_and_deliveries_stash ./
@@ -97,9 +136,7 @@ How to create a DB-stash
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 Use this if you want to create a ``db_and_deliveries_stash/`` to send to
-other developers (which can follow the steps in the previous section):
-
-::
+other developers (which can follow the steps in the previous section)::
 
     $ cd devenv/
     $ bin/fab autodb           (optional - resets your database)
@@ -124,23 +161,24 @@ Autocreate the demo-db:
 
     $ bin/django_dev.py dev_autodb -v2
 
-5 - Run the development server
-=================================================================
 
-::
+
+.. _devrunserver:
+
+#################################################################
+Run the Django development server
+#################################################################
+As long as you understand that you have to use ``bin/django_dev.py`` (see :ref:`managepy`),
+the Django development server is just the Django development server::
 
     $ bin/django_dev.py runserver
 
-Go to http://localhost:8000/ and log in as a superuser using:
-
-::
+Go to http://localhost:8000/ and log in as a superuser using::
 
     user: grandma
     password: test
 
-Or as a user which is student, examiner and admin using:
-
-::
+Or as a user which is student, examiner and admin using::
 
     user: thor
     password: test
@@ -151,8 +189,12 @@ wiki <https://github.com/devilry/devilry-django/wiki/demo>`_ for more
 info about the demo database, including recommended test users for each
 role.
 
-Why Fabric?
-===========
+
+.. _fabric:
+
+###################################################
+Fabric
+###################################################
 
 We use `Fabric <http://fabfile.org>`_ to simplify common tasks. Fabric
 simply runs the requested ``@task`` decorated functions in
@@ -161,3 +203,17 @@ simply runs the requested ``@task`` decorated functions in
 ``fabfile.py`` is very straigt forward to read if you wonder what the
 tasks actually do. The ``fabric.api.local(...)`` function runs an
 executable on the local machine.
+
+
+.. _managepy:
+
+#######################################################################
+Where is manage.py?
+#######################################################################
+
+We use a buildout-generated wrapper for manage.py that sets up the correct
+PYTHONPATH and settingsmodule::
+
+    $ bin/django_dev.py <action>
+
+``django_dev.py`` is a wrapper that we have configured in ``development-base.cfg``.
