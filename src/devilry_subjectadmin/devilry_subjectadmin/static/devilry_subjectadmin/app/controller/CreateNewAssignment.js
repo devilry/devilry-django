@@ -389,7 +389,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
                 detailsdata: {
                     days: result.mostCommonDayDiff.days,
                     previous_assignment: this._em(result.lastAssignment.get('short_name')),
-                    previous_first_deadline: Ext.Date.format(previous_first_deadline, this.ui_datetimeformat),
+                    previous_first_deadline: devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(previous_first_deadline),
                     hasExtraDelay: result.delayCount > 1
                 }
             });
@@ -418,7 +418,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
                 detailsdata: {
                     days: result.mostCommonDayDiff.days,
                     previous_assignment: this._em(result.lastAssignment.get('short_name')),
-                    previous_publishing_time: Ext.Date.format(previous_publishing_time, this.ui_datetimeformat),
+                    previous_publishing_time: devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(previous_publishing_time),
                     hasExtraDelay: result.delayCount > 1
                 }
             });
