@@ -30,10 +30,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
 
     headerTpl: [
         '<div class="bootstrap">',
-            '<span class="linklike">',
-                '<em class="deadline_label">{deadline_term}</em>: ',
-                '<span class="deadline">{deadline_formatted}</span>',
-            '</span>',
+            '<small class="deadline_label"><em>{deadline_term}</em></small>: ',
+            '<strong class="deadline linklike">{deadline_formatted}</strong>',
             '<tpl if="in_the_future">',
                 '<span class="text-success"> ({offset_from_now})</span>',
             '<tpl else>',

@@ -51,7 +51,7 @@ Ext.define('devilry_subjectadmin.model.DeadlineBulk', {
     },
 
     formatDeadline: function() {
-        return Ext.Date.format(this.get('deadline'), 'Y-m-d H:i:s');
+        return devilry_extjsextras.DatetimeHelpers.formatDateTimeLong(this.get('deadline'));
     },
 
     updateBulkDeadlineIdFromOperation: function(operation) {
