@@ -2,6 +2,12 @@
 Devilry developer documentation overview
 ======================================================================
 
+.. note::
+    Welcome to the Devilry developer documentation.
+    See http://devilry.org/ for general information about Devilry,
+    and https://github.com/devilry/devilry-django for the code.
+
+
 
 #######################################################################
 Common topics (see Table of contents for all topics)

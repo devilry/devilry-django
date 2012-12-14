@@ -6,15 +6,16 @@ JavaScript --- Libraries and guidelines/code style
 
 Most of our UIs are developed in JavaScript using the ExtJS4 framework from Secha (http://sencha.com).
 
-
+#################################################
 Libraries
-#########
+#################################################
 At the time of writing, we only use ExtJS4. We are open to including more libraries, but we have not
 had the need yet.
 
 
+##################################################
 Guidelines and code style
-##########################
+##################################################
 
 Indent
     4 spaces
@@ -62,8 +63,9 @@ File naming
 
 .. _jshint:
 
+####################################################
 JSHint
-######
+####################################################
 
 For info about JSHint, see http://www.jshint.com/.
 
@@ -92,3 +94,65 @@ Simply point JSHint at a directory::
 The defaults are sane (unlike JSLint), so you should not need to supply any options.
 
 You can also use JSHint with :ref:`pycharm`.
+
+
+
+
+
+############################################
+Building the ExtJS javascript apps
+############################################
+
+.. note::
+    This is only needed if you have made changes to javascript sources, or if you are making
+    your own ExtJS app.
+
+
+Dependencies
+===================================
+
+You need to install `Sencha tools
+2 <http://www.sencha.com/products/sdk-tools/download/>`_ to build the
+ExtJS javascript apps. Sencha tools requires an Oracle Java Runtime Environment.
+
+
+The tasks
+===================================
+
+Use one of the jsbuild task. Use ``bin/fab -d jsbuild`` for docs. Example::
+
+    $ cd devenv/
+    $ bin/fab jsbuild:devilry_subjectadmin
+
+To build without compressing the JS-sources (**for debugging**)::
+
+    $ cd devenv/
+    $ bin/fab jsbuild:devilry_subjectadmin,nocompress=true
+
+
+Watch the filesystem for changes and rebuild
+--------------------------------------------
+
+Install watchdog::
+
+    $ virtualenv/bin/easy_install watchdog
+
+
+Call the tasks with ``watch=true``. E.g.::
+
+    $ fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true
+
+You probably want to use::
+
+    $ fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true,no_jsbcreate=next
+
+to create a JSB-file on startup, but no on each watcher-trigger. This
+speeds up rebuild significantly, but you will have to re-start
+``jsbuild`` when you add requires or new files.
+
+
+Broken pipe errors
+===================================
+
+You will most likely get a lot of broken pipe errors. This does not seem
+to cause any problems with the build.
