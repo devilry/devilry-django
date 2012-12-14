@@ -60,7 +60,7 @@ def texthashmatch(texthash, text):
 
 class GroupsListResource(ModelResource):
     model = Deadline
-    fields = ('id', 'name', 'is_open', 'num_deliveries',
+    fields = ('id', 'name', 'is_open', 'status', 'num_deliveries',
               'parentnode', 'feedback', 'candidates')
 
     def id(self, deadline):
@@ -71,6 +71,9 @@ class GroupsListResource(ModelResource):
 
     def is_open(self, deadline):
         return deadline.assignment_group.is_open
+
+    def status(self, deadline):
+        return deadline.assignment_group.get_status()
 
     def parentnode(self, deadline):
         return int(deadline.assignment_group.parentnode_id)
