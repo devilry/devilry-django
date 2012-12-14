@@ -1,6 +1,9 @@
 /** Period model. */
 Ext.define('devilry_subjectadmin.model.Period', {
     extend: 'Ext.data.Model',
+    requires: [
+        'devilry_extjsextras.DatetimeHelpers'
+    ],
 
     idProperty: 'id',
     fields: [
@@ -20,10 +23,10 @@ Ext.define('devilry_subjectadmin.model.Period', {
     ],
 
     formatStartTime: function() {
-        return Ext.Date.format(this.get('start_time'), 'Y-m-d H:i');
+        return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(this.get('start_time'));
     },
     formatEndTime: function() {
-        return Ext.Date.format(this.get('end_time'), 'Y-m-d H:i');
+        return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(this.get('end_time'));
     },
 
     proxy: {
