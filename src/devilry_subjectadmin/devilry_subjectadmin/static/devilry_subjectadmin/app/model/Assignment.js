@@ -48,10 +48,10 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
     },
 
     formatPublishingTime: function() {
-        return Ext.Date.format(this.get('publishing_time'), 'Y-m-d H:i');
+        return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(this.get('publishing_time'));
     },
     formatFirstDeadline: function() {
-        return Ext.Date.format(this.get('first_deadline'), 'Y-m-d H:i');
+        return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(this.get('first_deadline'));
     },
 
 
@@ -67,7 +67,7 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         var is_admin;
         if(breadcrumb.length === 0) {
          throw "Breadcrumb is empty";
-        } else if(breadcrumb.length == 1) {
+        } else if(breadcrumb.length === 1) {
             period_id = null;
             periodpath = breadcrumb[0].text.split('.').slice(0, 2).join('.');
             is_admin = false;
