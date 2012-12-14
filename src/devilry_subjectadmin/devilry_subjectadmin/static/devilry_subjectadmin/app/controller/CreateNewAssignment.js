@@ -196,12 +196,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         }
     },
 
-    _sameDateTimeIgnoreSeconds: function(a, b) {
-        return a.getYear() === b.getYear() && a.getMonth() === b.getMonth() &&
-            a.getDay() === b.getDay() && a.getMinutes() === b.getMinutes();
-    },
-
-
     _applyInitialValues: function(initialValues) {
         //initialValues.first_deadline = new Date();
         //var qry = Ext.Object.fromQueryString(window.location.search);
@@ -340,29 +334,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         });
     },
 
-    _autoapplyPublishingTime:function (initialValues, autoSummary) {
-        var detected_pubtime = new Date();
-
-        var last_assignment = this.getAssignmentsStore().first();
-        if(last_assignment) {
-            var last_pubtime = last_assignment.get('publishing_time');
-            if(detected_pubtime < last_pubtime || this._sameDateTimeIgnoreSeconds(last_pubtime, detected_pubtime)) {
-                detected_pubtime = Ext.Date.add(last_pubtime, Ext.Date.MINUTE, 2); // NOTE: We add 2 minutes to avoid that this assignment gets the same pubtime as the last assignment when the seconds are removed.
-                autoSummary.push({
-                    label: gettext('Publishing time'),
-                    detailstpl: [
-                        '<p>',
-                        gettext('TODO.'),
-                        '</p>'
-                    ],
-                    detailsdata: {
-                    }
-                });
-            }
-        }
-        initialValues.publishing_time = detected_pubtime;
-    },
-
     _autoapplyNamesFromLastAssignment: function(initialValues, autoSummary) {
         if(this.getAssignmentsStore().getCount() === 0) {
             return;
@@ -400,7 +371,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     _autoapplyFirstDeadline: function(initialValues, autoSummary) {
         var result = this.getAssignmentsStore().smartAutodetectFirstDeadline();
         if(result !== null) {
-            initialValues.first_deadline = result.first_deadline;
+            initialValues.first_deadline = result.detectedDateTime;
 
             var previous_first_deadline = result.lastAssignment.get('first_deadline');
             autoSummary.push({
@@ -416,7 +387,6 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
                     '</tpl>'
                 ],
                 detailsdata: {
-                    //first_deadline: this._em(Ext.Date.format(result.first_deadline, this.ui_datetimeformat)),
                     days: result.mostCommonDayDiff.days,
                     previous_assignment: this._em(result.lastAssignment.get('short_name')),
                     previous_first_deadline: Ext.Date.format(previous_first_deadline, this.ui_datetimeformat),
@@ -426,6 +396,34 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
         }
     },
 
+    _autoapplyPublishingTime:function (initialValues, autoSummary) {
+        var result = this.getAssignmentsStore().smartAutodetectPublishingTime();
+        if(result === null) {
+            initialValues.publishing_time = this.getAssignmentsStore().getUniqueFuturePublishingTime();
+        } else {
+            initialValues.publishing_time = result.detectedDateTime;
+            var previous_publishing_time = result.lastAssignment.get('publishing_time');
+            autoSummary.push({
+                label: gettext('Publishing time'),
+                detailstpl: [
+                    '<p>',
+                    gettext('Calculated by adding the most common timespan between publishing times ({days} days) to the publishing time of the last published assignment, {previous_assignment} ({previous_publishing_time}).'),
+                    '</p>',
+                    '<tpl if="hasExtraDelay">',
+                    '<p>',
+                    gettext('You have a break in the regular timespan. Since you use a short interval between 1 day and 14 days, we assume this means you have skipped an interval or two, and suggested a publishing time based on those assumptions.'),
+                    '</p>',
+                    '</tpl>'
+                ],
+                detailsdata: {
+                    days: result.mostCommonDayDiff.days,
+                    previous_assignment: this._em(result.lastAssignment.get('short_name')),
+                    previous_publishing_time: Ext.Date.format(previous_publishing_time, this.ui_datetimeformat),
+                    hasExtraDelay: result.delayCount > 1
+                }
+            });
+        }
+    },
 
     _getNumberInName: function(name) {
         var numbers = name.match(/\d+/);

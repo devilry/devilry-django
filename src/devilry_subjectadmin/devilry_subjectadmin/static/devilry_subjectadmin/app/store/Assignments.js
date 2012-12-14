@@ -23,25 +23,18 @@ Ext.define('devilry_subjectadmin.store.Assignments', {
     },
 
     /**
-     * Get assignments with ``first_deadline!==null`` as a MixedCollection
-     * sorted by first deadline, with the oldest first deadline first.
+     * Get assignments with ``record(fieldname)!==null`` as a MixedCollection
+     * sorted by ``fieldname``, with the oldest ``fieldname`` first.
      */
-    _getAsMixedCollectionSortedByFirstDeadline: function() {
+    _getAsMixedCollectionSortedByDateField: function(fieldname) {
         var assignments = new Ext.util.MixedCollection();
         this.each(function(assignmentRecord) {
-            if(!Ext.isEmpty(assignmentRecord.get('first_deadline'))) {
+            if(!Ext.isEmpty(assignmentRecord.get(fieldname))) {
                 assignments.add(assignmentRecord.get('id'), assignmentRecord);
             }
         }, this);
-
-        var isoDateTime = function(dateobj) {
-            if(Ext.isEmpty(dateobj)) {
-                return '';
-            }
-            return Ext.Date.format(dateobj, 'Y-m-dTH:i');
-        };
         assignments.sortBy(function(a, b) {
-            return isoDateTime(a.get('first_deadline')).localeCompare(isoDateTime(b.get('first_deadline')));
+            return a.get(fieldname).getTime() - b.get(fieldname).getTime();
         });
         return assignments;
     },
@@ -54,10 +47,10 @@ Ext.define('devilry_subjectadmin.store.Assignments', {
         var previousAssignmentRecord = null;
         var diffs = new Ext.util.MixedCollection();
         assignments.each(function(assignmentRecord) {
-            var currentDeadline = assignmentRecord.get(fieldname);
+            var current = assignmentRecord.get(fieldname);
             if(previousAssignmentRecord) {
-                var previousDeadline = previousAssignmentRecord.get(fieldname);
-                var diff = currentDeadline.getTime() - previousDeadline.getTime();
+                var previous = previousAssignmentRecord.get(fieldname);
+                var diff = current.getTime() - previous.getTime();
                 var daysDiff = Math.round(diff / 86400000);
                 if(diffs.containsKey(daysDiff)) {
                     diffs.add(daysDiff, diffs.getByKey(daysDiff) + 1);
@@ -78,39 +71,76 @@ Ext.define('devilry_subjectadmin.store.Assignments', {
         };
     },
 
-    smartAutodetectFirstDeadline: function() {
-        var assignments = this._getAsMixedCollectionSortedByFirstDeadline();
+    _smartAutodetectDateFieldValue: function(fieldname) {
+        var assignments = this._getAsMixedCollectionSortedByDateField(fieldname);
         if(assignments.length < 2) {
             return null;
         }
-        var mostCommonDayDiff = this._findMostCommonDayDifference(assignments, 'first_deadline');
+        var mostCommonDayDiff = this._findMostCommonDayDifference(assignments, fieldname);
+        if(mostCommonDayDiff === null) {
+            return null;
+        }
+
         var lastAssignment = assignments.last();
         var maxDelayCount = 1;
         if(mostCommonDayDiff.matchedAssignments > 1 && mostCommonDayDiff.days < 16) { // NOTE: matchedAssignments==2 means that we have 3 assignments (the first + the matches)
             maxDelayCount = 3; // We allow for a short vacation and still autodetect weekly and bi-weekly deliveries.
         }
-
         var delayCount = 1;
-        var first_deadline = null;
-        var previous_deadline = lastAssignment.get('first_deadline');
+        var detectedDateTime = null;
+        var previous_deadline = lastAssignment.get(fieldname);
         while(delayCount <= maxDelayCount) {
             var deadline = Ext.Date.add(previous_deadline, Ext.Date.DAY, mostCommonDayDiff.days*delayCount);
             var now = new Date();
             if(deadline > now) {
-                first_deadline = deadline;
+                detectedDateTime = deadline;
                 break;
             }
             delayCount++;
         }
-        if(first_deadline === null) {
+        if(detectedDateTime === null) {
             return null;
         }
         
         return {
             mostCommonDayDiff: mostCommonDayDiff,
-            first_deadline: first_deadline,
+            detectedDateTime: detectedDateTime,
             lastAssignment: lastAssignment,
             delayCount: delayCount
         };
+    },
+
+    smartAutodetectFirstDeadline: function() {
+        return this._smartAutodetectDateFieldValue('first_deadline');
+    },
+
+    smartAutodetectPublishingTime: function() {
+        return this._smartAutodetectDateFieldValue('publishing_time');
+    },
+
+
+
+
+    _sameDateTimeIgnoreSeconds: function(a, b) {
+        return a.getYear() === b.getYear() && a.getMonth() === b.getMonth() &&
+            a.getDay() === b.getDay() && a.getMinutes() === b.getMinutes();
+    },
+
+    /**
+     * Get a publishing time that is:
+     * - In the future.
+     * - After the last published assignment by at least 2 minutes.
+     */
+    getUniqueFuturePublishingTime: function() {
+        var assignments = this._getAsMixedCollectionSortedByDateField('publishing_time');
+        var now = new Date();
+        var lastAssignment = assignments.last();
+        if(lastAssignment) {
+            var last_pubtime = lastAssignment.get('publishing_time');
+            if(now < last_pubtime || this._sameDateTimeIgnoreSeconds(last_pubtime, now)) {
+                return Ext.Date.add(last_pubtime, Ext.Date.MINUTE, 2); // NOTE: We add 2 minutes to avoid that this assignment gets the same pubtime as the last assignment when the seconds are removed.
+            }
+        }
+        return now;
     }
 });
