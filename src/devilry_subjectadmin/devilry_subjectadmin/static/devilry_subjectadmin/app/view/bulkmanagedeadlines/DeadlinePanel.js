@@ -13,8 +13,10 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
         'devilry_subjectadmin.model.Group',
         'devilry_subjectadmin.view.bulkmanagedeadlines.GroupsInDeadlineGrid',
         'devilry_subjectadmin.view.bulkmanagedeadlines.EditDeadlineForm',
+        'devilry_subjectadmin.view.managestudents.GroupHelp',
         'devilry_extjsextras.PrimaryButton',
-        'devilry_extjsextras.DeleteButton'
+        'devilry_extjsextras.DeleteButton',
+        'devilry_extjsextras.MarkupMoreInfoBox'
     ],
 
     /**
@@ -70,10 +72,17 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
             ' <small>- ',
                 gettext('Students are organized in groups, even when they work alone'),
             '</small>',
-        '</h2>',
-        '<p class="muted"><small>',
+        '</h2>'
+    ],
+
+    groupsHelpTpl: [
+        '<p class="muted">',
             gettext('Select a group to view or edit it.'),
-        '</small></p>'
+            ' {MORE_BUTTON}',
+        '</p>',
+        '<div {MORE_ATTRS}>',
+            '{[devilry_subjectadmin.view.managestudents.GroupHelp.getGroupInfoColHelp()]}',
+        '</div>'
     ],
 
     constructor: function(config) {
@@ -174,11 +183,12 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                         assignment_id: this.assignment_id,
                         store: this.groupsStore
                     }, {
-                        xtype: 'box',
+                        xtype: 'markupmoreinfobox',
                         columnWidth: 1,
                         padding: '0 0 0 30',
-                        hidden: true
-                        //html: 'TODO: filter groups'
+                        tpl: this.groupsHelpTpl,
+                        data: {}
+                        // TODO: filter groups
                     }]
                 }]
             }, {

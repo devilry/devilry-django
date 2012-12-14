@@ -20,8 +20,8 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.GroupsInDeadlineGrid',
 
     getColumns: function() {
         return [
-            this.getGroupInfoColConfig(),
-            this.getMetadataColConfig()
+            this.getGroupInfoColConfig()
+//            this.getMetadataColConfig()
         ];
     },
 
