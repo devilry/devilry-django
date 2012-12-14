@@ -9,6 +9,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.CreateDeadlineForm', {
             xtype: 'container',
             itemId: 'createmodeContainer',
             hidden: true,
+            layout: 'anchor',
             items: [{
                 xtype: 'box',
                 margin: '20 0 0 0',
@@ -51,6 +52,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.CreateDeadlineForm', {
                 xtype: 'panel',
                 itemId: 'createmodeSpecificGroupsSelectpanel',
                 layout: 'column',
+                anchor: '100%',
                 margin: '10 0 10 25',
                 hidden: true,
                 border: 0,

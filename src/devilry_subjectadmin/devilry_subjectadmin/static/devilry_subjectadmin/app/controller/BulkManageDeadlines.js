@@ -540,7 +540,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
         var grid = selectPanel.down('bulkmanagedeadlines_allgroupsgrid');
         var bodysize = Ext.getBody().getViewSize();
         grid.setHeight(bodysize.height - 170);
-        this._scrollTo(formpanel.down('#saveDeadlineButton'));
+//        this._scrollTo(formpanel.down('#saveDeadlineButton')); // NOTE: Seems to cause rendering issues, at least in Chrome
     },
 
     _loadGroupsStore: function(groupIdsToSelectOnLoad) {
