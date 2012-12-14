@@ -19,6 +19,7 @@ Core
 
 Essential information for new developers
 ----------------------------------------
+* :ref:`devenv`
 * :ref:`testsuite`
 * :ref:`testhelper`
 * :ref:`javascript`
