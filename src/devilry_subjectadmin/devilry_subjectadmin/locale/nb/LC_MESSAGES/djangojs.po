@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-13 23:40+0100\n"
+"POT-Creation-Date: 2012-12-14 02:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -66,7 +66,7 @@ msgstr "Legg til studenter"
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:254
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:393
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:440
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:603
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:632
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:113
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:276
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:361
@@ -97,7 +97,7 @@ msgid "Failed to load groups"
 msgstr "Nedlasting av gruppedata feilet"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:181
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:433
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:462
 #: static/devilry_subjectadmin/app/controller/guides/CreateNewAssignment.js:9
 #: static/devilry_subjectadmin/app/view/createnewassignment/CreateNewAssignment.js:38
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:426
@@ -112,26 +112,26 @@ msgstr ""
 "Publiseringstidspunktet er satt til et senere tidspunkt enn første "
 "innleveringsfrist."
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:324
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:326
 msgid "Devilry suggested values for: {labels}."
 msgstr "Devilry foreslo følgende verdier for: {labels}."
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:355
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:357
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:235
 msgid "Name"
 msgstr "Navn"
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:358
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:360
 msgid "Suggested {long_name} as the name, based on {last_long_name}."
 msgstr "Foreslo {long_name} som navn, basert på {last_long_name}."
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:376
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:378
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:202
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:134
 msgid "Submission date"
 msgstr "Innleveringsfrist"
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:379
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:381
 msgid ""
 "Calculated by adding the most common timespan between submission dates "
 "({days} days) to the submission date of the last published assignment, "
@@ -141,7 +141,7 @@ msgstr ""
 "innleveringsfrister ({days} dager) til innleveringsfristen på den forrige "
 "publiserte oppgaven, {previous_assignment} ({previous_first_deadline})."
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:383
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:385
 msgid ""
 "You have a break in the regular timespan. Since you use a short interval "
 "between 1 day and 14 days, we assume this means you have skipped an interval "
@@ -152,7 +152,35 @@ msgstr ""
 "at du har hoppet over et intervall eller to, og foreslo en innleveringsfrist "
 "basert på den antagelsen."
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:416
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:407
+#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:90
+#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:195
+#: static/devilry_subjectadmin/app/view/period/ListOfAssignments.js:24
+msgid "Publishing time"
+msgstr "Publiseringstidspunkt"
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:410
+msgid ""
+"Calculated by adding the most common timespan between publishing times "
+"({days} days) to the publishing time of the last published assignment, "
+"{previous_assignment} ({previous_publishing_time})."
+msgstr ""
+"Beregnet ved å legge til det mest vanlige tidsrommet mellom "
+"publiseringstider ({days} dager) til publiseringstiden på den forrige "
+"publiserte oppgaven, {previous_assignment} ({previous_publishing_time})."
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:414
+msgid ""
+"You have a break in the regular timespan. Since you use a short interval "
+"between 1 day and 14 days, we assume this means you have skipped an interval "
+"or two, and suggested a publishing time based on those assumptions."
+msgstr ""
+"Du har en pause i det vanlige tidsrommet mellom publiseringstidspunkter. "
+"Siden du bruker et kort tidsintervall, mellom 1 og 14 dager, antar vi at det "
+"betyr at du har hoppet over et intervall eller to, og foreslo et "
+"publiseringstidspunkt basert på den antagelsen."
+
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:445
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:90
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:137
 #: static/devilry_subjectadmin/app/controller/managestudents/Overview.js:373
@@ -189,15 +217,15 @@ msgstr ""
 msgid "Loading"
 msgstr "Laster"
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:505
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:534
 msgid "Copy from %(assignment)s."
 msgstr "Kopier fra %(assignment)s."
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:615
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:644
 msgid "Created {name}."
 msgstr "Laget {name}."
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:617
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:646
 msgid "Create another assignment"
 msgstr "Legg til en oppgave til"
 
@@ -325,12 +353,6 @@ msgstr "Tagget %(users)s med: %(tags)s"
 #: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:193
 msgid "Cleared tags on %(users)s."
 msgstr "Fjernet alle tags fra %(users)s"
-
-#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:90
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:195
-#: static/devilry_subjectadmin/app/view/period/ListOfAssignments.js:24
-msgid "Publishing time"
-msgstr "Publiseringstidspunkt"
 
 #: static/devilry_subjectadmin/app/controller/assignment/Overview.js:105
 #: static/devilry_subjectadmin/app/controller/period/PeriodController.js:83
@@ -1212,13 +1234,14 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:205
 msgid ""
-"Choose a time when students will be able to start adding deliveries on the "
-"assignment. The default is <em>now</em>. Note that students must be "
-"registered on the assignment as well before they can add any deliveries."
+"Choose a time when students will be able to start adding deliveries to the "
+"assignment. Note that students must be registered on the assignment before "
+"they can add any deliveries. You have the option to add students on the next "
+"page."
 msgstr ""
-"Velg tidspunktet når studentene vil kunne begynne å levere. Standardverdien "
-"er <em>nå</em>. Merk at studentene også må være registrert på oppgaven før "
-"de kan levere."
+"Velg tidspunktet når studenter vil kunne begynne å levere. Merk at studenter "
+"må være registrert på oppgaven før de kan levere. Du får muligheten til å "
+"legge til studenter på neste side."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:217
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:53
@@ -2729,3 +2752,12 @@ msgid ""
 msgstr ""
 "Når du har slettet et %(subject_term)s er det ingen mulighet for å angre. "
 "Kun superbrukere kan slette et %(subject_term)s med innhold."
+
+#~ msgid ""
+#~ "Choose a time when students will be able to start adding deliveries on "
+#~ "the assignment. The default is <em>now</em>. Note that students must be "
+#~ "registered on the assignment as well before they can add any deliveries."
+#~ msgstr ""
+#~ "Velg tidspunktet når studentene vil kunne begynne å levere. "
+#~ "Standardverdien er <em>nå</em>. Merk at studentene også må være "
+#~ "registrert på oppgaven før de kan levere."

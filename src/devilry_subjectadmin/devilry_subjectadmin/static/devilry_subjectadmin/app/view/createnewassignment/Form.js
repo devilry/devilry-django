@@ -202,7 +202,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 itemId: 'publishingTimeHelp',
                                 html: [
                                     '<p class="muted"><small>',
-                                        gettext('Choose a time when students will be able to start adding deliveries on the assignment. Note that students must be registered on the assignment before they can add any deliveries. You have the option to add students on the next page.'),
+                                        gettext('Choose a time when students will be able to start adding deliveries to the assignment. Note that students must be registered on the assignment before they can add any deliveries. You have the option to add students on the next page.'),
                                     '</small></p>'
                                 ].join('')
                             }]
