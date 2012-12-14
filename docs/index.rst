@@ -27,6 +27,7 @@ Essential information for new developers
 ----------------------------------------
 * :ref:`devenv`
 * :ref:`sourceorganized`
+* :ref:`buildout`
 * :ref:`testsuite`
 * :ref:`testhelper`
 * :ref:`javascript`
@@ -73,6 +74,7 @@ Table of contents
 
     devenv
     sourceorganized
+    buildout
     testsuite
     testhelper
     plugins
