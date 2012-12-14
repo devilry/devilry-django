@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-14 02:05+0100\n"
+"POT-Creation-Date: 2012-12-14 23:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -992,8 +992,8 @@ msgid "View, edit and add students on this assignment"
 msgstr "Vis, rediger og legg til studenter på denne oppgaven"
 
 #: static/devilry_subjectadmin/app/view/assignment/Overview.js:92
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:69
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:107
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:71
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:116
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:9
 msgid "Groups"
 msgstr "Grupper"
@@ -1051,7 +1051,7 @@ msgstr "Slett"
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:66
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:74
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:105
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:114
 #: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:80
 msgid "Deadline"
 msgstr "Innleveringsfrist"
@@ -1061,15 +1061,15 @@ msgid "The time when the deadline expires"
 msgstr "Tidspunktet da innleveringsfristen går ut"
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:87
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:55
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:109
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:57
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:118
 #: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:53
 #: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:86
 msgid "About this deadline"
 msgstr "Om innleveringsfristen"
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:88
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:56
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:58
 msgid "Students see this when they add deliveries"
 msgstr "Studenter ser dette når de legger til innleveringer"
 
@@ -1078,7 +1078,7 @@ msgid "Text"
 msgstr "Tekst"
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:58
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:110
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:111
 msgid "Add deadline"
 msgstr "Legg til innleveringsfrist"
 
@@ -1135,22 +1135,22 @@ msgstr ""
 "Velg en eller flere grupper. Innleveringsfristen legges bare til på de "
 "gruppene du velger."
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:62
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:64
 msgid ""
 "This deadline has no text. Use the edit button if you want to set a text."
 msgstr ""
 "Denne innleveringsfristen har ikke noen tekst. Bruk rediger-knappen hvis du "
 "vil sette en tekst."
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:71
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:73
 msgid "Students are organized in groups, even when they work alone"
 msgstr "Studenter organiseres i grupper, også når de jobber alene"
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:75
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:80
 msgid "Select a group to view or edit it."
 msgstr "Velg en gruppe for å vise eller redigere den."
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:144
+#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:155
 msgid "Edit/move"
 msgstr "Rediger/flytt"
 
@@ -1175,7 +1175,7 @@ msgstr ""
 "innleveringsfrister og at denne siden grupperer innleveringsfrister med "
 "samme tidspunkt og tekst. Det betyr at redigering av en innleveringsfrist "
 "egentlig oppdaterer en mengde med individuelle innleveringsfrister (en for "
-"hver gruppe). Så når du velger bare noen av gruppen innenfor en "
+"hver gruppe). Så når du velger bare noen av gruppene innenfor en "
 "innleveringsfrist, velger du bare å endre noen av de individuelle "
 "innleveringsfristene, noe som tilsynelatende splitter denne "
 "innleveringsfristen i to."
@@ -1715,11 +1715,13 @@ msgstr ""
 "</a> er tilgjengelige."
 
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:40
+#: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:27
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:42
 msgid "Waiting for deliveries"
 msgstr "Venter på innleveringer"
 
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:42
+#: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:23
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:44
 msgid "Waiting for feedback"
 msgstr "Venter på tilbakemelding"
@@ -1771,6 +1773,51 @@ msgstr "Ingen-studenter"
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:232
 msgid "Missing-fullname"
 msgstr "Mangler-fulltnavn"
+
+#: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:7
+msgid ""
+"Each group is listed with full names first, then usernames, and lastly we "
+"display their status."
+msgstr ""
+"Hver gruppe listes med navn først, så brukernavn, og til slutt gruppens status."
+
+#: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:9
+msgid "The status of a group is one of:"
+msgstr "Statusen til gruppen er en av:"
+
+#: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:19
+msgid "Active grade"
+msgstr "Aktiv karakter"
+
+#: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:20
+msgid ""
+"If the examiner(s) has completed correcting the group. This is the active grade "
+"for the group on this assignment, which is not always their active grade on "
+"the current deadline."
+msgstr ""
+"Hvis retteren(e) har fullført retting av gruppen. Dette er den aktive "
+"tilbakemeldingen til gruppen på denne oppgaven, noe som ikke alltid er deres "
+"aktive karakter på nåværende innleveringsfrist."
+
+#: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:24
+msgid ""
+"If their active deadline has expired, and they have not been given any "
+"feedback."
+msgstr ""
+"Hvis deres aktive innleveringsfrist har utgått, og de ikke har fått "
+"tilbakemelding enda."
+
+#: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:28
+msgid "If their active deadline has not expired."
+msgstr "Hvis gruppens aktive innleveringsfrist ikke har utgått."
+
+#: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:31
+msgid ""
+"You may get other status-messages. In that case there is probably an error "
+"with some system integrating itself with Devilry, or a bug in Devilry."
+msgstr ""
+"Du kan få andre statusbeskjeder. I så tilfelle er det sannsynligvis en feil "
+"med et system som integrerer seg med Devilry, eller en feil i Devilry."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:7
 #: static/devilry_subjectadmin/app/view/managestudents/Overview.js:72

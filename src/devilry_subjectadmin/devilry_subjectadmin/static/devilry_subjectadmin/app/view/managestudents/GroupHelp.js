@@ -17,7 +17,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.GroupHelp', {
             '<ul>',
                 '<li>',
                     '<em>', gettext('Active grade'), '</em>',
-                    ' &mdash; <small>', gettext('If the examiner has completed correcting the group. This is the active grade for the group on this assignment, which is not always their active grade on the current deadline.'), '</small>',
+                    ' &mdash; <small>', gettext('If the examiner(s) has completed correcting the group. This is the active grade for the group on this assignment, which is not always their active grade on the current deadline.'), '</small>',
                 '</li>',
                 '<li>',
                     '<em>', gettext('Waiting for feedback'), '</em>',
