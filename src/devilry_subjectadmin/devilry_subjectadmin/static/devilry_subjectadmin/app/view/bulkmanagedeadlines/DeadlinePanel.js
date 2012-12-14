@@ -135,8 +135,10 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
                         width: 180,
                         itemId: 'deadlineButtonContainer',
                         margin: '0 0 0 40',
+                        padding: '18 0 0 0', // Line up upper border with first heading
                         items: [{
-                            xtype: 'primarybutton',
+                            xtype: 'button',
+                            scale: 'large',
                             itemId: 'editDeadlineButton',
                             cls: 'edit_deadline_button',
                             width: 180,

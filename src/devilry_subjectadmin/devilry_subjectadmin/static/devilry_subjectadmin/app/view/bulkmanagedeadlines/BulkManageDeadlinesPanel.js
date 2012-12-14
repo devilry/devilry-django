@@ -103,10 +103,11 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.BulkManageDeadlinesPan
                             '</p>'
                         ].join('')
                     }, {
-                        xtype: 'primarybutton',
+                        xtype: 'button',
                         itemId: 'addDeadlineButton',
+                        scale: 'large',
                         cls: 'add_deadline_button',
-                        width: 200,
+                        width: 220,
                         text: gettext('Add deadline')
                     }]
                 }, {
