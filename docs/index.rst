@@ -26,9 +26,11 @@ Core
 Essential information for new developers
 ----------------------------------------
 * :ref:`devenv`
+* :ref:`sourceorganized`
 * :ref:`testsuite`
 * :ref:`testhelper`
 * :ref:`javascript`
+* More info available on the `Developer wiki page <https://github.com/devilry/devilry-django/wiki/Developer>`_.
 
 
 How to document Devilry
@@ -70,6 +72,7 @@ Table of contents
     core.deliverystore
 
     devenv
+    sourceorganized
     testsuite
     testhelper
     plugins
