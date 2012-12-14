@@ -23,10 +23,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinePanel' ,{
     headerTpl: [
         '<div class="bootstrap deadlineheader">',
             '<div class="lineone">',
-                '<span class="linklike">',
-                    '<em class="deadline_label">{deadline_term}</em>: ',
-                    '<span class="deadline">{deadline_formatted}</span>',
-                '</span>',
+                '<small class="linklike"><em class="deadline_label">{deadline_term}</em></small>: ',
+                '<span class="deadline linklike">{deadline_formatted}</span>',
                 '<span class="in_the_future">',
                     '<tpl if="in_the_future">',
                         '<span class="text-success"> ({offset_from_now})</span>',
@@ -68,7 +66,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinePanel' ,{
 
     initComponent: function() {
         var deadline_datetime = devilry_subjectadmin.model.AggregatedGroupInfo.parseDateTime(this.deadline.deadline);
-        var deadline_formatted = Ext.Date.format(deadline_datetime, 'Y-m-d H:i:s');
+        var deadline_formatted = devilry_extjsextras.DatetimeHelpers.formatDateTimeLong(deadline_datetime);
         var offset_from_now = this.deadline.offset_from_now;
         offset_from_now = devilry_extjsextras.DatetimeHelpers.formatTimedeltaRelative(
             offset_from_now, this.deadline.in_the_future);
