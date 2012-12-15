@@ -96,6 +96,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
             managedeadlines_url: devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id),
             passedpreviousperiod_url: devilry_subjectadmin.utils.UrlLookup.passedPreviousPeriod(this.assignment_id),
             assignmentData: this.assignmentRecord.data,
+            electronic: this.assignmentRecord.get('delivery_types') === 0,
             period_term: gettext('period')
         });
     },
