@@ -38,6 +38,16 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
             '</tpl>',
         '</div>',
 
+        '<div class="savedbyblock">',
+            '<tpl if="latest_feedback">',
+                '<h4>', gettext('Corrected by') ,'</h4>',
+                '<p class="muted">',
+                    '{latest_feedback.saved_by.displayname}',
+                    ' <small>({[this.formatDatetime(values.latest_feedback.save_timestamp)]})</small>',
+                '</p>',
+            '</tpl>',
+        '</div>',
+
         '<div class="activefeedbackblock">',
             '<tpl if="has_active_feedback">',
                 '<h4>', gettext('Active feedback'), '</h4>',
@@ -85,8 +95,14 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
                     gettext('Download all files'),
                 '</a>',
             '</div>',
-        '</tpl>'
-
+        '</tpl>', {
+            formatDatetime: function(datetime) {
+                if(Ext.isString(datetime)) {
+                    datetime = Ext.Date.parse(datetime, 'Y-m-d H:i:s');
+                }
+                return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(datetime);
+            }
+        }
     ],
 
     feedbackTpl: [

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-15 05:29+0100\n"
+"POT-Creation-Date: 2012-12-15 06:03+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -387,23 +387,23 @@ msgstr "{label} (Tilhørende grupper: {groupcount})"
 msgid "An error occurred while loading detailed group information."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:363
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:362
 msgid "Invalid delivery ID: {id}."
 msgstr "Ugyldig innleveringsID: {id}."
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:477
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:476
 msgid "Changed examiners of {group} to: {examiners}."
 msgstr "Endret retter for {group} til: {examiners}."
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:501
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:500
 msgid "Added you as examiner for {group}."
 msgstr "La deg til som retter for {group}."
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:548
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:547
 msgid "Saved the following tags for {group}: {tags}"
 msgstr "Lagret følgende tags for {group}: {tags}"
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:551
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:550
 msgid "No tags"
 msgstr "Ingen tags"
 
@@ -1654,10 +1654,14 @@ msgid "Failed"
 msgstr "Feilet"
 
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:43
+msgid "Corrected by"
+msgstr "Rettet av"
+
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:53
 msgid "Active feedback"
 msgstr "Aktiv tilbakemelding"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:45
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:55
 msgid ""
 "This is the active feedback on this assignment. Unless an examiner creates a "
 "new feedback, this will be the final grade on this assignment."
@@ -1666,43 +1670,43 @@ msgstr ""
 "lager en ny tilbakemelding, vil dette forbli den avsluttende karakteren på "
 "denne oppgaven."
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:52
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:62
 msgid "Time of delivery"
 msgstr "Innleveringstidspunkt"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:56
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:66
 msgid "{offset} AFTER the deadline."
 msgstr "{offset} ETTER innleveringsfristen"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:60
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:70
 msgid "{offset} before the deadline."
 msgstr "{offset} før innleveringsfristen"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:69
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:79
 msgid "Delivery made by"
 msgstr "Levert av"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:75
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:85
 msgid "Files"
 msgstr "Filer"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:85
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:95
 msgid "Download all files"
 msgstr "Last ned alle filer"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:96
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:112
 msgid "No detailed feedback"
 msgstr "Ingen detaljert tilbakemelding"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:128
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:144
 msgid "Delivery"
 msgstr "Innlevering"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:146
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:162
 msgid "feedback"
 msgstr "tilbakemelding"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:147
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:163
 msgid "examiner"
 msgstr "retter"
 
