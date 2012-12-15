@@ -4,6 +4,7 @@ from djangorestframework.mixins import ReadModelMixin
 from djangorestframework.permissions import IsAuthenticated
 
 from devilry_student.rest.aggregated_groupinfo import GroupResource
+from devilry.utils.restformat import format_datetime
 from .auth import IsGroupAdmin
 
 
@@ -11,6 +12,21 @@ from .auth import IsGroupAdmin
 
 class AdministratorGroupResource(GroupResource):
     fields = ('id', 'deadlines')
+
+    def _serialize_user(self, user):
+        full_name = user.devilryuserprofile.full_name
+        return {'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'displayname': full_name or user.username,
+                'full_name': full_name}
+
+    def format_feedback(self, staticfeedback):
+        feedbackdict = super(AdministratorGroupResource, self).format_feedback(staticfeedback)
+        feedbackdict['saved_by'] = self._serialize_user(staticfeedback.saved_by)
+        feedbackdict['save_timestamp'] = format_datetime(staticfeedback.save_timestamp)
+        feedbackdict['points'] = staticfeedback.points
+        return feedbackdict
 
 
 class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
