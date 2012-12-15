@@ -243,12 +243,18 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                 }
             }, this);
             var assignmentRecord = this.manageStudentsController.assignmentRecord;
+            var examiner_url;
+            if(assignmentRecord.get('delivery_types') === 0) {
+                examiner_url = devilry_subjectadmin.utils.UrlLookup.examinerGroupOverview(this.groupRecord.get('id'));
+            } else {
+                examiner_url = devilry_subjectadmin.utils.UrlLookup.examinerAssignmentGroupsOverview(assignmentRecord.get('id'));
+            }
             this.getExaminerRoleBox().updateData({
                 loading: false,
                 isExaminer: isExaminer,
                 is_published: assignmentRecord.get('is_published'),
                 pubtimeOffset: assignmentRecord.formatPublishOffsetFromNow(),
-                examinerui_url: devilry_subjectadmin.utils.UrlLookup.examinerGroupOverview(this.groupRecord.get('id'))
+                examinerui_url: examiner_url
             });
         }, this);
     },

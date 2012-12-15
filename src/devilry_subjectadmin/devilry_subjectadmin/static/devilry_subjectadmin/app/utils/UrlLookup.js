@@ -102,5 +102,10 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
         return Ext.String.format('{0}/examiner/assignmentgroup/{1}',
             window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
             group_id);
+    },
+    examinerAssignmentGroupsOverview: function(assignment_id) {
+        return Ext.String.format('{0}/examiner/assignment/{1}#students',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
+            assignment_id);
     }
 });
