@@ -1,7 +1,7 @@
 /**
  * Manage students overview (overview of all students on an assignment).
  */
-Ext.define('devilry_subjectadmin.view.managestudents.Overview' ,{
+Ext.define('devilry_subjectadmin.view.managestudents.ManageStudentsOverview' ,{
     extend: 'Ext.container.Container',
     alias: 'widget.managestudentsoverview',
     cls: 'devilry_subjectadmin_managestudentsoverview',

@@ -6,7 +6,7 @@
  * {@link devilry_subjectadmin.Application#managestudentsSuccessfullyLoaded} event, and
  * they use the documented methods to hook themselves into the user interface.
  */
-Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
+Ext.define('devilry_subjectadmin.controller.managestudents.ManageStudentsController', {
     extend: 'Ext.app.Controller',
 
     mixins: {
@@ -22,7 +22,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Overview', {
     ],
 
     views: [
-        'managestudents.Overview',
+        'managestudents.ManageStudentsOverview',
         'managestudents.ListOfGroups'
     ],
 

@@ -1,7 +1,7 @@
 /**
  * Assignment overview (overview of an assignment).
  */
-Ext.define('devilry_subjectadmin.view.assignment.Overview' ,{
+Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
     extend: 'Ext.container.Container',
     alias: 'widget.assignmentoverview',
     cls: 'devilry_subjectadmin_assignmentoverview',
