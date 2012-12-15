@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-15 06:03+0100\n"
+"POT-Creation-Date: 2012-12-15 06:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1389,6 +1389,14 @@ msgstr "Bla i alt der du er administrator"
 msgid "Interractive guides"
 msgstr "Interraktive guider"
 
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:56
+msgid ""
+"Takes you through creating any kind of assignment (electronic, paper, "
+"exam, ...)"
+msgstr ""
+"Tar deg gjennom alle stegene som trengs for å lage en hvilken som helst "
+"type oppgave (elektronisk, papir, eksamen, ...)."
+
 #: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:24
 msgid "Select a grading system"
 msgstr "Velg ett karaktersystem"
@@ -1435,6 +1443,7 @@ msgid "Internally in Devilry, a grade is stored as"
 msgstr "Internt i Devilry lagres karakterer som"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:69
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:37
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:28
 msgid "Points"
 msgstr "Poeng"
@@ -1653,15 +1662,15 @@ msgstr "Bestått"
 msgid "Failed"
 msgstr "Feilet"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:43
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:44
 msgid "Corrected by"
 msgstr "Rettet av"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:53
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:54
 msgid "Active feedback"
 msgstr "Aktiv tilbakemelding"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:55
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:56
 msgid ""
 "This is the active feedback on this assignment. Unless an examiner creates a "
 "new feedback, this will be the final grade on this assignment."
@@ -1670,43 +1679,43 @@ msgstr ""
 "lager en ny tilbakemelding, vil dette forbli den avsluttende karakteren på "
 "denne oppgaven."
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:62
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:63
 msgid "Time of delivery"
 msgstr "Innleveringstidspunkt"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:66
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:67
 msgid "{offset} AFTER the deadline."
 msgstr "{offset} ETTER innleveringsfristen"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:70
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:71
 msgid "{offset} before the deadline."
 msgstr "{offset} før innleveringsfristen"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:79
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:80
 msgid "Delivery made by"
 msgstr "Levert av"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:85
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:86
 msgid "Files"
 msgstr "Filer"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:95
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:96
 msgid "Download all files"
 msgstr "Last ned alle filer"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:112
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:113
 msgid "No detailed feedback"
 msgstr "Ingen detaljert tilbakemelding"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:144
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:145
 msgid "Delivery"
 msgstr "Innlevering"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:162
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:163
 msgid "feedback"
 msgstr "tilbakemelding"
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:163
+#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:164
 msgid "examiner"
 msgstr "retter"
 

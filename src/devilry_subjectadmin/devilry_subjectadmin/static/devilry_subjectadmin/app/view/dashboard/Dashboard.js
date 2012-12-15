@@ -53,7 +53,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
             guides: [{
                 xtype: 'guide-createnewassignment',
                 title: gettext('Create new assignment'),
-                description: gettext('Takes you through creating any kind of assignment (electronic, paper, exam, ...)')
+                description: gettext('Takes you through creating any kind of assignment (electronic, paper, exam, ...).')
             }]
         }]
     }]
