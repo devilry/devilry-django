@@ -17,6 +17,12 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
      * @cfg {int} [index_in_deadline]
      */
 
+    /**
+     * @cfg {bool} [non_electronic=false]
+     * Render optimized for non-electronic assignments?
+     */
+    non_electronic: false,
+
     metaTpl: [
         '<div class="gradeblock">',
             '<tpl if="latest_feedback">',
@@ -41,43 +47,46 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
             '</tpl>',
         '</div>',
 
-        '<div class="timeofdeliveryblock">',
-            '<h4>', gettext('Time of delivery'), '</h4>',
-            '<p>',
-                '<tpl if="delivery.after_deadline">',
-                    '<span class="text-warning">',
-                        gettext('{offset} AFTER the deadline.'),
-                    '</span>',
-                '<tpl else>',
-                    '<small class="muted">',
-                        gettext('{offset} before the deadline.'),
-                    '</small>',
-                '</tpl>',
-                '<br/><small class="muted">({delivery.time_of_delivery})</small>',
-            '</p>',
-        '</div>',
-
-        '<tpl if="delivery.delivered_by">',
-            '<div class="deliverymadebyblock">',
-                '<h4>', gettext('Delivery made by'), '</h4>',
-                '<p class="madeby_displayname">{delivery.delivered_by.user.displayname}</p>',
+        '<tpl if="electronic">',
+            '<div class="timeofdeliveryblock">',
+                '<h4>', gettext('Time of delivery'), '</h4>',
+                '<p>',
+                    '<tpl if="delivery.after_deadline">',
+                        '<span class="text-warning">',
+                            gettext('{offset} AFTER the deadline.'),
+                        '</span>',
+                    '<tpl else>',
+                        '<small class="muted">',
+                            gettext('{offset} before the deadline.'),
+                        '</small>',
+                    '</tpl>',
+                    '<br/><small class="muted">({delivery.time_of_delivery})</small>',
+                '</p>',
             '</div>',
-        '</tpl>',
 
-        '<div class="fileblock">',
-            '<h4>', gettext('Files'), '</h4>',
-            '<ul>',
-                '<tpl for="delivery.filemetas">',
-                    '<li>',
-                        '<p><a href="{download_url}" class="filename", title="{filename}">{[Ext.String.ellipsis(values.filename, 20)]}</a>',
-                        ' <small class="filesize">({pretty_size})</small></p>',
-                    '</li>',
-                '</tpl>',
-            '</ul>',
-            '<a href="{delivery.download_all_url.zip}" class="downloadallfiles">',
-                gettext('Download all files'),
-            '</a>',
-        '</div>'
+            '<tpl if="delivery.delivered_by">',
+                '<div class="deliverymadebyblock">',
+                    '<h4>', gettext('Delivery made by'), '</h4>',
+                    '<p class="madeby_displayname">{delivery.delivered_by.user.displayname}</p>',
+                '</div>',
+            '</tpl>',
+
+            '<div class="fileblock">',
+                '<h4>', gettext('Files'), '</h4>',
+                '<ul>',
+                    '<tpl for="delivery.filemetas">',
+                        '<li>',
+                            '<p><a href="{download_url}" class="filename", title="{filename}">{[Ext.String.ellipsis(values.filename, 20)]}</a>',
+                            ' <small class="filesize">({pretty_size})</small></p>',
+                        '</li>',
+                    '</tpl>',
+                '</ul>',
+                '<a href="{delivery.download_all_url.zip}" class="downloadallfiles">',
+                    gettext('Download all files'),
+                '</a>',
+            '</div>',
+        '</tpl>'
+
     ],
 
     feedbackTpl: [
@@ -98,7 +107,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
 
     initComponent: function() {
         var latest_feedback = this.delivery.feedbacks[0];
-        var has_active_feedback = this.active_feedback && this.active_feedback.delivery_id == this.delivery.id;
+        var has_active_feedback = this.active_feedback && this.active_feedback.delivery_id === this.delivery.id;
 
         //var metaTplCompiled = Ext.create('Ext.XTemplate', this.metaTpl, {
             //getFileDownloadUrl: Ext.bind(this._getFileDownloadUrl, this)
@@ -136,7 +145,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
                         offset: devilry_extjsextras.DatetimeHelpers.formatTimedeltaShort(this.delivery.offset_from_deadline),
                         feedback_term: gettext('feedback'),
                         examiner_term: gettext('examiner'),
-                        downloadAllUrl: this._getDownloadAllUrl()
+                        downloadAllUrl: this._getDownloadAllUrl(),
+                        electronic: !this.non_electronic
                     }
                 }, {
                     xtype: 'box',

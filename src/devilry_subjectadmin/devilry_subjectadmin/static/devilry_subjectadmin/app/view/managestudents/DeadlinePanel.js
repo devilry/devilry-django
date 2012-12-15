@@ -139,7 +139,8 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinePanel' ,{
                 xtype: 'admingroupinfo_delivery',
                 delivery: delivery,
                 index_in_deadline: index_in_deadline,
-                active_feedback: this.active_feedback
+                active_feedback: this.active_feedback,
+                non_electronic: this.non_electronic
             });
         }, this);
         return configs;
