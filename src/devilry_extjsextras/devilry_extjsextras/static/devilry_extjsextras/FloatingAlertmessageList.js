@@ -35,6 +35,14 @@ Ext.define('devilry_extjsextras.FloatingAlertmessageList', {
     },
     _onShowWindow: function() {
         this._setSizeAndPosition();
+        // NOTE: Defer to work around the problem of the window triggering show-event before the
+        // message is rendered completely. Without this, setSize will get the wrong height
+        Ext.defer(function () {
+            this._setSizeAndPosition();
+        }, 100, this);
+        Ext.defer(function () {
+            this._setSizeAndPosition();
+        }, 400, this);
     },
     _onWindowResize: function() {
         if(this.isVisible() && this.isFloating()) {
@@ -44,11 +52,12 @@ Ext.define('devilry_extjsextras.FloatingAlertmessageList', {
     _setSizeAndPosition: function() {
         if(this.isFloating()) {
             var bodysize = Ext.getBody().getViewSize();
-            var width = bodysize.width - this.sidePadding*2;
+            var width = bodysize.width * 0.42;
+            var left = bodysize.width - width - this.sidePadding;
             this.setSize({
                 width: width
             });
-            this.setPosition(this.sidePadding, 0);
+            this.setPosition(left, 0);
         }
     }
 });
