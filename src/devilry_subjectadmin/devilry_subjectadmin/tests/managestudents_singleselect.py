@@ -452,6 +452,10 @@ class TestManageSingleGroupDeadlinesAndDeliveries(DeadlineTestMixin, TestManageS
         made_by = delivery.find_element_by_css_selector('.deliverymadebyblock .madeby_displayname').text.strip()
         self.assertEquals(made_by, 'student1')
 
+        # Make sure we render all the blocks (could mess up if we handle non-electronic incorrectly)
+        for cls in ('.gradeblock', '.activefeedbackblock', '.timeofdeliveryblock', '.deliverymadebyblock', '.fileblock'):
+            self.assertEquals(len(delivery.find_elements_by_css_selector(cls)), 1)
+
     def test_delivery_feedback(self):
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
@@ -492,13 +496,37 @@ class TestManageSingleGroupNonElectronicDeadlinesAndDeliveries(DeadlineTestMixin
 
     def test_render_nonelectronic(self):
         g1 = self.create_group('g1:candidate(student1)')
-        print g1.deadlines.all()
         self.testhelper.add_delivery(g1, {'a.py': ['print ', 'meh']})
         self.testhelper.add_delivery(g1, {'b.py': ['print ', 'meh2']})
         self.browseToAndSelectAs('a1admin', g1)
         deadline = self.waitForDeadlineCount(1)[0]
         self.assertIn('Corrected deliveries', deadline.text)
         self.assertEquals(self.getDeliveryCount(deadline), 2)
+
+
+    def test_nonelectronic_deliverymeta(self):
+        g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
+        self.testhelper.add_delivery(g1, {'a.py': ['print ', 'meh']})
+        self.testhelper.add_feedback(g1,
+            verdict={'grade': 'C', 'points': 85, 'is_passing_grade': True},
+            rendered_view="This is the feedback")
+        self.browseToAndSelectAs('a1admin', g1)
+        deadline = self.waitForDeadlineCount(1)[0]
+        self.show_deadline(deadline)
+        delivery = self.get_deliveries(deadline)[0]
+
+        self.assertEquals(len(delivery.find_elements_by_css_selector('.no_feedback')), 0)
+        feedback = delivery.find_element_by_css_selector('.feedback_rendered_view').text.strip()
+        self.assertEquals(feedback, 'This is the feedback')
+        self.assertEquals('Passed',
+            delivery.find_element_by_css_selector('.gradeblock p .text-success').text.strip())
+
+        # Make sure we show what we should show, and hide what we should hide
+        for cls in ('.gradeblock', '.activefeedbackblock'):
+            self.assertEquals(len(delivery.find_elements_by_css_selector(cls)), 1)
+        for cls in ('.timeofdeliveryblock', '.deliverymadebyblock', '.fileblock'):
+            self.assertEquals(len(delivery.find_elements_by_css_selector(cls)), 0)
+
 
 
 class TestManageSingleGroupDelete(TestManageSingleGroupMixin,
