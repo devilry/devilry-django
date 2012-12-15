@@ -709,6 +709,12 @@ class TestHelper(object):
                 Number of days after the start time of the period that the
                 assignment should be published. Can be a negative number.
                 Defaults to 0.
+            delivery_types
+                ``electronic`` or ``nonelectronic``.
+            first_deadline
+                The offset of the ``first_deadline`` from the ``publishing_time`` in
+                days. If this is ``0``, we automatically add ``1`` second to the
+                ``publishing_time`` to ensure that they are not equal.
 
         :param assignmentgroups: List of assignmentgroups. Extras:
 
