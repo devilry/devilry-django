@@ -347,7 +347,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                 }
             });
         } else {
-            alert(Ext.String.format('Invalid delivery: {0}'), delivery_id);
+            alert(Ext.String.format('Invalid delivery: {0}', delivery_id));
         }
     },
 
