@@ -324,7 +324,11 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         }
     },
     _onAggregatedGroupInfoLoadFailure: function(operation) {
-        console.log('AggregatedGroupInfo load error', operation); // TODO: Handle load errors
+        this.application.getAlertmessagelist().add({
+            type: 'error',
+            autoclose: false,
+            message: gettext('An error occurred while loading detailed group information.')
+        });
     },
 
     _hightlightSelectedDelivery: function(delivery_id) {
@@ -353,7 +357,14 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
                 }
             });
         } else {
-            alert(Ext.String.format('Invalid delivery: {0}', delivery_id));
+            this.application.getAlertmessagelist().add({
+                type: 'error',
+                autoclose: false,
+                messagetpl: gettext('Invalid delivery ID: {id}.'),
+                messagedata: {
+                    id: delivery_id
+                }
+            });
         }
     },
 
