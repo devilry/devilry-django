@@ -2436,8 +2436,8 @@ msgid ""
 "Students can not see their points, only the grade, and if it is failed or "
 "passed."
 msgstr ""
-"Studenter kan ikke se deres poeng, kun karakter, og om den er feilet eller "
-"bestått."
+"Studenter kan ikke se sine poeng, kun karakter, og om den er bestått eller "
+"ikke."
 
 #: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:12
 msgid "Sort"
