@@ -4,6 +4,7 @@ from models import (Node, Subject, Period, Assignment, AssignmentGroup,
                     Candidate, Deadline, Delivery, StaticFeedback, FileMeta)
 from deliverystore import MemoryDeliveryStore
 from django.core.exceptions import ValidationError
+from devilry.apps.core.models import deliverytypes
 
 
 class TestHelper(object):
@@ -460,6 +461,13 @@ class TestHelper(object):
             else:
                 assignment.first_deadline += timedelta(days=days)
 
+        if extras['delivery_types']:
+            delivery_types = extras['delivery_types'][0]
+            typemap = {'electronic': deliverytypes.ELECTRONIC,
+                       'nonelectronic': deliverytypes.NON_ELECTRONIC}
+            assignment.delivery_types = typemap[delivery_types]
+        else:
+            assignment.delivery_types = deliverytypes.ELECTRONIC
 
         assignment.full_clean()
         assignment.save()
@@ -486,7 +494,8 @@ class TestHelper(object):
                     assignment_name = assignment
                     extras_arg = None
 
-                extras = self._parse_extras(extras_arg, ['admin', 'pub', 'anon', 'ln', 'first_deadline'])
+                extras = self._parse_extras(extras_arg, ['admin', 'pub', 'anon', 'ln',
+                                                         'first_deadline', 'delivery_types'])
                 new_assignment = self._create_or_add_assignment(assignment_name, period, extras)
                 created_assignments.append(new_assignment)
         return created_assignments
