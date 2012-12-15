@@ -338,7 +338,7 @@ class Command(BaseCommand):
         """
         Created with paper assignments where thor is admin.
         """
-        assignments = ['oblig{num}:pub({pub}):ln(Obligatorisk oppgave {num})'.format(num=num, pub=num*40) for num in xrange(1, 4)]
+        assignments = ['paper{num}:pub({pub}):ln(Paper delivery {num})'.format(num=num, pub=num*40) for num in xrange(1, 4)]
         periods = ['springcur:begins(-2):ends(6):ln(Spring Current)',
                    'springold:begins(-14):ends(6):ln(Spring Old)']
         self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
