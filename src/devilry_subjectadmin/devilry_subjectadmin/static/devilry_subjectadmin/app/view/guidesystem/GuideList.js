@@ -5,7 +5,7 @@ Ext.define('devilry_subjectadmin.view.guidesystem.GuideList', {
 
     /**
      * @cfg {Object[]} [guides]
-     * Array of guides. Each item is an object with ``xtype`` and ``title`` attributes.
+     * Array of guides. Each item is an object with ``xtype``, ``title``, ``description`` attributes.
      */
 
     tpl: [
@@ -17,18 +17,10 @@ Ext.define('devilry_subjectadmin.view.guidesystem.GuideList', {
                             '{title}',
                         '</a><br/>',
                         '<small class="muted">',
-                            'Takes you through creating any kind of assignment (electronic, paper, exam, ...)',
+                            '{description}',
                         '</small>',
                     '</p></li>',
                 '</tpl>',
-                '<li><p>',
-                    '<a href="#" data-guidextype="todo" class="guide_link">',
-                        'Placeholder for another guide',
-                    '</a><br/>',
-                    '<small class="muted">',
-                        'Shows how to do some common use-case.',
-                    '</small>',
-                '</p></li>',
             '</ul>',
         '</tpl>'
     ],

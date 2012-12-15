@@ -52,7 +52,8 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
             xtype: 'guidesystemlist',
             guides: [{
                 xtype: 'guide-createnewassignment',
-                title: gettext('Create new assignment')
+                title: gettext('Create new assignment'),
+                description: gettext('Takes you through creating any kind of assignment (electronic, paper, exam, ...)')
             }]
         }]
     }]
