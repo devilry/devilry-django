@@ -34,6 +34,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
                         '<span class="text-warning">', gettext('Failed') ,'</span>',
                     '</tpl>',
                     ' <small class="muted">({latest_feedback.grade})</small>',
+                    ' <small class="muted">(', gettext('Points'), ': {latest_feedback.points})</small>',
                 '</p>',
             '</tpl>',
         '</div>',
