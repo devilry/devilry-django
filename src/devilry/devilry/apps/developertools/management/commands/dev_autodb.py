@@ -87,6 +87,12 @@ rendered_view_anothertry = """
 <p>Maecenas faucibus mollis interdum. Maecenas sed diam eget risus varius blandit sit amet non magna. Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Praesent commodo cursus magna, vel scelerisque nisl consectetur et.</p>
 """
 
+rendered_view_evenanothertry = """
+<p>This was even worst.</p>
+
+<p>Read the last feedback and ACTUALLY FOLLOW THE INSTRUCTIONS.</p>
+"""
+
 
 rendered_view_failed = """
 <p>This was really bad.</p>
@@ -115,14 +121,12 @@ class Command(BaseCommand):
         self._setTagsFor(group, username)
         return path, group
 
-    def _addBadGroups(self, periodpath, assignments, anotherTryVerdict, failedVerdict,
-                      addDeadlines=True):
+    def _addBadGroups(self, periodpath, assignments, anotherTryVerdict, failedVerdict):
         for groupnum, names in enumerate(bad_students):
             username, fullname = names
             for assignment in assignments:
                 path, group = self._createGroup(periodpath, assignment, 'badgroup', groupnum, username)
-                if addDeadlines:
-                    self.testhelper.add_to_path(path + '.d1:ends(7)')
+                self.testhelper.add_to_path(path + '.d1:ends(7)')
                 since_pubishingtime = datetime.now() - group.parentnode.publishing_time
                 if since_pubishingtime.days >= 8:
                     self.testhelper.add_delivery(path, {'bad.py': ['print ', 'bah']},
@@ -132,21 +136,18 @@ class Command(BaseCommand):
                     self.testhelper.add_feedback(path,
                                                  verdict=anotherTryVerdict,
                                                  rendered_view=rendered_view_anothertry)
-                    if addDeadlines:
-                        self.testhelper.add_to_path(path + '.d2:ends(14)')
+                    self.testhelper.add_to_path(path + '.d2:ends(14)')
                 if since_pubishingtime.days >= 13:
                     self.testhelper.add_delivery(path, {'stillbad.py': ['print ', 'bah']}, time_of_delivery=-1)
                     self.testhelper.add_feedback(path, verdict=failedVerdict,
                                                  rendered_view=rendered_view_failed)
 
-    def _addMediumGroups(self, periodpath, assignments, anotherTryVerdict, okVerdict, do_not_finish=[],
-                         addDeadlines=True):
+    def _addMediumGroups(self, periodpath, assignments, anotherTryVerdict, okVerdict, do_not_finish=[]):
         for groupnum, names in enumerate(medium_students):
             username, fullname = names
             for assignment in assignments:
                 path, group = self._createGroup(periodpath, assignment, 'mediumgroup', groupnum, username)
-                if addDeadlines:
-                    self.testhelper.add_to_path(path + '.d1:ends(7)')
+                self.testhelper.add_to_path(path + '.d1:ends(7)')
 
                 since_pubishingtime = datetime.now() - group.parentnode.publishing_time
                 if since_pubishingtime.days >= 8:
@@ -157,28 +158,25 @@ class Command(BaseCommand):
                     self.testhelper.add_feedback(path,
                                                  verdict=anotherTryVerdict,
                                                  rendered_view=rendered_view_anothertry)
-                    if addDeadlines:
-                        self.testhelper.add_to_path(path + '.d2:ends(14)')
+                    self.testhelper.add_to_path(path + '.d2:ends(14)')
                 if since_pubishingtime.days >= 15:
                     self.testhelper.add_delivery(path, {'stillbad.py': ['print ', 'bah']}, time_of_delivery=-1)
                     self.testhelper.add_feedback(path,
                                                  verdict=anotherTryVerdict,
                                                  rendered_view=rendered_view_anothertry)
-                    if addDeadlines:
-                        self.testhelper.add_to_path(path + '.d3:ends(21)')
+                    self.testhelper.add_to_path(path + '.d3:ends(21)')
                 if since_pubishingtime.days >= 22:
                     self.testhelper.add_delivery(path, {'ok.py': ['print ', 'ok']}, time_of_delivery=-1)
                     if assignment in do_not_finish:
                         self.testhelper.add_feedback(path, verdict=okVerdict,
                                                      rendered_view=rendered_view_ok)
 
-    def _addGoodGroups(self, periodpath, assignments, goodVerdict, addDeadlines=True):
+    def _addGoodGroups(self, periodpath, assignments, goodVerdict):
         for groupnum, names in enumerate(good_students):
             username, fullname = names
             for assignment in assignments:
                 path, group = self._createGroup(periodpath, assignment, 'goodgroup', groupnum, username)
-                if addDeadlines:
-                    self.testhelper.add_to_path(path + '.d1:ends(7)')
+                self.testhelper.add_to_path(path + '.d1:ends(7)')
 
                 since_pubishingtime = datetime.now() - group.parentnode.publishing_time
                 if since_pubishingtime.days >= 8:
@@ -186,6 +184,20 @@ class Command(BaseCommand):
                                                  time_of_delivery=-1)
                     self.testhelper.add_feedback(path, verdict=goodVerdict,
                                                  rendered_view=rendered_view_good)
+
+
+    def _addNonElectronicFeedbacks(self, periodpath, assignments, students, group_prefix, feedbacks):
+        for groupnum, names in enumerate(students):
+            username, fullname = names
+            for assignmentnum, assignment in enumerate(assignments):
+                path, group = self._createGroup(periodpath, assignment, group_prefix, groupnum, username)
+                if assignmentnum < 1:
+                    for offset, verdict, rendered_view in feedbacks:
+                        delivery = self.testhelper.add_delivery(path, {}, time_of_delivery=offset)
+                        self.testhelper.add_feedback(delivery,
+                            verdict=verdict,
+                            rendered_view=rendered_view)
+
 
     def _onlyNames(self, nameWithExtras):
         return [name.split(':')[0] for name in nameWithExtras]
@@ -363,9 +375,18 @@ class Command(BaseCommand):
                 assignment.save()
             self._addRelatedStudents(period)
             self._addRelatedExaminers(period)
-            self._addBadGroups(periodpath, assignmentnames, anotherTryVerdict, failedVerdict, addDeadlines=False)
-            self._addMediumGroups(periodpath, assignmentnames, anotherTryVerdict, okVerdict, addDeadlines=False)
-            self._addGoodGroups(periodpath, assignmentnames, goodVerdict, addDeadlines=False)
+            self._addNonElectronicFeedbacks(periodpath, assignmentnames, bad_students, 'badgroup', [
+                (7, anotherTryVerdict, rendered_view_anothertry),
+                (13, anotherTryVerdict, rendered_view_evenanothertry),
+                (19, failedVerdict, rendered_view_failed),
+            ])
+            self._addNonElectronicFeedbacks(periodpath, assignmentnames, medium_students, 'mediumgroup', [
+                (7, anotherTryVerdict, rendered_view_anothertry),
+                (13, okVerdict, rendered_view_ok),
+            ])
+            self._addNonElectronicFeedbacks(periodpath, assignmentnames, good_students, 'goodgroup', [
+                (7, goodVerdict, rendered_view_good),
+            ])
 
     def create_users(self, list_of_users):
         for username, fullname in list_of_users:
@@ -422,27 +443,27 @@ class Command(BaseCommand):
         management.call_command('flush', verbosity=0, interactive=False)
 
         self.testhelper = TestHelper()
-        from django.db import transaction
-        with transaction.commit_on_success():
-            self.testhelper.create_superuser('grandma')
-            self.testhelper.grandma.is_staff = True
-            self.testhelper.grandma.save()
-            logging.info('Creating users')
-            self.create_users(bad_students)
-            self.create_users(medium_students)
-            self.create_users(good_students)
-            self.create_users([('donald', 'Donald Duck'),
-                               ('daisy', 'Daisy Duck'),
-                               ('clarabelle', 'Clarabelle Duck'),
-                               ('scrooge', 'Scrooge McDuck'),
-                               ('della', 'Duck'),
-                               ('gladstone', 'Gladstone Gander'),
-                               ('fethry', 'Fethry Duck')])
-            self._distributeStudentToExaminers()
-            logging.info('Generating data (nodes, periods, subjects, deliveries...). Run with -v3 for more details.')
-            self.create_duck2500p()
-            self.create_duck4000()
-            self.create_duck6000()
-            self.create_duck1100()
-            self.create_duck1010()
-            self._unset_groupnames()
+#        from django.db import transaction
+#        with transaction.commit_on_success():
+        self.testhelper.create_superuser('grandma')
+        self.testhelper.grandma.is_staff = True
+        self.testhelper.grandma.save()
+        logging.info('Creating users')
+        self.create_users(bad_students)
+        self.create_users(medium_students)
+        self.create_users(good_students)
+        self.create_users([('donald', 'Donald Duck'),
+                           ('daisy', 'Daisy Duck'),
+                           ('clarabelle', 'Clarabelle Duck'),
+                           ('scrooge', 'Scrooge McDuck'),
+                           ('della', 'Duck'),
+                           ('gladstone', 'Gladstone Gander'),
+                           ('fethry', 'Fethry Duck')])
+        self._distributeStudentToExaminers()
+        logging.info('Generating data (nodes, periods, subjects, deliveries...). Run with -v3 for more details.')
+        self.create_duck2500p()
+        self.create_duck4000()
+        self.create_duck6000()
+        self.create_duck1100()
+        self.create_duck1010()
+        self._unset_groupnames()
