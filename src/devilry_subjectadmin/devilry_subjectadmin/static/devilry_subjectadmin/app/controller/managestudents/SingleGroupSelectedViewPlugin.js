@@ -307,7 +307,9 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
     },
     _onAggregatedGroupInfoLoadSuccess: function(aggregatedGroupInfoRecord) {
         var active_feedback = this.groupRecord.get('feedback');
-        this.getDeadlinesContainer().populate(aggregatedGroupInfoRecord, active_feedback);
+        var assignmentRecord = this.manageStudentsController.assignmentRecord;
+        var delivery_types = assignmentRecord.get('delivery_types');
+        this.getDeadlinesContainer().populate(aggregatedGroupInfoRecord, active_feedback, delivery_types);
 
         var delivery_id = this.manageStudentsController.getOverview().select_delivery_on_load;
         this.manageStudentsController.getOverview().select_delivery_on_load = undefined; //NOTE: We only want to get it on the first load.

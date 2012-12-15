@@ -17,31 +17,54 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinePanel' ,{
      */
 
     /**
+     * @cfg {bool} [non_electronic=false]
+     * Render optimized for non-electronic assignments?
+     */
+    non_electronic: false,
+
+    /**
      * @cfg {Object} [active_feedback]
      */
 
     headerTpl: [
         '<div class="bootstrap deadlineheader">',
-            '<div class="lineone">',
-                '<small class="linklike"><em class="deadline_label">{deadline_term}</em></small>: ',
-                '<span class="deadline linklike">{deadline_formatted}</span>',
-                '<span class="in_the_future">',
-                    '<tpl if="in_the_future">',
-                        '<span class="text-success"> ({offset_from_now})</span>',
-                    '<tpl else>',
-                        '<span class="text-warning"> ({offset_from_now})</span>',
+            '<tpl if="non_electronic">',
+                '<div class="lineone">',
+                    '<span class="linklike">',
+                        gettext('Corrected deliveries'),
+                    '</span>',
+                '</div>',
+                '<div class="linetwo">',
+                    '<small>',
+                        '<em>', gettext('Deliveries') ,'</em>: ',
+                        '<span class="deliverycount">{delivery_count}</span>',
+                    '</small>',
+                '</div>',
+            '<tpl else>',
+                '<div class="lineone">',
+                    '<small class="linklike"><em class="deadline_label">{deadline_term}</em></small>: ',
+                    '<span class="deadline linklike">{deadline_formatted}</span>',
+                    '<span class="in_the_future">',
+                        '<tpl if="in_the_future">',
+                            '<span class="text-success"> ({offset_from_now})</span>',
+                        '<tpl else>',
+                            '<span class="text-warning"> ({offset_from_now})</span>',
+                        '</tpl>',
+                    '</span>',
+                '</div>',
+                '<div class="linetwo">',
+                    '<small>',
+                        '<em>', gettext('Deliveries') ,'</em>: ',
+                        '<span class="deliverycount">{delivery_count}</span>',
+                    '</small>',
+                    '<tpl if="text">',
+                        '&nbsp;',
+                        '&nbsp;',
+                        '&nbsp;',
+                        '<small><em>{text_title}</em>: {text}</small>',
                     '</tpl>',
-                '</span>',
-            '</div>',
-            '<div class="linetwo">',
-                '<small><em>{deliveries_term}</em>: <span class="deliverycount">{delivery_count}</span></small>',
-                '<tpl if="text">',
-                    '&nbsp;',
-                    '&nbsp;',
-                    '&nbsp;',
-                    '<small><em>{text_title}</em>: {text}</small>',
-                '</tpl>',
-            '</div>',
+                '</div>',
+            '</tpl>',
         '</div>'
     ],
 
@@ -78,11 +101,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinePanel' ,{
                 deadline_term: gettext('Deadline'),
                 deadline_formatted: deadline_formatted,
                 delivery_count: this.deadline.deliveries.length,
-                deliveries_term: gettext('Deliveries'),
                 offset_from_now: offset_from_now,
                 in_the_future: this.deadline.in_the_future,
                 text_title: gettext('About this deadline'),
-                text: this._formatDeadlineTextOneline()
+                text: this._formatDeadlineTextOneline(),
+                non_electronic: this.non_electronic
             }),
             items: [{
                 xtype: 'box',
