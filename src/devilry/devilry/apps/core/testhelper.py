@@ -425,9 +425,17 @@ class TestHelper(object):
         # make sure it evaluates as "within" the period.
         publishing_time = parentnode.start_time + timedelta(seconds=2)
 
+        if extras['delivery_types']:
+            deliverytype_alias = extras['delivery_types'][0]
+            typemap = {'electronic': deliverytypes.ELECTRONIC,
+                       'nonelectronic': deliverytypes.NON_ELECTRONIC}
+            delivery_types = typemap[deliverytype_alias]
+        else:
+            delivery_types = deliverytypes.ELECTRONIC
 
         assignment = Assignment(parentnode=parentnode, short_name=assignment_name,
-                                long_name=assignment_name.capitalize(), publishing_time=publishing_time)
+            long_name=assignment_name.capitalize(), publishing_time=publishing_time,
+            delivery_types=delivery_types)
         try:
             assignment.full_clean()
             assignment.save()
@@ -460,14 +468,6 @@ class TestHelper(object):
                 assignment.first_deadline += timedelta(seconds=1)
             else:
                 assignment.first_deadline += timedelta(days=days)
-
-        if extras['delivery_types']:
-            delivery_types = extras['delivery_types'][0]
-            typemap = {'electronic': deliverytypes.ELECTRONIC,
-                       'nonelectronic': deliverytypes.NON_ELECTRONIC}
-            assignment.delivery_types = typemap[delivery_types]
-        else:
-            assignment.delivery_types = deliverytypes.ELECTRONIC
 
         assignment.full_clean()
         assignment.save()
