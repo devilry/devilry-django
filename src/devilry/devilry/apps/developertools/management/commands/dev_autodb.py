@@ -8,7 +8,7 @@ from django.core import management
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.command import setup_logging, get_verbosity
-
+from devilry.apps.core.models.deliverytypes import NON_ELECTRONIC
 
 
 logger = logging.getLogger(__name__)
@@ -115,12 +115,14 @@ class Command(BaseCommand):
         self._setTagsFor(group, username)
         return path, group
 
-    def _addBadGroups(self, periodpath, assignments, anotherTryVerdict, failedVerdict):
+    def _addBadGroups(self, periodpath, assignments, anotherTryVerdict, failedVerdict,
+                      addDeadlines=True):
         for groupnum, names in enumerate(bad_students):
             username, fullname = names
             for assignment in assignments:
                 path, group = self._createGroup(periodpath, assignment, 'badgroup', groupnum, username)
-                self.testhelper.add_to_path(path + '.d1:ends(7)')
+                if addDeadlines:
+                    self.testhelper.add_to_path(path + '.d1:ends(7)')
                 since_pubishingtime = datetime.now() - group.parentnode.publishing_time
                 if since_pubishingtime.days >= 8:
                     self.testhelper.add_delivery(path, {'bad.py': ['print ', 'bah']},
@@ -130,18 +132,21 @@ class Command(BaseCommand):
                     self.testhelper.add_feedback(path,
                                                  verdict=anotherTryVerdict,
                                                  rendered_view=rendered_view_anothertry)
-                    self.testhelper.add_to_path(path + '.d2:ends(14)')
+                    if addDeadlines:
+                        self.testhelper.add_to_path(path + '.d2:ends(14)')
                 if since_pubishingtime.days >= 13:
                     self.testhelper.add_delivery(path, {'stillbad.py': ['print ', 'bah']}, time_of_delivery=-1)
                     self.testhelper.add_feedback(path, verdict=failedVerdict,
                                                  rendered_view=rendered_view_failed)
 
-    def _addMediumGroups(self, periodpath, assignments, anotherTryVerdict, okVerdict, do_not_finish=[]):
+    def _addMediumGroups(self, periodpath, assignments, anotherTryVerdict, okVerdict, do_not_finish=[],
+                         addDeadlines=True):
         for groupnum, names in enumerate(medium_students):
             username, fullname = names
             for assignment in assignments:
                 path, group = self._createGroup(periodpath, assignment, 'mediumgroup', groupnum, username)
-                self.testhelper.add_to_path(path + '.d1:ends(7)')
+                if addDeadlines:
+                    self.testhelper.add_to_path(path + '.d1:ends(7)')
 
                 since_pubishingtime = datetime.now() - group.parentnode.publishing_time
                 if since_pubishingtime.days >= 8:
@@ -152,25 +157,28 @@ class Command(BaseCommand):
                     self.testhelper.add_feedback(path,
                                                  verdict=anotherTryVerdict,
                                                  rendered_view=rendered_view_anothertry)
-                    self.testhelper.add_to_path(path + '.d2:ends(14)')
+                    if addDeadlines:
+                        self.testhelper.add_to_path(path + '.d2:ends(14)')
                 if since_pubishingtime.days >= 15:
                     self.testhelper.add_delivery(path, {'stillbad.py': ['print ', 'bah']}, time_of_delivery=-1)
                     self.testhelper.add_feedback(path,
                                                  verdict=anotherTryVerdict,
                                                  rendered_view=rendered_view_anothertry)
-                    self.testhelper.add_to_path(path + '.d2:ends(21)')
+                    if addDeadlines:
+                        self.testhelper.add_to_path(path + '.d3:ends(21)')
                 if since_pubishingtime.days >= 22:
                     self.testhelper.add_delivery(path, {'ok.py': ['print ', 'ok']}, time_of_delivery=-1)
                     if assignment in do_not_finish:
                         self.testhelper.add_feedback(path, verdict=okVerdict,
                                                      rendered_view=rendered_view_ok)
 
-    def _addGoodGroups(self, periodpath, assignments, goodVerdict):
+    def _addGoodGroups(self, periodpath, assignments, goodVerdict, addDeadlines=True):
         for groupnum, names in enumerate(good_students):
             username, fullname = names
             for assignment in assignments:
                 path, group = self._createGroup(periodpath, assignment, 'goodgroup', groupnum, username)
-                self.testhelper.add_to_path(path + '.d1:ends(7)')
+                if addDeadlines:
+                    self.testhelper.add_to_path(path + '.d1:ends(7)')
 
                 since_pubishingtime = datetime.now() - group.parentnode.publishing_time
                 if since_pubishingtime.days >= 8:
@@ -326,6 +334,39 @@ class Command(BaseCommand):
             self._addRelatedStudents(period)
             self._addRelatedExaminers(period)
 
+    def create_duck2500p(self):
+        """
+        Created with paper assignments where thor is admin.
+        """
+        assignments = ['oblig{num}:pub({pub}):ln(Obligatorisk oppgave {num})'.format(num=num, pub=num*40) for num in xrange(1, 4)]
+        periods = ['springcur:begins(-2):ends(6):ln(Spring Current)',
+                   'springold:begins(-14):ends(6):ln(Spring Old)']
+        self.testhelper.add(nodes="duckburgh:admin(duckburghadmin).ifi:admin(ifiadmin)",
+            subjects=["duck2500p:ln(DUCK2500p - Objektorientert programmering)"],
+            periods=periods,
+            assignments=assignments)
+        self.testhelper.duck2500p.admins.add(self.testhelper.thor)
+
+        anotherTryVerdict = {'grade': 'Not approved', 'points': 0, 'is_passing_grade': False}
+        failedVerdict = {'grade': 'Not approved', 'points': 0, 'is_passing_grade': False}
+        okVerdict = {'grade': 'Approved', 'points': 1, 'is_passing_grade': True}
+        goodVerdict = {'grade': 'Approved', 'points': 1, 'is_passing_grade': True}
+
+        assignmentnames = [name.split(':')[0] for name in assignments]
+        periodnames = self._onlyNames(periods)
+        for periodname in periodnames:
+            periodpath = 'duckburgh.ifi;duck2500p.' + periodname
+            logging.info('Creating %s', periodpath)
+            period = self.testhelper.get_object_from_path(periodpath)
+            for assignment in period.assignments.all():
+                assignment.delivery_types = NON_ELECTRONIC
+                assignment.save()
+            self._addRelatedStudents(period)
+            self._addRelatedExaminers(period)
+            self._addBadGroups(periodpath, assignmentnames, anotherTryVerdict, failedVerdict, addDeadlines=False)
+            self._addMediumGroups(periodpath, assignmentnames, anotherTryVerdict, okVerdict, addDeadlines=False)
+            self._addGoodGroups(periodpath, assignmentnames, goodVerdict, addDeadlines=False)
+
     def create_users(self, list_of_users):
         for username, fullname in list_of_users:
             self.testhelper.create_user(username, fullname)
@@ -399,6 +440,7 @@ class Command(BaseCommand):
                                ('fethry', 'Fethry Duck')])
             self._distributeStudentToExaminers()
             logging.info('Generating data (nodes, periods, subjects, deliveries...). Run with -v3 for more details.')
+            self.create_duck2500p()
             self.create_duck4000()
             self.create_duck6000()
             self.create_duck1100()
