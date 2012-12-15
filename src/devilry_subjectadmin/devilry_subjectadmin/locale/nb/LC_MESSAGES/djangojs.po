@@ -1392,7 +1392,7 @@ msgstr "Interraktive guider"
 #: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:56
 msgid ""
 "Takes you through creating any kind of assignment (electronic, paper, "
-"exam, ...)"
+"exam, ...)."
 msgstr ""
 "Tar deg gjennom alle stegene som trengs for å lage en hvilken som helst "
 "type oppgave (elektronisk, papir, eksamen, ...)."
