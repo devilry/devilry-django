@@ -359,7 +359,6 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         } else {
             this.application.getAlertmessagelist().add({
                 type: 'error',
-                autoclose: false,
                 messagetpl: gettext('Invalid delivery ID: {id}.'),
                 messagedata: {
                     id: delivery_id

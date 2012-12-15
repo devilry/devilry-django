@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-15 04:53+0100\n"
+"POT-Creation-Date: 2012-12-15 05:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -86,7 +86,7 @@ msgid "Saving"
 msgstr "Lagrer"
 
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:121
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:99
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:100
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:88
 msgid "Deadlines"
 msgstr "Innleveringsfrister"
@@ -185,14 +185,14 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:137
 #: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:373
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:177
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:294
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:300
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:48
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:109
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:55
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:64
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:81
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:135
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:146
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:137
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:148
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:54
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:58
 #: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimeWidget.js:46
@@ -234,7 +234,7 @@ msgid "Create %(period_term)s"
 msgstr "Legg til %(period_term)s"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:84
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:99
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:100
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:19
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:256
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:273
@@ -354,14 +354,14 @@ msgstr "Tagget %(users)s med: %(tags)s"
 msgid "Cleared tags on %(users)s."
 msgstr "Fjernet alle tags fra %(users)s"
 
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:105
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:106
 #: static/devilry_subjectadmin/app/controller/period/PeriodController.js:83
 #: static/devilry_subjectadmin/app/controller/subject/SubjectController.js:71
 #: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:29
 msgid "Rename {something}"
 msgstr "Endre navn på {something}"
 
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:108
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:109
 #: static/devilry_subjectadmin/app/controller/period/PeriodController.js:80
 #: static/devilry_subjectadmin/app/controller/subject/SubjectController.js:74
 msgid "Delete {something}"
@@ -383,19 +383,27 @@ msgstr "Rettere tilfeldig distribuert uten feil"
 msgid "{label} (Matching groups: {groupcount})"
 msgstr "{label} (Tilhørende grupper: {groupcount})"
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:460
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:330
+msgid "An error occurred while loading detailed group information."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:363
+msgid "Invalid delivery ID: {id}."
+msgstr "Ugyldig innleveringsID: {id}."
+
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:477
 msgid "Changed examiners of {group} to: {examiners}."
 msgstr "Endret retter for {group} til: {examiners}."
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:484
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:501
 msgid "Added you as examiner for {group}."
 msgstr "La deg til som retter for {group}."
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:531
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:548
 msgid "Saved the following tags for {group}: {tags}"
 msgstr "Lagret følgende tags for {group}: {tags}"
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:534
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:551
 msgid "No tags"
 msgstr "Ingen tags"
 
@@ -872,19 +880,19 @@ msgstr "Grupper"
 msgid "Deliveries"
 msgstr "Innleveringer"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:102
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:103
 msgid "View, edit and add deadlines, including the submission date."
 msgstr "Vis, rediger, og legg til innleveringsfrister."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:107
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:109
 msgid "Passed previous {period_term}"
 msgstr "Bestått tidligere {period_term}"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:110
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:112
 msgid "Wizard with automatic and manual selection."
 msgstr "Mulighet for automatisk og manuelt valg av studenter"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:138
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:140
 msgid ""
 "Renaming an assignment should not be done without a certain amount of "
 "consideration. The name of an assignment, especially the short name, is "
@@ -894,13 +902,13 @@ msgstr ""
 "til en oppgave, spesielt det korte navnet, brukes ofte som identifikator av "
 "systemer som integrerer seg med Devilry."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:141
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:143
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:130
 #: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:83
 msgid "Rename"
 msgstr "Gi nytt navn"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:149
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:151
 msgid ""
 "Once you delete an assignment, there is no going back. Only superusers can "
 "delete an assignment with deliveries."
@@ -908,7 +916,7 @@ msgstr ""
 "Når du har slettet en oppgave, er det ingen mulighet for å angre. Kun "
 "superbrukere kan slette oppgaver med innleveringer."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:152
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:154
 #: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:17
 #: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:19
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:137
@@ -1607,10 +1615,9 @@ msgid ""
 "This group has no deadlines. This is probably caused by a third-party plugin "
 "or integration script behaving incorrectly, or it may be a bug in Devilry."
 msgstr ""
-"Denne gruppen har ingen innleveringsfrister. Dette er sannsynligvis forårsaket "
-"av et tredjeparts-plugin eller script som oppfører seg feil. Det kan også "
-"komme av en feil i Devilry."
-
+"Denne gruppen har ingen innleveringsfrister. Dette er sannsynligvis "
+"forårsaket av et tredjeparts-plugin eller script som oppfører seg feil. Det "
+"kan også komme av en feil i Devilry."
 
 #: static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:50
 msgid "More than one deadline on non-electronic assignment"
@@ -1624,12 +1631,12 @@ msgid ""
 "deadline. The most likely cause is a third-party integration with Devilry "
 "that handles non-electronic assignments incorrectly, or a bug in Devilry."
 msgstr ""
-"Devilry støtter ikke innleveringsfrister på ikke-elektroniske oppgaver. For å "
-"unngå spesialhåndtering av ikke-elektroniske oppgaver, lagess NØYAKTIG EN "
-"sjult innleveringsfrist. Denne oppgaven er ikke-elektronisk, men den har mer enn "
-"en innleveringsfrist. Den mest sannsynlige årsaken er en tredjeparts integrasjon "
-"med Devilry som ikke håndterer ikke-elektroniske oppgaver korrekt, eller en feil "
-"i Devilry."
+"Devilry støtter ikke innleveringsfrister på ikke-elektroniske oppgaver. For "
+"å unngå spesialhåndtering av ikke-elektroniske oppgaver, lagess NØYAKTIG EN "
+"sjult innleveringsfrist. Denne oppgaven er ikke-elektronisk, men den har mer "
+"enn en innleveringsfrist. Den mest sannsynlige årsaken er en tredjeparts "
+"integrasjon med Devilry som ikke håndterer ikke-elektroniske oppgaver "
+"korrekt, eller en feil i Devilry."
 
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:29
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:15
