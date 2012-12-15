@@ -135,16 +135,17 @@ Watch the filesystem for changes and rebuild
 
 Install watchdog::
 
-    $ virtualenv/bin/easy_install watchdog
+    $ cd devenv/
+    $ bin/easy_install watchdog
 
 
 Call the tasks with ``watch=true``. E.g.::
 
-    $ fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true
+    $ bin/fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true
 
 You probably want to use::
 
-    $ fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true,no_jsbcreate=next
+    $ bin/fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true,no_jsbcreate=next
 
 to create a JSB-file on startup, but no on each watcher-trigger. This
 speeds up rebuild significantly, but you will have to re-start
