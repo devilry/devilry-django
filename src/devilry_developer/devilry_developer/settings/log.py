@@ -84,13 +84,7 @@ def create_logging_conf(logdir):
                 'level': 'DEBUG',
                 'propagate': False
             },
-            'devilry': {
-                'handlers': ['allButExceptionTracebacks',
-                             'console'],
-                'level': 'DEBUG',
-                'propagate': False
-            },
-            'devilry_subjectadmin': {
+            '': {
                 'handlers': ['allButExceptionTracebacks',
                              'console'],
                 'level': 'DEBUG',
