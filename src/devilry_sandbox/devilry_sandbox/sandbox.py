@@ -31,6 +31,7 @@ class Sandbox(object):
 
     def __init__(self, nodename='sandbox'):
         self.nodename = nodename
+        self.subject, self.unique_number = self.create_autonamed_subject()
 
     def _rootnode_exists(self):
         return Node.objects.filter(short_name=self.nodename).exists()
@@ -44,11 +45,12 @@ class Sandbox(object):
         return node
 
     def create_user(self, username, fullname):
+        username = '{0}{1}'.format(username, self.unique_number)
         user = User.objects.create(username=username,
                                    email='{0}@example.com'.format(username))
         user.devilryuserprofile.full_name = fullname
         user.devilryuserprofile.save()
-        user.set_password('test')
+        user.set_password(username)
         user.save()
         return user
 
@@ -78,21 +80,21 @@ class Sandbox(object):
             short_name = shortformat.format(num=num)
             long_name = longformat.format(num=num)
             try:
-                subject = self.create_subject(short_name, long_name)
+                subject = self._create_subject(short_name, long_name)
             except IntegrityError:
                 logger.info('Could not create subject %s. Trying again with a new name.', short_name)
             else:
                 logger.info('Created subject: %s', short_name)
-                return subject
+                return subject, num
 
-    def create_subject(self, short_name, long_name):
+    def _create_subject(self, short_name, long_name):
         node = self._create_rootnode_if_not_exists()
         subject = node.subjects.create(short_name=short_name,
                                        long_name=long_name)
         return subject
 
-    def create_period(self, subject, short_name, long_name):
-        period = subject.periods.create(short_name=short_name,
+    def create_period(self, short_name, long_name):
+        period = self.subject.periods.create(short_name=short_name,
                                         long_name=long_name,
                                         start_time=datetime.now() - timedelta(days=90),
                                         end_time=datetime.now() + timedelta(days=120))

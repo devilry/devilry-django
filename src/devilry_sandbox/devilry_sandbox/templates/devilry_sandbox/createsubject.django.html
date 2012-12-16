@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+{% load staticfiles %}
+<html>
+    <head>
+        {% block title %}
+            <title>Subjectadmin - create periodadmin demo</title>
+        {% endblock %}
+
+        {% block css %}
+            <link rel="stylesheet" type="text/css" href="{% static "devilry_theme/resources/stylesheets/bootstrap_full.css" %}" />
+        {% endblock %}
+    </head>
+<body>
+    <div class="container">
+        <div class="hero-unit" style="margin-top: 20px;">
+            <h1>Devilry demo</h1>
+            {% if success %}
+                <p>
+                    Test course named <em>{{ long_name }}</em> created successfully.
+                    Your username and password is:
+                </p>
+                <pre>Username: {{ username }}
+Password: {{ username }}</pre>
+
+                <p>
+                    <a href="{% url devilry_frontpage %}" target="_blank" class="btn btn-primary">Click here</a> to log into your Devilry demo.
+                </p>
+
+
+            {% else %}
+                <p>Click the button below to create a test course with an active semester.</p>
+                <p>
+                    <form action="{% url devilry-sandbox-createsubject-create %}" method="post">
+                        <button class="btn btn-primary btn-large" type='submit'>
+                            <i class="icon-plus icon-white"></i>
+                            Create test course
+                        </button>
+                    </form>
+                </p>
+            {% endif %}
+        </div>
+
+        {% if success %}
+            <p class="alert alert-warning">
+                Save your username and password if you want to be able to log out
+                and in again. We delete users and courses when we update the demo,
+                but your data should normally be safe for a couple of hours.
+            </p>
+        {% endif %}
+    </div>
+</body>
+</html>
