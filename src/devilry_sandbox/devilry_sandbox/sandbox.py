@@ -77,7 +77,7 @@ class Sandbox(object):
             period.relatedexaminer_set.create(user=self.add_or_get_user(username, fullname),
                 tags=tags)
 
-    def create_autonamed_subject(self, shortformat='test{num}', longformat='Test course {num}'):
+    def create_autonamed_subject(self, shortformat='testcourse{num}', longformat='Test course {num}'):
         tries = 0
         randrange = (0, 9999)
         while True:
