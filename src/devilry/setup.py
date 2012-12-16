@@ -10,7 +10,7 @@ setup(
     packages = find_packages(),
     install_requires = ['setuptools', 'Django', 'Markdown', 'django_errortemplates',
                         'djangorestframework', 'Pygments',
-                        'flup',
+                        #'flup',
                         #'PyYAML',
                         'gunicorn']
 )
