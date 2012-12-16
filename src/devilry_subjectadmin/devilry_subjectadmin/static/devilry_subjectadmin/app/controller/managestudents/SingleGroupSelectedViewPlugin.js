@@ -174,18 +174,17 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this.manageStudentsController = manageStudentsController;
         this.groupRecord = groupRecord;
 
-        var loadingText = gettext('Loading') + ' ...';
-
-        // Fade out all components
+        // Fade out all components, and set load mask
         Ext.Array.each(this._getLowPriComponents(), function(component) {
-            component.setLoading({
-                msg: loadingText,
-                maskCls: 'devilry-white-mask'
-            });
+            this._fadeOut(component);
         }, this);
         Ext.Array.each(this._getHighPriComponents(), function(component) {
             this._fadeOut(component);
         }, this);
+        this.getExaminerRoleBox().setLoading({
+            msg: gettext('Loading detailed group information ...'),
+            maskCls: 'devilry-white-mask'
+        });
 
         // Load the most important stuff immediately
         this._closeAllEditors();
@@ -206,20 +205,26 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
         this._loadTagsIntoStore();
         this._setupExaminerLinkBox();
         Ext.Array.each(this._getLowPriComponents(), function(component) {
-            component.setLoading(false);
+            this._fadeIn(component);
         }, this);
         this._populateDeadlinesContainer();
+        this.getExaminerRoleBox().setLoading(false);
     },
 
-    
+
     _fadeOut: function(component) {
-        component.getEl().setOpacity(0.2);
+//        component.getEl().setOpacity(0);
+        component.getEl().animate({
+            duration: 100,
+            from: {opacity: 1.0},
+            to: {opacity: 0}
+        });
     },
 
     _fadeIn: function(component) {
         component.getEl().animate({
-            duration: 400,
-            from: {opacity: 0.1},
+            duration: 200,
+            from: {opacity: 0},
             to: {opacity: 1.0}
         });
     },
