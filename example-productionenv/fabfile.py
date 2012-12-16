@@ -26,7 +26,6 @@ def refreshstatic():
     """
     Refresh static files
     """
-    local('bin/django_production.py dev_autogen_extjsmodels')
     local('bin/django_production.py devilry_extjs_jsmerge')
     local('bin/django_production.py collectstatic --noinput')
 
