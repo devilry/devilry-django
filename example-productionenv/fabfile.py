@@ -12,7 +12,7 @@ def virtualenv():
     Setup a virtualenv in virtualenv/, run bootstrap in the virtualenv, and run bootstrap.
     """
     local('virtualenv --no-site-packages .')
-    local('bin/easy_install zc.buildout')
+    local('bin/easy_install zc.buildout==1.6.1')
     local('bin/buildout')
 
 @task
