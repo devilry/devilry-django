@@ -1,11 +1,14 @@
 from datetime import datetime, timedelta
+from random import randint
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from devilry.apps.core.models import Node
 from devilry.apps.core.models import Subject
 from devilry.apps.core.models import Period
-from random import randint
+from logging import getLogger
 
+
+logger = getLogger(__name__)
 
 
 class Sandbox(object):
@@ -69,10 +72,23 @@ class Sandbox(object):
             period.relatedexaminer_set.create(user=self.add_or_get_user(username, fullname),
                                               tags=tags)
 
+    def create_autonamed_subject(self, shortformat='test{num}', longformat='Test course {num}'):
+        while True:
+            num = randint(0, 99999999)
+            short_name = shortformat.format(num=num)
+            long_name = longformat.format(num=num)
+            try:
+                subject = self.create_subject(short_name, long_name)
+            except IntegrityError:
+                logger.info('Could not create subject %s. Trying again with a new name.', short_name)
+            else:
+                logger.info('Created subject: %s', short_name)
+                return subject
+
     def create_subject(self, short_name, long_name):
         node = self._create_rootnode_if_not_exists()
         subject = node.subjects.create(short_name=short_name,
-                                      long_name=long_name)
+                                       long_name=long_name)
         return subject
 
     def create_period(self, subject, short_name, long_name):
