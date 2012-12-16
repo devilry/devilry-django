@@ -115,7 +115,8 @@ Ext.define('devilry_subjectadmin.controller.period.PeriodController', {
         this.application.fireEvent('periodSuccessfullyLoaded', record);
         this.application.setTitle(this._getPath());
         this.getHeader().update({
-            heading: record.get('long_name')
+            period: record.get('long_name'),
+            subject: record.get('breadcrumb')[0].text
         });
         this.setBreadcrumb(this.periodRecord);
         this._setMenuLabels();

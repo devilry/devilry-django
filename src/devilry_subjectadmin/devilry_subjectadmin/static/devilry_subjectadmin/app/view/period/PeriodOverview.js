@@ -54,9 +54,18 @@ Ext.define('devilry_subjectadmin.view.period.PeriodOverview' ,{
                     cls: 'bootstrap',
                     margin: '0 0 20 0',
                     itemId: 'header',
-                    tpl: '<h1 style="margin-top: 0;">{heading}</h1>',
+                    tpl: [
+                        '<tpl if="loading">',
+                            gettext('Loading'), ' ...',
+                        '<tpl else>',
+                            '<h1 style="margin-top: 0;">',
+                                '{period}',
+                                ' <small class="muted"> &mdash; {subject}</small>',
+                            '</h1>',
+                        '</tpl>'
+                    ],
                     data: {
-                        heading: gettext('Loading') + ' ...'
+                        loading: true
                     }
                 }, {
                     xtype: 'box',
