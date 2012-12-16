@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-15 06:52+0100\n"
+"POT-Creation-Date: 2012-12-16 09:10+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr "Siden finnes ikke"
 #: static/devilry_subjectadmin/app.js:296
 #: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:36
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:9
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:10
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:22
 #: static/devilry_subjectadmin/app/view/subject/ListAll.js:29
 msgid "All %(subjects_term)s"
 msgstr "Alle %(subjects_term)s"
@@ -37,8 +37,8 @@ msgstr "Alle %(subjects_term)s"
 #: static/devilry_subjectadmin/app.js:297
 #: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:37
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:10
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:11
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:16
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:23
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:28
 #: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:13
 #: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:28
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:28
@@ -184,11 +184,9 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:90
 #: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:137
 #: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:373
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:177
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:300
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:305
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:48
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:109
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:55
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:64
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:81
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:137
@@ -235,7 +233,7 @@ msgstr "Legg til %(period_term)s"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:84
 #: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:100
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:19
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:31
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:256
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:273
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:43
@@ -383,27 +381,31 @@ msgstr "Rettere tilfeldig distribuert uten feil"
 msgid "{label} (Matching groups: {groupcount})"
 msgstr "{label} (Tilhørende grupper: {groupcount})"
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:330
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:185
+msgid "Loading detailed group information ..."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:335
 msgid "An error occurred while loading detailed group information."
 msgstr ""
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:362
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:367
 msgid "Invalid delivery ID: {id}."
 msgstr "Ugyldig innleveringsID: {id}."
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:476
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:481
 msgid "Changed examiners of {group} to: {examiners}."
 msgstr "Endret retter for {group} til: {examiners}."
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:500
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:505
 msgid "Added you as examiner for {group}."
 msgstr "La deg til som retter for {group}."
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:547
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:552
 msgid "Saved the following tags for {group}: {tags}"
 msgstr "Lagret følgende tags for {group}: {tags}"
 
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:550
+#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:555
 msgid "No tags"
 msgstr "Ingen tags"
 
@@ -824,25 +826,25 @@ msgstr ""
 "Velg vekk denne for å utelate studenter som allerede er i en gruppe fra "
 "listen nedenfor."
 
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:15
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:27
 msgid ""
 "These are all %(subjects_term)s, %(periods_term)s and assignments where you "
 "have administrator rights. Assignments are listed if you have administrator-"
 "rights on the assignments, and not on the %(period_term)s or %(subject_term)"
 "s containing the assignment. The %(subject_term)s name is a link on if you "
-"have administrator rights on the subject."
+"have administrator rights on the %(subject_term)s."
 msgstr ""
 "Dette er alle %(subjects_term)s, %(periods_term)s og oppgaver der du har "
 "administrator-rettigheter. Oppgaver er med i listen hvis du har "
 "administrator-rettigheter på en oppgave, men ikke på tilhørende "
 "%(period_term)s eller %(subject_term)s. Navn på %(subject_term)s er en link "
-"hvis du har administrator-rettigheter på det."
+"på %(subject_term)s der du har administrator-rettigheter."
 
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:17
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:29
 msgid "periods"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminList.js:18
+#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:30
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:27
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:76
 #: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:81
@@ -1394,8 +1396,8 @@ msgid ""
 "Takes you through creating any kind of assignment (electronic, paper, "
 "exam, ...)."
 msgstr ""
-"Tar deg gjennom alle stegene som trengs for å lage en hvilken som helst "
-"type oppgave (elektronisk, papir, eksamen, ...)."
+"Tar deg gjennom alle stegene som trengs for å lage en hvilken som helst type "
+"oppgave (elektronisk, papir, eksamen, ...)."
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:24
 msgid "Select a grading system"
