@@ -11,9 +11,8 @@ def virtualenv():
     """
     Setup a virtualenv in virtualenv/, run bootstrap in the virtualenv, and run bootstrap.
     """
-    local('rm -rf virtualenv')
-    local('virtualenv virtualenv')
-    local('virtualenv/bin/python ../bootstrap.py')
+    local('virtualenv --no-site-packages .')
+    local('bin/easy_install zc.buildout')
     local('bin/buildout')
 
 @task
