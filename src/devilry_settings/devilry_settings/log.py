@@ -12,8 +12,7 @@ def create_logging_config(mail_admins=True,
                           log_to_stderr=True,
                           dangerous_actions_loglevel='INFO',
                           django_loglevel='ERROR',
-                          request_loglevel='ERROR',
-                          devilry_loglevel='ERROR'):
+                          request_loglevel='ERROR'):
     """
     Returns a logging config that can be used for ``settings.LOGGING``.
 
@@ -72,9 +71,9 @@ def create_logging_config(mail_admins=True,
         request_handlers.append('requestfile')
 
     # We use a custom set of handlers for dangerous actions
-    request_handlers = default_handlers[:] #copy
+    dangerous_handlers = default_handlers[:] #copy
     if log_to_file:
-        request_handlers.append('dangerousfile')
+        dangerous_handlers.append('dangerousfile')
 
     return {
         'version': 1,
@@ -122,21 +121,16 @@ def create_logging_config(mail_admins=True,
                 'level': request_loglevel,
                 'propagate': False
             },
-            'django': {
+            'devilry_subjectadmin': {
+                'handlers': dangerous_handlers,
+                'level': dangerous_actions_loglevel,
+                'propagate': False
+            },
+            '': {
                 'handlers': handlers,
                 'level': django_loglevel,
                 'propagate': False
             },
-            'devilry': {
-                'handlers': request_handlers,
-                'level': request_loglevel,
-                'propagate': False
-            },
-            'devilry_subjectadmin': {
-                'handlers': request_handlers,
-                'level': dangerous_actions_loglevel,
-                'propagate': False
-            }
         }
     }
 
