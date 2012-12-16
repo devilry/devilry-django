@@ -16,11 +16,11 @@
             <h1>Devilry demo</h1>
             {% if success %}
                 <p>
-                    Test course named <em>{{ long_name }}</em> created successfully.
+                    Test course named <em>Test course {{ unique_number }}</em> created successfully.
                     Your username and password is:
                 </p>
-                <pre>Username: {{ username }}
-Password: {{ username }}</pre>
+                <pre>Username: testuser{{ unique_number }}
+Password: testuser{{ unique_number }}</pre>
 
                 <p>
                     <a href="{% url devilry_frontpage %}" target="_blank" class="btn btn-primary">Click here</a> to log into your Devilry demo.
@@ -41,11 +41,12 @@ Password: {{ username }}</pre>
         </div>
 
         {% if success %}
-            <p class="alert alert-warning">
-                Save your username and password if you want to be able to log out
-                and in again. We delete users and courses when we update the demo,
-                but your data should normally be safe for a couple of hours.
-            </p>
+            <div class="alert alert-warning">
+                <h3>You can bookmark this page</h3>
+                <p>Save your username and password if you want to be able to log out
+                and in again.</p>
+                <p>An easy way of saving your login credentials, is to bookmark this page.</p>
+            </div>
         {% endif %}
     </div>
 </body>

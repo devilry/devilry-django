@@ -12,6 +12,9 @@ logger = getLogger(__name__)
 
 
 class Sandbox(object):
+    """
+    A simple sandboxing system for providing the admins with a more or less isolated environment.
+    """
     STUDENTS = (('dewey', 'Dewey Duck', 'group1'),
                 ('louie', 'Louie Duck', 'group1'),
                 ('huey', 'Huey Duck', 'group1'),
@@ -39,7 +42,7 @@ class Sandbox(object):
     def _create_rootnode_if_not_exists(self):
         if not self._rootnode_exists():
             node = Node.objects.create(short_name=self.nodename,
-                                       long_name=self.nodename)
+                long_name=self.nodename)
         else:
             node = Node.objects.get(short_name=self.nodename)
         return node
@@ -47,8 +50,8 @@ class Sandbox(object):
     def create_user(self, username, fullname):
         username = '{0}{1}'.format(username, self.unique_number)
         user = User.objects.create(username=username,
-                                   email='{0}@example.com'.format(username))
-        user.devilryuserprofile.full_name = fullname
+            email='{0}@example.com'.format(username))
+        user.devilryuserprofile.full_name = '{0} {1}'.format(fullname, self.unique_number)
         user.devilryuserprofile.save()
         user.set_password(username)
         user.save()
@@ -66,23 +69,33 @@ class Sandbox(object):
     def add_relatedstudents(self, period):
         for username, fullname, tags in self.STUDENTS:
             period.relatedstudent_set.create(user=self.add_or_get_user(username, fullname),
-                                             candidate_id='sec-{0}'.format(randint(0, 10000000)),
-                                             tags=tags)
+                candidate_id='sec-{0}'.format(randint(0, 10000000)),
+                tags=tags)
 
     def add_relatedexaminers(self, period):
         for username, fullname, tags in self.EXAMINERS:
             period.relatedexaminer_set.create(user=self.add_or_get_user(username, fullname),
-                                              tags=tags)
+                tags=tags)
 
     def create_autonamed_subject(self, shortformat='test{num}', longformat='Test course {num}'):
+        tries = 0
+        randrange = (0, 9999)
         while True:
-            num = randint(0, 99999999)
+            # We try with a relatively low range first, but in the unlikely case of that
+            # not working, we use a higher max/min
+            if tries > 50:
+                randrange = (100000, 999999999)
+            elif tries > 5:
+                randrange = (10000, 99999)
+            num = randint(*randrange)
+            tries += 1
             short_name = shortformat.format(num=num)
             long_name = longformat.format(num=num)
             try:
                 subject = self._create_subject(short_name, long_name)
             except IntegrityError:
-                logger.info('Could not create subject %s. Trying again with a new name.', short_name)
+                logger.info('Could not create subject %s. Trying again with a new name.',
+                    short_name)
             else:
                 logger.info('Created subject: %s', short_name)
                 return subject, num
@@ -90,14 +103,15 @@ class Sandbox(object):
     def _create_subject(self, short_name, long_name):
         node = self._create_rootnode_if_not_exists()
         subject = node.subjects.create(short_name=short_name,
-                                       long_name=long_name)
+            long_name=long_name)
         return subject
 
     def create_period(self, short_name, long_name):
-        period = self.subject.periods.create(short_name=short_name,
-                                        long_name=long_name,
-                                        start_time=datetime.now() - timedelta(days=90),
-                                        end_time=datetime.now() + timedelta(days=120))
+        period = self.subject.periods.create(
+            short_name=short_name,
+            long_name=long_name,
+            start_time=datetime.now() - timedelta(days=30),
+            end_time=datetime.now() + timedelta(days=150))
         self.add_relatedstudents(period)
         self.add_relatedexaminers(period)
         return period
