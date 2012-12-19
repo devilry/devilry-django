@@ -15,7 +15,9 @@ class CreateSubjectCreateView(View):
             sandbox = Sandbox()
             testuser = sandbox.create_user('testuser', 'Test User')
             sandbox.subject.admins.add(testuser)
-            sandbox.create_period('approx-spring2013', 'Spring 2013')
+            period = sandbox.create_period('approx-spring2013', 'Spring 2013')
+            period.relatedexaminer_set.create(user=testuser)
+
             return redirect('devilry-sandbox-createsubject-success',
                 unique_number=str(sandbox.unique_number))
 
