@@ -116,6 +116,15 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         return self.start_time < now and self.end_time > now
 
     @classmethod
+    def q_is_active(self):
+        """
+        Get a ``django.db.Q`` object that matches all active periods (periods where start_time is
+        in the past, and end_time is in the future).
+        """
+        now = datetime.now()
+        return Q(start_time__lt=now, end_time__gt=now)
+
+    @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(assignments__assignmentgroups__examiners__user=user_obj)
 
