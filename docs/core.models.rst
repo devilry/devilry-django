@@ -4,13 +4,6 @@
 :mod:`devilry.apps.core.models` --- Devilry core datastructure
 ===============================================================
 
-.. warning::
-    The automatic API documentation generation seems to not work on readthedocs. Please
-    use the `Old docs <http://devilry.org/devilry-django/dev/>`_, or the sources
-    in ``src/devilry/devilry/apps/core/models/`` if you need to view the docs
-    for the latest updates (nothing essential has changed).
-
-
 .. For some reason required to make cross references work.
    http://groups.google.com/group/sphinx-dev/browse_thread/thread/dd921549bc146a5c/2f39d79ce46d447f
 .. currentmodule:: devilry.apps.core.models
