@@ -155,6 +155,7 @@ CACHES = {
 #
 # Rosetta
 # - see: https://github.com/mbi/django-rosetta
+# - uncomment it here, in dev_urls, and in developments-base.cfg to use rosetta
 #
 ##############################################################
-INSTALLED_APPS += ['rosetta']
+#INSTALLED_APPS += ['rosetta']
