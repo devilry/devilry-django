@@ -86,7 +86,6 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
             q &= ~Q(end_time__lt=now)
         return q
 
-    #TODO delete this?
     @classmethod
     def q_is_candidate(cls, user_obj):
         return Q(assignments__assignmentgroups__candidates__student=user_obj)
