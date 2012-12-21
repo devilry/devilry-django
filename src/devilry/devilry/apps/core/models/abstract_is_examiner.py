@@ -40,7 +40,7 @@ class AbstractIsExaminer(object):
     @classmethod
     def published_where_is_examiner(cls, user_obj, old=True, active=True):
         """
-        Get all published <assignment-classifications>` items of this type
+        Get all published items of this type
         where the given ``user_obj`` is examiner on one of the assignment
         groups. Combines :meth:`q_is_examiner` and :meth:`q_published`.
 
