@@ -118,8 +118,12 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     @classmethod
     def q_is_active(self):
         """
-        Get a ``django.db.Q`` object that matches all active periods (periods where start_time is
+        Get a ``django.db.models.Q`` object that matches all active periods (periods where start_time is
         in the past, and end_time is in the future).
+
+        Example::
+
+            activeperiods = Period.objects.filter(Period.q_is_active())
         """
         now = datetime.now()
         return Q(start_time__lt=now, end_time__gt=now)
