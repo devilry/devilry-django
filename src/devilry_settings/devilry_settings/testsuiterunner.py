@@ -25,10 +25,10 @@ class FilterableTestSuiteRunner(DjangoTestSuiteRunner):
         if not args[0]:
             tests = []
             for case in suite:
-                path = '{0}.{1}'.format(case.__class__.__module__, case.__class__.__name__)
+                path = '{0}.{1}.{2}'.format(case.__class__.__module__, case.__class__.__name__, case._testMethodName)
                 if self._include(path):
                     tests.append(case)
                 else:
-                    self._debug('Ignored {0}'.format(path))
+                    self._debug('Ignored {0!r}'.format(path))
             suite._tests = tests
         return suite

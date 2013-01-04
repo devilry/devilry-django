@@ -28,7 +28,7 @@ We use a custom testsuiterunner, ``devilry_settings.testsuiterunner.FilterableTe
 This runner uses fnmatch (shell patterns) to exclude and include testcases. Excludes and
 includes are configured in the ``TEST_FILTER``-setting, and the defaults are configured in
 ``devilry_settings.default_settings.TEST_FILTER``. The patterns matches against the full
-python path to each testcase (the module path + the class name).
+python path to each testcase (the module path + the class name + method name).
 
 When you specify a testcase or app manually, ``TEST_FILTER`` is ignored. So you can, for example,
 still run the djangorestframework tests with::
@@ -36,3 +36,15 @@ still run the djangorestframework tests with::
     $ bin/django_dev.py test djangorestframework
 
 even if it is excluded in ``TEST_FILTER``.
+
+
+See ignored testcases
+---------------------
+
+Run tests with ``-v3`` to list ignored apps::
+
+    $ bin/django_dev.py test -v3
+
+Each ignored test is listed like this::
+
+    [TESTSUITE DEBUG] Ignored 'djangorestframework.tests.renderers.RendererIntegrationTests.test_bla'
