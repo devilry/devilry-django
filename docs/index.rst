@@ -80,6 +80,7 @@ Table of contents
     plugins
 
     devilry_subjectadmin
+    devilry_qualifiesforexam
 
     apps.gradeeditors
     utils.assignmentgroup
