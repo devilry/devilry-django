@@ -2,14 +2,83 @@
 :mod:`devilry_qualifiesforexam`
 ============================================
 
+.. py:currentmodule:: devilry_qualifiesforexam.models
+
 Database models, APIs and UI for qualifying students for final exams.
 
 
+.. _qualifiesforexam-uiworkflow:
 
+#######################################################
+UI workflow
+#######################################################
+How users are qualified for final exam i plugin-based. The subject/period admin is taken through
+a wizard with the following steps/pages:
+
+1. If no configuration exists for the period:
+       List the title and description of each plugin (see :ref:`qualifiesforexam-plugins` below),
+       and let the user select the plugin they want to use. The selection is stored in
+       :attr:`QualifiesForFinalExamPeriodStatus.plugin`.
+   If a configuration exists for the period:
+       Show the overview of the semester (basically the same as the preview described as page 3 below).
+       Includes a button to change the configuration. Clicking this button will show the list
+       of plugins, just like when no configuration exists, with the previously used plugin
+       selected. The *change*-button is only available on active periods.
+2. Completely controlled by the plugin. May be more than one page if that should be needed by
+   the plugin. The plugin can also just redirect directly to the next page if it does not require
+   any input from the user. We supply a footer with save and back buttons that should be the same
+   for all plugins.
+3. Preview the results with the option to save or go back to the previous page.
+
+
+
+.. _qualifiesforexam-plugins:
+
+#######################################################
+Plugins
+#######################################################
+A plugin is a regular Django app.
+
+
+Registering an app as a qualifiesforexam plugin
+===============================================
+Add something like the following to ``yourapp/devilry_plugin.py``::
+
+    from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
+    from django.core.urlresolvers import reverse
+    from django.utils.translation import ugettext_lazy as _
+
+    qualifiesforexam_plugins.add(
+        id='myapp.myplugin',
+        url=reverse('myapp-myplugin'), # The url of the view to use for step/page 2 in the workflow
+        title=_('My plugin'),
+        description=_('Does <strong>this</strong> and <em>that</em>.')
+    )
+
+
+
+Configure available plugins
+===========================
+Available plugins are configured in ``settings.DEVILRY_QUALIFIESFOREXAM_PLUGINS``, which is
+a list of Django appnames. Note that the apps must also be in ``settings.INSTALLED_APPS``.
+The plugins are shown in listed order in page 1 of the wizard described in the
+:ref:`qualifiesforexam-uiworkflow`.
+
+.. note::
+    You can safely remove plugins from ``settings.DEVILRY_QUALIFIESFOREXAM_PLUGINS``.
+    They will simply not be available in the list of plugins in the
+    :ref:`qualifiesforexam-uiworkflow`.
+
+
+
+
+
+
+.. _qualifiesforexam-models:
+
+#######################################################
 Database models
-###############
-
-.. py:currentmodule:: devilry_qualifiesforexam.models
+#######################################################
 
 .. py:class:: QualifiesForFinalExam
 
@@ -59,3 +128,8 @@ Database models
     .. py:attribute:: user
 
         Database foreign key to the user that made the status change.
+
+    .. py:attribute:: plugin
+
+        Database char field that stores the id of the plugin (see :ref:`qualifiesforexam-plugins`)
+        that was used to change the status.
