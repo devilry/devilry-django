@@ -4,7 +4,7 @@ language: python
 python:
   - "2.7"
 
-#env: SKIP_SELENIUMTESTS=1
+env: SKIP_SELENIUMTESTS=1
 
 before_install:
   - "export DISPLAY=:99.0"
@@ -19,5 +19,4 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script:
-  - devenv/bin/django_dev.py test devilry_subjectadmin -v2
-#  - devenv/bin/django_dev.py test -v2
+  - devenv/bin/django_dev.py test -v2
