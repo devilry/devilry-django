@@ -92,6 +92,15 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
                       'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware']
 
 
+#######################################################################
+#
+# Testing
+#
+#######################################################################
+
+TEST_RUNNER = 'devilry_settings.testsuiterunner.FilterableTestSuiteRunner'
+TEST_FILTER = {'exclude': ['django.*', 'djangorestframework.*'],
+               'include': ['devilry*']}
 
 
 ########################################################################

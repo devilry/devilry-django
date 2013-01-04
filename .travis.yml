@@ -7,14 +7,16 @@ python:
 env: SKIP_SELENIUMTESTS=1
 
 before_install:
-    - sudo apt-get update -qq
-    - sudo apt-get install -qq fabric python-virtualenv python-setuptools
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq fabric python-virtualenv python-setuptools
 
 # http://www.vlent.nl/weblog/2012/10/12/travis-ci-easy-and-fun-ci-for-your-plone-packages-nejc-zupan/
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-    - (cd devenv/; virtualenv venv; venv/bin/python ../bootstrap.py; bin/buildout)
+  - (cd devenv/; virtualenv venv; venv/bin/python ../bootstrap.py; bin/buildout)
 
 # command to run tests, e.g. python setup.py test
 script:
-    - devenv/bin/django_dev.py test
+  - devenv/bin/django_dev.py test -v2
