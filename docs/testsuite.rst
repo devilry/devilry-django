@@ -14,9 +14,9 @@ Skip the *selenium* tests using::
 
 Specify a browser for the selenium tests using (example uses Firefox)::
 
-    $ SELENIUM_BROWSER=Firefox bin/django_dev.py test
+    $ SELENIUM_BROWSER=Chrome bin/django_dev.py test
 
-*Chrome* is the default browser.
+*Firefox* is the default browser (configured in ``devilry_developer.settings.base``).
 
 
 
