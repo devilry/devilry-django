@@ -1,4 +1,7 @@
-[![Build Status](https://travis-ci.org/devilry/devilry-django.png?branch=master)](https://travis-ci.org/devilry/devilry-django)
+
+.. image:: https://travis-ci.org/devilry/devilry-django.png?branch=master
+  :alt: Build status
+  :target: https://travis-ci.org/devilry/devilry-django
 
 http://devilry.org should always be the staring point when looking for documentation.
 
