@@ -49,11 +49,11 @@ class TestSearchForUsers(TestCase):
         self.assertEquals(len(self._searchas(username, 'tHoR')), 1)
         thor = self._searchas(username, 'tHoR')[0]
         self.assertEquals(thor,
-                          {'username': 'thor',
-                           'id': User.objects.get(username='thor').id,
-                           'full_name': 'God of thunder and Battle',
-                           'languagecode': '',
-                           'email': 'god.of.thunder.and.battle@thor.com'})
+                          {u'username': u'thor',
+                           u'id': User.objects.get(username='thor').id,
+                           u'full_name': u'God of thunder and Battle',
+                           u'languagecode': None,
+                           u'email': u'god.of.thunder.and.battle@thor.com'})
 
     def test_search_nodeadmin(self):
         self._test_search_as('uniadmin')
