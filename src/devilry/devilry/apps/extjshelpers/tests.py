@@ -50,13 +50,29 @@ class RestUser(ModelRestfulView):
 class TestModelIntegration(TestCase):
     def test_to_extjsmodel(self):
         actual = restfulcls_to_extjsmodel(RestUser)
-        expected = """Ext.define('devilry.apps.extjshelpers.tests.SimplifiedUser', {
+        expected = r"""
+/*******************************************************************************
+ * NOTE: You will need to add the following before your application code:
+ *
+ *    Ext.Loader.setConfig({
+ *        enabled: true,
+ *        paths: {
+ *            'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes'
+ *        }
+ *    });
+ *    Ext.syncRequire('devilry.extjshelpers.RestProxy');
+ ******************************************************************************/
+Ext.define('devilry.apps.extjshelpers.tests.SimplifiedUser', {
     extend: 'Ext.data.Model',
     requires: ['devilry.extjshelpers.RestProxy'],
     fields: [{"type": "int", "name": "id"}, {"type": "auto", "name": "first"}, {"type": "auto", "name": "last"}, {"type": "auto", "name": "email"}, {"type": "int", "name": "score"}],
     idProperty: 'id',
-    proxy: Ext.create('devilry.extjshelpers.RestProxy', {
+    proxy: {
+        type: 'devilryrestproxy',
         url: '/restuser',
+        headers: {
+            'X_DEVILRY_USE_EXTJS': true
+        },
         extraParams: {
             getdata_in_qrystring: true,
             result_fieldgroups: '[]'
@@ -69,7 +85,7 @@ class TestModelIntegration(TestCase):
         writer: {
             type: 'json'
         }
-    })
+    }
 })"""
         actual = actual.split('\n')
         expected = expected.split('\n')
