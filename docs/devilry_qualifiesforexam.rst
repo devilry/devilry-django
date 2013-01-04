@@ -76,7 +76,7 @@ The plugins are shown in listed order on page 1 of the wizard described in the
 Plugins shipped with Devilry
 #######################################################
 
-``devilry_qualifiesforexam_approvedornot``
+``devilry_qualifiesforexam_approved``
 ==========================================
 TODO
 

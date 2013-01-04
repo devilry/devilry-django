@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-setup(name = 'devilry_qualifiesforexam_approvedornot',
+setup(name = 'devilry_qualifiesforexam_approved',
       description = 'Devilry qualifiesforexam plugin for approved/not approved.',
       version = '1.0',
       license='BSD',
