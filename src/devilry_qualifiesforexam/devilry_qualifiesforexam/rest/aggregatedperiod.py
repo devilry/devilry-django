@@ -52,7 +52,7 @@ class AggregatePeriod(View):
 
     # Parameters
     - ``id``: The last part of the path is the ID of the period.
-    - ``load_everything``: Add ``loadEverything=1`` to the querystring to
+    - ``load_everything``: Add ``load_everything=1`` to the querystring to
       load feedback for all groups for all students within the period.
     - ``include_nonrelated``: Add ``include_nonrelated=1`` to the querystring
       to include students that are not registered as related students on the
