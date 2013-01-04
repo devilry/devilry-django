@@ -16,7 +16,7 @@ class TestAssignmentGroup(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
                  subjects=["inf1100"],
-                 periods=["old:begins(-2):ends(1)", "looong:admin(teacher1)"],
+                 periods=["old:begins(-2):ends(1)", "looong:admin(teacher1):begins(-1):ends(10)"],
                  assignments=["assignment1", "assignment2"],
                  assignmentgroups=["g1:candidate(student1):examiner(examiner1)",
                                    "g2:candidate(student2):examiner(examiner2)",
