@@ -10,7 +10,7 @@ before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sudo apt-get update -qq
-  - sudo apt-get install -qq fabric python-virtualenv python-setuptools
+  - sudo apt-get install -qq python-virtualenv python-setuptools
 
 # http://www.vlent.nl/weblog/2012/10/12/travis-ci-easy-and-fun-ci-for-your-plone-packages-nejc-zupan/
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
