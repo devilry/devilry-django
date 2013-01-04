@@ -17,4 +17,4 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script:
-    - devenv/bin/django_dev.py test devilry_subjectadmin
+    - devenv/bin/django_dev.py test
