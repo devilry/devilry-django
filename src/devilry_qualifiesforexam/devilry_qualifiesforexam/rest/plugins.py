@@ -16,6 +16,7 @@ class Plugins(View):
     An object/dict with one item for each qualifiesforexam plugin. Each item
     has the following attributes:
 
+    - ``id``: The ID of the plugin.
     - ``title``: The title of the plugin.
     - ``description``: A longer description of the plugin. May contain html markup.
     - ``url``: The URL to the plugin
