@@ -10,6 +10,5 @@ from .feedback import *
 from .deadline import *
 from .memorydeliverystore import *
 from .fsdeliverystore import *
-from .dbmdeliverystore import *
 from .testhelper import *
 from .devilryuserprofile import *

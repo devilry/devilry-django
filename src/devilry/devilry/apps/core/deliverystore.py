@@ -207,64 +207,6 @@ class FsHierDeliveryStore(FsDeliveryStore):
         return join(self.root, str(toplevel), str(sublevel), str(delivery_obj.pk))
 
 
-class DbmDeliveryStore(DeliveryStoreInterface):
-    """Dbm DeliveryStore ONLY FOR TESTING."""
-
-    class FileWriter(object):
-        def __init__(self, dbm, key):
-            self.dbm = dbm
-            self.key = key
-            self.data = StringIO()
-
-        def write(self, s):
-            self.data.write(s)
-
-        def close(self):
-            self.dbm[self.key] = self.data.getvalue()
-            self.dbm.close()
-
-    def __init__(self, filename=None, dbm=dumbdbm):
-        """
-        :param filename:
-            The dbm-file where files are stored. Defaults to
-            the value of the ``DELIVERY_STORE_DBM_FILENAME``-setting.
-        :param dbm:
-            The dbm implementation. This defaults to :mod:`dumbdbm` for
-            portability of the data-files because this DeliveryStore is
-            primarly for development and database storage in the devilry
-            git-repo. But the parameter is provided to make it really easy
-            to create a DeliveryStore using a more efficient dbm, like gdbm.
-        """
-        self.dbm = dbm
-        self.filename = filename or settings.DELIVERY_STORE_DBM_FILENAME
-
-    def _get_key(self, filemeta_obj):
-        return str(filemeta_obj.pk)
-
-    def read_open(self, filemeta_obj):
-        try:
-            data = self.dbm.open(self.filename, 'r')[self._get_key(filemeta_obj)]
-        except KeyError, e:
-            raise FileNotFoundError(filemeta_obj)
-        return MemFile(data)
-
-    def write_open(self, filemeta_obj):
-        dbm = self.dbm.open(self.filename, 'c')
-        return DbmDeliveryStore.FileWriter(dbm,
-                self._get_key(filemeta_obj))
-
-    def remove(self, filemeta_obj):
-        dbm = self.dbm.open(self.filename, 'c')
-        key = self._get_key(filemeta_obj)
-        if not key in dbm:
-            raise FileNotFoundError(filemeta_obj)
-        del dbm[key]
-
-    def exists(self, filemeta_obj):
-        dbm = self.dbm.open(self.filename, 'c')
-        return self._get_key(filemeta_obj) in dbm
-
-
 class MemoryDeliveryStore(DeliveryStoreInterface):
     """ Memory-base DeliveryStore ONLY FOR TESTING.
 
