@@ -49,7 +49,7 @@ Add something like the following to ``yourapp/devilry_plugin.py``::
     from django.utils.translation import ugettext_lazy as _
 
     qualifiesforexam_plugins.add(
-        id='myapp.myplugin',
+        id='myapp',
         url=reverse('myapp-myplugin'), # The url of the view to use for step/page 2 in the workflow
         title=_('My plugin'),
         description=_('Does <strong>this</strong> and <em>that</em>.')
@@ -60,8 +60,8 @@ Add something like the following to ``yourapp/devilry_plugin.py``::
 Configure available plugins
 ===========================
 Available plugins are configured in ``settings.DEVILRY_QUALIFIESFOREXAM_PLUGINS``, which is
-a list of Django appnames. Note that the apps must also be in ``settings.INSTALLED_APPS``.
-The plugins are shown in listed order in page 1 of the wizard described in the
+a list of plugin ids. Note that the apps containing the plugin must also be in ``settings.INSTALLED_APPS``.
+The plugins are shown in listed order on page 1 of the wizard described in the
 :ref:`qualifiesforexam-uiworkflow`.
 
 .. note::

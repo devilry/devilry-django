@@ -71,7 +71,8 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry_i18n',
                   'devilry_settings',
                   'devilry_subjectadmin',
-                  'devilry_qualifiesforexam'
+                  'devilry_qualifiesforexam',
+                  'devilry_qualifiesforexam_approvedornot'
                  ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
@@ -158,6 +159,12 @@ DEVILRY_EXAMINER_NO_PERMISSION_MSG = {'title': 'You are not an examiner',
                                       'body': 'You are not registered as an examiner on any publshed assignments in Devilry. If this is wrong, please contact the subject/course administrator.'}
 DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG = {'title': 'You are not an administrator',
                                            'body': 'You are not registered as an administrator on any Node, Subject/Course, Period/Semester or Assignment in Devilry. If this is wrong, please contact the system administrator.'}
+
+
+DEVILRY_QUALIFIESFOREXAM_PLUGINS = [
+    'devilry_qualifiesforexam_approved.all',
+    'devilry_qualifiesforexam_approved.subset'
+]
 
 
 #: Deadline handling method:
