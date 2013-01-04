@@ -1649,7 +1649,7 @@ class TestSimplifiedAdminDeadline(SimplifiedAdminTestBase):
     def test_search_query_newdeadlines_andextras(self):
         # add some new deadlines, to simulate groups getting a second
         # chance
-        self.add_to_path('uni;inf101.secondsem.a1.g2.deadline:ends(10):text(This is your last shot!)')
+        self.add_to_path('uni;inf101.secondsem.a1.g2.deadline:ends(20):text(This is your last shot!)')
 
         search_res = SimplifiedDeadline.search(self.admin1, result_fieldgroups=self.allExtras)
         expected_res = [modelinstance_to_dict(self.inf101_firstsem_a1_g1.deadlines.all()[0], self.allFields),
