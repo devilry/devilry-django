@@ -17,7 +17,7 @@ class SimplifiedConfig(SimplifiedModelApi):
 
     @classmethod
     def read_authorize(cls, user, obj):
-        if not Assignment.published_where_is_examiner(user).filter(id=obj.assignment_id):
+        if not Assignment.published_where_is_examiner(user).filter(id=obj.assignment_id).exists():
             raise PermissionDenied()
 
 
