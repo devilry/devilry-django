@@ -69,11 +69,19 @@ DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 SELENIUM_BROWSER = 'Firefox' # Default selenium browser
 
 
+PASSWORD_HASHERS = (
+    #    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+    'django.contrib.auth.hashers.SHA1PasswordHasher',
+)
+
+
 #DEVILRY_USERADMIN_USER_READONLY_FIELDS = ['email', 'is_superuser', 'is_staff', 'is_active']
 #DEVILRY_USERADMIN_DEVILRYUSERPROFILE_READONLY_FIELDS = ['languagecode', 'full_name']
 #DEVILRY_USERADMIN_USER_CHANGE_VIEW_MESSAGE = 'This is a test.'
 #DEVILRY_USERADMIN_USER_ADD_VIEW_MESSAGE = 'This is a add test.'
 #DEVILRY_USERADMIN_PASSWORD_HELPMESSAGE = 'Passwords are handled by Our Awesome External User Management System. Follow <a href="https://awesome.example.com">this link</a> to reset passwords.'
+
 
 
 ##################################################################################
