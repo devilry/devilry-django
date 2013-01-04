@@ -72,6 +72,16 @@ The plugins are shown in listed order in page 1 of the wizard described in the
 
 
 
+#######################################################
+Plugins shipped with Devilry
+#######################################################
+
+``devilry_qualifiesforexam_approvedornot``
+==========================================
+TODO
+
+
+
 
 
 .. _qualifiesforexam-models:
