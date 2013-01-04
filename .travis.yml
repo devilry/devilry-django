@@ -13,7 +13,7 @@ before_install:
 # http://www.vlent.nl/weblog/2012/10/12/travis-ci-easy-and-fun-ci-for-your-plone-packages-nejc-zupan/
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-    - (cd devenv/; fab bootstrap)
+    - (cd devenv/; virtualenv venv; venv/bin/python ../bootstrap.py; bin/buildout)
 
 # command to run tests, e.g. python setup.py test
 script:
