@@ -99,8 +99,14 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
 #######################################################################
 
 TEST_RUNNER = 'devilry_settings.testsuiterunner.FilterableTestSuiteRunner'
-TEST_FILTER = {'exclude': ['django.*', 'djangorestframework.*'],
-               'include': ['devilry*']}
+TEST_FILTER = {
+    'exclude': [
+        'django.*', 'djangorestframework.*',
+        'devilry.apps.examiner.tests.simplified.*',
+        'devilry.apps.student.tests.simplified.*',
+        ],
+    'include': ['devilry*']
+}
 
 
 ########################################################################
