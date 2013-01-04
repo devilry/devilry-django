@@ -21,3 +21,4 @@ class QualifiesForFinalExamPeriodStatus(models.Model):
     createtime = models.DateTimeField(auto_now_add=True)
     message = models.TextField(blank=True)
     user = models.ForeignKey(User)
+    plugin = models.CharField(max_length=500)
