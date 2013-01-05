@@ -1,10 +1,12 @@
+from django.shortcuts import get_object_or_404
 from django.views.generic import RedirectView
 from django.core.urlresolvers import reverse
 
-from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Period
 
 
 # TODO: Auth
+
 
 
 class QualifiesForExamViewMixin(object):
@@ -14,6 +16,7 @@ class QualifiesForExamViewMixin(object):
         the querystring and store them as instance variables.
         """
         self.periodid = self.request.GET['periodid']
+        self.period = get_object_or_404(Period, pk=self.periodid)
         self.pluginsessionid = self.request.GET['pluginsessionid']
 
     def save_results_for_preview(self, passing_relatedstudents):
@@ -22,14 +25,13 @@ class QualifiesForExamViewMixin(object):
         }
 
 
+
 class AllApprovedView(RedirectView, QualifiesForExamViewMixin):
     permanent = False
     query_string = True
 
     def _get_passing_students(self):
         passing_relatedstudents = []
-        for group in AssignmentGroup.objects.filter(parentnode__parentnode_id=self.periodid):
-            print group
         return passing_relatedstudents
 
     def get(self, request):
