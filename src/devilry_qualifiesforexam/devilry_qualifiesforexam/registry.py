@@ -17,7 +17,7 @@ class Registry(object):
                 'id': id,
                 'title': unicode(item['title']),
                 'description': unicode(item['description']),
-                'url': item['url']
+                'url': str(item['url'])
             })
         return items
 

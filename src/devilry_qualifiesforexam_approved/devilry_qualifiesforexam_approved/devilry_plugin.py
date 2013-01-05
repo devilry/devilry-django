@@ -1,11 +1,11 @@
 from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 
 
 qualifiesforexam_plugins.add(
     id = 'devilry_qualifiesforexam_approved.all',
-    url = '', #reverse('myapp-myplugin'), # The url of the view to use for step/page 2 in the workflow
+    url = reverse_lazy('devilry_qualifiesforexam_approved_all'),
     title = _('Approved grade on ALL assignments'),
     description = _('Choose this option if you require your students to pass all the assignments.')
 )
