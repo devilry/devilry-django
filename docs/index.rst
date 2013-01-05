@@ -88,6 +88,7 @@ Table of contents
     utils.delivery_collection
     utils.groupnodes
     utils.devilry_email
+    utils.groups_groupedby_relatedstudent_and_assignment
 
     readthedocs
     i18n

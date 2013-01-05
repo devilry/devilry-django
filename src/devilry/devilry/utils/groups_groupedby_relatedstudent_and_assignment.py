@@ -94,47 +94,46 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
     """
     Provides an easy-to-use API for overviews over the results of all students
     in a period.
-
-    Typical usage (create a csv of the period)::
-
-        grouper = GroupsGroupedByRelatedStudentAndAssignment(self.testhelper.sub_p1)
-
-        header = ['USER','IGNORED']
-        for assignment in grouper.iter_assignments():
-            header.append(assignment.short_name)
-        print ';'.join(header)
-
-        def print_aggregated_relstudentinfo(aggregated_relstudentinfo, ignored):
-            user = aggregated_relstudentinfo.user
-            row = [user.username, ignored]
-            for grouplist in aggregated_relstudentinfo.iter_groups_by_assignment():
-                # NOTE: There can be more than one group if the same student is in more than one
-                #       group on an assignment - we select the "best" feedback.
-                feedback = grouplist.get_feedback_with_most_points()
-                if feedback:
-                    row.append(feedback.grade)
-                else:
-                    row.append('NO-FEEDBACK')
-            print ';'.join(row)
-
-        # Print all related students
-        for aggregated_relstudentinfo in grouper.iter_relatedstudents_with_results():
-            print_aggregated_relstudentinfo(aggregated_relstudentinfo, 'NO')
-
-        # Last we print the ignored students (non-related students that are in a group)
-        for aggregated_relstudentinfo in grouper.iter_students_with_feedback_that_is_candidate_but_not_in_related():
-            print_aggregated_relstudentinfo(aggregated_relstudentinfo, 'YES')
     """
-    def __init__(self, period, order_assignments_by='publishing_time'):
+    def __init__(self, period):
+        """
+        :param period: A :class:`devilry.apps.core.models.Period` object.
+        """
         self.period = period
-        self.order_assignments_by = order_assignments_by
         self._collect_assignments()
         self._initialize_result()
         self._add_groups_to_result()
 
+    def get_assignment_queryset(self):
+        """
+        Get the queryset used to fetch all assignments on the period.
+        Override for custom ordering or if you need to optimize the query for
+        your usecase (``select_related``, ``prefetch_related``, etc.)
+        """
+        return self.period.assignments.all().order_by('publishing_time')
+    
+    def get_relatedstudents_queryset(self):
+        """
+        Get the queryset used to fetch all relatedstudents on the period.
+        Override if you need to optimize the query for your usecase
+        (``select_related``, ``prefetch_related``, etc.)
+        """
+        return self.period.relatedstudent_set.all()
+
+    def get_groups_queryset(self):
+        """
+        Get the queryset used to fetch all groups on the period.
+        Override if you need to optimize the query for your usecase
+        (``select_related``, ``prefetch_related``, etc.)
+        """
+        groupqry = AssignmentGroup.objects.filter(parentnode__parentnode=self.period)
+        groupqry = groupqry.select_related('parentnode', 'parentnode__parentnode')
+        return groupqry
+
+
     def _collect_assignments(self):
         self.assignments = []
-        for assignment in self.period.assignments.all().order_by(self.order_assignments_by):
+        for assignment in self.get_assignment_queryset():
             self.assignments.append(assignment)
 
     def _create_assignmentsdict(self):
@@ -145,7 +144,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
 
     def _initialize_result(self):
         self.result = {}
-        for relatedstudent in self.period.relatedstudent_set.all():
+        for relatedstudent in self.get_relatedstudents_queryset():
             self.result[relatedstudent.user_id] = AggreatedRelatedStudentInfo(
                 user = relatedstudent.user,
                 assignments = self._create_assignmentsdict()
@@ -160,8 +159,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         return ignoreddict[candidate.student_id]
 
     def _add_groups_to_result(self):
-        groupqry = AssignmentGroup.objects.filter(parentnode__parentnode=self.period)
-        groupqry = groupqry.select_related('parentnode', 'parentnode__parentnode')
+        groupqry = self.get_groups_queryset()
         self.ignored_students = {}
         self.ignored_students_with_results = {}
         for group in groupqry:
@@ -176,8 +174,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
     def iter_assignments(self):
         """
         Iterate over all the assignments, yielding Assignment-objects. The objects
-        are iterated in the order specified by the ``order_assignments_by`` argument
-        for ``__init__``.
+        are iterated in the order returned by :meth:`get_assignment_queryset`.
         """
         return self.assignments.__iter__()
 
