@@ -115,6 +115,7 @@ awsdemo/virtualenv/
 # Git repos - we sometimes check these out for development, and we do not want them as subrepos!
 src/django_seleniumhelpers/
 src/djangosenchatools/
+src/django_devserver/
 
 # npm installs
 node_modules/
