@@ -22,7 +22,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamSelectPluginCont
 
     init: function() {
         this.control({
-            'viewport frontpage': {
+            'viewport selectplugin': {
                 render: this._onRender
             }
         });
