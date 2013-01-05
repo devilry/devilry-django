@@ -33,6 +33,7 @@ INSTALLED_APPS += [
     'djangosenchatools',
     'devilry_sandbox',
     'django_extensions',
+    'devserver',
 
     # Not apps, but here for the Django test system to discover them:
     'devilry.utils',
