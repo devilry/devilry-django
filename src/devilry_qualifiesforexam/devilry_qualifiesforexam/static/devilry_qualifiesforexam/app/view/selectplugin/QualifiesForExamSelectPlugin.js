@@ -1,4 +1,4 @@
-Ext.define('devilry_qualifiesforexam.view.QualifiesForExamSelectPlugin' ,{
+Ext.define('devilry_qualifiesforexam.view.selectplugin.QualifiesForExamSelectPlugin' ,{
     extend: 'Ext.container.Container',
     alias: 'widget.selectplugin',
     cls: 'devilry_qualifiesforexam_frontpage',

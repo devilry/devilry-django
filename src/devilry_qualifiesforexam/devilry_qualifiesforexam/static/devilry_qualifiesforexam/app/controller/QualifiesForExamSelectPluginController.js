@@ -2,7 +2,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamSelectPluginCont
     extend: 'Ext.app.Controller',
 
     views: [
-        'QualifiesForExamSelectPlugin'
+        'selectplugin.QualifiesForExamSelectPlugin'
     ],
 
     stores: [
