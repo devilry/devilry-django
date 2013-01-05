@@ -40,17 +40,34 @@ class GroupList(list):
 
 
 class AggreatedRelatedStudentInfo(object):
+    """
+    Used by :class:`.GroupsGroupedByRelatedStudentAndAssignment` to stores all results for a
+    single student on a period.
+    """
     def __init__(self, user, assignments):
+        #: The Django user object for the student.
         self.user = user
+
+        #: Dict of assignments where the key is the assignment-id, and the value is a :class:`.GroupList`.
         self.assignments = assignments
 
     def iter_groups_by_assignment(self):
+        """
+        Returns an iterator over all :class:`.GroupList` objects for this student.
+        Shortcut for ``self.assignments.itervalues()``.
+        """
         return self.assignments.itervalues()
 
     def add_group(self, group):
+        """
+        Used by :class:`.GroupsGroupedByRelatedStudentAndAssignment` to add groups.
+        """
         self.assignments[group.parentnode_id].append(group)
 
     def prettyprint(self):
+        """
+        Prettyprint for debugging.
+        """
         print '{0}:'.format(self.user)
         for assignmentid, groups in self.assignments.iteritems():
             print '  - Assignment ID: {0}'.format(assignmentid)
@@ -63,6 +80,9 @@ class AggreatedRelatedStudentInfo(object):
                 print '    - {0}: {1}'.format(group, grade)
 
     def __str__(self):
+        """
+        Returns a short representation of the object that should be useful when debugging.
+        """
         return u'AggreatedRelatedStudentInfo(user={0}, assignmentcount={1}, grades={2!r})'.format(
             self.user.username,
             len(self.assignments),
