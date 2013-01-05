@@ -28,7 +28,7 @@ Ext.application({
     ],
 
     controllers: [
-        'QualifiesForExamFrontpageController'
+        'QualifiesForExamSelectPluginController'
     ],
 
     refs: [{
@@ -109,7 +109,7 @@ Ext.application({
     frontpage: function() {
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
-            xtype: 'frontpage'
+            xtype: 'selectplugin'
         });
     }
 });

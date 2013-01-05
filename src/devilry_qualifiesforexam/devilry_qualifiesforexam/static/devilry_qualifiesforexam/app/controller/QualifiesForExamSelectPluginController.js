@@ -1,8 +1,8 @@
-Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamFrontpageController', {
+Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamSelectPluginController', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'QualifiesForExamFrontpage'
+        'QualifiesForExamSelectPlugin'
     ],
 
     stores: [
