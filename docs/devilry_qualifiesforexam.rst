@@ -60,7 +60,8 @@ Add something like the following to ``yourapp/devilry_plugin.py``::
 Configure available plugins
 ===========================
 Available plugins are configured in ``settings.DEVILRY_QUALIFIESFOREXAM_PLUGINS``, which is
-a list of plugin ids. Note that the apps containing the plugin must also be in ``settings.INSTALLED_APPS``.
+a list of plugin ids. Note that the apps containing the plugin must also be in
+``settings.INSTALLED_APPS``, and the urls must be registered.
 The plugins are shown in listed order on page 1 of the wizard described in the
 :ref:`qualifiesforexam-uiworkflow`.
 
