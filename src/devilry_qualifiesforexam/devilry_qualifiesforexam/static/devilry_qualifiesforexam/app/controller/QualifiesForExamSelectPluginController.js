@@ -46,8 +46,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamSelectPluginCont
 
 
     _onLoadSuccess: function(records) {
-        console.log('success', records);
-
+        // NOTE: This is not really needed since the view is loaded when the store is loaded, but it is nice to have for debugging.
     },
 
     _onProxyError: function(proxy, response, operation) {
