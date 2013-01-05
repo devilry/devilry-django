@@ -16,15 +16,6 @@ class GroupsGroupedByRelatedStudentAndAssignmentTest(TestCase):
                               "stud3:candidate(student3):examiner(examiner1)",
                               "stud4:candidate(student4,student3):examiner(examiner1)"],
             deadlines=['d1:ends(1)'])
-#
-#        for group in self.testhelper.sub_p1_a1.assignmentgroups.all():
-#            if group.name == 'stud1':
-#                self._add_good_feedback(group)
-#            elif group.name == 'stud2':
-#                pass # Gets no feedback
-#            else:
-#                self._add_bad_feedback(group)
-
 
     def _add_good_feedback(self, group):
         delivery = self.testhelper.add_delivery(group, {"good.py": "print awesome"})
@@ -47,8 +38,6 @@ class GroupsGroupedByRelatedStudentAndAssignmentTest(TestCase):
     def test_iter_students_that_is_candidate_but_not_in_related(self):
         grouper = GroupsGroupedByRelatedStudentAndAssignment(self.testhelper.sub_p1)
         ignored = list(grouper.iter_students_that_is_candidate_but_not_in_related())
-        for aggregated_relstudentinfo in ignored:
-            aggregated_relstudentinfo.prettyprint()
         self.assertEquals(len(ignored), 4)
         student1_info = None
         for aggregated_relstudentinfo in ignored:
@@ -91,35 +80,3 @@ class GroupsGroupedByRelatedStudentAndAssignmentTest(TestCase):
         grouper = GroupsGroupedByRelatedStudentAndAssignment(self.testhelper.sub_p1)
         results = list(grouper.iter_relatedstudents_with_results())
         self.assertEqual(len(results), 2)
-
-#    def test_tull(self):
-#        for assignment in self.testhelper.sub_p1.assignments.all():
-#            for group in assignment.assignmentgroups.all():
-#                self._add_good_feedback(group)
-#        grouper = GroupsGroupedByRelatedStudentAndAssignment(self.testhelper.sub_p1)
-#
-#        header = ['USER','IGNORED']
-#        for assignment in grouper.iter_assignments():
-#            header.append(assignment.short_name)
-#        print ';'.join(header)
-#
-#        def print_aggregated_relstudentinfo(aggregated_relstudentinfo, ignored):
-#            user = aggregated_relstudentinfo.user
-#            row = [user.username, ignored]
-#            for grouplist in aggregated_relstudentinfo.iter_groups_by_assignment():
-#                # NOTE: There can be more than one group if the same student is in more than one
-#                #       group on an assignment - we select the "best" feedback.
-#                feedback = grouplist.get_feedback_with_most_points()
-#                if feedback:
-#                    row.append(feedback.grade)
-#                else:
-#                    row.append('NO-FEEDBACK')
-#            print ';'.join(row)
-#
-#        # Print all related students
-#        for aggregated_relstudentinfo in grouper.iter_relatedstudents_with_results():
-#            print_aggregated_relstudentinfo(aggregated_relstudentinfo, 'NO')
-#
-#        # Last we print the ignored students (non-related students that are in a group)
-#        for aggregated_relstudentinfo in grouper.iter_students_with_feedback_that_is_candidate_but_not_in_related():
-#            print_aggregated_relstudentinfo(aggregated_relstudentinfo, 'YES')
