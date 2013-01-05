@@ -44,12 +44,18 @@ class AggreatedRelatedStudentInfo(object):
     Used by :class:`.GroupsGroupedByRelatedStudentAndAssignment` to stores all results for a
     single student on a period.
     """
-    def __init__(self, user, assignments):
+    def __init__(self, user, assignments, relatedstudent=None):
         #: The Django user object for the student.
         self.user = user
 
         #: Dict of assignments where the key is the assignment-id, and the value is a :class:`.GroupList`.
         self.assignments = assignments
+
+        #: The :class:`devilry.apps.core.models.RelatedStudent` for users that are related students.
+        #: This is only available for the objects returned by
+        #: :meth:`.GroupsGroupedByRelatedStudentAndAssignment.iter_relatedstudents_with_results`,
+        #: and not for the objects returned by the ignored students iterators.
+        self.relatedstudent = relatedstudent
 
     def iter_groups_by_assignment(self):
         """
@@ -147,7 +153,8 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         for relatedstudent in self.get_relatedstudents_queryset():
             self.result[relatedstudent.user_id] = AggreatedRelatedStudentInfo(
                 user = relatedstudent.user,
-                assignments = self._create_assignmentsdict()
+                assignments = self._create_assignmentsdict(),
+                relatedstudent=relatedstudent
             )
 
     def _create_or_add_ignoredgroup(self, ignoreddict, candidate):
