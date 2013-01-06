@@ -42,8 +42,8 @@ Ext.define('devilry_qualifiesforexam.view.selectplugin.QualifiesForExamSelectPlu
                         xtype: 'listplugins',
                         margin: '0 0 0 40',
                         columnWidth: '1',
-                        periodid: 5,
-                        pluginsessionid: 'dsdsadadwdwq'
+                        periodid: 9,
+                        pluginsessionid: 'test'
                     }]
                 }]
             }]

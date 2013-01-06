@@ -2,8 +2,8 @@ from django.shortcuts import get_object_or_404
 
 from devilry.apps.core.models import Period
 
-
 # TODO: Auth
+
 
 
 def create_sessionkey(pluginsessionid):
@@ -14,6 +14,13 @@ class PreviewData(object):
     def __init__(self, passing_relatedstudentids):
         self.passing_relatedstudentids = passing_relatedstudentids
 
+    def __str__(self):
+        return '{0!r}'.format(self.passing_relatedstudentids)
+
+    def serialize(self):
+        return {
+            'passing_relatedstudentids': self.passing_relatedstudentids
+        }
 
 class QualifiesForExamViewMixin(object):
     def get_plugin_input(self):
