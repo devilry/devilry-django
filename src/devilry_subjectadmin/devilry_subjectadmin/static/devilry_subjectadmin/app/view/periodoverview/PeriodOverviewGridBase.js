@@ -101,6 +101,7 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
         this.tbar = [{
             xtype: 'button',
             text: gettext('Sort'),
+            itemId: 'sortButton',
             menu: [{
                 itemId: 'sortByFullname',
                 text: gettext('Full name'),
@@ -152,6 +153,16 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
         this.headerCt.insert(this.columns.length, column);
     },
 
+    /**
+     * Loops through the given array and uses ``this.addAssignmentResultColumn()`` to add columns.
+     * */
+    addColumnForEachAssignment:function (assignments) {
+        Ext.Array.each(assignments, function(assignment) {
+            this.addAssignmentResultColumn(assignment);
+        }, this);
+        this.getView().refresh();
+    },
+
 
     _renderAssignmentResultColum: function(value, meta, record, rowIndex, colIndex) {
         var assignmentIndex = colIndex - this.firstAssignmentColumnIndex;
@@ -166,17 +177,81 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
         console.log('TODO');
     },
 
-    _onSortByFullname: function() {
-        this._sortBy('fullname');
-    },
-    _onSortByLastname: function() {
-        this._sortBy('lastname');
-    },
-    _onSortByUsername: function() {
-        this._sortBy('username');
+
+
+    addAssignmentSorters: function(assignments) {
+        var menu = this.down('#sortButton').menu;
+        Ext.Array.each(assignments, function(assignment, index) {
+            menu.add({
+                text: assignment.short_name,
+                hideOnClick: false,
+                menu: [{
+                    text: gettext('Sort by points ascending'),
+                    listeners: {
+                        scope: this,
+                        click: function() {
+                            this._onSortByFeedback(index, this._sortByPointsAscending);
+                        }
+                    }
+                }, {
+                    text: gettext('Sort by points decending'),
+                    listeners: {
+                        scope: this,
+                        click: function() {
+                            this._onSortByFeedback(index, this._sortByPointsDecending);
+                        }
+                    }
+                }]
+            });
+        }, this);
     },
 
-    _sortBy: function(sortby) {
+
+    _getBestFeedback: function(record, assignmentIndex) {
+        var grouplist = record.get('groups_by_assignment')[assignmentIndex].grouplist;
+        var bestFeedback = {
+            points: -1,
+            grade: '',
+            is_passing_grade: false
+        };
+        for (var i = 0; i < grouplist.length; i++) {
+            var group = grouplist[i];
+            if(group.status === 'corrected' && group.feedback.points > bestFeedback.points) {
+                bestFeedback = group.feedback;
+            }
+        }
+        return bestFeedback;
+    },
+
+
+    _onSortByFeedback: function(assignmentIndex, sorter) {
+        this.getStore().sort(Ext.create('Ext.util.Sorter', {
+            sorterFn: Ext.bind(function(a, b) {
+                var aFeedback = this._getBestFeedback(a, assignmentIndex);
+                var bFeedback = this._getBestFeedback(b, assignmentIndex);
+                return sorter(aFeedback, bFeedback);
+            }, this)
+        }));
+    },
+    _sortByPointsAscending: function(feedbackA, feedbackB) {
+        return feedbackA.points - feedbackB.points;
+    },
+    _sortByPointsDecending: function(feedbackA, feedbackB) {
+        return feedbackB.points - feedbackA.points;
+    },
+
+
+    _onSortByFullname: function() {
+        this._sortByUser('fullname');
+    },
+    _onSortByLastname: function() {
+        this._sortByUser('lastname');
+    },
+    _onSortByUsername: function() {
+        this._sortByUser('username');
+    },
+
+    _sortByUser: function(sortby) {
         var sorter = null;
         if(sortby === 'username') {
             sorter = this._sortByUsername;
@@ -191,7 +266,6 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
             sorterFn: Ext.bind(sorter, this)
         }));
     },
-
 
     _sortByUserProperty: function(a, b, property) {
         return a.get('user')[property].localeCompare(b.get('user')[property]);

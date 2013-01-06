@@ -62,17 +62,11 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
         var perioddata = this.previewRecord.get('perioddata');
         var passing_relatedstudentids = this.previewRecord.get('pluginoutput').passing_relatedstudentids;
         var passing_relatedstudentids_map = Ext.Array.toMap(passing_relatedstudentids); // Turn into object for fast lookup
-        this.getPreviewGrid().passing_relatedstudentids_map = passing_relatedstudentids_map;
-        this._addColumnForEachAssignment(perioddata.assignments);
+        var previewGrid = this.getPreviewGrid();
+        previewGrid.passing_relatedstudentids_map = passing_relatedstudentids_map;
+        previewGrid.addColumnForEachAssignment(perioddata.assignments);
+        previewGrid.addAssignmentSorters(perioddata.assignments);
         this._loadRelatedStudentsIntoGridStore(perioddata.relatedstudents);
-    },
-
-    _addColumnForEachAssignment:function (assignments) {
-        var grid = this.getPreviewGrid();
-        Ext.Array.each(assignments, function(assignment) {
-            grid.addAssignmentResultColumn(assignment);
-        }, this);
-        grid.getView().refresh();
     },
 
     _loadRelatedStudentsIntoGridStore: function(relatedstudents) {
