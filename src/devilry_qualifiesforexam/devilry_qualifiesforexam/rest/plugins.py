@@ -13,7 +13,7 @@ class Plugins(View):
     None.
 
     # Returns
-    An object/dict with one item for each qualifiesforexam plugin. Each item
+    An array/list with one object/dict for each qualifiesforexam plugin. Each item
     has the following attributes:
 
     - ``id``: The ID of the plugin.
