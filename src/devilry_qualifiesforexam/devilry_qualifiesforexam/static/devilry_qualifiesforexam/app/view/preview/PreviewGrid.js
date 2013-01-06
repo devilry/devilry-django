@@ -4,8 +4,11 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
     cls: 'devilry_qualifiesforexam_previewgrid bootstrap',
 
     /**
-     * @cfg {String[]} [assignments]
+     * @cfg {int} [firstAssignmentColumnIndex=1]
+     * When rendering assignment result, we need to know the column index of the first assignment
+     * to place the results in the correct column.
      */
+    firstAssignmentColumnIndex: 2,
 
     store: 'RelatedStudents',
     requires: [
@@ -73,12 +76,13 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
             text: gettext('Student'),
             dataIndex: 'id',
             flex: 2,
-            renderer: this._renderStudentColumn
+            renderer: this.renderStudentColumn
         }];
+        this.setupColumns();
         this.callParent(arguments);
     },
 
-    _renderStudentColumn: function(value, meta, record) {
+    renderStudentColumn: function(value, meta, record) {
         return this.studentColTplCompiled.apply(record.get('user'));
     },
 
@@ -100,11 +104,42 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
 
 
     _renderAssignmentResultColum: function(value, meta, record, rowIndex, colIndex) {
-        var assignmentIndex = colIndex - 1;
+        var assignmentIndex = colIndex - this.firstAssignmentColumnIndex;
         var assignmentinfo = record.get('groups_by_assignment')[assignmentIndex];
         return this.feedbackColTplCompiled.apply({
             grouplist: assignmentinfo.grouplist,
             assignmentid: assignmentinfo.assignmentid
+        });
+    },
+
+
+    qualifiesColTpl: [
+        '<p class="qualifies">',
+            '<tpl if="qualifes">',
+                '<span class="qualified-for-exam label label-success">',
+                    gettext('Yes'),
+                '</span>',
+            '<tpl else>',
+                '<span class="not-qualified-for-exam label label-warning">',
+                    gettext('No'),
+                '</span>',
+            '</tpl>',
+        '</p>'
+    ],
+
+    setupColumns: function() {
+        this.qualifiesColTplCompiled = Ext.create('Ext.XTemplate', this.qualifiesColTpl);
+        this.columns.push({
+            text: gettext('Qualifies for final exams?'),
+            dataIndex: 'id',
+            flex: 1,
+            renderer: this._renderQualifiesColumn
+        });
+    },
+
+    _renderQualifiesColumn: function(value, meta, record) {
+        return this.qualifiesColTplCompiled.apply({
+            qualifies: false
         });
     }
 });
