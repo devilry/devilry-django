@@ -12,7 +12,9 @@ class Preview(View):
     """
     Generate the data required to provide a preview for the qualified for exam wizard.
 
-    # Parameters
+    # GET
+
+    ## Parameters
     The following parameters are required:
 
     - ``periodid``: The ID of the period. Supplied as the last part of the URL-path.
@@ -20,12 +22,11 @@ class Preview(View):
     - ``pluginsessionid``: Forwarded from the first page of the wizard. It is an ID
       used to lookup the output from the plugin.
 
-    # Returns
+    ## Returns
     An object/dict with the following attributes:
 
     - ``pluginoutput``: The serialized output from the plugin.
     - ``perioddata``: All results for all students on the period.
-
     """
     permissions = (IsAuthenticated, IsPeriodAdmin)
 

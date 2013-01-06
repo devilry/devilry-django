@@ -170,16 +170,6 @@ TODO
 Database models
 #######################################################
 
-.. py:class:: devilry_qualifiesforexam.models.QualifiesForFinalExam
-
-    .. py:attribute:: relatedstudent
-
-        Database one-to-one relation to :class:`devilry.apps.core.models.RelatedStudent`.
-
-    .. py:attribute:: qualifies
-
-        Boolean database field telling
-
 
 .. py:class:: devilry_qualifiesforexam.models.QualifiesForFinalExamPeriodStatus
 
@@ -223,3 +213,24 @@ Database models
 
         Database char field that stores the id of the plugin (see :ref:`qualifiesforexam-plugins`)
         that was used to change the status.
+
+    .. py:attribute:: pluginsettings
+
+        A text field where plugins can store their settings, typically in some structured
+        format like JSON, XML or YAML.
+
+
+
+.. py:class:: devilry_qualifiesforexam.models.QualifiesForFinalExam
+
+    .. py:attribute:: relatedstudent
+
+        Database one-to-one relation to :class:`devilry.apps.core.models.RelatedStudent`.
+
+    .. py:attribute:: qualifies
+
+        Boolean database field telling if the student qualifies or not.
+
+    .. py:attribute:: status
+
+        Foreign key to a :class:`.QualifiesForFinalExamPeriodStatus`.

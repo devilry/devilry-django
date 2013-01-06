@@ -16,6 +16,7 @@ class QualifiesForFinalExamPeriodStatus(models.Model):
     message = models.TextField(blank=True)
     user = models.ForeignKey(User)
     plugin = models.CharField(max_length=500)
+    pluginsettings = models.TextField(null=True, blank=True)
 
 
 class QualifiesForFinalExam(models.Model):
