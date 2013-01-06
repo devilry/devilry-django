@@ -128,7 +128,7 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
         }, '->', {
             xtype: 'textfield',
             width: 250,
-            emptyText: gettext('Search ...'),
+            emptyText: gettext('Search for name, or username ...'),
             listeners: {
                 scope: this,
                 change: this._onSearch
@@ -174,12 +174,12 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
         });
     },
 
-    _onSearch: function() {
-        console.log('TODO');
-    },
-
-
-
+    /**
+     * Add sorters for the given assignments.
+     * @param assignments An array of assignment-objects. Each object
+     *   must have the ``short_name``-attribute, and the array must be sorted
+     *   in the same order as they are in the records in the store.
+     * */
     addAssignmentSorters: function(assignments) {
         var menu = this.down('#sortButton').menu;
         Ext.Array.each(assignments, function(assignment, index) {
@@ -208,6 +208,27 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
     },
 
 
+    _onSearch: function(field, newValue) {
+        if(!Ext.isEmpty(this.searchtask)) {
+            this.searchtask.cancel();
+        }
+        this.searchtask = new Ext.util.DelayedTask(function() {
+            this._search(newValue.toLocaleLowerCase());
+        }, this);
+        this.searchtask.delay(140);
+    },
+    _searchMatch: function(searchString, value) {
+        return value.toLocaleLowerCase().indexOf(searchString) !== -1;
+    },
+    _search: function(searchString) {
+        this.getStore().filterBy(function(record) {
+            var user = record.get('user');
+            return this._searchMatch(searchString, user.username) ||
+                this._searchMatch(searchString, user.full_name);
+        }, this);
+    },
+
+
     _getBestFeedback: function(record, assignmentIndex) {
         var grouplist = record.get('groups_by_assignment')[assignmentIndex].grouplist;
         var bestFeedback = {
@@ -223,8 +244,6 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
         }
         return bestFeedback;
     },
-
-
     _onSortByFeedback: function(assignmentIndex, sorter) {
         this.getStore().sort(Ext.create('Ext.util.Sorter', {
             sorterFn: Ext.bind(function(a, b) {
