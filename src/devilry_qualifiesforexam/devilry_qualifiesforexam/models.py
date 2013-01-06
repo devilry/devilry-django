@@ -4,12 +4,6 @@ from django.contrib.auth.models import User
 from devilry.apps.core.models import RelatedStudent
 from devilry.apps.core.models import Period
 
-
-class QualifiesForFinalExam(models.Model):
-    relatedstudent = models.OneToOneField(RelatedStudent)
-    qualifies = models.BooleanField()
-
-
 class QualifiesForFinalExamPeriodStatus(models.Model):
     STATUS_CHOICES = (
         ('ready', 'Ready for export'),
@@ -22,3 +16,10 @@ class QualifiesForFinalExamPeriodStatus(models.Model):
     message = models.TextField(blank=True)
     user = models.ForeignKey(User)
     plugin = models.CharField(max_length=500)
+
+
+class QualifiesForFinalExam(models.Model):
+    relatedstudent = models.OneToOneField(RelatedStudent)
+    status = models.ForeignKey(QualifiesForFinalExamPeriodStatus,
+        related_name='students')
+    qualifies = models.BooleanField()
