@@ -1,11 +1,5 @@
 {% extends "devilry_theme/apptemplate.django.html" %}
 
 {% block head_preapp %}
-
-    <script type="text/javascript">
-        window.DevilryQualifiesForExamParams = {
-            periodid: '{{ params.periodid }}'
-        };
-    </script>
     <script type="text/javascript" src="{% url devilry_qualifiesforexam_i18n %}"></script>
 {% endblock %}
