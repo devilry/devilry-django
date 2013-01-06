@@ -28,7 +28,8 @@ Ext.application({
     ],
 
     controllers: [
-        'QualifiesForExamSelectPluginController'
+        'QualifiesForExamSelectPluginController',
+        'QualifiesForExamPreviewController'
     ],
 
     refs: [{
@@ -94,7 +95,8 @@ Ext.application({
 
     _setupRoutes: function() {
         this.route = Ext.create('devilry_extjsextras.Router', this);
-        this.route.add('', 'frontpage');
+        this.route.add('', 'selectplugin');
+        this.route.add('preview', 'preview');
         this.route.start();
     },
 
@@ -106,10 +108,17 @@ Ext.application({
         });
     },
 
-    frontpage: function() {
+    selectplugin: function() {
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
             xtype: 'selectplugin'
+        });
+    },
+
+    preview: function() {
+        this.breadcrumbs.setHome();
+        this.setPrimaryContent({
+            xtype: 'preview'
         });
     }
 });
