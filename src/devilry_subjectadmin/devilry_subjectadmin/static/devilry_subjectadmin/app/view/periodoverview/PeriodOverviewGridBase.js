@@ -77,9 +77,12 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
             text: gettext('Student'),
             dataIndex: 'id',
             flex: 2,
+            menuDisabled: true,
+            sortable: false,
             renderer: this.renderStudentColumn
         }];
         this.setupColumns();
+        this.setupToolbar();
         this.callParent(arguments);
     },
 
@@ -94,6 +97,43 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
     setupColumns: function() {
     },
 
+    setupToolbar: function() {
+        this.tbar = [{
+            xtype: 'button',
+            text: gettext('Sort'),
+            menu: [{
+                itemId: 'sortByFullname',
+                text: gettext('Full name'),
+                listeners: {
+                    scope: this,
+                    click: this._onSortByFullname
+                }
+            }, {
+                itemId: 'sortByLastname',
+                text: gettext('Last name'),
+                listeners: {
+                    scope: this,
+                    click: this._onSortByLastname
+                }
+            }, {
+                itemId: 'sortByUsername',
+                text: gettext('Username'),
+                listeners: {
+                    scope: this,
+                    click: this._onSortByUsername
+                }
+            }]
+        }, '->', {
+            xtype: 'textfield',
+            width: 250,
+            emptyText: gettext('Search ...'),
+            listeners: {
+                scope: this,
+                change: this._onSearch
+            }
+        }];
+    },
+
     /**
      * Add assignment column to the grid.
      * @param assignment An object with assignment details.
@@ -105,6 +145,8 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
             text: assignment.short_name,
             flex: 1,
             dataIndex: 'id',
+            menuDisabled: true,
+            sortable: false,
             renderer: this._renderAssignmentResultColum
         });
         this.headerCt.insert(this.columns.length, column);
@@ -119,4 +161,56 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
             assignmentid: assignmentinfo.assignmentid
         });
     },
+
+    _onSearch: function() {
+        console.log('TODO');
+    },
+
+    _onSortByFullname: function() {
+        this._sortBy('fullname');
+    },
+    _onSortByLastname: function() {
+        this._sortBy('lastname');
+    },
+    _onSortByUsername: function() {
+        this._sortBy('username');
+    },
+
+    _sortBy: function(sortby) {
+        var sorter = null;
+        if(sortby === 'username') {
+            sorter = this._sortByUsername;
+        } else if(sortby === 'fullname') {
+            sorter = this._sortByFullname;
+        } else if(sortby === 'lastname') {
+            sorter = this._sortByLastname;
+        } else {
+            throw "Invalid sorter: " + sortby;
+        }
+        this.getStore().sort(Ext.create('Ext.util.Sorter', {
+            sorterFn: Ext.bind(sorter, this)
+        }));
+    },
+
+
+    _sortByUserProperty: function(a, b, property) {
+        return a.get('user')[property].localeCompare(b.get('user')[property]);
+    },
+    _sortByUsername: function (a, b) {
+        return this._sortByUserProperty(a, b, 'username');
+    },
+
+    _sortByFullname: function (a, b) {
+        return this._sortByUserProperty(a, b, 'full_name');
+    },
+
+    _getLastname: function(record) {
+        var splitted = record.get('user').full_name.split(/\s+/);
+        return splitted[splitted.length-1];
+    },
+    _sortByLastname: function (a, b) {
+        var aLastName = this._getLastname(a);
+        var bLastName = this._getLastname(b);
+        return aLastName.localeCompare(bLastName);
+    }
 });

@@ -32,6 +32,8 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
             text: gettext('Qualifies for final exams?'),
             dataIndex: 'id',
             flex: 1,
+            menuDisabled: true,
+            sortable: false,
             renderer: this._renderQualifiesColumn
         });
     },
