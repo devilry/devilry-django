@@ -37,6 +37,22 @@ class GroupList(list):
         else:
             return None
 
+    def _serialize_feedback(self, feedback):
+        if feedback:
+            return {'id': feedback.id,
+                    'grade': feedback.grade,
+                    'points': feedback.points,
+                    'is_passing_grade': feedback.is_passing_grade,
+                    'save_timestamp': feedback.save_timestamp}
+        else:
+            return None
+
+    def serialize(self):
+        out = {
+            'feedbacks': [self._serialize_feedback(group.feedback) for group in self]
+        }
+        return out
+
 
 
 class AggreatedRelatedStudentInfo(object):
@@ -94,6 +110,28 @@ class AggreatedRelatedStudentInfo(object):
             len(self.assignments),
             [str(gradelist.get_best_gradestring()) for gradelist in self.iter_groups_by_assignment()]
         )
+
+
+    def _serialize_user(self, user):
+        return {'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'full_name': user.devilryuserprofile.full_name}
+
+    def serialize(self):
+        out = {'user': self._serialize_user(self.user),
+               'assignments': [],
+               'relatedstudent': None}
+        if self.relatedstudent:
+            out['relatedstudent'] = {
+                'id': self.relatedstudent.id,
+                'tags': self.relatedstudent.tags,
+                'candidate_id': self.relatedstudent.candidate_id}
+        for assignmentid, grouplist in self.assignments.iteritems():
+            out['assignments'].append({'assignmentid': assignmentid,
+                                       'grouplist': grouplist.serialize()})
+        return out
+
 
 
 class GroupsGroupedByRelatedStudentAndAssignment(object):
@@ -216,3 +254,24 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         the students that have no feedback.
         """
         return self.ignored_students_with_results.itervalues()
+
+    def _serialize_assignment(self, basenode):
+        return {'id': basenode.id,
+                'short_name': basenode.short_name,
+                'long_name': basenode.long_name}
+
+    def serialize(self):
+        """
+        Serialize all the collected data as plain python objects.
+        """
+        out = {
+            'relatedstudents':
+                [r.serialize() for r in self.iter_relatedstudents_with_results()],
+            'students_that_is_candidate_but_not_in_related':
+                [r.serialize() for r in self.iter_students_that_is_candidate_but_not_in_related()],
+            'students_with_feedback_that_is_candidate_but_not_in_related':
+                [r.serialize() for r in self.iter_students_with_feedback_that_is_candidate_but_not_in_related()],
+            'assignments':
+                [self._serialize_assignment(a) for a in self.iter_assignments()]
+        }
+        return out
