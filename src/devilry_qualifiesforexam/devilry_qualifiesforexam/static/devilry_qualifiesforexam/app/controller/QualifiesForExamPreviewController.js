@@ -15,8 +15,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
 
     requires: [
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
-        'devilry_extjsextras.HtmlErrorDialog',
-        'Ext.grid.column.Column'
+        'devilry_extjsextras.HtmlErrorDialog'
     ],
 
 
@@ -68,11 +67,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
     _addColumnForEachAssignment:function (assignments) {
         var grid = this.getPreviewGrid();
         Ext.Array.each(assignments, function(assignment) {
-            var column = Ext.create('Ext.grid.column.Column', {
-                text: assignment.short_name,
-                flex: 1
-            });
-            grid.headerCt.insert(grid.columns.length, column);
+            grid.addAssignmentResultColumn(assignment);
         }, this);
         grid.getView().refresh();
     },
