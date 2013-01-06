@@ -15,18 +15,22 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
 
     requires: [
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
-        'devilry_extjsextras.HtmlErrorDialog'
+        'devilry_extjsextras.HtmlErrorDialog',
+        'Ext.grid.column.Column'
     ],
 
 
     refs: [{
         ref: 'preview',
         selector: 'preview'
+    }, {
+        ref: 'previewGrid',
+        selector: 'previewgrid'
     }],
 
     init: function() {
         this.control({
-            'viewport preview': {
+            'viewport previewgrid': {
                 render: this._onRender
             }
         });
@@ -37,7 +41,6 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
     },
 
     _onRender: function() {
-        console.log('Render preview');
         this.periodid = this.getPreview().periodid;
         this.pluginsessionid = this.getPreview().pluginsessionid;
         this._loadPreviewModel();
@@ -58,12 +61,25 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
     _onPreviewModelLoadSuccess: function(record) {
         this.previewRecord = record;
         var perioddata = this.previewRecord.get('perioddata');
+        this._addColumnForEachAssignment(perioddata.assignments);
+        this._loadRelatedStudentsIntoGridStore(perioddata.relatedstudents);
+    },
 
+    _addColumnForEachAssignment:function (assignments) {
+        var grid = this.getPreviewGrid();
+        Ext.Array.each(assignments, function(assignment) {
+            var column = Ext.create('Ext.grid.column.Column', {
+                text: assignment.short_name,
+                flex: 1
+            });
+            grid.headerCt.insert(grid.columns.length, column);
+        }, this);
+        grid.getView().refresh();
+    },
+
+    _loadRelatedStudentsIntoGridStore: function(relatedstudents) {
         var relatedstudentsStore = this.getRelatedStudentsStore();
-        relatedstudentsStore.loadData(perioddata.relatedstudents);
-//        relatedstudentsStore.each(function (record) {
-//            console.log(record.data);
-//        });
+        relatedstudentsStore.loadData(relatedstudents);
     },
 
     _onProxyError: function(proxy, response, operation) {

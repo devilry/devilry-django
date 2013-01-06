@@ -12,6 +12,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.QualifiesForExamPreview' ,{
      */
 
     requires: [
+        'devilry_qualifiesforexam.view.preview.PreviewGrid'
     ],
 
     layout: 'border',
@@ -19,9 +20,8 @@ Ext.define('devilry_qualifiesforexam.view.preview.QualifiesForExamPreview' ,{
     initComponent: function() {
         Ext.apply(this, {
             items: [{
-                xtype: 'box',
-                region: 'center',
-                html: 'todo'
+                xtype: 'previewgrid',
+                region: 'center'
             }]
         });
         this.callParent(arguments);
