@@ -33,4 +33,4 @@ class AllApprovedView(RedirectView, QualifiesForExamViewMixin):
         return super(AllApprovedView, self).get(request)
 
     def get_redirect_url(self, **kwargs):
-        return reverse('devilry_qualifiesforexam_ui', kwargs={'periodid': self.periodid})
+        return reverse('devilry_qualifiesforexam_ui')

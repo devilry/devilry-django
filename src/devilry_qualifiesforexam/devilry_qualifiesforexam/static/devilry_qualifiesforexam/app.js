@@ -95,8 +95,8 @@ Ext.application({
 
     _setupRoutes: function() {
         this.route = Ext.create('devilry_extjsextras.Router', this);
-        this.route.add('', 'selectplugin');
-        this.route.add('preview', 'preview');
+        this.route.add('/wizard/:periodid/selectplugin', 'selectplugin');
+        this.route.add('/wizard/:periodid/preview', 'preview');
         this.route.start();
     },
 
@@ -108,17 +108,19 @@ Ext.application({
         });
     },
 
-    selectplugin: function() {
+    selectplugin: function(routeInfo, periodid) {
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
-            xtype: 'selectplugin'
+            xtype: 'selectplugin',
+            periodid: periodid
         });
     },
 
-    preview: function() {
+    preview: function(routeInfo, periodid) {
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
-            xtype: 'preview'
+            xtype: 'preview',
+            periodid: periodid
         });
     }
 });
