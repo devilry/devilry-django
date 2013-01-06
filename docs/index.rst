@@ -59,6 +59,7 @@ Apps
 ----------------------------------------------------------------------
 
 * :ref:`devilry_subjectadmin`
+* :ref:`devilry_qualifiesforexam`
 
 .. note:: The apps listing is incomplete.
 
