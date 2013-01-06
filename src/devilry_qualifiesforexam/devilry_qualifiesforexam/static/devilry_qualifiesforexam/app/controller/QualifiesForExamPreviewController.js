@@ -5,9 +5,9 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
         'preview.QualifiesForExamPreview'
     ],
 
-//    models: [
-//        'Preview'
-//    ],
+    models: [
+        'Preview'
+    ],
 
     requires: [
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
@@ -26,30 +26,33 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
                 render: this._onRender
             }
         });
-//        this.mon(this.getPluginsStore().proxy, {
-//            scope: this,
-//            exception: this._onProxyError
-//        });
+        this.mon(this.getPreviewModel().proxy, {
+            scope: this,
+            exception: this._onProxyError
+        });
     },
 
     _onRender: function() {
         console.log('Render preview');
-        var periodid = this.getPreview().periodid;
-        var pluginsessionid = this.getPreview().pluginsessionid;
-//        this.getPreviewModel().load({
-//            scope: this,
-//            callback: function(records, op) {
-//                if(op.success) {
-//                    this._onLoadSuccess(records);
-//                }
-//                NOTE: Errors are handled in _onProxyError
-//            }
-//        });
+        this.periodid = this.getPreview().periodid;
+        this.pluginsessionid = this.getPreview().pluginsessionid;
+        this._loadPreviewModel();
     },
 
+    _loadPreviewModel: function() {
+        this.getPreviewModel().setParamsAndLoad(periodid, pluginsessionid, {
+            scope: this,
+            callback: function(records, op) {
+                if(op.success) {
+                    this._onPreviewModelLoadSuccess(records);
+                }
+                // NOTE: Errors are handled in _onProxyError
+            }
+        });
+    },
 
-    _onLoadSuccess: function(records) {
-        // NOTE: This is not really needed since the view is loaded when the store is loaded, but it is nice to have for debugging.
+    _onPreviewModelLoadSuccess: function(record) {
+        this.previewRecord = record;
     },
 
     _onProxyError: function(proxy, response, operation) {
