@@ -3,6 +3,14 @@ Ext.define('devilry_qualifiesforexam.view.preview.QualifiesForExamPreview' ,{
     alias: 'widget.preview',
     cls: 'devilry_qualifiesforexam_preview',
 
+    /**
+     * @cfg {string} [pluginsessionid]
+     */
+
+    /**
+     * @cfg {int} [periodid]
+     */
+
     requires: [
     ],
 

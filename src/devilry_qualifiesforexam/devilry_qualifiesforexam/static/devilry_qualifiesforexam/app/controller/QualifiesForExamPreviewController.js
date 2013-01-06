@@ -15,14 +15,14 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
     ],
 
 
-//    refs: [{
-//        ref: 'allWhereIsAdminList',
-//        selector: 'allactivewhereisadminlist'
-//    }],
+    refs: [{
+        ref: 'preview',
+        selector: 'preview'
+    }],
 
     init: function() {
         this.control({
-            'viewport selectplugin': {
+            'viewport preview': {
                 render: this._onRender
             }
         });
@@ -34,6 +34,8 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
 
     _onRender: function() {
         console.log('Render preview');
+        var periodid = this.getPreview().periodid;
+        var pluginsessionid = this.getPreview().pluginsessionid;
 //        this.getPreviewModel().load({
 //            scope: this,
 //            callback: function(records, op) {

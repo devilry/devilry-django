@@ -127,11 +127,12 @@ Ext.application({
         });
     },
 
-    preview: function(routeInfo, periodid) {
+    preview: function(routeInfo, periodid, pluginsessionid) {
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
             xtype: 'preview',
-            periodid: periodid
+            periodid: periodid,
+            pluginsessionid: pluginsessionid
         });
     }
 });
