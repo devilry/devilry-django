@@ -129,8 +129,8 @@ class AggreatedRelatedStudentInfo(object):
                 'tags': self.relatedstudent.tags,
                 'candidate_id': self.relatedstudent.candidate_id}
         for assignmentid, grouplist in self.assignments.iteritems():
-            out['assignments'].append({'assignmentid': assignmentid,
-                                       'grouplist': grouplist.serialize()})
+            out['groups_by_assignment'].append({'assignmentid': assignmentid,
+                                                'grouplist': grouplist.serialize()})
         return out
 
 
