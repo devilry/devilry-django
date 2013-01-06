@@ -95,8 +95,19 @@ Ext.application({
 
     _setupRoutes: function() {
         this.route = Ext.create('devilry_extjsextras.Router', this);
+
+        // Handle routing request via the querystring.
+        // If we get a token in the ``routeto`` attribute, we set the hash to that token,
+        // and reload the page with the querystring removed.
+        var query = Ext.Object.fromQueryString(window.location.search);
+        if(!Ext.isEmpty(query.routeto)) {
+            this.route.setHashWithoutEvent(query.routeto);
+            window.location.search = '';
+        }
+
+        // Setup routes
         this.route.add('/wizard/:periodid/selectplugin', 'selectplugin');
-        this.route.add('/wizard/:periodid/preview', 'preview');
+        this.route.add('/wizard/:periodid/preview/:pluginsessionid', 'preview');
         this.route.start();
     },
 

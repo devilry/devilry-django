@@ -1,5 +1,4 @@
 from django.views.generic import RedirectView
-from django.core.urlresolvers import reverse
 
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
 from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamViewMixin
@@ -33,4 +32,4 @@ class AllApprovedView(RedirectView, QualifiesForExamViewMixin):
         return super(AllApprovedView, self).get(request)
 
     def get_redirect_url(self, **kwargs):
-        return reverse('devilry_qualifiesforexam_ui')
+        return self.get_preview_url()
