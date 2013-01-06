@@ -8,5 +8,5 @@ from .preview import Preview
 urlpatterns = patterns('devilry_qualifiesforexam.rest',
                        url(r'^aggregatedperiod/(?P<id>\d+)$', AggregatePeriod.as_view()),
                        url(r'^plugins$', Plugins.as_view()),
-                       url(r'^preview$', Preview.as_view())
+                       url(r'^preview/(?P<id>\d+)$', Preview.as_view())
                       )

@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from devilry_qualifiesforexam.pluginhelpers import create_sessionkey
 from devilry.apps.core.models import Period
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
+from devilry_subjectadmin.rest.auth import IsPeriodAdmin
 
 
 class Preview(View):
@@ -15,21 +16,22 @@ class Preview(View):
     The following parameters are required:
 
     - ``periodid``: The ID of the period. Supplied as the last part of the URL-path.
+      404 is returned unless the user is admin on this period.
     - ``pluginsessionid``: Forwarded from the first page of the wizard. It is an ID
       used to lookup the output from the plugin.
 
     # Returns
-    An object/dict. Each item has the following attributes:
+    An object/dict with the following attributes:
 
-    - ``id``: .
+    - ``pluginoutput``: The serialized output from the plugin.
+    - ``perioddata``: All results for all students on the period.
 
     """
-    permissions = (IsAuthenticated,)
+    permissions = (IsAuthenticated, IsPeriodAdmin)
 
-    def get(self, request):
+    def get(self, request, id):
         pluginsessionid = self.request.GET['pluginsessionid']
-        periodid = self.request.GET['periodid']
-        period = get_object_or_404(Period, pk=periodid)
+        period = get_object_or_404(Period, pk=id)
         previewdata = self.request.session[create_sessionkey(pluginsessionid)]
         grouper = GroupsGroupedByRelatedStudentAndAssignment(period)
         return {
