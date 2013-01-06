@@ -5,6 +5,10 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
         'preview.QualifiesForExamPreview'
     ],
 
+    stores: [
+        'RelatedStudents'
+    ],
+
     models: [
         'Preview'
     ],
@@ -40,7 +44,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
     },
 
     _loadPreviewModel: function() {
-        this.getPreviewModel().setParamsAndLoad(periodid, pluginsessionid, {
+        this.getPreviewModel().setParamsAndLoad(this.periodid, this.pluginsessionid, {
             scope: this,
             callback: function(records, op) {
                 if(op.success) {
@@ -53,6 +57,13 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
 
     _onPreviewModelLoadSuccess: function(record) {
         this.previewRecord = record;
+        var perioddata = this.previewRecord.get('perioddata');
+
+        var relatedstudentsStore = this.getRelatedStudentsStore();
+        relatedstudentsStore.loadData(perioddata.relatedstudents);
+//        relatedstudentsStore.each(function (record) {
+//            console.log(record.data);
+//        });
     },
 
     _onProxyError: function(proxy, response, operation) {
