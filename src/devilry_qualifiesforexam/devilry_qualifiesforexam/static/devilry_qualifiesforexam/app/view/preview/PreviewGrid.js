@@ -10,6 +10,12 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
      */
     firstAssignmentColumnIndex: 2,
 
+    /**
+     * @property {int[]} [passing_relatedstudentids_map]
+     * Set by the controller, and used by ``this._renderQualifiesColumn()``.
+     */
+
+
     store: 'RelatedStudents',
     requires: [
         'Ext.XTemplate',
@@ -115,7 +121,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
 
     qualifiesColTpl: [
         '<p class="qualifies">',
-            '<tpl if="qualifes">',
+            '<tpl if="qualifies">',
                 '<span class="qualified-for-exam label label-success">',
                     gettext('Yes'),
                 '</span>',
@@ -138,8 +144,10 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
     },
 
     _renderQualifiesColumn: function(value, meta, record) {
+        var relatedStudentId = record.get('relatedstudent').id;
+        var qualifies = typeof this.passing_relatedstudentids_map[relatedStudentId] !== 'undefined';
         return this.qualifiesColTplCompiled.apply({
-            qualifies: false
+            qualifies: qualifies
         });
     }
 });

@@ -60,6 +60,9 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
     _onPreviewModelLoadSuccess: function(record) {
         this.previewRecord = record;
         var perioddata = this.previewRecord.get('perioddata');
+        var passing_relatedstudentids = this.previewRecord.get('pluginoutput').passing_relatedstudentids;
+        var passing_relatedstudentids_map = Ext.Array.toMap(passing_relatedstudentids); // Turn into object for fast lookup
+        this.getPreviewGrid().passing_relatedstudentids_map = passing_relatedstudentids_map;
         this._addColumnForEachAssignment(perioddata.assignments);
         this._loadRelatedStudentsIntoGridStore(perioddata.relatedstudents);
     },
