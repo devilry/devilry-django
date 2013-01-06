@@ -47,11 +47,15 @@ class GroupList(list):
         else:
             return None
 
-    def serialize(self):
-        out = {
-            'feedbacks': [self._serialize_feedback(group.feedback) for group in self]
+    def _serialize_group(self, group):
+        return {
+            'id': group.id,
+            'feedback': self._serialize_feedback(group.feedback),
+            'status': group.get_status()
         }
-        return out
+
+    def serialize(self):
+        return [self._serialize_group(group) for group in self]
 
 
 
