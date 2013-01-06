@@ -14,8 +14,7 @@ i18n_packages = get_javascript_catalog_packages('devilry_header', 'devilry.apps.
 
 urlpatterns = patterns('devilry_qualifiesforexam',
     url('^rest/', include('devilry_qualifiesforexam.rest.urls')),
-    url('^wizard/(?P<periodid>\d+)/$',
-        login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view()))),
+    url('^$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view()))),
         name='devilry_qualifiesforexam_ui'),
     url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
         name='devilry_qualifiesforexam_i18n')
