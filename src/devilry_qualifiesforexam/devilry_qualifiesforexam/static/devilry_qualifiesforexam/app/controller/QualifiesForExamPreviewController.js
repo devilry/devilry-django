@@ -66,6 +66,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
         previewGrid.passing_relatedstudentids_map = passing_relatedstudentids_map;
         previewGrid.addColumnForEachAssignment(perioddata.assignments);
         previewGrid.addAssignmentSorters(perioddata.assignments);
+        previewGrid.sortByQualifiesQualifiedFirst();
         this._loadRelatedStudentsIntoGridStore(perioddata.relatedstudents);
     },
 

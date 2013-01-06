@@ -97,6 +97,7 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
     setupColumns: function() {
     },
 
+    /** Override to customize toolbar */
     setupToolbar: function() {
         this.tbar = [{
             xtype: 'button',

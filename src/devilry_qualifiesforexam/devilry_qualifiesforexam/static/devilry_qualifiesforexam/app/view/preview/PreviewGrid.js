@@ -38,11 +38,54 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
         });
     },
 
-    _renderQualifiesColumn: function(value, meta, record) {
+    _qualifiesForFinalExam: function(record) {
         var relatedStudentId = record.get('relatedstudent').id;
         var qualifies = typeof this.passing_relatedstudentids_map[relatedStudentId] !== 'undefined';
+        return qualifies;
+    },
+
+    _renderQualifiesColumn: function(value, meta, record) {
         return this.qualifiesColTplCompiled.apply({
-            qualifies: qualifies
+            qualifies: this._qualifiesForFinalExam(record)
         });
+    },
+
+    setupToolbar: function() {
+        this.callParent(arguments);
+        this.tbar[0].menu.push({
+            text: gettext('Qualifies for final exam'),
+            hideOnClick: false,
+            menu: [{
+                text: gettext('Qualified students first'),
+                listeners: {
+                    scope: this,
+                    click: this.sortByQualifiesQualifiedFirst
+                }
+            }, {
+                text: gettext('Qualified students last'),
+                listeners: {
+                    scope: this,
+                    click: this.sortByQualifiesQualifiedLast
+                }
+            }]
+        });
+    },
+
+    _sortByQualifies: function(descending) {
+        var sorter = function(a, b) { return a - b; };
+        if(descending) {
+            sorter = function(a, b) { return b - a; };
+        }
+        this.getStore().sort(Ext.create('Ext.util.Sorter', {
+            sorterFn: Ext.bind(function(a, b) {
+                return sorter(Number(this._qualifiesForFinalExam(a)), Number(this._qualifiesForFinalExam(b)));
+            }, this)
+        }));
+    },
+    sortByQualifiesQualifiedFirst: function() {
+        return this._sortByQualifies(true);
+    },
+    sortByQualifiesQualifiedLast: function() {
+        return this._sortByQualifies(false);
     }
 });
