@@ -122,8 +122,7 @@ class TestRestStatus(TestCase):
         content, response = self._postas('periodadmin', {
             'period': self.testhelper.sub_p1.id,
             'status': 'notready',
-            'message': 'Test',
-            'plugin': 'devilry_qualifiesforexam_approved.all'
+            'message': 'Test'
         })
         self.assertEquals(response.status_code, 201)
         status = Status.objects.all()[0]
@@ -223,14 +222,15 @@ class TestRestStatus(TestCase):
         self.client.login(username=username, password='test')
         return self.client.rest_get(self._get_url())
 
-    def _createlistteststatus(self, period, status='ready'):
+    def _createlistteststatus(self, period, status='ready',
+                              plugin='devilry_qualifiesforexam_approved.all'):
         status = Status(
             period = period,
             status = status,
             message = 'Test',
             user = self.testhelper.periodadmin,
-            plugin = 'devilry_qualifiesforexam_approved.all',
-            pluginsettings = 'tst'
+            plugin = plugin,
+            pluginsettings = ''
         )
         status.full_clean()
         status.save()
@@ -241,7 +241,7 @@ class TestRestStatus(TestCase):
         relatedStudent2 = self._create_relatedstudent('student2', 'Student Two')
 
         self._createlistteststatus(self.testhelper.sub_oldperiod)
-        self._createlistteststatus(self.testhelper.sub_p1, status='notready')
+        self._createlistteststatus(self.testhelper.sub_p1, status='notready', plugin='')
         import time
         time.sleep(0.1)
         status = self._createlistteststatus(self.testhelper.sub_p1)
@@ -268,6 +268,7 @@ class TestRestStatus(TestCase):
     def test_getlist_as_nobody(self):
         self.testhelper.create_user('nobody')
         content, response = self._getlistas('nobody')
-        self._createlistteststatus(self.testhelper.sub_p1, status='notready')
+        self._createlistteststatus(self.testhelper.sub_p1,
+            status='notready', plugin='')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(content), 0)

@@ -81,13 +81,18 @@ class StatusView(View):
     ## Parameters
 
     - ``period``: The period ID (last part of the URL-path).
-    - ``status``: The status.
-    - ``message``: The status message.
-    - ``plugin``: The plugin that was used to generate the results.
-    - ``pluginsettings``: The plugin settings that was used to generate the results.
+    - ``status``: The status. One of:
+        - ``notready``: Retracted from one of the other statuses - not ready for export. Students
+          are ignored, only a message is stored.
+        - ``ready``: Ready for export.
+        - ``almostready``: Almost ready for export. Student that are not ready are in the ``notready_relatedstudentids``-parameter.
+    - ``message``: The status message. Can not be empty when the status is ``notready``.
+    - ``plugin``: The plugin that was used to generate the results. Must be ``null`` when status is ``notready``, and required for all other statuses.
+    - ``pluginsettings``: The plugin settings that was used to generate the results.  Must be ``null`` when status is ``notready``. Not required by any of the other statuses.
     - ``passing_relatedstudentids``: List of related students that qualifies for final exam.
     - ``notready_relatedstudentids``: List of related students that are not ready to be exported.
       These are stored with the value ``None`` (``NULL``) in the ``qualifies`` database field.
+      For all statuses except ``almostready``, it is an error if this is not empty or ``null``.
     """
     permissions = (IsAuthenticated,)
     resource = StatusResource

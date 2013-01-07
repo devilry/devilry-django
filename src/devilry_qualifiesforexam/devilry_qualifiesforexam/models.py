@@ -37,6 +37,15 @@ class Status(models.Model):
             self.message = ''
         if self.status == 'notready' and not self.message:
             raise ValidationError('Message can not be empty when status is ``notready``.')
+        if self.status != 'notready' and not self.plugin:
+            raise ValidationError('``plugin`` is required for all statuses except ``notready``.')
+        if self.status == 'notready':
+            if self.plugin:
+                raise ValidationError('``plugin`` is not allowed when status is ``notready``.')
+            if self.pluginsettings:
+                raise ValidationError('``pluginsettings`` is not allowed when status is ``notready``.')
+
+
 
 class QualifiesForFinalExam(models.Model):
     relatedstudent = models.ForeignKey(RelatedStudent)
