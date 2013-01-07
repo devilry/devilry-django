@@ -36,10 +36,35 @@ class StatusView(View):
 
     # GET
     With no period specified, list the latest status for all active periods, including
-    useful statistics for a UI listing.
+    useful statistics for a UI listing. For each item in the listing, we yield and object
+    with the following attributes:
+
+    - ``id``: The period id.
+    - ``is_active``: Is the period active? (boolean)
+    - ``short_name``: The short name of the period.
+    - ``long_name``: The long name of the period.
+    - ``subject``: An object describing the subject (attributed: ``id``, ``short_name``, ``long_name``).
+    - ``active_status``: An object describing the active status, or ``null``. The object
+      has the following attributes:
+           - ``id``: The ID of the status.
+            - ``period``: The ID of the period.
+            - ``status``: Short identifier for the status.
+            - ``createtime``: The creation time of the status.
+            - ``message``: A message for this status (added by the one that saved it).
+            - ``user``: An object with information about the user that saved the status. Attributes:
+               ``id``, ``username``, ``full_name``, ``email``.
+            - ``plugin``: The ID of the plugin used to generate the list of qualified students.
+            - ``pluginsettings``: Settings provided to the plugin to geneate the list of qualified students.
 
     With a period specified, return a detailed description of the latest status on that period,
-    including all students on the period.
+    including all students on the period. The object has the same attributes as the items in
+    the listing described above, but with some additional details:
+
+    - The ``perioddata``-attribute, which contains detailed data for all students in the period.
+    - Instead of ``active_status``, we return a list of all statuses, where the active status
+      is the first item. Each status in the list includes an additional attribute,
+      ``passing_relatedstudentids_map``, which contains a map with the ID of all the
+      relatedstudents with passing grade.
 
     # POST
     Marks students as qualified or unqualfied for final exams. All related students are
