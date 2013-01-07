@@ -1,7 +1,7 @@
 from django.test import TestCase
-from django.contrib.auth.models import User
 
 from devilry.apps.core.testhelper import TestHelper
+from devilry.apps.core.models import Period
 from devilry.utils.rest_testclient import RestClient
 from devilry_qualifiesforexam.models import Status
 
@@ -13,8 +13,9 @@ class TestRestStatus(TestCase):
         self.testhelper.add(nodes='uni:admin(uniadmin)',
             subjects=['sub'],
             periods=[
-                'oldperiod:admin(p1admin):begins(-12):ends(2)',
-                'p1:admin(p1admin):begins(-2):ends(6)'])
+                'oldperiod:admin(periodadmin):begins(-12):ends(2)',
+                'p1:admin(periodadmin):begins(-3):ends(6)',
+                'p2:admin(periodadmin):begins(-1):ends(6)'])
         self.client = RestClient()
         self.url = '/devilry_qualifiesforexam/rest/status/'
         self.testhelper.create_superuser('superuser')
@@ -64,7 +65,7 @@ class TestRestStatus(TestCase):
         self.assertFalse(qualifies2.qualifies)
 
     def test_post_as_periodadmin(self):
-        self._test_post_as(self.testhelper.p1admin)
+        self._test_post_as(self.testhelper.periodadmin)
 
     def test_post_as_nodeadmin(self):
         self._test_post_as(self.testhelper.uniadmin)
@@ -85,9 +86,9 @@ class TestRestStatus(TestCase):
         self.assertEqual(response.status_code, 403)
 
 
-    def _getinstanceas(self, username):
+    def _getinstanceas(self, username, periodid):
         self.client.login(username=username, password='test')
-        return self.client.rest_get(self._get_url(self.testhelper.sub_p1.id))
+        return self.client.rest_get(self._get_url(periodid))
 
     def _test_getinstance_as(self, username):
         relatedStudent1 = self._create_relatedstudent('student1', 'Student One')
@@ -104,7 +105,7 @@ class TestRestStatus(TestCase):
         status.students.create(relatedstudent=relatedStudent1, qualifies=True)
         status.students.create(relatedstudent=relatedStudent2, qualifies=False)
 
-        content, response = self._getinstanceas(username)
+        content, response = self._getinstanceas(username, self.testhelper.sub_p1.id)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(set(content.keys()),
             set(['id', 'perioddata', 'statuses', u'short_name', u'long_name', u'subject']))
@@ -124,7 +125,7 @@ class TestRestStatus(TestCase):
 
 
     def test_getinstance_as_periodadmin(self):
-        self._test_getinstance_as('p1admin')
+        self._test_getinstance_as('periodadmin')
     def test_getinstance_as_nodeadmin(self):
         self._test_getinstance_as('uniadmin')
     def test_getinstance_as_superuser(self):
@@ -132,9 +133,20 @@ class TestRestStatus(TestCase):
 
     def test_getinstanceas_nobody(self):
         self.testhelper.create_user('nobody')
-        content, response = self._getinstanceas('nobody')
+        content, response = self._getinstanceas('nobody', self.testhelper.sub_p1.id)
         self.assertEqual(response.status_code, 403)
 
+    def test_getinstance_no_statuses(self):
+        content, response = self._getinstanceas('periodadmin', self.testhelper.sub_p1.id)
+        self.assertEqual(response.status_code, 404)
+        self.assertEquals(content['detail'], u'The period has no statuses')
+
+    def test_getinstance_invalid_period(self):
+        periodid = 10000
+        self.assertFalse(Period.objects.filter(id=periodid).exists()) # Just to be sure we dont get false positives
+        content, response = self._getinstanceas('periodadmin', periodid)
+        self.assertEqual(response.status_code, 404)
+        self.assertEquals(content['detail'], u'The period with ID 10000 does not exist')
 
     def _getlistas(self, username):
         self.client.login(username=username, password='test')
@@ -145,7 +157,7 @@ class TestRestStatus(TestCase):
             period = period,
             status = status,
             message = 'Test',
-            user = self.testhelper.p1admin,
+            user = self.testhelper.periodadmin,
             plugin = 'devilry_qualifiesforexam_approved.all',
             pluginsettings = 'tst'
         )
@@ -167,13 +179,16 @@ class TestRestStatus(TestCase):
 
         content, response = self._getlistas(username)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(content), 1)
-        periodinfo = content[0]
-        self.assertEqual(periodinfo['id'], self.testhelper.sub_p1.id)
-        self.assertEqual(periodinfo['active_status']['id'], status.id)
+        self.assertEqual(len(content), 2)
+        p1info = content[0]
+        self.assertEqual(p1info['id'], self.testhelper.sub_p1.id)
+        self.assertEqual(p1info['active_status']['id'], status.id)
+        p2info = content[1]
+        self.assertEqual(p2info['id'], self.testhelper.sub_p2.id)
+        self.assertEqual(p2info['active_status'], None)
 
     def test_getlist_as_periodadmin(self):
-        self._test_getlist_as('p1admin')
+        self._test_getlist_as('periodadmin')
     def test_getlist_as_nodeadmin(self):
         self._test_getlist_as('uniadmin')
     def test_getlist_as_superuser(self):

@@ -96,6 +96,8 @@ class StatusView(View):
         return out
 
     def _serialize_status(self, status, includestudents=True):
+        if not status:
+            return None
         out = {
             'id': status.id,
             'period': status.period.id,
@@ -123,7 +125,12 @@ class StatusView(View):
         }
 
     def _get_instance(self, id):
-        period = get_object_or_404(Period, id=id)
+        try:
+            period = Period.objects.get(id=id)
+        except Period.DoesNotExist:
+            raise ErrorResponse(statuscodes.HTTP_404_NOT_FOUND,
+                {'detail': 'The period with ID {id} does not exist'.format(id=id)})
+
         self._permissioncheck(period)
 
         statusQry = period.qualifiedforexams_status.all()
@@ -154,6 +161,7 @@ class StatusView(View):
         qry = qry.filter(Period.q_is_active())
         qry = qry.prefetch_related('qualifiedforexams_status')
         qry = qry.select_related('parentnode')
+        qry = qry.order_by('start_time')
         return [self._listserialize_period(period) for period in qry]
 
     def get(self, request, id=None):
