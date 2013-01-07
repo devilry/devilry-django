@@ -42,7 +42,6 @@ Ext.define('devilry_qualifiesforexam.view.preview.QualifiesForExamPreview' ,{
                     xtype: 'panel',
                     itemId: 'summary',
                     tpl: this.summaryTpl,
-                    autoScroll: true,
                     border: false,
                     data: {},
                     fbar: [{
