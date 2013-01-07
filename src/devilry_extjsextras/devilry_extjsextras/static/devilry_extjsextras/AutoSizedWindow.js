@@ -32,10 +32,10 @@ Ext.define('devilry_extjsextras.AutoSizedWindow', {
             var height = bodyHeight;
             var width = bodyWidth;
             if(this._preferredHeight) {
-                var height = bodyHeight < this._preferredHeight? bodyHeight: this._preferredHeight;
+                height = bodyHeight < this._preferredHeight? bodyHeight: this._preferredHeight;
             }
             if(this._preferredWidth) {
-                var width = bodyWidth < this._preferredWidth? bodyWidth: this._preferredWidth;
+                width = bodyWidth < this._preferredWidth? bodyWidth: this._preferredWidth;
             }
             this.setSize({
                 width: width,
