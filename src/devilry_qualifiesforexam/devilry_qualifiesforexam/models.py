@@ -20,7 +20,7 @@ class Status(models.Model):
     createtime = models.DateTimeField(auto_now_add=True)
     message = models.TextField(blank=True)
     user = models.ForeignKey(User)
-    plugin = models.CharField(max_length=500)
+    plugin = models.CharField(max_length=500, null=True, blank=True)
     pluginsettings = models.TextField(null=True, blank=True)
 
     class Meta:

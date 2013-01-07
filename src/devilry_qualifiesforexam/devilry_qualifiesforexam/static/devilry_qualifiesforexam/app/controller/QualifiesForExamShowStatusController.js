@@ -15,7 +15,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
 
     requires: [
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
-        'devilry_extjsextras.HtmlErrorDialog'
+        'devilry_qualifiesforexam.utils.CreateStatus'
     ],
 
 
@@ -34,6 +34,12 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
         this.control({
             'viewport showstatus statusdetailsgrid': {
                 render: this._onRender
+            },
+            'viewport showstatus #retractButton': {
+                click: this._onRetract
+            },
+            'viewport showstatus #updateButton': {
+                click: this._onUpdate
             }
         });
         this.mon(this.getStatusModel().proxy, {
@@ -123,6 +129,59 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         errorhandler.addErrors(response, operation);
         this.application.getAlertmessagelist().addMany(errorhandler.errormessages, 'error', true);
+    },
+
+
+    _onRetract: function() {
+        Ext.Msg.show({
+            title: gettext('Why do you need to retract current status?'),
+            msg: gettext('Explain why you need to change the status to "Not ready", and hit OK to save.'),
+            scope: this,
+            multiline: true,
+            buttons: Ext.Msg.OKCANCEL,
+            icon: Ext.Msg.QUESTION,
+            width: 550,
+            fn: function(btn, text){
+                if(btn === 'ok'){
+                    if(Ext.String.trim(text) === '') {
+                        Ext.Msg.show({
+                            title: gettext('Invalid input'),
+                            msg: gettext('A message is required'),
+                            buttons: Ext.Msg.OK,
+                            icon: Ext.Msg.ERROR,
+                            scope: this,
+                            fn: function() {
+                                this._onRetract();
+                            }
+                        });
+                    } else {
+                        this._retract(text);
+                    }
+                }
+            }
+        });
+    },
+
+    _retract: function (message) {
+        devilry_qualifiesforexam.utils.CreateStatus.create({
+            period: this.periodid,
+            status: 'notready',
+            message: message
+        }, {
+            scope: this,
+            success:function () {
+                window.location.reload();
+            },
+            failure: function (response) {
+                devilry_qualifiesforexam.utils.CreateStatus.addErrorsToAlertmessagelist(
+                    response,
+                    this.application.getAlertmessagelist());
+            }
+        });
+    },
+
+    _onUpdate: function() {
+        console.log('update');
     }
 });
 

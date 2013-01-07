@@ -34,7 +34,7 @@ class QualifiesForExamViewMixin(object):
         self.request.session[create_sessionkey(self.pluginsessionid)] = PreviewData(*args, **kwargs)
 
     def get_preview_url(self):
-        return '{url}?routeto=/wizard/{periodid}/preview/{pluginsessionid}'.format(
+        return '{url}?routeto=/{periodid}/preview/{pluginsessionid}'.format(
             url=reverse('devilry_qualifiesforexam_ui'),
             periodid = self.periodid,
             pluginsessionid = self.pluginsessionid)

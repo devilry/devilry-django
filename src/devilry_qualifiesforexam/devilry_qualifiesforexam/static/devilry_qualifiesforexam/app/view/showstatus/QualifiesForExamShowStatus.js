@@ -29,7 +29,7 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
             '</p>',
             '<p>',
                 '<span class="muted">', gettext('Status'), ':</span> ',
-                '<span class="status-text label label-success">',
+                '<span class="status-text label label-{[this.getClassForStatus(values.status)]}">',
                     '{statustext}',
                 '</span>',
                 ' <small class="muted createtime">(',
@@ -37,14 +37,20 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
                 ')</small>',
             '</p>',
             '<tpl if="message">',
-                '<h2>', gettext('Message'), '</h2>',
-                '<p>{message}</p>',
+                '<div class="alert alert-info" style="white-space:pre-line;">{message}</div>',
             '</tpl>',
         '</tpl>', {
             formatDatetime:function (dt) {
                 var dateobj = devilry_extjsextras.DatetimeHelpers.parseRestformattedDatetime(dt);
-                console.log(devilry_extjsextras.DatetimeHelpers.formatDateTimeLong(dateobj), dateobj);
                 return devilry_extjsextras.DatetimeHelpers.formatDateTimeLong(dateobj);
+            },
+            getClassForStatus: function (status) {
+                var map = {
+                    ready: 'success',
+                    almostready: 'info',
+                    notready: 'warning'
+                };
+                return map[status];
             }
         }
     ],
