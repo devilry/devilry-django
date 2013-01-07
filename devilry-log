@@ -237,3 +237,5 @@ ExtJS Stores
 * Fixed by changing the 'navclass' property of the devilryheader element residing in this.viewport.
 * (!) Correct text in 'How administrator rights work': 'eighter' -> 'either'. Probably a rewrite of the whole sidebar on 'administrator rights' would do the trick.
 * No error message if the date is edited and is set prior to the start date.
+* Saved url-listing as API guide in devenv/urls.txt
+* Suggest making the runserver by django_devserver to be optional.
