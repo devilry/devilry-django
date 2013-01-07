@@ -24,7 +24,7 @@ Ext.define('devilry_header.Breadcrumbs', {
     ],
 
     /**
-     * @cfg
+     * @cfg a
      * 
      */
     defaultBreadcrumbs: undefined,

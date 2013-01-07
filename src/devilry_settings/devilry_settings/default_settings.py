@@ -72,7 +72,8 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry_settings',
                   'devilry_subjectadmin',
                   'devilry_qualifiesforexam',
-                  'devilry_qualifiesforexam_approved'
+                  'devilry_qualifiesforexam_approved',
+                  'devilry_nodeadmin'
                  ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
