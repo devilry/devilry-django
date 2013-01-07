@@ -9,7 +9,8 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
         'RelatedStudents'
     ],
     models: [
-        'Status'
+        'Status',
+        'DetailedPeriodOverview'
     ],
 
     requires: [
@@ -36,6 +37,10 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
             scope: this,
             exception: this._onProxyError
         });
+        this.mon(this.getDetailedPeriodOverviewModel().proxy, {
+            scope: this,
+            exception: this._onProxyError
+        });
     },
 
     _onRender: function() {
@@ -57,10 +62,28 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
 
     _onStatusModelLoadSuccess: function(record) {
         this.statusRecord = record;
-        console.log(this.statusRecord);
+        this._loadDetailedPeriodOverview();
+    },
+
+    _loadDetailedPeriodOverview: function() {
+        this.getDetailedPeriodOverviewModel().load(this.periodid, {
+            scope: this,
+            callback: function(records, op) {
+                if(op.success) {
+                    this._onLoadDetailedPeriodOverviewSuccess(records);
+                }
+                // NOTE: Errors are handled in _onProxyError
+            }
+        });
+    },
+    _onLoadDetailedPeriodOverviewSuccess: function(record) {
+        this.detailedPeriodOverviewRecord = record;
+        this._onLoadAllComplete();
+    },
+
+    _onLoadAllComplete: function() {
         var status = this.statusRecord.getActiveStatus();
         var passing_relatedstudentids_map = status.passing_relatedstudentids_map;
-        console.log(passing_relatedstudentids_map);
         var grid = this.getDetailsGrid();
         grid.passing_relatedstudentids_map = passing_relatedstudentids_map;
 //        previewGrid.addColumnForEachAssignment(perioddata.assignments);
