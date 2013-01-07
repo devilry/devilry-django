@@ -16,7 +16,7 @@ class Status(models.Model):
     STATUS_CHOICES_DICT = dict(STATUS_CHOICES)
     period = models.ForeignKey(Period,
         related_name='qualifiedforexams_status')
-    status = models.SlugField(max_length=30, blank=False)
+    status = models.SlugField(max_length=30, blank=False, choices=STATUS_CHOICES)
     createtime = models.DateTimeField(auto_now_add=True)
     message = models.TextField(blank=True)
     user = models.ForeignKey(User)
@@ -34,7 +34,7 @@ class QualifiesForFinalExam(models.Model):
     relatedstudent = models.ForeignKey(RelatedStudent)
     status = models.ForeignKey(Status,
         related_name='students')
-    qualifies = models.BooleanField()
+    qualifies = models.NullBooleanField()
 
     class Meta:
         unique_together = ('relatedstudent', 'status')

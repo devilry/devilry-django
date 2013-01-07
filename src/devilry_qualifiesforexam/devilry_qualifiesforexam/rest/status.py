@@ -23,6 +23,7 @@ class StatusForm(forms.ModelForm):
         fields = ['period', 'status', 'message', 'plugin', 'pluginsettings']
 
     passing_relatedstudentids = ListOfTypedField(coerce=int, required=False)
+    notready_relatedstudentids = ListOfTypedField(coerce=int, required=False)
 
 
 class StatusResource(FormResource):
@@ -78,6 +79,8 @@ class StatusView(View):
     - ``plugin``: The plugin that was used to generate the results.
     - ``pluginsettings``: The plugin settings that was used to generate the results.
     - ``passing_relatedstudentids``: List of related students that qualifies for final exam.
+    - ``notready_relatedstudentids``: List of related students that are not ready to be exported.
+      These are stored with the value ``None`` (``NULL``) in the ``qualifies`` database field.
     """
     permissions = (IsAuthenticated,)
     resource = StatusResource
@@ -103,11 +106,16 @@ class StatusView(View):
             status.full_clean()
             status.save()
             passing_relatedstudentids = set(self.CONTENT['passing_relatedstudentids'])
+            notready_relatedstudentids = set(self.CONTENT['notready_relatedstudentids'])
             for relatedstudent in period.relatedstudent_set.all():
+                if relatedstudent.id in notready_relatedstudentids:
+                    qualifies = None
+                else:
+                    qualifies = relatedstudent.id in passing_relatedstudentids
                 qualifies = QualifiesForFinalExam(
                     relatedstudent = relatedstudent,
                     status = status,
-                    qualifies = relatedstudent.id in passing_relatedstudentids
+                    qualifies = qualifies
                 )
                 qualifies.full_clean()
                 qualifies.save()

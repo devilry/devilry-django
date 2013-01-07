@@ -230,6 +230,8 @@ Database models
     .. py:attribute:: qualifies
 
         Boolean database field telling if the student qualifies or not.
+        This may be ``None`` (``NULL``), if the status is ``almostready``,
+        to mark students as not ready for export.
 
     .. py:attribute:: status
 

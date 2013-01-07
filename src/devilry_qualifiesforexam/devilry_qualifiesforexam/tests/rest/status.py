@@ -85,6 +85,38 @@ class TestRestStatus(TestCase):
         })
         self.assertEqual(response.status_code, 403)
 
+    def test_post_almostready(self):
+        relatedStudent1 = self._create_relatedstudent('student1', 'Student One')
+        relatedStudent2 = self._create_relatedstudent('student2', 'Student Two')
+        content, response = self._postas('periodadmin', {
+            'period': self.testhelper.sub_p1.id,
+            'status': 'almostready',
+            'message': 'This is a test',
+            'plugin': 'devilry_qualifiesforexam_approved.all',
+            'passing_relatedstudentids': [relatedStudent1.id],
+            'notready_relatedstudentids': [relatedStudent2.id]
+        })
+        self.assertEquals(response.status_code, 201)
+        status = Status.objects.all()[0]
+        self.assertEquals(status.status, 'almostready')
+        self.assertEqual(status.students.count(), 2)
+        qualifies1 = status.students.get(relatedstudent=relatedStudent1)
+        qualifies2 = status.students.get(relatedstudent=relatedStudent2)
+        self.assertTrue(qualifies1.qualifies)
+        self.assertIsNone(qualifies2.qualifies)
+
+    def test_post_invalidstatus(self):
+        relatedStudent1 = self._create_relatedstudent('student1', 'Student One')
+        content, response = self._postas('periodadmin', {
+            'period': self.testhelper.sub_p1.id,
+            'status': 'invalidstatus',
+            'plugin': 'devilry_qualifiesforexam_approved.all',
+            'passing_relatedstudentids': [relatedStudent1.id]
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(content['field_errors']['status'][0],
+            u'Select a valid choice. invalidstatus is not one of the available choices.')
+
 
     def _getinstanceas(self, username, periodid):
         self.client.login(username=username, password='test')
@@ -147,6 +179,8 @@ class TestRestStatus(TestCase):
         content, response = self._getinstanceas('periodadmin', periodid)
         self.assertEqual(response.status_code, 404)
         self.assertEquals(content['detail'], u'The period with ID 10000 does not exist')
+
+
 
     def _getlistas(self, username):
         self.client.login(username=username, password='test')
