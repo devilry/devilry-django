@@ -1,13 +1,22 @@
 from djangorestframework.views import View
 from djangorestframework.permissions import IsAuthenticated
+from djangorestframework.resources import FormResource
 from djangorestframework.response import ErrorResponse
 from djangorestframework import status as statuscodes
 from django.shortcuts import get_object_or_404
+from django import forms
 
 from devilry_qualifiesforexam.pluginhelpers import create_sessionkey
 from devilry.apps.core.models import Period
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
 from devilry_subjectadmin.rest.auth import IsPeriodAdmin
+
+
+class PreviewForm(forms.Form):
+    pluginsessionid = forms.CharField(required=True)
+
+class PreviewResource(FormResource):
+    form = PreviewForm
 
 
 class Preview(View):
@@ -31,12 +40,10 @@ class Preview(View):
     - ``perioddata``: All results for all students on the period.
     """
     permissions = (IsAuthenticated, IsPeriodAdmin)
+    resource = PreviewResource
 
     def get(self, request, id):
-        pluginsessionid = self.request.GET.get('pluginsessionid', None)
-        if not pluginsessionid:
-            raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST,
-                {'detail': '``pluginsessionid`` is a required parameter'})
+        pluginsessionid = self.CONTENT['pluginsessionid']
         period = get_object_or_404(Period, pk=id)
         previewdata = self.request.session[create_sessionkey(pluginsessionid)]
         grouper = GroupsGroupedByRelatedStudentAndAssignment(period)
