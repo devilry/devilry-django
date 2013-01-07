@@ -113,7 +113,7 @@ class TestRestStatus(TestCase):
         statuses = content['statuses']
         self.assertEqual(len(statuses), 1)
         self.assertEqual(set(statuses[0].keys()),
-            set([u'id', u'status', u'plugin',
+            set([u'id', u'status', u'plugin', u'statustext',
                  u'period', u'passing_relatedstudentids_map',
                  u'pluginsettings', u'user', u'message', u'createtime']))
         self.assertEqual(statuses[0]['period'], self.testhelper.sub_p1.id)

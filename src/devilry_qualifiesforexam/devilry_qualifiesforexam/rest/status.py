@@ -127,6 +127,7 @@ class StatusView(View):
             'id': status.id,
             'period': status.period.id,
             'status': status.status,
+            'statustext': unicode(status.getStatusText()),
             'createtime': status.createtime,
             'message': status.message,
             'user': serialize_user(status.user),
