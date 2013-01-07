@@ -1,5 +1,7 @@
 from djangorestframework.views import View
 from djangorestframework.permissions import IsAuthenticated
+from djangorestframework.response import ErrorResponse
+from djangorestframework import status as statuscodes
 from django.shortcuts import get_object_or_404
 
 from devilry_qualifiesforexam.pluginhelpers import create_sessionkey
@@ -31,7 +33,10 @@ class Preview(View):
     permissions = (IsAuthenticated, IsPeriodAdmin)
 
     def get(self, request, id):
-        pluginsessionid = self.request.GET['pluginsessionid']
+        pluginsessionid = self.request.GET.get('pluginsessionid', None)
+        if not pluginsessionid:
+            raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST,
+                {'detail': '``pluginsessionid`` is a required parameter'})
         period = get_object_or_404(Period, pk=id)
         previewdata = self.request.session[create_sessionkey(pluginsessionid)]
         grouper = GroupsGroupedByRelatedStudentAndAssignment(period)
