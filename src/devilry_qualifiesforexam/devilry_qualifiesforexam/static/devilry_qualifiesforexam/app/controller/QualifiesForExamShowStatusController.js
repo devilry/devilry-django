@@ -86,10 +86,11 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
         var passing_relatedstudentids_map = status.passing_relatedstudentids_map;
         var grid = this.getDetailsGrid();
         grid.passing_relatedstudentids_map = passing_relatedstudentids_map;
-//        previewGrid.addColumnForEachAssignment(perioddata.assignments);
-//        previewGrid.addAssignmentSorters(perioddata.assignments);
-//        previewGrid.sortByQualifiesQualifiedFirst();
-//        this._loadRelatedStudentsIntoGridStore(perioddata.relatedstudents);
+        var assignments = this.detailedPeriodOverviewRecord.get('assignments');
+        grid.addColumnForEachAssignment(assignments);
+        grid.addAssignmentSorters(assignments);
+        grid.sortByQualifiesQualifiedFirst();
+        this._loadRelatedStudentsIntoGridStore(this.detailedPeriodOverviewRecord.get('relatedstudents'));
     },
 
     _loadRelatedStudentsIntoGridStore: function(relatedstudents) {
