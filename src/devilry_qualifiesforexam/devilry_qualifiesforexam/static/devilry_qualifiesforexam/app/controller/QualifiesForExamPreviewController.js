@@ -29,8 +29,11 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
 
     init: function() {
         this.control({
-            'viewport previewgrid': {
+            'viewport preview previewgrid': {
                 render: this._onRender
+            },
+            'viewport preview #saveButton': {
+                click: this._onSave
             }
         });
         this.mon(this.getPreviewModel().proxy, {
@@ -79,6 +82,17 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         errorhandler.addErrors(response, operation);
         this.application.getAlertmessagelist().addMany(errorhandler.errormessages, 'error', true);
+    },
+
+
+    _onSave:function () {
+        Ext.Ajax.request({
+            url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_qualifiesforexam/rest/status/',
+            method: 'POST',
+//            params: {
+//                period:
+//            }
+        });
     }
 });
 
