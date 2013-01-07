@@ -86,13 +86,34 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
 
 
     _onSave:function () {
+        var passing_relatedstudentids = this.previewRecord.get('pluginoutput').passing_relatedstudentids;
         Ext.Ajax.request({
             url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_qualifiesforexam/rest/status/',
             method: 'POST',
-//            params: {
-//                period:
-//            }
+            jsonData: {
+                period: this.periodid,
+                status: 'ready',
+                message: null,
+                plugin: 'devilry_qualifiesforexam_approved.all',
+                pluginsettings: null,
+                passing_relatedstudentids: passing_relatedstudentids
+            },
+            extraParams: {
+                format: 'json'
+            },
+            scope: this,
+            success: this._onSaveSuccess(),
+            failure: this._onSaveFailure()
         });
+    },
+    _onSaveSuccess:function (response) {
+        console.log('Success');
+    },
+    _onSaveFailure:function (response, operation) {
+        var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
+        errorhandler.addRestErrorsFromResponse(response);
+        this.application.getAlertmessagelist().addMany(
+            errorhandler.asArrayOfStrings(), 'error', true);
     }
 });
 

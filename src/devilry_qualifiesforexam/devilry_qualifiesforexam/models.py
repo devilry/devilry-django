@@ -24,7 +24,7 @@ class Status(models.Model):
 
 
 class QualifiesForFinalExam(models.Model):
-    relatedstudent = models.OneToOneField(RelatedStudent)
+    relatedstudent = models.ForeignKey(RelatedStudent)
     status = models.ForeignKey(Status,
         related_name='students')
     qualifies = models.BooleanField()
