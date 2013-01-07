@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ValidationError
 
 from devilry.apps.core.models import RelatedStudent
 from devilry.apps.core.models import Period
@@ -29,6 +30,13 @@ class Status(models.Model):
     def getStatusText(self):
         return self.STATUS_CHOICES_DICT[self.status]
 
+    def clean(self):
+        if not self.message:
+            self.message = ''
+        if isinstance(self.message, (str, unicode)) and self.message.strip() == '':
+            self.message = ''
+        if self.status == 'notready' and not self.message:
+            raise ValidationError('Message can not be empty when status is ``notready``.')
 
 class QualifiesForFinalExam(models.Model):
     relatedstudent = models.ForeignKey(RelatedStudent)
@@ -38,3 +46,9 @@ class QualifiesForFinalExam(models.Model):
 
     class Meta:
         unique_together = ('relatedstudent', 'status')
+
+    def clean(self):
+        if self.qualifies == None and self.status.status != 'almostready':
+            raise ValidationError('Only the ``almostready`` status allows marking students as not ready for export.')
+        if self.status.status == 'notready':
+            raise ValidationError('Status ``notready`` does not allow marking qualified students.')

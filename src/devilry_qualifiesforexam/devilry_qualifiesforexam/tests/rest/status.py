@@ -105,6 +105,43 @@ class TestRestStatus(TestCase):
         self.assertTrue(qualifies1.qualifies)
         self.assertIsNone(qualifies2.qualifies)
 
+    def test_post_notreadystudents_with_invalidstatus(self):
+        relatedStudent1 = self._create_relatedstudent('student1', 'Student One')
+        content, response = self._postas('periodadmin', {
+            'period': self.testhelper.sub_p1.id,
+            'status': 'ready', # Could choose any status except almostready for this test to be valid
+            'plugin': 'devilry_qualifiesforexam_approved.all',
+            'notready_relatedstudentids': [relatedStudent1.id]
+        })
+        self.assertEquals(response.status_code, 400)
+        self.assertEqual(content['details'],
+            u'Only the ``almostready`` status allows marking students as not ready for export.')
+
+    def test_post_notready_check_studentsignored(self):
+        relatedStudent1 = self._create_relatedstudent('student1', 'Student One')
+        content, response = self._postas('periodadmin', {
+            'period': self.testhelper.sub_p1.id,
+            'status': 'notready',
+            'message': 'Test',
+            'plugin': 'devilry_qualifiesforexam_approved.all'
+        })
+        self.assertEquals(response.status_code, 201)
+        status = Status.objects.all()[0]
+        self.assertEquals(status.status, 'notready')
+        self.assertEquals(status.message, 'Test')
+        self.assertEqual(status.students.count(), 0)
+
+    def test_post_notready_messagerequired(self):
+        relatedStudent1 = self._create_relatedstudent('student1', 'Student One')
+        content, response = self._postas('periodadmin', {
+            'period': self.testhelper.sub_p1.id,
+            'status': 'notready',
+            'message': '  ',
+            'plugin': 'devilry_qualifiesforexam_approved.all'
+        })
+        self.assertEquals(response.status_code, 400)
+        self.assertEqual(content['errors'][0], u'Message can not be empty when status is ``notready``.')
+
     def test_post_invalidstatus(self):
         relatedStudent1 = self._create_relatedstudent('student1', 'Student One')
         content, response = self._postas('periodadmin', {

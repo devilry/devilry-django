@@ -7,6 +7,7 @@ from djangorestframework.response import Response
 from djangorestframework import status as statuscodes
 from django import forms
 from django.db import transaction
+from django.core.exceptions import ValidationError
 
 from devilry.apps.core.models import Period
 from devilry_qualifiesforexam.models import Status
@@ -28,6 +29,12 @@ class StatusForm(forms.ModelForm):
 
 class StatusResource(FormResource):
     form = StatusForm
+
+#    def validate_request(self, data, files=None):
+#        if data['notready_relatedstudentids'] and data['status'] != 'almostready':
+#            return
+#        return super(StatusResource, self).validate_request(data, files)
+
 
 
 class StatusView(View):
@@ -105,20 +112,25 @@ class StatusView(View):
             )
             status.full_clean()
             status.save()
-            passing_relatedstudentids = set(self.CONTENT['passing_relatedstudentids'])
-            notready_relatedstudentids = set(self.CONTENT['notready_relatedstudentids'])
-            for relatedstudent in period.relatedstudent_set.all():
-                if relatedstudent.id in notready_relatedstudentids:
-                    qualifies = None
-                else:
-                    qualifies = relatedstudent.id in passing_relatedstudentids
-                qualifies = QualifiesForFinalExam(
-                    relatedstudent = relatedstudent,
-                    status = status,
-                    qualifies = qualifies
-                )
-                qualifies.full_clean()
-                qualifies.save()
+            if status.status != 'notready':
+                passing_relatedstudentids = set(self.CONTENT['passing_relatedstudentids'])
+                notready_relatedstudentids = set(self.CONTENT['notready_relatedstudentids'])
+                for relatedstudent in period.relatedstudent_set.all():
+                    if relatedstudent.id in notready_relatedstudentids:
+                        qualifies = None
+                    else:
+                        qualifies = relatedstudent.id in passing_relatedstudentids
+                    qualifies = QualifiesForFinalExam(
+                        relatedstudent = relatedstudent,
+                        status = status,
+                        qualifies = qualifies
+                    )
+                    try:
+                        qualifies.full_clean()
+                    except ValidationError as e:
+                        raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST,
+                            {'details': ' '.join(e.messages)})
+                    qualifies.save()
         return Response(201, '')
 
 
