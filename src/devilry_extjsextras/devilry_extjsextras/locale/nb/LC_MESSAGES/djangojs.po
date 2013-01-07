@@ -1,4 +1,4 @@
- # SOME DESCRIPTIVE TITLE.
+# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-14 01:59+0100\n"
+"POT-Creation-Date: 2013-01-07 21:15+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -59,39 +59,39 @@ msgstr "Lag"
 
 #: static/devilry_extjsextras/DatetimeHelpers.js:14
 msgctxt "extjs short datetime"
-msgid "Y-m-d h:i"
-msgstr "D j. M Y h:i"
+msgid "Y-m-d H:i"
+msgstr "D j. M Y H:i"
 
 #: static/devilry_extjsextras/DatetimeHelpers.js:24
 msgctxt "extjs long datetime"
-msgid "Y-m-d h:i"
-msgstr "l j. F Y \\k\\l. h:i"
+msgid "Y-m-d H:i"
+msgstr "l j. F Y \\k\\l. H:i"
 
-#: static/devilry_extjsextras/DatetimeHelpers.js:34
+#: static/devilry_extjsextras/DatetimeHelpers.js:39
 #, c-format
 msgid "%s days"
 msgstr "%s dager"
 
-#: static/devilry_extjsextras/DatetimeHelpers.js:36
+#: static/devilry_extjsextras/DatetimeHelpers.js:41
 #, c-format
 msgid "%s hours"
 msgstr "%s timer"
 
-#: static/devilry_extjsextras/DatetimeHelpers.js:38
+#: static/devilry_extjsextras/DatetimeHelpers.js:43
 #, c-format
 msgid "%s minutes"
 msgstr "%s minutter"
 
-#: static/devilry_extjsextras/DatetimeHelpers.js:40
+#: static/devilry_extjsextras/DatetimeHelpers.js:45
 #, c-format
 msgid "%s seconds"
 msgstr "%s sekunder"
 
-#: static/devilry_extjsextras/DatetimeHelpers.js:53
+#: static/devilry_extjsextras/DatetimeHelpers.js:58
 msgid "In %(delta)s"
 msgstr "Om %(delta)s"
 
-#: static/devilry_extjsextras/DatetimeHelpers.js:57
+#: static/devilry_extjsextras/DatetimeHelpers.js:62
 msgid "%(delta)s ago"
 msgstr "For %(delta)s siden"
 
