@@ -58,13 +58,13 @@ class StatusView(View):
 
     With a period specified, return a detailed description of the latest status on that period,
     including all students on the period. The object has the same attributes as the items in
-    the listing described above, but with some additional details:
+    the listing described above, but with some new and remove attributes:
 
-    - The ``perioddata``-attribute, which contains detailed data for all students in the period.
-    - Instead of ``active_status``, we return a list of all statuses, where the active status
-      is the first item. Each status in the list includes an additional attribute,
-      ``passing_relatedstudentids_map``, which contains a map with the ID of all the
-      relatedstudents with passing grade.
+    - ``perioddata``: Contains detailed data for all students in the period.
+    - ``statuses``: Instead of ``active_status``, we return a list of all statuses,
+      where the active status is the first item. Each status in the list includes
+      an additional attribute, ``passing_relatedstudentids_map``, which contains
+      a map with the ID of all the relatedstudents with passing grade.
 
     # POST
     Marks students as qualified or unqualfied for final exams. All related students are
