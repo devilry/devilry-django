@@ -15,7 +15,8 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
 
     requires: [
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
-        'devilry_qualifiesforexam.utils.CreateStatus'
+        'devilry_qualifiesforexam.utils.CreateStatus',
+        'devilry_qualifiesforexam.utils.UrlLookup'
     ],
 
 
@@ -184,7 +185,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
     },
 
     _onUpdate: function() {
-        console.log('update');
+        this.application.route.navigate(devilry_qualifiesforexam.utils.UrlLookup.selectplugin(this.periodid));
     }
 });
 
