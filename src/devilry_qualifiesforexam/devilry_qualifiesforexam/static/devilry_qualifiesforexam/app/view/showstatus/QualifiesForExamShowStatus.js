@@ -25,14 +25,15 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
 
     initComponent: function() {
         Ext.apply(this, {
+            autoScroll: true,
             layout: 'anchor',
-            padding: '20',
+            padding: '40 40 0 40',
             items: [{
                 xtype: 'container',
                 cls: 'devilry_focuscontainer bootstrap',
                 padding: 20,
-                height: 195,
                 margin: '0 0 20 0',
+                anchor: '100%',
                 layout: 'fit',
                 items: [{
                     xtype: 'panel',
@@ -40,20 +41,16 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
                     tpl: this.summaryTpl,
                     autoScroll: true,
                     border: false,
-                    data: {},
-//                    fbar: [{
-//                        xtype: 'button',
-//                        itemId: 'backButton',
-//                        text: gettext('Back')
-//                    }, {
-//                        xtype: 'primarybutton',
-//                        itemId: 'saveButton',
-//                        text: gettext('Save')
-//                    }]
+                    data: {}
                 }]
             }, {
                 xtype: 'statusdetailsgrid',
-                anchor: '0 -215'
+                anchor: '100%',
+                height: 300, // Initial height before it is autoset
+                autoHeightMargin: 100
+            }, {
+                xtype: 'box',
+                height: 40 // NOTE: get a "margin" below the table - padding does not seem to be respected
             }]
         });
         this.callParent(arguments);

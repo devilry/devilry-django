@@ -2,6 +2,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
     extend: 'devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase',
     alias: 'widget.previewgrid',
     cls: 'devilry_qualifiesforexam_previewgrid bootstrap',
+    mixins: ['devilry_extjsextras.AutoHeightComponentMixin'],
 
     firstAssignmentColumnIndex: 2,
 
@@ -25,6 +26,12 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
             '</tpl>',
         '</p>'
     ],
+
+
+    constructor: function () {
+        this.callParent(arguments);
+        this.setupAutoHeightSizing();
+    },
 
     setupColumns: function() {
         this.qualifiesColTplCompiled = Ext.create('Ext.XTemplate', this.qualifiesColTpl);

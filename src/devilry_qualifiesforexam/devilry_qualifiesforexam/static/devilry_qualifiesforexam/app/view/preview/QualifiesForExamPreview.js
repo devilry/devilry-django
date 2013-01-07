@@ -28,15 +28,16 @@ Ext.define('devilry_qualifiesforexam.view.preview.QualifiesForExamPreview' ,{
 
     initComponent: function() {
         Ext.apply(this, {
+            autoScroll: true,
             layout: 'anchor',
-            padding: '20',
+            padding: '40 40 0 40',
             items: [{
                 xtype: 'container',
                 cls: 'devilry_focuscontainer bootstrap',
                 padding: 20,
-                height: 195,
                 margin: '0 0 20 0',
                 layout: 'fit',
+                anchor: '100%',
                 items: [{
                     xtype: 'panel',
                     itemId: 'summary',
@@ -56,7 +57,12 @@ Ext.define('devilry_qualifiesforexam.view.preview.QualifiesForExamPreview' ,{
                 }]
             }, {
                 xtype: 'previewgrid',
-                anchor: '0 -215'
+                anchor: '100%',
+                height: 300, // Initial height before it is autoset
+                autoHeightMargin: 100
+            }, {
+                xtype: 'box',
+                height: 40 // NOTE: get a "margin" below the table - padding does not seem to be respected
             }]
         });
         this.callParent(arguments);
