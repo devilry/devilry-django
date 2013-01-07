@@ -22,7 +22,8 @@ class Preview(View):
     - ``periodid``: The ID of the period. Supplied as the last part of the URL-path.
       404 is returned unless the user is admin on this period.
     - ``pluginsessionid``: Forwarded from the first page of the wizard. It is an ID
-      used to lookup the output from the plugin.
+      used to lookup the output from the plugin, included in the listing in the plugins
+      REST API.
 
     ## Returns
     An object/dict with the following attributes:
