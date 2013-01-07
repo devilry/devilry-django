@@ -23,7 +23,7 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
             '<p class="status-numberedsummary">',
                 gettext('{qualifiedstudents}/{totalstudents} students qualifies for final exams.'),
                 ' <small class="muted">',
-                    gettext('See the table below for details. The table includes detailed information about the results of each student for all assignments. This information may not match the information used to calculate if the students qualify for exams if students have been given new feedback after the status was saved.'),
+                    gettext('See the table below for details. The table includes detailed information about the results of each student for all assignments. This information may not match the information used to calculate if the students qualify for exams when students have been given new feedback after the status was saved.'),
                 '</small>',
             '</p>',
             '<p>',
