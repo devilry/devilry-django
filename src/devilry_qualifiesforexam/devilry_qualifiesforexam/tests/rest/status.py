@@ -108,7 +108,7 @@ class TestRestStatus(TestCase):
         content, response = self._getinstanceas(username, self.testhelper.sub_p1.id)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(set(content.keys()),
-            set(['id', 'perioddata', 'statuses', u'short_name', u'long_name', u'subject']))
+            set(['id', 'perioddata', 'statuses', u'is_active', u'short_name', u'long_name', u'subject']))
         self.assertEqual(content['id'], self.testhelper.sub_p1.id)
         statuses = content['statuses']
         self.assertEqual(len(statuses), 1)

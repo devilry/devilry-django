@@ -86,6 +86,7 @@ class StatusView(View):
                 )
                 qualifies.full_clean()
                 qualifies.save()
+        print period.qualifiedforexams_status.all()
         return Response(201, '')
 
 
@@ -117,6 +118,7 @@ class StatusView(View):
             'id': period.id,
             'short_name': period.short_name,
             'long_name': period.long_name,
+            'is_active': period.is_active(),
             'subject': {
                 'id': period.parentnode.id,
                 'short_name': period.parentnode.short_name,
