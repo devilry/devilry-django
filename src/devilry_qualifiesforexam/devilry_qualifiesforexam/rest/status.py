@@ -1,14 +1,34 @@
 from djangorestframework.views import View
 from djangorestframework.permissions import IsAuthenticated
-from django.shortcuts import get_object_or_404
+from djangorestframework.resources import FormResource
+from djangorestframework.response import ErrorResponse
+from djangorestframework.response import Response
+from djangorestframework import status
+from django import forms
+from django.db import transaction
 
-from devilry_qualifiesforexam.pluginhelpers import create_sessionkey
 from devilry.apps.core.models import Period
-from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
-from devilry_subjectadmin.rest.auth import IsPeriodAdmin
+from devilry_qualifiesforexam.models import Status
+from devilry_qualifiesforexam.models import QualifiesForFinalExam
+from devilry.utils.restformfields import ListOfTypedField
 
 
-class Status(View):
+
+
+
+class StatusForm(forms.ModelForm):
+    class Meta:
+        model = Status
+        fields = ['period', 'status', 'message', 'plugin', 'pluginsettings']
+
+    passing_relatedstudentids = ListOfTypedField(coerce=int)
+
+
+class StatusResource(FormResource):
+    form = StatusForm
+
+
+class StatusView(View):
     """
     API for ``QualifiesForFinalExamPeriodStatus``, that lets users list and add statuses.
     Includes marking students as qualified/disqualified for final exams.
@@ -20,13 +40,45 @@ class Status(View):
     ## Parameters
 
     - ``period``: The period ID (last part of the URL-path).
-    - ``passing_relatedstudentids``: List of related students that qualifies for final exam.
-    - ``status``: The status message.
+    - ``status``: The status.
+    - ``message``: The status message.
     - ``plugin``: The plugin that was used to generate the results.
     - ``pluginsettings``: The plugin settings that was used to generate the results.
+    - ``passing_relatedstudentids``: List of related students that qualifies for final exam.
     """
-    permissions = (IsAuthenticated, IsPeriodAdmin)
+    permissions = (IsAuthenticated,)
+    resource = StatusResource
 
-    def post(self, request, id):
-        pluginsessionid = self.request.GET['pluginsessionid']
-        period = get_object_or_404(Period, pk=id)
+    def _permissioncheck(self, period):
+        if self.request.user.is_superuser:
+            return
+        if not Period.where_is_admin(self.request.user).filter(id=period.id).exists():
+            raise ErrorResponse(status=status.HTTP_403_FORBIDDEN)
+
+    def post(self, request):
+        period = self.CONTENT['period']
+        self._permissioncheck(period)
+        with transaction.commit_on_success():
+            status = Status(
+                period = period,
+                status = self.CONTENT['status'],
+                message = self.CONTENT['message'],
+                user = self.request.user,
+                plugin = self.CONTENT['plugin'],
+                pluginsettings = self.CONTENT['pluginsettings']
+            )
+            status.full_clean()
+            status.save()
+            passing_relatedstudentids = set(self.CONTENT['passing_relatedstudentids'])
+            for relatedstudent in period.relatedstudent_set.all():
+                qualifies = QualifiesForFinalExam(
+                    relatedstudent = relatedstudent,
+                    status = status,
+                    qualifies = relatedstudent.id in passing_relatedstudentids
+                )
+                qualifies.full_clean()
+                qualifies.save()
+        return Response(201, '')
+
+    def get(self, request):
+        return ['hei']
