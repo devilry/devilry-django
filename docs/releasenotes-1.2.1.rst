@@ -30,3 +30,7 @@ to a plugin based architecture, the new app adds some useful new features:
 
 - Support for *almost finished*. This solves the problem that arises when just a couple of the
   students need more time, but you want to export the rest of the students as ready for exams.
+  The support is really simple:
+    - The entire period/semester is marked as *almost ready for export*.
+    - The administrator gets a message field where they can explain the situation.
+    - The administrator has to select the students that is not ready for export.

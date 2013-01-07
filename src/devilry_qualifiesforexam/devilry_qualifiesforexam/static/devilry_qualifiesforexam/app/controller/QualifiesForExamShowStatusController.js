@@ -25,6 +25,9 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
     }, {
         ref: 'detailsGrid',
         selector: 'statusdetailsgrid'
+    }, {
+        ref: 'summary',
+        selector: 'showstatus #summary'
     }],
 
     init: function() {
@@ -82,6 +85,24 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
     },
 
     _onLoadAllComplete: function() {
+        this._setupSummary();
+        this._setupGrid();
+    },
+
+    _setupSummary:function () {
+        var status = this.statusRecord.getActiveStatus();
+        var qualifiedstudents = Ext.Object.getSize(status.passing_relatedstudentids_map);
+        var totalstudents = this.detailedPeriodOverviewRecord.get('relatedstudents').length;
+        var data = {
+            loading: false,
+            qualifiedstudents: qualifiedstudents,
+            totalstudents: totalstudents
+        };
+        Ext.apply(data, status);
+        this.getSummary().update(data);
+    },
+
+    _setupGrid:function () {
         var status = this.statusRecord.getActiveStatus();
         var passing_relatedstudentids_map = status.passing_relatedstudentids_map;
         var grid = this.getDetailsGrid();

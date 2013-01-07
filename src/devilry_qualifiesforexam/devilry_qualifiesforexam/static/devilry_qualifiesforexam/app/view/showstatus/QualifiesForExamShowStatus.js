@@ -18,9 +18,19 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
         '<h1 style="margin: 0 0 10px 0;">',
             gettext('Qualfied for final exam'),
         '</h1>',
-        '<p>',
-            gettext('TODO'),
-        '</p>'
+        '<tpl if="loading">',
+            '<p class="muted">', gettext('Loading'), '...</p>',
+        '<tpl else>',
+            '<p class="muted">',
+                gettext('{qualifiedstudents}/{totalstudents} students qualifies for final exams.'),
+            '</p>',
+            '<p>',
+                '<span class="muted">', gettext('Status'), ':</span> ',
+                '<span class="label label-success">',
+                    '{statustext}',
+                '</span>',
+            '</p>',
+        '</tpl>'
     ],
 
     initComponent: function() {
@@ -41,7 +51,9 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
                     tpl: this.summaryTpl,
                     autoScroll: true,
                     border: false,
-                    data: {}
+                    data: {
+                        loading: true
+                    }
                 }]
             }, {
                 xtype: 'statusdetailsgrid',
