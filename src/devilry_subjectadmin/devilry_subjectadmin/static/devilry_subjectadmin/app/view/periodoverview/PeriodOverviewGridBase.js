@@ -128,7 +128,7 @@ Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
         }, '->', {
             xtype: 'textfield',
             width: 250,
-            emptyText: gettext('Search for name, or username ...'),
+            emptyText: gettext('Search for name or username ...'),
             listeners: {
                 scope: this,
                 change: this._onSearch
