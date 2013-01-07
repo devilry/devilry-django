@@ -22,6 +22,7 @@ from .popfromgroup import PopFromGroup
 from .mergeintogroup import MergeIntoGroup
 from .aggregated_groupinfo import AggregatedGroupInfo
 from .passedinpreviousperiod import PassedInPreviousPeriod
+from .detailedperiodoverview import DetailedPeriodOverview
 
 
 urlpatterns = patterns('devilry_subjectadmin.rest',
@@ -32,6 +33,7 @@ urlpatterns = patterns('devilry_subjectadmin.rest',
                        url(r'^subject/(?P<id>[^/]+)$', InstanceSubjectRest.as_view()),
                        url(r'^period/$', ListOrCreatePeriodRest.as_view(), name='devilry-subjectadmin-rest-period'),
                        url(r'^period/(?P<id>[^/]+)$', InstancePeriodRest.as_view(), name='devilry-subjectadmin-rest-period-instance'),
+                       url(r'^detailedperiodoverview/(?P<id>[^/]+)$', DetailedPeriodOverview.as_view(), name='devilry-subjectadmin-rest-detailedperiodoverview'),
                        url(r'^relatedexaminer/(?P<period_id>\d+)/$', ListOrCreateRelatedExaminerRest.as_view()),
                        url(r'^relatedexaminer/(?P<period_id>\d+)/(?P<id>\d+)$', InstanceRelatedExaminerRest.as_view()),
                        url(r'^relatedstudent/(?P<period_id>\d+)/$', ListOrCreateRelatedStudentRest.as_view()),
