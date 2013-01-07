@@ -12,7 +12,9 @@ class TestRestStatus(TestCase):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
             subjects=['sub'],
-            periods=['p1:admin(p1admin)'])
+            periods=[
+                'oldperiod:admin(p1admin):begins(-12):ends(2)',
+                'p1:admin(p1admin):begins(-2):ends(6)'])
         self.client = RestClient()
         self.url = '/devilry_qualifiesforexam/rest/status/'
         self.testhelper.create_superuser('superuser')
@@ -104,12 +106,14 @@ class TestRestStatus(TestCase):
 
         content, response = self._getinstanceas(username)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(set(content.keys()), set(['id', 'perioddata', 'statuses']))
+        self.assertEqual(set(content.keys()),
+            set(['id', 'perioddata', 'statuses', u'short_name', u'long_name', u'subject']))
         self.assertEqual(content['id'], self.testhelper.sub_p1.id)
         statuses = content['statuses']
         self.assertEqual(len(statuses), 1)
         self.assertEqual(set(statuses[0].keys()),
-            set([u'status', u'plugin', u'period', u'passing_relatedstudentids_map',
+            set([u'id', u'status', u'plugin',
+                 u'period', u'passing_relatedstudentids_map',
                  u'pluginsettings', u'user', u'message', u'createtime']))
         self.assertEqual(statuses[0]['period'], self.testhelper.sub_p1.id)
         self.assertEqual(statuses[0]['status'], 'ready')
@@ -130,3 +134,54 @@ class TestRestStatus(TestCase):
         self.testhelper.create_user('nobody')
         content, response = self._getinstanceas('nobody')
         self.assertEqual(response.status_code, 403)
+
+
+    def _getlistas(self, username):
+        self.client.login(username=username, password='test')
+        return self.client.rest_get(self._get_url())
+
+    def _createlistteststatus(self, period, status='ready'):
+        status = Status(
+            period = period,
+            status = status,
+            message = 'Test',
+            user = self.testhelper.p1admin,
+            plugin = 'devilry_qualifiesforexam_approved.all',
+            pluginsettings = 'tst'
+        )
+        status.full_clean()
+        status.save()
+        return status
+
+    def _test_getlist_as(self, username):
+        relatedStudent1 = self._create_relatedstudent('student1', 'Student One')
+        relatedStudent2 = self._create_relatedstudent('student2', 'Student Two')
+
+        self._createlistteststatus(self.testhelper.sub_oldperiod)
+        self._createlistteststatus(self.testhelper.sub_p1, status='notready')
+        import time
+        time.sleep(0.1)
+        status = self._createlistteststatus(self.testhelper.sub_p1)
+        status.students.create(relatedstudent=relatedStudent1, qualifies=True)
+        status.students.create(relatedstudent=relatedStudent2, qualifies=False)
+
+        content, response = self._getlistas(username)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(content), 1)
+        periodinfo = content[0]
+        self.assertEqual(periodinfo['id'], self.testhelper.sub_p1.id)
+        self.assertEqual(periodinfo['active_status']['id'], status.id)
+
+    def test_getlist_as_periodadmin(self):
+        self._test_getlist_as('p1admin')
+    def test_getlist_as_nodeadmin(self):
+        self._test_getlist_as('uniadmin')
+    def test_getlist_as_superuser(self):
+        self._test_getlist_as('superuser')
+
+    def test_getlist_as_nobody(self):
+        self.testhelper.create_user('nobody')
+        content, response = self._getlistas('nobody')
+        self._createlistteststatus(self.testhelper.sub_p1, status='notready')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(content), 0)

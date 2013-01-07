@@ -95,8 +95,9 @@ class StatusView(View):
             out[str(qualifies.relatedstudent.id)] = True
         return out
 
-    def _serialize_status(self, status):
-        return {
+    def _serialize_status(self, status, includestudents=True):
+        out = {
+            'id': status.id,
             'period': status.period.id,
             'status': status.status,
             'createtime': status.createtime,
@@ -104,27 +105,56 @@ class StatusView(View):
             'user': serialize_user(status.user),
             'plugin': status.plugin,
             'pluginsettings': status.pluginsettings,
-            'passing_relatedstudentids_map': self._create_passing_relatedstudentids_map(status)
+        }
+        if includestudents:
+            out['passing_relatedstudentids_map'] = self._create_passing_relatedstudentids_map(status)
+        return out
+
+    def _serialize_period(self, period):
+        return {
+            'id': period.id,
+            'short_name': period.short_name,
+            'long_name': period.long_name,
+            'subject': {
+                'id': period.parentnode.id,
+                'short_name': period.parentnode.short_name,
+                'long_name': period.parentnode.long_name
+            }
         }
 
     def _get_instance(self, id):
         period = get_object_or_404(Period, id=id)
         self._permissioncheck(period)
 
-        statusQry = period.qualifiedforexams_status.order_by('-createtime').all()
+        statusQry = period.qualifiedforexams_status.all()
         if len(statusQry) == 0:
             raise ErrorResponse(statuscodes.HTTP_404_NOT_FOUND,
                 {'detail': 'The period has no statuses'})
 
         grouper = GroupsGroupedByRelatedStudentAndAssignment(period)
-        return {
-            'id': period.id,
+        out = self._serialize_period(period)
+        out.update({
             'perioddata': grouper.serialize(),
             'statuses': [self._serialize_status(status) for status in statusQry]
-        }
+        })
+        return out
+
+    def _listserialize_period(self, period):
+        statuses = period.qualifiedforexams_status.all()[:1]
+        if len(statuses) == 0:
+            active_status = None
+        else:
+            active_status = statuses[0]
+        out = self._serialize_period(period)
+        out.update({'active_status': self._serialize_status(active_status, includestudents=False)})
+        return out
 
     def _get_list(self):
-        return []
+        qry = Period.where_is_admin_or_superadmin(self.request.user)
+        qry = qry.filter(Period.q_is_active())
+        qry = qry.prefetch_related('qualifiedforexams_status')
+        qry = qry.select_related('parentnode')
+        return [self._listserialize_period(period) for period in qry]
 
     def get(self, request, id=None):
         if id:
