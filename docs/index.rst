@@ -2,17 +2,22 @@
 Devilry developer documentation overview
 ======================================================================
 
+
+.. warning::
+    This documentation is for the upcoming Devilry 1.2.1 release.
+    The docs for the current stable version is
+    `here <http://devilry.org/devilry-django/dev/>`_.
+
+
 .. note::
     Welcome to the Devilry developer documentation.
     See http://devilry.org/ for general information about Devilry,
     and https://github.com/devilry/devilry-django for the code.
 
 
-
 #######################################################################
 Common topics (see Table of contents for all topics)
 #######################################################################
-
 
 
 Core
@@ -65,6 +70,13 @@ Apps
 
 
 #######################################################################
+Releases
+#######################################################################
+
+* :ref:`releasenoteslisting`
+
+
+#######################################################################
 Table of contents
 #######################################################################
 .. toctree::
@@ -95,6 +107,8 @@ Table of contents
     i18n
     javascript
     pycharm
+
+    releasenoteslisting
 
 
 
