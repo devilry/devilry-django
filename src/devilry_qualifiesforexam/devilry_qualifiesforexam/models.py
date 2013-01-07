@@ -19,9 +19,15 @@ class Status(models.Model):
     plugin = models.CharField(max_length=500)
     pluginsettings = models.TextField(null=True, blank=True)
 
+    class Meta:
+        ordering = ['-createtime']
+
 
 class QualifiesForFinalExam(models.Model):
     relatedstudent = models.OneToOneField(RelatedStudent)
     status = models.ForeignKey(Status,
         related_name='students')
     qualifies = models.BooleanField()
+
+    class Meta:
+        unique_together = ('relatedstudent', 'status')

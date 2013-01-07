@@ -14,7 +14,14 @@ class TestRestStatus(TestCase):
             subjects=['sub'],
             periods=['p1:admin(p1admin)'])
         self.client = RestClient()
-        self.url = '/devilry_qualifiesforexam/rest/status'
+        self.url = '/devilry_qualifiesforexam/rest/status/'
+        self.testhelper.create_superuser('superuser')
+
+    def _get_url(self, periodid=None):
+        if periodid:
+            return '{0}{1}'.format(self.url, periodid)
+        else:
+            return self.url
 
     def _create_relatedstudent(self, username, fullname=None):
         user = getattr(self.testhelper, username, None)
@@ -25,7 +32,7 @@ class TestRestStatus(TestCase):
 
     def _postas(self, username, data):
         self.client.login(username=username, password='test')
-        return self.client.rest_post(self.url, data)
+        return self.client.rest_post(self._get_url(), data)
 
     def _test_post_as(self, username):
         self.assertEquals(Status.objects.count(), 0)
@@ -61,5 +68,65 @@ class TestRestStatus(TestCase):
         self._test_post_as(self.testhelper.uniadmin)
 
     def test_post_as_superuser(self):
-        self.testhelper.create_superuser('superuser')
         self._test_post_as(self.testhelper.superuser)
+
+    def test_post_as_nobody(self):
+        self.testhelper.create_user('nobody')
+        content, response = self._postas('nobody', {
+            'period': self.testhelper.sub_p1.id,
+            'status': 'ready',
+            'message': 'This is a test',
+            'plugin': 'devilry_qualifiesforexam_approved.all',
+            'pluginsettings': 'test',
+            'passing_relatedstudentids': [10]
+        })
+        self.assertEqual(response.status_code, 403)
+
+
+    def _getinstanceas(self, username):
+        self.client.login(username=username, password='test')
+        return self.client.rest_get(self._get_url(self.testhelper.sub_p1.id))
+
+    def _test_getinstance_as(self, username):
+        relatedStudent1 = self._create_relatedstudent('student1', 'Student One')
+        relatedStudent2 = self._create_relatedstudent('student2', 'Student Two')
+        status = Status(
+            period = self.testhelper.sub_p1,
+            status = 'ready',
+            message = 'Test',
+            user = getattr(self.testhelper, username),
+            plugin = 'devilry_qualifiesforexam_approved.all',
+            pluginsettings = 'tst'
+        )
+        status.save()
+        status.students.create(relatedstudent=relatedStudent1, qualifies=True)
+        status.students.create(relatedstudent=relatedStudent2, qualifies=False)
+
+        content, response = self._getinstanceas(username)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(set(content.keys()), set(['id', 'perioddata', 'statuses']))
+        self.assertEqual(content['id'], self.testhelper.sub_p1.id)
+        statuses = content['statuses']
+        self.assertEqual(len(statuses), 1)
+        self.assertEqual(set(statuses[0].keys()),
+            set([u'status', u'plugin', u'period', u'passing_relatedstudentids_map',
+                 u'pluginsettings', u'user', u'message', u'createtime']))
+        self.assertEqual(statuses[0]['period'], self.testhelper.sub_p1.id)
+        self.assertEqual(statuses[0]['status'], 'ready')
+        self.assertEqual(statuses[0]['message'], 'Test')
+        self.assertEqual(statuses[0]['plugin'], 'devilry_qualifiesforexam_approved.all')
+        self.assertEqual(statuses[0]['pluginsettings'], 'tst')
+        self.assertIn(str(relatedStudent1.id), statuses[0]['passing_relatedstudentids_map'])
+
+
+    def test_getinstance_as_periodadmin(self):
+        self._test_getinstance_as('p1admin')
+    def test_getinstance_as_nodeadmin(self):
+        self._test_getinstance_as('uniadmin')
+    def test_getinstance_as_superuser(self):
+        self._test_getinstance_as('superuser')
+
+    def test_getinstanceas_nobody(self):
+        self.testhelper.create_user('nobody')
+        content, response = self._getinstanceas('nobody')
+        self.assertEqual(response.status_code, 403)

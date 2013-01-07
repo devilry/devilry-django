@@ -8,7 +8,7 @@ from .status import StatusView
 
 urlpatterns = patterns('devilry_qualifiesforexam.rest',
                        url(r'^aggregatedperiod/(?P<id>\d+)$', AggregatePeriod.as_view()),
-                       url(r'^status$', StatusView.as_view()),
+                       url(r'^status/(?P<id>\d+)?$', StatusView.as_view()),
                        url(r'^plugins$', Plugins.as_view()),
                        url(r'^preview/(?P<id>\d+)$', Preview.as_view())
                       )
