@@ -22,7 +22,7 @@ class StatusForm(forms.ModelForm):
         model = Status
         fields = ['period', 'status', 'message', 'plugin', 'pluginsettings']
 
-    passing_relatedstudentids = ListOfTypedField(coerce=int)
+    passing_relatedstudentids = ListOfTypedField(coerce=int, required=False)
 
 
 class StatusResource(FormResource):
