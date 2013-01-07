@@ -8,6 +8,9 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
     stores: [
         'RelatedStudents'
     ],
+    models: [
+        'Status'
+    ],
 
     requires: [
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
@@ -16,53 +19,54 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
 
 
     refs: [{
-        ref: 'preview',
-        selector: 'preview'
+        ref: 'overview',
+        selector: 'showstatus'
     }, {
-        ref: 'previewGrid',
-        selector: 'previewgrid'
+        ref: 'detailsGrid',
+        selector: 'statusdetailsgrid'
     }],
 
     init: function() {
         this.control({
-            'viewport preview previewgrid': {
+            'viewport showstatus statusdetailsgrid': {
                 render: this._onRender
-            },
-//            'viewport preview #saveButton': {
-//                click: this._onSave
-//            }
+            }
+        });
+        this.mon(this.getStatusModel().proxy, {
+            scope: this,
+            exception: this._onProxyError
         });
     },
 
     _onRender: function() {
-        console.log('Render');
-        this.periodid = this.getPreview().periodid;
-//        this._loadPreviewModel();
+        this.periodid = this.getOverview().periodid;
+        this._loadStatusModel();
     },
 
-    _loadPreviewModel: function() {
-        this.getPreviewModel().setParamsAndLoad(this.periodid, this.pluginsessionid, {
+    _loadStatusModel: function() {
+        this.getStatusModel().load(this.periodid, {
             scope: this,
             callback: function(records, op) {
                 if(op.success) {
-                    this._onPreviewModelLoadSuccess(records);
+                    this._onStatusModelLoadSuccess(records);
                 }
                 // NOTE: Errors are handled in _onProxyError
             }
         });
     },
 
-    _onPreviewModelLoadSuccess: function(record) {
-        this.previewRecord = record;
-        var perioddata = this.previewRecord.get('perioddata');
-        var passing_relatedstudentids = this.previewRecord.get('pluginoutput').passing_relatedstudentids;
-        var passing_relatedstudentids_map = Ext.Array.toMap(passing_relatedstudentids); // Turn into object for fast lookup
-        var previewGrid = this.getPreviewGrid();
-        previewGrid.passing_relatedstudentids_map = passing_relatedstudentids_map;
-        previewGrid.addColumnForEachAssignment(perioddata.assignments);
-        previewGrid.addAssignmentSorters(perioddata.assignments);
-        previewGrid.sortByQualifiesQualifiedFirst();
-        this._loadRelatedStudentsIntoGridStore(perioddata.relatedstudents);
+    _onStatusModelLoadSuccess: function(record) {
+        this.statusRecord = record;
+        console.log(this.statusRecord);
+        var status = this.statusRecord.getActiveStatus();
+        var passing_relatedstudentids_map = status.passing_relatedstudentids_map;
+        console.log(passing_relatedstudentids_map);
+        var grid = this.getDetailsGrid();
+        grid.passing_relatedstudentids_map = passing_relatedstudentids_map;
+//        previewGrid.addColumnForEachAssignment(perioddata.assignments);
+//        previewGrid.addAssignmentSorters(perioddata.assignments);
+//        previewGrid.sortByQualifiesQualifiedFirst();
+//        this._loadRelatedStudentsIntoGridStore(perioddata.relatedstudents);
     },
 
     _loadRelatedStudentsIntoGridStore: function(relatedstudents) {
