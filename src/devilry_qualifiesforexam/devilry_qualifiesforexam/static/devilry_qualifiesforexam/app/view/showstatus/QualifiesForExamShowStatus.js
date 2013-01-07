@@ -9,8 +9,7 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
      */
 
     requires: [
-        'devilry_qualifiesforexam.view.showstatus.ShowDetailsGrid',
-        'devilry_extjsextras.DatetimeHelpers'
+        'devilry_qualifiesforexam.view.showstatus.ShowDetailsGrid'
     ],
 
 
@@ -33,17 +32,16 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
                     '{statustext}',
                 '</span>',
                 ' <small class="muted createtime">(',
-                    gettext('Savetime'), ': {[this.formatDatetime(values.createtime)]}',
+                    gettext('Saved {savetime} by {saveuser}'),
                 ')</small>',
             '</p>',
             '<tpl if="message">',
-                '<div class="alert alert-info" style="white-space:pre-line;">{message}</div>',
+                '<div class="alert alert-info" style="white-space:pre-line;">',
+                    '<strong>', gettext('Message') ,':<br/></strong>',
+                    '{message}',
+                '</div>',
             '</tpl>',
         '</tpl>', {
-            formatDatetime:function (dt) {
-                var dateobj = devilry_extjsextras.DatetimeHelpers.parseRestformattedDatetime(dt);
-                return devilry_extjsextras.DatetimeHelpers.formatDateTimeLong(dateobj);
-            },
             getClassForStatus: function (status) {
                 var map = {
                     ready: 'success',

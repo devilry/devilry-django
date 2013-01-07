@@ -102,7 +102,10 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
         var data = {
             loading: false,
             qualifiedstudents: qualifiedstudents,
-            totalstudents: totalstudents
+            totalstudents: totalstudents,
+            savetime: this.statusRecord.formatCreatetime(status.createtime),
+            saveuser: Ext.String.format('<a href="mailto:{0}">{1}</a>',
+                status.user.email, status.user.full_name)
         };
         Ext.apply(data, status);
         this.getSummary().update(data);

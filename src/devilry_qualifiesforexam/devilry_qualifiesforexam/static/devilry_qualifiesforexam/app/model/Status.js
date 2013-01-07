@@ -1,5 +1,8 @@
 Ext.define('devilry_qualifiesforexam.model.Status', {
     extend: 'Ext.data.Model',
+    requires: [
+        'devilry_extjsextras.DatetimeHelpers'
+    ],
 
     idProperty: 'id',
     fields: [
@@ -24,7 +27,6 @@ Ext.define('devilry_qualifiesforexam.model.Status', {
         }
     },
 
-
     getActiveStatus: function () {
         if(!Ext.isEmpty(this.get('active_status'))) {
             return this.get('active_status');
@@ -33,5 +35,10 @@ Ext.define('devilry_qualifiesforexam.model.Status', {
         } else {
             return null;
         }
+    },
+
+    formatCreatetime: function (createtime) {
+        var dateobj = devilry_extjsextras.DatetimeHelpers.parseRestformattedDatetime(createtime);
+        return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(dateobj);
     }
 });
