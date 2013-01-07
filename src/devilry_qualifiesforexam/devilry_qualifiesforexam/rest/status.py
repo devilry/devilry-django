@@ -153,7 +153,8 @@ class StatusView(View):
 
     def _get_instance(self, id):
         try:
-            period = Period.objects.get(id=id)
+            qry = Period.objects.select_related('parentnode')
+            period = qry.get(id=id)
         except Period.DoesNotExist:
             raise ErrorResponse(statuscodes.HTTP_404_NOT_FOUND,
                 {'detail': 'The period with ID {id} does not exist'.format(id=id)})
