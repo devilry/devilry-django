@@ -8,7 +8,7 @@ from devilry_settings.i18n import get_javascript_catalog_packages
 from .views import AppView
 
 
-i18n_packages = get_javascript_catalog_packages('devilry_header', 'devilry.apps.core')
+i18n_packages = get_javascript_catalog_packages('devilry_extjsextras', 'devilry_header', 'devilry.apps.core')
 
 
 

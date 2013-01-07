@@ -10,31 +10,43 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
 
     requires: [
         'devilry_qualifiesforexam.view.showstatus.ShowDetailsGrid',
-        'devilry_extjsextras.PrimaryButton'
+        'devilry_extjsextras.DatetimeHelpers'
     ],
 
 
     summaryTpl: [
         '<h1 style="margin: 0 0 10px 0;">',
-            gettext('Qualfied for final exam'),
+            gettext('Qualified for final exam'),
         '</h1>',
         '<tpl if="loading">',
             '<p class="muted">', gettext('Loading'), '...</p>',
         '<tpl else>',
-            '<p class="muted status-numberedsummary">',
+            '<p class="status-numberedsummary">',
                 gettext('{qualifiedstudents}/{totalstudents} students qualifies for final exams.'),
+                ' <small class="muted">',
+                    gettext('See the table below for details. The table includes detailed information about the results of each student for all assignments. This information may not match the information used to calculate if the students qualify for exams if students have been given new feedback after the status was saved.'),
+                '</small>',
             '</p>',
             '<p>',
                 '<span class="muted">', gettext('Status'), ':</span> ',
                 '<span class="status-text label label-success">',
                     '{statustext}',
                 '</span>',
+                ' <small class="muted createtime">(',
+                    gettext('Savetime'), ': {[this.formatDatetime(values.createtime)]}',
+                ')</small>',
             '</p>',
             '<tpl if="message">',
                 '<h2>', gettext('Message'), '</h2>',
                 '<p>{message}</p>',
             '</tpl>',
-        '</tpl>'
+        '</tpl>', {
+            formatDatetime:function (dt) {
+                var dateobj = devilry_extjsextras.DatetimeHelpers.parseRestformattedDatetime(dt);
+                console.log(devilry_extjsextras.DatetimeHelpers.formatDateTimeLong(dateobj), dateobj);
+                return devilry_extjsextras.DatetimeHelpers.formatDateTimeLong(dateobj);
+            }
+        }
     ],
 
     initComponent: function() {
@@ -57,6 +69,23 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
                     border: false,
                     data: {
                         loading: true
+                    },
+                    dockedItems: {
+                        xtype: 'toolbar',
+                        dock: 'bottom',
+                        ui: 'footer',
+                        items: [{
+                            xtype: 'button',
+                            scale: 'medium',
+                            text: gettext('Change status'),
+                            menu: [{
+                                text: gettext('Retract - change the status to "Not ready for export"'),
+                                itemId: 'retractButton'
+                            }, {
+                                text: gettext('Update - re-run the qualified for final exams wizard'),
+                                itemId: 'updateButton'
+                            }]
+                        }]
                     }
                 }]
             }, {
