@@ -29,7 +29,8 @@ Ext.application({
 
     controllers: [
         'QualifiesForExamSelectPluginController',
-        'QualifiesForExamPreviewController'
+        'QualifiesForExamPreviewController',
+        'QualifiesForExamShowStatusController'
     ],
 
     refs: [{
@@ -106,8 +107,9 @@ Ext.application({
         }
 
         // Setup routes
-        this.route.add('/wizard/:periodid/selectplugin', 'selectplugin');
-        this.route.add('/wizard/:periodid/preview/:pluginsessionid', 'preview');
+        this.route.add('/:periodid/selectplugin', 'selectplugin');
+        this.route.add('/:periodid/preview/:pluginsessionid', 'preview');
+        this.route.add('/:periodid/showstatus', 'showstatus');
         this.route.start();
     },
 
@@ -133,6 +135,14 @@ Ext.application({
             xtype: 'preview',
             periodid: periodid,
             pluginsessionid: pluginsessionid
+        });
+    },
+
+    showstatus: function(routeInfo, periodid) {
+        this.breadcrumbs.setHome();
+        this.setPrimaryContent({
+            xtype: 'showstatus',
+            periodid: periodid
         });
     }
 });
