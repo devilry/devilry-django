@@ -111,7 +111,6 @@ class StatusView(View):
                 )
                 qualifies.full_clean()
                 qualifies.save()
-        print period.qualifiedforexams_status.all()
         return Response(201, '')
 
 
