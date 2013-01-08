@@ -153,7 +153,7 @@ The example above is quite simple, but it can be made even simpler if you use
         def student_qualifies_for_exam(self, aggregated_relstudentinfo):
             # Test if the student in the AggreatedRelatedStudentInfo qualifies.
             # Typically something like this (all students must pass all assignments):
-            for grouplist in aggregated_relstudentinfo.iter_groups_by_assignment():
+            for assignmentid, grouplist in aggregated_relstudentinfo.assignments.iteritems():
                 feedback = grouplist.get_feedback_with_most_points()
                 if not feedback or not feedback.is_passing_grade:
                     return False
