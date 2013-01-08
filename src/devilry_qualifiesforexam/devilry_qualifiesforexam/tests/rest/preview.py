@@ -19,13 +19,6 @@ class TestRestPreview(TestCase):
     def _get_url(self, periodid):
         return reverse('devilry_qualifiesforexam-rest-preview', kwargs={'id': periodid})
 
-    def _create_relatedstudent(self, username, fullname=None):
-        user = getattr(self.testhelper, username, None)
-        if not user:
-            user = self.testhelper.create_user(username, fullname=fullname)
-        relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user)
-        return relstudent
-
     def _getas(self, username, periodid, previewdata, pluginsessionid='tst'):
         self.client.login(username=username, password='test')
         session = self.client.session
@@ -35,8 +28,6 @@ class TestRestPreview(TestCase):
             pluginsessionid=pluginsessionid)
 
     def _test_getas(self, username):
-        relatedStudent1 = self._create_relatedstudent('student1', 'Student One')
-        relatedStudent2 = self._create_relatedstudent('student2', 'Student Two')
         content, response = self._getas(username, self.testhelper.sub_p1.id,
             PreviewData(passing_relatedstudentids=[1, 2, 4]))
         self.assertEqual(response.status_code, 200)
