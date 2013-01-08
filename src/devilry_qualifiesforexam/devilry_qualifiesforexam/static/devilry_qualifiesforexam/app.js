@@ -22,7 +22,7 @@ Ext.application({
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',
         'devilry_header.Header',
-        'devilry_header.Breadcrumbs',
+        'devilry_qualifiesforexam.utils.Breadcrumbs',
 //        'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.FloatingAlertmessageList'
     ],
@@ -44,14 +44,7 @@ Ext.application({
     },
 
     _createViewport: function() {
-
-        // TODO: Add breadcrumb back to subjectadmin using data from the Django view (which is added via the view context)
-        this.breadcrumbs = Ext.widget('breadcrumbs', {
-            defaultBreadcrumbs: [{
-                text: gettext("Dashboard"),
-                url: '#'
-            }]
-        });
+        this.breadcrumbs = Ext.create('devilry_qualifiesforexam.utils.Breadcrumbs');
 
         this.primaryContentContainer = Ext.widget('container', {
             region: 'center',

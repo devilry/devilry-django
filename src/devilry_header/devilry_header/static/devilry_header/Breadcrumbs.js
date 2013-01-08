@@ -73,10 +73,25 @@ Ext.define('devilry_header.Breadcrumbs', {
         }, this);
     },
 
-    add: function(url, text) {
+    /**
+     * Called every time an url is added to the breadcrumb. Override it
+     * if you want to change the URLs (I.E.: Add a prefix).
+     */
+    formatUrl: function (url, meta) {
+        return url;
+    },
+
+    /**
+     * Add breadcrumb.
+     * @param url The URL of the breadcrumb.
+     * @param text The text for the breadcrumb.
+     * @param meta Metadata that can be used by other systems when to customize the breadcrumb.
+     */
+    add: function(url, text, meta) {
         this.breadcrumbs.push({
-            url: url,
-            text: text
+            url: this.formatUrl(url),
+            text: text,
+            meta: meta
         });
     },
 
