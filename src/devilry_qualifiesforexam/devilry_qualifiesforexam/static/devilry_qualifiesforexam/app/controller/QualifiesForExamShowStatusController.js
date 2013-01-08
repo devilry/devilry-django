@@ -1,6 +1,10 @@
 Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusController', {
     extend: 'Ext.app.Controller',
 
+    mixins: [
+        'devilry_qualifiesforexam.controller.PeriodControllerMixin'
+    ],
+
     views: [
         'showstatus.QualifiesForExamShowStatus'
     ],
@@ -55,6 +59,15 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
 
     _onRender: function() {
         this.periodid = this.getOverview().periodid;
+        this.loadPeriod(this.periodid);
+    },
+
+    getAppBreadcrumbs: function () {
+        var text = gettext('Qualifies for final exams');
+        return [[], text];
+    },
+
+    onLoadPeriodSuccess: function () {
         this._loadStatusModel();
     },
 

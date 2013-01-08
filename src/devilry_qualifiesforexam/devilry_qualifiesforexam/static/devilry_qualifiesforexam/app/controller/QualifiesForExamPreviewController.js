@@ -1,6 +1,10 @@
 Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewController', {
     extend: 'Ext.app.Controller',
 
+    mixins: [
+        'devilry_qualifiesforexam.controller.PeriodControllerMixin'
+    ],
+
     views: [
         'preview.QualifiesForExamPreview'
     ],
@@ -49,8 +53,17 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
     _onRender: function() {
         this.periodid = this.getPreview().periodid;
         this.pluginsessionid = this.getPreview().pluginsessionid;
-        this._loadPreviewModel();
         this.application.setTitle(gettext('Preview and confirm'));
+        this.loadPeriod(this.periodid);
+    },
+
+    getAppBreadcrumbs: function () {
+        var text = gettext('Qualifies for final exams - preview?');
+        return [[], text];
+    },
+
+    onLoadPeriodSuccess: function () {
+        this._loadPreviewModel();
     },
 
     _loadPreviewModel: function() {
