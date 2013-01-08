@@ -15,7 +15,8 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
 
     requires: [
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
-        'devilry_extjsextras.HtmlErrorDialog'
+        'devilry_qualifiesforexam.utils.CreateStatus',
+        'devilry_qualifiesforexam.utils.UrlLookup'
     ],
 
 
@@ -24,7 +25,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
         selector: 'preview'
     }, {
         ref: 'previewGrid',
-        selector: 'previewgrid'
+        selector: 'preview previewgrid'
     }],
 
     init: function() {
@@ -105,7 +106,8 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
         });
     },
     _onSaveSuccess:function (response) {
-        console.log('Success');
+        this.application.route.navigate(
+            devilry_qualifiesforexam.utils.UrlLookup.showstatus(this.periodid));
     }
 });
 

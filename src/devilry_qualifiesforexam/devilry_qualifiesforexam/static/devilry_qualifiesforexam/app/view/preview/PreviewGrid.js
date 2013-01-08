@@ -52,6 +52,9 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
     },
 
     _renderQualifiesColumn: function(value, meta, record) {
+        if(Ext.isEmpty(this.passing_relatedstudentids_map)) {
+            return '';
+        }
         return this.qualifiesColTplCompiled.apply({
             qualifies: this._qualifiesForFinalExam(record)
         });

@@ -22,7 +22,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.QualifiesForExamPreview' ,{
             gettext('Preview and confirm'),
         '</h1>',
         '<p>',
-            gettext('Please click the save-button below when you are ready proceed. The table below shows the result of your choices.'),
+            gettext('The table shows the result of your choices.'),
         '</p>'
     ],
 
@@ -44,15 +44,23 @@ Ext.define('devilry_qualifiesforexam.view.preview.QualifiesForExamPreview' ,{
                     tpl: this.summaryTpl,
                     border: false,
                     data: {},
-                    fbar: [{
-                        xtype: 'button',
-                        itemId: 'backButton',
-                        text: gettext('Back')
-                    }, {
-                        xtype: 'primarybutton',
-                        itemId: 'saveButton',
-                        text: gettext('Save')
-                    }]
+                    dockedItems: {
+                        xtype: 'toolbar',
+                        dock: 'bottom',
+                        ui: 'footer',
+                        defaults: {
+                            minWidth: 100
+                        },
+                        items: [{
+                            xtype: 'button',
+                            itemId: 'backButton',
+                            text: gettext('Back')
+                        }, {
+                            xtype: 'primarybutton',
+                            itemId: 'saveButton',
+                            text: gettext('Save')
+                        }]
+                    }
                 }]
             }, {
                 xtype: 'previewgrid',
