@@ -35,6 +35,9 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
             },
             'viewport preview #saveButton': {
                 click: this._onSave
+            },
+            'viewport preview #backButton': {
+                click: this._onBack
             }
         });
         this.mon(this.getPreviewModel().proxy, {
@@ -47,6 +50,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
         this.periodid = this.getPreview().periodid;
         this.pluginsessionid = this.getPreview().pluginsessionid;
         this._loadPreviewModel();
+        this.application.setTitle(gettext('Preview and confirm'));
     },
 
     _loadPreviewModel: function() {
@@ -108,6 +112,10 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
     _onSaveSuccess:function (response) {
         this.application.route.navigate(
             devilry_qualifiesforexam.utils.UrlLookup.showstatus(this.periodid));
+    },
+
+    _onBack:function () {
+        window.history.go(-3);
     }
 });
 
