@@ -78,8 +78,6 @@ class NextButton(Submit):
         super(NextButton, self).__init__('submit', _('Next'))
 
 class BackButton(HTML):
-    field_classes = 'btn btn-large'
-
     def __init__(self, backurl):
         html = '<a href="{url}" class="btn btn-large" style="margin-right: 5px;">{label}</a>'.format(
             url = backurl,
