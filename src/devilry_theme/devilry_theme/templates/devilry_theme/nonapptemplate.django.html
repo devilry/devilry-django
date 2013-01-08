@@ -1,0 +1,17 @@
+{% extends "devilry_theme/apptemplate.django.html" %}
+{% comment %}
+This template is for views that are not ExtJS apps. They may still use ExtJS, but they
+are not built as separate apps. The devilry header is included at the top of the page,
+so you should ensure that you have a 40px margin at the top of your page to avoid that
+the header overlaps with your content.
+
+{% endcomment %}
+
+{# Override to add data at the beginning at the <head>-tag #}
+{% block head-pre %}{% endblock %}
+
+{# Override to add data at the end at the <head>-tag #}
+{% block head-post %}{% endblock %}
+
+{# Override to add data to the <body>. #}
+{% block body %}{% endblock %}
