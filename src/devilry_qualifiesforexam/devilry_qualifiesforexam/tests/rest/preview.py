@@ -12,10 +12,7 @@ class TestRestPreview(TestCase):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
             subjects=['sub'],
-            periods=[
-                'oldperiod:admin(periodadmin):begins(-12):ends(2)',
-                'p1:admin(periodadmin):begins(-3):ends(6)',
-                'p2:admin(periodadmin):begins(-1):ends(6)'])
+            periods=['p1:admin(periodadmin):begins(-3):ends(6)'])
         self.client = RestClient()
         self.testhelper.create_superuser('superuser')
 
