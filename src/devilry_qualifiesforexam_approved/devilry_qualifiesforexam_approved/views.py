@@ -4,9 +4,6 @@ from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsG
 from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamViewMixin
 
 
-# TODO: Auth
-
-
 class AllApprovedView(RedirectView, QualifiesForExamViewMixin):
     permanent = False
     query_string = True
@@ -27,7 +24,7 @@ class AllApprovedView(RedirectView, QualifiesForExamViewMixin):
         return passing_relatedstudentsids
 
     def get(self, request):
-        self.get_plugin_input() # set self.periodid and self.pluginsessionid
+        self.get_plugin_input_and_authenticate() # set self.periodid and self.pluginsessionid
         self.save_plugin_output(self._get_passing_students())
         return super(AllApprovedView, self).get(request)
 

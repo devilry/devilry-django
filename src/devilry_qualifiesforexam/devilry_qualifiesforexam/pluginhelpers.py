@@ -1,11 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django.core.urlresolvers import reverse
-from urllib import urlencode
+from django.core.exceptions import PermissionDenied
 
 from devilry.apps.core.models import Period
-
-# TODO: Auth
-
 
 
 def create_sessionkey(pluginsessionid):
@@ -25,8 +22,10 @@ class PreviewData(object):
         }
 
 class QualifiesForExamViewMixin(object):
-    def get_plugin_input(self):
+    def get_plugin_input_and_authenticate(self):
         self.periodid = self.request.GET['periodid']
+        if not Period.where_is_admin_or_superadmin(self.request.user).filter(id=self.periodid).exists():
+            raise PermissionDenied()
         self.period = get_object_or_404(Period, pk=self.periodid)
         self.pluginsessionid = self.request.GET['pluginsessionid']
 
