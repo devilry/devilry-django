@@ -6,9 +6,7 @@
     {% block meta_http_equiv %}
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     {% endblock %}
-    {% block title %}
-        <title>{{ title }}</title>
-    {% endblock %}
+    <title>{% block title %}{{ title }}{% endblock %}</title>
 
     {% block favicons %}
         <link rel="apple-touch-icon" href="{% static "devilry_theme/resources/favicons/apple-touch-icon.png" %}" />

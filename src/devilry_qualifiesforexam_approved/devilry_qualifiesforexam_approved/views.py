@@ -38,7 +38,7 @@ class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
         class SelectAssignmentForm(forms.Form):
             assignments = forms.MultipleChoiceField(
                 required=True,
-                label=_('Assignments that students have to pass:'),
+                label=_('Select assignments that students must pass to qualify for final exams'),
                 widget=forms.CheckboxSelectMultiple,
                 choices=choices)
 
