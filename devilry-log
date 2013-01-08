@@ -272,3 +272,8 @@ ExtJS Stores
 * The nodeadmin-application seemed not to discover the bootstrap stylesheets, while they were in order in other apps. I assumed that the reason for that was some compass routine that wasn't ran, but it was actually the template file that was changed for the subjectadmin application.
 * Copied the subjectadmin's django.app template into nodeadmin. This fixes the bootstrap classes.
 * The fonts are dynamically loaded.
+* For each new application a folder by the name of 'resources' must be added to each static folder alongside the ext.js script folders and app.js. After the creation (and installing compass) run:
+** compass install compass
+* The previous point will create stylesheet, scss folders to store the scss sources and their compiled stylesheet counterparts.
+* Run 'compass watch' in the resources folder to start monitorin and compiling changes.
+* 

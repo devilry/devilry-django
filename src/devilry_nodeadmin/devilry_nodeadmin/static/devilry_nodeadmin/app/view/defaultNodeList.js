@@ -4,7 +4,7 @@ Ext.define('devilry_nodeadmin.view.defaultNodeList', {
     cls: 'bootstrap',
     tpl: [
         '<div class="bootstrap">',
-            '<small>Denne listen viser kun nodene der du er administrator. Klikk på elementene for å se',
+            '<small>Denne listen viser kun de nodene du administrerer. Klikk på elementene for å se',
                 ' de underliggende nodene, og bruk tilbakeknappen for å gå en node opp i hierarkiet.</small>',
             '<tpl for=".">',
                 '<div class="bootstrap node" style="padding-bottom: 10px;">',

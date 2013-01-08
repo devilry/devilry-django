@@ -1,7 +1,7 @@
 Ext.define('devilry_nodeadmin.view.nodeDetailsOverview', {
     extend: 'Ext.view.View',
     alias: 'widget.nodedetailsoverview',
-    cls: 'bootstrap nodedetailsoverview',
+    cls: 'bootstrap',
     tpl: [
         '<tpl for=".">',
         '<h1>About <i>{ short_name }</i></h1>',
@@ -12,14 +12,15 @@ Ext.define('devilry_nodeadmin.view.nodeDetailsOverview', {
         '<h4>Kurs <small>Nede ser du kursene som hører til dette nivået</small></h4>',
         '<dl>',
         '<tpl for="subjects">',
-        '<li><a href="/devilry_subjectadmin/#/subject/{ id }/">{ long_name }</a></li>',
+        '<li class="course"><a href="/devilry_subjectadmin/#/subject/{ id }/">{ long_name }</a></li>',
         '</tpl>',
         '</ul>',
-        '<small></small>'
+        '<div style="">Lenkene til hver kurs tar deg et sted hvor du kan flytte fristene, endre gruppetilhørighet, ',
+            'og </div>',
         '</tpl>'
     ],
 
-    itemSelector: 'div.node',
+    itemSelector: 'li .course',
 
     initComponent: function() {
         this.store = Ext.create( 'devilry_nodeadmin.store.NodeDetails' );

@@ -1,7 +1,7 @@
 Ext.define('devilry_nodeadmin.view.nodeChildrenList', {
     extend: 'Ext.view.View',
     alias: 'widget.nodechildrenlist',
-    cls: 'nodechildrenlist',
+    cls: 'bootstrap',
     tpl: [
         '<div class="bootstrap">',
         '<h1>Contains</h1>',
