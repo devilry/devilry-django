@@ -50,12 +50,21 @@ Ext.define('devilry_header.Breadcrumbs', {
      * */
     set: function(breadcrumbs, current) {
         this.clear();
-        if(this.defaultBreadcrumbs) {
-            this.addMany(this.defaultBreadcrumbs);
+        if(this.getDefaultBreadcrumbs()) {
+            this.addMany(this.getDefaultBreadcrumbs());
         }
         this.addMany(breadcrumbs);
         this.add('', current);
         this.draw();
+    },
+
+    /**
+     * Get the default breadcrumbs. You can override this to generate
+     * ``defaultBreadcrumbs`` dynamically. Defaults to returning
+     * ``this.defaultBreadcrumbs``.
+     */
+    getDefaultBreadcrumbs:function () {
+        return this.defaultBreadcrumbs;
     },
 
     addMany: function(breadcrumbs) {
