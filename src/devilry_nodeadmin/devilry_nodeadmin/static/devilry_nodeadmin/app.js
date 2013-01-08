@@ -45,7 +45,9 @@ Ext.application({
         'devilry_nodeadmin.view.nodeDetailsOverview'
     ],
 
-
+    controllers: [
+        'NodeBrowser'
+    ],
 
     _setupRoutes: function() {
         this.route = Ext.create('devilry_extjsextras.Router', this );

@@ -239,3 +239,29 @@ ExtJS Stores
 * No error message if the date is edited and is set prior to the start date.
 * Saved url-listing as API guide in devenv/urls.txt
 * Suggest making the runserver by django_devserver to be optional.
+
+
+2012-01-08
+* I seem not to be getting access to bootstrap at all. Probably need to install Ruby and SASS.
+* So point of controls is to initialize references and through them, render certain events on particular events. The one I am examining now at this point also initiates the store and renders in in a view.
+* (?) How is the ubuntu-font handled and what are the fallbacks in case it is not embedded and loaded dynamically.
+* The question of how to inject an id into a store proxy's url arises again, but this time in the context of a controller. The solution seems to be a function inside each view corresponding to the url parameter. In subjectadmin this is done in following manner:
+** devilry_subjectadmin:    
+**  setAssignment: function(assignment_id) {
+**    this.proxy.url = 
+**      Ext.String.format(this.proxy.urlpatt, assignment_id);
+**  },
+* And again, what is 'urlpatt'? It doesn't sound like something from stdlib! Here's an explanation extracted from the bellows of 'RelatedStudentRo.js':
+** urlpatt: D...s.DEVILRY_URLPATH_PREFIX 
+**   + '/devilry_subjectadmin/rest/relatedstudent_assignment_ro/{0}/',
+** url: null, // We use baseurl to dynamically set the url from urlpatt
+* 'baseurl' seems to be defined in an abstract store that RelatedStudentRo inherits from. Not sure how to interfere with its inner workings, or whether I should call them, but it seems to be sufficient to override the buildUrl function of the store AS LONG (!) as you call the super-class 'for additional processing like adding cache-buster strings'.
+* There seems to be no buildUrl override in the examplary abstract classes I am consulting, so it might be that 'this.urlpatt' is an overridable property. According to the source it is not, neither is it in the parent. 
+* It appears to be that proxy need to have parameter type: 'rest', so maybe I should take a look at RestProxy-class
+* Adding type: 'rest' to all store proxies.
+* The buildUrl-function seems to be residing in: Ext.data.proxy.Server.buildUrl():
+* "Ext JS 4.1.1a is also available under the GPLv3 for open source projects, which may require the release of your code.", counterpoint: Sencha is a member of Free Software Foundation.
+* "This is a private utility class for internal use by the framework. Don't rely on its existence."
+* Still no urlpatt, even in Ext.data.proxy.Server.
+* (?) "According to a blogger" the proxies should reside inside of a model, since the store inherits from it.
+

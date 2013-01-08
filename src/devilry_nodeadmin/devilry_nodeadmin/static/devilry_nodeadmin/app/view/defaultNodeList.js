@@ -1,7 +1,7 @@
 Ext.define('devilry_nodeadmin.view.defaultNodeList', {
     extend: 'Ext.view.View',
     alias: 'widget.defaultnodelist',
-    cls: 'defaultnodelist',
+    cls: 'bootstrap',
     tpl: [
         '<div class="bootstrap">',
             '<h1>Node browser</h1>',
