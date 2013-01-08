@@ -77,6 +77,12 @@ Add something like the following to ``yourapp/devilry_plugin.py``::
     )
 
 
+Create the view
+===============
+
+See :ref:`qualifiesforexam-pluginhelpers` and take a look at the sourcecode for
+``devilry_qualifiesforexam_approved`` (in the ``src/`` directory of the Devilry sources).
+
 
 Configure available plugins
 ===========================
@@ -93,35 +99,69 @@ The plugins are shown in listed order on page 1 of the wizard described in the
 
 
 
+.. _qualifiesforexam-pluginhelpers:
 
 #######################################################
 Plugin helpers
 #######################################################
 
-.. py:class:: devilry_qualifiesforexam.pluginhelpers.PreviewData(passing_relatedstudentids)
+.. py:currentmodule:: devilry_qualifiesforexam.pluginhelpers
 
-    Stores the output from a plugin.
+The QualifiesForExamPluginViewMixin class
+=========================================
 
-    :param passing_relatedstudentids: See :attr:`.passing_relatedstudentids`.
-
-    .. py:attribute:: passing_relatedstudentids
-
-        List of the IDs of all :class:`devilry.apps.core.models.RelatedStudent` that
-        qualifies for final exams according to the plugin that generated the data.
+:class:`~devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginViewMixin` is a mixin class
+that simplifies the common tasks for all plugin views (getting input and setting
+output).
 
 
+Basic usage
+-----------
 
-.. py:function:: devilry_qualifiesforexam.pluginhelpers.create_sessionkey(pluginsessionid)
+Basic usage of the class turns the input and output steps described in
+:ref:`qualifiesforexam-plugins-what` into two methods:
+:meth:`get_plugin_input_and_authenticate`, :meth:`.save_plugin_output`. Those two
+methods greatly simplify writing plugins. For example, we can create a view like this::
 
-    Generate the session key for the plugin output as described in
-    :ref:`qualifiesforexam-plugins-what`.
+    from django.views.generic import View
+    class MyPluginView(View, QualifiesForExamPluginViewMixin):
+        def post(self, request):
+            try:
+                self.get_plugin_input_and_authenticate()
+            except PermissionDenied:
+                return HttpResponseForbidden()
+            # Your code to detect passing students
+            passing_relatedstudentsids = [1,2,3]
+            self.save_plugin_output(passing_relatedstudentsids)
+            return HttpResponseRedirect(self.get_preview_url())
 
 
-.. py:class:: devilry_qualifiesforexam.pluginhelpers.QualifiesForExamViewMixin
+.. _qualifiesforexam-pluginhelpers-completeexample:
 
-    A mixin class that simplifies the common tasks for all plugin views (getting input and setting
-    output). It basically turns the input and output steps described in
-    :ref:`qualifiesforexam-plugins-what` into two simple methods.
+A more complete example
+-----------------------
+
+The example above is quite simple, but it can be made even simpler if you use
+:meth:`.handle_save_results_and_redirect_to_preview_request` and override
+:meth:`student_qualifies_for_exam`::
+
+    from django.views.generic import View
+    class MyPluginView(View, QualifiesForExamPluginViewMixin):
+        def post(self, request):
+            return self.handle_save_results_and_redirect_to_preview_request()
+
+        def student_qualifies_for_exam(self, aggregated_relstudentinfo):
+            # Test if the student in the AggreatedRelatedStudentInfo qualifies.
+            # Typically something like this (all students must pass all assignments):
+            for grouplist in aggregated_relstudentinfo.iter_groups_by_assignment():
+                feedback = grouplist.get_feedback_with_most_points()
+                if not feedback or not feedback.is_passing_grade:
+                    return False
+            return True
+
+
+
+.. py:class:: devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginViewMixin
 
     .. py:attribute:: periodid
 
@@ -137,16 +177,78 @@ Plugin helpers
         The pluginsessionid described in :ref:`qualifiesforexam-plugins-what` ---
         set by :meth:`.get_plugin_input`.
 
-    .. py:method:: get_plugin_input
+    .. py:method:: get_plugin_input_and_authenticate
 
         Reads the parameters (periodid and pluginsessionid) from
         the querystring and store them as in the following instance
-        variables: :attr:`.periodid`.
+        variables: :attr:`.periodid`, :attr:`.period`, :attr:`.pluginsessionid`.
+
+        :raise: :exc:`django.core.exceptions.PermissionDenied` if the request user is not
+            administrator on the period.
 
     .. py:method:: save_plugin_output(*args, **kwargs)
 
         Shortcut that saves a :class:`.PreviewData` in the session key generated
         using :func:`.create_sessionkey`. Args and kwargs are forwarded to :class:`.PreviewData`.
+
+    .. py:method:: get_preview_url
+
+        Get the preview URL - the URL you must redirect to after saving the output
+        (:meth:`.save_plugin_output`) to proceed to the preview.
+
+    .. py:method:: redirect_to_preview_url
+
+        Returns a ``HttpResponseRedirect`` that redirects to :meth:`.get_preview_url`.
+
+    .. py:method:: student_qualifies_for_exam
+
+        Must be implemented in subclasses if you use :meth:`get_relatedstudents_that_qualify_for_exam`.
+        See :ref:`qualifiesforexam-pluginhelpers-completeexample`.
+
+        :return: Does the student qualify for exam?
+        :rtype: bool
+
+    .. py:method:: get_relatedstudents_that_qualify_for_exam
+
+        Uses :ref:`utils_groups_groupedby_relatedstudent_and_assignment` to aggregate all data
+        for all students in the period. Loops through the resulting
+        :class:`~devilry.utils.groups_groupedby_relatedstudent_and_assignment.AggreatedRelatedStudentInfo`-objects
+        and sends them to :meth:`.student_qualifies_for_exam`.
+
+        :return:
+            A list with the ids of all relatedstudents for which
+            :meth:`.student_qualifies_for_exam` returned ``True``.
+
+    .. py:method:: handle_save_results_and_redirect_to_preview_request
+
+        See :ref:`qualifiesforexam-pluginhelpers-completeexample`.
+
+
+
+Other helpers
+=============
+
+.. py:class:: devilry_qualifiesforexam.pluginhelpers.PreviewData(passing_relatedstudentids)
+
+    Stores the output from a plugin. You should not need to use this directly. Use
+    :meth:`.QualifiesForExamPluginViewMixin.save_plugin_output` instead.
+
+    :param passing_relatedstudentids: See :attr:`.passing_relatedstudentids`.
+
+    .. py:attribute:: passing_relatedstudentids
+
+        List of the IDs of all :class:`devilry.apps.core.models.RelatedStudent` that
+        qualifies for final exams according to the plugin that generated the data.
+
+
+
+.. py:function:: devilry_qualifiesforexam.pluginhelpers.create_sessionkey(pluginsessionid)
+
+    Generate the session key for the plugin output as described in
+    :ref:`qualifiesforexam-plugins-what`. You should not need to use this directly. Use
+    :meth:`.QualifiesForExamPluginViewMixin.get_plugin_input_and_authenticate` instead.
+
+
 
 
 
@@ -170,6 +272,7 @@ TODO
 Database models
 #######################################################
 
+.. py:currentmodule:: devilry_qualifiesforexam.models
 
 .. py:class:: devilry_qualifiesforexam.models.QualifiesForFinalExamPeriodStatus
 

@@ -1,3 +1,5 @@
+.. _utils_groups_groupedby_relatedstudent_and_assignment:
+
 ===================================================================
 :mod:`devilry.utils.groups_groupedby_relatedstudent_and_assignment`
 ===================================================================
