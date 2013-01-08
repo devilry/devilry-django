@@ -1,3 +1,5 @@
+@import "compass/css3/border-radius";
+
 
 $primaryButtonColor: $blueDark;
 $primaryButtonColorOver: darken($blueDark, 5%);
@@ -57,13 +59,6 @@ $primaryButtonColorDisabled: lighten($blueDark, 25%);
 
     $icon-size: $button-large-icon-size
 );
-
-
-// Focus state for keyboard and accessibility
-.x-btn-focus {
-    outline: 1px dotted #666;
-}
-
 
 
 $dangerButtonColor: $red;
@@ -180,3 +175,35 @@ $dangerButtonColorDisabled: lighten($red, 25%);
 
     $icon-size: $button-medium-icon-size
 );
+
+
+
+// Focus state for keyboard and accessibility
+.x-btn-focus {
+    outline: 1px dotted #666;
+}
+
+.x-btn-default-small, .x-btn-primary-small, .x-btn-danger-small {
+    @include border-radius(4px);
+    .x-btn-inner {
+        padding: 0 9px;
+        font-size: 12px !important;
+    }
+}
+
+.x-btn-default-medium, .x-btn-primary-medium, .x-btn-danger-medium {
+    @include border-radius(4px);
+    .x-btn-inner {
+        padding: 0 14px;
+        font-size: 14px !important;
+    }
+}
+
+
+.x-btn-default-large, .x-btn-primary-large, .x-btn-danger-large {
+    @include border-radius(5px);
+    .x-btn-inner {
+        padding: 0 14px;
+        font-size: 16px !important;
+    }
+}
