@@ -61,4 +61,4 @@ class QualifiesForExamPluginViewMixin(object):
         except PermissionDenied:
             return HttpResponseForbidden()
         self.save_plugin_output(self.get_relatedstudents_that_qualify_for_exam())
-        return self.save_and_redirect()
+        return self.redirect_to_preview_url()
