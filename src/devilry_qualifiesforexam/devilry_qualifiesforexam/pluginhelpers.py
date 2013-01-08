@@ -4,6 +4,8 @@ from django.core.exceptions import PermissionDenied
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseRedirect
+from crispy_forms.layout import Submit, HTML
+from django.utils.translation import ugettext_lazy as _
 
 from devilry.apps.core.models import Period
 
@@ -67,3 +69,20 @@ class QualifiesForExamPluginViewMixin(object):
             return HttpResponseForbidden()
         self.save_plugin_output(self.get_relatedstudents_that_qualify_for_exam())
         return self.redirect_to_preview_url()
+
+
+class NextButton(Submit):
+    field_classes = 'btn btn-primary btn-large'
+
+    def __init__(self):
+        super(NextButton, self).__init__('submit', _('Next'))
+
+class BackButton(HTML):
+    field_classes = 'btn btn-large'
+
+    def __init__(self, backurl):
+        html = '<a href="{url}" class="btn btn-large" style="margin-right: 5px;">{label}</a>'.format(
+            url = backurl,
+            label = unicode(_('Back'))
+        )
+        super(BackButton, self).__init__(html)

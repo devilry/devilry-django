@@ -5,10 +5,10 @@ from django import forms
 from django.http import HttpResponseForbidden
 from django.core.exceptions import PermissionDenied
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, ButtonHolder, Submit, HTML
+from crispy_forms.layout import Layout, ButtonHolder
 
 from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
-
+from devilry_qualifiesforexam.pluginhelpers import BackButton, NextButton
 
 
 
@@ -23,10 +23,6 @@ class AllApprovedView(View, QualifiesForExamPluginViewMixin):
     def get(self, request):
         return self.handle_save_results_and_redirect_to_preview_request()
 
-
-
-class GraySubmit(Submit):
-    field_classes = 'btn btn-large'
 
 
 class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
@@ -47,11 +43,8 @@ class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
                 self.helper.layout = Layout(
                     'assignments',
                     ButtonHolder(
-                        HTML('<a href="{url}" class="btn" style="margin-right: 5px;">{label}</a>'.format(
-                            url = backurl,
-                            label = unicode(_('Back'))
-                        )),
-                        GraySubmit('submit', _('Next'))
+                        BackButton(backurl),
+                        NextButton()
                     )
                 )
                 super(SelectAssignmentForm, self).__init__(*args, **kwargs)

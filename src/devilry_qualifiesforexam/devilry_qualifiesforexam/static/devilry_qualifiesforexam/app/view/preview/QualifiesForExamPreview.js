@@ -51,7 +51,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.QualifiesForExamPreview' ,{
                         items: [{
                             xtype: 'button',
                             itemId: 'backButton',
-                            scale: 'medium',
+                            scale: 'large',
                             text: gettext('Back')
                         }, {
                             xtype: 'primarybutton',
