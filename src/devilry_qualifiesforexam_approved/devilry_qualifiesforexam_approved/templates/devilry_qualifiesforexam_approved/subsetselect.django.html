@@ -1,0 +1,9 @@
+{% extends "devilry_theme/nonapptemplate.django.html" %}
+{% load crispy_forms_tags %}
+
+{% block bootstrap-body %}
+    <div class="container-fluid">
+        {% crispy form %}
+        {# {{ form.as_p }}#}
+    </div>
+{% endblock %}

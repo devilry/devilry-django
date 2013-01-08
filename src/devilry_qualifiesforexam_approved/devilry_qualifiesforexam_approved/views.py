@@ -1,6 +1,14 @@
 from django.views.generic import View
+from django.views.generic import FormView
+from django.utils.translation import ugettext_lazy as _
+from django import forms
+from django.http import HttpResponseForbidden
+from django.core.exceptions import PermissionDenied
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, ButtonHolder, Submit
 
 from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
+
 
 
 
@@ -17,13 +25,60 @@ class AllApprovedView(View, QualifiesForExamPluginViewMixin):
 
 
 
-class SubsetApprovedView(View, QualifiesForExamPluginViewMixin):
+class GraySubmit(Submit):
+    field_classes = 'btn'
+
+
+class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
+    template_name = 'devilry_qualifiesforexam_approved/subsetselect.django.html'
+
+    def get_form_class(self):
+        choices = [(a.id, a.long_name) for a in self.period.assignments.order_by('publishing_time')]
+
+        class SelectAssignmentForm(forms.Form):
+            assignments = forms.MultipleChoiceField(
+                required=True,
+                label=_('Assignments that students have to pass:'),
+                widget=forms.CheckboxSelectMultiple,
+                choices=choices)
+
+            def __init__(self, *args, **kwargs):
+                self.helper = FormHelper()
+                self.helper.layout = Layout(
+                    'assignments',
+                    ButtonHolder(
+                        GraySubmit('submit', _('Next'))
+                    )
+                )
+                super(SelectAssignmentForm, self).__init__(*args, **kwargs)
+
+        return SelectAssignmentForm
+
     def student_qualifies_for_exam(self, aggregated_relstudentinfo):
-        for grouplist in aggregated_relstudentinfo.iter_groups_by_assignment():
-            feedback = grouplist.get_feedback_with_most_points()
-            if not (feedback and feedback.is_passing_grade):
-                return False
+        for assignmentid, grouplist in aggregated_relstudentinfo.assignments.iteritems():
+            if assignmentid in self.assignments_to_pass:
+                feedback = grouplist.get_feedback_with_most_points()
+                if not (feedback and feedback.is_passing_grade):
+                    return False
         return True
 
+    def form_valid(self, form):
+        self.assignments_to_pass = set(map(int, form.cleaned_data['assignments']))
+        self.save_plugin_output(self.get_relatedstudents_that_qualify_for_exam())
+        from django.http import HttpResponse
+#        return HttpResponse('Good')
+        return self.redirect_to_preview_url()
+
     def post(self, request):
-        return self.handle_save_results_and_redirect_to_preview_request()
+        try:
+            self.get_plugin_input_and_authenticate() # set self.periodid and self.pluginsessionid
+        except PermissionDenied:
+            return HttpResponseForbidden()
+        return super(SubsetApprovedView, self).post(request)
+
+    def get(self, request):
+        try:
+            self.get_plugin_input_and_authenticate() # set self.periodid and self.pluginsessionid
+        except PermissionDenied:
+            return HttpResponseForbidden()
+        return super(SubsetApprovedView, self).get(request)

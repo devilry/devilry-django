@@ -6,7 +6,23 @@ from devilry.apps.core.testhelper import TestHelper
 from devilry_qualifiesforexam.pluginhelpers import create_sessionkey
 
 
-class TestAllApprovedView(TestCase):
+class ApprovedTestMixin(object):
+
+    def create_relatedstudent(self, username):
+        user = getattr(self.testhelper, username, None)
+        if not user:
+            user = self.testhelper.create_user(username)
+        relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user)
+        return relstudent
+
+    def create_feedbacks(self, *feedbacks):
+        for group, feedback in feedbacks:
+            self.testhelper.add_delivery(group, {'file.py': ['print ', 'bah']})
+            self.testhelper.add_feedback(group, verdict=feedback)
+
+
+
+class TestAllApprovedView(TestCase, ApprovedTestMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
@@ -25,7 +41,7 @@ class TestAllApprovedView(TestCase):
         self.client.login(username=username, password='test')
         return self.client.get(reverse('devilry_qualifiesforexam_approved_all'), data)
 
-    def _test_getas(self, username):
+    def _test_permsas(self, username):
         response = self._getas(username, {
             'periodid': self.testhelper.sub_p1.id,
             'pluginsessionid': 'tst'
@@ -34,12 +50,12 @@ class TestAllApprovedView(TestCase):
         previewdata = self.client.session[create_sessionkey('tst')]
         self.assertEqual(previewdata.passing_relatedstudentids, [])
 
-    def test_get_as_periodadmin(self):
-        self._test_getas('periodadmin')
-    def test_get_as_nodeadmin(self):
-        self._test_getas('uniadmin')
-    def test_get_as_superuser(self):
-        self._test_getas('superuser')
+    def test_perms_as_periodadmin(self):
+        self._test_permsas('periodadmin')
+    def test_perms_as_nodeadmin(self):
+        self._test_permsas('uniadmin')
+    def test_perms_as_superuser(self):
+        self._test_permsas('superuser')
 
     def test_getas_nobody(self):
         self.testhelper.create_user('nobody')
@@ -54,26 +70,14 @@ class TestAllApprovedView(TestCase):
         })
         self.assertEqual(response.status_code, 403)
 
-    def _create_relatedstudent(self, username):
-        user = getattr(self.testhelper, username, None)
-        if not user:
-            user = self.testhelper.create_user(username)
-        relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user)
-        return relstudent
-
-    def _create_feedbacks(self, *feedbacks):
-        for group, feedback in feedbacks:
-            self.testhelper.add_delivery(group, {'file.py': ['print ', 'bah']})
-            self.testhelper.add_feedback(group, verdict=feedback)
-
     def test_realistic(self):
-        self._create_relatedstudent('student1')
-        relatedStudent2 = self._create_relatedstudent('student2')
-        self._create_feedbacks( # Fails because of the F
+        self.create_relatedstudent('student1')
+        relatedStudent2 = self.create_relatedstudent('student2')
+        self.create_feedbacks( # Fails because of the F
             (self.testhelper.sub_p1_a1_gstudent1, {'grade': 'F', 'points': 0, 'is_passing_grade': False}),
             (self.testhelper.sub_p1_a2_gstudent1, {'grade': 'A', 'points': 0, 'is_passing_grade': True})
         )
-        self._create_feedbacks( # Passes all
+        self.create_feedbacks( # Passes all
             (self.testhelper.sub_p1_a1_gstudent2, {'grade': 'A', 'points': 0, 'is_passing_grade': True}),
             (self.testhelper.sub_p1_a2_gstudent2, {'grade': 'A', 'points': 0, 'is_passing_grade': True})
         )
@@ -84,3 +88,108 @@ class TestAllApprovedView(TestCase):
         self.assertEqual(response.status_code, 302)
         previewdata = self.client.session[create_sessionkey('tst')]
         self.assertEqual(previewdata.passing_relatedstudentids, [relatedStudent2.id])
+
+
+
+class TestSubsetApprovedView(TestCase, ApprovedTestMixin):
+    def setUp(self):
+        self.testhelper = TestHelper()
+        self.testhelper.add(nodes='uni:admin(uniadmin)',
+            subjects=['sub'],
+            periods=['p1:admin(periodadmin):begins(-3):ends(6)'],
+            assignments=['a1:ln(Assignment One)', 'a2:ln(Assignment Two)', 'a3:ln(Assignment Three)'],
+            assignmentgroups=[
+                'gstudent1:candidate(student1):examiner(examiner1)',
+                'gstudent2:candidate(student2):examiner(examiner1)',
+                'gstudent3:candidate(student3):examiner(examiner1)',
+            ],
+            deadlines=['d1:ends(10)']
+        )
+        self.testhelper.create_superuser('superuser')
+        self.client = Client()
+
+    def _getas(self, username, data):
+        self.client.login(username=username, password='test')
+        return self.client.get(reverse('devilry_qualifiesforexam_approved_subset'), data)
+
+    def _postas(self, username, data, querystring):
+        self.client.login(username=username, password='test')
+        from urllib import urlencode
+        url = '{0}?{1}'.format(
+            reverse('devilry_qualifiesforexam_approved_subset'),
+            urlencode(querystring))
+        return self.client.post(url, data)
+
+
+    def _test_perms_as(self, username):
+        querystring = {'periodid': self.testhelper.sub_p1.id, 'pluginsessionid': 'tst'}
+        response = self._getas(username, querystring)
+        self.assertEqual(response.status_code, 200)
+
+        response = self._postas(username,
+            data = {'assignments': [str(self.testhelper.sub_p1_a1.id)]},
+            querystring = querystring)
+        self.assertEqual(response.status_code, 302)
+
+    def test_perms_as_periodadmin(self):
+        self._test_perms_as('periodadmin')
+    def test_perms_as_nodeadmin(self):
+        self._test_perms_as('uniadmin')
+    def test_perms_as_superuser(self):
+        self._test_perms_as('superuser')
+
+    def test_permsas_nobody(self):
+        self.testhelper.create_user('nobody')
+        querystring = {'periodid': self.testhelper.sub_p1.id}
+        response = self._getas('nobody', querystring)
+        self.assertEqual(response.status_code, 403)
+        response = self._postas('nobody', data = {}, querystring=querystring)
+        self.assertEqual(response.status_code, 403)
+
+    def test_get_invalid_period(self):
+        querystring = {'periodid': 1000}
+        response = self._getas('periodadmin', querystring)
+        self.assertEqual(response.status_code, 403)
+        response = self._postas('nobody', data = {}, querystring=querystring)
+        self.assertEqual(response.status_code, 403)
+
+    def test_get_formrendered(self):
+        self.testhelper.add_to_path('uni;sub.p2:admin(periodadmin).test:ln(Test Assignment)')
+        querystring = {'periodid': self.testhelper.sub_p1.id, 'pluginsessionid': 'tst'}
+        response = self._getas('periodadmin', querystring)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('Assignment One', response.content)
+        self.assertIn('Assignment Two', response.content)
+        self.assertIn('Assignment Three', response.content)
+        self.assertNotIn('Test Assignment', response.content)
+
+    def test_post_realistic(self):
+        self.create_relatedstudent('student1')
+        relatedStudent2 = self.create_relatedstudent('student2')
+        relatedStudent3 = self.create_relatedstudent('student3')
+        self.create_feedbacks( # student1 Fails because of the F on a1 and a2
+            (self.testhelper.sub_p1_a1_gstudent1, {'grade': 'F', 'points': 0, 'is_passing_grade': False}),
+            (self.testhelper.sub_p1_a2_gstudent1, {'grade': 'F', 'points': 0, 'is_passing_grade': True}),
+            (self.testhelper.sub_p1_a3_gstudent1, {'grade': 'A', 'points': 0, 'is_passing_grade': True})
+        )
+        self.create_feedbacks( # student2 Passes all
+            (self.testhelper.sub_p1_a1_gstudent2, {'grade': 'A', 'points': 0, 'is_passing_grade': True}),
+            (self.testhelper.sub_p1_a2_gstudent2, {'grade': 'A', 'points': 0, 'is_passing_grade': True}),
+            (self.testhelper.sub_p1_a3_gstudent2, {'grade': 'A', 'points': 0, 'is_passing_grade': True})
+        )
+        self.create_feedbacks( # student3 passes a1 and a2, so he passes
+            (self.testhelper.sub_p1_a1_gstudent3, {'grade': 'A', 'points': 0, 'is_passing_grade': True}),
+            (self.testhelper.sub_p1_a2_gstudent3, {'grade': 'A', 'points': 0, 'is_passing_grade': True}),
+            (self.testhelper.sub_p1_a3_gstudent3, {'grade': 'F', 'points': 0, 'is_passing_grade': False})
+        )
+        response = self._postas('periodadmin',
+            data = {
+                'assignments': [str(self.testhelper.sub_p1_a1.id)]},
+            querystring = {
+                'periodid': self.testhelper.sub_p1.id,
+                'pluginsessionid': 'tst'}
+        )
+        self.assertEqual(response.status_code, 302)
+        previewdata = self.client.session[create_sessionkey('tst')]
+        self.assertEqual(set(previewdata.passing_relatedstudentids),
+            set([relatedStudent2.id, relatedStudent3.id]))
