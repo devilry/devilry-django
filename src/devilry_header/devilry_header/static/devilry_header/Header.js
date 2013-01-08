@@ -4,7 +4,6 @@
 Ext.define('devilry_header.Header', {
     extend: 'Ext.container.Container',
     alias: 'widget.devilryheader',
-    cls: 'devilryheader',
     margins: '0 0 0 0',
     height: 30,
 
@@ -49,6 +48,11 @@ Ext.define('devilry_header.Header', {
      */
 
     constructor: function(config) {
+        if(Ext.isEmpty(config.cls)) {
+            config.cls = 'devilryheader';
+        } else {
+            config.cls = ['devilryheader', config.cls].join(' ');
+        }
         if(!this.navclass_to_rolename[config.navclass]) {
             throw "Invalid navclass: " + config.navclass;
         }

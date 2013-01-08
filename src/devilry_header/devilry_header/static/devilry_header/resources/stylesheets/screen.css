@@ -389,3 +389,16 @@
   font-size: 11px;
   color: #aaa;
 }
+
+/* line 259, ../sass/screen.scss */
+.devilryheader-nonapp {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+/* line 265, ../sass/screen.scss */
+.devilryheader-nonapp-bodyoffset {
+  padding-top: 40px;
+}

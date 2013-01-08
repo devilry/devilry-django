@@ -1,4 +1,5 @@
 {% extends "devilry_theme/apptemplate.django.html" %}
+{% load static %}
 {% comment %}
 This template is for views that are not ExtJS apps. They may still use ExtJS, but they
 are not built as separate apps. The devilry header is included at the top of the page,
@@ -6,8 +7,16 @@ so you should ensure that you have a 40px margin at the top of your page to avoi
 the header overlaps with your content.
 {% endcomment %}
 
-{# Used for apps, so it should not be used with this template #}
-{% block app %}{% endblock %}
+{% block app %}
+    {% if EXTJS4_DEBUG %}
+        <script type="text/javascript" src="{% static "devilry_header/app.js" %}"></script>
+    {% else %}
+        <script type="text/javascript" src="{% static "devilry_header/app-all.js" %}"></script>
+    {% endif %}
+{% endblock %}
+{% block head_preapp %}
+    <script type="text/javascript" src="{% url devilry_qualifiesforexam_i18n %}"></script>
+{% endblock %}
 
 {# Override to add data at the beginning at the <head>-tag #}
 {% block head-pre %}{% endblock %}
@@ -17,6 +26,10 @@ the header overlaps with your content.
 
 {# Override to add data to the <body>. #}
 {% block body %}
+    {% block devilryheader %}
+        <div id="devilryheader-container"></div>
+    {% endblock %}
+
     <div class="bootstrap">
         {# Override for a body with bootstrap styles #}
         {% block bootstrap-body %}{% endblock %}
