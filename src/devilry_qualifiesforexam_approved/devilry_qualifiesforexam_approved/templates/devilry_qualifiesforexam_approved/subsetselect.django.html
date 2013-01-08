@@ -8,8 +8,12 @@
     <script type="text/javascript" src="{% url devilry_qualifiesforexam_approved_i18n %}"></script>
 {% endblock %}
 
+{% block bodyclass%}devilry_subtlebg{% endblock %}
+
 {% block bootstrap-body %}
-    <div class="container-fluid">
-        {% crispy form %}
+    <div class="container-fluid" style="margin: 20px;">
+        <div class="devilry_focuscontainer" style="padding: 20px 20px 0 20px;">
+            {% crispy form %}
+        </div>
     </div>
 {% endblock %}

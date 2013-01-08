@@ -41,6 +41,11 @@ class QualifiesForExamPluginViewMixin(object):
             periodid = self.periodid,
             pluginsessionid = self.pluginsessionid)
 
+    def get_selectplugin_url(self):
+        return '{url}?routeto=/{periodid}/selectplugin'.format(
+            url=reverse('devilry_qualifiesforexam_ui'),
+            periodid = self.periodid)
+
     def redirect_to_preview_url(self):
         return HttpResponseRedirect(self.get_preview_url())
 

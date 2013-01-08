@@ -48,12 +48,10 @@ Ext.define('devilry_qualifiesforexam.view.preview.QualifiesForExamPreview' ,{
                         xtype: 'toolbar',
                         dock: 'bottom',
                         ui: 'footer',
-                        defaults: {
-                            minWidth: 100
-                        },
                         items: [{
                             xtype: 'button',
                             itemId: 'backButton',
+                            scale: 'medium',
                             text: gettext('Back')
                         }, {
                             xtype: 'primarybutton',
