@@ -196,6 +196,11 @@ The example above is quite simple, but it can be made even simpler if you use
         Get the preview URL - the URL you must redirect to after saving the output
         (:meth:`.save_plugin_output`) to proceed to the preview.
 
+    .. py:method:: get_selectplugin_url
+
+        Get the preview URL - the URL you should navigate to when users select *Back* from
+        your plugin view.
+
     .. py:method:: redirect_to_preview_url
 
         Returns a ``HttpResponseRedirect`` that redirects to :meth:`.get_preview_url`.
