@@ -10,16 +10,16 @@ Ext.define('devilry_subjectadmin.view.subject.ListOfPeriods', {
     tpl: [
         '<ul class="unstyled">',
             '<tpl for=".">',
-                '<li class="devilry_period"><p>',
+                '<li class="devilry_period">',
                     '<div class="name"><a href="#/period/{id}/">{long_name}</a></div> ',
-                    '<div class="timespan">',
+                    '<div class="startendtime">',
                         '<small class="muted">',
                             '{[this.formatDatetime(values.start_time)]}',
                             ' &mdash; ',
                             '{[this.formatDatetime(values.end_time)]}',
                         '</small>',
                     '<div>',
-                '</p></li>',
+                '</li>',
             '</tpl>',
         '<ul>', {
             formatDatetime: function(datetime) {
