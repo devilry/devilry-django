@@ -14,9 +14,6 @@ the header overlaps with your content.
         <script type="text/javascript" src="{% static "devilry_header/app-all.js" %}"></script>
     {% endif %}
 {% endblock %}
-{% block head_preapp %}
-    <script type="text/javascript" src="{% url devilry_qualifiesforexam_i18n %}"></script>
-{% endblock %}
 
 {# Override to add data at the beginning at the <head>-tag #}
 {% block head-pre %}{% endblock %}

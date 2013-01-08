@@ -4,6 +4,10 @@
 
 {% block title %}{% trans "Select assignments that students must pass to qualify for final exams" %} - Devilry{% endblock %}
 
+{% block head_preapp %}
+    <script type="text/javascript" src="{% url devilry_qualifiesforexam_approved_i18n %}"></script>
+{% endblock %}
+
 {% block bootstrap-body %}
     <div class="container-fluid">
         {% crispy form %}
