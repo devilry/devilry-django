@@ -1,7 +1,6 @@
 from django.views.generic import RedirectView
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseForbidden
-from djangorestframework.views import View
 
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
 from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamViewMixin
