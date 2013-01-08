@@ -14,7 +14,7 @@ class PreviewData(object):
         self.passing_relatedstudentids = passing_relatedstudentids
 
     def __str__(self):
-        return '{0!r}'.format(self.passing_relatedstudentids)
+        return 'PreviewData(passing_relatedstudentids={0!r})'.format(self.passing_relatedstudentids)
 
     def serialize(self):
         return {
