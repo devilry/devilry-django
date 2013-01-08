@@ -3,8 +3,8 @@ Ext.define( 'devilry_nodeadmin.store.NodeDetails', {
     storeId: 'NodeDetails',
     model: 'devilry_nodeadmin.model.Details',
     proxy: {
-        type: 'rest',
-        url: '/rest/node/{node_pk}/details',
+        type: 'ajax',
+        url: 'rest/nodes/',
         reader: {
             type: 'json'
         }

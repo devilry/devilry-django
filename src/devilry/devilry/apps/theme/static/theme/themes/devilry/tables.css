@@ -1,0 +1,18 @@
+table.horizontalinfotable {
+  border-collapse: collapse;
+  border: 1px solid #d4d2ce; }
+  table.horizontalinfotable thead th {
+    text-align: left;
+    font-weight: bold;
+    font-style: normal;
+    background-color: #ECEBE9; }
+  table.horizontalinfotable td, table.horizontalinfotable th {
+    padding: 2px 6px;
+    border: 1px solid #d4d2ce; }
+  table.horizontalinfotable tfoot td {
+    font-style: normal;
+    font-weight: bold;
+    font-style: normal;
+    color: #666; }
+  table.horizontalinfotable td {
+    background-color: #fff; }

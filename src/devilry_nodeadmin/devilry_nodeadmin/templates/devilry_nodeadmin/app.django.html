@@ -3,41 +3,33 @@
 {% load static %}
 
 {% block css %}
-{{ block.super }}
-{% comment %}
+{% include "devilry_theme/cssimports.django.html" %}
+{% include "devilry_header/cssimports.django.html" %}
+
 <link rel="stylesheet" type="text/css"
-    href="{% static "devilry_nodeadmin/resources/stylesheets/devilry_nodeadmin.css" %}" />
-{% endcomment %}
+      href="{% static "devilry_subjectadmin/resources/stylesheets/devilry_subjectadmin.css" %}" />
 {% endblock %}
 
 {% block app %}
+<script type="text/javascript" src="{% static "devilry_extjsextras/consolefallback.js" %}"></script>
 <script type="text/javascript" src="{% url devilry-settings %}"></script>
-{% include "devilry_header/cssimports.django.html" %}
+{% include "markup/mathjaxheader.django.html" %}
 
 
-<script type="text/javascript">
-    var DevilrySettings = {
-        DEVILRY_STATIC_URL: '{{ DEVILRY_STATIC_URL}}',
-        DEVILRY_URLPATH_PREFIX: '{{ DEVILRY_URLPATH_PREFIX }}',
-        DEVILRY_SYNCSYSTEM: '{{ DEVILRY_SYNCSYSTEM|escapejs }}',
-        DEVILRY_HELP_URL: '{{ DEVILRY_HELP_URL }}',
-        DEVILRY_COMMON_CSS: '{{DEVILRY_THEME_URL }}/common.css',
-        DEVILRY_I18N_CURRENT_LOCALE: '{{ DEVILRY_I18N_CURRENT_LOCALE }}',
-        DEVILRY_SORT_FULL_NAME_BY_LASTNAME: {{ DEVILRY_SORT_FULL_NAME_BY_LASTNAME|yesno:"true,false" }},
-        DEVILRY_LOGOUT_URL: '{{ DEVILRY_LOGOUT_URL }}',
-        DEVILRY_LOGIN_URL: '{% url login %}'
-    };
-
-    var DevilryUser = {
-        is_authenticated: {{ user.is_authenticated|yesno:"true,false" }},
-        is_superuser: {{ user.is_superuser|lower }},
-        username: '{{ user.username }}'
-    };
-</script>
-
-<script type="text/javascript" src="{% static "devilry_extjsextras/extjsajax_django_csrf.js" %}"></script>
-
-<script type="text/javascript" src="{% url devilry_nodeadmin_i18n %}"></script>
+<script type="text/javascript" src="{% url devilry_subjectadmin_i18n %}"></script>
 
 {{ block.super }}
+
+<script type="text/javascript" src="{% static "devilry_extjsextras/extjslocale.js" %}"></script>
+
+<script type="text/javascript">
+{#NOTE: This is required for thee old restful API classes.#}
+Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+    'X_DEVILRY_USE_EXTJS': true
+});
+        </script>
+
+{#NOTE: This is after the app-file because the files required in extjsajax_django_csrf are added to app-all.js, and is not available in production unless they come AFTER app-all.js. #}
+<script type="text/javascript" src="{% static "devilry_extjsextras/extjsajax_django_csrf.js" %}"></script>
+
 {% endblock %}

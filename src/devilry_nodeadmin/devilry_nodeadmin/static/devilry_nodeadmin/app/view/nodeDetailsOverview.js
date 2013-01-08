@@ -9,12 +9,13 @@ Ext.define('devilry_nodeadmin.view.nodeDetailsOverview', {
         '<div>{ subject_count } emner</div>',
         '<div>{ assignment_count } oppgaver</div>',
         '<hr />',
-        '<h4>Subjects</h4>',
-        '<ul>',
+        '<h4>Kurs <small>Nede ser du kursene som hører til dette nivået</small></h4>',
+        '<dl>',
         '<tpl for="subjects">',
-        '<li><a href="/devilry_subjectadmin/#/subject/{ id }/"><i class="icon icon-chevron-back"></i>{ long_name }</a></li>',
+        '<li><a href="/devilry_subjectadmin/#/subject/{ id }/">{ long_name }</a></li>',
         '</tpl>',
         '</ul>',
+        '<small></small>'
         '</tpl>'
     ],
 

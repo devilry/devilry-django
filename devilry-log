@@ -265,3 +265,10 @@ ExtJS Stores
 * Still no urlpatt, even in Ext.data.proxy.Server.
 * (?) "According to a blogger" the proxies should reside inside of a model, since the store inherits from it.
 
+2013-01-08
+* (?) Should I override pagination to ensure that all elements are visible to the user unless I wish to implement a page-select feature?
+* Does plugin.autodiscover() work as it should?
+* Installed compass.
+* The nodeadmin-application seemed not to discover the bootstrap stylesheets, while they were in order in other apps. I assumed that the reason for that was some compass routine that wasn't ran, but it was actually the template file that was changed for the subjectadmin application.
+* Copied the subjectadmin's django.app template into nodeadmin. This fixes the bootstrap classes.
+* The fonts are dynamically loaded.
