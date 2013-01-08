@@ -10,13 +10,10 @@
 
     // Grid system and page structure
     @import "bootstrap/scaffolding";
-    @import "bootstrap/grid";
-    @import "bootstrap/layouts";
 
     // Base CSS
     @import "bootstrap/type";
     @import "bootstrap/code";
-    @import "bootstrap/forms";
     @import "bootstrap/tables";
 
     // Components: common
@@ -56,3 +53,10 @@
 }
 
 @import "devilry_bootstrap_extras";
+
+// Bootstrap stuff that does not work well with ExtJS
+.bootstrapextras {
+    @import "bootstrap/forms";
+    @import "bootstrap/grid";
+    @import "bootstrap/layouts";
+}
