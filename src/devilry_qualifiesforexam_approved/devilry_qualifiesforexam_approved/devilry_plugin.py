@@ -12,7 +12,7 @@ qualifiesforexam_plugins.add(
 
 qualifiesforexam_plugins.add(
     id = 'devilry_qualifiesforexam_approved.subset',
-    url = '', #reverse('myapp-myplugin'), # The url of the view to use for step/page 2 in the workflow
+    url = reverse_lazy('devilry_qualifiesforexam_approved_subset'),
     title = _('Students must pass a set of assignments selected by you'),
     description = _('Choose this option if you require your students to get a passing grade on a subset of their assignments to qualify for final exams. You select the assignments on the next page.')
 )
