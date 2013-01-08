@@ -42,7 +42,8 @@ Ext.application({
         // views
         'devilry_nodeadmin.view.defaultNodeList',
         'devilry_nodeadmin.view.nodeChildrenList',
-        'devilry_nodeadmin.view.nodeDetailsOverview'
+        'devilry_nodeadmin.view.nodeDetailsOverview',
+        'devilry_nodeadmin.view.nodeParentLink'
     ],
 
     controllers: [
@@ -52,6 +53,7 @@ Ext.application({
     _setupRoutes: function() {
         this.route = Ext.create('devilry_extjsextras.Router', this );
         this.route.add( "", 'showDefault' );
+        this.route.add( "/node/", 'showDefault' );
         this.route.add( "/node/:node_id", 'showChildren' );
         this.route.start();
     },
@@ -87,6 +89,7 @@ Ext.application({
 
         this.primaryContentContainer = Ext.widget('container', {
             xtype: 'container',
+            cls: 'bootstrap',
             region: 'east',
             columnWidth: 0.5,
             padding: '30 20 20 30'
@@ -94,10 +97,10 @@ Ext.application({
 
         this.secondaryContentContainer = Ext.widget('container', {
             xtype: 'container',
+            cls: 'bootstrap',
             region: 'west',
             columnWidth: 0.5,
             padding: '30 20 20 30'
-
         });
 
         this.viewport = Ext.create('Ext.container.Viewport', {
@@ -130,16 +133,22 @@ Ext.application({
             xtype: 'defaultnodelist'
         });
         this.setSecondaryContent({
-
+            /* */
         });
     },
 
     showChildren: function( routeInfo, node_pk ) {
         console.log( node_pk );
-        this.setPrimaryContent({
-            xtype: 'nodechildrenlist',
-            node_pk: node_pk
-        });
+        this.setPrimaryContent([
+            {
+                xtype: 'nodeparentlink',
+                node_pk: node_pk
+            },
+            {
+                xtype: 'nodechildrenlist',
+                node_pk: node_pk
+            }
+        ]);
         this.setSecondaryContent({
             xtype: 'nodedetailsoverview',
             node_pk: node_pk

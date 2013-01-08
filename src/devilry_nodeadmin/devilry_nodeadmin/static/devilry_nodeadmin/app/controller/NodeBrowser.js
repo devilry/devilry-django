@@ -4,7 +4,8 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowser', {
     views: [
         'defaultNodeList',
         'nodeChildrenList',
-        'nodeDetailsOverview'
+        'nodeDetailsOverview',
+        'nodeParentLink'
     ],
 
     stores: [
@@ -16,7 +17,6 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowser', {
     models: [
         'Details',
         'Node',
-        'Parent',
         'Subject'
     ],
 

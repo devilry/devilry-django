@@ -20,7 +20,7 @@ from django.db.models import Count, Min, Max
 class NodeResource( ModelResource ):
     model = Node
     fields = (  'id', 'short_name', 'long_name',
-                'etag', 'parent', 'most_recent_start_time', )
+                'etag', 'predecessor', 'children', 'most_recent_start_time', )
     allowed_methods = ('get' ,)
 
     # [->] to RelatedNodeDetails
@@ -35,7 +35,7 @@ class NodeResource( ModelResource ):
 
     # Hierarchy data
 
-    def parent( self, instance ):
+    def predecessor( self, instance ):
         parent_serializer = ParentNodeResource()
         return parent_serializer.serialize( instance.parentnode )
 
@@ -48,7 +48,7 @@ class NodeResource( ModelResource ):
 
 class ChildNodeResource( NodeResource ):
     model = Node
-    fields = (  'id', 'short_name', 'long_name', 'parent', 'most_recent_start_time', )
+    fields = (  'id', 'short_name', 'long_name', 'predecessor', 'most_recent_start_time', )
 
 
 class ParentNodeResource( NodeResource ):
@@ -92,16 +92,15 @@ class NodeSubjectResource( ModelResource ):
     model = Subject
     fields = ( 'id', 'short_name', 'long_name', )
 
-class NodeDetailsResource( ModelResource ):
+class NodeDetailsResource( NodeResource ):
     model = Node
-    fields = (  'id', 'short_name', 'long_name', 'etag',
+    fields = (  'id', 'short_name', 'long_name', 'predecessor', 'etag',
                 'subject_count', 'assignment_count', 'period_count', 'subjects', )
 
     def subjects( self, instance ):
         resource = NodeSubjectResource()
         subjects = Subject.objects.filter( parentnode=instance )
         return resource.serialize_iter( subjects )
-
 
     # stats
     def subject_count( self, instance ):

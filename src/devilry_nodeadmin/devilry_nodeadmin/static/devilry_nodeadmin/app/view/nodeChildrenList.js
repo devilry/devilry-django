@@ -4,11 +4,11 @@ Ext.define('devilry_nodeadmin.view.nodeChildrenList', {
     cls: 'bootstrap',
     tpl: [
         '<div class="bootstrap">',
-        '<h1>Contains</h1>',
+        '<h2>Inneholder</h2>',
             '<tpl for=".">',
-            '<div class="bootstrap node" style="padding-bottom: 10px;">',
+            '<div style="padding-bottom: 10px;">',
                 '<a href="/devilry_nodeadmin/#/node/{ id }"><h3>',
-                    '<tpl for="parent">{ short_name }</tpl>',
+                    '<tpl for="predecessor">{ short_name }</tpl>',
                 ' / { long_name }</h3>',
                 '<tpl if="most_recent_start_time != null">',
                     '<div>Earliest start time: { most_recent_start_time }</div>',
@@ -18,7 +18,6 @@ Ext.define('devilry_nodeadmin.view.nodeChildrenList', {
                 '</a>',
             '</div>',
             '</tpl>',
-            '<div style="padding-top: 20px;"><a href="">&lt; back to the top level</a></div>',
         '</div>'
     ],
 
@@ -26,7 +25,7 @@ Ext.define('devilry_nodeadmin.view.nodeChildrenList', {
 
     initComponent: function() {
         this.store = Ext.create( 'devilry_nodeadmin.store.NodeChildren' );
-        this.store.proxy.url = Ext.String.format('/devilry_nodeadmin/rest/node/{0}', this.node_pk );
+        this.store.proxy.url = Ext.String.format('/devilry_nodeadmin/rest/node/{0}/children', this.node_pk );
         this.callParent(arguments);
     }
 

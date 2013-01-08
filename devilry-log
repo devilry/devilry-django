@@ -276,4 +276,10 @@ ExtJS Stores
 ** compass install compass
 * The previous point will create stylesheet, scss folders to store the scss sources and their compiled stylesheet counterparts.
 * Run 'compass watch' in the resources folder to start monitorin and compiling changes.
+* Use Ext.String.ellipsis on all long-names.
+* Current rest-response structure does not allow me to link a child to a parent node due to the fact that the returned children are a list, and I am not sure how Ext js will handle an imposed parent property on the superlevel of each response.
+* The simples solution is to create a view that contains fetches the parent reference from the NodeDetails and make it an item inside the NodeChildren-view.
+* Suggesting the role name of 'Department/Faculty/School administrator' to 'Department administrator'
+* 'setPrimaryContent' (and setSecondaryContent) accept _lists_ of xtyped elements, and _do not_ accept comma-separated arguments.
+* Up-navigation is fixed by adding parent to details in Ext.js: views, models and in Django: resource-fields.
 * 

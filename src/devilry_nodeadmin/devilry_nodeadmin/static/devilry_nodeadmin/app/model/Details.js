@@ -8,8 +8,10 @@ Ext.define( 'devilry_nodeadmin.model.Details', {
         { name: 'subject_count', type: 'int' },
         { name: 'assignment_count', type: 'int' },
         { name: 'etag', type: 'string' },
+        { name: 'predecessor' },
         { name: 'subjects' }
     ],
     belongsTo: 'devilry_nodeadmin.model.Node',
+    hasOne: 'devilry_nodeadmin.model.Node',
     hasMany: 'devilry_nodeadmin.model.Subject'
 });

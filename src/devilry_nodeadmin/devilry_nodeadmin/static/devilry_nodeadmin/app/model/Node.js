@@ -6,7 +6,9 @@ Ext.define( 'devilry_nodeadmin.model.Node', {
         { name: 'long_name', type: 'string' },
         { name: 'most_recent_start_time', type: 'date' },
         { name: 'etag', type: 'string' },
-        { name: 'parent' }
+        { name: 'predecessor' },
+        { name: 'children'}
     ],
-    hasOne: 'devilry_nodeadmin.model.Parent'
+    hasOne: 'devilry_nodeadmin.model.Node',
+    hasMany: 'devilry_nodeadmin.model.Node'
 });

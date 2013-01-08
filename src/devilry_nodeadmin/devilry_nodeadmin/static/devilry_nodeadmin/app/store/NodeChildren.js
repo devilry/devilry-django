@@ -6,7 +6,8 @@ Ext.define( 'devilry_nodeadmin.store.NodeChildren', {
         type: 'ajax',
         url: 'rest/nodes/',
         reader: {
-            type: 'json'
+            type: 'json',
+            root: 'children'
         }
     },
     autoLoad: true
