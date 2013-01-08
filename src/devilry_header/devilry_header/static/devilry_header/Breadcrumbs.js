@@ -24,8 +24,9 @@ Ext.define('devilry_header.Breadcrumbs', {
     ],
 
     /**
-     * @cfg
-     * 
+     * @cfg {object} [defaultBreadcrumbs=undefined]
+     * A list of breadcrumbs that will always be added to the beginning of
+     * the breadcrumbs.
      */
     defaultBreadcrumbs: undefined,
 
