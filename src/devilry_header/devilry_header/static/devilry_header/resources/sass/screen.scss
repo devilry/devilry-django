@@ -2,6 +2,7 @@
 @import "compass/css3/user-interface";
 @import "compass/typography/text/ellipsis";
 
+$headerHeight: 30px;
 $baseFontFamily: "Helvetica Neue", Helvetica, Arial, sans-serif !default;
 $baseFontSize: 13px;
 $baseLineHeight: 18px;
@@ -263,5 +264,5 @@ $hovermenu_bgcolor: #000;
     width: 100%;
 }
 .devilryheader-nonapp-bodyoffset {
-    padding-top: 40px;
+    padding-top: $headerHeight;
 }
