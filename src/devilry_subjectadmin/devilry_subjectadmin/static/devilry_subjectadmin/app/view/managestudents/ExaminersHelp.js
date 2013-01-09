@@ -41,7 +41,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersHelp', {
         }
         return this._relatedNoteTpl.apply({
             period_term: gettext('period'),
-            relatedexaminers_link: Ext.String.format('href="{0}" target="_blank"',
+            relatedexaminers_link: Ext.String.format('href="{0}" target="_blank" class="new-window-link"',
                 devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(period_id))
         });
     }
