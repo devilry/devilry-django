@@ -145,6 +145,21 @@ class ExportDetailedPeriodOverviewXslx(ExportDetailedPeriodOverviewBase):
         self.currentrow = 0
         self.generate()
 
+    def add_header(self):
+        headerlist = self.get_headerlist()
+        self.add_row(headerlist)
+        for cells in self.worksheet.columns:
+            cell = cells[0]
+            cell.style.font.bold = True
+            if cell.column == 'A':
+                self.worksheet.column_dimensions[cell.column].width = 30
+            elif cell.column == 'B':
+                self.worksheet.column_dimensions[cell.column].width = 13
+            elif cell.value == 'WARNINGS':
+                self.worksheet.column_dimensions[cell.column].width = 70
+            else:
+                self.worksheet.column_dimensions[cell.column].width = 18
+
     def add_cell(self, column, value):
         cell = self.worksheet.cell(row=self.currentrow, column=column)
         cell.value = value
