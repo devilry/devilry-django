@@ -133,7 +133,10 @@ Ext.application({
             xtype: 'defaultnodelist'
         });
         this.setSecondaryContent({
-            xtype: 'nodetree'
+            html: [ "Denne listen viser kun de nodene du administrerer. Klikk på et element for å se",
+            "de underliggende nivåene, emnene og periodene. Du kan gå ett nivå tilbake ved hjelp av knappen ",
+            "i det øvre høyre hjørne." ],
+            border: null
         });
     },
 

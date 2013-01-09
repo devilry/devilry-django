@@ -282,7 +282,7 @@ ExtJS Stores
 * Suggest changing the role name of 'Department/Faculty/School administrator' to 'Department administrator'
 * 'setPrimaryContent' (and setSecondaryContent) accept _lists_ of xtyped elements, and _do not_ accept comma-separated arguments.
 * Up-navigation is fixed by adding parent to details in Ext.js: views, models and in Django: resource-fields.
-* Remember the difference between 'et sted hvor', og 'et sted der'.
+* Mind the difference between 'et sted hvor', og 'et sted der'.
 
 
 2012-01-09
