@@ -3373,6 +3373,12 @@ a.new-window-link {
   padding-right: 13px;
 }
 
+/* line 69, ../sass/_devilry_linkstyles.scss */
+a[href^="mailto"] {
+  background: transparent url(../icons/email-link.png) center right no-repeat;
+  padding-right: 19px;
+}
+
 /* line 4, ../sass/_devilry_alert.scss */
 .bootstrap .alert-role-examiner {
   background-color: #0077b3;
