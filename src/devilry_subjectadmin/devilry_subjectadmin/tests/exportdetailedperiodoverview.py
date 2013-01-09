@@ -72,7 +72,6 @@ class TestExportDetailedPeriodOverview(TestCase):
         response = self._getas('periodadmin', {
             'format': 'csv'
         })
-        print response.content
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, '\r\n'.join([
             'NAME,USERNAME,a1,a2,WARNINGS',
