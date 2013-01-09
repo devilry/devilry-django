@@ -42,7 +42,11 @@ class ExportDetailedPeriodOverviewBase(object):
     def get_headerlist(self):
         header = ['NAME', 'USERNAME']
         for assignment in self.grouper.iter_assignments():
-            header.append(assignment.short_name)
+            if self.gradedetails == 'all':
+                for datatype in ('Grade', 'Points', 'Passing grade'):
+                    header.append('{0} ({1})'.format(assignment.short_name, datatype))
+            else:
+                header.append(assignment.short_name)
         header.append('WARNINGS')
         return header
 
@@ -60,9 +64,9 @@ class ExportDetailedPeriodOverviewBase(object):
 
     def format_feedback(self, feedback):
         if self.gradedetails == 'all':
-            return '{0} ({1}, points: {2})'.format(feedback.grade,
-                self.strformat_is_passing_grade(feedback.is_passing_grade),
-                feedback.points)
+            return [feedback.grade,
+                    feedback.points,
+                    self.strformat_is_passing_grade(feedback.is_passing_grade)]
         elif self.gradedetails == 'grade':
             return feedback.grade
         elif self.gradedetails == 'points':
@@ -76,6 +80,23 @@ class ExportDetailedPeriodOverviewBase(object):
             return full_name.encode('utf-8')
         else:
             return 'name-missing'
+
+    def add_aggregated_relstudentinfo(self, aggregated_relstudentinfo, warning=''):
+        user = aggregated_relstudentinfo.user
+        row = [self.get_fullname_utf8(user), user.username]
+        for column, grouplist in enumerate(aggregated_relstudentinfo.iter_groups_by_assignment()):
+            # NOTE: There can be more than one group if the same student is in more than one
+            #       group on an assignment - we select the "best" feedback.
+            feedback = grouplist.get_feedback_with_most_points()
+            if feedback:
+                if self.gradedetails == 'all':
+                    row += self.format_feedback(feedback)
+                else:
+                    row.append(self.format_feedback(feedback))
+            else:
+                row.append('NO-FEEDBACK')
+        row.append(warning)
+        self.add_row(row)
 
     def get_content_type(self):
         return 'text/plain'
@@ -101,20 +122,6 @@ class ExportDetailedPeriodOverviewCsv(ExportDetailedPeriodOverviewBase):
         self.csvwriter = csv.writer(self.out, dialect='excel')
         self.generate()
 
-    def add_aggregated_relstudentinfo(self, aggregated_relstudentinfo, warning=''):
-        user = aggregated_relstudentinfo.user
-        row = [self.get_fullname_utf8(user), user.username]
-        for grouplist in aggregated_relstudentinfo.iter_groups_by_assignment():
-            # NOTE: There can be more than one group if the same student is in more than one
-            #       group on an assignment - we select the "best" feedback.
-            feedback = grouplist.get_feedback_with_most_points()
-            if feedback:
-                row.append(self.format_feedback(feedback))
-            else:
-                row.append('NO-FEEDBACK')
-        row.append(warning)
-        self.add_row(row)
-
     def add_row(self, iterable):
         self.csvwriter.writerow(iterable)
 
@@ -135,24 +142,13 @@ class ExportDetailedPeriodOverviewXslx(ExportDetailedPeriodOverviewBase):
         self.currentrow = 0
         self.generate()
 
-    def add_aggregated_relstudentinfo(self, aggregated_relstudentinfo, warning=''):
-        user = aggregated_relstudentinfo.user
-        row = [self.get_fullname_utf8(user), user.username]
-        for grouplist in aggregated_relstudentinfo.iter_groups_by_assignment():
-            # NOTE: There can be more than one group if the same student is in more than one
-            #       group on an assignment - we select the "best" feedback.
-            feedback = grouplist.get_feedback_with_most_points()
-            if feedback:
-                row.append(self.format_feedback(feedback))
-            else:
-                row.append('NO-FEEDBACK')
-        row.append(warning)
-        self.add_row(row)
+    def add_cell(self, column, value):
+        cell = self.worksheet.cell(row=self.currentrow, column=column)
+        cell.value = value
 
     def add_row(self, iterable):
-        for column, data in enumerate(iterable):
-            cell = self.worksheet.cell(row=self.currentrow, column=column)
-            cell.value = data
+        for column, value in enumerate(iterable):
+            self.add_cell(column, value)
         self.currentrow += 1
 
     def get_output(self):

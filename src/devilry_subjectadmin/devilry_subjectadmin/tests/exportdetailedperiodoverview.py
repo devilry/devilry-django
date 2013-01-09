@@ -74,9 +74,9 @@ class TestExportDetailedPeriodOverview(TestCase):
         })
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, '\r\n'.join([
-            'NAME,USERNAME,a1,a2,WARNINGS',
-            'Student One,student1,"F (Failed, points: 2)","B (Passed, points: 50)",',
-            'name-missing,student2,"A (Passed, points: 52)","A (Passed, points: 53)",',
+            'NAME,USERNAME,a1 (Grade),a1 (Points),a1 (Passing grade),a2 (Grade),a2 (Points),a2 (Passing grade),WARNINGS',
+            'Student One,student1,F,2,Failed,B,50,Passed,',
+            'name-missing,student2,A,52,Passed,A,53,Passed,',
             ''
         ]))
 
