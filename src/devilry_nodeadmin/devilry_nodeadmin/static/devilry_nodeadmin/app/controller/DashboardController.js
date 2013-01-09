@@ -19,7 +19,7 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
             'viewport dashboardoverview #secondary': {
                 render: this._onRenderSecondary
             }
-        })
+        });
     },
 
     _onRenderSecondary: function() {

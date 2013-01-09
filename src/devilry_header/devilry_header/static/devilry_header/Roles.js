@@ -47,7 +47,7 @@ Ext.define('devilry_header.Roles', {
                         '</a></li>',
                     '</tpl>',
                     '<tpl if="userInfo.is_superuser | userInfo.is_nodeadmin">',
-                        '<li><a href="{urlpath_prefix}/administrator/" class="nodeadmin_role">',
+                        '<li><a href="{urlpath_prefix}/devilry_nodeadmin/" class="nodeadmin_role">',
                             '<div class="heading">',
                                 interpolate(gettext('%(Node_term)s administrator'), {
                                     Node_term: gettext('Node')

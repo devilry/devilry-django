@@ -24,10 +24,5 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
 
     itemSelector: 'li .course',
 
-    initComponent: function() {
-        this.store = Ext.create( 'devilry_nodeadmin.store.NodeDetails' );
-        this.store.proxy.url = Ext.String.format('/devilry_nodeadmin/rest/node/{0}/details', this.node_pk );
-        this.callParent(arguments);
-    }
-
+    store: 'NodeDetails'
 });

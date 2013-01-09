@@ -4,11 +4,15 @@ Ext.define( 'devilry_nodeadmin.store.NodeChildren', {
     model: 'devilry_nodeadmin.model.Node',
     proxy: {
         type: 'ajax',
-        url: 'rest/nodes/',
+        urlpatt: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_nodeadmin/rest/node/{0}/children',
         reader: {
             type: 'json',
             root: 'children'
         }
     },
-    autoLoad: true
+
+    loadWithNode: function(node_pk, config) {
+        this.proxy.url = Ext.String.format(this.proxy.urlpatt, node_pk);
+        this.load(config);
+    }
 });
