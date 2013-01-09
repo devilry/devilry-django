@@ -21,6 +21,7 @@ class ExportDetailedPeriodOverviewBase(object):
         self.filenameprefix = filenameprefix
         self.gradedetails = self.query.get('grade', 'all')
         self.download = self.query.get('download', False) == '1'
+        self.export_all_details = self.gradedetails == 'all'
 
     def generate(self):
         self.add_header()
@@ -42,7 +43,7 @@ class ExportDetailedPeriodOverviewBase(object):
     def get_headerlist(self):
         header = ['NAME', 'USERNAME']
         for assignment in self.grouper.iter_assignments():
-            if self.gradedetails == 'all':
+            if self.export_all_details:
                 for datatype in ('Grade', 'Points', 'Passing grade'):
                     header.append('{0} ({1})'.format(assignment.short_name, datatype))
             else:
@@ -89,12 +90,12 @@ class ExportDetailedPeriodOverviewBase(object):
             #       group on an assignment - we select the "best" feedback.
             feedback = grouplist.get_feedback_with_most_points()
             if feedback:
-                if self.gradedetails == 'all':
+                if self.export_all_details:
                     row += self.format_feedback(feedback)
                 else:
                     row.append(self.format_feedback(feedback))
             else:
-                if self.gradedetails == 'all':
+                if self.export_all_details:
                     row.extend(['NO-FEEDBACK']*3)
                 else:
                     row.append('NO-FEEDBACK')
@@ -151,14 +152,20 @@ class ExportDetailedPeriodOverviewXslx(ExportDetailedPeriodOverviewBase):
         for cells in self.worksheet.columns:
             cell = cells[0]
             cell.style.font.bold = True
+            colwidth = None
             if cell.column == 'A':
-                self.worksheet.column_dimensions[cell.column].width = 30
+                colwidth = 30
             elif cell.column == 'B':
-                self.worksheet.column_dimensions[cell.column].width = 13
+                colwidth = 13
             elif cell.value == 'WARNINGS':
-                self.worksheet.column_dimensions[cell.column].width = 70
+                colwidth = 70
             else:
-                self.worksheet.column_dimensions[cell.column].width = 18
+                if self.export_all_details:
+                    colwidth = 18
+                else:
+                    colwidth = 13
+            self.worksheet.column_dimensions[cell.column].width = colwidth
+
 
     def add_cell(self, column, value):
         cell = self.worksheet.cell(row=self.currentrow, column=column)
