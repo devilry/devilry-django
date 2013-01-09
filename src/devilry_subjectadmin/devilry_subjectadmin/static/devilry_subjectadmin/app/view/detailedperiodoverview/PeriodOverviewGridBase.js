@@ -85,6 +85,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
             flex: 2,
             menuDisabled: true,
             sortable: false,
+            minWidth: 150,
             renderer: this.renderStudentColumn
         }];
         this.setupColumns();
@@ -155,6 +156,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
             dataIndex: 'id',
             menuDisabled: true,
             sortable: false,
+            minWidth: 150,
             renderer: this._renderAssignmentResultColum
         });
         this.headerCt.insert(this.columns.length, column);
