@@ -84,7 +84,7 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
         } else if(type === 'Subject') {
             return this.subjectOverview(id);
         } else if(type === 'Node') {
-            return '#/nodeoverview-does-not-exist-yet';
+            return this.nodeadminNodeOverview(id);
         } else {
             Ext.Error.raise({
                 msg: 'The given type does not have an overview',
@@ -94,6 +94,18 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
         }
     },
 
+
+    //
+    //
+    // In the nodeadmin UI
+    //
+    //
+    //
+    nodeadminNodeOverview: function(node_pk) {
+        return Ext.String.format('{0}/devilry_nodeadmin/#/node/{1}',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
+            node_pk);
+    },
 
     //
     //
