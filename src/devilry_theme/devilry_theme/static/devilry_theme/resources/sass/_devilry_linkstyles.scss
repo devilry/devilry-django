@@ -68,5 +68,10 @@ a.new-window-link {
 }
 a[href^="mailto"] {
     background: transparent url(../icons/email-link.png) center right no-repeat;
-    padding-right: 19px;
+    padding-right: 20px;
+    &.mail-link-right {
+        background: transparent url(../icons/email-link.png) center left no-repeat;
+        padding-left: 20px;
+        padding-right: 0;
+    }
 }
