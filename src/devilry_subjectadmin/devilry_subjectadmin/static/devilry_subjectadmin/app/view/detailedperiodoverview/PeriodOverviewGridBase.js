@@ -10,7 +10,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
      * When rendering assignment result, we need to know the column index of the first assignment
      * to place the results in the correct column.
      */
-    firstAssignmentColumnIndex: 1,
+    firstAssignmentColumnIndex: 0,
 
     requires: [
         'Ext.XTemplate',
@@ -82,11 +82,12 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         this.columns = [{
             text: gettext('Student'),
             dataIndex: 'id',
-            flex: 2,
+//            flex: 2,
             menuDisabled: true,
             sortable: false,
-            minWidth: 150,
-            renderer: this.renderStudentColumn
+            width: 230,
+            locked: true,
+            renderer: Ext.bind(this.renderStudentColumn, this)
         }];
         this.setupColumns();
         this.setupToolbar();
@@ -157,9 +158,16 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
             menuDisabled: true,
             sortable: false,
             minWidth: 150,
-            renderer: this._renderAssignmentResultColum
+            renderer: Ext.bind(this._renderAssignmentResultColum, this)
         });
-        this.headerCt.insert(this.columns.length, column);
+
+        // NOTE: We use locking. That means the grid is a container where the first item is a grid
+        // with the locked cols, and the second item is a grid with the other cols. If we disable
+        // locking, change the 2 lines below to:
+        //      this.headerCt.insert(this.columns.length, column);
+        // increment firstAssignmentColumnIndex with 1.
+        var grid = this.items.last();
+        grid.headerCt.insert(grid.columns.length, column);
     },
 
     /**

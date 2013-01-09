@@ -4,7 +4,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
     cls: 'devilry_qualifiesforexam_previewgrid bootstrap',
     mixins: ['devilry_extjsextras.AutoHeightComponentMixin'],
 
-    firstAssignmentColumnIndex: 2,
+    firstAssignmentColumnIndex: 1,
 
     /**
      * @property {int[]} [passing_relatedstudentids_map]
@@ -42,7 +42,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
             minWidth: 160,
             menuDisabled: true,
             sortable: false,
-            renderer: this._renderQualifiesColumn
+            renderer: Ext.bind(this._renderQualifiesColumn, this)
         });
     },
 
