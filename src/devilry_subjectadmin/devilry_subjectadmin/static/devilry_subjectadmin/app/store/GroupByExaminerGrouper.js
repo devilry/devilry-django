@@ -36,7 +36,7 @@ Ext.define('devilry_subjectadmin.store.GroupByExaminerGrouper', {
     //},
 
     getGroupString: function() {
-        console.log('YO');
+        console.log('YO'); // TF?
         return 'examiners';
     }
 });

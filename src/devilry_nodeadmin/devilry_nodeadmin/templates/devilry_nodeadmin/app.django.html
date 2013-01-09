@@ -1,0 +1,35 @@
+{% extends "extjs4/apptemplate.django.html" %}
+{% load i18n %}
+{% load static %}
+
+{% block css %}
+{% include "devilry_theme/cssimports.django.html" %}
+{% include "devilry_header/cssimports.django.html" %}
+
+<link rel="stylesheet" type="text/css"
+      href="{% static "devilry_nodeadmin/resources/stylesheets/devilry_nodeadmin.css" %}" />
+{% endblock %}
+
+{% block app %}
+<script type="text/javascript" src="{% static "devilry_extjsextras/consolefallback.js" %}"></script>
+<script type="text/javascript" src="{% url devilry-settings %}"></script>
+{% include "markup/mathjaxheader.django.html" %}
+
+
+<script type="text/javascript" src="{% url devilry_nodeadmin_i18n %}"></script>
+
+{{ block.super }}
+
+<script type="text/javascript" src="{% static "devilry_extjsextras/extjslocale.js" %}"></script>
+
+<script type="text/javascript">
+{#NOTE: This is required for thee old restful API classes.#}
+Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
+    'X_DEVILRY_USE_EXTJS': true
+});
+        </script>
+
+{#NOTE: This is after the app-file because the files required in extjsajax_django_csrf are added to app-all.js, and is not available in production unless they come AFTER app-all.js. #}
+<script type="text/javascript" src="{% static "devilry_extjsextras/extjsajax_django_csrf.js" %}"></script>
+
+{% endblock %}
