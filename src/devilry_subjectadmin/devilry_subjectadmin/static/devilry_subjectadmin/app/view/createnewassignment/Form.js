@@ -271,7 +271,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                 ],
                                 data: {
                                     period_term: gettext('period'),
-                                    relatedstudents_link: Ext.String.format('href="{0}" target="_blank"',
+                                    relatedstudents_link: Ext.String.format('href="{0}" target="_blank" class="new-window-link"',
                                         devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id))
                                 }
 
@@ -376,9 +376,9 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                     '</small></p>'
                                 ],
                                 data: {
-                                    relatedstudents_link: Ext.String.format('href="{0}" target="_blank"',
+                                    relatedstudents_link: Ext.String.format('href="{0}" target="_blank" class="new-window-link"',
                                         devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id)),
-                                        relatedexaminers_link: Ext.String.format('href="{0}" target="_blank"',
+                                        relatedexaminers_link: Ext.String.format('href="{0}" target="_blank" class="new-window-link"',
                                             devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id))
                                 }
 
