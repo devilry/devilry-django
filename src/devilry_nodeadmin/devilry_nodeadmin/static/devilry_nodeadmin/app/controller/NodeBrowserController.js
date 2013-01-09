@@ -2,13 +2,13 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'NodeBrowserOverview'
+        'nodebrowser.NodeBrowserOverview'
     ],
 
     requires: [
-        'devilry_nodeadmin.view.NodeChildrenList',
-        'devilry_nodeadmin.view.NodeDetailsOverview',
-        'devilry_nodeadmin.view.NodeParentLink'
+        'devilry_nodeadmin.view.nodebrowser.NodeChildrenList',
+        'devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview',
+        'devilry_nodeadmin.view.nodebrowser.NodeParentLink'
     ],
 
     stores: [

@@ -1,10 +1,10 @@
-Ext.define('devilry_nodeadmin.view.DashboardOverview', {
+Ext.define('devilry_nodeadmin.view.dashboard.DashboardOverview', {
     extend: 'Ext.container.Container',
     alias: 'widget.dashboardoverview',
     cls: 'devilry_nodeadmin_nodebrowseroverview',
 
     requires: [
-        'devilry_nodeadmin.view.DefaultNodeList'
+        'devilry_nodeadmin.view.dashboard.DefaultNodeList'
     ],
 
     layout: 'column',

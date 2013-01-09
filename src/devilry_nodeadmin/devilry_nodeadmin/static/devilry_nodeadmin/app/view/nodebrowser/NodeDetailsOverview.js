@@ -1,4 +1,4 @@
-Ext.define('devilry_nodeadmin.view.NodeDetailsOverview', {
+Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
     extend: 'Ext.view.View',
     alias: 'widget.nodedetailsoverview',
     cls: 'secondary bootstrap',

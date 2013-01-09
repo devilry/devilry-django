@@ -1,4 +1,4 @@
-Ext.define('devilry_nodeadmin.view.NodeParentLink', {
+Ext.define('devilry_nodeadmin.view.nodebrowser.NodeParentLink', {
     extend: 'Ext.view.View',
     alias: 'widget.nodeparentlink',
     cls: 'navigator bootstrap',

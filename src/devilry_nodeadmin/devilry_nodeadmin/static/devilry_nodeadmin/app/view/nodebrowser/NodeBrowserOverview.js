@@ -1,4 +1,4 @@
-Ext.define('devilry_nodeadmin.view.NodeBrowserOverview', {
+Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
     extend: 'Ext.container.Container',
     alias: 'widget.nodebrowseroverview',
     cls: 'devilry_nodeadmin_nodebrowseroverview',

@@ -2,7 +2,7 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'DashboardOverview'
+        'dashboard.DashboardOverview'
     ],
 
     stores: [
