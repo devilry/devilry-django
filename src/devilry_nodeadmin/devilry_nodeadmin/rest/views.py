@@ -91,12 +91,25 @@ class NodeSubjectResource( ModelResource ):
 class NodeDetailsResource( NodeResource ):
     model = Node
     fields = (  'id', 'short_name', 'long_name', 'predecessor', 'etag',
-                'subject_count', 'assignment_count', 'period_count', 'subjects', )
+                'subject_count', 'assignment_count', 'period_count', 'subjects', 'breadcrumbs')
 
     def subjects( self, instance ):
         resource = NodeSubjectResource()
         subjects = Subject.objects.filter( parentnode=instance )
         return resource.serialize_iter( subjects )
+
+#    def breadcrumbs(self, instance):
+#        node = instance.parentnode
+#        breadcrumb = []
+#        while node != None:
+#            user = self.view.request.user
+#            if node.is_admin():
+#                breadcrumb.append({
+#                    'id': node.id,
+#                    'short_name': node.short_name
+#                })
+#            else:
+#
 
     # stats
     def subject_count( self, instance ):
