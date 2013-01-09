@@ -1,2 +1,0 @@
-msgid "Noden inneholder"
-msgstr "The node contains"

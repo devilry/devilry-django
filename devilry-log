@@ -296,3 +296,7 @@ ExtJS Stores
 * Reading up on i18n. Probably should postpone and consult the maintainer.
 * [+] Check on higher resolutions.
 * Translating nb->en, or en->nb?
+
+2012-01-10
+* Make font classes files: ubuntu-local and unbuntu, for the local version stored in statics and the imported one from google's font api.
+* 
