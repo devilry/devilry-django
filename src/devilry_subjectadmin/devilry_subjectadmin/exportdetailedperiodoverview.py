@@ -4,6 +4,8 @@ from django.http import HttpResponseBadRequest
 from django.http import HttpResponseForbidden
 from cStringIO import StringIO
 import csv
+from openpyxl import Workbook
+from openpyxl.writer.excel import save_virtual_workbook
 
 from devilry.apps.core.models import Period
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
@@ -123,9 +125,51 @@ class ExportDetailedPeriodOverviewCsv(ExportDetailedPeriodOverviewBase):
         return '{0}.csv'.format(self.filenameprefix)
 
 
+class ExportDetailedPeriodOverviewXslx(ExportDetailedPeriodOverviewBase):
+    supports_warnings = True
+    def __init__(self, *args, **kwargs):
+        super(ExportDetailedPeriodOverviewXslx, self).__init__(*args, **kwargs)
+        self.workbook = Workbook()
+        self.worksheet = self.workbook.get_active_sheet()
+        self.worksheet.title = self.filenameprefix
+        self.currentrow = 0
+        self.generate()
+
+    def add_aggregated_relstudentinfo(self, aggregated_relstudentinfo, warning=''):
+        user = aggregated_relstudentinfo.user
+        row = [self.get_fullname_utf8(user), user.username]
+        for grouplist in aggregated_relstudentinfo.iter_groups_by_assignment():
+            # NOTE: There can be more than one group if the same student is in more than one
+            #       group on an assignment - we select the "best" feedback.
+            feedback = grouplist.get_feedback_with_most_points()
+            if feedback:
+                row.append(self.format_feedback(feedback))
+            else:
+                row.append('NO-FEEDBACK')
+        row.append(warning)
+        self.add_row(row)
+
+    def add_row(self, iterable):
+        for column, data in enumerate(iterable):
+            cell = self.worksheet.cell(row=self.currentrow, column=column)
+            cell.value = data
+        self.currentrow += 1
+
+    def get_output(self):
+        return save_virtual_workbook(self.workbook)
+
+    def get_content_type(self):
+        return 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+
+    def get_filename(self):
+        return '{0}.xlsx'.format(self.filenameprefix)
+
+
+
 class ExportDetailedPeriodOverview(View):
     exporters = {
-        'csv': ExportDetailedPeriodOverviewCsv
+        'csv': ExportDetailedPeriodOverviewCsv,
+        'xslx': ExportDetailedPeriodOverviewXslx
     }
     def get(self, request, id):
         qry = Period.where_is_admin_or_superadmin(self.request.user).filter(id=id)

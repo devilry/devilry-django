@@ -79,3 +79,10 @@ class TestExportDetailedPeriodOverview(TestCase):
             'name-missing,student2,"A (Passed, points: 52)","A (Passed, points: 53)",',
             ''
         ]))
+
+    def test_export_ooxml(self):
+        self._create_testdata()
+        response = self._getas('periodadmin', {
+            'format': 'xslx'
+        })
+        self.assertEqual(response.status_code, 200)
