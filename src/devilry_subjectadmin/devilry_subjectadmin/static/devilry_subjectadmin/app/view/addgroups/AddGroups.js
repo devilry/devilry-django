@@ -41,7 +41,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
             '</p>',
             '<tpl if="is_periodadmin">',
                 '<p>',
-                    '<a target="_blank" href="{manageRelatedStudentsUrl}" class="addoreditstudents_link">',
+                    '<a target="_blank" href="{manageRelatedStudentsUrl}" class="addoreditstudents_link new-window-link">',
                         gettext('Add or edit students on {periodpath}'),
                     '</a>',
                 '</p>',
@@ -180,7 +180,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AddGroups', {
                     lesstext: gettext('Less help') + ' ...',
                     tpl: this.helptpl,
                     data: {
-                        periodpath: Ext.String.format('<em>{0}</em>', this.periodinfo.path),
+                        periodpath: this.periodinfo.path,
                         is_periodadmin: this.periodinfo.is_admin,
                         hasIgnored: this.ignoredcount > 0,
                         ignoredcount: this.ignoredcount,
