@@ -13,6 +13,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
     items: [{
         xtype: 'container',
         itemId: 'primary',
+        cls: 'devilry_nodeadmin_primary',
         columnWidth: 0.5,
         padding: '30 20 20 30'
 //        items: [{
@@ -25,6 +26,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
     }, {
         xtype: 'container',
         itemId: 'secondary',
+        cls: 'devilry_nodeadmin_secondary',
         columnWidth: 0.5,
         padding: '30 20 20 30'
     }]

@@ -12,7 +12,7 @@ Ext.define('devilry_nodeadmin.view.dashboard.DashboardOverview', {
 
     items: [{
         xtype: 'container',
-        cls: 'bootstrap',
+        cls: 'devilry_nodeadmin_primary',
         itemId: 'primary',
         columnWidth: 0.5,
         padding: '30 20 20 30',
@@ -22,6 +22,7 @@ Ext.define('devilry_nodeadmin.view.dashboard.DashboardOverview', {
     }, {
         xtype: 'box',
         itemId: 'secondary',
+        cls: 'devilry_nodeadmin_secondary',
         cls: 'bootstrap',
         columnWidth: 0.5,
         padding: '30 20 20 30'

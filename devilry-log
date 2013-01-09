@@ -304,3 +304,6 @@ ExtJS Stores
 * [+] Prefix all devilry_nodadmin styles with the name of the app; add the new style names to the components.
 * Fix the floating issue on the navigation links.
 * Capitalize view-names
+* Parameters to _onRender
+* For the sake of Selenium-tests you should assign cls property to all elements.
+* 

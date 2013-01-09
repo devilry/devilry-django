@@ -1,7 +1,7 @@
 Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
     extend: 'Ext.view.View',
     alias: 'widget.nodedetailsoverview',
-    cls: 'secondary bootstrap',
+    cls: 'devilry_nodeadmin_nodedetailsoverview bootstrap',
     tpl: [
         '<tpl for=".">',
             '<h1>Om <i>{ short_name }</i></h1>',

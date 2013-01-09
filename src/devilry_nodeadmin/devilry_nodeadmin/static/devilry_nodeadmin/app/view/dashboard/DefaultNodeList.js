@@ -1,9 +1,9 @@
 Ext.define('devilry_nodeadmin.view.dashboard.DefaultNodeList', {
     extend: 'Ext.view.View',
     alias: 'widget.defaultnodelist',
-    cls: 'primary',
+    cls: 'devilry_nodeadmin_defaultnodelist bootstrap',
     tpl: [
-        '<h1>Navigér</h1>',
+        '<h1>', gettext("Navigate"), '</h1>',
         '<hr />',
         '<tpl for=".">',
             '<div class="bootstrap node" style="padding-bottom: 10px;">',

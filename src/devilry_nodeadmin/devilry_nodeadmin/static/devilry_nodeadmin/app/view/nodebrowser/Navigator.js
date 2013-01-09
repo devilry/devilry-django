@@ -1,7 +1,7 @@
-Ext.define('devilry_nodeadmin.view.nodebrowser.NodeParentLink', {
+Ext.define('devilry_nodeadmin.view.nodebrowser.Navigator', {
     extend: 'Ext.view.View',
     alias: 'widget.nodeparentlink',
-    cls: 'navigator bootstrap',
+    cls: 'devilry_nodeadmin_navigator bootstrap',
     tpl: [
         '<tpl for=".">',
             '<span>{ short_name }</span>',

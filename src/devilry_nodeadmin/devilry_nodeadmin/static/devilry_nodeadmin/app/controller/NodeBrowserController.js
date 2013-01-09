@@ -8,7 +8,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
     requires: [
         'devilry_nodeadmin.view.nodebrowser.NodeChildrenList',
         'devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview',
-        'devilry_nodeadmin.view.nodebrowser.NodeParentLink'
+        'devilry_nodeadmin.view.nodebrowser.Navigator'
     ],
 
     stores: [

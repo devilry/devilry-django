@@ -1,13 +1,13 @@
 /* line 1, ../sass/devilry_nodeadmin.scss */
-.primary {
+.devilry_nodeadmin_primary {
   line-height: 20px;
 }
 /* line 4, ../sass/devilry_nodeadmin.scss */
-.primary .footer {
+.devilry_nodeadmin_primary .footer {
   margin-top: 25px;
 }
 /* line 8, ../sass/devilry_nodeadmin.scss */
-.primary .node {
+.devilry_nodeadmin_primary .node {
   border: 1px solid #e6e6e6;
   padding: 9px 5px 5px 10px;
   margin: 5px;
