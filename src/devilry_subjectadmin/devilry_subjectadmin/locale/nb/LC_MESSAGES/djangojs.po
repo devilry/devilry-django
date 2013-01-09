@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-09 21:15+0100\n"
+"POT-Creation-Date: 2013-01-09 22:06+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -182,7 +182,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:373
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:305
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:48
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:109
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:110
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:64
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:81
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:137
@@ -503,28 +503,20 @@ msgstr "Legg til administratorer"
 msgid "Other administrators"
 msgstr "Andre administratorer"
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:75
-msgid ""
-"These administrators are from items higher up in the hierarchy. The links in "
-"parenthesis is to the location where the administrator propagates from."
-msgstr ""
-"Disse administratorene er fra objekter høyere opp i hierarkiet. Linkene i "
-"parentes går til objektet der administratoren propagerer fra."
-
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:136
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:137
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:31
 msgid "Details"
 msgstr "Detaljer"
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:137
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:138
 msgid "Hide details"
 msgstr "Sjul detaljer"
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:163
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:164
 msgid "Edit administrators"
 msgstr "Rediger administratorer"
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:188
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:189
 msgid ""
 "Use the field at the bottom of this window to search for users. When you "
 "select a user from the search results, they are immediatly made "
@@ -534,7 +526,7 @@ msgstr ""
 "velger en bruker fra søkeresultatene, blir de øyeblikkelig lagt til som "
 "administrator. Lukk vinduet eller kikk ESC når du er ferdig."
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:191
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:192
 msgid ""
 "Select one or more users and click the remove-button to remove them from "
 "administrators."
@@ -542,11 +534,11 @@ msgstr ""
 "Velg en eller flere brukere og klikk på slett-knappen for å fjerne fra "
 "administratorlisten."
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:195
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:196
 msgid "You can remove yourself from administrators."
 msgstr "Du kan fjerne deg selv fra administratorlisten."
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:198
+#: static/devilry_subjectadmin/app/view/AdminsBox.js:199
 msgid ""
 "If you remove yourself by accident, you need to ask another administrator to "
 "re-add you. Close this window and use the list of administrators and other "
@@ -829,12 +821,13 @@ msgstr ""
 "listen nedenfor."
 
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:27
+#, fuzzy
 msgid ""
 "These are all %(subjects_term)s, %(periods_term)s and assignments where you "
-"have administrator rights. Assignments are listed if you have administrator-"
-"rights on the assignments, and not on the %(period_term)s or %(subject_term)"
-"s containing the assignment. The %(subject_term)s name is a link on if you "
-"have administrator rights on the %(subject_term)s."
+"have administrator rights. Assignments are included in the listing if you "
+"have administrator-rights on the assignment, and not on the %(period_term)s "
+"or %(subject_term)s containing the assignment. The %(subject_term)s name is "
+"a link if you have administrator rights on the %(subject_term)s."
 msgstr ""
 "Dette er alle %(subjects_term)s, %(periods_term)s og oppgaver der du har "
 "administrator-rettigheter. Oppgaver er med i listen hvis du har "
@@ -2903,6 +2896,13 @@ msgid ""
 msgstr ""
 "Når du har slettet et %(subject_term)s er det ingen mulighet for å angre. "
 "Kun superbrukere kan slette et %(subject_term)s med innhold."
+
+#~ msgid ""
+#~ "These administrators are from items higher up in the hierarchy. The links "
+#~ "in parenthesis is to the location where the administrator propagates from."
+#~ msgstr ""
+#~ "Disse administratorene er fra objekter høyere opp i hierarkiet. Linkene i "
+#~ "parentes går til objektet der administratoren propagerer fra."
 
 #~ msgid "Opens in new window"
 #~ msgstr "Åpnes i et nytt vindu"
