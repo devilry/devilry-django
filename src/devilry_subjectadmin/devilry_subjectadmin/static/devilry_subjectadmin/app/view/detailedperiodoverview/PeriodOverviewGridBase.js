@@ -218,10 +218,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         this.searchtask.delay(140);
     },
     _searchMatch: function(searchString, value) {
-        if(value === null) {
-            value = '';
-        }
-        return value.toLocaleLowerCase().indexOf(searchString) !== -1;
+        return this._forceString(value).toLocaleLowerCase().indexOf(searchString) !== -1;
     },
     _search: function(searchString) {
         this.getStore().filterBy(function(record) {
@@ -290,8 +287,16 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         }));
     },
 
+    _forceString:function (value) {
+        if(value === null) {
+            return '';
+        } else {
+            return value;
+        }
+    },
+
     _sortByUserProperty: function(a, b, property) {
-        return a.get('user')[property].localeCompare(b.get('user')[property]);
+        return this._forceString(a.get('user')[property]).localeCompare(this._forceString(b.get('user')[property]));
     },
     _sortByUsername: function (a, b) {
         return this._sortByUserProperty(a, b, 'username');
@@ -302,7 +307,8 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
     },
 
     _getLastname: function(record) {
-        var splitted = record.get('user').full_name.split(/\s+/);
+        var full_name = this._forceString(record.get('user').full_name);
+        var splitted = full_name.split(/\s+/);
         return splitted[splitted.length-1];
     },
     _sortByLastname: function (a, b) {
