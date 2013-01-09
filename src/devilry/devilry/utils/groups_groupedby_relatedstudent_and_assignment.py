@@ -260,6 +260,17 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         """
         return self.ignored_students_with_results.itervalues()
 
+    def iter_students_with_no_feedback_that_is_candidate_but_not_in_related(self):
+        """
+        Iterate over everything returned by
+        :meth:`.iter_students_that_is_candidate_but_not_in_related`
+        except for the students returned by
+        :meth:`.iter_students_with_feedback_that_is_candidate_but_not_in_related`
+        """
+        for userid, student in self.ignored_students.iteritems():
+            if not userid in self.ignored_students_with_results:
+                yield student
+
     def _serialize_assignment(self, basenode):
         return {'id': basenode.id,
                 'short_name': basenode.short_name,
