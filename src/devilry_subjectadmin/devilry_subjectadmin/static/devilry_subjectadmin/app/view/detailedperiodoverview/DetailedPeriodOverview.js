@@ -18,13 +18,13 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.DetailedPeriodOverv
         Ext.apply(this, {
             padding: '20',
             layout: 'border',
+            style: 'background-color: transparent !important;',
             items: [{
                 //                cls: 'devilry_focuscontainer',
                 xtype: 'box',
                 cls: 'bootstrap',
-                margin: '0 0 20 0',
                 region: 'north',
-                height: 20,
+                height: 24,
                 itemId: 'header',
                 tpl: [
                     '<h1 style="margin: 0; padding: 0; font-size: 14px; line-height: 14px;">',

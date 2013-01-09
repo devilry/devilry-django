@@ -11,7 +11,10 @@ Ext.define('devilry_subjectadmin.controller.DetailedPeriodOverviewController', {
     ],
 
 //    stores: ['RelatedStudents'],
-    models: ['Period'],
+    models: [
+        'Period',
+        'DetailedPeriodOverview'
+    ],
 
     refs: [{
         ref: 'overview',
@@ -39,7 +42,6 @@ Ext.define('devilry_subjectadmin.controller.DetailedPeriodOverviewController', {
         this.loadPeriod(period_id);
     },
 
-
     //
     //
     // Load period
@@ -61,6 +63,31 @@ Ext.define('devilry_subjectadmin.controller.DetailedPeriodOverviewController', {
     },
     _onLoadPeriodSuccess: function(record) {
         this.periodRecord = record;
+        this._loadDetailedPeriodOverview();
+    },
+
+    //
+    //
+    // Load detailed period overview
+    //
+    //
+    _loadDetailedPeriodOverview: function() {
+        this.getDetailedPeriodOverviewModel().load(this.period_id, {
+            scope: this,
+            callback: function(records, op) {
+                if(op.success) {
+                    this._onLoadDetailedPeriodOverviewSuccess(records);
+                }
+                // NOTE: Errors are handled in _onProxyError
+            }
+        });
+    },
+    _onLoadDetailedPeriodOverviewSuccess: function(record) {
+        this.detailedPeriodOverviewRecord = record;
+        this._onAllLoaded();
+    },
+
+    _onAllLoaded:function () {
         var path = this.getPathFromBreadcrumb(this.periodRecord);
         var label = gettext('Detailed overview');
         this.getHeader().update({
