@@ -4,15 +4,20 @@ Ext.define('devilry_nodeadmin.view.nodeParentLink', {
     cls: 'node-parent-link',
     tpl: [
         '<tpl for=".">',
-        '<tpl if="predecessor">',
-        '<a href="/devilry_nodeadmin/#/node/{ predecessor.id }"><i class="icon-chevron-up"></i> ett nivå opp</a>',
-        '<tpl else>',
-        '<a href="/devilry_nodeadmin/#/node/"><i class="icon-chevron-up"></i> ett nivå opp</a>',
+        '<div class="navigator">',
+            '<span>{ short_name }</span>',
+            '<tpl if="predecessor">',
+                '<a href="/devilry_nodeadmin/#/node/"><i class="icon-home"></i> til rotnoden</a>',
+                '<a href="/devilry_nodeadmin/#/node/{ predecessor.id }"><i class="icon-chevron-up"></i> ett nivå opp</a>',
+            '<tpl else>',
+                '<a href="/devilry_nodeadmin/#/node/"><i class="icon-home"></i> til rotnoden</a>',
+            '</tpl>',
+        '</div>',
         '</tpl>',
-        '</tpl>'
+        '<hr />'
     ],
 
-    itemSelector: 'a',
+    itemSelector: '',
 
     initComponent: function() {
         this.store = Ext.create( 'devilry_nodeadmin.store.NodeDetails' );

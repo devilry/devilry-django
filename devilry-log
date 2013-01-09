@@ -263,10 +263,10 @@ ExtJS Stores
 * "Ext JS 4.1.1a is also available under the GPLv3 for open source projects, which may require the release of your code.", counterpoint: Sencha is a member of Free Software Foundation.
 * "This is a private utility class for internal use by the framework. Don't rely on its existence."
 * Still no urlpatt, even in Ext.data.proxy.Server.
-* (?) "According to a blogger" the proxies should reside inside of a model, since the store inherits from it.
+* [?] "According to a blogger" the proxies should reside inside of a model, since the store inherits from it.
 
 2013-01-08
-* (?) Should I override pagination to ensure that all elements are visible to the user unless I wish to implement a page-select feature?
+* [?] Should I override pagination to ensure that all elements are visible to the user unless I wish to implement a page-select feature?
 * Does plugin.autodiscover() work as it should?
 * Installed compass.
 * The nodeadmin-application seemed not to discover the bootstrap stylesheets, while they were in order in other apps. I assumed that the reason for that was some compass routine that wasn't ran, but it was actually the template file that was changed for the subjectadmin application.
@@ -286,7 +286,13 @@ ExtJS Stores
 
 
 2012-01-09
-* (?) Ask for a larger dataset for testing.
+* [?] Ask for a larger dataset for testing.
 * Does compass assign scope to my app, or do I have to watch out for namespace-collisions?
 * Attempted to make a default Tree-view of the node hierarchy, but postponed the efforta after the deadline. The legacy code is tagged, see TreeView, TreeStore and NodeInterface classes. The API is still accessible in /devilry_nodeadmin/tree/ and served by following views.py classes: NodeTreeResource and NodeTree 
-* 
+* ems or pixels?
+* Some improvements in the navigation menu: the button elements look better on the right side, the key is to increase spacing between the content panes to ensure that their contents do not merge visually. 
+* Don't forget to mention the css namespace. Maybe the sheets are condensed into one: your application may interfere with others.
+* Remaining: 1. move the store/view functionality into a controller. 2. introduce breadcrumbs. 3. i18n and gettext. 4. Store sorting by or without statistics..
+* Reading up on i18n. Probably should postpone and consult the maintainer.
+* [+] Check on higher resolutions.
+* Translating nb->en, or en->nb?

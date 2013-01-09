@@ -8,17 +8,29 @@
   line-height: 20px;
 }
 
-/* line 9, ../sass/devilry_nodeadmin.scss */
-.node-parent-link {
-  margin-top: 25px;
+/* line 11, ../sass/devilry_nodeadmin.scss */
+.navigator a {
+  margin-right: 15px;
   float: right;
 }
-/* line 13, ../sass/devilry_nodeadmin.scss */
-.node-parent-link i {
+/* line 16, ../sass/devilry_nodeadmin.scss */
+.navigator i {
   margin-right: 5px;
 }
+/* line 20, ../sass/devilry_nodeadmin.scss */
+.navigator span {
+  margin-right: 50px;
+}
 
-/* line 19, ../sass/devilry_nodeadmin.scss */
+/* line 25, ../sass/devilry_nodeadmin.scss */
 .footer {
   margin-top: 25px;
+}
+
+/* line 29, ../sass/devilry_nodeadmin.scss */
+.node {
+  border: 1px solid #e6e6e6;
+  padding: 9px 5px 5px 10px;
+  margin: 5px;
+  border-radius: 5px;
 }
