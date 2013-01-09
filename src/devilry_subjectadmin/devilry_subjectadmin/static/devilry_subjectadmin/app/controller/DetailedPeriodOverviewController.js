@@ -10,7 +10,7 @@ Ext.define('devilry_subjectadmin.controller.DetailedPeriodOverviewController', {
         'detailedperiodoverview.DetailedPeriodOverview'
     ],
 
-//    stores: ['RelatedStudents'],
+    stores: ['AggregatedRelatedStudentInfos'],
     models: [
         'Period',
         'DetailedPeriodOverview'
@@ -22,6 +22,9 @@ Ext.define('devilry_subjectadmin.controller.DetailedPeriodOverviewController', {
     }, {
         ref: 'header',
         selector: 'viewport detailedperiodoverview #header'
+    }, {
+        ref: 'detailsGrid',
+        selector: 'viewport detailedperiodoverview detailedperiodoverviewgrid'
     }],
 
     init: function() {
@@ -31,15 +34,15 @@ Ext.define('devilry_subjectadmin.controller.DetailedPeriodOverviewController', {
             }
         });
 
-//        this.mon(this.getRelatedStudentsStore().proxy, {
-//            scope: this,
-//            exception: this.onRelatedStoreProxyError
-//        });
+        this.mon(this.getDetailedPeriodOverviewModel().proxy, {
+            scope: this,
+            exception: this._onProxyError
+        });
     },
 
     _onRender: function() {
-        var period_id = this.getOverview().period_id;
-        this.loadPeriod(period_id);
+        this.period_id = this.getOverview().period_id;
+        this.loadPeriod();
     },
 
     //
@@ -48,9 +51,9 @@ Ext.define('devilry_subjectadmin.controller.DetailedPeriodOverviewController', {
     //
     //
 
-    loadPeriod: function(period_id) {
+    loadPeriod: function() {
         this.setLoadingBreadcrumb();
-        this.getPeriodModel().load(period_id, {
+        this.getPeriodModel().load(this.period_id, {
             scope: this,
             callback: function(record, operation) {
                 if(operation.success) {
@@ -86,6 +89,18 @@ Ext.define('devilry_subjectadmin.controller.DetailedPeriodOverviewController', {
         this.detailedPeriodOverviewRecord = record;
         this._onAllLoaded();
     },
+    _onProxyError: function(proxy, response, operation) {
+        var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
+        errorhandler.addErrors(response, operation);
+        this.application.getAlertmessagelist().addMany(errorhandler.errormessages, 'error', true);
+    },
+
+
+    //
+    //
+    // Create grid
+    //
+    //
 
     _onAllLoaded:function () {
         var path = this.getPathFromBreadcrumb(this.periodRecord);
@@ -96,5 +111,15 @@ Ext.define('devilry_subjectadmin.controller.DetailedPeriodOverviewController', {
         });
         this.application.setTitle(Ext.String.format('{0} - {1}', label, path));
         this.setSubviewBreadcrumb(this.periodRecord, 'Period', [], label);
+        this._setupGrid();
+    },
+
+    _setupGrid: function () {
+        var grid = this.getDetailsGrid();
+        var assignments = this.detailedPeriodOverviewRecord.get('assignments');
+        grid.addColumnForEachAssignment(assignments);
+        grid.addAssignmentSorters(assignments);
+//        grid.sortByQualifiesQualifiedFirst();
+        this.getAggregatedRelatedStudentInfosStore().loadData(this.detailedPeriodOverviewRecord.get('relatedstudents'));
     }
 });

@@ -1,11 +1,9 @@
-/**
- * Subject overview (overview of an subject).
- */
 Ext.define('devilry_subjectadmin.view.detailedperiodoverview.DetailedPeriodOverview' ,{
     extend: 'Ext.container.Container',
     alias: 'widget.detailedperiodoverview',
     cls: 'devilry_detailedperiodoverview',
     requires: [
+        'devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGrid'
     ],
 
 
@@ -39,7 +37,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.DetailedPeriodOverv
                     loading: true
                 }
             }, {
-                xtype: '',
+                xtype: 'detailedperiodoverviewgrid',
                 region: 'center'
             }]
         });

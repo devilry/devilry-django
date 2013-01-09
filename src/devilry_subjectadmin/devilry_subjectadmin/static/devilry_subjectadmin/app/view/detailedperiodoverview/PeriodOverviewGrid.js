@@ -3,5 +3,5 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGrid'
     alias: 'widget.detailedperiodoverviewgrid',
     cls: 'devilry_subjectadmin_detailedperiodoverviewgrid bootstrap',
 
-    store: 'RelatedStudents'
+    store: 'AggregatedRelatedStudentInfos'
 });
