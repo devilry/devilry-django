@@ -8,6 +8,10 @@
     {% endblock %}
     <title>{% block title %}{{ title }}{% endblock %}</title>
 
+    {% block consolefallback %}
+        <script type="text/javascript" src="{% static "devilry_extjsextras/consolefallback.js" %}"></script>
+    {% endblock %}
+
     {% block favicons %}
         <link rel="apple-touch-icon" href="{% static "devilry_theme/resources/favicons/apple-touch-icon.png" %}" />
         <link rel="shortcut icon" href="{% static "devilry_theme/resources/favicons/favicon.ico" %}" />
@@ -50,6 +54,10 @@
         {% endif %}
     {% endblock %}
     {% block head_postapp %}{% endblock %}
+
+    {% block extjslocale %}
+        <script type="text/javascript" src="{% static "devilry_extjsextras/extjslocale.js" %}"></script>
+    {% endblock %}
 
     {% block extjs_csrf %}
         {#NOTE: This is after the app-file because the files required in extjsajax_django_csrf are added to app-all.js, and is not available in production unless they come AFTER app-all.js. #}
