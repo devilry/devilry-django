@@ -59,12 +59,12 @@ class TestExportDetailedPeriodOverview(TestCase):
         self._create_relatedstudent('student1', fullname='Student One')
         self._create_relatedstudent('student2')
         self._create_feedbacks(
-            (self.testhelper.sub_p1_a1_gstudent1, {'grade': 'F', 'points': 0, 'is_passing_grade': False}),
-            (self.testhelper.sub_p1_a2_gstudent1, {'grade': 'A', 'points': 0, 'is_passing_grade': True})
+            (self.testhelper.sub_p1_a1_gstudent1, {'grade': 'F', 'points': 2, 'is_passing_grade': False}),
+            (self.testhelper.sub_p1_a2_gstudent1, {'grade': 'B', 'points': 50, 'is_passing_grade': True})
         )
         self._create_feedbacks(
-            (self.testhelper.sub_p1_a1_gstudent2, {'grade': 'A', 'points': 0, 'is_passing_grade': True}),
-            (self.testhelper.sub_p1_a2_gstudent2, {'grade': 'A', 'points': 0, 'is_passing_grade': True})
+            (self.testhelper.sub_p1_a1_gstudent2, {'grade': 'A', 'points': 52, 'is_passing_grade': True}),
+            (self.testhelper.sub_p1_a2_gstudent2, {'grade': 'A', 'points': 53, 'is_passing_grade': True})
         )
 
     def test_export_csv(self):
@@ -72,7 +72,11 @@ class TestExportDetailedPeriodOverview(TestCase):
         response = self._getas('periodadmin', {
             'format': 'csv'
         })
-        self.assertEqual(response.status_code, 200)
         print response.content
-        self.assertEquals(response.content.count('name-missing'), 1)
-        self.assertEquals(response.content.count('Student One'), 1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, '\r\n'.join([
+            'NAME,USERNAME,a1,a2,WARNINGS',
+            'Student One,student1,"F (Failed, points: 2)","B (Passed, points: 50)",',
+            'name-missing,student2,"A (Passed, points: 52)","A (Passed, points: 53)",',
+            ''
+        ]))
