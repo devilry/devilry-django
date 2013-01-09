@@ -4,7 +4,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
     cls: 'devilry_qualifiesforexam_previewgrid bootstrap',
     mixins: ['devilry_extjsextras.AutoHeightComponentMixin'],
 
-    firstAssignmentColumnIndex: 1,
+    firstAssignmentColumnIndex: 2,
 
     /**
      * @property {int[]} [passing_relatedstudentids_map]
