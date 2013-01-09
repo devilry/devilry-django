@@ -2,35 +2,33 @@
 .primary {
   line-height: 20px;
 }
-
-/* line 5, ../sass/devilry_nodeadmin.scss */
-.secondary {
-  line-height: 20px;
-}
-
-/* line 11, ../sass/devilry_nodeadmin.scss */
-.navigator a {
-  margin-right: 15px;
-  float: right;
-}
-/* line 16, ../sass/devilry_nodeadmin.scss */
-.navigator i {
-  margin-right: 5px;
-}
-/* line 20, ../sass/devilry_nodeadmin.scss */
-.navigator span {
-  margin-right: 50px;
-}
-
-/* line 25, ../sass/devilry_nodeadmin.scss */
-.footer {
+/* line 4, ../sass/devilry_nodeadmin.scss */
+.primary .footer {
   margin-top: 25px;
 }
-
-/* line 29, ../sass/devilry_nodeadmin.scss */
-.node {
+/* line 8, ../sass/devilry_nodeadmin.scss */
+.primary .node {
   border: 1px solid #e6e6e6;
   padding: 9px 5px 5px 10px;
   margin: 5px;
   border-radius: 5px;
+}
+
+/* line 18, ../sass/devilry_nodeadmin.scss */
+.navigator a {
+  margin-right: 15px;
+  float: right;
+}
+/* line 23, ../sass/devilry_nodeadmin.scss */
+.navigator i {
+  margin-right: 5px;
+}
+/* line 27, ../sass/devilry_nodeadmin.scss */
+.navigator span {
+  margin-right: 50px;
+}
+
+/* line 33, ../sass/devilry_nodeadmin.scss */
+.secondary {
+  line-height: 20px;
 }

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-09 17:22+0100\n"
+"POT-Creation-Date: 2013-01-09 18:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -30,13 +30,13 @@ msgstr ""
 
 #: static/devilry_nodeadmin/app/view/nodeChildrenList.js:23
 msgid "no nodes on this level"
-msgstr ""
+msgstr "ingen noder på dette nivå"
 
-#: static/devilry_nodeadmin/app/view/nodeParentLink.js:11
-#: static/devilry_nodeadmin/app/view/nodeParentLink.js:18
+#: static/devilry_nodeadmin/app/view/nodeParentLink.js:10
+#: static/devilry_nodeadmin/app/view/nodeParentLink.js:17
 msgid "til rotnoden"
 msgstr ""
 
-#: static/devilry_nodeadmin/app/view/nodeParentLink.js:14
+#: static/devilry_nodeadmin/app/view/nodeParentLink.js:13
 msgid "ett nivå opp"
 msgstr ""

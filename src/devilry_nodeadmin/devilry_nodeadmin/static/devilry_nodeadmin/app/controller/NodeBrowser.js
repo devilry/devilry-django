@@ -2,32 +2,22 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowser', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'defaultNodeList',
         'nodeChildrenList',
         'nodeDetailsOverview',
-        'nodeParentLink',
+        'nodeParentLink'
     ],
 
     stores: [
         'NodeChildren',
-        'NodeDetails',
+        'NodeDetails'
     ],
 
     models: [
         'Details',
-        'Node',
+        'Node'
     ],
 
-    refs: [
-        {
-            ref: 'primary',
-            selector: 'viewport primary'
-        },
-        {
-            ref: 'viewport secondary',
-            selector: ''
-        }
-    ],
+    refs: [],
 
     init: function() {
 

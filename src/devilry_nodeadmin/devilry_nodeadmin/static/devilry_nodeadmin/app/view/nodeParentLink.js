@@ -1,10 +1,9 @@
 Ext.define('devilry_nodeadmin.view.nodeParentLink', {
     extend: 'Ext.view.View',
     alias: 'widget.nodeparentlink',
-    cls: 'node-parent-link',
+    cls: 'navigator',
     tpl: [
         '<tpl for=".">',
-        '<div class="navigator">',
             '<span>{ short_name }</span>',
             '<tpl if="predecessor">',
                 '<a href="/devilry_nodeadmin/#/node/"><i class="icon-home"></i>',
@@ -18,7 +17,6 @@ Ext.define('devilry_nodeadmin.view.nodeParentLink', {
                     gettext( "til rotnoden" ),
                 '</a>',
             '</tpl>',
-        '</div>',
         '</tpl>',
         '<hr />'
     ],

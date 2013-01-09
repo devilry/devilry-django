@@ -292,7 +292,7 @@ ExtJS Stores
 * Attempted to make a default Tree-view of the node hierarchy, but postponed the efforta after the deadline. The legacy code is tagged, see TreeView, TreeStore and NodeInterface classes. The API is still accessible in /devilry_nodeadmin/tree/ and served by following views.py classes: NodeTreeResource and NodeTree 
 * ems or pixels?
 * Some improvements in the navigation menu: the button elements look better on the right side, the key is to increase spacing between the content panes to ensure that their contents do not merge visually. 
-* Don't forget to mention the css namespace. Maybe the sheets are condensed into one: your application may interfere with others.
+* [x] [?] Don't forget to mention the css namespace. Maybe the sheets are condensed into one: your application may interfere with others.
 * Remaining: 1. move the store/view functionality into a controller. 2. introduce breadcrumbs. 3. i18n and gettext. 4. Store sorting by or without statistics..
 * Reading up on i18n. Probably should postpone and consult the maintainer.
 * [+] Check on higher resolutions.
@@ -301,4 +301,6 @@ ExtJS Stores
 2012-01-10
 * Make font classes files: ubuntu-local and unbuntu, for the local version stored in statics and the imported one from google's font api.
 * [!] Override pagination to max.
-* 
+* [+] Prefix all devilry_nodadmin styles with the name of the app; add the new style names to the components.
+* Fix the floating issue on the navigation links.
+* Capitalize view-names

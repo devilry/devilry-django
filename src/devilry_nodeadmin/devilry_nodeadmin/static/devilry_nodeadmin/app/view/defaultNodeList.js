@@ -1,4 +1,4 @@
-Ext.define('devilry_nodeadmin.view.defaultNodeList', {
+Ext.define('devilry_nodeadmin.view.DefaultNodeList', {
     extend: 'Ext.view.View',
     alias: 'widget.defaultnodelist',
     cls: 'primary',
