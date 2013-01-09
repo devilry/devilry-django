@@ -88,6 +88,7 @@ Ext.application({
 
 
     showDefault: function( routeInfo ) {
+        this.breadcrumbs.setHome();
         this.setPrimaryContent({
             xtype: 'dashboardoverview'
         });
