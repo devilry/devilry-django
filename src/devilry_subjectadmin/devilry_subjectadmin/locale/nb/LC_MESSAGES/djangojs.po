@@ -1327,7 +1327,7 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:395
 msgid "Make me examiner for all students."
-msgstr "Gjør meg til retter for alle studenten."
+msgstr "Gjør meg til retter for alle studentene."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:405
 msgid "I.e.: you plan to provide feedback to all students yourself."
