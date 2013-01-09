@@ -1259,7 +1259,7 @@ msgstr "Studenter?"
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:255
 msgid "Add all students registered on the %(period_term)s."
-msgstr "Legg til alle studenter registrert på oppgavens %(period_term)s?"
+msgstr "Legg til alle studenter registrert på oppgavens %(period_term)s."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:269
 msgid "You may want to view and edit <a {relatedstudents_link}>students</a>."
@@ -1267,7 +1267,7 @@ msgstr "Du kan se på og redigere <a {relatedstudents_link}>studenter</a>."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:279
 msgid "Copy from another assignment."
-msgstr "Kopier fra en annen oppgave"
+msgstr "Kopier fra en annen oppgave."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:304
 msgid "Only copy those with passing grade?"
