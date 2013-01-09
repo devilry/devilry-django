@@ -19,7 +19,13 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
 
     studentColTpl: [
         '<div class="student" style="white-space: normal !important;">',
-            '<div class="fullname"><strong>{full_name}</strong></div>',
+            '<div class="fullname">',
+                '<tpl if="full_name">',
+                    '<strong>{full_name}</strong>',
+                '<tpl else>',
+                    '<em>', gettext('Name missing'), '</em>',
+                '</tpl>',
+            '</div>',
             '<div class="username"><small class="muted">{username}</small></div>',
         '</div>'
     ],
@@ -218,7 +224,10 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         this.searchtask.delay(140);
     },
     _searchMatch: function(searchString, value) {
-        return this._forceString(value).toLocaleLowerCase().indexOf(searchString) !== -1;
+        if(value === null) {
+            value = gettext('Name missing'); // Allow users to search for this string to find users with missing name (this is the string they see when the name is missing)
+        }
+        return value.toLocaleLowerCase().indexOf(searchString) !== -1;
     },
     _search: function(searchString) {
         this.getStore().filterBy(function(record) {
