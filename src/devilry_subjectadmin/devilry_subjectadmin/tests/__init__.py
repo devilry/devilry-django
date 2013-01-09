@@ -12,4 +12,4 @@ from .gradeeditor import *
 from .relatedusersui import *
 from .addgroups import *
 from .deadlines import *
-from .exportperioddetails import *
+from .exportdetailedperiodoverview import *
