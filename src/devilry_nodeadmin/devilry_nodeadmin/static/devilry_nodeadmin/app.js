@@ -22,13 +22,18 @@ Ext.application({
 
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
-        'devilry_extjsextras.AlertMessage'
+        'devilry_extjsextras.FloatingAlertmessageList'
     ],
 
     controllers: [
         'NodeBrowserController',
         'DashboardController'
     ],
+
+    refs: [{
+        ref: 'alertmessagelist',
+        selector: 'viewport floatingalertmessagelist#appAlertmessagelist'
+    }],
 
     _setupRoutes: function() {
         this.route = Ext.create('devilry_extjsextras.Router', this );
@@ -53,6 +58,13 @@ Ext.application({
             layout: 'fit'
         });
 
+        this.breadcrumbs = Ext.widget('breadcrumbs', {
+            defaultBreadcrumbs: [{
+                text: gettext("Dashboard"),
+                url: '#'
+            }]
+        });
+
         this.viewport = Ext.create('Ext.container.Viewport', {
             xtype: 'container',
             layout: 'border',
@@ -66,7 +78,10 @@ Ext.application({
                 xtype: 'container',
                 region: 'center',
                 layout: 'fit',
-                items: this.primaryContentContainer
+                items: [this.primaryContentContainer, {
+                    xtype: 'floatingalertmessagelist', // NOTE: The alertmessagelist available as getAlertMessagelist() - used for errors and information
+                    itemId: 'appAlertmessagelist'
+                }]
             }]
         });
     },

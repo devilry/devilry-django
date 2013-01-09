@@ -8,7 +8,8 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
     requires: [
         'devilry_nodeadmin.view.nodebrowser.NodeChildrenList',
         'devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview',
-        'devilry_nodeadmin.view.nodebrowser.Navigator'
+        'devilry_nodeadmin.view.nodebrowser.Navigator',
+        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler'
     ],
 
     stores: [
@@ -37,7 +38,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
             'viewport nodebrowseroverview #primary': {
                 render: this._onRenderPrimary
             }
-        })
+        });
     },
 
     _onRenderPrimary: function() {
@@ -53,6 +54,40 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
             xtype: 'nodedetailsoverview',
             node_pk: node_pk
         }]);
+
+        this.getNodeChildrenStore().loadWithNode(node_pk, {
+            scope: this,
+            callback: function (records, op) {
+                if(op.success) {
+                    this._onLoadNodeChildrenSuccess(records);
+                } else {
+                    this._onLoadError(op);
+                }
+            }
+        });
+        this.getNodeDetailsStore().loadWithNode(node_pk, {
+            scope: this,
+            callback: function (records, op) {
+                if(op.success) {
+                    this._onLoadNodeDetailsSuccess(records);
+                } else {
+                    this._onLoadError(op);
+                }
+            }
+        });
+    },
+
+    _onLoadNodeDetailsSuccess:function () {
+        this.application.breadcrumbs.set([], 'Nodebrowser');
+    },
+    _onLoadNodeChildrenSuccess:function () {
+    },
+
+    _onLoadError:function (op) {
+        var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
+        errorhandler.addErrorsFromOperation(op);
+        this.application.getAlertmessagelist().addMany(
+            errorhandler.errormessages, 'error', true);
     }
 });
 

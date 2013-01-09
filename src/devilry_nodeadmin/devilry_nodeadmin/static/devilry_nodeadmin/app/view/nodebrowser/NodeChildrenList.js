@@ -2,6 +2,9 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeChildrenList', {
     extend: 'Ext.view.View',
     alias: 'widget.nodechildrenlist',
     cls: 'devilry_nodeadmin_nodechildrenlist bootstrap',
+
+    store: 'NodeChildren',
+
     tpl: [
         '<div class="bootstrap">',
         '<tpl if="length">',
@@ -25,12 +28,5 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeChildrenList', {
         '</div>'
     ],
 
-    itemSelector: 'div.node',
-
-    initComponent: function() {
-        this.store = Ext.create( 'devilry_nodeadmin.store.NodeChildren' );
-        this.store.proxy.url = Ext.String.format('/devilry_nodeadmin/rest/node/{0}/children', this.node_pk );
-        this.callParent(arguments);
-    }
-
+    itemSelector: 'div.node'
 });
