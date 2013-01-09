@@ -1404,7 +1404,7 @@ msgstr "Navn mangler"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:36
 msgid "Not registered on assignment"
-msgstr "Ikke registrert på oppgave"
+msgstr "Ikke registrert på oppgaven"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:50
 msgid "Points:"

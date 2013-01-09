@@ -32,7 +32,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
     feedbackColTpl: [
         '<div class="feedback feedback_assignment_{assignmentid}" style="white-space: normal !important;">',
             '<tpl if="grouplist.length == 0">',
-                '<small class="muted nofeedback">',
+                '<small class="text-error nofeedback">',
                     gettext('Not registered on assignment'),
                 '</small>',
             '<tpl else>',
