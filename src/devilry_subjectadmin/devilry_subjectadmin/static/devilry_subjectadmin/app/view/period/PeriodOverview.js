@@ -163,6 +163,7 @@ Ext.define('devilry_subjectadmin.view.period.PeriodOverview' ,{
                         xtype: 'singleactionbox',
                         itemId: 'deleteButton',
                         id: 'periodDeleteButton',
+                        hidden: true,
                         titleText: gettext('Loading') + ' ...',
                         buttonUi: 'danger',
                         bodyTpl: [

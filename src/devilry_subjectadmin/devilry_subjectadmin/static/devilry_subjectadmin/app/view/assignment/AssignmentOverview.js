@@ -144,6 +144,7 @@ Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
                     }, {
                         xtype: 'singleactionbox',
                         itemId: 'deleteButton',
+                        hidden: true,
                         id: 'assignmentDeleteButton',
                         titleText: gettext('Loading') + ' ...',
                         bodyHtml: [
