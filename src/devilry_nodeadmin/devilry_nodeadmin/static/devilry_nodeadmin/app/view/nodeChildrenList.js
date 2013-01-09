@@ -4,7 +4,7 @@ Ext.define('devilry_nodeadmin.view.nodeChildrenList', {
     cls: 'bootstrap',
     tpl: [
         '<div class="bootstrap">',
-        '<h2>Inneholder</h2>',
+        '<h2>Noden inneholder</h2>',
             '<tpl for=".">',
             '<div style="padding-bottom: 10px;">',
                 '<a href="/devilry_nodeadmin/#/node/{ id }"><h3>',

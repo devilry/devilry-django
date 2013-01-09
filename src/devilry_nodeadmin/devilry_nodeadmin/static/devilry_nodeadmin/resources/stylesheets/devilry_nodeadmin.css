@@ -17,3 +17,8 @@
 .node-parent-link i {
   margin-right: 5px;
 }
+
+/* line 19, ../sass/devilry_nodeadmin.scss */
+.footer {
+  margin-top: 25px;
+}

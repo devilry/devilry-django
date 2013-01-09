@@ -133,7 +133,7 @@ Ext.application({
             xtype: 'defaultnodelist'
         });
         this.setSecondaryContent({
-            /* */
+            xtype: 'nodetree'
         });
     },
 

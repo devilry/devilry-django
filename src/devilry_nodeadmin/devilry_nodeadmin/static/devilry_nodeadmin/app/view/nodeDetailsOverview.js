@@ -16,7 +16,7 @@ Ext.define('devilry_nodeadmin.view.nodeDetailsOverview', {
         '<li class="course"><a href="/devilry_subjectadmin/#/subject/{ id }/">{ long_name }</a></li>',
         '</tpl>',
         '</ul>',
-        '<div class="">Lenkene til disse kurs tar deg et sted hvor du kan flytte fristene, endre gruppetilhørighet, ',
+        '<div class="footer">Lenkene til disse kurs tar deg et sted der du kan flytte fristene, endre gruppetilhørighet, ',
             'og se detaljene om en student.</div>',
         '</tpl>',
         '</tpl>'

@@ -5,19 +5,17 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowser', {
         'defaultNodeList',
         'nodeChildrenList',
         'nodeDetailsOverview',
-        'nodeParentLink'
+        'nodeParentLink',
     ],
 
     stores: [
         'NodeChildren',
         'NodeDetails',
-        'RelatedNodes'
     ],
 
     models: [
         'Details',
         'Node',
-        'Subject'
     ],
 
     refs: [
@@ -44,7 +42,8 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowser', {
             exception: this._onProxyError
         });
         */
-    },
+
+    }
 
     /*
     _onRenderAllWhereIsAdminList: function() {

@@ -279,7 +279,14 @@ ExtJS Stores
 * Use Ext.String.ellipsis on all long-names.
 * Current rest-response structure does not allow me to link a child to a parent node due to the fact that the returned children are a list, and I am not sure how Ext js will handle an imposed parent property on the superlevel of each response.
 * The simples solution is to create a view that contains fetches the parent reference from the NodeDetails and make it an item inside the NodeChildren-view.
-* Suggesting the role name of 'Department/Faculty/School administrator' to 'Department administrator'
+* Suggest changing the role name of 'Department/Faculty/School administrator' to 'Department administrator'
 * 'setPrimaryContent' (and setSecondaryContent) accept _lists_ of xtyped elements, and _do not_ accept comma-separated arguments.
 * Up-navigation is fixed by adding parent to details in Ext.js: views, models and in Django: resource-fields.
+* Remember the difference between 'et sted hvor', og 'et sted der'.
+
+
+2012-01-09
+* (?) Ask for a larger dataset for testing.
+* Does compass assign scope to my app, or do I have to watch out for namespace-collisions?
+* Attempted to make a default Tree-view of the node hierarchy, but postponed the efforta after the deadline. The legacy code is tagged, see TreeView, TreeStore and NodeInterface classes. The API is still accessible in /devilry_nodeadmin/tree/ and served by following views.py classes: NodeTreeResource and NodeTree 
 * 

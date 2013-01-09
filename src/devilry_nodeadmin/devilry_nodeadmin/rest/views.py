@@ -68,10 +68,6 @@ class RelatedNodes( ListModelView ):
     def get_queryset( self ):
         nodes = Node.where_is_admin_or_superadmin( self.request.user )
         nodes = nodes.exclude( parentnode__in=nodes )
-        if self.request.user.is_superuser:
-            nodes = Node.objects.filter(parentnode__isnull=True)
-        else:
-            nodes = Node.objects.filter(admins=self.request.user)
         return nodes
 
 
@@ -126,3 +122,28 @@ class RelatedNodeDetails( InstanceModelView ):
 
     def get_instance_data( self, instance ):
         return instance
+
+
+##
+# Node Trees
+##
+
+class NodeTreeResource( NodeResource ):
+    model = Node
+    fields = (  'id', 'short_name', 'children', )
+    allowed_methods = ('get' ,)
+
+    def children( self, instance ):
+        candidates = Node.objects.filter( parentnode=instance )
+        return self.serialize_iter( candidates )
+
+
+class NodeTree( ListModelView ):
+    resource = NodeTreeResource
+    permissions = (IsAuthenticated, ) # [+] restrict to Admin
+    allowed_methods = ('get' ,)
+
+    def get_queryset( self ):
+        nodes = Node.where_is_admin_or_superadmin( self.request.user )
+        nodes = nodes.exclude( parentnode__in=nodes )
+        return nodes
