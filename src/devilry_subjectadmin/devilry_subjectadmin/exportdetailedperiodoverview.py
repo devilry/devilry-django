@@ -94,7 +94,10 @@ class ExportDetailedPeriodOverviewBase(object):
                 else:
                     row.append(self.format_feedback(feedback))
             else:
-                row.append('NO-FEEDBACK')
+                if self.gradedetails == 'all':
+                    row.extend(['NO-FEEDBACK']*3)
+                else:
+                    row.append('NO-FEEDBACK')
         row.append(warning)
         self.add_row(row)
 
