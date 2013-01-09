@@ -254,7 +254,7 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/controller/DetailedPeriodOverviewController.js:107
 msgid "Detailed overview"
-msgstr ""
+msgstr "Detaljert oversikt"
 
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:104
 #: static/devilry_subjectadmin/app/controller/assignment/EditGradeEditor.js:75
@@ -821,7 +821,6 @@ msgstr ""
 "listen nedenfor."
 
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:27
-#, fuzzy
 msgid ""
 "These are all %(subjects_term)s, %(periods_term)s and assignments where you "
 "have administrator rights. Assignments are included in the listing if you "
@@ -1395,25 +1394,21 @@ msgstr ""
 "oppgave (elektronisk, papir, eksamen, ...)."
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/DetailedPeriodOverview.js:32
-#, fuzzy
 msgid "Detailed overview of {periodpath}"
-msgstr "Legg til eller rediger studenter på {periodpath}"
+msgstr "Detaljert oversikt over {periodpath}"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:26
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:230
-#, fuzzy
 msgid "Name missing"
 msgstr "Navn mangler"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:36
-#, fuzzy
 msgid "Not registered on assignment"
-msgstr "Lag ny oppgave"
+msgstr "Ikke registrert på oppgave"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:50
-#, fuzzy
 msgid "Points:"
-msgstr "Poeng"
+msgstr "Poeng:"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:56
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:40
@@ -1467,9 +1462,8 @@ msgid "Username"
 msgstr "Brukernavn"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:138
-#, fuzzy
 msgid "Search for name or username ..."
-msgstr "Søk etter brukernavn, navn eller epost ..."
+msgstr "Søk etter brukernavn eller navn ..."
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:198
 msgid "Sort by points ascending"
