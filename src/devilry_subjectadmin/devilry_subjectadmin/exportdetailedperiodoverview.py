@@ -3,12 +3,10 @@ from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseForbidden
 from cStringIO import StringIO
+import csv
 
 from devilry.apps.core.models import Period
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
-
-
-
 
 
 class ExportDetailedPeriodOverviewBase(object):
@@ -25,7 +23,6 @@ class ExportDetailedPeriodOverviewBase(object):
     def generate(self):
         self.add_header()
         if self.supports_warnings:
-            print self.grouper.ignored_students_with_results
             if self.grouper.ignored_students_with_results:
                 warning = 'Student has feedback, but is not registered on the period.'
                 for aggregated_relstudentinfo in self.grouper.iter_students_with_feedback_that_is_candidate_but_not_in_related():
@@ -48,12 +45,9 @@ class ExportDetailedPeriodOverviewBase(object):
         return header
 
     def add_header(self):
-        raise NotImplementedError()
+        self.add_row(self.get_headerlist())
 
-    def add_line(self, line):
-        raise NotImplementedError()
-
-    def add_title(self, header):
+    def add_row(self, iterable):
         raise NotImplementedError()
 
     def strformat_is_passing_grade(self, is_passing_grade):
@@ -102,7 +96,7 @@ class ExportDetailedPeriodOverviewCsv(ExportDetailedPeriodOverviewBase):
     def __init__(self, *args, **kwargs):
         super(ExportDetailedPeriodOverviewCsv, self).__init__(*args, **kwargs)
         self.out = StringIO()
-        self.seperator = self.query.get('separator', '\t')
+        self.csvwriter = csv.writer(self.out, dialect='excel')
         self.generate()
 
     def add_aggregated_relstudentinfo(self, aggregated_relstudentinfo, warning=''):
@@ -117,18 +111,10 @@ class ExportDetailedPeriodOverviewCsv(ExportDetailedPeriodOverviewBase):
             else:
                 row.append('NO-FEEDBACK')
         row.append(warning)
-        self.add_line(self.seperator.join(row))
+        self.add_row(row)
 
-    def add_header(self):
-        self.add_line(self.seperator.join(self.get_headerlist()))
-
-    def add_line(self, line):
-        self.out.write(line)
-        self.out.write('\n')
-
-    def add_title(self, header):
-        self.add_line('')
-        self.add_line(header)
+    def add_row(self, iterable):
+        self.csvwriter.writerow(iterable)
 
     def get_output(self):
         return self.out.getvalue()
