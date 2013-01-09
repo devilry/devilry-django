@@ -26,7 +26,7 @@ Ext.application({
     ],
 
     controllers: [
-        'NodeBrowser',
+        'NodeBrowserController',
         'DashboardController'
     ],
 
@@ -76,28 +76,13 @@ Ext.application({
         this.setPrimaryContent({
             xtype: 'dashboardoverview'
         });
-//        this.setSecondaryContent({
-//            html: [ "Denne listen viser kun nodene du administrerer. Klikk på et element for å se ",
-//            "de underliggende nivåene, emnene og periodene." ],
-//            border: null
-//        });
     },
 
     showChildren: function( routeInfo, node_pk ) {
-//        this.setPrimaryContent([
-//            {
-//                xtype: 'nodeparentlink',
-//                node_pk: node_pk
-//            },
-//            {
-//                xtype: 'nodechildrenlist',
-//                node_pk: node_pk
-//            }
-//        ]);
-//        this.setSecondaryContent({
-//            xtype: 'nodedetailsoverview',
-//            node_pk: node_pk
-//        })
+        this.setPrimaryContent({
+            xtype: 'nodebrowseroverview',
+            node_pk: node_pk
+        });
     },
 
     //

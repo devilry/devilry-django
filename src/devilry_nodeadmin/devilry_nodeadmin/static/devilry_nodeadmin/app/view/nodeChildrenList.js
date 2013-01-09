@@ -1,4 +1,4 @@
-Ext.define('devilry_nodeadmin.view.nodeChildrenList', {
+Ext.define('devilry_nodeadmin.view.NodeChildrenList', {
     extend: 'Ext.view.View',
     alias: 'widget.nodechildrenlist',
     cls: 'bootstrap',
