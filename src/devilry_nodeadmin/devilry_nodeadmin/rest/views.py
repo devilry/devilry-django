@@ -12,6 +12,8 @@ from djangorestframework.mixins import InstanceMixin, ReadModelMixin
 from djangorestframework.resources import ModelResource
 from djangorestframework.permissions import IsAuthenticated
 
+from devilry_subjectadmin.rest.auth import BaseIsAdmin, nodeadmin_required
+
 from django.db.models import Count, Min, Max
 
 
@@ -114,9 +116,19 @@ class NodeDetailsResource( NodeResource ):
         result = instance.subjects.all().aggregate( Count('periods') )
         return result['periods__count']
 
+
+
+class IsNodeAdmin( BaseIsAdmin ):
+    ID_KWARG = 'pk'
+
+    def check_permission( self, user ):
+        nodeid = self.get_id()
+        nodeadmin_required( user, nodeid )
+
+
 class RelatedNodeDetails( InstanceModelView ):
     resource = NodeDetailsResource
-    permissions = ( IsAuthenticated, )
+    permissions = ( IsAuthenticated, IsNodeAdmin, )
     allowed_methods = ('get' ,)
 
 

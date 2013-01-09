@@ -293,7 +293,7 @@ ExtJS Stores
 * ems or pixels?
 * Some improvements in the navigation menu: the button elements look better on the right side, the key is to increase spacing between the content panes to ensure that their contents do not merge visually. 
 * [x] [?] Don't forget to mention the css namespace. Maybe the sheets are condensed into one: your application may interfere with others.
-* Remaining: 1. move the store/view functionality into a controller. 2. introduce breadcrumbs. 3. i18n and gettext. 4. Store sorting by or without statistics..
+* Remaining: [x] 1. move the store/view functionality into a controller. 2. introduce breadcrumbs. [x] 3. i18n and gettext. 4. Store sorting by or without statistics.. 5. fjerne default pagination
 * Reading up on i18n. Probably should postpone and consult the maintainer.
 * [+] Check on higher resolutions.
 * [x] Translating nb->en, or en->nb?
@@ -306,4 +306,5 @@ ExtJS Stores
 * Capitalize view-names
 * Parameters to _onRender
 * For the sake of Selenium-tests you should assign cls property to all elements.
-* 
+* User Datetimehelper from extjshelpers to manipulate and compare dates. Must be imported by requires. A singleton.
+* Always catch errors by the callback of a store, or rather through the proxy because it has more information on hte error.

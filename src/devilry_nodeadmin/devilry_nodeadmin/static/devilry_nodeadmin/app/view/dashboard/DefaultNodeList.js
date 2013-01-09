@@ -10,9 +10,12 @@ Ext.define('devilry_nodeadmin.view.dashboard.DefaultNodeList', {
                 '<a href="/devilry_nodeadmin/#/node/{ id }"><h3>{ long_name }</h3></a>',
             '</div>',
         '</tpl>',
+        /*
         '<div class="footer">Denne listen viser kun de nodene du administrerer. Klikk på et element for å se ',
         'de underliggende nivåene, emnene og periodene. Du kan gå ett nivå tilbake ved hjelp av knappen ',
         'i det øvre høyre hjørne.</div>'
+        */
+        '<div class="footer">These are only the nodes you control.</div>'
     ],
 
     itemSelector: 'div.node',
