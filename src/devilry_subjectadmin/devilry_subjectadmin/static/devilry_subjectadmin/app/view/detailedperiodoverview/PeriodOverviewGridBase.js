@@ -218,6 +218,9 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         this.searchtask.delay(140);
     },
     _searchMatch: function(searchString, value) {
+        if(value === null) {
+            value = '';
+        }
         return value.toLocaleLowerCase().indexOf(searchString) !== -1;
     },
     _search: function(searchString) {
