@@ -28,7 +28,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
         '<div {MORE_ATTRS}>',
             '<h5>', gettext('How administrator rights work'), '</h5>',
             '<p>',
-                gettext('Devilry has a very simple permission system for administrators. You are eighter administrator on an item, or you have no access to the administrator views for an item.'),
+                gettext('Devilry has a very simple permission system for administrators. You are either administrator on an item, or you have no access to the administrator views for an item.'),
             '</p>',
             '<p>',
                 gettext('Administrators can be set anywhere in the hierarchy, from nodes on the top, to assignments at the bottom, and permissions propagate downwards in the hierarchy.'),
