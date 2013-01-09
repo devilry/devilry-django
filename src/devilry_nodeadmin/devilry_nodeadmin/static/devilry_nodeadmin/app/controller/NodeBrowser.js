@@ -20,8 +20,8 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowser', {
 
     refs: [
         {
-            ref: 'viewport primary',
-            selector: ''
+            ref: 'primary',
+            selector: 'viewport primary'
         },
         {
             ref: 'viewport secondary',
@@ -31,33 +31,9 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowser', {
 
     init: function() {
 
-        /*
-        this.control({
-            'viewport dashboard ': {
-                render: this._onRenderAllWhereIsAdminList
-            }
-        });
-        this.mon(this.getAllActivesWhereIsAdminStore().proxy, {
-            scope: this,
-            exception: this._onProxyError
-        });
-        */
+
 
     }
 
-    /*
-    _onRenderAllWhereIsAdminList: function() {
-        this.getAllActivesWhereIsAdminStore().load({
-            scope: this,
-            callback: function(records, op) {
-                if(op.success) {
-                    this._onLoadSuccess(records);
-                } else {
-                    // NOTE: Errors are handled in _onProxyError
-                }
-            }
-        });
-    }
-    */
 });
 

@@ -104,21 +104,43 @@ Ext.define('devilry_subjectadmin.view.period.PeriodOverview' ,{
                     xtype: 'box',
                     cls: 'bootstrap',
                     margin: '30 0 0 0',
-                    html: [
-                        '<h2>', gettext('Students and examiners'), '</h2>',
+                    tpl: [
+                        '<h2>',
+                            gettext('Edit and view information related to the {period_term}'),
+                        '</h2>',
                         '<ul class="unstyled">',
                             '<li><p>',
-                                '<a href="', devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id), '">',
+                                '<a href="{manageRelatedStudentsUrl}">',
                                     gettext('Students'),
                                 '</a>',
                             '</p></li>',
                             '<li><p>',
-                                '<a href="', devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id), '">',
+                                '<a href="{manageRelatedExaminersUrl}">',
                                     gettext('Examiners'),
                                 '</a>',
                             '</p></li>',
+                            '<li><p>',
+                                '<a href="{detailedOverviewUlr}">',
+                                    gettext('Overview of all results'),
+                                '</a>',
+                            '</p></li>',
+                            '<li><p>',
+                                '<a href="{qualifiedForFinalExamsUrl}">',
+                                    gettext('Qualified for final exams'),
+                                '</a>',
+                            '</p></li>',
                         '</ul>'
-                    ].join('')
+                    ],
+                    data: {
+                        period_term: gettext('period'),
+                        manageRelatedExaminersUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id),
+                        manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id),
+                        detailedOverviewUlr: devilry_subjectadmin.utils.UrlLookup.detailedPeriodOverview(this.period_id),
+                        qualifiedForFinalExamsUrl: Ext.String.format(
+                            '{0}/devilry_qualifiesforexam/#/{1}/showstatus',
+                            window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                            this.period_id)
+                    }
                 }, {
                     xtype: 'dangerousactions',
                     margin: '45 0 0 0',

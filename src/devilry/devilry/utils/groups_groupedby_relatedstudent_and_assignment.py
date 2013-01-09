@@ -37,6 +37,26 @@ class GroupList(list):
         else:
             return None
 
+    def _serialize_feedback(self, feedback):
+        if feedback:
+            return {'id': feedback.id,
+                    'grade': feedback.grade,
+                    'points': feedback.points,
+                    'is_passing_grade': feedback.is_passing_grade,
+                    'save_timestamp': feedback.save_timestamp}
+        else:
+            return None
+
+    def _serialize_group(self, group):
+        return {
+            'id': group.id,
+            'feedback': self._serialize_feedback(group.feedback),
+            'status': group.get_status()
+        }
+
+    def serialize(self):
+        return [self._serialize_group(group) for group in self]
+
 
 
 class AggreatedRelatedStudentInfo(object):
@@ -44,12 +64,18 @@ class AggreatedRelatedStudentInfo(object):
     Used by :class:`.GroupsGroupedByRelatedStudentAndAssignment` to stores all results for a
     single student on a period.
     """
-    def __init__(self, user, assignments):
+    def __init__(self, user, assignments, relatedstudent=None):
         #: The Django user object for the student.
         self.user = user
 
         #: Dict of assignments where the key is the assignment-id, and the value is a :class:`.GroupList`.
         self.assignments = assignments
+
+        #: The :class:`devilry.apps.core.models.RelatedStudent` for users that are related students.
+        #: This is only available for the objects returned by
+        #: :meth:`.GroupsGroupedByRelatedStudentAndAssignment.iter_relatedstudents_with_results`,
+        #: and not for the objects returned by the ignored students iterators.
+        self.relatedstudent = relatedstudent
 
     def iter_groups_by_assignment(self):
         """
@@ -90,6 +116,29 @@ class AggreatedRelatedStudentInfo(object):
         )
 
 
+    def _serialize_user(self, user):
+        return {'id': user.id,
+                'username': user.username,
+                'email': user.email,
+                'full_name': user.devilryuserprofile.full_name}
+
+    def serialize(self):
+        out = {'id': self.user.id, # NOTE: This is added to support stupid datamodel layers, like ExtJS, which does not support the ID of a record to be within an attribute
+               'user': self._serialize_user(self.user),
+               'groups_by_assignment': [],
+               'relatedstudent': None}
+        if self.relatedstudent:
+            out['relatedstudent'] = {
+                'id': self.relatedstudent.id,
+                'tags': self.relatedstudent.tags,
+                'candidate_id': self.relatedstudent.candidate_id}
+        for assignmentid, grouplist in self.assignments.iteritems():
+            out['groups_by_assignment'].append({'assignmentid': assignmentid,
+                                                'grouplist': grouplist.serialize()})
+        return out
+
+
+
 class GroupsGroupedByRelatedStudentAndAssignment(object):
     """
     Provides an easy-to-use API for overviews over the results of all students
@@ -118,7 +167,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         Override if you need to optimize the query for your usecase
         (``select_related``, ``prefetch_related``, etc.)
         """
-        return self.period.relatedstudent_set.all()
+        return self.period.relatedstudent_set.all().select_related('user', 'user__devilryuserprofile')
 
     def get_groups_queryset(self):
         """
@@ -127,7 +176,9 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         (``select_related``, ``prefetch_related``, etc.)
         """
         groupqry = AssignmentGroup.objects.filter(parentnode__parentnode=self.period)
-        groupqry = groupqry.select_related('parentnode', 'parentnode__parentnode')
+        groupqry = groupqry.select_related('parentnode', 'parentnode__parentnode', 'feedback')
+        groupqry = groupqry.prefetch_related('candidates', 'candidates__student',
+            'candidates__student__devilryuserprofile')
         return groupqry
 
 
@@ -147,7 +198,8 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         for relatedstudent in self.get_relatedstudents_queryset():
             self.result[relatedstudent.user_id] = AggreatedRelatedStudentInfo(
                 user = relatedstudent.user,
-                assignments = self._create_assignmentsdict()
+                assignments = self._create_assignmentsdict(),
+                relatedstudent=relatedstudent
             )
 
     def _create_or_add_ignoredgroup(self, ignoreddict, candidate):
@@ -207,3 +259,24 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         the students that have no feedback.
         """
         return self.ignored_students_with_results.itervalues()
+
+    def _serialize_assignment(self, basenode):
+        return {'id': basenode.id,
+                'short_name': basenode.short_name,
+                'long_name': basenode.long_name}
+
+    def serialize(self):
+        """
+        Serialize all the collected data as plain python objects.
+        """
+        out = {
+            'relatedstudents':
+                [r.serialize() for r in self.iter_relatedstudents_with_results()],
+            'students_that_is_candidate_but_not_in_related':
+                [r.serialize() for r in self.iter_students_that_is_candidate_but_not_in_related()],
+            'students_with_feedback_that_is_candidate_but_not_in_related':
+                [r.serialize() for r in self.iter_students_with_feedback_that_is_candidate_but_not_in_related()],
+            'assignments':
+                [self._serialize_assignment(a) for a in self.iter_assignments()]
+        }
+        return out

@@ -6,6 +6,7 @@ Ext.define('devilry_qualifiesforexam.model.Plugin', {
         {name: 'id', type: 'string'},
         {name: 'title',  type: 'string'},
         {name: 'description', type: 'string'},
+        {name: 'pluginsessionid', type: 'string'},
         {name: 'url', type: 'string'}
     ],
 

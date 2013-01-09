@@ -1,6 +1,10 @@
 Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamSelectPluginController', {
     extend: 'Ext.app.Controller',
 
+    mixins: [
+        'devilry_qualifiesforexam.controller.PeriodControllerMixin'
+    ],
+
     views: [
         'selectplugin.QualifiesForExamSelectPlugin'
     ],
@@ -15,10 +19,10 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamSelectPluginCont
     ],
 
 
-//    refs: [{
-//        ref: 'allWhereIsAdminList',
-//        selector: 'allactivewhereisadminlist'
-//    }],
+    refs: [{
+        ref: 'overview',
+        selector: 'selectplugin'
+    }],
 
     init: function() {
         this.control({
@@ -33,6 +37,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamSelectPluginCont
     },
 
     _onRender: function() {
+        this.periodid = this.getOverview().periodid;
         this.getPluginsStore().load({
             scope: this,
             callback: function(records, op) {
@@ -44,9 +49,13 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamSelectPluginCont
         });
     },
 
-
     _onLoadSuccess: function(records) {
-        // NOTE: This is not really needed since the view is loaded when the store is loaded, but it is nice to have for debugging.
+        this.loadPeriod(this.periodid);
+    },
+
+    getAppBreadcrumbs: function () {
+        var text = gettext('Qualifies for final exams - how?');
+        return [[], text];
     },
 
     _onProxyError: function(proxy, response, operation) {

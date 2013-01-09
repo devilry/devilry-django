@@ -11,7 +11,7 @@ Ext.define('devilry_extjsextras.DatetimeHelpers', {
      * @param dateobj A Date object.
      */
     formatDateTimeShort: function(dateobj) {
-        return Ext.Date.format(dateobj, pgettext('extjs short datetime', 'Y-m-d h:i'));
+        return Ext.Date.format(dateobj, pgettext('extjs short datetime', 'Y-m-d H:i'));
     },
 
     /**
@@ -21,7 +21,12 @@ Ext.define('devilry_extjsextras.DatetimeHelpers', {
      * @param dateobj A Date object.
      */
     formatDateTimeLong: function(dateobj) {
-        return Ext.Date.format(dateobj, pgettext('extjs long datetime', 'Y-m-d h:i'));
+        return Ext.Date.format(dateobj, pgettext('extjs long datetime', 'Y-m-d H:i'));
+    },
+
+    parseRestformattedDatetime: function (datetimeString) {
+//        return Ext.Date.parse(datetimeString, 'Y-m-dTH:i:s.u');
+        return Ext.Date.parse(datetimeString, 'c');
     },
 
     /**

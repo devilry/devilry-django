@@ -1,34 +1,19 @@
-{% extends "extjs4/apptemplate.django.html" %}
-{% load i18n %}
+{% extends "devilry_theme/apptemplate.django.html" %}
 {% load static %}
 
-{% block css %}
-{% include "devilry_theme/cssimports.django.html" %}
-{% include "devilry_header/cssimports.django.html" %}
-{% endblock %}
 
-{% block app %}
-<script type="text/javascript" src="{% static "devilry_extjsextras/consolefallback.js" %}"></script>
+{% block head_preapp %}
+    {# formatoverrides is required by the old rest apis #}
+    <script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
+    {% include "markup/mathjaxheader.django.html" %}
 
-{# formatoverrides is required by the old rest apis #}
-<script type="text/javascript" src="{{ DEVILRY_STATIC_URL }}/extjshelpers/formatoverrides.js"></script>
-{% include "markup/mathjaxheader.django.html" %}
+    <script type="text/javascript">
+        var DevilryUser = {
+            is_authenticated: {{ user.is_authenticated|yesno:"true,false" }},
+            is_superuser: {{ user.is_superuser|lower }},
+            username: '{{ user.username }}'
+        };
+    </script>
+    <script type="text/javascript" src="{% url devilry_student_i18n %}"></script>
 
-<script type="text/javascript" src="{% url devilry-settings %}"></script>
-
-<script type="text/javascript">
-
-    var DevilryUser = {
-        is_authenticated: {{ user.is_authenticated|yesno:"true,false" }},
-        is_superuser: {{ user.is_superuser|lower }},
-        username: '{{ user.username }}'
-    };
-</script>
-
-<script type="text/javascript" src="{% url devilry_student_i18n %}"></script>
-
-{{ block.super }}
-
-{#NOTE: This is after the app-file because the files required in extjsajax_django_csrf are added to app-all.js, and is not available in production unless they come AFTER app-all.js. #}
-<script type="text/javascript" src="{% static "devilry_extjsextras/extjsajax_django_csrf.js" %}"></script>
 {% endblock %}

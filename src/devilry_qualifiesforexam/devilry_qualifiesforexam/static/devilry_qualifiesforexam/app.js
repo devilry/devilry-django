@@ -3,7 +3,7 @@ Ext.application({
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_qualifiesforexam/app',
     paths: {
         'devilry_extjsextras': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras',
-        'devilry_subjectadmin': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras',
+        'devilry_subjectadmin': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_subjectadmin/app',
         'devilry_theme': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_theme',
         'devilry_i18n': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_i18n',
         'devilry_authenticateduserinfo': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_authenticateduserinfo',
@@ -22,13 +22,15 @@ Ext.application({
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',
         'devilry_header.Header',
-        'devilry_header.Breadcrumbs',
+        'devilry_qualifiesforexam.utils.Breadcrumbs',
 //        'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.FloatingAlertmessageList'
     ],
 
     controllers: [
-        'QualifiesForExamSelectPluginController'
+        'QualifiesForExamSelectPluginController',
+        'QualifiesForExamPreviewController',
+        'QualifiesForExamShowStatusController'
     ],
 
     refs: [{
@@ -42,14 +44,7 @@ Ext.application({
     },
 
     _createViewport: function() {
-
-        // TODO: Add breadcrumb back to subjectadmin using data from the Django view (which is added via the view context)
-        this.breadcrumbs = Ext.widget('breadcrumbs', {
-            defaultBreadcrumbs: [{
-                text: gettext("Dashboard"),
-                url: '#'
-            }]
-        });
+        this.breadcrumbs = Ext.create('devilry_qualifiesforexam.utils.Breadcrumbs');
 
         this.primaryContentContainer = Ext.widget('container', {
             region: 'center',
@@ -94,7 +89,20 @@ Ext.application({
 
     _setupRoutes: function() {
         this.route = Ext.create('devilry_extjsextras.Router', this);
-        this.route.add('', 'frontpage');
+
+        // Handle routing request via the querystring.
+        // If we get a token in the ``routeto`` attribute, we set the hash to that token,
+        // and reload the page with the querystring removed.
+        var query = Ext.Object.fromQueryString(window.location.search);
+        if(!Ext.isEmpty(query.routeto)) {
+            this.route.setHashWithoutEvent(query.routeto);
+            window.location.search = '';
+        }
+
+        // Setup routes
+        this.route.add('/:periodid/selectplugin', 'selectplugin');
+        this.route.add('/:periodid/preview/:pluginsessionid', 'preview');
+        this.route.add('/:periodid/showstatus', 'showstatus');
         this.route.start();
     },
 
@@ -106,10 +114,28 @@ Ext.application({
         });
     },
 
-    frontpage: function() {
+    selectplugin: function(routeInfo, periodid) {
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
-            xtype: 'selectplugin'
+            xtype: 'selectplugin',
+            periodid: periodid
+        });
+    },
+
+    preview: function(routeInfo, periodid, pluginsessionid) {
+        this.breadcrumbs.setHome();
+        this.setPrimaryContent({
+            xtype: 'preview',
+            periodid: periodid,
+            pluginsessionid: pluginsessionid
+        });
+    },
+
+    showstatus: function(routeInfo, periodid) {
+        this.breadcrumbs.setHome();
+        this.setPrimaryContent({
+            xtype: 'showstatus',
+            periodid: periodid
         });
     }
 });

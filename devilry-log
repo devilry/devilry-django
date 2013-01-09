@@ -104,8 +104,8 @@ ExtJS Stores
 * To pass multiple objects to ListModelView, override get_queryset (return a subset of Node.objects.all). 
 * The child of ListModelView must have 'resource' property and may need 'permissions' set to ( IsAuthenticated, ).
 * Every View child is added to the urls.py with as_view() call.
-** (+) url( r'nodes/', AttachedNodes.as_view() )
-* (?) How to handle many-to-many relationships in rest-framework?
+** [+] url( r'nodes/', AttachedNodes.as_view() )
+* [?] How to handle many-to-many relationships in rest-framework?
 
 2012-12-12
 * Researching the interaction of controllers and views.
@@ -178,13 +178,13 @@ ExtJS Stores
 * Trying to fetch store via StoreManager. Fails.
 * Trying configs 'autoRender', 'autoShow'; no effect.
 * 'cls' option in every View corresponds to the specific css class that will be applied to the component and its children.
-* (!) Reason for views not displaying node contents: the view that specifically defines the 'store' parameter overrides something in the previous class, so the store itself needs to be instantiated and set to this.store _inside the initComponent method_. Otherwise, the tepmplate will be rendered, but its elements would be ommited.
+* [!] Reason for views not displaying node contents: the view that specifically defines the 'store' parameter overrides something in the previous class, so the store itself needs to be instantiated and set to this.store _inside the initComponent method_. Otherwise, the tepmplate will be rendered, but its elements would be ommited.
 ** initComponent: function() {
 **     this.store = Ext.create( "devilry_nodeadmin.store.RelatedNodes" )
 **     this.callParent();
 ** }
-* (?) Should I use Router from extjsextras, or the one from Ext.js' 4.0? Transition.
-* (x) (?) In order to enable Routes, I had to alter the urls.py of the django-application, to allow /nodes/:node_id subdirectory. This is not done on subjectadmin, but yet it works! Why?
+* [x] [?] Should I use Router from extjsextras, or the one from Ext.js' 4.0? Transition.
+* [x] [?] In order to enable Routes, I had to alter the urls.py of the django-application, to allow /nodes/:node_id subdirectory. This is not done on subjectadmin, but yet it works! Why?
 * Solved: the routes fake the url-pattern by adding a # directory like this: the proper configuration of my node/:node_id path would be in full 'devilry_nodeadmin/#/node/2. Tested and works.
 * Attempting to pass the 'node_id' parameter to the store and replace the contents of primaryContentContainer.
 * Its probably best to rethink the rest approach and do not treat children and parent nodes differently, they should all be rendered and treated the same, yet the app must be tree level aware.
@@ -199,7 +199,7 @@ ExtJS Stores
 * Nested objects in templates must start with their own template scope tag. Following template will display the parent id followed by its child:
 ** <tpl for="."><tpl for="parent">{id}</tpl>child</tpl>
 * Inconsistency in tpl tags often leads to Uncaught TypeError
-* (?) There seems to be a certain issue with the url dispatcher: if the argument in the regexp string is the same as a field of a model (or resource), and the target of the url is a descendant of ListModelView, then it will automatically filter out the objects by pk no matter what happens inside the overriden get_queryset-function.
+* [?] [x] There seems to be a certain issue with the url dispatcher: if the argument in the regexp string is the same as a field of a model (or resource), and the target of the url is a descendant of ListModelView, then it will automatically filter out the objects by pk no matter what happens inside the overriden get_queryset-function.
 
 
 2012-01-05
@@ -208,10 +208,10 @@ ExtJS Stores
 * Managed to split up the layout of the app into two columns: one for the navigation, and one for the details about each node. The correct configuration is: { container/border, { container/center/column { container/east|west} }
 * When using the InstanceModelView for READ ONLY, remember to reduce the allowed methods to:
 ** allowed_methods = ['get'] 
-* (?) Inquire if it is ok to follow the convention and call a store and a view the same only deferring in the uppercase/lowecase first letter.
+* [?] [x] Inquire if it is ok to follow the convention and call a store and a view the same only deferring in the uppercase/lowecase first letter.
 * Give the events the event-like names. Right now they describe the data they serve, not the event that selects the data.
 * Can swap regions of the node browser and the node detail overview.
-* Crating a link back to the parent node from a child view.
+* Creating a link back to the parent node from a child view.
 * Remember to use i18n and gettext
 * Must redesign the boilerplated rest to allow going back to parent from a terminal node (terminal nodes return empty json-responses, so there is no refernce to which parent they come from: solutions to this is to switch from a list of children to a node with its own 'hasMany' children relation.
 * The 'go to parent link', and parents in themselves have a potential caveat: they lead the user away from the nodes he has permission to administer. So on each up-step through the hierarchy one is ought to doublecheck, if the user actually owns the node.
@@ -219,7 +219,7 @@ ExtJS Stores
 * Attempting to create a list of Subjects and other multiply-related objects in the rest framework.
 * Examine how the Subject-models are implemented in the other apps of the devilry.
 * Remember to treat the pagination appropriately.
-* (?) Splitting into Ext js panels vs. native html-composition
+* [?] Splitting into Ext js panels vs. native html-composition
 * Handle the url-editing attempts: add error message for missing route: "the node is either not found, out of scope or requiring higher priveleges"
 * Consider appending an element (to recreate hierarchy) on navigation, instead of replacing it by setPrimaryContent.
 
@@ -235,7 +235,7 @@ ExtJS Stores
 ** devilry_nodeadmin = fs devilry_nodeadmin
 * There seems to be some confusion in Header.js in regards to the old 'administrator' role.
 * Fixed by changing the 'navclass' property of the devilryheader element residing in this.viewport.
-* (!) Correct text in 'How administrator rights work': 'eighter' -> 'either'. Probably a rewrite of the whole sidebar on 'administrator rights' would do the trick.
+* [x] [!] Correct text in 'How administrator rights work': 'eighter' -> 'either'. Probably a rewrite of the whole sidebar on 'administrator rights' would do the trick.
 * No error message if the date is edited and is set prior to the start date.
 * Saved url-listing as API guide in devenv/urls.txt
 * Suggest making the runserver by django_devserver to be optional.
@@ -244,7 +244,7 @@ ExtJS Stores
 2012-01-08
 * I seem not to be getting access to bootstrap at all. Probably need to install Ruby and SASS.
 * So point of controls is to initialize references and through them, render certain events on particular events. The one I am examining now at this point also initiates the store and renders in in a view.
-* (?) How is the ubuntu-font handled and what are the fallbacks in case it is not embedded and loaded dynamically.
+* [x] [?] How is the ubuntu-font handled and what are the fallbacks in case it is not embedded and loaded dynamically.
 * The question of how to inject an id into a store proxy's url arises again, but this time in the context of a controller. The solution seems to be a function inside each view corresponding to the url parameter. In subjectadmin this is done in following manner:
 ** devilry_subjectadmin:    
 **  setAssignment: function(assignment_id) {
@@ -263,10 +263,11 @@ ExtJS Stores
 * "Ext JS 4.1.1a is also available under the GPLv3 for open source projects, which may require the release of your code.", counterpoint: Sencha is a member of Free Software Foundation.
 * "This is a private utility class for internal use by the framework. Don't rely on its existence."
 * Still no urlpatt, even in Ext.data.proxy.Server.
-* [?] "According to a blogger" the proxies should reside inside of a model, since the store inherits from it.
+* [x] [?] "According to a blogger" the proxies should reside inside of a model, since the store inherits from it.
 
 2013-01-08
 * [?] Should I override pagination to ensure that all elements are visible to the user unless I wish to implement a page-select feature?
+* Inquire about the autoload and autosync in stores.
 * Does plugin.autodiscover() work as it should?
 * Installed compass.
 * The nodeadmin-application seemed not to discover the bootstrap stylesheets, while they were in order in other apps. I assumed that the reason for that was some compass routine that wasn't ran, but it was actually the template file that was changed for the subjectadmin application.
@@ -286,7 +287,7 @@ ExtJS Stores
 
 
 2012-01-09
-* [?] Ask for a larger dataset for testing.
+* [x] [?] Ask for a larger dataset for testing.
 * Does compass assign scope to my app, or do I have to watch out for namespace-collisions?
 * Attempted to make a default Tree-view of the node hierarchy, but postponed the efforta after the deadline. The legacy code is tagged, see TreeView, TreeStore and NodeInterface classes. The API is still accessible in /devilry_nodeadmin/tree/ and served by following views.py classes: NodeTreeResource and NodeTree 
 * ems or pixels?
@@ -295,8 +296,9 @@ ExtJS Stores
 * Remaining: 1. move the store/view functionality into a controller. 2. introduce breadcrumbs. 3. i18n and gettext. 4. Store sorting by or without statistics..
 * Reading up on i18n. Probably should postpone and consult the maintainer.
 * [+] Check on higher resolutions.
-* Translating nb->en, or en->nb?
+* [x] Translating nb->en, or en->nb?
 
 2012-01-10
 * Make font classes files: ubuntu-local and unbuntu, for the local version stored in statics and the imported one from google's font api.
+* [!] Override pagination to max.
 * 

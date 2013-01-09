@@ -53,4 +53,13 @@
     .alert.closable:hover {
         border: 1px solid #888;
     }
+
+    form {
+        .asteriskField {
+            display: none;
+        }
+        label.requiredField {
+            font-weight: bold;
+        }
+    }
 }

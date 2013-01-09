@@ -24,8 +24,9 @@ Ext.define('devilry_header.Breadcrumbs', {
     ],
 
     /**
-     * @cfg a
-     * 
+     * @cfg {object} [defaultBreadcrumbs=undefined]
+     * A list of breadcrumbs that will always be added to the beginning of
+     * the breadcrumbs.
      */
     defaultBreadcrumbs: undefined,
 
@@ -49,12 +50,21 @@ Ext.define('devilry_header.Breadcrumbs', {
      * */
     set: function(breadcrumbs, current) {
         this.clear();
-        if(this.defaultBreadcrumbs) {
-            this.addMany(this.defaultBreadcrumbs);
+        if(this.getDefaultBreadcrumbs()) {
+            this.addMany(this.getDefaultBreadcrumbs());
         }
         this.addMany(breadcrumbs);
         this.add('', current);
         this.draw();
+    },
+
+    /**
+     * Get the default breadcrumbs. You can override this to generate
+     * ``defaultBreadcrumbs`` dynamically. Defaults to returning
+     * ``this.defaultBreadcrumbs``.
+     */
+    getDefaultBreadcrumbs:function () {
+        return this.defaultBreadcrumbs;
     },
 
     addMany: function(breadcrumbs) {
@@ -63,10 +73,25 @@ Ext.define('devilry_header.Breadcrumbs', {
         }, this);
     },
 
-    add: function(url, text) {
+    /**
+     * Called every time an url is added to the breadcrumb. Override it
+     * if you want to change the URLs (I.E.: Add a prefix).
+     */
+    formatUrl: function (url, meta) {
+        return url;
+    },
+
+    /**
+     * Add breadcrumb.
+     * @param url The URL of the breadcrumb.
+     * @param text The text for the breadcrumb.
+     * @param meta Metadata that can be used by other systems when to customize the breadcrumb.
+     */
+    add: function(url, text, meta) {
         this.breadcrumbs.push({
-            url: url,
-            text: text
+            url: this.formatUrl(url),
+            text: text,
+            meta: meta
         });
     },
 

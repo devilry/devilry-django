@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-09 17:18+0100\n"
+"POT-Creation-Date: 2013-01-09 17:22+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,8 +19,9 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: static/devilry_nodeadmin/app/view/nodeChildrenList.js:8
-msgid "Noden inneholder"
-msgstr ""
+#, fuzzy
+msgid "Node contains"
+msgstr "Noden inneholder"
 
 #: static/devilry_nodeadmin/app/view/nodeChildrenList.js:15
 #: static/devilry_nodeadmin/app/view/nodeChildrenList.js:17
@@ -28,7 +29,7 @@ msgid "Earliest start time"
 msgstr ""
 
 #: static/devilry_nodeadmin/app/view/nodeChildrenList.js:23
-msgid "ingen noder"
+msgid "no nodes on this level"
 msgstr ""
 
 #: static/devilry_nodeadmin/app/view/nodeParentLink.js:11

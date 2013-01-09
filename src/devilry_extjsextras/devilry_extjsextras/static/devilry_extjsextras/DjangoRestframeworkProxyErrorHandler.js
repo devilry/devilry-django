@@ -13,7 +13,7 @@ Ext.define('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', {
     },
 
     _addFieldErrors: function(responseData) {
-        if(responseData.field_errors) {
+        if(!Ext.isEmpty(responseData.field_errors)) {
             this.fielderrors = responseData.field_errors;
         }
     },

@@ -33,7 +33,7 @@ Ext.application({
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',
         'devilry_header.Header',
-        'devilry_header.Breadcrumbs',
+        'devilry_subjectadmin.utils.Breadcrumbs',
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.form.DateField',
         'devilry_extjsextras.form.TimeField',
@@ -65,6 +65,7 @@ Ext.application({
         'RelatedStudents',
         'RelatedExaminers',
         'PassedPreviousPeriod',
+        'DetailedPeriodOverviewController',
 
         'GuideSystem',
         'guides.CreateNewAssignment'
@@ -154,12 +155,7 @@ Ext.application({
     },
 
     _createViewport: function() {
-        this.breadcrumbs = Ext.widget('breadcrumbs', {
-            defaultBreadcrumbs: [{
-                text: gettext("Dashboard"),
-                url: '#'
-            }]
-        });
+        this.breadcrumbs = Ext.create('devilry_subjectadmin.utils.Breadcrumbs');
         this.primaryContentContainer = Ext.widget('container', {
             region: 'center',
             layout: 'fit'
@@ -249,6 +245,7 @@ Ext.application({
         this.route.add("/period/:period_id/", 'showPeriod');
         this.route.add("/period/:period_id/@@relatedstudents", 'showRelatedStudents');
         this.route.add("/period/:period_id/@@relatedexaminers", 'showRelatedExaminers');
+        this.route.add("/period/:period_id/@@detailedoverview", 'detailedPeriodOverview');
         this.route.add("/period/:period_id/@@create-new-assignment/", 'createNewAssignment');
         this.route.add("/period/:period_id/@@create-new-assignment/:defaults", 'createNewAssignment');
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
@@ -330,6 +327,12 @@ Ext.application({
     showRelatedExaminers: function(routeInfo, period_id) {
         this.setPrimaryContent({
             xtype: 'relatedexaminers',
+            period_id: period_id
+        });
+    },
+    detailedPeriodOverview: function(routeInfo, period_id) {
+        this.setPrimaryContent({
+            xtype: 'detailedperiodoverview',
             period_id: period_id
         });
     },

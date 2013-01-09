@@ -2,11 +2,14 @@
 {% load staticfiles %}
 <html>
 <head>
+    {% block head-pre %}{% endblock %}
     {% block meta_http_equiv %}
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     {% endblock %}
-    {% block title %}
-        <title>{{ title }}</title>
+    <title>{% block title %}{{ title }}{% endblock %}</title>
+
+    {% block consolefallback %}
+        <script type="text/javascript" src="{% static "devilry_extjsextras/consolefallback.js" %}"></script>
     {% endblock %}
 
     {% block favicons %}
@@ -52,10 +55,16 @@
     {% endblock %}
     {% block head_postapp %}{% endblock %}
 
+    {% block extjslocale %}
+        <script type="text/javascript" src="{% static "devilry_extjsextras/extjslocale.js" %}"></script>
+    {% endblock %}
+
     {% block extjs_csrf %}
         {#NOTE: This is after the app-file because the files required in extjsajax_django_csrf are added to app-all.js, and is not available in production unless they come AFTER app-all.js. #}
         <script type="text/javascript" src="{% static "devilry_extjsextras/extjsajax_django_csrf.js" %}"></script>
     {% endblock %}
+
+    {% block head-post %}{% endblock %}
 </head>
-<body></body>
+<body class="{% block bodyclass%}{% endblock %}">{% block body %}{% endblock %}</body>
 </html>

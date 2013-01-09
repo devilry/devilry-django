@@ -11,7 +11,7 @@ from devilry_nodeadmin.util import emptyview, Out
 from devilry_nodeadmin.views import AppView
 
 i18n_packages = get_javascript_catalog_packages(
-    'devilry_stats', 
+    'devilry_nodeadmin',
     'devilry_header', 
     'devilry_extjsextras', 
     'devilry.apps.core'

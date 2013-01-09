@@ -12,3 +12,4 @@ from .popfromgroup import *
 from .mergeintogroup import *
 from .aggregated_groupinfo import *
 from .passedinpreviousperiod import *
+from .detailedperiodoverview import TestRestDetailedPeriodOverview

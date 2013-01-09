@@ -4,9 +4,8 @@
 Ext.define('devilry_header.Header', {
     extend: 'Ext.container.Container',
     alias: 'widget.devilryheader',
-    cls: 'devilryheader',
     margins: '0 0 0 0',
-    height: 30,
+    height: 30, // NOTE: Make sure to adjust $headerHeight in the stylesheet if this is changed
 
     requires: [
         'devilry_header.FlatButton',
@@ -49,6 +48,11 @@ Ext.define('devilry_header.Header', {
      */
 
     constructor: function(config) {
+        if(Ext.isEmpty(config.cls)) {
+            config.cls = 'devilryheader';
+        } else {
+            config.cls = ['devilryheader', config.cls].join(' ');
+        }
         if(!this.navclass_to_rolename[config.navclass]) {
             throw "Invalid navclass: " + config.navclass;
         }

@@ -20,7 +20,7 @@ Ext.define('devilry_nodeadmin.view.nodeChildrenList', {
             '</div>',
         '</tpl>',
         '<tpl else>',
-            '<h2><small>', gettext("ingen noder"), '</small></h2>',
+            '<h2><small>', gettext("no nodes on this level"), '</small></h2>',
         '</tpl>',
         '</div>'
     ],

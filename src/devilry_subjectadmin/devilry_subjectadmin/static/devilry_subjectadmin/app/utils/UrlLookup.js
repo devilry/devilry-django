@@ -24,6 +24,9 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     manageRelatedExaminers: function(period_id) {
         return Ext.String.format('#/period/{0}/@@relatedexaminers', period_id);
     },
+    detailedPeriodOverview: function(period_id) {
+        return Ext.String.format('#/period/{0}/@@detailedoverview', period_id);
+    },
 
     assignmentOverview: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/', assignment_id);

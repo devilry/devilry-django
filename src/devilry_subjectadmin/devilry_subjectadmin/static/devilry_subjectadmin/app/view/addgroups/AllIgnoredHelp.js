@@ -46,9 +46,9 @@ Ext.define('devilry_subjectadmin.view.addgroups.AllIgnoredHelp', {
                 '</p>',
             '</tpl>',
             '<tpl if="isPeriodadmin">',
-                '<p><strong><a target="_blank" href="{manageRelatedStudentsUrl}" class="add_more_students_to_period_link">',
+                '<p><strong><a target="_blank" href="{manageRelatedStudentsUrl}" class="add_more_students_to_period_link new-window-link">',
                     gettext('Add students to {periodpath}'),
-                '</a></strong> <small class="muted">(', gettext('Opens in new window') ,')</small></p>',
+                '</a></strong></p>',
                 '<p>',
                     gettext('When you return to this page, reload it to see newly added students.'),
                 '</p>',
@@ -58,7 +58,7 @@ Ext.define('devilry_subjectadmin.view.addgroups.AllIgnoredHelp', {
                 '</p>',
             '</tpl>'
         ).apply({
-            periodpath: Ext.String.format('<em>{0}</em>', periodinfo.path),
+            periodpath: periodinfo.path,
             periodHasStudents: totalStudentsOnPeriod > 0,
             isPeriodadmin: periodinfo.is_admin,
             manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(periodinfo.id)

@@ -3,6 +3,10 @@ Ext.define('devilry_qualifiesforexam.view.selectplugin.QualifiesForExamSelectPlu
     alias: 'widget.selectplugin',
     cls: 'devilry_qualifiesforexam_selectplugin',
 
+    /**
+     * @cfg {int} [periodid]
+     */
+
     requires: [
         'devilry_qualifiesforexam.view.selectplugin.ListPlugins'
     ],
@@ -42,8 +46,7 @@ Ext.define('devilry_qualifiesforexam.view.selectplugin.QualifiesForExamSelectPlu
                         xtype: 'listplugins',
                         margin: '0 0 0 40',
                         columnWidth: '1',
-                        periodid: 5,
-                        pluginsessionid: 'dsdsadadwdwq'
+                        periodid: this.periodid
                     }]
                 }]
             }]

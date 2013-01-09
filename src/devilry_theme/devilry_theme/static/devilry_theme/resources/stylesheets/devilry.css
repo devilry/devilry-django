@@ -11920,11 +11920,6 @@ svg, vml {
   background-image: url('../images/btn/btn-primary-large-disabled-bg.gif');
 }
 
-/* line 63, ../sass/_button-uis.scss */
-.x-btn-focus {
-  outline: 1px dotted #666;
-}
-
 /* line 637, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
 .x-btn-danger-large {
   border-color: #9d261d;
@@ -12661,6 +12656,56 @@ svg, vml {
 .x-nlg .x-btn-danger-medium-disabled {
   background-repeat: repeat-x;
   background-image: url('../images/btn/btn-danger-medium-disabled-bg.gif');
+}
+
+/* line 182, ../sass/_button-uis.scss */
+.x-btn-focus {
+  outline: 1px dotted #666;
+}
+
+/* line 186, ../sass/_button-uis.scss */
+.x-btn-default-small, .x-btn-primary-small, .x-btn-danger-small {
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -o-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  border-radius: 4px;
+}
+/* line 188, ../sass/_button-uis.scss */
+.x-btn-default-small .x-btn-inner, .x-btn-primary-small .x-btn-inner, .x-btn-danger-small .x-btn-inner {
+  padding: 0 9px;
+  font-size: 12px !important;
+}
+
+/* line 194, ../sass/_button-uis.scss */
+.x-btn-default-medium, .x-btn-primary-medium, .x-btn-danger-medium {
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  -o-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -khtml-border-radius: 4px;
+  border-radius: 4px;
+}
+/* line 196, ../sass/_button-uis.scss */
+.x-btn-default-medium .x-btn-inner, .x-btn-primary-medium .x-btn-inner, .x-btn-danger-medium .x-btn-inner {
+  padding: 0 14px;
+  font-size: 14px !important;
+}
+
+/* line 203, ../sass/_button-uis.scss */
+.x-btn-default-large, .x-btn-primary-large, .x-btn-danger-large {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -o-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -khtml-border-radius: 5px;
+  border-radius: 5px;
+}
+/* line 205, ../sass/_button-uis.scss */
+.x-btn-default-large .x-btn-inner, .x-btn-primary-large .x-btn-inner, .x-btn-danger-large .x-btn-inner {
+  padding: 0 14px;
+  font-size: 16px !important;
 }
 
 /* line 2, ../sass/_doesnotexist.scss */
