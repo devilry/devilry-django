@@ -65,6 +65,7 @@ Ext.application({
         'RelatedStudents',
         'RelatedExaminers',
         'PassedPreviousPeriod',
+        'DetailedPeriodOverviewController',
 
         'GuideSystem',
         'guides.CreateNewAssignment'
@@ -244,6 +245,7 @@ Ext.application({
         this.route.add("/period/:period_id/", 'showPeriod');
         this.route.add("/period/:period_id/@@relatedstudents", 'showRelatedStudents');
         this.route.add("/period/:period_id/@@relatedexaminers", 'showRelatedExaminers');
+        this.route.add("/period/:period_id/@@detailedoverview", 'detailedPeriodOverview');
         this.route.add("/period/:period_id/@@create-new-assignment/", 'createNewAssignment');
         this.route.add("/period/:period_id/@@create-new-assignment/:defaults", 'createNewAssignment');
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
@@ -325,6 +327,12 @@ Ext.application({
     showRelatedExaminers: function(routeInfo, period_id) {
         this.setPrimaryContent({
             xtype: 'relatedexaminers',
+            period_id: period_id
+        });
+    },
+    detailedPeriodOverview: function(routeInfo, period_id) {
+        this.setPrimaryContent({
+            xtype: 'detailedperiodoverview',
             period_id: period_id
         });
     },

@@ -1,7 +1,7 @@
 /**
  * Base class for grids that needs an overview of an entire period.
  */
-Ext.define('devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase', {
+Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridBase', {
     extend: 'Ext.grid.Panel',
     cls: 'devilry_qualifiesforexam_previewgrid bootstrap',
 

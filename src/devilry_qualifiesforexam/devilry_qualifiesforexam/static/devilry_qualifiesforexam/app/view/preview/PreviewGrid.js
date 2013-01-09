@@ -1,5 +1,5 @@
 Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
-    extend: 'devilry_subjectadmin.view.periodoverview.PeriodOverviewGridBase',
+    extend: 'devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridBase',
     alias: 'widget.previewgrid',
     cls: 'devilry_qualifiesforexam_previewgrid bootstrap',
     mixins: ['devilry_extjsextras.AutoHeightComponentMixin'],
