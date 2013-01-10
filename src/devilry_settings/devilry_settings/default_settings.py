@@ -211,9 +211,4 @@ LOGGING = create_logging_config()
 #################################################
 # Settings without a default value
 #################################################
-
-## If we use django to serve static files, we need this setting to define
-## where they are located. Static files are located in the devilry/static/
-## directory in the devilry source repository.
-#DEVILRY_STATIC_ROOT = '/path/to/static'
 #DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-support@example.com'
