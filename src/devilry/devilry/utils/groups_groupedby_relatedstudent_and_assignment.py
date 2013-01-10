@@ -255,6 +255,11 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         """
         Iterate over the students that is candidate on one or more groups, but not registered as
         related students.
+
+        This iterator includes everything yielded by both:
+
+        - :meth:`iter_students_with_feedback_that_is_candidate_but_not_in_related`
+        - :meth:`iter_students_with_no_feedback_that_is_candidate_but_not_in_related`
         """
         return self.ignored_students.itervalues()
 
@@ -290,7 +295,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         out = {
             'relatedstudents':
                 [r.serialize() for r in self.iter_relatedstudents_with_results()],
-            'students_that_is_candidate_but_not_in_related':
+            'students_with_no_feedback_that_is_candidate_but_not_in_related':
                 [r.serialize() for r in self.iter_students_that_is_candidate_but_not_in_related()],
             'students_with_feedback_that_is_candidate_but_not_in_related':
                 [r.serialize() for r in self.iter_students_with_feedback_that_is_candidate_but_not_in_related()],
