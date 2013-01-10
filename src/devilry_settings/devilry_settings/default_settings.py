@@ -200,6 +200,14 @@ LANGUAGES = [('en', gettext_noop('English')),
 DEVILRY_ENABLE_MATHJAX = True
 
 
+
+###################################################
+# Setup logging using the defaults - logs to stderr
+###################################################
+from devilry_settings.log import create_logging_config
+LOGGING = create_logging_config()
+
+
 #################################################
 # Settings without a default value
 #################################################
@@ -209,4 +217,3 @@ DEVILRY_ENABLE_MATHJAX = True
 ## directory in the devilry source repository.
 #DEVILRY_STATIC_ROOT = '/path/to/static'
 #DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-support@example.com'
-
