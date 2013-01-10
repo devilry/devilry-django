@@ -17,7 +17,8 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
 
     requires: [
         'Ext.XTemplate',
-        'Ext.grid.column.Column'
+        'Ext.grid.column.Column',
+        'devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewIgnoredMenu'
     ],
 
     studentColTpl: [
@@ -36,7 +37,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
                 '</span>',
             '</tpl>',
             '<tpl if="ignored_without_feedback">',
-                '<span class="label ignored_without_feedback-badge">',
+                '<span class="label label-info ignored_without_feedback-badge">',
                     gettext('Ignored, has no feedback so probably not a problem'),
                 '</span>',
             '</tpl>',
@@ -107,12 +108,11 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
     },
 
     renderStudentColumn: function(value, meta, record) {
-        var user = record.get('user');
         return this.studentColTplCompiled.apply({
-            user: user,
+            user: record.get('user'),
             period_term: gettext('period'),
-            ignored_with_feedback: typeof(this.ignored_with_feedback[user.id]) !== 'undefined',
-            ignored_without_feedback: typeof(this.ignored_without_feedback[user.id]) !== 'undefined'
+            ignored_with_feedback: this._isIgnoredWithFeedback(record),
+            ignored_without_feedback: this._isIgnoredWithoutFeedback(record)
         });
     },
 
@@ -152,6 +152,19 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
                 }
             }]
         }, '->', {
+            xtype: 'button',
+            text: 'Undefined',
+            itemId: 'ignoredButton',
+            hidden: true,
+            menu: {
+                xtype: 'periodoverviewignoredmenu',
+                listeners: {
+                    scope: this,
+                    showButtonClick: this._onShowIgnored,
+                    hideButtonClick: this._onHideIgnored
+                }
+            }
+        }, {
             xtype: 'textfield',
             width: 250,
             emptyText: gettext('Search for name or username ...'),
@@ -347,7 +360,40 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         return aLastName.localeCompare(bLastName);
     },
 
-    _byUserId:function (aggregatedStudentInfoArray) {
+
+    //
+    //
+    // Handle ignored
+    //
+    //
+
+    _isIgnoredWithFeedback:function (record) {
+        return typeof(this.ignored_with_feedback[record.get('user').id]) !== 'undefined';
+    },
+    _isIgnoredWithoutFeedback:function (record) {
+        return typeof(this.ignored_without_feedback[record.get('user').id]) !== 'undefined';
+    },
+    _isIgnored:function (record) {
+        return this._isIgnoredWithFeedback(record) || this._isIgnoredWithoutFeedback(record);
+    },
+
+    _hideIgnored:function () {
+        this.getStore().filterBy(function (record) {
+            return !this._isIgnored(record);
+        }, this);
+    },
+    _showIgnored:function () {
+        this.getStore().clearFilter();
+    },
+
+    _onShowIgnored:function (menu) {
+        this._showIgnored();
+    },
+    _onHideIgnored:function (menu) {
+        this._hideIgnored();
+    },
+
+    _byUserId: function (aggregatedStudentInfoArray) {
         var byUserId = {};
         for (var i = 0; i < aggregatedStudentInfoArray.length; i++) {
             var aggregatedStudentInfo = aggregatedStudentInfoArray[i];
@@ -356,10 +402,38 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         return byUserId;
     },
 
-    handleIgnored: function (ignored_with_feedback, ignored_without_feedback) {
+    handleIgnored: function (period_id, ignored_with_feedback, ignored_without_feedback) {
+        // Turn into map for the rendering function
         this.ignored_with_feedback = this._byUserId(ignored_with_feedback);
         this.ignored_without_feedback = this._byUserId(ignored_without_feedback);
+
+        // Add to store and hide them using a filter
         this.getStore().loadData(ignored_with_feedback, true);
         this.getStore().loadData(ignored_without_feedback, true);
+        this._hideIgnored();
+
+        // Show the ignoredButton
+        var labelTpl = Ext.create('Ext.XTemplate',
+            gettext('Some students are ignored'),
+            '<span class="bootstrap">',
+                '<tpl if="ignored_with_feedback_count">',
+                ' <span class="badge badge-important">{ignored_with_feedback_count}</span>',
+                '</tpl>',
+                '<tpl if="ignored_without_feedback_count">',
+                    ' <span class="badge badge-info">{ignored_without_feedback_count}</span>',
+                '</tpl>',
+            '</span>'
+        );
+        var ignoredButton = this.down('#ignoredButton');
+        ignoredButton.setText(labelTpl.apply({
+            ignored_with_feedback_count: ignored_with_feedback.length,
+            ignored_without_feedback_count: ignored_without_feedback.length
+        }));
+        ignoredButton.menu.updateBody({
+            period_id: period_id,
+            ignored_with_feedback_count: ignored_with_feedback.length,
+            ignored_without_feedback_count: ignored_without_feedback.length
+        });
+        ignoredButton.show();
     }
 });

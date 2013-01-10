@@ -126,7 +126,7 @@ Ext.define('devilry_subjectadmin.controller.DetailedPeriodOverviewController', {
             'students_with_feedback_that_is_candidate_but_not_in_related');
         var ignored_without_feedback = this.detailedPeriodOverviewRecord.get(
             'students_with_no_feedback_that_is_candidate_but_not_in_related');
-        grid.handleIgnored(ignored_with_feedback, ignored_without_feedback);
+        grid.handleIgnored(this.period_id, ignored_with_feedback, ignored_without_feedback);
         grid.sortByFullname();
     }
 });
