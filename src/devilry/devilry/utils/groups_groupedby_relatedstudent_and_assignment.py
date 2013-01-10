@@ -17,11 +17,14 @@ class GroupList(list):
         """
         best = None
         for group in self:
+            feedback = None
+            if group.get_status() == 'corrected':
+                feedback = group.feedback
             if best:
-                if group.feedback and group.feedback.points > best.points:
+                if feedback and feedback.points > best.points:
                     best = group
             else:
-                best = group.feedback
+                best = feedback
         return best
 
     def get_best_gradestring(self):
