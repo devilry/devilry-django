@@ -7,6 +7,7 @@
 ########################################################################
 
 DEBUG = False
+EXTJS4_DEBUG = DEBUG
 TEMPLATE_DEBUG = DEBUG
 
 TIME_ZONE = 'Europe/Oslo'
