@@ -296,7 +296,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
             'relatedstudents':
                 [r.serialize() for r in self.iter_relatedstudents_with_results()],
             'students_with_no_feedback_that_is_candidate_but_not_in_related':
-                [r.serialize() for r in self.iter_students_that_is_candidate_but_not_in_related()],
+                [r.serialize() for r in self.iter_students_with_no_feedback_that_is_candidate_but_not_in_related()],
             'students_with_feedback_that_is_candidate_but_not_in_related':
                 [r.serialize() for r in self.iter_students_with_feedback_that_is_candidate_but_not_in_related()],
             'assignments':
