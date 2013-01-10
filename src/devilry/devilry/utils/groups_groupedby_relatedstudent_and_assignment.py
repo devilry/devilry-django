@@ -100,6 +100,7 @@ class AggreatedRelatedStudentInfo(object):
         print '{0}:'.format(self.user)
         for assignmentid, groups in self.assignments.iteritems():
             print '  - Assignment ID: {0}'.format(assignmentid)
+            print '     - Groups: {0}'.format(len(groups))
             for group in groups:
                 if group.feedback:
                     grade = '{0} (points:{1},passed:{2})'.format(group.feedback.grade,
@@ -216,7 +217,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
     def _add_groups_to_result(self):
         groupqry = self.get_groups_queryset()
         self.ignored_students = {}
-        self.ignored_students_with_results = {}
+        self.ignored_students_with_results = set()
         for group in groupqry:
             for candidate in group.candidates.all():
                 if candidate.student_id in self.result:
@@ -224,7 +225,8 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
                 else:
                     self._create_or_add_ignoredgroup(self.ignored_students, candidate).add_group(group)
                     if group.feedback:
-                        self._create_or_add_ignoredgroup(self.ignored_students_with_results, candidate).add_group(group)
+                        self.ignored_students_with_results.add(candidate.student_id)
+
 
     def iter_assignments(self):
         """
@@ -261,7 +263,9 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         Same as :meth:`.iter_students_that_is_candidate_but_not_in_related`, but it does not include
         the students that have no feedback.
         """
-        return self.ignored_students_with_results.itervalues()
+        for userid, aggregatedgroupinfo in self.ignored_students.iteritems():
+            if userid in self.ignored_students_with_results:
+                yield aggregatedgroupinfo
 
     def iter_students_with_no_feedback_that_is_candidate_but_not_in_related(self):
         """
@@ -270,9 +274,9 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         except for the students returned by
         :meth:`.iter_students_with_feedback_that_is_candidate_but_not_in_related`
         """
-        for userid, student in self.ignored_students.iteritems():
+        for userid, aggregatedgroupinfo in self.ignored_students.iteritems():
             if not userid in self.ignored_students_with_results:
-                yield student
+                yield aggregatedgroupinfo
 
     def _serialize_assignment(self, basenode):
         return {'id': basenode.id,
