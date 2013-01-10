@@ -84,6 +84,7 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.media",
                                "django.core.context_processors.debug",
                                'django.contrib.messages.context_processors.messages',
+                               'extjs4.context_processors.extjs4',
                                'devilry.apps.theme.templatecontext.template_variables')
 
 
