@@ -12,6 +12,9 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
      */
     firstAssignmentColumnIndex: 1,
 
+    ignored_with_feedback: {},
+    ignored_without_feedback: {},
+
     requires: [
         'Ext.XTemplate',
         'Ext.grid.column.Column'
@@ -20,13 +23,23 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
     studentColTpl: [
         '<div class="student" style="white-space: normal !important;">',
             '<div class="fullname">',
-                '<tpl if="full_name">',
-                    '<strong>{full_name}</strong>',
+                '<tpl if="user.full_name">',
+                    '<strong>{user.full_name}</strong>',
                 '<tpl else>',
                     '<em>', gettext('Name missing'), '</em>',
                 '</tpl>',
             '</div>',
-            '<div class="username"><small class="muted">{username}</small></div>',
+            '<div class="username"><small class="muted">{user.username}</small></div>',
+            '<tpl if="ignored_with_feedback">',
+                '<span class="label label-important ignored_with_feedback-badge">',
+                    gettext('Ignored, has feedback so this may be a problem'),
+                '</span>',
+            '</tpl>',
+            '<tpl if="ignored_without_feedback">',
+                '<span class="label ignored_without_feedback-badge">',
+                    gettext('Ignored, has no feedback so probably not a problem'),
+                '</span>',
+            '</tpl>',
         '</div>'
     ],
     feedbackColTpl: [
@@ -94,7 +107,13 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
     },
 
     renderStudentColumn: function(value, meta, record) {
-        return this.studentColTplCompiled.apply(record.get('user'));
+        var user = record.get('user');
+        return this.studentColTplCompiled.apply({
+            user: user,
+            period_term: gettext('period'),
+            ignored_with_feedback: typeof(this.ignored_with_feedback[user.id]) !== 'undefined',
+            ignored_without_feedback: typeof(this.ignored_without_feedback[user.id]) !== 'undefined'
+        });
     },
 
 
@@ -326,5 +345,21 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         var aLastName = this._getLastname(a);
         var bLastName = this._getLastname(b);
         return aLastName.localeCompare(bLastName);
+    },
+
+    _byUserId:function (aggregatedStudentInfoArray) {
+        var byUserId = {};
+        for (var i = 0; i < aggregatedStudentInfoArray.length; i++) {
+            var aggregatedStudentInfo = aggregatedStudentInfoArray[i];
+            byUserId[aggregatedStudentInfo.user.id] = aggregatedStudentInfo;
+        }
+        return byUserId;
+    },
+
+    handleIgnored: function (ignored_with_feedback, ignored_without_feedback) {
+        this.ignored_with_feedback = this._byUserId(ignored_with_feedback);
+        this.ignored_without_feedback = this._byUserId(ignored_without_feedback);
+        this.getStore().loadData(ignored_with_feedback, true);
+        this.getStore().loadData(ignored_without_feedback, true);
     }
 });
