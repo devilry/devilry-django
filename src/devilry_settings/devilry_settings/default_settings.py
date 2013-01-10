@@ -21,6 +21,7 @@ DATABASES = {}
 EMAIL_SUBJECT_PREFIX = '[Devilry] '
 ROOT_URLCONF = 'devilry_settings.default_root_urlconf'
 AUTH_PROFILE_MODULE = 'core.DevilryUserProfile'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
 INSTALLED_APPS = ['django.contrib.markup',
@@ -143,7 +144,12 @@ DEVILRY_EMAIL_SIGNATURE = "This is a message from the Devilry assignment deliver
 
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
-DEVILRY_SYNCSYSTEM = 'YOUR MASTER SYSTEM HERE'
+DEVILRY_SYNCSYSTEM = 'YOUR SYNC SYSTEM HERE'
+DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
+DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-admin@example.com'
+DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
+
+
 
 #: Email pattern. Set this, and add 'devilry.apps.autoset_empty_email_by_username' to INSTALLED_APPS
 #: to automatically set email to "<username>@DEVILRY_DEFAULT_EMAIL_SUFFIX" if it is not set when a user is saved.
@@ -206,9 +212,3 @@ DEVILRY_ENABLE_MATHJAX = True
 ###################################################
 from devilry_settings.log import create_logging_config
 LOGGING = create_logging_config()
-
-
-#################################################
-# Settings without a default value
-#################################################
-#DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-support@example.com'
