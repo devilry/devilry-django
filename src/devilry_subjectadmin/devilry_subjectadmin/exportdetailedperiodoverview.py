@@ -64,7 +64,7 @@ class ExportDetailedPeriodOverviewBase(object):
             return 'Failed'
 
     def format_feedback(self, feedback):
-        if self.gradedetails == 'all':
+        if self.export_all_details:
             return [feedback.grade,
                     feedback.points,
                     self.strformat_is_passing_grade(feedback.is_passing_grade)]
@@ -88,23 +88,22 @@ class ExportDetailedPeriodOverviewBase(object):
         for column, grouplist in enumerate(aggregated_relstudentinfo.iter_groups_by_assignment()):
             # NOTE: There can be more than one group if the same student is in more than one
             #       group on an assignment - we select the "best" feedback.
+            cells = None
             if len(grouplist) == 0:
                 if self.export_all_details:
-                    row.extend(['Not registered on assignment']*3)
+                    cells = ['Not registered on assignment']*3
                 else:
-                    row.append('Not registered on assignment')
+                    cells = ['Not registered on assignment']
             else:
                 feedback = grouplist.get_feedback_with_most_points()
                 if feedback:
-                    if self.export_all_details:
-                        row += self.format_feedback(feedback)
-                    else:
-                        row.append(self.format_feedback(feedback))
+                    cells = self.format_feedback(feedback)
                 else:
                     if self.export_all_details:
-                        row.extend(['NO-FEEDBACK']*3)
+                        cells = ['NO-FEEDBACK']*3
                     else:
-                        row.append('NO-FEEDBACK')
+                        cells = ['NO-FEEDBACK']
+            row.extend(cells)
         row.append(warning)
         self.add_row(row)
 
