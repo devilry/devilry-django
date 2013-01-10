@@ -181,7 +181,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         groupqry = AssignmentGroup.objects.filter(parentnode__parentnode=self.period)
         groupqry = groupqry.select_related('parentnode', 'parentnode__parentnode', 'feedback')
         groupqry = groupqry.prefetch_related('candidates', 'candidates__student',
-            'candidates__student__devilryuserprofile')
+            'candidates__student__devilryuserprofile', 'deadlines')
         return groupqry
 
 
