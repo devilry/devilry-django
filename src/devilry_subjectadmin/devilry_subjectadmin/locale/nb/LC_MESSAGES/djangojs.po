@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-10 01:01+0100\n"
+"POT-Creation-Date: 2013-01-10 01:30+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1399,27 +1399,29 @@ msgstr "Detaljert oversikt over {periodpath}"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/ExportPeriodOverviewMenu.js:11
 msgid "MS Excel (Office Open XML)"
-msgstr ""
+msgstr "MS Excel (Office Open XML)"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/ExportPeriodOverviewMenu.js:20
 msgid "Comma-separated values (CSV)"
-msgstr ""
+msgstr "Komma-separerte verdier (CSV)"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/ExportPeriodOverviewMenu.js:29
-#, fuzzy
 msgid "Other formats"
-msgstr "Andre administratorer"
+msgstr "Andre formater"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/ExportPeriodOverviewMenu.js:31
 msgid ""
 "These formats are mostly useful for programmers that need formats that are "
 "easy to parse. Refer to the Devilry website and Wiki for how to use the REST "
-"api."
+"API."
 msgstr ""
+"Disse formatene er for det meste kun for programmerere som behøver formater "
+"som er lette å lese. Se Devilry websiden og Wikien for informasjon om "
+"hvordan du kan bruke REST APIet."
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGrid.js:20
 msgid "Export"
-msgstr ""
+msgstr "Eksporer"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:26
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:230

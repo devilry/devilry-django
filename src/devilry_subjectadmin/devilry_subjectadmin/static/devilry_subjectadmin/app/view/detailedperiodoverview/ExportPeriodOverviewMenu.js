@@ -28,7 +28,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.ExportPeriodOvervie
 
         '<h4 style="margin-top: 20px;">', gettext('Other formats'), '</h4>',
         '<p class="muted">',
-            gettext('These formats are mostly useful for programmers that need formats that are easy to parse. Refer to the Devilry website and Wiki for how to use the REST api.'),
+            gettext('These formats are mostly useful for programmers that need formats that are easy to parse. Refer to the Devilry website and Wiki for how to use the REST API.'),
         '</p>',
         '<a href="{restapi_url}?format=json" target="_blank" class="btn btn-small">JSON</a> ',
         '<a href="{restapi_url}?format=yaml" target="_blank" class="btn btn-small">YAML</a> ',
