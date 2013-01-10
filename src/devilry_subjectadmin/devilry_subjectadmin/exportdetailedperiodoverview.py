@@ -88,17 +88,23 @@ class ExportDetailedPeriodOverviewBase(object):
         for column, grouplist in enumerate(aggregated_relstudentinfo.iter_groups_by_assignment()):
             # NOTE: There can be more than one group if the same student is in more than one
             #       group on an assignment - we select the "best" feedback.
-            feedback = grouplist.get_feedback_with_most_points()
-            if feedback:
+            if len(grouplist) == 0:
                 if self.export_all_details:
-                    row += self.format_feedback(feedback)
+                    row.extend(['Not registered on assignment']*3)
                 else:
-                    row.append(self.format_feedback(feedback))
+                    row.append('Not registered on assignment')
             else:
-                if self.export_all_details:
-                    row.extend(['NO-FEEDBACK']*3)
+                feedback = grouplist.get_feedback_with_most_points()
+                if feedback:
+                    if self.export_all_details:
+                        row += self.format_feedback(feedback)
+                    else:
+                        row.append(self.format_feedback(feedback))
                 else:
-                    row.append('NO-FEEDBACK')
+                    if self.export_all_details:
+                        row.extend(['NO-FEEDBACK']*3)
+                    else:
+                        row.append('NO-FEEDBACK')
         row.append(warning)
         self.add_row(row)
 
