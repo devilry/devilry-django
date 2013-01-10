@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-10 01:30+0100\n"
+"POT-Creation-Date: 2013-01-10 01:34+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -389,7 +389,7 @@ msgstr "Laster detaljert gruppeinformasjon ..."
 
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:335
 msgid "An error occurred while loading detailed group information."
-msgstr ""
+msgstr "En feil oppsto mens vi lastet inn detaljert gruppeinformasjon."
 
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:367
 msgid "Invalid delivery ID: {id}."
@@ -1496,11 +1496,11 @@ msgstr "Søk etter brukernavn eller navn ..."
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:198
 msgid "Sort by points ascending"
-msgstr ""
+msgstr "Sorter etter poeng i stigende rekkefølge"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:206
 msgid "Sort by points decending"
-msgstr ""
+msgstr "Sorter etter poeng i synkende rekkefølge"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:24
 msgid "Select a grading system"
@@ -2706,8 +2706,8 @@ msgstr ""
 "\"%(relatedexaminers_url)s\">rettere</a>-siden og legg til rettere."
 
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:109
-msgid "Edit and view information related to the {period_term}"
-msgstr ""
+msgid "Edit and view related information"
+msgstr "Rediger og vis tilknyttet informasjon"
 
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:124
 msgid "Overview of all results"

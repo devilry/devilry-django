@@ -105,9 +105,9 @@ Ext.define('devilry_subjectadmin.view.period.PeriodOverview' ,{
                     cls: 'bootstrap',
                     margin: '30 0 0 0',
                     tpl: [
-                        '<h2>',
-                            gettext('Edit and view information related to the {period_term}'),
-                        '</h2>',
+                        '<h3>',
+                            gettext('Edit and view related information'),
+                        '</h3>',
                         '<ul class="unstyled">',
                             '<li><p>',
                                 '<a href="{manageRelatedStudentsUrl}">',
