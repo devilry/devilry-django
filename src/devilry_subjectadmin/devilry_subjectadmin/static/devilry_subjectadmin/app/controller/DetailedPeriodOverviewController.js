@@ -119,7 +119,7 @@ Ext.define('devilry_subjectadmin.controller.DetailedPeriodOverviewController', {
         var assignments = this.detailedPeriodOverviewRecord.get('assignments');
         grid.addColumnForEachAssignment(assignments);
         grid.addAssignmentSorters(assignments);
-//        grid.sortByQualifiesQualifiedFirst();
         this.getAggregatedRelatedStudentInfosStore().loadData(this.detailedPeriodOverviewRecord.get('relatedstudents'));
+        grid.sortByFullname();
     }
 });

@@ -115,21 +115,21 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
                 text: gettext('Full name'),
                 listeners: {
                     scope: this,
-                    click: this._onSortByFullname
+                    click: this.sortByFullname
                 }
             }, {
                 itemId: 'sortByLastname',
                 text: gettext('Last name'),
                 listeners: {
                     scope: this,
-                    click: this._onSortByLastname
+                    click: this.sortByLastname
                 }
             }, {
                 itemId: 'sortByUsername',
                 text: gettext('Username'),
                 listeners: {
                     scope: this,
-                    click: this._onSortByUsername
+                    click: this.sortByUsername
                 }
             }]
         }, '->', {
@@ -272,24 +272,24 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
     },
 
 
-    _onSortByFullname: function() {
+    sortByFullname: function() {
         this._sortByUser('fullname');
     },
-    _onSortByLastname: function() {
+    sortByLastname: function() {
         this._sortByUser('lastname');
     },
-    _onSortByUsername: function() {
+    sortByUsername: function() {
         this._sortByUser('username');
     },
 
     _sortByUser: function(sortby) {
         var sorter = null;
         if(sortby === 'username') {
-            sorter = this._sortByUsername;
+            sorter = this._byUsernameCompare;
         } else if(sortby === 'fullname') {
-            sorter = this._sortByFullname;
+            sorter = this._byFullnameCompare;
         } else if(sortby === 'lastname') {
-            sorter = this._sortByLastname;
+            sorter = this._byLastnameCompare;
         } else {
             throw "Invalid sorter: " + sortby;
         }
@@ -306,15 +306,15 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         }
     },
 
-    _sortByUserProperty: function(a, b, property) {
+    _byUserPropertyCompare: function(a, b, property) {
         return this._forceString(a.get('user')[property]).localeCompare(this._forceString(b.get('user')[property]));
     },
-    _sortByUsername: function (a, b) {
-        return this._sortByUserProperty(a, b, 'username');
+    _byUsernameCompare: function (a, b) {
+        return this._byUserPropertyCompare(a, b, 'username');
     },
 
-    _sortByFullname: function (a, b) {
-        return this._sortByUserProperty(a, b, 'full_name');
+    _byFullnameCompare: function (a, b) {
+        return this._byUserPropertyCompare(a, b, 'full_name');
     },
 
     _getLastname: function(record) {
@@ -322,7 +322,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         var splitted = full_name.split(/\s+/);
         return splitted[splitted.length-1];
     },
-    _sortByLastname: function (a, b) {
+    _byLastnameCompare: function (a, b) {
         var aLastName = this._getLastname(a);
         var bLastName = this._getLastname(b);
         return aLastName.localeCompare(bLastName);
