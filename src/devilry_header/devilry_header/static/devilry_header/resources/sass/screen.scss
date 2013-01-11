@@ -188,6 +188,7 @@ $hovermenu_bgcolor: #000;
                     font-weight: bold;
                 }
                 .description {
+                    font-size: 12px;
                 }
                 &.student_role {
                     @include role_link($studentcolor_bg);
