@@ -54,7 +54,6 @@ exampledata-backup.tar.bz2
 */example-productionenv/bin/
 productionenv/
 *.exe
-devilry_all_uncompiled.js
 devilryrestfullib/build/
 db_and_deliveries_stash/
 .idea/
