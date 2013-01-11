@@ -12,10 +12,19 @@ Semantic changes
 ================
 Administrators are no longer implicitly examiner. They must make themself examiner if they want
 to provide feedback to students. We have made it easy to make yourself examiner:
+
 - An option when creating an assignment.
 - Administrators can edit examiners on the period/semester.
 - When browsing a group (student), you get a button to make yourself examiner if you are
   not already.
+
+
+A complete rewrite of the deployment system
+===========================================
+We have split our deployment scripts (for system administrators) into a separate repository.
+The repository includes a Chef DevOps setup that should simplify the work of system admins
+greatly. It also includes a much better setup for those who do not wish to use Chef. See
+http://devilry-deploy.readthedocs.org/ for more information.
 
 
 New subject admin UI
