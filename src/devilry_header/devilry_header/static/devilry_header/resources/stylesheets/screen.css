@@ -133,7 +133,7 @@
 }
 /* line 128, ../sass/screen.scss */
 .devilryheader .devilrylogo a.logotext {
-  font-weight: bold;
+  font-weight: normal;
   font-size: 15px;
   color: #aa0000;
   text-decoration: none;
