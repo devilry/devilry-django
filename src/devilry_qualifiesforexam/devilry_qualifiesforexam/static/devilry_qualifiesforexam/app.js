@@ -8,7 +8,7 @@ Ext.application({
         'devilry_i18n': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_i18n',
         'devilry_authenticateduserinfo': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_authenticateduserinfo',
 //        'devilry_usersearch': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_usersearch',
-        'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header'
+        'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header/app'
     },
 
     requires: [
