@@ -14,6 +14,9 @@ Ext.application({
     requires: [
         'Ext.container.Viewport',
         'Ext.view.View',
+        'Ext.layout.container.Border',
+        'Ext.layout.container.Column',
+        'Ext.form.field.ComboBox',
         'Ext.selection.DataViewModel',
         'Ext.selection.Model',
 
