@@ -19,19 +19,19 @@ msgstr ""
 
 #: static/devilry_core/terminology.js:7
 msgid "Node"
-msgstr "Department/Faculty/School"
+msgstr "Department"
 
 #: static/devilry_core/terminology.js:7
 msgid "Nodes"
-msgstr "Departments/Faculties/Schools"
+msgstr "Departments"
 
 #: static/devilry_core/terminology.js:8
 msgid "node"
-msgstr "department/faculty/school"
+msgstr "department"
 
 #: static/devilry_core/terminology.js:8
 msgid "nodes"
-msgstr "departments/faculties/schools"
+msgstr "departments"
 
 
 
