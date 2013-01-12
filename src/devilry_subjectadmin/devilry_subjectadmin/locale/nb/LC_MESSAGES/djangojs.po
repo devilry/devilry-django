@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-10 05:04+0100\n"
+"POT-Creation-Date: 2013-01-12 01:20+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1428,9 +1428,8 @@ msgid "Export"
 msgstr "Eksporer"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:26
-#, fuzzy
 msgid "Showing {count} students"
-msgstr "Viser {visiblecount}/{totalcount}"
+msgstr "Viser {count} studenter"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:34
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:273
@@ -1439,11 +1438,13 @@ msgstr "Navn mangler"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:40
 msgid "Ignored, has feedback so this may be a problem"
-msgstr ""
+msgstr "Ignorert, har tilbakemelding(er) så dette kan være et problem"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:45
 msgid "Ignored, has no feedback so probably not a problem"
 msgstr ""
+"Ignorert, har ingen tilbakemeldinger så dette er sannsynligvis ikke et "
+"problem"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:54
 msgid "Not registered on assignment"
@@ -1519,8 +1520,7 @@ msgstr "Sorter etter poeng i stigende rekkefølge"
 msgid "Sort by points decending"
 msgstr "Sorter etter poeng i synkende rekkefølge"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:430
-#, fuzzy
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:434
 msgid "Some students are ignored"
 msgstr "Ingen studenter tilgjengelige"
 
@@ -1531,32 +1531,36 @@ msgid ""
 "the {period_term} when they quit the {subject_term}, so this may not "
 "indicate a problem."
 msgstr ""
+"Noen studenter er registrert på grupper i inneværende {period_term}, men "
+"ikke registrert på inneværende {period_term}. Det er vanlig å fjerne "
+"studenter fra et {period_term} når de trekker seg, så dette er ikke "
+"nødvendigvis en feil."
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:17
-#, fuzzy
 msgid ""
 "Students in groups with feedback and not registered on the {period_term}."
-msgstr "Legg til alle studenter registrert på oppgavens %(period_term)s."
+msgstr ""
+"Studenter er i grupper med tilbakemelding, men er ikke registrert på "
+"inneværende {period_term}."
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:23
-#, fuzzy
 msgid ""
 "Students in groups without feedback but not registered on the {period_term}."
-msgstr "Legg til alle studenter registrert på oppgavens %(period_term)s."
+msgstr ""
+"Studenter er i grupper uten tilbakemelding, men er ikke registrert på "
+"inneværende {period_term}."
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:30
-#, fuzzy
 msgid "Show ignored students in the table"
-msgstr "Ikke legg til studenter."
+msgstr "Vis ignorerte studenter i tabellen"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:35
 msgid "Hide ignored students in the table"
-msgstr ""
+msgstr "Sjul ignorerte studenter i tabellen"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:40
-#, fuzzy
-msgid "Edit/view student on the {period_term}"
-msgstr "Legg til eller rediger studenter på {periodpath}"
+msgid "Edit/view students on the {period_term}"
+msgstr "Rediger/vis studenter på inneværende {period_term}."
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:24
 msgid "Select a grading system"

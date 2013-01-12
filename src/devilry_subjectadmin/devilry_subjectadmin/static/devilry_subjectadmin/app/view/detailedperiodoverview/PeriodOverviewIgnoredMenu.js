@@ -37,7 +37,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewIgnor
             '</tpl>',
 
             ' &nbsp;<a class="new-window-link" href="{manageRelatedStudentsUrl}" target="_blank">',
-                gettext('Edit/view student on the {period_term}'),
+                gettext('Edit/view students on the {period_term}'),
             '</a>',
         '</tpl>'
     ],
