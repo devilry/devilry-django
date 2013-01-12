@@ -23,6 +23,7 @@ class Status(models.Model):
     user = models.ForeignKey(User)
     plugin = models.CharField(max_length=500, null=True, blank=True)
     pluginsettings = models.TextField(null=True, blank=True)
+    pluginsettings_summary = models.TextField(null=True, blank=True)
 
     class Meta:
         ordering = ['-createtime']

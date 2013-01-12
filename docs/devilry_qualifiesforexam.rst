@@ -327,6 +327,13 @@ Database models
         A text field where plugins can store their settings, typically in some structured
         format like JSON, XML or YAML.
 
+    .. py:attribute:: pluginsettings_summary
+
+        A text field where plugins can describe their settings in a redable manner. This
+        text is filtered through ``django.utils.translation.ugettext_lazy`` before beeing
+        displayed, so plugins can internationalize the string.
+
+
 
 
 .. py:class:: devilry_qualifiesforexam.models.QualifiesForFinalExam
