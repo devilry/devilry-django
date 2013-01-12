@@ -279,7 +279,66 @@ Database models
 
 .. py:currentmodule:: devilry_qualifiesforexam.models
 
-.. py:class:: devilry_qualifiesforexam.models.QualifiesForFinalExamPeriodStatus
+
+How the models fit together
+===========================
+
+Each time a periodadmin qualifies students for final exams, even when they only partly qualify their
+students, a new :class:`.Status`-record is saved in the database. A status has a ForeignKey to
+:class:`devilry.apps.core.models.Period`, so the last saved Status is the active
+qualified-for-exam status for a Period.
+
+Each time a :class:`.Status` is saved, all of the :class:`devilry.apps.core.models.RelatedStudent`s
+for that period gets a :class:`.QualifiesForFinalExam`-record, which saves the qualifies-for-exam
+status for the student. When a status is ``almostready``, we use ``NULL`` in the
+:attr:`.QualifiesForFinalExam.qualifies`-field to indicate students that are not ready.
+
+Node administrators or systems that intergrate with Devilry uses :attr:`.Status.exported_timestamp`
+to mark :class:`Status`-records that have been exported to an external system. It is important to
+note that we export statuses, not periods. This means that we can create new statuses, and re-export
+them. An automatic system can check timestamps to handle status changes, and the Node admin UI
+can show/hilight periods with exported statuses and more recent statuses.
+
+:class:`DeadlineTag` is used to organize periods by the time when they should have made a
+``ready``-:class:`.Status`.
+
+
+
+The models
+==========
+
+.. py:class:: devilry_qualifiesforexam.models.DeadlineTag
+
+    A deadlinetag is used to tag :class:`devilry.apps.core.models.Period`-objects with a timestamp
+    and an optional tag describing the timestamp.
+
+    .. py:attribute:: timestamp
+
+        Database field containing the date and time when a period admin should be finished
+        qualifying students for final exams.
+
+    .. py:attribute:: tag
+
+        A tag for node-admins for this deadlinetag. Max 30 chars. May be empty or ``null``.
+
+
+.. py:class:: devilry_qualifiesforexam.models.PeriodTag
+
+    This table is used to create a one-to-many relation from :class:`.DeadlineTag` to
+    :class:`devilry.apps.core.models.Period`.
+
+    .. py:attribute:: deadlinetag
+
+        Database foreign key to the :class:`.DeadlineTag` that the Period should be tagged by.
+
+
+    .. py:attribute:: period
+
+        Database foreign key to the :class:`devilry.apps.core.models.Period` that this tag
+        points to.
+
+
+.. py:class:: devilry_qualifiesforexam.models.Status
 
     Every time the admin updates qualifies-for-exam on a period, we save new object of this
     database model.
@@ -293,6 +352,11 @@ Database models
 
         Database foreign key to the :class:`devilry.apps.core.models.Period` that the
         status is for.
+
+    .. py:attribute:: exported_timestamp
+
+        Database datetime field that tells when the status was exported out of Devilry to an
+        external system. This is ``null`` if the status has not been expored out of Devilry.
 
     .. py:attribute:: status
 

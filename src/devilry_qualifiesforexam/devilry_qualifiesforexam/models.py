@@ -8,6 +8,15 @@ from devilry.apps.core.models import Period
 
 
 
+class DeadlineTag(models.Model):
+    timestamp = models.DateTimeField()
+    tag = models.CharField(max_length=30, null=True, blank=True)
+
+class PeriodTag(models.Model):
+    period = models.OneToOneField(Period, primary_key=True)
+    deadlinetag = models.ForeignKey(DeadlineTag)
+
+
 class Status(models.Model):
     STATUS_CHOICES = (
         ('ready', _('Ready for export')),
@@ -24,6 +33,7 @@ class Status(models.Model):
     plugin = models.CharField(max_length=500, null=True, blank=True)
     pluginsettings = models.TextField(null=True, blank=True)
     pluginsettings_summary = models.TextField(null=True, blank=True)
+    exported_timestamp = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ['-createtime']
