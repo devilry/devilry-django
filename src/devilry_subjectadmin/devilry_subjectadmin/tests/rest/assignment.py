@@ -194,7 +194,7 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(set(content['inherited_admins'][0].keys()),
                           set(['basenode', 'user']))
         self.assertEquals(set(content['inherited_admins'][0]['basenode'].keys()),
-                          set(['type', 'path', 'id']))
+                          set(['type', 'path', 'id', 'is_admin']))
         self.assertEquals(set(content['inherited_admins'][0]['user'].keys()),
                           set(['email', 'username', 'id', 'full_name']))
         inherited_adminusernames = [user['user']['username'] for user in content['inherited_admins']]
