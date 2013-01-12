@@ -419,6 +419,10 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
     },
 
     handleIgnored: function (period_id, ignored_with_feedback, ignored_without_feedback) {
+        if((ignored_with_feedback.length + ignored_without_feedback.length) === 0) {
+            return;
+        }
+
         // Turn into map for the rendering function
         this.ignored_with_feedback_map = this._byUserId(ignored_with_feedback);
         this.ignored_without_feedback_map = this._byUserId(ignored_without_feedback);
