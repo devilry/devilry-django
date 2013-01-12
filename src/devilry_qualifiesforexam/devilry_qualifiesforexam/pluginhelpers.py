@@ -4,15 +4,24 @@ from django.core.exceptions import PermissionDenied
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseRedirect
+import django.dispatch
 from crispy_forms.layout import Submit, HTML
 from django.utils.translation import ugettext_lazy as _
 
 from devilry.apps.core.models import Period
 
 
+#: This signal is sent every time a status is saved through the REST API.
+#: The REST API forwards the ``status``, and the ``settings``, which is whatever
+#: data the plugin has stored in
+#: ``request.session[create_settings_sessionkey(pluginsessionid)].
+status_saved = django.dispatch.Signal(providing_args=['status', 'settings'])
+
 def create_sessionkey(pluginsessionid):
     return 'qualifiesforexam-{0}'.format(pluginsessionid)
 
+def create_settings_sessionkey(pluginsessionid):
+    return '{0}-settings'.format(create_sessionkey(pluginsessionid))
 
 class PreviewData(object):
     def __init__(self, passing_relatedstudentids):
@@ -36,6 +45,9 @@ class QualifiesForExamPluginViewMixin(object):
 
     def save_plugin_output(self, *args, **kwargs):
         self.request.session[create_sessionkey(self.pluginsessionid)] = PreviewData(*args, **kwargs)
+
+    def save_settings_in_session(self, data):
+        self.request.session[create_settings_sessionkey(self.pluginsessionid)] = data
 
     def get_preview_url(self):
         return '{url}?routeto=/{periodid}/preview/{pluginsessionid}'.format(
