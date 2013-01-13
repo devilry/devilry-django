@@ -109,8 +109,8 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
             period: this.periodid,
             status: 'ready',
             message: null,
-            plugin: 'devilry_qualifiesforexam_approved.all',
-            pluginsettings: null,
+            plugin: 'devilry_qualifiesforexam_approved.subset',
+            pluginsessionid: this.pluginsessionid,
             passing_relatedstudentids: passing_relatedstudentids
         }, {
             scope: this,
