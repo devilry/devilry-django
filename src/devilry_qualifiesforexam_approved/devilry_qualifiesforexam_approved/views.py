@@ -62,7 +62,7 @@ class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
     def form_valid(self, form):
         self.assignments_to_pass = set(map(int, form.cleaned_data['assignments']))
         self.save_plugin_output(self.get_relatedstudents_that_qualify_for_exam())
-        self.save_settings_in_session()
+#        self.save_settings_in_session()
         return self.redirect_to_preview_url()
 
     def post(self, request):

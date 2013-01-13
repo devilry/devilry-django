@@ -4,25 +4,12 @@ from django.core.urlresolvers import reverse
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry_qualifiesforexam.pluginhelpers import create_sessionkey
-
-
-class ApprovedTestMixin(object):
-
-    def create_relatedstudent(self, username):
-        user = getattr(self.testhelper, username, None)
-        if not user:
-            user = self.testhelper.create_user(username)
-        relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user)
-        return relstudent
-
-    def create_feedbacks(self, *feedbacks):
-        for group, feedback in feedbacks:
-            self.testhelper.add_delivery(group, {'file.py': ['print ', 'bah']})
-            self.testhelper.add_feedback(group, verdict=feedback)
+from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginTestMixin
 
 
 
-class TestAllApprovedView(TestCase, ApprovedTestMixin):
+
+class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
@@ -57,14 +44,14 @@ class TestAllApprovedView(TestCase, ApprovedTestMixin):
     def test_perms_as_superuser(self):
         self._test_permsas('superuser')
 
-    def test_getas_nobody(self):
+    def test_perms_as_nobody(self):
         self.testhelper.create_user('nobody')
         response = self._getas('nobody', {
             'periodid': self.testhelper.sub_p1.id
         })
         self.assertEqual(response.status_code, 403)
 
-    def test_get_invalid_period(self):
+    def test_invalid_period(self):
         response = self._getas('periodadmin', {
             'periodid': 1000
         })
@@ -91,7 +78,7 @@ class TestAllApprovedView(TestCase, ApprovedTestMixin):
 
 
 
-class TestSubsetApprovedView(TestCase, ApprovedTestMixin):
+class TestSubsetApprovedView(TestCase, QualifiesForExamPluginTestMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
@@ -138,7 +125,7 @@ class TestSubsetApprovedView(TestCase, ApprovedTestMixin):
     def test_perms_as_superuser(self):
         self._test_perms_as('superuser')
 
-    def test_permsas_nobody(self):
+    def test_perms_as_nobody(self):
         self.testhelper.create_user('nobody')
         querystring = {'periodid': self.testhelper.sub_p1.id}
         response = self._getas('nobody', querystring)
@@ -146,7 +133,7 @@ class TestSubsetApprovedView(TestCase, ApprovedTestMixin):
         response = self._postas('nobody', data = {}, querystring=querystring)
         self.assertEqual(response.status_code, 403)
 
-    def test_get_invalid_period(self):
+    def test_invalid_period(self):
         querystring = {'periodid': 1000}
         response = self._getas('periodadmin', querystring)
         self.assertEqual(response.status_code, 403)

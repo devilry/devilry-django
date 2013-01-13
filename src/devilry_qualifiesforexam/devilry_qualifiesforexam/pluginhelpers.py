@@ -96,3 +96,34 @@ class BackButton(HTML):
             label = unicode(_('Back'))
         )
         super(BackButton, self).__init__(html)
+
+
+
+class QualifiesForExamPluginTestMixin(object):
+
+    def create_relatedstudent(self, username):
+        user = getattr(self.testhelper, username, None)
+        if not user:
+            user = self.testhelper.create_user(username)
+        relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user)
+        return relstudent
+
+    def create_feedbacks(self, *feedbacks):
+        for group, feedback in feedbacks:
+            self.testhelper.add_delivery(group, {'file.py': ['print ', 'bah']})
+            self.testhelper.add_feedback(group, verdict=feedback)
+
+    def test_perms_as_periodadmin(self):
+        raise NotImplementedError()
+
+    def test_perms_as_nodeadmin(self):
+        raise NotImplementedError()
+
+    def test_perms_as_superuser(self):
+        raise NotImplementedError()
+
+    def test_perms_as_nobody(self):
+        raise NotImplementedError()
+
+    def test_invalid_period(self):
+        raise NotImplementedError()
