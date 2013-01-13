@@ -21,7 +21,6 @@ class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):
                 'gstudent2:candidate(student2):examiner(examiner1)'],
             deadlines=['d1:ends(10)']
         )
-        self.testhelper.create_superuser('superuser')
         self.client = Client()
 
     def _getas(self, username, data):
@@ -42,6 +41,7 @@ class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):
     def test_perms_as_nodeadmin(self):
         self._test_permsas('uniadmin')
     def test_perms_as_superuser(self):
+        self.testhelper.create_superuser('superuser')
         self._test_permsas('superuser')
 
     def test_perms_as_nobody(self):
@@ -92,7 +92,6 @@ class TestSubsetApprovedView(TestCase, QualifiesForExamPluginTestMixin):
             ],
             deadlines=['d1:ends(10)']
         )
-        self.testhelper.create_superuser('superuser')
         self.client = Client()
 
     def _getas(self, username, data):
@@ -123,6 +122,7 @@ class TestSubsetApprovedView(TestCase, QualifiesForExamPluginTestMixin):
     def test_perms_as_nodeadmin(self):
         self._test_perms_as('uniadmin')
     def test_perms_as_superuser(self):
+        self.testhelper.create_superuser('superuser')
         self._test_perms_as('superuser')
 
     def test_perms_as_nobody(self):

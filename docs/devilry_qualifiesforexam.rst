@@ -37,7 +37,9 @@ a wizard with the following steps/pages:
 #######################################################
 Plugins
 #######################################################
-A plugin is a regular Django app.
+A plugin is a regular Django app. Your best source for a simple example is the
+``devilry_qualifiesforexam_approved``-module which contains two plugins. You will find the
+package in the ``src/``-directory of the devilry repository.
 
 
 .. _qualifiesforexam-plugins-what:
@@ -96,6 +98,15 @@ The plugins are shown in listed order on page 1 of the wizard described in the
     You can safely remove plugins from ``settings.DEVILRY_QUALIFIESFOREXAM_PLUGINS``.
     They will simply not be available in the list of plugins in the
     :ref:`qualifiesforexam-uiworkflow`.
+
+
+Write tests
+===========
+If you want your plugin to be considered for inclusion in Devilry you will have to write good
+tests. These plugins handle very sensitive data, so it would be madness to deploy them in production
+without proper tests. We provide a helper-mixin for tests,
+:class:`devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginTestMixin`, which you should
+use. See the ``tests``-module in ``devilry_qualifiesforexam_approved`` for examples.
 
 
 
@@ -230,29 +241,8 @@ The example above is quite simple, but it can be made even simpler if you use
 
 
 
-Other helpers
-=============
-
-.. py:class:: devilry_qualifiesforexam.pluginhelpers.PreviewData(passing_relatedstudentids)
-
-    Stores the output from a plugin. You should not need to use this directly. Use
-    :meth:`.QualifiesForExamPluginViewMixin.save_plugin_output` instead.
-
-    :param passing_relatedstudentids: See :attr:`.passing_relatedstudentids`.
-
-    .. py:attribute:: passing_relatedstudentids
-
-        List of the IDs of all :class:`devilry.apps.core.models.RelatedStudent` that
-        qualifies for final exams according to the plugin that generated the data.
-
-
-
-.. py:function:: devilry_qualifiesforexam.pluginhelpers.create_sessionkey(pluginsessionid)
-
-    Generate the session key for the plugin output as described in
-    :ref:`qualifiesforexam-plugins-what`. You should not need to use this directly. Use
-    :meth:`.QualifiesForExamPluginViewMixin.get_plugin_input_and_authenticate` instead.
-
+Helper for unit tests
+=====================
 
 .. py:class:: devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginTestMixin
 
@@ -260,6 +250,13 @@ Other helpers
     :class:`.QualifiesForExamPluginViewMixin`). This class has a couple of helpers that
     simplifies writing tests, and some unimplemented methods that ensure you do not forget
     to write permission tests.
+
+    .. note::
+        If you use this class as base for your tests, your chances of getting a plugin approved
+        for inclusion as part of Devilry is greatly increased. You have to include at least one
+        test in addition to the unimplemented tests, a test that uses a realistic dataset
+        to make sure your plugin behaves as intended (E.g.: Approves/disapproves the expected
+        students). You may need more than one extra test if your plugin is complex.
 
     .. py:attribute:: period
 
@@ -269,7 +266,9 @@ Other helpers
     .. py:attribute:: testhelper
 
         A :class:`devilry.apps.core.testhelper.TestHelper`-object which is required for
-        :meth:`.create_feedbacks` to work.
+        :meth:`.create_feedbacks` and :meth:`.create_relatedstudent` to work.
+
+        Typcally created with something like this in
 
     .. py:method:: create_relatedstudent(username)
 
@@ -324,6 +323,29 @@ Other helpers
 
         Must be implemented in subclasses.
 
+
+Other helpers
+=============
+
+.. py:class:: devilry_qualifiesforexam.pluginhelpers.PreviewData(passing_relatedstudentids)
+
+    Stores the output from a plugin. You should not need to use this directly. Use
+    :meth:`.QualifiesForExamPluginViewMixin.save_plugin_output` instead.
+
+    :param passing_relatedstudentids: See :attr:`.passing_relatedstudentids`.
+
+    .. py:attribute:: passing_relatedstudentids
+
+        List of the IDs of all :class:`devilry.apps.core.models.RelatedStudent` that
+        qualifies for final exams according to the plugin that generated the data.
+
+
+
+.. py:function:: devilry_qualifiesforexam.pluginhelpers.create_sessionkey(pluginsessionid)
+
+    Generate the session key for the plugin output as described in
+    :ref:`qualifiesforexam-plugins-what`. You should not need to use this directly. Use
+    :meth:`.QualifiesForExamPluginViewMixin.get_plugin_input_and_authenticate` instead.
 
 
 
