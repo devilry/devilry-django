@@ -22,10 +22,17 @@ class TestRestStatus(TestCase):
         self.url = reverse('devilry_qualifiesforexam-rest-status')
         self.testhelper.create_superuser('superuser')
 
+        qualifiesforexam_plugins.add(
+            id = 'devilry_qualifiesforexam.test.noop-plugin',
+            url = '/some/noop-url',
+            title = 'Noop',
+            description = 'noop'
+        )
+
     def tearDown(self):
-        for plugin in ('devilry_qualifiesforexam.test.plugin', 'devilry_qualifiesforexam.test.noop-plugin'):
-            if plugin in qualifiesforexam_plugins:
-                del qualifiesforexam_plugins.items['devilry_qualifiesforexam.test.plugin']
+        for pluginid in ('devilry_qualifiesforexam.test.plugin', 'devilry_qualifiesforexam.test.noop-plugin'):
+            if pluginid in qualifiesforexam_plugins:
+                del qualifiesforexam_plugins.items[pluginid]
 
     def _get_url(self, periodid=None):
         if periodid:
@@ -52,7 +59,7 @@ class TestRestStatus(TestCase):
             'period': self.testhelper.sub_p1.id,
             'status': 'ready',
             'message': 'This is a test',
-            'plugin': 'devilry_qualifiesforexam_approved.all',
+            'plugin': 'devilry_qualifiesforexam.test.noop-plugin',
             'pluginsettings': 'test',
             'pluginsessionid': 'tst',
             'passing_relatedstudentids': [relatedStudent1.id]
@@ -63,7 +70,7 @@ class TestRestStatus(TestCase):
         self.assertEquals(status.period, self.testhelper.sub_p1)
         self.assertEquals(status.status, 'ready')
         self.assertEquals(status.message, 'This is a test')
-        self.assertEquals(status.plugin, 'devilry_qualifiesforexam_approved.all')
+        self.assertEquals(status.plugin, 'devilry_qualifiesforexam.test.noop-plugin')
         self.assertEquals(status.pluginsettings, 'test')
 
         self.assertEqual(status.students.count(), 2)
@@ -87,7 +94,7 @@ class TestRestStatus(TestCase):
             'period': self.testhelper.sub_p1.id,
             'status': 'ready',
             'message': 'This is a test',
-            'plugin': 'devilry_qualifiesforexam_approved.all',
+            'plugin': 'devilry_qualifiesforexam.test.noop-plugin',
             'pluginsettings': 'test',
             'pluginsessionid': 'tst',
             'passing_relatedstudentids': [10]
@@ -101,7 +108,7 @@ class TestRestStatus(TestCase):
             'period': self.testhelper.sub_p1.id,
             'status': 'almostready',
             'message': 'This is a test',
-            'plugin': 'devilry_qualifiesforexam_approved.all',
+            'plugin': 'devilry_qualifiesforexam.test.noop-plugin',
             'pluginsessionid': 'tst',
             'passing_relatedstudentids': [relatedStudent1.id],
             'notready_relatedstudentids': [relatedStudent2.id]
@@ -120,7 +127,7 @@ class TestRestStatus(TestCase):
         content, response = self._postas('periodadmin', {
             'period': self.testhelper.sub_p1.id,
             'status': 'ready', # Could choose any status except almostready for this test to be valid
-            'plugin': 'devilry_qualifiesforexam_approved.all',
+            'plugin': 'devilry_qualifiesforexam.test.noop-plugin',
             'pluginsessionid': 'tst',
             'notready_relatedstudentids': [relatedStudent1.id]
         })
@@ -149,7 +156,7 @@ class TestRestStatus(TestCase):
             'status': 'notready',
             'pluginsessionid': 'tst',
             'message': '  ',
-            'plugin': 'devilry_qualifiesforexam_approved.all'
+            'plugin': 'devilry_qualifiesforexam.test.noop-plugin'
         })
         self.assertEquals(response.status_code, 400)
         self.assertEqual(content['errors'][0], u'Message can not be empty when status is ``notready``.')
@@ -160,7 +167,7 @@ class TestRestStatus(TestCase):
             'period': self.testhelper.sub_p1.id,
             'status': 'invalidstatus',
             'pluginsessionid': 'tst',
-            'plugin': 'devilry_qualifiesforexam_approved.all',
+            'plugin': 'devilry_qualifiesforexam.test.noop-plugin',
             'passing_relatedstudentids': [relatedStudent1.id]
         })
         self.assertEqual(response.status_code, 400)
@@ -180,7 +187,7 @@ class TestRestStatus(TestCase):
             status = 'ready',
             message = 'Test',
             user = getattr(self.testhelper, username),
-            plugin = 'devilry_qualifiesforexam_approved.all',
+            plugin = 'devilry_qualifiesforexam.test.noop-plugin',
             pluginsettings = 'tst'
         )
         status.save()
@@ -201,7 +208,7 @@ class TestRestStatus(TestCase):
         self.assertEqual(statuses[0]['period'], self.testhelper.sub_p1.id)
         self.assertEqual(statuses[0]['status'], 'ready')
         self.assertEqual(statuses[0]['message'], 'Test')
-        self.assertEqual(statuses[0]['plugin'], 'devilry_qualifiesforexam_approved.all')
+        self.assertEqual(statuses[0]['plugin'], 'devilry_qualifiesforexam.test.noop-plugin')
         self.assertEqual(statuses[0]['pluginsettings'], 'tst')
         self.assertIn(str(relatedStudent1.id), statuses[0]['passing_relatedstudentids_map'])
 
@@ -237,7 +244,7 @@ class TestRestStatus(TestCase):
         return self.client.rest_get(self._get_url())
 
     def _createlistteststatus(self, period, status='ready',
-                              plugin='devilry_qualifiesforexam_approved.all'):
+                              plugin='devilry_qualifiesforexam.test.noop-plugin'):
         status = Status(
             period = period,
             status = status,
