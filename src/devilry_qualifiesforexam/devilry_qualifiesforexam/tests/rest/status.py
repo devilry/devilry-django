@@ -33,7 +33,8 @@ class TestRestStatus(TransactionTestCase):
             url = '/some/noop-url',
             title = 'Noop',
             post_statussave=noop,
-            description = 'noop'
+            description = 'noop',
+            pluginsettings_summary_generator = lambda status: 'noop summary'
         )
 
     def tearDown(self):
@@ -212,6 +213,7 @@ class TestRestStatus(TransactionTestCase):
         self.assertEqual(statuses[0]['status'], 'ready')
         self.assertEqual(statuses[0]['message'], 'Test')
         self.assertEqual(statuses[0]['plugin'], 'devilry_qualifiesforexam.test.noop-plugin')
+        self.assertEqual(statuses[0]['pluginsettings_summary'], 'noop summary')
         self.assertIn(str(relatedStudent1.id), statuses[0]['passing_relatedstudentids_map'])
 
 

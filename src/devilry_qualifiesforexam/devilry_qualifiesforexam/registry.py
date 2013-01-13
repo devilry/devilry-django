@@ -7,9 +7,11 @@ class Registry(object):
         self.items = {}
 
     def add(self, id, title, description, url, post_statussave=None,
-            uses_settings=False):
+            uses_settings=False, pluginsettings_summary_generator=None):
         self.items[id] = dict(title=title, description=description, url=url,
-            post_statussave=post_statussave, uses_settings=uses_settings)
+            post_statussave=post_statussave, uses_settings=uses_settings,
+            pluginsettings_summary_generator=pluginsettings_summary_generator
+        )
 
     def __contains__(self, pluginid):
         return pluginid in self.items
@@ -33,6 +35,14 @@ class Registry(object):
 
     def post_statussave(self, status, settings):
         self.items[status.plugin]['post_statussave'](status, settings)
+
+    def get_pluginsettings_summary(self, status):
+        item = self.items[status.plugin]
+        generator = item['pluginsettings_summary_generator']
+        if generator:
+            return generator(status)
+        else:
+            return None
 
     def unregister(self, pluginid):
         del self.items[pluginid]

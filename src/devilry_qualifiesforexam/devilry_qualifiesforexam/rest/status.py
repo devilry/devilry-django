@@ -24,7 +24,7 @@ from devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerificati
 class StatusForm(forms.ModelForm):
     class Meta:
         model = Status
-        fields = ['period', 'status', 'message', 'plugin', 'pluginsettings_summary']
+        fields = ['period', 'status', 'message', 'plugin']
 
     passing_relatedstudentids = ListOfTypedField(coerce=int, required=False)
     notready_relatedstudentids = ListOfTypedField(coerce=int, required=False)
@@ -177,7 +177,7 @@ class StatusView(View):
         }
         if includedetails:
             out['passing_relatedstudentids_map'] = self._create_passing_relatedstudentids_map(status)
-            out['pluginsettings_summary'] = status.pluginsettings_summary
+            out['pluginsettings_summary'] = qualifiesforexam_plugins.get_pluginsettings_summary(status)
         return out
 
     def _serialize_period(self, period):
