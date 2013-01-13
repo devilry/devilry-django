@@ -103,14 +103,19 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
 
     _setDangerousActionsLabels: function() {
         var assignmentPath = this._getPath();
+
+        if(this.assignmentRecord.get('can_delete')) {
+            var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
+                something: assignmentPath
+            });
+            this.getDeleteButton().setTitleText(deleteLabel);
+            this.getDeleteButton().show();
+        }
+
         var renameLabel = Ext.create('Ext.XTemplate', gettext('Rename {something}')).apply({
             something: assignmentPath
         });
-        var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
-            something: assignmentPath
-        });
         this.getRenameButton().setTitleText(renameLabel);
-        this.getDeleteButton().setTitleText(deleteLabel);
     },
 
     _onRename: function() {

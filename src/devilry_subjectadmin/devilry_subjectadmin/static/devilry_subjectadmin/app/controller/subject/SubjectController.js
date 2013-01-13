@@ -68,14 +68,18 @@ Ext.define('devilry_subjectadmin.controller.subject.SubjectController', {
     },
 
     _setDangerousActionsLabels: function() {
+        if(this.subjectRecord.get('can_delete')) {
+            var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
+                something: this.subjectRecord.get('short_name')
+            });
+            this.getDeleteButton().setTitleText(deleteLabel);
+            this.getDeleteButton().show();
+        }
+
         var renameLabel = Ext.create('Ext.XTemplate', gettext('Rename {something}')).apply({
             something: this.subjectRecord.get('short_name')
         });
-        var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
-            something: this.subjectRecord.get('short_name')
-        });
         this.getRenameButton().setTitleText(renameLabel);
-        this.getDeleteButton().setTitleText(deleteLabel);
     },
 
     _loadPeriods: function() {

@@ -17,11 +17,14 @@ class GroupList(list):
         """
         best = None
         for group in self:
+            feedback = None
+            if group.get_status() == 'corrected':
+                feedback = group.feedback
             if best:
-                if group.feedback and group.feedback.points > best.points:
+                if feedback and feedback.points > best.points:
                     best = group
             else:
-                best = group.feedback
+                best = feedback
         return best
 
     def get_best_gradestring(self):
@@ -97,6 +100,7 @@ class AggreatedRelatedStudentInfo(object):
         print '{0}:'.format(self.user)
         for assignmentid, groups in self.assignments.iteritems():
             print '  - Assignment ID: {0}'.format(assignmentid)
+            print '     - Groups: {0}'.format(len(groups))
             for group in groups:
                 if group.feedback:
                     grade = '{0} (points:{1},passed:{2})'.format(group.feedback.grade,
@@ -178,7 +182,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         groupqry = AssignmentGroup.objects.filter(parentnode__parentnode=self.period)
         groupqry = groupqry.select_related('parentnode', 'parentnode__parentnode', 'feedback')
         groupqry = groupqry.prefetch_related('candidates', 'candidates__student',
-            'candidates__student__devilryuserprofile')
+            'candidates__student__devilryuserprofile', 'deadlines')
         return groupqry
 
 
@@ -213,7 +217,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
     def _add_groups_to_result(self):
         groupqry = self.get_groups_queryset()
         self.ignored_students = {}
-        self.ignored_students_with_results = {}
+        self.ignored_students_with_results = set()
         for group in groupqry:
             for candidate in group.candidates.all():
                 if candidate.student_id in self.result:
@@ -221,7 +225,8 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
                 else:
                     self._create_or_add_ignoredgroup(self.ignored_students, candidate).add_group(group)
                     if group.feedback:
-                        self._create_or_add_ignoredgroup(self.ignored_students_with_results, candidate).add_group(group)
+                        self.ignored_students_with_results.add(candidate.student_id)
+
 
     def iter_assignments(self):
         """
@@ -250,6 +255,11 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         """
         Iterate over the students that is candidate on one or more groups, but not registered as
         related students.
+
+        This iterator includes everything yielded by both:
+
+        - :meth:`iter_students_with_feedback_that_is_candidate_but_not_in_related`
+        - :meth:`iter_students_with_no_feedback_that_is_candidate_but_not_in_related`
         """
         return self.ignored_students.itervalues()
 
@@ -258,7 +268,9 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         Same as :meth:`.iter_students_that_is_candidate_but_not_in_related`, but it does not include
         the students that have no feedback.
         """
-        return self.ignored_students_with_results.itervalues()
+        for userid, aggregatedgroupinfo in self.ignored_students.iteritems():
+            if userid in self.ignored_students_with_results:
+                yield aggregatedgroupinfo
 
     def iter_students_with_no_feedback_that_is_candidate_but_not_in_related(self):
         """
@@ -267,9 +279,9 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         except for the students returned by
         :meth:`.iter_students_with_feedback_that_is_candidate_but_not_in_related`
         """
-        for userid, student in self.ignored_students.iteritems():
+        for userid, aggregatedgroupinfo in self.ignored_students.iteritems():
             if not userid in self.ignored_students_with_results:
-                yield student
+                yield aggregatedgroupinfo
 
     def _serialize_assignment(self, basenode):
         return {'id': basenode.id,
@@ -283,8 +295,8 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         out = {
             'relatedstudents':
                 [r.serialize() for r in self.iter_relatedstudents_with_results()],
-            'students_that_is_candidate_but_not_in_related':
-                [r.serialize() for r in self.iter_students_that_is_candidate_but_not_in_related()],
+            'students_with_no_feedback_that_is_candidate_but_not_in_related':
+                [r.serialize() for r in self.iter_students_with_no_feedback_that_is_candidate_but_not_in_related()],
             'students_with_feedback_that_is_candidate_but_not_in_related':
                 [r.serialize() for r in self.iter_students_with_feedback_that_is_candidate_but_not_in_related()],
             'assignments':

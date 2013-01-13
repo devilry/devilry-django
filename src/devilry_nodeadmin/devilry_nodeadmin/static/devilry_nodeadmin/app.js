@@ -7,13 +7,16 @@ Ext.application({
         'devilry_theme': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_theme',
         'devilry_i18n': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_i18n',
         'devilry_usersearch': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_usersearch',
-        'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header',
+        'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header/app',
         'devilry_authenticateduserinfo': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_authenticateduserinfo'
     },
 
     requires: [
         'Ext.container.Viewport',
         'Ext.view.View',
+        'Ext.layout.container.Border',
+        'Ext.layout.container.Column',
+        'Ext.form.field.ComboBox',
         'Ext.selection.DataViewModel',
         'Ext.selection.Model',
 

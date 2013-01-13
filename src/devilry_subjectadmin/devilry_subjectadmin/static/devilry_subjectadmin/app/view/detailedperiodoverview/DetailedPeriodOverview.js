@@ -38,7 +38,8 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.DetailedPeriodOverv
                 }
             }, {
                 xtype: 'detailedperiodoverviewgrid',
-                region: 'center'
+                region: 'center',
+                period_id: this.period_id
             }]
         });
         this.callParent(arguments);

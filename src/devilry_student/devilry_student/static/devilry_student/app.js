@@ -15,7 +15,7 @@ Ext.application({
     paths: {
         'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes',
         'devilry_extjsextras': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras',
-        'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header',
+        'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header/app',
         'devilry_authenticateduserinfo': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_authenticateduserinfo',
         'devilry_i18n': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_i18n',
         'devilry_theme': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_theme'

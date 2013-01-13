@@ -25,6 +25,7 @@ devilry_urls = ((r'^student/', include('devilry.apps.student.urls')),
                 (r'^devilry_send_email_to_students/', include('devilry.apps.send_email_to_students.urls')),
                 (r'^devilry_qualifiesforexam/', include('devilry_qualifiesforexam.urls')),
                 (r'^devilry_qualifiesforexam_approved/', include('devilry_qualifiesforexam_approved.urls')),
+                (r'^devilry_header/', include('devilry_header.urls')),
                 (r'^$', frontpage),
                 ('^devilry_nodeadmin/', include('devilry_nodeadmin.urls'))
                )

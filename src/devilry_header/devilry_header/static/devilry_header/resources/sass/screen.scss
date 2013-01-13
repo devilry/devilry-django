@@ -126,7 +126,7 @@ $hovermenu_bgcolor: #000;
         background-repeat: no-repeat;
         background-position: 10px center;
         a.logotext {
-            font-weight: bold;
+            font-weight: normal;
             font-size: 15px;
             color: $logocolor;
             text-decoration: none;
@@ -188,6 +188,7 @@ $hovermenu_bgcolor: #000;
                     font-weight: bold;
                 }
                 .description {
+                    font-size: 12px;
                 }
                 &.student_role {
                     @include role_link($studentcolor_bg);

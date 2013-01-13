@@ -1,15 +1,16 @@
 Ext.application({
     name: 'devilry_header',
-    appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_qualifiesforexam/app',
+    appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header/app',
     paths: {
         'devilry_extjsextras': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_extjsextras',
         'devilry_theme': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_theme',
         'devilry_i18n': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_i18n',
-        'devilry_authenticateduserinfo': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_authenticateduserinfo',
-        'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header'
+        'devilry_authenticateduserinfo': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_authenticateduserinfo'
     },
 
     requires: [
+        'Ext.layout.container.Column',
+        'Ext.form.field.ComboBox',
         'devilry_header.Header',
         'devilry_header.Breadcrumbs'
     ],
@@ -18,7 +19,7 @@ Ext.application({
         this._createHeader();
     },
 
-    _createHeader: function() {
+    _createHeader:function () {
         this.breadcrumbs = Ext.widget('breadcrumbs', {
             defaultBreadcrumbs: [{
                 text: gettext("Dashboard"),

@@ -84,6 +84,7 @@ Ext.define('devilry_subjectadmin.view.subject.SubjectOverview' ,{
                     }, {
                         xtype: 'singleactionbox',
                         itemId: 'deleteButton',
+                        hidden: true,
                         id: 'subjectDeleteButton',
                         titleText: gettext('Loading') + ' ...',
                         bodyHtml: interpolate(gettext('Once you delete a %(subject_term)s, there is no going back. Only superusers can delete a non-empty %(subject_term)s.'), {

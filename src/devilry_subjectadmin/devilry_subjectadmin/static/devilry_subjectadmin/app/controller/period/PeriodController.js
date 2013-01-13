@@ -77,13 +77,18 @@ Ext.define('devilry_subjectadmin.controller.period.PeriodController', {
 
     _setMenuLabels: function() {
         var periodpath = this._getPath();
-        var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
-            something: periodpath
-        });
+
+        if(this.periodRecord.can_delete) {
+            var deleteLabel = Ext.create('Ext.XTemplate', gettext('Delete {something}')).apply({
+                something: periodpath
+            });
+            this.getDeleteButton().setTitleText(deleteLabel);
+            this.getDeleteButton.show();
+        }
+
         var renameLabel = Ext.create('Ext.XTemplate', gettext('Rename {something}')).apply({
             something: periodpath
         });
-        this.getDeleteButton().setTitleText(deleteLabel);
         this.getRenameButton().setTitleText(renameLabel);
     },
 

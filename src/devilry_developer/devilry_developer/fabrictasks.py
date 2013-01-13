@@ -211,3 +211,13 @@ def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False):
     extra_args = ' '.join(extra_args)
     local(('bin/django_extjsbuild.py senchatoolsbuild {extra_args} '
            '--app {appname}').format(appname=appname, extra_args=extra_args))
+
+
+@task
+def jsbuildall():
+    """
+    Build all the Devilry apps using the ``jsbuild`` task with compression enabled.
+    """
+    for appname in ("devilry_frontpage", "devilry_header","devilry_nodeadmin",
+                    "devilry_qualifiesforexam", "devilry_student", "devilry_subjectadmin"):
+        jsbuild(appname)

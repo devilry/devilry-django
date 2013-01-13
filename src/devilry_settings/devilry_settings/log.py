@@ -7,9 +7,6 @@ from os.path import join
 
 def create_logging_config(mail_admins=True,
                           mail_admins_level='ERROR',
-                          log_to_file=False,
-                          log_to_file_dir=None,
-                          log_to_stderr=True,
                           dangerous_actions_loglevel='INFO',
                           django_loglevel='ERROR',
                           request_loglevel='ERROR'):
@@ -27,13 +24,7 @@ def create_logging_config(mail_admins=True,
             - WARN
             - ERROR
 
-    :param log_to_file:
-        Log to file?
-    :param log_to_file_dir:
-        The directory to put files in if ``log_to_file==True``.
-    :param log_to_stderr:
-        Log to stderr?
-    :param log_dangerous_actions:
+    :param dangerous_actions_loglevel:
         Log dangerous actions? Set to ``"INFO"`` to log any somewhat dangerous
         actions (I.E.: creating a deadline, update a subject, ...). Set to
         ``"WARN"`` to log only really dangerous actions, like deleting something.
@@ -43,37 +34,14 @@ def create_logging_config(mail_admins=True,
         Loglevel for logs from the django namespace. See ``mail_admins_level`` for valid levels.
     :param request_loglevel:
         Loglevel for request logs (from the django.request namespace). See ``mail_admins_level`` for valid levels.
-    :param devilry_loglevel:
-        Loglevel for log messages from Devilry (from the devilry namespace). See ``mail_admins_level`` for valid levels.
 
     :raise ValueError:
         If ``log_to_file_dir`` is not given when ``log_to_file==True``.
     """
 
-    if log_to_file and not log_to_file_dir:
-        raise ValueError('create_logging_config(...) requires a ``log_to_file_dir`` if ``log_to_file==True``.')
-
-
-    default_handlers = []
+    handlers = ['stderr']
     if mail_admins:
-        default_handlers.append('mail_admins')
-    if log_to_stderr:
-        default_handlers.append('stderr')
-
-    # Handlers used for everything but requests and dangerous actions
-    handlers = default_handlers[:] #copy
-    if log_to_file:
-        handlers.append('logfile')
-
-    # We use a custom set of handlers for request logging
-    request_handlers = default_handlers[:] #copy
-    if log_to_file:
-        request_handlers.append('requestfile')
-
-    # We use a custom set of handlers for dangerous actions
-    dangerous_handlers = default_handlers[:] #copy
-    if log_to_file:
-        dangerous_handlers.append('dangerousfile')
+        handlers.append('mail_admins')
 
     return {
         'version': 1,
@@ -91,24 +59,6 @@ def create_logging_config(mail_admins=True,
                 'formatter': 'verbose',
                 'class': 'logging.StreamHandler'
             },
-            'logfile': {
-                'level': 'DEBUG',
-                'formatter': 'verbose',
-                'class': 'logging.FileHandler',
-                'filename': join(log_to_file_dir, 'devilry.log'),
-            },
-            'dangerousfile': {
-                'level': 'DEBUG',
-                'formatter': 'verbose',
-                'class': 'logging.FileHandler',
-                'filename': join(log_to_file_dir, 'dangerous_actions.log'),
-            },
-            'requestfile': {
-                'level': 'DEBUG',
-                'formatter': 'verbose',
-                'class': 'logging.FileHandler',
-                'filename': join(log_to_file_dir, 'requests.log')
-            },
             'mail_admins': {
                 'level': mail_admins_level,
                 'class': 'django.utils.log.AdminEmailHandler',
@@ -117,12 +67,12 @@ def create_logging_config(mail_admins=True,
         },
         'loggers': {
             'django.request': {
-                'handlers': request_handlers,
+                'handlers': handlers,
                 'level': request_loglevel,
                 'propagate': False
             },
             'devilry_subjectadmin': {
-                'handlers': dangerous_handlers,
+                'handlers': handlers,
                 'level': dangerous_actions_loglevel,
                 'propagate': False
             },

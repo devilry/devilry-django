@@ -8,16 +8,14 @@ Ext.application({
         'devilry_i18n': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_i18n',
         'devilry_authenticateduserinfo': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_authenticateduserinfo',
 //        'devilry_usersearch': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_usersearch',
-        'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header'
+        'devilry_header': DevilrySettings.DEVILRY_STATIC_URL + '/devilry_header/app'
     },
 
     requires: [
         'Ext.container.Viewport',
-//        'Ext.layout.container.Border',
-//        'Ext.layout.container.Column',
-//        'Ext.layout.container.Card',
-//        'Ext.form.RadioGroup',
-//        'Ext.form.field.Radio',
+        'Ext.layout.container.Border',
+        'Ext.layout.container.Column',
+        'Ext.form.field.ComboBox',
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',

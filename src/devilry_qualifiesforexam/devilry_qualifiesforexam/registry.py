@@ -17,8 +17,8 @@ class Registry(object):
                 'id': id,
                 'title': unicode(item['title']),
                 'description': unicode(item['description']),
-                'pluginsessionid': 'test',
-#                'pluginsessionid': uuid1().hex,
+#                'pluginsessionid': 'test',
+                'pluginsessionid': uuid1().hex,
                 'url': str(item['url'])
             })
         return items

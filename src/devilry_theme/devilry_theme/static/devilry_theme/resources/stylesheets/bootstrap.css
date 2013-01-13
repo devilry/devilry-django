@@ -3376,7 +3376,13 @@ a.new-window-link {
 /* line 69, ../sass/_devilry_linkstyles.scss */
 a[href^="mailto"] {
   background: transparent url(../icons/email-link.png) center right no-repeat;
-  padding-right: 19px;
+  padding-right: 20px;
+}
+/* line 72, ../sass/_devilry_linkstyles.scss */
+a[href^="mailto"].mail-link-right {
+  background: transparent url(../icons/email-link.png) center left no-repeat;
+  padding-left: 20px;
+  padding-right: 0;
 }
 
 /* line 4, ../sass/_devilry_alert.scss */
@@ -3498,6 +3504,10 @@ a[href^="mailto"] {
 /* line 61, ../sass/_devilry_bootstrap_extras.scss */
 .bootstrap form label.requiredField {
   font-weight: bold;
+}
+/* line 66, ../sass/_devilry_bootstrap_extras.scss */
+.bootstrap h5 {
+  margin: 20px 0 4px 0;
 }
 
 /* line 58, ../sass/bootstrap.scss */

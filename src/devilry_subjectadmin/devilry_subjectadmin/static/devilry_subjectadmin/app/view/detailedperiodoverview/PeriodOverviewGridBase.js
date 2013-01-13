@@ -12,27 +12,45 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
      */
     firstAssignmentColumnIndex: 1,
 
+    ignored_with_feedback_map: {},
+    ignored_without_feedback_map: {},
+
     requires: [
         'Ext.XTemplate',
-        'Ext.grid.column.Column'
+        'Ext.grid.column.Column',
+        'devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewIgnoredMenu',
+        'Ext.toolbar.TextItem'
     ],
+
+
+    counterTpl: gettext('Showing {count} students'),
 
     studentColTpl: [
         '<div class="student" style="white-space: normal !important;">',
             '<div class="fullname">',
-                '<tpl if="full_name">',
-                    '<strong>{full_name}</strong>',
+                '<tpl if="user.full_name">',
+                    '<strong>{user.full_name}</strong>',
                 '<tpl else>',
                     '<em>', gettext('Name missing'), '</em>',
                 '</tpl>',
             '</div>',
-            '<div class="username"><small class="muted">{username}</small></div>',
+            '<div class="username"><small class="muted">{user.username}</small></div>',
+            '<tpl if="ignored_with_feedback">',
+                '<span class="label label-important ignored_with_feedback-badge">',
+                    gettext('Ignored, has feedback so this may be a problem'),
+                '</span>',
+            '</tpl>',
+            '<tpl if="ignored_without_feedback">',
+                '<span class="label label-info ignored_without_feedback-badge">',
+                    gettext('Ignored, has no feedback so probably not a problem'),
+                '</span>',
+            '</tpl>',
         '</div>'
     ],
     feedbackColTpl: [
         '<div class="feedback feedback_assignment_{assignmentid}" style="white-space: normal !important;">',
             '<tpl if="grouplist.length == 0">',
-                '<small class="muted nofeedback">',
+                '<small class="text-error nofeedback">',
                     gettext('Not registered on assignment'),
                 '</small>',
             '<tpl else>',
@@ -47,8 +65,8 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
                                     '<div class="gradedetails">',
                                         '<small class="grade muted">({feedback.grade})</small>',
                                         ' <small class="points muted">(',
-                                            gettext('Points:'),
-                                            '{feedback.points})',
+                                            gettext('Points'),
+                                            ':{feedback.points})',
                                         '</small>',
                                     '</div>',
                                 '</div>',
@@ -79,6 +97,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
     initComponent: function() {
         this.studentColTplCompiled = Ext.create('Ext.XTemplate', this.studentColTpl);
         this.feedbackColTplCompiled = Ext.create('Ext.XTemplate', this.feedbackColTpl);
+        this.counterTplCompiled = Ext.create('Ext.XTemplate', this.counterTpl);
         this.columns = [{
             text: gettext('Student'),
             dataIndex: 'id',
@@ -91,10 +110,16 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         this.setupColumns();
         this.setupToolbar();
         this.callParent(arguments);
+        this.mon(this.getStore(), 'datachanged', this._onStoreDataChanged, this);
     },
 
     renderStudentColumn: function(value, meta, record) {
-        return this.studentColTplCompiled.apply(record.get('user'));
+        return this.studentColTplCompiled.apply({
+            user: record.get('user'),
+            period_term: gettext('period'),
+            ignored_with_feedback: this._isIgnoredWithFeedback(record),
+            ignored_without_feedback: this._isIgnoredWithoutFeedback(record)
+        });
     },
 
 
@@ -115,24 +140,37 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
                 text: gettext('Full name'),
                 listeners: {
                     scope: this,
-                    click: this._onSortByFullname
+                    click: this.sortByFullname
                 }
             }, {
                 itemId: 'sortByLastname',
                 text: gettext('Last name'),
                 listeners: {
                     scope: this,
-                    click: this._onSortByLastname
+                    click: this.sortByLastname
                 }
             }, {
                 itemId: 'sortByUsername',
                 text: gettext('Username'),
                 listeners: {
                     scope: this,
-                    click: this._onSortByUsername
+                    click: this.sortByUsername
                 }
             }]
         }, '->', {
+            xtype: 'button',
+            text: 'Undefined',
+            itemId: 'ignoredButton',
+            hidden: true,
+            menu: {
+                xtype: 'periodoverviewignoredmenu',
+                listeners: {
+                    scope: this,
+                    showButtonClick: this._onShowIgnored,
+                    hideButtonClick: this._onHideIgnored
+                }
+            }
+        }, {
             xtype: 'textfield',
             width: 250,
             emptyText: gettext('Search for name or username ...'),
@@ -140,6 +178,11 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
                 scope: this,
                 change: this._onSearch
             }
+        }];
+        this.bbar = ['->', {
+            xtype: 'tbtext',
+            text: gettext('Loading') + ' ...',
+            itemId: 'itemCounter'
         }];
     },
 
@@ -272,24 +315,24 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
     },
 
 
-    _onSortByFullname: function() {
+    sortByFullname: function() {
         this._sortByUser('fullname');
     },
-    _onSortByLastname: function() {
+    sortByLastname: function() {
         this._sortByUser('lastname');
     },
-    _onSortByUsername: function() {
+    sortByUsername: function() {
         this._sortByUser('username');
     },
 
     _sortByUser: function(sortby) {
         var sorter = null;
         if(sortby === 'username') {
-            sorter = this._sortByUsername;
+            sorter = this._byUsernameCompare;
         } else if(sortby === 'fullname') {
-            sorter = this._sortByFullname;
+            sorter = this._byFullnameCompare;
         } else if(sortby === 'lastname') {
-            sorter = this._sortByLastname;
+            sorter = this._byLastnameCompare;
         } else {
             throw "Invalid sorter: " + sortby;
         }
@@ -306,15 +349,15 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         }
     },
 
-    _sortByUserProperty: function(a, b, property) {
+    _byUserPropertyCompare: function(a, b, property) {
         return this._forceString(a.get('user')[property]).localeCompare(this._forceString(b.get('user')[property]));
     },
-    _sortByUsername: function (a, b) {
-        return this._sortByUserProperty(a, b, 'username');
+    _byUsernameCompare: function (a, b) {
+        return this._byUserPropertyCompare(a, b, 'username');
     },
 
-    _sortByFullname: function (a, b) {
-        return this._sortByUserProperty(a, b, 'full_name');
+    _byFullnameCompare: function (a, b) {
+        return this._byUserPropertyCompare(a, b, 'full_name');
     },
 
     _getLastname: function(record) {
@@ -322,9 +365,105 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
         var splitted = full_name.split(/\s+/);
         return splitted[splitted.length-1];
     },
-    _sortByLastname: function (a, b) {
+    _byLastnameCompare: function (a, b) {
         var aLastName = this._getLastname(a);
         var bLastName = this._getLastname(b);
         return aLastName.localeCompare(bLastName);
+    },
+
+
+    //
+    //
+    // Handle ignored
+    //
+    //
+
+    _isIgnoredWithFeedback:function (record) {
+        return typeof(this.ignored_with_feedback_map[record.get('user').id]) !== 'undefined';
+    },
+    _isIgnoredWithoutFeedback:function (record) {
+        return typeof(this.ignored_without_feedback_map[record.get('user').id]) !== 'undefined';
+    },
+    _isIgnored:function (record) {
+        return this._isIgnoredWithFeedback(record) || this._isIgnoredWithoutFeedback(record);
+    },
+
+    _hideIgnored:function () {
+        var records = [];
+        this.getStore().each(function (record) {
+            if(this._isIgnored(record)) {
+                records.push(record);
+            }
+        }, this);
+        this.getStore().remove(records);
+    },
+    _showIgnored:function () {
+        this.getStore().loadData(this.ignored_with_feedback, true);
+        this.getStore().loadData(this.ignored_without_feedback, true);
+    },
+
+    _onShowIgnored:function (menu) {
+        this._showIgnored();
+    },
+    _onHideIgnored:function (menu) {
+        this._hideIgnored();
+    },
+
+    _byUserId: function (aggregatedStudentInfoArray) {
+        var byUserId = {};
+        for (var i = 0; i < aggregatedStudentInfoArray.length; i++) {
+            var aggregatedStudentInfo = aggregatedStudentInfoArray[i];
+            byUserId[aggregatedStudentInfo.user.id] = aggregatedStudentInfo;
+        }
+        return byUserId;
+    },
+
+    handleIgnored: function (period_id, ignored_with_feedback, ignored_without_feedback) {
+        if((ignored_with_feedback.length + ignored_without_feedback.length) === 0) {
+            return;
+        }
+
+        // Turn into map for the rendering function
+        this.ignored_with_feedback_map = this._byUserId(ignored_with_feedback);
+        this.ignored_without_feedback_map = this._byUserId(ignored_without_feedback);
+        this.ignored_with_feedback = ignored_with_feedback;
+        this.ignored_without_feedback = ignored_without_feedback;
+
+        // Show the ignoredButton
+        var labelTpl = Ext.create('Ext.XTemplate',
+            gettext('Some students are ignored'),
+            '<span class="bootstrap">',
+                '<tpl if="ignored_with_feedback_count">',
+                ' <span class="badge badge-important">{ignored_with_feedback_count}</span>',
+                '</tpl>',
+                '<tpl if="ignored_without_feedback_count">',
+                    ' <span class="badge badge-info">{ignored_without_feedback_count}</span>',
+                '</tpl>',
+            '</span>'
+        );
+        var ignoredButton = this.down('#ignoredButton');
+        ignoredButton.setText(labelTpl.apply({
+            ignored_with_feedback_count: ignored_with_feedback.length,
+            ignored_without_feedback_count: ignored_without_feedback.length
+        }));
+        ignoredButton.menu.updateBody({
+            period_id: period_id,
+            ignored_with_feedback_count: ignored_with_feedback.length,
+            ignored_without_feedback_count: ignored_without_feedback.length
+        });
+        ignoredButton.show();
+    },
+
+
+    _onStoreDataChanged:function () {
+        this.updateCounter();
+    },
+    updateCounter:function () {
+        var itemCounter = this.down('#itemCounter');
+        var store = this.getStore();
+        var label = this.counterTplCompiled.apply({
+            count: store.count()
+        });
+        itemCounter.setText(label);
     }
 });

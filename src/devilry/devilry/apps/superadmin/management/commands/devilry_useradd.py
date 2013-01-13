@@ -24,6 +24,10 @@ class Command(UserModCommand):
             dest='is_superuser',
             default=False,
             help='Make the user a superuser, with access to everything in the system.'),
+        make_option('--password',
+            dest='password',
+            default=False,
+            help='Set a password for the user. If not specified, we set an unusable password.'),
         make_input_encoding_option()
     )
 
@@ -41,7 +45,10 @@ class Command(UserModCommand):
 
         if User.objects.filter(username=username).count() == 0:
             user = User(username=username, **kw)
-            user.set_unusable_password()
+            if options['password']:
+                user.set_password(options['password'])
+            else:
+                user.set_unusable_password()
             self.save_user(user, verbosity)
 
             profile = user.get_profile()

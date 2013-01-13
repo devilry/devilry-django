@@ -21,6 +21,7 @@ class ExportDetailedPeriodOverviewBase(object):
         self.filenameprefix = filenameprefix
         self.gradedetails = self.query.get('grade', 'all')
         self.download = self.query.get('download', False) == '1'
+        self.export_all_details = self.gradedetails == 'all'
 
     def generate(self):
         self.add_header()
@@ -42,7 +43,7 @@ class ExportDetailedPeriodOverviewBase(object):
     def get_headerlist(self):
         header = ['NAME', 'USERNAME']
         for assignment in self.grouper.iter_assignments():
-            if self.gradedetails == 'all':
+            if self.export_all_details:
                 for datatype in ('Grade', 'Points', 'Passing grade'):
                     header.append('{0} ({1})'.format(assignment.short_name, datatype))
             else:
@@ -63,7 +64,7 @@ class ExportDetailedPeriodOverviewBase(object):
             return 'Failed'
 
     def format_feedback(self, feedback):
-        if self.gradedetails == 'all':
+        if self.export_all_details:
             return [feedback.grade,
                     feedback.points,
                     self.strformat_is_passing_grade(feedback.is_passing_grade)]
@@ -87,14 +88,22 @@ class ExportDetailedPeriodOverviewBase(object):
         for column, grouplist in enumerate(aggregated_relstudentinfo.iter_groups_by_assignment()):
             # NOTE: There can be more than one group if the same student is in more than one
             #       group on an assignment - we select the "best" feedback.
-            feedback = grouplist.get_feedback_with_most_points()
-            if feedback:
-                if self.gradedetails == 'all':
-                    row += self.format_feedback(feedback)
+            cells = None
+            if len(grouplist) == 0:
+                if self.export_all_details:
+                    cells = ['Not registered on assignment']*3
                 else:
-                    row.append(self.format_feedback(feedback))
+                    cells = ['Not registered on assignment']
             else:
-                row.append('NO-FEEDBACK')
+                feedback = grouplist.get_feedback_with_most_points()
+                if feedback:
+                    cells = self.format_feedback(feedback)
+                else:
+                    if self.export_all_details:
+                        cells = ['NO-FEEDBACK']*3
+                    else:
+                        cells = ['NO-FEEDBACK']
+            row.extend(cells)
         row.append(warning)
         self.add_row(row)
 
@@ -141,6 +150,27 @@ class ExportDetailedPeriodOverviewXslx(ExportDetailedPeriodOverviewBase):
         self.worksheet.title = self.filenameprefix
         self.currentrow = 0
         self.generate()
+
+    def add_header(self):
+        headerlist = self.get_headerlist()
+        self.add_row(headerlist)
+        for cells in self.worksheet.columns:
+            cell = cells[0]
+            cell.style.font.bold = True
+            colwidth = None
+            if cell.column == 'A':
+                colwidth = 30
+            elif cell.column == 'B':
+                colwidth = 13
+            elif cell.value == 'WARNINGS':
+                colwidth = 70
+            else:
+                if self.export_all_details:
+                    colwidth = 18
+                else:
+                    colwidth = 13
+            self.worksheet.column_dimensions[cell.column].width = colwidth
+
 
     def add_cell(self, column, value):
         cell = self.worksheet.cell(row=self.currentrow, column=column)

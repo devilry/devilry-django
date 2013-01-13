@@ -28,7 +28,7 @@ class TestRestDetailedPeriodOverview(TestCase):
         # NOTE: This is tested in more detail in the API that generates the data (devilry.utils.groups_groupedby_relatedstudent_and_assignment)
         self.assertEqual(set(content.keys()),
             set([u'students_with_feedback_that_is_candidate_but_not_in_related',
-                 u'students_that_is_candidate_but_not_in_related',
+                 u'students_with_no_feedback_that_is_candidate_but_not_in_related',
                  u'relatedstudents', u'assignments']))
 
     def test_getlist_as_periodadmin(self):
