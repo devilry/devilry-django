@@ -79,6 +79,23 @@ class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):
         previewdata = self.client.session[create_sessionkey('tst')]
         self.assertEqual(previewdata.passing_relatedstudentids, [relatedStudent2.id])
 
+    def test_verify(self):
+        status = Status(period=self.period, status='ready', message='',
+            user=self.testhelper.periodadmin,
+            plugin='devilry_qualifiesforexam_approved.subset'
+        )
+        status.save()
+        relatedStudent1 = self.create_relatedstudent('student1')
+        status.students.create(relatedstudent=relatedStudent1, qualifies=True)
+
+        self.create_feedbacks(
+            (self.testhelper.sub_p1_a1_gstudent1, {'grade': 'F', 'points': 0, 'is_passing_grade': False})
+        )
+
+        with self.assertRaises(PluginResultsFailedVerification):
+            post_statussave_subset(status, {
+                'assignmentids_that_must_be_passed': [self.testhelper.sub_p1_a1.id]
+            })
 
 
 class TestSubsetApprovedView(TestCase, QualifiesForExamPluginTestMixin):

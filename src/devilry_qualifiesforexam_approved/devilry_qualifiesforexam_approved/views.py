@@ -11,21 +11,21 @@ from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMix
 from devilry_qualifiesforexam.pluginhelpers import BackButton, NextButton
 from devilry_qualifiesforexam.models import Status
 from .post_statussave import PeriodResultsCollectorSubset
+from .post_statussave import PeriodResultsCollectorAll
 
 
 
 class AllApprovedView(View, QualifiesForExamPluginViewMixin):
     pluginid = 'devilry_qualifiesforexam_approved.all'
 
-    def student_qualifies_for_exam(self, aggregated_relstudentinfo):
-        for grouplist in aggregated_relstudentinfo.iter_groups_by_assignment():
-            feedback = grouplist.get_feedback_with_most_points()
-            if not feedback or not feedback.is_passing_grade:
-                return False
-        return True
-
     def get(self, request):
-        return self.handle_save_results_and_redirect_to_preview_request()
+        try:
+            self.get_plugin_input_and_authenticate() # set self.periodid and self.pluginsessionid
+        except PermissionDenied:
+            return HttpResponseForbidden()
+        qualified_relstudentids = PeriodResultsCollectorAll().get_relatedstudents_that_qualify_for_exam(self.period)
+        self.save_plugin_output(qualified_relstudentids)
+        return self.redirect_to_preview_url()
 
 
 
@@ -71,8 +71,8 @@ class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
 
     def form_valid(self, form):
         assignmentids_that_must_be_passed = set(map(int, form.cleaned_data['assignments']))
-        qualified = PeriodResultsCollectorSubset(assignmentids_that_must_be_passed).get_relatedstudents_that_qualify_for_exam(self.period)
-        self.save_plugin_output(qualified)
+        qualified_relstudentids = PeriodResultsCollectorSubset(assignmentids_that_must_be_passed).get_relatedstudents_that_qualify_for_exam(self.period)
+        self.save_plugin_output(qualified_relstudentids)
         self.save_settings_in_session({
             'assignmentids_that_must_be_passed': assignmentids_that_must_be_passed
         })

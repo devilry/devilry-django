@@ -83,13 +83,6 @@ class QualifiesForExamPluginViewMixin(PeriodResultsCollector):
     def redirect_to_preview_url(self):
         return HttpResponseRedirect(self.get_preview_url())
 
-    def handle_save_results_and_redirect_to_preview_request(self):
-        try:
-            self.get_plugin_input_and_authenticate() # set self.periodid and self.pluginsessionid
-        except PermissionDenied:
-            return HttpResponseForbidden()
-        self.save_plugin_output(self.get_relatedstudents_that_qualify_for_exam(self.period))
-        return self.redirect_to_preview_url()
 
 
 class NextButton(Submit):
