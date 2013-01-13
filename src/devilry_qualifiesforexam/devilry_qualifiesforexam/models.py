@@ -46,8 +46,9 @@ class Status(models.Model):
             self.message = ''
         if self.status == 'notready' and not self.message:
             raise ValidationError('Message can not be empty when status is ``notready``.')
-        if self.status != 'notready' and not self.plugin:
-            raise ValidationError('``plugin`` is required for all statuses except ``notready``.')
+        if self.status != 'notready':
+            if not self.plugin and not self.message:
+                raise ValidationError('A ``message`` is required when no ``plugin`` is specified. The message should explain why a plugin is not used.')
         if self.status == 'notready':
             if self.plugin:
                 raise ValidationError('``plugin`` is not allowed when status is ``notready``.')
