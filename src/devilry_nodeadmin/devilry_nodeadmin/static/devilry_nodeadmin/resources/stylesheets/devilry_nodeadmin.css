@@ -32,3 +32,8 @@
 .secondary {
   line-height: 20px;
 }
+
+/* line 39, ../sass/devilry_nodeadmin.scss */
+.devilry_nodeadmin_nodedetailsoverview h3 {
+  font-style: italic;
+}

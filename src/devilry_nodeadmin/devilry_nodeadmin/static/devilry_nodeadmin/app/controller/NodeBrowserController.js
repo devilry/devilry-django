@@ -87,7 +87,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         errorhandler.addErrorsFromOperation(op);
         this.application.getAlertmessagelist().addMany(
-            errorhandler.errormessages, 'error', true);
+            errorhandler.errormessages, 'error', true );
     }
 });
 
