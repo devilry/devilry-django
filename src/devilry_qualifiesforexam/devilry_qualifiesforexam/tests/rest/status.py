@@ -208,7 +208,8 @@ class TestRestStatus(TransactionTestCase):
         self.assertEqual(set(statuses[0].keys()),
             set([u'id', u'status', u'plugin', u'statustext',
                  u'period', u'passing_relatedstudentids_map',
-                 u'user', u'message', u'createtime', u'pluginsettings_summary']))
+                 u'user', u'message', u'createtime', u'pluginsettings_summary',
+                 u'plugin_description', u'plugin_title']))
         self.assertEqual(statuses[0]['period'], self.testhelper.sub_p1.id)
         self.assertEqual(statuses[0]['status'], 'ready')
         self.assertEqual(statuses[0]['message'], 'Test')

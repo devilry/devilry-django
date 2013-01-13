@@ -9,7 +9,8 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
      */
 
     requires: [
-        'devilry_qualifiesforexam.view.showstatus.ShowDetailsGrid'
+        'devilry_qualifiesforexam.view.showstatus.ShowDetailsGrid',
+        'devilry_extjsextras.MarkupMoreInfoBox'
     ],
 
 
@@ -21,12 +22,6 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
             '<p class="muted">', gettext('Loading'), '...</p>',
         '<tpl else>',
             '<p class="status-numberedsummary">',
-                gettext('{qualifiedstudents}/{totalstudents} students qualifies for final exams.'),
-                ' <small class="muted">',
-                    gettext('See the table below for details. The table includes detailed information about the results of each student for all assignments. This information may not match the information used to calculate if the students qualify for exams when students have been given new feedback after the status was saved.'),
-                '</small>',
-            '</p>',
-            '<p>',
                 '<span class="muted">', gettext('Status'), ':</span> ',
                 '<span class="status-text label label-{[this.getClassForStatus(values.status)]}">',
                     '{statustext}',
@@ -34,7 +29,21 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
                 ' <small class="muted createtime">(',
                     gettext('Saved {savetime} by {saveuser}'),
                 ')</small>',
+                '<br />',
+                gettext('{qualifiedstudents}/{totalstudents} students qualifies for final exams.'),
+                ' <small>{MORE_BUTTON}</small>',
             '</p>',
+            '<div {MORE_ATTRS}>',
+                '<div class="well well-small">',
+                    '<p>',
+                        gettext('See the table below for details. The table includes detailed information about the results of each student for all assignments. This information may not match the information used to calculate if the students qualify for exams when students have been given new feedback after the status was saved.'),
+                    '</p>',
+                    '<tpl if="pluginsettings_summary">',
+                        '<h4>', gettext('The following settings was used to generate this status') ,':</h4>',
+                        '{pluginsettings_summary}',
+                    '</tpl>',
+                '</div>',
+            '</div>',
             '<tpl if="message">',
                 '<div class="alert alert-info" style="white-space:pre-line;">',
                     '<strong>', gettext('Message') ,':<br/></strong>',
@@ -67,12 +76,15 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
                 layout: 'fit',
                 items: [{
                     xtype: 'panel',
-                    itemId: 'summary',
-                    tpl: this.summaryTpl,
-                    autoScroll: true,
                     border: false,
+                    layout: 'fit',
                     data: {
                         loading: true
+                    },
+                    items: {
+                        xtype: 'markupmoreinfobox',
+                        itemId: 'summary',
+                        tpl: this.summaryTpl
                     },
                     dockedItems: {
                         xtype: 'toolbar',

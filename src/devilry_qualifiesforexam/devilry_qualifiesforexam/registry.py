@@ -44,6 +44,12 @@ class Registry(object):
         else:
             return None
 
+    def get_title(self, pluginid):
+        return self.items[pluginid]['title']
+
+    def get_description(self, pluginid):
+        return self.items[pluginid]['description']
+
     def unregister(self, pluginid):
         del self.items[pluginid]
 
