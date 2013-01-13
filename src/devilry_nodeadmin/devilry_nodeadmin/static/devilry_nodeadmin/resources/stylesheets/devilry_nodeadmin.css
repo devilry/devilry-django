@@ -20,31 +20,36 @@
 
 /* line 21, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_defaultnodelist .to-frontpage {
-  font-size: 16px;
+  font-size: 14px;
   float: right;
   margin-left: 10px;
+  font-weight: normal;
+}
+/* line 28, ../sass/devilry_nodeadmin.scss */
+.devilry_nodeadmin_defaultnodelist i {
+  margin-right: 5px;
 }
 
-/* line 30, ../sass/devilry_nodeadmin.scss */
+/* line 35, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_navigator a {
   margin-right: 15px;
   float: right;
 }
-/* line 35, ../sass/devilry_nodeadmin.scss */
+/* line 40, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_navigator i {
   margin-right: 5px;
 }
-/* line 39, ../sass/devilry_nodeadmin.scss */
+/* line 44, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_navigator span {
   margin-right: 50px;
 }
 
-/* line 45, ../sass/devilry_nodeadmin.scss */
+/* line 50, ../sass/devilry_nodeadmin.scss */
 .secondary {
   line-height: 20px;
 }
 
-/* line 51, ../sass/devilry_nodeadmin.scss */
+/* line 56, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodedetailsoverview h3 {
   font-style: italic;
 }

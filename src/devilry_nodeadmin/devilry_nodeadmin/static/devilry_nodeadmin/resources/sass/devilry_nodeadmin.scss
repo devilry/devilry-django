@@ -19,9 +19,14 @@
 
 .devilry_nodeadmin_defaultnodelist {
     .to-frontpage {
-      font-size: 16px;
+      font-size: 14px;
       float: right;
       margin-left: 10px;
+      font-weight: normal;
+    }
+
+    i {
+      margin-right: 5px;
     }
 }
 

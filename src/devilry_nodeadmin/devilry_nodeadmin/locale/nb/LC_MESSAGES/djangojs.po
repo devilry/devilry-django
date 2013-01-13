@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-09 18:19+0100\n"
+"POT-Creation-Date: 2013-01-13 06:05+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,25 +18,50 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: static/devilry_nodeadmin/app/view/nodeChildrenList.js:8
+
+#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:9
+msgid "Or return (to the front-page)"
+msgstr "Eller gå til hjemmesiden"
+
+#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:22
+msgid ""
+"These are only the nodes you control. Select an element to see the child "
+"levels, its subjects and periods. The menu in the upper right corner of the "
+"page will always let you navigate back and to the top of the structure."
+msgstr "Denne listen viser kun de nodene du administrerer. Klikk på et element for å se de underliggende nivåene, emnene og periodene. Du kan gå ett nivå tilbake ved hjelp av knappen i det øvre høyre hjørne."
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:11
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:18
+msgid "to the top"
+msgstr "det øverste nivå"
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:14
+msgid "up"
+msgstr "ett nivå opp"
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:7
+msgid "Om"
+msgstr "About"
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:9
+msgid "courses"
+msgstr "kurs"
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:10
+msgid "assignments"
+msgstr "oppgaver"
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:14
+msgid "Subjects "
+msgstr "Kurs "
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:14
 #, fuzzy
-msgid "Node contains"
-msgstr "Noden inneholder"
+msgid "on this level"
+msgstr "som hører til dette nivået"
 
-#: static/devilry_nodeadmin/app/view/nodeChildrenList.js:15
-#: static/devilry_nodeadmin/app/view/nodeChildrenList.js:17
-msgid "Earliest start time"
-msgstr ""
-
-#: static/devilry_nodeadmin/app/view/nodeChildrenList.js:23
-msgid "no nodes on this level"
-msgstr "ingen noder på dette nivå"
-
-#: static/devilry_nodeadmin/app/view/nodeParentLink.js:10
-#: static/devilry_nodeadmin/app/view/nodeParentLink.js:17
-msgid "til rotnoden"
-msgstr ""
-
-#: static/devilry_nodeadmin/app/view/nodeParentLink.js:13
-msgid "ett nivå opp"
-msgstr ""
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:22
+msgid ""
+"Follow these links to a place where you can extend deadlines, alter group "
+"membership, and get a detailed overview of a particular student."
+msgstr "Lenkene til disse kurs tar deg et sted der du kan flytte fristene, endre gruppetilhørighet, og se detaljene om en student."
