@@ -7,10 +7,22 @@
 
   .node {
     border: 1px solid rgb( 230, 230, 230 );
-    padding: 9px 5px 5px 10px;
+    padding: 9px 9px 9px 14px;
     margin: 5px;
     border-radius: 5px;
+    display: block;
+    font-size: 28px;
+    line-height: 48px;
+    font-weight: bold;
   }
+}
+
+.devilry_nodeadmin_defaultnodelist {
+    .to-frontpage {
+      font-size: 16px;
+      float: right;
+      margin-left: 10px;
+    }
 }
 
 .devilry_nodeadmin_navigator {

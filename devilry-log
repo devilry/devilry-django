@@ -301,13 +301,13 @@ ExtJS Stores
 2012-01-10
 * Make font classes files: ubuntu-local and unbuntu, for the local version stored in statics and the imported one from google's font api.
 * [!] Override pagination to max.
-* [+] Prefix all devilry_nodadmin styles with the name of the app; add the new style names to the components.
-* Fix the floating issue on the navigation links.
-* Capitalize view-names
+* [+] Prefix all devilry_nodeadmin styles with the name of the app; add the new style names to the components.
+* [x] Fix the floating issue on the navigation links.
+* [x] Capitalize view-names
 * Parameters to _onRender
 * For the sake of Selenium-tests you should assign cls property to all elements.
 * User Datetimehelper from extjshelpers to manipulate and compare dates. Must be imported by requires. A singleton.
 * Always catch errors by the callback of a store, or rather through the proxy because it has more information on hte error.
 
 2012-01-13
-* 
+* Remains: 1. fix the stores, [x] 2. style bubbles as block elements; there are few, so give them some space 3. translate to english and create norwegian string couterparts 4. create the breadcrumbs repr in the api [x] 5. add the frontpage link, consider its position 5. disable default view pagination
