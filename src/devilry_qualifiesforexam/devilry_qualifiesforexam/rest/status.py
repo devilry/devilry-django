@@ -28,7 +28,7 @@ class StatusForm(forms.ModelForm):
 
     passing_relatedstudentids = ListOfTypedField(coerce=int, required=False)
     notready_relatedstudentids = ListOfTypedField(coerce=int, required=False)
-    pluginsessionid = forms.CharField(required=True)
+    pluginsessionid = forms.CharField(required=False)
 
 
 class StatusResource(FormResource):
@@ -173,13 +173,15 @@ class StatusView(View):
             'createtime': status.createtime,
             'message': status.message,
             'user': serialize_user(status.user),
-            'plugin': status.plugin,
-            'plugin_title': unicode(qualifiesforexam_plugins.get_title(status.plugin))
+            'plugin': status.plugin
         }
+        if status.plugin:
+            out['plugin_title'] = unicode(qualifiesforexam_plugins.get_title(status.plugin))
         if includedetails:
             out['passing_relatedstudentids_map'] = self._create_passing_relatedstudentids_map(status)
-            out['pluginsettings_summary'] = qualifiesforexam_plugins.get_pluginsettings_summary(status)
-            out['plugin_description'] = unicode(qualifiesforexam_plugins.get_description(status.plugin))
+            if status.plugin:
+                out['pluginsettings_summary'] = qualifiesforexam_plugins.get_pluginsettings_summary(status)
+                out['plugin_description'] = unicode(qualifiesforexam_plugins.get_description(status.plugin))
         return out
 
     def _serialize_period(self, period):
