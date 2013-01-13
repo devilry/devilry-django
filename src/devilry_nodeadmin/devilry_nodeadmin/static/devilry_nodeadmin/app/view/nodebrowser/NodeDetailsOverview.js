@@ -17,7 +17,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
                     '</tpl>',
                 '</ul>',
                 '<div class="footer">',
-                gettext( 'Follow these subject links to extend deadlines, alter group membership, and get a detailed summary of a particular student.' ),
+                gettext( 'Follow these subject links to extend deadlines, alter group membership, and to get detailed summaries of particular students.' ),
                 '</div>',
             '</tpl>',
         '</tpl>'
