@@ -105,7 +105,7 @@ class QualifiesForExamPluginTestMixin(object):
         user = getattr(self.testhelper, username, None)
         if not user:
             user = self.testhelper.create_user(username)
-        relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user)
+        relstudent = self.period.relatedstudent_set.create(user=user)
         return relstudent
 
     def create_feedbacks(self, *feedbacks):

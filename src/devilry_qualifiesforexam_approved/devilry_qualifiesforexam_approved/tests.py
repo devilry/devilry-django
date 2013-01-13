@@ -21,6 +21,7 @@ class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):
                 'gstudent2:candidate(student2):examiner(examiner1)'],
             deadlines=['d1:ends(10)']
         )
+        self.period = self.testhelper.sub_p1
         self.client = Client()
 
     def _getas(self, username, data):
@@ -92,6 +93,7 @@ class TestSubsetApprovedView(TestCase, QualifiesForExamPluginTestMixin):
             ],
             deadlines=['d1:ends(10)']
         )
+        self.period = self.testhelper.sub_p1
         self.client = Client()
 
     def _getas(self, username, data):

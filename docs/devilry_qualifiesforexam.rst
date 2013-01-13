@@ -258,11 +258,6 @@ Helper for unit tests
         to make sure your plugin behaves as intended (E.g.: Approves/disapproves the expected
         students). You may need more than one extra test if your plugin is complex.
 
-    .. py:attribute:: period
-
-        The period you use in your tests.
-        Needs to be set in the ``setUp``-method after for :meth:`.create_relatedstudent` to work.
-
     .. py:attribute:: testhelper
 
         A :class:`devilry.apps.core.testhelper.TestHelper`-object which is required for
@@ -293,10 +288,18 @@ Helper for unit tests
                         deadlines=['d1:ends(10)']
                     )
 
+    .. py:attribute:: period
+
+        The period you use in your tests. Needs to be set in the ``setUp``-method for
+        :meth:`.create_relatedstudent` to work. Typically defined with the following code
+        after the core in the example in :attr:`.testhelper`::
+
+            self.period = self.testhelper.sub_p1
+
     .. py:method:: create_relatedstudent(username)
 
-        Create an return a related student on See :attr:`.period`. The user is created if it
-        does not exist.
+        Create and return a related student on the :attr:`.period`. A user with the given
+        username is created if it does not exist.
 
     .. py:method:: create_feedbacks(*feedbacks):
 
