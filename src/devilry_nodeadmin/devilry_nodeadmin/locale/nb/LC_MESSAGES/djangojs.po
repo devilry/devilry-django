@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-13 06:05+0100\n"
+"POT-Creation-Date: 2013-01-13 06:14+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,17 +18,231 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Route not found"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Return to dashboard"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Loading"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "About you"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid ""
+"The table below shows the personal information registered about you in "
+"Devilry. <a href=\"{wrong_userinfo_url}\">Click here</a> if any information "
+"is incorrect."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Name"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Email"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Username"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Log out"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Could not connect to server at URL \"{url}\"."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Less info"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "More info"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Student"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Students can make deliveres and browse their own feedback history."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Examiner"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Examiners give students feedback on their deliveries."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "%(Subject_term)s administrator"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid ""
+"%(Subject_term)s administrators manage %(subjects_term)s, %(periods_term)s "
+"and assignments where they have been explicitly registered as administrator."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "subjects"
+msgstr "kurs"
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "nodes"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "periods"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "%(Node_term)s administrator"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Node"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid ""
+"%(Node_term)s administrators manage %(nodes_term)s where they have "
+"administrator-rights."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Superuser"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Superusers have complete access to all data stored in Devilry."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "I should have had more roles"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid ""
+"You have no permissions on anything in Devilry. Click <a href="
+"\"{no_permissions_url}\">this link</a> to go to a page explaining how to get "
+"access to Devilry."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Error"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid ""
+"Failed to load infomation about the authenticated user. Try to reload the "
+"page."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Details"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:11
+msgid "Node contains"
+msgstr "Noden inneholder"
+
+#: static/devilry_nodeadmin/app-all.js:4
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:18
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:20
+msgid "Earliest start time"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:26
+msgid "no nodes on this level"
+msgstr "ingen noder"
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "til rotnoden"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "ett nivå opp"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:6
+msgid "Navigate"
+msgstr "Navigér"
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Help"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Failed to load help links. Try reloading the page."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid ""
+"Your local Devilry system administrator(s) have not added any external help "
+"for you. If you feel anything in Devilry is unclear, contact your local "
+"Devilry system administrator(s) and ask them to add help links."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Edit help links"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Failed to load languages. Try to reload the page."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Saving"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Failed to save language choice."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Choose your role"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Language"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Select role"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4 static/devilry_nodeadmin/app.js:66
+msgid "Dashboard"
+msgstr ""
 
 #: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:9
 msgid "Or return (to the front-page)"
 msgstr "Eller gå til hjemmesiden"
 
-#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:22
+#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:20
 msgid ""
 "These are only the nodes you control. Select an element to see the child "
 "levels, its subjects and periods. The menu in the upper right corner of the "
 "page will always let you navigate back and to the top of the structure."
-msgstr "Denne listen viser kun de nodene du administrerer. Klikk på et element for å se de underliggende nivåene, emnene og periodene. Du kan gå ett nivå tilbake ved hjelp av knappen i det øvre høyre hjørne."
+msgstr ""
+"Denne listen viser kun de nodene du administrerer. Klikk på et element for å "
+"se de underliggende nivåene, emnene og periodene. Du kan gå ett nivå tilbake "
+"ved hjelp av knappen i det øvre høyre hjørne."
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:11
 #: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:18
@@ -51,17 +265,18 @@ msgstr "kurs"
 msgid "assignments"
 msgstr "oppgaver"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:14
-msgid "Subjects "
-msgstr "Kurs "
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:13
+msgid "Subjects"
+msgstr "Kurs"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:14
-#, fuzzy
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:13
 msgid "on this level"
 msgstr "som hører til dette nivået"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:22
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:20
 msgid ""
 "Follow these links to a place where you can extend deadlines, alter group "
 "membership, and get a detailed overview of a particular student."
-msgstr "Lenkene til disse kurs tar deg et sted der du kan flytte fristene, endre gruppetilhørighet, og se detaljene om en student."
+msgstr ""
+"Lenkene til disse kurs tar deg et sted der du kan flytte fristene, endre "
+"gruppetilhørighet, og se detaljene om en student."

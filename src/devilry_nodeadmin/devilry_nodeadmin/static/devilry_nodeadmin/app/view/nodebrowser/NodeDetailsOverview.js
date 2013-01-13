@@ -10,7 +10,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
             '<div>{ assignment_count } ', gettext( 'assignments' ), '</div>',
             '<hr />',
             '<tpl if="subjects.length">',
-                '<h4>', gettext( "Subjects " ), ' <small>', gettext( 'on this level' ), '</small></h4>',
+                '<h4>', gettext( "Subjects" ), ' <small>', gettext( 'on this level' ), '</small></h4>',
                 '<ul>',
                     '<tpl for="subjects">',
                     '<li class="course"><a href="/devilry_subjectadmin/#/subject/{ id }/">{ long_name }</a></li>',
