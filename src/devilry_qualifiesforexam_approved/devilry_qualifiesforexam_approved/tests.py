@@ -6,7 +6,7 @@ from devilry.apps.core.testhelper import TestHelper
 from devilry_qualifiesforexam.pluginhelpers import create_sessionkey
 from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginTestMixin
 from devilry_qualifiesforexam.models import Status
-from devilry_qualifiesforexam_approved.settingssaver import save_subset_settings
+from devilry_qualifiesforexam_approved.post_statussave import save_subset_settings
 from devilry_qualifiesforexam_approved.models import SubsetPluginSetting
 
 

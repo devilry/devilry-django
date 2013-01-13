@@ -6,9 +6,10 @@ class Registry(object):
     def __init__(self):
         self.items = {}
 
-    def add(self, id, title, description, url, settingssaver=None):
+    def add(self, id, title, description, url, post_statussave=None,
+            uses_settings=False):
         self.items[id] = dict(title=title, description=description, url=url,
-            settingssaver=settingssaver)
+            post_statussave=post_statussave, uses_settings=uses_settings)
 
     def __contains__(self, pluginid):
         return pluginid in self.items
@@ -27,11 +28,11 @@ class Registry(object):
             })
         return items
 
-    def has_settingssaver(self, pluginid):
-        return self.items[pluginid]['settingssaver'] != None
+    def uses_settings(self, pluginid):
+        return self.items[pluginid]['uses_settings']
 
-    def save_settings_for(self, status, settings):
-        self.items[status.plugin]['settingssaver'](status, settings)
+    def post_statussave(self, status, settings):
+        self.items[status.plugin]['post_statussave'](status, settings)
 
     def unregister(self, pluginid):
         del self.items[pluginid]

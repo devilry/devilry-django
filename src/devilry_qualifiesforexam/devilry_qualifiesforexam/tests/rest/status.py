@@ -9,6 +9,11 @@ from devilry_qualifiesforexam.pluginhelpers import create_settings_sessionkey
 from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
 
 
+def noop(*args):
+    pass
+
+
+
 class TestRestStatus(TransactionTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
@@ -26,6 +31,7 @@ class TestRestStatus(TransactionTestCase):
             id = 'devilry_qualifiesforexam.test.noop-plugin',
             url = '/some/noop-url',
             title = 'Noop',
+            post_statussave=noop,
             description = 'noop'
         )
 
@@ -301,7 +307,8 @@ class TestRestStatus(TransactionTestCase):
             url = '/some/url',
             title = 'Test',
             description = 'A test',
-            settingssaver = save_settings
+            uses_settings=True,
+            post_statussave = save_settings
         )
         self.client.login(username='periodadmin', password='test')
         session = self.client.session
@@ -329,8 +336,9 @@ class TestRestStatus(TransactionTestCase):
             id = 'devilry_qualifiesforexam.test.plugin',
             url = '/some/url',
             title = 'Test',
+            uses_settings = True,
             description = 'A test',
-            settingssaver = save_settings
+            post_statussave = save_settings
         )
         self.assertEquals(Status.objects.count(), 0)
         content, response = self._postas('periodadmin', {
