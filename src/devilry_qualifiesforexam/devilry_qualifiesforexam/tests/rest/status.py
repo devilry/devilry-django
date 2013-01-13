@@ -60,7 +60,6 @@ class TestRestStatus(TransactionTestCase):
             'status': 'ready',
             'message': 'This is a test',
             'plugin': 'devilry_qualifiesforexam.test.noop-plugin',
-            'pluginsettings': 'test',
             'pluginsessionid': 'tst',
             'passing_relatedstudentids': [relatedStudent1.id]
         })
@@ -71,7 +70,6 @@ class TestRestStatus(TransactionTestCase):
         self.assertEquals(status.status, 'ready')
         self.assertEquals(status.message, 'This is a test')
         self.assertEquals(status.plugin, 'devilry_qualifiesforexam.test.noop-plugin')
-        self.assertEquals(status.pluginsettings, 'test')
 
         self.assertEqual(status.students.count(), 2)
         qualifies1 = status.students.get(relatedstudent=relatedStudent1)
@@ -95,7 +93,6 @@ class TestRestStatus(TransactionTestCase):
             'status': 'ready',
             'message': 'This is a test',
             'plugin': 'devilry_qualifiesforexam.test.noop-plugin',
-            'pluginsettings': 'test',
             'pluginsessionid': 'tst',
             'passing_relatedstudentids': [10]
         })
@@ -187,8 +184,7 @@ class TestRestStatus(TransactionTestCase):
             status = 'ready',
             message = 'Test',
             user = getattr(self.testhelper, username),
-            plugin = 'devilry_qualifiesforexam.test.noop-plugin',
-            pluginsettings = 'tst'
+            plugin = 'devilry_qualifiesforexam.test.noop-plugin'
         )
         status.save()
         status.students.create(relatedstudent=relatedStudent1, qualifies=True)
@@ -204,12 +200,11 @@ class TestRestStatus(TransactionTestCase):
         self.assertEqual(set(statuses[0].keys()),
             set([u'id', u'status', u'plugin', u'statustext',
                  u'period', u'passing_relatedstudentids_map',
-                 u'pluginsettings', u'user', u'message', u'createtime']))
+                 u'user', u'message', u'createtime', u'pluginsettings_summary']))
         self.assertEqual(statuses[0]['period'], self.testhelper.sub_p1.id)
         self.assertEqual(statuses[0]['status'], 'ready')
         self.assertEqual(statuses[0]['message'], 'Test')
         self.assertEqual(statuses[0]['plugin'], 'devilry_qualifiesforexam.test.noop-plugin')
-        self.assertEqual(statuses[0]['pluginsettings'], 'tst')
         self.assertIn(str(relatedStudent1.id), statuses[0]['passing_relatedstudentids_map'])
 
 
@@ -250,8 +245,7 @@ class TestRestStatus(TransactionTestCase):
             status = status,
             message = 'Test',
             user = self.testhelper.periodadmin,
-            plugin = plugin,
-            pluginsettings = ''
+            plugin = plugin
         )
         status.full_clean()
         status.save()

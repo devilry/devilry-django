@@ -23,7 +23,7 @@ from devilry_qualifiesforexam.pluginhelpers import create_settings_sessionkey
 class StatusForm(forms.ModelForm):
     class Meta:
         model = Status
-        fields = ['period', 'status', 'message', 'plugin', 'pluginsettings']
+        fields = ['period', 'status', 'message', 'plugin', 'pluginsettings_summary']
 
     passing_relatedstudentids = ListOfTypedField(coerce=int, required=False)
     notready_relatedstudentids = ListOfTypedField(coerce=int, required=False)
@@ -71,7 +71,7 @@ class StatusView(View):
             - ``user``: An object with information about the user that saved the status. Attributes:
                ``id``, ``username``, ``full_name``, ``email``.
             - ``plugin``: The ID of the plugin used to generate the list of qualified students.
-            - ``pluginsettings``: Settings provided to the plugin to geneate the list of qualified students.
+            - ``pluginsettings_summary``: Human-readable summary of the settings used to generate the status.
 
     With a period specified, return a detailed description of the latest status on that period,
     including all students on the period. The object has the same attributes as the items in
@@ -97,7 +97,6 @@ class StatusView(View):
         - ``almostready``: Almost ready for export. Student that are not ready are in the ``notready_relatedstudentids``-parameter.
     - ``message``: The status message. Can not be empty when the status is ``notready``.
     - ``plugin``: The plugin that was used to generate the results. Must be ``null`` when status is ``notready``, and required for all other statuses.
-    - ``pluginsettings``: The plugin settings that was used to generate the results.  Must be ``null`` when status is ``notready``. Not required by any of the other statuses.
     - ``passing_relatedstudentids``: List of related students that qualifies for final exam.
     - ``notready_relatedstudentids``: List of related students that are not ready to be exported.
       These are stored with the value ``None`` (``NULL``) in the ``qualifies`` database field.
@@ -134,8 +133,7 @@ class StatusView(View):
                 status = self.CONTENT['status'],
                 message = self.CONTENT['message'],
                 user = self.request.user,
-                plugin = self.CONTENT['plugin'],
-                pluginsettings = self.CONTENT['pluginsettings']
+                plugin = self.CONTENT['plugin']
             )
             status.full_clean()
             status.save()
@@ -172,7 +170,7 @@ class StatusView(View):
             out[str(qualifies.relatedstudent.id)] = True
         return out
 
-    def _serialize_status(self, status, includestudents=True):
+    def _serialize_status(self, status, includedetails=True):
         if not status:
             return None
         out = {
@@ -183,11 +181,11 @@ class StatusView(View):
             'createtime': status.createtime,
             'message': status.message,
             'user': serialize_user(status.user),
-            'plugin': status.plugin,
-            'pluginsettings': status.pluginsettings,
+            'plugin': status.plugin
         }
-        if includestudents:
+        if includedetails:
             out['passing_relatedstudentids_map'] = self._create_passing_relatedstudentids_map(status)
+            out['pluginsettings_summary'] = status.pluginsettings_summary
         return out
 
     def _serialize_period(self, period):
@@ -233,7 +231,7 @@ class StatusView(View):
         else:
             active_status = statuses[0]
         out = self._serialize_period(period)
-        out.update({'active_status': self._serialize_status(active_status, includestudents=False)})
+        out.update({'active_status': self._serialize_status(active_status, includedetails=False)})
         return out
 
     def _get_list(self):

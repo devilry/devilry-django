@@ -31,7 +31,6 @@ class Status(models.Model):
     message = models.TextField(blank=True)
     user = models.ForeignKey(User)
     plugin = models.CharField(max_length=500, null=True, blank=True)
-    pluginsettings = models.TextField(null=True, blank=True)
     pluginsettings_summary = models.TextField(null=True, blank=True)
     exported_timestamp = models.DateTimeField(null=True, blank=True)
 
@@ -53,8 +52,8 @@ class Status(models.Model):
         if self.status == 'notready':
             if self.plugin:
                 raise ValidationError('``plugin`` is not allowed when status is ``notready``.')
-            if self.pluginsettings:
-                raise ValidationError('``pluginsettings`` is not allowed when status is ``notready``.')
+        if not self.plugin and self.pluginsettings_summary:
+            raise ValidationError('``pluginsettings_summary`` is only allowed when a ``plugin`` is specified.')
 
     @classmethod
     def get_current_status(cls, period):
