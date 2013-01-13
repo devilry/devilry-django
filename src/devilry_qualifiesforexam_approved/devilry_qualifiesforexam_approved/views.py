@@ -53,16 +53,18 @@ class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
 
     def student_qualifies_for_exam(self, aggregated_relstudentinfo):
         for assignmentid, grouplist in aggregated_relstudentinfo.assignments.iteritems():
-            if assignmentid in self.assignments_to_pass:
+            if assignmentid in self.assignment_that_must_be_passed:
                 feedback = grouplist.get_feedback_with_most_points()
                 if not (feedback and feedback.is_passing_grade):
                     return False
         return True
 
     def form_valid(self, form):
-        self.assignments_to_pass = set(map(int, form.cleaned_data['assignments']))
+        self.assignment_that_must_be_passed = set(map(int, form.cleaned_data['assignments']))
         self.save_plugin_output(self.get_relatedstudents_that_qualify_for_exam())
-#        self.save_settings_in_session()
+        self.save_settings_in_session({
+            'assignment_that_must_be_passed': self.assignment_that_must_be_passed
+        })
         return self.redirect_to_preview_url()
 
     def post(self, request):

@@ -15,7 +15,7 @@ from devilry.apps.core.models import Period
 #: The REST API forwards the ``status``, and the ``settings``, which is whatever
 #: data the plugin has stored in
 #: ``request.session[create_settings_sessionkey(pluginsessionid)].
-status_saved = django.dispatch.Signal(providing_args=['status', 'settings'])
+#status_saved_signal = django.dispatch.Signal(providing_args=['status', 'settings'])
 
 def create_sessionkey(pluginsessionid):
     return 'qualifiesforexam-{0}'.format(pluginsessionid)

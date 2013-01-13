@@ -15,6 +15,8 @@ from devilry_qualifiesforexam.models import QualifiesForFinalExam
 from devilry.utils.restformfields import ListOfTypedField
 from devilry.utils.restformat import serialize_user
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
+from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
+from devilry_qualifiesforexam.pluginhelpers import create_settings_sessionkey
 
 
 
@@ -25,6 +27,7 @@ class StatusForm(forms.ModelForm):
 
     passing_relatedstudentids = ListOfTypedField(coerce=int, required=False)
     notready_relatedstudentids = ListOfTypedField(coerce=int, required=False)
+    pluginsessionid = forms.CharField(required=True)
 
 
 class StatusResource(FormResource):
@@ -35,6 +38,12 @@ class StatusResource(FormResource):
 #            return
 #        return super(StatusResource, self).validate_request(data, files)
 
+
+class SavePluginWithoutSettingsError(Exception):
+    """
+    Raised when we try to save a status with a plugin that requires settings without
+    providing settings in the session.
+    """
 
 
 class StatusView(View):
@@ -103,6 +112,19 @@ class StatusView(View):
         if not Period.where_is_admin(self.request.user).filter(id=period.id).exists():
             raise ErrorResponse(status=statuscodes.HTTP_403_FORBIDDEN)
 
+    def _save_settings(self, status):
+        pluginsessionid = self.CONTENT['pluginsessionid']
+        if not qualifiesforexam_plugins.has_settingssaver(status.plugin):
+            return
+        try:
+            settings = self.request.session.pop(create_settings_sessionkey(pluginsessionid))
+        except KeyError:
+            raise SavePluginWithoutSettingsError(
+                'The "{0}"-plugin requires settings - no settings found in the session.'.format(
+                    status.plugin))
+        else:
+            qualifiesforexam_plugins.save_settings_for(status, settings)
+
     def post(self, request, id=None):
         period = self.CONTENT['period']
         self._permissioncheck(period)
@@ -136,6 +158,11 @@ class StatusView(View):
                         raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST,
                             {'details': ' '.join(e.messages)})
                     qualifies.save()
+
+                try:
+                    self._save_settings(status)
+                except SavePluginWithoutSettingsError as e:
+                    raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST, {'detail': str(e)})
         return Response(201, '')
 
 

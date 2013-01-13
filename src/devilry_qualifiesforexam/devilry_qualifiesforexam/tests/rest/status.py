@@ -5,7 +5,8 @@ from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import Period
 from devilry.utils.rest_testclient import RestClient
 from devilry_qualifiesforexam.models import Status
-
+from devilry_qualifiesforexam.pluginhelpers import create_settings_sessionkey
+from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
 
 
 class TestRestStatus(TestCase):
@@ -20,6 +21,11 @@ class TestRestStatus(TestCase):
         self.client = RestClient()
         self.url = reverse('devilry_qualifiesforexam-rest-status')
         self.testhelper.create_superuser('superuser')
+
+    def tearDown(self):
+        for plugin in ('devilry_qualifiesforexam.test.plugin', 'devilry_qualifiesforexam.test.noop-plugin'):
+            if plugin in qualifiesforexam_plugins:
+                del qualifiesforexam_plugins.items['devilry_qualifiesforexam.test.plugin']
 
     def _get_url(self, periodid=None):
         if periodid:
@@ -48,6 +54,7 @@ class TestRestStatus(TestCase):
             'message': 'This is a test',
             'plugin': 'devilry_qualifiesforexam_approved.all',
             'pluginsettings': 'test',
+            'pluginsessionid': 'tst',
             'passing_relatedstudentids': [relatedStudent1.id]
         })
         self.assertEquals(response.status_code, 201)
@@ -82,6 +89,7 @@ class TestRestStatus(TestCase):
             'message': 'This is a test',
             'plugin': 'devilry_qualifiesforexam_approved.all',
             'pluginsettings': 'test',
+            'pluginsessionid': 'tst',
             'passing_relatedstudentids': [10]
         })
         self.assertEqual(response.status_code, 403)
@@ -94,6 +102,7 @@ class TestRestStatus(TestCase):
             'status': 'almostready',
             'message': 'This is a test',
             'plugin': 'devilry_qualifiesforexam_approved.all',
+            'pluginsessionid': 'tst',
             'passing_relatedstudentids': [relatedStudent1.id],
             'notready_relatedstudentids': [relatedStudent2.id]
         })
@@ -112,6 +121,7 @@ class TestRestStatus(TestCase):
             'period': self.testhelper.sub_p1.id,
             'status': 'ready', # Could choose any status except almostready for this test to be valid
             'plugin': 'devilry_qualifiesforexam_approved.all',
+            'pluginsessionid': 'tst',
             'notready_relatedstudentids': [relatedStudent1.id]
         })
         self.assertEquals(response.status_code, 400)
@@ -123,6 +133,7 @@ class TestRestStatus(TestCase):
         content, response = self._postas('periodadmin', {
             'period': self.testhelper.sub_p1.id,
             'status': 'notready',
+            'pluginsessionid': 'tst',
             'message': 'Test'
         })
         self.assertEquals(response.status_code, 201)
@@ -136,6 +147,7 @@ class TestRestStatus(TestCase):
         content, response = self._postas('periodadmin', {
             'period': self.testhelper.sub_p1.id,
             'status': 'notready',
+            'pluginsessionid': 'tst',
             'message': '  ',
             'plugin': 'devilry_qualifiesforexam_approved.all'
         })
@@ -147,6 +159,7 @@ class TestRestStatus(TestCase):
         content, response = self._postas('periodadmin', {
             'period': self.testhelper.sub_p1.id,
             'status': 'invalidstatus',
+            'pluginsessionid': 'tst',
             'plugin': 'devilry_qualifiesforexam_approved.all',
             'passing_relatedstudentids': [relatedStudent1.id]
         })
@@ -273,3 +286,33 @@ class TestRestStatus(TestCase):
             status='notready', plugin='')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(content), 0)
+
+
+    def test_save_settings(self):
+
+        savedsettings = {}
+        def save_settings(status, settings):
+            savedsettings['status'] = status
+            savedsettings['settings'] = settings
+
+        qualifiesforexam_plugins.add(
+            id = 'devilry_qualifiesforexam.test.plugin',
+            url = '/some/url',
+            title = 'Test',
+            description = 'A test',
+            settingssaver = save_settings
+        )
+        self.client.login(username='periodadmin', password='test')
+        session = self.client.session
+        session[create_settings_sessionkey('tst')] = {'test': 'settings'}
+        session.save()
+        content, response = self._postas('periodadmin', {
+            'period': self.testhelper.sub_p1.id,
+            'status': 'ready',
+            'plugin': 'devilry_qualifiesforexam.test.plugin',
+            'pluginsessionid': 'tst',
+            'passing_relatedstudentids': []
+        })
+        self.assertEqual(len(savedsettings), 2)
+        self.assertEqual(savedsettings['settings'], {'test': 'settings'})
+        self.assertIsInstance(savedsettings['status'], Status)
