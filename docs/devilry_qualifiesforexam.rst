@@ -172,7 +172,7 @@ The example above is quite simple, but it can be made even simpler if you use
 
 
 
-.. py:class:: devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginViewMixin
+.. py:class:: QualifiesForExamPluginViewMixin
 
     .. py:attribute:: periodid
 
@@ -244,7 +244,7 @@ The example above is quite simple, but it can be made even simpler if you use
 Helper for unit tests
 =====================
 
-.. py:class:: devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginTestMixin
+.. py:class:: QualifiesForExamPluginTestMixin
 
     Mixin-class for test-cases for plugin-views (the views that typically inherit from
     :class:`.QualifiesForExamPluginViewMixin`). This class has a couple of helpers that
@@ -268,7 +268,30 @@ Helper for unit tests
         A :class:`devilry.apps.core.testhelper.TestHelper`-object which is required for
         :meth:`.create_feedbacks` and :meth:`.create_relatedstudent` to work.
 
-        Typcally created with something like this in
+        Typcally created with something like this in ``setUp``::
+
+            from django.test import TestCase
+            from devilry.apps.core.testhelper import TestHelper
+
+            class TestMyPluginView(TestCase, QualifiesForExamPluginTestMixin):
+                def setUp(self):
+                    self.testhelper = TestHelper()
+
+                    # Create:
+                    # - the uni-node with ``uniadmin`` as admin
+                    # - the uni.sub.p1 period with ``periodadmin`` as admin.
+                    # - the a1 and a2 assignments within ``p1``, with separate groups on each
+                    #   assignment for student1 and student2, and with examiner1 as examiner.
+                    # - a deadline on each group
+                    self.testhelper.add(nodes='uni:admin(uniadmin)',
+                        subjects=['sub'],
+                        periods=['p1:admin(periodadmin):begins(-3):ends(6)'],
+                        assignments=['a1', 'a2'],
+                        assignmentgroups=[
+                            'gstudent1:candidate(student1):examiner(examiner1)',
+                            'gstudent2:candidate(student2):examiner(examiner1)'],
+                        deadlines=['d1:ends(10)']
+                    )
 
     .. py:method:: create_relatedstudent(username)
 
@@ -327,7 +350,7 @@ Helper for unit tests
 Other helpers
 =============
 
-.. py:class:: devilry_qualifiesforexam.pluginhelpers.PreviewData(passing_relatedstudentids)
+.. py:class:: PreviewData(passing_relatedstudentids)
 
     Stores the output from a plugin. You should not need to use this directly. Use
     :meth:`.QualifiesForExamPluginViewMixin.save_plugin_output` instead.
@@ -341,7 +364,7 @@ Other helpers
 
 
 
-.. py:function:: devilry_qualifiesforexam.pluginhelpers.create_sessionkey(pluginsessionid)
+.. py:function:: create_sessionkey(pluginsessionid)
 
     Generate the session key for the plugin output as described in
     :ref:`qualifiesforexam-plugins-what`. You should not need to use this directly. Use
@@ -399,7 +422,7 @@ can show/hilight periods with exported statuses and more recent statuses.
 The models
 ==========
 
-.. py:class:: devilry_qualifiesforexam.models.DeadlineTag
+.. py:class:: DeadlineTag
 
     A deadlinetag is used to tag :class:`devilry.apps.core.models.Period`-objects with a timestamp
     and an optional tag describing the timestamp.
@@ -414,7 +437,7 @@ The models
         A tag for node-admins for this deadlinetag. Max 30 chars. May be empty or ``null``.
 
 
-.. py:class:: devilry_qualifiesforexam.models.PeriodTag
+.. py:class:: PeriodTag
 
     This table is used to create a one-to-many relation from :class:`.DeadlineTag` to
     :class:`devilry.apps.core.models.Period`.
@@ -430,7 +453,7 @@ The models
         points to.
 
 
-.. py:class:: devilry_qualifiesforexam.models.Status
+.. py:class:: Status
 
     Every time the admin updates qualifies-for-exam on a period, we save new object of this
     database model.
@@ -453,7 +476,7 @@ The models
     .. py:attribute:: status
 
         Database char field that accepts the following values:
-    
+
         - ``ready`` is used to indicate the the entire period is ready for export/use.
         - ``almostready`` is used to indicate that the period is almost ready for export/use, and
           that the exceptions are explained in the :attr:`.message`.
@@ -492,7 +515,7 @@ The models
 
 
 
-.. py:class:: devilry_qualifiesforexam.models.QualifiesForFinalExam
+.. py:class:: QualifiesForFinalExam
 
     .. py:attribute:: relatedstudent
 
