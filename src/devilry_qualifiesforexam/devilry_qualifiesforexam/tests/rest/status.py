@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.core.urlresolvers import reverse
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import Period
@@ -17,7 +18,7 @@ class TestRestStatus(TestCase):
                 'p1:admin(periodadmin):begins(-3):ends(6)',
                 'p2:admin(periodadmin):begins(-1):ends(6)'])
         self.client = RestClient()
-        self.url = '/devilry_qualifiesforexam/rest/status/'
+        self.url = reverse('devilry_qualifiesforexam-rest-status')
         self.testhelper.create_superuser('superuser')
 
     def _get_url(self, periodid=None):
