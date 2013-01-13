@@ -6,8 +6,9 @@ from devilry.apps.core.testhelper import TestHelper
 from devilry_qualifiesforexam.pluginhelpers import create_sessionkey
 from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginTestMixin
 from devilry_qualifiesforexam.models import Status
-from devilry_qualifiesforexam_approved.post_statussave import save_subset_settings
+from devilry_qualifiesforexam_approved.post_statussave import post_statussave_subset
 from devilry_qualifiesforexam_approved.models import SubsetPluginSetting
+from devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification
 
 
 class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):
@@ -191,7 +192,7 @@ class TestSubsetApprovedView(TestCase, QualifiesForExamPluginTestMixin):
         )
         status.save()
         self.assertEqual(SubsetPluginSetting.objects.count(), 0)
-        save_subset_settings(status, {
+        post_statussave_subset(status, {
             'assignmentids_that_must_be_passed': [self.testhelper.sub_p1_a1.id, self.testhelper.sub_p1_a2.id]
         })
         self.assertEqual(SubsetPluginSetting.objects.count(), 1)
@@ -199,3 +200,21 @@ class TestSubsetApprovedView(TestCase, QualifiesForExamPluginTestMixin):
         self.assertEqual(settings.selectedassignment_set.count(), 2)
         ids = set([selected.assignment.id for selected in settings.selectedassignment_set.all()])
         self.assertEqual(ids, set([self.testhelper.sub_p1_a1.id, self.testhelper.sub_p1_a2.id]))
+
+    def test_verify(self):
+        status = Status(period=self.period, status='ready', message='',
+            user=self.testhelper.periodadmin,
+            plugin='devilry_qualifiesforexam_approved.subset'
+        )
+        status.save()
+        relatedStudent1 = self.create_relatedstudent('student1')
+        status.students.create(relatedstudent=relatedStudent1, qualifies=True)
+
+        self.create_feedbacks(
+            (self.testhelper.sub_p1_a1_gstudent1, {'grade': 'F', 'points': 0, 'is_passing_grade': False})
+        )
+
+        with self.assertRaises(PluginResultsFailedVerification):
+            post_statussave_subset(status, {
+                'assignmentids_that_must_be_passed': [self.testhelper.sub_p1_a1.id]
+            })

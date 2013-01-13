@@ -38,7 +38,21 @@ class PluginResultsFailedVerification(Exception):
     - The dataset used to calculate the results has changed since results was generated.
     """
 
-class QualifiesForExamPluginViewMixin(object):
+
+class PeriodResultsCollector(object):
+    def student_qualifies_for_exam(self, aggregated_relstudentinfo):
+        raise NotImplementedError()
+
+    def get_relatedstudents_that_qualify_for_exam(self, period):
+        passing_relatedstudentsids = []
+        grouper = GroupsGroupedByRelatedStudentAndAssignment(period)
+        for aggregated_relstudentinfo in grouper.iter_relatedstudents_with_results():
+            if self.student_qualifies_for_exam(aggregated_relstudentinfo):
+                passing_relatedstudentsids.append(aggregated_relstudentinfo.relatedstudent.id)
+        return passing_relatedstudentsids
+
+
+class QualifiesForExamPluginViewMixin(PeriodResultsCollector):
     pluginid = None
 
     def get_plugin_input_and_authenticate(self):
@@ -69,23 +83,12 @@ class QualifiesForExamPluginViewMixin(object):
     def redirect_to_preview_url(self):
         return HttpResponseRedirect(self.get_preview_url())
 
-    def student_qualifies_for_exam(self, aggregated_relstudentinfo):
-        raise NotImplementedError()
-
-    def get_relatedstudents_that_qualify_for_exam(self):
-        passing_relatedstudentsids = []
-        grouper = GroupsGroupedByRelatedStudentAndAssignment(self.period)
-        for aggregated_relstudentinfo in grouper.iter_relatedstudents_with_results():
-            if self.student_qualifies_for_exam(aggregated_relstudentinfo):
-                passing_relatedstudentsids.append(aggregated_relstudentinfo.relatedstudent.id)
-        return passing_relatedstudentsids
-
     def handle_save_results_and_redirect_to_preview_request(self):
         try:
             self.get_plugin_input_and_authenticate() # set self.periodid and self.pluginsessionid
         except PermissionDenied:
             return HttpResponseForbidden()
-        self.save_plugin_output(self.get_relatedstudents_that_qualify_for_exam())
+        self.save_plugin_output(self.get_relatedstudents_that_qualify_for_exam(self.period))
         return self.redirect_to_preview_url()
 
 

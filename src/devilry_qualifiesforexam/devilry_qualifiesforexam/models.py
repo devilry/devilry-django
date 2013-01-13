@@ -62,6 +62,9 @@ class Status(models.Model):
             raise cls.DoesNotExist('The period with id={0} has no statuses'.format(period.id))
         return latest[0]
 
+    def get_qualified_students(self):
+        return self.students.filter(qualifies=True)
+
 
 class QualifiesForFinalExam(models.Model):
     relatedstudent = models.ForeignKey(RelatedStudent)

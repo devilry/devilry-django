@@ -10,6 +10,7 @@ from crispy_forms.layout import Layout, ButtonHolder
 from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
 from devilry_qualifiesforexam.pluginhelpers import BackButton, NextButton
 from devilry_qualifiesforexam.models import Status
+from .post_statussave import PeriodResultsCollectorSubset
 
 
 
@@ -68,19 +69,12 @@ class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
 
         return SelectAssignmentForm
 
-    def student_qualifies_for_exam(self, aggregated_relstudentinfo):
-        for assignmentid, grouplist in aggregated_relstudentinfo.assignments.iteritems():
-            if assignmentid in self.assignmentids_that_must_be_passed:
-                feedback = grouplist.get_feedback_with_most_points()
-                if not (feedback and feedback.is_passing_grade):
-                    return False
-        return True
-
     def form_valid(self, form):
-        self.assignmentids_that_must_be_passed = set(map(int, form.cleaned_data['assignments']))
-        self.save_plugin_output(self.get_relatedstudents_that_qualify_for_exam())
+        assignmentids_that_must_be_passed = set(map(int, form.cleaned_data['assignments']))
+        qualified = PeriodResultsCollectorSubset(assignmentids_that_must_be_passed).get_relatedstudents_that_qualify_for_exam(self.period)
+        self.save_plugin_output(qualified)
         self.save_settings_in_session({
-            'assignmentids_that_must_be_passed': self.assignmentids_that_must_be_passed
+            'assignmentids_that_must_be_passed': assignmentids_that_must_be_passed
         })
         return self.redirect_to_preview_url()
 
