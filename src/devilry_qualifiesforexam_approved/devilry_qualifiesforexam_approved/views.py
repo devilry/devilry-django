@@ -9,6 +9,7 @@ from crispy_forms.layout import Layout, ButtonHolder
 
 from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
 from devilry_qualifiesforexam.pluginhelpers import BackButton, NextButton
+from devilry_qualifiesforexam.models import Status
 
 
 
@@ -27,6 +28,19 @@ class AllApprovedView(View, QualifiesForExamPluginViewMixin):
 
 class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
     template_name = 'devilry_qualifiesforexam_approved/subsetselect.django.html'
+
+    def get_initial(self):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        try:
+            current_status = Status.get_current_status(self.period)
+        except Status.DoesNotExist:
+            return {}
+        else:
+            settings = current_status.devilry_qualifiesforexam_approved_subsetpluginsetting
+            ids = [selected.assignment.id for selected in settings.selectedassignment_set.all()]
+            return {'assignments': ids}
 
     def get_form_class(self):
         choices = [(a.id, a.long_name) for a in self.period.assignments.order_by('publishing_time')]

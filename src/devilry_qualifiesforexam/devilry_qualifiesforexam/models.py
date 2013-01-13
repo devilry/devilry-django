@@ -56,6 +56,12 @@ class Status(models.Model):
             if self.pluginsettings:
                 raise ValidationError('``pluginsettings`` is not allowed when status is ``notready``.')
 
+    @classmethod
+    def get_current_status(cls, period):
+        latest = period.qualifiedforexams_status.all().order_by('-createtime')[:1]
+        if len(latest) == 0:
+            raise cls.DoesNotExist('The period with id={0} has no statuses'.format(period.id))
+        return latest[0]
 
 
 class QualifiesForFinalExam(models.Model):
