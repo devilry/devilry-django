@@ -5,8 +5,9 @@ from django.core.urlresolvers import reverse
 from devilry.apps.core.testhelper import TestHelper
 from devilry_qualifiesforexam.pluginhelpers import create_sessionkey
 from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginTestMixin
-
-
+from devilry_qualifiesforexam.models import Status
+from devilry_qualifiesforexam_approved.settingssaver import save_subset_settings
+from devilry_qualifiesforexam_approved.models import SubsetPluginSetting
 
 
 class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):
@@ -182,3 +183,19 @@ class TestSubsetApprovedView(TestCase, QualifiesForExamPluginTestMixin):
         previewdata = self.client.session[create_sessionkey('tst')]
         self.assertEqual(set(previewdata.passing_relatedstudentids),
             set([relatedStudent2.id, relatedStudent3.id]))
+
+    def test_save_settings(self):
+        status = Status(period=self.period, status='ready', message='',
+            user=self.testhelper.periodadmin,
+            plugin='devilry_qualifiesforexam_approved.subset'
+        )
+        status.save()
+        self.assertEqual(SubsetPluginSetting.objects.count(), 0)
+        save_subset_settings(status, {
+            'assignmentids_that_must_be_passed': [self.testhelper.sub_p1_a1.id, self.testhelper.sub_p1_a2.id]
+        })
+        self.assertEqual(SubsetPluginSetting.objects.count(), 1)
+        settings = status.devilry_qualifiesforexam_approved_subsetpluginsetting
+        self.assertEqual(settings.selectedassignment_set.count(), 2)
+        ids = set([selected.assignment.id for selected in settings.selectedassignment_set.all()])
+        self.assertEqual(ids, set([self.testhelper.sub_p1_a1.id, self.testhelper.sub_p1_a2.id]))

@@ -3,13 +3,14 @@ from devilry_qualifiesforexam.models import Status
 from devilry.apps.core.models import Assignment
 
 
-class SelectedAssignmentSubset(models.Model):
+class SubsetPluginSetting(models.Model):
     """
     Configuration for the ``devilry_qualifiesforexam_approved.subset``-plugin.
     """
-    status = models.OneToOneField(Status, primary_key=True)
+    status = models.OneToOneField(Status, primary_key=True,
+        related_name="%(app_label)s_%(class)s")
 
 
 class SelectedAssignment(models.Model):
-    subset = models.ForeignKey(SelectedAssignmentSubset)
+    subset = models.ForeignKey(SubsetPluginSetting)
     assignment = models.ForeignKey(Assignment)
