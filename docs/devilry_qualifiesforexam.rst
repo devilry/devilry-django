@@ -118,7 +118,7 @@ Plugin helpers
 
 .. py:currentmodule:: devilry_qualifiesforexam.pluginhelpers
 
-The QualifiesForExamPluginViewMixin class
+The mixin classes
 =========================================
 
 :class:`~devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginViewMixin` is a mixin class
@@ -152,15 +152,14 @@ methods greatly simplify writing plugins. For example, we can create a view like
 A more complete example
 -----------------------
 
-The example above is quite simple, but it can be made even simpler if you use
-:meth:`.handle_save_results_and_redirect_to_preview_request` and override
-:meth:`student_qualifies_for_exam`::
+The example above is very simple. You will usually have to iterate over all the students in a
+period to find out who qualifies::
 
     from django.views.generic import View
-    class MyPluginView(View, QualifiesForExamPluginViewMixin):
-        def post(self, request):
-            return self.handle_save_results_and_redirect_to_preview_request()
+    from devilry_qualifiesforexam.pluginhelpers import PeriodResultsCollector
+    from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
 
+    class MyPeriodResultsCollector(PeriodResultsCollector):
         def student_qualifies_for_exam(self, aggregated_relstudentinfo):
             # Test if the student in the AggreatedRelatedStudentInfo qualifies.
             # Typically something like this (all students must pass all assignments):
@@ -169,6 +168,39 @@ The example above is quite simple, but it can be made even simpler if you use
                 if not feedback or not feedback.is_passing_grade:
                     return False
             return True
+
+    class MyPluginView(View, QualifiesForExamPluginViewMixin):
+        def post(self, request):
+            try:
+                self.get_plugin_input_and_authenticate()
+            except PermissionDenied:
+                return HttpResponseForbidden()
+            # Your code to detect passing students
+            passing_relatedstudentsids = MyPeriodResultsCollector().get_relatedstudents_that_qualify_for_exam()
+            self.save_plugin_output(passing_relatedstudentsids)
+            return HttpResponseRedirect(self.get_preview_url())
+
+
+
+.. py::class:: PeriodResultsCollector
+
+    .. py:method:: student_qualifies_for_exam
+
+        Must be implemented in subclasses.
+
+        :return: Does the student qualify for exam?
+        :rtype: bool
+
+    .. py:method:: get_relatedstudents_that_qualify_for_exam
+
+        Uses :ref:`utils_groups_groupedby_relatedstudent_and_assignment` to aggregate all data
+        for all students in the period. Loops through the resulting
+        :class:`~devilry.utils.groups_groupedby_relatedstudent_and_assignment.AggreatedRelatedStudentInfo`-objects
+        and sends them to :meth:`.student_qualifies_for_exam`.
+
+        :return:
+            A list with the ids of all relatedstudents for which
+            :meth:`.student_qualifies_for_exam` returned ``True``.
 
 
 
@@ -202,6 +234,11 @@ The example above is quite simple, but it can be made even simpler if you use
         Shortcut that saves a :class:`.PreviewData` in the session key generated
         using :func:`.create_sessionkey`. Args and kwargs are forwarded to :class:`.PreviewData`.
 
+    .. py:method:: save_settings_in_session(settings)
+
+        Save settings in the session. You get this back as an argument to your
+        ``post_statussave``-handler if your plugin is configured with ``uses_settings=True``.
+
     .. py:method:: get_preview_url
 
         Get the preview URL - the URL you must redirect to after saving the output
@@ -216,28 +253,6 @@ The example above is quite simple, but it can be made even simpler if you use
 
         Returns a ``HttpResponseRedirect`` that redirects to :meth:`.get_preview_url`.
 
-    .. py:method:: student_qualifies_for_exam
-
-        Must be implemented in subclasses if you use :meth:`get_relatedstudents_that_qualify_for_exam`.
-        See :ref:`qualifiesforexam-pluginhelpers-completeexample`.
-
-        :return: Does the student qualify for exam?
-        :rtype: bool
-
-    .. py:method:: get_relatedstudents_that_qualify_for_exam
-
-        Uses :ref:`utils_groups_groupedby_relatedstudent_and_assignment` to aggregate all data
-        for all students in the period. Loops through the resulting
-        :class:`~devilry.utils.groups_groupedby_relatedstudent_and_assignment.AggreatedRelatedStudentInfo`-objects
-        and sends them to :meth:`.student_qualifies_for_exam`.
-
-        :return:
-            A list with the ids of all relatedstudents for which
-            :meth:`.student_qualifies_for_exam` returned ``True``.
-
-    .. py:method:: handle_save_results_and_redirect_to_preview_request
-
-        See :ref:`qualifiesforexam-pluginhelpers-completeexample`.
 
 
 
