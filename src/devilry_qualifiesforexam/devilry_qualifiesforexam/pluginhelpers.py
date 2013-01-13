@@ -30,6 +30,8 @@ class PreviewData(object):
         }
 
 class QualifiesForExamPluginViewMixin(object):
+    pluginid = None
+
     def get_plugin_input_and_authenticate(self):
         self.periodid = self.request.GET['periodid']
         if not Period.where_is_admin_or_superadmin(self.request.user).filter(id=self.periodid).exists():
@@ -44,9 +46,10 @@ class QualifiesForExamPluginViewMixin(object):
         self.request.session[create_settings_sessionkey(self.pluginsessionid)] = data
 
     def get_preview_url(self):
-        return '{url}?routeto=/{periodid}/preview/{pluginsessionid}'.format(
+        return '{url}?routeto=/{periodid}/preview/{pluginid}/{pluginsessionid}'.format(
             url=reverse('devilry_qualifiesforexam_ui'),
             periodid = self.periodid,
+            pluginid = self.pluginid,
             pluginsessionid = self.pluginsessionid)
 
     def get_selectplugin_url(self):

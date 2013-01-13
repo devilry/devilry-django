@@ -14,6 +14,8 @@ from devilry_qualifiesforexam.models import Status
 
 
 class AllApprovedView(View, QualifiesForExamPluginViewMixin):
+    pluginid = 'devilry_qualifiesforexam_approved.all'
+
     def student_qualifies_for_exam(self, aggregated_relstudentinfo):
         for grouplist in aggregated_relstudentinfo.iter_groups_by_assignment():
             feedback = grouplist.get_feedback_with_most_points()
@@ -28,6 +30,7 @@ class AllApprovedView(View, QualifiesForExamPluginViewMixin):
 
 class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
     template_name = 'devilry_qualifiesforexam_approved/subsetselect.django.html'
+    pluginid = 'devilry_qualifiesforexam_approved.subset'
 
     def get_initial(self):
         """
