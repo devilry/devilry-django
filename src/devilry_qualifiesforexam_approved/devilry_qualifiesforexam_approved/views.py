@@ -12,6 +12,7 @@ from devilry_qualifiesforexam.pluginhelpers import BackButton, NextButton
 from devilry_qualifiesforexam.models import Status
 from .post_statussave import PeriodResultsCollectorSubset
 from .post_statussave import PeriodResultsCollectorAll
+from .models import SubsetPluginSetting
 
 
 
@@ -42,9 +43,13 @@ class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
         except Status.DoesNotExist:
             return {}
         else:
-            settings = current_status.devilry_qualifiesforexam_approved_subsetpluginsetting
-            ids = [selected.assignment.id for selected in settings.selectedassignment_set.all()]
-            return {'assignments': ids}
+            try:
+                settings = current_status.devilry_qualifiesforexam_approved_subsetpluginsetting
+            except SubsetPluginSetting.DoesNotExist:
+                return {}
+            else:
+                ids = [selected.assignment.id for selected in settings.selectedassignment_set.all()]
+                return {'assignments': ids}
 
     def get_form_class(self):
         choices = [(a.id, a.long_name) for a in self.period.assignments.order_by('publishing_time')]
