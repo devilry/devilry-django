@@ -152,7 +152,8 @@ class StatusView(View):
                         raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST,
                             {'details': ' '.join(e.messages)})
                     qualifies.save()
-                self._invoke_post_statussave(status)
+                if status.plugin:
+                    self._invoke_post_statussave(status)
         return Response(201, '')
 
 
