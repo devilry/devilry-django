@@ -31,6 +31,9 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
         ref: 'detailsGrid',
         selector: 'statusdetailsgrid'
     }, {
+        ref: 'retractButton',
+        selector: 'showstatus #retractButton'
+    }, {
         ref: 'summary',
         selector: 'showstatus #summary'
     }],
@@ -85,6 +88,9 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
 
     _onStatusModelLoadSuccess: function(record) {
         this.statusRecord = record;
+        if(this.statusRecord.getActiveStatus().status !== 'notready') {
+            this.getRetractButton().show();
+        }
         this._loadDetailedPeriodOverview();
     },
 
