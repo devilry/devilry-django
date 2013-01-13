@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TransactionTestCase
 from django.core.urlresolvers import reverse
 
 from devilry.apps.core.testhelper import TestHelper
@@ -9,7 +9,7 @@ from devilry_qualifiesforexam.pluginhelpers import create_settings_sessionkey
 from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
 
 
-class TestRestStatus(TestCase):
+class TestRestStatus(TransactionTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
@@ -320,6 +320,33 @@ class TestRestStatus(TestCase):
             'pluginsessionid': 'tst',
             'passing_relatedstudentids': []
         })
+        self.assertEqual(response.status_code, 201)
         self.assertEqual(len(savedsettings), 2)
         self.assertEqual(savedsettings['settings'], {'test': 'settings'})
         self.assertIsInstance(savedsettings['status'], Status)
+
+
+    def test_save_settings_missing_sessiondata(self):
+
+        def save_settings(status, settings):
+            pass
+
+        qualifiesforexam_plugins.add(
+            id = 'devilry_qualifiesforexam.test.plugin',
+            url = '/some/url',
+            title = 'Test',
+            description = 'A test',
+            settingssaver = save_settings
+        )
+        self.assertEquals(Status.objects.count(), 0)
+        content, response = self._postas('periodadmin', {
+            'period': self.testhelper.sub_p1.id,
+            'status': 'ready',
+            'plugin': 'devilry_qualifiesforexam.test.plugin',
+            'pluginsessionid': 'tst',
+            'passing_relatedstudentids': []
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(content['detail'],
+            u'The "devilry_qualifiesforexam.test.plugin"-plugin requires settings - no settings found in the session.')
+        self.assertEquals(Status.objects.count(), 0) # The database rolled back because of the error
