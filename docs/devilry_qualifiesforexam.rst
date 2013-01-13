@@ -254,6 +254,76 @@ Other helpers
     :meth:`.QualifiesForExamPluginViewMixin.get_plugin_input_and_authenticate` instead.
 
 
+.. py:class:: devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginTestMixin
+
+    Mixin-class for test-cases for plugin-views (the views that typically inherit from
+    :class:`.QualifiesForExamPluginViewMixin`). This class has a couple of helpers that
+    simplifies writing tests, and some unimplemented methods that ensure you do not forget
+    to write permission tests.
+
+    .. py:attribute:: period
+
+        The period you use in your tests.
+        Needs to be set in the ``setUp``-method after for :meth:`.create_relatedstudent` to work.
+
+    .. py:attribute:: testhelper
+
+        A :class:`devilry.apps.core.testhelper.TestHelper`-object which is required for
+        :meth:`.create_feedbacks` to work.
+
+    .. py:method:: create_relatedstudent(username)
+
+        Create an return a related student on See :attr:`.period`. The user is created if it
+        does not exist.
+
+    .. py:method:: create_feedbacks(*feedbacks):
+
+        Create feedbacks on groups from the given list of ``feedbacks``.
+
+        :param feedbacks:
+            Each item in the arguments list is a ``(group, feedback)`` tuple where ``group``
+            is the :class:`devilry.apps.core.models.AssignmentGroup`-object that it to be given
+            feedback, and ``feedbacks`` is a dict with attributes for the
+            :class:`devilry.apps.core.models.StaticFeedback` with the following keys:
+
+                ``grade``
+                    See :attr:`devilry.apps.core.models.StaticFeedback.grade`.
+                ``points``
+                    See :attr:`devilry.apps.core.models.StaticFeedback.points`.
+                ``is_passing_grade``
+                    See :attr:`devilry.apps.core.models.StaticFeedback.is_passing_grade`.
+
+        A delivery to save the feedback on is created automatically, so all that is needed
+        of the groups is an examiner, a candidate and a deadline.
+
+        Example::
+
+            self.create_feedbacks(
+                (self.testhelper.sub_p1_a1_gstudent2, {'grade': 'B', 'points': 86, 'is_passing_grade': True}),
+                (self.testhelper.sub_p1_a2_gstudent2, {'grade': 'A', 'points': 97, 'is_passing_grade': True})
+            )
+
+
+    .. py:method:: test_perms_as_periodadmin
+
+        Must be implemented in subclasses.
+
+    .. py:method:: test_perms_as_nodeadmin
+
+        Must be implemented in subclasses.
+
+    .. py:attribute:: test_perms_as_superuser
+
+        Must be implemented in subclasses.
+
+    .. py:attribute:: test_perms_as_nobody
+
+        Must be implemented in subclasses.
+
+    .. py:attribute:: test_invalid_period
+
+        Must be implemented in subclasses.
+
 
 
 
