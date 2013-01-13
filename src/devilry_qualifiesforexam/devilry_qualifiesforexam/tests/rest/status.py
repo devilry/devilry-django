@@ -6,6 +6,7 @@ from devilry.apps.core.models import Period
 from devilry.utils.rest_testclient import RestClient
 from devilry_qualifiesforexam.models import Status
 from devilry_qualifiesforexam.pluginhelpers import create_settings_sessionkey
+from devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification
 from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
 
 
@@ -351,4 +352,29 @@ class TestRestStatus(TransactionTestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(content['detail'],
             u'The "devilry_qualifiesforexam.test.plugin"-plugin requires settings - no settings found in the session.')
+        self.assertEquals(Status.objects.count(), 0) # The database rolled back because of the error
+
+
+    def test_fail_verification(self):
+
+        def post_statussave(status, settings):
+            raise PluginResultsFailedVerification('Invalid')
+
+        qualifiesforexam_plugins.add(
+            id = 'devilry_qualifiesforexam.test.plugin',
+            url = '/some/url',
+            title = 'Test',
+            description = 'A test',
+            post_statussave = post_statussave
+        )
+        self.assertEquals(Status.objects.count(), 0)
+        content, response = self._postas('periodadmin', {
+            'period': self.testhelper.sub_p1.id,
+            'status': 'ready',
+            'plugin': 'devilry_qualifiesforexam.test.plugin',
+            'pluginsessionid': 'tst',
+            'passing_relatedstudentids': []
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(content['detail'], u'Invalid')
         self.assertEquals(Status.objects.count(), 0) # The database rolled back because of the error
