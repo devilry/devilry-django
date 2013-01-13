@@ -312,3 +312,6 @@ ExtJS Stores
 2012-01-13
 * Remains: 1. fix the stores, [x] 2. style bubbles as block elements; there are few, so give them some space 3. translate to english and create norwegian string couterparts 4. create the breadcrumbs repr in the api [x] 5. add the frontpage link, consider its position 6. disable default view pagination 7. handle pluarl/zero-count in templates
 * Find out how to ignore the app-all.js in the translations.
+* Improved navigation elements.
+* Finished the first draft of the translation.
+* 

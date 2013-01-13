@@ -4,7 +4,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
     cls: 'devilry_nodeadmin_nodedetailsoverview bootstrap',
     tpl: [
         '<tpl for=".">',
-            '<h1>', gettext( 'Om' ), ' <i>{ short_name }</i></h1>',
+            '<h1>', gettext( 'About' ), ' <i>{ short_name }</i></h1>',
             '<h3>{ long_name }</h3>',
             '<div>{ subject_count } ', gettext( 'courses' ), '</div>',
             '<div>{ assignment_count } ', gettext( 'assignments' ), '</div>',
@@ -17,7 +17,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
                     '</tpl>',
                 '</ul>',
                 '<div class="footer">',
-                gettext( 'Follow these links to a place where you can extend deadlines, alter group membership, and get a detailed overview of a particular student.' ),
+                gettext( 'Follow these subject links to extend deadlines, alter group membership, and get a detailed summary of a particular student.' ),
                 '</div>',
             '</tpl>',
         '</tpl>'

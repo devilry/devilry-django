@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-13 06:14+0100\n"
+"POT-Creation-Date: 2013-01-13 06:59+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -88,6 +88,11 @@ msgstr ""
 #: static/devilry_nodeadmin/app-all.js:4
 msgid "%(Subject_term)s administrator"
 msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+#, fuzzy
+msgid "Subject"
+msgstr "Kurs"
 
 #: static/devilry_nodeadmin/app-all.js:4
 msgid ""
@@ -244,18 +249,18 @@ msgstr ""
 "se de underliggende nivåene, emnene og periodene. Du kan gå ett nivå tilbake "
 "ved hjelp av knappen i det øvre høyre hjørne."
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:11
-#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:18
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:10
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:17
 msgid "to the top"
-msgstr "det øverste nivå"
+msgstr "til det øverste nivå"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:14
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:13
 msgid "up"
 msgstr "ett nivå opp"
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:7
-msgid "Om"
-msgstr "About"
+msgid "About"
+msgstr "Om"
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:9
 msgid "courses"
@@ -275,8 +280,8 @@ msgstr "som hører til dette nivået"
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:20
 msgid ""
-"Follow these links to a place where you can extend deadlines, alter group "
-"membership, and get a detailed overview of a particular student."
+"Follow these subject links to extend deadlines, alter group membership, and "
+"get a detailed summary of a particular student."
 msgstr ""
 "Lenkene til disse kurs tar deg et sted der du kan flytte fristene, endre "
 "gruppetilhørighet, og se detaljene om en student."

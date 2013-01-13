@@ -178,7 +178,8 @@ class PathResource( ModelResource ):
             path.append( candidate )
             candidate = candidate.parentnode
             counter += 1
-            print candidate
+
+        path.reverse()
 
         serializer = PathElementResource()
 
@@ -191,5 +192,5 @@ class PathElementResource( ModelResource ):
 
 class Path( InstanceModelView ):
     resource = PathResource
-    permissions = ( IsAuthenticated, IsNodeAdmin, )
+    permissions = ( IsAuthenticated, )
     allowed_methods = ('get' ,)
