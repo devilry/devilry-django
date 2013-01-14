@@ -833,6 +833,53 @@ class TestHelper(object):
             setattr(obj, key, value)
         obj.save()
 
+
+    def create_feedbacks(self, *args):
+        """
+        Create feedbacks on groups from the given list of ``(group, feedback, delivery)``-tuples.
+
+        :param args:
+            Each item in the arguments list is a ``(group, feedback[, delivery])`` tuple where:
+
+            ``group``
+                is the :class:`devilry.apps.core.models.AssignmentGroup`-object that it to be given
+                feedback
+            ``feedbacks``
+                is a dict with attributes for the :class:`devilry.apps.core.models.StaticFeedback`
+                with the following keys:
+
+                ``grade``
+                    See :attr:`devilry.apps.core.models.StaticFeedback.grade`.
+                ``points``
+                    See :attr:`devilry.apps.core.models.StaticFeedback.points`.
+                ``is_passing_grade``
+                    See :attr:`devilry.apps.core.models.StaticFeedback.is_passing_grade`.
+            ``delivery``
+                Is an optional dict of files to make a delivery from. Defaults to::
+
+                    {'test.py': ['print ', 'tst']}
+
+        A delivery to save the feedback on is created automatically, so all that is needed
+        of the groups is an examiner, a candidate and a deadline.
+
+        Example::
+
+            self.create_feedbacks(
+                (group1, {'grade': 'B', 'points': 86, 'is_passing_grade': True}),
+                (group2, {'grade': 'A', 'points': 96, 'is_passing_grade': True}, {'hello.txt', ['Hello']}),
+                (group3, {'grade': 'F', 'points': 12, 'is_passing_grade': False})
+            )
+        """
+        for item in args:
+            group = item[0]
+            feedback = item[1]
+            delivery = {'test.py': ['print ', 'tst']}
+            if len(item) == 3:
+                delivery = item[2]
+            self.add_delivery(group, delivery)
+            self.add_feedback(group, verdict=feedback)
+
+
     def load_generic_scenario(self):
         # set up the base structure
         self.add(nodes='uni:admin(mortend)',
