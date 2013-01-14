@@ -60,6 +60,14 @@ An overview, very similar to the one in the old UI, but it is faster and has som
 Autodetects problems with missing students. Supports export to Office Open XML (MS Excel), CSV, JSON,
 XML, YAML and REST API.
 
+
+Logging of all dangerous actions
+--------------------------------
+We log all dangerous actions in the new UI, like deletion, renaming, moving deadline, and so on.
+The log-records include the action performed, with IDs and names, the user who made the change,
+and the time the change occurred. We also log failed dangerous actions.
+
+
 New system for marking qualified for final exam
 -----------------------------------------------
 Far more user-friendly and plugin based, so it is easy to extend.
