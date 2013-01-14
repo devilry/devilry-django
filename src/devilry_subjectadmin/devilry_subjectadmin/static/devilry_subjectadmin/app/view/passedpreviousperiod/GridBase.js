@@ -17,7 +17,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
             '<tpl if="name">',
                 '<div class="groupname">{name}</div>',
             '</tpl>',
-            '<div class="username"><small>{usernames}</small></div>',
+            '<div class="usernames"><small>{usernames}</small></div>',
         '</div>'
     ],
 
