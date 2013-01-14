@@ -77,7 +77,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
             usernames.push(candidate.user.username);
         }
         return this.col1TplCompiled.apply({
-            id: record.get('id'),
+            id: group.id,
             name: group.name,
             displaynames: displaynames.join(', '),
             usernames: usernames.join(', '),
@@ -89,7 +89,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
         var oldgroup = record.get('oldgroup');
         var whyignored = record.get('whyignored');
         return this.col2TplCompiled.apply({
-            id: record.get('id'),
+            id: record.get('group').id,
             oldgroup: oldgroup,
             oldperiodname: oldgroup? oldgroup.period.long_name: null,
             whyignored: whyignored
