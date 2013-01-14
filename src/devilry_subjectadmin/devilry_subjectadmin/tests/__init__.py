@@ -13,3 +13,4 @@ from .relatedusersui import *
 from .addgroups import *
 from .deadlines import *
 from .exportdetailedperiodoverview import *
+from .passedpreviousperiod import *

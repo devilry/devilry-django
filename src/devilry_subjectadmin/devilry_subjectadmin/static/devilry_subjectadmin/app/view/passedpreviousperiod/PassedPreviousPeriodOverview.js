@@ -1,4 +1,4 @@
-Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
+Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodOverview' ,{
     extend: 'Ext.panel.Panel',
     alias: 'widget.passedpreviousperiodoverview',
     cls: 'devilry_subjectadmin_passedpreviousperiodoverview',
@@ -46,7 +46,8 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.Overview' ,{
                         fbar: [{
                             xtype: 'checkbox',
                             boxLabel: gettext('Show groups that Devilry believes should not be marked as previously passed?'),
-                            itemId: 'showUnRecommendedCheckbox'
+                            itemId: 'showUnRecommendedCheckbox',
+                            cls: 'showUnRecommendedCheckbox'
                         }, '->', {
                             xtype: 'button',
                             scale: 'large',

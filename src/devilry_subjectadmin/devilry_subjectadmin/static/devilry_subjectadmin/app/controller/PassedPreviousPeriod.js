@@ -17,7 +17,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
     ],
 
     views: [
-        'passedpreviousperiod.Overview'
+        'passedpreviousperiod.PassedPreviousPeriodOverview'
     ],
 
     models: [
