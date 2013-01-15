@@ -28,7 +28,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
                     gettext('Passed {oldperiodname}.'),
                 '</span>',
             '<tpl else>',
-                '<span class="text-warning">',
+                '<span class="whyingnored whyignored_{whyignored} text-warning">',
                     '<tpl switch="whyignored">',
                         '<tpl case="has_alias_feedback">',
                             gettext('Is already marked as previously passed.'),
