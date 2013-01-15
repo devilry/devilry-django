@@ -159,7 +159,9 @@ class MarkAsPassedInPreviousPeriod(object):
         delivery = latest_deadline.deliveries.create(successful=True,
                                                      delivery_type=deliverytypes.ALIAS,
                                                      alias_delivery=alias_delivery)
-        delivery.feedbacks.create(**feedback)
+        feedback = delivery.feedbacks.create(**feedback)
+        delivery.full_clean() # NOTE: We have to validate after adding feedback, or the delivery will fail to validate
+        feedback.full_clean()
 
     def _find_candidates_in_previous(self, candidate):
         matches = []
