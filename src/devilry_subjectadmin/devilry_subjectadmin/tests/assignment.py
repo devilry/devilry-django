@@ -28,15 +28,27 @@ class TestAssignment(SubjectAdminSeleniumTestCase):
         self.waitForCssSelector('.devilry_extjsextras_alertmessagelist')
         self.assertTrue('404: NOT FOUND' in self.selenium.page_source)
 
-    def test_shortcuts_render(self):
+    def test_no_students(self):
         self.testhelper.add(nodes='uni',
                             subjects=['sub'],
                             periods=['period1'],
                             assignments=['week2:pub(2):admin(week2admin)'])
         self._loginToAssignment('week2admin', self.testhelper.sub_period1_week2.id)
+        overview = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_assignmentoverview')
+        self.waitForText('This assignment has no students. You need to add students', within=overview)
+
+    def test_shortcuts_render(self):
+        self.testhelper.add(nodes='uni',
+            subjects=['sub'],
+            periods=['period1'],
+            assignments=['week2:pub(2):admin(week2admin)'],
+            assignmentgroups=['g1:candidate(student1)']
+        )
+        self._loginToAssignment('week2admin', self.testhelper.sub_period1_week2.id)
         self.waitForCssSelector('.devilry_subjectadmin_assignmentoverview')
         self.assertTrue('@@manage-students' in self.selenium.page_source)
         self.assertTrue('@@bulk-manage-deadlines' in self.selenium.page_source)
+        self.assertTrue('@@passed-previous-period' in self.selenium.page_source)
 
     def test_title(self):
         self.testhelper.add(nodes='uni',
