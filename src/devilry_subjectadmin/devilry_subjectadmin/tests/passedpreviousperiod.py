@@ -110,3 +110,11 @@ class TestPassedPreviousPeriod(SubjectAdminSeleniumTestCase):
         self._test_whyignored(self.testhelper.sub_p2_a1_g1,
             'has_feedback',
             'Group has feedback for this assignment.')
+
+    def test_allignoredmessage(self):
+        self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
+        warning = self.waitForAndFindElementByCssSelector('.devilry_extjsextras_floatingalertmessagelist .no-nonignoredgroups-warning')
+        self.assertIn(
+            'We did not detect any groups that Devilry does not believe should '\
+            'be ignored. Use the checkbox below the grid to see and select ignored groups.',
+            warning.text)

@@ -145,6 +145,10 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         this.getOverview().setLoading(false);
         if(operation.success) {
             this._applyPageOneFilters();
+            var displayedGroups = this.getPassedPreviousPeriodItemsStore().getCount();
+            if(displayedGroups === 0) {
+                this._handleNoDisplayedGroups();
+            }
             this.getGroupsGrid().selectWithPassingGradeInPrevious();
         } else {
             this.onLoadFailure(operation);
@@ -163,6 +167,14 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         } else {
             this.getNextButton().enable();
         }
+    },
+
+    _handleNoDisplayedGroups:function () {
+        this.application.getAlertmessagelist().add({
+            type: 'warning',
+            extracls: 'no-nonignoredgroups-warning',
+            message: gettext('We did not detect any groups that Devilry does not believe should be ignored. Use the checkbox below the grid to see and select ignored groups.')
+        });
     },
 
     _applyPageOneFilters: function() {
