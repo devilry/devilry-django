@@ -183,7 +183,9 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             if self.deadline.deadline < datetime.now():
                 raise ValidationError(DEADLINE_EXPIRED_MESSAGE.format(deadline=self.deadline.deadline.isoformat(),
                                                                       assignment=unicode(assignment)))
-
+        if self.delivery_type == deliverytypes.ALIAS:
+            if not self.alias_delivery and not self.feedbacks.exists():
+                raise ValidationError('A Delivery with delivery_type=ALIAS must have an alias_delivery or feedback.')
         super(Delivery, self).clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):

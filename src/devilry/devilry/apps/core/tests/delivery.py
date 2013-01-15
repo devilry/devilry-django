@@ -5,6 +5,7 @@ from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
 from ..models import Delivery
+from ..models import deliverytypes
 from ..testhelper import TestHelper
 
 class TestDelivery(TestCase, TestHelper):
@@ -58,6 +59,39 @@ class TestDelivery(TestCase, TestHelper):
         # TODO find a graceful way to handle this error:
         d.number = 1
         self.assertRaises(IntegrityError, d.save())
+
+    def test_noalias_missing_feedback(self):
+        self._create_testdata()
+        deadline = self.inf1100_period1_assignment1_g3_d1
+        delivery = deadline.deliveries.create(successful=True,
+            delivery_type=deliverytypes.ALIAS,
+            alias_delivery=None)
+        with self.assertRaises(ValidationError):
+            delivery.clean()
+
+    def test_noalias_with_feedback(self):
+        self._create_testdata()
+        deadline = self.inf1100_period1_assignment1_g3_d1
+        delivery = deadline.deliveries.create(successful=True,
+            delivery_type=deliverytypes.ALIAS,
+            alias_delivery=None)
+        delivery.feedbacks.create(
+            grade = 'A',
+            is_passing_grade = True,
+            points = 100,
+            rendered_view = '',
+            saved_by = self.examiner1
+        )
+        delivery.clean()
+
+    def test_with_alias(self):
+        self._create_testdata()
+        deadline = self.inf1100_period1_assignment1_g3_d1
+        otherdelivery = deadline.deliveries.create(successful=True)
+        delivery = deadline.deliveries.create(successful=True,
+            delivery_type=deliverytypes.ALIAS,
+            alias_delivery=otherdelivery)
+        delivery.clean()
 
     def test_delete_delivered_by_candidate(self):
         self._create_testdata()
