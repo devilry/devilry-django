@@ -1,5 +1,6 @@
-from datetime import datetime, timedelta
 from devilry.apps.core.testhelper import TestHelper
+from devilry.apps.core.models import deliverytypes
+
 
 from .base import SubjectAdminSeleniumTestCase
 
@@ -64,20 +65,48 @@ class TestPassedPreviousPeriod(SubjectAdminSeleniumTestCase):
         grid = self._get_selectgroupsgrid()
         self.assertEquals(len(self._find_gridrows(grid)), 1)
         row = self._get_row_by_group(grid, p2_a1_g1)
-        self.assertEqual(row.find_element_by_css_selector('.names').text.strip(), 'Student One')
-        self.assertEqual(row.find_element_by_css_selector('.usernames').text.strip(), 'student1')
+        self.assertEqual(row.find_element_by_css_selector('.groupinfo .names').text.strip(), 'Student One')
+        self.assertEqual(row.find_element_by_css_selector('.groupinfo .usernames').text.strip(), 'student1')
 
-
-    def test_hidden(self):
-        self.testhelper.create_feedbacks(
-            (self.testhelper.sub_p1_a1_g1, {'grade': 'F', 'points': 0, 'is_passing_grade': False})
-        )
-        self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
-
-        p2_a1_g1 = self.testhelper.sub_p2_a1_g1
+    def _test_whyignored(self, group, whyignored_class, whyignored_text):
         grid = self._get_selectgroupsgrid()
         self.assertEquals(len(self._find_gridrows(grid)), 0)
         self._click_show_hidden_groups_checkbox()
         self._wait_for_rowcount(grid, 1)
-        row = self._get_row_by_group(grid, p2_a1_g1)
-        self.assertEqual(row.find_element_by_css_selector('.names').text.strip(), 'Student One')
+        row = self._get_row_by_group(grid, group)
+        self.assertEqual(row.find_element_by_css_selector('.groupinfo .names').text.strip(), 'Student One')
+        cssselector = '.oldgroup_or_ignoredinfo .whyignored_{0}'.format(whyignored_class)
+        self.assertEqual(1,
+            len(row.find_elements_by_css_selector(cssselector)))
+        self.assertEqual(row.find_element_by_css_selector('.oldgroup_or_ignoredinfo .whyignored').text.strip(),
+            whyignored_text)
+
+    def test_ignored_only_failing_grade_in_previous(self):
+        self.testhelper.create_feedbacks(
+            (self.testhelper.sub_p1_a1_g1, {'grade': 'F', 'points': 0, 'is_passing_grade': False})
+        )
+        self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
+        self._test_whyignored(self.testhelper.sub_p2_a1_g1,
+            'only_failing_grade_in_previous',
+            'The student has delivered this assignment previously, but never achieved a passing grade.')
+
+    def test_ignored_has_alias_feedback(self):
+        # Add an alias delivery to the P2 assignment
+        delivery = self.testhelper.add_delivery(self.testhelper.sub_p2_a1_g1)
+        delivery.delivery_type = deliverytypes.ALIAS
+        delivery.save()
+        self.testhelper.add_feedback(delivery, verdict={'grade': 'B', 'points': 86, 'is_passing_grade': True})
+
+        self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
+        self._test_whyignored(self.testhelper.sub_p2_a1_g1,
+            'has_alias_feedback',
+            'Is already marked as previously passed.')
+
+    def test_ignored_has_feedback(self):
+        self.testhelper.create_feedbacks(
+            (self.testhelper.sub_p2_a1_g1, {'grade': 'A', 'points': 70, 'is_passing_grade': True})
+        )
+        self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
+        self._test_whyignored(self.testhelper.sub_p2_a1_g1,
+            'has_feedback',
+            'Group has feedback for this assignment.')
