@@ -64,8 +64,8 @@ Ext.define('devilry_subjectadmin.controller.Dashboard', {
                                 subject.short_name, assignment.long_name),
                                 suffix: period.long_name,
                                 //suffix: multipleActivePeriods? period.long_name: null,
-                            type: 'period',
-                            id: period.id
+                            type: 'assignment',
+                            id: assignment.id
                         });
                     }, this);
                 }
