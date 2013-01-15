@@ -52,15 +52,13 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
                 menuDisabled: true,
                 renderer: this.rendergroupInfoCol,
                 sortable: false
-            }, {
-                dataIndex: 'id',
-                flex: 3,
-                menuDisabled: true,
-                renderer: this.renderoldOrIgnoredCol,
-                sortable: false
             }]
         });
+        this.addColumns();
         this.callParent(arguments);
+    },
+
+    addColumns:function () {
     },
 
     rendergroupInfoCol: function(unused, unused2, record) {

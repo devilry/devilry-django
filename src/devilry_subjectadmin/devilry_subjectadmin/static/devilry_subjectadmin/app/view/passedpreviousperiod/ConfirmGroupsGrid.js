@@ -3,5 +3,15 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid', {
     alias: 'widget.confirmpassedpreviousgroupsgrid',
     cls: 'devilry_subjectadmin_editpassedpreviousgroupssgrid bootstrap',
 
-    disableSelection: true
+//    disableSelection: true,
+
+    addColumns:function () {
+        this.columns.push({
+            dataIndex: 'id',
+            flex: 1,
+            menuDisabled: true,
+            renderer: this.renderoldOrIgnoredCol,
+            sortable: false
+        });
+    }
 });
