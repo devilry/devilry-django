@@ -1,7 +1,7 @@
 /**
  * Passed previous period wizard
  */
-Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriod', {
+Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
     extend: 'Ext.app.Controller',
     mixins: [
         'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
