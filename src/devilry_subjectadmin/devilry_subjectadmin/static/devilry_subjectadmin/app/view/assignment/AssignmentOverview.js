@@ -67,7 +67,7 @@ Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
                     xtype: 'alertmessage',
                     itemId: 'noGroupsMessage',
                     hidden: true,
-                    type: 'error',
+                    type: 'warning',
                     title: gettext('No students'),
                     message: interpolate(gettext('This assignment has no students. You need to <a href="%(addstudents_url)s">add students</a>.'), {
                         addstudents_url: devilry_subjectadmin.utils.UrlLookup.manageStudentsAddStudents(this.assignment_id)
