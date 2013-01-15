@@ -1,5 +1,5 @@
 Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodOverview' ,{
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.passedpreviousperiodoverview',
     cls: 'devilry_subjectadmin_passedpreviousperiodoverview',
     requires: [
@@ -13,20 +13,22 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
      * @cfg {String} assignment_id (required)
      */
 
+    // Internal attribute used for the width of the west-panel on all pages
+    sideBarWidth: 250,
 
     initComponent: function() {
         Ext.apply(this, {
-            bodyPadding: '20 40 20 40',
+            padding: '20 40 20 40',
             layout: 'border',
-            border: false,
+            style: 'background: transparent !important;',
 
             items: [{
                 xtype: 'box',
                 region: 'north',
-                height: 70,
+                height: 55,
                 cls: 'bootstrap',
                 html: [
-                    '<h1>',
+                    '<h1 style="margin: 0; padding: 0;">',
                         gettext('Passed previously'),
                     '</h1>'
                     ].join('')
@@ -39,10 +41,10 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                     xtype: 'container',
                     itemId: 'pageOne',
                     layout: 'border',
+                    style: 'background: transparent !important;',
                     items: [{
                         xtype: 'selectpassedpreviousgroupsgrid',
                         region: 'center',
-
                         fbar: [{
                             xtype: 'checkbox',
                             boxLabel: gettext('Show groups that Devilry believes should not be marked as previously passed?'),
@@ -58,7 +60,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                     }, {
                         xtype: 'box',
                         region: 'west',
-                        width: 300,
+                        width: this.sideBarWidth,
                         cls: 'bootstrap',
                         padding: '0 30 0 0',
                         html: [
@@ -75,11 +77,12 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                 }, {
                     xtype: 'container',
                     itemId: 'pageTwo',
+                    style: 'background: transparent !important;',
                     layout: 'border',
                     items: [{
                         xtype: 'box',
                         region: 'west',
-                        width: 300,
+                        width: this.sideBarWidth,
                         cls: 'bootstrap',
                         padding: '0 30 0 0',
                         html: [
