@@ -68,7 +68,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                                     }, true),
                             '</p>',
                             '<p class="muted"><small>',
-                                gettext('The search for previously passed students match the short name of old assignments against the short name of this assignment. Only groups with exactly one student in both the old and the current assignment is matched.'),
+                                gettext('The search for previously passed students match the short name of old assignments against the short name of this assignment. Only groups with exactly one student in both the old and the current assignment is matched. You can find the short name of an assignment by looking at the breadcrumb in the header, or in the title of the Rename-section of "Dangerous actions" when visiting the assignment.'),
                             '</small></p>'
                         ].join('')
                     }]
