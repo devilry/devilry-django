@@ -78,12 +78,12 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                     layout: 'border',
                     items: [{
                         xtype: 'box',
-                        region: 'east',
+                        region: 'west',
                         width: 300,
                         cls: 'bootstrap',
-                        padding: '0 0 0 30',
+                        padding: '0 30 0 0',
                         html: [
-                            '<p class="muted">',
+                            '<p class="text-info">',
                                 gettext('Make sure you really want to mark these groups as previously passed before saving.'),
                             '</p>',
                             '<p class="muted"><small>',
