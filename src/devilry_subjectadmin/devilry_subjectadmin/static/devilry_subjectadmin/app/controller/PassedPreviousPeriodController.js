@@ -132,6 +132,9 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
     },
 
 
+    _clearMessages:function () {
+        this.application.getAlertmessagelist().removeAll();
+    },
 
     //
     //
@@ -209,6 +212,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
     },
 
     _onShowUnRecommendedCheckbox: function() {
+        this._clearMessages();
         this._applyPageOneFilters();
     },
 
@@ -230,9 +234,11 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
             period_term: gettext('period'),
             shorthelp: gradeeditor.shortformat.shorthelp,
             gradingsystem: Ext.String.format('<em>{0}</em>', gradeeditor.title),
+            needsGradeFormatExplained: gradeeditor.shortformat.widget !== 'bool',
             loading: false
         });
         this._setPage('pageTwo');
+        this._clearMessages();
     },
 
     //
@@ -247,7 +253,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
 
     _onSave: function() {
         var store = this.getPassedPreviousPeriodItemsStore();
-        this.application.getAlertmessagelist().removeAll();
+        this._clearMessages();
         store.each(function(record) {
             var oldgroup = record.get('oldgroup');
             record.setDirty(); // We want to push all records, not just those with changes
