@@ -272,7 +272,29 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         this.getOverview().setLoading(false);
         var error = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         error.addBatchErrors(batch);
-        var messages = error.asArrayOfStrings();
-        this.application.getAlertmessagelist().addMany(messages, 'error');
+        var messages = [];
+        var validationErrors = 0;
+        Ext.Array.each(batch.exceptions, function(exception) {
+            if(exception.error.status === 400) {
+                validationErrors ++;
+            } else {
+                var message = error.parseHttpError(exception.error, exception.request);
+                messages.push(message);
+            }
+        }, this);
+        if(messages.length > 0) {
+            this.application.getAlertmessagelist().addMany(messages, 'error');
+        }
+        if(validationErrors > 0) {
+            this.application.getAlertmessagelist().add({
+                type: 'error',
+                messagetpl: [
+                    gettext('{errorcount} groups has an invalid grade. Please review the help for the grade format in the sidebar.')
+                ],
+                messagedata: {
+                    errorcount: validationErrors
+                }
+            });
+        }
     }
 });
