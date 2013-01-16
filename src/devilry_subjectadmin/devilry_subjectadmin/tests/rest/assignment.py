@@ -183,7 +183,8 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous',
                                'number_of_deliveries', 'number_of_groups',
-                               'number_of_candidates', 'gradeeditor']))
+                               'number_of_candidates', 'gradeeditor',
+                               'number_of_groups_where_is_examiner']))
 
     def test_get_admins(self):
         self.client.login(username='duck2000admin', password='test')
@@ -298,7 +299,8 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous',
                                'number_of_deliveries', 'number_of_groups',
-                               'number_of_candidates', 'gradeeditor']))
+                               'number_of_candidates', 'gradeeditor',
+                               'number_of_groups_where_is_examiner']))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 

@@ -1,8 +1,9 @@
 from datetime import datetime
 from django.db.models import Count
-from devilry.apps.core.models import Assignment
 from djangorestframework.permissions import IsAuthenticated
 
+from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import Examiner
 from devilry.utils.restformat import format_datetime
 from devilry.utils.restformat import format_timedelta
 from .auth import IsAssignmentAdmin
@@ -44,6 +45,7 @@ class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResour
     fields = AssignmentResource.fields + ('can_delete', 'admins', 'inherited_admins',
                                           'breadcrumb', 'number_of_groups',
                                           'number_of_deliveries',
+                                          'number_of_groups_where_is_examiner',
                                           'number_of_candidates', 'gradeeditor')
 
     def _serialize_shortformat(self, config, shortformat):
@@ -65,6 +67,12 @@ class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResour
                 'title': gradeeditor.title,
                 'shortformat': self._serialize_shortformat(config, gradeeditor.shortformat)
             }
+
+    def number_of_groups_where_is_examiner(self, instance):
+        if isinstance(instance, self.model):
+            return Examiner.objects.filter(
+                user = self.view.request.user,
+                assignmentgroup__parentnode=instance).count()
 
 
 class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):
@@ -94,8 +102,8 @@ class InstanceAssignmentRest(BaseNodeInstanceModelView):
         qry = super(InstanceAssignmentRest, self).get_queryset()
         qry = qry.select_related('parentnode', 'parentnode__parentnode')
         qry = qry.prefetch_related('admins', 'admins__devilryuserprofile',
-                                   'parentnode__admins', 'parentnode__admins__devilryuserprofile',
-                                   'parentnode__parentnode__admins', 'parentnode__parentnode__admins__devilryuserprofile')
+            'parentnode__admins', 'parentnode__admins__devilryuserprofile',
+            'parentnode__parentnode__admins', 'parentnode__parentnode__admins__devilryuserprofile')
         qry = qry.annotate(number_of_groups=Count('assignmentgroups', distinct=True))
         qry = qry.annotate(number_of_deliveries=Count('assignmentgroups__deadlines__deliveries', distinct=True))
         qry = qry.annotate(number_of_candidates=Count('assignmentgroups__candidates', distinct=True))
