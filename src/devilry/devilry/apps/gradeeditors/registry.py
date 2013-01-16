@@ -91,7 +91,7 @@ class ShortFormatNumOfTotalBase(ShortFormat):
     widget = ShortFormatWidgets.NUM_OF_TOTAL
 
     @classmethod
-    def validate(cls, value):
+    def validate(cls, config, value):
         if not value.isdigit():
             raise ValidationError(_('Must be a number.'))
 
