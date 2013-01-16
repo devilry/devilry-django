@@ -14,11 +14,15 @@ class BasicFormShortFormat(ShortFormatNumOfTotalBase):
     widget = ShortFormatWidgets.NUM_OF_TOTAL
 
     @classmethod
+    def _parse_config(cls, config):
+        return json.loads(config.config)
+
+    @classmethod
     def to_staticfeedback_kwargs(cls, config, value):
-        config = json.loads(config.config)
+        configdict = cls._parse_config(config)
         grade = value
         points = cls.get_value_as_number(value)
-        is_passing_grade = points >= config['approvedLimit']
+        is_passing_grade = points >= configdict['approvedLimit']
         return {
             'is_passing_grade': is_passing_grade,
             'grade': grade,
@@ -32,7 +36,9 @@ class BasicFormShortFormat(ShortFormatNumOfTotalBase):
 
     @classmethod
     def shorthelp(cls, config):
-        return _('Must be a number.')
+        configdict = cls._parse_config(config)
+        return _('Must be a number. {approvedLimit} points is required to pass.').format(
+            approvedLimit=configdict['approvedLimit'])
 
 
 class BasicForm(JsonRegistryItem):
