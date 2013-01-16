@@ -168,10 +168,11 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(content['number_of_deliveries'], 3)
         self.assertEquals(content['number_of_candidates'], 5)
         self.assertEquals(content['gradeeditor'], {
-            'gradeeditorid': 'approved',
-            'title': 'Approved/not approved',
-            'shortformat': {
-                'widget': 'bool'
+            u'gradeeditorid': u'approved',
+            u'title': u'Approved/not approved',
+            u'shortformat': {
+                u'widget': u'bool',
+                u'shorthelp': u'Must be one of: true, false.'
             }
         })
         self.assertEquals(set(content.keys()),
