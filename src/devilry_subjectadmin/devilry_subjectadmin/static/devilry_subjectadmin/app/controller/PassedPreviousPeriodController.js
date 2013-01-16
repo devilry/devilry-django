@@ -317,6 +317,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         if(validationErrors > 0) {
             this.application.getAlertmessagelist().add({
                 type: 'error',
+                extracls: 'passed-previously-invalid-grade-value',
                 message: gettext('At least one group has an invalid grade. Please review the help for the grade format in the sidebar.')
             });
         }
