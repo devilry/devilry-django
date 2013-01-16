@@ -46,22 +46,24 @@ class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResour
                                           'number_of_deliveries',
                                           'number_of_candidates', 'gradeeditor')
 
-    def _serialize_shortformat(self, shortformat):
+    def _serialize_shortformat(self, config, shortformat):
         if shortformat:
             return {
-                'widget': shortformat.widget
+                'widget': shortformat.widget,
+                'shorthelp': unicode(shortformat.shorthelp(config))
             }
         else:
             return None
 
     def gradeeditor(self, instance):
         if isinstance(instance, self.model):
-            gradeeditorid = instance.gradeeditor_config.gradeeditorid
-            gradeeditor = gradeeditor_registry[gradeeditorid]
+            config = instance.gradeeditor_config
+            gradeeditorid = config.gradeeditorid
+            gradeeditor = gradeeditor_registry[config.gradeeditorid]
             return {
                 'gradeeditorid': gradeeditorid,
                 'title': gradeeditor.title,
-                'shortformat': self._serialize_shortformat(gradeeditor.shortformat)
+                'shortformat': self._serialize_shortformat(config, gradeeditor.shortformat)
             }
 
 
