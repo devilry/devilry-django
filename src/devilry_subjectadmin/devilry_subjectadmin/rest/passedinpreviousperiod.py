@@ -74,7 +74,6 @@ class ResultSerializer(object):
         self.serialized.append({'id': group.id, # Included because ExtJS requires an id-property, and group.id does not work - does not hinder other clients in any way, and the overhead is minimal.
                                 'group': self._serialize_group(group),
                                 'oldgroup': oldgroup,
-                                'shortformat_widget': self.shortformat.widget,
                                 'whyignored': whyignored})
 
     def serialize(self):

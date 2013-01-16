@@ -65,7 +65,6 @@ class TestRestPassedInPreviousPeriod(TestCase):
         self.assertEqual(oldgroup['assignment']['id'], self.testhelper.sub_old_a1.id)
         self.assertEqual(oldgroup['period']['id'], self.testhelper.sub_old.id)
         self.assertEqual(oldgroup['feedback_shortformat'], 'true')
-        self.assertEqual(item['shortformat_widget'], 'bool')
 
 
 
