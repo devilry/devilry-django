@@ -38,18 +38,20 @@ class ShortFormat(object):
     widget = ShortFormatWidgets.STRING
 
     @classmethod
-    def validate(cls, value):
+    def validate(cls, config, value):
         """
         Validate the given shortformat.
+
+        :param config: A :class:`devilry.apps.gradeeditors.models.Config` object.
         """
         raise NotImplementedError()
 
     @classmethod
-    def to_staticfeedback_kwargs(cls, assignment, value):
+    def to_staticfeedback_kwargs(cls, config, value):
         """
         Convert ``value`` into a dictionary of keyword arguments for StaticFeedback.
 
-        :param assignment: A :class:`devilry.apps.core.models.Assignment` object.
+        :param config: A :class:`devilry.apps.gradeeditors.models.Config` object.
         :param value: The value. This is already validated by :meth:`.validate` when
             sent to this method.
 
@@ -59,15 +61,15 @@ class ShortFormat(object):
                 - is_passing_grade
                 - grade
                 - points
-                - rendered_view
         """
         raise NotImplementedError()
 
     @classmethod
-    def format_feedback(cls, feedback):
+    def format_feedback(cls, config, feedback):
         """
         Format the given feedback on a format that is parsable by this ShortFormat.
 
+        :param config: A :class:`devilry.apps.gradeeditors.models.Config` object.
         :param feedback: A :class:`devilry.apps.core.models.StaticFeedback`.
         :return: A string with the formatted feedback. The returned value must validate with
             :meth:`.validate`.

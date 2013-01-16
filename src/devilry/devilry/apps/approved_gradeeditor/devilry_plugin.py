@@ -23,12 +23,12 @@ class ApprovedShortFormat(ShortFormat):
     falsevalue = 'false'
 
     @classmethod
-    def validate(cls, value):
+    def validate(cls, config, value):
         if not value == cls.truevalue and not value == cls.falsevalue:
             raise ShortFormatValidationError(_('Must be one of: true, false.'))
 
     @classmethod
-    def to_staticfeedback_kwargs(cls, assignment, value):
+    def to_staticfeedback_kwargs(cls, config, value):
         is_passing_grade = value == cls.truevalue
         grade = _grade_from_is_passing_grade(is_passing_grade)
         return {
@@ -39,7 +39,7 @@ class ApprovedShortFormat(ShortFormat):
         }
 
     @classmethod
-    def format_feedback(cls, feedback):
+    def format_feedback(cls, config, feedback):
         if feedback.is_passing_grade:
             return cls.truevalue
         else:
