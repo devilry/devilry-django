@@ -48,17 +48,18 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
         Ext.apply(this, {
             columns: [{
                 dataIndex: 'id',
+                text: gettext('Group'),
                 flex: 7,
                 menuDisabled: true,
                 renderer: this.rendergroupInfoCol,
                 sortable: false
             }]
         });
-        this.addColumns();
+        this.extraInit();
         this.callParent(arguments);
     },
 
-    addColumns:function () {
+    extraInit: function () {
     },
 
     rendergroupInfoCol: function(unused, unused2, record) {
@@ -83,7 +84,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
         });
     },
 
-    renderoldOrIgnoredCol: function(unused, unused2, record) {
+    renderOldOrIgnoredCol: function(unused, unused2, record) {
         var oldgroup = record.get('oldgroup');
         var whyignored = record.get('whyignored');
         return this.oldOrIgnoredColTplCompiled.apply({
