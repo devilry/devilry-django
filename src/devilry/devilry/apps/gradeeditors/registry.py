@@ -93,7 +93,7 @@ class ShortFormatNumOfTotalBase(ShortFormat):
     @classmethod
     def validate(cls, config, value):
         if not value.isdigit():
-            raise ValidationError(_('Must be a number.'))
+            raise ShortFormatValidationError(_('Must be a number.'))
 
     @classmethod
     def get_value_as_number(cls, value):
