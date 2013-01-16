@@ -155,6 +155,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
 
     _handleNoGroups: function() {
         this.getNoGroupsMessage().show();
+        this.getExaminerRoleBox().hide();
         this._updateLinkList(false);
     }
 });
