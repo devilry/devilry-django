@@ -4,6 +4,31 @@ from django.conf import settings
 from devilry.apps.gradeeditors import (gradeeditor_registry, JsonRegistryItem,
                                        DraftValidationError, ConfigValidationError)
 from devilry.apps.markup.parse_markdown import markdown_full
+from devilry.apps.gradeeditors import ShortFormatNumOfTotalBase
+from devilry.apps.gradeeditors import ShortFormatWidgets
+from devilry.apps.gradeeditors import ShortFormatValidationError
+from django.utils.translation import ugettext_lazy as _
+
+
+class BasicFormShortFormat(ShortFormatNumOfTotalBase):
+    widget = ShortFormatWidgets.NUM_OF_TOTAL
+
+    @classmethod
+    def to_staticfeedback_kwargs(cls, config, value):
+        config = json.loads(config.config)
+        grade = value
+        points = cls.get_value_as_number(value)
+        is_passing_grade = points >= config['approvedLimit']
+        return {
+            'is_passing_grade': is_passing_grade,
+            'grade': grade,
+            'points': points,
+            'rendered_view': ''
+        }
+
+    @classmethod
+    def format_feedback(cls, config, feedback):
+        return str(feedback.points)
 
 
 
@@ -13,6 +38,7 @@ class BasicForm(JsonRegistryItem):
     description = '<p>You set up a very simple schema. This schema may contain multiple input fields. An input field is a text (<em>I.E: "Question 2.3"</em>) and corresponding input field (number-input or checkbox). You may choose the number of points required to pass the assignment.</p><p>Examiners fill out this schema and an optional feedback text. A numeric grade (I.E.: <em>64/100</em>) is calculated from their input.</p>'
     config_editor_url = settings.DEVILRY_STATIC_URL + '/basicform_gradeeditor/configeditor.js'
     draft_editor_url = settings.DEVILRY_STATIC_URL + '/basicform_gradeeditor/drafteditor.js'
+    shortformat = BasicFormShortFormat
 
     @classmethod
     def validate_draft(cls, draftstring, configstring):
