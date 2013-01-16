@@ -1,22 +1,18 @@
 #from django.utils.translation import ugettext as _
 from django import forms
-#from django.db import transaction
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource
 from djangorestframework.permissions import IsAuthenticated
-#from djangorestframework.response import Response
 from djangorestframework.response import ErrorResponse
 from djangorestframework import status
 
 from devilry.utils.passed_in_previous_period import MarkAsPassedInPreviousPeriod
 from devilry.apps.core.models import Assignment
 from devilry.apps.gradeeditors import gradeeditor_registry
-#from .errors import PermissionDeniedError
 from .errors import NotFoundError
 from .auth import IsAssignmentAdmin
 from .group import GroupSerializer
 from .fields import DictField
-#from .log import logger
 
 
 
@@ -31,12 +27,6 @@ class FeedbackField(DictField):
         points = forms.IntegerField(required=True)
         is_passing_grade = forms.BooleanField(required=False)
         rendered_view = forms.CharField(required=False)
-
-#class OldGroupField(DictField):
-    #class Form(forms.Form):
-        #id = forms.IntegerField(required=True)
-        #assignment = forms.CharField(required=False) # Ignored
-        #period = forms.CharField(required=False) # Ignored
 
 class PassedInPreviousPeriodForm(forms.Form):
     id = forms.IntegerField(required=False) # Ignored - see node about ExtJS further down
@@ -71,9 +61,7 @@ class ResultSerializer(object):
     def _serialize_oldgroup(self, oldgroup):
         assignment = oldgroup.parentnode
         period = assignment.parentnode
-#        groupserializer = GroupSerializer(oldgroup)
         return {'id': oldgroup.id,
-#                'feedback': groupserializer.serialize_feedback(),
                 'shortformat_widget': self.shortformat.widget,
                 'oldfeedback_shortformat': self.shortformat.format_feedback(oldgroup.feedback),
                 'assignment': self._serialize_basenode(assignment),
@@ -91,7 +79,7 @@ class ResultSerializer(object):
     def _add(self, group, oldgroup=None, whyignored=None):
         if oldgroup != None:
             oldgroup = self._serialize_oldgroup(oldgroup)
-        self.serialized.append({'id': group.id, # Included because ExtJS requires an id-property, and group.id does not work.
+        self.serialized.append({'id': group.id, # Included because ExtJS requires an id-property, and group.id does not work - does not hinder other clients in any way, and the overhead is minimal.
                                 'group': self._serialize_group(group),
                                 'oldgroup': oldgroup,
                                 'whyignored': whyignored})

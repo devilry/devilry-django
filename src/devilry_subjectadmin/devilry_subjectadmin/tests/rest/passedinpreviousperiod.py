@@ -43,7 +43,7 @@ class TestRestPassedInPreviousPeriod(TestCase):
         self.assertEquals(response.status_code, 403)
 
 
-    def _get_with_oldfeedback(self):
+    def test_with_oldfeedback(self):
         # Add a group for the student on the old period
         self.testhelper.add_to_path('uni;sub.old.a1.g1:candidate(student1):examiner(examiner1).d1:ends(1)')
         self.testhelper.create_feedbacks(
@@ -66,6 +66,8 @@ class TestRestPassedInPreviousPeriod(TestCase):
         self.assertEqual(oldgroup['period']['id'], self.testhelper.sub_old.id)
         self.assertEqual(oldgroup['oldfeedback_shortformat'], 'true')
         self.assertEqual(oldgroup['shortformat_widget'], 'bool')
+
+
 
     def _putas(self, username, data):
         self.client.login(username=username, password='test')
