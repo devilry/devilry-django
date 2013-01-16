@@ -252,7 +252,7 @@ Ext.define('devilry_subjectadmin.controller.managestudents.SingleGroupSelectedVi
             if(assignmentRecord.get('delivery_types') === 0) {
                 examiner_url = devilry_subjectadmin.utils.UrlLookup.examinerGroupOverview(this.groupRecord.get('id'));
             } else {
-                examiner_url = devilry_subjectadmin.utils.UrlLookup.examinerAssignmentGroupsOverview(assignmentRecord.get('id'));
+                examiner_url = devilry_subjectadmin.utils.UrlLookup.examinerGroupsOverviewStudents(assignmentRecord.get('id'));
             }
             this.getExaminerRoleBox().updateData({
                 loading: false,

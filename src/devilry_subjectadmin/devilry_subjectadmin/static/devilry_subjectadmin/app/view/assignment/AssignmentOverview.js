@@ -9,6 +9,7 @@ Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
         'Ext.layout.container.Column',
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.AlertMessageList',
+        'devilry_extjsextras.AlertMessage',
         'devilry_subjectadmin.view.assignment.GradeEditorSelectWidget',
         'devilry_subjectadmin.view.assignment.EditPublishingTimeWidget',
         'devilry_subjectadmin.view.assignment.EditAnonymousWidget',
@@ -16,7 +17,8 @@ Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
         'devilry_subjectadmin.view.DangerousActions',
         'devilry_extjsextras.SingleActionBox',
         'devilry_subjectadmin.view.AdminsBox',
-        'devilry_subjectadmin.view.EditSidebarContainer'
+        'devilry_subjectadmin.view.EditSidebarContainer',
+        'devilry_subjectadmin.view.managestudents.ExaminersHelp'
     ],
 
     /**
@@ -121,14 +123,58 @@ Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
                         loading: true
                     }
                 }, {
-                    //xtype: 'box',
-                    //cls: 'bootstrap tools',
-                    //itemId: 'linkList',
-                    //tpl: [
-                        //'<h2'
-                    //],
-                    //data: {}
-                //}, {
+                    xtype: 'container',
+                    cls: 'bootstrap',
+                    layout: 'fit',
+                    items: {
+                        xtype: 'alertmessage',
+                        type: 'role-examiner',
+                        itemId: 'examinerRoleBox',
+                        messagetpl: [
+                            '<tpl if="loading">',
+                                gettext('Loading'), ' ...',
+                            '<tpl else>',
+                                '<tpl if="mygroupscount &gt; 0">',
+                                    '<tpl if="is_published">',
+                                        '<div class="pull-left" style="margin-right: 10px;">',
+                                            '<a href="{examinerui_url}" target="_blank" class="btn btn-mini btn-inverse">',
+                                                gettext('Go to examiner interface'),
+                                                ' <i class="icon-share-alt icon-white"></i>',
+                                            '</a> ',
+                                        '</div>',
+                                    '</tpl>',
+                                    '<strong>',
+                                        gettext('You are examiner for {mygroupscount}/{totalgroups} groups.'),
+                                    '</strong>',
+                                    ' ',
+                                    '<tpl if="!is_published">',
+                                        '<small>',
+                                            gettext('When this assignment is published, you will get a link here that takes you to the examiner interface.'),
+                                        '</small>',
+                                    '</tpl>',
+                                '<tpl else>',
+                                    gettext('You are not examiner for any groups on this assignment.'),
+                                '</tpl>',
+                                ' <small>{MORE_BUTTON}</small>',
+                                '<div {MORE_ATTRS}>',
+                                    '<p style="margin-top:10px;">',
+                                        gettext('Follow the Students-link above if you wish to manage examiners.'),
+                                    '</p>',
+                                    '<h4>',
+                                        gettext('About examiners'),
+                                    '</h4>',
+                                    '<p>',
+                                        devilry_subjectadmin.view.managestudents.ExaminersHelp.getIntroText(),
+                                    '</p>',
+                                    devilry_subjectadmin.view.managestudents.ExaminersHelp.getDetailsUl(),
+                                '</div>',
+                            '</tpl>'
+                        ],
+                        messagedata: {
+                            loading: true
+                        }
+                    }
+                }, {
                     xtype: 'dangerousactions',
                     margin: '125 0 0 0',
                     items: [{

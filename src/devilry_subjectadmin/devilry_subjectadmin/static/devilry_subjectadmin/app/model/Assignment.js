@@ -29,6 +29,7 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         {name: 'number_of_groups',  type: 'int', persist: false},
         {name: 'number_of_deliveries',  type: 'int', persist: false},
         {name: 'number_of_candidates',  type: 'int', persist: false},
+        {name: 'number_of_groups_where_is_examiner',  type: 'int', persist: false},
         {name: 'gradeeditor', type: 'auto', persist: false}
     ],
 

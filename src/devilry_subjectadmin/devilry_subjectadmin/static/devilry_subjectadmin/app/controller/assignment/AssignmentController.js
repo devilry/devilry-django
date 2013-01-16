@@ -46,6 +46,9 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
     }, {
         ref: 'linkList',
         selector: 'assignmentoverview #linkList'
+    }, {
+        ref: 'examinerRoleBox',
+        selector: 'assignmentoverview #examinerRoleBox'
     }],
 
     init: function() {
@@ -84,6 +87,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
             this._handleNoGroups();
         } else {
             this._updateLinkList(true);
+            this._updateExaminerBox();
         }
         this.getAdminsbox().setBasenodeRecord(this.assignmentRecord);
     },
@@ -100,6 +104,16 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
             electronic: this.assignmentRecord.get('delivery_types') === 0,
             period_term: gettext('period'),
             has_students: has_students
+        });
+    },
+
+    _updateExaminerBox: function() {
+        this.getExaminerRoleBox().updateData({
+            loading: false,
+            is_published: this.assignmentRecord.get('is_published'),
+            mygroupscount: this.assignmentRecord.get('number_of_groups_where_is_examiner'),
+            totalgroups: this.assignmentRecord.get('number_of_groups'),
+            examinerui_url: devilry_subjectadmin.utils.UrlLookup.examinerGroupsOverviewTodo(this.assignmentRecord.get('id'))
         });
     },
 
