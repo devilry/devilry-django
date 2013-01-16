@@ -56,8 +56,11 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         ref: 'pageTwo',
         selector: 'passedpreviousperiodoverview #pageTwo'
     }, {
+        ref: 'confirmGridWrapper',
+        selector: 'passedpreviousperiodoverview #pageTwo #confirmGridWrapper'
+    }, {
         ref: 'confirmGroupsGrid',
-        selector: 'passedpreviousperiodoverview confirmpassedpreviousgroupsgrid'
+        selector: 'passedpreviousperiodoverview #pageTwo confirmpassedpreviousgroupsgrid'
     }],
 
     init: function() {
@@ -150,12 +153,14 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
 
             var store = this.getPassedPreviousPeriodItemsStore();
             store.each(function(record) {
-                record.set('newfeedback_shortformat', record.get('oldgroup').feedback_shortformat);
-                record.commit();
+                var oldgroup = record.get('oldgroup');
+                if(oldgroup !== null) {
+                    record.set('newfeedback_shortformat', oldgroup.feedback_shortformat);
+                    record.commit();
+                }
             });
 
             this.getGroupsGrid().selectWithPassingGradeInPrevious();
-            this.getConfirmGroupsGrid().addEditColumn(this.assignmentRecord.get('gradeeditor'));
         } else {
             this.onLoadFailure(operation);
         }
@@ -210,6 +215,12 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         store.filterBy(function(record) {
             return selModel.isSelected(record);
         });
+        var wrapper = this.getConfirmGridWrapper();
+        wrapper.removeAll();
+        wrapper.add({
+            xtype: 'confirmpassedpreviousgroupsgrid',
+            gradeeditor: this.assignmentRecord.get('gradeeditor')
+        });
         this._setPage('pageTwo');
     },
 
@@ -225,20 +236,9 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
 
     _onSave: function() {
         var store = this.getPassedPreviousPeriodItemsStore();
+        this.application.getAlertmessagelist().removeAll();
         store.each(function(record) {
             var oldgroup = record.get('oldgroup');
-//            if(Ext.isEmpty(oldgroup)) {
-//                var feedback = {
-//                    grade: 'Approved',
-//                    points: 1,
-//                    is_passing_grade: true,
-//                    rendered_view: ''
-//                };
-//                record.set('feedback', feedback);
-//            } else {
-//                record.set('feedback', null);
-//                record.setDirty();
-//            }
             record.setDirty(); // We want to push all records, not just those with changes
         }, this);
         this.getOverview().setLoading(gettext('Saving') + ' ...');
@@ -288,12 +288,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         if(validationErrors > 0) {
             this.application.getAlertmessagelist().add({
                 type: 'error',
-                messagetpl: [
-                    gettext('{errorcount} groups has an invalid grade. Please review the help for the grade format in the sidebar.')
-                ],
-                messagedata: {
-                    errorcount: validationErrors
-                }
+                message: gettext('At least one group has an invalid grade. Please review the help for the grade format in the sidebar.')
             });
         }
     }

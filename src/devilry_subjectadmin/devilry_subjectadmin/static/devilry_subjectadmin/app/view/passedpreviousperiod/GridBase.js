@@ -46,6 +46,9 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
         this.groupInfoColTplCompiled = Ext.create('Ext.XTemplate', this.groupInfoColTpl);
         this.oldOrIgnoredColTplCompiled = Ext.create('Ext.XTemplate', this.oldOrIgnoredColTpl);
         Ext.apply(this, {
+            viewConfig:{
+                markDirty:false
+            },
             columns: [{
                 dataIndex: 'id',
                 text: gettext('Group'),

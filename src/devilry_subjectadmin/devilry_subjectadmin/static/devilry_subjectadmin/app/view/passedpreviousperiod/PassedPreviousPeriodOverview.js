@@ -94,7 +94,10 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                             '</small></p>'
                         ].join('')
                     }, {
-                        xtype: 'confirmpassedpreviousgroupsgrid',
+                        xtype: 'panel',
+                        itemId: 'confirmGridWrapper',
+                        layout: 'fit',
+                        items: [],
                         region: 'center',
                         fbar: [{
                             xtype: 'button',

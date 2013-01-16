@@ -8,6 +8,9 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid', {
     ],
     hideHeaders: false,
 
+    /**
+     * @cfg {object} [gradeeditor]
+     */
 
     extraInit: function () {
         this.selType = 'cellmodel';
@@ -21,6 +24,15 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid', {
         this.plugins = [
             this.cellEditor
         ];
+        this.columns.push({
+            dataIndex: 'newfeedback_shortformat',
+            text: gettext('Grade'),
+            flex: 4,
+            menuDisabled: true,
+            renderer: this._renderGradeColumn,
+            sortable: false,
+            editor: this._getEditor(this.gradeeditor.shortformat.widget)
+        });
     },
 
     _getEditor:function (widget) {
@@ -37,20 +49,6 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid', {
             throw Ext.String.format("Unsupported widget: {0}", widget);
         }
         return editor;
-    },
-
-    addEditColumn: function (gradeeditor) {
-        this.gradeeditor = gradeeditor;
-        var column = {
-            dataIndex: 'newfeedback_shortformat',
-                text: gettext('Grade'),
-            flex: 4,
-            menuDisabled: true,
-            renderer: this._renderGradeColumn,
-            sortable: false,
-            editor: this._getEditor(this.gradeeditor.shortformat.widget)
-        };
-        this.headerCt.insert(this.columns.length, column);
     },
 
     _renderGradeColumn: function(value, unused2, record) {
