@@ -13,6 +13,7 @@ from devilry.apps.core.models import Assignment
 from devilry.apps.gradeeditors import gradeeditor_registry
 from devilry.apps.gradeeditors import ShortFormatValidationError
 from .errors import NotFoundError
+from .errors import BadRequestFieldError
 from .errors import ValidationErrorResponse
 from .auth import IsAssignmentAdmin
 from .group import GroupSerializer
@@ -179,6 +180,8 @@ class PassedInPreviousPeriod(View):
                 except ShortFormatValidationError as e:
                     raise ValidationErrorResponse(e)
                 feedback = shortformat.to_staticfeedback_kwargs(gradeeditor_config, newfeedback_shortformat)
+                if not feedback['is_passing_grade']:
+                    raise BadRequestFieldError('newfeedback_shortformat', 'Must be a passing grade')
                 feedback['rendered_view'] = ''
                 feedback['saved_by'] = self.request.user
 
