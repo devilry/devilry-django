@@ -36,6 +36,9 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
     }, {
         ref: 'cardContainer',
         selector: 'passedpreviousperiodoverview #cardContainer'
+    }, {
+        ref: 'unsupportedGradeEditor',
+        selector: 'passedpreviousperiodoverview #unsupportedGradeEditor'
 
     // Page one
     }, {
@@ -99,7 +102,16 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         var path = this.getPathFromBreadcrumb(this.assignmentRecord);
         this.application.setTitle(Ext.String.format('{0}.{1}', path, text));
 
-        this.loadGradeEditorRecords(this.assignmentRecord.get('id'));
+        var gradeeditor = this.assignmentRecord.get('gradeeditor');
+        if(gradeeditor.shortformat === null) {
+            this.getOverview().setLoading(false);
+            this.getUnsupportedGradeEditor().updateData({
+                gradingsystem: Ext.String.format('<em>{0}</em>', gradeeditor.title)
+            });
+            this._setPage('unsupportedGradeEditor');
+        } else {
+            this._loadStore();
+        }
     },
     onLoadAssignmentFailure: function(operation) {
         this.getOverview().setLoading(false);
@@ -110,23 +122,6 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         this.getCardContainer().getLayout().setActiveItem(itemId);
     },
 
-    //
-    //
-    // Load grade editor
-    //
-    //
-
-    onLoadGradeEditorSuccess: function(gradeEditorConfigRecord, gradeEditorRegistryItemRecord) {
-        this.gradeEditorConfigRecord = gradeEditorConfigRecord;
-        this.gradeEditorRegistryItemRecord = gradeEditorRegistryItemRecord;
-        var gradeeditorid = this.gradeEditorConfigRecord.get('gradeeditorid');
-        if(gradeeditorid !== 'approved') {
-            this.getOverview().setLoading(false);
-            this._setPage('unsupportedGradeEditor');
-        } else {
-            this._loadStore();
-        }
-    },
 
 
     //
