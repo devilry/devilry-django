@@ -89,15 +89,12 @@ class TestRestPassedInPreviousPeriod(TestCase):
         g3 = self.testhelper.sub_cur_a1_g3
         content, response = self._putas(username,
                                         [{'group': {'id': g1.id},
-                                          'feedback': {'grade': 'A',
-                                                       'is_passing_grade': True,
-                                                       'points': 100,
-                                                       'rendered_view': 'Good'}},
+                                          'newfeedback_shortformat': 'true'},
                                          {'group': {'id': g3.id}}])
         self.assertEquals(response.status_code, 200)
 
         g1 = self.testhelper.reload_from_db(g1)
-        self.assertEquals(g1.feedback.grade, 'A')
+        self.assertEquals(g1.feedback.grade, 'approved')
         self.assertEquals(g1.feedback.delivery.delivery_type, deliverytypes.ALIAS)
 
         g2 = self.testhelper.reload_from_db(g2)

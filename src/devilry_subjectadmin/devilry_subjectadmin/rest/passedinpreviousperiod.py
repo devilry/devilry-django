@@ -21,29 +21,22 @@ class GroupField(DictField):
         id = forms.IntegerField(required=True)
         candidates = forms.CharField(required=False) # Ignored
 
-class FeedbackField(DictField):
-    class Form(forms.Form):
-        grade = forms.CharField(required=True)
-        points = forms.IntegerField(required=True)
-        is_passing_grade = forms.BooleanField(required=False)
-        rendered_view = forms.CharField(required=False)
-
 class PassedInPreviousPeriodForm(forms.Form):
     id = forms.IntegerField(required=False) # Ignored - see node about ExtJS further down
     group = GroupField(required=True)
-    feedback = FeedbackField(required=False)
-    oldgroup = forms.CharField(required=False) # Ignored
-    whyignored = forms.CharField(required=False) # Ignored
+    newfeedback_shortformat = forms.CharField(required=False)
+#    oldgroup = forms.CharField(required=False) # Ignored
+#    whyignored = forms.CharField(required=False) # Ignored
 
 
 class PassedInPreviousPeriodResource(FormResource):
     form = PassedInPreviousPeriodForm
-    fields = ('group', 'oldgroup', 'whyignored', 'feedback')
 
 
 
 class ResultSerializer(object):
-    def __init__(self, shortformat, result):
+    def __init__(self, gradeeditor_config, shortformat, result):
+        self.gradeeditor_config = gradeeditor_config
         self.shortformat = shortformat
         self.result = result
 
@@ -63,7 +56,8 @@ class ResultSerializer(object):
         period = assignment.parentnode
         return {'id': oldgroup.id,
                 'shortformat_widget': self.shortformat.widget,
-                'oldfeedback_shortformat': self.shortformat.format_feedback(oldgroup.feedback),
+                'oldfeedback_shortformat': self.shortformat.format_feedback(
+                    self.gradeeditor_config, oldgroup.feedback),
                 'assignment': self._serialize_basenode(assignment),
                 'period': self._serialize_basenode(period)}
 
@@ -110,14 +104,14 @@ class PassedInPreviousPeriod(View):
         except Assignment.DoesNotExist:
             raise NotFoundError('Assignment with id={0} not found'.format(id))
 
-    def _get_shortformat(self):
-        gradeeditorid = self.assignment.gradeeditor_config.gradeeditorid
-        shortformat = gradeeditor_registry[gradeeditorid].shortformat
+    def _get_gradeeditor_config_and_shortformat(self):
+        gradeeditor_config = self.assignment.gradeeditor_config
+        shortformat = gradeeditor_registry[gradeeditor_config.gradeeditorid].shortformat
         if shortformat:
-            return shortformat
+            return gradeeditor_config, shortformat
         else:
             raise ErrorResponse(status.HTTP_400_BAD_REQUEST, {
-                'detail': 'The grading system, {gradingsystem}, does not support shortformat, which is requried by this API.'.format(gradingsystem=gradeeditorid)
+                'detail': 'The grading system, {gradingsystem}, does not support shortformat, which is requried by this API.'.format(gradingsystem=gradeeditor_config.gradeeditorid)
             })
 
     def get(self, request, id):
@@ -127,16 +121,23 @@ class PassedInPreviousPeriod(View):
     def _get_result(self):
         marker = MarkAsPassedInPreviousPeriod(self.assignment)
         result = marker.mark_all(pretend=True)
-        return ResultSerializer(self._get_shortformat(), result).serialize()
+        gradeeditor_config, shortformat = self._get_gradeeditor_config_and_shortformat()
+        return ResultSerializer(gradeeditor_config, shortformat, result).serialize()
 
     def put(self, request, id):
         self.assignment = self._get_assignment(id)
         marker = MarkAsPassedInPreviousPeriod(self.assignment)
-        group_ids = [item['group']['id'] for item in self.CONTENT]
+        gradeeditor_config, shortformat = self._get_gradeeditor_config_and_shortformat()
         for item in self.CONTENT:
             group = self.assignment.assignmentgroups.get(id=item['group']['id'])
-            feedback = item['feedback']
-            if feedback:
-                feedback['saved_by'] = self.request.user # NOTE: If we do not get a feedback, a search for old feedbacks is performed, and saved_by is copied from the old feedback.
+            newfeedback_shortformat = item['newfeedback_shortformat']
+            if newfeedback_shortformat:
+                feedback = shortformat.to_staticfeedback_kwargs(gradeeditor_config, newfeedback_shortformat)
+                feedback['rendered_view'] = ''
+                # NOTE: If we do not get a feedback, a search for old feedbacks is performed,
+                #       and saved_by is copied from the old feedback.
+                feedback['saved_by'] = self.request.user
+            else:
+                feedback = None
             marker.mark_group(group, feedback=feedback)
         return self._get_result()
