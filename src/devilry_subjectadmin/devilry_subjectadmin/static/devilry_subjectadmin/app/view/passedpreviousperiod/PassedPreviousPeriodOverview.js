@@ -115,7 +115,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                                     '<p>',
                                         '<span class="text-warning">', gettext('Warning'), ':</span>',
                                         '<small> ',
-                                            gettext('You must specify passing grades. Many users find it confusing when the autodetected grade is not a passing grade, but that is simply because the assignment has been configured differently this {period_term}.'),
+                                            gettext('You must specify passing grades. Many users find it confusing when the autodetected grade is not a passing grade, but that is simply because the grading system has been configured differently this {period_term}.'),
                                         '</small>',
                                     '</p>',
                                 '</div>',

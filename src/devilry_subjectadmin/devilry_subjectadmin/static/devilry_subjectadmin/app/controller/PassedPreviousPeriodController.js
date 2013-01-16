@@ -180,7 +180,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         this.application.getAlertmessagelist().add({
             type: 'warning',
             extracls: 'no-nonignoredgroups-warning',
-            message: gettext('We did not detect any groups that Devilry does not believe should be ignored. Use the checkbox below the grid to see and select ignored groups.')
+            message: gettext('We did not detect any groups that Devilry does not believe should be ignored. Use the checkbox below the table to see and select ignored groups.')
         });
     },
 
