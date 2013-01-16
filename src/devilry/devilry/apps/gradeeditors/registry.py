@@ -102,10 +102,17 @@ class RegistryItem(object):
 
         The URL to the config editor.
 
-    .. attribute:: draft_editor_url::
+    .. attribute:: draft_editor_url
 
         The URL to the draft editor.
+
+    .. attribute:: shortformat
+
+        An optional :class:`.ShortFormat` for this plugin. If no shortformat is defined,
+        the plugin will not be usable in places that require shortformat.
     """
+    shortformat = None
+
     def __str__(self):
         return self.title
 
