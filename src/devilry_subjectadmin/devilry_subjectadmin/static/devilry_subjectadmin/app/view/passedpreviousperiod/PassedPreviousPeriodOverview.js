@@ -111,7 +111,10 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                     xtype: 'alertmessage',
                     type: 'error',
                     title: 'Unsupported grading system',
-                    message: 'The passed previously functionality only supports the <em>Approved/not approved</em> grading system. We will fix this before the version you are testing is released.'
+                    messagetpl: gettext('The passed previously functionality is not supported by the grading system configured on this assignment ({gradingsystem}).'),
+                    messagedata: {
+                        gradingsystem: gettext('Loading') + ' ...'
+                    }
                 }]
             }]
         });
