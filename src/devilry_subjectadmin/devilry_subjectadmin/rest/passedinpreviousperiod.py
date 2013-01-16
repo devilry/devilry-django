@@ -12,20 +12,12 @@ from devilry.apps.gradeeditors import gradeeditor_registry
 from .errors import NotFoundError
 from .auth import IsAssignmentAdmin
 from .group import GroupSerializer
-from .fields import DictField
 
 
-
-class GroupField(DictField):
-    class Form(forms.Form):
-        id = forms.IntegerField(required=True)
-        candidates = forms.CharField(required=False) # Ignored
 
 class PassedInPreviousPeriodForm(forms.Form):
     id = forms.IntegerField(required=True)
     newfeedback_shortformat = forms.CharField(required=False)
-#    oldgroup = forms.CharField(required=False) # Ignored
-#    whyignored = forms.CharField(required=False) # Ignored
 
 
 class PassedInPreviousPeriodResource(FormResource):
@@ -137,6 +129,8 @@ class PassedInPreviousPeriod(View):
 
     def validate_request(self, datalist, files=None):
         cleaned_datalist = []
+        if not isinstance(datalist, list):
+            datalist = [datalist]
         for data in datalist:
             cleaned_data = super(PassedInPreviousPeriod, self).validate_request(data)
             cleaned_datalist.append(cleaned_data)

@@ -227,18 +227,19 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         var store = this.getPassedPreviousPeriodItemsStore();
         store.each(function(record) {
             var oldgroup = record.get('oldgroup');
-            if(Ext.isEmpty(oldgroup)) {
-                var feedback = {
-                    grade: 'Approved',
-                    points: 1,
-                    is_passing_grade: true,
-                    rendered_view: ''
-                };
-                record.set('feedback', feedback);
-            } else {
-                record.set('feedback', null);
-                record.setDirty();
-            }
+//            if(Ext.isEmpty(oldgroup)) {
+//                var feedback = {
+//                    grade: 'Approved',
+//                    points: 1,
+//                    is_passing_grade: true,
+//                    rendered_view: ''
+//                };
+//                record.set('feedback', feedback);
+//            } else {
+//                record.set('feedback', null);
+//                record.setDirty();
+//            }
+            record.setDirty(); // We want to push all records, not just those with changes
         }, this);
         this.getOverview().setLoading(gettext('Saving') + ' ...');
         store.sync({

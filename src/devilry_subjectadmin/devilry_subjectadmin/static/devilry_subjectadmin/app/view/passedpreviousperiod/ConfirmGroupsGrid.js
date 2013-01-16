@@ -81,9 +81,5 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid', {
         if(this.gradeeditor.shortformat.widget === 'bool') {
             return false; // Can not edit
         }
-//        var record = e.record;
-//        if(record.get('oldgroup') !== null) {
-//            return false; // Can not edit
-//        }
     }
 });
