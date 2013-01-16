@@ -19,17 +19,17 @@ def _grade_from_is_passing_grade(is_passing_grade):
 
 class ApprovedShortFormat(ShortFormat):
     widget = ShortFormatWidgets.BOOL
-    truevalues = ('true', '1', 'yes')
-    falsevalues = ('false', '0', 'no')
+    truevalue = 'true'
+    falsevalue = 'false'
 
     @classmethod
     def validate(cls, value):
-        if not value in cls.truevalues and not value in cls.falsevalues:
-            raise ShortFormatValidationError(_('Must be one of: true, 1, yes, false, 0, no.'))
+        if not value == cls.truevalue and not value == cls.falsevalue:
+            raise ShortFormatValidationError(_('Must be one of: true, false.'))
 
     @classmethod
     def to_staticfeedback_kwargs(cls, assignment, value):
-        is_passing_grade = value in cls.truevalues
+        is_passing_grade = value == cls.truevalue
         grade = _grade_from_is_passing_grade(is_passing_grade)
         return {
             'is_passing_grade': is_passing_grade,
@@ -38,6 +38,12 @@ class ApprovedShortFormat(ShortFormat):
             'rendered_view': ''
         }
 
+    @classmethod
+    def format_feedback(cls, feedback):
+        if feedback.is_passing_grade:
+            return cls.truevalue
+        else:
+            return cls.falsevalue
 
 
 class Approved(JsonRegistryItem):

@@ -63,6 +63,18 @@ class ShortFormat(object):
         """
         raise NotImplementedError()
 
+    @classmethod
+    def format_feedback(cls, feedback):
+        """
+        Format the given feedback on a format that is parsable by this ShortFormat.
+
+        :param feedback: A :class:`devilry.apps.core.models.StaticFeedback`.
+        :return: A string with the formatted feedback. The returned value must validate with
+            :meth:`.validate`.
+        """
+        raise NotImplementedError()
+
+
 
 class ShortFormatNumOfTotalBase(ShortFormat):
     widget = ShortFormatWidgets.NUM_OF_TOTAL
