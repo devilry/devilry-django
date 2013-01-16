@@ -55,8 +55,7 @@ class ResultSerializer(object):
         assignment = oldgroup.parentnode
         period = assignment.parentnode
         return {'id': oldgroup.id,
-                'shortformat_widget': self.shortformat.widget,
-                'oldfeedback_shortformat': self.shortformat.format_feedback(
+                'feedback_shortformat': self.shortformat.format_feedback(
                     self.gradeeditor_config, oldgroup.feedback),
                 'assignment': self._serialize_basenode(assignment),
                 'period': self._serialize_basenode(period)}
@@ -76,6 +75,7 @@ class ResultSerializer(object):
         self.serialized.append({'id': group.id, # Included because ExtJS requires an id-property, and group.id does not work - does not hinder other clients in any way, and the overhead is minimal.
                                 'group': self._serialize_group(group),
                                 'oldgroup': oldgroup,
+                                'shortformat_widget': self.shortformat.widget,
                                 'whyignored': whyignored})
 
     def serialize(self):
