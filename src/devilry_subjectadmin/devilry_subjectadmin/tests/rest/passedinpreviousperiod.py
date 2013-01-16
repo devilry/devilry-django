@@ -4,8 +4,6 @@ from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.rest_testclient import RestClient
 from devilry.apps.core.models import deliverytypes
 
-from pprint import pprint
-
 
 class TestRestPassedInPreviousPeriod(TestCase):
     def setUp(self):
@@ -44,6 +42,30 @@ class TestRestPassedInPreviousPeriod(TestCase):
         content, response = self._getas('nobody')
         self.assertEquals(response.status_code, 403)
 
+
+    def _get_with_oldfeedback(self):
+        # Add a group for the student on the old period
+        self.testhelper.add_to_path('uni;sub.old.a1.g1:candidate(student1):examiner(examiner1).d1:ends(1)')
+        self.testhelper.create_feedbacks(
+            (self.testhelper.sub_old_a1_g1, {'grade': 'approved', 'points': 1, 'is_passing_grade': True})
+        )
+
+        # Add the student to the current period
+        self.testhelper.add_to_path('uni;sub.cur.a1.g1:candidate(student1)')
+
+        content, response = self._getas('adm')
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 1)
+        item = content[0]
+        self.assertEquals(item['group']['id'], self.testhelper.sub_cur_a1_g1.id)
+        self.assertEquals(item['whyignored'], None)
+        self.assertNotEquals(item['oldgroup'], None)
+        oldgroup = item['oldgroup']
+        self.assertEqual(oldgroup['id'], self.testhelper.sub_old_a1_g1.id)
+        self.assertEqual(oldgroup['assignment']['id'], self.testhelper.sub_old_a1.id)
+        self.assertEqual(oldgroup['period']['id'], self.testhelper.sub_old.id)
+        self.assertEqual(oldgroup['oldfeedback_shortformat'], 'true')
+        self.assertEqual(oldgroup['shortformat_widget'], 'bool')
 
     def _putas(self, username, data):
         self.client.login(username=username, password='test')

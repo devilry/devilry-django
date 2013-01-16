@@ -5,9 +5,12 @@ from djangorestframework.views import View
 from djangorestframework.resources import FormResource
 from djangorestframework.permissions import IsAuthenticated
 #from djangorestframework.response import Response
+from djangorestframework.response import ErrorResponse
+from djangorestframework import status
 
 from devilry.utils.passed_in_previous_period import MarkAsPassedInPreviousPeriod
 from devilry.apps.core.models import Assignment
+from devilry.apps.gradeeditors import gradeeditor_registry
 #from .errors import PermissionDeniedError
 from .errors import NotFoundError
 from .auth import IsAssignmentAdmin
@@ -50,7 +53,8 @@ class PassedInPreviousPeriodResource(FormResource):
 
 
 class ResultSerializer(object):
-    def __init__(self, result):
+    def __init__(self, shortformat, result):
+        self.shortformat = shortformat
         self.result = result
 
     def _serialize_basenode(self, basenode):
@@ -67,9 +71,11 @@ class ResultSerializer(object):
     def _serialize_oldgroup(self, oldgroup):
         assignment = oldgroup.parentnode
         period = assignment.parentnode
-        groupserializer = GroupSerializer(oldgroup)
+#        groupserializer = GroupSerializer(oldgroup)
         return {'id': oldgroup.id,
-                'feedback': groupserializer.serialize_feedback(),
+#                'feedback': groupserializer.serialize_feedback(),
+                'shortformat_widget': self.shortformat.widget,
+                'oldfeedback_shortformat': self.shortformat.format_feedback(oldgroup.feedback),
                 'assignment': self._serialize_basenode(assignment),
                 'period': self._serialize_basenode(period)}
 
@@ -116,6 +122,16 @@ class PassedInPreviousPeriod(View):
         except Assignment.DoesNotExist:
             raise NotFoundError('Assignment with id={0} not found'.format(id))
 
+    def _get_shortformat(self):
+        gradeeditorid = self.assignment.gradeeditor_config.gradeeditorid
+        shortformat = gradeeditor_registry[gradeeditorid].shortformat
+        if shortformat:
+            return shortformat
+        else:
+            raise ErrorResponse(status.HTTP_400_BAD_REQUEST, {
+                'detail': 'The grading system, {gradingsystem}, does not support shortformat, which is requried by this API.'.format(gradingsystem=gradeeditorid)
+            })
+
     def get(self, request, id):
         self.assignment = self._get_assignment(id)
         return self._get_result()
@@ -123,7 +139,7 @@ class PassedInPreviousPeriod(View):
     def _get_result(self):
         marker = MarkAsPassedInPreviousPeriod(self.assignment)
         result = marker.mark_all(pretend=True)
-        return ResultSerializer(result).serialize()
+        return ResultSerializer(self._get_shortformat(), result).serialize()
 
     def put(self, request, id):
         self.assignment = self._get_assignment(id)
