@@ -156,16 +156,6 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
             if(displayedGroups === 0) {
                 this._handleNoDisplayedGroups();
             }
-
-            var store = this.getPassedPreviousPeriodItemsStore();
-            store.each(function(record) {
-                var oldgroup = record.get('oldgroup');
-                if(oldgroup !== null) {
-                    record.set('newfeedback_shortformat', oldgroup.feedback_shortformat);
-                    record.commit();
-                }
-            });
-
             this.getGroupsGrid().selectWithPassingGradeInPrevious();
         } else {
             this.onLoadFailure(operation);
@@ -218,18 +208,39 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
 
     _onNextButton: function() {
         var store = this.getPassedPreviousPeriodItemsStore();
+        var gradeeditor = this.assignmentRecord.get('gradeeditor');
+
+        // Filter out all non-selected
         var selModel = this.getGroupsGrid().getSelectionModel();
         store.filterBy(function(record) {
             return selModel.isSelected(record);
         });
 
-        var gradeeditor = this.assignmentRecord.get('gradeeditor');
+        // Set default values in the store
+        var boolwidget = gradeeditor.shortformat.widget === 'bool';
+        store.each(function(record) {
+            var oldgroup = record.get('oldgroup');
+            var value = null;
+            if(oldgroup !== null) {
+                value = oldgroup.feedback_shortformat;
+            } else if(boolwidget) {
+                value = 'true';
+            }
+            if(value !== null) {
+                record.set('newfeedback_shortformat', value);
+                record.commit();
+            }
+        });
+
+        // Create the edit grid
         var wrapper = this.getConfirmGridWrapper();
         wrapper.removeAll();
         wrapper.add({
             xtype: 'confirmpassedpreviousgroupsgrid',
             gradeeditor: gradeeditor
         });
+
+        // Customize the sidebar help
         this.getPageTwoSidebar().update({
             period_term: gettext('period'),
             shorthelp: gradeeditor.shortformat.shorthelp,
@@ -237,6 +248,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
             needsGradeFormatExplained: gradeeditor.shortformat.widget !== 'bool',
             loading: false
         });
+
         this._setPage('pageTwo');
         this._clearMessages();
     },
@@ -255,7 +267,6 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         var store = this.getPassedPreviousPeriodItemsStore();
         this._clearMessages();
         store.each(function(record) {
-            var oldgroup = record.get('oldgroup');
             record.setDirty(); // We want to push all records, not just those with changes
         }, this);
         this.getOverview().setLoading(gettext('Saving') + ' ...');

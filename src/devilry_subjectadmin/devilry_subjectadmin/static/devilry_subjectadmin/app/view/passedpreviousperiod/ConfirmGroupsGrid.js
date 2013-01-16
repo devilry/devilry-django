@@ -41,7 +41,6 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid', {
         };
         if(widget === 'bool') {
             editor.xtype = 'textfield';
-            editor.readOnly = true;
         } else if(widget === 'num-of-total') {
             editor.xtype = 'numberfield';
             editor.minValue = 0;
