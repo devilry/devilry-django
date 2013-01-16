@@ -22,8 +22,7 @@ class GroupField(DictField):
         candidates = forms.CharField(required=False) # Ignored
 
 class PassedInPreviousPeriodForm(forms.Form):
-    id = forms.IntegerField(required=False) # Ignored - see node about ExtJS further down
-    group = GroupField(required=True)
+    id = forms.IntegerField(required=True)
     newfeedback_shortformat = forms.CharField(required=False)
 #    oldgroup = forms.CharField(required=False) # Ignored
 #    whyignored = forms.CharField(required=False) # Ignored
@@ -87,6 +86,52 @@ class ResultSerializer(object):
 
 class PassedInPreviousPeriod(View):
     """
+    Autodetect and mark groups as passed previous periods.
+
+    # Parameters
+    Takes the ``id`` of the assignment as the last segment of the url PATH.
+
+    # GET
+
+    ## Returns
+    Returns a list/array where each item is an object describing a group on the current assignment
+    with the following attributes:
+
+    - ``id``: The ID of the group (same as the id-attribute of the ``group`` below).
+    - ``group``: An object with details about the group. Has the following attributes:
+        - ``candidates``: A list of candidates on the group. Each candidate has the following
+          attributes:
+            - ``id``: The ID of the candidate object.
+            - ``candidate_id``: The candidateID for this candidate - used on anonymous assignments.
+            - ``user``: An object describing the user with the following attributes:
+                - ``id``: The internal ID for the user.
+                - ``displayname``: The name of the user if available, otherwise, the username.
+                - ``username``: The username.
+                - ``full_name``: The full name of the user, or ``null``.
+                - ``email``: The email-address of the user.
+    - ``oldgroup``: An object describing an autodetected old group with passing grade and the same
+        candidates as this group. ``null`` if no such group is detected. Has the following attributes:
+            - ``id``: The ID of the old group.
+            - ``assignment``: An object describing the assignment of the old group. Attributes:
+                ``id``: ID of the assignment.
+                ``short_name``: Short name of the assignment.
+                ``long_name``: Long name of the assignment.
+            - ``period``: An object describing the period of the old group. Attributes:
+                ``id``: ID of the period.
+                ``short_name``: Short name of the period.
+                ``long_name``: Long name of the period.
+            - ``feedback_shortformat``: The shortformat formatted feedback of the old group.
+
+    # PUT
+    Mark groups as passed previously. Takes a list/array of groups to pass, each group is an object
+    with the following attributes:
+
+    - ``id`` (int): The ID of a group that should be marked as approved in a previous period.
+      Must be a group in the
+    - ``newfeedback_shortformat`` (string|null): The feedback that should be added to the delivery
+      that is made to mark this as a previously passed group. If this is ``null``, we try to
+      autodetect the feedback, and autolink the feedback with an old feedback. You should
+      generally only set this to ``null`` if GET returns ``oldgroup!=null`` for the group.
     """
     permissions = (IsAuthenticated, IsAssignmentAdmin)
     resource = PassedInPreviousPeriodResource
@@ -129,7 +174,7 @@ class PassedInPreviousPeriod(View):
         marker = MarkAsPassedInPreviousPeriod(self.assignment)
         gradeeditor_config, shortformat = self._get_gradeeditor_config_and_shortformat()
         for item in self.CONTENT:
-            group = self.assignment.assignmentgroups.get(id=item['group']['id'])
+            group = self.assignment.assignmentgroups.get(id=item['id'])
             newfeedback_shortformat = item['newfeedback_shortformat']
             if newfeedback_shortformat:
                 feedback = shortformat.to_staticfeedback_kwargs(gradeeditor_config, newfeedback_shortformat)
