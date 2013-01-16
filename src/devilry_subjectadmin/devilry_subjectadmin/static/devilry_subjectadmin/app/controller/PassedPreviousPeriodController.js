@@ -55,6 +55,9 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
     }, {
         ref: 'pageTwo',
         selector: 'passedpreviousperiodoverview #pageTwo'
+    }, {
+        ref: 'confirmGroupsGrid',
+        selector: 'passedpreviousperiodoverview confirmpassedpreviousgroupsgrid'
     }],
 
     init: function() {
@@ -144,7 +147,15 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
             if(displayedGroups === 0) {
                 this._handleNoDisplayedGroups();
             }
+
+            var store = this.getPassedPreviousPeriodItemsStore();
+            store.each(function(record) {
+                record.set('newfeedback_shortformat', record.get('oldgroup').feedback_shortformat);
+                record.commit();
+            });
+
             this.getGroupsGrid().selectWithPassingGradeInPrevious();
+            this.getConfirmGroupsGrid().addEditColumn(this.assignmentRecord.get('gradeeditor'));
         } else {
             this.onLoadFailure(operation);
         }
