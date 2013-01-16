@@ -3,15 +3,35 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid', {
     alias: 'widget.confirmpassedpreviousgroupsgrid',
     cls: 'devilry_subjectadmin_editpassedpreviousgroupssgrid bootstrap',
 
+    requires: [
+        'Ext.grid.plugin.CellEditing'
+    ],
+    hideHeaders: false,
+
 //    disableSelection: true,
 
-    addColumns:function () {
+    extraInit: function () {
         this.columns.push({
-            dataIndex: 'id',
-            flex: 1,
+            dataIndex: 'feedback_shortformat',
+            text: gettext('Grade'),
+            flex: 3,
             menuDisabled: true,
-            renderer: this.renderoldOrIgnoredCol,
-            sortable: false
+            renderer: this._renderGradeCol,
+            sortable: false,
+            editor: {
+                allowBlank: false
+            }
         });
+
+        this.selType = 'cellmodel';
+        this.plugins = [
+            Ext.create('Ext.grid.plugin.CellEditing', {
+                clicksToEdit: 1
+            })
+        ];
+    },
+
+    _renderGradeColumn: function(unused, unused2, record) {
+        return '';
     }
 });
