@@ -30,6 +30,9 @@ class BasicFormShortFormat(ShortFormatNumOfTotalBase):
     def format_feedback(cls, config, feedback):
         return str(feedback.points)
 
+    @classmethod
+    def shorthelp(cls, config):
+        return _('Must be a number.')
 
 
 class BasicForm(JsonRegistryItem):

@@ -45,6 +45,10 @@ class ApprovedShortFormat(ShortFormat):
         else:
             return cls.falsevalue
 
+    @classmethod
+    def shorthelp(cls, config):
+        return _('Must be one of: true, false.')
+
 
 class Approved(JsonRegistryItem):
     """

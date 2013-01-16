@@ -76,20 +76,31 @@ class ShortFormat(object):
         """
         raise NotImplementedError()
 
+    @classmethod
+    def shorthelp(cls, config):
+        """
+        Get a short help for this shortformat. Can be more than 40 chars, but it should be
+        understandable if we ellipsis the string at 40 chars (I.E.: cut the string and suffix with
+        ``...``)
+        :param config: A :class:`devilry.apps.gradeeditors.models.Config` object.
+        """
+        raise NotImplementedError()
 
 
 class ShortFormatNumOfTotalBase(ShortFormat):
     widget = ShortFormatWidgets.NUM_OF_TOTAL
-    patt = re.compile(r'^(\d+)/(\d+)$')
 
     @classmethod
     def validate(cls, value):
-        match = cls.patt.match(value)
-        if match:
-            x, y = match.groups()
-            if y >= x:
-                return
-        raise ValidationError(_('Must be on the "X/Y" format where X and Y are both numbers, and "Y >= X".'))
+        if not value.isdigit():
+            raise ValidationError(_('Must be a number.'))
+
+    @classmethod
+    def get_value_as_number(cls, value):
+        """
+        Parse the value string and return it as a number.
+        """
+        return int(value)
 
 
 
