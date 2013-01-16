@@ -56,6 +56,9 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         ref: 'pageTwo',
         selector: 'passedpreviousperiodoverview #pageTwo'
     }, {
+        ref: 'pageTwoSidebar',
+        selector: 'passedpreviousperiodoverview #pageTwo #pageTwoSidebar'
+    }, {
         ref: 'confirmGridWrapper',
         selector: 'passedpreviousperiodoverview #pageTwo #confirmGridWrapper'
     }, {
@@ -215,11 +218,19 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         store.filterBy(function(record) {
             return selModel.isSelected(record);
         });
+
+        var gradeeditor = this.assignmentRecord.get('gradeeditor');
         var wrapper = this.getConfirmGridWrapper();
         wrapper.removeAll();
         wrapper.add({
             xtype: 'confirmpassedpreviousgroupsgrid',
-            gradeeditor: this.assignmentRecord.get('gradeeditor')
+            gradeeditor: gradeeditor
+        });
+        this.getPageTwoSidebar().update({
+            period_term: gettext('period'),
+            shorthelp: gradeeditor.shortformat.shorthelp,
+            gradingsystem: Ext.String.format('<em>{0}</em>', gradeeditor.title),
+            loading: false
         });
         this._setPage('pageTwo');
     },
