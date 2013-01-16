@@ -1,3 +1,4 @@
+import json
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import deliverytypes
 
@@ -118,3 +119,67 @@ class TestPassedPreviousPeriod(SubjectAdminSeleniumTestCase):
             'We did not detect any groups that Devilry does not believe should '\
             'be ignored. Use the checkbox below the grid to see and select ignored groups.',
             warning.text)
+
+
+    def _click_nextbutton(self):
+        button = self.waitForAndFindElementByCssSelector(
+            '.devilry_subjectadmin_passedpreviousperiodoverview .nextButton button')
+        self.waitForEnabled(button)
+        button.click()
+
+    def _click_savebutton(self):
+        button = self.waitForAndFindElementByCssSelector(
+            '.devilry_subjectadmin_passedpreviousperiodoverview .saveButton button')
+        self.waitForEnabled(button)
+        button.click()
+
+    def test_page2_boolwidget(self):
+        self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
+        self.testhelper.create_feedbacks(
+            (self.testhelper.sub_p1_a1_g1, {'grade': 'B', 'points': 86, 'is_passing_grade': True})
+        )
+        self._click_nextbutton()
+        self.waitForText('Make sure you really want to mark these groups')
+        pagetwosidebar = self.waitForAndFindElementByCssSelector(
+            '.devilry_subjectadmin_passedpreviousperiodoverview .pageTwoSidebar')
+        self.assertNotIn('Grade format', pagetwosidebar.text)
+
+    def _set_grade_editor(self, assignment, gradeeditorid, config):
+        assignment.gradeeditor_config.gradeeditorid = gradeeditorid
+        assignment.gradeeditor_config.config = config
+        assignment.gradeeditor_config.save()
+
+    def test_page2_nonboolwidget_sidebar(self):
+        self._set_grade_editor(self.testhelper.sub_p2_a1, 'basicform',
+            json.dumps({'approvedLimit': 12}))
+        self.testhelper.create_feedbacks(
+            (self.testhelper.sub_p1_a1_g1, {'grade': 'B', 'points': 86, 'is_passing_grade': True})
+        )
+        self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
+        self._click_nextbutton()
+        pagetwosidebar = self.waitForAndFindElementByCssSelector(
+            '.devilry_subjectadmin_passedpreviousperiodoverview .pageTwoSidebar')
+        gradeformathelp = self.waitForAndFindElementByCssSelector('.gradeformat-help', within=pagetwosidebar)
+        self.assertIn('Must be a number. 12 points is required to pass.', gradeformathelp.text)
+
+
+    def _test_save(self, gradeeditor, config=None):
+        self._set_grade_editor(self.testhelper.sub_p2_a1, gradeeditor, config)
+        self.assertEquals(self.testhelper.sub_p2_a1_g1_d1.deliveries.count(), 0)
+        self.testhelper.create_feedbacks(
+            (self.testhelper.sub_p1_a1_g1, {'grade': 'B', 'points': 86, 'is_passing_grade': True})
+        )
+        self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
+        self._click_nextbutton()
+        self._click_savebutton()
+        successmessage = self.waitForAndFindElementByCssSelector(
+            '.devilry_extjsextras_floatingalertmessagelist .passed-previously-sync-success')
+        self.assertIn('Marked 1 groups as previously passed.', successmessage.text)
+        self.assertEquals(self.testhelper.sub_p2_a1_g1_d1.deliveries.count(), 1)
+
+    def test_save_approved(self):
+        self._test_save('approved')
+
+    def test_save_basicform(self):
+        self._test_save('basicform',
+            config=json.dumps({'approvedLimit': 12}))

@@ -55,6 +55,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                             xtype: 'button',
                             scale: 'large',
                             text: gettext('Next'),
+                            cls: 'nextButton',
                             disabled: true,
                             itemId: 'nextButton'
                         }]
@@ -91,7 +92,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                         xtype: 'markupmoreinfobox',
                         region: 'west',
                         width: this.sideBarWidth,
-                        cls: 'bootstrap',
+                        cls: 'bootstrap pageTwoSidebar',
                         padding: '0 30 0 0',
                         autoScroll: true,
                         itemId: 'pageTwoSidebar',
@@ -103,19 +104,21 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                             '</p>',
 
                             '<tpl if="needsGradeFormatExplained">',
-                                '<h4>',
-                                    gettext('Grade format'),
-                                '</h4>',
-                                '<p>',
-                                    gettext('The current grading system, {gradingsystem}, specifies the following help:'),
-                                    ' <blockquote class="text-info shorthelp">{shorthelp}</blockquote>',
-                                '</p>',
-                                '<p>',
-                                    '<span class="text-warning">', gettext('Warning'), ':</span>',
-                                    '<small> ',
-                                        gettext('You must specify passing grades. Many users find it confusing when the autodetected grade is not a passing grade, but that is simply because the assignment has been configured differently this {period_term}.'),
-                                    '</small>',
-                                '</p>',
+                                '<div class="gradeformat-help">',
+                                    '<h4>',
+                                        gettext('Grade format'),
+                                    '</h4>',
+                                    '<p>',
+                                        gettext('The current grading system, {gradingsystem}, specifies the following help:'),
+                                        ' <blockquote class="text-info shorthelp">{shorthelp}</blockquote>',
+                                    '</p>',
+                                    '<p>',
+                                        '<span class="text-warning">', gettext('Warning'), ':</span>',
+                                        '<small> ',
+                                            gettext('You must specify passing grades. Many users find it confusing when the autodetected grade is not a passing grade, but that is simply because the assignment has been configured differently this {period_term}.'),
+                                        '</small>',
+                                    '</p>',
+                                '</div>',
                             '</tpl>',
                             '<p>{MORE_BUTTON}</p>',
 
@@ -156,7 +159,8 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                         }, '->', {
                             xtype: 'primarybutton',
                             text: gettext('Save'),
-                            itemId: 'saveButton'
+                            itemId: 'saveButton',
+                            cls: 'saveButton'
                         }]
                     }]
                 }, {

@@ -288,6 +288,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         this.application.getAlertmessagelist().add({
             type: 'success',
             autoclose: true,
+            extracls: 'passed-previously-sync-success',
             message: interpolate(gettext('Marked %(count)s groups as previously passed.'), {
                 count: count
             }, true)
