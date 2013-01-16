@@ -5,11 +5,15 @@ from djangorestframework.resources import FormResource
 from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.response import ErrorResponse
 from djangorestframework import status
+from django.db import transaction
 
 from devilry.utils.passed_in_previous_period import MarkAsPassedInPreviousPeriod
+from devilry.utils.passed_in_previous_period import MarkAsPassedInPreviousPeriodError
 from devilry.apps.core.models import Assignment
 from devilry.apps.gradeeditors import gradeeditor_registry
+from devilry.apps.gradeeditors import ShortFormatValidationError
 from .errors import NotFoundError
+from .errors import ValidationErrorResponse
 from .auth import IsAssignmentAdmin
 from .group import GroupSerializer
 
@@ -17,7 +21,7 @@ from .group import GroupSerializer
 
 class PassedInPreviousPeriodForm(forms.Form):
     id = forms.IntegerField(required=True)
-    newfeedback_shortformat = forms.CharField(required=False)
+    newfeedback_shortformat = forms.CharField(required=True)
 
 
 class PassedInPreviousPeriodResource(FormResource):
@@ -166,16 +170,23 @@ class PassedInPreviousPeriod(View):
         self.assignment = self._get_assignment(id)
         marker = MarkAsPassedInPreviousPeriod(self.assignment)
         gradeeditor_config, shortformat = self._get_gradeeditor_config_and_shortformat()
-        for item in self.CONTENT:
-            group = self.assignment.assignmentgroups.get(id=item['id'])
-            newfeedback_shortformat = item['newfeedback_shortformat']
-            if newfeedback_shortformat:
+        with transaction.commit_on_success():
+            for item in self.CONTENT:
+                group = self.assignment.assignmentgroups.get(id=item['id'])
+                newfeedback_shortformat = item['newfeedback_shortformat']
+                try:
+                    shortformat.validate(gradeeditor_config, newfeedback_shortformat)
+                except ShortFormatValidationError as e:
+                    raise ValidationErrorResponse(e)
                 feedback = shortformat.to_staticfeedback_kwargs(gradeeditor_config, newfeedback_shortformat)
                 feedback['rendered_view'] = ''
-                # NOTE: If we do not get a feedback, a search for old feedbacks is performed,
-                #       and saved_by is copied from the old feedback.
                 feedback['saved_by'] = self.request.user
-            else:
-                feedback = None
-            marker.mark_group(group, feedback=feedback)
+
+                oldgroup = None
+                try:
+                    oldgroup = marker.find_previously_passed_group(group)
+                except MarkAsPassedInPreviousPeriodError:
+                    pass
+                created_feedback = marker.mark_as_delivered_in_previous(group, oldgroup=oldgroup,
+                        feedback=feedback)
         return self._get_result()

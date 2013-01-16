@@ -1,11 +1,11 @@
-from django.test import TestCase
+from django.test import TransactionTestCase
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.rest_testclient import RestClient
 from devilry.apps.core.models import deliverytypes
 
 
-class TestRestPassedInPreviousPeriod(TestCase):
+class TestRestPassedInPreviousPeriod(TransactionTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
@@ -89,7 +89,8 @@ class TestRestPassedInPreviousPeriod(TestCase):
         content, response = self._putas(username,
                                         [{'id': g1.id,
                                           'newfeedback_shortformat': 'true'},
-                                         {'id': g3.id}])
+                                         {'id': g3.id,
+                                          'newfeedback_shortformat': 'true'}])
         self.assertEquals(response.status_code, 200)
 
         g1 = self.testhelper.reload_from_db(g1)
@@ -100,7 +101,7 @@ class TestRestPassedInPreviousPeriod(TestCase):
         self.assertEquals(g2.feedback, None)
 
         g3 = self.testhelper.reload_from_db(g3)
-        self.assertEquals(g3.feedback.grade, 'C')
+        self.assertEquals(g3.feedback.grade, 'approved')
         self.assertEquals(g3.feedback.delivery.delivery_type, deliverytypes.ALIAS)
         self.assertEquals(g3.feedback.delivery.alias_delivery, oldg3_delivery)
 
@@ -115,3 +116,13 @@ class TestRestPassedInPreviousPeriod(TestCase):
         self.testhelper.create_user('nobody')
         content, response = self._putas('nobody', [])
         self.assertEquals(response.status_code, 403)
+
+
+    def test_put_shortformat_validationerror(self):
+        self.testhelper.add_to_path('uni;sub.cur.a1.g1:candidate(student1).d1')
+        g1 = self.testhelper.sub_cur_a1_g1
+        content, response = self._putas('adm',
+            [{'id': g1.id,
+              'newfeedback_shortformat': 'invalidstuff'}])
+        self.assertEquals(response.status_code, 400)
+        self.assertEquals(content['errors'][0], u'Must be one of: true, false.')
