@@ -10,6 +10,7 @@ from .auth import periodadmin_required
 from .viewbase import BaseNodeInstanceModelView
 from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
+from devilry.apps.gradeeditors import gradeeditor_registry
 
 
 
@@ -43,7 +44,25 @@ class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResour
     fields = AssignmentResource.fields + ('can_delete', 'admins', 'inherited_admins',
                                           'breadcrumb', 'number_of_groups',
                                           'number_of_deliveries',
-                                          'number_of_candidates')
+                                          'number_of_candidates', 'gradeeditor')
+
+    def _serialize_shortformat(self, shortformat):
+        if shortformat:
+            return {
+                'widget': shortformat.widget
+            }
+        else:
+            return None
+
+    def gradeeditor(self, instance):
+        if isinstance(instance, self.model):
+            gradeeditorid = instance.gradeeditor_config.gradeeditorid
+            gradeeditor = gradeeditor_registry[gradeeditorid]
+            return {
+                'gradeeditorid': gradeeditorid,
+                'title': gradeeditor.title,
+                'shortformat': self._serialize_shortformat(gradeeditor.shortformat)
+            }
 
 
 class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):
