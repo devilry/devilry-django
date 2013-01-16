@@ -4,9 +4,10 @@
     A :class:`Registry`-object.
 """
 import json
+import re
 from django.conf import settings
 from django.core.exceptions import ValidationError
-
+from django.utils.translation import ugettext_lazy as _
 
 class ConfigValidationError(ValidationError):
     """
@@ -19,6 +20,63 @@ class DraftValidationError(ValidationError):
     Raised when :meth:`RegistryItem.validate_draft` fails to validate the
     draftstring.
     """
+
+
+class ShortFormatValidationError(ValidationError):
+    """
+    Raised when :meth:`.ShortFormat.validate` fails.
+    """
+
+
+class ShortFormatWidgets(object):
+    STRING = 'string'
+    BOOL = 'bool'
+    NUM_OF_TOTAL = 'num-of-total'
+
+
+class ShortFormat(object):
+    widget = ShortFormatWidgets.STRING
+
+    @classmethod
+    def validate(cls, value):
+        """
+        Validate the given shortformat.
+        """
+        raise NotImplementedError()
+
+    @classmethod
+    def to_staticfeedback_kwargs(cls, assignment, value):
+        """
+        Convert ``value`` into a dictionary of keyword arguments for StaticFeedback.
+
+        :param assignment: A :class:`devilry.apps.core.models.Assignment` object.
+        :param value: The value. This is already validated by :meth:`.validate` when
+            sent to this method.
+
+        :return:
+            The returned dict should only contain the following keys:
+
+                - is_passing_grade
+                - grade
+                - points
+                - rendered_view
+        """
+        raise NotImplementedError()
+
+
+class ShortFormatNumOfTotalBase(ShortFormat):
+    widget = ShortFormatWidgets.NUM_OF_TOTAL
+    patt = re.compile(r'^(\d+)/(\d+)$')
+
+    @classmethod
+    def validate(cls, value):
+        match = cls.patt.match(value)
+        if match:
+            x, y = match.groups()
+            if y >= x:
+                return
+        raise ValidationError(_('Must be on the "X/Y" format where X and Y are both numbers, and "Y >= X".'))
+
 
 
 class RegistryItem(object):
