@@ -1591,7 +1591,7 @@ msgstr "Sorter etter poeng i synkende rekkefølge"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:434
 msgid "Some students are ignored"
-msgstr "Ingen studenter tilgjengelige"
+msgstr "Noen studenter er ignorert"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:11
 msgid ""
