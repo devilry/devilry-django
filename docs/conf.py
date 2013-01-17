@@ -64,7 +64,8 @@ intersphinx_mapping = {
 
 extlinks = {
     'djangodoc': ('https://docs.djangoproject.com/en/{0}/%s'.format(django_version), None),
-    'devilrydeploy': ('https://devilry-deploy.readthedocs.org/en/{0}/%s'.format(version), None)
+    'devilrydeploy': ('https://devilry-deploy.readthedocs.org/en/{0}/%s'.format(version), None),
+    'devilryissue': ('https://github.com/devilry/devilry-django/issues/%s', 'issue ')
 }
 
 

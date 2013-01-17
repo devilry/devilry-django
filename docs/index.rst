@@ -74,6 +74,7 @@ Releases
 Table of contents
 #######################################################################
 .. toctree::
+    :maxdepth: 2
 
     core.models
     userobj
@@ -103,6 +104,7 @@ Table of contents
     pycharm
 
     releasenoteslisting
+    release
 
 
 
