@@ -2119,7 +2119,7 @@ msgid ""
 "Use <em>Select by search</em> (further down in the help) to efficiently "
 "select students."
 msgstr ""
-"Bruk <em>Select by search</em> (lenger ned på denne hjelpsiden) for å "
+"Bruk <em>Velg via søk</em> (lenger ned på denne hjelpsiden) for å "
 "effektivt velge studenter."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:32
@@ -2352,7 +2352,7 @@ msgstr "Avansert"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:74
 msgid "Random distribute"
-msgstr "Tilfeldig distribuering"
+msgstr "Tilfeldig fordeling"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:77
 msgid ""
