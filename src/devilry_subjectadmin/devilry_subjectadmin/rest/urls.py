@@ -23,6 +23,7 @@ from .mergeintogroup import MergeIntoGroup
 from .aggregated_groupinfo import AggregatedGroupInfo
 from .passedinpreviousperiod import PassedInPreviousPeriod
 from .detailedperiodoverview import DetailedPeriodOverview
+from .examinerstats import ExaminerStats
 
 
 urlpatterns = patterns('devilry_subjectadmin.rest',
@@ -44,6 +45,9 @@ urlpatterns = patterns('devilry_subjectadmin.rest',
                        url(r'^relatedexaminer_assignment_ro/(?P<assignment_id>\d+)/$', ListRelatedExaminersOnAssignmentRest.as_view()),
                        url(r'^allwhereisadmin/$', AllWhereIsAdmin.as_view()),
                        url(r'^aggregated-groupinfo/(?P<id>[^/]+)$', AggregatedGroupInfo.as_view()),
+                       url(r'^examinerstats/(?P<id>[^/]+)$',
+                           ExaminerStats.as_view(),
+                           name='devilry-subjectadmin-rest-examinerstats'),
                        url(r'^popfromgroup/(?P<id>[^/]+)$', PopFromGroup.as_view()),
                        url(r'^mergeintogroup/(?P<id>[^/]+)$', MergeIntoGroup.as_view()),
                        url(r'^deadlinesbulk/(?P<id>[^/]+)/$', DeadlinesBulkListOrCreate.as_view()),
