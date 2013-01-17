@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "devilry",
-    version = "1.1",
+    version = "1.2.1rc1",
     url = 'http://devilry.org',
     license = 'BSD',
     description = "A system for handling electronic deliveries.",

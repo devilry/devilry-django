@@ -50,7 +50,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.intersphin
 #
 # The short X.Y version.
 version = '1.2.1'
-devilry_releasetype = 'rc'
+devilry_releasetype = 'rc1'
 # The full version, including alpha/beta/rc tags.
 release = '{0}-{1}'.format(version, devilry_releasetype)
 
@@ -64,7 +64,7 @@ intersphinx_mapping = {
 
 extlinks = {
     'djangodoc': ('https://docs.djangoproject.com/en/{0}/%s'.format(django_version), None),
-    'devilrydeploy': ('https://devilry-deploy.readthedocs.org/en/{0}/%s'.format(version), None),
+    'devilrydeploy': ('https://devilry-deploy.readthedocs.org/en/{0}/%s'.format(release), None),
     'devilryissue': ('https://github.com/devilry/devilry-django/issues/%s', 'issue ')
 }
 
