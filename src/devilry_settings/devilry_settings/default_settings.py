@@ -74,8 +74,8 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry_i18n',
                   'devilry_settings',
                   'devilry_subjectadmin',
-                  'devilry_qualifiesforexam',
-                  'devilry_qualifiesforexam_approved',
+#                  'devilry_qualifiesforexam',
+#                  'devilry_qualifiesforexam_approved',
                   'devilry_nodeadmin'
                  ]
 
