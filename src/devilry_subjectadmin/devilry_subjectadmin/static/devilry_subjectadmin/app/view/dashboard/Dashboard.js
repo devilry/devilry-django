@@ -55,6 +55,18 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
                 title: gettext('Create new assignment'),
                 description: gettext('Takes you through creating any kind of assignment (electronic, paper, exam, ...).')
             }]
+        }, {
+            xtype: 'box',
+            cls: 'bootstrap',
+            tpl: [
+                '<h4>{heading}</h4>',
+                '<p class="muted"><small>',
+                    gettext('Click your username in the header of the page, and see under the Help-heading.'),
+                '</small></p>'
+            ],
+            data: {
+                heading: gettext('More guides and help')
+            }
         }]
     }]
 });
