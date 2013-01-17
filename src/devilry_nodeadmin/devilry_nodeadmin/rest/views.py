@@ -93,7 +93,7 @@ class NodeSubjectResource( ModelResource ):
 class NodeDetailsResource( NodeResource ):
     model = Node
     fields = (  'id', 'short_name', 'long_name', 'predecessor', 'etag',
-                'subject_count', 'assignment_count', 'period_count', 'subjects', 'breadcrumbs')
+                'subject_count', 'assignment_count', 'period_count', 'subjects', 'breadcrumbs', 'path', )
 
     def subjects( self, instance ):
         resource = NodeSubjectResource()
@@ -115,6 +115,25 @@ class NodeDetailsResource( NodeResource ):
         # [?] downward-recursive?
         result = instance.subjects.all().aggregate( Count('periods') )
         return result['periods__count']
+
+    def path( self, instance ):
+        PATH_MAX_LENGTH = 8
+
+        path = []
+        counter = 1
+        candidate = instance
+        candidates = Node.where_is_admin_or_superadmin( self.view.request.user )
+
+        while candidate in candidates and counter < PATH_MAX_LENGTH:
+            path.append( candidate )
+            candidate = candidate.parentnode
+            counter += 1
+
+        path.reverse()
+
+        serializer = PathElementResource()
+
+        return serializer.serialize_iter( path )
 
 
 class IsNodeAdmin( BaseIsAdmin ):

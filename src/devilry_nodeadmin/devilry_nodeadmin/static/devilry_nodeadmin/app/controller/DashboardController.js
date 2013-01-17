@@ -9,6 +9,10 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
         'RelatedNodes'
     ],
 
+    models: [
+        'Node'
+    ],
+
     refs: [{
         ref: 'secondary',
         selector: 'dashboardoverview #secondary'
@@ -23,7 +27,31 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
     },
 
     _onRenderSecondary: function() {
-//        this.getSecondary().update('Hei')
+
+        // STORES
+
+        // related nodes
+        this.getRelatedNodesStore().collect( {
+            scope: this,
+            callback: function( records, op ) {
+                if( op.success ) {
+                    this._onLoadRelatedNodesSuccess( records );
+                } else {
+                    this._onLoadError(op);
+                }
+            }
+        });
+
+    },
+
+    _onLoadRelatedNodes: function( records ) {},
+
+    _onLoadError:function (op) {
+        var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
+        errorhandler.addErrorsFromOperation(op);
+        this.application.getAlertmessagelist().addMany(
+            errorhandler.errormessages, 'error', true );
     }
+
 });
 

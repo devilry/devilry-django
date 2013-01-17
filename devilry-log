@@ -314,4 +314,10 @@ ExtJS Stores
 * Find out how to ignore the app-all.js in the translations.
 * Improved navigation elements.
 * Finished the first draft of the translation.
-* 
+
+
+2012-01-17
+* Fixing breadcrumbs in nodeadmin involves the fixing the _onLoad* store loading callbacks in NodeBrowserController. 
+* I have completed api that returns the breadcrumb path as a sorted list of elements. This spares us for an additional http-request, error handling, and boilerplate.
+* The path attribute in each node has to be translated into the breadcrumb schema: { url: "...", text: "..." }. This is done by 
+* Fixed the firefox and IE issue: js attempts to parse html-output of rest framework instead of the json. Seems to be a url-issue, which requires and appendage of format=json to the url.

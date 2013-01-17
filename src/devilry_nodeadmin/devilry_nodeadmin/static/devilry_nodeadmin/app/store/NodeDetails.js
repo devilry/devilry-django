@@ -3,15 +3,16 @@ Ext.define( 'devilry_nodeadmin.store.NodeDetails', {
     storeId: 'NodeDetails',
     model: 'devilry_nodeadmin.model.Details',
     proxy: {
-        type: 'rest',
-        urlpatt: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_nodeadmin/rest/node/{0}/details',
+        type: 'ajax',
+        url: null,
+        urlPattern: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_nodeadmin/rest/node/{0}/details?format=json',
         reader: {
             type: 'json'
         }
     },
 
-    loadWithNode: function(node_pk, config) {
-        this.proxy.url = Ext.String.format(this.proxy.urlpatt, node_pk);
+    collectByNode: function( node_pk, config ) {
+        this.proxy.url = Ext.String.format(this.proxy.urlPattern, node_pk);
         this.load(config);
     }
 });
