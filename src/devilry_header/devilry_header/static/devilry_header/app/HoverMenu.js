@@ -20,42 +20,60 @@ Ext.define('devilry_header.HoverMenu', {
         this._setupAutosizing();
 
         Ext.apply(this, {
-            layout: 'column',
+            layout: 'border',
             items: [{
-                width: 300,
                 xtype: 'container',
-                padding: '10 20 10 10',
+                region: 'center',
+                layout: 'column',
                 items: [{
-                    xtype: 'box',
-                    html: [
-                        '<h2>',
-                            gettext('Choose your role'),
-                        '</h2>'
-                    ].join('')
-                }, {
-                    xtype: 'devilryheader_roles'
-                }]
-            }, {
-                columnWidth: 1.0,
-                padding: '10 10 10 20',
-                xtype: 'container',
-                items: [{
-                    xtype: 'devilryheader_userinfobox'
-                }, {
+                    width: 300,
                     xtype: 'container',
-                    margin: '30 0 0 0',
+                    padding: '10 20 10 10',
                     items: [{
                         xtype: 'box',
-                        html: ['<h2>', gettext('Language'), '</h2>'].join('')
+                        html: [
+                            '<h2>',
+                                gettext('Choose your role'),
+                            '</h2>'
+                        ].join('')
                     }, {
-                        xtype: 'devilry_i18n_languageselect',
-                        width: 250
+                        xtype: 'devilryheader_roles'
                     }]
-
                 }, {
-                    margin: '30 0 0 0',
-                    xtype: 'devilryheader_helplinksbox'
+                    columnWidth: 1.0,
+                    padding: '10 10 10 20',
+                    xtype: 'container',
+                    items: [{
+                        xtype: 'devilryheader_userinfobox'
+                    }, {
+                        xtype: 'container',
+                        margin: '30 0 0 0',
+                        items: [{
+                            xtype: 'box',
+                            html: ['<h2>', gettext('Language'), '</h2>'].join('')
+                        }, {
+                            xtype: 'devilry_i18n_languageselect',
+                            width: 250
+                        }]
+
+                    }, {
+                        margin: '30 0 0 0',
+                        xtype: 'devilryheader_helplinksbox'
+                    }]
                 }]
+            }, {
+                xtype: 'box',
+                cls: 'devilryheader_footer',
+                region: 'south',
+                height: 30,
+                tpl: [
+                    '<p><small>',
+                        'Devilry {version} (<a href="http://devilry.org">http://devilry.org</a>)',
+                    '</small></p>'
+                ],
+                data: {
+                    version: DevilrySettings.DEVILRY_VERSION
+                }
             }]
         });
         this.callParent(arguments);

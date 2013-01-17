@@ -9,7 +9,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
     frame: false,
     hideHeaders: true,
 
-    col1Tpl: [
+    groupInfoColTpl: [
         '<div class="groupinfo groupinfo_{id}" style="white-space:normal !important;">',
             '<div class="names"><strong>',
                 '{displaynames}',
@@ -17,18 +17,18 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
             '<tpl if="name">',
                 '<div class="groupname">{name}</div>',
             '</tpl>',
-            '<div class="username"><small>{usernames}</small></div>',
+            '<div class="usernames"><small class="muted">{usernames}</small></div>',
         '</div>'
     ],
 
-    col2Tpl: [
+    oldOrIgnoredColTpl: [
         '<div class="oldgroup_or_ignoredinfo oldgroup_or_ignoredinfo_{id}" style="white-space:normal !important;">',
             '<tpl if="oldgroup">',
                 '<span class="oldgroupinfo text-success">',
                     gettext('Passed {oldperiodname}.'),
                 '</span>',
             '<tpl else>',
-                '<span class="text-warning">',
+                '<span class="whyignored whyignored_{whyignored} text-warning">',
                     '<tpl switch="whyignored">',
                         '<tpl case="has_alias_feedback">',
                             gettext('Is already marked as previously passed.'),
@@ -43,27 +43,29 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
     ],
 
     initComponent: function() {
-        this.col1TplCompiled = Ext.create('Ext.XTemplate', this.col1Tpl);
-        this.col2TplCompiled = Ext.create('Ext.XTemplate', this.col2Tpl);
+        this.groupInfoColTplCompiled = Ext.create('Ext.XTemplate', this.groupInfoColTpl);
+        this.oldOrIgnoredColTplCompiled = Ext.create('Ext.XTemplate', this.oldOrIgnoredColTpl);
         Ext.apply(this, {
+            viewConfig:{
+                markDirty:false
+            },
             columns: [{
                 dataIndex: 'id',
+                text: gettext('Group'),
                 flex: 7,
                 menuDisabled: true,
-                renderer: this.renderCol1,
-                sortable: false
-            }, {
-                dataIndex: 'id',
-                flex: 3,
-                menuDisabled: true,
-                renderer: this.renderCol2,
+                renderer: this.rendergroupInfoCol,
                 sortable: false
             }]
         });
+        this.extraInit();
         this.callParent(arguments);
     },
 
-    renderCol1: function(unused, unused2, record) {
+    extraInit: function () {
+    },
+
+    rendergroupInfoCol: function(unused, unused2, record) {
         var group = record.get('group');
         var displaynames = [];
         var usernames = [];
@@ -76,8 +78,8 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
             displaynames.push(candidate.user.displayname);
             usernames.push(candidate.user.username);
         }
-        return this.col1TplCompiled.apply({
-            id: record.get('id'),
+        return this.groupInfoColTplCompiled.apply({
+            id: group.id,
             name: group.name,
             displaynames: displaynames.join(', '),
             usernames: usernames.join(', '),
@@ -85,11 +87,11 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.GridBase', {
         });
     },
 
-    renderCol2: function(unused, unused2, record) {
+    renderOldOrIgnoredCol: function(unused, unused2, record) {
         var oldgroup = record.get('oldgroup');
         var whyignored = record.get('whyignored');
-        return this.col2TplCompiled.apply({
-            id: record.get('id'),
+        return this.oldOrIgnoredColTplCompiled.apply({
+            id: record.get('group').id,
             oldgroup: oldgroup,
             oldperiodname: oldgroup? oldgroup.period.long_name: null,
             whyignored: whyignored

@@ -4,9 +4,10 @@
     A :class:`Registry`-object.
 """
 import json
+import re
 from django.conf import settings
 from django.core.exceptions import ValidationError
-
+from django.utils.translation import ugettext_lazy as _
 
 class ConfigValidationError(ValidationError):
     """
@@ -19,6 +20,88 @@ class DraftValidationError(ValidationError):
     Raised when :meth:`RegistryItem.validate_draft` fails to validate the
     draftstring.
     """
+
+
+class ShortFormatValidationError(ValidationError):
+    """
+    Raised when :meth:`.ShortFormat.validate` fails.
+    """
+
+
+class ShortFormatWidgets(object):
+    STRING = 'string'
+    BOOL = 'bool'
+    NUM_OF_TOTAL = 'num-of-total'
+
+
+class ShortFormat(object):
+    widget = ShortFormatWidgets.STRING
+
+    @classmethod
+    def validate(cls, config, value):
+        """
+        Validate the given shortformat.
+
+        :param config: A :class:`devilry.apps.gradeeditors.models.Config` object.
+        """
+        raise NotImplementedError()
+
+    @classmethod
+    def to_staticfeedback_kwargs(cls, config, value):
+        """
+        Convert ``value`` into a dictionary of keyword arguments for StaticFeedback.
+
+        :param config: A :class:`devilry.apps.gradeeditors.models.Config` object.
+        :param value: The value. This is already validated by :meth:`.validate` when
+            sent to this method.
+
+        :return:
+            The returned dict should only contain the following keys:
+
+                - is_passing_grade
+                - grade
+                - points
+        """
+        raise NotImplementedError()
+
+    @classmethod
+    def format_feedback(cls, config, feedback):
+        """
+        Format the given feedback on a format that is parsable by this ShortFormat.
+
+        :param config: A :class:`devilry.apps.gradeeditors.models.Config` object.
+        :param feedback: A :class:`devilry.apps.core.models.StaticFeedback`.
+        :return: A string with the formatted feedback. The returned value must validate with
+            :meth:`.validate`.
+        """
+        raise NotImplementedError()
+
+    @classmethod
+    def shorthelp(cls, config):
+        """
+        Get a short help for this shortformat. Can be more than 40 chars, but it should be
+        understandable if we ellipsis the string at 40 chars (I.E.: cut the string and suffix with
+        ``...``)
+        :param config: A :class:`devilry.apps.gradeeditors.models.Config` object.
+        """
+        raise NotImplementedError()
+
+
+class ShortFormatNumOfTotalBase(ShortFormat):
+    widget = ShortFormatWidgets.NUM_OF_TOTAL
+
+    @classmethod
+    def validate(cls, config, value):
+        if not value.isdigit():
+            raise ShortFormatValidationError(_('Must be a number.'))
+
+    @classmethod
+    def get_value_as_number(cls, value):
+        """
+        Parse the value string and return it as a number.
+        """
+        return int(value)
+
 
 
 class RegistryItem(object):
@@ -44,10 +127,17 @@ class RegistryItem(object):
 
         The URL to the config editor.
 
-    .. attribute:: draft_editor_url::
+    .. attribute:: draft_editor_url
 
         The URL to the draft editor.
+
+    .. attribute:: shortformat
+
+        An optional :class:`.ShortFormat` for this plugin. If no shortformat is defined,
+        the plugin will not be usable in places that require shortformat.
     """
+    shortformat = None
+
     def __str__(self):
         return self.title
 

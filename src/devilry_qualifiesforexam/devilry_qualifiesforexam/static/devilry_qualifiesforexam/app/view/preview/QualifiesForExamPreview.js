@@ -8,6 +8,10 @@ Ext.define('devilry_qualifiesforexam.view.preview.QualifiesForExamPreview' ,{
      */
 
     /**
+     * @cfg {string} [pluginid]
+     */
+
+    /**
      * @cfg {int} [periodid]
      */
 

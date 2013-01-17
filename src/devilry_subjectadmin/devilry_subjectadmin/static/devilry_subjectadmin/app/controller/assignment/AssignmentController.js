@@ -46,6 +46,9 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
     }, {
         ref: 'linkList',
         selector: 'assignmentoverview #linkList'
+    }, {
+        ref: 'examinerRoleBox',
+        selector: 'assignmentoverview #examinerRoleBox'
     }],
 
     init: function() {
@@ -79,10 +82,12 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
             heading: record.get('long_name')
         });
         this._setDangerousActionsLabels();
-        this._updateLinkList();
         this.application.fireEvent('assignmentSuccessfullyLoaded', record);
         if(this.assignmentRecord.get('number_of_groups') === 0) {
             this._handleNoGroups();
+        } else {
+            this._updateLinkList(true);
+            this._updateExaminerBox();
         }
         this.getAdminsbox().setBasenodeRecord(this.assignmentRecord);
     },
@@ -90,14 +95,25 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
         this.onLoadFailure(operation);
     },
 
-    _updateLinkList: function() {
+    _updateLinkList: function(has_students) {
         this.getLinkList().update({
             managestudents_url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignment_id),
             managedeadlines_url: devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id),
             passedpreviousperiod_url: devilry_subjectadmin.utils.UrlLookup.passedPreviousPeriod(this.assignment_id),
             assignmentData: this.assignmentRecord.data,
             electronic: this.assignmentRecord.get('delivery_types') === 0,
-            period_term: gettext('period')
+            period_term: gettext('period'),
+            has_students: has_students
+        });
+    },
+
+    _updateExaminerBox: function() {
+        this.getExaminerRoleBox().updateData({
+            loading: false,
+            is_published: this.assignmentRecord.get('is_published'),
+            mygroupscount: this.assignmentRecord.get('number_of_groups_where_is_examiner'),
+            totalgroups: this.assignmentRecord.get('number_of_groups'),
+            examinerui_url: devilry_subjectadmin.utils.UrlLookup.examinerGroupsOverviewTodo(this.assignmentRecord.get('id'))
         });
     },
 
@@ -139,5 +155,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
 
     _handleNoGroups: function() {
         this.getNoGroupsMessage().show();
+        this.getExaminerRoleBox().hide();
+        this._updateLinkList(false);
     }
 });

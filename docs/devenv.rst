@@ -36,7 +36,7 @@ Install dependencies/requirements
     - use Virtualenv to avoid installing anything globally, and to get a clean environment
     - use Fabric because we have a lot of useful scripts written for Fabric that will ease
       setting up your development environment and building various components of Devilry.
-      See :ref:`fabric`.
+      See :ref:`aboutfabric`.
 
     Note that all instructions below assume you have and want to install Fabric and Virtualenv.
 
@@ -101,7 +101,7 @@ And you may want to read :ref:`managepy`.
 Create a database
 #######################################################################
 We have several alternatives for setting up a demo database. They all
-use Fabric tasks. See :ref:`fabric`
+use Fabric tasks. See :ref:`aboutfabric`
 
 
 ::
@@ -114,7 +114,7 @@ the server as soon as the users have been created (one of the first
 things the script does).
 
 Alternative step 4.1 - Setup an empty databse
-------------------------------------------------
+================================================
 
 ::
 
@@ -122,7 +122,7 @@ Alternative step 4.1 - Setup an empty databse
     $ bin/fab syncdb
 
 Alternative step 4.1 - From database dump
-------------------------------------------------
+================================================
 
 Creating the demo database takes a lot of time (~12mins on a 2012
 macbook air with SSD disk). You may ask a developer to send you a
@@ -133,7 +133,7 @@ macbook air with SSD disk). You may ask a developer to send you a
     $ bin/fab unstash_db_and_deliveries
 
 How to create a DB-stash
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 Use this if you want to create a ``db_and_deliveries_stash/`` to send to
 other developers (which can follow the steps in the previous section)::
@@ -190,7 +190,7 @@ info about the demo database, including recommended test users for each
 role.
 
 
-.. _fabric:
+.. _aboutfabric:
 
 ###################################################
 Fabric

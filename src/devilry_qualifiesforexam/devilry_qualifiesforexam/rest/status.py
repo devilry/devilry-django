@@ -15,16 +15,20 @@ from devilry_qualifiesforexam.models import QualifiesForFinalExam
 from devilry.utils.restformfields import ListOfTypedField
 from devilry.utils.restformat import serialize_user
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
+from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
+from devilry_qualifiesforexam.pluginhelpers import create_settings_sessionkey
+from devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification
 
 
 
 class StatusForm(forms.ModelForm):
     class Meta:
         model = Status
-        fields = ['period', 'status', 'message', 'plugin', 'pluginsettings']
+        fields = ['period', 'status', 'message', 'plugin']
 
     passing_relatedstudentids = ListOfTypedField(coerce=int, required=False)
     notready_relatedstudentids = ListOfTypedField(coerce=int, required=False)
+    pluginsessionid = forms.CharField(required=False)
 
 
 class StatusResource(FormResource):
@@ -62,7 +66,7 @@ class StatusView(View):
             - ``user``: An object with information about the user that saved the status. Attributes:
                ``id``, ``username``, ``full_name``, ``email``.
             - ``plugin``: The ID of the plugin used to generate the list of qualified students.
-            - ``pluginsettings``: Settings provided to the plugin to geneate the list of qualified students.
+            - ``pluginsettings_summary``: Human-readable summary of the settings used to generate the status.
 
     With a period specified, return a detailed description of the latest status on that period,
     including all students on the period. The object has the same attributes as the items in
@@ -88,7 +92,6 @@ class StatusView(View):
         - ``almostready``: Almost ready for export. Student that are not ready are in the ``notready_relatedstudentids``-parameter.
     - ``message``: The status message. Can not be empty when the status is ``notready``.
     - ``plugin``: The plugin that was used to generate the results. Must be ``null`` when status is ``notready``, and required for all other statuses.
-    - ``pluginsettings``: The plugin settings that was used to generate the results.  Must be ``null`` when status is ``notready``. Not required by any of the other statuses.
     - ``passing_relatedstudentids``: List of related students that qualifies for final exam.
     - ``notready_relatedstudentids``: List of related students that are not ready to be exported.
       These are stored with the value ``None`` (``NULL``) in the ``qualifies`` database field.
@@ -103,6 +106,20 @@ class StatusView(View):
         if not Period.where_is_admin(self.request.user).filter(id=period.id).exists():
             raise ErrorResponse(status=statuscodes.HTTP_403_FORBIDDEN)
 
+    def _invoke_post_statussave(self, status):
+        pluginsessionid = self.CONTENT['pluginsessionid']
+        settings = None
+        if qualifiesforexam_plugins.uses_settings(status.plugin):
+            try:
+                settings = self.request.session.pop(create_settings_sessionkey(pluginsessionid))
+            except KeyError:
+                msg = 'The "{0}"-plugin requires settings - no settings found in the session.'.format(status.plugin)
+                raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST, {'detail': msg})
+        try:
+            qualifiesforexam_plugins.post_statussave(status, settings)
+        except PluginResultsFailedVerification as e:
+            raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST, {'detail': str(e)})
+
     def post(self, request, id=None):
         period = self.CONTENT['period']
         self._permissioncheck(period)
@@ -112,8 +129,7 @@ class StatusView(View):
                 status = self.CONTENT['status'],
                 message = self.CONTENT['message'],
                 user = self.request.user,
-                plugin = self.CONTENT['plugin'],
-                pluginsettings = self.CONTENT['pluginsettings']
+                plugin = self.CONTENT['plugin']
             )
             status.full_clean()
             status.save()
@@ -136,6 +152,8 @@ class StatusView(View):
                         raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST,
                             {'details': ' '.join(e.messages)})
                     qualifies.save()
+                if status.plugin:
+                    self._invoke_post_statussave(status)
         return Response(201, '')
 
 
@@ -145,7 +163,7 @@ class StatusView(View):
             out[str(qualifies.relatedstudent.id)] = True
         return out
 
-    def _serialize_status(self, status, includestudents=True):
+    def _serialize_status(self, status, includedetails=True):
         if not status:
             return None
         out = {
@@ -156,11 +174,15 @@ class StatusView(View):
             'createtime': status.createtime,
             'message': status.message,
             'user': serialize_user(status.user),
-            'plugin': status.plugin,
-            'pluginsettings': status.pluginsettings,
+            'plugin': status.plugin
         }
-        if includestudents:
+        if status.plugin:
+            out['plugin_title'] = unicode(qualifiesforexam_plugins.get_title(status.plugin))
+        if includedetails:
             out['passing_relatedstudentids_map'] = self._create_passing_relatedstudentids_map(status)
+            if status.plugin:
+                out['pluginsettings_summary'] = qualifiesforexam_plugins.get_pluginsettings_summary(status)
+                out['plugin_description'] = unicode(qualifiesforexam_plugins.get_description(status.plugin))
         return out
 
     def _serialize_period(self, period):
@@ -206,7 +228,7 @@ class StatusView(View):
         else:
             active_status = statuses[0]
         out = self._serialize_period(period)
-        out.update({'active_status': self._serialize_status(active_status, includestudents=False)})
+        out.update({'active_status': self._serialize_status(active_status, includedetails=False)})
         return out
 
     def _get_list(self):

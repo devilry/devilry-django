@@ -37,6 +37,16 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.SelectGroupsGrid', {
         this.callParent(arguments);
     },
 
+    extraInit: function () {
+        this.columns.push({
+            dataIndex: 'id',
+            flex: 3,
+            menuDisabled: true,
+            renderer: this.renderOldOrIgnoredCol,
+            sortable: false
+        });
+    },
+
     _onSelectAll: function() {
         this.getSelectionModel().selectAll();
     },

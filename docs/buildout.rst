@@ -82,7 +82,7 @@ Buildout attributes
 ####################################################
 
 Override attributes
--------------------
+===================
 A typical use-case for overriding attributes are development versions of
 dependencies::
 
@@ -90,7 +90,7 @@ dependencies::
     Django = 5.0-beta2
 
 Extend attributes
------------------
+=================
 You can extend attibutes with ``+=``. One use-case is adding another part::
 
     [buildout]
@@ -99,7 +99,7 @@ You can extend attibutes with ``+=``. One use-case is adding another part::
 
 
 Reference attributes
---------------------
+====================
 Attributes can be referenced anywhere in the buildout config. The format is
 ${<section>:<attribute>}. A couple of useful builtin attributes:
 

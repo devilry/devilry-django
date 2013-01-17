@@ -52,6 +52,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
 
     _onRender: function() {
         this.periodid = this.getPreview().periodid;
+        this.pluginid = this.getPreview().pluginid;
         this.pluginsessionid = this.getPreview().pluginsessionid;
         this.application.setTitle(gettext('Preview and confirm'));
         this.loadPeriod(this.periodid);
@@ -109,8 +110,8 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
             period: this.periodid,
             status: 'ready',
             message: null,
-            plugin: 'devilry_qualifiesforexam_approved.all',
-            pluginsettings: null,
+            plugin: this.pluginid,
+            pluginsessionid: this.pluginsessionid,
             passing_relatedstudentids: passing_relatedstudentids
         }, {
             scope: this,

@@ -99,7 +99,7 @@ Ext.application({
 
         // Setup routes
         this.route.add('/:periodid/selectplugin', 'selectplugin');
-        this.route.add('/:periodid/preview/:pluginsessionid', 'preview');
+        this.route.add('/:periodid/preview/:pluginid/:pluginsessionid', 'preview');
         this.route.add('/:periodid/showstatus', 'showstatus');
         this.route.start();
     },
@@ -120,11 +120,12 @@ Ext.application({
         });
     },
 
-    preview: function(routeInfo, periodid, pluginsessionid) {
+    preview: function(routeInfo, periodid, pluginid, pluginsessionid) {
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
             xtype: 'preview',
             periodid: periodid,
+            pluginid: pluginid,
             pluginsessionid: pluginsessionid
         });
     },

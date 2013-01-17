@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-12 01:20+0100\n"
+"POT-Creation-Date: 2013-01-17 06:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,8 +45,8 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/AddGroups.js:264
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:132
 #: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:399
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:86
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:91
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:89
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:94
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:36
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:114
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:64
@@ -66,7 +66,7 @@ msgstr "Legg til studenter"
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:113
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:276
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:361
-#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriod.js:225
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:272
 #: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:198
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:192
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:223
@@ -82,7 +82,7 @@ msgid "Saving"
 msgstr "Lagrer"
 
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:121
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:100
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:103
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:88
 msgid "Deadlines"
 msgstr "Innleveringsfrister"
@@ -183,10 +183,11 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:305
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:48
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:110
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:64
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:81
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:137
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:149
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:66
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:83
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:135
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:185
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:197
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:54
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:58
 #: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimeWidget.js:46
@@ -202,6 +203,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:107
 #: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsButton.js:26
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:36
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:173
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:59
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:152
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:167
@@ -230,7 +232,8 @@ msgid "Create %(period_term)s"
 msgstr "Legg til %(period_term)s"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:84
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:100
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:245
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:105
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:31
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:256
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:273
@@ -239,6 +242,7 @@ msgstr "Legg til %(period_term)s"
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:43
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:44
 #: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:12
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:83
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:28
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:88
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:98
@@ -307,14 +311,31 @@ msgstr "Avbryt"
 msgid "Save and continue editing"
 msgstr "Lagre og fortsett å redigere"
 
-#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriod.js:97
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:30
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:109
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:33
 msgid "Passed previously"
 msgstr "Bestått tidligere"
 
-#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriod.js:244
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:183
+msgid ""
+"We did not detect any groups that Devilry does not believe should be "
+"ignored. Use the checkbox below the table to see and select ignored groups."
+msgstr ""
+"Vi kunne ikke finne noen grupper som Devilry ikke tror bør ignoreres. Det er "
+"en knapp under tabellen som du kan klikke på for å se og velge ignorerte "
+"grupper."
+
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:292
 msgid "Marked %(count)s groups as previously passed."
 msgstr "Markerte %(count)s grupper som tidligere bestått."
+
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:321
+msgid ""
+"At least one group has an invalid grade. Please review the help for the "
+"grade format in the sidebar."
+msgstr ""
+"Minst en gruppe har ugyldig karakter. Venligst les hjelpen for "
+"karakterformatet på venstre del av siden."
 
 #: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:125
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:155
@@ -357,13 +378,13 @@ msgstr "Tagget %(users)s med: %(tags)s"
 msgid "Cleared tags on %(users)s."
 msgstr "Fjernet alle tags fra %(users)s"
 
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:108
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:124
 #: static/devilry_subjectadmin/app/controller/period/PeriodController.js:82
 #: static/devilry_subjectadmin/app/controller/subject/SubjectController.js:72
 msgid "Delete {something}"
 msgstr "Slett {something}"
 
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:115
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:131
 #: static/devilry_subjectadmin/app/controller/period/PeriodController.js:89
 #: static/devilry_subjectadmin/app/controller/subject/SubjectController.js:79
 #: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:29
@@ -735,10 +756,14 @@ msgid "Add selected students"
 msgstr "Legg til valgte studenter"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:179
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:69
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:99
 msgid "More help"
 msgstr "Mer hjelp"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:180
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:70
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:100
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:142
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:153
 msgid "Less help"
@@ -850,12 +875,12 @@ msgstr ""
 msgid "subject"
 msgstr ""
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:71
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:73
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:86
 msgid "No students"
 msgstr "Ingen studenter"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:72
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:74
 msgid ""
 "This assignment has no students. You need to <a href=\"%(addstudents_url)s"
 "\">add students</a>."
@@ -863,36 +888,67 @@ msgstr ""
 "Denne oppgaven har ingen studenter. Du må <a href=\"%(addstudents_url)s"
 "\">legge til studenter</a>."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:89
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:92
 msgid "View, edit and add students on this assignment"
 msgstr "Vis, rediger og legg til studenter på denne oppgaven"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:92
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:95
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:69
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:114
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:9
 msgid "Groups"
 msgstr "Grupper"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:93
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:96
 #: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:39
 #: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:57
 msgid "Deliveries"
 msgstr "Innleveringer"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:103
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:106
 msgid "View, edit and add deadlines, including the submission date."
 msgstr "Vis, rediger, og legg til innleveringsfrister."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:109
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:112
 msgid "Passed previous {period_term}"
 msgstr "Bestått tidligere {period_term}"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:112
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:115
 msgid "Wizard with automatic and manual selection."
 msgstr "Mulighet for automatisk og manuelt valg av studenter"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:140
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:141
+msgid "Go to examiner interface"
+msgstr "Gå til brukergrensesnittet for rettere"
+
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:147
+msgid "You are examiner for {mygroupscount}/{totalgroups} groups."
+msgstr "Du er retter for {mygroupscount}/{totalgroups} grupper."
+
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:152
+msgid ""
+"When this assignment is published, you will get a link here that takes you "
+"to the examiner interface."
+msgstr ""
+"Når denne oppgaven publiseres vil du få en link her som tar deg til "
+"brukergrensesnittet for rettere."
+
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:156
+msgid "You are not examiner for any groups on this assignment."
+msgstr "Du er ikke retter for noen grupper på denne oppgaven."
+
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:161
+msgid "Follow the Students-link above if you wish to manage examiners."
+msgstr ""
+"Følg Studenter-linken ovenfor hvis du ønsker å administrere rettere på denne "
+"oppgaven."
+
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:164
+#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:69
+msgid "About examiners"
+msgstr "Om rettere"
+
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:188
 msgid ""
 "Renaming an assignment should not be done without a certain amount of "
 "consideration. The name of an assignment, especially the short name, is "
@@ -902,13 +958,13 @@ msgstr ""
 "til en oppgave, spesielt det korte navnet, brukes ofte som identifikator av "
 "systemer som integrerer seg med Devilry."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:143
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:191
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:161
 #: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:83
 msgid "Rename"
 msgstr "Gi nytt navn"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:152
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:200
 msgid ""
 "Once you delete an assignment, there is no going back. Only superusers can "
 "delete an assignment with deliveries."
@@ -916,7 +972,7 @@ msgstr ""
 "Når du har slettet en oppgave, er det ingen mulighet for å angre. Kun "
 "superbrukere kan slette oppgaver med innleveringer."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:155
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:203
 #: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:17
 #: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:19
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:137
@@ -931,7 +987,7 @@ msgstr "Slett"
 #: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimePanel.js:16
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:42
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:94
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:99
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:161
 #: static/devilry_subjectadmin/app/view/period/EditDurationPanel.js:13
 msgid "Save"
 msgstr "Lagre"
@@ -1253,7 +1309,7 @@ msgstr ""
 "legge til studenter på neste side."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:217
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:53
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:57
 msgid "Next"
 msgstr "Neste"
 
@@ -1344,7 +1400,7 @@ msgid "Do not setup examiners at this time."
 msgstr "Ikke sett opp rettere nå."
 
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:421
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:95
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:156
 msgid "Back"
 msgstr "Tilbake"
 
@@ -1396,6 +1452,18 @@ msgid ""
 msgstr ""
 "Tar deg gjennom alle stegene som trengs for å lage en hvilken som helst type "
 "oppgave (elektronisk, papir, eksamen, ...)."
+
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:64
+msgid ""
+"Click your username in the header of the page, and see under the Help-"
+"heading."
+msgstr ""
+"Klikk på brukernavnet ditt på toppen av siden, og se under overskriften "
+"\"Hjelp\"."
+
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:68
+msgid "More guides and help"
+msgstr "Flere guider og mer hjelp"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/DetailedPeriodOverview.js:32
 msgid "Detailed overview of {periodpath}"
@@ -1474,6 +1542,7 @@ msgstr "Venter på tilbakemelding"
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:92
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:32
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:19
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:58
 msgid "Passed"
 msgstr "Bestått"
 
@@ -1808,6 +1877,8 @@ msgstr ""
 
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:29
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:15
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:29
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:128
 msgid "Grade"
 msgstr "Karakter"
 
@@ -2601,10 +2672,6 @@ msgid "See the help to your right for information about setting examiners."
 msgstr ""
 "Se hjelp på din høyre side for informasjon om hvordan du setter rettere."
 
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:69
-msgid "About examiners"
-msgstr "Om rettere"
-
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:78
 msgid ""
 "This assignment will be published {pubtimeOffset}. Examiners and students "
@@ -2671,6 +2738,11 @@ msgstr "Organiser grupper som går på samme gruppetimer eller i samme klasse."
 msgid "Mark suspected cheaters."
 msgstr "Marker grupper som mistenkes for juks."
 
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:66
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:69
+msgid "Autodetected"
+msgstr "Funnet automatisk"
+
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:28
 msgid "Passed {oldperiodname}."
 msgstr "Bestått {oldperiodname}."
@@ -2691,33 +2763,43 @@ msgstr ""
 msgid "Group has feedback for this assignment."
 msgstr "Gruppen har tilbakemelding på denne oppgaven."
 
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:48
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:54
+msgid "Group"
+msgstr "Gruppe"
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:51
 msgid ""
 "Show groups that Devilry believes should not be marked as previously passed?"
 msgstr ""
 "Vis grupper som Devilry mener ikke burde markeres som tidligere bestått?"
 
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:65
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:73
 msgid ""
 "Select one or more groups. Groups that we belive have passed this assignment "
 "before has been selected automatically, and they are marked with the name of "
-"the old assignment."
+"the old {period_term}."
 msgstr ""
 "Velg en eller flere grupper. Grupper som vi tror har bestått denne oppgaven "
-"tidligere har blitt valgt automatisk, og de er markert med navnet på den "
-"gamle oppgaven."
+"tidligere har blitt valgt automatisk (markert med {period_term} i grønn "
+"tekst)."
 
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:68
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:78
 msgid ""
 "The search for previously passed students match the short name of old "
 "assignments against the short name of this assignment. Only groups with "
-"exactly one student in both the old and the current assignment is matched."
+"exactly one student in both the old and the current assignment is matched. "
+"You can find the short name of an assignment by looking at the breadcrumb in "
+"the header, or in the title of the Rename-section of \"Dangerous actions\" "
+"when visiting the assignment."
 msgstr ""
 "Søket etter studenter som tidligere har bestått matcher det korte navnet på "
 "gamle oppgaver mot det korte navnet på denne oppgaven. Kun oppgaver med "
-"nøyaktig en student i både den gamle og den nåværende oppgaven matches."
+"nøyaktig en student i både den gamle og den nåværende oppgaven matches.Du "
+"finner det korte navnet til en oppgave ved å se i stien til oppgaven "
+"iheaderen, eller i tittelen i seksjonen \"Endre navn\" i seksjonen \"Farlige "
+"handlinger\" når du er inne på siden med oversikt over oppgaven."
 
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:84
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:103
 msgid ""
 "Make sure you really want to mark these groups as previously passed before "
 "saving."
@@ -2725,15 +2807,69 @@ msgstr ""
 "Forsikre deg om at du virkelig ønsker å markere disse gruppene som bestått "
 "tidligere semester før du lagrer."
 
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/Overview.js:87
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:109
+msgid "Grade format"
+msgstr "Karakterformat"
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:112
 msgid ""
-"This will create a new delivery on each of the groups, mark the delivery as "
-"a placeholder for a previously approved delivery, and create a feedback with "
-"passing grade on the delivery."
+"The current grading system, {gradingsystem}, specifies the following help:"
+msgstr "Karaktersystemet, {gradingsystem}, spesifiserer følgende hjelp:"
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:116
+msgid "Warning"
+msgstr "Advarsel"
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:118
+msgid ""
+"You must specify passing grades. Many users find it confusing when the "
+"autodetected grade is not a passing grade, but that is simply because the "
+"grading system has been configured differently this {period_term}."
 msgstr ""
-"Dette vil lage en ny innlevering for hver av gruppene, markere innleveringen "
-"som en link lit en tidligere bestått innlevering, og lage en tilbakemelding "
-"med bestått karakter på innleveringen."
+"Du må spesifisere beståtte karakterer. Mange brukere blir forvirret når den "
+"automatisk satte karakteren ikke er en bestått karakter, men det er enkelt "
+"og greit fordi karaktersystemet har blitt konfigurert med andre parametere i "
+"inneværende {period_term}."
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:132
+msgid ""
+"You have to specify a grade for each group. You do so by clicking the cells "
+"in the Grade-column and specifying a grade. If Devilry autodetected that the "
+"group has passed this assignment previously, the grade will already be "
+"specified, but you can still override the detected value if you grade "
+"students differently this {period_term}."
+msgstr ""
+"Du må spesifisere en karakter for hver gruppe. Du gjør det ved å klikke på "
+"cellene i Karakter-kolonnen, for så å spesifisere en karakter. Hvis Devilry "
+"oppdager at grupper har bestått denne oppgaven tidligere, vil karakteren "
+"allerede være spesifisert. I så tilfelle kan du allikevel overstyre den "
+"oppdagede karakteren hvis du setter karakterer på en annen måte i "
+"inneværende {period_term}."
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:138
+msgid "How it works"
+msgstr "Hvordan det fungerer"
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:141
+msgid ""
+"When you click save, we will create a new delivery for each of the groups, "
+"mark the delivery as a placeholder for a previously approved delivery, and "
+"create a feedback on the delivery. The grade of the feedback will be the one "
+"specified in the Grade-column."
+msgstr ""
+"Når du velger Lagre vil vi lage en ny innlevering for hver av gruppene, "
+"markere innleveringen som en link til en tidligere bestått innlevering, for "
+"så å lage en tilbakemelding med bestått karakter på innleveringen. "
+"Karakteren til tilbakemeldingen vil være den som er spesifisert i Karakter-"
+"kolonnen."
+
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:171
+msgid ""
+"The passed previously functionality is not supported by the grading system "
+"configured on this assignment ({gradingsystem})."
+msgstr ""
+"Karaktersystemet konfigurert på denne oppgaven, {gradingsystem}, støtter "
+"ikke funksjonaliteten som kreves for bestått tidligere."
 
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:27
 msgid "Autodetected as previously passed"
@@ -2772,10 +2908,6 @@ msgstr "Rediger og vis tilknyttet informasjon"
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:124
 msgid "Overview of all results"
 msgstr "Oversikt over alle resultater"
-
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:129
-msgid "Qualified for final exams"
-msgstr "Kan gå opp til eksamen"
 
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:155
 msgid ""
@@ -2973,6 +3105,9 @@ msgid ""
 msgstr ""
 "Når du har slettet et %(subject_term)s er det ingen mulighet for å angre. "
 "Kun superbrukere kan slette et %(subject_term)s med innhold."
+
+#~ msgid "Qualified for final exams"
+#~ msgstr "Kan gå opp til eksamen"
 
 #~ msgid ""
 #~ "These administrators are from items higher up in the hierarchy. The links "

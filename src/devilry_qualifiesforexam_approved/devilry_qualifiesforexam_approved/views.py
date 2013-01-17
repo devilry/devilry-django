@@ -9,24 +9,47 @@ from crispy_forms.layout import Layout, ButtonHolder
 
 from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
 from devilry_qualifiesforexam.pluginhelpers import BackButton, NextButton
+from devilry_qualifiesforexam.models import Status
+from .post_statussave import PeriodResultsCollectorSubset
+from .post_statussave import PeriodResultsCollectorAll
+from .models import SubsetPluginSetting
 
 
 
 class AllApprovedView(View, QualifiesForExamPluginViewMixin):
-    def student_qualifies_for_exam(self, aggregated_relstudentinfo):
-        for grouplist in aggregated_relstudentinfo.iter_groups_by_assignment():
-            feedback = grouplist.get_feedback_with_most_points()
-            if not feedback or not feedback.is_passing_grade:
-                return False
-        return True
+    pluginid = 'devilry_qualifiesforexam_approved.all'
 
     def get(self, request):
-        return self.handle_save_results_and_redirect_to_preview_request()
+        try:
+            self.get_plugin_input_and_authenticate() # set self.periodid and self.pluginsessionid
+        except PermissionDenied:
+            return HttpResponseForbidden()
+        qualified_relstudentids = PeriodResultsCollectorAll().get_relatedstudents_that_qualify_for_exam(self.period)
+        self.save_plugin_output(qualified_relstudentids)
+        return self.redirect_to_preview_url()
 
 
 
 class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
     template_name = 'devilry_qualifiesforexam_approved/subsetselect.django.html'
+    pluginid = 'devilry_qualifiesforexam_approved.subset'
+
+    def get_initial(self):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        try:
+            current_status = Status.get_current_status(self.period)
+        except Status.DoesNotExist:
+            return {}
+        else:
+            try:
+                settings = current_status.devilry_qualifiesforexam_approved_subsetpluginsetting
+            except SubsetPluginSetting.DoesNotExist:
+                return {}
+            else:
+                ids = [selected.assignment.id for selected in settings.selectedassignment_set.all()]
+                return {'assignments': ids}
 
     def get_form_class(self):
         choices = [(a.id, a.long_name) for a in self.period.assignments.order_by('publishing_time')]
@@ -51,17 +74,13 @@ class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
 
         return SelectAssignmentForm
 
-    def student_qualifies_for_exam(self, aggregated_relstudentinfo):
-        for assignmentid, grouplist in aggregated_relstudentinfo.assignments.iteritems():
-            if assignmentid in self.assignments_to_pass:
-                feedback = grouplist.get_feedback_with_most_points()
-                if not (feedback and feedback.is_passing_grade):
-                    return False
-        return True
-
     def form_valid(self, form):
-        self.assignments_to_pass = set(map(int, form.cleaned_data['assignments']))
-        self.save_plugin_output(self.get_relatedstudents_that_qualify_for_exam())
+        assignmentids_that_must_be_passed = set(map(int, form.cleaned_data['assignments']))
+        qualified_relstudentids = PeriodResultsCollectorSubset(assignmentids_that_must_be_passed).get_relatedstudents_that_qualify_for_exam(self.period)
+        self.save_plugin_output(qualified_relstudentids)
+        self.save_settings_in_session({
+            'assignmentids_that_must_be_passed': assignmentids_that_must_be_passed
+        })
         return self.redirect_to_preview_url()
 
     def post(self, request):

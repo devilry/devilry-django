@@ -64,7 +64,7 @@ Ext.application({
         'BulkManageDeadlines',
         'RelatedStudents',
         'RelatedExaminers',
-        'PassedPreviousPeriod',
+        'PassedPreviousPeriodController',
         'DetailedPeriodOverviewController',
 
         'GuideSystem',

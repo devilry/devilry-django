@@ -37,7 +37,9 @@ a wizard with the following steps/pages:
 #######################################################
 Plugins
 #######################################################
-A plugin is a regular Django app.
+A plugin is a regular Django app. Your best source for a simple example is the
+``devilry_qualifiesforexam_approved``-module which contains two plugins. You will find the
+package in the ``src/``-directory of the devilry repository.
 
 
 .. _qualifiesforexam-plugins-what:
@@ -98,6 +100,15 @@ The plugins are shown in listed order on page 1 of the wizard described in the
     :ref:`qualifiesforexam-uiworkflow`.
 
 
+Write tests
+===========
+If you want your plugin to be considered for inclusion in Devilry you will have to write good
+tests. These plugins handle very sensitive data, so it would be madness to deploy them in production
+without proper tests. We provide a helper-mixin for tests,
+:class:`devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginTestMixin`, which you should
+use. See the ``tests``-module in ``devilry_qualifiesforexam_approved`` for examples.
+
+
 
 .. _qualifiesforexam-pluginhelpers:
 
@@ -107,7 +118,7 @@ Plugin helpers
 
 .. py:currentmodule:: devilry_qualifiesforexam.pluginhelpers
 
-The QualifiesForExamPluginViewMixin class
+The mixin classes
 =========================================
 
 :class:`~devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginViewMixin` is a mixin class
@@ -141,15 +152,14 @@ methods greatly simplify writing plugins. For example, we can create a view like
 A more complete example
 -----------------------
 
-The example above is quite simple, but it can be made even simpler if you use
-:meth:`.handle_save_results_and_redirect_to_preview_request` and override
-:meth:`student_qualifies_for_exam`::
+The example above is very simple. You will usually have to iterate over all the students in a
+period to find out who qualifies::
 
     from django.views.generic import View
-    class MyPluginView(View, QualifiesForExamPluginViewMixin):
-        def post(self, request):
-            return self.handle_save_results_and_redirect_to_preview_request()
+    from devilry_qualifiesforexam.pluginhelpers import PeriodResultsCollector
+    from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
 
+    class MyPeriodResultsCollector(PeriodResultsCollector):
         def student_qualifies_for_exam(self, aggregated_relstudentinfo):
             # Test if the student in the AggreatedRelatedStudentInfo qualifies.
             # Typically something like this (all students must pass all assignments):
@@ -159,9 +169,42 @@ The example above is quite simple, but it can be made even simpler if you use
                     return False
             return True
 
+    class MyPluginView(View, QualifiesForExamPluginViewMixin):
+        def post(self, request):
+            try:
+                self.get_plugin_input_and_authenticate()
+            except PermissionDenied:
+                return HttpResponseForbidden()
+            # Your code to detect passing students
+            passing_relatedstudentsids = MyPeriodResultsCollector().get_relatedstudents_that_qualify_for_exam()
+            self.save_plugin_output(passing_relatedstudentsids)
+            return HttpResponseRedirect(self.get_preview_url())
 
 
-.. py:class:: devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginViewMixin
+
+.. py::class:: PeriodResultsCollector
+
+    .. py:method:: student_qualifies_for_exam
+
+        Must be implemented in subclasses.
+
+        :return: Does the student qualify for exam?
+        :rtype: bool
+
+    .. py:method:: get_relatedstudents_that_qualify_for_exam
+
+        Uses :ref:`utils_groups_groupedby_relatedstudent_and_assignment` to aggregate all data
+        for all students in the period. Loops through the resulting
+        :class:`~devilry.utils.groups_groupedby_relatedstudent_and_assignment.AggreatedRelatedStudentInfo`-objects
+        and sends them to :meth:`.student_qualifies_for_exam`.
+
+        :return:
+            A list with the ids of all relatedstudents for which
+            :meth:`.student_qualifies_for_exam` returned ``True``.
+
+
+
+.. py:class:: QualifiesForExamPluginViewMixin
 
     .. py:attribute:: periodid
 
@@ -191,6 +234,11 @@ The example above is quite simple, but it can be made even simpler if you use
         Shortcut that saves a :class:`.PreviewData` in the session key generated
         using :func:`.create_sessionkey`. Args and kwargs are forwarded to :class:`.PreviewData`.
 
+    .. py:method:: save_settings_in_session(settings)
+
+        Save settings in the session. You get this back as an argument to your
+        ``post_statussave``-handler if your plugin is configured with ``uses_settings=True``.
+
     .. py:method:: get_preview_url
 
         Get the preview URL - the URL you must redirect to after saving the output
@@ -205,35 +253,122 @@ The example above is quite simple, but it can be made even simpler if you use
 
         Returns a ``HttpResponseRedirect`` that redirects to :meth:`.get_preview_url`.
 
-    .. py:method:: student_qualifies_for_exam
 
-        Must be implemented in subclasses if you use :meth:`get_relatedstudents_that_qualify_for_exam`.
-        See :ref:`qualifiesforexam-pluginhelpers-completeexample`.
 
-        :return: Does the student qualify for exam?
-        :rtype: bool
 
-    .. py:method:: get_relatedstudents_that_qualify_for_exam
+Helper for unit tests
+=====================
 
-        Uses :ref:`utils_groups_groupedby_relatedstudent_and_assignment` to aggregate all data
-        for all students in the period. Loops through the resulting
-        :class:`~devilry.utils.groups_groupedby_relatedstudent_and_assignment.AggreatedRelatedStudentInfo`-objects
-        and sends them to :meth:`.student_qualifies_for_exam`.
+.. py:class:: QualifiesForExamPluginTestMixin
 
-        :return:
-            A list with the ids of all relatedstudents for which
-            :meth:`.student_qualifies_for_exam` returned ``True``.
+    Mixin-class for test-cases for plugin-views (the views that typically inherit from
+    :class:`.QualifiesForExamPluginViewMixin`). This class has a couple of helpers that
+    simplifies writing tests, and some unimplemented methods that ensure you do not forget
+    to write permission tests.
 
-    .. py:method:: handle_save_results_and_redirect_to_preview_request
+    .. note::
+        If you use this class as base for your tests, your chances of getting a plugin approved
+        for inclusion as part of Devilry is greatly increased. You have to include at least one
+        test in addition to the unimplemented tests, a test that uses a realistic dataset
+        to make sure your plugin behaves as intended (E.g.: Approves/disapproves the expected
+        students). You may need more than one extra test if your plugin is complex.
 
-        See :ref:`qualifiesforexam-pluginhelpers-completeexample`.
+    .. py:attribute:: testhelper
 
+        A :class:`devilry.apps.core.testhelper.TestHelper`-object which is required for
+        :meth:`.create_feedbacks` and :meth:`.create_relatedstudent` to work.
+
+        Typcally created with something like this in ``setUp``::
+
+            from django.test import TestCase
+            from devilry.apps.core.testhelper import TestHelper
+
+            class TestMyPluginView(TestCase, QualifiesForExamPluginTestMixin):
+                def setUp(self):
+                    self.testhelper = TestHelper()
+
+                    # Create:
+                    # - the uni-node with ``uniadmin`` as admin
+                    # - the uni.sub.p1 period with ``periodadmin`` as admin.
+                    # - the a1 and a2 assignments within ``p1``, with separate groups on each
+                    #   assignment for student1 and student2, and with examiner1 as examiner.
+                    # - a deadline on each group
+                    self.testhelper.add(nodes='uni:admin(uniadmin)',
+                        subjects=['sub'],
+                        periods=['p1:admin(periodadmin):begins(-3):ends(6)'],
+                        assignments=['a1', 'a2'],
+                        assignmentgroups=[
+                            'gstudent1:candidate(student1):examiner(examiner1)',
+                            'gstudent2:candidate(student2):examiner(examiner1)'],
+                        deadlines=['d1:ends(10)']
+                    )
+
+    .. py:attribute:: period
+
+        The period you use in your tests. Needs to be set in the ``setUp``-method for
+        :meth:`.create_relatedstudent` to work. Typically defined with the following code
+        after the core in the example in :attr:`.testhelper`::
+
+            self.period = self.testhelper.sub_p1
+
+    .. py:method:: create_relatedstudent(username)
+
+        Create and return a related student on the :attr:`.period`. A user with the given
+        username is created if it does not exist.
+
+    .. py:method:: create_feedbacks(*feedbacks):
+
+        Create feedbacks on groups from the given list of ``feedbacks``.
+
+        :param feedbacks:
+            Each item in the arguments list is a ``(group, feedback)`` tuple where ``group``
+            is the :class:`devilry.apps.core.models.AssignmentGroup`-object that it to be given
+            feedback, and ``feedbacks`` is a dict with attributes for the
+            :class:`devilry.apps.core.models.StaticFeedback` with the following keys:
+
+                ``grade``
+                    See :attr:`devilry.apps.core.models.StaticFeedback.grade`.
+                ``points``
+                    See :attr:`devilry.apps.core.models.StaticFeedback.points`.
+                ``is_passing_grade``
+                    See :attr:`devilry.apps.core.models.StaticFeedback.is_passing_grade`.
+
+        A delivery to save the feedback on is created automatically, so all that is needed
+        of the groups is an examiner, a candidate and a deadline.
+
+        Example::
+
+            self.create_feedbacks(
+                (self.testhelper.sub_p1_a1_gstudent2, {'grade': 'B', 'points': 86, 'is_passing_grade': True}),
+                (self.testhelper.sub_p1_a2_gstudent2, {'grade': 'A', 'points': 97, 'is_passing_grade': True})
+            )
+
+
+    .. py:method:: test_perms_as_periodadmin
+
+        Must be implemented in subclasses.
+
+    .. py:method:: test_perms_as_nodeadmin
+
+        Must be implemented in subclasses.
+
+    .. py:attribute:: test_perms_as_superuser
+
+        Must be implemented in subclasses.
+
+    .. py:attribute:: test_perms_as_nobody
+
+        Must be implemented in subclasses.
+
+    .. py:attribute:: test_invalid_period
+
+        Must be implemented in subclasses.
 
 
 Other helpers
 =============
 
-.. py:class:: devilry_qualifiesforexam.pluginhelpers.PreviewData(passing_relatedstudentids)
+.. py:class:: PreviewData(passing_relatedstudentids)
 
     Stores the output from a plugin. You should not need to use this directly. Use
     :meth:`.QualifiesForExamPluginViewMixin.save_plugin_output` instead.
@@ -247,13 +382,11 @@ Other helpers
 
 
 
-.. py:function:: devilry_qualifiesforexam.pluginhelpers.create_sessionkey(pluginsessionid)
+.. py:function:: create_sessionkey(pluginsessionid)
 
     Generate the session key for the plugin output as described in
     :ref:`qualifiesforexam-plugins-what`. You should not need to use this directly. Use
     :meth:`.QualifiesForExamPluginViewMixin.get_plugin_input_and_authenticate` instead.
-
-
 
 
 
@@ -279,7 +412,66 @@ Database models
 
 .. py:currentmodule:: devilry_qualifiesforexam.models
 
-.. py:class:: devilry_qualifiesforexam.models.QualifiesForFinalExamPeriodStatus
+
+How the models fit together
+===========================
+
+Each time a periodadmin qualifies students for final exams, even when they only partly qualify their
+students, a new :class:`.Status`-record is saved in the database. A status has a ForeignKey to
+:class:`devilry.apps.core.models.Period`, so the last saved Status is the active
+qualified-for-exam status for a Period.
+
+Each time a :class:`.Status` is saved, all of the :class:`devilry.apps.core.models.RelatedStudent`s
+for that period gets a :class:`.QualifiesForFinalExam`-record, which saves the qualifies-for-exam
+status for the student. When a status is ``almostready``, we use ``NULL`` in the
+:attr:`.QualifiesForFinalExam.qualifies`-field to indicate students that are not ready.
+
+Node administrators or systems that intergrate with Devilry uses :attr:`.Status.exported_timestamp`
+to mark :class:`Status`-records that have been exported to an external system. It is important to
+note that we export statuses, not periods. This means that we can create new statuses, and re-export
+them. An automatic system can check timestamps to handle status changes, and the Node admin UI
+can show/hilight periods with exported statuses and more recent statuses.
+
+:class:`DeadlineTag` is used to organize periods by the time when they should have made a
+``ready``-:class:`.Status`.
+
+
+
+The models
+==========
+
+.. py:class:: DeadlineTag
+
+    A deadlinetag is used to tag :class:`devilry.apps.core.models.Period`-objects with a timestamp
+    and an optional tag describing the timestamp.
+
+    .. py:attribute:: timestamp
+
+        Database field containing the date and time when a period admin should be finished
+        qualifying students for final exams.
+
+    .. py:attribute:: tag
+
+        A tag for node-admins for this deadlinetag. Max 30 chars. May be empty or ``null``.
+
+
+.. py:class:: PeriodTag
+
+    This table is used to create a one-to-many relation from :class:`.DeadlineTag` to
+    :class:`devilry.apps.core.models.Period`.
+
+    .. py:attribute:: deadlinetag
+
+        Database foreign key to the :class:`.DeadlineTag` that the Period should be tagged by.
+
+
+    .. py:attribute:: period
+
+        Database foreign key to the :class:`devilry.apps.core.models.Period` that this tag
+        points to.
+
+
+.. py:class:: Status
 
     Every time the admin updates qualifies-for-exam on a period, we save new object of this
     database model.
@@ -294,10 +486,15 @@ Database models
         Database foreign key to the :class:`devilry.apps.core.models.Period` that the
         status is for.
 
+    .. py:attribute:: exported_timestamp
+
+        Database datetime field that tells when the status was exported out of Devilry to an
+        external system. This is ``null`` if the status has not been expored out of Devilry.
+
     .. py:attribute:: status
 
         Database char field that accepts the following values:
-    
+
         - ``ready`` is used to indicate the the entire period is ready for export/use.
         - ``almostready`` is used to indicate that the period is almost ready for export/use, and
           that the exceptions are explained in the :attr:`.message`.
@@ -327,9 +524,16 @@ Database models
         A text field where plugins can store their settings, typically in some structured
         format like JSON, XML or YAML.
 
+    .. py:attribute:: pluginsettings_summary
+
+        A text field where plugins can describe their settings in a redable manner. This
+        text is filtered through ``django.utils.translation.ugettext_lazy`` before beeing
+        displayed, so plugins can internationalize the string.
 
 
-.. py:class:: devilry_qualifiesforexam.models.QualifiesForFinalExam
+
+
+.. py:class:: QualifiesForFinalExam
 
     .. py:attribute:: relatedstudent
 

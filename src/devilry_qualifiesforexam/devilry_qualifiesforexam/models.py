@@ -8,6 +8,15 @@ from devilry.apps.core.models import Period
 
 
 
+class DeadlineTag(models.Model):
+    timestamp = models.DateTimeField()
+    tag = models.CharField(max_length=30, null=True, blank=True)
+
+class PeriodTag(models.Model):
+    period = models.OneToOneField(Period, primary_key=True)
+    deadlinetag = models.ForeignKey(DeadlineTag)
+
+
 class Status(models.Model):
     STATUS_CHOICES = (
         ('ready', _('Ready for export')),
@@ -22,7 +31,7 @@ class Status(models.Model):
     message = models.TextField(blank=True)
     user = models.ForeignKey(User)
     plugin = models.CharField(max_length=500, null=True, blank=True)
-    pluginsettings = models.TextField(null=True, blank=True)
+    exported_timestamp = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ['-createtime']
@@ -37,14 +46,22 @@ class Status(models.Model):
             self.message = ''
         if self.status == 'notready' and not self.message:
             raise ValidationError('Message can not be empty when status is ``notready``.')
-        if self.status != 'notready' and not self.plugin:
-            raise ValidationError('``plugin`` is required for all statuses except ``notready``.')
+        if self.status != 'notready':
+            if not self.plugin and not self.message:
+                raise ValidationError('A ``message`` is required when no ``plugin`` is specified. The message should explain why a plugin is not used.')
         if self.status == 'notready':
             if self.plugin:
                 raise ValidationError('``plugin`` is not allowed when status is ``notready``.')
-            if self.pluginsettings:
-                raise ValidationError('``pluginsettings`` is not allowed when status is ``notready``.')
 
+    @classmethod
+    def get_current_status(cls, period):
+        latest = period.qualifiedforexams_status.all().order_by('-createtime')[:1]
+        if len(latest) == 0:
+            raise cls.DoesNotExist('The period with id={0} has no statuses'.format(period.id))
+        return latest[0]
+
+    def get_qualified_students(self):
+        return self.students.filter(qualifies=True)
 
 
 class QualifiesForFinalExam(models.Model):

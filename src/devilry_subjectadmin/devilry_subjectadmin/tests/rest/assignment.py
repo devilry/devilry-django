@@ -167,6 +167,14 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(content['number_of_groups'], 2)
         self.assertEquals(content['number_of_deliveries'], 3)
         self.assertEquals(content['number_of_candidates'], 5)
+        self.assertEquals(content['gradeeditor'], {
+            u'gradeeditorid': u'approved',
+            u'title': u'Approved/not approved',
+            u'shortformat': {
+                u'widget': u'bool',
+                u'shorthelp': u'Must be one of: true, false.'
+            }
+        })
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
@@ -175,7 +183,8 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous',
                                'number_of_deliveries', 'number_of_groups',
-                               'number_of_candidates']))
+                               'number_of_candidates', 'gradeeditor',
+                               'number_of_groups_where_is_examiner']))
 
     def test_get_admins(self):
         self.client.login(username='duck2000admin', password='test')
@@ -194,7 +203,7 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(set(content['inherited_admins'][0].keys()),
                           set(['basenode', 'user']))
         self.assertEquals(set(content['inherited_admins'][0]['basenode'].keys()),
-                          set(['type', 'path', 'id']))
+                          set(['type', 'path', 'id', 'is_admin']))
         self.assertEquals(set(content['inherited_admins'][0]['user'].keys()),
                           set(['email', 'username', 'id', 'full_name']))
         inherited_adminusernames = [user['user']['username'] for user in content['inherited_admins']]
@@ -290,7 +299,8 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous',
                                'number_of_deliveries', 'number_of_groups',
-                               'number_of_candidates']))
+                               'number_of_candidates', 'gradeeditor',
+                               'number_of_groups_where_is_examiner']))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 

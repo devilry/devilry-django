@@ -3,10 +3,10 @@ Ext.define('devilry_subjectadmin.model.PassedPreviousPeriodItem', {
     idProperty: 'id',
     fields: [
         {name: 'id', type: 'int'},
-        {name: 'group', type: 'auto'},
+        {name: 'group', type: 'auto', persist: false},
         {name: 'oldgroup', type: 'auto', persist: false},
         {name: 'whyignored', type: 'string', persist: false},
-        {name: 'feedback', type: 'auto'}
+        {name: 'newfeedback_shortformat', type: 'string'}
     ],
 
     proxy: {

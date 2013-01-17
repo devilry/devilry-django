@@ -4,25 +4,14 @@ from django.core.urlresolvers import reverse
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry_qualifiesforexam.pluginhelpers import create_sessionkey
+from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginTestMixin
+from devilry_qualifiesforexam.models import Status
+from devilry_qualifiesforexam_approved.post_statussave import post_statussave_subset
+from devilry_qualifiesforexam_approved.models import SubsetPluginSetting
+from devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification
 
 
-class ApprovedTestMixin(object):
-
-    def create_relatedstudent(self, username):
-        user = getattr(self.testhelper, username, None)
-        if not user:
-            user = self.testhelper.create_user(username)
-        relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user)
-        return relstudent
-
-    def create_feedbacks(self, *feedbacks):
-        for group, feedback in feedbacks:
-            self.testhelper.add_delivery(group, {'file.py': ['print ', 'bah']})
-            self.testhelper.add_feedback(group, verdict=feedback)
-
-
-
-class TestAllApprovedView(TestCase, ApprovedTestMixin):
+class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
@@ -34,7 +23,7 @@ class TestAllApprovedView(TestCase, ApprovedTestMixin):
                 'gstudent2:candidate(student2):examiner(examiner1)'],
             deadlines=['d1:ends(10)']
         )
-        self.testhelper.create_superuser('superuser')
+        self.period = self.testhelper.sub_p1
         self.client = Client()
 
     def _getas(self, username, data):
@@ -55,16 +44,17 @@ class TestAllApprovedView(TestCase, ApprovedTestMixin):
     def test_perms_as_nodeadmin(self):
         self._test_permsas('uniadmin')
     def test_perms_as_superuser(self):
+        self.testhelper.create_superuser('superuser')
         self._test_permsas('superuser')
 
-    def test_getas_nobody(self):
+    def test_perms_as_nobody(self):
         self.testhelper.create_user('nobody')
         response = self._getas('nobody', {
             'periodid': self.testhelper.sub_p1.id
         })
         self.assertEqual(response.status_code, 403)
 
-    def test_get_invalid_period(self):
+    def test_invalid_period(self):
         response = self._getas('periodadmin', {
             'periodid': 1000
         })
@@ -89,9 +79,26 @@ class TestAllApprovedView(TestCase, ApprovedTestMixin):
         previewdata = self.client.session[create_sessionkey('tst')]
         self.assertEqual(previewdata.passing_relatedstudentids, [relatedStudent2.id])
 
+    def test_verify(self):
+        status = Status(period=self.period, status='ready', message='',
+            user=self.testhelper.periodadmin,
+            plugin='devilry_qualifiesforexam_approved.subset'
+        )
+        status.save()
+        relatedStudent1 = self.create_relatedstudent('student1')
+        status.students.create(relatedstudent=relatedStudent1, qualifies=True)
+
+        self.create_feedbacks(
+            (self.testhelper.sub_p1_a1_gstudent1, {'grade': 'F', 'points': 0, 'is_passing_grade': False})
+        )
+
+        with self.assertRaises(PluginResultsFailedVerification):
+            post_statussave_subset(status, {
+                'assignmentids_that_must_be_passed': [self.testhelper.sub_p1_a1.id]
+            })
 
 
-class TestSubsetApprovedView(TestCase, ApprovedTestMixin):
+class TestSubsetApprovedView(TestCase, QualifiesForExamPluginTestMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin)',
@@ -105,7 +112,7 @@ class TestSubsetApprovedView(TestCase, ApprovedTestMixin):
             ],
             deadlines=['d1:ends(10)']
         )
-        self.testhelper.create_superuser('superuser')
+        self.period = self.testhelper.sub_p1
         self.client = Client()
 
     def _getas(self, username, data):
@@ -136,9 +143,10 @@ class TestSubsetApprovedView(TestCase, ApprovedTestMixin):
     def test_perms_as_nodeadmin(self):
         self._test_perms_as('uniadmin')
     def test_perms_as_superuser(self):
+        self.testhelper.create_superuser('superuser')
         self._test_perms_as('superuser')
 
-    def test_permsas_nobody(self):
+    def test_perms_as_nobody(self):
         self.testhelper.create_user('nobody')
         querystring = {'periodid': self.testhelper.sub_p1.id}
         response = self._getas('nobody', querystring)
@@ -146,7 +154,7 @@ class TestSubsetApprovedView(TestCase, ApprovedTestMixin):
         response = self._postas('nobody', data = {}, querystring=querystring)
         self.assertEqual(response.status_code, 403)
 
-    def test_get_invalid_period(self):
+    def test_invalid_period(self):
         querystring = {'periodid': 1000}
         response = self._getas('periodadmin', querystring)
         self.assertEqual(response.status_code, 403)
@@ -193,3 +201,37 @@ class TestSubsetApprovedView(TestCase, ApprovedTestMixin):
         previewdata = self.client.session[create_sessionkey('tst')]
         self.assertEqual(set(previewdata.passing_relatedstudentids),
             set([relatedStudent2.id, relatedStudent3.id]))
+
+    def test_save_settings(self):
+        status = Status(period=self.period, status='ready', message='',
+            user=self.testhelper.periodadmin,
+            plugin='devilry_qualifiesforexam_approved.subset'
+        )
+        status.save()
+        self.assertEqual(SubsetPluginSetting.objects.count(), 0)
+        post_statussave_subset(status, {
+            'assignmentids_that_must_be_passed': [self.testhelper.sub_p1_a1.id, self.testhelper.sub_p1_a2.id]
+        })
+        self.assertEqual(SubsetPluginSetting.objects.count(), 1)
+        settings = status.devilry_qualifiesforexam_approved_subsetpluginsetting
+        self.assertEqual(settings.selectedassignment_set.count(), 2)
+        ids = set([selected.assignment.id for selected in settings.selectedassignment_set.all()])
+        self.assertEqual(ids, set([self.testhelper.sub_p1_a1.id, self.testhelper.sub_p1_a2.id]))
+
+    def test_verify(self):
+        status = Status(period=self.period, status='ready', message='',
+            user=self.testhelper.periodadmin,
+            plugin='devilry_qualifiesforexam_approved.subset'
+        )
+        status.save()
+        relatedStudent1 = self.create_relatedstudent('student1')
+        status.students.create(relatedstudent=relatedStudent1, qualifies=True)
+
+        self.create_feedbacks(
+            (self.testhelper.sub_p1_a1_gstudent1, {'grade': 'F', 'points': 0, 'is_passing_grade': False})
+        )
+
+        with self.assertRaises(PluginResultsFailedVerification):
+            post_statussave_subset(status, {
+                'assignmentids_that_must_be_passed': [self.testhelper.sub_p1_a1.id]
+            })

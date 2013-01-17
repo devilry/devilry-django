@@ -133,18 +133,14 @@ To build without compressing the JS-sources (**for debugging**)::
 Watch the filesystem for changes and rebuild
 --------------------------------------------
 
-Install watchdog::
-
-    $ cd devenv/
-    $ bin/easy_install watchdog
-
-
 Call the tasks with ``watch=true``. E.g.::
 
+    $ cd devenv/
     $ bin/fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true
 
 You probably want to use::
 
+    $ cd devenv/
     $ bin/fab jsbuild:devilry_subjectadmin,nocompress=true,watch=true,no_jsbcreate=next
 
 to create a JSB-file on startup, but no on each watcher-trigger. This
