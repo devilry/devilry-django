@@ -169,6 +169,15 @@ $hovermenu_bgcolor: #000;
         margin: 0 0 $baseLineHeight/2;
         line-height: $baseLineHeight;
     }
+
+    .devilryheader_footer {
+        text-align: center;
+        color: #aaa;
+        a {
+            color: #ccc;
+            text-decoration: underline;
+        }
+    }
 }
 
 

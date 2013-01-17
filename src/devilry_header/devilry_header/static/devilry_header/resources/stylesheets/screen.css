@@ -175,32 +175,42 @@
   margin: 0 0 9px;
   line-height: 18px;
 }
-
+/* line 173, ../sass/screen.scss */
+.devilryheader_hovermenu .devilryheader_footer {
+  text-align: center;
+  color: #aaa;
+}
 /* line 176, ../sass/screen.scss */
+.devilryheader_hovermenu .devilryheader_footer a {
+  color: #ccc;
+  text-decoration: underline;
+}
+
+/* line 185, ../sass/screen.scss */
 .devilryheader_roles ul {
   margin: 0 0 10px 0;
 }
-/* line 178, ../sass/screen.scss */
+/* line 187, ../sass/screen.scss */
 .devilryheader_roles ul li {
   margin: 0;
   padding: 0;
 }
-/* line 181, ../sass/screen.scss */
+/* line 190, ../sass/screen.scss */
 .devilryheader_roles ul li a {
   display: block;
   text-decoration: none;
   color: #000;
   line-height: 18px;
 }
-/* line 187, ../sass/screen.scss */
+/* line 196, ../sass/screen.scss */
 .devilryheader_roles ul li a .heading {
   font-weight: bold;
 }
-/* line 190, ../sass/screen.scss */
+/* line 199, ../sass/screen.scss */
 .devilryheader_roles ul li a .description {
   font-size: 12px;
 }
-/* line 193, ../sass/screen.scss */
+/* line 202, ../sass/screen.scss */
 .devilryheader_roles ul li a.student_role {
   padding: 8px 28px 4px 8px;
   background-color: #77b300;
@@ -230,7 +240,7 @@
   text-decoration: none;
   color: #000;
 }
-/* line 196, ../sass/screen.scss */
+/* line 205, ../sass/screen.scss */
 .devilryheader_roles ul li a.examiner_role {
   padding: 8px 28px 4px 8px;
   background-color: #0077b3;
@@ -260,7 +270,7 @@
   text-decoration: none;
   color: #000;
 }
-/* line 199, ../sass/screen.scss */
+/* line 208, ../sass/screen.scss */
 .devilryheader_roles ul li a.subjectadmin_role {
   padding: 8px 28px 4px 8px;
   background-color: #ffcc00;
@@ -290,7 +300,7 @@
   text-decoration: none;
   color: #000;
 }
-/* line 202, ../sass/screen.scss */
+/* line 211, ../sass/screen.scss */
 .devilryheader_roles ul li a.nodeadmin_role {
   padding: 8px 28px 4px 8px;
   background-color: #ff9900;
@@ -320,7 +330,7 @@
   text-decoration: none;
   color: #000;
 }
-/* line 205, ../sass/screen.scss */
+/* line 214, ../sass/screen.scss */
 .devilryheader_roles ul li a.superuser_role {
   padding: 8px 28px 4px 8px;
   background-color: #cc3300;
@@ -350,51 +360,51 @@
   text-decoration: none;
   color: #000;
 }
-/* line 211, ../sass/screen.scss */
+/* line 220, ../sass/screen.scss */
 .devilryheader_roles div.loading {
   font-size: 36px;
   font-weight: bold;
 }
 
-/* line 220, ../sass/screen.scss */
+/* line 229, ../sass/screen.scss */
 .devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable th, .devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable td {
   line-height: 18px;
   font-size: 13px;
 }
-/* line 224, ../sass/screen.scss */
+/* line 233, ../sass/screen.scss */
 .devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable th {
   color: #999;
   font-weight: bold;
   padding: 4px 10px 4px 0;
 }
-/* line 229, ../sass/screen.scss */
+/* line 238, ../sass/screen.scss */
 .devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable td {
   color: #fff;
 }
-/* line 233, ../sass/screen.scss */
+/* line 242, ../sass/screen.scss */
 .devilryheader_hovermenu .devilryheader_userinfobox div.logout_para {
   margin-top: 10px !important;
 }
-/* line 235, ../sass/screen.scss */
+/* line 244, ../sass/screen.scss */
 .devilryheader_hovermenu .devilryheader_userinfobox div.logout_para a.logout_button {
   text-decoration: none;
 }
 
-/* line 245, ../sass/screen.scss */
+/* line 254, ../sass/screen.scss */
 .devilryheader_helplinksbox ul.helplinks li {
   margin: 0 0 10px 0;
 }
-/* line 248, ../sass/screen.scss */
+/* line 257, ../sass/screen.scss */
 .devilryheader_helplinksbox ul.helplinks li .title a {
   font-weight: bold;
 }
-/* line 252, ../sass/screen.scss */
+/* line 261, ../sass/screen.scss */
 .devilryheader_helplinksbox ul.helplinks li .description {
   font-size: 11px;
   color: #aaa;
 }
 
-/* line 261, ../sass/screen.scss */
+/* line 270, ../sass/screen.scss */
 .devilryheader-nonapp {
   position: fixed;
   top: 0;
@@ -402,7 +412,7 @@
   width: 100%;
 }
 
-/* line 267, ../sass/screen.scss */
+/* line 276, ../sass/screen.scss */
 .devilryheader-nonapp-bodyoffset {
   padding-top: 30px;
 }
