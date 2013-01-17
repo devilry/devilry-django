@@ -2648,7 +2648,7 @@ msgstr "Valgte grupper"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsMenu.js:22
 msgid "click group to deselect it"
-msgstr "klikke p[ gruppen for fjerne markering"
+msgstr "klikk på gruppen for fjerne markering"
 
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:44
 msgid "Create/edit feedback"
