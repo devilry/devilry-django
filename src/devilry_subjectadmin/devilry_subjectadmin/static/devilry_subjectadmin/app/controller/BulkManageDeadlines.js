@@ -184,7 +184,7 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     },
 
     _scrollTo: function(component) {
-        component.el.scrollIntoView(this.getBulkManageDeadlinesPanel().body, false, true);
+        component.el.scrollIntoView(this.getBulkManageDeadlinesPanel().getEl(), false, true);
     },
 
     _onDeadlineHeaderClick: function(header) {
