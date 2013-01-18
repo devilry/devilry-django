@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-13 07:02+0100\n"
+"POT-Creation-Date: 2013-01-18 04:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -28,45 +28,6 @@ msgstr ""
 
 #: static/devilry_nodeadmin/app-all.js:4
 msgid "Loading"
-msgstr ""
-
-#: static/devilry_nodeadmin/app-all.js:4
-msgid "About you"
-msgstr ""
-
-#: static/devilry_nodeadmin/app-all.js:4
-msgid ""
-"The table below shows the personal information registered about you in "
-"Devilry. <a href=\"{wrong_userinfo_url}\">Click here</a> if any information "
-"is incorrect."
-msgstr ""
-
-#: static/devilry_nodeadmin/app-all.js:4
-msgid "Name"
-msgstr ""
-
-#: static/devilry_nodeadmin/app-all.js:4
-msgid "Email"
-msgstr ""
-
-#: static/devilry_nodeadmin/app-all.js:4
-msgid "Username"
-msgstr ""
-
-#: static/devilry_nodeadmin/app-all.js:4
-msgid "Log out"
-msgstr ""
-
-#: static/devilry_nodeadmin/app-all.js:4
-msgid "Could not connect to server at URL \"{url}\"."
-msgstr ""
-
-#: static/devilry_nodeadmin/app-all.js:4
-msgid "Less info"
-msgstr ""
-
-#: static/devilry_nodeadmin/app-all.js:4
-msgid "More info"
 msgstr ""
 
 #: static/devilry_nodeadmin/app-all.js:4
@@ -102,7 +63,7 @@ msgstr ""
 
 #: static/devilry_nodeadmin/app-all.js:4
 msgid "subjects"
-msgstr "kurs"
+msgstr "Kurs"
 
 #: static/devilry_nodeadmin/app-all.js:4
 msgid "nodes"
@@ -146,6 +107,46 @@ msgid ""
 msgstr ""
 
 #: static/devilry_nodeadmin/app-all.js:4
+#, fuzzy
+msgid "About you"
+msgstr "Om"
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid ""
+"The table below shows the personal information registered about you in "
+"Devilry. <a href=\"{wrong_userinfo_url}\">Click here</a> if any information "
+"is incorrect."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Name"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Email"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Username"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Log out"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Less info"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "More info"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+msgid "Could not connect to server at URL \"{url}\"."
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
 msgid "Error"
 msgstr ""
 
@@ -156,24 +157,21 @@ msgid ""
 msgstr ""
 
 #: static/devilry_nodeadmin/app-all.js:4
-msgid "Details"
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:11
+msgid "Node contains"
 msgstr ""
 
 #: static/devilry_nodeadmin/app-all.js:4
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:11
-msgid "Node contains"
-msgstr "Noden inneholder"
-
-#: static/devilry_nodeadmin/app-all.js:4
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:18
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:20
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:22
 msgid "Earliest start time"
 msgstr ""
 
 #: static/devilry_nodeadmin/app-all.js:4
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:26
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:28
+#, fuzzy
 msgid "no nodes on this level"
-msgstr "ingen noder"
+msgstr "som hører til dette nivået"
 
 #: static/devilry_nodeadmin/app-all.js:4
 msgid "til rotnoden"
@@ -184,9 +182,13 @@ msgid "ett nivå opp"
 msgstr ""
 
 #: static/devilry_nodeadmin/app-all.js:4
-#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:6
+msgid "Details"
+msgstr ""
+
+#: static/devilry_nodeadmin/app-all.js:4
+#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:10
 msgid "Navigate"
-msgstr "Navigér"
+msgstr ""
 
 #: static/devilry_nodeadmin/app-all.js:4
 msgid "Help"
@@ -235,11 +237,30 @@ msgstr ""
 msgid "Dashboard"
 msgstr ""
 
-#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:9
+#: static/devilry_nodeadmin/app/controller/NodeBrowserController.js:106
+msgid "Om noden"
+msgstr ""
+
+#: static/devilry_nodeadmin/app/view/dashboard/BetaWarning.js:7
+msgid ""
+"This part of Devilry is in experemental stage. To make sure you get things "
+"done, we have kept a stable environment accessible, providing the same "
+"functionality. If you ever encounter issues with this page, please make sure "
+"to report them and head over  "
+msgstr ""
+"Vi jobber med å forbedre denne delen av Devilry. For at det ikke skal påvirke din bruk av systemet"
+"har vi beholdt en midlertidig versjon med tilsvarende funksjonalitet. Hvis du finner feil, vennligst "
+"rapporter dem og gå over "
+
+#: static/devilry_nodeadmin/app/view/dashboard/BetaWarning.js:8
+msgid "to the alternative interface"
+msgstr "til den gamle versjonen"
+
+#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:13
 msgid "Or return (to the front-page)"
 msgstr "Eller gå til hjemmesiden"
 
-#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:20
+#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:22
 msgid ""
 "These are only the nodes you control. Select an element to see the child "
 "levels, its subjects and periods. The menu in the upper right corner of the "
@@ -249,14 +270,18 @@ msgstr ""
 "se de underliggende nivåene, emnene og periodene. Du kan gå ett nivå tilbake "
 "ved hjelp av knappen i det øvre høyre hjørne."
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:10
-#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:17
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:14
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:21
 msgid "to the top"
 msgstr "til øverste nivå"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:13
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:17
 msgid "up"
 msgstr "ett nivå opp"
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:22
+msgid "none"
+msgstr "ingen"
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:7
 msgid "About"
@@ -279,7 +304,6 @@ msgid "on this level"
 msgstr "som hører til dette nivået"
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:20
-#, fuzzy
 msgid ""
 "Follow these subject links to extend deadlines, alter group membership, and "
 "to get detailed summaries of particular students."
