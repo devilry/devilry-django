@@ -5,12 +5,14 @@ Ext.define('devilry_subjectadmin.model.ExaminerStat', {
     fields: [
         {name: 'id', type: 'int'},
         {name: 'examiner', type: 'auto'},
-        {name: 'waitingfordeliveries', type: 'auto'},
-        {name: 'waitingforfeedback', type: 'auto'},
-        {name: 'nodeadlines', type: 'auto'},
-        {name: 'closedwithoutfeedback', type: 'auto'},
-        {name: 'failed', type: 'auto'},
-        {name: 'passed', type: 'auto'}
+        {name: 'waitingfordeliveries_count', type: 'int'},
+        {name: 'waitingforfeedback_count', type: 'int'},
+        {name: 'nodeadlines_count', type: 'int'},
+        {name: 'closedwithoutfeedback_count', type: 'int'},
+        {name: 'failed_count', type: 'int'},
+        {name: 'passed_count', type: 'int'},
+        {name: 'corrected_count', type: 'int'},
+        {name: 'groups', type: 'auto'}
     ],
 
     proxy: {

@@ -18,12 +18,12 @@ class SingleExaminerStats(object):
         }
     def __init__(self, examiner):
         self.examiner = examiner
-        self.waitingfordeliveries = []
-        self.waitingforfeedback = []
-        self.nodeadlines = []
-        self.closedwithoutfeedback = []
-        self.failed = []
-        self.passed = []
+        self.waitingfordeliveries_count = 0
+        self.waitingforfeedback_count = 0
+        self.nodeadlines_count = 0
+        self.closedwithoutfeedback_count = 0
+        self.failed_count = 0
+        self.passed_count = 0
         self.allgroups = []
 
     def _serialize_group(self, group):
@@ -50,9 +50,9 @@ class SingleExaminerStats(object):
                 feedback = group.feedback
                 points = feedback.points
                 if group.feedback.is_passing_grade:
-                    self.passed.append(group)
+                    self.passed_count += 1
                 else:
-                    self.failed.append(group)
+                    self.failed_count += 1
                 if self.points_best == None or points > self.points_best:
                     self.points_best = points
                 if self.points_worst == None or points < self.points_worst:
@@ -78,6 +78,7 @@ class SingleExaminerStats(object):
             'closedwithoutfeedback_count': self.closedwithoutfeedback_count,
             'failed_count': self.failed_count,
             'passed_count': self.passed_count,
+            'corrected_count': self.failed_count + self.passed_count,
             'groups': self._serialize_groups(self.allgroups),
             'points_best': self.points_best,
             'points_worst': self.points_worst,
