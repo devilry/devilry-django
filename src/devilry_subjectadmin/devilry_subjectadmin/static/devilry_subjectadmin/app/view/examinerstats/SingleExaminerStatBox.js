@@ -11,7 +11,7 @@ Ext.define('devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox' ,{
      */
 
     bodytpl: [
-        '<h4>{stats.examiner.user.displayname}</h4>',
+        '<h3>{stats.examiner.user.displayname}</h3>',
         '<dl>',
             '<dt>', gettext('Corrected groups') ,'</dt>',
             '<dd>{stats.corrected_count}/{total_count}</dd>',
@@ -39,6 +39,9 @@ Ext.define('devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox' ,{
                     gettext('Best:'), '{stats.points_best}',
                 ')</small>',
             '</dd>',
+
+            '<dt>', gettext('Average number of words in feedback') ,'</dt>',
+            '<dd>{stats.feedback_words_avg}</dd>',
         '</dl>'
     ],
 

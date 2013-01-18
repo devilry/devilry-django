@@ -1,7 +1,7 @@
-Ext.define('devilry_subjectadmin.view.examinerstats.AveragePointsChart' ,{
+Ext.define('devilry_subjectadmin.view.examinerstats.AverageWordsChart' ,{
     extend: 'Ext.chart.Chart',
-    alias: 'widget.examinerstats_averagePointsChart',
-    cls: 'devilry_subjectadmin_examinerstats_averagePointsChart',
+    alias: 'widget.examinerstats_averageWordsChart',
+    cls: 'devilry_subjectadmin_examinerstats_averageWordsChart',
 
     animate: true,
     shadow: true,
@@ -9,11 +9,11 @@ Ext.define('devilry_subjectadmin.view.examinerstats.AveragePointsChart' ,{
     axes: [{
         type: 'Numeric',
         position: 'left',
-        fields: ['points_avg'],
+        fields: ['feedback_words_avg'],
         label: {
             renderer: Ext.util.Format.numberRenderer('0,0')
         },
-        title: gettext('Average points'),
+        title: gettext('Number words in feedback'),
         grid: true,
         minimum: 0
     }, {
@@ -39,25 +39,25 @@ Ext.define('devilry_subjectadmin.view.examinerstats.AveragePointsChart' ,{
             renderer: function(record, item) {
                 this.setTitle([
                     record.get('examiner').user.displayname,
-                    ': ', record.get('points_avg'), ' ',
-                    gettext('points')
+                    ': ', record.get('feedback_words_avg'), ' ',
+                    gettext('words')
                 ].join(''));
             }
         },
         label: {
             display: 'insideEnd',
-            field: 'points_avg',
+            field: 'feedback_words_avg',
             renderer: Ext.util.Format.numberRenderer('0'),
             orientation: 'horizontal',
             contrast: true,
             'text-anchor': 'middle'
         },
         xField: 'examiner',
-        yField: ['points_avg'],
+        yField: ['feedback_words_avg'],
 
         renderer: function(sprite, record, attr, index, store) {
             return Ext.apply(attr, {
-                fill: '#0077b3',
+                fill: '#77B300',
                 stroke: '#222222'
             });
         }
