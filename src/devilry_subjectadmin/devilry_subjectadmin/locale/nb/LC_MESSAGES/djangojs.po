@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-17 06:16+0100\n"
+"POT-Creation-Date: 2013-01-18 14:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: static/devilry_subjectadmin/app.js:278
+#: static/devilry_subjectadmin/app.js:280
 msgid "Route not found"
 msgstr "Siden finnes ikke"
 
-#: static/devilry_subjectadmin/app.js:293
+#: static/devilry_subjectadmin/app.js:295
 #: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:36
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:9
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:22
@@ -30,7 +30,7 @@ msgstr "Siden finnes ikke"
 msgid "All %(subjects_term)s"
 msgstr "Alle %(subjects_term)s"
 
-#: static/devilry_subjectadmin/app.js:294
+#: static/devilry_subjectadmin/app.js:296
 #: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:37
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:10
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:23
@@ -49,7 +49,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:94
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:36
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:114
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:64
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:65
 msgid "Students"
 msgstr "Students"
 
@@ -207,8 +207,8 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:59
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:152
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:167
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:59
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:69
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:60
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:70
 #: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:55
 #: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:79
 #: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:89
@@ -250,11 +250,11 @@ msgstr "Legg til %(period_term)s"
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:159
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:175
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:28
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:147
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:164
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:151
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:168
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:29
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:158
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:175
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:162
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:179
 #: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:66
 msgid "period"
 msgstr ""
@@ -262,6 +262,11 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/DetailedPeriodOverviewController.js:107
 msgid "Detailed overview"
 msgstr "Detaljert oversikt"
+
+#: static/devilry_subjectadmin/app/controller/ExaminerStatsController.js:58
+#, fuzzy
+msgid "Examiner statistics"
+msgstr "Rettere"
 
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:104
 #: static/devilry_subjectadmin/app/controller/assignment/EditGradeEditor.js:75
@@ -343,7 +348,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:36
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:52
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:119
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:54
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:55
 msgid "Examiners"
 msgstr "Rettere"
 
@@ -370,11 +375,20 @@ msgstr "Endret kantidat IDen til {0} til {1}."
 msgid "Showing {visiblecount}/{totalcount}"
 msgstr "Viser {visiblecount}/{totalcount}"
 
-#: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:141
+#: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:56
+#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:80
+#: static/devilry_subjectadmin/app/view/managestudents/ExaminersInGroupGrid.js:22
+#: static/devilry_subjectadmin/app/view/managestudents/SelectExaminersGrid.js:23
+#: static/devilry_subjectadmin/app/view/managestudents/StudentsInGroupGrid.js:23
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Grid.js:24
+msgid "Full name missing"
+msgstr "Navn mangler"
+
+#: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:149
 msgid "Tagged %(users)s with: %(tags)s"
 msgstr "Tagget %(users)s med: %(tags)s"
 
-#: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:193
+#: static/devilry_subjectadmin/app/controller/RelatedUsersBase.js:201
 msgid "Cleared tags on %(users)s."
 msgstr "Fjernet alle tags fra %(users)s"
 
@@ -528,6 +542,7 @@ msgid "Other administrators"
 msgstr "Andre administratorer"
 
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:137
+#: static/devilry_subjectadmin/app/view/examinerstats/ExaminerStatsOverview.js:64
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:31
 msgid "Details"
 msgstr "Detaljer"
@@ -666,9 +681,9 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:26
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnSingle.js:34
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Grid.js:55
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:93
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:95
 #: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:41
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:103
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:105
 msgid "Tags"
 msgstr "Tags"
 
@@ -683,14 +698,6 @@ msgstr ""
 "{periodpath} og tags på oppgavene i {periodpath} holdes ikke i synk etter at "
 "du legger til studenter på oppgavene. Det betyr at du trygt kan redigere "
 "tags på en oppgave uten at det på virker andre oppgaver eller {periodpath}."
-
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:80
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersInGroupGrid.js:22
-#: static/devilry_subjectadmin/app/view/managestudents/SelectExaminersGrid.js:23
-#: static/devilry_subjectadmin/app/view/managestudents/StudentsInGroupGrid.js:23
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Grid.js:24
-msgid "Full name missing"
-msgstr "Navn mangler"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:102
 msgid "No matching examiners"
@@ -764,8 +771,8 @@ msgstr "Mer hjelp"
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:180
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:70
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:100
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:142
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:153
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:146
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:157
 msgid "Less help"
 msgstr "Mindre hjelp"
 
@@ -1519,6 +1526,7 @@ msgid "Not registered on assignment"
 msgstr "Ikke registrert på oppgaven"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:68
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:35
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:69
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:37
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:28
@@ -1533,6 +1541,8 @@ msgid "Waiting for deliveries"
 msgstr "Venter på innleveringer"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:76
+#: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:53
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:130
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:42
 #: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:23
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:44
@@ -1630,6 +1640,106 @@ msgstr "Sjul ignorerte studenter i tabellen"
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:40
 msgid "Edit/view students on the {period_term}"
 msgstr "Rediger/vis studenter på inneværende {period_term}."
+
+#: static/devilry_subjectadmin/app/view/examinerstats/AveragePointsChart.js:22
+msgid "Average points"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/examinerstats/AveragePointsChart.js:29
+#: static/devilry_subjectadmin/app/view/examinerstats/AverageWordsChart.js:29
+#: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:32
+#, fuzzy
+msgid "Examiner"
+msgstr "Rettere"
+
+#: static/devilry_subjectadmin/app/view/examinerstats/AveragePointsChart.js:49
+#, fuzzy
+msgid "points"
+msgstr "Poeng"
+
+#: static/devilry_subjectadmin/app/view/examinerstats/AverageWordsChart.js:22
+#, fuzzy
+msgid "Number words in feedback"
+msgstr "Ingen tilbakemelding"
+
+#: static/devilry_subjectadmin/app/view/examinerstats/AverageWordsChart.js:49
+msgid "words"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/examinerstats/ExaminerStatsOverview.js:35
+#, fuzzy
+msgid "Overview of examiners"
+msgstr "Oversikt over alle resultater"
+
+#: static/devilry_subjectadmin/app/view/examinerstats/ExaminerStatsOverview.js:37
+msgid "Statistics about your examiners."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/examinerstats/ExaminerStatsOverview.js:66
+msgid "Detailed statistics for each examiner."
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:24
+msgid "Results/Progress"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:51
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:20
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:122
+#, fuzzy
+msgid "Passed groups"
+msgstr "Bestått tidligere"
+
+#: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:52
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:23
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:126
+#, fuzzy
+msgid "Failed groups"
+msgstr "Nedlasting av gruppedata feilet"
+
+#: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:54
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:134
+#, fuzzy
+msgid "Waiting for deadline to expire"
+msgstr "Venter på innleveringer"
+
+#: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:55
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:32
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:138
+#, fuzzy
+msgid "Closed without feedback"
+msgstr "Lag/rediger tilbakemelding"
+
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:17
+#, fuzzy
+msgid "Corrected groups"
+msgstr "Valgte grupper"
+
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:26
+#, fuzzy
+msgid "Groups waiting for feedback"
+msgstr "Venter på tilbakemelding"
+
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:29
+#, fuzzy
+msgid "Groups waiting for deadline to expire"
+msgstr "grupper uten innleveringsfrist."
+
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:37
+msgid "Average:"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:39
+msgid "Worst:"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:40
+msgid "Best:"
+msgstr ""
+
+#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:44
+msgid "Average number of words in feedback"
+msgstr ""
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:24
 msgid "Select a grading system"
@@ -2119,8 +2229,8 @@ msgid ""
 "Use <em>Select by search</em> (further down in the help) to efficiently "
 "select students."
 msgstr ""
-"Bruk <em>Velg via søk</em> (lenger ned på denne hjelpsiden) for å "
-"effektivt velge studenter."
+"Bruk <em>Velg via søk</em> (lenger ned på denne hjelpsiden) for å effektivt "
+"velge studenter."
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:32
 msgid "You are administrator, which is NOT the same as examiner."
@@ -2463,8 +2573,8 @@ msgstr ""
 "tilbakemeldinger tags og rettere)."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:51
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:99
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:109
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:101
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:111
 msgid "Set tag(s)"
 msgstr "Erstatt tag(s)"
 
@@ -2473,8 +2583,8 @@ msgid "Replace the tags on the selected groups with one or more new tag(s)."
 msgstr "Erstatt tags på valgte grupper med en eller flere nye tags."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:56
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:103
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:113
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:105
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:115
 msgid "Add tag(s)"
 msgstr "Legg til tag(s)"
 
@@ -2484,10 +2594,10 @@ msgstr "Legg til en eller flere tag(s) på de valgte gruppene."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:61
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:95
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:95
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:184
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:105
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:195
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:97
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:188
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:107
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:199
 msgid "Clear tags"
 msgstr "Fjern tags"
 
@@ -2496,14 +2606,14 @@ msgid "Remove/clear all tags from the selected groups."
 msgstr "Fjern alle tags fra de valgte gruppene"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:84
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:173
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:184
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:177
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:188
 msgid "Set tags"
 msgstr "Erstatt tags"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:90
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:179
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:190
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:183
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:194
 msgid "Add tags"
 msgstr "Legg til tags"
 
@@ -2966,33 +3076,33 @@ msgstr ""
 "settes opp som rettere på de 20 studentene når du lager en ny oppgave hvis "
 "du velger å bruke tags for å sette opp rettere."
 
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:86
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:157
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:96
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:168
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:88
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:161
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:98
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:172
 msgid "Remove selected"
 msgstr "Fjern valgte"
 
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:112
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:114
 msgid "Add examiner"
 msgstr "Legg til retter"
 
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:119
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:129
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:121
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:131
 msgid "Filter (name, username, tags, candidate ID)"
 msgstr "Filter (navn, brukernavn, tags, candidat-ID"
 
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:141
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:152
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:145
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:156
 msgid "More help ..."
 msgstr "Mer hjelp ..."
 
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:162
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:166
 msgid "Do you really want to remove all the selected examiners?"
 msgstr "Vil du virkelig fjerne alle de valgte retterne?"
 
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:163
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:174
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:167
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:178
 msgid ""
 "They will not be removed from any existing assignments. You will not be able "
 "to add them on any new assignments, and they will not be available in "
@@ -3002,7 +3112,7 @@ msgstr ""
 "til på nye oppgaver, og de vil ikke bli tilgjengelige statistikk over hele "
 "inneværende %(period_term)s."
 
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:189
+#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:193
 msgid "Do you really want to clear all tags on the selected examiners?"
 msgstr "Vi du virkelig fjerne alle tags på valgte rettere?"
 
@@ -3068,15 +3178,15 @@ msgstr ""
 "settes opp som rettere på de 20 studentene når du lager en ny oppgave hvis "
 "du velger å bruke tags for å sette opp rettere."
 
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:122
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:124
 msgid "Add student"
 msgstr "Legg til student"
 
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:173
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:177
 msgid "Do you really want to remove all the selected students?"
 msgstr "Vil du virkelig fjerne alle de valgte studentene?"
 
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:200
+#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:204
 msgid "Do you really want to clear all tags on the selected students?"
 msgstr "Vil du virkelig fjerne alle tags på de valgte studentene?"
 

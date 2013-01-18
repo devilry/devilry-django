@@ -41,6 +41,9 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     passedPreviousPeriod: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@passed-previous-period', assignment_id);
     },
+    assignmentExaminerStats: function(assignment_id) {
+        return Ext.String.format('#/assignment/{0}/@@examinerstats', assignment_id);
+    },
 
     manageStudents: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@manage-students/', assignment_id);

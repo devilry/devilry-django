@@ -21,7 +21,7 @@ Ext.define('devilry_subjectadmin.view.examinerstats.PassedGroupsChart' ,{
                 return Ext.String.format('{0}%', Ext.util.Format.number(value, '0.0'));
             }
         },
-        title: gettext('Progress'),
+        title: gettext('Results/Progress'),
         grid: true,
         minimum: 0,
         maximum: 100

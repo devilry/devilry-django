@@ -100,6 +100,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
             managestudents_url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignment_id),
             managedeadlines_url: devilry_subjectadmin.utils.UrlLookup.bulkManageDeadlines(this.assignment_id),
             passedpreviousperiod_url: devilry_subjectadmin.utils.UrlLookup.passedPreviousPeriod(this.assignment_id),
+            examinerstats_url: devilry_subjectadmin.utils.UrlLookup.assignmentExaminerStats(this.assignment_id),
             assignmentData: this.assignmentRecord.data,
             electronic: this.assignmentRecord.get('delivery_types') === 0,
             period_term: gettext('period'),
