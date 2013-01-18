@@ -44,13 +44,6 @@ Ext.define('devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox' ,{
 
     initComponent: function() {
         this._createChartStore();
-        var colormap = {
-            passed: '#468847',
-            failed: '#f89406',
-            waitingforfeedback: '#aaaaaa',
-            waitingfordeliveries: '#eeeeee',
-            closedwithoutfeedback: '#00ffff'
-        };
         Ext.apply(this, {
             layout: 'column',
             items: [{

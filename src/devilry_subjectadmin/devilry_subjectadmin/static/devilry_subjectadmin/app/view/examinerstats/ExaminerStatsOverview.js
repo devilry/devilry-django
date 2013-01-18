@@ -4,6 +4,7 @@ Ext.define('devilry_subjectadmin.view.examinerstats.ExaminerStatsOverview' ,{
     cls: 'devilry_subjectadmin_examinerstatsoverview',
 
     requires: [
+        'devilry_subjectadmin.view.examinerstats.AveragePointsChart'
     ],
 
     /**
@@ -34,6 +35,9 @@ Ext.define('devilry_subjectadmin.view.examinerstats.ExaminerStatsOverview' ,{
                             gettext('Statistics about your examiners.'),
                         '</small></p>'
                     ].join('')
+                }, {
+                    xtype: 'examinerstats_averagePointsChart',
+                    height: 300
                 }]
             }, {
                 xtype: 'container',
