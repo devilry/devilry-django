@@ -19,7 +19,10 @@ Ext.define('devilry_nodeadmin.view.dashboard.DefaultNodeList', {
         '</tpl>',
         '<div class="footer">',
             '<div>',
-                gettext( 'These are only the nodes you control. Select an element to see the child levels, its subjects and periods. The menu in the upper right corner of the page will always let you navigate back and to the top of the structure.' ),
+                interpolate(gettext( 'These are only the nodes you control. Select an element to see the child levels, its %(subjects_term)s and %(periods_term)s. The menu in the upper right corner of the page will always let you navigate back and to the top of the structure.' ), {
+                    subjects_term: gettext('subjects'),
+                    periods_term: gettext('periods')
+                 }, true),
             '</div>',
         '</div>'
     ],

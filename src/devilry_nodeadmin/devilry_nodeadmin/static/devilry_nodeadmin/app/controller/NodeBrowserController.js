@@ -103,7 +103,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
             } )
         } );
 
-        this.application.breadcrumbs.set( breadcrumb, gettext( 'Om noden' ) );
+        this.application.breadcrumbs.set( breadcrumb, gettext( 'About the node' ) );
     },
 
     _onLoadNodeChildrenSuccess:function ( records ) {},
