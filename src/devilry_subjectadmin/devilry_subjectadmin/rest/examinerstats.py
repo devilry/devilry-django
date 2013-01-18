@@ -39,16 +39,20 @@ class SingleExaminerStats(object):
     def add_group(self, group):
         self.allgroups.append(group)
 
+    def _countwords(self, rendered_view):
+        return len(rendered_view.split())
 
     def aggregate_data(self):
         self.points_best = None
         self.points_worst = None
+        words = []
         allpoints = []
         for group in self.allgroups:
             status = group.get_status()
             if status == 'corrected':
                 feedback = group.feedback
                 points = feedback.points
+                words.append(self._countwords(feedback.rendered_view))
                 if group.feedback.is_passing_grade:
                     self.passed_count += 1
                 else:
@@ -63,6 +67,7 @@ class SingleExaminerStats(object):
                 value = getattr(self, attrname)
                 setattr(self, attrname, value + 1)
         self.points_avg = numpy.mean(allpoints)
+        self.feedback_words_avg = numpy.mean(words)
 
 
     def serialize(self):
@@ -82,7 +87,8 @@ class SingleExaminerStats(object):
             'groups': self._serialize_groups(self.allgroups),
             'points_best': self.points_best,
             'points_worst': self.points_worst,
-            'points_avg': self.points_avg
+            'points_avg': self.points_avg,
+            'feedback_words_avg': self.feedback_words_avg
         }
 
 

@@ -11,7 +11,7 @@ Ext.define('devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox' ,{
      */
 
     bodytpl: [
-        '<h3>{stats.examiner.user.displayname}</h3>',
+        '<h4>{stats.examiner.user.displayname}</h4>',
         '<dl>',
             '<dt>', gettext('Corrected groups') ,'</dt>',
             '<dd>{stats.corrected_count}/{total_count}</dd>',
@@ -27,6 +27,15 @@ Ext.define('devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox' ,{
 
             '<dt>', gettext('Groups waiting for deadline to expire') ,'</dt>',
             '<dd>{stats.waitingfordeliveries_count}/{total_count}</dd>',
+
+            '<dt>', gettext('Points'), '</dt>',
+            '<dd>',
+                gettext('Average:'), ' {stats.points_avg} ',
+                '<small class="muted">(',
+                    gettext('Worst:'), '{stats.points_worst}, ',
+                    gettext('Best:'), '{stats.points_best}',
+                ')</small>',
+            '</dd>',
         '</dl>'
     ],
 

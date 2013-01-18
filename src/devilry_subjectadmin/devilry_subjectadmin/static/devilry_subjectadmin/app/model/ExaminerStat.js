@@ -12,6 +12,10 @@ Ext.define('devilry_subjectadmin.model.ExaminerStat', {
         {name: 'failed_count', type: 'int'},
         {name: 'passed_count', type: 'int'},
         {name: 'corrected_count', type: 'int'},
+        {name: 'points_best', type: 'int'},
+        {name: 'points_worst', type: 'int'},
+        {name: 'points_avg', type: 'int'},
+        {name: 'feedback_words_avg', type: 'int'},
         {name: 'groups', type: 'auto'}
     ],
 
