@@ -5,7 +5,8 @@ Ext.define('devilry_subjectadmin.view.examinerstats.ExaminerStatsOverview' ,{
 
     requires: [
         'devilry_subjectadmin.view.examinerstats.AveragePointsChart',
-        'devilry_subjectadmin.view.examinerstats.AverageWordsChart'
+        'devilry_subjectadmin.view.examinerstats.AverageWordsChart',
+        'devilry_subjectadmin.view.examinerstats.PassedGroupsChart'
     ],
 
     /**
@@ -41,6 +42,9 @@ Ext.define('devilry_subjectadmin.view.examinerstats.ExaminerStatsOverview' ,{
                     height: 400
                 }, {
                     xtype: 'examinerstats_averageWordsChart',
+                    height: 400
+                }, {
+                    xtype: 'examinerstats_passedGroupsChart',
                     height: 400
                 }]
             }, {

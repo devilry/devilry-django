@@ -1,7 +1,7 @@
-Ext.define('devilry_subjectadmin.view.examinerstats.AverageWordsChart' ,{
+Ext.define('devilry_subjectadmin.view.examinerstats.PassedGroupsChart' ,{
     extend: 'Ext.chart.Chart',
-    alias: 'widget.examinerstats_averageWordsChart',
-    cls: 'devilry_subjectadmin_examinerstats_averageWordsChart',
+    alias: 'widget.examinerstats_passedGroupsChart',
+    cls: 'devilry_subjectadmin_examinerstats_passedGroupsChart',
 
     animate: true,
     shadow: true,
@@ -9,11 +9,11 @@ Ext.define('devilry_subjectadmin.view.examinerstats.AverageWordsChart' ,{
     axes: [{
         type: 'Numeric',
         position: 'left',
-        fields: ['feedback_words_avg'],
+        fields: ['passed_percent'],
         label: {
             renderer: Ext.util.Format.numberRenderer('0,0')
         },
-        title: gettext('Number words in feedback'),
+        title: gettext('Passed groups (percent)'),
         grid: true,
         minimum: 0
     }, {
@@ -39,25 +39,24 @@ Ext.define('devilry_subjectadmin.view.examinerstats.AverageWordsChart' ,{
             renderer: function(record, item) {
                 this.setTitle([
                     record.get('examiner').user.displayname,
-                    ': ', record.get('feedback_words_avg'), ' ',
-                    gettext('words')
+                    ': ', record.get('passed_percent'), '% '
                 ].join(''));
             }
         },
         label: {
             display: 'insideEnd',
-            field: 'feedback_words_avg',
+            field: 'passed_percent',
             renderer: Ext.util.Format.numberRenderer('0'),
             orientation: 'horizontal',
             contrast: true,
             'text-anchor': 'middle'
         },
         xField: 'examiner',
-        yField: ['feedback_words_avg'],
+        yField: ['passed_percent'],
 
         renderer: function(sprite, record, attr, index, store) {
             return Ext.apply(attr, {
-                fill: '#555555',
+                fill: '#468847',
                 stroke: '#222222'
             });
         }
