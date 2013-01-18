@@ -11,15 +11,22 @@ Ext.define('devilry_subjectadmin.view.examinerstats.ExaminerStatsOverview' ,{
      * The ID of the assignment to load examiner stats for.
      */
 
-    autoScroll: true, // Autoscroll on overflow
 
     initComponent: function() {
         Ext.apply(this, {
             layout: 'anchor',
+            autoScroll: true, // Autoscroll on overflow
+            padding: 40,
             defaults: {
                 anchor: '100%'
             },
-            items: []
+            items: [{
+                xtype: 'container',
+                itemId: 'examinerStatBoxes',
+                cls: 'devilry_focuscontainer',
+                padding: 10,
+                items: []
+            }]
         });
         this.callParent(arguments);
     }

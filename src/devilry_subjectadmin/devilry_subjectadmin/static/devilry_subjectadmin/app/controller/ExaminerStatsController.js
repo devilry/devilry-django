@@ -11,7 +11,8 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
     requires: [
         'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
-        'devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox'
+        'devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox',
+        'Ext.util.Sorter'
     ],
 
     views: [
@@ -29,6 +30,9 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
     refs: [{
         ref: 'overview',
         selector: 'examinerstatsoverview'
+    }, {
+        ref: 'examinerStatBoxes',
+        selector: 'examinerstatsoverview #examinerStatBoxes'
     }, {
         ref: 'globalAlertmessagelist',
         selector: 'viewport floatingalertmessagelist#appAlertmessagelist'
@@ -82,9 +86,16 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
     },
 
     _onLoadExaminerStatsSuccess: function(records, operation) {
-        var overview = this.getOverview();
-        this.getExaminerStatsStore().each(function (record) {
-            overview.add({
+        var examinerStatBoxes = this.getExaminerStatBoxes();
+        var store = this.getExaminerStatsStore();
+        store.sort(Ext.create('Ext.util.Sorter', {
+            sorterFn: function (a, b) {
+                return a.get('examiner').user.displayname.localeCompare(
+                    b.get('examiner').user.displayname);
+            }
+        }));
+        store.each(function (record) {
+            examinerStatBoxes.add({
                 xtype: 'singleexaminerstatobx',
                 examinerstat: record
             });
