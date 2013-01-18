@@ -2,7 +2,8 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'dashboard.DashboardOverview'
+        'dashboard.DashboardOverview',
+        'dashboard.BetaWarning'
     ],
 
     stores: [
@@ -14,19 +15,28 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
     ],
 
     refs: [{
+        ref: 'overview',
+        selector: 'dashboardoverview'
+    }, {
+        ref: 'primary',
+        selector: 'dashboardoverview #primary'
+    }, {
         ref: 'secondary',
         selector: 'dashboardoverview #secondary'
     }],
 
     init: function() {
         this.control({
+            'viewport dashboardoverview #primary': {
+                render: this._onRenderPrimary
+            },
             'viewport dashboardoverview #secondary': {
                 render: this._onRenderSecondary
             }
         });
     },
 
-    _onRenderSecondary: function() {
+    _onRenderPrimary: function() {
 
         // STORES
         // related nodes
@@ -41,7 +51,20 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
             }
         });
 
+        this.getPrimary().add([
+            { xtype: 'defaultnodelist' }
+        ]);
     },
+
+    _onRenderSecondary: function() {
+
+        this.getSecondary().add([
+            { xtype: 'betawarning' }
+        ]);
+
+    },
+
+
 
     _onLoadRelatedNodesSuccess: function( records ) {},
 
