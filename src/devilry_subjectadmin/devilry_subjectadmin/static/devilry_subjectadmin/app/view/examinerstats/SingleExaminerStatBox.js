@@ -40,21 +40,84 @@ Ext.define('devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox' ,{
     ],
 
     initComponent: function() {
+        this._createChartStore();
         Ext.apply(this, {
-            layout: 'anchor',
-            defaults: {
-                anchor: '100%'
-            },
+            layout: 'column',
             items: [{
                 xtype: 'box',
+                columnWidth: 0.4,
                 cls: 'bootstrap',
                 tpl: this.bodytpl,
                 data: {
                     stats: this.examinerstat.data,
                     total_count: this.examinerstat.get('groups').length
                 }
+            }, {
+                xtype: 'chart',
+                animate: true,
+                store: this.chartStore,
+                columnWidth: 0.6,
+                height: 300,
+                shadow: true,
+                legend: {
+                    position: 'right'
+                },
+                insetPadding: 30,
+                theme: 'Base:gradients',
+                series: [{
+                    type: 'pie',
+                    field: 'groups_percent',
+                    showInLegend: true,
+                    donut: false,
+                    tips: {
+                      trackMouse: true,
+                      width: 140,
+//                      height: ,
+                      renderer: function(record, item) {
+                        this.setTitle(record.get('title') + ': ' +
+                            Math.round(record.get('groups_percent')) + '%');
+                      }
+                    },
+                    highlight: {
+                      segment: {
+                        margin: 20
+                      }
+                    },
+                    label: {
+                        field: 'title',
+                        display: 'rotate',
+                        contrast: true,
+                        font: '12px Ubuntu, sans-serif'
+                    }
+                }]
             }]
         });
         this.callParent(arguments);
+    },
+
+    _createChartStore:function () {
+        var data = [{
+            title: gettext('Passed groups'),
+            groups_percent: this.examinerstat.get('passed_percent')
+        }, {
+            title: gettext('Failed groups'),
+            groups_percent: this.examinerstat.get('failed_percent')
+        }, {
+            title: gettext('Waiting for feedback'),
+            groups_percent: this.examinerstat.get('waitingforfeedback_percent')
+        }, {
+            title: gettext('Waiting for deadline to expire'),
+            groups_percent: this.examinerstat.get('waitingfordeliveries_percent')
+        }];
+        this.chartStore = Ext.create('Ext.data.Store', {
+            fields: [
+                {name: 'title', type: 'string'},
+                {name: 'groups_percent', type: 'float'}
+            ],
+            data: data,
+            proxy: {
+                type: 'memory'
+            }
+        });
     }
 });

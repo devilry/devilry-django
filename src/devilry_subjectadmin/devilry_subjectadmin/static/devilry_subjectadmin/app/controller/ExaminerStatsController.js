@@ -94,10 +94,15 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
                     b.get('examiner').user.displayname);
             }
         }));
-        store.each(function (record) {
+        store.each(function (record, index) {
+            var margin = '20 0 0 0';
+            if(index === 0) {
+                margin = '0';
+            }
             examinerStatBoxes.add({
                 xtype: 'singleexaminerstatobx',
-                examinerstat: record
+                examinerstat: record,
+                margin: margin
             });
         });
     },

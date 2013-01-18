@@ -14,12 +14,11 @@ Ext.define('devilry_subjectadmin.view.examinerstats.ExaminerStatsOverview' ,{
 
     initComponent: function() {
         Ext.apply(this, {
-            layout: 'column',
+            layout: 'anchor',
             autoScroll: true, // Autoscroll on overflow
             padding: 40,
             items: [{
                 xtype: 'container',
-                columnWidth: 0.6,
                 padding: 10,
                 layout: 'anchor',
                 cls: 'devilry_focuscontainer',
@@ -38,8 +37,7 @@ Ext.define('devilry_subjectadmin.view.examinerstats.ExaminerStatsOverview' ,{
                 }]
             }, {
                 xtype: 'container',
-                columnWidth: 0.4,
-                margin: '0 0 0 40',
+                margin: '40 0 0 0',
                 layout: 'anchor',
                 cls: 'devilry_focuscontainer',
                 padding: 10,
@@ -51,7 +49,7 @@ Ext.define('devilry_subjectadmin.view.examinerstats.ExaminerStatsOverview' ,{
                     xtype: 'box',
                     cls: 'bootstrap',
                     html: [
-                        '<h3 style="margin: 0;">', gettext('Details'), '</h3>',
+                        '<h2 style="margin: 0;">', gettext('Details'), '</h2>',
                         '<p class="muted"><small>',
                             gettext('Detailed statistics for each examiner.'),
                         '</small></p>'
