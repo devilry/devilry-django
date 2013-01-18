@@ -14,7 +14,8 @@ setup(name = 'devilry_subjectadmin',
                           'devilry_extjsextras',
                           'django_seleniumhelpers', 'django_extjs4',
                           'djangosenchatools', 'djangorestframework',
-                          'openpyxl'
+                          'openpyxl',
+                          'numpy'
                           ],
       include_package_data=True,
       long_description = open(join(this_dir, 'README.rst')).read().strip(),
