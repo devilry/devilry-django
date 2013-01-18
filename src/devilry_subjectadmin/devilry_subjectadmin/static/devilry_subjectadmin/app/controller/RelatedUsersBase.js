@@ -38,7 +38,7 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
         if(Ext.isEmpty(this.task)) {
             this.task = new Ext.util.DelayedTask(this._filter, this, [field]);
         }
-        this.task.delay(500);
+        this.task.delay(200);
     },
 
     _filter: function(field) {
@@ -51,9 +51,17 @@ Ext.define('devilry_subjectadmin.controller.RelatedUsersBase', {
     },
 
     matchRelatedUser: function(record, lowercaseValue) {
+        var full_name = record.get('user').full_name;
+        if(Ext.isEmpty(full_name)) {
+            full_name = gettext('Full name missing');
+        }
+        var tags = record.get('tags');
+        if(Ext.isEmpty(tags)) {
+            tags = '';
+        }
         return record.get('user').username.toLocaleLowerCase().indexOf(lowercaseValue) !== -1 ||
-            record.get('user').full_name.toLocaleLowerCase().indexOf(lowercaseValue) !== -1 ||
-            record.get('tags').toLocaleLowerCase().indexOf(lowercaseValue) !== -1;
+            full_name.toLocaleLowerCase().indexOf(lowercaseValue) !== -1 ||
+            tags.toLocaleLowerCase().indexOf(lowercaseValue) !== -1;
     },
 
     updateGridSummaryBox: function() {
