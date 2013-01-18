@@ -1,5 +1,11 @@
-@import url(http://fonts.googleapis.com/css?family=Ubuntu:300);
-/* line 7, ../sass/bootstrap.scss */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 300;
+  src: local("Ubuntu Light"), local("Ubuntu-Light"), url(../fonts/ubuntu/ubuntu.woff) format("woff");
+}
+
+/* line 12, ../sass/bootstrap.scss */
 .bootstrap {
   /* White icons with optional class, or on hover/active states of certain elements */
   /* move down carets for tabs */
@@ -3510,7 +3516,7 @@ a[href^="mailto"].mail-link-right {
   margin: 20px 0 4px 0;
 }
 
-/* line 58, ../sass/bootstrap.scss */
+/* line 63, ../sass/bootstrap.scss */
 .bootstrapextras {
   /* Allow for input prepend/append in search forms */
 }
