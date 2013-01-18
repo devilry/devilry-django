@@ -52,7 +52,7 @@ Ext.define('devilry_subjectadmin.view.examinerstats.ExaminerStatsOverview' ,{
                 margin: '40 0 0 0',
                 layout: 'anchor',
                 cls: 'devilry_focuscontainer',
-                padding: 10,
+                padding: 20,
 //                style: 'background-color: #fff; border: 1px solid #ccc',
                 defaults: {
                     anchor: '100%'

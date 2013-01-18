@@ -11,11 +11,12 @@ Ext.define('devilry_subjectadmin.view.examinerstats.PassedGroupsChart' ,{
         position: 'left',
         fields: ['passed_percent'],
         label: {
-            renderer: Ext.util.Format.numberRenderer('0,0')
+            renderer: Ext.util.Format.numberRenderer('0')
         },
         title: gettext('Passed groups (percent)'),
         grid: true,
-        minimum: 0
+        minimum: 0,
+        maximum: 100
     }, {
         type: 'Category',
         position: 'bottom',

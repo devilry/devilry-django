@@ -11,7 +11,7 @@ Ext.define('devilry_subjectadmin.view.examinerstats.AverageWordsChart' ,{
         position: 'left',
         fields: ['feedback_words_avg'],
         label: {
-            renderer: Ext.util.Format.numberRenderer('0,0')
+            renderer: Ext.util.Format.numberRenderer('0.0')
         },
         title: gettext('Number words in feedback'),
         grid: true,

@@ -11,7 +11,7 @@ Ext.define('devilry_subjectadmin.view.examinerstats.AveragePointsChart' ,{
         position: 'left',
         fields: ['points_avg'],
         label: {
-            renderer: Ext.util.Format.numberRenderer('0,0')
+            renderer: Ext.util.Format.numberRenderer('0.00')
         },
         title: gettext('Average points'),
         grid: true,

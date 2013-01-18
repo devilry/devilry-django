@@ -14,18 +14,18 @@ Ext.define('devilry_subjectadmin.model.ExaminerStat', {
         {name: 'passed_count', type: 'int'},
         {name: 'corrected_count', type: 'int'},
         
-        {name: 'waitingfordeliveries_percent', type: 'int'},
-        {name: 'waitingforfeedback_percent', type: 'int'},
-        {name: 'nodeadlines_percent', type: 'int'},
-        {name: 'closedwithoutfeedback_percent', type: 'int'},
-        {name: 'failed_percent', type: 'int'},
-        {name: 'passed_percent', type: 'int'},
-        {name: 'corrected_percent', type: 'int'},
+        {name: 'waitingfordeliveries_percent', type: 'float'},
+        {name: 'waitingforfeedback_percent', type: 'float'},
+        {name: 'nodeadlines_percent', type: 'float'},
+        {name: 'closedwithoutfeedback_percent', type: 'float'},
+        {name: 'failed_percent', type: 'float'},
+        {name: 'passed_percent', type: 'float'},
+        {name: 'corrected_percent', type: 'float'},
         
         {name: 'points_best', type: 'int'},
         {name: 'points_worst', type: 'int'},
-        {name: 'points_avg', type: 'int'},
-        {name: 'feedback_words_avg', type: 'int'},
+        {name: 'points_avg', type: 'float'},
+        {name: 'feedback_words_avg', type: 'float'},
         {name: 'groups', type: 'auto'}
     ],
 
