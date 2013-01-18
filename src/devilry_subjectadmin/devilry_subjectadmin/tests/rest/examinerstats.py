@@ -35,11 +35,11 @@ class TestRestExaminerStats(TestCase):
     def test_perms_as_superuser(self):
         self._test_get_as('superuser')
 
-    def test_get_as_nobody(self):
+    def test_perms_as_nobody(self):
         self.testhelper.create_user('nobody')
         content, response = self._getas('nobody', self.testhelper.sub_p1_a1.id)
         self.assertEqual(response.status_code, 403)
 
-    def test_get_invalid_id(self):
+    def test_perms_invalid_id(self):
         content, response = self._getas('assignmentadmin', 10000)
         self.assertEqual(response.status_code, 403)
