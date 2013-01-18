@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-18 14:01+0100\n"
+"POT-Creation-Date: 2013-01-18 14:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -185,9 +185,9 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:110
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:66
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:83
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:135
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:185
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:197
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:143
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:193
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:205
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:54
 #: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:58
 #: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimeWidget.js:46
@@ -233,7 +233,7 @@ msgstr "Legg til %(period_term)s"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:84
 #: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:245
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:105
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:106
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:31
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:256
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:273
@@ -264,9 +264,10 @@ msgid "Detailed overview"
 msgstr "Detaljert oversikt"
 
 #: static/devilry_subjectadmin/app/controller/ExaminerStatsController.js:58
-#, fuzzy
-msgid "Examiner statistics"
-msgstr "Rettere"
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:120
+#: static/devilry_subjectadmin/app/view/examinerstats/ExaminerStatsOverview.js:35
+msgid "Statistics about examiners"
+msgstr "Statistikk om retterne"
 
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:104
 #: static/devilry_subjectadmin/app/controller/assignment/EditGradeEditor.js:75
@@ -392,13 +393,13 @@ msgstr "Tagget %(users)s med: %(tags)s"
 msgid "Cleared tags on %(users)s."
 msgstr "Fjernet alle tags fra %(users)s"
 
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:124
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:125
 #: static/devilry_subjectadmin/app/controller/period/PeriodController.js:82
 #: static/devilry_subjectadmin/app/controller/subject/SubjectController.js:72
 msgid "Delete {something}"
 msgstr "Slett {something}"
 
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:131
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:132
 #: static/devilry_subjectadmin/app/controller/period/PeriodController.js:89
 #: static/devilry_subjectadmin/app/controller/subject/SubjectController.js:79
 #: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:29
@@ -924,15 +925,19 @@ msgstr "Bestått tidligere {period_term}"
 msgid "Wizard with automatic and manual selection."
 msgstr "Mulighet for automatisk og manuelt valg av studenter"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:141
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:123
+msgid "Charts and numbers."
+msgstr "Grafer og tall."
+
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:149
 msgid "Go to examiner interface"
 msgstr "Gå til brukergrensesnittet for rettere"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:147
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:155
 msgid "You are examiner for {mygroupscount}/{totalgroups} groups."
 msgstr "Du er retter for {mygroupscount}/{totalgroups} grupper."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:152
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:160
 msgid ""
 "When this assignment is published, you will get a link here that takes you "
 "to the examiner interface."
@@ -940,22 +945,22 @@ msgstr ""
 "Når denne oppgaven publiseres vil du få en link her som tar deg til "
 "brukergrensesnittet for rettere."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:156
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:164
 msgid "You are not examiner for any groups on this assignment."
 msgstr "Du er ikke retter for noen grupper på denne oppgaven."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:161
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:169
 msgid "Follow the Students-link above if you wish to manage examiners."
 msgstr ""
 "Følg Studenter-linken ovenfor hvis du ønsker å administrere rettere på denne "
 "oppgaven."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:164
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:172
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:69
 msgid "About examiners"
 msgstr "Om rettere"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:188
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:196
 msgid ""
 "Renaming an assignment should not be done without a certain amount of "
 "consideration. The name of an assignment, especially the short name, is "
@@ -965,13 +970,13 @@ msgstr ""
 "til en oppgave, spesielt det korte navnet, brukes ofte som identifikator av "
 "systemer som integrerer seg med Devilry."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:191
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:199
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:161
 #: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:83
 msgid "Rename"
 msgstr "Gi nytt navn"
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:200
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:208
 msgid ""
 "Once you delete an assignment, there is no going back. Only superusers can "
 "delete an assignment with deliveries."
@@ -979,7 +984,7 @@ msgstr ""
 "Når du har slettet en oppgave, er det ingen mulighet for å angre. Kun "
 "superbrukere kan slette oppgaver med innleveringer."
 
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:203
+#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:211
 #: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:17
 #: static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:19
 #: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:137
@@ -1643,103 +1648,88 @@ msgstr "Rediger/vis studenter på inneværende {period_term}."
 
 #: static/devilry_subjectadmin/app/view/examinerstats/AveragePointsChart.js:22
 msgid "Average points"
-msgstr ""
+msgstr "Poeng (gjennomsnitt)"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/AveragePointsChart.js:29
 #: static/devilry_subjectadmin/app/view/examinerstats/AverageWordsChart.js:29
 #: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:32
-#, fuzzy
 msgid "Examiner"
-msgstr "Rettere"
+msgstr "Retter"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/AveragePointsChart.js:49
-#, fuzzy
 msgid "points"
-msgstr "Poeng"
+msgstr "poeng"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/AverageWordsChart.js:22
-#, fuzzy
 msgid "Number words in feedback"
-msgstr "Ingen tilbakemelding"
+msgstr "Antall ord i tilbakemeldingene"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/AverageWordsChart.js:49
 msgid "words"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/examinerstats/ExaminerStatsOverview.js:35
-#, fuzzy
-msgid "Overview of examiners"
-msgstr "Oversikt over alle resultater"
+msgstr "ord"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/ExaminerStatsOverview.js:37
-msgid "Statistics about your examiners."
-msgstr ""
+msgid "Summary in this section, in the next section."
+msgstr "Oppsummering i denne seksjonen, detaljer i neste seksjon."
 
 #: static/devilry_subjectadmin/app/view/examinerstats/ExaminerStatsOverview.js:66
 msgid "Detailed statistics for each examiner."
-msgstr ""
+msgstr "Detaljert statistikk for hver retter."
 
 #: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:24
 msgid "Results/Progress"
-msgstr ""
+msgstr "Resultat/Fremgang"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:51
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:20
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:122
-#, fuzzy
 msgid "Passed groups"
-msgstr "Bestått tidligere"
+msgstr "Grupper med bestått karakter"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:52
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:23
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:126
-#, fuzzy
 msgid "Failed groups"
-msgstr "Nedlasting av gruppedata feilet"
+msgstr "Grupper med ikke-bestått karakter"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:54
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:134
-#, fuzzy
 msgid "Waiting for deadline to expire"
-msgstr "Venter på innleveringer"
+msgstr "Venter på at innleveringsfristen skal utgå"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:55
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:32
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:138
-#, fuzzy
 msgid "Closed without feedback"
-msgstr "Lag/rediger tilbakemelding"
+msgstr "Lukket uten tilbakemelding"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:17
-#, fuzzy
 msgid "Corrected groups"
-msgstr "Valgte grupper"
+msgstr "Rettede grupper"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:26
-#, fuzzy
 msgid "Groups waiting for feedback"
-msgstr "Venter på tilbakemelding"
+msgstr "Grupper som venter på tilbakemelding"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:29
-#, fuzzy
 msgid "Groups waiting for deadline to expire"
-msgstr "grupper uten innleveringsfrist."
+msgstr "Grupper som venter på at innleveringsfristen skal utgå"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:37
 msgid "Average:"
-msgstr ""
+msgstr "Gjennomsnitt:"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:39
 msgid "Worst:"
-msgstr ""
+msgstr "Verste:"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:40
 msgid "Best:"
-msgstr ""
+msgstr "Beste:"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:44
 msgid "Average number of words in feedback"
-msgstr ""
+msgstr "Gjennomsnitt antall ord i tilbakemeldingen"
 
 #: static/devilry_subjectadmin/app/view/gradeeditor/Change.js:24
 msgid "Select a grading system"

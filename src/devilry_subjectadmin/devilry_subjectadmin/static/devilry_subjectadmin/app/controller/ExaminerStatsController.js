@@ -55,7 +55,7 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
     },
 
     _setBreadcrumbAndTitle: function(subviewtext) {
-        var text = gettext('Examiner statistics');
+        var text = gettext('Statistics about examiners');
         this.setSubviewBreadcrumb(this.assignmentRecord, 'Assignment', [], text);
         var path = this.getPathFromBreadcrumb(this.assignmentRecord);
         this.application.setTitle(Ext.String.format('{0}.{1}', path, text));

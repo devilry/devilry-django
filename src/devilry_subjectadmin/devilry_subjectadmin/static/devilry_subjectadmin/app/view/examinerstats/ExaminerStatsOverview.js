@@ -32,9 +32,9 @@ Ext.define('devilry_subjectadmin.view.examinerstats.ExaminerStatsOverview' ,{
                     xtype: 'box',
                     cls: 'bootstrap',
                     html: [
-                        '<h1 style="margin: 0;">', gettext('Overview of examiners'), '</h1>',
+                        '<h1 style="margin: 0;">', gettext('Statistics about examiners'), '</h1>',
                         '<p class="muted"><small>',
-                            gettext('Statistics about your examiners.'),
+                            gettext('Summary in this section, in the next section.'),
                         '</small></p>'
                     ].join('')
                 }, {
