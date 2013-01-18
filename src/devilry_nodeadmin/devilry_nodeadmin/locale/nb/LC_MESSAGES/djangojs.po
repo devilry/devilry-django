@@ -165,7 +165,7 @@ msgstr ""
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:18
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:22
 msgid "Earliest start time"
-msgstr ""
+msgstr "Nærmeste periodestart"
 
 #: static/devilry_nodeadmin/app-all.js:4
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:28
@@ -188,7 +188,7 @@ msgstr ""
 #: static/devilry_nodeadmin/app-all.js:4
 #: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:10
 msgid "Navigate"
-msgstr ""
+msgstr "Navigér"
 
 #: static/devilry_nodeadmin/app-all.js:4
 msgid "Help"
@@ -248,8 +248,8 @@ msgid ""
 "functionality. If you ever encounter issues with this page, please make sure "
 "to report them and head over  "
 msgstr ""
-"Vi jobber med å forbedre denne delen av Devilry. For at det ikke skal påvirke din bruk av systemet"
-"har vi beholdt en midlertidig versjon med tilsvarende funksjonalitet. Hvis du finner feil, vennligst "
+"Vi jobber med å forbedre denne delen av Devilry. For at det ikke skal hindre din bruk av systemet "
+"har vi satt opp en midlertidig versjon med tilsvarende funksjonalitet. Hvis du finner feil, vennligst "
 "rapporter dem og gå over "
 
 #: static/devilry_nodeadmin/app/view/dashboard/BetaWarning.js:8
