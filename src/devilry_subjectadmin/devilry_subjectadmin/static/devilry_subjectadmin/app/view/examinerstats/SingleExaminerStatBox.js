@@ -28,6 +28,9 @@ Ext.define('devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox' ,{
             '<dt>', gettext('Groups waiting for deadline to expire') ,'</dt>',
             '<dd>{stats.waitingfordeliveries_count}/{total_count}</dd>',
 
+            '<dt>', gettext('Closed without feedback') ,'</dt>',
+            '<dd>{stats.closedwithoutfeedback_count}/{total_count}</dd>',
+
             '<dt>', gettext('Points'), '</dt>',
             '<dd>',
                 gettext('Average:'), ' {stats.points_avg} ',
@@ -108,6 +111,9 @@ Ext.define('devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox' ,{
         }, {
             title: gettext('Waiting for deadline to expire'),
             groups_percent: this.examinerstat.get('waitingfordeliveries_percent')
+        }, {
+            title: gettext('Closed without feedback'),
+            groups_percent: this.examinerstat.get('closedwithoutfeedback_percent')
         }];
         this.chartStore = Ext.create('Ext.data.Store', {
             fields: [
