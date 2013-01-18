@@ -42,6 +42,12 @@ class SingleExaminerStats(object):
     def _countwords(self, rendered_view):
         return len(rendered_view.split())
 
+    def _percentage(self, part, whole):
+        if whole == 0:
+            return 0
+        else:
+            return 100 * float(part)/float(whole)
+
     def aggregate_data(self):
         self.points_best = None
         self.points_worst = None
@@ -71,6 +77,7 @@ class SingleExaminerStats(object):
 
 
     def serialize(self):
+        totalgroups = len(self.allgroups)
         return {
             'id': self.examiner.user_id,
             'examiner': {
@@ -84,6 +91,15 @@ class SingleExaminerStats(object):
             'failed_count': self.failed_count,
             'passed_count': self.passed_count,
             'corrected_count': self.failed_count + self.passed_count,
+
+            'waitingfordeliveries_percent': self._percentage(self.waitingfordeliveries_count, totalgroups),
+            'waitingforfeedback_percent': self._percentage(self.waitingforfeedback_count, totalgroups),
+            'nodeadlines_percent': self._percentage(self.nodeadlines_count, totalgroups),
+            'closedwithoutfeedback_percent': self._percentage(self.closedwithoutfeedback_count, totalgroups),
+            'failed_percent': self._percentage(self.failed_count, totalgroups),
+            'passed_percent': self._percentage(self.passed_count, totalgroups),
+            'corrected_percent': self._percentage(self.failed_count + self.passed_count, totalgroups),
+
             'groups': self._serialize_groups(self.allgroups),
             'points_best': self.points_best,
             'points_worst': self.points_worst,
