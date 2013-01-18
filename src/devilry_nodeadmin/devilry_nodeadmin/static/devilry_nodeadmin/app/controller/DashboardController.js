@@ -29,22 +29,21 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
     _onRenderSecondary: function() {
 
         // STORES
-
         // related nodes
-        this.getRelatedNodesStore().collect( {
+        this.getRelatedNodesStore().collectAll( {
             scope: this,
             callback: function( records, op ) {
                 if( op.success ) {
                     this._onLoadRelatedNodesSuccess( records );
                 } else {
-                    this._onLoadError(op);
+                    this._onLoadError( op );
                 }
             }
         });
 
     },
 
-    _onLoadRelatedNodes: function( records ) {},
+    _onLoadRelatedNodesSuccess: function( records ) {},
 
     _onLoadError:function (op) {
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');

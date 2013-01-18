@@ -10,16 +10,10 @@ Ext.define( 'devilry_nodeadmin.store.RelatedNodes', {
             type: 'json'
         }
     },
-    autoLoad: true,
 
-    inject: function() {
-        return
-    }
-
-    collect: function(config) {
-        this.proxy.url = Ext.String.format( this.proxy.urlPattern );
+    collectAll: function( config ) {
+        this.proxy.url = this.proxy.urlPattern;
         this.load(config);
     }
-
 
 });

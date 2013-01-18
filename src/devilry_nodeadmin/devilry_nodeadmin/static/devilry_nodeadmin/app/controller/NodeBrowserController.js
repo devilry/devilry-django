@@ -59,7 +59,6 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
 
 
         // STORES
-
         // children
         this.getNodeChildrenStore().collectByNode( node_pk, {
             scope: this,
@@ -84,7 +83,6 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
             }
         });
 
-        //
     },
 
     _onLoadNodeDetailsSuccess:function ( records ) {

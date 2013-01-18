@@ -12,7 +12,7 @@ Ext.define( 'devilry_nodeadmin.store.NodeDetails', {
     },
 
     collectByNode: function( node_pk, config ) {
-        this.proxy.url = Ext.String.format(this.proxy.urlPattern, node_pk);
+        this.proxy.url = Ext.String.format( this.proxy.urlPattern, node_pk );
         this.load(config);
     }
 });
