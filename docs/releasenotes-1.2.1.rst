@@ -95,6 +95,12 @@ Smarter statuses
 Groups (students) are no longer closed or open. Instead they have smarter statuses, like:
 *Waiting for feedback*, *Waiting for deliveries*, *Corrected*, and so on.
 
+Statistics about examiners on an assignment
+-------------------------------------------
+Charts and numbers that should help admins keep track of their examiners.
+Please let us know if you have suggestions for more numbers or charts in this
+view, or if you have ideas for making it better.
+
 
 New node admin UI
 =================
