@@ -10,7 +10,8 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
 
     requires: [
         'devilry_subjectadmin.utils.UrlLookup',
-        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler'
+        'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler',
+        'devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox'
     ],
 
     views: [
@@ -81,6 +82,13 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
     },
 
     _onLoadExaminerStatsSuccess: function(records, operation) {
+        var overview = this.getOverview();
+        this.getExaminerStatsStore().each(function (record) {
+            overview.add({
+                xtype: 'singleexaminerstatobx',
+                examinerstat: record
+            });
+        });
     },
 
     _scrollTo: function(component) {

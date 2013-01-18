@@ -19,10 +19,7 @@ Ext.define('devilry_subjectadmin.view.examinerstats.ExaminerStatsOverview' ,{
             defaults: {
                 anchor: '100%'
             },
-            items: [{
-                xtype: 'box',
-                html: 'hello world'
-            }]
+            items: []
         });
         this.callParent(arguments);
     }
