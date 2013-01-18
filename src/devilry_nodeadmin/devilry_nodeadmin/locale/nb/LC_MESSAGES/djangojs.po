@@ -252,7 +252,7 @@ msgstr ""
 #: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:10
 #: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:17
 msgid "to the top"
-msgstr "til det øverste nivå"
+msgstr "til øverste nivå"
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:13
 msgid "up"

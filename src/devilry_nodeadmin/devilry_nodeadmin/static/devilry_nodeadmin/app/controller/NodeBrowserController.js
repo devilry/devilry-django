@@ -78,7 +78,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
                 if( op.success ) {
                     this._onLoadNodeDetailsSuccess( records );
                 } else {
-                    this._onLoadError(op);
+                    this._onLoadError( op );
                 }
             }
         });
@@ -87,13 +87,22 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
 
     _onLoadNodeDetailsSuccess:function ( records ) {
         // convert to the breadcrumb object format
+        var current = records[0].data;
+        var path = current.path;
 
-        console.log( records[0].data.path );
-        this.application.breadcrumbs.set( records[0].data.path, 'Nodebrowser');
+        var breadcrumb = [];
+
+        Ext.Array.each( path, function(element) {
+            breadcrumb.push( {
+                text: element.short_name,
+                url: Ext.String.format( "/devilry_nodeadmin/#/node/{0}", element.id )
+            } )
+        } );
+
+        this.application.breadcrumbs.set( breadcrumb, gettext( 'Om noden' ) );
     },
     _onLoadNodeChildrenSuccess:function ( records ) {
-        console.log( records[0] );
-        this.application.breadcrumbs.set([], 'Nodebrowser');
+        this.application.breadcrumbs.set([], '');
     },
 
     _onLoadError:function (op) {
