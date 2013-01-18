@@ -100,7 +100,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
             breadcrumb.push( {
                 text: element.short_name,
                 url: Ext.String.format( "/devilry_nodeadmin/#/node/{0}", element.id )
-            } )
+            } );
         } );
 
         this.application.breadcrumbs.set( breadcrumb, gettext( 'About the node' ) );

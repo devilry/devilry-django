@@ -30,7 +30,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeChildrenList', {
         '</div>',
         {
             formatDatetime: function(datetime) {
-                return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(datetime)
+                return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(datetime);
             }
         }
     ],
