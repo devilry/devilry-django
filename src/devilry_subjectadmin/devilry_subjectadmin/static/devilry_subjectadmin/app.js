@@ -66,6 +66,7 @@ Ext.application({
         'RelatedExaminers',
         'PassedPreviousPeriodController',
         'DetailedPeriodOverviewController',
+        'ExaminerStatsController',
 
         'GuideSystem',
         'guides.CreateNewAssignment'
@@ -250,6 +251,7 @@ Ext.application({
         this.route.add("/period/:period_id/@@create-new-assignment/:defaults", 'createNewAssignment');
         this.route.add("/assignment/:assignment_id/", 'showAssignment');
         this.route.add("/assignment/:assignment_id/@@manage-students/", 'manageStudents');
+        this.route.add("/assignment/:assignment_id/@@examinerstats", 'examinerstats');
         this.route.add("/assignment/:assignment_id/@@manage-students/@@select-delivery/:group_id/:delivery_id", 'manageGroupsSelectDelivery');
         this.route.add("/assignment/:assignment_id/@@manage-students/@@select/:group_ids", 'manageGroupsSelectGroups');
         this.route.add("/assignment/:assignment_id/@@manage-students/@@add-students", 'manageGroupsAddStudents');
@@ -371,6 +373,13 @@ Ext.application({
             xtype: 'gradeeditoroverview',
             assignment_id: assignment_id,
             changeGradeEditor: true
+        });
+    },
+
+    examinerstats: function(routeInfo, assignment_id) {
+        this.setPrimaryContent({
+            xtype: 'examinerstatsoverview',
+            assignment_id: assignment_id
         });
     },
 

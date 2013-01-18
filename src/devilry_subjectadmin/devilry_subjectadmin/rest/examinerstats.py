@@ -20,8 +20,9 @@ class SingleExaminerStats(object):
         self.waitingfordeliveries = []
         self.waitingforfeedback = []
         self.nodeadlines = []
-        self.corrected = []
         self.closedwithoutfeedback = []
+        self.failed = []
+        self.passed = []
 
     def _serialize_group(self, group):
         serializer = GroupSerializer(group)
@@ -34,8 +35,15 @@ class SingleExaminerStats(object):
         return map(self._serialize_group, groups)
 
     def add_group(self, group, status):
-        attrname = self.STATUS_TO_ATTR_MAP[status]
-        getattr(self, attrname).append(group)
+        if status == 'corrected':
+            if group.feedback.is_passing_grade:
+                self.passed.append(group)
+            else:
+                self.failed.append(group)
+        else:
+            attrname = self.STATUS_TO_ATTR_MAP[status]
+            getattr(self, attrname).append(group)
+
 
     def serialize(self):
         return {
@@ -47,10 +55,10 @@ class SingleExaminerStats(object):
             'waitingfordeliveries': self._serialize_groups(self.waitingfordeliveries),
             'waitingforfeedback': self._serialize_groups(self.waitingforfeedback),
             'nodeadlines': self._serialize_groups(self.nodeadlines),
-            'corrected': self._serialize_groups(self.corrected),
-            'closedwithoutfeedback': self._serialize_groups(self.closedwithoutfeedback)
+            'closedwithoutfeedback': self._serialize_groups(self.closedwithoutfeedback),
+            'failed': self._serialize_groups(self.failed),
+            'passed': self._serialize_groups(self.passed),
         }
-
 
 
 class AggregatedExaminerStats(object):
