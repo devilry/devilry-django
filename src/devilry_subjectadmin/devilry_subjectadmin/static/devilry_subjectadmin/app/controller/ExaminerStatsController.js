@@ -22,6 +22,7 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
     ],
 
     stores: [
+        'ExaminerStats'
     ],
 
     refs: [{
@@ -38,11 +39,6 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
                 render: this._onRender
             }
         });
-
-//        this.mon(this.getDeadlinesBulkStore().proxy, {
-//            scope: this,
-//            exception: this._onDeadlinesBulkStoreProxyError
-//        });
     },
 
     _onRender: function() {
@@ -50,19 +46,7 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
         this.getOverview().setLoading();
         this.assignment_id = this.getOverview().assignment_id;
         this.loadAssignment(this.assignment_id);
-//        var store = this.getDeadlinesBulkStore();
-//        store.proxy.setUrl(this.assignment_id);
-//        store.load({
-//            scope: this,
-//            callback: function(records, operation) {
-//                this.getBulkManageDeadlinesPanel().setLoading(false);
-//                if(operation.success) {
-//                    this._onLoadSuccess(records, operation);
-//                } else {
-//                    NOTE: Failure is handled in _onDeadlinesBulkStoreProxyError()
-//                }
-//            }
-//        });
+        this._loadExaminerStats();
     },
 
     _setBreadcrumbAndTitle: function(subviewtext) {
@@ -79,7 +63,24 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
         this.onLoadFailure(operation);
     },
 
-    _onLoadSuccess: function(deadlineRecords, operation) {
+
+    _loadExaminerStats:function () {
+        var store = this.getExaminerStatsStore();
+        store.proxy.setUrl(this.assignment_id);
+        store.load({
+            scope: this,
+            callback: function(records, operation) {
+                this.getOverview().setLoading(false);
+                if(operation.success) {
+                    this._onLoadExaminerStatsSuccess(records, operation);
+                } else {
+                    this.onLoadFailure(operation);
+                }
+            }
+        });
+    },
+
+    _onLoadExaminerStatsSuccess: function(records, operation) {
     },
 
     _scrollTo: function(component) {

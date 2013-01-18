@@ -1,6 +1,6 @@
 /**
- * Mixin for controllers that need to load an assignment from {@link
- * devilry_subjectadmin.store.Assignments}.
+ * Mixin for controllers that need to load an assignment from
+ * {@link devilry_subjectadmin.store.Assignments}.
  *
  * Requirements for the class using the mixin:
  *
