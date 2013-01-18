@@ -83,7 +83,7 @@ Ext.define('devilry_subjectadmin.view.AdminsBox', {
                                 '</tpl>',
                             '</a>',
                             ' <tpl if="basenode.is_admin">',
-                                '<small>(<a href="{url}">{basenode.path})</a>',
+                                '<small>(<a href="{url}">{basenode.path})</a></small>',
                             '<tpl else>',
                                 '<small class="muted">({basenode.path})</small>',
                             '</tpl>',
