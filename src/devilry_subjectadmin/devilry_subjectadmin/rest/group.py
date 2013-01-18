@@ -454,11 +454,13 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
         qry = self.resource.model.objects.filter(parentnode=assignment_id)
         qry = qry.select_related('feedback')
         qry = qry.annotate(num_deliveries=Count('deadlines__deliveries'))
-        qry = qry.prefetch_related('deadlines',
-                                   'examiners', 'examiners__user',
-                                   'examiners__user__devilryuserprofile',
-                                   'candidates', 'candidates__student',
-                                   'candidates__student__devilryuserprofile')
+        qry = qry.prefetch_related(
+            'deadlines',
+            'tags',
+            'examiners', 'examiners__user',
+            'examiners__user__devilryuserprofile',
+            'candidates', 'candidates__student',
+            'candidates__student__devilryuserprofile')
 
         querystring = self.request.GET.get('query', '')
         if len(querystring) > 0:
