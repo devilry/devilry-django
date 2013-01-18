@@ -3,6 +3,12 @@ Ext.define('devilry_subjectadmin.view.examinerstats.PassedGroupsChart' ,{
     alias: 'widget.examinerstats_passedGroupsChart',
     cls: 'devilry_subjectadmin_examinerstats_passedGroupsChart',
 
+    requires: [
+        'Ext.chart.series.Column',
+        'Ext.chart.axis.Numeric',
+        'Ext.chart.axis.Category'
+    ],
+
     animate: true,
     shadow: true,
     store: 'ExaminerStats',

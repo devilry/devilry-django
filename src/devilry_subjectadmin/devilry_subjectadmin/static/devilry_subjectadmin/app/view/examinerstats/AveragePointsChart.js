@@ -3,6 +3,12 @@ Ext.define('devilry_subjectadmin.view.examinerstats.AveragePointsChart' ,{
     alias: 'widget.examinerstats_averagePointsChart',
     cls: 'devilry_subjectadmin_examinerstats_averagePointsChart',
 
+    requires: [
+        'Ext.chart.series.Column',
+        'Ext.chart.axis.Numeric',
+        'Ext.chart.axis.Category'
+    ],
+
     animate: true,
     shadow: true,
     store: 'ExaminerStats',

@@ -3,6 +3,12 @@ Ext.define('devilry_subjectadmin.view.examinerstats.AverageWordsChart' ,{
     alias: 'widget.examinerstats_averageWordsChart',
     cls: 'devilry_subjectadmin_examinerstats_averageWordsChart',
 
+    requires: [
+        'Ext.chart.series.Column',
+        'Ext.chart.axis.Numeric',
+        'Ext.chart.axis.Category'
+    ],
+
     animate: true,
     shadow: true,
     store: 'ExaminerStats',

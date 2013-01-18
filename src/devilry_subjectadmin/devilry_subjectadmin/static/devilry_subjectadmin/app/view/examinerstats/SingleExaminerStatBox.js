@@ -4,6 +4,7 @@ Ext.define('devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox' ,{
     cls: 'devilry_subjectadmin_singleexaminerstatobx',
 
     requires: [
+        'Ext.chart.series.Pie'
     ],
 
     /**
