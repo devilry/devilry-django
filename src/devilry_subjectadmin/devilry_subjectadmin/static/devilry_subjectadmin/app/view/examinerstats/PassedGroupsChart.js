@@ -11,9 +11,11 @@ Ext.define('devilry_subjectadmin.view.examinerstats.PassedGroupsChart' ,{
         position: 'left',
         fields: ['passed_percent'],
         label: {
-            renderer: Ext.util.Format.numberRenderer('0')
+            renderer:function (value) {
+                return Ext.String.format('{0}%', Ext.util.Format.number(value, '0.0'));
+            }
         },
-        title: gettext('Passed groups (percent)'),
+        title: gettext('Progress'),
         grid: true,
         minimum: 0,
         maximum: 100
@@ -32,32 +34,43 @@ Ext.define('devilry_subjectadmin.view.examinerstats.PassedGroupsChart' ,{
     series: [{
         type: 'column',
         axis: 'bottom',
+        stacked: true,
         highlight: true,
         tips: {
             trackMouse: true,
             width: 220,
 //            height: 28,
             renderer: function(record, item) {
+                var labelMap = {
+                    passed_percent: gettext('Passed groups'),
+                    failed_percent: gettext('Failed groups'),
+                    waitingforfeedback_percent: gettext('Waiting for feedback'),
+                    waitingfordeliveries_percent: gettext('Waiting for deadline to expire'),
+                    closedwithoutfeedback_percent: gettext('Closed without feedback')
+                };
+                var percent = Ext.util.Format.number(record.get(item.yField), '0.0');
                 this.setTitle([
-                    record.get('examiner').user.displayname,
-                    ': ', record.get('passed_percent'), '% '
+                    labelMap[item.yField], ': ',
+                    percent, '% ',
+                    ' (', record.get('examiner').user.displayname, ')'
                 ].join(''));
             }
         },
-        label: {
-            display: 'insideEnd',
-            field: 'passed_percent',
-            renderer: Ext.util.Format.numberRenderer('0'),
-            orientation: 'horizontal',
-            contrast: true,
-            'text-anchor': 'middle'
-        },
         xField: 'examiner',
-        yField: ['passed_percent'],
+        yField: ['passed_percent', 'failed_percent', 'waitingforfeedback_percent', 'waitingfordeliveries_percent', 'closedwithoutfeedback_percent'],
 
         renderer: function(sprite, record, attr, index, store) {
+            var yindex = index%5;
+            var colorSet = [
+                '#468847', // passed
+                '#b94a48', // failed
+                '#999999', // waitingforfeedback
+                '#eeeeee', // waitingfordeliveries
+                '#ff0000'  // closedwithoutfeedback
+            ];
+            var color = colorSet[yindex];
             return Ext.apply(attr, {
-                fill: '#468847',
+                fill: color,
                 stroke: '#222222'
             });
         }
