@@ -52,6 +52,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
     initComponent: function() {
         Ext.apply(this, {
             layout: 'border',
+            bodyStyle: 'background: transparent;',
             items: [{
                 xtype: 'box',
                 columnWidth: 1,
@@ -76,6 +77,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                 }
             }, {
                 xtype: 'panel',
+                bodyStyle: 'background: transparent;',
                 border: false,
                 layout: 'border',
                 region: 'center',
@@ -142,10 +144,12 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                     items: [{
                         xtype: 'panel',
                         border: false,
+                        bodyStyle: 'background: transparent;',
                         layout: 'card',
                         itemId: 'sidebarDeck',
                         items: [{
                             xtype: 'moreinfobox',
+                            bodyStyle: 'background: transparent;',
                             cls: 'related_user_helpbox related_student_helpbox',
                             itemId: 'helpBox',
                             introtext: this.introhelp,
