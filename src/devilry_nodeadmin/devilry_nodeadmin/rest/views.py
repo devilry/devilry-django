@@ -12,6 +12,8 @@ from djangorestframework.mixins import InstanceMixin, ReadModelMixin
 from djangorestframework.resources import ModelResource
 from djangorestframework.permissions import IsAuthenticated
 
+from devilry_subjectadmin.rest.auth import BaseIsAdmin, nodeadmin_required
+
 from django.db.models import Count, Min, Max
 
 
@@ -91,25 +93,12 @@ class NodeSubjectResource( ModelResource ):
 class NodeDetailsResource( NodeResource ):
     model = Node
     fields = (  'id', 'short_name', 'long_name', 'predecessor', 'etag',
-                'subject_count', 'assignment_count', 'period_count', 'subjects', 'breadcrumbs')
+                'subject_count', 'assignment_count', 'period_count', 'subjects', 'breadcrumbs', 'path', )
 
     def subjects( self, instance ):
         resource = NodeSubjectResource()
         subjects = Subject.objects.filter( parentnode=instance )
         return resource.serialize_iter( subjects )
-
-#    def breadcrumbs(self, instance):
-#        node = instance.parentnode
-#        breadcrumb = []
-#        while node != None:
-#            user = self.view.request.user
-#            if node.is_admin():
-#                breadcrumb.append({
-#                    'id': node.id,
-#                    'short_name': node.short_name
-#                })
-#            else:
-#
 
     # stats
     def subject_count( self, instance ):
@@ -127,9 +116,37 @@ class NodeDetailsResource( NodeResource ):
         result = instance.subjects.all().aggregate( Count('periods') )
         return result['periods__count']
 
+    def path( self, instance ):
+        PATH_MAX_LENGTH = 8
+
+        path = []
+        counter = 1
+        candidate = instance
+        candidates = Node.where_is_admin_or_superadmin( self.view.request.user )
+
+        while candidate in candidates and counter < PATH_MAX_LENGTH:
+            path.append( candidate )
+            candidate = candidate.parentnode
+            counter += 1
+
+        path.reverse()
+
+        serializer = PathElementResource()
+
+        return serializer.serialize_iter( path )
+
+
+class IsNodeAdmin( BaseIsAdmin ):
+    ID_KWARG = 'pk'
+
+    def check_permission( self, user ):
+        nodeid = self.get_id()
+        nodeadmin_required( user, nodeid )
+
+
 class RelatedNodeDetails( InstanceModelView ):
     resource = NodeDetailsResource
-    permissions = ( IsAuthenticated, )
+    permissions = ( IsAuthenticated, IsNodeAdmin, )
     allowed_methods = ('get' ,)
 
 
@@ -160,3 +177,39 @@ class NodeTree( ListModelView ):
         nodes = Node.where_is_admin_or_superadmin( self.request.user )
         nodes = nodes.exclude( parentnode__in=nodes )
         return nodes
+
+
+
+
+class PathResource( ModelResource ):
+    model = Node
+    fields = ( 'id', 'path', )
+
+    def path( self, instance ):
+        PATH_MAX_LENGTH = 8
+
+        path = []
+        counter = 1
+        candidate = instance
+        candidates = Node.where_is_admin_or_superadmin( self.view.request.user )
+
+        while candidate in candidates and counter < PATH_MAX_LENGTH:
+            path.append( candidate )
+            candidate = candidate.parentnode
+            counter += 1
+
+        path.reverse()
+
+        serializer = PathElementResource()
+
+        return serializer.serialize_iter( path )
+
+
+class PathElementResource( ModelResource ):
+    model = Node
+    fields = ( 'id', 'short_name', )
+
+class Path( InstanceModelView ):
+    resource = PathResource
+    permissions = ( IsAuthenticated, )
+    allowed_methods = ('get' ,)

@@ -293,7 +293,7 @@ ExtJS Stores
 * ems or pixels?
 * Some improvements in the navigation menu: the button elements look better on the right side, the key is to increase spacing between the content panes to ensure that their contents do not merge visually. 
 * [x] [?] Don't forget to mention the css namespace. Maybe the sheets are condensed into one: your application may interfere with others.
-* Remaining: 1. move the store/view functionality into a controller. 2. introduce breadcrumbs. 3. i18n and gettext. 4. Store sorting by or without statistics..
+* Remaining: [x] 1. move the store/view functionality into a controller. 2. introduce breadcrumbs. [x] 3. i18n and gettext. 4. Store sorting by or without statistics.. 5. fjerne default pagination
 * Reading up on i18n. Probably should postpone and consult the maintainer.
 * [+] Check on higher resolutions.
 * [x] Translating nb->en, or en->nb?
@@ -301,9 +301,42 @@ ExtJS Stores
 2012-01-10
 * Make font classes files: ubuntu-local and unbuntu, for the local version stored in statics and the imported one from google's font api.
 * [!] Override pagination to max.
-* [+] Prefix all devilry_nodadmin styles with the name of the app; add the new style names to the components.
-* Fix the floating issue on the navigation links.
-* Capitalize view-names
+* [+] Prefix all devilry_nodeadmin styles with the name of the app; add the new style names to the components.
+* [x] Fix the floating issue on the navigation links.
+* [x] Capitalize view-names
 * Parameters to _onRender
 * For the sake of Selenium-tests you should assign cls property to all elements.
-* 
+* User Datetimehelper from extjshelpers to manipulate and compare dates. Must be imported by requires. A singleton.
+* Always catch errors by the callback of a store, or rather through the proxy because it has more information on hte error.
+
+2012-01-13
+* Remains: [x] 1. fix the stores, [x] 2. style bubbles as block elements; there are few, so give them some space [x] 3. translate to english and create norwegian string couterparts [x] 4. create the breadcrumbs repr in the api [x] 5. add the frontpage link, consider its position 6. disable default view pagination 7. handle pluarl/zero-count in templates
+* Find out how to ignore the app-all.js in the translations.
+* Improved navigation elements.
+* Finished the first draft of the translation.
+
+
+2012-01-17
+* Fixing breadcrumbs in nodeadmin involves the fixing the _onLoad* store loading callbacks in NodeBrowserController. 
+* I have completed api that returns the breadcrumb path as a sorted list of elements. This spares us for an additional http-request, error handling, and boilerplate.
+* The path attribute in each node has to be translated into the breadcrumb schema: { url: "...", text: "..." }. This is done by 
+* Fixed the firefox and IE issue: js attempts to parse html-output of rest framework instead of the json. Seems to be a url-issue, which requires and appendage of format=json to the url.
+* Fixed the breadcrumb with a temporary solution that does what it should. Some tuning is due to display the current node (the last element in the path that doesn't have a link).
+* Complete nodeLookup.js for nodeadmin, use in breadcrumbs.
+* [+] Disable default view pagination.
+* [+] Deal with pluralization and zero element count.
+* [+] Store sorting
+* [x] Fix the date format in node browser.
+* To use the facilities of devilry_extjsextras add the custom template function to your template, after the last comma. 
+** {
+**     formatDatetime: function(datetime) {
+**       return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(
+**           datetime)
+**       }
+** }
+* If you have problems in accessing certain parameters in a template, and passing them to a template-function: try prepending the parameter name with a "values.", like:
+** this.formatDatetime( values.most_recent_start_time )
+* [+] Find out how to exclude app-all.js
+* Something happened to the related top-level nodes.
+* Fixed the stores and correct import in the 
+* The built code seems to be interfering.
