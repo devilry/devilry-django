@@ -96,14 +96,14 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
 
         var breadcrumb = [];
 
-        Ext.Array.each( path, function(element) {
-            breadcrumb.push( {
+        for (var i = 0; i < path.length-1; i++) {
+            var element = path[i];
+            breadcrumb.push({
                 text: element.short_name,
                 url: Ext.String.format( "/devilry_nodeadmin/#/node/{0}", element.id )
-            } );
-        } );
-
-        this.application.breadcrumbs.set( breadcrumb, gettext( 'About the node' ) );
+            });
+        }
+        this.application.breadcrumbs.set( breadcrumb, path[path.length-1].short_name);
     },
 
     _onLoadNodeChildrenSuccess:function ( records ) {},
