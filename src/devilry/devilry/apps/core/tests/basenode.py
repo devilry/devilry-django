@@ -62,3 +62,15 @@ class TestBaseNode(TestCase, TestHelper):
         inherited_admins.sort(cmp=lambda a,b: cmp(a.user.username, b.user.username))
         self.assertEquals(inherited_admins[0].user.username, 'duck2000adm')
         self.assertEquals(inherited_admins[0].basenode.short_name, 'duck2000')
+
+    def test_get_all_admin_ids(self):
+        self.add(nodes='uio.matnat:admin(matnatadm).ifi:admin(ifiadmin,ifiadmin2)',
+                 subjects=['duck2000:admin(duck2000adm)'],
+                 periods=['aboutnow:admin(aboutnowadm)'])
+
+        admin_ids = self.duck2000_aboutnow.get_all_admin_ids()
+        self.assertEquals(len(admin_ids), 6)
+        self.assertEquals(admin_ids,
+            set([self.uioadmin.id, self.matnatadm.id, self.ifiadmin.id,
+                 self.ifiadmin2.id, self.duck2000adm.id, self.aboutnowadm.id]))
+
