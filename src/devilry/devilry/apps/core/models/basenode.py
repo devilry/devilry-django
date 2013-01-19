@@ -79,6 +79,21 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
             self.parentnode._get_inherited_admins(admins)
         return admins.values()
 
+    def get_all_admins(self):
+        """
+        Get all admins (including inherited) as a list of ``django.contrib.auth.model.User`` objects.
+        """
+        return set(list(self.get_inherited_admins()) + list(self.admins.all()))
+
+    def get_all_admin_ids(self):
+        """
+        Get all admins (including inherited) as a set user-ids.
+        """
+        admin_ids = set([inheritedadmin.user.id for inheritedadmin in self.get_inherited_admins()])
+        for user in self.admins.all():
+            admin_ids.add(user.id)
+        return admin_ids
+
     def is_admin(self, user_obj):
         """ Check if the given user is admin on this node or any parentnode.
 

@@ -1,0 +1,3 @@
+{{ object.long_name }}
+{{ object.short_name }}
+{{ object.get_path }}

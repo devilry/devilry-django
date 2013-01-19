@@ -1,2 +1,1 @@
-{{ object.short_name }}
-{{ object.long_name }}
+{% extends "search/indexes/core/basenode_text.txt" %}
