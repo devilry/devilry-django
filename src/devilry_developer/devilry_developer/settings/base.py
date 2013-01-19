@@ -85,6 +85,14 @@ PASSWORD_HASHERS = (
 #DEVILRY_USERADMIN_PASSWORD_HELPMESSAGE = 'Passwords are handled by Our Awesome External User Management System. Follow <a href="https://awesome.example.com">this link</a> to reset passwords.'
 
 
+##################################################################################
+# Haystack (search)
+##################################################################################
+INSTALLED_APPS.insert(0, 'haystack')
+HAYSTACK_SEARCH_ENGINE = 'solr'
+HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
+HAYSTACK_SITECONF = 'devilry_search.haystack_search_sites'
+
 
 ##################################################################################
 # Make Devilry speak in typical university terms (semester instead of period, ...)

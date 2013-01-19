@@ -1,0 +1,2 @@
+{{ object.short_name }}
+{{ object.long_name }}
