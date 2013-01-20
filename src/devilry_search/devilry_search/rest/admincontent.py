@@ -8,7 +8,7 @@ from haystack.query import SearchQuerySet
 
 
 class SearchForm(forms.Form):
-    search = forms.CharField(required=True)
+    search = forms.CharField(required=False)
     maxresults = forms.IntegerField(required=False,
         min_value=1,
         max_value=100)
@@ -21,11 +21,10 @@ class SearchAdminContent(View):
     # Parameters
     Takes the following parameters (in the QUERYSTRING):
 
-    - ``search``: The search string.
+    - ``search``: The search string. The result will be an empty list if this is empty.
     - ``maxresults``: The maximum number of results. Defaults to 10. Must be between 1 and 100.
 
     # Returns
-
     """
     permissions = (IsAuthenticated,)
     default_maxresults = 10
@@ -60,6 +59,8 @@ class SearchAdminContent(View):
         form = SearchForm(self.request.GET)
         if form.is_valid():
             searchstring = form.cleaned_data['search']
+            if not searchstring:
+                return []
             maxresults = form.cleaned_data['maxresults'] or self.default_maxresults
             searchresults = SearchQuerySet().filter(admins=self.request.user.id).auto_query(searchstring)
             output = []

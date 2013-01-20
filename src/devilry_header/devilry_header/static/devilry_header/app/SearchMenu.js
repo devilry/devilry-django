@@ -24,7 +24,14 @@ Ext.define('devilry_header.SearchMenu', {
             },
             items: [{
                 xtype: 'textfield',
-                emptyText: gettext('Search') + ' ...'
+                emptyText: gettext('Search') + ' ...',
+                enableKeyEvents: true,
+                itemId: 'searchfield',
+                listeners: {
+                    scope: this,
+                    change: this._onSearchFieldChange,
+                    keypress: this._onSearchFieldKeyPress
+                }
             }, {
                 xtype: 'container',
                 itemId: 'searchResultsContainer',
@@ -44,22 +51,32 @@ Ext.define('devilry_header.SearchMenu', {
 
     _addSearchResultViews:function () {
         var container = this.down('#searchResultsContainer');
-        var store = Ext.create('devilry_header.store.AdminSearchResults');
-        store.search({
-            search: 'duck'
-        }, {
-            callback:function (records, op) {
-                console.log(records, op);
-            }
-        });
         this.add({
             xtype: 'devilry_header_adminsearchresults',
-            store: store
+            store: Ext.create('devilry_header.store.AdminSearchResults')
         });
     },
 
-    _search:function (search) {
 
+    _onSearchFieldChange:function (field) {
+        if(Ext.isEmpty(this.task)) {
+            this.task = new Ext.util.DelayedTask(this._search, this, [field]);
+        }
+        this.task.delay(300);
+    },
+
+    _onSearchFieldKeyPress:function (field, e) {
+        if(e.getKey() === e.ENTER) {
+            if(!Ext.isEmpty(this.task)) {
+                this.task.cancel();
+            }
+            this._search(field);
+        }
+    },
+
+    _search:function (field) {
+        var search = field.getValue();
+        this.down('devilry_header_adminsearchresults').search(search);
     },
 
 
@@ -103,5 +120,6 @@ Ext.define('devilry_header.SearchMenu', {
 
     _onShow: function() {
         this._setSizeAndPosition();
+        this.down('#searchfield').focus();
     }
 });

@@ -11,12 +11,15 @@ Ext.define('devilry_header.AdminSearchResultsView', {
         '<div class="muted"><small class="path">{path}</small></div>'
     ],
 
+    hidden: true, // We show ourself automatically on search results
+    hideHeaders: true,
+
     initComponent: function() {
         this.resultTplCompiled = Ext.create('Ext.XTemplate', this.resultTpl);
         Ext.apply(this, {
+            minHeight: 50,
             columns: [{
                 dataIndex: 'title',
-                text: 'Results',
                 flex: 1,
                 menuDisabled: true,
                 renderer: this._renderResult,
@@ -24,6 +27,18 @@ Ext.define('devilry_header.AdminSearchResultsView', {
             }]
         });
         this.callParent(arguments);
+    },
+
+    search:function (search) {
+        this.show();
+        this.getStore().search({
+            search: search
+        }, {
+            callback:function (records, op) {
+                if(op.success) {
+                }
+            }
+        });
     },
 
     _renderResult:function (unused, unused2, record) {
