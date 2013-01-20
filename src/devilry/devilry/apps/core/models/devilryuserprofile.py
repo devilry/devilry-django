@@ -117,6 +117,13 @@ class DevilryUserProfile(models.Model):
     class Meta:
         app_label = 'core'
 
+    def get_displayname(self):
+        """
+        Get a name for this user, preferrably the full name, but falls back to username of
+        that is unavailable.
+        """
+        return self.full_name or self.username
+
 
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
