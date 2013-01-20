@@ -42,6 +42,8 @@ site.register(Assignment, AssignmentIndex)
 class AssignmentGroupIndex(AdminsSearchIndex):
     examiner_ids = indexes.MultiValueField()
     student_ids = indexes.MultiValueField()
+    examiners = indexes.CharField(use_template=True)
+    tags = indexes.CharField(use_template=True)
 
     def prepare_examiner_ids(self, obj):
         return [examiner.user.id for examiner in obj.examiners.all()]

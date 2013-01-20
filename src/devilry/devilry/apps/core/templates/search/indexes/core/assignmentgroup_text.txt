@@ -5,9 +5,8 @@
 {% include "search/indexes/core/format_user.django.txt" with user=candidate.student only %}
 {% if candidate.candidate_id %}{{ candidate.candidate_id }}{% endif %}
 {% endfor %}
-{% for examiner in object.examiners.all %}
-{% include "search/indexes/core/format_user.django.txt" with user=examiner.user only %}
-{% endfor %}
-{% for tag in object.tags.all %}
-{{ tag.tag }}
-{% endfor %}
+{% if not object.parentnode.anonymous %}
+    {% for examiner in object.examiners.all %}
+    {% include "search/indexes/core/format_user.django.txt" with user=examiner.user only %}
+    {% endfor %}
+{% endif %}

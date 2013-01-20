@@ -1,0 +1,3 @@
+{% for examiner in object.examiners.all %}
+{% include "search/indexes/core/format_user.django.txt" with user=examiner.user only %}
+{% endfor %}
