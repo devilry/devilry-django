@@ -10,6 +10,7 @@ Ext.define('devilry_header.Header', {
     requires: [
         'devilry_header.FlatButton',
         'devilry_header.HoverMenu',
+        'devilry_header.SearchMenu',
         'devilry_header.Roles',
         'devilry_authenticateduserinfo.UserInfo',
         'devilry_header.Breadcrumbs'
@@ -114,6 +115,14 @@ Ext.define('devilry_header.Header', {
                 }
             }, {
                 // NOTE: This component is floating, so it is not really part of the layout
+                xtype: 'devilryheader_searchmenu',
+                listeners: {
+                    scope: this,
+                    show: this._onShowSearchmenu,
+                    hide: this._onHideSearchmenu
+                }
+            }, {
+                // NOTE: This component is floating, so it is not really part of the layout
                 xtype: 'devilryheader_hovermenu',
                 listeners: {
                     scope: this,
@@ -175,5 +184,13 @@ Ext.define('devilry_header.Header', {
     _onHideHovermenu: function() {
         this._getCurrentRoleButton().setNotPressedCls();
         this._getUserButton().setNotPressedCls();
+    },
+
+
+    _onShowSearchmenu: function() {
+        console.log('show');
+    },
+    _onHideSearchmenu: function() {
+        console.log('hide');
     }
 });
