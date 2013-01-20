@@ -627,3 +627,27 @@ class TestAssignmentGroupStatus(TestCase):
         self.g1.is_open = False
         self.g1.save()
         self.assertEquals(self.g1.get_status(), 'closed-without-feedback')
+
+
+
+class TestAssignmentGroupUserIds(TestCase):
+
+    def setUp(self):
+        self.testhelper = TestHelper()
+
+    def test_get_all_admin_ids(self):
+        self.testhelper.add(
+            nodes='uni:admin(uniadm).inf:admin(infadm,infadm2)',
+            subjects=['sub:admin(subadm,subadm2)'],
+            periods=['p1:admin(p1adm)'],
+            assignments=['a1:admin(a1adm,a1adm2)'],
+            assignmentgroups=['g1:candidate(student1)']
+        )
+
+        admin_ids = self.testhelper.sub_p1_a1_g1.get_all_admin_ids()
+        self.assertEquals(len(admin_ids), 8)
+        self.assertEquals(admin_ids,
+            set([self.testhelper.uniadm.id, self.testhelper.infadm.id,
+                 self.testhelper.infadm2.id, self.testhelper.subadm.id,
+                 self.testhelper.subadm2.id, self.testhelper.p1adm.id,
+                 self.testhelper.a1adm.id, self.testhelper.a1adm2.id]))
