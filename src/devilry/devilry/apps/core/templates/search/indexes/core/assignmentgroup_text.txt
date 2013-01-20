@@ -1,0 +1,11 @@
+{% if name %}{{ name }}{% endif %}
+{% for candidate in candiates.all %}
+{% include "search/indexes/core/format_user.django.txt" with user=candidate.student only %}
+{% if candidate.candidate_id %}{{ candidate.id }}{% endif %}
+{% endfor %}
+{% for examiner in examiners.all %}
+{% include "search/indexes/core/format_user.django.txt" with user=examiner.user only %}
+{% endfor %}
+{% for tag in tags.all %}
+{{ tag.tag }}
+{% endfor %}

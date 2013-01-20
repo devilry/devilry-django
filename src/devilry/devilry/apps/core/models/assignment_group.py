@@ -468,6 +468,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                 return 'closed-without-feedback'
 
 
+    def get_all_admin_ids(self):
+        return self.parentnode.get_all_admin_ids()
+
+
 class AssignmentGroupTag(models.Model):
     """
     An AssignmentGroup can be tagged with zero or more tags using this class.

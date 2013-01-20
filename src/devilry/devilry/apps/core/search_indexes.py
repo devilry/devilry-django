@@ -5,6 +5,7 @@ from .models import Node
 from .models import Subject
 from .models import Period
 from .models import Assignment
+from .models import AssignmentGroup
 
 
 
@@ -36,3 +37,9 @@ class AssignmentIndex(AdminsSearchIndex):
     publishing_time = indexes.DateTimeField(model_attr='publishing_time')
 
 site.register(Assignment, AssignmentIndex)
+
+
+class AssignmentGroupIndex(AdminsSearchIndex):
+    pass
+
+site.register(AssignmentGroup, AssignmentGroupIndex)
