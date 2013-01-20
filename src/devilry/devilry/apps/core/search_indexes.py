@@ -11,7 +11,7 @@ from .models import AssignmentGroup
 
 
 class AdminsSearchIndex(BaseIndex):
-    admins = indexes.MultiValueField(model_attr='get_all_admin_ids')
+    admin_ids = indexes.MultiValueField(model_attr='get_all_admin_ids')
 
 
 class NodeIndex(AdminsSearchIndex):
@@ -40,6 +40,14 @@ site.register(Assignment, AssignmentIndex)
 
 
 class AssignmentGroupIndex(AdminsSearchIndex):
-    pass
+    examiner_ids = indexes.MultiValueField()
+    student_ids = indexes.MultiValueField()
+
+    def prepare_examiner_ids(self, obj):
+        return [examiner.user.id for examiner in obj.examiners.all()]
+
+    def prepare_student_ids(self, obj):
+        return [candidate.student.id for candidate in obj.candidates.all()]
+
 
 site.register(AssignmentGroup, AssignmentGroupIndex)
