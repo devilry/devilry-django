@@ -1,9 +1,9 @@
 {% if object.name %}{{ object.name }}{% endif %}
 {{ object.parentnode.long_name }}
 {{ object.parentnode.get_path }}
-{% for candidate in object.candiates.all %}
+{% for candidate in object.candidates.all %}
 {% include "search/indexes/core/format_user.django.txt" with user=candidate.student only %}
-{% if object.candidate.candidate_id %}{{ object.candidate.candidate_id }}{% endif %}
+{% if candidate.candidate_id %}{{ candidate.candidate_id }}{% endif %}
 {% endfor %}
 {% for examiner in object.examiners.all %}
 {% include "search/indexes/core/format_user.django.txt" with user=examiner.user only %}
