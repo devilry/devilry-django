@@ -47,5 +47,5 @@ class SearchAdminContent(SearchRestViewBase):
         return serialized
 
     def get_search_queryset(self):
-        return SearchQuerySet().filter(admin_ids=self.request.user.id).models(
+        return SearchQuerySet().filter(admin_ids=unicode(self.request.user.id)).models(
             Node, Subject, Period, Assignment, AssignmentGroup)

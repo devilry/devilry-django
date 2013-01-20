@@ -90,9 +90,15 @@ PASSWORD_HASHERS = (
 # Haystack (search)
 ##################################################################################
 INSTALLED_APPS.insert(0, 'haystack')
-HAYSTACK_SEARCH_ENGINE = 'solr'
-HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
 HAYSTACK_SITECONF = 'devilry_search.haystack_search_sites'
+
+## Whoosh
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_WHOOSH_PATH = 'devilry_whoosh_index'
+
+## Solr
+#HAYSTACK_SEARCH_ENGINE = 'solr'
+#HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
 
 
 ##################################################################################
