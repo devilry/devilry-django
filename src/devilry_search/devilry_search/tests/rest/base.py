@@ -32,3 +32,19 @@ class HaystackTestSettings(override_settings):
     def __exit__(self, *args, **kwargs):
         super(HaystackTestSettings, self).__exit__(*args, **kwargs)
         rmtree(self.whoosh_path)
+
+
+
+class AssertSearchResultMixin(object):
+    def assert_has_search_result(self, result, modeltype, title, meta=None):
+        for item in result:
+            if item['type'] == modeltype and item['title'] == title and item['meta'] == meta:
+                return
+        raise AssertionError(
+            ('Could not find {{"type": {modeltype!r}, "title": {title!r}, '
+             '"meta": {meta!r}, ...}} in {result!r}').format(
+                modeltype=modeltype,
+                title=title,
+                meta=meta,
+                result=result
+            ))

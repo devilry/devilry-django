@@ -1,1 +1,2 @@
 from .rest.admincontent import TestRestSearchAdminContent
+from .rest.studentcontent import TestRestSearchStudentContent

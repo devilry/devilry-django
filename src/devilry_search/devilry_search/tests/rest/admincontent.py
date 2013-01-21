@@ -4,10 +4,11 @@ from django.core.urlresolvers import reverse
 from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.rest_testclient import RestClient
 from .base import HaystackTestSettings
+from .base import AssertSearchResultMixin
 
 
 
-class TestRestSearchAdminContent(TestCase):
+class TestRestSearchAdminContent(TestCase, AssertSearchResultMixin):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin):ln(Test Uni)',
@@ -23,19 +24,6 @@ class TestRestSearchAdminContent(TestCase):
     def _getas(self, username, **data):
         self.client.login(username=username, password='test')
         return self.client.rest_get(self.url, **data)
-
-    def assert_has_search_result(self, result, modeltype, title, meta=None):
-        for item in result:
-            if item['type'] == modeltype and item['title'] == title and item['meta'] == meta:
-                return
-        raise AssertionError(
-            ('Could not find {{"type": {modeltype!r}, "title": {title!r}, '
-             '"meta": {meta!r}, ...}} in {result!r}').format(
-                modeltype=modeltype,
-                title=title,
-                meta=meta,
-                result=result
-            ))
 
     def test_perms_uniadmin(self):
         with HaystackTestSettings():

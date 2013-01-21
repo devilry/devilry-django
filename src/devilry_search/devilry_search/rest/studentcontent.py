@@ -26,6 +26,7 @@ class SearchStudentContent(SearchRestViewBase):
         assignment = obj.parentnode
         serialized['title'] = assignment.long_name
         serialized['path'] = assignment.get_path()
+        serialized['meta'] = self.commaseparated_students(obj)
         return serialized
 
     def get_search_queryset(self):

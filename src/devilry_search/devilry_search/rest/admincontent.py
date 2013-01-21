@@ -40,9 +40,8 @@ class SearchAdminContent(SearchRestViewBase):
 
     def serialize_type_core_assignmentgroup(self, obj, serialized):
         assignment = obj.parentnode
-        studentnames = [c.student.get_profile().get_displayname() for c in obj.candidates.all()]
         serialized['title'] = assignment.long_name
-        serialized['meta'] = u', '.join(studentnames)
+        serialized['meta'] = self.commaseparated_students(obj)
         serialized['path'] = assignment.get_path()
         return serialized
 
