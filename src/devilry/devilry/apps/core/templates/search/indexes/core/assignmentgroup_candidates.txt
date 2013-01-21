@@ -1,0 +1,4 @@
+{% for candidate in object.candidates.all %}
+{% include "search/indexes/core/format_user.django.txt" with user=candidate.student only %}
+{% if candidate.candidate_id %}{{ candidate.candidate_id }}{% endif %}
+{% endfor %}

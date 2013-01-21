@@ -68,6 +68,7 @@ class AssignmentGroupIndex(AdminsSearchIndex):
     examiner_ids = indexes.MultiValueField()
     student_ids = indexes.MultiValueField()
     examiners = indexes.CharField(use_template=True)
+    candidates = indexes.CharField(use_template=True)
     tags = indexes.CharField(use_template=True)
 
     def prepare_examiner_ids(self, obj):
