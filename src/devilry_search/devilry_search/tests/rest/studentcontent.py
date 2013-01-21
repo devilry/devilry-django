@@ -17,7 +17,9 @@ class TestRestSearchStudentContent(TestCase, AssertSearchResultMixin):
             assignments=['a1:ln(Test A1)'],
             assignmentgroups=[
                 'TestGroup1:candidate(student1)',
-                'TestGroup2:candidate(student2,student1)'
+                'TestGroup2:candidate(student2,student1)',
+                'TestGroup3:candidate(student2)',
+                'TestGroup4:candidate(student3):examiner(student1)'
             ]
         )
 

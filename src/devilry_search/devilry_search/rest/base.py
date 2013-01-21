@@ -31,11 +31,10 @@ class SearchRestViewBase(View):
     def get_search_queryset(self):
         raise NotImplementedError()
 
-
-    def commaseparated_students(self, assignment):
+    def serialize_students(self, assignment):
         studentnames = [c.student.get_profile().get_displayname()
                         for c in assignment.candidates.all()]
-        return u', '.join(studentnames)
+        return studentnames
 
     def get(self, request):
         form = SearchForm(self.request.GET)

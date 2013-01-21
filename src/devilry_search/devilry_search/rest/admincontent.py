@@ -42,7 +42,7 @@ class SearchAdminContent(SearchRestViewBase):
         assignment = obj.parentnode
         serialized['title'] = assignment.long_name
         serialized['path'] = assignment.get_path()
-        serialized['students'] = self.commaseparated_students(obj)
+        serialized['students'] = self.serialize_students(obj)
         serialized['name'] = obj.name
         return serialized
 

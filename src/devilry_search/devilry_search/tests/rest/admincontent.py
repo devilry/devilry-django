@@ -34,7 +34,7 @@ class TestRestSearchAdminContent(TestCase, AssertSearchResultMixin):
             self.assert_has_search_result(content, type='core_period', title='Test P1')
             self.assert_has_search_result(content, type='core_assignment', title='Test A1')
             self.assert_has_search_result(content, type='core_assignmentgroup',
-                title='Test A1', students='student1')
+                title='Test A1', students=['student1'])
 
     def test_perms_subjectadmin(self):
         with HaystackTestSettings():
@@ -44,7 +44,7 @@ class TestRestSearchAdminContent(TestCase, AssertSearchResultMixin):
             self.assert_has_search_result(content, type='core_period', title='Test P1')
             self.assert_has_search_result(content, type='core_assignment', title='Test A1')
             self.assert_has_search_result(content, type='core_assignmentgroup',
-                title='Test A1', students='student1')
+                title='Test A1', students=['student1'])
 
     def test_perms_periodadmin(self):
         with HaystackTestSettings():
@@ -53,7 +53,7 @@ class TestRestSearchAdminContent(TestCase, AssertSearchResultMixin):
             self.assert_has_search_result(content, type='core_period', title='Test P1')
             self.assert_has_search_result(content, type='core_assignment', title='Test A1')
             self.assert_has_search_result(content, type='core_assignmentgroup',
-                title='Test A1', students='student1')
+                title='Test A1', students=['student1'])
 
     def test_perms_assignmentadmin(self):
         with HaystackTestSettings():
@@ -61,5 +61,5 @@ class TestRestSearchAdminContent(TestCase, AssertSearchResultMixin):
             self.assertEqual(len(content), 2)
             self.assert_has_search_result(content, type='core_assignment', title='Test A1')
             self.assert_has_search_result(content, type='core_assignmentgroup',
-                title='Test A1', students='student1')
+                title='Test A1', students=['student1'])
 

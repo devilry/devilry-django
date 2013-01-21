@@ -7,9 +7,9 @@ from .base import SearchRestViewBase
 
 
 
-class SearchStudentContent(SearchRestViewBase):
+class SearchExaminerContent(SearchRestViewBase):
     """
-    Searches all content where the authenticated user is student.
+    Searches all content where the authenticated user is examiner.
 
     # Parameters
     Takes the following parameters (in the QUERYSTRING):
@@ -22,14 +22,23 @@ class SearchStudentContent(SearchRestViewBase):
     permissions = (IsAuthenticated,)
     default_maxresults = 10
 
+
+    def _serialize_candidateids(self, assignment):
+        candidateids = [c.candidate_id
+                        for c in assignment.candidates.all()]
+        return candidateids
+
     def serialize_type_core_assignmentgroup(self, obj, serialized):
         assignment = obj.parentnode
         serialized['title'] = assignment.long_name
         serialized['path'] = assignment.get_path()
-        serialized['students'] = self.serialize_students(obj)
+        if assignment.anonymous:
+            serialized['students'] = self._serialize_candidateids(obj)
+        else:
+            serialized['students'] = self.serialize_students(obj)
         serialized['name'] = obj.name
         return serialized
 
     def get_search_queryset(self):
-        return SearchQuerySet().filter(student_ids=self.request.user.id).models(
+        return SearchQuerySet().filter(examiner_ids=self.request.user.id).models(
             AssignmentGroup)
