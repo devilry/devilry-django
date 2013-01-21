@@ -24,8 +24,7 @@ class SearchRestViewBase(View):
         serializer = getattr(self, 'serialize_type_{0}'.format(modeltype))
         serialized = {
             'id': result.object.id,
-            'type': modeltype,
-            'meta': None
+            'type': modeltype
         }
         return serializer(result.object, serialized)
 

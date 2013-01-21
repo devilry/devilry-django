@@ -41,8 +41,9 @@ class SearchAdminContent(SearchRestViewBase):
     def serialize_type_core_assignmentgroup(self, obj, serialized):
         assignment = obj.parentnode
         serialized['title'] = assignment.long_name
-        serialized['meta'] = self.commaseparated_students(obj)
         serialized['path'] = assignment.get_path()
+        serialized['students'] = self.commaseparated_students(obj)
+        serialized['name'] = obj.name
         return serialized
 
     def get_search_queryset(self):

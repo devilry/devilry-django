@@ -36,15 +36,17 @@ class HaystackTestSettings(override_settings):
 
 
 class AssertSearchResultMixin(object):
-    def assert_has_search_result(self, result, modeltype, title, meta=None):
+    def assert_has_search_result(self, result, **match):
         for item in result:
-            if item['type'] == modeltype and item['title'] == title and item['meta'] == meta:
+            allmatched = True
+            for key, value in match.iteritems():
+                if item.get(key) != value:
+                    allmatched = False
+                    break
+            if allmatched:
                 return
         raise AssertionError(
-            ('Could not find {{"type": {modeltype!r}, "title": {title!r}, '
-             '"meta": {meta!r}, ...}} in {result!r}').format(
-                modeltype=modeltype,
-                title=title,
-                meta=meta,
+            ('Could not find {match!r} in {result!r}').format(
+                match=match,
                 result=result
             ))
