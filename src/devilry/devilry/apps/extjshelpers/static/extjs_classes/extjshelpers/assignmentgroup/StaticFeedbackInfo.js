@@ -181,7 +181,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
     onLoadStaticfeedbackstore: function(store, records, successful) {
         if(successful) {
-            if(records.length == 0) {
+            if(records.length === 0) {
                 this.bodyWithNoFeedback();
             }
             else {
