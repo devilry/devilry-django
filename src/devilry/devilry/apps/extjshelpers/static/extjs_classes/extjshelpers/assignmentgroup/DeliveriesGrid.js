@@ -13,7 +13,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
     rowTpl: Ext.create('Ext.XTemplate',
         '<div class="bootstrap" style="white-space:normal; line-height: 1.5em !important;">',
             '<div>',
-                '<strong class="delivery_number">{delivery.number}:</strong> ',
+                '<span class="delivery_number">{delivery.number}:</span> ',
                 '<tpl if="assignmentgroup.parentnode__delivery_types === 1">',
                     '<span class="not_in_devilry">',
                         gettext('Non-electronic delivery'),
@@ -84,6 +84,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
+            border: false,
             columns: [{
                 header: 'Data',
                 dataIndex: 'id',

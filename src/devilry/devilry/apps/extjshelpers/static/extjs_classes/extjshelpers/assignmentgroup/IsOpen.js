@@ -33,11 +33,18 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
      */
     onSetRecord: function() {
         this.removeAll();
+        var buttonText;
+        if(this.assignmentgroup_recordcontainer.record.get('is_open')) {
+            buttonText = '<i class="icon-folder-open"></i> ' + gettext('Open - click to close');
+        } else {
+            buttonText = '<i class="icon-folder-close"></i> ' + gettext('Closed - click to open');
+        }
         if(this.canExamine) {
             this.add({
                 xtype: 'button',
                 scale: 'medium',
-                text: this.assignmentgroup_recordcontainer.record.data.is_open? gettext('Open - click to close'): gettext('Closed - click to open'),
+                cls: 'bootstrap',
+                text: buttonText,
                 listeners: {
                     scope: this,
                     click: this.onStatusButtonClick,

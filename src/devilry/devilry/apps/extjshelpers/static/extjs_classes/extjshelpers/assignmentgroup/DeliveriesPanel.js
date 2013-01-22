@@ -14,9 +14,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
 
     titleTpl: [
         '<div class="deadline_title bootstrap">',
-            '<p style="margin: 0; padding: 0;">',
+            '<p style="padding: 5px; margin: 0;">',
                 '<tpl if="assignmentgroup.parentnode__delivery_types !== 1">',
-                    '<small class="muted" style="line-height: 14px;">', gettext('Deadline'), ':</small><br/>',
+                    '<small class="muted" style="line-height: 14px;">', gettext('Deadline'), ':</small> ',
                     '<strong style="font-size: 16px;">{[this.formatDatetime(values.deadline.deadline)]}</strong>',
                 '</tpl>',
                 '<tpl if="assignmentgroup.parentnode__delivery_types === 1">',
@@ -50,7 +50,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
                 xtype: 'box',
                 cls: 'bootstrap',
                 html: [
-                    '<p class="muted" style="margin: 0; padding: 0;">',
+                    '<p class="muted" style="margin: 0 0 0 5px; padding: 0;">',
                         gettext('No deliveries on this deadline'),
                     '</p>'
                 ]

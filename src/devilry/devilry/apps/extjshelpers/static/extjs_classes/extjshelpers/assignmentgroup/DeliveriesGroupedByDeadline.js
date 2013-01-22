@@ -1,5 +1,5 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.deliveriesgroupedbydeadline',
     cls: 'widget-deliveriesgroupedbydeadline',
     requires: [
@@ -25,7 +25,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
 //    }, true),
 
     autoScroll: true,
-    border: false,
+    style: 'border-right: 1px solid #ddd !important; border-top: 1px solid #ddd !important;',
 
     /**
     * @cfg
@@ -226,7 +226,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             this.add({
                 xtype: 'button',
                 scale: 'medium',
-                text: gettext('New deadline'),
+                text: '<i class="icon-time"></i> ' + gettext('New deadline'),
+                cls: 'bootstrap',
                 listeners: {
                     scope: this,
                     click: this.onCreateNewDeadline

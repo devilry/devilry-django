@@ -59,6 +59,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     isAdministrator: false,
 
 
+    autoScroll: true,
+
+
     constructor: function() {
         this.addEvents('assignmentGroupLoaded');
         this.callParent(arguments);
@@ -201,61 +204,66 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         }
 
         Ext.apply(this, {
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
+            layout: 'anchor',
+            padding: '20 30 20 30',
+            defaults: {anchor: '100%'},
             items: [{
-                xtype: 'assignmentgrouptitle',
-                singlerecordontainer: this.assignmentgroup_recordcontainer,
-                margin: '15 0 10 0',
-                extradata: {
-                    canExamine: this.canExamine,
-                    url: window.location.href
-                }
+                xtype: 'container',
+                layout: 'column',
+                items: [{
+                    columnWidth: 1,
+                    xtype: 'assignmentgrouptitle',
+                    singlerecordontainer: this.assignmentgroup_recordcontainer,
+                    margin: '0 0 10 0',
+                    extradata: {
+                        canExamine: this.canExamine,
+                        url: window.location.href
+                    }
+                }, {
+                    xtype: 'container',
+                    width: 300,
+                    layout: 'column',
+//                    defaults: {anchor: '100%'},
+                    items: [{
+                        xtype: 'button',
+                        columnWidth: 0.4,
+                        hidden: !this.canExamine,
+                        text: '<i class="icon-th-list"></i> ' + gettext('To-do list'),
+                        cls: 'bootstrap',
+                        scale: 'medium',
+                        flex: 6,
+                        listeners: {
+                            scope: this,
+                            click: function() {
+                                Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow', {
+                                    assignmentgroupmodelname: this.getSimplifiedClassName('SimplifiedAssignmentGroup'),
+                                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer
+                                }).show();
+                            }
+                        }
+                    }, {
+                        xtype: 'assignmentgroup_isopen',
+                        margin: '0 0 0 3',
+                        columnWidth: 0.6,
+                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                        canExamine: this.canExamine
+                    }]
+                }]
             }, {
                 xtype: 'container',
-                layout: 'border',
+                layout: 'column',
                 style: 'background-color: transparent',
                 flex: 1,
                 border: false,
                 items: [{
                     xtype: 'container',
-                    region: 'west',
-                    margin: '0 20 0 0',
-                    width: 300,
+                    margin: '0 40 0 0',
+                    columnWidth: 0.3,
                     layout: {
                         type: 'vbox',
                         align: 'stretch'
                     },
                     items: [{
-                        xtype: 'container',
-                        //title: 'Actions',
-                        layout: {
-                            type: 'hbox'
-                        },
-                        items: [{
-                            xtype: 'button',
-                            hidden: !this.canExamine,
-                            text: gettext('To-do list'),
-                            scale: 'medium',
-                            flex: 6,
-                            listeners: {
-                                scope: this,
-                                click: function() {
-                                    Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow', {
-                                        assignmentgroupmodelname: this.getSimplifiedClassName('SimplifiedAssignmentGroup'),
-                                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer
-                                    }).show();
-                                }
-                            }
-                        }, {xtype: 'box', width: 5}, {
-                            xtype: 'assignmentgroup_isopen',
-                            flex: 10,
-                            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                            canExamine: this.canExamine
-                        }]
-                    }, {
                         xtype: 'panel',
                         margin: '10 0 0 0',
                         flex: 1,
@@ -282,7 +290,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         }]
                     }]
                 }, this.centerArea = Ext.widget('container', {
-                    region: 'center',
+                    columnWidth: 0.7,
                     layout: 'fit',
                     items: {
                         xtype: 'box',

@@ -95,8 +95,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                     items: [{
                         xtype: 'singlerecordcontainerdepbutton',
                         singlerecordcontainer: this.delivery_recordcontainer,
-                        text: gettext('Browse files'),
-                        scale: 'small',
+                        text: '<i class="icon-list-alt"></i> ' + gettext('Browse files'),
+                        cls: 'bootstrap',
+                        scale: 'medium',
                         listeners: {
                             scope: this,
                             click: function() {
@@ -109,8 +110,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                     }, {
                         xtype: 'singlerecordcontainerdepbutton',
                         singlerecordcontainer: this.delivery_recordcontainer,
-                        scale: 'small',
-                        text: gettext('Download all files (.zip)'),
+                        scale: 'medium',
+                        text: '<i class="icon-download"></i> ' + gettext('Download all files (.zip)'),
+                        cls: 'bootstrap',
                         listeners: {
                             scope: this,
                             click: function(view, record, item) {
@@ -136,6 +138,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                 xtype: 'panel',
                 tbar: this.getToolbarItems(),
                 layout: 'fit',
+                margin: '0 0 20 0',
                 items: this.bodyContent
             }]
         });
