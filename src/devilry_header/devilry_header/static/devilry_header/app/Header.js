@@ -200,9 +200,7 @@ Ext.define('devilry_header.Header', {
     },
 
     _onShowHovermenu: function() {
-        if(this._getSearchMenu().isVisible()) { // Hide search menu when showing hovermenu
-            this._getSearchButton().toggle();
-        }
+        this._getSearchButton().setPressedWithEvent(false); // Hide search menu when showing hover menu
         this._getCurrentRoleButton().setPressedCls();
         this._getUserButton().setPressedCls();
     },
@@ -226,12 +224,10 @@ Ext.define('devilry_header.Header', {
     },
 
     _onShowSearchmenu: function() {
-        if(this._getHoverMenu().isVisible()) { // Hide hover menu when showing search menu
-            this._getUserButton().toggle();
-        }
+        this._getUserButton().setPressedWithEvent(false); // Hide hover menu when showing search menu
         this._getSearchButton().setPressedCls();
     },
     _onHideSearchmenu: function() {
-        this._getSearchButton().setNotPressedCls();
+        this._getSearchButton().setPressed(false);
     }
 });

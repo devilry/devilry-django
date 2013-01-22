@@ -98,5 +98,21 @@ Ext.define('devilry_header.FlatButton', {
         } else {
             this.fireEvent('click', this);
         }
+    },
+
+    setPressed:function (pressed) {
+        this.pressed = pressed;
+        if(pressed) {
+            this.setPressedCls();
+        } else {
+            this.setNotPressedCls();
+        }
+    },
+
+    setPressedWithEvent:function (pressed) {
+        if(pressed !== this.pressed) {
+            this.setPressed(pressed);
+            this.fireEvent('toggle', this, this.pressed);
+        }
     }
 });
