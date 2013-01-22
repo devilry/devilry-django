@@ -5,7 +5,7 @@ Ext.define('devilry_header.ExaminerSearchResultsView', {
 
     singleResultTpl: [
         '<div>',
-            '<a href="{[this.getUrl(values)]}" class="result-target-link">{title}</a>',
+            '<a href="{[this.getUrl(values)]}" class="{[this.getResultLinkCls()]}">{title}</a>',
             ' <span class="label label-inverse typename">{[this.getTypeName(values.type)]}</span>',
         '</div>',
         '<div class="muted"><small class="path">{path}</small></div>',

@@ -4,7 +4,7 @@ Ext.define('devilry_header.StudentSearchResultsView', {
     extraCls: 'devilry_header_studentsearchresults',
 
     singleResultTpl: [
-        '<div><a href="{[this.getUrl(values)]}" class="result-target-link">{title}</a></div>',
+        '<div><a href="{[this.getUrl(values)]}" class="{[this.getResultLinkCls()]}">{title}</a></div>',
         '<div class="muted"><small class="path">{path}</small></div>',
         '<tpl if="type == \'core_assignmentgroup\'">',
             '<tpl if="values.students.length &gt; 1">',

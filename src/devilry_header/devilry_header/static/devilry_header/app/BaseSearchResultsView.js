@@ -26,6 +26,17 @@ Ext.define('devilry_header.BaseSearchResultsView', {
         'Ext.XTemplate'
     ],
 
+    constructor:function () {
+        this.addEvents(
+            /**
+             * @event resultLinkClick
+             * Fired when a link to a search result is clicked.
+             */
+            'resultLinkClick'
+        );
+        this.callParent(arguments);
+    },
+
     initComponent: function() {
         var headingTpl = [];
         if(this.showHeading) {
@@ -68,6 +79,9 @@ Ext.define('devilry_header.BaseSearchResultsView', {
                     },
                     joinStringArray:function (arr) {
                         return arr.join(', ');
+                    },
+                    getResultLinkCls:function () {
+                        return 'result-target-link';
                     }
                 }
             ],
@@ -78,6 +92,12 @@ Ext.define('devilry_header.BaseSearchResultsView', {
             element: 'el',
             delegate: 'a.more-searchresults-button',
             click: this._onMore
+        });
+        this.addListener({
+            scope: this,
+            element: 'el',
+            delegate: 'a.result-target-link',
+            click: this._onResultLinkClick
         });
         this.callParent(arguments);
     },
@@ -158,5 +178,11 @@ Ext.define('devilry_header.BaseSearchResultsView', {
 
     getUrl:function (values) {
         return '#';
+    },
+
+    _onResultLinkClick:function (e) {
+        this.fireEvent('resultLinkClick');
+        // NOTE: We do not prevent the default action, so this does not prevent the link from
+        //       triggering navigation.
     }
 });

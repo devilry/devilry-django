@@ -78,12 +78,17 @@ Ext.define('devilry_header.SearchMenu', {
         var columnWidth = 1.0 / rolecount;
         var showHeading = rolecount > 1;
 
+        var listeners = {
+            scope: this,
+            resultLinkClick: this._onResultLinkClick
+        };
         if(this.isStudent) {
             views.push({
                 xtype: 'devilry_header_studentsearchresults',
                 columnWidth: columnWidth,
                 showHeading: showHeading,
-                store: Ext.create('devilry_header.store.StudentSearchResults')
+                store: Ext.create('devilry_header.store.StudentSearchResults'),
+                listeners: listeners
             });
         }
         if(this.isExaminer) {
@@ -91,7 +96,8 @@ Ext.define('devilry_header.SearchMenu', {
                 xtype: 'devilry_header_examinersearchresults',
                 columnWidth: columnWidth,
                 showHeading: showHeading,
-                store: Ext.create('devilry_header.store.ExaminerSearchResults')
+                store: Ext.create('devilry_header.store.ExaminerSearchResults'),
+                listeners: listeners
             });
         }
         if(this.isAdmin) {
@@ -99,7 +105,8 @@ Ext.define('devilry_header.SearchMenu', {
                 xtype: 'devilry_header_adminsearchresults',
                 columnWidth: columnWidth,
                 showHeading: showHeading,
-                store: Ext.create('devilry_header.store.AdminSearchResults')
+                store: Ext.create('devilry_header.store.AdminSearchResults'),
+                listeners: listeners
             });
         }
         container.add(views);
@@ -160,9 +167,6 @@ Ext.define('devilry_header.SearchMenu', {
     },
 
     _setSizeAndPosition: function() {
-//        var bodysize = Ext.getBody().getViewSize();
-//        var size = this.getSize();
-//        this.setPagePosition(bodysize.width - size.width - 100, this.topOffset);
         var bodysize = Ext.getBody().getViewSize();
         this.setSize({
             width: bodysize.width,
@@ -177,5 +181,9 @@ Ext.define('devilry_header.SearchMenu', {
             this.down('#searchfield').focus();
 //            this.down('#searchfield').setValue('Obligatorisk oppgave 1');
         }, 300, this);
+    },
+
+    _onResultLinkClick:function () {
+        this.hide();
     }
 });

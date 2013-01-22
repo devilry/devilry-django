@@ -4,7 +4,7 @@ Ext.define('devilry_header.AdminSearchResultsView', {
     extraCls: 'devilry_header_adminsearchresults',
 
     singleResultTpl: [
-        '<div><a href="{[this.getUrl(values)]}" class="result-target-link">{title}</a>',
+        '<div><a href="{[this.getUrl(values)]}" class="{[this.getResultLinkCls()]}">{title}</a>',
             ' <span class="label label-inverse typename">{[this.getTypeName(values.type)]}</span>',
         '</div>',
         '<div class="meta path">{path}</div>',
