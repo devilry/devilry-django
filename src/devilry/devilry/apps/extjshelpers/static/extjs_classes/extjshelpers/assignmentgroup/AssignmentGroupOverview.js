@@ -221,17 +221,23 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     }
                 }, {
                     xtype: 'container',
-                    width: 300,
+                    width: 350,
                     layout: 'column',
 //                    defaults: {anchor: '100%'},
                     items: [{
+                        xtype: 'assignmentgroup_isopen',
+                        columnWidth: 0.6,
+                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                        canExamine: this.canExamine
+                    }, {
                         xtype: 'button',
                         columnWidth: 0.4,
                         hidden: !this.canExamine,
-                        text: '<i class="icon-th-list"></i> ' + gettext('To-do list'),
+                        text: '<i class="icon-white icon-th-list"></i> ' + gettext('To-do list'),
                         cls: 'bootstrap',
                         scale: 'medium',
-                        flex: 6,
+                        ui: 'inverse',
+                        margin: '0 0 0 3',
                         listeners: {
                             scope: this,
                             click: function() {
@@ -241,12 +247,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                                 }).show();
                             }
                         }
-                    }, {
-                        xtype: 'assignmentgroup_isopen',
-                        margin: '0 0 0 3',
-                        columnWidth: 0.6,
-                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                        canExamine: this.canExamine
                     }]
                 }]
             }, {

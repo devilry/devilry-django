@@ -45,6 +45,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
                 scale: 'medium',
                 cls: 'bootstrap',
                 text: buttonText,
+//                ui: 'inverse',
                 listeners: {
                     scope: this,
                     click: this.onStatusButtonClick,
