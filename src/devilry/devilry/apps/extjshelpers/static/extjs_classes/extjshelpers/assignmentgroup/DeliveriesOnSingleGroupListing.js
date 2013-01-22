@@ -2,7 +2,7 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.deliveriesonsinglegrouplisting',
-    cls: 'widget-deliveriesonsinglegrouplisting selectable-grid',
+    cls: 'widget-deliveriesonsinglegrouplisting',
     requires: [
         'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel'

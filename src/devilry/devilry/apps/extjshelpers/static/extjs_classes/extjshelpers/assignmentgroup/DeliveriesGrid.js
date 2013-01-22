@@ -1,7 +1,7 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.deliveriesgrid',
-    cls: 'widget-deliveriesgrid selectable-grid',
+    cls: 'widget-deliveriesgrid',
     hideHeaders: true, // Hide column header
     mixins: [
         'devilry.extjshelpers.AddPagerIfNeeded'
