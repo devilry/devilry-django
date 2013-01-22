@@ -146,7 +146,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
      */
     onLoadingComplete: function() {
         var delivery = this.delivery_recordcontainer.record.data;
-        var islatestDelivery = this.deliverystore.currentPage == 1 && this.deliverystore.data.items[0].data.id == delivery.id;
+        var islatestDelivery = this.deliverystore.currentPage === 1 && this.deliverystore.data.items[0].data.id === delivery.id;
 
         this.show();
         this.toolbar.removeAll();
@@ -157,7 +157,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         Ext.apply(data, delivery);
         this.update(data);
 
-        if(delivery.delivery_type == 0) {
+        if(delivery.delivery_type === 0) {
             this.toolbar.add({
                 xtype: 'button',
                 text: 'Browse files',

@@ -4,7 +4,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
     cls: 'widget-assignmentgrouptitle section pathheading bootstrap',
 
     tpl: Ext.create('Ext.XTemplate',
-        '<h1 style="margin: 0; line-height: 25px;"><small>{parentnode__parentnode__parentnode__short_name}.{parentnode__parentnode__parentnode__short_name}.</small>{parentnode__long_name}</h1>',
+        '<h1 style="margin: 0; line-height: 25px;"><small>{parentnode__parentnode__parentnode__short_name}.{parentnode__parentnode__short_name}.</small>{parentnode__long_name}</h1>',
         '<tpl if="name">',
             '{name}: ',
         '</tpl>',

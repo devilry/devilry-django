@@ -56,12 +56,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
 
     getToolbarItems: function() {
         this.createButton = Ext.create('Ext.button.Button', {
-            text: interpolate(gettext('Create %(feedback_term)s'), {
-                feedback_term: gettext('feedback')
-            }, true),
-            iconCls: 'icon-add-32',
+            text: [
+                '<i class="icon-plus"></i> ',
+                gettext('Create feedback')
+            ].join(''),
             hidden: false,
-            scale: 'large',
+            cls: 'bootstrap',
+            scale: 'medium',
             listeners: {
                 scope: this,
                 click: this.loadGradeEditor,

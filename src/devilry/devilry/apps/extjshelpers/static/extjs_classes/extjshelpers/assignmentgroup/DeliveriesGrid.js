@@ -24,9 +24,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
                         '<div class="afterdeadline">',
                             '<tpl if="delivery.time_of_delivery &gt; deadline.deadline">',
                                  ' <span class="label label-important">',
-                                    interpolate(gettext('After %(deadline_term)s'), {
-                                        deadline_term: gettext('deadline')
-                                    }, true),
+                                    gettext('After deadline'),
                                  '</span>',
                             '</tpl>',
                         '</div>',
