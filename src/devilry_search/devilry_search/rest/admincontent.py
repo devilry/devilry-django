@@ -44,8 +44,12 @@ class SearchAdminContent(SearchRestViewBase):
         serialized['path'] = assignment.get_path()
         serialized['students'] = self.serialize_students(obj)
         serialized['name'] = obj.name
+        serialized['assignment_id'] = assignment.id
         return serialized
 
     def get_search_queryset(self):
-        return SearchQuerySet().filter(admin_ids=unicode(self.request.user.id)).models(
+        qry = SearchQuerySet()
+        if not self.request.user.is_superuser:
+            qry = qry.filter(admin_ids=unicode(self.request.user.id))
+        return qry.models(
             Node, Subject, Period, Assignment, AssignmentGroup)

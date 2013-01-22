@@ -25,9 +25,9 @@ class TestRestSearchAdminContent(TestCase, AssertSearchResultMixin):
         self.client.login(username=username, password='test')
         return self.client.rest_get(self.url, **data)
 
-    def test_perms_uniadmin(self):
+    def _test_perms_topnodeorsuper(self, username):
         with HaystackTestSettings():
-            content, response = self._getas('uniadmin', search='Test')
+            content, response = self._getas(username, search='Test')
             matches = content['matches']
             self.assertEqual(len(matches), 5)
             self.assert_has_search_result(matches, type='core_node', title='Test Uni')
@@ -36,6 +36,13 @@ class TestRestSearchAdminContent(TestCase, AssertSearchResultMixin):
             self.assert_has_search_result(matches, type='core_assignment', title='Test A1')
             self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', students=['student1'])
+
+    def test_perms_uniadmin(self):
+        self._test_perms_topnodeorsuper('uniadmin')
+
+    def test_perms_superuser(self):
+        self.testhelper.create_superuser('superuser')
+        self._test_perms_topnodeorsuper('superuser')
 
     def test_perms_subjectadmin(self):
         with HaystackTestSettings():
