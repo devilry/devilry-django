@@ -40,8 +40,8 @@ Ext.define('devilry.examiner.AssignmentLayout', {
             singlerecordontainer: this.assignment_recordcontainer,
             margin: '20 0 0 0',
             tpl: Ext.create('Ext.XTemplate',
-                '<div class="section pathheading">',
-                '    <h1><small>{parentnode__parentnode__short_name}.{parentnode__short_name}.</small>{long_name}</h1>',
+                '<div class="section pathheading bootstrap">',
+                    '<h1 style="margin: 0; line-height: 25px;"><small>{parentnode__parentnode__short_name}.{parentnode__short_name}.</small>{long_name}</h1>',
                 '</div>'
             )
         });
