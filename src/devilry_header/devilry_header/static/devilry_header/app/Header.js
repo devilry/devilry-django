@@ -105,6 +105,22 @@ Ext.define('devilry_header.Header', {
                 flex: 1
             }, {
                 xtype: 'devilryheader_flatbutton',
+                itemId: 'searchButton',
+                enableToggle: true,
+                width: 50,
+                tpl: [
+                    '<div class="textwrapper bootstrap">',
+                    '<i class="icon-search icon-white"></i>',
+                    '</div>'
+                ],
+                data: {},
+                listeners: {
+                    scope: this,
+                    render: this._onRenderSearchButton,
+                    toggle: this._onToggleSearchButton
+                }
+            }, {
+                xtype: 'devilryheader_flatbutton',
                 itemId: 'userButton',
                 enableToggle: true,
                 width: 100,
@@ -143,6 +159,12 @@ Ext.define('devilry_header.Header', {
     _getUserButton: function() {
         return this.down('#userButton');
     },
+    _getSearchButton: function() {
+        return this.down('#searchButton');
+    },
+    _getSearchMenu: function() {
+        return this.down('devilryheader_searchmenu');
+    },
     _getBreadcrumbArea: function() {
         return this.down('#breadcrumbarea');
     },
@@ -178,6 +200,9 @@ Ext.define('devilry_header.Header', {
     },
 
     _onShowHovermenu: function() {
+        if(this._getSearchMenu().isVisible()) { // Hide search menu when showing hovermenu
+            this._getSearchButton().toggle();
+        }
         this._getCurrentRoleButton().setPressedCls();
         this._getUserButton().setPressedCls();
     },
@@ -187,10 +212,26 @@ Ext.define('devilry_header.Header', {
     },
 
 
+    _onRenderSearchButton:function () {
+        this._getSearchButton().addExtraClass('devilry_header_search_button');
+    },
+
+    _onToggleSearchButton: function(button) {
+        var searchmenu = this._getSearchMenu();
+        if(button.pressed) {
+            searchmenu.show();
+        } else {
+            searchmenu.hide();
+        }
+    },
+
     _onShowSearchmenu: function() {
-        console.log('show');
+        if(this._getHoverMenu().isVisible()) { // Hide hover menu when showing search menu
+            this._getUserButton().toggle();
+        }
+        this._getSearchButton().setPressedCls();
     },
     _onHideSearchmenu: function() {
-        console.log('hide');
+        this._getSearchButton().setNotPressedCls();
     }
 });

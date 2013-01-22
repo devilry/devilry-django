@@ -415,35 +415,41 @@
   padding-top: 30px;
 }
 
-/* line 1, ../sass/_search.scss */
+/* line 3, ../sass/_search.scss */
 .devilryheader_searchmenu {
   font-size: 13px;
   background-color: black;
   color: #fff;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-/* line 9, ../sass/_search.scss */
+/* line 11, ../sass/_search.scss */
 .devilryheader_searchmenu .searchmenu_searchfield input {
   height: auto;
   font-size: 20px;
 }
-/* line 15, ../sass/_search.scss */
+/* line 17, ../sass/_search.scss */
 .devilryheader_searchmenu .devilry_header_searchresults h3 {
   font-size: 18px;
   line-height: 20px;
   margin: 15px 0 0 0;
   padding: 0;
 }
-/* line 21, ../sass/_search.scss */
+/* line 23, ../sass/_search.scss */
 .devilryheader_searchmenu .devilry_header_searchresults ul.search-results {
   margin-top: 10px;
 }
-/* line 23, ../sass/_search.scss */
+/* line 25, ../sass/_search.scss */
 .devilryheader_searchmenu .devilry_header_searchresults ul.search-results li.single-result-wrapper {
   margin-bottom: 5px;
 }
-/* line 27, ../sass/_search.scss */
+/* line 29, ../sass/_search.scss */
 .devilryheader_searchmenu .devilry_header_searchresults ul.search-results li.single-result-wrapper span.typename {
   display: inline-block;
   margin-left: 6px;
+}
+
+/* line 41, ../sass/_search.scss */
+.devilryheader .flatbutton.flatbutton_not_pressed.devilry_header_search_button {
+  background-color: #2b2b2b;
+  background-position: 80% 10px;
 }

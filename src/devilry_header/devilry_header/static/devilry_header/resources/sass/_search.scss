@@ -1,3 +1,5 @@
+@import "variables";
+
 .devilryheader_searchmenu {
     font-size: $baseFontSize;
     //background-color: $almostblack;
@@ -29,6 +31,16 @@
                     margin-left: 6px;
                 }
             }
+        }
+    }
+}
+
+
+.devilryheader .flatbutton {
+    &.flatbutton_not_pressed {
+        &.devilry_header_search_button {
+            background-color: lighten($almostblack, 7%);
+            background-position: 80% 10px;
         }
     }
 }

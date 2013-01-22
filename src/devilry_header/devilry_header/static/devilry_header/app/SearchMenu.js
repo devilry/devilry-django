@@ -20,7 +20,7 @@ Ext.define('devilry_header.SearchMenu', {
             floating: true,
             frame: false,
             border: 0,
-            autoShow: true,
+//            autoShow: true,
             autoScroll: true,
             topOffset: 30,
             padding: 20,
@@ -173,9 +173,9 @@ Ext.define('devilry_header.SearchMenu', {
 
     _onShow: function() {
         this._setSizeAndPosition();
-        this.down('#searchfield').focus();
         Ext.defer(function () {
-            this.down('#searchfield').setValue('donald');
+            this.down('#searchfield').focus();
+//            this.down('#searchfield').setValue('donald');
         }, 300, this);
     }
 });
