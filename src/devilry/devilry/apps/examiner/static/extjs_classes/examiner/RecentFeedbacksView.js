@@ -1,5 +1,6 @@
 Ext.define('devilry.examiner.RecentFeedbacksView', {
     extend: 'devilry.extjshelpers.DashGrid',
+    alias: 'widget.examiner_recentfeedbackview',
     requires: [
         'devilry.extjshelpers.DateTime'
     ],
@@ -112,7 +113,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
                     return me.studentsRowTpl.apply(record.data);
                 }
             }]);
-        };
+        }
 
         var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
             frame: false,

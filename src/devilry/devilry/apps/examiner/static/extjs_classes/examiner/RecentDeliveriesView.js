@@ -1,5 +1,6 @@
 Ext.define('devilry.examiner.RecentDeliveriesView', {
     extend: 'devilry.extjshelpers.DashGrid',
+    alias: 'widget.examiner_recentdeliveriesview',
     requires: [
         'devilry.extjshelpers.DateTime'
     ],

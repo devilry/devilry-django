@@ -23,9 +23,17 @@
         {% comment %}
         <link rel="stylesheet" type="text/css" href="{{ DEVILRY_STATIC_URL }}/themebase/css/devilry.css" />
         {% endcomment %}
-        <link rel="stylesheet" type="text/css"
+{#        <link rel="stylesheet" type="text/css"#}
                 {#href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all.css" />#}
-                href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all-gray.css" />
+{#                href="{{ DEVILRY_EXTJS_URL }}/resources/css/ext-all-gray.css" />#}
+
+{#        <link rel="stylesheet" type="text/css"#}
+{#              href="{% static "devilry_theme/resources/stylesheets/bootstrap.css" %}" />#}
+
+        {% include "devilry_theme/cssimports.django.html" %}
+        <link rel="apple-touch-icon" href="{% static "devilry_theme/resources/favicons/apple-touch-icon.png" %}" />
+        <link rel="shortcut icon" href="{% static "devilry_theme/resources/favicons/favicon.ico" %}" />
+
 
         {% include "devilry_header/cssimports.django.html" %}
 

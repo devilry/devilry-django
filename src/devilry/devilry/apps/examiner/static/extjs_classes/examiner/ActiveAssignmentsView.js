@@ -1,5 +1,6 @@
 Ext.define('devilry.examiner.ActiveAssignmentsView', {
     extend: 'devilry.extjshelpers.DashGrid',
+    alias: 'widget.examiner_activeassignmentsview',
     requires: [
         'devilry.extjshelpers.DateTime'
     ],
