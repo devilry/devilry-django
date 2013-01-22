@@ -1,1 +1,2 @@
 {% extends "search/indexes/core/basenode_text.txt" %}
+{{ object.parentnode.long_name }}
