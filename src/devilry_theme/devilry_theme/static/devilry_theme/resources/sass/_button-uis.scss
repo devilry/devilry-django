@@ -119,8 +119,6 @@ $dangerButtonColorDisabled: lighten($red, 25%);
 
     $icon-size: $button-large-icon-size
 );
-
-
 @include extjs-button-ui(
     /* UI + Scale */
     'danger-medium',
@@ -142,6 +140,67 @@ $dangerButtonColorDisabled: lighten($red, 25%);
     $background-color-focus: $dangerButtonColorOver,
     $background-color-pressed: $dangerButtonColorPressed,
     $background-color-disabled: $dangerButtonColorDisabled,
+
+    $background-gradient: 'glossy',
+    $background-gradient-over: 'glossy',
+    $background-gradient-focus: 'glossy',
+    $background-gradient-pressed: 'matte-reverse',
+    $background-gradient-disabled: 'matte',
+
+    $color: $white,
+    $color-over: $white,
+    $color-focus: $white,
+    $color-pressed: $white,
+    $color-disabled: $white,
+
+    $font-size: ($baseFontSize + 1px),
+    $font-size-over: ($baseFontSize + 1px),
+    $font-size-focus: ($baseFontSize + 1px),
+    $font-size-pressed: ($baseFontSize + 1px),
+    $font-size-disabled: ($baseFontSize + 1px),
+
+    $font-weight: $button-medium-font-weight,
+    $font-weight-over: $button-medium-font-weight-over,
+    $font-weight-focus: $button-medium-font-weight-focus,
+    $font-weight-pressed: $button-medium-font-weight-pressed,
+    $font-weight-disabled: $button-medium-font-weight-disabled,
+
+    $font-family: $button-medium-font-family,
+    $font-family-over: $button-medium-font-family-over,
+    $font-family-focus: $button-medium-font-family-focus,
+    $font-family-pressed: $button-medium-font-family-pressed,
+    $font-family-disabled: $button-medium-font-family-disabled,
+
+    $icon-size: $button-medium-icon-size
+);
+
+
+
+$inverseButtonColor: #191919;
+$inverseButtonColorOver: darken($inverseButtonColor, 5%);
+$inverseButtonColorPressed: darken($inverseButtonColor, 4%);
+$inverseButtonColorDisabled: lighten($inverseButtonColor, 25%);
+@include extjs-button-ui(
+    /* UI + Scale */
+    'inverse-medium',
+
+    $border-radius: $button-medium-border-radius,
+    $border-width: $button-medium-border-width,
+
+    $border-color: $inverseButtonColor,
+    $border-color-over: $inverseButtonColor,
+    $border-color-focus: $black,
+    $border-color-pressed: $inverseButtonColor,
+    $border-color-disabled: transparent,
+
+    $padding: $button-medium-padding,
+    $text-padding: 18px, // Left and right padding
+
+    $background-color: $inverseButtonColor,
+    $background-color-over: $inverseButtonColorOver,
+    $background-color-focus: $inverseButtonColorOver,
+    $background-color-pressed: $inverseButtonColorPressed,
+    $background-color-disabled: $inverseButtonColorDisabled,
 
     $background-gradient: 'glossy',
     $background-gradient-over: 'glossy',
