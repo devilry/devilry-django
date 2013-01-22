@@ -15,11 +15,21 @@ Ext.define('devilry_header.BaseSearchResultsView', {
     hidden: true, // We show ourself automatically on search results
     loadCountDefault: 10,
     loadCountMax: 150,
+    showHeading: false,
+    noResultsMsgTpl: [
+        '<small class="muted">',
+            gettext('No results matching {search} found.'),
+        '</small>'
+    ],
+
+    requires: [
+        'Ext.XTemplate'
+    ],
 
     initComponent: function() {
         var headingTpl = [];
-        if(!Ext.isEmpty(this.heading)) {
-            headingTpl = ['<h3>', this.heading, '<h3>'];
+        if(this.showHeading) {
+            headingTpl = ['<h3>', this.heading, '</h3>'];
         }
 
         var typeNameMap = {
@@ -33,13 +43,16 @@ Ext.define('devilry_header.BaseSearchResultsView', {
             cls: Ext.String.format('{0} {1}', this.cls, this.extraCls),
             tpl: [
                 headingTpl.join(''),
-                '<ul class="unstyled">',
+                '<ul class="unstyled search-results">',
                     '<tpl for=".">',
                         '<li class="single-result-wrapper">',
                             this.singleResultTpl.join(''),
                         '</li>',
                     '</tpl>',
                 '</ul>',
+                '<p class="no-searchresults-box" style="display: none;">',
+                    // NOTE: We set the value of this when it is shown
+                '</p>',
                 '<p>',
                     '<a class="btn btn-primary btn-small more-searchresults-button" style="display: none;">',
                         // NOTE: We set the value of this when it is shown
@@ -82,22 +95,46 @@ Ext.define('devilry_header.BaseSearchResultsView', {
         });
     },
 
-    _getMoreButton:function () {
-        var morebutton = Ext.get(this.getEl().query('.more-searchresults-button')[0]);
+    _getElement:function (cssselector) {
+        var morebutton = Ext.get(this.getEl().query(cssselector)[0]);
         morebutton.enableDisplayMode();
         return morebutton;
+    },
+
+    _getMoreButton:function () {
+        return this._getElement('.more-searchresults-button');
+    },
+
+    _getNoResultsBox:function () {
+        return this._getElement('.no-searchresults-box');
     },
 
     _onSearchSuccess:function () {
         var store = this.getStore();
         if(store.getCount() <= this.loadCountDefault && store.getTotalCount() > store.getCount()) {
-            var morebutton = this._getMoreButton();
-            var loadcount = Ext.Array.min([store.getTotalCount(), this.loadCountMax]);
-            morebutton.setHTML(interpolate(gettext('Load %(loadcount)s more'), {
-                loadcount: loadcount
-            }, true));
-            morebutton.show();
+            this._onMoreResultsAvailable();
         }
+        if(store.getCount() === 0) {
+            this._onNoSearchResults();
+        }
+    },
+
+    _onMoreResultsAvailable:function () {
+        var store = this.getStore();
+        var morebutton = this._getMoreButton();
+        var loadcount = Ext.Array.min([store.getTotalCount(), this.loadCountMax]);
+        morebutton.setHTML(interpolate(gettext('Load %(loadcount)s more'), {
+            loadcount: loadcount
+        }, true));
+        morebutton.show();
+    },
+
+    _onNoSearchResults:function () {
+        var box = this._getNoResultsBox();
+        box.setHTML(Ext.create('Ext.XTemplate', this.noResultsMsgTpl).apply({
+            search: Ext.String.format('<em>{0}</em>', this.currentSearch)
+        }));
+        box.show();
     },
 
     _onMore:function (e) {

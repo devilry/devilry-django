@@ -435,11 +435,15 @@
   padding: 0;
 }
 /* line 21, ../sass/_search.scss */
-.devilryheader_searchmenu .devilry_header_searchresults li.single-result-wrapper {
+.devilryheader_searchmenu .devilry_header_searchresults ul.search-results {
+  margin-top: 10px;
+}
+/* line 23, ../sass/_search.scss */
+.devilryheader_searchmenu .devilry_header_searchresults ul.search-results li.single-result-wrapper {
   margin-bottom: 5px;
 }
-/* line 25, ../sass/_search.scss */
-.devilryheader_searchmenu .devilry_header_searchresults li.single-result-wrapper span.typename {
+/* line 27, ../sass/_search.scss */
+.devilryheader_searchmenu .devilry_header_searchresults ul.search-results li.single-result-wrapper span.typename {
   display: inline-block;
   margin-left: 6px;
 }
