@@ -4,9 +4,27 @@ Ext.define('devilry_header.StudentSearchResultsView', {
     extraCls: 'devilry_header_studentsearchresults',
 
     singleResultTpl: [
-        '<div><a href="#" class="result-target-link">{title}</a></div>',
-        '<div class="muted"><small class="path">{path}</small></div>'
+        '<div><a href="{[this.getUrl(values)]}" class="result-target-link">{title}</a></div>',
+        '<div class="muted"><small class="path">{path}</small></div>',
+        '<tpl if="type == \'core_assignmentgroup\'">',
+            '<tpl if="values.students.length &gt; 1">',
+                '<div class="meta students">',
+                    '{[this.joinStringArray(values.students)]}',
+                '</small></div>',
+            '</tpl>',
+        '</tpl>'
     ],
 
-    heading: gettext('Content where you are student')
+    heading: gettext('Content where you are student'),
+
+    getUrl:function (values) {
+        var prefix = Ext.String.format('{0}/devilry_student/',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX);
+        if(values.type === 'core_assignmentgroup') {
+            return Ext.String.format('{0}#/group/{1}/',
+                prefix, values.id);
+        } else {
+            throw Ext.String.format('Unknown type: {0}', values.type);
+        }
+    }
 });
