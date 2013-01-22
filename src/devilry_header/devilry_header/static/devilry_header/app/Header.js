@@ -4,7 +4,7 @@
 Ext.define('devilry_header.Header', {
     extend: 'Ext.container.Container',
     alias: 'widget.devilryheader',
-    margins: '0 0 0 0',
+    margin: '0 0 0 0',
     height: 30, // NOTE: Make sure to adjust $headerHeight in the stylesheet if this is changed
 
     requires: [
