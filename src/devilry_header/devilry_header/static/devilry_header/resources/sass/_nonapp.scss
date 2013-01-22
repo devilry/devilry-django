@@ -1,0 +1,12 @@
+@import "variables";
+
+
+.devilryheader-nonapp {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+.devilryheader-nonapp-bodyoffset {
+    padding-top: $headerHeight;
+}
