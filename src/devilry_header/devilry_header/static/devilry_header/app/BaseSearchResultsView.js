@@ -13,6 +13,8 @@ Ext.define('devilry_header.BaseSearchResultsView', {
      */
 
     hidden: true, // We show ourself automatically on search results
+    loadCountDefault: 10,
+    loadCountMax: 150,
 
     initComponent: function() {
         var headingTpl = [];
@@ -39,12 +41,9 @@ Ext.define('devilry_header.BaseSearchResultsView', {
                     '</tpl>',
                 '</ul>',
                 '<p>',
-                    '<button class="btn btn-primary previous-searchresult-button">',
-                        '<i class="icon-white icon-chevron-left"></i>',
-                    '</button>',
-                    '<button class="btn btn-primary next-searchresult-button">',
-                        '<i class="icon-white icon-chevron-right"></i>',
-                    '</button>',
+                    '<a class="btn btn-primary btn-small more-searchresults-button" style="display: none;">',
+                        // NOTE: We set the value of this when it is shown
+                    '</a>',
                 '</p>', {
                     getTypeName:function (type) {
                         return typeNameMap[type];
@@ -53,18 +52,58 @@ Ext.define('devilry_header.BaseSearchResultsView', {
             ],
             itemSelector: 'ul li.single-result-wrapper'
         });
+        this.addListener({
+            scope: this,
+            element: 'el',
+            delegate: 'a.more-searchresults-button',
+            click: this._onMore
+        });
         this.callParent(arguments);
+    },
+
+    _search:function (config) {
+        this.getStore().search(Ext.apply({
+            search: this.currentSearch
+        }, config), {
+            scope: this,
+            callback:function (records, op) {
+                if(op.success) {
+                    this._onSearchSuccess();
+                }
+            }
+        });
     },
 
     search:function (search) {
         this.show();
-        this.getStore().search({
-            search: search
-        }, {
-            callback:function (records, op) {
-                if(op.success) {
-                }
-            }
+        this.currentSearch = search;
+        this._search({
+            limit: this.loadCountDefault
+        });
+    },
+
+    _getMoreButton:function () {
+        var morebutton = Ext.get(this.getEl().query('.more-searchresults-button')[0]);
+        morebutton.enableDisplayMode();
+        return morebutton;
+    },
+
+    _onSearchSuccess:function () {
+        var store = this.getStore();
+        if(store.getCount() <= this.loadCountDefault && store.getTotalCount() > store.getCount()) {
+            var morebutton = this._getMoreButton();
+            var loadcount = Ext.Array.min([store.getTotalCount(), this.loadCountMax]);
+            morebutton.setHTML(interpolate(gettext('Load %(loadcount)s more'), {
+                loadcount: loadcount
+            }, true));
+            morebutton.show();
+        }
+    },
+
+    _onMore:function (e) {
+        e.preventDefault();
+        this._search({
+            limit: this.loadCountMax
         });
     },
 

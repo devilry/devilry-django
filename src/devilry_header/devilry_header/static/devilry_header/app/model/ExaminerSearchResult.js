@@ -18,7 +18,9 @@ Ext.define('devilry_header.model.ExaminerSearchResult', {
             format: 'json'
         },
         reader: {
-            type: 'json'
+            type: 'json',
+            root: 'matches',
+            totalProperty: 'total'
         }
     }
 });
