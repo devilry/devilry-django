@@ -4,10 +4,12 @@ Ext.define('devilry_header.SearchMenu', {
     cls: 'devilryheader_searchmenu',
 
     requires: [
-        'devilry_header.store.AdminSearchResults',
-        'devilry_header.AdminSearchResultsView',
+        'devilry_header.store.StudentSearchResults',
+        'devilry_header.StudentSearchResultsView',
         'devilry_header.store.ExaminerSearchResults',
-        'devilry_header.ExaminerSearchResultsView'
+        'devilry_header.ExaminerSearchResultsView',
+        'devilry_header.store.AdminSearchResults',
+        'devilry_header.AdminSearchResultsView'
     ],
 
     initComponent: function() {
@@ -57,14 +59,19 @@ Ext.define('devilry_header.SearchMenu', {
         var container = this.down('#searchResultsContainer');
         var views = [];
         views.push({
-            xtype: 'devilry_header_adminsearchresults',
-            columnWidth: 0.5,
-            store: Ext.create('devilry_header.store.AdminSearchResults')
+            xtype: 'devilry_header_studentsearchresults',
+            columnWidth: 0.33,
+            store: Ext.create('devilry_header.store.StudentSearchResults')
         });
         views.push({
             xtype: 'devilry_header_examinersearchresults',
-            columnWidth: 0.5,
+            columnWidth: 0.33,
             store: Ext.create('devilry_header.store.ExaminerSearchResults')
+        });
+        views.push({
+            xtype: 'devilry_header_adminsearchresults',
+            columnWidth: 0.33,
+            store: Ext.create('devilry_header.store.AdminSearchResults')
         });
         container.add(views);
     },
@@ -90,6 +97,7 @@ Ext.define('devilry_header.SearchMenu', {
         var search = field.getValue();
         this.down('devilry_header_adminsearchresults').search(search);
         this.down('devilry_header_examinersearchresults').search(search);
+        this.down('devilry_header_studentsearchresults').search(search);
     },
 
 

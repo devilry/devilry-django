@@ -1,4 +1,4 @@
-Ext.define('devilry_header.model.ExaminerSearchResult', {
+Ext.define('devilry_header.model.StudentSearchResult', {
     extend: 'Ext.data.Model',
 
     idProperty: 'id',
@@ -13,7 +13,7 @@ Ext.define('devilry_header.model.ExaminerSearchResult', {
 
     proxy: {
         type: 'rest',
-        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_search/rest/examinercontent',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_search/rest/studentcontent',
         extraParams: {
             format: 'json'
         },

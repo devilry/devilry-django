@@ -6,6 +6,8 @@ Ext.define('devilry_header.model.AdminSearchResult', {
         {name: 'id', type: 'int'},
         {name: 'path', type: 'string'},
         {name: 'title',  type: 'string'},
+        {name: 'name',  type: 'string'},
+        {name: 'students',  type: 'auto'},
         {name: 'type',  type: 'string'}
     ],
 
