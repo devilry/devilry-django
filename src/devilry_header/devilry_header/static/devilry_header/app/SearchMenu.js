@@ -110,7 +110,7 @@ Ext.define('devilry_header.SearchMenu', {
         if(Ext.isEmpty(this.task)) {
             this.task = new Ext.util.DelayedTask(this._search, this, [field]);
         }
-        this.task.delay(300);
+        this.task.delay(500);
     },
 
     _onSearchFieldKeyPress:function (field, e) {
@@ -175,7 +175,7 @@ Ext.define('devilry_header.SearchMenu', {
         this._setSizeAndPosition();
         Ext.defer(function () {
             this.down('#searchfield').focus();
-//            this.down('#searchfield').setValue('donald');
+//            this.down('#searchfield').setValue('Obligatorisk oppgave 1');
         }, 300, this);
     }
 });
