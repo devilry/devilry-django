@@ -49,7 +49,8 @@ class SearchRestViewBase(View):
 
             matches = []
             for result in searchresults[:limit]:
-                matches.append(self._serialize_searchresult(result))
+                if result: # We may get some None-values if content has been deleted since last indexing
+                    matches.append(self._serialize_searchresult(result))
             return {
                 'total': total,
                 'matches': matches
