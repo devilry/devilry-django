@@ -21,11 +21,9 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
             title: gettext('Todo-list'),
             toolbarExtra: ['->', {
                 xtype: 'button',
-                scale: 'large',
-                iconCls: 'icon-save-32',
-                text: interpolate(gettext('Download all %(deliveries_term)s'), {
-                    deliveries_term: gettext('deliveries')
-                }, true),
+                scale: 'medium',
+                text: '<i class="icon-download"></i> ' + gettext('Download all deliveries'),
+                cls: 'bootstrap',
                 listeners: {
                     scope: this,
                     click: this.onDownload

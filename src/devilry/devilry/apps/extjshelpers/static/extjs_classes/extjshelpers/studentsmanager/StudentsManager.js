@@ -94,7 +94,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         });
 
         this.giveFeedbackToSelectedArgs = {
-            text: gettext('Give feedback to selected'),
+            text: '<i class="icon-pencil"></i> ' + gettext('Give feedback to selected'),
+            cls: 'bootstrap',
             listeners: {
                 scope: this,
                 click: this.onGiveFeedbackToSelected,
@@ -132,7 +133,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             handler: function() { me.setFilter(''); }
         }, {
             xtype: 'button',
-            text: gettext('Filter'),
+            text: '<i class="icon-filter"></i> ' + gettext('Filter'),
+            cls: 'bootstrap',
             menu: {
                 xtype: 'menu',
                 plain: true,
@@ -167,10 +169,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         if(this.assignmentrecord.get('delivery_types') === 0) {
             topBarItems.push({
                 xtype: 'button',
-                text: interpolate(gettext('Download all %(deliveries_term)s'), {
-                    deliveries_term: gettext('deliveries')
-                }, true),
-                iconCls: 'icon-save-16',
+                text: '<i class="icon-download"></i> ' + gettext('Download all deliveries'),
+                cls: 'bootstrap',
                 listeners: {
                     scope: this,
                     click: this._onDownload
@@ -296,8 +296,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         );
 
         return [{
-            text: gettext('Help'),
-//            iconCls: 'icon-help-16',
+            text: '<i class="icon-question-sign"></i> ' + gettext('Help'),
+            cls: 'bootstrap',
             scale: 'medium',
             listeners: {
                 scope: this,

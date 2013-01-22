@@ -57,7 +57,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
     getToolbarItems: function() {
         this.createButton = Ext.create('Ext.button.Button', {
             text: [
-                '<i class="icon-plus"></i> ',
+                '<i class="icon-pencil"></i> ',
                 gettext('Create feedback')
             ].join(''),
             hidden: false,
