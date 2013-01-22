@@ -7,22 +7,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
     alias: 'widget.filemetabrowserpanel',
     cls: 'widget-filemetabrowserpanel',
 
-    config: {
-        /**
-         * @cfg
-         * FileMeta ``Ext.data.Store``. (Required).
-         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
-         * class.
-         */
-        filemetastore: undefined,
+    /**
+     * @cfg
+     * FileMeta ``Ext.data.Store``. (Required).
+     * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
+     * class.
+     */
+    filemetastore: undefined,
 
-        
-        /**
-         * @cfg
-         * Id of the delivery in which the filemetas belong.
-         */
-        deliveryid: undefined,
-    },
+
+    /**
+     * @cfg
+     * Id of the delivery in which the filemetas belong.
+     */
+    deliveryid: undefined,
+
+    fileTpl: [
+        '<a href="{downloadurl}"><strong>{data.filename}</strong></a> <small class="muted">({size})</small>'
+    ],
 
     initComponent: function() {
         this.filemetastore.proxy.extraParams.filters = Ext.JSON.encode([
@@ -42,44 +44,51 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                 this.setLoading(false);
             }
         });
-        
+
+        var renderTpl = Ext.create('Ext.XTemplate', this.fileTpl);
+        var me = this;
         Ext.apply(this, {
             items: [{
                 xtype: 'grid',
                 sortableColumns: false,
                 store: this.filemetastore,
-                cls: 'selectable-grid',
+                hideHeaders: true,
+                disableSelection: true,
+                cls: 'bootstrap',
                 columns: [{
-                    header: gettext('File name'),
-                    menuDisabled: true,
-                    flex:1, 
-                    dataIndex: 'filename'
-                }, {
-                    header: gettext('Size'),
+                    flex:1,
                     menuDisabled: true,
                     dataIndex: 'size',
-                    renderer: function(value) {
+                    renderer: function(size, unused, record) {
                         var units = ['Bytes', 'KBytes', 'MBytes', 'GBytes'];
                         var i = 0;
-                        while(value >= 1024) {
-                            value /= 1024;
+                        while(size >= 1024) {
+                            size /= 1024;
                             ++i;
                         }
+                        var sizeWithUnit;
                         if(i < units.length) {
-                            return value.toFixed() + ' ' + units[i];
+                            sizeWithUnit = size.toFixed() + ' ' + units[i];
                         } else {
-                            return value + ' ' + units[0];
+                            sizeWithUnit = size + ' ' + units[0];
                         }
-                        
+
+                        var url = Ext.String.format("{0}/student/show-delivery/filedownload/{1}",
+                            DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('id'));
+                        return renderTpl.apply({
+                            data: record.data,
+                            size: sizeWithUnit,
+                            downloadurl: url
+                        });
                     }
-                }],
-                listeners: {
-                    scope: this,
-                    itemclick: function(self, record) {
-                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/filedownload/" + record.get('id');
-                        window.open(url, 'download');
-                    }
-                }
+                }]
+//                listeners: {
+//                    scope: this,
+//                    itemclick: function(self, record) {
+//                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/filedownload/" + record.get('id');
+//                        window.open(url, 'download');
+//                    }
+//                }
     
             }],
 
@@ -98,15 +107,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                     }
                 }
             }]
-            // , {
-                // xtype: 'button',
-                // text: 'Download all files (tar.gz)',
-                // listeners: {
-                    // click: function() {
-                        // console.log('Downloading tar.gz some time in the future');
-                    // }
-                // }
-            // }]
         });
         this.callParent(arguments);
     }
