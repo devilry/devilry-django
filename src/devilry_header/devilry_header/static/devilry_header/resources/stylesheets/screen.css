@@ -448,8 +448,11 @@
   margin-left: 6px;
 }
 
-/* line 41, ../sass/_search.scss */
-.devilryheader .flatbutton.flatbutton_not_pressed.devilry_header_search_button {
+/* line 39, ../sass/_search.scss */
+.devilryheader .flatbutton.flatbutton_toggleable {
+  background-position: 75% 10px;
+}
+/* line 42, ../sass/_search.scss */
+.devilryheader .flatbutton.flatbutton_toggleable.flatbutton_not_pressed.devilry_header_search_button {
   background-color: #2b2b2b;
-  background-position: 80% 10px;
 }

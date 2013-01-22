@@ -36,11 +36,11 @@
 }
 
 
-.devilryheader .flatbutton {
+.devilryheader .flatbutton.flatbutton_toggleable {
+    background-position: 75% 10px;
     &.flatbutton_not_pressed {
         &.devilry_header_search_button {
             background-color: lighten($almostblack, 7%);
-            background-position: 80% 10px;
         }
     }
 }
