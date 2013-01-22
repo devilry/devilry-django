@@ -447,12 +447,18 @@
   display: inline-block;
   margin-left: 6px;
 }
+/* line 33, ../sass/_search.scss */
+.devilryheader_searchmenu .devilry_header_searchresults ul.search-results li.single-result-wrapper .meta {
+  font-size: 12px;
+  color: #999;
+  line-height: 16px;
+}
 
-/* line 39, ../sass/_search.scss */
+/* line 44, ../sass/_search.scss */
 .devilryheader .flatbutton.flatbutton_toggleable {
   background-position: 75% 10px;
 }
-/* line 42, ../sass/_search.scss */
+/* line 47, ../sass/_search.scss */
 .devilryheader .flatbutton.flatbutton_toggleable.flatbutton_not_pressed.devilry_header_search_button {
   background-color: #2b2b2b;
 }
