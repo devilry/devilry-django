@@ -9,15 +9,15 @@ from djangorestframework import status as statuscodes
 class SearchForm(forms.Form):
     # NOTE: Remember to update the docs for each of the subclasses of SearchRestViewBase if we change this
     search = forms.CharField(required=False)
-    maxresults = forms.IntegerField(required=False,
+    limit = forms.IntegerField(required=False,
         min_value=1,
-        max_value=100)
+        max_value=200)
 
 
 
 class SearchRestViewBase(View):
     permissions = (IsAuthenticated,)
-    default_maxresults = 10
+    default_limit = 10
 
     def _serialize_searchresult(self, result):
         modeltype = '{0}_{1}'.format(result.app_label, result.model_name)
@@ -42,12 +42,18 @@ class SearchRestViewBase(View):
             searchstring = form.cleaned_data['search']
             if not searchstring:
                 return []
-            maxresults = form.cleaned_data['maxresults'] or self.default_maxresults
-            searchresults = self.get_search_queryset().auto_query(searchstring)
-            output = []
-            for result in searchresults[:maxresults]:
-                output.append(self._serialize_searchresult(result))
-            return output
+            limit = form.cleaned_data['limit'] or self.default_limit
+
+            searchresults = self.get_search_queryset().auto_query(searchstring).load_all()
+            total = searchresults.count()
+
+            matches = []
+            for result in searchresults[:limit]:
+                matches.append(self._serialize_searchresult(result))
+            return {
+                'total': total,
+                'matches': matches
+            }
         else:
             errors = dict(form.errors.iteritems())
             raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST, errors)

@@ -33,10 +33,11 @@ class TestRestSearchExaminerContent(TestCase, AssertSearchResultMixin):
     def test_perms_examiner(self):
         with HaystackTestSettings():
             content, response = self._getas('examiner1', search='Test')
-            self.assertEqual(len(content), 2)
-            self.assert_has_search_result(content, type='core_assignmentgroup',
+            matches = content['matches']
+            self.assertEqual(len(matches), 2)
+            self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup1', students=['student1'])
-            self.assert_has_search_result(content, type='core_assignmentgroup',
+            self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup2', students=['student2'])
 
     def test_anonymous(self):
@@ -47,10 +48,11 @@ class TestRestSearchExaminerContent(TestCase, AssertSearchResultMixin):
         student2candidate.save()
         with HaystackTestSettings():
             content, response = self._getas('examiner1', search='Test')
-            self.assertEqual(len(content), 2)
-            self.assert_has_search_result(content, type='core_assignmentgroup',
+            matches = content['matches']
+            self.assertEqual(len(matches), 2)
+            self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup1', students=[None])
-            self.assert_has_search_result(content, type='core_assignmentgroup',
+            self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup2', students=['secret'])
 
 
@@ -58,8 +60,9 @@ class TestRestSearchExaminerContent(TestCase, AssertSearchResultMixin):
     def test_can_search_for_students(self):
         with HaystackTestSettings():
             content, response = self._getas('examiner1', search='student1')
-            self.assertEqual(len(content), 1)
-            self.assert_has_search_result(content, type='core_assignmentgroup',
+            matches = content['matches']
+            self.assertEqual(len(matches), 1)
+            self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup1')
 
     def test_anonymous_no_search_bleeding(self):
@@ -67,4 +70,5 @@ class TestRestSearchExaminerContent(TestCase, AssertSearchResultMixin):
         self.testhelper.sub_p1_a1.save()
         with HaystackTestSettings():
             content, response = self._getas('examiner1', search='student1')
-            self.assertEqual(len(content), 0)
+            matches = content['matches']
+            self.assertEqual(len(matches), 0)

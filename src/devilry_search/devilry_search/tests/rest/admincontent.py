@@ -28,38 +28,42 @@ class TestRestSearchAdminContent(TestCase, AssertSearchResultMixin):
     def test_perms_uniadmin(self):
         with HaystackTestSettings():
             content, response = self._getas('uniadmin', search='Test')
-            self.assertEqual(len(content), 5)
-            self.assert_has_search_result(content, type='core_node', title='Test Uni')
-            self.assert_has_search_result(content, type='core_subject', title='Test Sub')
-            self.assert_has_search_result(content, type='core_period', title='Test P1')
-            self.assert_has_search_result(content, type='core_assignment', title='Test A1')
-            self.assert_has_search_result(content, type='core_assignmentgroup',
+            matches = content['matches']
+            self.assertEqual(len(matches), 5)
+            self.assert_has_search_result(matches, type='core_node', title='Test Uni')
+            self.assert_has_search_result(matches, type='core_subject', title='Test Sub')
+            self.assert_has_search_result(matches, type='core_period', title='Test P1')
+            self.assert_has_search_result(matches, type='core_assignment', title='Test A1')
+            self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', students=['student1'])
 
     def test_perms_subjectadmin(self):
         with HaystackTestSettings():
             content, response = self._getas('subadmin', search='Test')
-            self.assertEqual(len(content), 4)
-            self.assert_has_search_result(content, type='core_subject', title='Test Sub')
-            self.assert_has_search_result(content, type='core_period', title='Test P1')
-            self.assert_has_search_result(content, type='core_assignment', title='Test A1')
-            self.assert_has_search_result(content, type='core_assignmentgroup',
+            matches = content['matches']
+            self.assertEqual(len(matches), 4)
+            self.assert_has_search_result(matches, type='core_subject', title='Test Sub')
+            self.assert_has_search_result(matches, type='core_period', title='Test P1')
+            self.assert_has_search_result(matches, type='core_assignment', title='Test A1')
+            self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', students=['student1'])
 
     def test_perms_periodadmin(self):
         with HaystackTestSettings():
             content, response = self._getas('p1admin', search='Test')
-            self.assertEqual(len(content), 3)
-            self.assert_has_search_result(content, type='core_period', title='Test P1')
-            self.assert_has_search_result(content, type='core_assignment', title='Test A1')
-            self.assert_has_search_result(content, type='core_assignmentgroup',
+            matches = content['matches']
+            self.assertEqual(len(matches), 3)
+            self.assert_has_search_result(matches, type='core_period', title='Test P1')
+            self.assert_has_search_result(matches, type='core_assignment', title='Test A1')
+            self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', students=['student1'])
 
     def test_perms_assignmentadmin(self):
         with HaystackTestSettings():
             content, response = self._getas('a1admin', search='Test')
-            self.assertEqual(len(content), 2)
-            self.assert_has_search_result(content, type='core_assignment', title='Test A1')
-            self.assert_has_search_result(content, type='core_assignmentgroup',
+            matches = content['matches']
+            self.assertEqual(len(matches), 2)
+            self.assert_has_search_result(matches, type='core_assignment', title='Test A1')
+            self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', students=['student1'])
 

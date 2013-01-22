@@ -33,8 +33,9 @@ class TestRestSearchStudentContent(TestCase, AssertSearchResultMixin):
     def test_perms_student(self):
         with HaystackTestSettings():
             content, response = self._getas('student1', search='Test')
-            self.assertEqual(len(content), 2)
-            self.assert_has_search_result(content, type='core_assignmentgroup',
+            matches = content['matches']
+            self.assertEqual(len(matches), 2)
+            self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup1')
-            self.assert_has_search_result(content, type='core_assignmentgroup',
+            self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup2')
