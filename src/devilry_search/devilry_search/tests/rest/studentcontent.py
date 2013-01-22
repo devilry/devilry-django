@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
@@ -39,3 +40,11 @@ class TestRestSearchStudentContent(TestCase, AssertSearchResultMixin):
                 title='Test A1', name='TestGroup1')
             self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup2')
+
+    def test_perms_student_unpublished(self):
+        self.testhelper.sub_p1_a1.publishing_time = datetime.now() + timedelta(days=1)
+        self.testhelper.sub_p1_a1.save()
+        with HaystackTestSettings():
+            content, response = self._getas('student1', search='Test')
+            matches = content['matches']
+            self.assertEqual(len(matches), 0)

@@ -31,5 +31,5 @@ class SearchStudentContent(SearchRestViewBase):
         return serialized
 
     def get_search_queryset(self):
-        return SearchQuerySet().filter(student_ids=self.request.user.id).models(
+        return SearchQuerySet().filter(student_ids=self.request.user.id, is_published=True).models(
             AssignmentGroup)

@@ -80,6 +80,7 @@ class AssignmentGroupIndex(AdminsSearchIndex):
     candidates = indexes.CharField(use_template=True)
     tags = indexes.CharField(use_template=True)
     is_active = indexes.BooleanField()
+    is_published = indexes.BooleanField()
 
     def prepare_examiner_ids(self, obj):
         return [examiner.user.id for examiner in obj.examiners.all()]
@@ -103,6 +104,9 @@ class AssignmentGroupIndex(AdminsSearchIndex):
 
     def prepare_is_active(self, obj):
         return obj.parentnode.is_active()
+
+    def prepare_is_published(self, obj):
+        return obj.parentnode.publishing_time < datetime.now()
 
 
 
