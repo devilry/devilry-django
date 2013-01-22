@@ -1,3 +1,116 @@
+/* line 6, ../sass/_header.scss */
+.devilryheader {
+  font-size: 13px;
+  background-color: #191919;
+  color: #fff;
+  position: relative;
+  top: 0;
+  left: 0;
+  overflow: hidden;
+}
+/* line 16, ../sass/_header.scss */
+.devilryheader .flatbutton .textwrapper {
+  color: #000;
+  padding: 7px 10px 0 10px;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+/* line 23, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_loading {
+  background-color: #191919;
+}
+/* line 25, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_loading .textwrapper {
+  color: #999;
+}
+/* line 29, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_hover {
+  cursor: pointer;
+  background-color: #666666 !important;
+}
+/* line 36, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_pressed {
+  background-color: #444444;
+}
+/* line 39, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_toggleable {
+  background-image: url("../images/menuarrow_black_down.png");
+  background-repeat: no-repeat;
+  background-position: 92% 10px;
+}
+/* line 43, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_toggleable .textwrapper {
+  padding-right: 20px;
+}
+/* line 46, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_toggleable.flatbutton_pressed {
+  background-image: url("../images/menuarrow_black_up.png");
+}
+/* line 51, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_not_pressed.no_role {
+  background-color: #555555;
+}
+/* line 54, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_not_pressed.student {
+  background-color: #77b300;
+}
+/* line 57, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_not_pressed.examiner {
+  background-color: #0077b3;
+}
+/* line 60, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_not_pressed.subjectadmin {
+  background-color: #ffcc00;
+}
+/* line 63, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_not_pressed.nodeadmin {
+  background-color: #ff9900;
+}
+/* line 66, ../sass/_header.scss */
+.devilryheader .flatbutton.flatbutton_not_pressed.superuser {
+  background-color: #cc3300;
+}
+/* line 72, ../sass/_header.scss */
+.devilryheader .currentrolebutton {
+  background-image: url("../images/reversearrow_down.png");
+  background-repeat: no-repeat;
+  background-position: right top;
+}
+/* line 76, ../sass/_header.scss */
+.devilryheader .currentrolebutton .textwrapper {
+  padding-right: 28px;
+}
+/* line 79, ../sass/_header.scss */
+.devilryheader .currentrolebutton.flatbutton_pressed {
+  background-image: url("../images/reversearrow_up.png") !important;
+}
+/* line 84, ../sass/_header.scss */
+.devilryheader .devilrylogo {
+  padding: 6px 10px 0 35px;
+  background-color: black;
+  background-image: url("../images/devilrylogo_small.png");
+  background-repeat: no-repeat;
+  background-position: 10px center;
+}
+/* line 90, ../sass/_header.scss */
+.devilryheader .devilrylogo a.logotext {
+  font-weight: normal;
+  font-size: 15px;
+  color: #aa0000;
+  text-decoration: none;
+}
+/* line 95, ../sass/_header.scss */
+.devilryheader .devilrylogo a.logotext:hover {
+  text-decoration: underline;
+}
+
 /* line 8, ../sass/_breadcrumbs.scss */
 .devilry_header_breadcrumb {
   padding: 7px 40px 8px 10px;
@@ -30,187 +143,110 @@
   margin-right: 4px;
 }
 
-/* line 44, ../sass/screen.scss */
-.devilryheader {
-  font-size: 13px;
-  background-color: #191919;
-  color: #fff;
-  position: relative;
-  top: 0;
-  left: 0;
-  overflow: hidden;
-}
-/* line 54, ../sass/screen.scss */
-.devilryheader .flatbutton .textwrapper {
-  color: #000;
-  padding: 7px 10px 0 10px;
-  -moz-user-select: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  user-select: none;
-  white-space: nowrap;
-  overflow: hidden;
-  -o-text-overflow: ellipsis;
-  -ms-text-overflow: ellipsis;
-  text-overflow: ellipsis;
-}
-/* line 61, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_loading {
-  background-color: #191919;
-}
-/* line 63, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_loading .textwrapper {
-  color: #999;
-}
-/* line 67, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_hover {
-  cursor: pointer;
-  background-color: #666666 !important;
-}
-/* line 74, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_pressed {
-  background-color: #444444;
-}
-/* line 77, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_toggleable {
-  background-image: url("../images/menuarrow_black_down.png");
-  background-repeat: no-repeat;
-  background-position: 92% 10px;
-}
-/* line 81, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_toggleable .textwrapper {
-  padding-right: 20px;
-}
-/* line 84, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_toggleable.flatbutton_pressed {
-  background-image: url("../images/menuarrow_black_up.png");
-}
-/* line 89, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_not_pressed.no_role {
-  background-color: #555555;
-}
-/* line 92, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_not_pressed.student {
-  background-color: #77b300;
-}
-/* line 95, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_not_pressed.examiner {
-  background-color: #0077b3;
-}
-/* line 98, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_not_pressed.subjectadmin {
-  background-color: #ffcc00;
-}
-/* line 101, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_not_pressed.nodeadmin {
-  background-color: #ff9900;
-}
-/* line 104, ../sass/screen.scss */
-.devilryheader .flatbutton.flatbutton_not_pressed.superuser {
-  background-color: #cc3300;
-}
-/* line 110, ../sass/screen.scss */
-.devilryheader .currentrolebutton {
-  background-image: url("../images/reversearrow_down.png");
-  background-repeat: no-repeat;
-  background-position: right top;
-}
-/* line 114, ../sass/screen.scss */
-.devilryheader .currentrolebutton .textwrapper {
-  padding-right: 28px;
-}
-/* line 117, ../sass/screen.scss */
-.devilryheader .currentrolebutton.flatbutton_pressed {
-  background-image: url("../images/reversearrow_up.png") !important;
-}
-/* line 122, ../sass/screen.scss */
-.devilryheader .devilrylogo {
-  padding: 6px 10px 0 35px;
-  background-color: black;
-  background-image: url("../images/devilrylogo_small.png");
-  background-repeat: no-repeat;
-  background-position: 10px center;
-}
-/* line 128, ../sass/screen.scss */
-.devilryheader .devilrylogo a.logotext {
-  font-weight: normal;
-  font-size: 15px;
-  color: #aa0000;
-  text-decoration: none;
-}
-/* line 133, ../sass/screen.scss */
-.devilryheader .devilrylogo a.logotext:hover {
-  text-decoration: underline;
-}
-
-/* line 140, ../sass/screen.scss */
+/* line 4, ../sass/_hovermenu.scss */
 .devilryheader_hovermenu {
   font-size: 13px;
   background-color: black;
   color: #fff;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-/* line 148, ../sass/screen.scss */
+/* line 12, ../sass/_hovermenu.scss */
 .devilryheader_hovermenu h2 {
   font-size: 20px;
   margin: 0 0 7px 0;
 }
-/* line 154, ../sass/screen.scss */
+/* line 18, ../sass/_hovermenu.scss */
 .devilryheader_hovermenu .discreet {
   font-size: 11px;
   color: #aaa;
 }
-/* line 157, ../sass/screen.scss */
+/* line 21, ../sass/_hovermenu.scss */
 .devilryheader_hovermenu .discreet a {
   color: #fff;
   text-decoration: underline;
 }
-/* line 163, ../sass/screen.scss */
+/* line 27, ../sass/_hovermenu.scss */
 .devilryheader_hovermenu a {
   text-decoration: underline;
   color: #3366FF;
 }
-/* line 168, ../sass/screen.scss */
+/* line 32, ../sass/_hovermenu.scss */
 .devilryheader_hovermenu p {
   margin: 0 0 9px;
   line-height: 18px;
 }
-/* line 173, ../sass/screen.scss */
+/* line 37, ../sass/_hovermenu.scss */
 .devilryheader_hovermenu .devilryheader_footer {
   text-align: center;
   color: #aaa;
 }
-/* line 176, ../sass/screen.scss */
+/* line 40, ../sass/_hovermenu.scss */
 .devilryheader_hovermenu .devilryheader_footer a {
   color: #ccc;
   text-decoration: underline;
 }
+/* line 49, ../sass/_hovermenu.scss */
+.devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable th, .devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable td {
+  line-height: 18px;
+  font-size: 13px;
+}
+/* line 53, ../sass/_hovermenu.scss */
+.devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable th {
+  color: #999;
+  font-weight: bold;
+  padding: 4px 10px 4px 0;
+}
+/* line 58, ../sass/_hovermenu.scss */
+.devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable td {
+  color: #fff;
+}
+/* line 62, ../sass/_hovermenu.scss */
+.devilryheader_hovermenu .devilryheader_userinfobox div.logout_para {
+  margin-top: 10px !important;
+}
+/* line 64, ../sass/_hovermenu.scss */
+.devilryheader_hovermenu .devilryheader_userinfobox div.logout_para a.logout_button {
+  text-decoration: none;
+}
+/* line 72, ../sass/_hovermenu.scss */
+.devilryheader_hovermenu .devilryheader_helplinksbox ul.helplinks li {
+  margin: 0 0 10px 0;
+}
+/* line 75, ../sass/_hovermenu.scss */
+.devilryheader_hovermenu .devilryheader_helplinksbox ul.helplinks li .title a {
+  font-weight: bold;
+}
+/* line 79, ../sass/_hovermenu.scss */
+.devilryheader_hovermenu .devilryheader_helplinksbox ul.helplinks li .description {
+  font-size: 11px;
+  color: #aaa;
+}
 
-/* line 185, ../sass/screen.scss */
+/* line 28, ../sass/_roles.scss */
 .devilryheader_roles ul {
   margin: 0 0 10px 0;
 }
-/* line 187, ../sass/screen.scss */
+/* line 30, ../sass/_roles.scss */
 .devilryheader_roles ul li {
   margin: 0;
   padding: 0;
 }
-/* line 190, ../sass/screen.scss */
+/* line 33, ../sass/_roles.scss */
 .devilryheader_roles ul li a {
   display: block;
   text-decoration: none;
   color: #000;
   line-height: 18px;
 }
-/* line 196, ../sass/screen.scss */
+/* line 39, ../sass/_roles.scss */
 .devilryheader_roles ul li a .heading {
   font-weight: bold;
 }
-/* line 199, ../sass/screen.scss */
+/* line 42, ../sass/_roles.scss */
 .devilryheader_roles ul li a .description {
   font-size: 12px;
 }
-/* line 202, ../sass/screen.scss */
+/* line 45, ../sass/_roles.scss */
 .devilryheader_roles ul li a.student_role {
   padding: 8px 28px 4px 8px;
   background-color: #77b300;
@@ -232,7 +268,7 @@
   margin-right: 8px;
   margin-left: 0;
 }
-/* line 35, ../sass/screen.scss */
+/* line 16, ../sass/_roles.scss */
 .devilryheader_roles ul li a.student_role:hover {
   margin-right: 0;
   margin-left: 8px;
@@ -240,7 +276,7 @@
   text-decoration: none;
   color: #000;
 }
-/* line 205, ../sass/screen.scss */
+/* line 48, ../sass/_roles.scss */
 .devilryheader_roles ul li a.examiner_role {
   padding: 8px 28px 4px 8px;
   background-color: #0077b3;
@@ -262,7 +298,7 @@
   margin-right: 8px;
   margin-left: 0;
 }
-/* line 35, ../sass/screen.scss */
+/* line 16, ../sass/_roles.scss */
 .devilryheader_roles ul li a.examiner_role:hover {
   margin-right: 0;
   margin-left: 8px;
@@ -270,7 +306,7 @@
   text-decoration: none;
   color: #000;
 }
-/* line 208, ../sass/screen.scss */
+/* line 51, ../sass/_roles.scss */
 .devilryheader_roles ul li a.subjectadmin_role {
   padding: 8px 28px 4px 8px;
   background-color: #ffcc00;
@@ -292,7 +328,7 @@
   margin-right: 8px;
   margin-left: 0;
 }
-/* line 35, ../sass/screen.scss */
+/* line 16, ../sass/_roles.scss */
 .devilryheader_roles ul li a.subjectadmin_role:hover {
   margin-right: 0;
   margin-left: 8px;
@@ -300,7 +336,7 @@
   text-decoration: none;
   color: #000;
 }
-/* line 211, ../sass/screen.scss */
+/* line 54, ../sass/_roles.scss */
 .devilryheader_roles ul li a.nodeadmin_role {
   padding: 8px 28px 4px 8px;
   background-color: #ff9900;
@@ -322,7 +358,7 @@
   margin-right: 8px;
   margin-left: 0;
 }
-/* line 35, ../sass/screen.scss */
+/* line 16, ../sass/_roles.scss */
 .devilryheader_roles ul li a.nodeadmin_role:hover {
   margin-right: 0;
   margin-left: 8px;
@@ -330,7 +366,7 @@
   text-decoration: none;
   color: #000;
 }
-/* line 214, ../sass/screen.scss */
+/* line 57, ../sass/_roles.scss */
 .devilryheader_roles ul li a.superuser_role {
   padding: 8px 28px 4px 8px;
   background-color: #cc3300;
@@ -352,7 +388,7 @@
   margin-right: 8px;
   margin-left: 0;
 }
-/* line 35, ../sass/screen.scss */
+/* line 16, ../sass/_roles.scss */
 .devilryheader_roles ul li a.superuser_role:hover {
   margin-right: 0;
   margin-left: 8px;
@@ -360,51 +396,13 @@
   text-decoration: none;
   color: #000;
 }
-/* line 220, ../sass/screen.scss */
+/* line 63, ../sass/_roles.scss */
 .devilryheader_roles div.loading {
   font-size: 36px;
   font-weight: bold;
 }
 
-/* line 229, ../sass/screen.scss */
-.devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable th, .devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable td {
-  line-height: 18px;
-  font-size: 13px;
-}
-/* line 233, ../sass/screen.scss */
-.devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable th {
-  color: #999;
-  font-weight: bold;
-  padding: 4px 10px 4px 0;
-}
-/* line 238, ../sass/screen.scss */
-.devilryheader_hovermenu .devilryheader_userinfobox table.userinfotable td {
-  color: #fff;
-}
-/* line 242, ../sass/screen.scss */
-.devilryheader_hovermenu .devilryheader_userinfobox div.logout_para {
-  margin-top: 10px !important;
-}
-/* line 244, ../sass/screen.scss */
-.devilryheader_hovermenu .devilryheader_userinfobox div.logout_para a.logout_button {
-  text-decoration: none;
-}
-
-/* line 254, ../sass/screen.scss */
-.devilryheader_helplinksbox ul.helplinks li {
-  margin: 0 0 10px 0;
-}
-/* line 257, ../sass/screen.scss */
-.devilryheader_helplinksbox ul.helplinks li .title a {
-  font-weight: bold;
-}
-/* line 261, ../sass/screen.scss */
-.devilryheader_helplinksbox ul.helplinks li .description {
-  font-size: 11px;
-  color: #aaa;
-}
-
-/* line 270, ../sass/screen.scss */
+/* line 4, ../sass/_nonapp.scss */
 .devilryheader-nonapp {
   position: fixed;
   top: 0;
@@ -412,7 +410,27 @@
   width: 100%;
 }
 
-/* line 276, ../sass/screen.scss */
+/* line 10, ../sass/_nonapp.scss */
 .devilryheader-nonapp-bodyoffset {
   padding-top: 30px;
+}
+
+/* line 1, ../sass/_search.scss */
+.devilryheader_searchmenu {
+  font-size: 13px;
+  background-color: black;
+  color: #fff;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+/* line 9, ../sass/_search.scss */
+.devilryheader_searchmenu .searchmenu_searchfield input {
+  height: auto;
+  font-size: 20px;
+}
+/* line 15, ../sass/_search.scss */
+.devilryheader_searchmenu .devilry_header_searchresults h3 {
+  font-size: 18px;
+  line-height: 20px;
+  margin: 15px 0 0 0;
+  padding: 0;
 }

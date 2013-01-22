@@ -5,4 +5,18 @@
     //border-top: 2px solid #444 !important;
     color: #fff;
     font-family: $baseFontFamily;
+
+    .searchmenu_searchfield input {
+        height: auto;
+        font-size: 20px;
+    }
+
+    .devilry_header_searchresults {
+        h3 {
+            font-size: 18px;
+            line-height: 20px;
+            margin: 15px 0 0 0;
+            padding: 0;
+        }
+    }
 }
