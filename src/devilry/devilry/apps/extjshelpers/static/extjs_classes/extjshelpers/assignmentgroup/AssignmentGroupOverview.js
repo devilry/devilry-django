@@ -169,7 +169,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 });
                 this.centerArea.removeAll();
                 this.centerArea.add(this.feedbackPanel);
-            };
+            }
         }
     },
 
@@ -204,6 +204,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             items: [{
                 xtype: 'assignmentgrouptitle',
                 singlerecordontainer: this.assignmentgroup_recordcontainer,
+                margin: '15 0 10 0',
                 extradata: {
                     canExamine: this.canExamine,
                     url: window.location.href
@@ -233,7 +234,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             xtype: 'button',
                             hidden: !this.canExamine,
                             text: gettext('To-do list'),
-                            scale: 'large',
+                            scale: 'medium',
                             flex: 6,
                             listeners: {
                                 scope: this,
@@ -244,7 +245,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                                     }).show();
                                 }
                             }
-                        }, {xtype: 'box', width: 10}, {
+                        }, {xtype: 'box', width: 5}, {
                             xtype: 'assignmentgroup_isopen',
                             flex: 10,
                             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
@@ -301,7 +302,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             return;
         }
         if(deliveriesgroupedbydeadline.latestStaticFeedbackRecord) {
-            latestFeedbackTime = deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('save_timestamp');
+            var latestFeedbackTime = deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('save_timestamp');
             if(latestDelivery.get('time_of_delivery') > latestFeedbackTime) {
                 deliveriesgroupedbydeadline.selectDelivery(latestDelivery.get('id'));
             } else {

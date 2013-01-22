@@ -83,28 +83,27 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     initComponentExtra: function() {
         this.previewButton = Ext.widget('button', {
             text: 'Show preview',
-            scale: 'large',
+            scale: 'medium',
             //iconCls: 'icon-save-32',
             listeners: {
                 scope: this,
-                click: this.onPreview,
+                click: this.onPreview
             }
         });
 
         this.draftButton = Ext.widget('button', {
             text: 'Save draft',
-            scale: 'large',
-            iconCls: 'icon-save-32',
+            scale: 'medium',
             listeners: {
                 scope: this,
-                click: this.onSaveDraft,
+                click: this.onSaveDraft
             }
         });
 
         this.publishButton = Ext.widget('button', {
             text: 'Publish',
             scale: 'large',
-            iconCls: 'icon-add-32',
+            ui: 'primary',
             listeners: {
                 scope: this,
                 click: this.onPublish
@@ -154,8 +153,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         if(this.getDraftEditor().help) {
             this.buttonBar.insert(0, {
                 text: 'Help',
-                iconCls: 'icon-help-32',
-                scale: 'large',
+                scale: 'medium',
                 listeners: {
                     scope: this,
                     click: this.onHelp
@@ -209,13 +207,13 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      */
     onLoadCurrentDraft: function(records, operation, successful) {
         if(successful) {
-            var draftstring = undefined;
+            var draftstring;
             if(records.length !== 0) {
                 draftstring = records[0].data.draft;
             }
             this.initializeDraftEditor(draftstring);
         } else {
-            throw "Failed to load current draft."
+            throw "Failed to load current draft.";
         }
     },
 
@@ -313,7 +311,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
                 if(showpreview) {
                     me.showPreview(response, operation);
                 }
-            },
+            }
         });
     },
 
@@ -344,7 +342,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
                 items: ['->', {
                     xtype: 'button',
                     text: 'Close preview',
-                    scale: 'large',
+                    scale: 'medium',
                     listeners: {
                         click: function() {
                             this.up('window').close();

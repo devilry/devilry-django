@@ -36,7 +36,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
         if(this.canExamine) {
             this.add({
                 xtype: 'button',
-                scale: 'large',
+                scale: 'medium',
                 text: this.assignmentgroup_recordcontainer.record.data.is_open? gettext('Open - click to close'): gettext('Closed - click to open'),
                 listeners: {
                     scope: this,

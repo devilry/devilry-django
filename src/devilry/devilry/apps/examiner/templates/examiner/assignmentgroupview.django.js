@@ -22,9 +22,6 @@
             xtype: 'devilryheader',
             navclass: 'examiner'
         }, {
-            region: 'south',
-            xtype: 'pagefooter'
-        }, {
             region: 'center',
             xtype: 'assignmentgroupoverview',
             assignmentgroupid: {{ objectid }},
