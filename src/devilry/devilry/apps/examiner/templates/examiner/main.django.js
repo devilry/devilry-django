@@ -25,7 +25,7 @@
             region: 'center',
             xtype: 'examiner-dashboard',
             dashboardUrl: DASHBOARD_URL,
-            padding: '0 40 0 40',
+            padding: '10 40 20 40',
             margin: 0,
             border: false
         }]

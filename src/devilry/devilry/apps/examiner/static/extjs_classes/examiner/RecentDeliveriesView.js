@@ -46,7 +46,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
 
 
     studentsRowTpl: Ext.create('Ext.XTemplate',
-        '<ul class="commaSeparatedList">',
+        '<ul class="commaSeparatedList"  style="margin: 0;">',
         '   <tpl for="deadline__assignment_group__candidates__identifier">',
         '       <li>{.}</li>',
         '   </tpl>',
@@ -125,7 +125,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
                     return me.studentsRowTpl.apply(record.data);
                 }
             }]);
-        };
+        }
 
 
 
