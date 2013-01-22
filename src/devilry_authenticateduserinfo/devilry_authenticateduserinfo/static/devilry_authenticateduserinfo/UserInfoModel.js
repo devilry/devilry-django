@@ -29,9 +29,14 @@ Ext.define('devilry_authenticateduserinfo.UserInfoModel', {
 
     /** Returns true is the user has any roles. */
     hasAnyRoles: function() {
-        return this.get('is_superuser') || this.get('is_nodeadmin')
-            || this.get('is_subjectadmin') || this.get('is_periodadmin') || this.get('is_assignmentadmin')
-            || this.get('is_student') || this.get('is_examiner');
+        return this.get('is_superuser') || this.get('is_nodeadmin') ||
+            this.get('is_subjectadmin') || this.get('is_periodadmin') || this.get('is_assignmentadmin') ||
+            this.get('is_student') || this.get('is_examiner');
+    },
+
+    isAdmin:function () {
+        return this.get('is_superuser') || this.get('is_nodeadmin') ||
+            this.get('is_subjectadmin') || this.get('is_periodadmin') || this.get('is_assignmentadmin');
     },
 
     getDisplayName: function() {
