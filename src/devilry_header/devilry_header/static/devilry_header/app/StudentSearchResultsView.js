@@ -4,7 +4,7 @@ Ext.define('devilry_header.StudentSearchResultsView', {
     extraCls: 'devilry_header_studentsearchresults',
 
     singleResultTpl: [
-        '<div><a href="#"><strong class="title">{title}</strong></a> <small>({type})</small></div>',
+        '<div><a href="#" class="result-target-link">{title}</a></div>',
         '<div class="muted"><small class="path">{path}</small></div>'
     ],
 

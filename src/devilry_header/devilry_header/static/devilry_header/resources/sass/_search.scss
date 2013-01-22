@@ -18,5 +18,14 @@
             margin: 15px 0 0 0;
             padding: 0;
         }
+        li.single-result-wrapper {
+            margin-bottom: 5px;
+            a.result-target-link {
+            }
+            span.typename {
+                display: inline-block;
+                margin-left: 6px;
+            }
+        }
     }
 }

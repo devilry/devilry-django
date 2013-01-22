@@ -19,6 +19,14 @@ Ext.define('devilry_header.BaseSearchResultsView', {
         if(!Ext.isEmpty(this.heading)) {
             headingTpl = ['<h3>', this.heading, '<h3>'];
         }
+
+        var typeNameMap = {
+            core_node: gettext('Node'),
+            core_subject: gettext('Subject'),
+            core_period: gettext('Period'),
+            core_assignment: gettext('Assignment'),
+            core_assignmentgroup: gettext('Group')
+        };
         Ext.apply(this, {
             cls: Ext.String.format('{0} {1}', this.cls, this.extraCls),
             tpl: [
@@ -37,7 +45,11 @@ Ext.define('devilry_header.BaseSearchResultsView', {
                     '<button class="btn btn-primary next-searchresult-button">',
                         '<i class="icon-white icon-chevron-right"></i>',
                     '</button>',
-                '</p>'
+                '</p>', {
+                    getTypeName:function (type) {
+                        return typeNameMap[type];
+                    }
+                }
             ],
             itemSelector: 'ul li.single-result-wrapper'
         });
