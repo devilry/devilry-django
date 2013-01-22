@@ -4,6 +4,7 @@ Ext.define('devilry_header.SearchMenu', {
     cls: 'devilryheader_searchmenu',
 
     requires: [
+        'devilry_authenticateduserinfo.UserInfo',
         'devilry_header.store.StudentSearchResults',
         'devilry_header.StudentSearchResultsView',
         'devilry_header.store.ExaminerSearchResults',
@@ -52,27 +53,55 @@ Ext.define('devilry_header.SearchMenu', {
     },
 
     _onRenderSearchResultsContainer:function () {
-        this._addSearchResultViews();
+        devilry_authenticateduserinfo.UserInfo.load(function(userInfoRecord) {
+            this._addSearchResultViews(userInfoRecord);
+        }, this);
     },
 
-    _addSearchResultViews:function () {
+    _addSearchResultViews:function (userInfoRecord) {
         var container = this.down('#searchResultsContainer');
         var views = [];
-        views.push({
-            xtype: 'devilry_header_studentsearchresults',
-            columnWidth: 0.33,
-            store: Ext.create('devilry_header.store.StudentSearchResults')
-        });
-        views.push({
-            xtype: 'devilry_header_examinersearchresults',
-            columnWidth: 0.33,
-            store: Ext.create('devilry_header.store.ExaminerSearchResults')
-        });
-        views.push({
-            xtype: 'devilry_header_adminsearchresults',
-            columnWidth: 0.33,
-            store: Ext.create('devilry_header.store.AdminSearchResults')
-        });
+
+        this.isAdmin = userInfoRecord.isAdmin();
+        this.isExaminer = userInfoRecord.get('is_examiner');
+        this.isStudent = userInfoRecord.get('is_student');
+        var rolecount = 0;
+        if(this.isAdmin) {
+            rolecount ++;
+        }
+        if(this.isExaminer) {
+            rolecount ++;
+        }
+        if(this.isStudent) {
+            rolecount ++;
+        }
+        var columnWidth = 1.0 / rolecount;
+        var showHeading = rolecount > 1;
+
+        if(this.isStudent) {
+            views.push({
+                xtype: 'devilry_header_studentsearchresults',
+                columnWidth: columnWidth,
+                showHeading: showHeading,
+                store: Ext.create('devilry_header.store.StudentSearchResults')
+            });
+        }
+        if(this.isExaminer) {
+            views.push({
+                xtype: 'devilry_header_examinersearchresults',
+                columnWidth: columnWidth,
+                showHeading: showHeading,
+                store: Ext.create('devilry_header.store.ExaminerSearchResults')
+            });
+        }
+        if(this.isAdmin) {
+            views.push({
+                xtype: 'devilry_header_adminsearchresults',
+                columnWidth: columnWidth,
+                showHeading: showHeading,
+                store: Ext.create('devilry_header.store.AdminSearchResults')
+            });
+        }
         container.add(views);
     },
 
@@ -95,9 +124,15 @@ Ext.define('devilry_header.SearchMenu', {
 
     _search:function (field) {
         var search = field.getValue();
-        this.down('devilry_header_adminsearchresults').search(search);
-        this.down('devilry_header_examinersearchresults').search(search);
-        this.down('devilry_header_studentsearchresults').search(search);
+        if(this.isAdmin) {
+            this.down('devilry_header_adminsearchresults').search(search);
+        }
+        if(this.isExaminer) {
+            this.down('devilry_header_examinersearchresults').search(search);
+        }
+        if(this.isStudent) {
+            this.down('devilry_header_studentsearchresults').search(search);
+        }
     },
 
 
