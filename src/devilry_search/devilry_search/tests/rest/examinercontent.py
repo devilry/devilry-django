@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
@@ -41,6 +42,16 @@ class TestRestSearchExaminerContent(TestCase, AssertSearchResultMixin):
                 title='Test A1', name='TestGroup2', students=['student2'])
             self.assert_has_search_result(matches, type='core_assignment', title='Test A1')
 
+
+    def test_perms_examiner_not_published(self):
+        self.testhelper.sub_p1_a1.publishing_time = datetime.now() + timedelta(days=1)
+        self.testhelper.sub_p1_a1.save()
+        with HaystackTestSettings():
+            content, response = self._getas('examiner1', search='Test')
+            matches = content['matches']
+            self.assertEqual(len(matches), 0)
+
+
     def test_anonymous(self):
         self.testhelper.sub_p1_a1.anonymous = True
         self.testhelper.sub_p1_a1.save()
@@ -56,8 +67,6 @@ class TestRestSearchExaminerContent(TestCase, AssertSearchResultMixin):
             self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup2', students=['secret'])
             self.assert_has_search_result(matches, type='core_assignment', title='Test A1')
-
-
 
     def test_can_search_for_students(self):
         with HaystackTestSettings():

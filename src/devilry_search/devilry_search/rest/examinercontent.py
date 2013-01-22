@@ -46,5 +46,5 @@ class SearchExaminerContent(SearchRestViewBase):
         return serialized
 
     def get_search_queryset(self):
-        return SearchQuerySet().filter(examiner_ids=self.request.user.id).models(
+        return SearchQuerySet().filter(examiner_ids=self.request.user.id, is_active=True).models(
             AssignmentGroup, Assignment)
