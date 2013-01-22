@@ -18,12 +18,10 @@
             xtype: 'devilryheader',
             navclass: 'examiner'
         }, {
-            region: 'south',
-            xtype: 'pagefooter'
-        }, {
             region: 'center',
             xtype: 'examiner-assignmentlayout',
-            margin: '0 10 0 10',
+            margin: '0 0 0 0',
+            padding: '0 20 0 20',
             assignmentid: {{ assignmentid }}
         }]
     });
