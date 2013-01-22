@@ -39,6 +39,8 @@ Ext.define('devilry_header.BaseSearchResultsView', {
             core_assignment: gettext('Assignment'),
             core_assignmentgroup: gettext('Group')
         };
+
+        var me = this;
         Ext.apply(this, {
             cls: Ext.String.format('{0} {1}', this.cls, this.extraCls),
             tpl: [
@@ -60,6 +62,12 @@ Ext.define('devilry_header.BaseSearchResultsView', {
                 '</p>', {
                     getTypeName:function (type) {
                         return typeNameMap[type];
+                    },
+                    getUrl:function (values) {
+                        return Ext.bind(me.getUrl, me)(values);
+                    },
+                    joinStringArray:function (arr) {
+                        return arr.join(', ');
                     }
                 }
             ],
@@ -146,5 +154,9 @@ Ext.define('devilry_header.BaseSearchResultsView', {
 
     _renderResult:function (unused, unused2, record) {
         return this.resultTplCompiled.apply(record.data);
+    },
+
+    getUrl:function (values) {
+        return '#';
     }
 });
