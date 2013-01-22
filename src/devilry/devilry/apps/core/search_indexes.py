@@ -1,5 +1,7 @@
 from haystack import indexes
 from haystack import site
+from datetime import datetime
+
 from devilry_search.base import BaseIndex
 from .models import Node
 from .models import Subject
@@ -50,6 +52,7 @@ site.register(Period, PeriodIndex)
 
 class AssignmentIndex(AdminsSearchIndex):
     publishing_time = indexes.DateTimeField(model_attr='publishing_time')
+    is_active = indexes.BooleanField(model_attr='is_active')
     examiner_ids = indexes.MultiValueField()
 
     def prepare_examiner_ids(self, obj):
@@ -76,6 +79,7 @@ class AssignmentGroupIndex(AdminsSearchIndex):
     examiners = indexes.CharField(use_template=True)
     candidates = indexes.CharField(use_template=True)
     tags = indexes.CharField(use_template=True)
+    is_active = indexes.BooleanField()
 
     def prepare_examiner_ids(self, obj):
         return [examiner.user.id for examiner in obj.examiners.all()]
@@ -96,6 +100,9 @@ class AssignmentGroupIndex(AdminsSearchIndex):
             'examiners', 'examiners__user', 'examiners__user__devilryuserprofile',
             'candidates', 'candidates__student', 'candidates__student__devilryuserprofile')
         return qry
+
+    def prepare_is_active(self, obj):
+        return obj.parentnode.is_active()
 
 
 

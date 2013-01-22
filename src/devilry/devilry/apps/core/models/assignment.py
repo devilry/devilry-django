@@ -212,3 +212,11 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         from .delivery import Delivery
         return Delivery.objects.filter(deadline__assignment_group__parentnode=self).count() == 0
+
+
+    def is_active(self):
+        """
+        Returns ``True`` if this assignment is published, and the period has not ended yet.
+        """
+        now = datetime.now()
+        return self.publishing_time < now and self.parentnode.end_time > now

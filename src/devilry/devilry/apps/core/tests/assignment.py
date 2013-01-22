@@ -24,6 +24,15 @@ class TestAssignment(TestCase, TestHelper):
         self.add_to_path('uio.ifi;inf1100.looong.assignment3.group1:examiner(examiner1)')
         self.add_to_path('uio.ifi;inf1100.old.oldassignment.group1:examiner(examiner3)')
 
+    def test_is_active(self):
+        self.assertTrue(self.inf1100_looong_assignment1.is_active())
+        self.assertFalse(self.inf1100_old_assignment1.is_active())
+
+        # Move assignments pubtime to future, and check that it is no longer active
+        self.inf1100_looong_assignment1.publishing_time = datetime.now() + timedelta(days=1)
+        self.inf1100_looong_assignment1.save()
+        self.assertFalse(self.inf1100_looong_assignment1.is_active())
+
     def test_first_deadline_clean_ok(self):
         assignment1 = self.inf1100_looong_assignment1
         assignment1.first_deadline = assignment1.parentnode.start_time + timedelta(days=1)
