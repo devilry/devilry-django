@@ -34,11 +34,12 @@ class TestRestSearchExaminerContent(TestCase, AssertSearchResultMixin):
         with HaystackTestSettings():
             content, response = self._getas('examiner1', search='Test')
             matches = content['matches']
-            self.assertEqual(len(matches), 2)
+            self.assertEqual(len(matches), 3)
             self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup1', students=['student1'])
             self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup2', students=['student2'])
+            self.assert_has_search_result(matches, type='core_assignment', title='Test A1')
 
     def test_anonymous(self):
         self.testhelper.sub_p1_a1.anonymous = True
@@ -49,11 +50,12 @@ class TestRestSearchExaminerContent(TestCase, AssertSearchResultMixin):
         with HaystackTestSettings():
             content, response = self._getas('examiner1', search='Test')
             matches = content['matches']
-            self.assertEqual(len(matches), 2)
+            self.assertEqual(len(matches), 3)
             self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup1', students=[None])
             self.assert_has_search_result(matches, type='core_assignmentgroup',
                 title='Test A1', name='TestGroup2', students=['secret'])
+            self.assert_has_search_result(matches, type='core_assignment', title='Test A1')
 
 
 

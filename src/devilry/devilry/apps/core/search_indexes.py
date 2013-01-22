@@ -6,6 +6,7 @@ from .models import Subject
 from .models import Period
 from .models import Assignment
 from .models import AssignmentGroup
+from .models import Examiner
 
 
 
@@ -49,6 +50,11 @@ site.register(Period, PeriodIndex)
 
 class AssignmentIndex(AdminsSearchIndex):
     publishing_time = indexes.DateTimeField(model_attr='publishing_time')
+    examiner_ids = indexes.MultiValueField()
+
+    def prepare_examiner_ids(self, obj):
+        return [examiner.user.id
+                for examiner in Examiner.objects.filter(assignmentgroup__parentnode=obj.id)]
 
     def index_queryset(self):
         qry = super(AssignmentIndex, self).index_queryset()

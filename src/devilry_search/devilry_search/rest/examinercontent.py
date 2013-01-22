@@ -2,6 +2,7 @@ from djangorestframework.permissions import IsAuthenticated
 from haystack.query import SearchQuerySet
 
 from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Assignment
 from .base import SearchRestViewBase
 
 
@@ -28,6 +29,11 @@ class SearchExaminerContent(SearchRestViewBase):
                         for c in assignment.candidates.all()]
         return candidateids
 
+    def serialize_type_core_assignment(self, obj, serialized):
+        serialized['title'] = obj.long_name
+        serialized['path'] = obj.get_path()
+        return serialized
+
     def serialize_type_core_assignmentgroup(self, obj, serialized):
         assignment = obj.parentnode
         serialized['title'] = assignment.long_name
@@ -41,4 +47,4 @@ class SearchExaminerContent(SearchRestViewBase):
 
     def get_search_queryset(self):
         return SearchQuerySet().filter(examiner_ids=self.request.user.id).models(
-            AssignmentGroup)
+            AssignmentGroup, Assignment)
