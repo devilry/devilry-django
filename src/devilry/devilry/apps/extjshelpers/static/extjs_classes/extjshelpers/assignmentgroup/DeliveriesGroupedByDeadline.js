@@ -19,12 +19,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
     ],
 
-    title: interpolate(gettext('%(Deliveries_term)s grouped by %(deadline_term)s'), {
-        Deliveries_term: gettext('Deliveries'),
-        deadline_term: gettext('deadline')
-    }, true),
+//    title: interpolate(gettext('%(Deliveries_term)s grouped by %(deadline_term)s'), {
+//        Deliveries_term: gettext('Deliveries'),
+//        deadline_term: gettext('deadline')
+//    }, true),
 
     autoScroll: true,
+    border: false,
 
     /**
     * @cfg
@@ -56,19 +57,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         if(this.assignmentgroup_recordcontainer.record) {
             this._onLoadAssignmentGroup();
         }
-        if(this.role !== 'student') {
-            this.bbar = [{
-                xtype: 'button',
-                text: interpolate(gettext('New %(deadline_term)s'), {
-                    deadline_term: gettext('deadline')
-                }, true),
-                iconCls: 'icon-add-16',
-                listeners: {
-                    scope: this,
-                    click: this.onCreateNewDeadline
-                }
-            }];
-        }
+
         this.callParent(arguments);
         this.on('render', function() {
             Ext.defer(function() {
@@ -156,7 +145,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                 if(deliveryRecords.length === 0) {
                     this.addDeliveriesPanel(deadlineRecords, deadlineRecord, deliveriesStore);
                 } else {
-                    this.findLatestFeebackInDeadline(deadlineRecords, deadlineRecord, deliveriesStore, deliveryRecords)
+                    this.findLatestFeebackInDeadline(deadlineRecords, deadlineRecord, deliveriesStore, deliveryRecords);
                 }
             }
         });
@@ -164,7 +153,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
 
     _handleLatestDeadline: function(deadlineRecord, deliveryRecords) {
         var is_open = this.assignmentgroup_recordcontainer.record.get('is_open');
-        if(this.role != 'student' && deliveryRecords.length === 0 && deadlineRecord.get('deadline') < Ext.Date.now() && is_open) {
+        if(this.role !== 'student' && deliveryRecords.length === 0 && deadlineRecord.get('deadline') < Ext.Date.now() && is_open) {
             this._onExpiredNoDeliveries();
         }
     },
@@ -187,7 +176,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                         this.addDeliveriesPanel(deadlineRecords, deadlineRecord, deliveriesStore, activeFeedback);
                     }
                 }
-            })
+            });
         }, this);
     },
 
@@ -228,6 +217,21 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             this.getEl().unmask();
             this.isLoading = false;
             this.fireEvent('loadComplete', this);
+            this._onLoadComplete();
+        }
+    },
+
+    _onLoadComplete:function () {
+        if(this.role !== 'student') {
+            this.add({
+                xtype: 'button',
+                scale: 'medium',
+                text: gettext('New deadline'),
+                listeners: {
+                    scope: this,
+                    click: this.onCreateNewDeadline
+                }
+            });
         }
     },
 
@@ -302,9 +306,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             scope: this,
             closable: false,
             fn: function(buttonId) {
-                if(buttonId == 'yes') {
+                if(buttonId === 'yes') {
                     this.onCreateNewDeadline()
-                } else if (buttonId == 'no') {
+                } else if (buttonId === 'no') {
                     devilry.extjshelpers.assignmentgroup.IsOpen.closeGroup(this.assignmentgroup_recordcontainer);
                 }
             }
@@ -318,7 +322,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     selectDelivery: function(deliveryid) {
         Ext.each(this.items.items, function(deliveriespanel) {
             var index = deliveriespanel.deliveriesStore.find('id', deliveryid);
-            if(index != -1) {
+            if(index !== -1) {
                 var deliveriesgrid = deliveriespanel.down('deliveriesgrid');
                 if(deliveriespanel.collapsed) {
                     deliveriespanel.toggleCollapse();

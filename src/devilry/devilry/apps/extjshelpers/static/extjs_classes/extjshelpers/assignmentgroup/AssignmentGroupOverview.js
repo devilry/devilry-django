@@ -24,11 +24,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     ],
 
     nonElectronicNodeTpl: Ext.create('Ext.XTemplate',
-        '<p><strong>Note</strong>: This assignment only uses Devilry for registering results, not for deliveries. ',
-        'Deliveries are registered (by examiners) as a placeholder for results.</p>',
-        '<tpl if="canExamine">',
-        '   <p>See <a href="{DEVILRY_HELP_URL}" target="_blank">help</a> for details about how to examine non-electronic deliveries.</p>',
-        '</tpl>'
+        '<div class="bootstrap">',
+            '<div class="alert" style="margin: 0;">',
+                '<p><strong>Warning</strong>: This assignment only uses Devilry for registering results, not for deliveries. ',
+                'Deliveries are registered (by examiners) as a placeholder for results.</p>',
+                '<tpl if="canExamine">',
+                '   <p>See <a href="{DEVILRY_HELP_URL}" target="_blank">help</a> for details about how to correct non-electronic deliveries.</p>',
+                '</tpl>',
+            '</div>',
+        '</div>'
     ),
 
     /**
@@ -218,8 +222,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 items: [{
                     xtype: 'container',
                     region: 'west',
-                    margin: '0 10 0 0',
-                    width: 250,
+                    margin: '0 20 0 0',
+                    width: 300,
                     layout: {
                         type: 'vbox',
                         align: 'stretch'
