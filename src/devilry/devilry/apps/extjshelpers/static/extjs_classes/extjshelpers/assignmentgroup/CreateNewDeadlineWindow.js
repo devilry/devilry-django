@@ -40,7 +40,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow', {
                 model: this.deadlinemodel,
                 editform: Ext.create('devilry.extjshelpers.forms.Deadline'),
                 record: deadlineRecord
-            }),
+            })
         });
         this.callParent(arguments);
     }

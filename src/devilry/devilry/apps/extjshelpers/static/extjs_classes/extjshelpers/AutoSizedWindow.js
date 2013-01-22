@@ -1,13 +1,13 @@
 Ext.define('devilry.extjshelpers.AutoSizedWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.devilry_autosizedwindow',
-    maximizable: false,
     windowPadding: 20,
 
     initComponent: function() {
         this._preferredWidth = this.width;
         this._preferredHeight = this.height;
         this._setupAutosizing();
+        this.maximizable = false;
         this.callParent(arguments);
     },
 
@@ -32,10 +32,10 @@ Ext.define('devilry.extjshelpers.AutoSizedWindow', {
             var height = bodyHeight;
             var width = bodyWidth;
             if(this._preferredHeight) {
-                var height = bodyHeight < this._preferredHeight? bodyHeight: this._preferredHeight;
+                height = bodyHeight < this._preferredHeight? bodyHeight: this._preferredHeight;
             }
             if(this._preferredWidth) {
-                var width = bodyWidth < this._preferredWidth? bodyWidth: this._preferredWidth;
+                width = bodyWidth < this._preferredWidth? bodyWidth: this._preferredWidth;
             }
             this.setSize({
                 width: width,

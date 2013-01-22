@@ -3,8 +3,8 @@ Ext.define('devilry.extjshelpers.HelpWindow', {
     alias: 'widget.helpwindow',
     modal: true,
     layout: 'fit',
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 800,
     closable: false, // To easy to double click and close an undelying window
 
     helptpl: Ext.create('Ext.XTemplate', '<div class="section helpsection">{helptext}</div>'),

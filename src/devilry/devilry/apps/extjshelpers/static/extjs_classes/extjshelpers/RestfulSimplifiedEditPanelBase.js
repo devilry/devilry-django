@@ -50,13 +50,13 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
         this.model = Ext.ModelManager.getModel(this.model);
 
         this.editform.frame = false;
-        if(this.editform.flex == undefined) {
+        if(this.editform.flex === undefined) {
             this.editform.flex = 15;
         }
         this.editform.border = 0;
 
         var extrabarCssCls = this.extrabaronbottom? 'extrabaronbottom': 'extrabaronright';
-        var helpwidth = undefined;
+        var helpwidth;
         if(!this.extrabaronbottom) {
             this.layout = 'column';
             helpwidth = 300;
@@ -85,9 +85,8 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
 
             items: ['->', {
                 xtype: 'button',
-                text: 'Save',
+                text: gettext('Save'),
                 scale: 'large',
-                iconCls: 'icon-save-32',
                 listeners: {
                     scope: this,
                     click: this.onSave
@@ -107,12 +106,12 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
         }
         var help = '<div class="section helpsection">';
         var me = this;
-        var state = this.record == undefined? 'new': 'existing';
+        var state = this.record === undefined? 'new': 'existing';
         Ext.Array.each(this.editform.help, function(helpobj) {
             if(Ext.typeOf(helpobj) === 'string') {
                 helpobj = {text: helpobj};
             }
-            if(helpobj.state == undefined || (helpobj.state == state)) {
+            if(helpobj.state === undefined || (helpobj.state === state)) {
                 help += Ext.String.format('<p>{0}</p>', helpobj.text);
             }
         });
@@ -124,7 +123,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
             var record = Ext.ModelManager.create(this.editform.getForm().getValues(),
                                                  this.model);
             this.fireEvent('saveSucess', record);
-        };
+        }
     },
 
     loadRecord: function() {

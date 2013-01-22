@@ -12,7 +12,8 @@
     {{ block.super }}
     Ext.create('Ext.container.Viewport', {
         layout: 'border',
-        cls: 'viewport',
+//        cls: 'viewport',
+        style: 'background-color: transparent',
         items: [{
             region: 'north',
             xtype: 'devilryheader',
