@@ -8,7 +8,8 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         'devilry_extjsextras.Router',
         'devilry_header.Breadcrumbs'
     ],
-    
+    cls: 'devilry_subtlebg',
+
     /**
      * @cfg
      */

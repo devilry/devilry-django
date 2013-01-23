@@ -22,6 +22,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.student.models.Delivery',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
+    cls: 'devilry_subtlebg',
 
     nonElectronicNodeTpl: Ext.create('Ext.XTemplate',
         '<div class="bootstrap">',
@@ -259,13 +260,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                     xtype: 'container',
                     margin: '0 40 0 0',
                     columnWidth: 0.3,
-                    layout: {
-                        type: 'vbox',
-                        align: 'stretch'
-                    },
+                    layout: 'anchor',
+                    defaults: {anchor: '100%'},
                     items: [{
-                        xtype: 'panel',
-                        margin: '10 0 0 0',
+                        xtype: 'container',
+                        margin: '8 0 0 0',
                         flex: 1,
                         border: false,
                         layout: {

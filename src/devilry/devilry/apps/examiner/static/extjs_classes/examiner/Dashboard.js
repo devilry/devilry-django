@@ -8,6 +8,8 @@ Ext.define('devilry.examiner.Dashboard', {
         'devilry.examiner.RecentFeedbacksView'
     ],
 
+    cls: 'devilry_subtlebg',
+
     /**
      * @cfg {string} [dashboardUrl]
      */

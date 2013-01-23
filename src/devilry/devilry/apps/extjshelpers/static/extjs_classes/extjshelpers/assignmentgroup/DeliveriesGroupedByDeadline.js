@@ -1,5 +1,5 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
-    extend: 'Ext.container.Container',
+    extend: 'Ext.panel.Panel',
     alias: 'widget.deliveriesgroupedbydeadline',
     cls: 'widget-deliveriesgroupedbydeadline',
     requires: [
@@ -25,7 +25,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
 //    }, true),
 
     autoScroll: true,
-    style: 'border-right: 1px solid #ddd !important; border-top: 1px solid #ddd !important;',
+//    style: 'border-right: 1px solid #ddd !important; border-top: 1px solid #ddd !important;',
+    border: 1,
 
     /**
     * @cfg

@@ -1,5 +1,5 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.deliveriespanel',
     requires: [
         'devilry.extjshelpers.assignmentgroup.IsOpen',

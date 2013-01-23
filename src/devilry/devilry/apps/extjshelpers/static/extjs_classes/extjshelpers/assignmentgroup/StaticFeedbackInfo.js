@@ -1,7 +1,7 @@
 /** Panel to show StaticFeedback info.
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.staticfeedbackinfo',
     cls: 'widget-staticfeedbackinfo',
     requires: [
@@ -84,6 +84,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                 border: false,
                 cls: 'bootstrap',
                 itemId: 'deliveryTitle',
+                bodyStyle: 'background-color: transparent;',
                 tpl: this.titleTpl,
                 data: {
                     loading: true
