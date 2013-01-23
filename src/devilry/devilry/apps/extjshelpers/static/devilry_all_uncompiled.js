@@ -436,6 +436,34 @@ Ext.define('devilry.extjshelpers.GridSelectionModel', {
 });
 
 
+Ext.define('devilry_header.model.StudentSearchResult', {
+    extend: 'Ext.data.Model',
+
+    idProperty: 'id',
+    fields: [
+        {name: 'id', type: 'int'},
+        {name: 'path', type: 'string'},
+        {name: 'title',  type: 'string'},
+        {name: 'name',  type: 'string'},
+        {name: 'students',  type: 'auto'},
+        {name: 'type',  type: 'string'}
+    ],
+
+    proxy: {
+        type: 'rest',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_search/rest/studentcontent',
+        extraParams: {
+            format: 'json'
+        },
+        reader: {
+            type: 'json',
+            root: 'matches',
+            totalProperty: 'total'
+        }
+    }
+});
+
+
 Ext.define('devilry.extjshelpers.DateTime', {
     statics: {
         restfulNow: function() {
@@ -1766,11 +1794,19 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
      */
     onSetRecord: function() {
         this.removeAll();
+        var buttonText;
+        if(this.assignmentgroup_recordcontainer.record.get('is_open')) {
+            buttonText = '<i class="icon-folder-open"></i> ' + gettext('Open - click to close');
+        } else {
+            buttonText = '<i class="icon-folder-close"></i> ' + gettext('Closed - click to open');
+        }
         if(this.canExamine) {
             this.add({
                 xtype: 'button',
-                scale: 'large',
-                text: this.assignmentgroup_recordcontainer.record.data.is_open? gettext('Open - click to close'): gettext('Closed - click to open'),
+                scale: 'medium',
+                cls: 'bootstrap',
+                text: buttonText,
+//                ui: 'inverse',
                 listeners: {
                     scope: this,
                     click: this.onStatusButtonClick,
@@ -1895,92 +1931,71 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
 
 
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.deliveriespanel',
     requires: [
         'devilry.extjshelpers.assignmentgroup.IsOpen',
+        'devilry_extjsextras.DatetimeHelpers'
     ],
 
-    config: {
-        assignmentgroup_recordcontainer: undefined,
-        delivery_recordcontainer: undefined,
-        deadlineRecord: undefined,
-        deliveriesStore: undefined,
-        activeFeedback: undefined
-    },
+    assignmentgroup_recordcontainer: undefined,
+    delivery_recordcontainer: undefined,
+    deadlineRecord: undefined,
+    deliveriesStore: undefined,
+    activeFeedback: undefined,
 
-    titleTpl: Ext.create('Ext.XTemplate',
-        '<span class="deadline_title">',
-        '    <span style="font-weight:bold">', gettext('Deadline'), ': ',
-        '        <tpl if="assignmentgroup.parentnode__delivery_types !== 1">{deadline.deadline:date}</tpl>',
-        '        <tpl if="assignmentgroup.parentnode__delivery_types === 1">', gettext('Not defined in Devilry'), '</tpl>',
-        '    </span>',
-        //'    <div>',
-        ////'        Deliveries: <span class="number_of_deliveries">{deadline.number_of_deliveries}</span>',
-        //'        <tpl if="deadline.number_of_deliveries &gt; 0">{extra}</tpl>',
-        //'    </div>',
-        '</span>'
-    ),
+    titleTpl: [
+        '<div class="deadline_title bootstrap">',
+            '<p style="padding: 5px; margin: 0;">',
+                '<tpl if="assignmentgroup.parentnode__delivery_types !== 1">',
+                    '<small class="muted" style="line-height: 14px;">', gettext('Deadline'), ':</small> ',
+                    '<strong style="font-size: 16px;">{[this.formatDatetime(values.deadline.deadline)]}</strong>',
+                '</tpl>',
+                '<tpl if="assignmentgroup.parentnode__delivery_types === 1">',
+                    gettext('Non-electronic delivery'),
+                '</tpl>',
+            '</p>',
+        '</div>', {
+            formatDatetime:function (dt) {
+                return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(dt);
+            }
+        }
+    ],
 
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
 
     initComponent: function() {
-        //var extra = '(No feedback)';
-        //if(this.activeFeedback) {
-            //extra = Ext.String.format('(Latest feedback: {0})', this.activeFeedback.data.grade);
-        //}
-
         Ext.apply(this, {
-            title: this.titleTpl.apply({
-                deadline: this.deadlineRecord.data,
-                assignmentgroup: this.assignmentgroup_recordcontainer.record.data
-                //extra: extra
-            }),
-            //layout: 'fit',
             border: false,
-            listeners: {
-                scope: this,
-                collapse: this._onCollapse
-            }
-            //tbar: [{
-                //xtype: 'button',
-                //iconCls: 'icon-edit-16',
-                //text: 'Edit deadline',
-                //listeners: {
-                    //scope: this,
-                    //click: this.onEditDeadline
-                //}
-            //}, {
-                //xtype: 'button',
-                //iconCls: 'icon-delete-16',
-                //text: 'Delete deadline',
-                //listeners: {
-                    //scope: this,
-                    //click: this.onDeleteDeadline
-                //}
-            //}]
+            margin: '0 0 20 0'
         });
 
+        this.items = [{
+            xtype: 'box',
+            tpl: this.titleTpl,
+            data: {
+                deadline: this.deadlineRecord.data,
+                assignmentgroup: this.assignmentgroup_recordcontainer.record.data
+            }
+        }];
         if(this.deliveriesStore.count() === 0) {
-            this.items = {
+            this.items.push({
                 xtype: 'box',
-                html: interpolate(gettext('No %(deliveries_term)s on this %(deadline_term)s.'), {
-                    deliveries_term: gettext('deliveries'),
-                    deadline_term: gettext('deadline')
-                }, true),
-                padding: 10
-            };
+                cls: 'bootstrap',
+                html: [
+                    '<p class="muted" style="margin: 0 0 0 5px; padding: 0;">',
+                        gettext('No deliveries on this deadline'),
+                    '</p>'
+                ]
+            });
         } else {
-            this.items = {
+            this.items.push({
                 xtype: 'deliveriesgrid',
+//                margin: '0 0 0 20',
                 delivery_recordcontainer: this.delivery_recordcontainer,
                 assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                 deadlineRecord: this.deadlineRecord,
                 store: this.deliveriesStore
-            };
+            });
         }
 
         this.callParent(arguments);
@@ -1988,17 +2003,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesPanel', {
 
     _onCollapse: function() {
         //var allGrids = this.up('assignmentgroupoverview').feedbackPanel.hide();
-    },
-
-    /**
-     * @private
-     */
-    onEditDeadline: function() {
-        console.log('Edit deadline');
-    },
-
-    onDeleteDeadline: function() {
-        console.log('Delete deadline');
     }
 });
 
@@ -2409,13 +2413,13 @@ Ext.define('devilry.extjshelpers.RestProxy', {
 Ext.define('devilry.extjshelpers.AutoSizedWindow', {
     extend: 'Ext.window.Window',
     alias: 'widget.devilry_autosizedwindow',
-    maximizable: false,
     windowPadding: 20,
 
     initComponent: function() {
         this._preferredWidth = this.width;
         this._preferredHeight = this.height;
         this._setupAutosizing();
+        this.maximizable = false;
         this.callParent(arguments);
     },
 
@@ -2440,10 +2444,10 @@ Ext.define('devilry.extjshelpers.AutoSizedWindow', {
             var height = bodyHeight;
             var width = bodyWidth;
             if(this._preferredHeight) {
-                var height = bodyHeight < this._preferredHeight? bodyHeight: this._preferredHeight;
+                height = bodyHeight < this._preferredHeight? bodyHeight: this._preferredHeight;
             }
             if(this._preferredWidth) {
-                var width = bodyWidth < this._preferredWidth? bodyWidth: this._preferredWidth;
+                width = bodyWidth < this._preferredWidth? bodyWidth: this._preferredWidth;
             }
             this.setSize({
                 width: width,
@@ -2816,6 +2820,15 @@ Ext.define('devilry_extjsextras.Router', {
     }
 });
 
+
+Ext.define('devilry_header.store.BaseSearchResults', {
+    extend: 'Ext.data.Store',
+
+    search: function (params, loadConfig) {
+        Ext.apply(this.proxy.extraParams, params);
+        this.load(loadConfig);
+    }
+});
 
 Ext.define('devilry.extjshelpers.SortByLastnameColumn', {
     extend: 'Ext.grid.column.Column',
@@ -5745,6 +5758,35 @@ Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase', {
 });
 
 
+Ext.define('devilry_header.model.AdminSearchResult', {
+    extend: 'Ext.data.Model',
+
+    idProperty: 'id',
+    fields: [
+        {name: 'id', type: 'int'},
+        {name: 'path', type: 'string'},
+        {name: 'title',  type: 'string'},
+        {name: 'name',  type: 'string'},
+        {name: 'students',  type: 'auto'},
+        {name: 'assignment_id',  type: 'auto'},
+        {name: 'type',  type: 'string'}
+    ],
+
+    proxy: {
+        type: 'rest',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_search/rest/admincontent',
+        extraParams: {
+            format: 'json'
+        },
+        reader: {
+            type: 'json',
+            root: 'matches',
+            totalProperty: 'total'
+        }
+    }
+});
+
+
 Ext.define('devilry.extjshelpers.DashGrid', {
     extend: 'Ext.Container',
 
@@ -6098,6 +6140,34 @@ Ext.define('devilry_extjsextras.ManageItemsPanel' ,{
 });
 
 
+Ext.define('devilry_header.model.ExaminerSearchResult', {
+    extend: 'Ext.data.Model',
+
+    idProperty: 'id',
+    fields: [
+        {name: 'id', type: 'int'},
+        {name: 'path', type: 'string'},
+        {name: 'title',  type: 'string'},
+        {name: 'name',  type: 'string'},
+        {name: 'students',  type: 'auto'},
+        {name: 'type',  type: 'string'}
+    ],
+
+    proxy: {
+        type: 'rest',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_search/rest/examinercontent',
+        extraParams: {
+            format: 'json'
+        },
+        reader: {
+            type: 'json',
+            root: 'matches',
+            totalProperty: 'total'
+        }
+    }
+});
+
+
 
 /**
  * Panel to browse FileMeta.
@@ -6107,22 +6177,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
     alias: 'widget.filemetabrowserpanel',
     cls: 'widget-filemetabrowserpanel',
 
-    config: {
-        /**
-         * @cfg
-         * FileMeta ``Ext.data.Store``. (Required).
-         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
-         * class.
-         */
-        filemetastore: undefined,
+    /**
+     * @cfg
+     * FileMeta ``Ext.data.Store``. (Required).
+     * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
+     * class.
+     */
+    filemetastore: undefined,
 
-        
-        /**
-         * @cfg
-         * Id of the delivery in which the filemetas belong.
-         */
-        deliveryid: undefined,
-    },
+
+    /**
+     * @cfg
+     * Id of the delivery in which the filemetas belong.
+     */
+    deliveryid: undefined,
+
+    fileTpl: [
+        '<a href="{downloadurl}"><strong>{data.filename}</strong></a> <small class="muted">({size})</small>'
+    ],
 
     initComponent: function() {
         this.filemetastore.proxy.extraParams.filters = Ext.JSON.encode([
@@ -6142,44 +6214,51 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                 this.setLoading(false);
             }
         });
-        
+
+        var renderTpl = Ext.create('Ext.XTemplate', this.fileTpl);
+        var me = this;
         Ext.apply(this, {
             items: [{
                 xtype: 'grid',
                 sortableColumns: false,
                 store: this.filemetastore,
-                cls: 'selectable-grid',
+                hideHeaders: true,
+                disableSelection: true,
+                cls: 'bootstrap',
                 columns: [{
-                    header: gettext('File name'),
-                    menuDisabled: true,
-                    flex:1, 
-                    dataIndex: 'filename'
-                }, {
-                    header: gettext('Size'),
+                    flex:1,
                     menuDisabled: true,
                     dataIndex: 'size',
-                    renderer: function(value) {
+                    renderer: function(size, unused, record) {
                         var units = ['Bytes', 'KBytes', 'MBytes', 'GBytes'];
                         var i = 0;
-                        while(value >= 1024) {
-                            value /= 1024;
+                        while(size >= 1024) {
+                            size /= 1024;
                             ++i;
                         }
+                        var sizeWithUnit;
                         if(i < units.length) {
-                            return value.toFixed() + ' ' + units[i];
+                            sizeWithUnit = size.toFixed() + ' ' + units[i];
                         } else {
-                            return value + ' ' + units[0];
+                            sizeWithUnit = size + ' ' + units[0];
                         }
-                        
+
+                        var url = Ext.String.format("{0}/student/show-delivery/filedownload/{1}",
+                            DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('id'));
+                        return renderTpl.apply({
+                            data: record.data,
+                            size: sizeWithUnit,
+                            downloadurl: url
+                        });
                     }
-                }],
-                listeners: {
-                    scope: this,
-                    itemclick: function(self, record) {
-                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/filedownload/" + record.get('id');
-                        window.open(url, 'download');
-                    }
-                }
+                }]
+//                listeners: {
+//                    scope: this,
+//                    itemclick: function(self, record) {
+//                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/filedownload/" + record.get('id');
+//                        window.open(url, 'download');
+//                    }
+//                }
     
             }],
 
@@ -6198,15 +6277,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
                     }
                 }
             }]
-            // , {
-                // xtype: 'button',
-                // text: 'Download all files (tar.gz)',
-                // listeners: {
-                    // click: function() {
-                        // console.log('Downloading tar.gz some time in the future');
-                    // }
-                // }
-            // }]
         });
         this.callParent(arguments);
     }
@@ -6490,9 +6560,14 @@ Ext.define('devilry_authenticateduserinfo.UserInfoModel', {
 
     /** Returns true is the user has any roles. */
     hasAnyRoles: function() {
-        return this.get('is_superuser') || this.get('is_nodeadmin')
-            || this.get('is_subjectadmin') || this.get('is_periodadmin') || this.get('is_assignmentadmin')
-            || this.get('is_student') || this.get('is_examiner');
+        return this.get('is_superuser') || this.get('is_nodeadmin') ||
+            this.get('is_subjectadmin') || this.get('is_periodadmin') || this.get('is_assignmentadmin') ||
+            this.get('is_student') || this.get('is_examiner');
+    },
+
+    isAdmin:function () {
+        return this.get('is_superuser') || this.get('is_nodeadmin') ||
+            this.get('is_subjectadmin') || this.get('is_periodadmin') || this.get('is_assignmentadmin');
     },
 
     getDisplayName: function() {
@@ -7460,6 +7535,7 @@ Ext.define('devilry.apps.student.simplified.SimplifiedDeadline', {
 
 Ext.define('devilry.examiner.RecentFeedbacksView', {
     extend: 'devilry.extjshelpers.DashGrid',
+    alias: 'widget.examiner_recentfeedbackview',
     requires: [
         'devilry.extjshelpers.DateTime'
     ],
@@ -7494,7 +7570,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
 
 
     studentsRowTpl: Ext.create('Ext.XTemplate',
-        '<ul class="commaSeparatedList">',
+        '<ul class="commaSeparatedList" style="margin: 0;">',
         '   <tpl for="delivery__deadline__assignment_group__candidates__identifier">',
         '       <li>{.}</li>',
         '   </tpl>',
@@ -7572,7 +7648,7 @@ Ext.define('devilry.examiner.RecentFeedbacksView', {
                     return me.studentsRowTpl.apply(record.data);
                 }
             }]);
-        };
+        }
 
         var activeAssignmentsGrid = Ext.create('Ext.grid.Panel', {
             frame: false,
@@ -8355,6 +8431,22 @@ Ext.define('devilry_header.FlatButton', {
         } else {
             this.fireEvent('click', this);
         }
+    },
+
+    setPressed:function (pressed) {
+        this.pressed = pressed;
+        if(pressed) {
+            this.setPressedCls();
+        } else {
+            this.setNotPressedCls();
+        }
+    },
+
+    setPressedWithEvent:function (pressed) {
+        if(pressed !== this.pressed) {
+            this.setPressed(pressed);
+            this.fireEvent('toggle', this, this.pressed);
+        }
     }
 });
 
@@ -8385,48 +8477,68 @@ Ext.define('devilry.statistics.SidebarPluginContainer', {
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.deliveriesgrid',
-    cls: 'widget-deliveriesgrid selectable-grid',
+    cls: 'widget-deliveriesgrid',
     hideHeaders: true, // Hide column header
     mixins: [
         'devilry.extjshelpers.AddPagerIfNeeded'
     ],
+    requires: [
+        'devilry_extjsextras.DatetimeHelpers'
+    ],
 
     rowTpl: Ext.create('Ext.XTemplate',
-        '<div style="white-space:normal; line-height: 1.5em !important;">',
-        '<span class="delivery_number">{delivery.number}:</span> ',
-        '<tpl if="assignmentgroup.parentnode__delivery_types === 1">',
-        '    <span class="not_in_devilry">Autogenerated by examiner</span>',
-        '</tpl>',
-        '<tpl if="assignmentgroup.parentnode__delivery_types !== 1">',
-            '<span class="time_of_delivery">{delivery.time_of_delivery:date}</span>',
-            '<tpl if="delivery.delivery_type == 0">',
-                '<tpl if="delivery.time_of_delivery &gt; deadline.deadline">',
-                     ' <span class="warningInlineItem">',
-                        interpolate(gettext('After %(deadline_term)s'), {
-                            deadline_term: gettext('deadline')
-                        }, true),
-                     '</span>',
+        '<div class="bootstrap" style="white-space:normal; line-height: 1.5em !important;">',
+            '<div>',
+                '<span class="delivery_number">{delivery.number}:</span> ',
+                '<tpl if="assignmentgroup.parentnode__delivery_types === 1">',
+                    '<span class="not_in_devilry">',
+                        gettext('Non-electronic delivery'),
+                    '</span>',
+                '<tpl else>',
+                    '<span class="time_of_delivery">{[this.formatDatetime(values.delivery.time_of_delivery)]}</span>',
+                    '<tpl if="delivery.delivery_type == 0">',
+                        '<div class="afterdeadline">',
+                            '<tpl if="delivery.time_of_delivery &gt; deadline.deadline">',
+                                 ' <span class="label label-important">',
+                                    gettext('After deadline'),
+                                 '</span>',
+                            '</tpl>',
+                        '</div>',
+                    '</tpl>',
                 '</tpl>',
+            '</div>',
+            '<tpl if="delivery.delivery_type == 2">',
+                '<div><span class="label label-inverse">',
+                    interpolate(gettext('From previous %(period_term)s'), {
+                        period_term: gettext('period')
+                    }, true),
+                '</span></div>',
             '</tpl>',
-        '</tpl>',
-        '<tpl if="delivery.delivery_type == 2">',
-            '<span class="neutralInlineItem">',
-                interpolate(gettext('From previous %(period_term)s'), {
-                    period_term: gettext('period')
-                }, true),
-            '</span>',
-        '</tpl>',
-        '<tpl if="hasLatestFeedback">',
-            ' <span class="neutralInlineItem">',
-                interpolate(gettext('active %(feedback_term)s'), {
-                    feedback_term: gettext('feedback')
-                }, true),
-            '</span>',
-        '</tpl>',
-        '<tpl if="feedback">',
-        '   <span class="has-feedback" style="white-space:no-wrap">({feedback.grade})</span>',
-        '</tpl>',
-        '</div>'
+            '<div class="feedback">',
+                '<tpl if="feedback">',
+                    '<span class="{[this.getFeedbackClass(values.feedback)]}">',
+                        '{[this.getPassingLabel(values.feedback)]} ({feedback.grade})',
+                    '</span>',
+                '</tpl>',
+                '<tpl if="hasLatestFeedback">',
+                    ' <span class="label label-success">',
+                        interpolate(gettext('active %(feedback_term)s'), {
+                            feedback_term: gettext('feedback')
+                        }, true),
+                    '</span>',
+                '</tpl>',
+            '</div>',
+        '</div>', {
+            formatDatetime:function (dt) {
+                return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(dt);
+            },
+            getFeedbackClass:function (feedback) {
+                return feedback.is_passing_grade? 'text-success': 'text-warning';
+            },
+            getPassingLabel:function (feedback) {
+                return feedback.is_passing_grade? gettext('Passed'): gettext('Failed');
+            }
+        }
     ),
 
     /**
@@ -8448,6 +8560,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
     initComponent: function() {
         var me = this;
         Ext.apply(this, {
+            border: false,
             columns: [{
                 header: 'Data',
                 dataIndex: 'id',
@@ -8988,6 +9101,11 @@ Ext.define('devilry.administrator.studentsmanager.StudentsManagerManageExaminers
     }
 });
 
+
+Ext.define('devilry_header.store.ExaminerSearchResults', {
+    extend: 'devilry_header.store.BaseSearchResults',
+    model: 'devilry_header.model.ExaminerSearchResult'
+});
 
 Ext.define('devilry.extjshelpers.studentsmanager.ImportGroupsFromAnotherAssignment', {
     extend: 'Ext.panel.Panel',
@@ -11303,30 +11421,28 @@ Ext.define('devilry.extjshelpers.GridPeformActionOnSelected', {
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
     extend: 'devilry.extjshelpers.SingleRecordView',
     alias: 'widget.assignmentgrouptitle',
-    cls: 'widget-assignmentgrouptitle section pathheading',
+    cls: 'widget-assignmentgrouptitle section pathheading bootstrap',
 
     tpl: Ext.create('Ext.XTemplate',
-        '<h1><small>{parentnode__parentnode__parentnode__short_name}.{parentnode__parentnode__parentnode__short_name}.</small>{parentnode__short_name}</h1>',
+        '<h1 style="margin: 0; line-height: 25px;"><small>{parentnode__parentnode__parentnode__short_name}.{parentnode__parentnode__short_name}.</small>{parentnode__long_name}</h1>',
         '<tpl if="name">',
-        '   {name}: ',
-        '<tpl else>',
-            gettext('Group members:'),
+            '{name}: ',
         '</tpl>',
-        '<ul class="names">',
-        '<tpl for="candidates">',
-        '   <li>{identifier} <tpl if="full_name">({full_name})</tpl></li>',
-        '</tpl>',
+        '<ul class="names" style="margin: 0;">',
+            '<tpl for="candidates">',
+                '<li>{identifier} <tpl if="full_name">({full_name})</tpl></li>',
+            '</tpl>',
         '</ul>',
         '<tpl if="canExamine">',
             '<tpl if="parentnode__anonymous == false">',
-                '<a class="email" href="mailto:',
+                '<small><a href="mailto:',
                     '<tpl for="candidates">',
                         '{email}<tpl if="xindex &lt; xcount">,</tpl>',
                     '</tpl>',
                 '?subject={parentnode__parentnode__parentnode__short_name}.{parentnode__parentnode__short_name}.{parentnode__short_name}',
                 '&body={url}',
                 '">',
-                'Send email</a>',
+                'Send email</a></small>',
             '</tpl>',
         '</tpl>'
     )
@@ -11335,6 +11451,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle', {
 
 Ext.define('devilry.examiner.ActiveAssignmentsView', {
     extend: 'devilry.extjshelpers.DashGrid',
+    alias: 'widget.examiner_activeassignmentsview',
     requires: [
         'devilry.extjshelpers.DateTime'
     ],
@@ -12449,6 +12566,11 @@ Ext.define('devilry_header.HelpLinkModel', {
 });
 
 
+Ext.define('devilry_header.store.AdminSearchResults', {
+    extend: 'devilry_header.store.BaseSearchResults',
+    model: 'devilry_header.model.AdminSearchResult'
+});
+
 /**
 Message for highlighting the failure, possible failure, or success of
 an action. Particularly useful for forms.
@@ -12660,6 +12782,195 @@ Ext.define('devilry_extjsextras.AlertMessage', {
     }
 });
 
+
+Ext.define('devilry_header.BaseSearchResultsView', {
+    extend: 'Ext.view.View',
+    cls: 'devilry_header_searchresults bootstrap',
+
+    /**
+     * @cfg {string|string[]} [singleResultTpl]
+     * The XTemplate for a single search result.
+     */
+
+    /**
+     * @cfg {string} [heading=undefined]
+     * The heading of the search result. Title is not shown if this is not defined.
+     */
+
+    hidden: true, // We show ourself automatically on search results
+    loadCountDefault: 10,
+    loadCountMax: 150,
+    showHeading: false,
+    noResultsMsgTpl: [
+        '<small class="muted">',
+            gettext('No results matching {search} found.'),
+        '</small>'
+    ],
+
+    requires: [
+        'Ext.XTemplate'
+    ],
+
+    constructor:function () {
+        this.addEvents(
+            /**
+             * @event resultLinkClick
+             * Fired when a link to a search result is clicked.
+             */
+            'resultLinkClick'
+        );
+        this.callParent(arguments);
+    },
+
+    initComponent: function() {
+        var headingTpl = [];
+        if(this.showHeading) {
+            headingTpl = ['<h3>', this.heading, '</h3>'];
+        }
+
+        var typeNameMap = {
+            core_node: gettext('Node'),
+            core_subject: gettext('Subject'),
+            core_period: gettext('Period'),
+            core_assignment: gettext('Assignment'),
+            core_assignmentgroup: gettext('Group')
+        };
+
+        var me = this;
+        Ext.apply(this, {
+            cls: Ext.String.format('{0} {1}', this.cls, this.extraCls),
+            tpl: [
+                headingTpl.join(''),
+                '<ul class="unstyled search-results">',
+                    '<tpl for=".">',
+                        '<li class="single-result-wrapper">',
+                            this.singleResultTpl.join(''),
+                        '</li>',
+                    '</tpl>',
+                '</ul>',
+                '<p class="no-searchresults-box" style="display: none;">',
+                    // NOTE: We set the value of this when it is shown
+                '</p>',
+                '<p>',
+                    '<a class="btn btn-primary btn-small more-searchresults-button" style="display: none;">',
+                        // NOTE: We set the value of this when it is shown
+                    '</a>',
+                '</p>', {
+                    getTypeName:function (type) {
+                        return typeNameMap[type];
+                    },
+                    getUrl:function (values) {
+                        return Ext.bind(me.getUrl, me)(values);
+                    },
+                    joinStringArray:function (arr) {
+                        return arr.join(', ');
+                    },
+                    getResultLinkCls:function () {
+                        return 'result-target-link';
+                    }
+                }
+            ],
+            itemSelector: 'ul li.single-result-wrapper'
+        });
+        this.addListener({
+            scope: this,
+            element: 'el',
+            delegate: 'a.more-searchresults-button',
+            click: this._onMore
+        });
+        this.addListener({
+            scope: this,
+            element: 'el',
+            delegate: 'a.result-target-link',
+            click: this._onResultLinkClick
+        });
+        this.callParent(arguments);
+    },
+
+    _search:function (config) {
+        this.getStore().search(Ext.apply({
+            search: this.currentSearch
+        }, config), {
+            scope: this,
+            callback:function (records, op) {
+                if(op.success) {
+                    this._onSearchSuccess();
+                }
+            }
+        });
+    },
+
+    search:function (search) {
+        this.show();
+        this.currentSearch = search;
+        this._search({
+            limit: this.loadCountDefault
+        });
+    },
+
+    _getElement:function (cssselector) {
+        var morebutton = Ext.get(this.getEl().query(cssselector)[0]);
+        morebutton.enableDisplayMode();
+        return morebutton;
+    },
+
+    _getMoreButton:function () {
+        return this._getElement('.more-searchresults-button');
+    },
+
+    _getNoResultsBox:function () {
+        return this._getElement('.no-searchresults-box');
+    },
+
+    _onSearchSuccess:function () {
+        var store = this.getStore();
+        if(store.getCount() <= this.loadCountDefault && store.getTotalCount() > store.getCount()) {
+            this._onMoreResultsAvailable();
+        }
+        if(store.getCount() === 0) {
+            this._onNoSearchResults();
+        }
+    },
+
+    _onMoreResultsAvailable:function () {
+        var store = this.getStore();
+        var morebutton = this._getMoreButton();
+        var loadcount = Ext.Array.min([store.getTotalCount(), this.loadCountMax]);
+        morebutton.setHTML(interpolate(gettext('Load %(loadcount)s more'), {
+            loadcount: loadcount
+        }, true));
+        morebutton.show();
+    },
+
+    _onNoSearchResults:function () {
+        var box = this._getNoResultsBox();
+        box.setHTML(Ext.create('Ext.XTemplate', this.noResultsMsgTpl).apply({
+            search: Ext.String.format('<em>{0}</em>', this.currentSearch)
+        }));
+        box.show();
+    },
+
+    _onMore:function (e) {
+        e.preventDefault();
+        this._search({
+            limit: this.loadCountMax
+        });
+    },
+
+    _renderResult:function (unused, unused2, record) {
+        return this.resultTplCompiled.apply(record.data);
+    },
+
+    getUrl:function (values) {
+        return '#';
+    },
+
+    _onResultLinkClick:function (e) {
+        this.fireEvent('resultLinkClick');
+        // NOTE: We do not prevent the default action, so this does not prevent the link from
+        //       triggering navigation.
+    }
+});
 
 Ext.define('devilry.extjshelpers.forms.Deadline', {
     extend: 'Ext.form.Panel',
@@ -13147,6 +13458,11 @@ Ext.define('devilry.apps.examiner.simplified.SimplifiedDelivery', {
     }
 });
 
+Ext.define('devilry_header.store.StudentSearchResults', {
+    extend: 'devilry_header.store.BaseSearchResults',
+    model: 'devilry_header.model.StudentSearchResult'
+});
+
 // Autogenerated by the dev_coreextjsmodels script. DO NOT CHANGE MANUALLY
 
 /*******************************************************************************
@@ -13282,8 +13598,8 @@ Ext.define('devilry.extjshelpers.HelpWindow', {
     alias: 'widget.helpwindow',
     modal: true,
     layout: 'fit',
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 800,
     closable: false, // To easy to double click and close an undelying window
 
     helptpl: Ext.create('Ext.XTemplate', '<div class="section helpsection">{helptext}</div>'),
@@ -13860,6 +14176,41 @@ Ext.define('devilry.apps.administrator.simplified.SimplifiedRelatedStudent', {
         },
         writer: {
             type: 'json'
+        }
+    }
+});
+
+Ext.define('devilry_header.ExaminerSearchResultsView', {
+    extend: 'devilry_header.BaseSearchResultsView',
+    alias: 'widget.devilry_header_examinersearchresults',
+    extraCls: 'devilry_header_examinersearchresults',
+
+    singleResultTpl: [
+        '<div>',
+            '<a href="{[this.getUrl(values)]}" class="{[this.getResultLinkCls()]}">{title}</a>',
+            ' <span class="label label-inverse typename">{[this.getTypeName(values.type)]}</span>',
+        '</div>',
+        '<div class="meta path">{path}</div>',
+        '<tpl if="type == \'core_assignmentgroup\'">',
+            '<div class="meta students">',
+                '{[this.joinStringArray(values.students)]}',
+            '</small></div>',
+        '</tpl>'
+    ],
+
+    heading: gettext('Content where you are examiner'),
+
+    getUrl:function (values) {
+        var prefix = Ext.String.format('{0}/examiner/',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX);
+        if(values.type === 'core_assignmentgroup') {
+            return Ext.String.format('{0}assignmentgroup/{1}',
+                prefix, values.id);
+        } else if(values.type === 'core_assignment') {
+            return Ext.String.format('{0}assignment/{1}',
+                prefix, values.id);
+        } else {
+            throw Ext.String.format('Unknown type: {0}', values.type);
         }
     }
 });
@@ -14766,6 +15117,7 @@ Ext.define('devilry.student.models.Deadline', {
 
 Ext.define('devilry.examiner.RecentDeliveriesView', {
     extend: 'devilry.extjshelpers.DashGrid',
+    alias: 'widget.examiner_recentdeliveriesview',
     requires: [
         'devilry.extjshelpers.DateTime'
     ],
@@ -14811,7 +15163,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
 
 
     studentsRowTpl: Ext.create('Ext.XTemplate',
-        '<ul class="commaSeparatedList">',
+        '<ul class="commaSeparatedList"  style="margin: 0;">',
         '   <tpl for="deadline__assignment_group__candidates__identifier">',
         '       <li>{.}</li>',
         '   </tpl>',
@@ -14890,7 +15242,7 @@ Ext.define('devilry.examiner.RecentDeliveriesView', {
                     return me.studentsRowTpl.apply(record.data);
                 }
             }]);
-        };
+        }
 
 
 
@@ -15152,13 +15504,13 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
         this.model = Ext.ModelManager.getModel(this.model);
 
         this.editform.frame = false;
-        if(this.editform.flex == undefined) {
+        if(this.editform.flex === undefined) {
             this.editform.flex = 15;
         }
         this.editform.border = 0;
 
         var extrabarCssCls = this.extrabaronbottom? 'extrabaronbottom': 'extrabaronright';
-        var helpwidth = undefined;
+        var helpwidth;
         if(!this.extrabaronbottom) {
             this.layout = 'column';
             helpwidth = 300;
@@ -15187,9 +15539,8 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
 
             items: ['->', {
                 xtype: 'button',
-                text: 'Save',
+                text: gettext('Save'),
                 scale: 'large',
-                iconCls: 'icon-save-32',
                 listeners: {
                     scope: this,
                     click: this.onSave
@@ -15209,12 +15560,12 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
         }
         var help = '<div class="section helpsection">';
         var me = this;
-        var state = this.record == undefined? 'new': 'existing';
+        var state = this.record === undefined? 'new': 'existing';
         Ext.Array.each(this.editform.help, function(helpobj) {
             if(Ext.typeOf(helpobj) === 'string') {
                 helpobj = {text: helpobj};
             }
-            if(helpobj.state == undefined || (helpobj.state == state)) {
+            if(helpobj.state === undefined || (helpobj.state === state)) {
                 help += Ext.String.format('<p>{0}</p>', helpobj.text);
             }
         });
@@ -15226,7 +15577,7 @@ Ext.define('devilry.extjshelpers.RestfulSimplifiedEditPanelBase', {
             var record = Ext.ModelManager.create(this.editform.getForm().getValues(),
                                                  this.model);
             this.fireEvent('saveSucess', record);
-        };
+        }
     },
 
     loadRecord: function() {
@@ -16586,7 +16937,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
      */
     onLoadingComplete: function() {
         var delivery = this.delivery_recordcontainer.record.data;
-        var islatestDelivery = this.deliverystore.currentPage == 1 && this.deliverystore.data.items[0].data.id == delivery.id;
+        var islatestDelivery = this.deliverystore.currentPage === 1 && this.deliverystore.data.items[0].data.id === delivery.id;
 
         this.show();
         this.toolbar.removeAll();
@@ -16597,7 +16948,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
         Ext.apply(data, delivery);
         this.update(data);
 
-        if(delivery.delivery_type == 0) {
+        if(delivery.delivery_type === 0) {
             this.toolbar.add({
                 xtype: 'button',
                 text: 'Browse files',
@@ -16804,33 +17155,34 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackView', {
     cls: 'widget-staticfeedbackview',
 
     tpl: Ext.create('Ext.XTemplate',
-        '<tpl if="!isactive">',
-        '   <div class="section warning-small">',
-        '       <h1>This is not the active feedback</h1>',
-        '       When an examiner publish a feedback, the feedback is ',
-        '       stored forever. When an examiner needs to modify a feedback, ',
-        '       they create a new feedback. Therefore, you see more than ',
-        '       one feedback in the toolbar above. Unless there is something ',
-        '       wrong with the latest feedback, you should not have to ',
-        '       read this feedback',
-        '   </div>',
-        '</tpl>',
+        '<div class="bootstrap">',
+            '<tpl if="!isactive">',
+                '<div class="alert">',
+                    '<h4>This is not the active feedback</h4>',
+                    'When an examiner publish a feedback, the feedback is ',
+                    'stored forever. When an examiner needs to modify a feedback, ',
+                    'they create a new feedback. Therefore, you see more than ',
+                    'one feedback in the toolbar above. Unless there is something ',
+                    'wrong with the latest feedback, you should not have to ',
+                    'read this feedback',
+                '</div>',
+            '</tpl>',
 
-        '<div class="section {gradecls}">',
-            '<h1>', gettext('Grade'), '</h1>',
-            '<p>',
-                '<strong>{is_passing_grade_label}</strong> ({grade})',
-            '</p>',
-        '</div>',
-        '<div class="section rendered_view">{rendered_view}<div class="section">'
+            '<div class="alert alert-{gradecls}">',
+                '<strong>', gettext('Grade'), '</strong>: ',
+                '{is_passing_grade_label} ({grade})',
+            '</div>',
+
+            '<div class="rendered_view_preview">{rendered_view}</div>',
+        '</div>'
     ),
 
     
     getData: function(data) {
-        data.gradecls = data.is_passing_grade? 'ok-small': 'warning-small';
+        data.gradecls = data.is_passing_grade? 'success': 'warning';
         data.is_passing_grade_label = data.is_passing_grade? gettext('Passed'): gettext('Failed');
         return data;
-    },
+    }
 });
 
 
@@ -16878,6 +17230,76 @@ Ext.define('devilry_extjsextras.OkButton', {
     cls: 'devilry_extjsextras_okbutton',
     text: pgettext('uibutton', 'Ok'),
     width: 70
+});
+
+
+Ext.define('devilry.examiner.Dashboard', {
+    extend: 'Ext.container.Container',
+    alias: 'widget.examiner-dashboard',
+
+    requires: [
+        'devilry.examiner.ActiveAssignmentsView',
+        'devilry.examiner.RecentDeliveriesView',
+        'devilry.examiner.RecentFeedbacksView'
+    ],
+
+    cls: 'devilry_subtlebg',
+
+    /**
+     * @cfg {string} [dashboardUrl]
+     */
+    dasboardUrl: undefined,
+
+    initComponent: function() {
+        Ext.apply(this, {
+            layout: 'anchor',
+            autoScroll: true,
+            defaults: {
+                anchor: '100%'
+            },
+            items: [{
+                xtype: 'examiner_activeassignmentsview',
+                model: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedAssignment'),
+                dashboard_url: this.dashboardUrl
+            }, {
+                xtype: 'container',
+                margin: '10 0 0 0',
+                layout: 'column',
+                items: [{
+                    xtype: 'examiner_recentdeliveriesview',
+                    model: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery'),
+                    dashboard_url: this.dashboardUrl,
+                    columnWidth: 0.5,
+                    margin: '0 10px 0 0',
+                    urlCreateFn: function(record) {
+                        return Ext.String.format(
+                            "{0}assignmentgroup/{1}?deliveryid={2}",
+                            this.dashboardUrl,
+                            record.get('deadline__assignment_group'),
+                            record.get('id')
+                        );
+                    },
+                    urlCreateFnScope: this
+                }, {
+                    xtype: 'examiner_recentfeedbackview',
+                    model: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedStaticFeedback'),
+                    dashboard_url: this.dashboardUrl,
+                    columnWidth: 0.5,
+                    margin: '0 0 0 10px',
+                    urlCreateFn: function(record) {
+                        return Ext.String.format(
+                            "{0}assignmentgroup/{1}?deliveryid={2}",
+                            this.dashboardUrl,
+                            record.get('delivery__deadline__assignment_group'),
+                            record.get('delivery')
+                        );
+                    },
+                    urlCreateFnScope: this
+                }]
+            }]
+        });
+        this.callParent(arguments);
+    }
 });
 
 
@@ -17000,6 +17422,52 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeyBrowser', {
 });
 
 
+Ext.define('devilry_header.AdminSearchResultsView', {
+    extend: 'devilry_header.BaseSearchResultsView',
+    alias: 'widget.devilry_header_adminsearchresults',
+    extraCls: 'devilry_header_adminsearchresults',
+
+    singleResultTpl: [
+        '<div><a href="{[this.getUrl(values)]}" class="{[this.getResultLinkCls()]}">{title}</a>',
+            ' <span class="label label-inverse typename">{[this.getTypeName(values.type)]}</span>',
+        '</div>',
+        '<div class="meta path">{path}</div>',
+        '<tpl if="type == \'core_assignmentgroup\'">',
+            '<div class="meta students">',
+                '{[this.joinStringArray(values.students)]}',
+            '</small></div>',
+        '</tpl>'
+    ],
+
+    heading: gettext('Content where you are admin'),
+
+
+    getUrl:function (values) {
+        var subjectadmin_prefix = Ext.String.format('{0}/devilry_subjectadmin/',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX);
+        var nodeadmin_prefix = Ext.String.format('{0}/devilry_nodeadmin/',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX);
+        if(values.type === 'core_assignmentgroup') {
+            return Ext.String.format('{0}#/assignment/{1}/@@manage-students/@@select/{2}',
+                subjectadmin_prefix, values.assignment_id, values.id);
+        } else if(values.type === 'core_assignment') {
+            return Ext.String.format('{0}#/assignment/{1}/',
+                subjectadmin_prefix, values.id);
+        } else if(values.type === 'core_period') {
+            return Ext.String.format('{0}#/period/{1}/',
+                subjectadmin_prefix, values.id);
+        } else if(values.type === 'core_subject') {
+            return Ext.String.format('{0}#/subject/{1}/',
+                subjectadmin_prefix, values.id);
+        } else if(values.type === 'core_node') {
+            return Ext.String.format('{0}#/node/{1}',
+                nodeadmin_prefix, values.id);
+        } else {
+            throw Ext.String.format('Unknown type: {0}', values.type);
+        }
+    }
+});
+
 Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.gui.MustPassEditor', {
     extend: 'Ext.panel.Panel',
     alias: 'widget.statistics-mustpasseditor',
@@ -17051,6 +17519,37 @@ Ext.define('devilry_header.HelpLinksStore', {
     }
 });
 
+
+Ext.define('devilry_header.StudentSearchResultsView', {
+    extend: 'devilry_header.BaseSearchResultsView',
+    alias: 'widget.devilry_header_studentsearchresults',
+    extraCls: 'devilry_header_studentsearchresults',
+
+    singleResultTpl: [
+        '<div><a href="{[this.getUrl(values)]}" class="{[this.getResultLinkCls()]}">{title}</a></div>',
+        '<div class="meta path">{path}</div>',
+        '<tpl if="type == \'core_assignmentgroup\'">',
+            '<tpl if="values.students.length &gt; 1">',
+                '<div class="meta students">',
+                    '{[this.joinStringArray(values.students)]}',
+                '</small></div>',
+            '</tpl>',
+        '</tpl>'
+    ],
+
+    heading: gettext('Content where you are student'),
+
+    getUrl:function (values) {
+        var prefix = Ext.String.format('{0}/devilry_student/',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX);
+        if(values.type === 'core_assignmentgroup') {
+            return Ext.String.format('{0}#/group/{1}/',
+                prefix, values.id);
+        } else {
+            throw Ext.String.format('Unknown type: {0}', values.type);
+        }
+    }
+});
 
 Ext.define('devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow', {
     extend: 'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
@@ -17908,7 +18407,7 @@ Ext.define('devilry.extjshelpers.tooltips.assignmentgroup.AssignmentGroup', {
 Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesOnSingleGroupListing', {
     extend: 'Ext.grid.Panel',
     alias: 'widget.deliveriesonsinglegrouplisting',
-    cls: 'widget-deliveriesonsinglegrouplisting selectable-grid',
+    cls: 'widget-deliveriesonsinglegrouplisting',
     requires: [
         'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
         'devilry.extjshelpers.RestfulSimplifiedEditPanel'
@@ -18636,6 +19135,197 @@ Ext.define('devilry.administrator.DefaultCreateWindow', {
 });
 
 
+Ext.define('devilry_header.SearchMenu', {
+    extend: 'Ext.container.Container',
+    alias: 'widget.devilryheader_searchmenu',
+    cls: 'devilryheader_searchmenu',
+
+    requires: [
+        'devilry_authenticateduserinfo.UserInfo',
+        'devilry_header.store.StudentSearchResults',
+        'devilry_header.StudentSearchResultsView',
+        'devilry_header.store.ExaminerSearchResults',
+        'devilry_header.ExaminerSearchResultsView',
+        'devilry_header.store.AdminSearchResults',
+        'devilry_header.AdminSearchResultsView'
+    ],
+
+    initComponent: function() {
+        this._setupAutosizing();
+        Ext.apply(this, {
+            layout: 'anchor',
+            floating: true,
+            frame: false,
+            border: 0,
+//            autoShow: true,
+            autoScroll: true,
+            topOffset: 30,
+            padding: 20,
+            defaults: {
+                anchor: '100%'
+            },
+            items: [{
+                xtype: 'textfield',
+                emptyText: gettext('Search') + ' ...',
+                enableKeyEvents: true,
+                itemId: 'searchfield',
+                cls: 'searchmenu_searchfield',
+                listeners: {
+                    scope: this,
+                    change: this._onSearchFieldChange,
+                    keypress: this._onSearchFieldKeyPress
+                }
+            }, {
+                xtype: 'container',
+                itemId: 'searchResultsContainer',
+                layout: 'column',
+                items: [],
+                listeners: {
+                    scope: this,
+                    render: this._onRenderSearchResultsContainer
+                }
+            }]
+        });
+        this.callParent(arguments);
+    },
+
+    _onRenderSearchResultsContainer:function () {
+        devilry_authenticateduserinfo.UserInfo.load(function(userInfoRecord) {
+            this._addSearchResultViews(userInfoRecord);
+        }, this);
+    },
+
+    _addSearchResultViews:function (userInfoRecord) {
+        var container = this.down('#searchResultsContainer');
+        var views = [];
+
+        this.isAdmin = userInfoRecord.isAdmin();
+        this.isExaminer = userInfoRecord.get('is_examiner');
+        this.isStudent = userInfoRecord.get('is_student');
+        var rolecount = 0;
+        if(this.isAdmin) {
+            rolecount ++;
+        }
+        if(this.isExaminer) {
+            rolecount ++;
+        }
+        if(this.isStudent) {
+            rolecount ++;
+        }
+        var columnWidth = 1.0 / rolecount;
+        var showHeading = rolecount > 1;
+
+        var listeners = {
+            scope: this,
+            resultLinkClick: this._onResultLinkClick
+        };
+        if(this.isStudent) {
+            views.push({
+                xtype: 'devilry_header_studentsearchresults',
+                columnWidth: columnWidth,
+                showHeading: showHeading,
+                store: Ext.create('devilry_header.store.StudentSearchResults'),
+                listeners: listeners
+            });
+        }
+        if(this.isExaminer) {
+            views.push({
+                xtype: 'devilry_header_examinersearchresults',
+                columnWidth: columnWidth,
+                showHeading: showHeading,
+                store: Ext.create('devilry_header.store.ExaminerSearchResults'),
+                listeners: listeners
+            });
+        }
+        if(this.isAdmin) {
+            views.push({
+                xtype: 'devilry_header_adminsearchresults',
+                columnWidth: columnWidth,
+                showHeading: showHeading,
+                store: Ext.create('devilry_header.store.AdminSearchResults'),
+                listeners: listeners
+            });
+        }
+        container.add(views);
+    },
+
+
+    _onSearchFieldChange:function (field) {
+        if(Ext.isEmpty(this.task)) {
+            this.task = new Ext.util.DelayedTask(this._search, this, [field]);
+        }
+        this.task.delay(500);
+    },
+
+    _onSearchFieldKeyPress:function (field, e) {
+        if(e.getKey() === e.ENTER) {
+            if(!Ext.isEmpty(this.task)) {
+                this.task.cancel();
+            }
+            this._search(field);
+        }
+    },
+
+    _search:function (field) {
+        var search = field.getValue();
+        if(this.isAdmin) {
+            this.down('devilry_header_adminsearchresults').search(search);
+        }
+        if(this.isExaminer) {
+            this.down('devilry_header_examinersearchresults').search(search);
+        }
+        if(this.isStudent) {
+            this.down('devilry_header_studentsearchresults').search(search);
+        }
+    },
+
+
+    //
+    //
+    // Autoresize to window size
+    //
+    //
+
+    _setupAutosizing: function() {
+        // Get the DOM disruption over with before the component renders and begins a layout
+        Ext.getScrollbarSize();
+
+        // Clear any dimensions, we will size later on
+        this.width = this.height = undefined;
+
+        Ext.fly(window).on('resize', this._onWindowResize, this);
+        this.on('show', this._onShow, this);
+    },
+
+    _onWindowResize: function() {
+        if(this.isVisible()) {
+            this._setSizeAndPosition();
+        }
+    },
+
+    _setSizeAndPosition: function() {
+        var bodysize = Ext.getBody().getViewSize();
+        this.setSize({
+            width: bodysize.width,
+            height: bodysize.height - this.topOffset
+        });
+        this.setPagePosition(0, this.topOffset);
+    },
+
+    _onShow: function() {
+        this._setSizeAndPosition();
+        Ext.defer(function () {
+            this.down('#searchfield').focus();
+//            this.down('#searchfield').setValue('Obligatorisk oppgave 1');
+        }, 300, this);
+    },
+
+    _onResultLinkClick:function () {
+        this.hide();
+    }
+});
+
+
 Ext.define('devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow', {
     extend: 'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
     alias: 'widget.createnewdeadlinewindow',
@@ -18678,7 +19368,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow', {
                 model: this.deadlinemodel,
                 editform: Ext.create('devilry.extjshelpers.forms.Deadline'),
                 record: deadlineRecord
-            }),
+            })
         });
         this.callParent(arguments);
     }
@@ -19721,60 +20411,63 @@ Ext.define('devilry.extjshelpers.formfields.ForeignKeySelector', {
 /** Panel to show StaticFeedback info.
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.staticfeedbackinfo',
     cls: 'widget-staticfeedbackinfo',
-    layout: 'fit',
     requires: [
         'devilry.extjshelpers.Pager',
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackView',
-        'devilry.extjshelpers.SingleRecordContainerDepButton'
+        'devilry.extjshelpers.SingleRecordContainerDepButton',
+        'devilry_extjsextras.DatetimeHelpers'
     ],
-    title: 'Please select a delivery',
 
-    config: {
-        assignmentgroup_recordcontainer: undefined,
+    assignmentgroup_recordcontainer: undefined,
 
-        /**
-         * @cfg
-         * FileMeta ``Ext.data.Store``. (Required).
-         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
-         * class.
-         */
-        filemetastore: undefined,
+    /**
+     * @cfg
+     * FileMeta ``Ext.data.Store``. (Required).
+     * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
+     * class.
+     */
+    filemetastore: undefined,
 
-        /**
-         * @cfg
-         * FileMeta ``Ext.data.Store``. (Required).
-         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
-         * class.
-         */
-        staticfeedbackstore: undefined,
+    /**
+     * @cfg
+     * FileMeta ``Ext.data.Store``. (Required).
+     * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
+     * class.
+     */
+    staticfeedbackstore: undefined,
 
-        /**
-         * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
-         */
-        delivery_recordcontainer: undefined
-    },
+    /**
+     * @cfg
+     * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
+     */
+    delivery_recordcontainer: undefined,
 
-    titleTpl: Ext.create('Ext.XTemplate',
-        'Delivery {delivery.number}: ',
-        '<tpl if="assignmentgroup.parentnode__delivery_types === 1">',
-        '    Autogenerated by examiner',
-        '</tpl>',
-        '<tpl if="assignmentgroup.parentnode__delivery_types !== 1">',
-        '    {delivery.time_of_delivery:date}',
-        '    <tpl if="delivery.time_of_delivery &gt; deadline__deadline">',
-        '       <span class="after-deadline">(After deadline)</span>',
-        '    </tpl>',
-        '</tpl>',
-        '<tpl if="feedback">',
-        '   ({feedback.grade})',
-        '</tpl>'
-    ),
+    titleTpl: [
+        '<tpl if="loading">',
+            gettext('Loading'), ' ...',
+        '<tpl else>',
+            '<h2 style="margin: 0 0 5 0;">',
+                gettext('Delivery'), ' #{delivery.number}',
+            '</h2>',
+            '<tpl if="assignmentgroup.parentnode__delivery_types === 1">',
+                '<span class="label label-info">',
+                    gettext('Non-electronic delivery'),
+                '</span>',
+            '<tpl else>',
+                gettext('Time of delivery: '),
+                '{[this.formatDatetime(values.delivery.time_of_delivery)]}',
+            '</tpl>',
+        '</tpl>', {
+            formatDatetime:function (dt) {
+                return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(dt);
+            }
+        }
+    ],
 
 
     constructor: function(config) {
@@ -19791,8 +20484,74 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         });
 
         Ext.apply(this, {
-            items: [this.bodyContent],
-            tbar: this.getToolbarItems()
+            layout: 'anchor',
+            border: false,
+            defaults: {
+                anchor: '100%'
+            },
+            items: [{
+                xtype: 'panel',
+                border: false,
+                cls: 'bootstrap',
+                itemId: 'deliveryTitle',
+                bodyStyle: 'background-color: transparent;',
+                tpl: this.titleTpl,
+                data: {
+                    loading: true
+                },
+                dockedItems: [{
+                    xtype: 'toolbar',
+                    dock: 'bottom',
+                    ui: 'footer',
+                    items: [{
+                        xtype: 'singlerecordcontainerdepbutton',
+                        singlerecordcontainer: this.delivery_recordcontainer,
+                        text: '<i class="icon-list-alt"></i> ' + gettext('Browse files'),
+                        cls: 'bootstrap',
+                        scale: 'medium',
+                        listeners: {
+                            scope: this,
+                            click: function() {
+                                Ext.create('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
+                                    filemetastore: this.filemetastore,
+                                    deliveryid: this.delivery_recordcontainer.record.data.id
+                                }).show();
+                            }
+                        }
+                    }, {
+                        xtype: 'singlerecordcontainerdepbutton',
+                        singlerecordcontainer: this.delivery_recordcontainer,
+                        scale: 'medium',
+                        text: '<i class="icon-download"></i> ' + gettext('Download all files (.zip)'),
+                        cls: 'bootstrap',
+                        listeners: {
+                            scope: this,
+                            click: function(view, record, item) {
+                                var url = Ext.String.format(
+                                    '{0}/student/show-delivery/compressedfiledownload/{1}',
+                                    DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                                    this.delivery_recordcontainer.record.data.id
+                                );
+                                window.open(url, 'download');
+                            }
+                        }
+                    }]
+                }]
+            }, {
+                xtype: 'box',
+                cls: 'bootstrap',
+                html: [
+                    '<h3 style="margin: 20px 0 0 0;">',
+                        gettext('Feedback'),
+                    '</h3>'
+                ].join('')
+            }, {
+                xtype: 'panel',
+                tbar: this.getToolbarItems(),
+                layout: 'fit',
+                margin: '0 0 20 0',
+                items: this.bodyContent
+            }]
         });
         this.callParent(arguments);
 
@@ -19809,59 +20568,22 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
 
     getToolbarItems: function() {
-        var items = [];
-        if(this.assignmentgroup_recordcontainer.record.get('parentnode__delivery_types') === 0) {
-            items = [{
-                xtype: 'singlerecordcontainerdepbutton',
-                singlerecordcontainer: this.delivery_recordcontainer,
-                text: gettext('Browse files'),
-                scale: 'large',
-                listeners: {
-                    scope: this,
-                    click: function() {
-                        Ext.create('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
-                            filemetastore: this.filemetastore,
-                            deliveryid: this.delivery_recordcontainer.record.data.id
-                        }).show();
-                    }
-                }
-            }, {
-                xtype: 'singlerecordcontainerdepbutton',
-                singlerecordcontainer: this.delivery_recordcontainer,
-                scale: 'large',
-                text: gettext('Download all files (.zip)'),
-                listeners: {
-                    scope: this,
-                    click: function(view, record, item) {
-                        var url = Ext.String.format(
-                            '{0}/student/show-delivery/compressedfiledownload/{1}',
-                            DevilrySettings.DEVILRY_URLPATH_PREFIX,
-                            this.delivery_recordcontainer.record.data.id
-                        );
-                        window.open(url, 'download');
-                    }
-                }
-            }];
-        }
-
-        items = Ext.Array.merge(items, ['->', {
-            // This button is only here to work around rendering issues when the toolbar is empty (because we have added singlerecordcontainerdepbutton's, but they are never shown)
-            xtype: 'button',
-            text: '&nbsp;',
-            disabled: true,
-            scale: 'large'
-        }, {
+        var items = ['->', {
             xtype: 'devilrypager',
             store: this.staticfeedbackstore,
             width: 200,
             reverseDirection: true,
             middleLabelTpl: Ext.create('Ext.XTemplate',
                 '<tpl if="firstRecord">',
-            '   {currentNegativePageOffset})&nbsp;&nbsp;',
-            '   {firstRecord.data.save_timestamp:date}',
-            '</tpl>'
+                    '{currentNegativePageOffset})&nbsp;',
+                    '{[this.formatDatetime(values.firstRecord.data.save_timestamp)]}',
+                '</tpl>', {
+                    formatDatetime:function (dt) {
+                        return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(dt);
+                    }
+                }
             )
-        }]);
+        }];
         return items;
     },
 
@@ -19878,11 +20600,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
         var deliveryrecord = this.delivery_recordcontainer.record;
         var staticfeedbackStore = deliveryrecord.staticfeedbacks();
-        this.setTitle(this.titleTpl.apply({
+        this.down('#deliveryTitle').update({
+            loading: false,
             delivery: deliveryrecord.data,
             assignmentgroup: this.assignmentgroup_recordcontainer.record.data,
             feedback: staticfeedbackStore.count() > 0? staticfeedbackStore.data.items[0].data: undefined
-        }));
+        });
     },
 
 
@@ -19901,7 +20624,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
     onLoadStaticfeedbackstore: function(store, records, successful) {
         if(successful) {
-            if(records.length == 0) {
+            if(records.length === 0) {
                 this.bodyWithNoFeedback();
             }
             else {
@@ -20134,12 +20857,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
     ],
 
-    title: interpolate(gettext('%(Deliveries_term)s grouped by %(deadline_term)s'), {
-        Deliveries_term: gettext('Deliveries'),
-        deadline_term: gettext('deadline')
-    }, true),
+//    title: interpolate(gettext('%(Deliveries_term)s grouped by %(deadline_term)s'), {
+//        Deliveries_term: gettext('Deliveries'),
+//        deadline_term: gettext('deadline')
+//    }, true),
 
     autoScroll: true,
+//    style: 'border-right: 1px solid #ddd !important; border-top: 1px solid #ddd !important;',
+    border: 1,
 
     /**
     * @cfg
@@ -20171,19 +20896,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         if(this.assignmentgroup_recordcontainer.record) {
             this._onLoadAssignmentGroup();
         }
-        if(this.role !== 'student') {
-            this.bbar = [{
-                xtype: 'button',
-                text: interpolate(gettext('New %(deadline_term)s'), {
-                    deadline_term: gettext('deadline')
-                }, true),
-                iconCls: 'icon-add-16',
-                listeners: {
-                    scope: this,
-                    click: this.onCreateNewDeadline
-                }
-            }];
-        }
+
         this.callParent(arguments);
         this.on('render', function() {
             Ext.defer(function() {
@@ -20271,7 +20984,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                 if(deliveryRecords.length === 0) {
                     this.addDeliveriesPanel(deadlineRecords, deadlineRecord, deliveriesStore);
                 } else {
-                    this.findLatestFeebackInDeadline(deadlineRecords, deadlineRecord, deliveriesStore, deliveryRecords)
+                    this.findLatestFeebackInDeadline(deadlineRecords, deadlineRecord, deliveriesStore, deliveryRecords);
                 }
             }
         });
@@ -20279,7 +20992,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
 
     _handleLatestDeadline: function(deadlineRecord, deliveryRecords) {
         var is_open = this.assignmentgroup_recordcontainer.record.get('is_open');
-        if(this.role != 'student' && deliveryRecords.length === 0 && deadlineRecord.get('deadline') < Ext.Date.now() && is_open) {
+        if(this.role !== 'student' && deliveryRecords.length === 0 && deadlineRecord.get('deadline') < Ext.Date.now() && is_open) {
             this._onExpiredNoDeliveries();
         }
     },
@@ -20302,7 +21015,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                         this.addDeliveriesPanel(deadlineRecords, deadlineRecord, deliveriesStore, activeFeedback);
                     }
                 }
-            })
+            });
         }, this);
     },
 
@@ -20343,6 +21056,22 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             this.getEl().unmask();
             this.isLoading = false;
             this.fireEvent('loadComplete', this);
+            this._onLoadComplete();
+        }
+    },
+
+    _onLoadComplete:function () {
+        if(this.role !== 'student') {
+            this.add({
+                xtype: 'button',
+                scale: 'medium',
+                text: '<i class="icon-time"></i> ' + gettext('New deadline'),
+                cls: 'bootstrap',
+                listeners: {
+                    scope: this,
+                    click: this.onCreateNewDeadline
+                }
+            });
         }
     },
 
@@ -20417,9 +21146,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             scope: this,
             closable: false,
             fn: function(buttonId) {
-                if(buttonId == 'yes') {
+                if(buttonId === 'yes') {
                     this.onCreateNewDeadline()
-                } else if (buttonId == 'no') {
+                } else if (buttonId === 'no') {
                     devilry.extjshelpers.assignmentgroup.IsOpen.closeGroup(this.assignmentgroup_recordcontainer);
                 }
             }
@@ -20433,7 +21162,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     selectDelivery: function(deliveryid) {
         Ext.each(this.items.items, function(deliveriespanel) {
             var index = deliveriespanel.deliveriesStore.find('id', deliveryid);
-            if(index != -1) {
+            if(index !== -1) {
                 var deliveriesgrid = deliveriespanel.down('deliveriesgrid');
                 if(deliveriespanel.collapsed) {
                     deliveriespanel.toggleCollapse();
@@ -21485,28 +22214,27 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
     initComponentExtra: function() {
         this.previewButton = Ext.widget('button', {
             text: 'Show preview',
-            scale: 'large',
+            scale: 'medium',
             //iconCls: 'icon-save-32',
             listeners: {
                 scope: this,
-                click: this.onPreview,
+                click: this.onPreview
             }
         });
 
         this.draftButton = Ext.widget('button', {
             text: 'Save draft',
-            scale: 'large',
-            iconCls: 'icon-save-32',
+            scale: 'medium',
             listeners: {
                 scope: this,
-                click: this.onSaveDraft,
+                click: this.onSaveDraft
             }
         });
 
         this.publishButton = Ext.widget('button', {
             text: 'Publish',
             scale: 'large',
-            iconCls: 'icon-add-32',
+            ui: 'primary',
             listeners: {
                 scope: this,
                 click: this.onPublish
@@ -21556,8 +22284,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
         if(this.getDraftEditor().help) {
             this.buttonBar.insert(0, {
                 text: 'Help',
-                iconCls: 'icon-help-32',
-                scale: 'large',
+                scale: 'medium',
                 listeners: {
                     scope: this,
                     click: this.onHelp
@@ -21611,13 +22338,13 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
      */
     onLoadCurrentDraft: function(records, operation, successful) {
         if(successful) {
-            var draftstring = undefined;
+            var draftstring;
             if(records.length !== 0) {
                 draftstring = records[0].data.draft;
             }
             this.initializeDraftEditor(draftstring);
         } else {
-            throw "Failed to load current draft."
+            throw "Failed to load current draft.";
         }
     },
 
@@ -21715,7 +22442,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
                 if(showpreview) {
                     me.showPreview(response, operation);
                 }
-            },
+            }
         });
     },
 
@@ -21746,7 +22473,7 @@ Ext.define('devilry.gradeeditors.DraftEditorWindow', {
                 items: ['->', {
                     xtype: 'button',
                     text: 'Close preview',
-                    scale: 'large',
+                    scale: 'medium',
                     listeners: {
                         click: function() {
                             this.up('window').close();
@@ -22128,42 +22855,60 @@ Ext.define('devilry_header.HoverMenu', {
         this._setupAutosizing();
 
         Ext.apply(this, {
-            layout: 'column',
+            layout: 'border',
             items: [{
-                width: 300,
                 xtype: 'container',
-                padding: '10 20 10 10',
+                region: 'center',
+                layout: 'column',
                 items: [{
-                    xtype: 'box',
-                    html: [
-                        '<h2>',
-                            gettext('Choose your role'),
-                        '</h2>'
-                    ].join('')
-                }, {
-                    xtype: 'devilryheader_roles'
-                }]
-            }, {
-                columnWidth: 1.0,
-                padding: '10 10 10 20',
-                xtype: 'container',
-                items: [{
-                    xtype: 'devilryheader_userinfobox'
-                }, {
+                    width: 300,
                     xtype: 'container',
-                    margin: '30 0 0 0',
+                    padding: '10 20 10 10',
                     items: [{
                         xtype: 'box',
-                        html: ['<h2>', gettext('Language'), '</h2>'].join('')
+                        html: [
+                            '<h2>',
+                                gettext('Choose your role'),
+                            '</h2>'
+                        ].join('')
                     }, {
-                        xtype: 'devilry_i18n_languageselect',
-                        width: 250
+                        xtype: 'devilryheader_roles'
                     }]
-
                 }, {
-                    margin: '30 0 0 0',
-                    xtype: 'devilryheader_helplinksbox'
+                    columnWidth: 1.0,
+                    padding: '10 10 10 20',
+                    xtype: 'container',
+                    items: [{
+                        xtype: 'devilryheader_userinfobox'
+                    }, {
+                        xtype: 'container',
+                        margin: '30 0 0 0',
+                        items: [{
+                            xtype: 'box',
+                            html: ['<h2>', gettext('Language'), '</h2>'].join('')
+                        }, {
+                            xtype: 'devilry_i18n_languageselect',
+                            width: 250
+                        }]
+
+                    }, {
+                        margin: '30 0 0 0',
+                        xtype: 'devilryheader_helplinksbox'
+                    }]
                 }]
+            }, {
+                xtype: 'box',
+                cls: 'devilryheader_footer',
+                region: 'south',
+                height: 30,
+                tpl: [
+                    '<p><small>',
+                        'Devilry {version} (<a href="http://devilry.org">http://devilry.org</a>)',
+                    '</small></p>'
+                ],
+                data: {
+                    version: DevilrySettings.DEVILRY_VERSION
+                }
             }]
         });
         this.callParent(arguments);
@@ -22261,8 +23006,8 @@ Ext.define('devilry.gradeeditors.EditManyDraftEditorWindow', {
     initComponentExtra: function() {
         this.publishButton = Ext.widget('button', {
             text: this.buttonText,
-            scale: 'large',
-            iconCls: this.buttonIcon,
+            scale: 'medium',
+//            iconCls: this.buttonIcon,
             listeners: {
                 scope: this,
                 click: this.onPublish
@@ -22312,12 +23057,13 @@ Ext.define('devilry.gradeeditors.EditManyDraftEditorWindow', {
 Ext.define('devilry_header.Header', {
     extend: 'Ext.container.Container',
     alias: 'widget.devilryheader',
-    margins: '0 0 0 0',
+    margin: '0 0 0 0',
     height: 30, // NOTE: Make sure to adjust $headerHeight in the stylesheet if this is changed
 
     requires: [
         'devilry_header.FlatButton',
         'devilry_header.HoverMenu',
+        'devilry_header.SearchMenu',
         'devilry_header.Roles',
         'devilry_authenticateduserinfo.UserInfo',
         'devilry_header.Breadcrumbs'
@@ -22412,6 +23158,22 @@ Ext.define('devilry_header.Header', {
                 flex: 1
             }, {
                 xtype: 'devilryheader_flatbutton',
+                itemId: 'searchButton',
+                enableToggle: true,
+                width: 50,
+                tpl: [
+                    '<div class="textwrapper bootstrap">',
+                    '<i class="icon-search icon-white"></i>',
+                    '</div>'
+                ],
+                data: {},
+                listeners: {
+                    scope: this,
+                    render: this._onRenderSearchButton,
+                    toggle: this._onToggleSearchButton
+                }
+            }, {
+                xtype: 'devilryheader_flatbutton',
                 itemId: 'userButton',
                 enableToggle: true,
                 width: 100,
@@ -22419,6 +23181,14 @@ Ext.define('devilry_header.Header', {
                     scope: this,
                     render: this._onRenderUserButton,
                     toggle: this._onToggleUserButton
+                }
+            }, {
+                // NOTE: This component is floating, so it is not really part of the layout
+                xtype: 'devilryheader_searchmenu',
+                listeners: {
+                    scope: this,
+                    show: this._onShowSearchmenu,
+                    hide: this._onHideSearchmenu
                 }
             }, {
                 // NOTE: This component is floating, so it is not really part of the layout
@@ -22441,6 +23211,12 @@ Ext.define('devilry_header.Header', {
     },
     _getUserButton: function() {
         return this.down('#userButton');
+    },
+    _getSearchButton: function() {
+        return this.down('#searchButton');
+    },
+    _getSearchMenu: function() {
+        return this.down('devilryheader_searchmenu');
     },
     _getBreadcrumbArea: function() {
         return this.down('#breadcrumbarea');
@@ -22477,12 +23253,35 @@ Ext.define('devilry_header.Header', {
     },
 
     _onShowHovermenu: function() {
+        this._getSearchButton().setPressedWithEvent(false); // Hide search menu when showing hover menu
         this._getCurrentRoleButton().setPressedCls();
         this._getUserButton().setPressedCls();
     },
     _onHideHovermenu: function() {
         this._getCurrentRoleButton().setNotPressedCls();
         this._getUserButton().setNotPressedCls();
+    },
+
+
+    _onRenderSearchButton:function () {
+        this._getSearchButton().addExtraClass('devilry_header_search_button');
+    },
+
+    _onToggleSearchButton: function(button) {
+        var searchmenu = this._getSearchMenu();
+        if(button.pressed) {
+            searchmenu.show();
+        } else {
+            searchmenu.hide();
+        }
+    },
+
+    _onShowSearchmenu: function() {
+        this._getUserButton().setPressedWithEvent(false); // Hide hover menu when showing search menu
+        this._getSearchButton().setPressedCls();
+    },
+    _onHideSearchmenu: function() {
+        this._getSearchButton().setPressed(false);
     }
 });
 
@@ -22803,12 +23602,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
 
     getToolbarItems: function() {
         this.createButton = Ext.create('Ext.button.Button', {
-            text: interpolate(gettext('Create %(feedback_term)s'), {
-                feedback_term: gettext('feedback')
-            }, true),
-            iconCls: 'icon-add-32',
+            text: [
+                '<i class="icon-pencil"></i> ',
+                gettext('Create feedback')
+            ].join(''),
             hidden: false,
-            scale: 'large',
+            cls: 'bootstrap',
+            scale: 'medium',
             listeners: {
                 scope: this,
                 click: this.loadGradeEditor,
@@ -23333,7 +24133,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         });
 
         this.giveFeedbackToSelectedArgs = {
-            text: gettext('Give feedback to selected'),
+            text: '<i class="icon-pencil"></i> ' + gettext('Give feedback to selected'),
+            cls: 'bootstrap',
             listeners: {
                 scope: this,
                 click: this.onGiveFeedbackToSelected,
@@ -23356,7 +24157,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             }
         };
         this.giveFeedbackButton = Ext.widget('button', Ext.Object.merge({
-            scale: 'large',
+            scale: 'medium'
         }, this.giveFeedbackToSelectedArgs));
 
         var me = this;
@@ -23371,7 +24172,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             handler: function() { me.setFilter(''); }
         }, {
             xtype: 'button',
-            text: gettext('Filter'),
+            text: '<i class="icon-filter"></i> ' + gettext('Filter'),
+            cls: 'bootstrap',
             menu: {
                 xtype: 'menu',
                 plain: true,
@@ -23403,13 +24205,11 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         ];
 
 
-        if(this.assignmentrecord.get('delivery_types') == 0) {
+        if(this.assignmentrecord.get('delivery_types') === 0) {
             topBarItems.push({
                 xtype: 'button',
-                text: interpolate(gettext('Download all %(deliveries_term)s'), {
-                    deliveries_term: gettext('deliveries')
-                }, true),
-                iconCls: 'icon-save-16',
+                text: '<i class="icon-download"></i> ' + gettext('Download all deliveries'),
+                cls: 'bootstrap',
                 listeners: {
                     scope: this,
                     click: this._onDownload
@@ -23448,8 +24248,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
                     ui: 'footer',
                     items: this.getToolbarItems()
                 }]
-            }],
-
+            }]
         });
         this.callParent(arguments);
         this.setSearchfieldAttributes();
@@ -23536,9 +24335,9 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         );
 
         return [{
-            text: gettext('Help'),
-            iconCls: 'icon-help-32',
-            scale: 'large',
+            text: '<i class="icon-question-sign"></i> ' + gettext('Help'),
+            cls: 'bootstrap',
+            scale: 'medium',
             listeners: {
                 scope: this,
                 click: this.onHelp
@@ -23546,7 +24345,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
         }, '->', {
             xtype: 'button',
             text: gettext('Advanced'),
-            scale: 'large',
+            scale: 'medium',
             menu: {
                 xtype: 'menu',
                 plain: true,
@@ -23556,7 +24355,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     },
 
     getOnSingleMenuItems: function() {
-        menu = [{
+        var menu = [{
             text: gettext('Open in examiner interface'),
             listeners: {
                 scope: this,
@@ -23613,8 +24412,8 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
     onHelp: function() {
         Ext.widget('helpwindow', {
             title: gettext('Help'),
-            maximizable: true,
-            maximized: true,
+//            maximizable: true,
+//            maximized: true,
             helptpl: Ext.create('Ext.XTemplate',
                 '<div class="section helpsection">',
                 '   <h1>Guides</h1>',
@@ -23659,7 +24458,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     noneSelected: function() {
-        return this.getSelection().length == 0;
+        return this.getSelection().length === 0;
     },
 
     /**
@@ -23673,7 +24472,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
      * @private
      */
     singleSelected: function() {
-        return this.getSelection().length == 1;
+        return this.getSelection().length === 1;
     },
 
     /**
@@ -23704,7 +24503,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
             id: record.data.id,
             name: record.data.name,
             is_open: record.data.is_open,
-            parentnode: record.data.parentnode,
+            parentnode: record.data.parentnode
         });
         return editRecord;
     },
@@ -23828,101 +24627,6 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManager', {
 });
 
 
-Ext.define('devilry.examiner.Dashboard', {
-    extend: 'Ext.container.Container',
-    alias: 'widget.examiner-dashboard',
-
-    requires: [
-        'devilry.examiner.ActiveAssignmentsView',
-        'devilry.examiner.RecentDeliveriesView',
-        'devilry.examiner.RecentFeedbacksView',
-        'devilry.examiner.ExaminerSearchWidget'
-    ],
-
-    /**
-     * @cfg
-     */
-    dasboardUrl: undefined,
-    
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
-    
-    initComponent: function() {
-        var activeAssignmentsView = Ext.create('devilry.examiner.ActiveAssignmentsView', {
-            model: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedAssignment'),
-            dashboard_url: this.dashboardUrl,
-            minHeight: 140,
-            flex: 1
-        });
-        var recentDeliveries = Ext.create('devilry.examiner.RecentDeliveriesView', {
-            model: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedDelivery'),
-            dashboard_url: this.dashboardUrl,
-            flex: 1,
-            urlCreateFn: function(record) {
-                return Ext.String.format(
-                    "{0}assignmentgroup/{1}?deliveryid={2}",
-                    this.dashboardUrl,
-                    record.get('deadline__assignment_group'),
-                    record.get('id')
-                );
-            },
-            urlCreateFnScope: this
-        });
-        var recentFeedbacks = Ext.create('devilry.examiner.RecentFeedbacksView', {
-            model: Ext.ModelManager.getModel('devilry.apps.examiner.simplified.SimplifiedStaticFeedback'),
-            dashboard_url: this.dashboardUrl,
-            flex: 1,
-            urlCreateFn: function(record) {
-                return Ext.String.format(
-                    "{0}assignmentgroup/{1}?deliveryid={2}",
-                    this.dashboardUrl,
-                    record.get('delivery__deadline__assignment_group'),
-                    record.get('delivery')
-                );
-            },
-            urlCreateFnScope: this
-        });
-
-        var searchwidget = Ext.create('devilry.examiner.ExaminerSearchWidget', {
-            urlPrefix: this.dashboardUrl
-        });
-
-
-        Ext.apply(this, {
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
-            items: [searchwidget, {
-                xtype: 'panel',
-                //margin: '10 0 0 0',
-                border: false,
-                flex: 1,
-                autoScroll: true,
-                layout: {
-                    type: 'vbox',
-                    align: 'stretch'
-                },
-                items: [activeAssignmentsView, {
-                    xtype: 'container',
-                    margin: '10 0 0 0',
-                    layout: {
-                        type: 'hbox',
-                        align: 'stretch'
-                    },
-                    height: 200,
-                    width: 800, // Needed to avoid layout issue in FF3.6
-                    items: [recentDeliveries, {xtype: 'box', width: 40}, recentFeedbacks]
-                }]
-            }]
-        });
-        this.callParent(arguments);
-    }
-});
-
-
 /** Assignment layout TODO-list. Reloads the TODO-list whenever it is shown (on
  * the show-event). */
 Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
@@ -23946,11 +24650,9 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
             title: gettext('Todo-list'),
             toolbarExtra: ['->', {
                 xtype: 'button',
-                scale: 'large',
-                iconCls: 'icon-save-32',
-                text: interpolate(gettext('Download all %(deliveries_term)s'), {
-                    deliveries_term: gettext('deliveries')
-                }, true),
+                scale: 'medium',
+                text: '<i class="icon-download"></i> ' + gettext('Download all deliveries'),
+                cls: 'bootstrap',
                 listeners: {
                     scope: this,
                     click: this.onDownload
@@ -24015,13 +24717,18 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.student.models.Delivery',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
+    cls: 'devilry_subtlebg',
 
     nonElectronicNodeTpl: Ext.create('Ext.XTemplate',
-        '<p><strong>Note</strong>: This assignment only uses Devilry for registering results, not for deliveries. ',
-        'Deliveries are registered (by examiners) as a placeholder for results.</p>',
-        '<tpl if="canExamine">',
-        '   <p>See <a href="{DEVILRY_HELP_URL}" target="_blank">help</a> for details about how to examine non-electronic deliveries.</p>',
-        '</tpl>'
+        '<div class="bootstrap">',
+            '<div class="alert" style="margin: 0;">',
+                '<p><strong>Warning</strong>: This assignment only uses Devilry for registering results, not for deliveries. ',
+                'Deliveries are registered (by examiners) as a placeholder for results.</p>',
+                '<tpl if="canExamine">',
+                '   <p>See <a href="{DEVILRY_HELP_URL}" target="_blank">help</a> for details about how to correct non-electronic deliveries.</p>',
+                '</tpl>',
+            '</div>',
+        '</div>'
     ),
 
     /**
@@ -24046,6 +24753,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * ``false``, we use the examiner RESTful interface.
      */
     isAdministrator: false,
+
+
+    autoScroll: true,
 
 
     constructor: function() {
@@ -24162,7 +24872,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                 });
                 this.centerArea.removeAll();
                 this.centerArea.add(this.feedbackPanel);
-            };
+            }
         }
     },
 
@@ -24190,62 +24900,66 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         }
 
         Ext.apply(this, {
-            layout: {
-                type: 'vbox',
-                align: 'stretch'
-            },
+            layout: 'anchor',
+            padding: '20 30 20 30',
+            defaults: {anchor: '100%'},
             items: [{
-                xtype: 'assignmentgrouptitle',
-                singlerecordontainer: this.assignmentgroup_recordcontainer,
-                extradata: {
-                    canExamine: this.canExamine,
-                    url: window.location.href
-                }
+                xtype: 'container',
+                layout: 'column',
+                items: [{
+                    columnWidth: 1,
+                    xtype: 'assignmentgrouptitle',
+                    singlerecordontainer: this.assignmentgroup_recordcontainer,
+                    margin: '0 0 10 0',
+                    extradata: {
+                        canExamine: this.canExamine,
+                        url: window.location.href
+                    }
+                }, {
+                    xtype: 'container',
+                    width: 350,
+                    layout: 'column',
+//                    defaults: {anchor: '100%'},
+                    items: [{
+                        xtype: 'assignmentgroup_isopen',
+                        columnWidth: 0.6,
+                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
+                        canExamine: this.canExamine
+                    }, {
+                        xtype: 'button',
+                        columnWidth: 0.4,
+                        hidden: !this.canExamine,
+                        text: '<i class="icon-white icon-th-list"></i> ' + gettext('To-do list'),
+                        cls: 'bootstrap',
+                        scale: 'medium',
+                        ui: 'inverse',
+                        margin: '0 0 0 3',
+                        listeners: {
+                            scope: this,
+                            click: function() {
+                                Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow', {
+                                    assignmentgroupmodelname: this.getSimplifiedClassName('SimplifiedAssignmentGroup'),
+                                    assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer
+                                }).show();
+                            }
+                        }
+                    }]
+                }]
             }, {
                 xtype: 'container',
-                layout: 'border',
+                layout: 'column',
                 style: 'background-color: transparent',
                 flex: 1,
                 border: false,
                 items: [{
                     xtype: 'container',
-                    region: 'west',
-                    margin: '0 10 0 0',
-                    width: 250,
-                    layout: {
-                        type: 'vbox',
-                        align: 'stretch'
-                    },
+                    margin: '0 40 0 0',
+                    columnWidth: 0.3,
+                    layout: 'anchor',
+                    defaults: {anchor: '100%'},
                     items: [{
                         xtype: 'container',
-                        //title: 'Actions',
-                        layout: {
-                            type: 'hbox'
-                        },
-                        items: [{
-                            xtype: 'button',
-                            hidden: !this.canExamine,
-                            text: gettext('To-do list'),
-                            scale: 'large',
-                            flex: 6,
-                            listeners: {
-                                scope: this,
-                                click: function() {
-                                    Ext.create('devilry.extjshelpers.assignmentgroup.AssignmentGroupTodoListWindow', {
-                                        assignmentgroupmodelname: this.getSimplifiedClassName('SimplifiedAssignmentGroup'),
-                                        assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer
-                                    }).show();
-                                }
-                            }
-                        }, {xtype: 'box', width: 10}, {
-                            xtype: 'assignmentgroup_isopen',
-                            flex: 10,
-                            assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
-                            canExamine: this.canExamine
-                        }]
-                    }, {
-                        xtype: 'panel',
-                        margin: '10 0 0 0',
+                        margin: '8 0 0 0',
                         flex: 1,
                         border: false,
                         layout: {
@@ -24270,7 +24984,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                         }]
                     }]
                 }, this.centerArea = Ext.widget('container', {
-                    region: 'center',
+                    columnWidth: 0.7,
                     layout: 'fit',
                     items: {
                         xtype: 'box',
@@ -24294,7 +25008,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             return;
         }
         if(deliveriesgroupedbydeadline.latestStaticFeedbackRecord) {
-            latestFeedbackTime = deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('save_timestamp');
+            var latestFeedbackTime = deliveriesgroupedbydeadline.latestStaticFeedbackRecord.get('save_timestamp');
             if(latestDelivery.get('time_of_delivery') > latestFeedbackTime) {
                 deliveriesgroupedbydeadline.selectDelivery(latestDelivery.get('id'));
             } else {
@@ -24981,7 +25695,8 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         'devilry_extjsextras.Router',
         'devilry_header.Breadcrumbs'
     ],
-    
+    cls: 'devilry_subtlebg',
+
     /**
      * @cfg
      */
@@ -25011,9 +25726,10 @@ Ext.define('devilry.examiner.AssignmentLayout', {
 
         this.heading = Ext.widget('singlerecordview', {
             singlerecordontainer: this.assignment_recordcontainer,
+            margin: '20 0 0 0',
             tpl: Ext.create('Ext.XTemplate',
-                '<div class="section pathheading">',
-                '    <h1><small>{parentnode__parentnode__short_name}.{parentnode__short_name}.</small>{long_name}</h1>',
+                '<div class="section pathheading bootstrap">',
+                    '<h1 style="margin: 0; line-height: 25px;"><small>{parentnode__parentnode__short_name}.{parentnode__short_name}.</small>{long_name}</h1>',
                 '</div>'
             )
         });
@@ -25033,7 +25749,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
 
     todo_route: function() {
         var todo = this.down('examiner-assignmentlayout-todolist');
-        if(todo != null) { // Will be null for non-electronic
+        if(todo !== null) { // Will be null for non-electronic
             todo.show();
         }
         this._setBreadcrumbsAndTitle();
@@ -25056,7 +25772,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
                 text: path,
                 url: '#'
             });
-            active = gettext('Students')
+            active = gettext('Students');
         }
         devilry_header.Breadcrumbs.getInBody().set(breadcrumbs, active);
         window.document.title = Ext.String.format('{0} - Devilry', path);
@@ -25123,7 +25839,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
     },
 
     _onLoadRecord: function() {
-        if(this.assignment_recordcontainer.record.get('delivery_types') == 1) {
+        if(this.assignment_recordcontainer.record.get('delivery_types') === 1) {
             this._nonElectronicLayout();
         } else {
             this._electronicLayout();
@@ -25131,7 +25847,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         this._init();
         this.finishedLoading = true;
         Ext.getBody().unmask();
-    },
+    }
 });
 
 
