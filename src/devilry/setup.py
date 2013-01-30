@@ -12,5 +12,6 @@ setup(
                         'djangorestframework', 'Pygments',
                         #'flup',
                         #'PyYAML',
+                        'django-celery',
                         'gunicorn']
 )

@@ -1,3 +1,7 @@
+# Enable the Celery task queue
+import djcelery
+djcelery.setup_loader()
+
 
 ########################################################################
 #
@@ -33,6 +37,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'django.contrib.sessions',
                   'django.contrib.messages',
                   'django.contrib.admin',
+                  'djcelery',
                   'errortemplates',
                   'crispy_forms',
                   'djangorestframework',
