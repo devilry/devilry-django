@@ -125,7 +125,9 @@ TEST_FILTER = {
 # Celery
 #
 ########################################################################
+BROKER_URL = 'amqp://devilry:secret@localhost:5672/devilryhost'
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
 
 ########################################################################
 #
