@@ -1,8 +1,8 @@
 @font-face {
   font-family: 'Ubuntu';
   font-style: normal;
-  font-weight: 300;
-  src: local("Ubuntu Light"), local("Ubuntu-Light"), url(../fonts/ubuntu/ubuntu.woff) format("woff");
+  font-weight: 400;
+  src: local("Ubuntu"), local("Ubuntu"), url(../fonts/ubuntu/ubuntu.woff) format("woff");
 }
 
 /* line 12, ../sass/bootstrap.scss */
