@@ -7,7 +7,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     requires: [
         'devilry.extjshelpers.Pager',
         'devilry.extjshelpers.SingleRecordContainer',
-        'devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow',
+        'devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackView',
         'devilry.extjshelpers.SingleRecordContainerDepButton',
         'devilry_extjsextras.DatetimeHelpers'
@@ -88,45 +88,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                 tpl: this.titleTpl,
                 data: {
                     loading: true
-                },
-                dockedItems: [{
-                    xtype: 'toolbar',
-                    dock: 'bottom',
-                    ui: 'footer',
-                    items: [{
-                        xtype: 'singlerecordcontainerdepbutton',
-                        singlerecordcontainer: this.delivery_recordcontainer,
-                        text: '<i class="icon-list-alt"></i> ' + gettext('Browse files'),
-                        cls: 'bootstrap',
-                        scale: 'medium',
-                        listeners: {
-                            scope: this,
-                            click: function() {
-                                Ext.create('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
-                                    filemetastore: this.filemetastore,
-                                    deliveryid: this.delivery_recordcontainer.record.data.id
-                                }).show();
-                            }
-                        }
-                    }, {
-                        xtype: 'singlerecordcontainerdepbutton',
-                        singlerecordcontainer: this.delivery_recordcontainer,
-                        scale: 'medium',
-                        text: '<i class="icon-download"></i> ' + gettext('Download all files (.zip)'),
-                        cls: 'bootstrap',
-                        listeners: {
-                            scope: this,
-                            click: function(view, record, item) {
-                                var url = Ext.String.format(
-                                    '{0}/student/show-delivery/compressedfiledownload/{1}',
-                                    DevilrySettings.DEVILRY_URLPATH_PREFIX,
-                                    this.delivery_recordcontainer.record.data.id
-                                );
-                                window.open(url, 'download');
-                            }
-                        }
-                    }]
-                }]
+                }
+            }, {
+                xtype: 'filemetabrowserpanel',
+                store: this.filemetastore,
+                hidden: true
             }, {
                 xtype: 'box',
                 cls: 'bootstrap',
@@ -200,7 +166,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
 
     onSetStaticFeedbackRecord: function() {
-        var isactive = this.staticfeedbackstore.currentPage == 1;
+        var isactive = this.staticfeedbackstore.currentPage === 1;
         this.setBody({
             xtype: 'staticfeedbackview',
             padding: 10,

@@ -106,14 +106,29 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
                 feedback_term: gettext('feedback'),
                 delivery_term: gettext('delivery'),
                 assignment_term: gettext('assignment'),
-                feedback_term: gettext('feedback'),
                 grade_term: gettext('grade')
             }, true),
-            width: 415,
-            dismissDelay: 35000,
-            autoHide: true
+            width: 415
+//            dismissDelay: 35000,
+//            autoHide: true
         });
     },
+
+    onLoadDelivery: function() {
+        this.callParent(arguments);
+        var group = this.assignmentgroup_recordcontainer.record;
+        if(group.get('parentnode__delivery_types') !== 1) {
+            this._addElectronicDeliveryExtras();
+        }
+    },
+
+    _addElectronicDeliveryExtras: function() {
+        var deliveryrecord = this.delivery_recordcontainer.record;
+        var panel = this.down('filemetabrowserpanel');
+        panel.loadFilesForDelivery(deliveryrecord.get('id'));
+        panel.show();
+    },
+
 
     /**
      * @private
@@ -212,7 +227,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             xtype: 'component',
             html: ''
         });
-        this.showNoFeedbackTip();
+//        this.showNoFeedbackTip();
         //this.setBody({
             //xtype: 'component',
             //cls: 'no-feedback-editable',
