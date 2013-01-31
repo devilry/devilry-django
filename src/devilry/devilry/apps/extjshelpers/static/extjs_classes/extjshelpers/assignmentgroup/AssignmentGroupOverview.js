@@ -7,9 +7,8 @@
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     extend: 'Ext.container.Container',
     alias: 'widget.assignmentgroupoverview',
-    cls: 'widget-assignmentgroupoverview',
+    cls: 'widget-assignmentgroupoverview devilry_subtlebg',
     requires: [
-        'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
@@ -22,7 +21,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.student.models.Delivery',
         'devilry.extjshelpers.SingleRecordContainer'
     ],
-    cls: 'devilry_subtlebg',
 
     nonElectronicNodeTpl: Ext.create('Ext.XTemplate',
         '<div class="bootstrap">',
@@ -39,7 +37,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     /**
      * @cfg
      * Enable creation of new feedbacks? Defaults to ``false``.
-     * See: {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo#canExamine}.
      *
      * When this is ``true``, the authenticated user still needs to have
      * permission to POST new feedbacks for the view to work.
