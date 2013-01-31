@@ -15,7 +15,10 @@ class BasicFormShortFormat(ShortFormatNumOfTotalBase):
 
     @classmethod
     def _parse_config(cls, config):
-        return json.loads(config.config)
+        if config.config:
+            return json.loads(config.config)
+        else:
+            return {}
 
     @classmethod
     def to_staticfeedback_kwargs(cls, config, value):
@@ -38,7 +41,7 @@ class BasicFormShortFormat(ShortFormatNumOfTotalBase):
     def shorthelp(cls, config):
         configdict = cls._parse_config(config)
         return _('Must be a number. {approvedLimit} points is required to pass.').format(
-            approvedLimit=configdict['approvedLimit'])
+            approvedLimit=configdict.get('approvedLimit', _('NOT CONFIGURED')))
 
 
 class BasicForm(JsonRegistryItem):
