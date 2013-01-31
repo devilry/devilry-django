@@ -19,7 +19,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.administrator.models.Delivery',
         'devilry.examiner.models.Delivery',
         'devilry.student.models.Delivery',
-        'devilry.extjshelpers.SingleRecordContainer'
+        'devilry.extjshelpers.SingleRecordContainer',
+        'devilry.extjshelpers.assignmentgroup.DeadlineExpiredNoDeliveriesBox'
     ],
 
     nonElectronicNodeTpl: Ext.create('Ext.XTemplate',
@@ -35,7 +36,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     ),
 
     /**
-     * @cfg
+     * @cfg {bool} [canExamine]
      * Enable creation of new feedbacks? Defaults to ``false``.
      *
      * When this is ``true``, the authenticated user still needs to have
@@ -44,13 +45,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     canExamine: false,
 
     /**
-     * @cfg
+     * @cfg {int} [assignmentgroupid]
      * AssignmentGroup ID.
      */
     assignmentgroupid: undefined,
 
     /**
-     * @cfg
+     * @cfg {bool} [isAdministrator]
      * Use the administrator RESTful interface to store drafts? If this is
      * ``false``, we use the examiner RESTful interface.
      */
@@ -81,7 +82,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * @private
      */
     createAttributes: function() {
-
         this.role = !this.canExamine? 'student': this.isAdministrator? 'administrator': 'examiner';
         this.assignmentgroupmodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedAssignmentGroup'));
         this.filemetastore = this._createStore('SimplifiedFileMeta');
@@ -205,6 +205,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             padding: '20 30 20 30',
             defaults: {anchor: '100%'},
             items: [{
+                xtype: 'deadlineExpiredNoDeliveriesBox',
+                hidden: true,
+                listeners: {
+                    scope: this,
+                    closeGroup: this._onCloseGroup,
+                    addDeadline: this._onCreateNewDeadline
+                }
+            }, {
                 xtype: 'container',
                 layout: 'column',
                 items: [{
@@ -281,7 +289,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             flex: 1,
                             listeners: {
                                 scope: this,
-                                loadComplete: this._selectAppropriateDelivery
+                                loadComplete: this._selectAppropriateDelivery,
+                                expiredNoDeliveries: this._onExpiredNoDeliveries,
+                                createNewDeadline: this._onCreateNewDeadline
                             }
                         }]
                     }]
@@ -327,6 +337,41 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             deliveriesgroupedbydeadline.selectDelivery(query.deliveryid);
         } else {
             this._selectMostNaturalDelivery(deliveriesgroupedbydeadline);
+        }
+    },
+
+
+    /**
+     * @private
+     */
+    _onCreateNewDeadline: function() {
+        var me = this;
+        var createDeadlineWindow = Ext.widget('createnewdeadlinewindow', {
+            assignmentgroupid: this.assignmentgroup_recordcontainer.record.data.id,
+            deadlinemodel: Ext.String.format('devilry.{0}.models.Deadline', this.role),
+            onSaveSuccess: function(record) {
+                this.close();
+//                me.loadAllDeadlines();
+                window.location.reload();
+            }
+        });
+        createDeadlineWindow.show();
+    },
+
+    _onCloseGroup:function () {
+        devilry.extjshelpers.assignmentgroup.IsOpen.closeGroup(this.assignmentgroup_recordcontainer, function() {
+            window.location.reload();
+        });
+    },
+
+
+    /**
+     * @private
+     */
+    _onExpiredNoDeliveries: function() {
+        var group = this.assignmentgroup_recordcontainer.record;
+        if(group.get('is_open')) {
+            this.down('deadlineExpiredNoDeliveriesBox').show();
         }
     }
 });

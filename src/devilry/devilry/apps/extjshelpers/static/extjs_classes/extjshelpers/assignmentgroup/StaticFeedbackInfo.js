@@ -16,7 +16,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     assignmentgroup_recordcontainer: undefined,
 
     /**
-     * @cfg
+     * @cfg {Ext.data.Store} [filemetastore]
      * FileMeta ``Ext.data.Store``. (Required).
      * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
      * class.
@@ -24,7 +24,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     filemetastore: undefined,
 
     /**
-     * @cfg
+     * @cfg {object} [staticfeedbackstore]
      * FileMeta ``Ext.data.Store``. (Required).
      * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
      * class.
@@ -32,7 +32,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     staticfeedbackstore: undefined,
 
     /**
-     * @cfg
+     * @cfg {object} [delivery_recordcontainer]
      * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
      */
     delivery_recordcontainer: undefined,
