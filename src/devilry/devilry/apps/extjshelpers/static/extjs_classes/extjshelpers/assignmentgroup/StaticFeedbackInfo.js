@@ -73,6 +73,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
             autoScroll: true
         });
 
+        var group = this.assignmentgroup_recordcontainer.record;
         Ext.apply(this, {
             layout: 'anchor',
             border: false,
@@ -93,6 +94,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                 xtype: 'filemetabrowserpanel',
                 store: this.filemetastore,
                 hidden: true
+            }, {
+                xtype: 'box',
+                cls: 'bootstrap',
+                itemId: 'isClosedMessage',
+                hidden: group.get('is_open'),
+                html: [
+                    '<p class="alert">',
+                        gettext('This group is closed. Use the Open-button above to re-open it if you need to change the feedback.'),
+                    '</p>'
+                ].join('')
             }, {
                 xtype: 'box',
                 cls: 'bootstrap',

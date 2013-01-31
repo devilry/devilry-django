@@ -55,22 +55,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
 
 
     getToolbarItems: function() {
-        this.createButton = Ext.create('Ext.button.Button', {
-            text: [
-                '<i class="icon-pencil"></i> ',
-                gettext('Create feedback')
-            ].join(''),
-            hidden: false,
-            cls: 'bootstrap',
-            scale: 'medium',
-            listeners: {
-                scope: this,
-                click: this.loadGradeEditor,
-                render: this.onRenderEditButton
-            }
-        });
         var defaultItems = this.callParent();
-        Ext.Array.insert(defaultItems, 0, [this.createButton]);
+        var group = this.assignmentgroup_recordcontainer.record;
+        if(group.get('is_open')) {
+            this.createButton = Ext.create('Ext.button.Button', {
+                text: [
+                    '<i class="icon-pencil"></i> ',
+                    gettext('Create feedback')
+                ].join(''),
+                hidden: false,
+                cls: 'bootstrap',
+                scale: 'medium',
+                listeners: {
+                    scope: this,
+                    click: this.loadGradeEditor,
+                    render: this.onRenderEditButton
+                }
+            });
+            Ext.Array.insert(defaultItems, 0, [this.createButton]);
+        }
         return defaultItems;
     },
 
@@ -187,7 +190,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * - Registry item has loaded.
      */
     enableEditButton: function() {
-        if(this.isReadyToEditFeedback()) {
+        if(this.isReadyToEditFeedback() && !Ext.isEmpty(this.createButton)) {
             this.createButton.getEl().unmask();
         }
     },
@@ -274,15 +277,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * @private
      */
     reloadAssignmentGroup: function() {
-        this.assignmentgroupmodel.load(this.assignmentgroup_recordcontainer.record.data.id, {
-            scope: this,
-            success: function(record) {
-                this.assignmentgroup_recordcontainer.setRecord(record);
-            },
-            failure: function() {
-                // TODO: Handle errors
-            }
-        });
+        window.location.reload();
+//        this.assignmentgroupmodel.load(this.assignmentgroup_recordcontainer.record.data.id, {
+//            scope: this,
+//            success: function(record) {
+//                this.assignmentgroup_recordcontainer.setRecord(record);
+//            },
+//            failure: function() {
+//                TODO: Handle errors
+//            }
+//        });
     },
 
     /**
@@ -313,7 +317,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             scope: this,
             closable: false,
             fn: function(buttonId) {
-                if(buttonId == 'yes') {
+                if(buttonId === 'yes') {
                     this.createNewDeadline();
                 } else {
                     this.reloadAssignmentGroup();

@@ -161,9 +161,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     _showFeedbackPanel: function() {
         if(this.delivery_recordcontainer.record && this.assignmentgroup_recordcontainer.record) {
             if(!this.feedbackPanel) {
-                this.feedbackPanel = Ext.widget(this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo', {
+                this.feedbackPanel = Ext.widget('staticfeedbackeditor', {
                     staticfeedbackstore: this.staticfeedbackstore,
-                    //width: 400,
                     delivery_recordcontainer: this.delivery_recordcontainer,
                     filemetastore: this.filemetastore,
                     assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,

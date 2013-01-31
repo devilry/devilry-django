@@ -287,7 +287,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             deadlinemodel: Ext.String.format('devilry.{0}.models.Deadline', this.role),
             onSaveSuccess: function(record) {
                 this.close();
-                me.loadAllDeadlines();
+//                me.loadAllDeadlines();
+                window.location.reload();
             }
         });
         createDeadlineWindow.show();
@@ -310,7 +311,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             closable: false,
             fn: function(buttonId) {
                 if(buttonId === 'yes') {
-                    this.onCreateNewDeadline()
+                    this.onCreateNewDeadline();
                 } else if (buttonId === 'no') {
                     devilry.extjshelpers.assignmentgroup.IsOpen.closeGroup(this.assignmentgroup_recordcontainer);
                 }

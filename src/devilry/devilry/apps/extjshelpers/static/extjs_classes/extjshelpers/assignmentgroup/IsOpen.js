@@ -112,15 +112,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
             scope: this,
             closable: false,
             fn: function(buttonId) {
-                if(buttonId == 'yes') {
+                if(buttonId === 'yes') {
                     this.assignmentgroup_recordcontainer.record.data.is_open = true;
                     this.assignmentgroup_recordcontainer.record.save({
                         scope: this,
                         success: function(record) {
-                            this.assignmentgroup_recordcontainer.fireSetRecordEvent();
+//                            this.assignmentgroup_recordcontainer.fireSetRecordEvent();
+                            window.location.reload();
                         },
                         failure: function() {
-                            throw "Failed to open group."
+                            throw "Failed to open group.";
                         }
                     });
                 }
@@ -146,22 +147,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
             scope: this,
             closable: false,
             fn: function(buttonId) {
-                if(buttonId == 'yes') {
-                    statics.closeGroup(this.assignmentgroup_recordcontainer);
+                if(buttonId === 'yes') {
+                    statics.closeGroup(this.assignmentgroup_recordcontainer, function() {
+                        window.location.reload();
+                    });
                 }
             }
         });
     },
 
     statics: {
-        closeGroup: function(assignmentgroup_recordcontainer) {
+        closeGroup: function(assignmentgroup_recordcontainer, callbackFn, callbackScope) {
             assignmentgroup_recordcontainer.record.data.is_open = false;
             assignmentgroup_recordcontainer.record.save({
                 success: function(record) {
                     assignmentgroup_recordcontainer.fireSetRecordEvent();
+                    Ext.callback(callbackFn, callbackScope);
                 },
                 failure: function() {
-                    throw "Failed to close group."
+                    throw "Failed to close group.";
                 }
             });
         }
