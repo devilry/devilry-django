@@ -15,22 +15,11 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
      */
     store: undefined,
 
-
-    /**
-     * @cfg {int} [deliveryid]
-     * Id of the delivery in which the filemetas belong.
-     */
-    deliveryid: undefined,
-
-//    fileTpl: [
-//        '<a href="{downloadurl}"><strong>{data.filename}</strong></a> <small class="muted">({size})</small>'
-//    ],
-
     tpl: [
         '<h4>', gettext('Files'), ':</h4>',
         '<ul>',
             '<tpl for="files">',
-                '<li class="thumb-wrap">',
+                '<li class="filelinkitem">',
                     '<a href="{[this.getDownloadUrl(values.id)]}"><strong>{filename}</strong></a>',
                     ' <small class="muted">({[this.humanReadableSize(values.size)]})</small>',
                 '</li>',
@@ -62,10 +51,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
         }
     ],
 
-//
-//    initComponent: function() {
-//        this.callParent(arguments);
-//    },
+    itemSelector: 'li.filelinkitem',
 
     loadFilesForDelivery :function (deliveryid) {
         this.deliveryid = deliveryid;
