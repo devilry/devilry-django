@@ -43,6 +43,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'djangorestframework',
                   'gunicorn',
                   'extjs4',
+                  'celery_haystack',
 
                   'devilry.apps.core',
                   'devilry.apps.theme',

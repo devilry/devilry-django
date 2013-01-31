@@ -1,7 +1,8 @@
 from haystack import indexes
+from celery_haystack.indexes import CelerySearchIndex
 
 
-class BaseIndex(indexes.SearchIndex):
+class BaseIndex(CelerySearchIndex):
     """
     This ensures that all indexes uses the same field for ``document=True``.
     It is also convenient to have the same superclass for all indexes.
