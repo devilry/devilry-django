@@ -43,6 +43,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'djangorestframework',
                   'gunicorn',
                   'extjs4',
+                  'haystack',
                   'celery_haystack',
 
                   'devilry.apps.core',
@@ -119,6 +120,15 @@ TEST_FILTER = {
         ],
     'include': ['devilry*']
 }
+
+##################################################################################
+#
+# Haystack (search)
+#
+##################################################################################
+HAYSTACK_SITECONF = 'devilry_search.haystack_search_sites'
+HAYSTACK_SEARCH_ENGINE = 'solr'
+HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
 
 
 ########################################################################
