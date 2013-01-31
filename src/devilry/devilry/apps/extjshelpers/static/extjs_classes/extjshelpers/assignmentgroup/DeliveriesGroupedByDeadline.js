@@ -223,7 +223,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     },
 
     _onLoadComplete:function () {
-        if(this.role !== 'student') {
+        var group = this.assignmentgroup_recordcontainer.record;
+        if(group.get('parentnode__delivery_types') !== 1) {
             this.add({
                 xtype: 'button',
                 scale: 'medium',
