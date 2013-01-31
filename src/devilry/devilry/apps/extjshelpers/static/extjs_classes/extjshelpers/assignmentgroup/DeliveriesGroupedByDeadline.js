@@ -264,9 +264,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             var index = deliveriespanel.deliveriesStore.find('id', deliveryid);
             if(index !== -1) {
                 var deliveriesgrid = deliveriespanel.down('deliveriesgrid');
-                if(deliveriespanel.collapsed) {
-                    deliveriespanel.toggleCollapse();
-                }
+//                if(deliveriespanel.collapsed) {
+//                    deliveriespanel.toggleCollapse();
+//                }
                 deliveriesgrid.getSelectionModel().select(index);
                 return false; // break
             }

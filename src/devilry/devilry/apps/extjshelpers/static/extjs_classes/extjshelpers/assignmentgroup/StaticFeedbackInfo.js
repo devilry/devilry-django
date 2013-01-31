@@ -129,12 +129,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
         this.staticfeedback_recordcontainer.addListener('setRecord', this.onSetStaticFeedbackRecord, this);
         this.staticfeedbackstore.addListener('load', this.onLoadStaticfeedbackstore, this);
+
         if(this.delivery_recordcontainer.record) {
             this.onLoadDelivery();
         }
         this.delivery_recordcontainer.addListener('setRecord', this.onLoadDelivery, this);
     },
-
 
     getToolbarItems: function() {
         var items = ['->', {
@@ -156,9 +156,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         return items;
     },
 
-    /**
-     * @private
-     */
+
     onLoadDelivery: function() {
         this.staticfeedbackstore.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'delivery',
