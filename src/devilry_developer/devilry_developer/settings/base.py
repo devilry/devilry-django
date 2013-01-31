@@ -48,7 +48,7 @@ TEMPLATE_DEBUG = DEBUG
 EXTJS4_DEBUG = True
 STATIC_ROOT = 'static'
 
-DEVILRY_ENABLE_MATHJAX = False
+DEVILRY_ENABLE_MATHJAX = True
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+g$%**q(w78xqa_2)(_+%v8d)he-b_^@d*pqhq!#2p*a7*9e9h'
@@ -85,6 +85,11 @@ PASSWORD_HASHERS = (
 #DEVILRY_USERADMIN_USER_ADD_VIEW_MESSAGE = 'This is a add test.'
 #DEVILRY_USERADMIN_PASSWORD_HELPMESSAGE = 'Passwords are handled by Our Awesome External User Management System. Follow <a href="https://awesome.example.com">this link</a> to reset passwords.'
 
+
+##################################################################################
+# Celery
+##################################################################################
+CELERY_ALWAYS_EAGER = True
 
 ##################################################################################
 # Haystack (search)
