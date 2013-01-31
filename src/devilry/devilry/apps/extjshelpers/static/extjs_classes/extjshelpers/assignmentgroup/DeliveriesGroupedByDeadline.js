@@ -19,11 +19,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
     ],
 
-//    title: interpolate(gettext('%(Deliveries_term)s grouped by %(deadline_term)s'), {
-//        Deliveries_term: gettext('Deliveries'),
-//        deadline_term: gettext('deadline')
-//    }, true),
-
     autoScroll: true,
 //    style: 'border-right: 1px solid #ddd !important; border-top: 1px solid #ddd !important;',
     border: 1,
@@ -70,24 +65,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     _onLoadAssignmentGroup: function(groupRecordContainer) {
         var groupRecord = groupRecordContainer.record;
         this.loadAllDeadlines();
-        if(this.role === 'student' && groupRecord.get('is_open')) {
-            this.addDocked({
-                xtype: 'toolbar',
-                dock: 'bottom',
-                ui: 'footer',
-                items: [{
-                    xtype: 'box',
-                    tpl: '<a href="../add-delivery/{groupId}">{text}</a>',
-                    padding: '5 0 5 0',
-                    data: {
-                        text: interpolate(gettext('Add %(delivery_term)s'), {
-                            delivery_term: gettext('delivery')
-                        }),
-                        groupId: groupRecord.get('id')
-                    }
-                }]
-            });
-        }
     },
 
 

@@ -8,11 +8,8 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
     config: {
         model: undefined,
         noRecordsMessage: {
-            title: interpolate(gettext('No active %(assignments_term)s'), {
-                assignments_term: gettext('assignments')
-            }, true),
-            msg: interpolate(gettext('You are not registered on any %(assignments_term)s in any active %(periods_term)s.'), {
-                assignments_term: gettext('assignments'),
+            title: gettext('No active assignments'),
+            msg: interpolate(gettext('You are not registered on any assignments in any active %(periods_term)s.'), {
                 periods_term: gettext('periods')
             }, true)
         },
@@ -89,8 +86,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             xtype: 'box',
             tpl: '<div class="section"><h2>{header}</h2></div>',
             data: {
-                header: interpolate(gettext('%(Assignments_term)s in active %(periods_term)s'), {
-                    Assignments_term: gettext('Assignments'),
+                header: interpolate(gettext('Assignments in active %(periods_term)s'), {
                     periods_term: gettext('periods')
                 }, true)
             }

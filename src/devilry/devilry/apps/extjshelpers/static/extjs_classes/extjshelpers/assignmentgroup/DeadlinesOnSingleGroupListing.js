@@ -11,25 +11,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
         '{deadline:date}'
     ),
 
-    config: {
-        /**
-         * @cfg
-         * Deadline ``Ext.data.Model``.
-         */
-        deadlinemodel: undefined,
+    deadlinemodel: undefined,
+    assignmentgroup_recordcontainer: undefined,
+    enableDeadlineCreation: false,
 
-        /**
-         * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
-         */
-        assignmentgroup_recordcontainer: undefined,
-
-        /**
-         * @cfg
-         * Enable creation of new deadlines?
-         */
-        enableDeadlineCreation: false,
-    },
 
     constructor: function(config) {
         this.callParent([config]);

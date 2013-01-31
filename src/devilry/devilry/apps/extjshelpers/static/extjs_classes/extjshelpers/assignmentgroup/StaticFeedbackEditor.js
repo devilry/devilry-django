@@ -99,18 +99,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             }
         }, 100, this);
         this.editFeedbackTip = Ext.create('Ext.tip.ToolTip', {
-            title: interpolate(gettext('Click to give %(feedback_term)s on this %(delivery_term)s'), {
-                feedback_term: gettext('feedback'),
-                delivery_term: gettext('delivery')
-            }, true),
+            title: gettext('Click to give feedback on this delivery'),
             anchor: 'top',
             target: button.getEl().id,
-            html: interpolate(gettext('You add a %(feedback_term)s to a specific %(delivery_term)s. The latest %(feedback_term)s you publish on any %(delivery_term)s on this %(assignment_term)s becomes their active %(feedback_term)s/%(grade_term)s on the %(assignment_term)s.'), {
-                feedback_term: gettext('feedback'),
-                delivery_term: gettext('delivery'),
-                assignment_term: gettext('assignment'),
-                grade_term: gettext('grade')
-            }, true),
+            html: gettext('You add a feedback to a specific delivery. The latest feedback you publish on any delivery on this assignment becomes their active feedback/grade on the assignment.'),
             width: 415
 //            dismissDelay: 35000,
 //            autoHide: true
@@ -294,22 +286,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      */
     onFailingGrade: function() {
         var win = Ext.MessageBox.show({
-            title: interpolate(gettext('You published a %(feedback_term)s with a failing %(grade_term)s'), {
-                feedback_term: gettext('feedback'),
-                grade_term: gettext('grade')
-            }, true),
+            title: gettext('You published a feedback with a failing grade'),
             msg: [
                 '<p>', gettext('Would you like to give them another try?'), '</p>',
                 '<ul>',
                     '<li>',
-                        interpolate(gettext('Choose <strong>yes</strong> to create a new %(deadline_term)s'), {
-                            deadline_term: gettext('deadline')
-                        }, true),
+                        gettext('Choose <strong>yes</strong> to create a new deadline'),
                     '</li>',
                     '<li>',
-                        interpolate(gettext('Choose <strong>no</strong> to close the %(group_term)s. This fails the student(s) on this %(assignment_term)s. You can re-open the %(group_term)s at any time.'), {
-                            group_term: gettext('group')
-                        }, true),
+                        gettext('Choose <strong>no</strong> to close the group. This fails the student(s) on this assignment. You can re-open the group at any time.'),
                     '</li>',
                 '</ul>'
             ].join(''),

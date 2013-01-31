@@ -11,19 +11,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow', {
         'devilry.extjshelpers.forms.Deadline'
     ],
 
-    config: {
-        /**
-         * @cfg
-         * AssignmentGroup id
-         */
-        assignmentgroupid: undefined,
-
-        /**
-         * @cfg
-         * Deadline ``Ext.data.Model``.
-         */
-        deadlinemodel: undefined
-    },
+    assignmentgroupid: undefined,
+    deadlinemodel: undefined,
 
     constructor: function(config) {
         this.initConfig(config);

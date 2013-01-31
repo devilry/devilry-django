@@ -46,9 +46,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
                 '</tpl>',
                 '<tpl if="hasLatestFeedback">',
                     ' <span class="label label-success">',
-                        interpolate(gettext('active %(feedback_term)s'), {
-                            feedback_term: gettext('feedback')
-                        }, true),
+                        gettext('active feedback'),
                     '</span>',
                 '</tpl>',
             '</div>',
