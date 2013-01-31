@@ -102,7 +102,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                 itemId: 'isClosedMessage',
                 hidden: group.get('is_open'),
                 html: [
-                    '<p class="alert">',
+                    '<p class="alert alert-info">',
                         gettext('This group is closed. Use the Open-button above to re-open it if you need to change the feedback.'),
                     '</p>'
                 ].join('')
