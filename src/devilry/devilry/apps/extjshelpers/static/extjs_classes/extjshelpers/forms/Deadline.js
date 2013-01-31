@@ -36,6 +36,7 @@ Ext.define('devilry.extjshelpers.forms.Deadline', {
 
     help: [
         '<strong>Choose a deadline</strong>. Students will be able to deliver after the deadline expires, however deliveries after the deadline will be clearly marked.',
-        'The <strong>text</strong> is displayed to students when they view the deadline, and when they add deliveries on the deadline. The text is shown exactly as you see it in the text-box. No formatting of any kind is applied.'
+        'The <strong>text</strong> is displayed to students when they view the deadline, and when they add deliveries on the deadline. The text is shown exactly as you see it in the text-box. No formatting of any kind is applied.',
+        '<strong>NOTE:</strong> Examiners can not move Deadlines. We are planning a major cleanup of the Examiner UI, which will include the ability to move deadlines. In the meantime, ask your course administrator to move deadlines if needed.'
     ]
 });
