@@ -1873,15 +1873,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
             scope: this,
             closable: false,
             fn: function(buttonId) {
-                if(buttonId == 'yes') {
+                if(buttonId === 'yes') {
                     this.assignmentgroup_recordcontainer.record.data.is_open = true;
                     this.assignmentgroup_recordcontainer.record.save({
                         scope: this,
                         success: function(record) {
-                            this.assignmentgroup_recordcontainer.fireSetRecordEvent();
+//                            this.assignmentgroup_recordcontainer.fireSetRecordEvent();
+                            window.location.reload();
                         },
                         failure: function() {
-                            throw "Failed to open group."
+                            throw "Failed to open group.";
                         }
                     });
                 }
@@ -1907,22 +1908,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.IsOpen', {
             scope: this,
             closable: false,
             fn: function(buttonId) {
-                if(buttonId == 'yes') {
-                    statics.closeGroup(this.assignmentgroup_recordcontainer);
+                if(buttonId === 'yes') {
+                    statics.closeGroup(this.assignmentgroup_recordcontainer, function() {
+                        window.location.reload();
+                    });
                 }
             }
         });
     },
 
     statics: {
-        closeGroup: function(assignmentgroup_recordcontainer) {
+        closeGroup: function(assignmentgroup_recordcontainer, callbackFn, callbackScope) {
             assignmentgroup_recordcontainer.record.data.is_open = false;
             assignmentgroup_recordcontainer.record.save({
                 success: function(record) {
                     assignmentgroup_recordcontainer.fireSetRecordEvent();
+                    Ext.callback(callbackFn, callbackScope);
                 },
                 failure: function() {
-                    throw "Failed to close group."
+                    throw "Failed to close group.";
                 }
             });
         }
@@ -5349,47 +5353,6 @@ Ext.define('devilry.student.models.StaticFeedback', {
 });
 
 
-/**
- * Adds utilites for ``devilry.extjshelpers.RestProxy`` error handling.
- */
-Ext.define('devilry_extjsextras.RestfulApiProxyErrorHandler', {
-    extend: 'devilry_extjsextras.ProxyErrorHandler',
-
-    /**
-     * Adds the errors messages contained in the ``responseData`` added to
-     * ``Ext.data.Operation`` objects by
-     * ``devilry.extjshelpers.RestProxy.setException``.
-     */
-    addRestfulErrorsFromOperation: function(operation) {
-        if(operation.responseData && operation.responseData.items) {
-            var errors = operation.responseData.items;
-            this.errormessages = errors.errormessages;
-            this.fielderrors = this._removeGlobalFromFieldErrors(errors.fielderrors);
-            return true;
-        } else {
-            return false;
-        }
-    },
-
-    /** Copy fielderrors excluding any ``__all__`` attribute. */
-    _removeGlobalFromFieldErrors: function(fielderrors) {
-        var cleanedFieldErrors = {};
-        Ext.Object.each(fielderrors, function(key, value) {
-            if(key != '__all__') {
-                cleanedFieldErrors[key] = value;
-            }
-        });
-        return cleanedFieldErrors;
-    },
-
-    addErrors: function(operation) {
-        if(!this.addRestfulErrorsFromOperation(operation)) {
-            this.addErrorsFromOperation(operation);
-        }
-    }
-});
-
-
 Ext.define('devilry.extjshelpers.GridPrintButton', {
     //extend: 'Ext.button.Split',
     extend: 'Ext.button.Button',
@@ -6168,117 +6131,117 @@ Ext.define('devilry_header.model.ExaminerSearchResult', {
 });
 
 
+/**
+ * Adds utilites for ``devilry.extjshelpers.RestProxy`` error handling.
+ */
+Ext.define('devilry_extjsextras.RestfulApiProxyErrorHandler', {
+    extend: 'devilry_extjsextras.ProxyErrorHandler',
+
+    /**
+     * Adds the errors messages contained in the ``responseData`` added to
+     * ``Ext.data.Operation`` objects by
+     * ``devilry.extjshelpers.RestProxy.setException``.
+     */
+    addRestfulErrorsFromOperation: function(operation) {
+        if(operation.responseData && operation.responseData.items) {
+            var errors = operation.responseData.items;
+            this.errormessages = errors.errormessages;
+            this.fielderrors = this._removeGlobalFromFieldErrors(errors.fielderrors);
+            return true;
+        } else {
+            return false;
+        }
+    },
+
+    /** Copy fielderrors excluding any ``__all__`` attribute. */
+    _removeGlobalFromFieldErrors: function(fielderrors) {
+        var cleanedFieldErrors = {};
+        Ext.Object.each(fielderrors, function(key, value) {
+            if(key != '__all__') {
+                cleanedFieldErrors[key] = value;
+            }
+        });
+        return cleanedFieldErrors;
+    },
+
+    addErrors: function(operation) {
+        if(!this.addRestfulErrorsFromOperation(operation)) {
+            this.addErrorsFromOperation(operation);
+        }
+    }
+});
+
+
 
 /**
  * Panel to browse FileMeta.
  */
 Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.view.View',
     alias: 'widget.filemetabrowserpanel',
-    cls: 'widget-filemetabrowserpanel',
+    cls: 'widget-filemetabrowserpanel bootstrap',
 
     /**
-     * @cfg
-     * FileMeta ``Ext.data.Store``. (Required).
+     * @cfg {Ext.data.Store} [store]
+     * FileMeta store. (Required).
      * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
      * class.
      */
-    filemetastore: undefined,
+    store: undefined,
 
-
-    /**
-     * @cfg
-     * Id of the delivery in which the filemetas belong.
-     */
-    deliveryid: undefined,
-
-    fileTpl: [
-        '<a href="{downloadurl}"><strong>{data.filename}</strong></a> <small class="muted">({size})</small>'
+    tpl: [
+        '<h4>', gettext('Files'), ':</h4>',
+        '<ul>',
+            '<tpl for="files">',
+                '<li class="filelinkitem">',
+                    '<a href="{[this.getDownloadUrl(values.id)]}"><strong>{filename}</strong></a>',
+                    ' <small class="muted">({[this.humanReadableSize(values.size)]})</small>',
+                '</li>',
+            '</tpl>',
+        '</ul>',
+        '<p><a class="btn" href="{downloadAllUrl}">',
+            '<i class="icon-download"></i> ',
+            gettext('Download all files (.zip)'),
+        '</a></p>', {
+            getDownloadUrl: function(id) {
+                return Ext.String.format("{0}/student/show-delivery/filedownload/{1}",
+                    DevilrySettings.DEVILRY_URLPATH_PREFIX, id);
+            },
+            humanReadableSize:function (size) {
+                var units = ['Bytes', 'KBytes', 'MBytes', 'GBytes'];
+                var i = 0;
+                while(size >= 1024) {
+                    size /= 1024;
+                    ++i;
+                }
+                var sizeWithUnit;
+                if(i < units.length) {
+                    sizeWithUnit = size.toFixed() + ' ' + units[i];
+                } else {
+                    sizeWithUnit = size + ' ' + units[0];
+                }
+                return sizeWithUnit;
+            }
+        }
     ],
 
-    initComponent: function() {
-        this.filemetastore.proxy.extraParams.filters = Ext.JSON.encode([
+    itemSelector: 'li.filelinkitem',
+
+    loadFilesForDelivery :function (deliveryid) {
+        this.deliveryid = deliveryid;
+        this.store.proxy.extraParams.filters = Ext.JSON.encode([
             {field: 'delivery', comp:'exact', value: this.deliveryid}
         ]);
+        this.store.load();
+    },
 
-        this.on('render', function() {
-            Ext.defer(function() {
-                if(this.filemetastore.loading) {
-                    this.setLoading(true);
-                }
-            }, 100, this);
-        });
-        this.filemetastore.load({
-            scope: this,
-            callback: function() {
-                this.setLoading(false);
-            }
-        });
-
-        var renderTpl = Ext.create('Ext.XTemplate', this.fileTpl);
-        var me = this;
-        Ext.apply(this, {
-            items: [{
-                xtype: 'grid',
-                sortableColumns: false,
-                store: this.filemetastore,
-                hideHeaders: true,
-                disableSelection: true,
-                cls: 'bootstrap',
-                columns: [{
-                    flex:1,
-                    menuDisabled: true,
-                    dataIndex: 'size',
-                    renderer: function(size, unused, record) {
-                        var units = ['Bytes', 'KBytes', 'MBytes', 'GBytes'];
-                        var i = 0;
-                        while(size >= 1024) {
-                            size /= 1024;
-                            ++i;
-                        }
-                        var sizeWithUnit;
-                        if(i < units.length) {
-                            sizeWithUnit = size.toFixed() + ' ' + units[i];
-                        } else {
-                            sizeWithUnit = size + ' ' + units[0];
-                        }
-
-                        var url = Ext.String.format("{0}/student/show-delivery/filedownload/{1}",
-                            DevilrySettings.DEVILRY_URLPATH_PREFIX, record.get('id'));
-                        return renderTpl.apply({
-                            data: record.data,
-                            size: sizeWithUnit,
-                            downloadurl: url
-                        });
-                    }
-                }]
-//                listeners: {
-//                    scope: this,
-//                    itemclick: function(self, record) {
-//                        var url = DevilrySettings.DEVILRY_URLPATH_PREFIX + "/student/show-delivery/filedownload/" + record.get('id');
-//                        window.open(url, 'download');
-//                    }
-//                }
-    
-            }],
-
-            bbar: [{
-                xtype: 'button',
-                scale: 'large',
-                text: gettext('Download all files (.zip)'),
-                listeners: {
-                    scope: this,
-                    click: function(view, record, item) {
-                        var url = Ext.String.format(
-                            '{0}/student/show-delivery/compressedfiledownload/{1}',
-                            DevilrySettings.DEVILRY_URLPATH_PREFIX, this.deliveryid
-                        );
-                        window.open(url, 'download');
-                    }
-                }
-            }]
-        });
-        this.callParent(arguments);
+    collectData : function(records, startIndex){
+        var files = this.callParent(arguments);
+        return {
+            files: files,
+            downloadAllUrl: Ext.String.format("{0}/student/show-delivery/filedownload/{1}",
+                DevilrySettings.DEVILRY_URLPATH_PREFIX, this.deliveryid)
+        };
     }
 });
 
@@ -7155,41 +7118,149 @@ Ext.define('devilry.extjshelpers.models.Delivery', {
 });
 
 
-Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
-    extend: 'Ext.window.Window',
-    title: gettext('Files'),
-    height: 400,
-    width: 500,
-    modal: true,
-    layout: 'fit',
-    requires: [
-        'devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel'
+// Autogenerated by the dev_coreextjsmodels script. DO NOT CHANGE MANUALLY
+
+/*******************************************************************************
+ * NOTE: You will need to add the following before your application code:
+ *
+ *    Ext.Loader.setConfig({
+ *        enabled: true,
+ *        paths: {
+ *            'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes'
+ *        }
+ *    });
+ *    Ext.syncRequire('devilry.extjshelpers.RestProxy');
+ ******************************************************************************/
+Ext.define('devilry.apps.examiner.simplified.SimplifiedDelivery', {
+    extend: 'Ext.data.Model',
+    requires: ['devilry.extjshelpers.RestProxy'],
+    fields: [
+        {
+            "type": "int", 
+            "name": "id"
+        }, 
+        {
+            "type": "int", 
+            "name": "number"
+        }, 
+        {
+            "type": "date", 
+            "name": "time_of_delivery", 
+            "dateFormat": "Y-m-d\\TH:i:s"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline"
+        }, 
+        {
+            "type": "bool", 
+            "name": "successful"
+        }, 
+        {
+            "type": "int", 
+            "name": "delivery_type"
+        }, 
+        {
+            "type": "auto", 
+            "name": "alias_delivery"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__candidates__identifier"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__parentnode"
+        }, 
+        {
+            "type": "int", 
+            "name": "deadline__assignment_group__parentnode__delivery_types"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__parentnode__short_name"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__parentnode__long_name"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__parentnode__parentnode"
+        }, 
+        {
+            "type": "date", 
+            "name": "deadline__assignment_group__parentnode__parentnode__start_time", 
+            "dateFormat": "Y-m-d\\TH:i:s"
+        }, 
+        {
+            "type": "date", 
+            "name": "deadline__assignment_group__parentnode__parentnode__end_time", 
+            "dateFormat": "Y-m-d\\TH:i:s"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__parentnode__parentnode__short_name"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__parentnode__parentnode__long_name"
+        }, 
+        {
+            "type": "auto", 
+            "name": "delivered_by__identifier"
+        }, 
+        {
+            "type": "date", 
+            "name": "deadline__deadline", 
+            "dateFormat": "Y-m-d\\TH:i:s"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__name"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__candidates__identifier"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__parentnode__parentnode__parentnode"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__parentnode__parentnode__parentnode__short_name"
+        }, 
+        {
+            "type": "auto", 
+            "name": "deadline__assignment_group__parentnode__parentnode__parentnode__long_name"
+        }
     ],
-
-    config: {
-        filemetastore: undefined,
-        deliveryid: undefined
-    },
-
-    constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
-
-    initComponent: function() {
-        Ext.apply(this, {
-            items: [{
-                xtype: 'filemetabrowserpanel',
-                border: false,
-                layout: 'fit',
-                filemetastore: this.filemetastore,
-                deliveryid: this.deliveryid
-            }]
-        });
-        this.callParent(arguments);
+    idProperty: 'id',
+    proxy: {
+        type: 'devilryrestproxy',
+        url: '/examiner/restfulsimplifieddelivery/',
+        headers: {
+            'X_DEVILRY_USE_EXTJS': true
+        },
+        extraParams: {
+            getdata_in_qrystring: true,
+            result_fieldgroups: '["assignment_group_users", "assignment", "period", "delivered_by", "deadline", "assignment_group", "candidates", "subject"]'
+        },
+        reader: {
+            type: 'json',
+            root: 'items',
+            totalProperty: 'total'
+        },
+        writer: {
+            type: 'json'
+        }
     }
 });
-
 
 Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.advanced.PointSpec', {
     config: {
@@ -8522,9 +8593,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGrid', {
                 '</tpl>',
                 '<tpl if="hasLatestFeedback">',
                     ' <span class="label label-success">',
-                        interpolate(gettext('active %(feedback_term)s'), {
-                            feedback_term: gettext('feedback')
-                        }, true),
+                        gettext('active feedback'),
                     '</span>',
                 '</tpl>',
             '</div>',
@@ -9463,6 +9532,61 @@ Ext.define('devilry.extjshelpers.formfields.DateTimeField', {
     emptyText: 'YYYY-MM-DD hh:mm:ss'
 });
 
+
+Ext.define('devilry.extjshelpers.assignmentgroup.DeadlineExpiredNoDeliveriesBox', {
+    extend: 'Ext.Component',
+    alias: 'widget.deadlineExpiredNoDeliveriesBox',
+    cls: 'widget-deadlineExpiredNoDeliveriesBox bootstrap',
+
+    html: [
+        '<div class="alert">',
+            '<h3>',
+                gettext('Deadline expired - no deliveries'),
+            '</h3>',
+            '<p>',
+                gettext('The active deadline of this group has expired, and they have not made any deliveries. What would you like to do?'),
+            '</p>',
+            '<p>',
+                '<a class="btn btn-primary btn-large createnewdeadline">',
+                    '<i class="icon-time icon-white"></i> ',
+                    gettext('Add a new deadline'),
+                '</a> ',
+                '<a class="btn btn-large closegroup">',
+                    '<i class="icon-folder-close"></i> ',
+                    gettext('Close the group'),
+                '</a>',
+            '</p>',
+            '<p><small>',
+                gettext('Closing the group fails the student on this assignment. You can re-open the group at any time.'),
+            '</small></p>',
+        '</div>'
+    ].join(''),
+
+
+    initComponent:function () {
+        this.addListener({
+            scope: this,
+            element: 'el',
+            delegate: 'a.closegroup',
+            click: this._onCloseGroup
+        });
+        this.addListener({
+            scope: this,
+            element: 'el',
+            delegate: 'a.createnewdeadline',
+            click: this._onAddDeadline
+        });
+        this.callParent(arguments);
+    },
+
+    _onCloseGroup:function () {
+        this.fireEvent('closeGroup');
+    },
+
+    _onAddDeadline:function () {
+        this.fireEvent('addDeadline');
+    }
+});
 
 Ext.define('devilry.statistics.sidebarplugin.qualifiesforexam.RequirePassingGradeOnAll', {
     extend: 'devilry.statistics.sidebarplugin.qualifiesforexam.FilterBase',
@@ -11459,11 +11583,8 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
     config: {
         model: undefined,
         noRecordsMessage: {
-            title: interpolate(gettext('No active %(assignments_term)s'), {
-                assignments_term: gettext('assignments')
-            }, true),
-            msg: interpolate(gettext('You are not registered on any %(assignments_term)s in any active %(periods_term)s.'), {
-                assignments_term: gettext('assignments'),
+            title: gettext('No active assignments'),
+            msg: interpolate(gettext('You are not registered on any assignments in any active %(periods_term)s.'), {
                 periods_term: gettext('periods')
             }, true)
         },
@@ -11540,8 +11661,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             xtype: 'box',
             tpl: '<div class="section"><h2>{header}</h2></div>',
             data: {
-                header: interpolate(gettext('%(Assignments_term)s in active %(periods_term)s'), {
-                    Assignments_term: gettext('Assignments'),
+                header: interpolate(gettext('Assignments in active %(periods_term)s'), {
                     periods_term: gettext('periods')
                 }, true)
             }
@@ -13010,7 +13130,8 @@ Ext.define('devilry.extjshelpers.forms.Deadline', {
 
     help: [
         '<strong>Choose a deadline</strong>. Students will be able to deliver after the deadline expires, however deliveries after the deadline will be clearly marked.',
-        'The <strong>text</strong> is displayed to students when they view the deadline, and when they add deliveries on the deadline. The text is shown exactly as you see it in the text-box. No formatting of any kind is applied.'
+        'The <strong>text</strong> is displayed to students when they view the deadline, and when they add deliveries on the deadline. The text is shown exactly as you see it in the text-box. No formatting of any kind is applied.',
+        '<strong>NOTE:</strong> Examiners can not move Deadlines. We are planning a major cleanup of the Examiner UI, which will include the ability to move deadlines. In the meantime, ask your course administrator to move deadlines if needed.'
     ]
 });
 
@@ -13302,150 +13423,6 @@ Ext.define('devilry.apps.administrator.simplified.SimplifiedRelatedStudentKeyVal
         extraParams: {
             getdata_in_qrystring: true,
             result_fieldgroups: '[]'
-        },
-        reader: {
-            type: 'json',
-            root: 'items',
-            totalProperty: 'total'
-        },
-        writer: {
-            type: 'json'
-        }
-    }
-});
-
-// Autogenerated by the dev_coreextjsmodels script. DO NOT CHANGE MANUALLY
-
-/*******************************************************************************
- * NOTE: You will need to add the following before your application code:
- *
- *    Ext.Loader.setConfig({
- *        enabled: true,
- *        paths: {
- *            'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes'
- *        }
- *    });
- *    Ext.syncRequire('devilry.extjshelpers.RestProxy');
- ******************************************************************************/
-Ext.define('devilry.apps.examiner.simplified.SimplifiedDelivery', {
-    extend: 'Ext.data.Model',
-    requires: ['devilry.extjshelpers.RestProxy'],
-    fields: [
-        {
-            "type": "int", 
-            "name": "id"
-        }, 
-        {
-            "type": "int", 
-            "name": "number"
-        }, 
-        {
-            "type": "date", 
-            "name": "time_of_delivery", 
-            "dateFormat": "Y-m-d\\TH:i:s"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline"
-        }, 
-        {
-            "type": "bool", 
-            "name": "successful"
-        }, 
-        {
-            "type": "int", 
-            "name": "delivery_type"
-        }, 
-        {
-            "type": "auto", 
-            "name": "alias_delivery"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__candidates__identifier"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__parentnode"
-        }, 
-        {
-            "type": "int", 
-            "name": "deadline__assignment_group__parentnode__delivery_types"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__parentnode__short_name"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__parentnode__long_name"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__parentnode__parentnode"
-        }, 
-        {
-            "type": "date", 
-            "name": "deadline__assignment_group__parentnode__parentnode__start_time", 
-            "dateFormat": "Y-m-d\\TH:i:s"
-        }, 
-        {
-            "type": "date", 
-            "name": "deadline__assignment_group__parentnode__parentnode__end_time", 
-            "dateFormat": "Y-m-d\\TH:i:s"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__parentnode__parentnode__short_name"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__parentnode__parentnode__long_name"
-        }, 
-        {
-            "type": "auto", 
-            "name": "delivered_by__identifier"
-        }, 
-        {
-            "type": "date", 
-            "name": "deadline__deadline", 
-            "dateFormat": "Y-m-d\\TH:i:s"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__name"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__candidates__identifier"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__parentnode__parentnode__parentnode"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__parentnode__parentnode__parentnode__short_name"
-        }, 
-        {
-            "type": "auto", 
-            "name": "deadline__assignment_group__parentnode__parentnode__parentnode__long_name"
-        }
-    ],
-    idProperty: 'id',
-    proxy: {
-        type: 'devilryrestproxy',
-        url: '/examiner/restfulsimplifieddelivery/',
-        headers: {
-            'X_DEVILRY_USE_EXTJS': true
-        },
-        extraParams: {
-            getdata_in_qrystring: true,
-            result_fieldgroups: '["assignment_group_users", "assignment", "period", "delivered_by", "deadline", "assignment_group", "candidates", "subject"]'
         },
         reader: {
             type: 'json',
@@ -16789,252 +16766,36 @@ Ext.define('devilry.extjshelpers.tooltips.assignmentgroup.FeedbackWindow', {
         });
 
 
+Ext.define('devilry_header.StudentSearchResultsView', {
+    extend: 'devilry_header.BaseSearchResultsView',
+    alias: 'widget.devilry_header_studentsearchresults',
+    extraCls: 'devilry_header_studentsearchresults',
 
-/**
- * Panel to show Delivery info.
- */
-Ext.define('devilry.extjshelpers.assignmentgroup.DeliveryInfo', {
-    extend: 'Ext.panel.Panel',
-    alias: 'widget.deliveryinfo',
-    cls: 'widget-deliveryinfo',
-    html: '',
-    requires: [
-        'devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel'
+    singleResultTpl: [
+        '<div><a href="{[this.getUrl(values)]}" class="{[this.getResultLinkCls()]}">{title}</a></div>',
+        '<div class="meta path">{path}</div>',
+        '<tpl if="type == \'core_assignmentgroup\'">',
+            '<tpl if="values.students.length &gt; 1">',
+                '<div class="meta students">',
+                    '{[this.joinStringArray(values.students)]}',
+                '</small></div>',
+            '</tpl>',
+        '</tpl>'
     ],
 
-    //width: 500,
-    //style: {border: 'none'},
+    heading: gettext('Content where you are student'),
 
-    config: {
-        /**
-         * @cfg
-         * FileMeta ``Ext.data.Store``. (Required).
-         * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
-         * class.
-         */
-        filemetastore: undefined,
-
-        /**
-         * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
-         */
-        delivery_recordcontainer: undefined,
-
-        /**
-         * @cfg
-         * Delivery ``Ext.data.Model``.
-         */
-        deliverymodel: undefined,
-
-        /**
-         * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
-         */
-        assignmentgroup_recordcontainer: undefined
-    },
-
-    tpl: Ext.create('Ext.XTemplate',
-        '<tpl if="time_of_delivery">', // If time_of_delivery is false, the record is not loaded yet
-        '    <tpl if="delivery_type == 0">',
-        '        <tpl if="time_of_delivery &gt; deadline__deadline">',
-        '            <div class="section warning-small">',
-        '               <h1>After deadline</h1>',
-        '               <p>This delivery was made <strong>after</strong> the deadline (<em>{deadline__deadline:date}</em>).</p>',
-        '            </div>',
-        '        </tpl>',
-        '        <tpl if="!islatestDelivery">',
-        '            <div class="section warning-small">',
-        '               <h1>Not the latest delivery</h1>',
-        '               <p>',
-        '                   One or more deliveries has been made <strong>after</strong> the one you are currently viewing. <em>Normally</em> the latest delivery is corrected.',
-        '                   <tpl if="time_of_delivery &gt; deadline__deadline">',
-        '                       However since this delivery was made after the deadline, an earlier delivery may be corrected instead.',
-        '                   </tpl>',
-        '                   Choose <span class="menuref">Other deliveries</span> in the toolbar to view other deliveries.',
-        '               </p>',
-        '            </div>',
-        '        </tpl>',
-        '        <div class="section info-small">',
-        '           <h1>Delivery number {number}</h1>',
-        '           <p>This delivery was made <em>{time_of_delivery:date}</em>. Choose <span class="menuref">Browse files</span> in the toolbar to download the delivered files.</p>',
-        '        </div>',
-        '    </tpl>',
-        '    <tpl if="delivery_type == 1">',
-        '        <div class="section info-small">',
-        '           <p>This delivery was not made using Devilry. This usually means that it is a non-electronic delivery. However, it may also have been delivered through an alternative system, such as email.</p>',
-        '        </div>',
-        '    </tpl>',
-        '    <tpl if="delivery_type == 2">',
-        '        <div class="section info-small">',
-        '           <p>This delivery was made in another period/semester. It has been imported into the current period/semester.</p>',
-        '        </div>',
-        '    </tpl>',
-        '</tpl>'
-    ),
-
-    initComponent: function() {
-        this.toolbar = Ext.widget('toolbar', {
-            xtype: 'toolbar',
-            dock: 'top',
-            items: []
-        });
-        
-        Ext.apply(this, {
-            hidden: true,
-            dockedItems: [this.toolbar]
-        });
-        this.callParent(arguments);
-
-        this.deliverystore = this.createDeliveryStore();
-
-        if(this.assignmentgroup_recordcontainer.record) {
-            this.loadDeliveryStore();
+    getUrl:function (values) {
+        var prefix = Ext.String.format('{0}/devilry_student/',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX);
+        if(values.type === 'core_assignmentgroup') {
+            return Ext.String.format('{0}#/group/{1}/',
+                prefix, values.id);
+        } else {
+            throw Ext.String.format('Unknown type: {0}', values.type);
         }
-        this.assignmentgroup_recordcontainer.addListener('setRecord', this.loadDeliveryStore, this);
-
-        if(this.delivery_recordcontainer.record) {
-            this.onLoadDelivery();
-        }
-        this.delivery_recordcontainer.addListener('setRecord', this.onLoadSomething, this);
-    },
-
-    /**
-     * @private
-     */
-    onLoadSomething: function() {
-        if(this.delivery_recordcontainer.record && this.deliverystoreLoaded) {
-            this.onLoadingComplete();
-        }
-    },
-
-    /**
-     * @private
-     * Reload all deliveries on this assignmentgroup.
-     * */
-    loadDeliveryStore: function() {
-        //this.deliverystore.pageSize = 3;
-        this.deliverystore.proxy.extraParams.filters = Ext.JSON.encode([{
-            field: 'deadline__assignment_group',
-            comp: 'exact',
-            value: this.assignmentgroup_recordcontainer.record.data.id
-        }]);
-        this.deliverystore.load({
-            scope: this,
-            callback: function(records, op, success) {
-                if(success) {
-                    this.deliverystoreLoaded = true;
-                    this.fireEvent('deliveriesLoaded', this.deliverystore);
-                    this.onLoadSomething(records);
-                } else {
-                    throw "Failed to load delivery store.";
-                }
-            }
-        });
-    },
-
-    /**
-     * @private
-     */
-    onLoadingComplete: function() {
-        var delivery = this.delivery_recordcontainer.record.data;
-        var islatestDelivery = this.deliverystore.currentPage === 1 && this.deliverystore.data.items[0].data.id === delivery.id;
-
-        this.show();
-        this.toolbar.removeAll();
-
-        var data = {
-            islatestDelivery: islatestDelivery
-        };
-        Ext.apply(data, delivery);
-        this.update(data);
-
-        if(delivery.delivery_type === 0) {
-            this.toolbar.add({
-                xtype: 'button',
-                text: 'Browse files',
-                id: 'tooltip-browse-files',
-                scale: 'large',
-                listeners: {
-                    scope: this,
-                    click: this.showFileMetaBrowserWindow,
-                    render: function() {
-                        //Ext.create('devilry.extjshelpers.tooltips.assignmentgroup.BrowseFiles', {});
-                    }
-                }
-            });
-        }
-
-        this.toolbar.add({
-            xtype: 'button',
-            id: 'tooltip-other-deliveries',
-            text: 'Other deliveries',
-            scale: 'large',
-            listeners: {
-                scope: this,
-                click: this.onOtherDeliveries
-            }
-        });
-    },
-
-    /**
-     * @private
-     * */
-    createDeliveryStore: function() {
-        var deliverystore = Ext.create('Ext.data.Store', {
-            model: this.deliverymodel,
-            remoteFilter: true,
-            remoteSort: true,
-            autoSync: true,
-            groupField: 'deadline__deadline'
-        });
-
-        deliverystore.proxy.extraParams.orderby = Ext.JSON.encode(['-deadline__deadline', '-number']);
-        return deliverystore;
-    },
-
-    /**
-     * @private
-     */
-    onOtherDeliveries: function(button, notClosable) {
-        var deliveriesWindow = Ext.create('Ext.window.Window', {
-            title: 'Deliveries by this group',
-            height: 500,
-            width: 750,
-            modal: true,
-            layout: 'fit',
-            closeAction: 'hide',
-            //closable: button != undefined,
-            items: {
-                xtype: 'deliveriesonsinglegrouplisting',
-                store: this.deliverystore,
-                delivery_recordcontainer: this.delivery_recordcontainer
-            }
-        });
-        deliveriesWindow.show();
-    },
-
-    /**
-     * @private
-     */
-    showFileMetaBrowserWindow: function(button) {
-        var fileBrowser = Ext.create('Ext.window.Window', {
-            title: 'Files',
-            height: 400,
-            width: 500,
-            modal: true,
-            //animateTarget: button,
-            layout: 'fit',
-            items: [{
-                xtype: 'filemetabrowserpanel',
-                border: false,
-                filemetastore: this.filemetastore,
-                deliveryid: this.delivery_recordcontainer.record.data.id
-            }]
-        });
-        fileBrowser.show();
     }
 });
-
 
 /**
  * Search widget with a {@link devilry.extjshelpers.searchwidget.MultiSearchField} on top
@@ -17519,37 +17280,6 @@ Ext.define('devilry_header.HelpLinksStore', {
     }
 });
 
-
-Ext.define('devilry_header.StudentSearchResultsView', {
-    extend: 'devilry_header.BaseSearchResultsView',
-    alias: 'widget.devilry_header_studentsearchresults',
-    extraCls: 'devilry_header_studentsearchresults',
-
-    singleResultTpl: [
-        '<div><a href="{[this.getUrl(values)]}" class="{[this.getResultLinkCls()]}">{title}</a></div>',
-        '<div class="meta path">{path}</div>',
-        '<tpl if="type == \'core_assignmentgroup\'">',
-            '<tpl if="values.students.length &gt; 1">',
-                '<div class="meta students">',
-                    '{[this.joinStringArray(values.students)]}',
-                '</small></div>',
-            '</tpl>',
-        '</tpl>'
-    ],
-
-    heading: gettext('Content where you are student'),
-
-    getUrl:function (values) {
-        var prefix = Ext.String.format('{0}/devilry_student/',
-            window.DevilrySettings.DEVILRY_URLPATH_PREFIX);
-        if(values.type === 'core_assignmentgroup') {
-            return Ext.String.format('{0}#/group/{1}/',
-                prefix, values.id);
-        } else {
-            throw Ext.String.format('Unknown type: {0}', values.type);
-        }
-    }
-});
 
 Ext.define('devilry.extjshelpers.assignmentgroup.MultiCreateNewDeadlineWindow', {
     extend: 'devilry.extjshelpers.RestfulSimplifiedEditWindowBase',
@@ -19339,19 +19069,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow', {
         'devilry.extjshelpers.forms.Deadline'
     ],
 
-    config: {
-        /**
-         * @cfg
-         * AssignmentGroup id
-         */
-        assignmentgroupid: undefined,
-
-        /**
-         * @cfg
-         * Deadline ``Ext.data.Model``.
-         */
-        deadlinemodel: undefined
-    },
+    assignmentgroupid: undefined,
+    deadlinemodel: undefined,
 
     constructor: function(config) {
         this.initConfig(config);
@@ -20417,7 +20136,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     requires: [
         'devilry.extjshelpers.Pager',
         'devilry.extjshelpers.SingleRecordContainer',
-        'devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow',
+        'devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackView',
         'devilry.extjshelpers.SingleRecordContainerDepButton',
         'devilry_extjsextras.DatetimeHelpers'
@@ -20426,7 +20145,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     assignmentgroup_recordcontainer: undefined,
 
     /**
-     * @cfg
+     * @cfg {Ext.data.Store} [filemetastore]
      * FileMeta ``Ext.data.Store``. (Required).
      * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
      * class.
@@ -20434,7 +20153,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     filemetastore: undefined,
 
     /**
-     * @cfg
+     * @cfg {object} [staticfeedbackstore]
      * FileMeta ``Ext.data.Store``. (Required).
      * _Note_ that ``filemetastore.proxy.extraParams`` is changed by this
      * class.
@@ -20442,7 +20161,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
     staticfeedbackstore: undefined,
 
     /**
-     * @cfg
+     * @cfg {object} [delivery_recordcontainer]
      * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
      */
     delivery_recordcontainer: undefined,
@@ -20454,14 +20173,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
             '<h2 style="margin: 0 0 5 0;">',
                 gettext('Delivery'), ' #{delivery.number}',
             '</h2>',
-            '<tpl if="assignmentgroup.parentnode__delivery_types === 1">',
-                '<span class="label label-info">',
-                    gettext('Non-electronic delivery'),
-                '</span>',
-            '<tpl else>',
-                gettext('Time of delivery: '),
-                '{[this.formatDatetime(values.delivery.time_of_delivery)]}',
-            '</tpl>',
+            '<p>',
+                '<tpl if="assignmentgroup.parentnode__delivery_types === 1">',
+                    '<span class="label label-info">',
+                        gettext('Non-electronic delivery'),
+                    '</span>',
+                '<tpl else>',
+                    gettext('Time of delivery: '),
+                    '{[this.formatDatetime(values.delivery.time_of_delivery)]}',
+                '</tpl>',
+            '</p>',
         '</tpl>', {
             formatDatetime:function (dt) {
                 return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(dt);
@@ -20483,6 +20204,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
             autoScroll: true
         });
 
+        var group = this.assignmentgroup_recordcontainer.record;
         Ext.apply(this, {
             layout: 'anchor',
             border: false,
@@ -20498,45 +20220,21 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
                 tpl: this.titleTpl,
                 data: {
                     loading: true
-                },
-                dockedItems: [{
-                    xtype: 'toolbar',
-                    dock: 'bottom',
-                    ui: 'footer',
-                    items: [{
-                        xtype: 'singlerecordcontainerdepbutton',
-                        singlerecordcontainer: this.delivery_recordcontainer,
-                        text: '<i class="icon-list-alt"></i> ' + gettext('Browse files'),
-                        cls: 'bootstrap',
-                        scale: 'medium',
-                        listeners: {
-                            scope: this,
-                            click: function() {
-                                Ext.create('devilry.extjshelpers.assignmentgroup.FileMetaBrowserWindow', {
-                                    filemetastore: this.filemetastore,
-                                    deliveryid: this.delivery_recordcontainer.record.data.id
-                                }).show();
-                            }
-                        }
-                    }, {
-                        xtype: 'singlerecordcontainerdepbutton',
-                        singlerecordcontainer: this.delivery_recordcontainer,
-                        scale: 'medium',
-                        text: '<i class="icon-download"></i> ' + gettext('Download all files (.zip)'),
-                        cls: 'bootstrap',
-                        listeners: {
-                            scope: this,
-                            click: function(view, record, item) {
-                                var url = Ext.String.format(
-                                    '{0}/student/show-delivery/compressedfiledownload/{1}',
-                                    DevilrySettings.DEVILRY_URLPATH_PREFIX,
-                                    this.delivery_recordcontainer.record.data.id
-                                );
-                                window.open(url, 'download');
-                            }
-                        }
-                    }]
-                }]
+                }
+            }, {
+                xtype: 'filemetabrowserpanel',
+                store: this.filemetastore,
+                hidden: true
+            }, {
+                xtype: 'box',
+                cls: 'bootstrap',
+                itemId: 'isClosedMessage',
+                hidden: group.get('is_open'),
+                html: [
+                    '<p class="alert alert-info">',
+                        gettext('This group is closed. Students can not add deliveries on closed groups. Use the button above to re-open it if you need to change their feedback.'),
+                    '</p>'
+                ].join('')
             }, {
                 xtype: 'box',
                 cls: 'bootstrap',
@@ -20560,12 +20258,12 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
         this.staticfeedback_recordcontainer.addListener('setRecord', this.onSetStaticFeedbackRecord, this);
         this.staticfeedbackstore.addListener('load', this.onLoadStaticfeedbackstore, this);
+
         if(this.delivery_recordcontainer.record) {
             this.onLoadDelivery();
         }
         this.delivery_recordcontainer.addListener('setRecord', this.onLoadDelivery, this);
     },
-
 
     getToolbarItems: function() {
         var items = ['->', {
@@ -20587,9 +20285,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
         return items;
     },
 
-    /**
-     * @private
-     */
+
     onLoadDelivery: function() {
         this.staticfeedbackstore.proxy.extraParams.filters = Ext.JSON.encode([{
             field: 'delivery',
@@ -20610,7 +20306,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo', {
 
 
     onSetStaticFeedbackRecord: function() {
-        var isactive = this.staticfeedbackstore.currentPage == 1;
+        var isactive = this.staticfeedbackstore.currentPage === 1;
         this.setBody({
             xtype: 'staticfeedbackview',
             padding: 10,
@@ -20857,29 +20553,24 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         'devilry.extjshelpers.assignmentgroup.CreateNewDeadlineWindow'
     ],
 
-//    title: interpolate(gettext('%(Deliveries_term)s grouped by %(deadline_term)s'), {
-//        Deliveries_term: gettext('Deliveries'),
-//        deadline_term: gettext('deadline')
-//    }, true),
-
     autoScroll: true,
 //    style: 'border-right: 1px solid #ddd !important; border-top: 1px solid #ddd !important;',
     border: 1,
 
     /**
-    * @cfg
+    * @cfg {string} [role]
     */
     role: undefined,
 
     /**
-    * @cfg
+    * @cfg {object} [assignmentgroup_recordcontainer]
     * AssignmentGroup record container. The view is reloaded on the setRecord
     * event.
     */
     assignmentgroup_recordcontainer: undefined,
 
     /**
-    * @cfg
+    * @cfg {object} [delivery_recordcontainer]
     * A {@link devilry.extjshelpers.SingleRecordContainer} for Delivery.
     * The record is changed when a user selects a delivery.
     */
@@ -20908,24 +20599,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     _onLoadAssignmentGroup: function(groupRecordContainer) {
         var groupRecord = groupRecordContainer.record;
         this.loadAllDeadlines();
-        if(this.role === 'student' && groupRecord.get('is_open')) {
-            this.addDocked({
-                xtype: 'toolbar',
-                dock: 'bottom',
-                ui: 'footer',
-                items: [{
-                    xtype: 'box',
-                    tpl: '<a href="../add-delivery/{groupId}">{text}</a>',
-                    padding: '5 0 5 0',
-                    data: {
-                        text: interpolate(gettext('Add %(delivery_term)s'), {
-                            delivery_term: gettext('delivery')
-                        }),
-                        groupId: groupRecord.get('id')
-                    }
-                }]
-            });
-        }
     },
 
 
@@ -20993,7 +20666,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     _handleLatestDeadline: function(deadlineRecord, deliveryRecords) {
         var is_open = this.assignmentgroup_recordcontainer.record.get('is_open');
         if(this.role !== 'student' && deliveryRecords.length === 0 && deadlineRecord.get('deadline') < Ext.Date.now() && is_open) {
-            this._onExpiredNoDeliveries();
+            this.fireEvent('expiredNoDeliveries');
         }
     },
 
@@ -21061,7 +20734,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
     },
 
     _onLoadComplete:function () {
-        if(this.role !== 'student') {
+        var group = this.assignmentgroup_recordcontainer.record;
+        if(group.get('parentnode__delivery_types') !== 1) {
             this.add({
                 xtype: 'button',
                 scale: 'medium',
@@ -21069,7 +20743,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
                 cls: 'bootstrap',
                 listeners: {
                     scope: this,
-                    click: this.onCreateNewDeadline
+                    click:function () {
+                        this.fireEvent('createNewDeadline');
+                    }
                 }
             });
         }
@@ -21113,48 +20789,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
         });
     },
 
-
-    /**
-     * @private
-     */
-    onCreateNewDeadline: function() {
-        var me = this;
-        var createDeadlineWindow = Ext.widget('createnewdeadlinewindow', {
-            assignmentgroupid: this.assignmentgroup_recordcontainer.record.data.id,
-            deadlinemodel: Ext.String.format('devilry.{0}.models.Deadline', this.role),
-            onSaveSuccess: function(record) {
-                this.close();
-                me.loadAllDeadlines();
-            }
-        });
-        createDeadlineWindow.show();
-    },
-
-
-    /**
-     * @private
-     */
-    _onExpiredNoDeliveries: function() {
-        var win = Ext.MessageBox.show({
-            title: 'This group has no deliveries, and their active deadline has expired',
-            msg: '<p>Would you like to give the group a new deadline?</p><ul>' +
-                '<li>Choose <strong>yes</strong> to create a new deadline</li>' +
-                '<li>Choose <strong>no</strong> to close the group. This fails the student on this assignment. You can re-open the group at any time.</li>' +
-                '<li>Choose <strong>cancel</strong> to close this window without doing anything.</li>' +
-                '</ul>',
-            buttons: Ext.Msg.YESNOCANCEL,
-            scope: this,
-            closable: false,
-            fn: function(buttonId) {
-                if(buttonId === 'yes') {
-                    this.onCreateNewDeadline()
-                } else if (buttonId === 'no') {
-                    devilry.extjshelpers.assignmentgroup.IsOpen.closeGroup(this.assignmentgroup_recordcontainer);
-                }
-            }
-        });
-    },
-
     getLatestDelivery: function() {
         return this._allDeliveries[0];
     },
@@ -21164,9 +20798,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeliveriesGroupedByDeadline', {
             var index = deliveriespanel.deliveriesStore.find('id', deliveryid);
             if(index !== -1) {
                 var deliveriesgrid = deliveriespanel.down('deliveriesgrid');
-                if(deliveriespanel.collapsed) {
-                    deliveriespanel.toggleCollapse();
-                }
+//                if(deliveriespanel.collapsed) {
+//                    deliveriespanel.toggleCollapse();
+//                }
                 deliveriesgrid.getSelectionModel().select(index);
                 return false; // break
             }
@@ -21979,25 +21613,10 @@ Ext.define('devilry.extjshelpers.assignmentgroup.DeadlinesOnSingleGroupListing',
         '{deadline:date}'
     ),
 
-    config: {
-        /**
-         * @cfg
-         * Deadline ``Ext.data.Model``.
-         */
-        deadlinemodel: undefined,
+    deadlinemodel: undefined,
+    assignmentgroup_recordcontainer: undefined,
+    enableDeadlineCreation: false,
 
-        /**
-         * @cfg
-         * A {@link devilry.extjshelpers.SingleRecordContainer} for AssignmentGroup.
-         */
-        assignmentgroup_recordcontainer: undefined,
-
-        /**
-         * @cfg
-         * Enable creation of new deadlines?
-         */
-        enableDeadlineCreation: false,
-    },
 
     constructor: function(config) {
         this.callParent([config]);
@@ -23557,13 +23176,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
 
     config: {
         /**
-         * @cfg
+         * @cfg {object} [gradeeditor_config_recordcontainer]
          * A {@link devilry.extjshelpers.SingleRecordContainer} for GradeEditor Config.
          */
         gradeeditor_config_recordcontainer: undefined,
 
         /**
-         * @cfg
+         * @cfg {bool} [isAdministrator]
          * Use the administrator RESTful interface to store drafts? If this is
          * ``false``, we use the examiner RESTful interface.
          */
@@ -23601,22 +23220,25 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
 
 
     getToolbarItems: function() {
-        this.createButton = Ext.create('Ext.button.Button', {
-            text: [
-                '<i class="icon-pencil"></i> ',
-                gettext('Create feedback')
-            ].join(''),
-            hidden: false,
-            cls: 'bootstrap',
-            scale: 'medium',
-            listeners: {
-                scope: this,
-                click: this.loadGradeEditor,
-                render: this.onRenderEditButton
-            }
-        });
         var defaultItems = this.callParent();
-        Ext.Array.insert(defaultItems, 0, [this.createButton]);
+        var group = this.assignmentgroup_recordcontainer.record;
+        if(group.get('is_open')) {
+            this.createButton = Ext.create('Ext.button.Button', {
+                text: [
+                    '<i class="icon-pencil"></i> ',
+                    gettext('Create feedback')
+                ].join(''),
+                hidden: false,
+                cls: 'bootstrap',
+                scale: 'medium',
+                listeners: {
+                    scope: this,
+                    click: this.loadGradeEditor,
+                    render: this.onRenderEditButton
+                }
+            });
+            Ext.Array.insert(defaultItems, 0, [this.createButton]);
+        }
         return defaultItems;
     },
 
@@ -23642,24 +23264,31 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             }
         }, 100, this);
         this.editFeedbackTip = Ext.create('Ext.tip.ToolTip', {
-            title: interpolate(gettext('Click to give %(feedback_term)s on this %(delivery_term)s'), {
-                feedback_term: gettext('feedback'),
-                delivery_term: gettext('delivery')
-            }, true),
+            title: gettext('Click to give feedback on this delivery'),
             anchor: 'top',
             target: button.getEl().id,
-            html: interpolate(gettext('You add a %(feedback_term)s to a specific %(delivery_term)s. The latest %(feedback_term)s you publish on any %(delivery_term)s on this %(assignment_term)s becomes their active %(feedback_term)s/%(grade_term)s on the %(assignment_term)s.'), {
-                feedback_term: gettext('feedback'),
-                delivery_term: gettext('delivery'),
-                assignment_term: gettext('assignment'),
-                feedback_term: gettext('feedback'),
-                grade_term: gettext('grade')
-            }, true),
-            width: 415,
-            dismissDelay: 35000,
-            autoHide: true
+            html: gettext('You add a feedback to a specific delivery. The latest feedback you publish on any delivery on this assignment becomes their active feedback/grade on the assignment.'),
+            width: 415
+//            dismissDelay: 35000,
+//            autoHide: true
         });
     },
+
+    onLoadDelivery: function() {
+        this.callParent(arguments);
+        var group = this.assignmentgroup_recordcontainer.record;
+        if(group.get('parentnode__delivery_types') !== 1) {
+            this._addElectronicDeliveryExtras();
+        }
+    },
+
+    _addElectronicDeliveryExtras: function() {
+        var deliveryrecord = this.delivery_recordcontainer.record;
+        var panel = this.down('filemetabrowserpanel');
+        panel.loadFilesForDelivery(deliveryrecord.get('id'));
+        panel.show();
+    },
+
 
     /**
      * @private
@@ -23718,7 +23347,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * - Registry item has loaded.
      */
     enableEditButton: function() {
-        if(this.isReadyToEditFeedback()) {
+        if(this.isReadyToEditFeedback() && !Ext.isEmpty(this.createButton)) {
             this.createButton.getEl().unmask();
         }
     },
@@ -23758,7 +23387,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             xtype: 'component',
             html: ''
         });
-        this.showNoFeedbackTip();
+//        this.showNoFeedbackTip();
         //this.setBody({
             //xtype: 'component',
             //cls: 'no-feedback-editable',
@@ -23805,15 +23434,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      * @private
      */
     reloadAssignmentGroup: function() {
-        this.assignmentgroupmodel.load(this.assignmentgroup_recordcontainer.record.data.id, {
-            scope: this,
-            success: function(record) {
-                this.assignmentgroup_recordcontainer.setRecord(record);
-            },
-            failure: function() {
-                // TODO: Handle errors
-            }
-        });
+        window.location.reload();
+//        this.assignmentgroupmodel.load(this.assignmentgroup_recordcontainer.record.data.id, {
+//            scope: this,
+//            success: function(record) {
+//                this.assignmentgroup_recordcontainer.setRecord(record);
+//            },
+//            failure: function() {
+//                TODO: Handle errors
+//            }
+//        });
     },
 
     /**
@@ -23821,22 +23451,15 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
      */
     onFailingGrade: function() {
         var win = Ext.MessageBox.show({
-            title: interpolate(gettext('You published a %(feedback_term)s with a failing %(grade_term)s'), {
-                feedback_term: gettext('feedback'),
-                grade_term: gettext('grade')
-            }, true),
+            title: gettext('You published a feedback with a failing grade'),
             msg: [
                 '<p>', gettext('Would you like to give them another try?'), '</p>',
                 '<ul>',
                     '<li>',
-                        interpolate(gettext('Choose <strong>yes</strong> to create a new %(deadline_term)s'), {
-                            deadline_term: gettext('deadline')
-                        }, true),
+                        gettext('Choose <strong>yes</strong> to create a new deadline'),
                     '</li>',
                     '<li>',
-                        interpolate(gettext('Choose <strong>no</strong> to close the %(group_term)s. This fails the student(s) on this %(assignment_term)s. You can re-open the %(group_term)s at any time.'), {
-                            group_term: gettext('group')
-                        }, true),
+                        gettext('Choose <strong>no</strong> to close the group. This fails the student(s) on this assignment. You can re-open the group at any time.'),
                     '</li>',
                 '</ul>'
             ].join(''),
@@ -23844,7 +23467,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor', {
             scope: this,
             closable: false,
             fn: function(buttonId) {
-                if(buttonId == 'yes') {
+                if(buttonId === 'yes') {
                     this.createNewDeadline();
                 } else {
                     this.reloadAssignmentGroup();
@@ -24702,9 +24325,8 @@ Ext.define('devilry.examiner.AssignmentLayoutTodoList', {
 Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     extend: 'Ext.container.Container',
     alias: 'widget.assignmentgroupoverview',
-    cls: 'widget-assignmentgroupoverview',
+    cls: 'widget-assignmentgroupoverview devilry_subtlebg',
     requires: [
-        'devilry.extjshelpers.assignmentgroup.DeliveryInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackInfo',
         'devilry.extjshelpers.assignmentgroup.StaticFeedbackEditor',
         'devilry.extjshelpers.assignmentgroup.AssignmentGroupTitle',
@@ -24715,9 +24337,9 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
         'devilry.administrator.models.Delivery',
         'devilry.examiner.models.Delivery',
         'devilry.student.models.Delivery',
-        'devilry.extjshelpers.SingleRecordContainer'
+        'devilry.extjshelpers.SingleRecordContainer',
+        'devilry.extjshelpers.assignmentgroup.DeadlineExpiredNoDeliveriesBox'
     ],
-    cls: 'devilry_subtlebg',
 
     nonElectronicNodeTpl: Ext.create('Ext.XTemplate',
         '<div class="bootstrap">',
@@ -24732,9 +24354,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     ),
 
     /**
-     * @cfg
+     * @cfg {bool} [canExamine]
      * Enable creation of new feedbacks? Defaults to ``false``.
-     * See: {@link devilry.extjshelpers.assignmentgroup.DeliveryInfo#canExamine}.
      *
      * When this is ``true``, the authenticated user still needs to have
      * permission to POST new feedbacks for the view to work.
@@ -24742,13 +24363,13 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     canExamine: false,
 
     /**
-     * @cfg
+     * @cfg {int} [assignmentgroupid]
      * AssignmentGroup ID.
      */
     assignmentgroupid: undefined,
 
     /**
-     * @cfg
+     * @cfg {bool} [isAdministrator]
      * Use the administrator RESTful interface to store drafts? If this is
      * ``false``, we use the examiner RESTful interface.
      */
@@ -24779,7 +24400,6 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
      * @private
      */
     createAttributes: function() {
-
         this.role = !this.canExamine? 'student': this.isAdministrator? 'administrator': 'examiner';
         this.assignmentgroupmodel = Ext.ModelManager.getModel(this.getSimplifiedClassName('SimplifiedAssignmentGroup'));
         this.filemetastore = this._createStore('SimplifiedFileMeta');
@@ -24859,9 +24479,8 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
     _showFeedbackPanel: function() {
         if(this.delivery_recordcontainer.record && this.assignmentgroup_recordcontainer.record) {
             if(!this.feedbackPanel) {
-                this.feedbackPanel = Ext.widget(this.canExamine? 'staticfeedbackeditor': 'staticfeedbackinfo', {
+                this.feedbackPanel = Ext.widget('staticfeedbackeditor', {
                     staticfeedbackstore: this.staticfeedbackstore,
-                    //width: 400,
                     delivery_recordcontainer: this.delivery_recordcontainer,
                     filemetastore: this.filemetastore,
                     assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
@@ -24904,6 +24523,14 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             padding: '20 30 20 30',
             defaults: {anchor: '100%'},
             items: [{
+                xtype: 'deadlineExpiredNoDeliveriesBox',
+                hidden: true,
+                listeners: {
+                    scope: this,
+                    closeGroup: this._onCloseGroup,
+                    addDeadline: this._onCreateNewDeadline
+                }
+            }, {
                 xtype: 'container',
                 layout: 'column',
                 items: [{
@@ -24973,13 +24600,16 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
                             html: this.nonElectronicNodeTpl.apply({canExamine: this.canExamine, DEVILRY_HELP_URL: DevilrySettings.DEVILRY_HELP_URL})
                         }), {
                             xtype: 'deliveriesgroupedbydeadline',
+                            minHeight: 40,
                             role: this.role,
                             assignmentgroup_recordcontainer: this.assignmentgroup_recordcontainer,
                             delivery_recordcontainer: this.delivery_recordcontainer,
                             flex: 1,
                             listeners: {
                                 scope: this,
-                                loadComplete: this._selectAppropriateDelivery
+                                loadComplete: this._selectAppropriateDelivery,
+                                expiredNoDeliveries: this._onExpiredNoDeliveries,
+                                createNewDeadline: this._onCreateNewDeadline
                             }
                         }]
                     }]
@@ -25025,6 +24655,41 @@ Ext.define('devilry.extjshelpers.assignmentgroup.AssignmentGroupOverview', {
             deliveriesgroupedbydeadline.selectDelivery(query.deliveryid);
         } else {
             this._selectMostNaturalDelivery(deliveriesgroupedbydeadline);
+        }
+    },
+
+
+    /**
+     * @private
+     */
+    _onCreateNewDeadline: function() {
+        var me = this;
+        var createDeadlineWindow = Ext.widget('createnewdeadlinewindow', {
+            assignmentgroupid: this.assignmentgroup_recordcontainer.record.data.id,
+            deadlinemodel: Ext.String.format('devilry.{0}.models.Deadline', this.role),
+            onSaveSuccess: function(record) {
+                this.close();
+//                me.loadAllDeadlines();
+                window.location.reload();
+            }
+        });
+        createDeadlineWindow.show();
+    },
+
+    _onCloseGroup:function () {
+        devilry.extjshelpers.assignmentgroup.IsOpen.closeGroup(this.assignmentgroup_recordcontainer, function() {
+            window.location.reload();
+        });
+    },
+
+
+    /**
+     * @private
+     */
+    _onExpiredNoDeliveries: function() {
+        var group = this.assignmentgroup_recordcontainer.record;
+        if(group.get('is_open')) {
+            this.down('deadlineExpiredNoDeliveriesBox').show();
         }
     }
 });
