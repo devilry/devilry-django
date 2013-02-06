@@ -1,7 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 
-from devilry.apps.core.models import Subject
 
 
 
@@ -18,6 +17,7 @@ class AdminAddBase(BaseCommand):
             record.admins.add(user)
 
     def get_subject(self, short_name):
+        from devilry.apps.core.models import Subject
         try:
             return Subject.objects.get(short_name=short_name)
         except Subject.DoesNotExist, e:

@@ -1,5 +1,4 @@
 from django.core.management.base import CommandError
-from devilry.apps.core.models import Period
 
 from devilry_subjectadminadd import AdminAddBase
 
@@ -10,6 +9,8 @@ class Command(AdminAddBase):
     help = 'Add period admin.'
 
     def handle(self, *args, **options):
+        from devilry.apps.core.models import Period
+
         if len(args) != 3:
             raise CommandError('Subject, Period and admin-username is required. See --help.')
         subject_short_name = args[0]

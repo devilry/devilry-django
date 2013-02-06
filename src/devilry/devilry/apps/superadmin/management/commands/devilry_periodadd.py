@@ -2,8 +2,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ValidationError
 from optparse import make_option
 
-from devilry.apps.core.models import Subject, Period, Node
-from devilry.coreutils.utils import get_by_path
 from datetime import datetime
 
 
@@ -49,6 +47,8 @@ class Command(RecordSaveModCommand):
     )
 
     def handle(self, *args, **options):
+        from devilry.apps.core.models import Subject, Period
+
         if len(args) != 2:
             raise CommandError('Course short name and period short name is required. See --help.')
         if options['long_name'] == None:

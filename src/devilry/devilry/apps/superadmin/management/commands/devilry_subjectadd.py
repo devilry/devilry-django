@@ -2,7 +2,6 @@ from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ValidationError
 from optparse import make_option
 
-from devilry.apps.core.models import Subject, Node
 from devilry.coreutils.utils import get_by_path
 
 
@@ -35,6 +34,8 @@ class Command(RecordSaveModCommand):
     )
 
     def handle(self, *args, **options):
+        from devilry.apps.core.models import Subject, Node
+
         if len(args) != 2:
             raise CommandError('Node path and short name is required. See --help.')
         if options['long_name'] == None:

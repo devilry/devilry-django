@@ -2,7 +2,6 @@ from pprint import pprint
 from django.core.management.base import BaseCommand, CommandError
 from optparse import make_option
 
-from devilry.apps.core.models import Subject, Period, Assignment
 from devilry.utils.passed_in_previous_period import MarkAsPassedInPreviousPeriod
 
 
@@ -19,6 +18,8 @@ class Command(BaseCommand):
     )
 
     def handle(self, *args, **kwargs):
+        from devilry.apps.core.models import Subject, Period, Assignment
+
         if len(args) != 3:
             raise CommandError('Subject, period and assignment short_name is required. See --help.')
         subject_short_name = args[0]

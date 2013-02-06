@@ -1,13 +1,14 @@
 from django.db import transaction
 from django.core.management.base import NoArgsCommand
 
-from devilry.apps.core.models import Candidate
 
 
 class Command(NoArgsCommand):
     help = "Sync the cached fields in Candidate with the actual data from User."
 
     def handle_noargs(self, **options):
+        from devilry.apps.core.models import Candidate
+
         verbosity = int(options.get('verbosity', '1'))
 
         updates = 0
