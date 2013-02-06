@@ -1,5 +1,3 @@
-from devilry.apps.core.models import RelatedStudent
-
 from devilry_periodsetrelatedexaminers import RelatedBaseCommand
 
 
@@ -8,5 +6,6 @@ class Command(RelatedBaseCommand):
     user_type = "student"
 
     def handle(self, *args, **options):
+        from devilry.apps.core.models import RelatedStudent
         self.get_subject_and_period(args)
         self.add_users(RelatedStudent, args, options)

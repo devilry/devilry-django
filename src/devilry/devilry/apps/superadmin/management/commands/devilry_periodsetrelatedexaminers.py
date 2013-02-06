@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ValidationError
 
-from devilry.apps.core.models import Subject, Period, RelatedExaminer
 import sys
 
 
@@ -21,6 +20,7 @@ class RelatedBaseCommand(BaseCommand):
 
     def get_subject_and_period(self, args):
         """ Get the subject and period from args """
+        from devilry.apps.core.models import Subject, Period
         if len(args) != 2:
             raise CommandError('Subject and period is required. See --help.')
         subject_short_name = args[0]
@@ -99,5 +99,6 @@ class Command(RelatedBaseCommand):
     user_type = "examiner"
 
     def handle(self, *args, **options):
+        from devilry.apps.core.models import RelatedExaminer
         self.get_subject_and_period(args)
         self.add_users(RelatedExaminer, args, options)
