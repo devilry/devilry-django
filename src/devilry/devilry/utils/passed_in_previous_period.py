@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import StaticFeedback
 from devilry.apps.core.models import deliverytypes
@@ -145,7 +146,6 @@ class MarkAsPassedInPreviousPeriod(object):
             raise NotInPrevious()
 
     def mark_as_delivered_in_previous(self, group, oldgroup=None, feedback=None):
-        latest_deadline = group.deadlines.order_by('-deadline')[0]
         if oldgroup:
             oldfeedback = oldgroup.feedback
             alias_delivery = oldfeedback.delivery
@@ -159,6 +159,9 @@ class MarkAsPassedInPreviousPeriod(object):
             alias_delivery = None
         else:
             raise ValueError('oldgroup or feedback is required arguments.')
+
+        latest_deadline = group.deadlines.order_by('-deadline')[0]
+        latest_deadline.deadline = datetime.now() + timedelta(seconds=60)
         delivery = latest_deadline.deliveries.create(successful=True,
                                                      delivery_type=deliverytypes.ALIAS,
                                                      alias_delivery=alias_delivery)

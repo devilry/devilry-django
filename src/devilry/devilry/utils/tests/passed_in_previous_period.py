@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.test import TestCase
 from devilry.apps.core.testhelper import TestHelper
 
@@ -214,3 +215,20 @@ class TestMarkAsPassedInPrevious(TestCase):
                                self.testhelper.sub_p3_a1_g4]))
         g2 = self.testhelper.sub_p3_a1_g2
         self.assertEquals(g2.deadlines.all()[0].deliveries.count(), 0)
+
+
+    def test_mark_group_past_deadline(self):
+        self.testhelper.add(nodes="uni",
+                            subjects=["sub"],
+                            periods=["p3:begins(-3):ends(6)"],
+                            assignments=["a1:pub(1)"],
+                            assignmentgroups=["group:candidate(student1):examiner(examiner1)"],
+                            deadlines=['d1:ends(1)'])
+        assignment = self.testhelper.sub_p3_a1
+        marker = MarkAsPassedInPreviousPeriod(assignment)
+        group = self.testhelper.sub_p3_a1_group
+        self.assertEquals(len(group.deadlines.all()), 1)
+        self.assertTrue(group.deadlines.all()[0].deadline < datetime.now())
+        marker.mark_group(group)
+        self.assertEquals(len(group.deadlines.all()), 1)
+        self.assertTrue(group.deadlines.all()[0].deadline >= datetime.now())
