@@ -52,8 +52,20 @@ Ext.define('devilry.apps.examiner.simplified.SimplifiedAssignmentGroup', {
             "name": "number_of_deliveries"
         }, 
         {
+            "type": "int", 
+            "name": "feedback__points"
+        }, 
+        {
             "type": "auto", 
-            "name": "candidates__identifier"
+            "name": "feedback__grade"
+        }, 
+        {
+            "type": "bool", 
+            "name": "feedback__is_passing_grade"
+        }, 
+        {
+            "type": "auto", 
+            "name": "tags__tag"
         }, 
         {
             "type": "auto", 
@@ -78,30 +90,6 @@ Ext.define('devilry.apps.examiner.simplified.SimplifiedAssignmentGroup', {
         }, 
         {
             "type": "int", 
-            "name": "feedback__points"
-        }, 
-        {
-            "type": "auto", 
-            "name": "feedback__grade"
-        }, 
-        {
-            "type": "bool", 
-            "name": "feedback__is_passing_grade"
-        }, 
-        {
-            "type": "auto", 
-            "name": "parentnode__parentnode"
-        }, 
-        {
-            "type": "auto", 
-            "name": "parentnode__parentnode__long_name"
-        }, 
-        {
-            "type": "auto", 
-            "name": "parentnode__parentnode__short_name"
-        }, 
-        {
-            "type": "int", 
             "name": "feedback__delivery__number"
         }, 
         {
@@ -119,7 +107,23 @@ Ext.define('devilry.apps.examiner.simplified.SimplifiedAssignmentGroup', {
         }, 
         {
             "type": "auto", 
+            "name": "parentnode__parentnode"
+        }, 
+        {
+            "type": "auto", 
+            "name": "parentnode__parentnode__long_name"
+        }, 
+        {
+            "type": "auto", 
+            "name": "parentnode__parentnode__short_name"
+        }, 
+        {
+            "type": "auto", 
             "name": "candidates"
+        }, 
+        {
+            "type": "auto", 
+            "name": "candidates__identifier"
         }, 
         {
             "type": "auto", 
@@ -147,7 +151,7 @@ Ext.define('devilry.apps.examiner.simplified.SimplifiedAssignmentGroup', {
         },
         extraParams: {
             getdata_in_qrystring: true,
-            result_fieldgroups: '["users", "assignment", "feedback", "period", "feedbackdelivery", "candidates", "feedback_rendered_view", "subject"]'
+            result_fieldgroups: '["feedback", "tags", "assignment", "feedbackdelivery", "period", "candidates", "users", "feedback_rendered_view", "subject"]'
         },
         reader: {
             type: 'json',
