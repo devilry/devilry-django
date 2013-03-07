@@ -63,7 +63,7 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
         );
         var me = this;
         Ext.MessageBox.show({
-            title: 'Confirm that you want to create dummy delivery',
+            title: gettext('Confirm that you want to create dummy delivery'),
             msg: msg.apply(groupRecord.data),
             animateTarget: this.deletebutton,
             buttons: Ext.Msg.YESNO,
@@ -81,8 +81,23 @@ Ext.define('devilry.administrator.studentsmanager.AddDeliveriesMixin', {
      */
     addNonElectronicDelivery: function(groupRecord) {
         var delivery = this.createDeliveryRecord(groupRecord, this.deliveryTypes.TYPE_NON_ELECTRONIC);
-        delivery.save();
-        this.refreshStore();
+        this.progressWindow.start(gettext('Create non-electronic delivery'));
+        delivery.save({
+            scope: this,
+            callback: function(record, operation) {
+                if(operation.success) {
+                    this.progressWindow.addSuccess(groupRecord, gettext('Added non-electronic delivery.'));
+                } else {
+                    this.progressWindow.addErrorFromOperation(
+                        groupRecord,
+                        gettext('Failed to create non-electronic delivery.'),
+                        operation
+                    );
+                }
+                this.progressWindow.finish();
+                this.refreshStore();
+            }
+        });
     },
 
 
