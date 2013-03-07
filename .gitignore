@@ -37,6 +37,7 @@ exampledata-backup.tar.bz2
 .#*
 .sass-cache/
 .mr.developer.cfg
+.local.vimrc
 
 */.installed.cfg
 */bin/buildout
