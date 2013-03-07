@@ -95,6 +95,11 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
         this.onLoadFailure(operation);
     },
 
+    _isElectronic: function() {
+        return this.assignmentRecord.get('delivery_types') === 0;
+    },
+    
+
     _updateLinkList: function(has_students) {
         this.getLinkList().update({
             managestudents_url: devilry_subjectadmin.utils.UrlLookup.manageStudents(this.assignment_id),
@@ -102,7 +107,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
             passedpreviousperiod_url: devilry_subjectadmin.utils.UrlLookup.passedPreviousPeriod(this.assignment_id),
             examinerstats_url: devilry_subjectadmin.utils.UrlLookup.assignmentExaminerStats(this.assignment_id),
             assignmentData: this.assignmentRecord.data,
-            electronic: this.assignmentRecord.get('delivery_types') === 0,
+            electronic: this._isElectronic(),
             period_term: gettext('period'),
             has_students: has_students
         });
