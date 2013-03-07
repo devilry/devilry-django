@@ -6,9 +6,7 @@ from datetime import datetime, timedelta
 from django.core.management.base import BaseCommand
 from django.core import management
 
-from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.command import setup_logging, get_verbosity
-from devilry.apps.core.models.deliverytypes import NON_ELECTRONIC
 
 
 logger = logging.getLogger(__name__)
@@ -350,6 +348,7 @@ class Command(BaseCommand):
         """
         Created with paper assignments where thor is admin.
         """
+        from devilry.apps.core.models.deliverytypes import NON_ELECTRONIC
         assignments = ['paper{num}:pub({pub}):ln(Paper delivery {num})'.format(num=num, pub=num*40) for num in xrange(1, 4)]
         periods = ['springcur:begins(-2):ends(6):ln(Spring Current)',
                    'springold:begins(-14):ends(6):ln(Spring Old)']
@@ -437,6 +436,7 @@ class Command(BaseCommand):
             group.save()
 
     def handle(self, *args, **options):
+        from devilry.apps.core.testhelper import TestHelper
         verbosity = get_verbosity(options)
         setup_logging(verbosity)
         logging.info('Running manage.py flush')
