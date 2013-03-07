@@ -95,8 +95,8 @@ CELERY_ALWAYS_EAGER = True
 # Haystack (search)
 ##################################################################################
 ## Whoosh
-#HAYSTACK_SEARCH_ENGINE = 'whoosh'
-#HAYSTACK_WHOOSH_PATH = 'devilry_whoosh_index'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_WHOOSH_PATH = 'devilry_whoosh_index'
 
 ## Solr
 #HAYSTACK_SEARCH_ENGINE = 'solr'
