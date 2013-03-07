@@ -11,7 +11,7 @@ def bootstrap():
     """
     Runs ``virtualenv --no-site-packages . && bin/easy_install zc.buildout && bin/buildout && bin/fab postbootstrap``.
     """
-    local('virtualenv --no-site-packages .')
-    local('bin/easy_install zc.buildout')
+    local('virtualenv venv')
+    local('venv/bin/python ../bootstrap.py')
     local('bin/buildout')
     local('bin/fab postbootstrap')
