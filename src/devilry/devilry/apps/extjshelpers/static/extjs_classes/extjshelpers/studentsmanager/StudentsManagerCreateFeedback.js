@@ -86,7 +86,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
                         this.giveFeedbackToSelected(groupRecord, index, groupRecords.length, feedbackdraftModelName, draftstring);
                     }, this);
                 }
-            },
+            }
         });
     },
 
@@ -96,7 +96,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
     anyGroupHaveNoDeliveries: function(groupRecords) {
         for(i=0; i<groupRecords.length; i++) {
             var groupRecord = groupRecords[i];
-            if(groupRecord.data.number_of_deliveries == 0) {
+            if(groupRecord.data.number_of_deliveries === 0) {
                 return true;
             }
         }
@@ -110,7 +110,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCreateFeedback',
         var msg = Ext.String.format('Setting feedback on group {0}/{1}', index, totalSelectedGroups);
         this.getEl().mask(msg);
 
-        if(assignmentGroupRecord.data.latest_delivery_id == null)  {
+        if(assignmentGroupRecord.data.latest_delivery_id === null)  {
             if(this.assignmentrecord.data.delivery_types === this.deliveryTypes.TYPE_ELECTRONIC) {
                 this.progressWindow.addWarning(assignmentGroupRecord, 'Has no deliveries, and therefore we can not add any feedback.');
                 this._finishedSavingGroupCount ++;

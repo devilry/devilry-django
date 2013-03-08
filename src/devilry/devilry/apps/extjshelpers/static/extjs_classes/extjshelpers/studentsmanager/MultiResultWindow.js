@@ -47,7 +47,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         var logitem = {
             assgnmentGroupRecord: assgnmentGroupRecord,
             msg: msg
-        }
+        };
         this.log[level].push(logitem);
     },
 
@@ -151,7 +151,7 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
                 count: this.log.success.length,
                 total: total,
                 title: this.title
-            }, true)
+            }, true);
         }
         this._addIfItems(this.log.success, 'success', successMsg, 14);
     }
