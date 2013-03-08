@@ -1,41 +1,35 @@
 Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
-    extend: 'devilry.extjshelpers.AutoSizedWindow',
-    layout: 'fit',
-    closeAction: 'hide',
-    closable: false,
-    width: 600,
-    height: 400,
-    modal: true,
-    maximizable: true,
 
-    config: {
-        isAdministrator: undefined
-    },
+    /**
+     * @cfg {bool} [isAdministrator]
+     */
+    isAdministrator: undefined,
 
-    logTpl: Ext.create('Ext.XTemplate',
-        '<tpl for="log">',
-        '    <div class="section {parent.csscls}-small">',
-        '        <h1>',
-        '            <tpl if="assgnmentGroupRecord.data.name">',
-        '               {assgnmentGroupRecord.data.name} -',
-        '            </tpl>',
-        '            <tpl if="parent.isAdministrator">',
-        '                <tpl for="assgnmentGroupRecord.data.candidates__student__username">',
-        '                   {.}<tpl if="xindex &lt; xcount">, </tpl>',
-        '                </tpl>',
-        '            </tpl>',
-        '            <tpl if="!parent.isAdministrator">',
-        '                <tpl for="assgnmentGroupRecord.data.candidates">',
-        '                   {identifier}<tpl if="xindex &lt; xcount">, </tpl>',
-        '                </tpl>',
-        '            </tpl>',
-        '        </h1>',
-        '        {msg}',
-        '    </div>',
-        '</tpl>'
-    ),
+    logTpl: [
+        '<p>{title}. {MORE_BUTTON}</p>',
+        '<dl {MORE_ATTRS}>',
+            '<tpl for="log">',
+                '<dt>',
+                    '<tpl if="assgnmentGroupRecord.data.name">',
+                        '{assgnmentGroupRecord.data.name} -',
+                    '</tpl>',
+                    '<tpl if="parent.isAdministrator">',
+                        '<tpl for="assgnmentGroupRecord.data.candidates__student__username">',
+                            '{.}<tpl if="xindex &lt; xcount">, </tpl>',
+                        '</tpl>',
+                    '</tpl>',
+                    '<tpl if="!parent.isAdministrator">',
+                        '<tpl for="assgnmentGroupRecord.data.candidates">',
+                            '{identifier}<tpl if="xindex &lt; xcount">, </tpl>',
+                        '</tpl>',
+                    '</tpl>',
+                '</dt>',
+                '<dd>{msg}</dd>',
+            '</tpl>',
+        '</dl>'
+    ],
 
-    operationErrorTpl: Ext.create('Ext.XTemplate',
+    operationErrorTplArray: [
         '{msg}. ',
         '<tpl if="status === 0">',
         '    Error details: Could not connect to the Devilry server.',
@@ -43,54 +37,13 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
         '<tpl if="status !== 0">',
         '    (Error code: {status}) Error details: <strong>{statusText}</strong>',
         '</tpl>'
-    ),
+    ],
 
     constructor: function(config) {
-        this.initConfig(config);
-        this.callParent([config]);
-    },
-
-    initComponent: function() {
-        this.errorcontainer = Ext.widget('panel', {
-            title: 'Errors',
-            bodyPadding: 10
-        });
-        this.warningcontainer = Ext.widget('panel', {
-            title: 'Warnings',
-            bodyPadding: 10
-        });
-        this.successcontainer = Ext.widget('panel', {
-            title: 'Successful',
-            bodyPadding: 10
-        });
-        Ext.apply(this, {
-            items: {
-                xtype: 'panel',
-                border: false,
-                layout: 'accordion'
-            },
-            dockedItems: [{
-                xtype: 'toolbar',
-                dock: 'bottom',
-                ui: 'footer',
-                items: ['->', {
-                    xtype: 'button',
-                    text: 'Close this window',
-                    scale: 'large',
-                    listeners: {
-                        scope: this,
-                        click: function() {
-                            this.close();
-                        }
-                    }
-                }, '->']
-            }]
-        });
-        this.callParent(arguments);
+        this.operationErrorTpl = Ext.create('Ext.XTemplate', this.operationErrorTplArray);
     },
 
     addToLog: function(level, assgnmentGroupRecord, msg) {
-        
         var logitem = {
             assgnmentGroupRecord: assgnmentGroupRecord,
             msg: msg
@@ -161,53 +114,45 @@ Ext.define('devilry.extjshelpers.studentsmanager.MultiResultWindow', {
             warning: [],
             success: []
         };
-        this.setTitle(title);
-        this.down('panel').removeAll();
+        this.title = title;
     },
 
     /**
      * @private
      */
-    _addIfItems: function(log, csscls, title) {
+    _addIfItems: function(log, type, title, autoclose) {
         if(log.length > 0) {
-            var container = Ext.widget('panel', {
-                title: title,
-                bodyPadding: 10,
-                flex: 1,
-                autoScroll: true,
-                html: this.logTpl.apply({
-                    csscls: csscls,
+            window.getFloatingAlertMessageList().add({
+                type: type,
+                messagetpl: this.logTpl,
+                autoclose: autoclose,
+                messagedata: {
                     log: log,
+                    title: title,
                     isAdministrator: this.isAdministrator
-                })
+                }
             });
-            this.down('panel').add(container);
         }
     },
 
-    finish: function(resultMsg, successMsg) {
-        this._addIfItems(this.log.error, 'error', 'Errors');
-        if(successMsg && this.log.error.length === 0) {
-            this.down('panel').add({
-                xtype: 'panel',
-                title: successMsg.title,
-                html: successMsg.html,
-                bodyPadding: 10,
-                flex: 1
-            });
+    finish: function(successMsg) {
+        this._addIfItems(this.log.error, 'error', interpolate(gettext('%(count)s error(s) during: %(title)s'), {
+            title: this.title,
+            count: this.log.error.length
+        }, true));
+        this._addIfItems(this.log.warning, 'warning', interpolate(gettext('%(count)s warning(s) during: %(title)s'), {
+            title: this.title,
+            count: this.log.warning.length
+        }, true));
+
+        var total = this.log.error.length + this.log.warning.length + this.log.success.length;
+        if(Ext.isEmpty(successMsg)) {
+            successMsg = interpolate(gettext('%(title)s &mdash; %(count)s/%(total)s groups successfully updated'), {
+                count: this.log.success.length,
+                total: total,
+                title: this.title
+            }, true)
         }
-        if(resultMsg) {
-            this.down('panel').add({
-                xtype: 'panel',
-                title: resultMsg.title,
-                html: resultMsg.html,
-                bodyPadding: 10,
-                flex: 1
-            });
-        }
-        this._addIfItems(this.log.warning, 'warning', 'Warnings');
-        this._addIfItems(this.log.success, 'info', 'Details about each successful save');
-        this.show();
-        this.down('panel').getComponent(0).expand();
+        this._addIfItems(this.log.success, 'success', successMsg, 14);
     }
 });

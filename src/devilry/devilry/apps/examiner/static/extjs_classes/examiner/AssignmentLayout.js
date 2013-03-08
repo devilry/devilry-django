@@ -6,6 +6,7 @@ Ext.define('devilry.examiner.AssignmentLayout', {
         'devilry.extjshelpers.SingleRecordContainer',
         'devilry.extjshelpers.SingleRecordView',
         'devilry_extjsextras.Router',
+        'devilry.extjshelpers.studentsmanager.StudentsManager',
         'devilry_header.Breadcrumbs'
     ],
     cls: 'devilry_subtlebg',

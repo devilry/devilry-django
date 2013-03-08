@@ -76,14 +76,10 @@ Ext.define('devilry.extjshelpers.studentsmanager.StudentsManagerCloseOpen', {
                 if(this._finishedSavingGroupCount == totalSelectedGroups) {
                     this.loadFirstPage();
                     this.getEl().unmask();
-                    this.progressWindow.finish(null, {
-                        title: 'Success',
-                        html: Ext.String.format(
-                            '<div class="section info"><h1>Success</h1>Successfully {0} {1} groups.</div>',
-                            (is_open? 'opened': 'closed'),
-                            totalSelectedGroups
-                        )
-                    });
+                    this.progressWindow.finish(interpolate(gettext('%(opened_or_closed)s %(count)s groups'), {
+                        opened_or_closed: (is_open? gettext('Opened'): gettext('Closed')),
+                        count: totalSelectedGroups
+                    }, true));
                 }
             }
         });
