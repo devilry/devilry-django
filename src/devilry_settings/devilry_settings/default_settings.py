@@ -117,6 +117,8 @@ TEST_FILTER = {
         'django.*', 'djangorestframework.*',
         'devilry.apps.examiner.tests.simplified.*',
         'devilry.apps.student.tests.simplified.*',
+        'devilry.apps.student.tests.simplified.*',
+        'devilry_search.tests.*', # Ignored when running all tests because they requir a fullfeatured search backend, like solr, to work
         ],
     'include': ['devilry*']
 }
