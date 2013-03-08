@@ -19,6 +19,12 @@ Specify a browser for the selenium tests using (example uses Firefox)::
 *Firefox* is the default browser (configured in ``devilry_developer.settings.base``).
 
 
+.. note::
+    We use ``bin/django_test.py`` to run tests, because that django
+    ``manage.py``-wrapper is set up to use ``devilry_developer.settings.test``,
+    which does not load Haystack.
+
+
 
 
 The testsuite runner, and how we exclude/include tests
