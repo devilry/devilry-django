@@ -7,9 +7,10 @@ from devilry_settings.default_urls import devilry_urls
 
 urlpatterns = patterns('',
     # Urls for apps under development
-    #(r'^devilry_subjectadmin/', include('devilry_subjectadmin.urls')),
 #    url(r'^rosetta/', include('rosetta.urls')),
     url(r'^devilry_sandbox/', include('devilry_sandbox.urls')),
+    (r'^devilry_qualifiesforexam/', include('devilry_qualifiesforexam.urls')),
+    (r'^devilry_qualifiesforexam_approved/', include('devilry_qualifiesforexam_approved.urls')),
 
     # Add the default Devilry urls
     *devilry_urls
