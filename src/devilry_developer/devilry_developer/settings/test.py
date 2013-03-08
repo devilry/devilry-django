@@ -1,6 +1,5 @@
 from .base import *
 
-#INSTALLED_APPS.remove('haystack')
-#INSTALLED_APPS.remove('celery_haystack')
-#INSTALLED_APPS.remove('devilry_search')
-#HAYSTACK_SITECONF = None
+# Disable haystack (speeds up tests a lot)
+HAYSTACK_SEARCH_ENGINE = 'dummy' # http://django-haystack.readthedocs.org/en/v1.2.7/tutorial.html#modify-your-settings-py
+HAYSTACK_SITECONF = 'devilry_developer.dummy_haystack_search_sites'
