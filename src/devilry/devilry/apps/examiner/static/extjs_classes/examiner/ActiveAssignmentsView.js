@@ -49,7 +49,7 @@ Ext.define('devilry.examiner.ActiveAssignmentsView', {
             value: devilry.extjshelpers.DateTime.restfulNow()
         }]);
         this.store.proxy.extraParams.orderby = Ext.JSON.encode(['-publishing_time']);
-        this.store.pageSize = this.pageSize
+        this.store.pageSize = this.pageSize;
     },
 
     createBody: function() {
