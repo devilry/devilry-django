@@ -41,7 +41,7 @@ class TestCreateNewAssignment(SubjectAdminSeleniumTestCase, ExtJsTestMixin):
     def test_breadcrumb(self):
         self._load()
         breadcrumbtext = self.get_breadcrumbstring('Create new assignment')
-        self.assertEquals(breadcrumbtext, ['All subjects', 'sub.p1', 'Create new assignment'])
+        self.assertEquals(breadcrumbtext, ['All Courses', 'sub.p1', 'Create new assignment'])
 
     def test_form_render(self):
         self._load()
