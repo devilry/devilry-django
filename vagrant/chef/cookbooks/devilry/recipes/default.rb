@@ -1,3 +1,8 @@
+package "fabric"
+package "git"
+package "python-dev"
+package "build-essential"
+package "libncurses5-dev"
 
 ############################################
 #

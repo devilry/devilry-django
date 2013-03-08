@@ -51,11 +51,12 @@ Vagrant::Config.run do |config|
     #chef.json = { :mysql_password => "foo" }
   end
 
+  # More memory for the VM (needed for desktop UI to run smooth)
   Vagrant::Config.run do |config|
     config.vm.customize ["modifyvm", :id, "--memory", 1024]
   end
 
   Vagrant::Config.run do |config|
-    config.vm.share_folder("v-root", "/vagrant", "..", :nfs => true)
+    config.vm.share_folder("reporoot", "/reporoot", "..", :nfs => true)
   end
 end
