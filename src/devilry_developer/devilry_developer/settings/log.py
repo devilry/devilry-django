@@ -16,7 +16,7 @@ def create_logging_conf(logdir):
         'handlers': {
             'console': {
                 'level': 'DEBUG',
-                'formatter': 'simple',
+                'formatter': 'verbose',
                 'class': 'logging.StreamHandler'
             },
             'allButExceptionTracebacks': {
@@ -82,6 +82,11 @@ def create_logging_conf(logdir):
                              #'console', # Uncomment this if you want to see every email sent in the console, however it is probably more useful to use emailfile
                             ],
                 'level': 'DEBUG',
+                'propagate': False
+            },
+            'selenium.webdriver.remote.remote_connection': {
+                'handlers': ['allButExceptionTracebacks', 'console'],
+                'level': 'INFO',
                 'propagate': False
             },
             '': {
