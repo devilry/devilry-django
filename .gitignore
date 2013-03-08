@@ -124,6 +124,7 @@ node_modules/
 
 # vagrant/
 vagrant/.vagrant
+devenv_vagrant/
 
 # buildoutcache/
 buildoutcache/dlcache/*
