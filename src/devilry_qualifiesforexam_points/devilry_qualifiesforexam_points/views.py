@@ -45,14 +45,19 @@ class QualifiesBasedOnPointsView(FormView, QualifiesForExamPluginViewMixin):
         class SelectAssignmentForm(forms.Form):
             assignments = forms.MultipleChoiceField(
                 required=True,
-                label=_('Select assignments that students must pass to qualify for final exams'),
+                label=_('Assignments to include when counting points'),
                 widget=forms.CheckboxSelectMultiple,
                 choices=choices)
+            minimum_points = forms.IntegerField(
+                    required=True,
+                    min_value=0,
+                    label=_('Minimum number of points required in total on the selected assignment'))
 
             def __init__(self, *args, **kwargs):
                 self.helper = FormHelper()
                 self.helper.layout = Layout(
                     'assignments',
+                    'minimum_points',
                     ButtonHolder(
                         BackButton(backurl),
                         NextButton()
@@ -63,11 +68,14 @@ class QualifiesBasedOnPointsView(FormView, QualifiesForExamPluginViewMixin):
         return SelectAssignmentForm
 
     def form_valid(self, form):
-        assignmentids_that_must_be_passed = set(map(int, form.cleaned_data['assignments']))
-        qualified_relstudentids = PeriodResultsCollectorPoints(assignmentids_that_must_be_passed).get_relatedstudents_that_qualify_for_exam(self.period)
+        assignmentids = set(map(int, form.cleaned_data['assignments']))
+        minimum_points = form.cleaned_data['minimum_points']
+        collector = PeriodResultsCollectorPoints(assignmentids, minimum_points)
+        qualified_relstudentids = collector.get_relatedstudents_that_qualify_for_exam(self.period)
         self.save_plugin_output(qualified_relstudentids)
         self.save_settings_in_session({
-            'assignmentids_that_must_be_passed': assignmentids_that_must_be_passed
+            'assignmentids': assignmentids,
+            'minimum_points': minimum_points
         })
         return self.redirect_to_preview_url()
 

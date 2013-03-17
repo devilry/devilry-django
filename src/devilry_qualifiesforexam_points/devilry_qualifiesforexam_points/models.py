@@ -9,6 +9,7 @@ class PointsPluginSetting(models.Model):
     """
     status = models.OneToOneField(Status, primary_key=True,
         related_name="%(app_label)s_%(class)s")
+    minimum_points = models.PositiveIntegerField()
 
 
 class PointsPluginSelectedAssignment(models.Model):

@@ -5,27 +5,38 @@ from .models import PointsPluginSetting
 
 
 class PeriodResultsCollectorPoints(PeriodResultsCollector):
-    def __init__(self, assignmentids_that_must_be_passed):
-        self.assignmentids_that_must_be_passed = assignmentids_that_must_be_passed
+    def __init__(self, assignmentids, minimum_points):
+        self.assignmentids = assignmentids
+        self.minimum_points = minimum_points
 
     def student_qualifies_for_exam(self, aggregated_relstudentinfo):
+        points = 0
         for assignmentid, grouplist in aggregated_relstudentinfo.assignments.iteritems():
-            if assignmentid in self.assignmentids_that_must_be_passed:
+            if assignmentid in self.assignmentids:
                 feedback = grouplist.get_feedback_with_most_points()
-                if not (feedback and feedback.is_passing_grade):
-                    return False
-        return True
+                if feedback:
+                    points += feedback.points
+        return points >= self.minimum_points
+
 
 def post_statussave(status, settings):
-    assignmentids_that_must_be_passed = settings['assignmentids_that_must_be_passed']
+    """
+    Get settings from session, and store them in a settings-object that has a
+    foreign-key to the status-object.
+    """
+    assignmentids = settings['assignmentids']
+    minimum_points = settings['minimum_points']
 
     # Verify
-    qualified_now = set(PeriodResultsCollectorPoints(assignmentids_that_must_be_passed).get_relatedstudents_that_qualify_for_exam(status.period))
+    collector = PeriodResultsCollectorPoints(assignmentids, minimum_points)
+    qualified_now = set(collector.get_relatedstudents_that_qualify_for_exam(status.period))
     qualified_saved = set([s.relatedstudent.id for s in status.get_qualified_students()])
     if qualified_now != qualified_saved:
         raise PluginResultsFailedVerification()
 
     # Save settings
-    subset = PointsPluginSetting.objects.create(status=status)
-    for assignmentid in assignmentids_that_must_be_passed:
-        subset.pointspluginselectedassignment_set.create(assignment_id=assignmentid)
+    settings = PointsPluginSetting.objects.create(
+            status=status,
+            minimum_points=minimum_points)
+    for assignmentid in assignmentids:
+        settings.pointspluginselectedassignment_set.create(assignment_id=assignmentid)
