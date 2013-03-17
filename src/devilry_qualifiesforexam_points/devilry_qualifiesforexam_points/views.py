@@ -17,8 +17,8 @@ from .models import PointsPluginSetting
 
 
 class QualifiesBasedOnPointsView(FormView, QualifiesForExamPluginViewMixin):
-    template_name = 'devilry_qualifiesforexam_approved/subsetselect.django.html'
-    pluginid = 'devilry_qualifiesforexam_approved.subset'
+    template_name = 'devilry_qualifiesforexam_points/subsetselect.django.html'
+    pluginid = 'devilry_qualifiesforexam_points'
 
     def get_initial(self):
         """
@@ -27,15 +27,17 @@ class QualifiesBasedOnPointsView(FormView, QualifiesForExamPluginViewMixin):
         try:
             current_status = Status.get_current_status(self.period)
         except Status.DoesNotExist:
-            return {}
+            pass
         else:
             try:
                 settings = current_status.devilry_qualifiesforexam_approved_subsetpluginsetting
             except PointsPluginSetting.DoesNotExist:
-                return {}
+                pass
             else:
                 ids = [selected.assignment.id for selected in settings.selectedassignment_set.all()]
                 return {'assignments': ids}
+        ids = [assignment.id for assignment in self.period.assignments.all()]
+        return {'assignments': ids}
 
     def get_form_class(self):
         choices = [(a.id, a.long_name) for a in self.period.assignments.order_by('publishing_time')]

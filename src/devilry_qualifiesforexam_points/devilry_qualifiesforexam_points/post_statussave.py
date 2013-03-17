@@ -28,4 +28,4 @@ def post_statussave(status, settings):
     # Save settings
     subset = PointsPluginSetting.objects.create(status=status)
     for assignmentid in assignmentids_that_must_be_passed:
-        subset.selectedassignment_set.create(assignment_id=assignmentid)
+        subset.pointspluginselectedassignment_set.create(assignment_id=assignmentid)
