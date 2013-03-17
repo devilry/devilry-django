@@ -51,7 +51,7 @@ class QualifiesBasedOnPointsView(FormView, QualifiesForExamPluginViewMixin):
             minimum_points = forms.IntegerField(
                     required=True,
                     min_value=0,
-                    label=_('Minimum number of points required in total on the selected assignment'))
+                    label=_('Minimum number of points required in total on the selected assignments'))
 
             def __init__(self, *args, **kwargs):
                 self.helper = FormHelper()
