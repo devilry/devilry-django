@@ -4,7 +4,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
     cls: 'devilry_qualifiesforexam_previewgrid bootstrap',
     mixins: ['devilry_extjsextras.AutoHeightComponentMixin'],
 
-    firstAssignmentColumnIndex: 3,
+    firstAssignmentColumnIndex: 2,
 
     /**
      * @property {int[]} [passing_relatedstudentids_map]
@@ -45,31 +45,31 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
             renderer: Ext.bind(this._renderQualifiesColumn, this)
         });
 
-        this.columns.push({
-            text: gettext('Total points'),
-            dataIndex: 'id',
-            flex: 1,
-            minWidth: 100,
-            menuDisabled: true,
-            sortable: false,
-            renderer: Ext.bind(this._renderTotalPointsColumn, this)
-        });
+        //this.columns.push({
+            //text: gettext('Total points'),
+            //dataIndex: 'id',
+            //flex: 1,
+            //minWidth: 100,
+            //menuDisabled: true,
+            //sortable: false,
+            //renderer: Ext.bind(this._renderTotalPointsColumn, this)
+        //});
     },
 
-    _renderTotalPointsColumn: function(value, meta, record, rowIndex, colIndex) {
-        var groups_by_assignment = record.get('groups_by_assignment');
-        var total = 0;
-        for(var index=0; index<groups_by_assignment.length; index++)  {
-            var assignment = groups_by_assignment[index];
-            var group = assignment.grouplist[0];
-            var points = 0;
-            if(!Ext.isEmpty(group) && group.status === 'corrected') {
-                points = group.feedback.points;
-            }
-            total += points;
-        }
-        return total.toString();
-    },
+    //_renderTotalPointsColumn: function(value, meta, record, rowIndex, colIndex) {
+        //var groups_by_assignment = record.get('groups_by_assignment');
+        //var total = 0;
+        //for(var index=0; index<groups_by_assignment.length; index++)  {
+            //var assignment = groups_by_assignment[index];
+            //var group = assignment.grouplist[0];
+            //var points = 0;
+            //if(!Ext.isEmpty(group) && group.status === 'corrected') {
+                //points = group.feedback.points;
+            //}
+            //total += points;
+        //}
+        //return total.toString();
+    //},
 
     _qualifiesForFinalExam: function(record) {
         var relatedStudentId = record.get('relatedstudent').id;
