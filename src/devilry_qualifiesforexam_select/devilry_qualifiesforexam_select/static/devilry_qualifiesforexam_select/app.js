@@ -19,7 +19,7 @@ Ext.application({
     ],
 
     controllers: [
-        'SelectQualifiedStudentsGridController'
+        'SelectQualifiedStudentsController'
     ],
 
     refs: [{
@@ -45,7 +45,7 @@ Ext.application({
                     xtype: 'floatingalertmessagelist',
                     itemId: 'appAlertmessagelist'
                 }, {
-                    xtype: 'selectqualifiedstudentsgrid'
+                    xtype: 'selectqualifiedstudentsview'
                 }]
                 
             }]

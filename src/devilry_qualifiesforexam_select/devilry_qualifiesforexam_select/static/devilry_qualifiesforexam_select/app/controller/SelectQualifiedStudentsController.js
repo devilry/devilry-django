@@ -1,4 +1,4 @@
-Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsGridController', {
+Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsController', {
     extend: 'Ext.app.Controller',
 
     mixins: [
@@ -6,7 +6,7 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsGr
     ],
 
     views: [
-        'SelectQualifiedStudentsGrid'
+        'SelectQualifiedStudentsView'
     ],
 
     stores: ['AggregatedRelatedStudentInfos'],
@@ -16,7 +16,10 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsGr
 
     refs: [{
         ref: 'header',
-        selector: 'viewport #header'
+        selector: 'viewport selectqualifiedstudentsview #header'
+    }, {
+        ref: 'form',
+        selector: 'viewport selectqualifiedstudentsview'
     }, {
         ref: 'grid',
         selector: 'viewport selectqualifiedstudentsgrid'
@@ -27,10 +30,10 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsGr
             'viewport selectqualifiedstudentsgrid': {
                 render: this._onRender
             },
-            'viewport selectqualifiedstudentsgrid #backButton': {
+            'viewport selectqualifiedstudentsview #backButton': {
                 click: this._onBackButtonClick
             },
-            'viewport selectqualifiedstudentsgrid #nextButton': {
+            'viewport selectqualifiedstudentsview #nextButton': {
                 click: this._onNextButtonClick
             }
         });
@@ -96,7 +99,22 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsGr
     },
 
     _onNextButtonClick: function() {
-        
+        var selected = this.getGrid().getSelectionModel().getSelection();
+        console.log(selected);
+        var qualified_relstudentids = [];
+        for(var index=0; index<selected.length; index++)  {
+            var item = selected[index];
+            qualified_relstudentids.push(item.get('relatedstudent').id);
+        }
+        console.log(qualified_relstudentids);
+        this.getForm().submit({
+            url: window.location.href,
+            method: 'POST',
+            standardSubmit: true,
+            params: {
+                qualified_relstudentids: qualified_relstudentids
+            }
+        });
     }
 });
 

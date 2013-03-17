@@ -20,22 +20,11 @@ Ext.define('devilry_qualifiesforexam_select.view.SelectQualifiedStudentsGrid', {
 
     setupToolbar: function() {
         this.callParent(arguments);
-        this.bbar = undefined;
-        this.fbar = ['->', {
-            xtype: 'button',
-            scale: 'large',
-            itemId: 'backButton',
-            text: gettext('Back')
-        }, {
-            xtype: 'primarybutton',
-            scale: 'large',
-            itemId: 'nextButton',
-            text: gettext('Next')
-        }];
-    },
-
-    updateCounter:function () {
-        // NOTE: We override this to stop the superclass from adding stuff to the bbar that we have hidden.
+        //this.bbar = undefined;
     }
+
+    //updateCounter:function () {
+        //// NOTE: We override this to stop the superclass from adding stuff to the bbar that we have hidden.
+    //}
 });
 
