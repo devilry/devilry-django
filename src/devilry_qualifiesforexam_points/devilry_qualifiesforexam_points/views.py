@@ -30,11 +30,11 @@ class QualifiesBasedOnPointsView(FormView, QualifiesForExamPluginViewMixin):
             pass
         else:
             try:
-                settings = current_status.devilry_qualifiesforexam_approved_subsetpluginsetting
+                settings = current_status.devilry_qualifiesforexam_points_pointspluginsetting
             except PointsPluginSetting.DoesNotExist:
                 pass
             else:
-                ids = [selected.assignment.id for selected in settings.selectedassignment_set.all()]
+                ids = [selected.assignment.id for selected in settings.pointspluginselectedassignment_set.all()]
                 return {'assignments': ids}
         ids = [assignment.id for assignment in self.period.assignments.all()]
         return {'assignments': ids}

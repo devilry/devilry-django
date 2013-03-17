@@ -35,8 +35,10 @@ def post_statussave(status, settings):
         raise PluginResultsFailedVerification()
 
     # Save settings
-    settings = PointsPluginSetting.objects.create(
+    settings = PointsPluginSetting(
             status=status,
             minimum_points=minimum_points)
+    settings.full_clean()
+    settings.save()
     for assignmentid in assignmentids:
         settings.pointspluginselectedassignment_set.create(assignment_id=assignmentid)
