@@ -2,7 +2,7 @@ Ext.define('devilry_qualifiesforexam_select.view.SelectQualifiedStudentsGrid', {
     extend: 'devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridBase',
     alias: 'widget.selectqualifiedstudentsgrid',
     store: 'AggregatedRelatedStudentInfos',
-    title: gettext('Select students that qualifies for final exams'),
+    title: gettext('Select students that qualify for final exams'),
 
     requires: [
         'devilry_extjsextras.PrimaryButton'
