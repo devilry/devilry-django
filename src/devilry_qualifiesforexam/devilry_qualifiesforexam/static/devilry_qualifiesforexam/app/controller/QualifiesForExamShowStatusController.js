@@ -63,6 +63,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
     _onRender: function() {
         this.periodid = this.getOverview().periodid;
         this.loadPeriod(this.periodid);
+        this.getOverview().setLoading();
     },
 
     getAppBreadcrumbs: function () {
@@ -113,6 +114,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
     _onLoadAllComplete: function() {
         this._setupSummary();
         this._setupGrid();
+        this.getOverview().setLoading(false);
     },
 
     _setupSummary:function () {
@@ -149,6 +151,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
     },
 
     _onProxyError: function(proxy, response, operation) {
+        this.getOverview().setLoading(false);
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         errorhandler.addErrors(response, operation);
         if(errorhandler.errormessages.length === 1 && errorhandler.errormessages[0] === 'The period has no statuses') {
