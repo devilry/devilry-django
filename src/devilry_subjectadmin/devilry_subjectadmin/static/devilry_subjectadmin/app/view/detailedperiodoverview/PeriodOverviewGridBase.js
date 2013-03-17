@@ -12,6 +12,12 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
      */
     firstAssignmentColumnIndex: 1,
 
+    /**
+     * @cfg {bool} [hide_searchfield=false]
+     * Hide the searchfield?
+     */
+    hide_searchfield: false,
+
     ignored_with_feedback_map: {},
     ignored_without_feedback_map: {},
 
@@ -174,6 +180,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
             xtype: 'textfield',
             width: 250,
             emptyText: gettext('Search for name or username ...'),
+            hidden: this.hide_searchfield,
             listeners: {
                 scope: this,
                 change: this._onSearch
