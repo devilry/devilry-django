@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     url(r'^devilry_sandbox/', include('devilry_sandbox.urls')),
     (r'^devilry_qualifiesforexam/', include('devilry_qualifiesforexam.urls')),
     (r'^devilry_qualifiesforexam_approved/', include('devilry_qualifiesforexam_approved.urls')),
+    (r'^devilry_qualifiesforexam_points/', include('devilry_qualifiesforexam_points.urls')),
 
     # Add the default Devilry urls
     *devilry_urls

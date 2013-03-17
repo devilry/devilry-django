@@ -37,6 +37,7 @@ INSTALLED_APPS += [
     'devilry_search',
     'devilry_qualifiesforexam',
     'devilry_qualifiesforexam_approved',
+    'devilry_qualifiesforexam_points',
 
     # Not apps, but here for the Django test system to discover them:
     'devilry.utils',

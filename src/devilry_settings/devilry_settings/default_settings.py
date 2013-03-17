@@ -200,7 +200,8 @@ DEVILRY_ADMINISTRATOR_NO_PERMISSION_MSG = {'title': 'You are not an administrato
 
 DEVILRY_QUALIFIESFOREXAM_PLUGINS = [
     'devilry_qualifiesforexam_approved.all',
-    'devilry_qualifiesforexam_approved.subset'
+    'devilry_qualifiesforexam_approved.subset',
+    'devilry_qualifiesforexam_points'
 ]
 
 
