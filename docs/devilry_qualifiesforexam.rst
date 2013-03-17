@@ -519,17 +519,6 @@ The models
         Database char field that stores the id of the plugin (see :ref:`qualifiesforexam-plugins`)
         that was used to change the status.
 
-    .. py:attribute:: pluginsettings
-
-        A text field where plugins can store their settings, typically in some structured
-        format like JSON, XML or YAML.
-
-    .. py:attribute:: pluginsettings_summary
-
-        A text field where plugins can describe their settings in a redable manner. This
-        text is filtered through ``django.utils.translation.ugettext_lazy`` before beeing
-        displayed, so plugins can internationalize the string.
-
 
 
 
