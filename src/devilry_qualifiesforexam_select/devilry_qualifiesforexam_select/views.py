@@ -1,10 +1,10 @@
 #from django.views.generic import View
-#from django.http import HttpResponseForbidden
-#from django.core.exceptions import PermissionDenied
+from django.http import HttpResponseForbidden
+from django.core.exceptions import PermissionDenied
 from django.utils.translation import ugettext_lazy as _
 from extjs4.views import Extjs4AppView
 
-#from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
+from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
 #from devilry_qualifiesforexam.models import Status
 #from .post_statussave import PeriodResultsCollectorPoints
 
@@ -46,7 +46,27 @@ from extjs4.views import Extjs4AppView
 
 
 
-class QualifiesBasedOnManualSelectView(Extjs4AppView):
+class QualifiesBasedOnManualSelectView(Extjs4AppView, QualifiesForExamPluginViewMixin):
     template_name = "devilry_qualifiesforexam_select/app.django.html"
     appname = 'devilry_qualifiesforexam_select'
     title = _('Select students that qualifies for final exams - Devilry')
+
+
+    def get_context_data(self, **kwargs):
+        context = super(QualifiesBasedOnManualSelectView, self).get_context_data(**kwargs)
+        context['backurl'] = self.get_selectplugin_url()
+        return context
+
+    def post(self, request):
+        try:
+            self.get_plugin_input_and_authenticate() # set self.periodid and self.pluginsessionid
+        except PermissionDenied:
+            return HttpResponseForbidden()
+        return super(QualifiesBasedOnManualSelectView, self).post(request)
+
+    def get(self, request):
+        try:
+            self.get_plugin_input_and_authenticate() # set self.periodid and self.pluginsessionid
+        except PermissionDenied:
+            return HttpResponseForbidden()
+        return super(QualifiesBasedOnManualSelectView, self).get(request)

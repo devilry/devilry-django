@@ -24,10 +24,12 @@ Ext.define('devilry_qualifiesforexam_select.view.SelectQualifiedStudentsGrid', {
         this.fbar = ['->', {
             xtype: 'button',
             scale: 'large',
+            itemId: 'backButton',
             text: gettext('Back')
         }, {
             xtype: 'primarybutton',
             scale: 'large',
+            itemId: 'nextButton',
             text: gettext('Next')
         }];
     },

@@ -26,6 +26,12 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsGr
         this.control({
             'viewport selectqualifiedstudentsgrid': {
                 render: this._onRender
+            },
+            'viewport selectqualifiedstudentsgrid #backButton': {
+                click: this._onBackButtonClick
+            },
+            'viewport selectqualifiedstudentsgrid #nextButton': {
+                click: this._onNextButtonClick
             }
         });
 
@@ -37,17 +43,13 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsGr
 
     _onRender: function() {
         var query = Ext.Object.fromQueryString(window.location.search);
+        this.backurl = window.devilry_qualifiesforexam_select_opts.backurl;
         this.period_id = query.periodid;
         this.getGrid().setLoading();
         this._loadDetailedPeriodOverview();
     },
 
 
-    //
-    //
-    // Load detailed period overview
-    //
-    //
     _loadDetailedPeriodOverview: function() {
         this.getDetailedPeriodOverviewModel().load(this.period_id, {
             scope: this,
@@ -71,12 +73,6 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsGr
     },
 
 
-    //
-    //
-    // Create grid
-    //
-    //
-
     _onAllLoaded:function () {
         var grid = this.getGrid();
         var assignments = this.detailedPeriodOverviewRecord.get('assignments');
@@ -93,6 +89,14 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsGr
         grid.sortByFullname();
 
         this.getGrid().setLoading(false);
+    },
+
+    _onBackButtonClick: function() {
+        window.location.href = this.backurl;
+    },
+
+    _onNextButtonClick: function() {
+        
     }
 });
 
