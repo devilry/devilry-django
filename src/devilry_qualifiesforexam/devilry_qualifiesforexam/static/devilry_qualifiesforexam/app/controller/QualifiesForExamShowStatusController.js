@@ -61,9 +61,9 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
     },
 
     _onRender: function() {
+        this.getOverview().setLoading();
         this.periodid = this.getOverview().periodid;
         this.loadPeriod(this.periodid);
-        this.getOverview().setLoading();
     },
 
     getAppBreadcrumbs: function () {

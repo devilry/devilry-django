@@ -51,6 +51,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
     },
 
     _onRender: function() {
+        this.getPreview().setLoading();
         this.periodid = this.getPreview().periodid;
         this.pluginid = this.getPreview().pluginid;
         this.pluginsessionid = this.getPreview().pluginsessionid;
@@ -90,6 +91,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
         previewGrid.addAssignmentSorters(perioddata.assignments);
         previewGrid.sortByQualifiesQualifiedFirst();
         this._loadRelatedStudentsIntoGridStore(perioddata.relatedstudents);
+        this.getPreview().setLoading(false);
     },
 
     _loadRelatedStudentsIntoGridStore: function(relatedstudents) {
@@ -98,6 +100,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
     },
 
     _onProxyError: function(proxy, response, operation) {
+        this.getPreview().setLoading(false);
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
         errorhandler.addErrors(response, operation);
         this.application.getAlertmessagelist().addMany(errorhandler.errormessages, 'error', true);
