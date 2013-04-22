@@ -19,7 +19,7 @@ Ext.define('devilry_subjectadmin.view.allwhereisadmin.AllWhereIsAdminPanel' ,{
         anchor: '100%',
         html: [
             '<h1 style="margin-top: 0;">',
-                interpolate(gettext('All %(subjects_term)s'), {
+                interpolate(gettext('All my %(subjects_term)s'), {
                     subjects_term: gettext('subjects')
                 }, true),
             '</h1>',

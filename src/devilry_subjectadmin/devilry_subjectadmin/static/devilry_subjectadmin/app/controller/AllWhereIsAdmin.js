@@ -33,7 +33,7 @@ Ext.define('devilry_subjectadmin.controller.AllWhereIsAdmin', {
                 }
             }
         });
-        var label = interpolate(gettext('All %(subjects_term)s'), {
+        var label = interpolate(gettext('All my %(subjects_term)s'), {
             subjects_term: gettext('subjects')
         }, true);
         this.application.breadcrumbs.set([], label);

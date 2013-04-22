@@ -5,17 +5,16 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
     requires: ['devilry_subjectadmin.utils.UrlLookup'],
 
     _getBreadcrumbPrefix: function(basenodeRecord) {
-        var userInfoRecord = this.application.breadcrumbs.userInfoRecord;
+        var userInfoRecord = this.application.userInfoRecord;
         if(userInfoRecord.isSubjectPeriodOrAssignmentAdmin()) {
             return [{
-                text: interpolate(gettext("All %(subjects_term)s"), {
+                text: interpolate(gettext("All my %(subjects_term)s"), {
                     subjects_term: gettext('subjects')
                 }, true),
                 url: '#/'
             }];
-        } else {
-            return [];
         }
+        return [];
     },
 
     _addBasenodeBreadcrumbToBreadcrumb: function(breadcrumb, basenodeRecord, skipLast) {

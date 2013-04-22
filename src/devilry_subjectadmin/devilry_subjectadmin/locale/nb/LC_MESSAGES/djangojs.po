@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-22 15:06+0200\n"
+"POT-Creation-Date: 2013-04-22 23:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,15 +24,15 @@ msgstr "Siden finnes ikke"
 
 #: static/devilry_subjectadmin/app.js:308
 #: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:36
-#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:9
+#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:11
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:22
 #: static/devilry_subjectadmin/app/view/subject/ListAll.js:29
-msgid "All %(subjects_term)s"
-msgstr "Alle %(subjects_term)s"
+msgid "All my %(subjects_term)s"
+msgstr "Alle mine %(subjects_term)s"
 
 #: static/devilry_subjectadmin/app.js:309
 #: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:37
-#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:10
+#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:12
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:23
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:28
 #: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:13
@@ -181,7 +181,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:137
 #: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:373
 #: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:305
-#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:48
+#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:52
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:110
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:66
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:83
@@ -482,10 +482,6 @@ msgid ""
 msgstr ""
 "Det korte navnet kan inneholde inntil 20 små bokstaver (<em>a-z</em>) fra "
 "det engelske alfabetet, samt <em>tall</em>, <em>'_'</em> og <em>'-'</em>."
-
-#: static/devilry_subjectadmin/app/utils/Breadcrumbs.js:10
-msgid "Subjectadmin"
-msgstr "Kursadmin"
 
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:21
 msgid "Administrator rights"
@@ -3209,6 +3205,12 @@ msgid ""
 msgstr ""
 "Når du har slettet et %(subject_term)s er det ingen mulighet for å angre. "
 "Kun superbrukere kan slette et %(subject_term)s med innhold."
+
+#~ msgid "All %(subjects_term)s"
+#~ msgstr "Alle %(subjects_term)s"
+
+#~ msgid "Subjectadmin"
+#~ msgstr "Kursadmin"
 
 #~ msgid "Dashboard"
 #~ msgstr "Forsiden"

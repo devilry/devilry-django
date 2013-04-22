@@ -165,9 +165,8 @@ Ext.application({
     },
 
     _onUserInfoLoaded: function(userInfoRecord) {
-        this.breadcrumbs = Ext.create('devilry_subjectadmin.utils.Breadcrumbs', {
-            userInfoRecord: userInfoRecord
-        });
+        this.userInfoRecord = userInfoRecord;
+        this.breadcrumbs = Ext.create('devilry_subjectadmin.utils.Breadcrumbs');
         this.primaryContentContainer = Ext.widget('container', {
             region: 'center',
             layout: 'fit'
@@ -176,7 +175,7 @@ Ext.application({
         this.viewport.add([{
             xtype: 'devilryheader',
             region: 'north',
-            navclass: 'subjectadmin',
+            navclass: this.userInfoRecord.isSubjectPeriodOrAssignmentAdmin()? 'subjectadmin': 'nodeadmin',
             breadcrumbs: this.breadcrumbs
         }, {
             xtype: 'container',
@@ -306,7 +305,7 @@ Ext.application({
     },
 
     allSubjects: function(routeInfo) {
-        this.breadcrumbs.set([], interpolate(gettext("All %(subjects_term)s"), {
+        this.breadcrumbs.set([], interpolate(gettext("All my %(subjects_term)s"), {
             subjects_term: gettext('subjects')
         }, true));
         this.setPrimaryContent({

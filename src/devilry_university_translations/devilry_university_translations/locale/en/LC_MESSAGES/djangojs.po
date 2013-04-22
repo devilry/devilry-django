@@ -49,7 +49,7 @@ msgstr "course"
 
 #: static/devilry_core/terminology.js:11
 msgid "subjects"
-msgstr "Courses"
+msgstr "courses"
 
 
 #: static/devilry_core/terminology.js:9
