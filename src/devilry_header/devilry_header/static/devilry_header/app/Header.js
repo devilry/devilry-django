@@ -66,13 +66,7 @@ Ext.define('devilry_header.Header', {
         if(this.breadcrumbs) {
             breadcrumbareaItem = this.breadcrumbs;
         } else {
-            var defaultBreadcrumbs = [{
-                url: this.navclass_to_dashboard_url[this.navclass],
-                text: gettext('Dashboard')
-            }];
-            breadcrumbareaItem = Ext.widget('breadcrumbs', {
-                defaultBreadcrumbs: defaultBreadcrumbs
-            });
+            breadcrumbareaItem = Ext.widget('breadcrumbs');
         }
         Ext.apply(this, {
             layout: {
