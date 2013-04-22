@@ -89,6 +89,12 @@ def create_logging_conf(logdir):
                 'level': 'INFO',
                 'propagate': False
             },
+            'celery_haystack.tasks.CeleryHaystackSignalHandler': {
+                'handlers': ['allButExceptionTracebacks',
+                             'console'],
+                'level': 'INFO',
+                'propagate': False
+            },
             '': {
                 'handlers': ['allButExceptionTracebacks',
                              'console'],
