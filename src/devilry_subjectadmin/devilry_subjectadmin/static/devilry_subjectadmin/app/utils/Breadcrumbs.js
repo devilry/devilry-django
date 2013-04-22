@@ -10,5 +10,9 @@ Ext.define('devilry_subjectadmin.utils.Breadcrumbs', {
             text: gettext("Dashboard"),
             url: '#'
         }];
+    },
+
+    formatUrl: function (url, meta) {
+        return url;
     }
 });

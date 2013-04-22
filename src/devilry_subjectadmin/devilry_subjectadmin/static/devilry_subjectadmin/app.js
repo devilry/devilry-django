@@ -152,40 +152,53 @@ Ext.application({
 
     launch: function() {
         this._createViewport();
-        this._setupRoutes();
     },
 
     _createViewport: function() {
-        this.breadcrumbs = Ext.create('devilry_subjectadmin.utils.Breadcrumbs');
+        this.viewport = Ext.create('Ext.container.Viewport', {
+            xtype: 'container',
+            layout: 'border'
+        });
+        this.viewport.setLoading();
+        devilry_authenticateduserinfo.UserInfo.load(this._onUserInfoLoaded, this);
+    },
+
+    _onUserInfoLoaded: function(userInfoRecord) {
+        this.breadcrumbs = Ext.create('devilry_subjectadmin.utils.Breadcrumbs', {
+            userInfoRecord: userInfoRecord
+        });
         this.primaryContentContainer = Ext.widget('container', {
             region: 'center',
             layout: 'fit'
         });
-        this.viewport = Ext.create('Ext.container.Viewport', {
+        this.viewport.removeAll();
+        this.viewport.add([{
+            xtype: 'devilryheader',
+            region: 'north',
+            navclass: 'subjectadmin',
+            breadcrumbs: this.breadcrumbs
+        }, {
             xtype: 'container',
-            layout: 'border',
+            region: 'center',
+            cls: 'devilry_subtlebg',
+            layout: 'fit',
             items: [{
-                xtype: 'devilryheader',
-                region: 'north',
-                navclass: 'subjectadmin',
-                breadcrumbs: this.breadcrumbs
-            }, {
-                xtype: 'container',
-                region: 'center',
-                cls: 'devilry_subtlebg',
-                layout: 'fit',
-                items: [{
-                    xtype: 'floatingalertmessagelist',
-                    itemId: 'appAlertmessagelist',
-                    anchor: '100%'
-                }, this.primaryContentContainer]
-            }, {
-                xtype: 'guidesystemview',
-                region: 'east',
-                hidden: true,
-                width: 220
-            }]
-        });
+                xtype: 'floatingalertmessagelist',
+                itemId: 'appAlertmessagelist',
+                anchor: '100%'
+            }, this.primaryContentContainer]
+        }, {
+            xtype: 'guidesystemview',
+            region: 'east',
+            hidden: true,
+            width: 220
+        }]);
+        this.viewport.setLoading(false);
+        this._onViewportReady();
+    },
+
+    _onViewportReady: function() {
+        this._setupRoutes();
     },
 
     setPrimaryContent: function(component) {
