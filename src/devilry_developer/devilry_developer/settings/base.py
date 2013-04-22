@@ -52,7 +52,7 @@ TEMPLATE_DEBUG = DEBUG
 EXTJS4_DEBUG = True
 STATIC_ROOT = 'static'
 
-DEVILRY_ENABLE_MATHJAX = True
+DEVILRY_ENABLE_MATHJAX = False
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '+g$%**q(w78xqa_2)(_+%v8d)he-b_^@d*pqhq!#2p*a7*9e9h'
