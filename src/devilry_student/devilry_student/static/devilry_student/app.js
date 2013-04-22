@@ -54,12 +54,7 @@ Ext.application({
     },
 
     _createViewport: function() {
-        this.breadcrumbs = Ext.widget('breadcrumbs', {
-            defaultBreadcrumbs: [{
-                text: gettext("Dashboard"),
-                url: '#'
-            }]
-        });
+        this.breadcrumbs = Ext.widget('breadcrumbs');
 
         this.primaryContentContainer = Ext.widget('container', {
             region: 'center',
