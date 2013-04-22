@@ -31,7 +31,7 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
                 ')</small>',
                 '<br />',
                 '<tpl if="status != \'notready\'">',
-                    gettext('{qualifiedstudents}/{totalstudents} students qualifies for final exams.'),
+                    gettext('{qualifiedstudents}/{totalstudents} students qualify for final exams.'),
                     ' <small>{MORE_BUTTON}</small>',
                 '</tpl>',
             '</p>',
