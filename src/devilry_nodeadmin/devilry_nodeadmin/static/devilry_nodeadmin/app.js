@@ -61,12 +61,7 @@ Ext.application({
             layout: 'fit'
         });
 
-        this.breadcrumbs = Ext.widget('breadcrumbs', {
-            defaultBreadcrumbs: [{
-                text: gettext("Dashboard"),
-                url: '#'
-            }]
-        });
+        this.breadcrumbs = Ext.widget('breadcrumbs');
 
         this.viewport = Ext.create('Ext.container.Viewport', {
             xtype: 'container',
