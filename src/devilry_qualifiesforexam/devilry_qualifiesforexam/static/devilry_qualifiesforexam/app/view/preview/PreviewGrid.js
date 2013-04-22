@@ -12,6 +12,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
      */
 
     store: 'RelatedStudents',
+    disableSelection: true,
 
     qualifiesColTpl: [
         '<p class="qualifies">',
