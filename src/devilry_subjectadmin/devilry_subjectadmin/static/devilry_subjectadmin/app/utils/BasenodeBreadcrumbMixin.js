@@ -6,20 +6,16 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
 
     _getBreadcrumbPrefix: function(basenodeRecord) {
         var userInfoRecord = this.application.breadcrumbs.userInfoRecord;
-        var backNav = [{
-            text: interpolate(gettext("All %(subjects_term)s"), {
-                subjects_term: gettext('subjects')
-            }, true),
-            url: '#/'
-        }];
-        if(userInfoRecord.get('is_nodeadmin') || userInfoRecord.get('is_superuser')) {
-            backNav.push({
-                text: 'Up',
-                // TODO: This does not work, because parentnode is not always a Node (subject within a period...). We need to add an extra field in the REST API, or an extra breadcrumb entry for the node.
-                url: devilry_subjectadmin.utils.UrlLookup.nodeadminNodeOverview(basenodeRecord.get('parentnode'))
-            });
+        if(userInfoRecord.isSubjectPeriodOrAssignmentAdmin()) {
+            return [{
+                text: interpolate(gettext("All %(subjects_term)s"), {
+                    subjects_term: gettext('subjects')
+                }, true),
+                url: '#/'
+            }];
+        } else {
+            return [];
         }
-        return [backNav];
     },
 
     _addBasenodeBreadcrumbToBreadcrumb: function(breadcrumb, basenodeRecord, skipLast) {

@@ -109,6 +109,10 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
             window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
             node_pk);
     },
+    nodeadminDashboard: function() {
+        return Ext.String.format('{0}/devilry_nodeadmin/',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX);
+    },
 
     //
     //

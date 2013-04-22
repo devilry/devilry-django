@@ -31,7 +31,7 @@ Ext.define('devilry_header.Breadcrumbs', {
                 return choices.length > 1;
             },
             getFirstText: function(choices) {
-                return choices[0].text
+                return choices[0].text;
             }
         }
     ],
@@ -63,8 +63,9 @@ Ext.define('devilry_header.Breadcrumbs', {
      * */
     set: function(breadcrumbs, current) {
         this.clear();
-        if(this.getDefaultBreadcrumbs()) {
-            this.addMany(this.getDefaultBreadcrumbs());
+        var defaultBreadcrumbs = this.getDefaultBreadcrumbs();
+        if(defaultBreadcrumbs) {
+            this.addMany(defaultBreadcrumbs);
         }
         this.addMany(breadcrumbs);
         this.add('', current);

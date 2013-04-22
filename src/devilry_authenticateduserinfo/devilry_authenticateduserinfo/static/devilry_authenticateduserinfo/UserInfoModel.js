@@ -35,8 +35,11 @@ Ext.define('devilry_authenticateduserinfo.UserInfoModel', {
     },
 
     isAdmin:function () {
-        return this.get('is_superuser') || this.get('is_nodeadmin') ||
-            this.get('is_subjectadmin') || this.get('is_periodadmin') || this.get('is_assignmentadmin');
+        return this.get('is_superuser') || this.get('is_nodeadmin') || this.isSubjectPeriodOrAssignmentAdmin();
+    },
+
+    isSubjectPeriodOrAssignmentAdmin: function () {
+        return this.get('is_subjectadmin') || this.get('is_periodadmin') || this.get('is_assignmentadmin');
     },
 
     getDisplayName: function() {
