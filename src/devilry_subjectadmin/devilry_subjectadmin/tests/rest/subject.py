@@ -186,6 +186,19 @@ class TestRestInstanceSubjectRest(TestCase):
                            {u'id': th.uni_inf.id, u'text': u'inf', u'type': u'Node'},
                            {u'id': th.sub.id, u'text': u'sub', u'type': u'Subject'}])
 
+    def test_get_breadcrumb_superuser(self):
+        self.testhelper.add(nodes='uni.inf',
+                            subjects=['sub'])
+        self.testhelper.create_superuser('super')
+        self.client.login(username='super', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.sub.id))
+        self.assertEquals(response.status_code, 200)
+        th = self.testhelper
+        self.assertEquals(content['breadcrumb'],
+                          [{u'id': th.uni.id, u'text': u'uni', u'type': u'Node'},
+                           {u'id': th.uni_inf.id, u'text': u'inf', u'type': u'Node'},
+                           {u'id': th.sub.id, u'text': u'sub', u'type': u'Subject'}])
+
     def test_get_can_not_delete(self):
         self.client.login(username='duck2000admin', password='test')
         content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000.id))

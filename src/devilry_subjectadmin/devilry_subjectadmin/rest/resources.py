@@ -85,7 +85,7 @@ class BaseNodeInstanceResource(ModelResource):
                     for inheritedadmin in instance.get_inherited_admins()]
 
     def _add_breadcrumbitem(self, breadcrumb, basenode):
-        if basenode.parentnode and basenode.parentnode.is_admin(self.view.user):
+        if basenode.parentnode and basenode.parentnode.can_save(self.view.user):
             text = basenode.short_name
             self._add_breadcrumbitem(breadcrumb, basenode.parentnode) # Add parent before self to get reversed result
         else:

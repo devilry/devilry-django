@@ -210,6 +210,21 @@ class TestRestInstancePeriodRest(TestCase):
                            {u'id': th.sub.id, u'text': u'sub', u'type': u'Subject'},
                            {u'id': th.sub_p1.id, u'text': u'p1', u'type': u'Period'}])
 
+    def test_get_breadcrumb_superuser(self):
+        self.testhelper.add(nodes='uni.inf',
+                            subjects=['sub'],
+                            periods=['p1'])
+        self.testhelper.create_superuser('super')
+        self.client.login(username='super', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.sub_p1.id))
+        self.assertEquals(response.status_code, 200)
+        th = self.testhelper
+        self.assertEquals(content['breadcrumb'],
+                          [{u'id': th.uni.id, u'text': u'uni', u'type': u'Node'},
+                           {u'id': th.uni_inf.id, u'text': u'inf', u'type': u'Node'},
+                           {u'id': th.sub.id, u'text': u'sub', u'type': u'Subject'},
+                           {u'id': th.sub_p1.id, u'text': u'p1', u'type': u'Period'}])
+
     def test_get_can_not_delete(self):
         self.client.login(username='oneadmin', password='test')
         content, response = self.client.rest_get(self._geturl(self.testhelper.duck2000_periodone.id))
