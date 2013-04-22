@@ -13,14 +13,27 @@ Ext.define('devilry_header.Breadcrumbs', {
             '<tpl for="breadcrumbs">',
                 '<tpl if="xindex != xcount">',
                     '<li>',
-                        '<a href="{url}">{text}</a><span class="divider">/</span>',
+                        '<tpl for=".">',
+                            '<tpl if="xindex &gt; 1">',
+                                ' | ',
+                            '</tpl>',
+                            '<a href="{url}">{text}</a>',
+                        '</tpl>',
+                        '<span class="divider">/</span>',
                     '</li>',
                 '</tpl>',
                 '<tpl if="xindex == xcount">',
-                    '<li class="active">{text}</li>',
+                    '<li class="active">{[this.getFirstText(values)]}</li>',
                 '</tpl>',
             '</tpl>',
-        '</ul>'
+        '</ul>', {
+            isMultiChoice: function(choices) {
+                return choices.length > 1;
+            },
+            getFirstText: function(choices) {
+                return choices[0].text
+            }
+        }
     ],
 
     /**
@@ -69,7 +82,11 @@ Ext.define('devilry_header.Breadcrumbs', {
 
     addMany: function(breadcrumbs) {
         Ext.Array.each(breadcrumbs, function(breadcrumb) {
-            this.add(breadcrumb.url, breadcrumb.text);
+            if(Ext.isArray(breadcrumb)) {
+                this.addMultiChoice(breadcrumb);
+            } else {
+                this.add(breadcrumb.url, breadcrumb.text);
+            }
         }, this);
     },
 
@@ -88,11 +105,15 @@ Ext.define('devilry_header.Breadcrumbs', {
      * @param meta Metadata that can be used by other systems when to customize the breadcrumb.
      */
     add: function(url, text, meta) {
-        this.breadcrumbs.push({
+        this.addMultiChoice([{
             url: this.formatUrl(url),
             text: text,
             meta: meta
-        });
+        }]);
+    },
+
+    addMultiChoice: function(choices) {
+        this.breadcrumbs.push(choices);
     },
 
     clear: function() {

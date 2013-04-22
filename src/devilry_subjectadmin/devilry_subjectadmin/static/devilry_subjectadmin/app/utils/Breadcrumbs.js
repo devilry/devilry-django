@@ -7,7 +7,7 @@ Ext.define('devilry_subjectadmin.utils.Breadcrumbs', {
 
     getDefaultBreadcrumbs:function () {
         return [{
-            text: gettext("Dashboard"),
+            text: gettext("Subjectadmin"),
             url: '#'
         }];
     },

@@ -4,13 +4,22 @@
 Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
     requires: ['devilry_subjectadmin.utils.UrlLookup'],
 
-    _getBreadcrumbPrefix: function() {
-        return [{
+    _getBreadcrumbPrefix: function(basenodeRecord) {
+        var userInfoRecord = this.application.breadcrumbs.userInfoRecord;
+        var backNav = [{
             text: interpolate(gettext("All %(subjects_term)s"), {
                 subjects_term: gettext('subjects')
             }, true),
             url: '#/'
         }];
+        if(userInfoRecord.get('is_nodeadmin') || userInfoRecord.get('is_superuser')) {
+            backNav.push({
+                text: 'Up',
+                // TODO: This does not work, because parentnode is not always a Node (subject within a period...). We need to add an extra field in the REST API, or an extra breadcrumb entry for the node.
+                url: devilry_subjectadmin.utils.UrlLookup.nodeadminNodeOverview(basenodeRecord.get('parentnode'))
+            });
+        }
+        return [backNav];
     },
 
     _addBasenodeBreadcrumbToBreadcrumb: function(breadcrumb, basenodeRecord, skipLast) {
@@ -29,7 +38,7 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
     },
 
     setBreadcrumb: function(basenodeRecord) {
-        var breadcrumb = this._getBreadcrumbPrefix();
+        var breadcrumb = this._getBreadcrumbPrefix(basenodeRecord);
         this._addBasenodeBreadcrumbToBreadcrumb(breadcrumb, basenodeRecord, true);
         var breadcrumbList = basenodeRecord.get('breadcrumb');
         var lastBreadcrumb = breadcrumbList[breadcrumbList.length-1];
@@ -38,7 +47,7 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
 
     /** For children of basenodes */
     setSubviewBreadcrumb: function(basenodeRecord, basenodeType, extra, current) {
-        var breadcrumb = this._getBreadcrumbPrefix();
+        var breadcrumb = this._getBreadcrumbPrefix(basenodeRecord);
         this._addBasenodeBreadcrumbToBreadcrumb(breadcrumb, basenodeRecord);
         breadcrumb = breadcrumb.concat(extra);
         this.application.breadcrumbs.set(breadcrumb, current);

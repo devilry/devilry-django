@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-18 14:16+0100\n"
+"POT-Creation-Date: 2013-04-22 15:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: static/devilry_subjectadmin/app.js:280
+#: static/devilry_subjectadmin/app.js:293
 msgid "Route not found"
 msgstr "Siden finnes ikke"
 
-#: static/devilry_subjectadmin/app.js:295
+#: static/devilry_subjectadmin/app.js:308
 #: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:36
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:9
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:22
@@ -30,7 +30,7 @@ msgstr "Siden finnes ikke"
 msgid "All %(subjects_term)s"
 msgstr "Alle %(subjects_term)s"
 
-#: static/devilry_subjectadmin/app.js:296
+#: static/devilry_subjectadmin/app.js:309
 #: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:37
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:10
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:23
@@ -195,7 +195,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:35
 #: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:34
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/DetailedPeriodOverview.js:30
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:184
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:191
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:31
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:15
 #: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:11
@@ -233,11 +233,11 @@ msgstr "Legg til %(period_term)s"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:84
 #: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:245
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:106
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:111
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:31
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:256
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:273
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:119
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:125
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:118
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:43
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:44
@@ -393,13 +393,13 @@ msgstr "Tagget %(users)s med: %(tags)s"
 msgid "Cleared tags on %(users)s."
 msgstr "Fjernet alle tags fra %(users)s"
 
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:125
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:130
 #: static/devilry_subjectadmin/app/controller/period/PeriodController.js:82
 #: static/devilry_subjectadmin/app/controller/subject/SubjectController.js:72
 msgid "Delete {something}"
 msgstr "Slett {something}"
 
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:132
+#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:137
 #: static/devilry_subjectadmin/app/controller/period/PeriodController.js:89
 #: static/devilry_subjectadmin/app/controller/subject/SubjectController.js:79
 #: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:29
@@ -484,8 +484,8 @@ msgstr ""
 "det engelske alfabetet, samt <em>tall</em>, <em>'_'</em> og <em>'-'</em>."
 
 #: static/devilry_subjectadmin/app/utils/Breadcrumbs.js:10
-msgid "Dashboard"
-msgstr "Forsiden"
+msgid "Subjectadmin"
+msgstr "Kursadmin"
 
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:21
 msgid "Administrator rights"
@@ -1507,30 +1507,30 @@ msgstr ""
 msgid "Export"
 msgstr "Eksporer"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:26
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:32
 msgid "Showing {count} students"
 msgstr "Viser {count} studenter"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:34
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:273
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:40
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:280
 msgid "Name missing"
 msgstr "Navn mangler"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:40
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:46
 msgid "Ignored, has feedback so this may be a problem"
 msgstr "Ignorert, har tilbakemelding(er) så dette kan være et problem"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:45
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:51
 msgid "Ignored, has no feedback so probably not a problem"
 msgstr ""
 "Ignorert, har ingen tilbakemeldinger så dette er sannsynligvis ikke et "
 "problem"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:54
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:60
 msgid "Not registered on assignment"
 msgstr "Ikke registrert på oppgaven"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:68
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:74
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:35
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:69
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:37
@@ -1538,14 +1538,14 @@ msgstr "Ikke registrert på oppgaven"
 msgid "Points"
 msgstr "Poeng"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:74
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:80
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:40
 #: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:27
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:42
 msgid "Waiting for deliveries"
 msgstr "Venter på innleveringer"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:76
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:82
 #: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:53
 #: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:130
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:42
@@ -1554,57 +1554,57 @@ msgstr "Venter på innleveringer"
 msgid "Waiting for feedback"
 msgstr "Venter på tilbakemelding"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:92
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:98
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:32
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:19
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:58
 msgid "Passed"
 msgstr "Bestått"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:92
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:98
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:34
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:23
 msgid "Failed"
 msgstr "Feilet"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:102
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:108
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Grid.js:48
 msgid "Student"
 msgstr "Student"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:136
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:142
 #: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:12
 msgid "Sort"
 msgstr "Sorter"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:140
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:146
 #: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:18
 msgid "Full name"
 msgstr "Fullt navn"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:147
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:153
 #: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:25
 msgid "Last name"
 msgstr "Etternavn"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:154
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:160
 #: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:32
 msgid "Username"
 msgstr "Brukernavn"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:176
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:182
 msgid "Search for name or username ..."
 msgstr "Søk etter brukernavn eller navn ..."
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:241
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:248
 msgid "Sort by points ascending"
 msgstr "Sorter etter poeng i stigende rekkefølge"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:249
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:256
 msgid "Sort by points decending"
 msgstr "Sorter etter poeng i synkende rekkefølge"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:434
+#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:441
 msgid "Some students are ignored"
 msgstr "Noen studenter er ignorert"
 
@@ -3009,6 +3009,10 @@ msgstr "Rediger og vis tilknyttet informasjon"
 msgid "Overview of all results"
 msgstr "Oversikt over alle resultater"
 
+#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:129
+msgid "Qualified for final exams"
+msgstr "Kan gå opp til eksamen"
+
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:155
 msgid ""
 "Renaming a {period_term} should not be done without a certain amount of "
@@ -3206,8 +3210,8 @@ msgstr ""
 "Når du har slettet et %(subject_term)s er det ingen mulighet for å angre. "
 "Kun superbrukere kan slette et %(subject_term)s med innhold."
 
-#~ msgid "Qualified for final exams"
-#~ msgstr "Kan gå opp til eksamen"
+#~ msgid "Dashboard"
+#~ msgstr "Forsiden"
 
 #~ msgid ""
 #~ "These administrators are from items higher up in the hierarchy. The links "
