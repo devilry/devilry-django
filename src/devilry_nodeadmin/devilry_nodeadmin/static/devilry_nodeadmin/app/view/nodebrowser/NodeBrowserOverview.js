@@ -3,6 +3,10 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
     alias: 'widget.nodebrowseroverview',
     cls: 'devilry_nodeadmin_nodebrowseroverview',
 
+    requires: [
+        'devilry_extjsextras.UnfocusedContainer'
+    ],
+
     layout: 'column',
     autoScroll: true,
 
@@ -10,17 +14,18 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
      * @cfg {int} [node_pk]
      */
 
+    margin: '20',
+
     items: [{
-        xtype: 'container',
+        xtype: 'unfocusedcontainer',
         itemId: 'primary',
-        cls: 'devilry_nodeadmin_primary',
-        columnWidth: 0.5,
-        padding: '30 20 20 30'
+        cls: 'devilry_nodeadmin_nodebrowsersidebar',
+        width: 300,
+        padding: 0
     }, {
         xtype: 'container',
         itemId: 'secondary',
         cls: 'devilry_nodeadmin_secondary',
-        columnWidth: 0.5,
-        padding: '30 20 20 30'
+        columnWidth: 1.0
     }]
 });

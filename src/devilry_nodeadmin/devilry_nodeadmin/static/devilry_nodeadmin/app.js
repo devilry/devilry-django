@@ -76,6 +76,7 @@ Ext.application({
                 xtype: 'container',
                 region: 'center',
                 layout: 'fit',
+                cls: 'devilry_subtlebg',
                 items: [this.primaryContentContainer, {
                     xtype: 'floatingalertmessagelist', // NOTE: The alertmessagelist available as getAlertMessagelist() - used for errors and information
                     itemId: 'appAlertmessagelist'

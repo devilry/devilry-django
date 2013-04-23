@@ -1,20 +1,35 @@
+@import "compass/css3/border-radius";
+
+
+ul.devilry_nodeadmin_massive_navlist {
+    li {
+        a {
+            border: 1px solid rgb( 230, 230, 230 );
+            padding: 9px 9px 9px 14px;
+            margin: 5px 0 5px 0;
+            @include border-radius(5px);
+            background-color: #fff;
+            display: block;
+            font-size: 24px;
+            line-height: 48px;
+            font-weight: bold;
+        }
+    }
+}
+
 .devilry_nodeadmin_primary {
   line-height: 20px;
 
   .footer {
     margin-top: 25px;
   }
+}
 
-  .node {
-    border: 1px solid rgb( 230, 230, 230 );
-    padding: 9px 9px 9px 14px;
-    margin: 5px;
-    border-radius: 5px;
-    display: block;
-    font-size: 28px;
-    line-height: 48px;
-    font-weight: bold;
-  }
+.devilry_nodeadmin_nodebrowsersidebar {
+    border: 1px dotted #ccc;
+    border-right: none;
+    margin-top: 6px;
+    @include border-radius(6px 0 0 6px);
 }
 
 .devilry_nodeadmin_defaultnodelist {
@@ -35,20 +50,20 @@
 }
 
 .devilry_nodeadmin_navigator {
+    min-height: 20px;
+    margin-top: 5px;
+    padding: 6px 10px;
+    a.homelink {
+        float: right;
+    }
 
-  a {
-    margin-right: 15px;
-    float: right;
-  }
+    i {
+        margin-right: 5px;
+    }
 
-  i {
-    margin-right: 5px;
-  }
-
-  span {
-    margin-right: 50px;
-  }
-
+    span {
+        margin-right: 50px;
+    }
 }
 
 .secondary {
@@ -57,8 +72,30 @@
 
 
 .devilry_nodeadmin_nodedetailsoverview {
-  h3 {
-    font-style: italic;
-  }
+    h1 {
+        margin-top: 0;
+    }
 }
 
+.devilry_nodeadmin_nodechildrenlist {
+    margin-top: 15px;
+    li {
+        margin: 5px 0 5px 0;
+        a {
+            font-size: 20px;
+            border-top: 1px dotted #ccc;
+            border-bottom: 1px dotted #ccc;
+            display: block;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 6px 10px;
+            &:hover {
+                text-decoration: none;
+                background-color: #fff;
+            }
+        }
+    }
+    .no_nodes_on_level {
+        padding: 6px 10px;
+    }
+}

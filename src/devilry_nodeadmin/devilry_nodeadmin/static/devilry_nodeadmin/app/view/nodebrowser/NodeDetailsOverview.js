@@ -1,11 +1,12 @@
 Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
     extend: 'Ext.view.View',
     alias: 'widget.nodedetailsoverview',
-    cls: 'devilry_nodeadmin_nodedetailsoverview bootstrap',
+    cls: 'devilry_nodeadmin_nodedetailsoverview bootstrap devilry_focuscontainer',
+    padding: 20,
     tpl: [
         '<tpl for=".">',
-            '<h1>', gettext( 'About' ), ' <i>{ short_name }</i></h1>',
-            '<h3>{ long_name }</h3>',
+            '<h1>', gettext( 'About' ), ' {short_name}</h1>',
+            '<p class="muted">{long_name}</p>',
             '<div>{ subject_count } ', gettext( 'courses' ), '</div>',
             '<div>{ assignment_count } ', gettext( 'assignments' ), '</div>',
             '<hr />',
