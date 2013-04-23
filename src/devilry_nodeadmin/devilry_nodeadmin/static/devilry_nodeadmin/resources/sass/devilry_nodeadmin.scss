@@ -5,25 +5,20 @@ ul.devilry_nodeadmin_massive_navlist {
     li {
         a {
             border: 1px solid rgb( 230, 230, 230 );
-            padding: 9px 9px 9px 14px;
+            padding: 14px;
             margin: 5px 0 5px 0;
             @include border-radius(5px);
             background-color: #fff;
             display: block;
             font-size: 24px;
-            line-height: 48px;
+            line-height: 28px;
             font-weight: bold;
         }
     }
 }
 
-.devilry_nodeadmin_primary {
-  line-height: 20px;
-
-  .footer {
-    margin-top: 25px;
-  }
-}
+//.devilry_nodeadmin_primary {
+//}
 
 .devilry_nodeadmin_nodebrowsersidebar {
     border: 1px dotted #ccc;

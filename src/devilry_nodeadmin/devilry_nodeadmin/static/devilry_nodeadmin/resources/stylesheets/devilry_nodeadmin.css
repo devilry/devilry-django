@@ -1,7 +1,7 @@
 /* line 6, ../sass/devilry_nodeadmin.scss */
 ul.devilry_nodeadmin_massive_navlist li a {
   border: 1px solid #e6e6e6;
-  padding: 9px 9px 9px 14px;
+  padding: 14px;
   margin: 5px 0 5px 0;
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
@@ -11,20 +11,11 @@ ul.devilry_nodeadmin_massive_navlist li a {
   background-color: #fff;
   display: block;
   font-size: 24px;
-  line-height: 48px;
+  line-height: 28px;
   font-weight: bold;
 }
 
-/* line 20, ../sass/devilry_nodeadmin.scss */
-.devilry_nodeadmin_primary {
-  line-height: 20px;
-}
 /* line 23, ../sass/devilry_nodeadmin.scss */
-.devilry_nodeadmin_primary .footer {
-  margin-top: 25px;
-}
-
-/* line 28, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodebrowsersidebar {
   border: 1px dotted #cccccc;
   border-right: none;
@@ -36,61 +27,61 @@ ul.devilry_nodeadmin_massive_navlist li a {
   border-radius: 6px 0 0 6px;
 }
 
-/* line 36, ../sass/devilry_nodeadmin.scss */
+/* line 31, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_defaultnodelist .to-frontpage {
   font-size: 14px;
   float: right;
   margin-left: 10px;
   font-weight: normal;
 }
-/* line 43, ../sass/devilry_nodeadmin.scss */
+/* line 38, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_defaultnodelist i {
   margin-right: 5px;
 }
 
-/* line 48, ../sass/devilry_nodeadmin.scss */
+/* line 43, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_betawarning {
   line-height: 20px;
 }
 
-/* line 52, ../sass/devilry_nodeadmin.scss */
+/* line 47, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_navigator {
   min-height: 20px;
   margin-top: 5px;
   padding: 6px 10px;
 }
-/* line 56, ../sass/devilry_nodeadmin.scss */
+/* line 51, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_navigator a.homelink {
   float: right;
 }
-/* line 60, ../sass/devilry_nodeadmin.scss */
+/* line 55, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_navigator i {
   margin-right: 5px;
 }
-/* line 64, ../sass/devilry_nodeadmin.scss */
+/* line 59, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_navigator span {
   margin-right: 50px;
 }
 
-/* line 69, ../sass/devilry_nodeadmin.scss */
+/* line 64, ../sass/devilry_nodeadmin.scss */
 .secondary {
   line-height: 20px;
 }
 
-/* line 75, ../sass/devilry_nodeadmin.scss */
+/* line 70, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodedetailsoverview h1 {
   margin-top: 0;
 }
 
-/* line 80, ../sass/devilry_nodeadmin.scss */
+/* line 75, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodechildrenlist {
   margin-top: 15px;
 }
-/* line 82, ../sass/devilry_nodeadmin.scss */
+/* line 77, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodechildrenlist li {
   margin: 5px 0 5px 0;
 }
-/* line 84, ../sass/devilry_nodeadmin.scss */
+/* line 79, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodechildrenlist li a {
   font-size: 20px;
   border-top: 1px dotted #cccccc;
@@ -100,12 +91,12 @@ ul.devilry_nodeadmin_massive_navlist li a {
   font-weight: bold;
   padding: 6px 10px;
 }
-/* line 92, ../sass/devilry_nodeadmin.scss */
+/* line 87, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodechildrenlist li a:hover {
   text-decoration: none;
   background-color: #fff;
 }
-/* line 98, ../sass/devilry_nodeadmin.scss */
+/* line 93, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodechildrenlist .no_nodes_on_level {
   padding: 6px 10px;
 }
