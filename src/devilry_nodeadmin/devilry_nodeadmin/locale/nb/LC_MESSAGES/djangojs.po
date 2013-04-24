@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-23 19:22+0200\n"
+"POT-Creation-Date: 2013-04-24 11:49+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,6 +42,7 @@ msgstr ""
 "se underliggende nivåer, %(subjects_term)s og %(periods_term)s."
 
 #: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:18
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:28
 msgid "subjects"
 msgstr "Kurs"
 
@@ -84,8 +85,28 @@ msgstr "som hører til dette nivået"
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:21
 msgid ""
-"Follow these subject links to extend deadlines, alter group membership, and "
-"to get detailed summaries of particular students."
+"Follow these links to get access to all the details available to "
+"%(subject_term)s administrators. This includes the ability to extend "
+"deadlines, view detailed information about students and their feedback, and "
+"much more."
 msgstr ""
-"Lenkene til disse kurs tar deg et sted der du kan flytte fristene, endre "
-"gruppetilhørighet, og se detaljene om en student."
+"Følg disse linkene for å få tilgang til alle detaljene tilgjengelig for "
+"%(subject_term)s administratorer. Dette inkluderer mulighet for å utvide "
+"innleveringsfrister, se detaljert informasjon om studenter og "
+"tilbakemeldinger, og mye mer."
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:22
+msgid "subject"
+msgstr ""
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:27
+msgid ""
+"No %(subjects_term)s on this level. If there are any %(nodes_term)s below "
+"this level, they are listed in the menu on your left hand side."
+msgstr ""
+"Ingen %(subjects_term)s på dette nivået. Hvis det finnes noen %(nodes_term)s "
+"under dette nivået, er de i menyen på venstre side."
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:29
+msgid "nodes"
+msgstr ""

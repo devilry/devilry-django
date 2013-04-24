@@ -18,7 +18,7 @@ ul.devilry_nodeadmin_massive_navlist li a {
 /* line 23, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodebrowsersidebar {
   border: 1px dotted #cccccc;
-  border-right: none;
+  border-right: 1px solid #cccccc;
   margin-top: 6px;
   -webkit-border-radius: 6px 0 0 6px;
   -moz-border-radius: 6px 0 0 6px;

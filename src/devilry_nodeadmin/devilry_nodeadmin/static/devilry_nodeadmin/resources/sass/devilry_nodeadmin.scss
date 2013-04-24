@@ -22,7 +22,7 @@ ul.devilry_nodeadmin_massive_navlist {
 
 .devilry_nodeadmin_nodebrowsersidebar {
     border: 1px dotted #ccc;
-    border-right: none;
+    border-right: 1px solid #ccc;
     margin-top: 6px;
     @include border-radius(6px 0 0 6px);
 }
