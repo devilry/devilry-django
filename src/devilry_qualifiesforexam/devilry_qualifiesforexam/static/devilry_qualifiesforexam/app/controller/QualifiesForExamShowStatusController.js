@@ -151,13 +151,15 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
     },
 
     _onProxyError: function(proxy, response, operation) {
-        this.getOverview().setLoading(false);
-        var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
-        errorhandler.addErrors(response, operation);
-        if(errorhandler.errormessages.length === 1 && errorhandler.errormessages[0] === 'The period has no statuses') {
-            this._onNoStatus();
-        } else {
-            this.application.getAlertmessagelist().addMany(errorhandler.errormessages, 'error', true);
+        if(!Ext.isEmpty(this.getOverview()) && this.getOverview().isVisible()) {
+            this.getOverview().setLoading(false);
+            var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
+            errorhandler.addErrors(response, operation);
+            if(errorhandler.errormessages.length === 1 && errorhandler.errormessages[0] === 'The period has no statuses') {
+                this._onNoStatus();
+            } else {
+                this.application.getAlertmessagelist().addMany(errorhandler.errormessages, 'error', true);
+            }
         }
     },
 

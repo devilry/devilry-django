@@ -18,10 +18,11 @@ class PeriodTag(models.Model):
 
 
 class Status(models.Model):
+    READY, ALMOSTREADY, NOTREADY = ('ready', 'almostready', 'notready')
     STATUS_CHOICES = (
-        ('ready', _('Ready for export')),
-        ('almostready', _('Most students are ready for export')),
-        ('notready', _('Not ready for export (retracted)')),
+        (READY, _('Ready for export')),
+        (ALMOSTREADY, _('Most students are ready for export')),
+        (NOTREADY, _('Not ready for export (retracted)')),
     )
     STATUS_CHOICES_DICT = dict(STATUS_CHOICES)
     period = models.ForeignKey(Period,
@@ -62,6 +63,11 @@ class Status(models.Model):
 
     def get_qualified_students(self):
         return self.students.filter(qualifies=True)
+
+    def __unicode__(self):
+        return u'Status(period={period}, id={id}, status={status})'.format(
+                id=self.id, status=self.period, period=self.period)
+
 
 
 class QualifiesForFinalExam(models.Model):

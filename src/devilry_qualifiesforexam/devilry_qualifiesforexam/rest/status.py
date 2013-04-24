@@ -48,7 +48,7 @@ class StatusView(View):
 
     # GET
     With no period specified, list the latest status for all active periods, including
-    useful statistics for a UI listing. For each item in the listing, we yield and object
+    useful statistics for a UI listing. For each item in the listing, we yield an object
     with the following attributes:
 
     - ``id``: The period id.

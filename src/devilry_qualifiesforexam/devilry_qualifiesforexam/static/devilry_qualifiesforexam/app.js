@@ -29,7 +29,7 @@ Ext.application({
         'QualifiesForExamSelectPluginController',
         'QualifiesForExamPreviewController',
         'QualifiesForExamShowStatusController',
-        'NodeAdminBrowserController'
+        'SummaryViewController'
     ],
 
     refs: [{
@@ -111,6 +111,7 @@ Ext.application({
         }
 
         // Setup routes
+        this.route.add('/summary/:nodeid', 'summary');
         this.route.add('/:periodid/selectplugin', 'selectplugin');
         this.route.add('/:periodid/preview/:pluginid/:pluginsessionid', 'preview');
         this.route.add('/:periodid/showstatus', 'showstatus');
@@ -148,6 +149,14 @@ Ext.application({
         this.setPrimaryContent({
             xtype: 'showstatus',
             periodid: periodid
+        });
+    },
+
+    summary: function(routeInfo, nodeid) {
+        this.breadcrumbs.setHome();
+        this.setPrimaryContent({
+            xtype: 'summaryview',
+            nodeid: nodeid
         });
     }
 });
