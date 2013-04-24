@@ -154,31 +154,6 @@ class RelatedNodeDetails( InstanceModelView ):
         return instance
 
 
-##
-# Node Trees
-##
-
-class NodeTreeResource( NodeResource ):
-    model = Node
-    fields = (  'id', 'short_name', 'children', )
-    allowed_methods = ('get' ,)
-
-    def children( self, instance ):
-        candidates = Node.objects.filter( parentnode=instance )
-        return self.serialize_iter( candidates )
-
-
-class NodeTree( ListModelView ):
-    resource = NodeTreeResource
-    permissions = (IsAuthenticated, ) # [+] restrict to Admin
-    allowed_methods = ('get' ,)
-
-    def get_queryset( self ):
-        nodes = Node.where_is_admin_or_superadmin( self.request.user )
-        nodes = nodes.exclude( parentnode__in=nodes )
-        return nodes
-
-
 
 
 class PathResource( ModelResource ):
