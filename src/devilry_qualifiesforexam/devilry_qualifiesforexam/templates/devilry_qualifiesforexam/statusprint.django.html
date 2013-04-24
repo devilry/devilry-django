@@ -1,8 +1,20 @@
+{% load i18n %}
 <html>
     <head>
         {#<title>{{ period.get_path }}</title>#}
     </head>
     <body>
-        Hei
+        <ul>
+            {% for studentstatus in status.students.all %}
+            <li>
+                {{ studentstatus.relatedstudent.user.username }}
+                {% if studentstatus.qualifies %}
+                    <strong>{% trans "Yes" %}</strong>
+                {% else %}
+                    {% trans "No" %}
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
     </body>
 </html>
