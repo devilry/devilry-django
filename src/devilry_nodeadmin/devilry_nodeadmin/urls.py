@@ -7,7 +7,6 @@ from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
 from devilry_settings.i18n import get_javascript_catalog_packages
 
-from devilry_nodeadmin.util import emptyview, Out
 from devilry_nodeadmin.views import AppView
 
 i18n_packages = get_javascript_catalog_packages(
@@ -18,13 +17,11 @@ i18n_packages = get_javascript_catalog_packages(
 )
 
 urlpatterns = patterns('devilry_nodeadmin',
-
     url('^$',
         login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view()))),
             name='devilry_nodeadmin'),
     url('^i18n.js$', javascript_catalog, 
         kwargs={'packages': i18n_packages}, 
         name='devilry_nodeadmin_i18n'),
-    url('^emptyview$', Out() ),
     url('^rest/', include('devilry_nodeadmin.rest.urls') )
 )
