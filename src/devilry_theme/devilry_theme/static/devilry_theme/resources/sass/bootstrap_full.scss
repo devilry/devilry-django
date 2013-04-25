@@ -1,8 +1,11 @@
 // Used in views where we do not use extjs
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Ubuntu'), local('Ubuntu'), url(../fonts/ubuntu/ubuntu.woff) format('woff');
+}
 
-
-// The default font
-@import url(http://fonts.googleapis.com/css?family=Ubuntu:300);
 
 // Core variables and mixins
 @import "bootstrap/mixins";
