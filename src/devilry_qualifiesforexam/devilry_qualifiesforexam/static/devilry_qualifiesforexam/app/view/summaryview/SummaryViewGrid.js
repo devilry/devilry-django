@@ -50,7 +50,7 @@ Ext.define('devilry_qualifiesforexam.view.summaryview.SummaryViewGrid', {
                     gettext('View'),
                 '</a>',
                 ' ',
-                '<a href="{[this.getViewUrl(values.period_id)]}" target="_blank" class="btn btn-large btn-inverse">',
+                '<a href="{[this.getPrintUrl(values.status_id)]}" target="_blank" class="btn btn-large btn-inverse">',
                     '<i class="icon-print icon-white"></i> ',
                     gettext('Print'),
                 '</a>',
@@ -58,6 +58,9 @@ Ext.define('devilry_qualifiesforexam.view.summaryview.SummaryViewGrid', {
         '</div>', {
             getViewUrl: function(period_id) {
                 return devilry_qualifiesforexam.utils.UrlLookup.showstatus(period_id);
+            },
+            getPrintUrl: function(status_id) {
+                return devilry_qualifiesforexam.utils.UrlLookup.showstatus_print(status_id);
             }
         }
     ],
@@ -110,9 +113,11 @@ Ext.define('devilry_qualifiesforexam.view.summaryview.SummaryViewGrid', {
     },
 
     _renderActionsCol: function(value, meta, record) {
+        var active_status = record.get('active_status');
         return this.actionsColTplCompiled.apply({
             'period_id': record.get('id'),
-            'is_ready': !Ext.isEmpty(record.get('active_status')) && record.get('active_status').status == 'ready'
+            'status_id': Ext.isEmpty(active_status)? undefined: active_status.id,
+            'is_ready': !Ext.isEmpty(active_status) && active_status.status == 'ready'
         });
     }
 });
