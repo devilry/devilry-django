@@ -1,20 +1,45 @@
+{% extends "devilry_theme/printbase.django.html" %}
 {% load i18n %}
-<html>
-    <head>
-        {#<title>{{ period.get_path }}</title>#}
-    </head>
-    <body>
-        <ul>
-            {% for studentstatus in status.students.all %}
-            <li>
-                {{ studentstatus.relatedstudent.user.username }}
-                {% if studentstatus.qualifies %}
-                    <strong>{% trans "Yes" %}</strong>
-                {% else %}
-                    {% trans "No" %}
-                {% endif %}
-            </li>
+
+{% block title %}
+    {{ status.period.get_path }} - {% trans "Qualifies for final exams" %}
+{% endblock %}
+
+{% block body %}
+    <h1>
+        {{ status.period.get_path }}
+    </h1>
+    <p>{% trans "Qualifies for final exams" %}</p>
+    <table class="table table-striped table-bordered table-condensed">
+        <thead>
+            <tr>
+                <th>
+                    {% trans "Student" %}
+                    <small class="muted">({% blocktrans %}Ordered by username{% endblocktrans %})</small>
+                </th>
+                <th>{% trans "Qualifies for exam?" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for studentstatus in studentstatuses %}
+                <tr class="{{ studentstatus.qualifies|yesno:"success,warning" }}">
+                    <td>
+                        {% with studentstatus.relatedstudent.user as user %}
+                            {% if user.get_profile.full_name %}
+                                {{ user.get_profile.full_name }}
+                            {% endif %}
+                            ({{ studentstatus.relatedstudent.user.username }})
+                        {% endwith %}
+                    </td>
+                    <td style="width: 160px;">
+                        {% if studentstatus.qualifies %}
+                            <strong>{% trans "Yes" %}</strong>
+                        {% else %}
+                            <em>{% trans "No" %}</em>
+                        {% endif %}
+                    </td>
+                </tr>
             {% endfor %}
-        </ul>
-    </body>
-</html>
+        </tbody>
+    </table>
+{% endblock %}

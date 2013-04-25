@@ -33,5 +33,7 @@ class StatusPrintView(TemplateView):
 
     def get_context_data(self, **kwargs):
             context = super(StatusPrintView, self).get_context_data(**kwargs)
+            qry = self.status.students.all().order_by('relatedstudent__user__username')
             context['status'] = self.status
+            context['studentstatuses'] = qry
             return context
