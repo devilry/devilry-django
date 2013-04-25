@@ -236,7 +236,7 @@ class StatusView(View):
         qry = qry.filter(Period.q_is_active())
         qry = qry.prefetch_related('qualifiedforexams_status')
         qry = qry.select_related('parentnode')
-        qry = qry.order_by('start_time')
+        qry = qry.order_by('parentnode__long_name', 'start_time')
         return [self._listserialize_period(period) for period in qry]
 
     def get(self, request, id=None):
