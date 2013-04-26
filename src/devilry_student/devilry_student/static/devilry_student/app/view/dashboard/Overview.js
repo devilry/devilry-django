@@ -1,11 +1,9 @@
 Ext.define('devilry_student.view.dashboard.Overview' ,{
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.dashboard',
     cls: 'devilry_student_dashboard',
 
-    frame: false,
-    border: 0,
-    bodyPadding: 20,
+    padding: 20,
     autoScroll: true,
     layout: 'column',
 
@@ -15,6 +13,8 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
         items: [{
             xtype: 'container',
             itemId: 'notExpired',
+            cls: 'devilry_focuscontainer',
+            padding: 20,
             items: [{
                 xtype: 'box',
                 cls: 'bootstrap',
@@ -92,11 +92,12 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
             }
         }]
     }, {
-        xtype: 'panel',
+        xtype: 'container',
         border: 0,
         padding: '0 0 0 40',
         columnWidth: 0.35,
-        dockedItems: [{
+        layout: 'anchor',
+        items: [{
             xtype: 'toolbar',
             dock: 'top',
             ui: 'footer',
@@ -106,8 +107,7 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
                 xtype: 'dashboard_searchfield',
                 flex: 1
             }]
-        }],
-        items: [{
+        }, {
             xtype: 'container',
             itemId: 'recentDeliveries',
             margin: '20 0 0 0',

@@ -57,7 +57,6 @@ Ext.application({
         this.breadcrumbs = Ext.widget('breadcrumbs');
 
         this.primaryContentContainer = Ext.widget('container', {
-            region: 'center',
             layout: 'fit'
         });
         this.viewport = Ext.create('Ext.container.Viewport', {
@@ -71,7 +70,8 @@ Ext.application({
             }, {
                 xtype: 'container',
                 region: 'center',
-                layout: 'border',
+                layout: 'fit',
+                cls: 'devilry_subtlebg',
                 items: [this.primaryContentContainer]
             }]
         });
