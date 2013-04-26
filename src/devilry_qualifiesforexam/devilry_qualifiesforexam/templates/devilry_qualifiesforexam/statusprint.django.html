@@ -4,6 +4,13 @@
 {% block title %}
     {{ status.period.get_path }} - {% trans "Qualifies for final exams" %}
 {% endblock %}
+{% block head-post %}
+    <script type="text/javascript">
+        window.onload = function(){
+            window.print();
+        };
+    </script>
+{% endblock %}
 
 {% block body %}
     <h1>
@@ -42,7 +49,4 @@
             {% endfor %}
         </tbody>
     </table>
-    <script type="text/javascript">
-        window.print();
-    </script>
 {% endblock %}
