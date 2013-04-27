@@ -42,9 +42,10 @@ Ext.application({
 
     controllers: [
         'Dashboard',
-        'BrowseHistory',
         'GroupInfo',
-        'AddDelivery'
+        'AddDelivery',
+        'BrowseController',
+        'BrowseHistory'
     ],
 
     launch: function() {
@@ -95,6 +96,9 @@ Ext.application({
     _setupRoutes: function() {
         this.route = Ext.create('devilry_extjsextras.Router', this);
         this.route.add("", 'dashboard');
+        //this.route.add("/browseold/", 'browseold');
+        this.route.add("/browse/list/", 'browselist');
+        this.route.add("/browse/calendar/", 'browsecalendar');
         this.route.add("/browse/", 'browse');
         this.route.add("/browse/:period_id", 'browsePeriod');
         this.route.add("/group/:group_id/", 'groupinfo');
@@ -119,6 +123,24 @@ Ext.application({
     },
 
     browse: function() {
+        this.route.navigate('/browse/list/');
+    },
+
+    browselist: function() {
+        this.setPrimaryContent({
+            xtype: 'browse',
+            activeItem: 'list'
+        });
+    },
+
+    browsecalendar: function() {
+        this.setPrimaryContent({
+            xtype: 'browse',
+            activeItem: 'calendar'
+        });
+    },
+
+    browseold: function() {
         this.setPrimaryContent({
             xtype: 'browsehistory'
         });
