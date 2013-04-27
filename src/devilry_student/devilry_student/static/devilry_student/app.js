@@ -97,9 +97,8 @@ Ext.application({
         this.route = Ext.create('devilry_extjsextras.Router', this);
         this.route.add("", 'dashboard');
         //this.route.add("/browseold/", 'browseold');
-        this.route.add("/browse/list/", 'browselist');
-        this.route.add("/browse/calendar/", 'browsecalendar');
-        this.route.add("/browse/", 'browse');
+        this.route.add("/calendar/", 'browsecalendar');
+        this.route.add("/browse/", 'browselist');
         this.route.add("/browse/:period_id", 'browsePeriod');
         this.route.add("/group/:group_id/", 'groupinfo');
         this.route.add("/group/:group_id/@@add-delivery", 'groupinfoAddDelivery');
@@ -120,10 +119,6 @@ Ext.application({
         this.setPrimaryContent({
             xtype: 'dashboard'
         });
-    },
-
-    browse: function() {
-        this.route.navigate('/browse/list/');
     },
 
     browselist: function() {

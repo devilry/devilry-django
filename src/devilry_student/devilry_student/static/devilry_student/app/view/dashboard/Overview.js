@@ -78,17 +78,44 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
             margin: '30 0 0 0',
             tpl: [
                 '<h3>',
-                    interpolate(gettext('Other %(assignments_term)s'), {
-                        assignments_term: gettext('assignments')
-                    }, true),
+                    gettext('Navigate'),
                 '</h3>',
-                '<p><a href="#/browse/">{text}</a></p>'
+                '<ul class="unstyled">',
+                    '<li>',
+                        '<strong><a href="#/browse/">',
+                            gettext('Active {period_term}'),
+                        '</a></strong>',
+                        '<small class="muted"> - ',
+                            gettext('Results for all your assignments'),
+                        '</small>',
+                    '</li>',
+                    '<li>',
+                        '<strong><a href="#/browse/">',
+                            gettext('Calendar of active {period_term}'),
+                        '</a></strong>',
+                    '</li>',
+                    '<li>',
+                        '<strong><a href="#/browse/">',
+                            gettext('Qualified for final exams?'),
+                        '</a></strong>',
+                        '<small class="muted"> - ',
+                            gettext('Status for all {subjects_term} in active {periods_term}'),
+                        '</small>',
+                    '</li>',
+                    '<li>',
+                        '<strong><a href="#/browse/">',
+                            gettext('History'),
+                        '</a></strong>',
+                        '<small class="muted"> - ',
+                            gettext('Browse all your deliveries'),
+                        '</small>',
+                    '</li>',
+                '</ul>'
             ],
             data: {
-                text: interpolate(gettext('Browse all your %(assignments_term)s, including old %(deliveries_term)s'), {
-                    assignments_term: gettext('assignments'),
-                    deliveries_term: gettext('deliveries')
-                }, true)
+                subjects_term: gettext('subjects'),
+                periods_term: gettext('periods'),
+                period_term: gettext('period')
             }
         }]
     }, {

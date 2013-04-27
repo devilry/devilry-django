@@ -4,6 +4,7 @@ from .rest.aggregated_groupinfo import TestRestAggregatedGroupInfo
 from .rest.recent_deliveries import TestRestRecentDeliveries
 from .rest.recent_feedbacks import TestRestRecentFeedbacks
 from .rest.find_groups import TestRestFindGroups
+from .rest.results import TestRestResults
 from .groupinfoui import TestGroupInfoUI
 from .groupinfoui import TestAddDeliveryUI
 from .dashboardui import TestDashboardUI
