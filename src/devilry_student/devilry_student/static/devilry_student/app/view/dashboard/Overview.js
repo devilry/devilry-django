@@ -18,7 +18,7 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
             items: [{
                 xtype: 'box',
                 cls: 'bootstrap',
-                tpl: '<h1>{heading} <small>- {heading_suffix}</small></h1>',
+                tpl: '<h1 style="margin-top: 0;">{heading} <small>- {heading_suffix}</small></h1>',
                 data: {
                     heading: gettext('Assignments'),
                     heading_suffix: interpolate(gettext('click one to add a %(delivery_term)s'), {
