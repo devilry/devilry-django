@@ -8,11 +8,7 @@ Ext.define('devilry_student.controller.BrowseController', {
     ],
 
     stores: [
-        'OpenGroupsDeadlineNotExpired',
-        'OpenGroupsDeadlineExpired',
-        'RecentDeliveries',
-        'RecentFeedbacks',
-        'FindGroups'
+        'GroupedResults'
     ],
 
     refs: [{
@@ -22,13 +18,24 @@ Ext.define('devilry_student.controller.BrowseController', {
 
     init: function() {
         this.control({
-            'viewport browse': {
+            'viewport browse browselist': {
                 render: this._onRenderList
             }
         });
     },
 
     _onRenderList: function() {
-        console.log('Hei');
+        this.getGroupedResultsStore().load({
+            scope: this,
+            callback: function(records, op) {
+                if(op.success) {
+                    this._onLoadResultsSuccess();
+                }
+            }
+        });
+    },
+
+    _onLoadResultsSuccess: function() {
+        
     }
 });

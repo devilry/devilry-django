@@ -16,5 +16,5 @@ urlpatterns = patterns('devilry_student.rest',
                        url(r'^recent-deliveries/$', RecentDeliveriesView.as_view()),
                        url(r'^recent-feedbacks/$', RecentFeedbacksView.as_view()),
                        url(r'^find-groups/$', FindGroupsView.as_view()),
-                       url(r'^results/$', ResultsView.as_view(), name='devilry_student-rest-results')
+                       url(r'^results-grouped$', ResultsView.as_view(), name='devilry_student-rest-results')
                       )
