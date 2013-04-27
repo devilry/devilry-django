@@ -26,7 +26,7 @@ a wizard with the following steps/pages:
        selected. The *change*-button is only available on active periods.
 2. Completely controlled by the plugin. May be more than one page if that should be needed by
    the plugin. The plugin can also just redirect directly to the next page if it does not require
-   any input from the user. We supply a footer with save and back buttons that should be the same
+   any input from the user. We supply a box with save and back buttons that should be the same
    for all plugins.
 3. Preview the results with the option to save or go back to the previous page.
 
