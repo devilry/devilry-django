@@ -24,7 +24,13 @@ Ext.define('devilry_student.controller.BrowseGroupedController', {
 
     _onRenderList: function() {
         var activeonly = this.getBrowseGrouped().activeonly;
-        console.log(activeonly);
+        var title = gettext('History');
+        if(activeonly) {
+            title = Ext.create('Ext.XTemplate', gettext('Active {period_term}')).apply({
+                period_term: gettext('period')
+            });
+        }
+        this.application.breadcrumbs.set([], title);
         this.getGroupedResultsStore().load({
             scope: this,
             params: {

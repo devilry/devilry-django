@@ -210,21 +210,19 @@ Ext.define('devilry_student.controller.GroupInfo', {
         var periodpath = [subject.short_name, period.short_name].join('.');
 
         var breadcrumbs = [{
-            url: '#/browse/',
-            text: gettext('Browse')
-        }, {
-            url: Ext.String.format('#/browse/{0}', period.id),
-            text: periodpath
+            url: '#/browsegrouped/history',
+            text: gettext('History')
         }];
 
+        var path = Ext.String.format('{0}.{1}', periodpath, assignment.short_name);
         if(extra) {
             breadcrumbs.push({
                 url: Ext.String.format('#/group/{0}/', groupInfoRecord.get('id')),
-                text: assignment.short_name
+                text: path
             });
             this.application.breadcrumbs.set(breadcrumbs, extra);
         } else {
-            this.application.breadcrumbs.set(breadcrumbs, assignment.short_name);
+            this.application.breadcrumbs.set(breadcrumbs, path);
         }
 
         var title = [periodpath, assignment.shortname].join('.');

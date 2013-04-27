@@ -103,7 +103,7 @@ Ext.define('devilry_student.view.dashboard.Overview' ,{
                         //'</small>',
                     //'</li>',
                     '<li>',
-                        '<strong><a href="#/browsegrouped/all">',
+                        '<strong><a href="#/browsegrouped/history">',
                             gettext('History'),
                         '</a></strong>',
                         '<small class="muted"> - ',

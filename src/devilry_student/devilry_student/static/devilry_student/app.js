@@ -98,7 +98,7 @@ Ext.application({
         this.route.add("", 'dashboard');
         //this.route.add("/browseold/", 'browseold');
         this.route.add("/browsegrouped/active", 'browsegrouped_active');
-        this.route.add("/browsegrouped/all", 'browsegrouped_all');
+        this.route.add("/browsegrouped/history", 'browsegrouped_history');
         //this.route.add("/browse/:period_id", 'browsePeriod');
         this.route.add("/group/:group_id/", 'groupinfo');
         this.route.add("/group/:group_id/@@add-delivery", 'groupinfoAddDelivery');
@@ -121,7 +121,7 @@ Ext.application({
         });
     },
 
-    browsegrouped_all: function() {
+    browsegrouped_history: function() {
         this.setPrimaryContent({
             xtype: 'browsegrouped',
             activeonly: false
