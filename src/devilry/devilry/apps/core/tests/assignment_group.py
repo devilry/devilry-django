@@ -23,6 +23,18 @@ class TestAssignmentGroup(TestCase, TestHelper):
                                    "g3:candidate(student3,student2):examiner(examiner1,examiner2,examiner3)"])
         self.add_to_path('uio.ifi;inf1100.old.oldassignment.group1:examiner(examiner3)')
 
+    def test_assignment_property(self):
+        self.assertEquals(self.inf1100_looong_assignment1_g1.assignment,
+                self.inf1100_looong_assignment1)
+
+    def test_period_property(self):
+        self.assertEquals(self.inf1100_looong_assignment1_g1.period,
+                self.inf1100_looong)
+
+    def test_subject_property(self):
+        self.assertEquals(self.inf1100_looong_assignment1_g1.subject,
+                self.inf1100)
+
     def test_where_is_admin(self):
         self.assertEquals(6, AssignmentGroup.where_is_admin(self.teacher1).count())
 

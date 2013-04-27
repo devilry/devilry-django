@@ -173,6 +173,28 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def q_is_examiner(cls, user_obj):
         return Q(examiners__user=user_obj)
 
+
+    @property
+    def subject(self):
+        """
+        Shortcut for ``parentnode.parentnode.parentnode``.
+        """
+        return self.parentnode.parentnode.parentnode
+
+    @property
+    def period(self):
+        """
+        Shortcut for ``parentnode.parentnode``.
+        """
+        return self.parentnode.parentnode
+
+    @property
+    def assignment(self):
+        """
+        Alias for :obj:`.parentnode`.
+        """
+        return self.parentnode
+
     def __unicode__(self):
         return u'id={id} path={path} candidates=({candidates})'.format(id=self.id,
                                                                        path=self.parentnode.get_path(),
