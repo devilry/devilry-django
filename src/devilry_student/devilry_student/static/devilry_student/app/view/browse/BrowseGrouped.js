@@ -1,18 +1,32 @@
-Ext.define('devilry_student.view.browse.BrowseList' ,{
+Ext.define('devilry_student.view.browse.BrowseGrouped' ,{
     extend: 'Ext.view.View',
-    alias: 'widget.browselist',
-    cls: 'devilry_student_browselist bootstrap',
+    alias: 'widget.browsegrouped',
+    cls: 'devilry_student_browsegrouped bootstrap',
 
     store: 'GroupedResults',
     autoScroll: true,
     layout: 'fit',
     padding: 20,
 
+    /**
+     * @cfg {bool} [activeonly=false]
+     * List active periods only?
+     */
+    activeonly: false,
+
     tpl: [
-        '<tpl for=".">',
-            '<div class="subjectresults">',
-                '<h2>{long_name}</h2>',
-                '<tpl for="periods">',
+        '<h1>',
+            '<tpl if="activeonly">',
+                gettext('Active {period_term}'),
+            '<tpl else>',
+                gettext('History'),
+            '</tpl>',
+        '</h1>',
+        '<hr/>',
+        '<tpl for="subjects">',
+            '<div class="subjectresults devilry_focuscontainer" style="padding: 20px; margin-bottom: 20px;">',
+                '<h2>{data.long_name}</h2>',
+                '<tpl for="data.periods">',
                     '<h3>{long_name}</h3>',
                     '<table class="table table-striped table-bordered table-hover">',
                         '<tpl for="assignments">',
@@ -37,7 +51,9 @@ Ext.define('devilry_student.view.browse.BrowseList' ,{
                                             '</tpl>',
                                         '<tpl else>',
                                             '<tpl if="status === \'waiting-for-deliveries\'">',
-                                                '<em><small class="muted">', gettext('Waiting for deliveries'), '</small></em>',
+                                                '<em><small class="muted">',
+                                                    gettext('Waiting for deliveries, or for deadline to expire'),
+                                                '</small></em>',
                                             '<tpl elseif="status === \'waiting-for-feedback\'">',
                                                 '<em><small class="muted">', gettext('Waiting for feedback'), '</small></em>',
                                             '<tpl else>',
@@ -63,5 +79,13 @@ Ext.define('devilry_student.view.browse.BrowseList' ,{
         }
     ],
 
-    itemSelector: 'div.subjectresults'
+    itemSelector: 'div.subjectresults',
+
+    collectData: function(records, startIndex) {
+        return {
+            subjects: records,
+            period_term: gettext('period'),
+            activeonly: this.activeonly
+        };
+    }
 });

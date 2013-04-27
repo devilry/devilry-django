@@ -44,7 +44,7 @@ Ext.application({
         'Dashboard',
         'GroupInfo',
         'AddDelivery',
-        'BrowseController',
+        'BrowseGroupedController',
         'BrowseHistory'
     ],
 
@@ -97,9 +97,9 @@ Ext.application({
         this.route = Ext.create('devilry_extjsextras.Router', this);
         this.route.add("", 'dashboard');
         //this.route.add("/browseold/", 'browseold');
-        this.route.add("/calendar/", 'browsecalendar');
-        this.route.add("/browse/", 'browselist');
-        this.route.add("/browse/:period_id", 'browsePeriod');
+        this.route.add("/browsegrouped/active", 'browsegrouped_active');
+        this.route.add("/browsegrouped/all", 'browsegrouped_all');
+        //this.route.add("/browse/:period_id", 'browsePeriod');
         this.route.add("/group/:group_id/", 'groupinfo');
         this.route.add("/group/:group_id/@@add-delivery", 'groupinfoAddDelivery');
         this.route.add("/group/:group_id/:delivery_id", 'groupinfo');
@@ -121,19 +121,26 @@ Ext.application({
         });
     },
 
-    browselist: function() {
+    browsegrouped_all: function() {
         this.setPrimaryContent({
-            xtype: 'browse',
-            activeItem: 'list'
+            xtype: 'browsegrouped',
+            activeonly: false
         });
     },
 
-    browsecalendar: function() {
+    browsegrouped_active: function() {
         this.setPrimaryContent({
-            xtype: 'browse',
-            activeItem: 'calendar'
+            xtype: 'browsegrouped',
+            activeonly: true
         });
     },
+
+    //browsecalendar: function() {
+        //this.setPrimaryContent({
+            //xtype: 'browse',
+            //activeItem: 'calendar'
+        //});
+    //},
 
     browseold: function() {
         this.setPrimaryContent({
