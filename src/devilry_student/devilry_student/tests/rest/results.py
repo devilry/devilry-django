@@ -95,9 +95,9 @@ class TestRestResults(TestCase):
         self.assertEquals(response.status_code, 200)
         assignments = subjects[0]['periods'][0]['assignments']
         self.assertEquals(len(assignments), 3)
-        self.assertEquals(assignments[0]['id'], self.testhelper.sub_p1_a1.id)
+        self.assertEquals(assignments[2]['id'], self.testhelper.sub_p1_a1.id)
         self.assertEquals(assignments[1]['id'], self.testhelper.sub_p1_a2.id)
-        self.assertEquals(assignments[2]['id'], self.testhelper.sub_p1_a3.id)
+        self.assertEquals(assignments[0]['id'], self.testhelper.sub_p1_a3.id)
 
     def test_all_ordering_periods(self):
         self.testhelper.add_to_path('uni;sub.p0.a1.gX:candidate(student1).d1')
@@ -106,8 +106,8 @@ class TestRestResults(TestCase):
         self.assertEquals(response.status_code, 200)
         periods = subjects[0]['periods']
         self.assertEquals(len(periods), 2)
-        self.assertEquals(periods[0]['id'], self.testhelper.sub_p0.id)
-        self.assertEquals(periods[1]['id'], self.testhelper.sub_p1.id)
+        self.assertEquals(periods[1]['id'], self.testhelper.sub_p0.id)
+        self.assertEquals(periods[0]['id'], self.testhelper.sub_p1.id)
 
     def test_activeonly(self):
         self.testhelper.add_to_path('uni;sub.p0.a1.gX:candidate(student1).d1') # Not active

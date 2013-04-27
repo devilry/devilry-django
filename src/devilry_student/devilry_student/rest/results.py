@@ -71,8 +71,8 @@ class GroupedBySubjectSerialize(SerializeGroupMixin):
         subjects = OrderedDict()
         for group in self.qry.order_by(
                 'parentnode__parentnode__parentnode__long_name',
-                'parentnode__parentnode__start_time',
-                'parentnode__publishing_time', 'parentnode__short_name'):
+                '-parentnode__parentnode__start_time',
+                '-parentnode__publishing_time', 'parentnode__short_name'):
             subjectdict = self._add_or_get(subjects, group.subject, self._serialize_subject)
             perioddict = self._add_or_get(subjectdict['periods'], group.period, self._serialize_period)
             assignmentdict = self._add_or_get(perioddict['assignments'], group.assignment, self._serialize_assignment)
