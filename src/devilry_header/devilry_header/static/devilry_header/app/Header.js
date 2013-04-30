@@ -163,14 +163,24 @@ Ext.define('devilry_header.Header', {
         return this.down('#breadcrumbarea');
     },
 
+    setNavClass: function(navclass) {
+        this.navclass = navclass;
+        this._updateRoleButton();
+        this._getUserButton().addExtraClass(this.navclass);
+    },
+
+
     setBreadcrumbComponent: function(config) {
         this._getBreadcrumbArea().removeAll();
         this._getBreadcrumbArea().add(config);
     },
 
-    _onRenderCurrentRoleButton: function() {
+    _updateRoleButton: function() {
         this._getCurrentRoleButton().setText(this.navclass_to_rolename[this.navclass]);
         this._getCurrentRoleButton().addExtraClass(this.navclass);
+    },
+    _onRenderCurrentRoleButton: function() {
+        this._updateRoleButton();
     },
     _onRenderUserButton: function() {
         devilry_authenticateduserinfo.UserInfo.load(function(userInfoRecord) {
