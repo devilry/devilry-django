@@ -1,30 +1,28 @@
-from django.http import HttpResponse
-
-from devilry.apps.core.models import Node, Subject, DevilryUserProfile, Period, RelatedStudent
-
-from djangorestframework.views import ModelView, ListModelView, InstanceModelView
-from djangorestframework.mixins import InstanceMixin, ReadModelMixin
+from djangorestframework.views import ListModelView
 from djangorestframework.resources import ModelResource
 from djangorestframework.permissions import IsAuthenticated
+
+from devilry.apps.core.models import Node
 
 
 
 class ToplevelNodeListingResource(ModelResource):
     model = Node
-    fields = ('id', 'short_name', 'long_name', 'predecessor', 'etag',
-            'subject_count', 'assignment_count', 'period_count', 'subjects',
-            'breadcrumbs', 'path', 'childnodes')
+    fields = ('id', 'short_name', 'long_name')
 
 
 class ToplevelNodeListing( ListModelView ):
     """
-    All nodes where the user is either admin or superadmin
+    All nodes where the user is either admin (directly on the node), or all
+    toplevel nodes if the user is a superuser.
     """
-    
-    resource = NodeResource
+    resource = ToplevelNodeListingResource
     permissions = (IsAuthenticated,)
 
     def get_queryset( self ):
-        nodes = Node.where_is_admin_or_superadmin( self.request.user )
-        nodes = nodes.exclude( parentnode__in=nodes )
-        return nodes
+        if self.request.user.is_superuser:
+            qry = Node.objects.filter(parentnode__isnull=True)
+        else:
+            qry = Node.objects.filter(admins=self.request.user)
+        qry = qry.order_by('long_name')
+        return qry
