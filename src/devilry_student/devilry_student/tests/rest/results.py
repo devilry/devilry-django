@@ -178,3 +178,17 @@ class TestRestResults(TestCase):
         self.assertEquals(response.status_code, 200)
         period = subjects[0]['periods'][0]
         self.assertIsNone(period['qualifiesforexams'])
+
+    def test_get_qualifiesforexam_notready(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
+        status = Status.objects.create(period=self.testhelper.sub_p1,
+                user=self.testhelper.testuser,
+                status=Status.NOTREADY)
+        relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=self.testhelper.student1)
+        status.students.create(relatedstudent=relstudent, qualifies=False)
+
+        content, response = self._getas('student1')
+        subjects = content
+        self.assertEquals(response.status_code, 200)
+        period = subjects[0]['periods'][0]
+        self.assertIsNone(period['qualifiesforexams'])
