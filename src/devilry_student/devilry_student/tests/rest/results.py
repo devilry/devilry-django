@@ -1,9 +1,9 @@
-from datetime import datetime
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.rest_testclient import RestClient
+from devilry_qualifiesforexam.models import Status
 
 
 
@@ -27,13 +27,14 @@ class TestRestResults(TestCase):
     def test_get_empty(self):
         content, response = self._getas('testuser')
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(content, [])
+        self.assertEquals(content['subjects'], [])
 
 
     def test_get_hierarchy(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1).d1')
 
-        subjects, response = self._getas('student1')
+        content, response = self._getas('student1')
+        subjects = content['subjects']
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(subjects), 1)
         self.assertEquals(subjects[0]['id'], self.testhelper.sub.id)
@@ -60,10 +61,9 @@ class TestRestResults(TestCase):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1).d1')
         delivery1 = self.testhelper.add_delivery('sub.p1.a1.g1', {'x.txt': ['x']})
         self.testhelper.add_feedback(delivery1, verdict={'grade': 'C', 'points': 55, 'is_passing_grade': True})
-        #self.testhelper.sub_p1_a1_g1.is_open = False
-        #self.testhelper.sub_p1_a1_g1.save()
 
-        subjects, response = self._getas('student1')
+        content , response = self._getas('student1')
+        subjects = content['subjects']
         self.assertEquals(response.status_code, 200)
         group = subjects[0]['periods'][0]['assignments'][0]['groups'][0]
         self.assertEquals(group['id'], self.testhelper.sub_p1_a1_g1.id)
@@ -77,10 +77,9 @@ class TestRestResults(TestCase):
     def test_get_groupdetails_not_corrected(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1).d1')
         delivery1 = self.testhelper.add_delivery('sub.p1.a1.g1', {'x.txt': ['x']})
-        #self.testhelper.sub_p1_a1_g1.is_open = False
-        #self.testhelper.sub_p1_a1_g1.save()
 
-        subjects, response = self._getas('student1')
+        content, response = self._getas('student1')
+        subjects = content['subjects']
         self.assertEquals(response.status_code, 200)
         group = subjects[0]['periods'][0]['assignments'][0]['groups'][0]
         self.assertEquals(group['id'], self.testhelper.sub_p1_a1_g1.id)
@@ -91,7 +90,8 @@ class TestRestResults(TestCase):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1).d1')
         self.testhelper.add_to_path('uni;sub.p1.a2.g1:candidate(student1):examiner(examiner1).d1')
         self.testhelper.add_to_path('uni;sub.p1.a3.g1:candidate(student1):examiner(examiner1).d1')
-        subjects, response = self._getas('student1')
+        content, response = self._getas('student1')
+        subjects = content['subjects']
         self.assertEquals(response.status_code, 200)
         assignments = subjects[0]['periods'][0]['assignments']
         self.assertEquals(len(assignments), 3)
@@ -102,7 +102,8 @@ class TestRestResults(TestCase):
     def test_all_ordering_periods(self):
         self.testhelper.add_to_path('uni;sub.p0.a1.gX:candidate(student1).d1')
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
-        subjects, response = self._getas('student1')
+        content, response = self._getas('student1')
+        subjects = content['subjects']
         self.assertEquals(response.status_code, 200)
         periods = subjects[0]['periods']
         self.assertEquals(len(periods), 2)
@@ -113,7 +114,8 @@ class TestRestResults(TestCase):
         self.testhelper.add_to_path('uni;sub.p0.a1.gX:candidate(student1).d1') # Not active
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
         self.testhelper.add_to_path('uni;sub.p2.a1.gY:candidate(student1).d1') # Not included because it is not published
-        subjects, response = self._getas('student1', activeonly='true')
+        content, response = self._getas('student1', activeonly='true')
+        subjects = content['subjects']
         self.assertEquals(response.status_code, 200)
         periods = subjects[0]['periods']
         self.assertEquals(len(periods), 1)
@@ -123,18 +125,56 @@ class TestRestResults(TestCase):
         self.testhelper.add_to_path('uni;sub.p0.a1.gX:candidate(student1).d1')
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
         self.testhelper.add_to_path('uni;sub.p2.a1.gY:candidate(student1).d1') # Not included because it is not published
-        subjects, response = self._getas('student1')
+        content, response = self._getas('student1')
+        subjects = content['subjects']
         self.assertEquals(response.status_code, 200)
         periods = subjects[0]['periods']
         self.assertEquals(len(periods), 2)
         self.assertEquals(set([p['short_name'] for p in periods]),
             set(['p0', 'p1']))
-        
+
     def test_perms_owner_only(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
         self.testhelper.add_to_path('uni;sub.p1.a1.g2:candidate(student2).d1')
-        subjects, response = self._getas('student1')
+        content, response = self._getas('student1')
+        subjects = content['subjects']
         self.assertEquals(response.status_code, 200)
         groups = subjects[0]['periods'][0]['assignments'][0]['groups']
         self.assertEquals(len(groups), 1)
         self.assertEquals(groups[0]['id'], self.testhelper.sub_p1_a1_g1.id)
+
+    def test_get_qualifiesforexam_true(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
+        status = Status.objects.create(period=self.testhelper.sub_p1,
+                user=self.testhelper.testuser,
+                status=Status.READY)
+        relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=self.testhelper.student1)
+        status.students.create(relatedstudent=relstudent, qualifies=True)
+
+        content , response = self._getas('student1')
+        subjects = content['subjects']
+        self.assertEquals(response.status_code, 200)
+        period = subjects[0]['periods'][0]
+        self.assertTrue(period['qualifiesforexams'])
+
+    def test_get_qualifiesforexam_false(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
+        status = Status.objects.create(period=self.testhelper.sub_p1,
+                user=self.testhelper.testuser,
+                status=Status.READY)
+        relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=self.testhelper.student1)
+        status.students.create(relatedstudent=relstudent, qualifies=False)
+
+        content , response = self._getas('student1')
+        subjects = content['subjects']
+        self.assertEquals(response.status_code, 200)
+        period = subjects[0]['periods'][0]
+        self.assertFalse(period['qualifiesforexams'])
+
+    def test_get_qualifiesforexam_none(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
+        content , response = self._getas('student1')
+        subjects = content['subjects']
+        self.assertEquals(response.status_code, 200)
+        period = subjects[0]['periods'][0]
+        self.assertIsNone(period['qualifiesforexams'])

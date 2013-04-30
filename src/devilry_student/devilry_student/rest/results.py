@@ -1,16 +1,11 @@
-from datetime import datetime
-from django.db.models import Max, Q, Count
-from djangorestframework.resources import FormResource
-from django import forms
 from djangorestframework.views import View
 from djangorestframework.permissions import IsAuthenticated
+from django.conf import settings
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.utils import OrderedDict
-from .helpers import GroupResourceHelpersMixin
-from .helpers import format_datetime
-from .helpers import format_timedelta
-from .errors import BadRequestError
+from devilry_qualifiesforexam.models import QualifiesForFinalExam
+from devilry_qualifiesforexam.models import Status
 
 
 
@@ -35,8 +30,10 @@ class SerializeGroupMixin(object):
 
 
 class GroupedBySubjectSerialize(SerializeGroupMixin):
-    def __init__(self, qryset):
+    def __init__(self, qryset, devilry_qualifiesforexam_enabled, user):
         self.qry = qryset
+        self.devilry_qualifiesforexam_enabled = devilry_qualifiesforexam_enabled
+        self.user = user
 
     def _serialize_subject(self, subject):
         return {
@@ -47,12 +44,21 @@ class GroupedBySubjectSerialize(SerializeGroupMixin):
         }
 
     def _serialize_period(self, period):
-        return {
+        out = {
                 'id': period.id,
                 'short_name': period.short_name,
                 'long_name': period.long_name,
-                'assignments': OrderedDict()
+                'assignments': OrderedDict(),
         }
+        if self.devilry_qualifiesforexam_enabled:
+            try:
+                qualifies = QualifiesForFinalExam.objects.get(
+                        status__period=period, relatedstudent__user=self.user,
+                        status__status=Status.READY)
+                out['qualifiesforexams'] = qualifies.qualifies
+            except QualifiesForFinalExam.DoesNotExist:
+                out['qualifiesforexams'] = None
+        return out
 
     def _serialize_assignment(self, assignment):
         return {
@@ -82,7 +88,10 @@ class GroupedBySubjectSerialize(SerializeGroupMixin):
             subject['periods'] = subject['periods'].values()
             for period in subject['periods']:
                 period['assignments'] = period['assignments'].values()
-        return subjects.values()
+        return {
+            'subjects': subjects.values(),
+            'devilry_qualifiesforexam_enabled': self.devilry_qualifiesforexam_enabled
+        }
 
 
 
@@ -92,8 +101,9 @@ class ResultsView(View):
     permissions = (IsAuthenticated,)
 
     def get(self, request):
+        devilry_qualifiesforexam_enabled = 'devilry_qualifiesforexam' in settings.INSTALLED_APPS
         if self.request.GET.get('activeonly', False) == 'true':
             qry = AssignmentGroup.active_where_is_candidate(self.request.user)
         else:
             qry = AssignmentGroup.published_where_is_candidate(self.request.user)
-        return GroupedBySubjectSerialize(qry).serialize()
+        return GroupedBySubjectSerialize(qry, devilry_qualifiesforexam_enabled, request.user).serialize()
