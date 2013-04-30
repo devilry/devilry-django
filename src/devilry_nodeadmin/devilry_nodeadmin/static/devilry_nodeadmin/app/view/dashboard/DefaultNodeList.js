@@ -3,7 +3,7 @@ Ext.define('devilry_nodeadmin.view.dashboard.DefaultNodeList', {
     alias: 'widget.defaultnodelist',
     cls: 'devilry_nodeadmin_defaultnodelist bootstrap',
 
-    store: 'RelatedNodes',
+    store: 'ToplevelNodes',
 
     tpl: [
         '<ul class="unstyled devilry_nodeadmin_massive_navlist">',

@@ -7,11 +7,7 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
     ],
 
     stores: [
-        'RelatedNodes'
-    ],
-
-    models: [
-        'Node'
+        'ToplevelNodes'
     ],
 
     refs: [{
@@ -40,7 +36,7 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
 
         // STORES
         // related nodes
-        this.getRelatedNodesStore().collectAll( {
+        this.getToplevelNodesStore().load({
             scope: this,
             callback: function( records, op ) {
                 if( op.success ) {
@@ -66,7 +62,8 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
 
 
 
-    _onLoadRelatedNodesSuccess: function( records ) {},
+    _onLoadRelatedNodesSuccess: function( records ) {
+    },
 
     _onLoadError:function (op) {
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');

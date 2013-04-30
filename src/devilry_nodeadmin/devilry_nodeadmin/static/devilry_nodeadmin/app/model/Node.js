@@ -9,7 +9,6 @@ Ext.define( 'devilry_nodeadmin.model.Node', {
         { name: 'subject_count', type: 'int' },
         { name: 'etag', type: 'string' },
         { name: 'predecessor', type: 'auto'},
-        { name: 'children', type: 'auto'},
         { name: 'subjects', type: 'auto'},
         { name: 'childnodes', type: 'auto'},
         { name: 'path', type: 'auto'}
