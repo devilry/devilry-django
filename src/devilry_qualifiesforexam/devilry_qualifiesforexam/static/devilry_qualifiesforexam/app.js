@@ -35,6 +35,9 @@ Ext.application({
     refs: [{
         ref: 'alertmessagelist',
         selector: 'viewport floatingalertmessagelist#appAlertmessagelist'
+    }, {
+        ref: 'header',
+        selector: 'viewport devilryheader'
     }],
 
     launch: function() {
@@ -127,6 +130,7 @@ Ext.application({
     },
 
     selectplugin: function(routeInfo, periodid) {
+        this.getHeader().setNavClass('subjectadmin');
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
             xtype: 'selectplugin',
@@ -135,6 +139,7 @@ Ext.application({
     },
 
     preview: function(routeInfo, periodid, pluginid, pluginsessionid) {
+        this.getHeader().setNavClass('subjectadmin');
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
             xtype: 'preview',
@@ -145,6 +150,7 @@ Ext.application({
     },
 
     showstatus: function(routeInfo, periodid) {
+        this.getHeader().setNavClass('subjectadmin');
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
             xtype: 'showstatus',
@@ -153,6 +159,7 @@ Ext.application({
     },
 
     summary: function(routeInfo, nodeid) {
+        this.getHeader().setNavClass('nodeadmin');
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
             xtype: 'summaryview',
