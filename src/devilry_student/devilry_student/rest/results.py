@@ -51,13 +51,18 @@ class GroupedBySubjectSerialize(SerializeGroupMixin):
                 'assignments': OrderedDict(),
         }
         if self.devilry_qualifiesforexam_enabled:
+            out['qualifiesforexams'] = None
             try:
-                qualifies = QualifiesForFinalExam.objects.get(
-                        status__period=period, relatedstudent__user=self.user,
-                        status__status=Status.READY)
-                out['qualifiesforexams'] = qualifies.qualifies
-            except QualifiesForFinalExam.DoesNotExist:
-                out['qualifiesforexams'] = None
+                status = Status.get_current_status(period)
+            except Status.DoesNotExist:
+                pass
+            else:
+                if status.status == Status.READY:
+                    try:
+                        qualifies = status.students.get(relatedstudent__user=self.user)
+                        out['qualifiesforexams'] = qualifies.qualifies
+                    except QualifiesForFinalExam.DoesNotExist:
+                        pass
         return out
 
     def _serialize_assignment(self, assignment):
@@ -88,10 +93,7 @@ class GroupedBySubjectSerialize(SerializeGroupMixin):
             subject['periods'] = subject['periods'].values()
             for period in subject['periods']:
                 period['assignments'] = period['assignments'].values()
-        return {
-            'subjects': subjects.values(),
-            'devilry_qualifiesforexam_enabled': self.devilry_qualifiesforexam_enabled
-        }
+        return subjects.values()
 
 
 

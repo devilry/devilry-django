@@ -27,14 +27,14 @@ class TestRestResults(TestCase):
     def test_get_empty(self):
         content, response = self._getas('testuser')
         self.assertEquals(response.status_code, 200)
-        self.assertEquals(content['subjects'], [])
+        self.assertEquals(content, [])
 
 
     def test_get_hierarchy(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1):examiner(examiner1).d1')
 
         content, response = self._getas('student1')
-        subjects = content['subjects']
+        subjects = content
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(subjects), 1)
         self.assertEquals(subjects[0]['id'], self.testhelper.sub.id)
@@ -63,7 +63,7 @@ class TestRestResults(TestCase):
         self.testhelper.add_feedback(delivery1, verdict={'grade': 'C', 'points': 55, 'is_passing_grade': True})
 
         content , response = self._getas('student1')
-        subjects = content['subjects']
+        subjects = content
         self.assertEquals(response.status_code, 200)
         group = subjects[0]['periods'][0]['assignments'][0]['groups'][0]
         self.assertEquals(group['id'], self.testhelper.sub_p1_a1_g1.id)
@@ -79,7 +79,7 @@ class TestRestResults(TestCase):
         delivery1 = self.testhelper.add_delivery('sub.p1.a1.g1', {'x.txt': ['x']})
 
         content, response = self._getas('student1')
-        subjects = content['subjects']
+        subjects = content
         self.assertEquals(response.status_code, 200)
         group = subjects[0]['periods'][0]['assignments'][0]['groups'][0]
         self.assertEquals(group['id'], self.testhelper.sub_p1_a1_g1.id)
@@ -91,7 +91,7 @@ class TestRestResults(TestCase):
         self.testhelper.add_to_path('uni;sub.p1.a2.g1:candidate(student1):examiner(examiner1).d1')
         self.testhelper.add_to_path('uni;sub.p1.a3.g1:candidate(student1):examiner(examiner1).d1')
         content, response = self._getas('student1')
-        subjects = content['subjects']
+        subjects = content
         self.assertEquals(response.status_code, 200)
         assignments = subjects[0]['periods'][0]['assignments']
         self.assertEquals(len(assignments), 3)
@@ -103,7 +103,7 @@ class TestRestResults(TestCase):
         self.testhelper.add_to_path('uni;sub.p0.a1.gX:candidate(student1).d1')
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
         content, response = self._getas('student1')
-        subjects = content['subjects']
+        subjects = content
         self.assertEquals(response.status_code, 200)
         periods = subjects[0]['periods']
         self.assertEquals(len(periods), 2)
@@ -115,7 +115,7 @@ class TestRestResults(TestCase):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
         self.testhelper.add_to_path('uni;sub.p2.a1.gY:candidate(student1).d1') # Not included because it is not published
         content, response = self._getas('student1', activeonly='true')
-        subjects = content['subjects']
+        subjects = content
         self.assertEquals(response.status_code, 200)
         periods = subjects[0]['periods']
         self.assertEquals(len(periods), 1)
@@ -126,7 +126,7 @@ class TestRestResults(TestCase):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
         self.testhelper.add_to_path('uni;sub.p2.a1.gY:candidate(student1).d1') # Not included because it is not published
         content, response = self._getas('student1')
-        subjects = content['subjects']
+        subjects = content
         self.assertEquals(response.status_code, 200)
         periods = subjects[0]['periods']
         self.assertEquals(len(periods), 2)
@@ -137,7 +137,7 @@ class TestRestResults(TestCase):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
         self.testhelper.add_to_path('uni;sub.p1.a1.g2:candidate(student2).d1')
         content, response = self._getas('student1')
-        subjects = content['subjects']
+        subjects = content
         self.assertEquals(response.status_code, 200)
         groups = subjects[0]['periods'][0]['assignments'][0]['groups']
         self.assertEquals(len(groups), 1)
@@ -152,7 +152,7 @@ class TestRestResults(TestCase):
         status.students.create(relatedstudent=relstudent, qualifies=True)
 
         content , response = self._getas('student1')
-        subjects = content['subjects']
+        subjects = content
         self.assertEquals(response.status_code, 200)
         period = subjects[0]['periods'][0]
         self.assertTrue(period['qualifiesforexams'])
@@ -166,15 +166,15 @@ class TestRestResults(TestCase):
         status.students.create(relatedstudent=relstudent, qualifies=False)
 
         content , response = self._getas('student1')
-        subjects = content['subjects']
+        subjects = content
         self.assertEquals(response.status_code, 200)
         period = subjects[0]['periods'][0]
         self.assertFalse(period['qualifiesforexams'])
 
     def test_get_qualifiesforexam_none(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
-        content , response = self._getas('student1')
-        subjects = content['subjects']
+        content, response = self._getas('student1')
+        subjects = content
         self.assertEquals(response.status_code, 200)
         period = subjects[0]['periods'][0]
         self.assertIsNone(period['qualifiesforexams'])
