@@ -14,13 +14,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
         'devilry_extjsextras.DatetimeHelpers'
     ],
 
-    stores: [
-        'NodeChildren',
-        'NodeDetails'
-    ],
-
     models: [
-        'Details',
         'Node'
     ],
 
@@ -28,41 +22,44 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
         ref: 'overview',
         selector: 'nodebrowseroverview'
     }, {
-        ref: 'primary',
-        selector: 'nodebrowseroverview #primary'
+        ref: 'nodeDetailsOverview',
+        selector: 'nodedetailsoverview'
     }, {
-        ref: 'secondary',
-        selector: 'nodebrowseroverview #secondary'
+        ref: 'navigator',
+        selector: 'navigator'
+    }, {
+        ref: 'nodeChildrenList',
+        selector: 'nodechildrenlist'
     }],
 
     init: function() {
         this.control({
-            'viewport nodebrowseroverview #primary': {
-                render: this._onRenderPrimary
+            'viewport nodebrowseroverview navigator': {
+                render: this._onRenderDetailContainer
+            },
+            'viewport nodebrowseroverview nodechildrenlist': {
+                render: this._onRenderDetailContainer
+            },
+            'viewport nodebrowseroverview nodedetailsoverview': {
+                render: this._onRenderDetailContainer
             }
         });
     },
 
-    _onRenderPrimary: function() {
-        var node_pk = this.getOverview().node_pk;
+    _onRenderDetailContainer: function() {
+        this.getOverview().setLoading(true);
 
-        // STORES
-        // children
-        this.getNodeChildrenStore().collectByNode( node_pk, {
+        // Make sure all the views using the details data have been rendered
+        if(this.getNodeDetailsOverview().rendered && this.getNavigator().rendered && this.getNodeChildrenList().rendered) {
+            this._loadNodeDetails();
+        }
+    },
+
+    _loadNodeDetails: function() {
+        this.getNodeModel().load(this.getOverview().node_pk, {
             scope: this,
             callback: function ( records, op ) {
-                if( op.success ) {
-                    this._onLoadNodeChildrenSuccess( records );
-                } else {
-                    this._onLoadError(op);
-                }
-            }
-        });
-
-        // details
-        this.getNodeDetailsStore().collectByNode( node_pk, {
-            scope: this,
-            callback: function ( records, op ) {
+                this.getOverview().setLoading(false);
                 if( op.success ) {
                     this._onLoadNodeDetailsSuccess( records );
                 } else {
@@ -70,32 +67,11 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
                 }
             }
         });
-
-        this.getPrimary().add([{
-            xtype: 'navigator',
-            node_pk: node_pk
-        }, {
-            xtype: 'nodechildrenlist',
-            node_pk: node_pk
-        }]);
-
-
-        this.getSecondary().add([{
-            xtype: 'nodedetailsoverview',
-            node_pk: node_pk
-        }]);
-
     },
 
-    _onRenderSecondary: function() {},
-
-    _onLoadNodeDetailsSuccess:function ( records ) {
-        // convert to the breadcrumb object format
-        var current = records[0].data;
-        var path = current.path;
-
+    _onLoadNodeDetailsSuccess:function ( record ) {
+        var path = record.get('path');
         var breadcrumb = [];
-
         for (var i = 0; i < path.length-1; i++) {
             var element = path[i];
             breadcrumb.push({
@@ -104,9 +80,14 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
             });
         }
         this.application.breadcrumbs.set( breadcrumb, path[path.length-1].short_name);
+        this.getNodeDetailsOverview().update(record.data);
+        this.getNavigator().update({
+            predecessor: record.get('predecessor')
+        });
+        this.getNodeChildrenList().update({
+            nodes: record.get('childnodes')
+        });
     },
-
-    _onLoadNodeChildrenSuccess:function ( records ) {},
 
     _onLoadError:function (op) {
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
@@ -115,4 +96,3 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
             errorhandler.errormessages, 'error', true );
     }
 });
-

@@ -18,14 +18,16 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
 
     items: [{
         xtype: 'unfocusedcontainer',
-        itemId: 'primary',
         cls: 'devilry_nodeadmin_nodebrowsersidebar',
         width: 300,
-        padding: 0
+        layout: 'anchor',
+        items: [{
+            xtype: 'navigator'
+        }, {
+            xtype: 'nodechildrenlist'
+        }]
     }, {
-        xtype: 'container',
-        itemId: 'secondary',
-        cls: 'devilry_nodeadmin_secondary',
+        xtype: 'nodedetailsoverview',
         columnWidth: 1.0
     }]
 });

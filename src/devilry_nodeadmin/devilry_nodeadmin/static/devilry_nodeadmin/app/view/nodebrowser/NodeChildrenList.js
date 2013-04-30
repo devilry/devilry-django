@@ -1,14 +1,12 @@
 Ext.define('devilry_nodeadmin.view.nodebrowser.NodeChildrenList', {
-    extend: 'Ext.view.View',
+    extend: 'Ext.Component',
     alias: 'widget.nodechildrenlist',
     cls: 'devilry_nodeadmin_nodechildrenlist bootstrap',
 
-    store: 'NodeChildren',
-
     tpl: [
-        '<tpl if="length">',
+        '<tpl if="nodes.length">',
             '<ul class="unstyled">',
-                '<tpl for=".">',
+                '<tpl for="nodes">',
                     '<li>',
                         '<a href="/devilry_nodeadmin/#/node/{ id }">{ long_name }</a>',
                     '</li>',
@@ -22,7 +20,5 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeChildrenList', {
                 return devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(datetime);
             }
         }
-    ],
-
-    itemSelector: 'div.node'
+    ]
 });

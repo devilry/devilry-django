@@ -92,8 +92,9 @@ class NodeSubjectResource( ModelResource ):
 
 class NodeDetailsResource( NodeResource ):
     model = Node
-    fields = (  'id', 'short_name', 'long_name', 'predecessor', 'etag',
-                'subject_count', 'assignment_count', 'period_count', 'subjects', 'breadcrumbs', 'path', )
+    fields = ('id', 'short_name', 'long_name', 'predecessor', 'etag',
+            'subject_count', 'assignment_count', 'period_count', 'subjects',
+            'breadcrumbs', 'path', 'childnodes')
 
     def subjects( self, instance ):
         resource = NodeSubjectResource()
@@ -134,6 +135,17 @@ class NodeDetailsResource( NodeResource ):
         serializer = PathElementResource()
 
         return serializer.serialize_iter( path )
+
+
+    def _serialize_node(self, node):
+        return {
+            'id': node.id,
+            'short_name': node.short_name,
+            'long_name': node.long_name
+        }
+
+    def childnodes(self, instance):
+        return [self._serialize_node(node) for node in instance.child_nodes.all()]
 
 
 class IsNodeAdmin( BaseIsAdmin ):
