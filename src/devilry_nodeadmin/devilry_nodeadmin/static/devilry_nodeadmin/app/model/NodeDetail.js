@@ -1,4 +1,4 @@
-Ext.define( 'devilry_nodeadmin.model.Node', {
+Ext.define( 'devilry_nodeadmin.model.NodeDetail', {
     extend: 'Ext.data.Model',
     fields: [
         { name: 'id', type: 'int' },

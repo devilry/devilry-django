@@ -15,7 +15,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
     ],
 
     models: [
-        'Node'
+        'NodeDetail'
     ],
 
     refs: [{
@@ -56,7 +56,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
     },
 
     _loadNodeDetails: function() {
-        this.getNodeModel().load(this.getOverview().node_pk, {
+        this.getNodeDetailModel().load(this.getOverview().node_pk, {
             scope: this,
             callback: function ( records, op ) {
                 this.getOverview().setLoading(false);
