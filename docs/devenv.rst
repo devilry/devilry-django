@@ -78,6 +78,13 @@ Setup the development virtualenv
     $ cd devenv/
     $ fab bootstrap
 
+.. note::
+   $ fab bootstrap might not work even if the right tools in `Ubuntu
+   Linux`_ are installed. It is possible that the creation of
+   the virtual environment will fail because it either installs *setuptools* or
+   *distribute* into the environment. To use *distribute* you must
+   explicitly add the *\-\-distribute* flag to the *virtualenv* command or you
+   must set the VIRTUALENV_DISTRIBUTE environment variable.
 
 Next steps
 =================================================================
