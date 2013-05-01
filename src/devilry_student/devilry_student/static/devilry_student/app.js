@@ -1,14 +1,3 @@
-if(Ext.Loader.getConfig('enabled')) {
-    Ext.Loader.setConfig({
-        enabled: true,
-        paths: {
-            'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes'
-        }
-    });
-    Ext.syncRequire('devilry.extjshelpers.RestProxy');
-}
-
-
 Ext.application({
     name: 'devilry_student',
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_student/app',
@@ -44,8 +33,7 @@ Ext.application({
         'Dashboard',
         'GroupInfo',
         'AddDelivery',
-        'BrowseGroupedController',
-        'BrowseHistory'
+        'BrowseGroupedController'
     ],
 
     launch: function() {
@@ -96,10 +84,8 @@ Ext.application({
     _setupRoutes: function() {
         this.route = Ext.create('devilry_extjsextras.Router', this);
         this.route.add("", 'dashboard');
-        //this.route.add("/browseold/", 'browseold');
         this.route.add("/browsegrouped/active", 'browsegrouped_active');
         this.route.add("/browsegrouped/history", 'browsegrouped_history');
-        //this.route.add("/browse/:period_id", 'browsePeriod');
         this.route.add("/group/:group_id/", 'groupinfo');
         this.route.add("/group/:group_id/@@add-delivery", 'groupinfoAddDelivery');
         this.route.add("/group/:group_id/:delivery_id", 'groupinfo');
@@ -132,26 +118,6 @@ Ext.application({
         this.setPrimaryContent({
             xtype: 'browsegrouped',
             activeonly: true
-        });
-    },
-
-    //browsecalendar: function() {
-        //this.setPrimaryContent({
-            //xtype: 'browse',
-            //activeItem: 'calendar'
-        //});
-    //},
-
-    browseold: function() {
-        this.setPrimaryContent({
-            xtype: 'browsehistory'
-        });
-    },
-
-    browsePeriod: function(routeinfo, period_id) {
-        this.setPrimaryContent({
-            xtype: 'browsehistory',
-            period_id: period_id
         });
     },
 
