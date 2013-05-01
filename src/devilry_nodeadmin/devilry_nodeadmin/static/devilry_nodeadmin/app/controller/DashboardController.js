@@ -3,7 +3,8 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
 
     views: [
         'dashboard.DashboardOverview',
-        'dashboard.BetaWarning'
+        'dashboard.BetaWarning',
+        'dashboard.ToplevelNodeList'
     ],
 
     stores: [
@@ -13,56 +14,31 @@ Ext.define('devilry_nodeadmin.controller.DashboardController', {
     refs: [{
         ref: 'overview',
         selector: 'dashboardoverview'
-    }, {
-        ref: 'primary',
-        selector: 'dashboardoverview #primary'
-    }, {
-        ref: 'secondary',
-        selector: 'dashboardoverview #secondary'
     }],
 
     init: function() {
         this.control({
-            'viewport dashboardoverview #primary': {
-                render: this._onRenderPrimary
-            },
-            'viewport dashboardoverview #secondary': {
-                render: this._onRenderSecondary
+            'viewport dashboardoverview toplevelnodelist': {
+                render: this._onRender
             }
         });
     },
 
-    _onRenderPrimary: function() {
-
-        // STORES
-        // related nodes
+    _onRender: function() {
         this.getToplevelNodesStore().load({
             scope: this,
-            callback: function( records, op ) {
-                if( op.success ) {
-                    this._onLoadRelatedNodesSuccess( records );
+            callback: function(records, op) {
+                if(op.success) {
+                    this._onLoadRelatedNodesSuccess(records);
                 } else {
-                    this._onLoadError( op );
+                    this._onLoadError(op);
                 }
             }
         });
 
-        this.getPrimary().add([
-            { xtype: 'defaultnodelist' }
-        ]);
     },
 
-    _onRenderSecondary: function() {
-
-        this.getSecondary().add([
-            { xtype: 'betawarning' }
-        ]);
-
-    },
-
-
-
-    _onLoadRelatedNodesSuccess: function( records ) {
+    _onLoadRelatedNodesSuccess: function(records) {
     },
 
     _onLoadError:function (op) {

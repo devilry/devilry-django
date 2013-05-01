@@ -1,7 +1,7 @@
-Ext.define('devilry_nodeadmin.view.dashboard.DefaultNodeList', {
+Ext.define('devilry_nodeadmin.view.dashboard.ToplevelNodeList', {
     extend: 'Ext.view.View',
-    alias: 'widget.defaultnodelist',
-    cls: 'devilry_nodeadmin_defaultnodelist bootstrap',
+    alias: 'widget.toplevelnodelist',
+    cls: 'devilry_nodeadmin_toplevelnodelist bootstrap',
 
     store: 'ToplevelNodes',
 
