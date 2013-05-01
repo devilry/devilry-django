@@ -127,7 +127,7 @@ Ext.define('devilry_subjectadmin.view.period.PeriodOverview' ,{
                            '<li><p>',
                                '<a href="{qualifiedForFinalExamsUrl}">',
                                    gettext('Qualified for final exams'),
-                               '</a> <span class="label label-warning">beta</span>',
+                               '</a>',
                            '</p></li>',
                         '</ul>'
                     ],
