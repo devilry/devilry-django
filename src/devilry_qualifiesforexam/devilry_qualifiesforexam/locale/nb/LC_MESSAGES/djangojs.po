@@ -71,7 +71,7 @@ msgstr "Laster"
 #: static/devilry_qualifiesforexam/app/controller/SummaryViewController.js:32
 #: static/devilry_qualifiesforexam/app/controller/SummaryViewController.js:74
 msgid "Summary - Qualifies for final exams"
-msgstr "Oppsimmering - Kan gå opp til eksamen"
+msgstr "Oppsummering - Kan gå opp til eksamen"
 
 #: static/devilry_qualifiesforexam/app/view/preview/PreviewGrid.js:21
 msgid "Yes"
