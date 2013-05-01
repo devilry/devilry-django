@@ -57,7 +57,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
             }, {
                 xtype: 'guide-qualifiedforfinalexams',
                 title: gettext('Qualified for final exams'),
-                description: gettext('Takes you through marking students that qualify for final exams.')
+                description: gettext('Takes you through selecting students that qualify for final exams.')
             }]
         }, {
             xtype: 'box',

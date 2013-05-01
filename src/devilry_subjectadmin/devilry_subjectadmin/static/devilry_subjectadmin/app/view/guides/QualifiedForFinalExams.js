@@ -34,7 +34,8 @@ Ext.define('devilry_subjectadmin.view.guides.QualifiedForFinalExams', {
                 gettext('Click the <em>Qualified for final exams</em>-link near the bottom of the page.'),
             '</p>',
             '<p>',
-                gettext('On the next page this guide will disappear, and a new guide will begin. If you, or another admin, have already selected students that qualify for final exams, you will see the results of that selection instead of beginning a new guide.')
+                gettext('On the next page this guide will disappear, and a wizard guiding you through the required steps will begin. If you, or another admin, have already selected students that qualify for final exams, you will see the results of that selection instead of beginning the wizard.'),
+            '</p>'
         ],
         data: {
         }
