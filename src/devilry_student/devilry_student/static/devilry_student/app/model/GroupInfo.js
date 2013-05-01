@@ -5,6 +5,7 @@ Ext.define('devilry_student.model.GroupInfo', {
     fields: [
         {name: 'id', type: 'int'},
         {name: 'name', type: 'string'},
+        {name: 'status', type: 'string'},
         {name: 'is_open', type: 'bool'},
         {name: 'deadline_handling', type: 'int'},
         {name: 'candidates', type: 'auto'},
