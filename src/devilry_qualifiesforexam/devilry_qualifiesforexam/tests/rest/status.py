@@ -298,23 +298,19 @@ class TestRestStatus(TransactionTestCase):
         self.testhelper.add(nodes='uni.extra:admin(extraadmin)',
             subjects=['othersub'],
             periods=['p1:admin(periodadmin):begins(-3):ends(6)'])
-
         content, response = self._getlistas('extraadmin', node_id=self.testhelper.uni_extra.id)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(content), 1)
         p1info = content[0]
         self.assertEqual(p1info['id'], self.testhelper.othersub_p1.id)
 
-    def test_get_within_node_notactive_works(self):
+    def test_get_within_node_notactive(self):
         self.testhelper.add(nodes='uni.extra:admin(extraadmin)',
             subjects=['othersub'],
             periods=['old:admin(periodadmin):begins(-12):ends(6)'])
-
         content, response = self._getlistas('extraadmin', node_id=self.testhelper.uni_extra.id)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(content), 1)
-        oldinfo = content[0]
-        self.assertEqual(oldinfo['id'], self.testhelper.othersub_old.id)
+        self.assertEqual(len(content), 0)
 
     def test_get_within_node_notadmin_on_requested(self):
         self.testhelper.add(nodes='uni.extra:admin(extraadmin)')

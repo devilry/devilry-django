@@ -46,13 +46,20 @@ class StatusView(View):
     API for ``QualifiesForFinalExamPeriodStatus``, that lets users list and add statuses.
     Includes marking students as qualified/disqualified for final exams.
 
-    # GET
 
+    # GET
 
     ## With no period specified
     With no period specified (URL ends in ``/``), list the latest status for
-    all active periods, including useful statistics for a UI listing. For each
-    item in the listing, we yield an object with the following attributes:
+    all active periods, including useful statistics for a UI listing.
+
+
+    ### Parameters - given via the querystring
+    
+    - ``node_id`` (optional): Limit to periods within a given ``node_id``.
+
+    ### Response
+    A list where each object has the following attributes:
 
     - ``id``: The period id.
     - ``is_active``: Is the period active? (boolean)
@@ -72,13 +79,6 @@ class StatusView(View):
             - ``pluginsettings_summary``: Human-readable summary of the settings used to generate the status.
 
 
-    ## With ``node_id`` specified
-
-    With ``node_id`` specified (as querystring argument), show all statuses
-    within that period instead of all active statuses. Everything else,
-    including the URL, is just like with no period specified.
-
-
     ## With period specified
 
     With a period specified (last part of URL), return a detailed description
@@ -91,6 +91,8 @@ class StatusView(View):
       where the active status is the first item. Each status in the list includes
       an additional attribute, ``passing_relatedstudentids_map``, which contains
       a map with the ID of all the relatedstudents with passing grade.
+
+
 
     # POST
     Marks students as qualified or unqualfied for final exams. All related students are
@@ -247,9 +249,8 @@ class StatusView(View):
 
     def _get_list(self):
         qry = Period.where_is_admin_or_superadmin(self.request.user)
-        if self.request.GET.get('node_id', None) == None:
-            qry = qry.filter(Period.q_is_active())
-        else:
+        qry = qry.filter(Period.q_is_active())
+        if self.request.GET.get('node_id', None) != None:
             qry = qry.filter(parentnode__parentnode=self.request.GET['node_id'])
         qry = qry.prefetch_related('qualifiedforexams_status')
         qry = qry.select_related('parentnode')

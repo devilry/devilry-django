@@ -30,7 +30,7 @@ Ext.define('devilry_qualifiesforexam.controller.SummaryViewController', {
         this.application.breadcrumbs.set([], gettext('Loading') + ' ...');
         this.node_id = this.getSummaryView().node_id;
         this.application.setTitle(gettext('Summary - Qualifies for final exams'));
-        this.getStatusesStore().load({
+        this.getStatusesStore().loadWithinNode(this.node_id, {
             scope: this,
             callback: function(records, op) {
                 if(op.success) {
