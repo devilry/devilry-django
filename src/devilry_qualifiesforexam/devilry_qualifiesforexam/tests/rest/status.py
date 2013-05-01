@@ -244,9 +244,9 @@ class TestRestStatus(TransactionTestCase):
 
 
 
-    def _getlistas(self, username):
+    def _getlistas(self, username, **kwargs):
         self.client.login(username=username, password='test')
-        return self.client.rest_get(self._get_url())
+        return self.client.rest_get(self._get_url(), **kwargs)
 
     def _createlistteststatus(self, period, status='ready',
                               plugin='devilry_qualifiesforexam.test.noop-plugin'):
@@ -262,16 +262,11 @@ class TestRestStatus(TransactionTestCase):
         return status
 
     def _test_getlist_as(self, username):
-        relatedStudent1 = self._create_relatedstudent('student1', 'Student One')
-        relatedStudent2 = self._create_relatedstudent('student2', 'Student Two')
-
         self._createlistteststatus(self.testhelper.sub_oldperiod)
         self._createlistteststatus(self.testhelper.sub_p1, status='notready', plugin='')
         import time
-        time.sleep(0.1)
+        time.sleep(0.1) # Sleep to make sure the status below is the active status
         status = self._createlistteststatus(self.testhelper.sub_p1)
-        status.students.create(relatedstudent=relatedStudent1, qualifies=True)
-        status.students.create(relatedstudent=relatedStudent2, qualifies=False)
 
         content, response = self._getlistas(username)
         self.assertEqual(response.status_code, 200)
@@ -299,8 +294,36 @@ class TestRestStatus(TransactionTestCase):
         self.assertEqual(len(content), 0)
 
 
-    def test_save_settings(self):
+    def test_get_within_node(self):
+        self.testhelper.add(nodes='uni.extra:admin(extraadmin)',
+            subjects=['othersub'],
+            periods=['p1:admin(periodadmin):begins(-3):ends(6)'])
 
+        content, response = self._getlistas('extraadmin', node_id=self.testhelper.uni_extra.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(content), 1)
+        p1info = content[0]
+        self.assertEqual(p1info['id'], self.testhelper.othersub_p1.id)
+
+    def test_get_within_node_notactive_works(self):
+        self.testhelper.add(nodes='uni.extra:admin(extraadmin)',
+            subjects=['othersub'],
+            periods=['old:admin(periodadmin):begins(-12):ends(6)'])
+
+        content, response = self._getlistas('extraadmin', node_id=self.testhelper.uni_extra.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(content), 1)
+        oldinfo = content[0]
+        self.assertEqual(oldinfo['id'], self.testhelper.othersub_old.id)
+
+    def test_get_within_node_notadmin_on_requested(self):
+        self.testhelper.add(nodes='uni.extra:admin(extraadmin)')
+        content, response = self._getlistas('extraadmin', node_id=self.testhelper.uni.id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(content), 0)
+
+
+    def test_save_settings(self):
         savedsettings = {}
         def save_settings(status, settings):
             savedsettings['status'] = status
