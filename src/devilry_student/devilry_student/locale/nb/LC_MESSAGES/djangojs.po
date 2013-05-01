@@ -198,12 +198,12 @@ msgstr ""
 "gått ut."
 
 #: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:34
-msgid "Qualfied for final exams"
-msgstr "Kan gå opp til avsluttende eksamen"
+msgid "Qualified for final exams"
+msgstr "Kvalifisert til avsluttende eksamen"
 
 #: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:38
-msgid "Not qualfied for final exams"
-msgstr "Kan ikke gå opp til avsluttende eksamen"
+msgid "Not qualified for final exams"
+msgstr "Ikke kvalifisert til avsluttende eksamen"
 
 #: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:43
 msgid "WARNING"
