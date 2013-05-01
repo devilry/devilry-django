@@ -4,7 +4,6 @@ Ext.define( 'devilry_nodeadmin.model.Node', {
         { name: 'id', type: 'int' },
         { name: 'short_name', type: 'string' },
         { name: 'long_name', type: 'string' },
-        { name: 'most_recent_start_time', type: 'date' },
         { name: 'assignment_count', type: 'int' },
         { name: 'subject_count', type: 'int' },
         { name: 'etag', type: 'string' },
