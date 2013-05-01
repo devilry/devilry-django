@@ -82,7 +82,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
         this.application.breadcrumbs.set( breadcrumb, path[path.length-1].short_name);
         this.getNodeDetailsOverview().update(record.data);
         this.getNavigator().update({
-            predecessor: record.get('predecessor')
+            predecessor: path.length == 1? null: path[path.length-2]
         });
         this.getNodeChildrenList().update({
             nodes: record.get('childnodes')

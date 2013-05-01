@@ -33,7 +33,7 @@ class TestRestNodeDetails(TestCase):
         content, response = self.client.rest_get(self._geturl(self.testhelper.uni_inf.id))
         self.assertEquals(response.status_code, 200)
         self.assertEquals(set(content.keys()),
-                set([u'predecessor', u'subject_count', u'short_name', u'id',
+                set([u'subject_count', u'short_name', u'id',
                     u'long_name', u'assignment_count', u'etag',
                     u'period_count', u'path', u'childnodes', u'subjects']))
         self.assertEquals(content['short_name'], 'inf')

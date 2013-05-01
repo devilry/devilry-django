@@ -18,7 +18,7 @@ class IsNodeAdmin(BaseIsAdmin):
 
 class NodeDetailsResource(ModelResource):
     model = Node
-    fields = ('id', 'short_name', 'long_name', 'predecessor', 'etag',
+    fields = ('id', 'short_name', 'long_name', 'etag',
             'subject_count', 'assignment_count', 'period_count', 'subjects',
             'breadcrumbs', 'path', 'childnodes')
 
@@ -76,12 +76,6 @@ class NodeDetailsResource(ModelResource):
             'short_name': node.short_name,
             'long_name': node.long_name
         }
-
-    def predecessor(self, instance):
-        if instance.parentnode:
-            return self._serialize_node(instance.parentnode)
-        else:
-            return None
 
     def childnodes(self, instance):
         return [self._serialize_node(node) for node in instance.child_nodes.all()]
