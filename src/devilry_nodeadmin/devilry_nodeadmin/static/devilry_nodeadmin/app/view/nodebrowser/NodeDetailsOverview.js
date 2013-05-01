@@ -21,7 +21,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
                         gettext('Qualified for final exams'),
                     '</strong></a>',
                     '<small class="muted"> - ',
-                        gettext('View, print and browse students that qualifies for final exams.'),
+                        gettext('View, print and browse students "qualified for final exams"-status.'),
                     '</small>',
                 '</li>',
             '</ul>',

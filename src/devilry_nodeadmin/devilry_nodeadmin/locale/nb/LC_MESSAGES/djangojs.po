@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-24 11:49+0200\n"
+"POT-Creation-Date: 2013-05-01 11:05+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,7 +33,7 @@ msgstr ""
 msgid "to the alternative interface"
 msgstr "til den gamle versjonen"
 
-#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:17
+#: static/devilry_nodeadmin/app/view/dashboard/ToplevelNodeList.js:17
 msgid ""
 "These are only the nodes you control. Select an element to see the child "
 "levels, its %(subjects_term)s and %(periods_term)s."
@@ -41,49 +41,57 @@ msgstr ""
 "Denne listen viser kun de nodene du administrerer. Klikk på et element for å "
 "se underliggende nivåer, %(subjects_term)s og %(periods_term)s."
 
-#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:18
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:28
+#: static/devilry_nodeadmin/app/view/dashboard/ToplevelNodeList.js:18
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:42
 msgid "subjects"
 msgstr "Kurs"
 
-#: static/devilry_nodeadmin/app/view/dashboard/DefaultNodeList.js:19
+#: static/devilry_nodeadmin/app/view/dashboard/ToplevelNodeList.js:19
 msgid "periods"
 msgstr ""
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:13
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:10
 msgid "to the top"
 msgstr "til øverste nivå"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:16
-#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:20
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:13
+#: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:17
 msgid "up"
 msgstr "ett nivå opp"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:18
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeChildrenList.js:16
 msgid "No child-nodes on this level"
 msgstr "Ingen under-noder hører til dette nivået"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:8
-msgid "About"
-msgstr "Om"
-
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:10
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:13
 msgid "courses"
 msgstr "kurs"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:11
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:14
 msgid "assignments"
 msgstr "oppgaver"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:14
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:17
+msgid "Tools"
+msgstr "Verktøy"
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:21
+msgid "Qualified for final exams"
+msgstr "Kan gå opp til eksamen"
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:24
+msgid "View, print and browse students \"qualified for final exams\"-status."
+msgstr "Vis, skriv ut og bla i studentenes \"kan gå opp til eksamen\"-status."
+
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:28
 msgid "Subjects"
 msgstr "Kurs"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:14
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:28
 msgid "on this level"
 msgstr "som hører til dette nivået"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:21
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:30
 msgid ""
 "Follow these links to get access to all the details available to "
 "%(subject_term)s administrators. This includes the ability to extend "
@@ -95,11 +103,11 @@ msgstr ""
 "innleveringsfrister, se detaljert informasjon om studenter og "
 "tilbakemeldinger, og mye mer."
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:22
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:31
 msgid "subject"
 msgstr ""
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:27
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:41
 msgid ""
 "No %(subjects_term)s on this level. If there are any %(nodes_term)s below "
 "this level, they are listed in the menu on your left hand side."
@@ -107,6 +115,9 @@ msgstr ""
 "Ingen %(subjects_term)s på dette nivået. Hvis det finnes noen %(nodes_term)s "
 "under dette nivået, er de i menyen på venstre side."
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:29
+#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:43
 msgid "nodes"
 msgstr ""
+
+#~ msgid "About"
+#~ msgstr "Om"
