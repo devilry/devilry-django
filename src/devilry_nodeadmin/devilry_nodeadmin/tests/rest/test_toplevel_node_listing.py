@@ -15,7 +15,7 @@ class TestRestToplevelNodeListing(TestCase):
         self.client = RestClient()
 
     def _geturl(self):
-        return reverse('devilry_nodeadmin-toplevel_nodes')
+        return reverse('devilry_nodeadmin-rest_toplevel_nodes')
 
     def test_get_as_nodeadmin(self):
         self.client.login(username='infadmin', password='test')

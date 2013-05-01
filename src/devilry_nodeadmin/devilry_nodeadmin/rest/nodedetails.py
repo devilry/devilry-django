@@ -8,7 +8,7 @@ from devilry_subjectadmin.rest.auth import BaseIsAdmin, nodeadmin_required
 
 
 class IsNodeAdmin(BaseIsAdmin):
-    ID_KWARG = 'pk'
+    ID_KWARG = 'id'
 
     def check_permission( self, user ):
         nodeid = self.get_id()
@@ -90,8 +90,8 @@ class NodeDetailsResource(ModelResource):
 
 class NodeDetails( InstanceModelView ):
     resource = NodeDetailsResource
-    permissions = ( IsAuthenticated, IsNodeAdmin, )
-    allowed_methods = ('get' ,)
+    permissions = (IsAuthenticated, IsNodeAdmin,)
+    allowed_methods = ('get',)
 
-    def get_instance_data( self, instance ):
+    def get_instance_data(self, instance):
         return instance
