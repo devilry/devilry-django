@@ -1,5 +1,5 @@
 Ext.define('devilry_student.view.groupinfo.Overview' ,{
-    extend: 'Ext.panel.Panel',
+    extend: 'Ext.container.Container',
     alias: 'widget.groupinfo',
     cls: 'devilry_student_groupinfo',
 
@@ -17,11 +17,8 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
      * Show add delivery wizard on load?
      */
 
-    frame: false,
-    border: 0,
-    bodyPadding: 0,
-
     layout: 'border',
+    style: 'background: none !important;',
 
     items: [{
         xtype: 'box',
@@ -52,6 +49,7 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
     }, {
         xtype: 'panel',
         region: 'center',
+        bodyStyle: 'background-color: transparent !important;',
         bodyPadding: 20,
         autoScroll: true,
         layout: 'anchor',
