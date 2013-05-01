@@ -2,7 +2,7 @@ Ext.define('devilry_student.controller.BrowseGroupedController', {
     extend: 'Ext.app.Controller',
 
     views: [
-        'browse.BrowseGrouped'
+        'browsegrouped.BrowseGrouped'
     ],
 
     stores: [

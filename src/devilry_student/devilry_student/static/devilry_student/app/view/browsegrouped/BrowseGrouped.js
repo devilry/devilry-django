@@ -1,4 +1,4 @@
-Ext.define('devilry_student.view.browse.BrowseGrouped' ,{
+Ext.define('devilry_student.view.browsegrouped.BrowseGrouped' ,{
     extend: 'Ext.view.View',
     alias: 'widget.browsegrouped',
     cls: 'devilry_student_browsegrouped bootstrap',
