@@ -44,7 +44,7 @@ Ext.define('devilry_student.view.browsegrouped.BrowseGrouped' ,{
                                     '<td>',
                                         '<a href="{[this.getFeedbackUrl(values)]}">{parent.long_name}</a>',
                                     '</td>',
-                                    '<td style="width: 150px;">',
+                                    '<td style="width: 200px;">',
                                         '<tpl if="status === \'corrected\'">',
                                             '<strong class="grade">',
                                                 '{feedback.grade}',
