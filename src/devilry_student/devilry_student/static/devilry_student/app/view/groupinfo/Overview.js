@@ -21,24 +21,6 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
     style: 'background: none !important;',
 
     items: [{
-        xtype: 'box',
-        height: 'auto',
-        region: 'north',
-        padding: '20 20 0 20',
-        itemId: 'titleBox',
-        cls: 'bootstrap',
-        tpl: [
-            '<tpl if="groupinfo">',
-                '<h1>{groupinfo.breadcrumbs.assignment.long_name}</h1>',
-                '<p><small>',
-                    '{groupinfo.breadcrumbs.subject.short_name}.',
-                    '{groupinfo.breadcrumbs.period.short_name}.',
-                    '{groupinfo.breadcrumbs.assignment.short_name}',
-                '</small></p>',
-            '<tpl else>',
-                gettext('Loading') + ' ...',
-            '</tpl>'
-        ]
     }, {
         xtype: 'container',
         region: 'west',
@@ -47,16 +29,40 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
         padding: 20,
         itemId: 'metadataContainer'
     }, {
-        xtype: 'panel',
-        region: 'center',
-        bodyStyle: 'background-color: transparent !important;',
-        bodyPadding: 20,
+        xtype: 'container',
         autoScroll: true,
+        region: 'center',
         layout: 'anchor',
-        defaults: {
-            anchor: '100%'
-        },
-        itemId: 'deadlinesContainer',
-        cls: 'devilry_discussionview_container'
+        itemId: 'centerContainer',
+        items: [{
+            xtype: 'box',
+            height: 'auto',
+            region: 'north',
+            padding: '20 20 0 20',
+            itemId: 'titleBox',
+            cls: 'bootstrap',
+            tpl: [
+                '<tpl if="groupinfo">',
+                    '<h1>{groupinfo.breadcrumbs.assignment.long_name}</h1>',
+                    '<p><small>',
+                        '{groupinfo.breadcrumbs.subject.short_name}.',
+                        '{groupinfo.breadcrumbs.period.short_name}.',
+                        '{groupinfo.breadcrumbs.assignment.short_name}',
+                    '</small></p>',
+                '<tpl else>',
+                    gettext('Loading') + ' ...',
+                '</tpl>'
+            ]
+        }, {
+            xtype: 'panel',
+            bodyStyle: 'background-color: transparent !important;',
+            bodyPadding: 20,
+            layout: 'anchor',
+            defaults: {
+                anchor: '100%'
+            },
+            itemId: 'deadlinesContainer',
+            cls: 'devilry_discussionview_container'
+        }]
     }]
 });

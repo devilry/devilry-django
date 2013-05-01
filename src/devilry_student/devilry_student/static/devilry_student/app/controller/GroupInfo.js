@@ -21,6 +21,9 @@ Ext.define('devilry_student.controller.GroupInfo', {
         ref: 'overview',
         selector: 'viewport groupinfo'
     }, {
+        ref: 'centerContainer',
+        selector: 'viewport groupinfo #centerContainer'
+    }, {
         ref: 'deadlinesContainer',
         selector: 'viewport groupinfo #deadlinesContainer'
     }, {
@@ -176,7 +179,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
             var container = deliveryPanel.up('groupinfo_deadline');
             container.expand();
             //deliveryPanel.el.scrollIntoView(this.getOverview().body, false, true);
-            deliveryPanel.el.scrollIntoView(this.getDeadlinesContainer().body, false, true);
+            deliveryPanel.el.scrollIntoView(this.getCenterContainer().getEl(), false, true);
             //deliveryPanel.body.setStyle({
                 //'background-color': 'red'
             //});
