@@ -44,11 +44,13 @@ Ext.define('devilry_qualifiesforexam.view.summaryview.SummaryViewGrid', {
     ],
     actionsColTpl: [
         '<div class="actions" style="white-space:normal !important;">',
-            '<tpl if="is_ready">',
+            '<tpl if="can_view">',
                 '<a href="{[this.getViewUrl(values.period_id)]}" target="_blank" class="btn btn-large">',
                     '<i class="icon-share"></i> ',
                     gettext('View'),
                 '</a>',
+            '</tpl>',
+            '<tpl if="is_ready">',
                 ' ',
                 '<a href="{[this.getPrintUrl(values.status_id)]}" target="_blank" class="btn btn-large btn-inverse">',
                     '<i class="icon-print icon-white"></i> ',
@@ -117,7 +119,8 @@ Ext.define('devilry_qualifiesforexam.view.summaryview.SummaryViewGrid', {
         return this.actionsColTplCompiled.apply({
             'period_id': record.get('id'),
             'status_id': Ext.isEmpty(active_status)? undefined: active_status.id,
-            'is_ready': !Ext.isEmpty(active_status) && active_status.status == 'ready'
+            'is_ready': !Ext.isEmpty(active_status) && active_status.status == 'ready',
+            'can_view': !Ext.isEmpty(active_status)
         });
     }
 });

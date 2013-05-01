@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 12:31+0200\n"
+"POT-Creation-Date: 2013-05-01 12:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,7 +122,7 @@ msgstr ""
 "ender med forhåndsvisning før du får muligheten til å lagre."
 
 #: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:25
-#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:86
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:88
 msgid "Status"
 msgstr "Status"
 
@@ -201,23 +201,73 @@ msgstr "Oppdater nåværende status"
 msgid "Qualified for final exams summary"
 msgstr "Kan gå opp til avsluttende eksamen - oppsummering"
 
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:30
+msgid ""
+"Each {subject_term} in the list below has one of the following statuses:"
+msgstr ""
+
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:32
+msgid "Ready for export"
+msgstr ""
+
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:33
+msgid ""
+"The list of qualified students are ready for export. Use the view- or print-"
+"button to browse the list of qualified students."
+msgstr ""
+
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:36
 #: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:28
 msgid "None"
 msgstr "Ingen"
+
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:37
+#, fuzzy
+msgid ""
+"The {subject} administrator has not selected students that qualify for final "
+"exams yet."
+msgstr ""
+"{qualifiedstudents}/{totalstudents} studenter kan gå opp til avsluttende "
+"eksamen."
+
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:40
+msgid "Not ready for export (retracted)"
+msgstr ""
+
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:42
+msgid ""
+"The subject administrator has retracted a previously \"Ready for export\" "
+"status. This may be bad if you have already exported the status."
+msgstr ""
+
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:48
+msgid "WARNING"
+msgstr ""
+
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:50
+msgid ""
+"Devilry does NOT notify you when a status is changed. This could lead to "
+"problems when someone retracts or updates an exported status. Please contact "
+"the Devilry project if you want to help us create a good workflow for "
+"handling status changes."
+msgstr ""
+
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:54
+msgid "subject"
+msgstr ""
 
 #: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:50
 msgid "View"
 msgstr "Vis"
 
-#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:55
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:57
 msgid "Print"
 msgstr "Skriv ut"
 
-#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:79
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:81
 msgid "Subject"
 msgstr ""
 
-#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:94
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:96
 msgid "Actions"
 msgstr "Handlinger"
-
