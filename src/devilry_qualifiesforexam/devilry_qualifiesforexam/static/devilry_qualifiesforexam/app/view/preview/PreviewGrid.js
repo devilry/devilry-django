@@ -37,7 +37,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
     setupColumns: function() {
         this.qualifiesColTplCompiled = Ext.create('Ext.XTemplate', this.qualifiesColTpl);
         this.columns.push({
-            text: gettext('Qualifies for final exams?'),
+            text: gettext('Qualified for final exams?'),
             dataIndex: 'id',
             flex: 1,
             minWidth: 160,
@@ -90,7 +90,7 @@ Ext.define('devilry_qualifiesforexam.view.preview.PreviewGrid', {
     setupToolbar: function() {
         this.callParent(arguments);
         this.tbar[0].menu.push({
-            text: gettext('Qualifies for final exam'),
+            text: gettext('Qualified for final exams'),
             hideOnClick: false,
             menu: [{
                 text: gettext('Qualified students first'),

@@ -9,7 +9,7 @@ from .views import AppView
 from .views import StatusPrintView
 
 
-i18n_packages = get_javascript_catalog_packages('devilry_extjsextras', 'devilry_header', 'devilry.apps.core')
+i18n_packages = get_javascript_catalog_packages('devilry_extjsextras', 'devilry_header', 'devilry.apps.core', 'devilry_qualifiesforexam')
 
 
 

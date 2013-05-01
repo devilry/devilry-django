@@ -26,7 +26,7 @@ Ext.define('devilry_qualifiesforexam.view.summaryview.SummaryView' ,{
                 items: [{
                     xtype: 'box',
                     html: [
-                        '<h1>', gettext('Qualified for exams summary'), '</h1>',
+                        '<h1>', gettext('Qualified for final exams summary'), '</h1>',
                         '<p class="muted">',
                             'TODO: Explain statuses',
                         '</p>'

@@ -54,7 +54,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamSelectPluginCont
     },
 
     getAppBreadcrumbs: function () {
-        var text = gettext('Qualifies for final exams - how?');
+        var text = gettext('Qualified for final exams') + ' - ' + gettext('how?');
         return [[], text];
     },
 

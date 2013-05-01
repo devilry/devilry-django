@@ -1,0 +1,68 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-05-01 12:31+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: models.py:23
+msgid "Ready for export"
+msgstr "Klar for eksportering"
+
+#: models.py:24
+msgid "Most students are ready for export"
+msgstr "De fleste studentene er klare for eksportering"
+
+#: models.py:25
+msgid "Not ready for export (retracted)"
+msgstr "Ikke klar for eksportering (trukket tilbake)"
+
+#: pluginhelpers.py:92
+msgid "Next"
+msgstr "Neste"
+
+#: pluginhelpers.py:98
+msgid "Back"
+msgstr "Tilbake"
+
+#: views.py:14
+msgid "Devilry - Qualifies for final exam"
+msgstr "Devilry - Kan gå opp til avsluttende eksamen"
+
+#: templates/devilry_qualifiesforexam/statusprint.django.html:5
+#: templates/devilry_qualifiesforexam/statusprint.django.html:19
+msgid "Qualifies for final exams"
+msgstr "Kan gå opp til avsluttende eksamen"
+
+#: templates/devilry_qualifiesforexam/statusprint.django.html:24
+msgid "Student"
+msgstr "Student"
+
+#: templates/devilry_qualifiesforexam/statusprint.django.html:25
+msgid "Ordered by username"
+msgstr "Sortert etter brukernavn"
+
+#: templates/devilry_qualifiesforexam/statusprint.django.html:27
+msgid "Qualifies for exam?"
+msgstr "Kan gå opp til eksamen?"
+
+#: templates/devilry_qualifiesforexam/statusprint.django.html:43
+msgid "Yes"
+msgstr "Ja"
+
+#: templates/devilry_qualifiesforexam/statusprint.django.html:45
+msgid "No"
+msgstr "Nei"

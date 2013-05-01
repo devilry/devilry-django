@@ -67,7 +67,7 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
     },
 
     getAppBreadcrumbs: function () {
-        var text = gettext('Qualifies for final exams');
+        var text = gettext('Qualified for final exams');
         return [[], text];
     },
 

@@ -83,7 +83,7 @@ Ext.define('devilry_qualifiesforexam.view.summaryview.SummaryViewGrid', {
                 sortable: false,
                 renderer: Ext.bind(this._renderAboutCol, this)
             }, {
-                text: 'Status',
+                text: gettext('Status'),
                 flex: 1,
                 dataIndex: 'id',
                 menuDisabled: true,
@@ -91,9 +91,9 @@ Ext.define('devilry_qualifiesforexam.view.summaryview.SummaryViewGrid', {
                 minWidth: 160,
                 renderer: Ext.bind(this._renderStatusCol, this)
             }, {
-                text: 'Actions',
+                text: gettext('Actions'),
                 flex: 1,
-                minWidth: 80,
+                minWidth: 200,
                 renderer: Ext.bind(this._renderActionsCol, this)
             }]
         });
