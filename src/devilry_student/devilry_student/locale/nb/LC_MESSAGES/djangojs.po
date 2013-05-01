@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 13:42+0200\n"
+"POT-Creation-Date: 2013-05-01 20:55+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: static/devilry_student/app.js:110
+#: static/devilry_student/app.js:96
 msgid "Route not found"
 msgstr "Siden ikke funnet"
 
@@ -26,7 +26,6 @@ msgid "Uploading your file ..."
 msgstr "Last opp din fil ..."
 
 #: static/devilry_student/app/controller/AddDelivery.js:155
-#: static/devilry_student/app/controller/BrowseHistory.js:48
 #: static/devilry_student/app/controller/Dashboard.js:58
 #: static/devilry_student/app/controller/GroupInfo.js:100
 msgid "Error"
@@ -46,43 +45,21 @@ msgstr ""
 
 #: static/devilry_student/app/controller/BrowseGroupedController.js:27
 #: static/devilry_student/app/controller/GroupInfo.js:217
-#: static/devilry_student/app/view/browse/BrowseGrouped.js:22
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:22
 #: static/devilry_student/app/view/dashboard/Overview.js:107
 msgid "History"
 msgstr "Historie"
 
 #: static/devilry_student/app/controller/BrowseGroupedController.js:29
-#: static/devilry_student/app/view/browse/BrowseGrouped.js:20
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:20
 #: static/devilry_student/app/view/dashboard/Overview.js:86
 msgid "Active {period_term}"
 msgstr "Aktiv {period_term}"
 
 #: static/devilry_student/app/controller/BrowseGroupedController.js:30
-#: static/devilry_student/app/controller/BrowseHistory.js:50
-#: static/devilry_student/app/view/browse/BrowseGrouped.js:96
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:96
 #: static/devilry_student/app/view/dashboard/Overview.js:118
 msgid "period"
-msgstr ""
-
-#: static/devilry_student/app/controller/BrowseHistory.js:49
-msgid "Invalid %(period)s ID: %(period_id)s."
-msgstr ""
-
-#: static/devilry_student/app/controller/BrowseHistory.js:73
-#: static/devilry_student/app/controller/BrowseHistory.js:74
-#: static/devilry_student/app/controller/BrowseHistory.js:92
-#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:36
-msgid "Browse"
-msgstr ""
-
-#: static/devilry_student/app/controller/BrowseHistory.js:75
-msgid "Please select an %(assignment_term)s from the list."
-msgstr "Velg en %(assignment_term)s fra listen."
-
-#: static/devilry_student/app/controller/BrowseHistory.js:76
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:47
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:129
-msgid "assignment"
 msgstr ""
 
 #: static/devilry_student/app/controller/Dashboard.js:70
@@ -129,7 +106,6 @@ msgstr ""
 #: static/devilry_student/app/controller/GroupInfo.js:241
 #: static/devilry_student/app/controller/GroupInfo.js:249
 #: static/devilry_student/app/view/add_delivery/ConfirmAfterDeadline.js:22
-#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:39
 #: static/devilry_student/app/view/dashboard/Overview.js:69
 #: static/devilry_student/app/view/dashboard/Overview.js:149
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:131
@@ -220,98 +196,38 @@ msgstr ""
 "Jeg ønsker å legge til en %(delivery_term)s etter at innleveringsfristen har "
 "gått ut."
 
-#: static/devilry_student/app/view/browse/BrowseGrouped.js:33
-msgid "Qualfied for final exams"
-msgstr ""
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:33
+msgid "Qualified for final exams"
+msgstr "Kvalifisert til avsluttende eksamen"
 
-#: static/devilry_student/app/view/browse/BrowseGrouped.js:37
-msgid "Not qualfied for final exams"
-msgstr ""
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:37
+msgid "Not qualified for final exams"
+msgstr "Ikke kvalifisert til avsluttende eksamen"
 
-#: static/devilry_student/app/view/browse/BrowseGrouped.js:54
-#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:45
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:54
 #: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:23
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:30
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:73
 msgid "Passed"
 msgstr ""
 
-#: static/devilry_student/app/view/browse/BrowseGrouped.js:58
-#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:48
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:58
 #: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:25
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:32
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:75
 msgid "Failed"
 msgstr ""
 
-#: static/devilry_student/app/view/browse/BrowseGrouped.js:64
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:64
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:89
 msgid "Waiting for deliveries, or for deadline to expire"
 msgstr ""
 
-#: static/devilry_student/app/view/browse/BrowseGrouped.js:67
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:67
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:92
 #, fuzzy
 msgid "Waiting for feedback"
 msgstr "Aktiv tilbakemelding"
-
-#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:63
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:98
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:70
-msgid "No feedback"
-msgstr ""
-
-#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:92
-msgid ""
-"You are not registered on any %(assignments_term)s in %(path)s. This may not "
-"be an issue if %(path)s have no published %(assignments_term)s, or if %(path)"
-"s only uses Devilry to register final results."
-msgstr ""
-"Du er ikke registrert på noen %(assignments_term)s i %(path)s. Dette er ikke "
-"et problem hvis %(path)s ikke har publisert noen %(assignments_term)s enda, "
-"eller hvis %(path)s kun bruker Devilry for å registrere avsluttende "
-"resultater."
-
-#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:93
-#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:38
-#: static/devilry_student/app/view/dashboard/Overview.js:45
-#: static/devilry_student/app/view/dashboard/Overview.js:66
-#: static/devilry_student/app/view/dashboard/SearchField.js:16
-msgid "assignments"
-msgstr ""
-
-#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:107
-msgid "Assignment"
-msgstr ""
-
-#: static/devilry_student/app/view/browsehistory/AssignmentGrid.js:124
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:27
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:67
-msgid "Grade"
-msgstr ""
-
-#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:37
-msgid ""
-"Browse all your %(assignments_term)s and %(deliveries_term)s, including "
-"%(assignments_term)s from old %(periods_term)s."
-msgstr ""
-"Bla i alle dine %(assignments_term)s og %(deliveries_term)s, inkludert "
-"%(assignments_term)s fra gamle %(periods_term)s."
-
-#: static/devilry_student/app/view/browsehistory/BrowsePeriods.js:40
-#: static/devilry_student/app/view/dashboard/Overview.js:117
-msgid "periods"
-msgstr ""
-
-#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:68
-#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:73
-#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:82
-msgid "Subject"
-msgstr ""
-
-#: static/devilry_student/app/view/browsehistory/PeriodGrid.js:72
-msgid "Find a %(subject_term)s ..."
-msgstr "Finn et %(subject_term)s ..."
 
 #: static/devilry_student/app/view/dashboard/OpenGroupsDeadlineNotExpiredGrid.js:50
 #: static/devilry_student/app/view/groupinfo/DeadlinePanel.js:79
@@ -337,6 +253,12 @@ msgstr "klikk for å legge til en %(delivery_term)s"
 #: static/devilry_student/app/view/dashboard/Overview.js:44
 msgid "You have no active electronic %(assignments_term)s."
 msgstr "Du har ingen aktive elektroniske %(assignments_term)s."
+
+#: static/devilry_student/app/view/dashboard/Overview.js:45
+#: static/devilry_student/app/view/dashboard/Overview.js:66
+#: static/devilry_student/app/view/dashboard/SearchField.js:16
+msgid "assignments"
+msgstr ""
 
 #: static/devilry_student/app/view/dashboard/Overview.js:61
 msgid "%(assignments_term)s with expired %(deadlines_term)s"
@@ -369,6 +291,10 @@ msgstr "Søk i dine %(assignments_term)s ..."
 
 #: static/devilry_student/app/view/dashboard/Overview.js:116
 msgid "subjects"
+msgstr ""
+
+#: static/devilry_student/app/view/dashboard/Overview.js:117
+msgid "periods"
 msgstr ""
 
 #: static/devilry_student/app/view/dashboard/Overview.js:148
@@ -405,6 +331,11 @@ msgstr "Søket ditt har ingen treff"
 msgid "About this deadline"
 msgstr "Om denne innleveringsfristen"
 
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:27
+#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:67
+msgid "Grade"
+msgstr ""
+
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:41
 msgid "Active feedback"
 msgstr "Aktiv tilbakemelding"
@@ -426,6 +357,11 @@ msgstr ""
 
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:46
 msgid "grade"
+msgstr ""
+
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:47
+#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:129
+msgid "assignment"
 msgstr ""
 
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:55
@@ -451,6 +387,11 @@ msgstr ""
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:88
 msgid "Download all files"
 msgstr "Last ned alle filene"
+
+#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:98
+#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:70
+msgid "No feedback"
+msgstr ""
 
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:126
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:108
@@ -500,6 +441,29 @@ msgstr ""
 #: static/devilry_student/app/view/groupinfo/Overview.js:53
 msgid "Loading"
 msgstr ""
+
+#~ msgid "Please select an %(assignment_term)s from the list."
+#~ msgstr "Velg en %(assignment_term)s fra listen."
+
+#~ msgid ""
+#~ "You are not registered on any %(assignments_term)s in %(path)s. This may "
+#~ "not be an issue if %(path)s have no published %(assignments_term)s, or if "
+#~ "%(path)s only uses Devilry to register final results."
+#~ msgstr ""
+#~ "Du er ikke registrert på noen %(assignments_term)s i %(path)s. Dette er "
+#~ "ikke et problem hvis %(path)s ikke har publisert noen %(assignments_term)"
+#~ "s enda, eller hvis %(path)s kun bruker Devilry for å registrere "
+#~ "avsluttende resultater."
+
+#~ msgid ""
+#~ "Browse all your %(assignments_term)s and %(deliveries_term)s, including "
+#~ "%(assignments_term)s from old %(periods_term)s."
+#~ msgstr ""
+#~ "Bla i alle dine %(assignments_term)s og %(deliveries_term)s, inkludert "
+#~ "%(assignments_term)s fra gamle %(periods_term)s."
+
+#~ msgid "Find a %(subject_term)s ..."
+#~ msgstr "Finn et %(subject_term)s ..."
 
 #~ msgid "Other %(assignments_term)s"
 #~ msgstr "Andre %(assignments_term)s"
