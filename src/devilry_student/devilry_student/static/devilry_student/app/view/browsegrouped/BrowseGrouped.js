@@ -31,7 +31,7 @@ Ext.define('devilry_student.view.browsegrouped.BrowseGrouped' ,{
                     '<tpl if="is_relatedstudent">',
                         '<tpl if="qualifiesforexams == true">',
                             '<p><span class="label label-success">',
-                                gettext('Qualfied for final exams'),
+                                gettext('Qualified for final exams'),
                             '</span></p>',
                         '<tpl elseif="qualifiesforexams == false">',
                             '<p><span class="label label-important">',
