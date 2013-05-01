@@ -46,6 +46,7 @@ class TestRestResults(TestCase):
         self.assertEquals(periods[0]['id'], self.testhelper.sub_p1.id)
         self.assertEquals(periods[0]['short_name'], self.testhelper.sub_p1.short_name)
         self.assertEquals(periods[0]['long_name'], self.testhelper.sub_p1.long_name)
+        self.assertEquals(periods[0]['is_relatedstudent'], False)
 
         assignments = periods[0]['assignments']
         self.assertEquals(len(assignments), 1)
@@ -192,3 +193,13 @@ class TestRestResults(TestCase):
         self.assertEquals(response.status_code, 200)
         period = subjects[0]['periods'][0]
         self.assertIsNone(period['qualifiesforexams'])
+
+
+    def test_get_is_relatedstudent(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1')
+        relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=self.testhelper.student1)
+        content, response = self._getas('student1')
+        subjects = content
+        self.assertEquals(response.status_code, 200)
+        p1 = subjects[0]['periods'][0]
+        self.assertEquals(p1['is_relatedstudent'], True)

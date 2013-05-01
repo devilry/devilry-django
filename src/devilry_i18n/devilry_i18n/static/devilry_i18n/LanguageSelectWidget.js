@@ -21,11 +21,7 @@ Ext.define('devilry_i18n.LanguageSelectWidget', {
     ],
 
     initComponent: function() {
-        devilry_i18n.LanguageSelectModel.load(null, {
-            scope: this,
-            success: this._onLoadSuccess,
-            failure: this._onLoadFailure
-        });
+        this.loadTries = 0;
         Ext.apply(this, {
             layout: 'fit',
             items: [{
@@ -34,6 +30,7 @@ Ext.define('devilry_i18n.LanguageSelectWidget', {
             }]
         });
         this.callParent(arguments);
+        this._loadLanguages();
     },
 
     _createAvailableLanguagesStore: function(availableLanguages) {
@@ -50,10 +47,31 @@ Ext.define('devilry_i18n.LanguageSelectWidget', {
         });
     },
 
-    _onLoadSuccess: function(languageRecord) {
+    _loadLanguages: function() {
+        devilry_i18n.LanguageSelectModel.load(null, {
+            scope: this,
+            success: this._onLoadLanguagesSuccess,
+            failure: this._onLoadLanguagesFailure
+        });
+    },
+
+    _onLoadLanguagesSuccess: function(languageRecord) {
         this.languageRecord = languageRecord;
         var store = this._createAvailableLanguagesStore(languageRecord.get('available'));
         this._addCombobox(store, languageRecord.get('selected'));
+    },
+
+
+    _onLoadLanguagesFailure: function(unused, operation) {
+        // NOTE: We try multiple times, because quick page loads (like with
+        //       instant redirects), has a tendency to make loading fail, which
+        //       will show flash the error popup to the user.
+        if(this.loadTries > 3) {
+            this._showError(gettext('Failed to load languages. Try to reload the page.'));
+        } else {
+            this.loadTries ++;
+            Ext.defer(this._loadLanguages, 1000, this);
+        }
     },
 
     _showError: function(msg) {
@@ -62,10 +80,6 @@ Ext.define('devilry_i18n.LanguageSelectWidget', {
             msg: msg,
             icon: Ext.MessageBox.ERROR
         });
-    },
-
-    _onLoadFailure: function(unused, operation) {
-        this._showError(gettext('Failed to load languages. Try to reload the page.'));
     },
 
     _addCombobox: function(store, selected) {

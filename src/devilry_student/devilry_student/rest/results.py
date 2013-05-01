@@ -49,6 +49,7 @@ class GroupedBySubjectSerialize(SerializeGroupMixin):
                 'short_name': period.short_name,
                 'long_name': period.long_name,
                 'assignments': OrderedDict(),
+                'is_relatedstudent': period.relatedstudent_set.filter(user=self.user).exists()
         }
         if self.devilry_qualifiesforexam_enabled:
             out['qualifiesforexams'] = None
