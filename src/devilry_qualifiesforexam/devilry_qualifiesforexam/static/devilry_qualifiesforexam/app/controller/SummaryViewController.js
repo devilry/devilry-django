@@ -5,6 +5,9 @@ Ext.define('devilry_qualifiesforexam.controller.SummaryViewController', {
         'summaryview.SummaryView'
     ],
 
+    models: [
+        'NodeDetail'
+    ],
     stores: [
         'Statuses'
     ],
@@ -20,37 +23,61 @@ Ext.define('devilry_qualifiesforexam.controller.SummaryViewController', {
                 render: this._onRender
             }
         });
-        this.mon(this.getStatusesStore().proxy, {
-            scope: this,
-            exception: this._onProxyError
-        });
     },
 
     _onRender: function() {
         this.getSummaryView().setLoading();
-        this.nodeid = this.getSummaryView().periodid;
-        this.application.setTitle(gettext('Summary - Qualifies for exam'));
+        this.application.breadcrumbs.set([], gettext('Loading') + ' ...');
+        this.node_id = this.getSummaryView().node_id;
+        this.application.setTitle(gettext('Summary - Qualifies for final exams'));
         this.getStatusesStore().load({
             scope: this,
             callback: function(records, op) {
                 if(op.success) {
                     this._onLoadSuccess(records);
-                } // NOTE: Errors are handled in _onProxyError
+                } else {
+                    this._onLoadError( op );
+                }
             }
         });
     },
 
     _onLoadSuccess: function(records) {
         this.getSummaryView().setLoading(false);
+        this._loadNodeDetails();
     },
 
 
-    _onProxyError: function(proxy, response, operation) {
-        if(!Ext.isEmpty(this.getSummaryView()) && this.getSummaryView().isVisible()) {
-            this.getSummaryView().setLoading(false);
-            var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
-            errorhandler.addErrors(response, operation);
-            this.application.getAlertmessagelist().addMany(errorhandler.errormessages, 'error', true);
+    _loadNodeDetails: function() {
+        this.getNodeDetailModel().load(this.node_id, {
+            scope: this,
+            callback: function ( records, op ) {
+                if( op.success ) {
+                    this._onLoadNodeDetailsSuccess(records);
+                } else {
+                    this._onLoadError(op);
+                }
+            }
+        });
+    },
+
+    _onLoadNodeDetailsSuccess:function ( record ) {
+        var path = record.get('path');
+        var breadcrumb = [];
+        for (var i = 0; i < path.length; i++) {
+            var element = path[i];
+            breadcrumb.push({
+                text: element.short_name,
+                url: devilry_qualifiesforexam.utils.UrlLookup.nodeadmin_node_details(element.id)
+            });
         }
+        this.application.breadcrumbs.set( breadcrumb, gettext('Summary - Qualifies for final exams'));
+    },
+
+    _onLoadError:function (op) {
+        var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
+        errorhandler.addErrorsFromOperation(op);
+        this.application.getAlertmessagelist().addMany(
+            errorhandler.errormessages, 'error', true );
     }
 });

@@ -114,7 +114,7 @@ Ext.application({
         }
 
         // Setup routes
-        this.route.add('/summary/:nodeid', 'summary');
+        this.route.add('/summary/:node_id', 'summary');
         this.route.add('/:periodid/selectplugin', 'selectplugin');
         this.route.add('/:periodid/preview/:pluginid/:pluginsessionid', 'preview');
         this.route.add('/:periodid/showstatus', 'showstatus');
@@ -158,12 +158,12 @@ Ext.application({
         });
     },
 
-    summary: function(routeInfo, nodeid) {
+    summary: function(routeInfo, node_id) {
         this.getHeader().setNavClass('nodeadmin');
         this.breadcrumbs.setHome();
         this.setPrimaryContent({
             xtype: 'summaryview',
-            nodeid: nodeid
+            node_id: node_id
         });
     }
 });

@@ -4,7 +4,7 @@ Ext.define('devilry_qualifiesforexam.view.summaryview.SummaryView' ,{
     cls: 'devilry_qualifiesforexam_summaryview',
 
     /**
-     * @cfg {int} [nodeid]
+     * @cfg {int} [node_id]
      */
 
     requires: [
