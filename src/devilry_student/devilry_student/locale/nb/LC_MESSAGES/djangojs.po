@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 14:01+0200\n"
+"POT-Creation-Date: 2013-05-01 14:48+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,7 +57,8 @@ msgid "Active {period_term}"
 msgstr "Aktivt {period_term}"
 
 #: static/devilry_student/app/controller/BrowseGroupedController.js:30
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:96
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:46
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:106
 #: static/devilry_student/app/view/dashboard/Overview.js:118
 msgid "period"
 msgstr ""
@@ -196,34 +197,48 @@ msgstr ""
 "Jeg ønsker å legge til en %(delivery_term)s etter at innleveringsfristen har "
 "gått ut."
 
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:33
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:34
 msgid "Qualfied for final exams"
 msgstr "Kan gå opp til avsluttende eksamen"
 
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:37
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:38
 msgid "Not qualfied for final exams"
 msgstr "Kan ikke gå opp til avsluttende eksamen"
 
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:54
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:43
+msgid "WARNING"
+msgstr "ADVARSEL"
+
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:44
+msgid ""
+"You are not registered as a student on {parent.data.short_name}.{short_name}."
+msgstr ""
+"Du er ikke registrert som student på {parent.data.short_name}.{short_name}."
+
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:45
+msgid "subject"
+msgstr ""
+
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:64
 #: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:23
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:30
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:73
 msgid "Passed"
 msgstr "Bestått"
 
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:58
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:68
 #: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:25
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:32
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:75
 msgid "Failed"
 msgstr "Ikke bestått"
 
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:64
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:74
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:89
 msgid "Waiting for deliveries, or for deadline to expire"
 msgstr "Venter på innleveringer, eller på at innleveringsfristen går ut"
 
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:67
+#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:77
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:92
 msgid "Waiting for feedback"
 msgstr "Venter på tilbakemelding"
