@@ -20,7 +20,7 @@ msgstr ""
 
 #: devilry_plugin.py:13
 msgid "Students must get a minimum number of points"
-msgstr "Studenter må få et minimum antall poeng"
+msgstr "Studentene må oppnå et minimum antall poeng"
 
 #: devilry_plugin.py:14
 msgid ""
