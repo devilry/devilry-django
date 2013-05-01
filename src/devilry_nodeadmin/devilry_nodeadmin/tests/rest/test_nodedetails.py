@@ -11,6 +11,7 @@ class TestRestNodeDetails(TestCase):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni:admin(uniadmin).inf:admin(infadmin)')
         self.testhelper.add(nodes='uni.fys')
+        self.testhelper.create_superuser('super')
         self.client = RestClient()
 
     def _geturl(self, node_id):
@@ -22,12 +23,13 @@ class TestRestNodeDetails(TestCase):
         content, response = self.client.rest_get(self._geturl(self.testhelper.uni_inf.id))
         self.assertEquals(response.status_code, 403)
 
-    def _test_get_as(self, username):
-        self.client.login(username=username, password='test')
+    def test_as_wrongadmin(self):
+        self.client.login(username='infadmin', password='test')
         content, response = self.client.rest_get(self._geturl(self.testhelper.uni_fys.id))
         self.assertEquals(response.status_code, 403)
 
-        self.client.login(username='infadmin', password='test')
+    def _test_get_as(self, username):
+        self.client.login(username=username, password='test')
         content, response = self.client.rest_get(self._geturl(self.testhelper.uni_inf.id))
         self.assertEquals(response.status_code, 200)
         self.assertEquals(set(content.keys()),
@@ -41,12 +43,28 @@ class TestRestNodeDetails(TestCase):
         self._test_get_as('infadmin')
 
     def test_get_as_superuser(self):
-        self.testhelper.create_superuser('super')
-        self._test_get_as('superuser')
+        self._test_get_as('super')
 
 
-    #def test_get_path(self):
-        #self.assertEquals(content['path'], [
-            #{u'id': self.testhelper.uni.id, u'short_name': u'uni'},
-            #{u'id': self.testhelper.uni_inf.id, u'short_name': u'inf'}
-        #])
+    def test_get_path_only_admin_on_child(self):
+        self.client.login(username='infadmin', password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.uni_inf.id))
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['path'], [
+            {u'id': self.testhelper.uni_inf.id, u'short_name': u'uni.inf'}
+        ])
+
+    def _test_get_path_toplevel_admin(self, username):
+        self.client.login(username=username, password='test')
+        content, response = self.client.rest_get(self._geturl(self.testhelper.uni_inf.id))
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(content['path'], [
+            {u'id': self.testhelper.uni.id, u'short_name': u'uni'},
+            {u'id': self.testhelper.uni_inf.id, u'short_name': u'inf'}
+        ])
+
+    def test_get_path_toplevel_admin(self):
+        self._test_get_path_toplevel_admin('uniadmin')
+
+    def test_get_path_toplevel_superuser(self):
+        self._test_get_path_toplevel_admin('super')

@@ -52,13 +52,14 @@ class NodeDetailsResource(ModelResource):
     def path( self, instance ):
         path = []
         node = instance
-        while node != None:
-            toplevel = node.parentnode == None or not self._is_admin_or_superuser(node)
+        while True:
+            toplevel = node.parentnode == None or not self._is_admin_or_superuser(node.parentnode)
             if toplevel:
                 path.append({
                     'id': node.id,
                     'short_name': node.get_path()
                 })
+                break
             else:
                 path.append({
                     'id': node.id,
