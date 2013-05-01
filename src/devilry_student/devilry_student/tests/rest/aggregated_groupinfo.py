@@ -32,7 +32,7 @@ class TestRestAggregatedGroupInfo(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(set(content.keys()),
                           set(['id', 'name', 'is_open', 'candidates', 'examiners',
-                               'deadlines', 'active_feedback',
+                               'deadlines', 'active_feedback', 'status',
                                'deadline_handling', 'breadcrumbs', 'delivery_types']))
         self.assertEquals(content['id'], self.group.id)
         self.assertEquals(content['name'], 'g1')

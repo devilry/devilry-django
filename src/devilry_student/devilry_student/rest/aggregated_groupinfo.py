@@ -34,7 +34,8 @@ def pretty_filesize(num):
 
 class GroupResource(ModelResource, GroupResourceHelpersMixin):
     fields = ('id', 'name', 'is_open', 'candidates', 'deadlines', 'active_feedback',
-              'deadline_handling', 'breadcrumbs', 'examiners', 'delivery_types')
+              'deadline_handling', 'breadcrumbs', 'examiners', 'delivery_types',
+              'status')
     model = AssignmentGroup
 
 
@@ -117,6 +118,9 @@ class GroupResource(ModelResource, GroupResourceHelpersMixin):
 
     def delivery_types(self, instance):
         return instance.parentnode.delivery_types
+
+    def status(self, instance):
+        return instance.get_status()
 
 
 class AggregatedGroupInfo(InstanceMixin, ReadModelMixin, ModelView):
