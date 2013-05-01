@@ -9,9 +9,9 @@ from fabric.api import local, task
 @task
 def bootstrap():
     """
-    Runs ``virtualenv --no-site-packages venv && venv/bin/python ../bootstrap.py && bin/buildout && bin/fab postbootstrap``.
+    Runs ``virtualenv venv && venv/bin/python ../bootstrap.py && bin/buildout && bin/fab postbootstrap``.
     """
-    local('virtualenv --no-site-packages venv')
+    local('virtualenv venv')
     local('venv/bin/python ../bootstrap.py')
     local('bin/buildout')
     local('bin/fab postbootstrap')
