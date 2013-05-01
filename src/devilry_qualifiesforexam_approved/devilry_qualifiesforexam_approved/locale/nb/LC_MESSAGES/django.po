@@ -20,7 +20,7 @@ msgstr ""
 
 #: devilry_plugin.py:13
 msgid "Students must pass ALL assignments"
-msgstr "Studenter må bestå ALLE oppgavene"
+msgstr "Studentene må bestå ALLE oppgavene"
 
 #: devilry_plugin.py:14
 msgid ""
@@ -32,7 +32,7 @@ msgstr ""
 
 #: devilry_plugin.py:21
 msgid "Students must pass a set of assignments selected by you"
-msgstr "Studentenen må bestå et sett av oppgaver som du velger"
+msgstr "Studentene må bestå et sett av oppgaver som du velger"
 
 #: devilry_plugin.py:22
 msgid ""
