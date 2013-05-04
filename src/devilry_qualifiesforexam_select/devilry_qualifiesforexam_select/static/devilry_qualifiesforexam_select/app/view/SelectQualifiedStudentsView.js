@@ -4,7 +4,8 @@ Ext.define('devilry_qualifiesforexam_select.view.SelectQualifiedStudentsView', {
 
     requires: [
         'devilry_extjsextras.PrimaryButton',
-        'devilry_qualifiesforexam_select.view.SelectQualifiedStudentsGrid'
+        'devilry_qualifiesforexam_select.view.SelectQualifiedStudentsGrid',
+        'Ext.util.Cookies'
     ],
 
     initComponent: function() {
@@ -14,6 +15,10 @@ Ext.define('devilry_qualifiesforexam_select.view.SelectQualifiedStudentsView', {
             frame: false,
             items: [{
                 xtype: 'selectqualifiedstudentsgrid'
+            }, {
+                 xtype: 'hiddenfield',
+                name: 'csrfmiddlewaretoken',
+                value: Ext.util.Cookies.get('csrftoken')
             }],
             buttons: ['->', {
                 xtype: 'button',
