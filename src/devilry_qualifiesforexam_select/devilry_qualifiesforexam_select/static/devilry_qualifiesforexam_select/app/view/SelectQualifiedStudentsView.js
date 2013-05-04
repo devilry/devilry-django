@@ -5,6 +5,7 @@ Ext.define('devilry_qualifiesforexam_select.view.SelectQualifiedStudentsView', {
     requires: [
         'devilry_extjsextras.PrimaryButton',
         'devilry_qualifiesforexam_select.view.SelectQualifiedStudentsGrid',
+        'Ext.form.field.Hidden',
         'Ext.util.Cookies'
     ],
 

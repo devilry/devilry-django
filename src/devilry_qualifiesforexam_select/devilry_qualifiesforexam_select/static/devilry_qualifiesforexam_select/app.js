@@ -14,6 +14,7 @@ Ext.application({
         'Ext.container.Viewport',
         'Ext.layout.container.Border',
         'Ext.layout.container.Column',
+        'Ext.form.field.ComboBox',
         'devilry_header.Header',
         'devilry_extjsextras.FloatingAlertmessageList'
     ],

@@ -9,6 +9,10 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsCo
         'SelectQualifiedStudentsView'
     ],
 
+    requires: [
+        'Ext.form.action.StandardSubmit'
+    ],
+
     stores: ['AggregatedRelatedStudentInfos'],
     models: [
         'DetailedPeriodOverview'
