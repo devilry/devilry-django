@@ -8,13 +8,15 @@ from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMix
 
 
 
-
-class QualifiesBasedOnManualSelectView(Extjs4AppView, QualifiesForExamPluginViewMixin):
+class BaseAppView(Extjs4AppView):
     template_name = "devilry_qualifiesforexam_select/app.django.html"
     appname = 'devilry_qualifiesforexam_select'
     title = _('Select students that qualifies for final exams - Devilry')
-    pluginid = 'devilry_qualifiesforexam_select'
 
+
+
+class QualifiesBasedOnManualSelectView(BaseAppView, QualifiesForExamPluginViewMixin):
+    pluginid = 'devilry_qualifiesforexam_select'
 
     def get_context_data(self, **kwargs):
         context = super(QualifiesBasedOnManualSelectView, self).get_context_data(**kwargs)
@@ -44,3 +46,7 @@ class QualifiesBasedOnManualSelectView(Extjs4AppView, QualifiesForExamPluginView
         except PermissionDenied:
             return HttpResponseForbidden()
         return super(QualifiesBasedOnManualSelectView, self).get(request)
+
+
+class BuildExtjsAppView(BaseAppView):
+    pass
