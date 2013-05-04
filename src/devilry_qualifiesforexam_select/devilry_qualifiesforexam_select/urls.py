@@ -7,7 +7,8 @@ from devilry_settings.i18n import get_javascript_catalog_packages
 from .views import QualifiesBasedOnManualSelectView
 from .views import BuildExtjsAppView
 
-i18n_packages = get_javascript_catalog_packages('devilry_header', 'devilry.apps.core')
+i18n_packages = get_javascript_catalog_packages('devilry_extjsextras', 'devilry_header', 'devilry.apps.core', 'devilry_subjectadmin', 'devilry_qualifiesforexam', 'devilry_qualifiesforexam_select')
+
 
 
 
