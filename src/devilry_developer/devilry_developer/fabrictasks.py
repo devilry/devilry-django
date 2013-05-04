@@ -218,10 +218,12 @@ def jsbuildall():
     """
     Build all the Devilry apps using the ``jsbuild`` task with compression enabled.
     """
-    for appname in ("devilry_frontpage",
-                    "devilry_header",
-                    "devilry_nodeadmin",
-#                    "devilry_qualifiesforexam",
-                    "devilry_student",
-                    "devilry_subjectadmin"):
+    for appname in (
+            "devilry_frontpage",
+            "devilry_header",
+            "devilry_nodeadmin",
+            "devilry_qualifiesforexam",
+            "devilry_qualifiesforexam_select",
+            "devilry_student",
+            "devilry_subjectadmin"):
         jsbuild(appname)
