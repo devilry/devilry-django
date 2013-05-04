@@ -60,9 +60,9 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsCo
     _loadDetailedPeriodOverview: function() {
         this.getDetailedPeriodOverviewModel().load(this.period_id, {
             scope: this,
-            callback: function(records, op) {
+            callback: function(record, op) {
                 if(op.success) {
-                    this._onLoadDetailedPeriodOverviewSuccess(records);
+                    this._onLoadDetailedPeriodOverviewSuccess(record);
                 }
                 // NOTE: Errors are handled in _onProxyError
             }
@@ -71,7 +71,18 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsCo
     _onLoadDetailedPeriodOverviewSuccess: function(record) {
         this.detailedPeriodOverviewRecord = record;
         this.getGrid().setLoading();
-        this._onAllLoaded();
+        if(Ext.isIE) {
+            // NOTE: Without this, IE seems to flash the correct dataset in the
+            // grid, and then render an empty grid. No idea why this happens, but
+            // a short delay seems to solve the problem. Observed in IE9, but I
+            // assume this appears in all IE versions, and the delay is not that much
+            // of a "problem" even if it should be an IE9 specific bug.
+            Ext.defer(function() {
+                this._onAllLoaded();
+            }, 400, this);
+        } else {
+            this._onAllLoaded();
+        }
     },
     _onProxyError: function(proxy, response, operation) {
         var errorhandler = Ext.create('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler');
@@ -104,13 +115,11 @@ Ext.define('devilry_qualifiesforexam_select.controller.SelectQualifiedStudentsCo
 
     _onNextButtonClick: function() {
         var selected = this.getGrid().getSelectionModel().getSelection();
-        console.log(selected);
         var qualified_relstudentids = [];
         for(var index=0; index<selected.length; index++)  {
             var item = selected[index];
             qualified_relstudentids.push(item.get('relatedstudent').id);
         }
-        console.log(qualified_relstudentids);
         this.getForm().submit({
             url: window.location.href,
             method: 'POST',
