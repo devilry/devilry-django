@@ -43,3 +43,25 @@ class TestStatusPrintView(TestCase):
                 status=Status.NOTREADY)
         response = self._getas('superuser', status.pk)
         self.assertEqual(response.status_code, 404)
+
+    def test_status_periodadmin(self):
+        self.testhelper.add(nodes='uni',
+            subjects=['sub'],
+            periods=['p1:admin(periodadmin):begins(-3):ends(6)'])
+        status = Status.objects.create(
+                user=self.testhelper.superuser,
+                period=self.testhelper.sub_p1,
+                status=Status.READY)
+        response = self._getas('periodadmin', status.pk)
+        self.assertEqual(response.status_code, 200)
+
+    def test_status_superuser(self):
+        self.testhelper.add(nodes='uni',
+            subjects=['sub'],
+            periods=['p1:begins(-3):ends(6)'])
+        status = Status.objects.create(
+                user=self.testhelper.superuser,
+                period=self.testhelper.sub_p1,
+                status=Status.READY)
+        response = self._getas('superuser', status.pk)
+        self.assertEqual(response.status_code, 200)
