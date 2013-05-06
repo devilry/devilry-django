@@ -2,7 +2,8 @@
 How to release a new Devilry version
 ====================================
 
-In the devilry-django repo:
+In the devilry-django repo
+##########################
 
 1. Update the version number in ``src/devilry/setup.py`` and ``src/devilry/devilry/version.py``
 2. Update the version number in ``docs/conf.py``.
@@ -17,7 +18,14 @@ In the devilry-django repo:
     $ git push --tags
 
 
-In the devilry-deploy repo:
+In the devilry-deploy repo
+##########################
+
+.. note::
+
+    Make sure all new develop (mr.developer fs) dependencies in
+    ``buildout-base.cfg`` or ``buildout.cfg`` in the devilry code repo has been
+    added to ``buildout/buildout-base.cfg`` before releasing a new version.
 
 1. Update the version number in ``docs/src/conf.py``
 2. Update the revision id in ``${buildout:extends}`` and
@@ -26,7 +34,9 @@ In the devilry-deploy repo:
 3. Tag the release and push just like you did for devilry-django above.
 
 
-In the devilry-userdoc repo (this is not needed for RC and Beta releases):
+In the devilry-userdoc repo
+###########################
+.. note:: this is not needed for RC, Beta releases.
 
 1. Update the version number in ``conf.py``
 2. Tag the release and push just like you did for devilry-django above.
