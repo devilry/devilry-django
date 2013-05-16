@@ -81,13 +81,15 @@ class StatusPrintView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(StatusPrintView, self).get_context_data(**kwargs)
-        sortby = 'name'
+        sessionkey = 'devilry_qualifiesforexam.statusprint.sortby'
+        sortby = self.request.session.get(sessionkey, 'name')
         if self.request.GET.get('sortby'):
             form = StatusPrintViewForm(self.request.GET)
             if form.is_valid():
                 sortby = form.cleaned_data['sortby']
+                self.request.session[sessionkey] = sortby
         else:
-            form = StatusPrintViewForm()
+            form = StatusPrintViewForm(initial={'sortby': sortby})
         studentstatuses = self.__class__.get_studentstatuses_by_sorter(self.status, sortby)
         context['status'] = self.status
         context['studentstatuses'] = studentstatuses
