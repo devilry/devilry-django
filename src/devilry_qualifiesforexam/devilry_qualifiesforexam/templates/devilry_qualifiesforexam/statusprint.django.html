@@ -33,9 +33,9 @@
                     <td>
                         {% with studentstatus.relatedstudent.user as user %}
                             {% if user.get_profile.full_name %}
-                                {{ user.get_profile.full_name }}
+                                <span class="fullname">{{ user.get_profile.full_name }}</span>
                             {% endif %}
-                            ({{ studentstatus.relatedstudent.user.username }})
+                            <span class="username">({{ studentstatus.relatedstudent.user.username }})</span>
                         {% endwith %}
                     </td>
                     <td style="width: 160px;">
