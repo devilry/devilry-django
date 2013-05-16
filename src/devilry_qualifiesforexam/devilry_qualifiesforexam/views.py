@@ -4,7 +4,8 @@ from django.views.generic import TemplateView
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseForbidden
 from django import forms
-
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field
 from devilry.apps.core.models import Period
 from devilry_qualifiesforexam.models import Status
 
@@ -18,11 +19,23 @@ class AppView(Extjs4AppView):
 
 
 class StatusPrintViewForm(forms.Form):
-    sortby = forms.ChoiceField(choices=(
-            ('name', _('Name')),
-            ('username', _('Username')),
-            ('lastname', _('Last name'))
-        ))
+    sortby = forms.ChoiceField(
+            label=_('Sort by'),
+            choices=(
+                ('name', _('Name')),
+                ('username', _('Username')),
+                ('lastname', _('Last name')))
+            )
+
+    def __init__(self, *args, **kwargs):
+        super(StatusPrintViewForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.form_id = 'sortform'
+        self.helper.form_method = 'get'
+        self.helper.layout = Layout(
+                Field('sortby', id='sortby-field')
+        )
 
 
 def extract_lastname(user):
