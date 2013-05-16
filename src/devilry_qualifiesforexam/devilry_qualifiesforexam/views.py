@@ -50,6 +50,7 @@ def cmp_lastname(user_a, user_b):
 
 class StatusPrintView(TemplateView):
     template_name = 'devilry_qualifiesforexam/statusprint.django.html'
+    cookiekey = 'devilry_qualifiesforexam.statusprint.sortby'
 
     def get(self, request, status_id):
         try:
@@ -62,7 +63,9 @@ class StatusPrintView(TemplateView):
             elif self.status.status != Status.READY:
                 return HttpResponseNotFound()
             else:
-                return super(StatusPrintView, self).get(request, status_id)
+                response = super(StatusPrintView, self).get(request, status_id)
+                response.set_cookie(self.cookiekey, self.sortby)
+                return response
 
     @classmethod
     def get_studentstatuses_by_sorter(cls, status, sortby):
@@ -81,16 +84,15 @@ class StatusPrintView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(StatusPrintView, self).get_context_data(**kwargs)
-        sessionkey = 'devilry_qualifiesforexam.statusprint.sortby'
-        sortby = self.request.session.get(sessionkey, 'name')
+        sortby = self.request.COOKIES.get(self.cookiekey, 'name')
         if self.request.GET.get('sortby'):
             form = StatusPrintViewForm(self.request.GET)
             if form.is_valid():
                 sortby = form.cleaned_data['sortby']
-                self.request.session[sessionkey] = sortby
         else:
             form = StatusPrintViewForm(initial={'sortby': sortby})
         studentstatuses = self.__class__.get_studentstatuses_by_sorter(self.status, sortby)
+        self.sortby = sortby
         context['status'] = self.status
         context['studentstatuses'] = studentstatuses
         context['form'] = form
