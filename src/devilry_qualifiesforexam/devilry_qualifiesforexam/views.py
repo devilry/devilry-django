@@ -39,7 +39,7 @@ class StatusPrintViewForm(forms.Form):
 
 
 def extract_lastname(user):
-    profile = user.get_profile()
+    profile = user.devilryuserprofile
     name = profile.full_name
     if not name or not name.strip():
         return ''
@@ -77,9 +77,14 @@ class StatusPrintView(TemplateView):
             raise ValueError('Invalid sortby: {0}'.format(sortby))
 
         studentstatuses = status.students.all().order_by(orderby)
-        if sortby == 'lastname':
-            studentstatuses = list(studentstatuses)
-            studentstatuses.sort(lambda a, b: cmp_lastname(a.relatedstudent.user, b.relatedstudent.user))
+        studentstatuses = studentstatuses.select_related(
+                'relatedstudent',
+                'relatedstudent__user',
+                'relatedstudent__user__devilryuserprofile'
+            )
+        #if sortby == 'lastname':
+            #studentstatuses = list(studentstatuses)
+            #studentstatuses.sort(lambda a, b: cmp_lastname(a.relatedstudent.user, b.relatedstudent.user))
         return studentstatuses
 
     def get_context_data(self, **kwargs):

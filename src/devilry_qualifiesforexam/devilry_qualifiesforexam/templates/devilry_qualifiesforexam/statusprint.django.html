@@ -49,8 +49,8 @@
                 <tr class="{{ studentstatus.qualifies|yesno:"success,warning" }}">
                     <td>
                         {% with studentstatus.relatedstudent.user as user %}
-                            {% if user.get_profile.full_name %}
-                                <span class="fullname">{{ user.get_profile.full_name }}</span>
+                            {% if user.devilryuserprofile.full_name %}
+                                <span class="fullname">{{ user.devilryuserprofile.full_name }}</span>
                             {% endif %}
                             <span class="username">({{ studentstatus.relatedstudent.user.username }})</span>
                         {% endwith %}
