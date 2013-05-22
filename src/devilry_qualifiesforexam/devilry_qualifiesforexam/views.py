@@ -34,7 +34,7 @@ class StatusPrintViewForm(forms.Form):
         self.helper.form_id = 'sortform'
         self.helper.form_method = 'get'
         self.helper.layout = Layout(
-                Field('sortby', id='sortby-field'),
+                Field('sortby', id='sortby-field')
         )
 
 
