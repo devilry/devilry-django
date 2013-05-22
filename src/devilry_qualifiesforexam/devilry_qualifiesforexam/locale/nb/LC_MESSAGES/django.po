@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 12:59+0200\n"
+"POT-Creation-Date: 2013-05-22 21:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -38,31 +38,47 @@ msgstr "Neste"
 msgid "Back"
 msgstr "Tilbake"
 
-#: views.py:14
+#: views.py:16
 msgid "Devilry - Qualifies for final exam"
 msgstr "Devilry - Kan gå opp til avsluttende eksamen"
 
-#: templates/devilry_qualifiesforexam/statusprint.django.html:5
-#: templates/devilry_qualifiesforexam/statusprint.django.html:19
-msgid "Qualifies for final exams"
-msgstr "Kan gå opp til avsluttende eksamen"
+#: views.py:23
+msgid "Sort by"
+msgstr "Sorter etter"
 
-#: templates/devilry_qualifiesforexam/statusprint.django.html:24
-msgid "Student"
-msgstr "Student"
+#: views.py:25
+msgid "Name"
+msgstr "Navn"
 
-#: templates/devilry_qualifiesforexam/statusprint.django.html:25
-msgid "Ordered by username"
-msgstr "Sortert etter brukernavn"
+#: views.py:26
+msgid "Username"
+msgstr "Brukernavn"
 
-#: templates/devilry_qualifiesforexam/statusprint.django.html:27
-msgid "Qualifies for exam?"
-msgstr "Kan gå opp til eksamen?"
+#: views.py:27
+msgid "Last name"
+msgstr "Etternavn"
 
-#: templates/devilry_qualifiesforexam/statusprint.django.html:43
+#: templates/devilry_qualifiesforexam/statusprint-singlestudent.django.html:9
 msgid "Yes"
 msgstr "Ja"
 
-#: templates/devilry_qualifiesforexam/statusprint.django.html:45
+#: templates/devilry_qualifiesforexam/statusprint-singlestudent.django.html:11
 msgid "No"
 msgstr "Nei"
+
+#: templates/devilry_qualifiesforexam/statusprint.django.html:6
+#: templates/devilry_qualifiesforexam/statusprint.django.html:30
+msgid "Qualifies for final exams"
+msgstr "Kan gå opp til avsluttende eksamen"
+
+#: templates/devilry_qualifiesforexam/statusprint.django.html:36
+msgid "Print"
+msgstr "Skriv ut"
+
+#: templates/devilry_qualifiesforexam/statusprint.django.html:39
+msgid "Qualified for final exams"
+msgstr "Kan gå opp til avsluttende eksamen"
+
+#: templates/devilry_qualifiesforexam/statusprint.django.html:50
+msgid "NOT qualified for final exams"
+msgstr "Kan IKKE gå opp til avsluttende eksamen"

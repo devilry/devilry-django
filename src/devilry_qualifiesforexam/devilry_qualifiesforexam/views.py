@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from extjs4.views import Extjs4AppView
 from django.views.generic import TemplateView
 from django.http import HttpResponseNotFound

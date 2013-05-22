@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 20:41+0200\n"
+"POT-Creation-Date: 2013-05-22 21:17+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,7 +29,7 @@ msgstr "Se over og bekreft"
 
 #: static/devilry_qualifiesforexam/app/controller/QualifiesForExamPreviewController.js:63
 #: static/devilry_qualifiesforexam/app/controller/QualifiesForExamSelectPluginController.js:57
-#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:70
+#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:73
 #: static/devilry_qualifiesforexam/app/view/preview/PreviewGrid.js:93
 #: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:19
 msgid "Qualified for final exams"
@@ -43,11 +43,11 @@ msgstr "forhåndsvisning"
 msgid "how?"
 msgstr "hvordan?"
 
-#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:172
+#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:181
 msgid "Why do you need to retract current status?"
 msgstr "Hvorfor behøver du å trekke tilbake nåværende status?"
 
-#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:173
+#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:182
 msgid ""
 "Explain why you need to change the status to \"Not ready\", and hit OK to "
 "save."
@@ -55,11 +55,11 @@ msgstr ""
 "Forklar hvorfor du behøver å endtre status til \"Ikke klar for eksportering"
 "\", og klikk OK for å lagre."
 
-#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:183
+#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:192
 msgid "Invalid input"
 msgstr "Ugyldig verdi"
 
-#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:184
+#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:193
 msgid "A message is required"
 msgstr "En beskjed er påkrevd"
 
@@ -185,17 +185,22 @@ msgstr ""
 msgid "Message"
 msgstr "Beskjed"
 
-#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:114
+#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:116
 msgid "Change status"
 msgstr "Endre status"
 
-#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:116
+#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:119
 msgid "Retract - change the status to \"Not ready for export\""
 msgstr "Trekk tilbake - endre statusen til \"Ikke klar for eksport\""
 
-#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:120
+#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:123
 msgid "Update - re-run the qualified for final exams wizard"
 msgstr "Oppdater nåværende status"
+
+#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:134
+#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:57
+msgid "Print"
+msgstr "Skriv ut"
 
 #: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:29
 msgid "Qualified for final exams summary"
@@ -264,10 +269,6 @@ msgstr ""
 #: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:50
 msgid "View"
 msgstr "Vis"
-
-#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:57
-msgid "Print"
-msgstr "Skriv ut"
 
 #: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:81
 msgid "Subject"
