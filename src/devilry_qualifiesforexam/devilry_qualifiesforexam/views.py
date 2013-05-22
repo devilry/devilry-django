@@ -82,9 +82,9 @@ class StatusPrintView(TemplateView):
                 'relatedstudent__user',
                 'relatedstudent__user__devilryuserprofile'
             )
-        #if sortby == 'lastname':
-            #studentstatuses = list(studentstatuses)
-            #studentstatuses.sort(lambda a, b: cmp_lastname(a.relatedstudent.user, b.relatedstudent.user))
+        if sortby == 'lastname':
+            studentstatuses = list(studentstatuses)
+            studentstatuses.sort(lambda a, b: cmp_lastname(a.relatedstudent.user, b.relatedstudent.user))
         return studentstatuses
 
     def get_context_data(self, **kwargs):
