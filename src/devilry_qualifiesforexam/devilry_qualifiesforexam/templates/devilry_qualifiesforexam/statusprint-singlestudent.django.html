@@ -1,0 +1,12 @@
+{% load i18n %}
+{% with studentstatus.relatedstudent.user as user %}
+    {% if user.devilryuserprofile.full_name %}
+        <span class="fullname">{{ user.devilryuserprofile.full_name }}</span>
+    {% endif %}
+    <span class="username">({{ studentstatus.relatedstudent.user.username }})</span>
+{% endwith %}
+{% if studentstatus.qualifies %}
+    <span class="label label-success">{% trans "Yes" %}</span>
+{% else %}
+    <span class="label label-warning">{% trans "No" %}</span>
+{% endif %}
