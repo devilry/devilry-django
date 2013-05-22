@@ -176,7 +176,7 @@ class StatusView(View):
     def _create_passing_relatedstudentids_map(self, status):
         out = {}
         for qualifies in status.students.filter(qualifies=True):
-            out[str(qualifies.relatedstudent.id)] = True
+            out[str(qualifies.relatedstudent_id)] = True
         return out
 
     def _serialize_status(self, status, includedetails=True):
@@ -225,9 +225,11 @@ class StatusView(View):
         self._permissioncheck(period)
 
         statusQry = period.qualifiedforexams_status.all()
-        if len(statusQry) == 0:
+        if statusQry.count() == 0:
             raise ErrorResponse(statuscodes.HTTP_404_NOT_FOUND,
                 {'detail': 'The period has no statuses'})
+        statusQry = statusQry.select_related(
+                'period', 'user', 'user__devilryuserprofile')
 
         grouper = GroupsGroupedByRelatedStudentAndAssignment(period)
         out = self._serialize_period(period)
