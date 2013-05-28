@@ -80,7 +80,8 @@ def autodb():
     Run ``remove_db``, ``syncdb`` and ``bin/django_dev.py dev_autodb -v2``
     """
     reset_db()
-    local('bin/django_dev.py dev_autodb -v2')
+    local('bin/django_test.py dev_autodb -v2')
+    local('bin/django_dev.py rebuild_index')
 
 
 def _gzip_file(infile):
