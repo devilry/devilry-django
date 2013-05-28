@@ -1,3 +1,11 @@
+/*
+
+## Events
+
+``new_mathjax_math``
+    Fired each time mathjax has completed loading math.
+
+*/
 Ext.application({
     name: 'devilry_student',
     appFolder: DevilrySettings.DEVILRY_STATIC_URL + '/devilry_student/app',
@@ -40,6 +48,13 @@ Ext.application({
         this.dashboard_url = DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_student/';
         this._createViewport();
         this._setupRoutes();
+        if(window.DevilrySettings.DEVILRY_ENABLE_MATHJAX) {
+            MathJax.Hub.Register.MessageHook("New Math", Ext.bind(this._onNewMathJaxMath, this));
+        }
+    },
+
+    _onNewMathJaxMath: function(message) {
+        this.fireEvent('new_mathjax_math', message);
     },
 
     _createViewport: function() {
