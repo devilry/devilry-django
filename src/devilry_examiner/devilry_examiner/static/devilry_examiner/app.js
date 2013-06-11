@@ -25,6 +25,7 @@ Ext.application({
     ],
 
     controllers: [
+        'DashboardController'
     ],
 
     refs: [{
