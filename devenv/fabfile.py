@@ -12,6 +12,7 @@ def bootstrap():
     Runs ``virtualenv venv && venv/bin/python ../bootstrap.py && bin/buildout && bin/fab postbootstrap``.
     """
     local('virtualenv venv')
-    local('venv/bin/python ../bootstrap.py')
+    local('venv/bin/pip install distribute==0.6.45')
+    local('venv/bin/python ../bootstrap.py -d')
     local('bin/buildout')
     local('bin/fab postbootstrap')
