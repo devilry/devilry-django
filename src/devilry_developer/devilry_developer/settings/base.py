@@ -36,6 +36,7 @@ INSTALLED_APPS += [
     'devserver',
 
     'devilry_examiner',
+    'devilry_rest',
     'simple_rest',
 
     # Not apps, but here for the Django test system to discover them:
