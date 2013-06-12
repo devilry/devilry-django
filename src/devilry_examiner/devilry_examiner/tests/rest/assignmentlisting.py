@@ -15,12 +15,20 @@ class TestRestAssignmentListing(TestCase):
                                       #'duck4000:admin(adminone,admintwo,singleadmin)'])
         self.client = RestClient()
 
-    def _listas(self, username, **data):
-        self.client.login(username=username, password='test')
+
+    def _get(self, **data):
         return self.client.rest_get(reverse('devilry_examiner-rest-assignmentlisting'), **data)
 
-    def test_list(self):
+    def _getas(self, username, **data):
+        self.client.login(username=username, password='test')
+        return self._get(**data)
+
+    def test_get(self):
         self.testhelper.create_user('examiner1')
-        content, response = self._listas('examiner1')
+        content, response = self._getas('examiner1')
         self.assertEquals(response.status_code, 200)
         self.assertEquals(content, ['Hello', 'world'])
+
+    def test_get_noauth(self):
+        content, response = self._get()
+        self.assertEquals(response.status_code, 401)
