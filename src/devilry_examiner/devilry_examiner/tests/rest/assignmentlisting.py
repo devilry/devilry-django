@@ -1,5 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+import time
+from urllib import urlencode
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.rest_testclient import RestClient
@@ -32,3 +34,31 @@ class TestRestAssignmentListing(TestCase):
     def test_get_noauth(self):
         content, response = self._get()
         self.assertEquals(response.status_code, 401)
+
+
+    #def _put(self, getdata, data):
+        #url = reverse('devilry_examiner-rest-assignmentlisting')
+        #url = '{}?{}'.format(url, urlencode(getdata))
+        #print url
+        #return self.client.rest_put(url, data)
+
+    #def test_secret_key_auth(self):
+        #from devilry_rest.auth import calculate_signature
+        #import json
+
+        #getdata = {
+                #'somearg': 'A',
+                #'_auth_public_key': 'abc123',
+                #'_auth_timestamp': int(time.mktime(time.gmtime()))
+        #}
+        #bodydata = {'somedata': 'hello'}
+
+        #signature = calculate_signature(
+                #secret_key='test123',
+                #getdata=getdata,
+                #request_body=json.dumps(bodydata))
+        #getdata.update({
+            #'_auth_signature': signature,
+            #})
+        #content, response = self._put(getdata, bodydata)
+        #self.assertEquals(response.status_code, 401)

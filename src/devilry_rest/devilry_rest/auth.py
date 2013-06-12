@@ -3,14 +3,19 @@ import hashlib
 from datetime import datetime
 from simple_rest.auth.decorators import request_passes_test
 from simple_rest.utils.decorators import wrap_object
+#from django.contrib.auth.models import User
 
 
 
 
-#def get_secret_key(request, *args, **kwargs):
-    # TODO:
-    # return request.user.secret_key
-    #return 'test'
+def get_secret_key(request, *args, **kwargs):
+    public_key = request.GET.get('_auth_public_key')
+    if public_key:
+        #user = User.objects.get(public_key=public_key)
+        #return user.secret_key
+        return 'test123'
+    else:
+        return None
 
 
 def authentication_required(obj):
@@ -20,7 +25,9 @@ def authentication_required(obj):
     """
     def test_func(request, *args, **kwargs):
         #secret_key = get_secret_key(request, *args, **kwargs)
-        #return validate_signature(request, secret_key) or request.user.is_authenticated()
+        #if secret_key:
+            #return validate_signature(request, secret_key)
+        #else:
         return request.user.is_authenticated()
 
     decorator = request_passes_test(test_func)
@@ -28,15 +35,26 @@ def authentication_required(obj):
 
 
 
-def calculate_signature(key, data, timestamp):
+def calculate_signature(secret_key, getdata, request_body):
     """
-    Calculates the signature for the given request data.
+    Calculates the signature for the given request ``getdata`` and
+    ``request_body``.
+
+    Sort QUERYSTRING (``getdata``) alphabetically by key, and join all key
+    value pairs into one long string. Then append the ``request_body``. This
+    is the message sent to HMAC.
+
+    Generate a signature using HMAC with ``secret_key`` as the ``key``,
+    the message as the data and SHA512 as the hash function. The hexdigested
+    output is the signature.
     """
     # Construct the message from the timestamp and the data in the request
-    message = str(timestamp) + ''.join("%s%s" % (k,v) for k,v in sorted(data.items()))
+    message = '{}{}{}'.format(
+            ''.join("{}{}".format(k,v) for k, v in sorted(getdata.iteritems())),
+            request_body)
 
     # Calculate the signature (HMAC SHA512) according to RFC 2104
-    signature = hmac.HMAC(str(key), message, hashlib.sha512).hexdigest()
+    signature = hmac.HMAC(str(secret_key), message, hashlib.sha512).hexdigest()
 
     return signature
 
@@ -48,23 +66,18 @@ def validate_signature(request, secret_key):
     Validates the signature associated with the given request.
     """
 
-    # Extract the request parameters according to the HTTP method
-    data = request.GET.copy()
-    if request.method != 'GET':
-        message_body = getattr(request, request.method, {})
-        data.update(message_body)
+    getdata = request.GET.copy()
 
     # Make sure the request contains a signature
-    if data.get('sig', False):
-        sig = data['sig']
-        del data['sig']
+    if getdata.get('_auth_signature', False):
+        signature = getdata['_auth_signature']
+        del getdata['_auth_signature']
     else:
         return False
 
     # Make sure the request contains a timestamp
-    if data.get('t', False):
-        timestamp = int(data.get('t', False))
-        del data['t']
+    if getdata.get('_auth_timestamp', False):
+        timestamp = int(getdata.get('_auth_timestamp', False))
     else:
         return False
 
@@ -74,7 +87,8 @@ def validate_signature(request, secret_key):
         return False
 
     # Make sure the signature is valid
-    return sig == calculate_signature(secret_key, data, timestamp)
+    request_body = request.raw_post_data
+    return signature == calculate_signature(secret_key, getdata, request_body)
 
 
 

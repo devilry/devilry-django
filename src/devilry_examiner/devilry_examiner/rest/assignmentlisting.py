@@ -11,3 +11,8 @@ class AssignmentListing(Resource):
     def get(self, request, **kwargs):
         data = ['Hello', 'world']
         return data
+
+    #@RESTfulResponse()
+    #def put(self, request, **kwargs):
+        #data = ['Hello', 'world']
+        #return data
