@@ -17,11 +17,6 @@ Ext.define('devilry_subjectadmin.controller.guides.Base', {
             scope: this,
             beforeroute: this._onBeforeRoute
         });
-        this.control({
-            'viewport guide-createnewassignment': {
-                render: this.onRender
-            }
-        });
     },
 
     _onBeforeRoute: function() {

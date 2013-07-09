@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-22 23:43+0200\n"
+"POT-Creation-Date: 2013-05-01 20:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: static/devilry_subjectadmin/app.js:293
+#: static/devilry_subjectadmin/app.js:294
 msgid "Route not found"
 msgstr "Siden finnes ikke"
 
-#: static/devilry_subjectadmin/app.js:308
+#: static/devilry_subjectadmin/app.js:309
 #: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:36
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:11
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:22
@@ -30,7 +30,7 @@ msgstr "Siden finnes ikke"
 msgid "All my %(subjects_term)s"
 msgstr "Alle mine %(subjects_term)s"
 
-#: static/devilry_subjectadmin/app.js:309
+#: static/devilry_subjectadmin/app.js:310
 #: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:37
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:12
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:23
@@ -38,6 +38,7 @@ msgstr "Alle mine %(subjects_term)s"
 #: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:13
 #: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:28
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:28
+#: static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:28
 #: static/devilry_subjectadmin/app/view/subject/ListAll.js:30
 msgid "subjects"
 msgstr ""
@@ -198,6 +199,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:191
 #: static/devilry_subjectadmin/app/view/gradeeditor/Edit.js:31
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:15
+#: static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:15
 #: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:11
 #: static/devilry_subjectadmin/app/view/managestudents/DynamicLoadMenu.js:17
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:107
@@ -405,6 +407,12 @@ msgstr "Slett {something}"
 #: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:29
 msgid "Rename {something}"
 msgstr "Endre navn på {something}"
+
+#: static/devilry_subjectadmin/app/controller/guides/QualifiedForFinalExams.js:9
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:59
+#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:129
+msgid "Qualified for final exams"
+msgstr "Kan gå opp til eksamen"
 
 #: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:369
 msgid "Failed to load assignment"
@@ -874,6 +882,7 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:121
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:27
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:76
+#: static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:27
 #: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:81
 #: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:91
 msgid "subject"
@@ -1461,7 +1470,11 @@ msgstr ""
 "Tar deg gjennom alle stegene som trengs for å lage en hvilken som helst type "
 "oppgave (elektronisk, papir, eksamen, ...)."
 
-#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:64
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:60
+msgid "Takes you through selecting students that qualify for final exams."
+msgstr "Tar deg gjennom å velge studentene som kan gå opp til eksamen."
+
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:68
 msgid ""
 "Click your username in the header of the page, and see under the Help-"
 "heading."
@@ -1469,7 +1482,7 @@ msgstr ""
 "Klikk på brukernavnet ditt på toppen av siden, og se under overskriften "
 "\"Hjelp\"."
 
-#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:68
+#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:72
 msgid "More guides and help"
 msgstr "Flere guider og mer hjelp"
 
@@ -1821,6 +1834,7 @@ msgstr ""
 "karakter, har Devilry en pluginarkitektur for karaktersystemer."
 
 #: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:20
+#: static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:20
 msgid ""
 "Select an active {subject_term} from the list at the top of the left side of "
 "this page."
@@ -1891,6 +1905,36 @@ msgstr ""
 "Denne guiden lukkes når du klikker Lag ny oppgave. På toppen av neste side "
 "vil du få en link som lar deg raskt opprette en oppgave til med de samme "
 "innstillingene som du brukte på denne oppgaven."
+
+#: static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:23
+msgid ""
+"For {subjects_term} where you only have admin rights for selected "
+"assignments, those assignments will be listed. If you only have assignments "
+"in your list, you do not have the required rights to select students that "
+"qualify for final exams."
+msgstr ""
+"På {subjects_term} der du kun har administrator-rettigheter på utvalgte "
+"oppgaver, vil bare oppgavene listes. Hvis du kun har oppgaver i din liste, "
+"har du ikke de nødvendige rettighetene for å velge studenter som kan gå opp "
+"til avsluttende eksamen."
+
+#: static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:34
+msgid ""
+"Click the <em>Qualified for final exams</em>-link near the bottom of the "
+"page."
+msgstr "Klikk på linken <em>Kan gå opp til eksamen</em> nær bunnen av siden."
+
+#: static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:37
+msgid ""
+"On the next page this guide will disappear, and a wizard guiding you through "
+"the required steps will begin. If you, or another admin, have already "
+"selected students that qualify for final exams, you will see the results of "
+"that selection instead of beginning the wizard."
+msgstr ""
+"På neste side vil denne guiden forsvinne, og en ny guide som tar deg gjennom "
+"de påkrevde stegene vil begynne. Hvis du, eller en annen admin, allerede har "
+"valgt studentene som kan gå opp til eksamen, vil du se resultatet av det "
+"valget istedenfor å begynne en ny guide."
 
 #: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:25
 msgid "Step {current} of {total}"
@@ -3004,10 +3048,6 @@ msgstr "Rediger og vis tilknyttet informasjon"
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:124
 msgid "Overview of all results"
 msgstr "Oversikt over alle resultater"
-
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:129
-msgid "Qualified for final exams"
-msgstr "Kan gå opp til eksamen"
 
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:155
 msgid ""

@@ -8,6 +8,7 @@ Ext.define('devilry_subjectadmin.controller.GuideSystem', {
 
     requires: [
         'devilry_subjectadmin.view.guides.CreateNewAssignment',
+        'devilry_subjectadmin.view.guides.QualifiedForFinalExams',
         'devilry_subjectadmin.view.guidesystem.Pointer'
     ],
 

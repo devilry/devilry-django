@@ -54,6 +54,10 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
                 xtype: 'guide-createnewassignment',
                 title: gettext('Create new assignment'),
                 description: gettext('Takes you through creating any kind of assignment (electronic, paper, exam, ...).')
+            }, {
+                xtype: 'guide-qualifiedforfinalexams',
+                title: gettext('Qualified for final exams'),
+                description: gettext('Takes you through selecting students that qualify for final exams.')
             }]
         }, {
             xtype: 'box',

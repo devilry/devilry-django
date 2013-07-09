@@ -70,7 +70,8 @@ Ext.application({
         'ExaminerStatsController',
 
         'GuideSystem',
-        'guides.CreateNewAssignment'
+        'guides.CreateNewAssignment',
+        'guides.QualifiedForFinalExams'
     ],
 
     refs: [{

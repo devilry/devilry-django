@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 12:59+0200\n"
+"POT-Creation-Date: 2013-05-01 20:41+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -111,7 +111,7 @@ msgstr "Ingen plugins tilgjengelig"
 
 #: static/devilry_qualifiesforexam/app/view/selectplugin/QualifiesForExamSelectPlugin.js:31
 msgid "How do students qualify for final exams?"
-msgstr "Hvordan kvalifiserer studenter til avsluttende eksamen?"
+msgstr "Hvordan kvalifisere studenter til avsluttende eksamen?"
 
 #: static/devilry_qualifiesforexam/app/view/selectplugin/QualifiesForExamSelectPlugin.js:42
 msgid ""
@@ -204,8 +204,7 @@ msgstr "Kan gå opp til avsluttende eksamen - oppsummering"
 #: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:30
 msgid ""
 "Each {subject_term} in the list below has one of the following statuses:"
-msgstr ""
-"Hvert {subject_term} i listen nedenfor har en av følgende statuser:"
+msgstr "Hvert {subject_term} i listen nedenfor har en av følgende statuser:"
 
 #: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:32
 msgid "Ready for export"

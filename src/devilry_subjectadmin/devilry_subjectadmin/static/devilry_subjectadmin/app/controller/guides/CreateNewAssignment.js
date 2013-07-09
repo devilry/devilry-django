@@ -20,6 +20,9 @@ Ext.define('devilry_subjectadmin.controller.guides.CreateNewAssignment', {
     init: function() {
         this.callParent(arguments);
         this.control({
+            'viewport guide-createnewassignment': {
+                render: this.onRender
+            },
             'viewport dashboard allactivewhereisadminlist': {
                 render: this.ifActiveInterceptor(this.onFirstStep)
             },
