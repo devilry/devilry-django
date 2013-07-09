@@ -316,7 +316,7 @@ class TestAddDeliveryUI(StudentSeleniumTestCase):
         self._browseToAddDelivery(self.testhelper.sub_p1_a1_g1.id)
         self.waitForCssSelector('.devilry_extjsextras_alertmessage')
         self.assertEquals(self.selenium.find_element_by_css_selector('.devilry_extjsextras_alertmessage').text.strip(),
-                          'Error\nCan not add deliveries on closed groups.')
+                'Error: Can not add deliveries on closed groups.')
 
     def test_add_delivery_no_deadline(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
@@ -324,4 +324,4 @@ class TestAddDeliveryUI(StudentSeleniumTestCase):
         self._browseToAddDelivery(self.testhelper.sub_p1_a1_g1.id)
         self.waitForCssSelector('.devilry_extjsextras_alertmessage')
         self.assertEquals(self.selenium.find_element_by_css_selector('.devilry_extjsextras_alertmessage').text.strip(),
-                          'Error\nCan not add deliveries on a group without a deadline.')
+                'Error: Can not add deliveries on a group without a deadline.')

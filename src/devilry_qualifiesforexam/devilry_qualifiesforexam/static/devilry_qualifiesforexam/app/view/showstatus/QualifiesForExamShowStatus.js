@@ -110,8 +110,11 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
                         ui: 'footer',
                         items: [{
                             xtype: 'button',
-                            scale: 'medium',
-                            text: gettext('Change status'),
+                            scale: 'large',
+                            html: [
+                                '<i class="icon-edit"></i> ',
+                                gettext('Change status')
+                            ].join(''),
                             menu: [{
                                 text: gettext('Retract - change the status to "Not ready for export"'),
                                 hidden: true,
@@ -120,6 +123,17 @@ Ext.define('devilry_qualifiesforexam.view.showstatus.QualifiesForExamShowStatus'
                                 text: gettext('Update - re-run the qualified for final exams wizard'),
                                 itemId: 'updateButton'
                             }]
+                        }, {
+                            xtype: 'box',
+                            cls: 'bootstrap',
+                            hidden: true,
+                            itemId: 'printLinkBox',
+                            tpl: [
+                                '<a  href="{printstatusurl}" class="btn btn-inverse btn-large" target="_blank">',
+                                    '<i class="icon-print icon-white"></i> ',
+                                    gettext('Print'),
+                                '</a>'
+                            ]
                         }]
                     }
                 }]

@@ -11,6 +11,7 @@ Ext.application({
     requires: [
         'Ext.layout.container.Column',
         'Ext.form.field.ComboBox',
+        'Ext.layout.container.Border',
         'devilry_header.Header',
         'devilry_header.Breadcrumbs'
     ],

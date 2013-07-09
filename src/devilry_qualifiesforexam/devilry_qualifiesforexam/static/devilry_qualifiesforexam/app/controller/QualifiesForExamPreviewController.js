@@ -132,7 +132,11 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamPreviewControlle
     },
 
     _onBack:function () {
-        window.history.go(-3);
+        if(Ext.isIE) {
+            window.history.go(-2);
+        } else {
+            window.history.go(-3);
+        }
     }
 });
 

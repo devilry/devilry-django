@@ -31,6 +31,9 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
         ref: 'detailsGrid',
         selector: 'statusdetailsgrid'
     }, {
+        ref: 'printLinkBox',
+        selector: 'showstatus #printLinkBox'
+    }, {
         ref: 'retractButton',
         selector: 'showstatus #retractButton'
     }, {
@@ -131,6 +134,12 @@ Ext.define('devilry_qualifiesforexam.controller.QualifiesForExamShowStatusContro
         };
         Ext.apply(data, status);
         this.getSummary().update(data);
+        if(status.status !== 'notready') {
+            this.getPrintLinkBox().show();
+            this.getPrintLinkBox().update({
+                printstatusurl: devilry_qualifiesforexam.utils.UrlLookup.showstatus_print(status.id)
+            });
+        }
     },
 
     _setupGrid:function () {

@@ -35,6 +35,10 @@ Ext.define('devilry_student.controller.GroupInfo', {
     }],
 
     init: function() {
+        this.application.addListener({
+            scope: this,
+            new_mathjax_math: this._onNewMathJaxMath
+        });
         this.control({
             'viewport groupinfo #deadlinesContainer': {
                 render: this._onRender
@@ -323,5 +327,11 @@ Ext.define('devilry_student.controller.GroupInfo', {
         if(window.DevilrySettings.DEVILRY_ENABLE_MATHJAX) {
             MathJax.Hub.Queue(["Typeset", MathJax.Hub, component.el.id]);
         }
+    },
+
+    _onNewMathJaxMath: function(message) {
+        //var script = MathJax.Hub.getJaxFor(message[1]).SourceElement();
+        //console.log(message.join(" ")+": '"+script.text+"'");
+        // TODO: Re-render the view.
     }
 });

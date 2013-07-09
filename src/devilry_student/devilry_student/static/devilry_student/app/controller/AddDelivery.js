@@ -2,7 +2,8 @@ Ext.define('devilry_student.controller.AddDelivery', {
     extend: 'Ext.app.Controller',
 
     requires: [
-        'Ext.window.MessageBox'
+        'Ext.window.MessageBox',
+        'Ext.form.field.Checkbox'
     ],
 
     views: [

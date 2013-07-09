@@ -14,6 +14,7 @@ Ext.application({
         'Ext.container.Viewport',
         'Ext.layout.container.Border',
         'Ext.layout.container.Column',
+        'Ext.form.field.ComboBox',
         'devilry_header.Header',
         'devilry_extjsextras.FloatingAlertmessageList'
     ],
@@ -28,27 +29,34 @@ Ext.application({
     }],
 
     launch: function() {
-        this.viewport = Ext.create('Ext.container.Viewport', {
-            xtype: 'container',
-            layout: 'border',
-            items: [{
-                xtype: 'devilryheader',
-                region: 'north',
-                navclass: 'subjectadmin'
-            }, {
+        if(window.location.href.match(/^.+\/devilry_qualifiesforexam_select\/$/)) {
+            this.viewport = Ext.create('Ext.container.Viewport', {
+                xtype: 'box',
+                html: 'ExtJS build view. Only used to help the ExtJS builder find all files needed to build the app.'
+            });
+        } else {
+            this.viewport = Ext.create('Ext.container.Viewport', {
                 xtype: 'container',
-                region: 'center',
-                cls: 'devilry_subtlebg',
-                layout: 'fit',
-                padding: 20,
+                layout: 'border',
                 items: [{
-                    xtype: 'floatingalertmessagelist',
-                    itemId: 'appAlertmessagelist'
+                    xtype: 'devilryheader',
+                    region: 'north',
+                    navclass: 'subjectadmin'
                 }, {
-                    xtype: 'selectqualifiedstudentsview'
+                    xtype: 'container',
+                    region: 'center',
+                    cls: 'devilry_subtlebg',
+                    layout: 'fit',
+                    padding: 20,
+                    items: [{
+                        xtype: 'floatingalertmessagelist',
+                        itemId: 'appAlertmessagelist'
+                    }, {
+                        xtype: 'selectqualifiedstudentsview'
+                    }]
+                    
                 }]
-                
-            }]
-        });
+            });
+        }
     }
 });

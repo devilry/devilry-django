@@ -25,7 +25,7 @@ Ext.define('devilry_subjectadmin.view.guidesystem.GuideView', {
             tpl: gettext('Step {current} of {total}')
         }, {
             xtype: 'container',
-            padding: 10,
+            padding: Ext.isIE? '10 30 10 10': 10,
             layout: 'fit',
             itemId: 'body'
         }]

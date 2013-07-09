@@ -1,13 +1,24 @@
 {% extends "devilry_theme/printbase.django.html" %}
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block title %}
     {{ status.period.get_path }} - {% trans "Qualifies for final exams" %}
 {% endblock %}
 {% block head-post %}
     <script type="text/javascript">
+
+        function onSortByChange() {
+            var sortform = document.getElementById('sortform');
+            sortform.submit();
+        }
         window.onload = function(){
-            window.print();
+            var sortbyfield = document.getElementById('sortby-field')
+            if(sortbyfield.addEventListener) {
+                sortbyfield.addEventListener('change', onSortByChange)
+            } else { // IE 8
+                sortbyfield.attachEvent('onchange', onSortByChange)
+            }
         };
     </script>
 {% endblock %}
@@ -17,36 +28,34 @@
         {{ status.period.get_path }}
     </h1>
     <p>{% trans "Qualifies for final exams" %}</p>
-    <table class="table table-striped table-bordered table-condensed">
-        <thead>
-            <tr>
-                <th>
-                    {% trans "Student" %}
-                    <small class="muted">({% blocktrans %}Ordered by username{% endblocktrans %})</small>
-                </th>
-                <th>{% trans "Qualifies for exam?" %}</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="pull-right hidden-print">
+        {% crispy form %}
+    </div>
+    <button class="btn btn-primary btn-large hidden-print" onclick="window.print()">
+        <i class="icon-print icon-white"></i>
+        {% trans "Print" %}
+    </button>
+    <div style="clear: both;">
+        <h2>{% trans "Qualified for final exams" %}</h2>
+        <ul>
             {% for studentstatus in studentstatuses %}
-                <tr class="{{ studentstatus.qualifies|yesno:"success,warning" }}">
-                    <td>
-                        {% with studentstatus.relatedstudent.user as user %}
-                            {% if user.get_profile.full_name %}
-                                {{ user.get_profile.full_name }}
-                            {% endif %}
-                            ({{ studentstatus.relatedstudent.user.username }})
-                        {% endwith %}
-                    </td>
-                    <td style="width: 160px;">
-                        {% if studentstatus.qualifies %}
-                            <strong>{% trans "Yes" %}</strong>
-                        {% else %}
-                            <em>{% trans "No" %}</em>
-                        {% endif %}
-                    </td>
-                </tr>
+                {% if studentstatus.qualifies %}
+                    <li>
+                        {% include "devilry_qualifiesforexam/statusprint-singlestudent.django.html" %}
+                    </li>
+                {% endif %}
             {% endfor %}
-        </tbody>
-    </table>
+        </ul>
+
+        <h2>{% trans "NOT qualified for final exams" %}</h2>
+        <ul>
+            {% for studentstatus in studentstatuses %}
+                {% if not studentstatus.qualifies %}
+                    <li>
+                        {% include "devilry_qualifiesforexam/statusprint-singlestudent.django.html" %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
 {% endblock %}

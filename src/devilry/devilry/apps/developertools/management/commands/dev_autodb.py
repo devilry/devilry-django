@@ -43,7 +43,7 @@ good_students_usernames = get_usernames(good_students)
 
 
 
-rendered_view_good = """
+rendered_view_good = r"""
 <p>Very good. Please keep the quality of your deliveries at this level for the rest of the assignments.</p>
 
 <h1>This is a heading</h1>
@@ -62,7 +62,7 @@ rendered_view_good = """
 <p>Math example:</p>
 
 $mathblock$
-^3/_7
+\frac{d}{dx}\left( \int_{0}^{x} f(u)\,du\right)=f(x)
 $/mathblock$
 """
 
@@ -119,12 +119,18 @@ class Command(BaseCommand):
         self._setTagsFor(group, username)
         return path, group
 
+    def _addFirstDeadline(self, group):
+        from devilry.apps.core.models import Deadline
+        deadline = Deadline(assignment_group=group, deadline=group.parentnode.first_deadline)
+        deadline.full_clean()
+        deadline.save()
+
     def _addBadGroups(self, periodpath, assignments, anotherTryVerdict, failedVerdict):
         for groupnum, names in enumerate(bad_students):
             username, fullname = names
             for assignment in assignments:
                 path, group = self._createGroup(periodpath, assignment, 'badgroup', groupnum, username)
-                self.testhelper.add_to_path(path + '.d1:ends(7)')
+                self._addFirstDeadline(group)
                 since_pubishingtime = datetime.now() - group.parentnode.publishing_time
                 if since_pubishingtime.days >= 8:
                     self.testhelper.add_delivery(path, {'bad.py': ['print ', 'bah']},
@@ -145,7 +151,7 @@ class Command(BaseCommand):
             username, fullname = names
             for assignment in assignments:
                 path, group = self._createGroup(periodpath, assignment, 'mediumgroup', groupnum, username)
-                self.testhelper.add_to_path(path + '.d1:ends(7)')
+                self._addFirstDeadline(group)
 
                 since_pubishingtime = datetime.now() - group.parentnode.publishing_time
                 if since_pubishingtime.days >= 8:
@@ -174,7 +180,7 @@ class Command(BaseCommand):
             username, fullname = names
             for assignment in assignments:
                 path, group = self._createGroup(periodpath, assignment, 'goodgroup', groupnum, username)
-                self.testhelper.add_to_path(path + '.d1:ends(7)')
+                self._addFirstDeadline(group)
 
                 since_pubishingtime = datetime.now() - group.parentnode.publishing_time
                 if since_pubishingtime.days >= 8:
@@ -227,6 +233,7 @@ class Command(BaseCommand):
         for assignment in period.assignments.all():
             logging.info('Setting first_deadline on %s', assignment)
             assignment.first_deadline = assignment.publishing_time + timedelta(days=days_after_pubtime)
+            assignment.first_deadline = assignment.first_deadline.replace(hour=15, minute=0, second=0)
             assignment.save()
 
     def create_duck1100(self):
