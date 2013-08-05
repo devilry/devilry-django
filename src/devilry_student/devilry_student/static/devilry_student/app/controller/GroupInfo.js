@@ -24,6 +24,9 @@ Ext.define('devilry_student.controller.GroupInfo', {
         ref: 'centerContainer',
         selector: 'viewport groupinfo #centerContainer'
     }, {
+        ref: 'notStudentOnPeriodBox',
+        selector: 'viewport groupinfo #notStudentOnPeriodBox'
+    }, {
         ref: 'deadlinesContainer',
         selector: 'viewport groupinfo #deadlinesContainer'
     }, {
@@ -73,6 +76,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
         this._populateDeadlinesContainer(groupInfoRecord.get('deadlines'), groupInfoRecord.get('active_feedback'));
         this._populateMetadata(groupInfoRecord);
         this._populateTitleBox(groupInfoRecord);
+        this._handleNotStudentOnPeriod(groupInfoRecord);
 
         var delivery_id = this.getOverview().delivery_id;
         if(delivery_id !== undefined) {
@@ -104,6 +108,22 @@ Ext.define('devilry_student.controller.GroupInfo', {
             title: gettext('Error'),
             message: message
         });
+    },
+
+    _handleNotStudentOnPeriod: function(groupInfoRecord) {
+        //var is_relatedstudent = groupInfoRecord.get('is_relatedstudent');
+        var is_relatedstudent = false;
+        if(is_relatedstudent) {
+            return;
+        }
+        var subject = groupInfoRecord.get('breadcrumbs').subject;
+        var period = groupInfoRecord.get('breadcrumbs').period;
+        this.getNotStudentOnPeriodBox().update({
+            moreinfourl: 'http://devilry.org',
+            subject: subject.long_name,
+            period: period.long_name
+        });
+        this.getNotStudentOnPeriodBox().show();
     },
 
     _populateDeadlinesContainer: function(deadlines, active_feedback) {
