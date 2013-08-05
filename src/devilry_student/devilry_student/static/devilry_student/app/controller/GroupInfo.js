@@ -119,9 +119,8 @@ Ext.define('devilry_student.controller.GroupInfo', {
         var subject = groupInfoRecord.get('breadcrumbs').subject;
         var period = groupInfoRecord.get('breadcrumbs').period;
         this.getNotStudentOnPeriodBox().update({
-            moreinfourl: 'http://devilry.org',
-            subject: subject.long_name,
-            period: period.long_name
+            moreinfourl: window.DevilrySettings.DEVILRY_NOT_RELATEDSTUDENT_ON_PERIOD_URL,
+            subject: subject.short_name.toLocaleUpperCase()
         });
         this.getNotStudentOnPeriodBox().show();
     },
