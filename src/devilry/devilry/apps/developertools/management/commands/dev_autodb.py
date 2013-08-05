@@ -5,6 +5,7 @@ import logging
 from datetime import datetime, timedelta
 from django.core.management.base import BaseCommand
 from django.core import management
+from optparse import make_option
 
 from devilry.utils.command import setup_logging, get_verbosity
 
@@ -106,8 +107,18 @@ def days_in_future(days):
 
 class Command(BaseCommand):
     help = 'Create a database of static data for demo purposes.'
+    option_list = BaseCommand.option_list + (
+       make_option('--no-groups',
+           action='store_true',
+           dest='no_groups',
+           default=False,
+           help='Do not add groups (or deliveries). This really speeds up autodb, and is useful when generating data some other way.'),
+   )
+
 
     def _createGroup(self, periodpath, assignment, groupname, groupnum, username):
+        if self.no_groups:
+            return
         examiner = self._getExaminerFor(username)
         path = '{periodpath}.{assignment}.{groupname}{groupnum}'.format(**vars())
         extras = ':candidate({username}):examiner({examiner})'.format(**vars())
@@ -126,6 +137,8 @@ class Command(BaseCommand):
         deadline.save()
 
     def _addBadGroups(self, periodpath, assignments, anotherTryVerdict, failedVerdict):
+        if self.no_groups:
+            return
         for groupnum, names in enumerate(bad_students):
             username, fullname = names
             for assignment in assignments:
@@ -147,6 +160,8 @@ class Command(BaseCommand):
                                                  rendered_view=rendered_view_failed)
 
     def _addMediumGroups(self, periodpath, assignments, anotherTryVerdict, okVerdict, do_not_finish=[]):
+        if self.no_groups:
+            return
         for groupnum, names in enumerate(medium_students):
             username, fullname = names
             for assignment in assignments:
@@ -176,6 +191,8 @@ class Command(BaseCommand):
                                                      rendered_view=rendered_view_ok)
 
     def _addGoodGroups(self, periodpath, assignments, goodVerdict):
+        if self.no_groups:
+            return
         for groupnum, names in enumerate(good_students):
             username, fullname = names
             for assignment in assignments:
@@ -191,6 +208,8 @@ class Command(BaseCommand):
 
 
     def _addNonElectronicFeedbacks(self, periodpath, assignments, students, group_prefix, feedbacks):
+        if self.no_groups:
+            return
         for groupnum, names in enumerate(students):
             username, fullname = names
             for assignmentnum, assignment in enumerate(assignments):
@@ -445,6 +464,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         from devilry.apps.core.testhelper import TestHelper
         verbosity = get_verbosity(options)
+        self.no_groups = options['no_groups']
         setup_logging(verbosity)
         logging.info('Running manage.py flush')
         management.call_command('flush', verbosity=0, interactive=False)
