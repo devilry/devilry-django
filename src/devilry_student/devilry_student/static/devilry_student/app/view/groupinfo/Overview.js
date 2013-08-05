@@ -28,7 +28,7 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
         cls: 'notStudentOnPeriodBox',
         tpl: [
             '<a href="{moreinfourl}" target="_blank">',
-                gettext('You are not registered as a student on {subject} {period}. Click this box for more information.'),
+                gettext('You are not registered as a student on {subject}. Click this box for more information.'),
             '</a>'
         ]
     }, {
