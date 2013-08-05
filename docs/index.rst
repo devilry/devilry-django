@@ -17,6 +17,9 @@ Common topics (see Table of contents for all topics)
 Core
 ----------------------------------------------------------------------
 
+
+.. module:: devilry.apps.core
+
 * **devilry.apps.core.models:** :ref:`API <devilry.apps.core.models>`
 * :ref:`userobj`
 * :ref:`devilry.apps.core.deliverystore <devilry.apps.core.deliverystore>`
@@ -39,26 +42,29 @@ How to document Devilry
 * :ref:`readthedocs` --- If you need to debug build errors from readthedocs.org.
 
 
-Plugin development
+Extending Devilry
 ----------------------------------------------------------------------
 
-* **The basics:** :ref:`plugins`
-* **Grade editors:** :ref:`Overview <apps.gradeeditors>`
+* :doc:`extend_devilry`
+* **Plugins:** :ref:`plugins`, :ref:`Overview <apps.gradeeditors>`,
+  :doc:`Qualifies for exam <devilry_qualifiesforexam>`.
+* **Apps**: Read the `Django docs <https://www.djangoproject.com/>`_.
 
 
 RESTful API
 ----------------------------------------------------------------------
 
-* **Old rest APIs**: See the old docs: http://devilry.org/devilry-django/dev/
-* **New rest APIs**: Uses Djangorestframework, which generates docs that can be browsed. We are missing a
-  listing of the URLs of all our new APIs, so please contact us via Github if you need help finding them.
+* **Old rest APIs**: See the old docs: http://devilry.org/devilry-django/dev/.
+  These are deprecated and will be remove soon.
+* **New rest APIs**: We are missing a listing of the URLs of all our new APIs,
+  so please contact us (see http://devilry.org) if you need help finding them.
 
 
 Apps
 ----------------------------------------------------------------------
 
 * :ref:`devilry_subjectadmin`
-* :ref:`devilry_qualifiesforexam`
+* :doc:`devilry_qualifiesforexam`
 * :doc:`devilry_search`
 
 .. note:: The apps listing is incomplete.
@@ -86,6 +92,8 @@ Table of contents
     buildout
     testsuite
     testhelper
+    extend_devilry
+    create_app
     plugins
 
     devilry_subjectadmin
@@ -93,12 +101,7 @@ Table of contents
     devilry_search
 
     apps.gradeeditors
-    utils.assignmentgroup
-    utils.ordereddict
-    utils.delivery_collection
-    utils.groupnodes
-    utils.devilry_email
-    utils.groups_groupedby_relatedstudent_and_assignment
+    devilry.utils
 
     readthedocs
     i18n

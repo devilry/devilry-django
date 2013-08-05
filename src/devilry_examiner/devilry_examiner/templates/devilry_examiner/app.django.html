@@ -1,0 +1,8 @@
+{% extends "devilry_theme/apptemplate.django.html" %}
+{% load static %}
+
+{% block head_preapp %}
+    {#<link rel="stylesheet" type="text/css" href="{% static "devilry_examiner/resources/stylesheets/devilry_examiner.css" %}" />#}
+    {#{% include "markup/mathjaxheader.django.html" %}#}
+    <script type="text/javascript" src="{% url devilry_examiner_i18n %}"></script>
+{%  endblock %}

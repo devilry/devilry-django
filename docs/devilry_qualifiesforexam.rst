@@ -1,8 +1,8 @@
-.. _devilry_qualifiesforexam:
-
-============================================
+===============================
 :mod:`devilry_qualifiesforexam`
-============================================
+===============================
+
+.. module:: devilry_qualifiesforexam
 
 Database models, APIs and UI for qualifying students for final exams.
 
