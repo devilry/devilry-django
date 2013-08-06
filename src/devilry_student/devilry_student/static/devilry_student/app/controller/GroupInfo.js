@@ -113,15 +113,16 @@ Ext.define('devilry_student.controller.GroupInfo', {
     _handleNotStudentOnPeriod: function(groupInfoRecord) {
         var is_relatedstudent = groupInfoRecord.get('is_relatedstudent_on_period');
         if(is_relatedstudent) {
-            return;
+            this.getNotStudentOnPeriodBox().addClass('notStudentOnPeriodBox-false');
+        } else {
+            var subject = groupInfoRecord.get('breadcrumbs').subject;
+            var period = groupInfoRecord.get('breadcrumbs').period;
+            this.getNotStudentOnPeriodBox().update({
+                moreinfourl: window.DevilrySettings.DEVILRY_NOT_RELATEDSTUDENT_ON_PERIOD_URL,
+                subject: subject.short_name.toLocaleUpperCase()
+            });
+            this.getNotStudentOnPeriodBox().show();
         }
-        var subject = groupInfoRecord.get('breadcrumbs').subject;
-        var period = groupInfoRecord.get('breadcrumbs').period;
-        this.getNotStudentOnPeriodBox().update({
-            moreinfourl: window.DevilrySettings.DEVILRY_NOT_RELATEDSTUDENT_ON_PERIOD_URL,
-            subject: subject.short_name.toLocaleUpperCase()
-        });
-        this.getNotStudentOnPeriodBox().show();
     },
 
     _populateDeadlinesContainer: function(deadlines, active_feedback) {
