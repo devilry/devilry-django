@@ -1,0 +1,1 @@
+from .rest.assignmentlisting import TestRestAssignmentListing

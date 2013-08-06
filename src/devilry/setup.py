@@ -16,5 +16,6 @@ setup(
                         #'flup',
                         #'PyYAML',
                         'django-celery',
+                        'devilry_rest', # NOTE: We only need this until all modules importing from ``devilry.utils.rest*`` is updated
                         'gunicorn']
 )

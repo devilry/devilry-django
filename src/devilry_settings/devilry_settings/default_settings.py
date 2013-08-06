@@ -87,6 +87,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry_qualifiesforexam_approved',
                   'devilry_qualifiesforexam_points',
                   'devilry_qualifiesforexam_select',
+                  'devilry_mathjax'
                  ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
@@ -162,7 +163,7 @@ DEVILRY_DEFAULT_GRADEEDITOR='approved'
 DEVILRY_STATIC_URL = '/static' # Must not end in / (this means that '' is the server root)
 DEVILRY_THEME_URL = DEVILRY_STATIC_URL + '/theme/themes/devilry'
 DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjs4'
-DEVILRY_MATHJAX_URL = 'https://d3eoax9i5htok0.cloudfront.net/mathjax/latest/MathJax.js'
+DEVILRY_MATHJAX_URL = '{}/devilry_mathjax/MathJax.js'.format(DEVILRY_STATIC_URL)
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
 DEVILRY_HELP_URL = 'https://devilry-userdoc.readthedocs.org'
 

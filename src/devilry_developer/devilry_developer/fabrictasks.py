@@ -75,12 +75,18 @@ def autogen_extjsmodels():
     local('bin/django_dev.py dev_autogen_extjsmodels')
 
 @task
-def autodb():
+def autodb(no_groups=False):
     """
     Run ``remove_db``, ``syncdb`` and ``bin/django_dev.py dev_autodb -v2``
+
+    :param no_groups: Use ``autodb:no_groups=yes`` to run dev_autodb with --no-groups.
     """
+    no_groups = no_groups == 'yes'
+    autodb_args = ''
+    if no_groups:
+        autodb_args = '--no-groups'
     reset_db()
-    local('bin/django_test.py dev_autodb -v2')
+    local('bin/django_test.py dev_autodb -v2 {}'.format(autodb_args))
     local('bin/django_dev.py rebuild_index')
 
 
