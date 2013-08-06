@@ -1,0 +1,39 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-08-06 17:44+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: views.py:15
+msgid "Devilry - Student"
+msgstr ""
+
+#: rest/add_delivery.py:23
+msgid ""
+"Your active deadline, {deadline} has expired, and the administrators of "
+"{assignment} have configured HARD deadlines. This means that you can not add "
+"more deliveries to this assignment before an administrator have extended "
+"your deadline."
+msgstr ""
+"Din aktive innleveringsfrist, {deadline}, har gått ut, og administratorene "
+"av {assignment} har konfigurert HARDE innleveringsfrister. Det betyr at du "
+"ikke kan legge til flere innlevering på denne oppgaven før en administrator "
+"eller retter har gitt deg en ny innleveringsfrist."
+
+#: rest/add_delivery.py:173
+msgid "Filename must be unique"
+msgstr "Filnavnet må være unikt"

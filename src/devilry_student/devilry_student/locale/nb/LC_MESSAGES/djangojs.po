@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-05 16:16+0200\n"
+"POT-Creation-Date: 2013-08-06 17:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -452,8 +452,12 @@ msgstr ""
 "du kan ikke legge til flere %(deliveries_term)s."
 
 #: static/devilry_student/app/view/groupinfo/Overview.js:31
-msgid "You are not registered as a student on {subject}. Click this box for more information."
-msgstr "Du er ikke registrert som student på {subject}. Klikk på boksen for mer informasjon"
+msgid ""
+"You are not registered as a student on {subject}. Click this box for more "
+"information."
+msgstr ""
+"Du er ikke registrert som student på {subject}. Klikk på boksen for mer "
+"informasjon"
 
 #: static/devilry_student/app/view/groupinfo/Overview.js:63
 msgid "Loading"

@@ -1,6 +1,6 @@
 from datetime import datetime
 import django.dispatch
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.db import IntegrityError
 from django.conf import settings
@@ -120,8 +120,9 @@ class AddDeliveryView(View):
         if assignment.deadline_handling == Assignment.DEADLINEHANDLING_HARD:
             if self.deadline.deadline < datetime.now():
                 self._raise_error_response(400,
-                        DEADLINE_EXPIRED_MESSAGE.format(deadline=self.deadline.deadline.isoformat(),
-                        assignment=unicode(assignment)))
+                        DEADLINE_EXPIRED_MESSAGE.format(
+                            deadline=self.deadline.deadline.isoformat(),
+                            assignment=unicode(assignment)))
 
     def render(self, response):
         httpresponse = super(AddDeliveryView, self).render(response)

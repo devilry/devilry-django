@@ -6,6 +6,7 @@ def makemessages(langcode):
            '-i "static/devilry_student/app-all.js" '
            '-i "static/devilry_student/all-classes.js"'
           ).format(langcode))
+    local(('../../../devenv/bin/django_dev.py makemessages -l {0}').format(langcode))
 
 
 @task

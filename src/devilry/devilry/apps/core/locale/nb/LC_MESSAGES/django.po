@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-09-12 17:42+0200\n"
+"POT-Creation-Date: 2013-08-06 17:44+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,15 +18,26 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: models/assignment.py:176
-msgid "First deadline cannot be before publishing time."
-msgstr "Først innleveringsfrist kan ikke være før publiseringstidspunktet."
+#: models/assignment.py:181
+msgid ""
+"Submission date can not be before the publishing time ({publishing_time}) of "
+"the assignment."
+msgstr ""
 
-#: models/assignment.py:178
-msgid "First deadline must be within it's {period_term} ({start_time} - {end_time})."
-msgstr "Første innleveringsfrist må være innenfor sitt {period_term} ({start_time} - {end_time})."
+#: models/assignment.py:184
+#, fuzzy
+msgid ""
+"Submission date must be within it's {period_term} ({start_time} - "
+"{end_time})."
+msgstr ""
+"Første innleveringsfrist må være innenfor sitt {period_term} ({start_time} - "
+"{end_time})."
 
-#: models/assignment.py:196
+#: models/assignment.py:185
+msgid "period"
+msgstr ""
+
+#: models/assignment.py:203
 msgid ""
 "The publishing time, {publishing_time}, is invalid. It must be within it's "
 "period, {period}, which lasts from {start_time} to {end_time}"
@@ -58,14 +69,6 @@ msgid ""
 "visible to students."
 msgstr ""
 
-#: models/delivery.py:15
-msgid ""
-"Your active deadline, {deadline} has expired, and the administrators of "
-"{assignment} have configured HARD deadlines. This means that you can not add "
-"more deliveries to this assignment before an administrator have extended "
-"your deadline."
-msgstr ""
-
 #: models/node.py:86
 msgid "A node can not be it's own parent."
 msgstr ""
@@ -87,6 +90,9 @@ msgstr ""
 msgid "A node can not be the child of one of it's own children."
 msgstr ""
 
-#: models/period.py:135
+#: models/period.py:109
 msgid "Start time must be before end time."
 msgstr ""
+
+#~ msgid "First deadline cannot be before publishing time."
+#~ msgstr "Først innleveringsfrist kan ikke være før publiseringstidspunktet."
