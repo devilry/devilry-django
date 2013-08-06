@@ -1,7 +1,7 @@
 import json
 from django.test import TestCase
 from StringIO import StringIO
-
+from datetime import datetime, timedelta
 from devilry.apps.core.testhelper import TestHelper
 #from devilry.utils.rest_testclient import RestClient
 from django.test.client import Client
@@ -150,3 +150,24 @@ class TestRestAddDeliveryView(TestCase):
         self.assertEquals(response.status_code, 400)
         self.assertEquals(response['content-type'], 'text/html')
         self.assertEquals(content['detail'], 'Filename must be unique')
+
+    def test_hard_deadline(self):
+        
+        # Soft deadlines
+        fp = FakeFile('hello.txt', 'Hello world')
+
+        deadline = self.group.get_active_deadline()
+        deadline.deadline = datetime.now() - timedelta(days=1)
+        deadline.save()
+
+        response, content = self._postas('student1', {'file_to_add': fp})
+        self.assertEquals(response.status_code, 200)
+
+        # Hard deadlines
+        assignment = self.group.parentnode
+        assignment.deadline_handling = 1
+        assignment.save()
+
+        response, content = self._postas('student1', {'file_to_add': fp})
+        self.assertEquals(response.status_code, 400)
+
