@@ -179,5 +179,5 @@ class AddDeliveryView(View):
     def _raise_error_response(self, statuscode, message):
         if self.CONTENT['respond_with_200_status_on_error']:
             statuscode = 200 # This is required for IE
-        raise ErrorResponse(statuscode, {'detail': message,
+        raise ErrorResponse(statuscode, {'detail': unicode(message),
                                          'success': False})
