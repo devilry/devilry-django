@@ -89,6 +89,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         assignment. This is metadata that the UI can use where it is
         natural.
     """
+
+    DEADLINEHANDLING_SOFT = 0
+    DEADLINEHANDLING_HARD = 1
+
     class Meta:
         app_label = 'core'
         unique_together = ('short_name', 'parentnode')

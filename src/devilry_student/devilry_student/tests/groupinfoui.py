@@ -48,10 +48,6 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.assertEquals(self.selenium.find_element_by_css_selector('.candidatesblock').text.strip(), '')
         self.assertEquals(self.selenium.find_element_by_css_selector('.examinersblock h3').text.strip(), 'Examiner')
         self.assertEquals(self.selenium.find_element_by_css_selector('.examinersblock small').text.strip(), 'No examiner')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock h3').text.strip(), 'Grade')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock small').text.strip(), 'No feedback')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock h3').text.strip(), 'Status')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .label-success').text.strip(), 'Open')
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.deliveriesblock li')), 0)
         self.assertEquals(self.selenium.find_element_by_css_selector('.adddeliveryblock').text.strip(), '')
 
@@ -107,9 +103,7 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.login('student1')
         self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
         self.waitForCssSelector('.devilry_student_groupmetadata')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock h3').text.strip(), 'Status')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .label-important').text.strip(), 'Deadline expired')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.adddeliveryblock').text.strip(), '')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.adddeliveryblock .label-important').text.strip(), 'Deadline expired')
 
     def test_hard_deadline_not_expired(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1).d1:ends(1)')
@@ -122,7 +116,7 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
         self.waitForCssSelector('.devilry_student_groupmetadata')
         self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock h3').text.strip(), 'Status')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .label-success').text.strip(), 'Open')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .statuspara-waiting-for-deliveries').text.strip(), 'Waiting for deliveries, or for deadline to expire')
         self.assertEquals(self.selenium.find_element_by_css_selector('.adddeliveryblock .add_delivery_link').text.strip(), 'Add delivery')
 
     def _expand_deadline(self, deadline):
@@ -137,10 +131,9 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         delivery = self.testhelper.add_delivery('sub.p1.a1.g1', self.fileinfo)
         self.login('student1')
         self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
-        self.waitForCssSelector('.devilry_student_groupmetadata')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock small').text.strip(), 'No feedback')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .label-success').text.strip(), 'Open')
-        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.deliveriesblock li')), 1)
+        self.waitForCssSelector('.devilry_student_groupmetadata .statusblock')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.devilry_student_groupmetadata .statusblock .statuspara-waiting-for-feedback').text.strip(), 'Waiting for feedback')
+        self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_student_groupmetadata .deliveriesblock li')), 1)
 
         deadlinepanel = self._expand_deadline(self.testhelper.sub_p1_a1_g1_d1)
         deliverypanel = deadlinepanel.find_elements_by_css_selector('.devilry_student_groupinfo_delivery')[0]
@@ -156,15 +149,14 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.login('student1')
         self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
         self.waitForCssSelector('.devilry_student_groupmetadata')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock .success').text.strip(), 'Passed')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock .text-success').text.strip(), 'Passed')
         self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock small').text.strip(), '(A)')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .label-warning').text.strip(), 'Closed')
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.deliveriesblock li')), 1)
 
         deadlinepanel = self._expand_deadline(self.testhelper.sub_p1_a1_g1_d1)
         deliverypanel = deadlinepanel.find_elements_by_css_selector('.devilry_student_groupinfo_delivery')[0]
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock h4').text.strip(), 'Grade')
-        self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock .success').text.strip(), 'Passed')
+        self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock .text-success').text.strip(), 'Passed')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock small').text.strip(), '(A)')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.feedback_rendered_view').text.strip(), 'Good stuff')
 
@@ -177,15 +169,14 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.login('student1')
         self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
         self.waitForCssSelector('.devilry_student_groupmetadata')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock .danger').text.strip(), 'Failed')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock .text-warning').text.strip(), 'Failed')
         self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock small').text.strip(), '(F)')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .label-warning').text.strip(), 'Closed')
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.deliveriesblock li')), 1)
 
         deadlinepanel = self._expand_deadline(self.testhelper.sub_p1_a1_g1_d1)
         deliverypanel = deadlinepanel.find_elements_by_css_selector('.devilry_student_groupinfo_delivery')[0]
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock h4').text.strip(), 'Grade')
-        self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock .danger').text.strip(), 'Failed')
+        self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock .text-warning').text.strip(), 'Failed')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock small').text.strip(), '(F)')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.feedback_rendered_view').text.strip(), 'Bad stuff')
 
@@ -238,9 +229,8 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.login('student1')
         self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
         self.waitForCssSelector('.devilry_student_groupmetadata')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock .danger').text.strip(), 'Failed')
+        self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock .text-warning').text.strip(), 'Failed')
         self.assertEquals(self.selenium.find_element_by_css_selector('.gradeblock small').text.strip(), '(F)')
-        self.assertEquals(self.selenium.find_element_by_css_selector('.statusblock .label-warning').text.strip(), 'Closed')
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.deliveriesblock li')), 1)
 
         deadlinepanel = self._expand_deadline(self.testhelper.sub_p1_a1_g1_d1)
@@ -250,12 +240,29 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
             self.assertEquals(len(deliverypanel.find_elements_by_css_selector(selector)), 0)
 
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock h4').text.strip(), 'Grade')
-        self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock .danger').text.strip(), 'Failed')
+        self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock .text-warning').text.strip(), 'Failed')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.gradeblock small').text.strip(), '(F)')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.rendered_view').text.strip(), 'Bad stuff')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.activefeedbackblock h4').text.strip(), 'Active feedback')
 
+    def test_if_not_relatedstudent_on_period(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+        self.login('student1')
+        self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
+        self.waitForCssSelector('.devilry_student_groupmetadata')
+        element = self.waitForAndFindElementByCssSelector('.notStudentOnPeriodBox')
+        self.assertTrue(element.is_displayed())
+        self.assertEquals(element.text.strip(), 'You are not registered as a student on SUB. Click this box for more information.')
+        self.waitForDisplayed(element)
 
+    def test_if_relatedstudent_on_period(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+        self.testhelper.sub_p1.relatedstudent_set.create(user=self.testhelper.student1)
+        self.login('student1')
+        self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
+        self.waitForCssSelector('.devilry_student_groupmetadata')
+        element = self.waitForAndFindElementByCssSelector('.notStudentOnPeriodBox-false')
+        self.assertFalse(element.is_displayed())
 
 class TestAddDeliveryUI(StudentSeleniumTestCase):
     def setUp(self):

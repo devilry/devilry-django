@@ -21,6 +21,16 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
     style: 'background: none !important;',
 
     items: [{
+        xtype: 'box',
+        region: 'north',
+        hidden: true,
+        itemId: 'notStudentOnPeriodBox',
+        cls: 'notStudentOnPeriodBox',
+        tpl: [
+            '<a href="{moreinfourl}" target="_blank">',
+                gettext('You are not registered as a student on {subject}. Click this box for more information.'),
+            '</a>'
+        ]
     }, {
         xtype: 'container',
         region: 'west',

@@ -73,6 +73,7 @@ DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 ## - http://django_seleniumhelpers.readthedocs.org/
 #SKIP_SELENIUMTESTS = True
 SELENIUM_BROWSER = 'Firefox' # Default selenium browser
+SELENIUM_DEFAULT_TIMEOUT = 8
 
 
 PASSWORD_HASHERS = (
