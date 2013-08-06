@@ -1,6 +1,4 @@
-import json
 import django.dispatch
-from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 from django import forms
 from django.db import IntegrityError
