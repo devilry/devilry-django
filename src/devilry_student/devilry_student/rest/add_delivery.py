@@ -1,13 +1,16 @@
+from datetime import datetime
 import django.dispatch
 from django.utils.translation import ugettext as _
 from django import forms
 from django.db import IntegrityError
+from django.conf import settings
 from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource
 from djangorestframework.response import ErrorResponse
 
 from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
 from .helpers import IsPublishedAndCandidate
@@ -16,6 +19,9 @@ from .helpers import IsPublishedAndCandidate
 #: Signal used to signal that a delivery has been successfully completed
 successful_delivery_signal = django.dispatch.Signal(providing_args=["delivery"])
 
+
+DEFAULT_DEADLINE_EXPIRED_MESSAGE = _('Your active deadline, {deadline} has expired, and the administrators of {assignment} have configured HARD deadlines. This means that you can not add more deliveries to this assignment before an administrator have extended your deadline.')
+DEADLINE_EXPIRED_MESSAGE = getattr(settings, 'DEADLINE_EXPIRED_MESSAGE', DEFAULT_DEADLINE_EXPIRED_MESSAGE)
 
 
 class AddDeliveryForm(forms.Form):
@@ -81,11 +87,15 @@ class AddDeliveryView(View):
         self.group = self._get_or_notfounderror(AssignmentGroup, group_id)
 
         if not self.group.is_open:
-            raise self._raise_error_response(400, 'Can not add deliveries on closed groups.')
+            self._raise_error_response(400, 'Can not add deliveries on closed groups.')
+
+        if not self.group.is_open:
+            self._raise_error_response(400, 'Can not add deliveries on closed groups.')
 
         self.deadline = self.group.get_active_deadline()
-        self.delivery, created_delivery = self._create_or_get_delivery()
+        self._validate_hard_deadlines()
 
+        self.delivery, created_delivery = self._create_or_get_delivery()
         filename = None
         if 'file_to_add' in request.FILES:
             filename = self._add_file()
@@ -103,6 +113,15 @@ class AddDeliveryView(View):
                   'finished': finished,
                   'success': True} # NOTE: ``success`` is included for ExtJS compatibility
         return result
+
+
+    def _validate_hard_deadlines(self):
+        assignment = self.deadline.assignment_group.parentnode
+        if assignment.deadline_handling == Assignment.DEADLINEHANDLING_HARD:
+            if self.deadline.deadline < datetime.now():
+                self._raise_error_response(400,
+                        DEADLINE_EXPIRED_MESSAGE.format(deadline=self.deadline.deadline.isoformat(),
+                        assignment=unicode(assignment)))
 
     def render(self, response):
         httpresponse = super(AddDeliveryView, self).render(response)
