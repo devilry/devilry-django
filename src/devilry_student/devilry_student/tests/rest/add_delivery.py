@@ -2,6 +2,7 @@ import json
 from django.test import TestCase
 from StringIO import StringIO
 from datetime import datetime, timedelta
+from devilry.apps.core.models import Assignment
 from devilry.apps.core.testhelper import TestHelper
 #from devilry.utils.rest_testclient import RestClient
 from django.test.client import Client
@@ -165,7 +166,7 @@ class TestRestAddDeliveryView(TestCase):
 
         # Hard deadlines
         assignment = self.group.parentnode
-        assignment.deadline_handling = 1
+        assignment.deadline_handling = Assignment.DEADLINEHANDLING_HARD
         assignment.save()
 
         response, content = self._postas('student1', {'file_to_add': fp})
