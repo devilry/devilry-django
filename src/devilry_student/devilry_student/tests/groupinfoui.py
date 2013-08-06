@@ -245,16 +245,24 @@ class TestGroupInfoUI(StudentSeleniumTestCase):
         self.assertEquals(deliverypanel.find_element_by_css_selector('.rendered_view').text.strip(), 'Bad stuff')
         self.assertEquals(deliverypanel.find_element_by_css_selector('.activefeedbackblock h4').text.strip(), 'Active feedback')
 
-    def test_if_relatedstudent_on_period(self):
+    def test_if_not_relatedstudent_on_period(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
         self.login('student1')
         self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
         self.waitForCssSelector('.devilry_student_groupmetadata')
-        self.waitForAndFindElementByCssSelector('.notStudentOnPeriodBox')
         element = self.waitForAndFindElementByCssSelector('.notStudentOnPeriodBox')
         self.assertTrue(element.is_displayed())
         self.assertEquals(element.text.strip(), 'You are not registered as a student on SUB. Click this box for more information.')
         self.waitForDisplayed(element)
+
+    def test_if_relatedstudent_on_period(self):
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
+        self.testhelper.sub_p1.relatedstudent_set.create(user=self.testhelper.student1)
+        self.login('student1')
+        self._browseToGroup(self.testhelper.sub_p1_a1_g1.id)
+        self.waitForCssSelector('.devilry_student_groupmetadata')
+        element = self.waitForAndFindElementByCssSelector('.notStudentOnPeriodBox-false')
+        self.assertFalse(element.is_displayed())
 
 class TestAddDeliveryUI(StudentSeleniumTestCase):
     def setUp(self):
