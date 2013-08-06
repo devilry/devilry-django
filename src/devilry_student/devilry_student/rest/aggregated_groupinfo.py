@@ -35,7 +35,7 @@ def pretty_filesize(num):
 class GroupResource(ModelResource, GroupResourceHelpersMixin):
     fields = ('id', 'name', 'is_open', 'candidates', 'deadlines', 'active_feedback',
               'deadline_handling', 'breadcrumbs', 'examiners', 'delivery_types',
-              'status', 'is_registrated')
+              'status', 'is_relatedstudent_on_period')
     model = AssignmentGroup
 
 
@@ -122,7 +122,7 @@ class GroupResource(ModelResource, GroupResourceHelpersMixin):
     def status(self, instance):
         return instance.get_status()
 
-    def is_registrated(self, instance):
+    def is_relatedstudent_on_period(self, instance):
         period = instance.parentnode.parentnode
         user = self.view.request.user
         return period.relatedstudent_set.filter(user=user).exists()

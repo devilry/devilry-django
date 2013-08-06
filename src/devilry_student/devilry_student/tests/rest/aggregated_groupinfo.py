@@ -33,14 +33,14 @@ class TestRestAggregatedGroupInfo(TestCase):
         self.assertEquals(set(content.keys()),
                           set(['id', 'name', 'is_open', 'candidates', 'examiners',
                                'deadlines', 'active_feedback', 'status',
-                               'deadline_handling', 'breadcrumbs', 'delivery_types', 'is_registrated']))
+                               'deadline_handling', 'breadcrumbs', 'delivery_types', 'is_relatedstudent_on_period']))
         self.assertEquals(content['id'], self.group.id)
         self.assertEquals(content['name'], 'g1')
         self.assertEquals(content['is_open'], True)
         self.assertEquals(content['deadline_handling'], 0)
         self.assertEquals(content['active_feedback'], None)
         self.assertEquals(content['delivery_types'], 0)
-        self.assertEquals(content['is_registrated'], False)
+        self.assertEquals(content['is_relatedstudent_on_period'], False)
 
     def test_candidates(self):
         content, response = self._getas('student1')
@@ -90,8 +90,8 @@ class TestRestAggregatedGroupInfo(TestCase):
                                         u'long_name': u'Sub',
                                         u'short_name': u'sub'}})
 
-    def test_is_registrated(self):
+    def test_is_relatedstudent_on_period(self):
         self.testhelper.sub_p1.relatedstudent_set.create(user=self.testhelper.student1)
         content, response = self._getas('student1')
-        registred = content['is_registrated']
+        registred = content['is_relatedstudent_on_period']
         self.assertEquals(registred, True)

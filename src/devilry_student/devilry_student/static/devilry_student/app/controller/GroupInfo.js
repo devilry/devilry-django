@@ -111,7 +111,7 @@ Ext.define('devilry_student.controller.GroupInfo', {
     },
 
     _handleNotStudentOnPeriod: function(groupInfoRecord) {
-        var is_relatedstudent = groupInfoRecord.get('is_registrated');
+        var is_relatedstudent = groupInfoRecord.get('is_relatedstudent_on_period');
         if(is_relatedstudent) {
             return;
         }
