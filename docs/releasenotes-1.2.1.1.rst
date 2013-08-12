@@ -2,8 +2,6 @@
 1.2.1.1 release notes
 ====================================
 
-.. warning:: This is incomplete because the version has not been released yet.
-
 
 ##############################
 Major changes
