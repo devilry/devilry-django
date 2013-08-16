@@ -41,10 +41,7 @@ Ext.define('devilry_student.view.browsegrouped.BrowseGrouped' ,{
                     '<tpl else>',
                         '<p class="alert">',
                             '<strong>', gettext('WARNING'), ':</strong> ',
-                            interpolate(gettext('You are not registered as a student on {parent.data.short_name}.{short_name}.'), {
-                                subject_term: gettext('subject'),
-                                period_term: gettext('period')
-                            }, true),
+                            gettext('You are not registered as a student on {parent.data.short_name}.{short_name}.'),
                         '</p>',
                     '</tpl>',
                     '<table class="table table-striped table-bordered table-hover">',
