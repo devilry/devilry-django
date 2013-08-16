@@ -41,7 +41,7 @@ Ext.define('devilry_student.view.browsegrouped.BrowseGrouped' ,{
                     '<tpl else>',
                         '<p class="alert">',
                             '<strong>', gettext('WARNING'), ':</strong> ',
-                            gettext('You are not registered as a student on {parent.data.short_name}.{short_name}.'),
+                            gettext('You are not registered as a student on {[this.getPeriodShortNameHack(parent)]}.{short_name}.'),
                         '</p>',
                     '</tpl>',
                     '<table class="table table-striped table-bordered table-hover">',
@@ -88,6 +88,20 @@ Ext.define('devilry_student.view.browsegrouped.BrowseGrouped' ,{
                 return Ext.String.format('#/group/{0}/{1}',
                     group.id,
                     group.feedback? group.feedback.delivery_id: '');
+            },
+            getPeriodShortNameHack: function(parentobjorarray) {
+                // WARNING: THIS IS A HACK/WORKAROUND
+                // This is a hack to work around an issue in Sencha
+                // Touch version 4.1. See:
+                // https://github.com/devilry/devilry-django/issues/436
+                //
+                // When we have updated to ExtJS 4.2.x, we should be able to
+                // go back to using ``{parent.data.short_name}``.
+                var parentobj = parentobjorarray;
+                if(Ext.isArray(parentobjorarray)) {
+                    parentobj = parentobjorarray[parentobjorarray.length-1];
+                }
+                return parentobj.data.short_name;
             },
             getFeedbackCls: function(feedback) {
                 return feedback.is_passing_grade? 'text-success': 'text-warning';
