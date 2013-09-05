@@ -32,8 +32,6 @@ INSTALLED_APPS += [
     'seleniumhelpers',
     'djangosenchatools',
     'devilry_sandbox',
-    'django_extensions',
-    'devserver',
 
     'devilry_examiner',
     'devilry_rest',
