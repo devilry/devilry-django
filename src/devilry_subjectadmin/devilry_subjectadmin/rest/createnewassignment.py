@@ -23,8 +23,9 @@ from .log import logger
 def _find_relatedexaminers_matching_tags(tags, relatedexaminers):
     examiners = []
     for relatedexaminer in relatedexaminers:
+        examinertags = relatedexaminer.tags.split(',')
         for tag in tags:
-            if relatedexaminer.tags and tag in relatedexaminer.tags:
+            if relatedexaminer.tags and tag in examinertags:
                 examiners.append(relatedexaminer.user)
                 break
     return examiners
