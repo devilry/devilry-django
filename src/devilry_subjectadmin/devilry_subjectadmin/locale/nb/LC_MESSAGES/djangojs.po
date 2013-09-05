@@ -554,7 +554,7 @@ msgstr "Detaljer"
 
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:138
 msgid "Hide details"
-msgstr "Sjul detaljer"
+msgstr "Skjul detaljer"
 
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:164
 msgid "Edit administrators"
@@ -1649,7 +1649,7 @@ msgstr "Vis ignorerte studenter i tabellen"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:35
 msgid "Hide ignored students in the table"
-msgstr "Sjul ignorerte studenter i tabellen"
+msgstr "Skjul ignorerte studenter i tabellen"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:40
 msgid "Edit/view students on the {period_term}"
@@ -2010,7 +2010,7 @@ msgid ""
 msgstr ""
 "Devilry støtter ikke innleveringsfrister på ikke-elektroniske oppgaver. For "
 "å unngå spesialhåndtering av ikke-elektroniske oppgaver, lagess NØYAKTIG EN "
-"sjult innleveringsfrist. Denne oppgaven er ikke-elektronisk, men den har mer "
+"skjult innleveringsfrist. Denne oppgaven er ikke-elektronisk, men den har mer "
 "enn en innleveringsfrist. Den mest sannsynlige årsaken er en tredjeparts "
 "integrasjon med Devilry som ikke håndterer ikke-elektroniske oppgaver "
 "korrekt, eller en feil i Devilry."
@@ -2563,7 +2563,7 @@ msgstr "Om rettere ..."
 #: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:58
 #: static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnSingle.js:61
 msgid "Hide help"
-msgstr "Sjul hjelp"
+msgstr "Skjul hjelp"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:102
 msgid ""

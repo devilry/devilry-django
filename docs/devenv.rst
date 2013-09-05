@@ -85,6 +85,10 @@ Setup the development virtualenv
    *distribute* into the environment. To use *distribute* you must
    explicitly add the *\-\-distribute* flag to the *virtualenv* command or you
    must set the VIRTUALENV_DISTRIBUTE environment variable.
+   
+.. note::
+   If you get any trouble with ncurses linking during installation, make sure you have the development version
+   of the ncurses library installed.
 
 Next steps
 =================================================================
