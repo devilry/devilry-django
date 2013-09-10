@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 from django.db import models
+from south.modelsinspector import add_introspection_rules
 
 import re
 
@@ -40,3 +41,11 @@ class LongNameField(models.CharField):
                 'This is the name visible to students.'))
         kw.update(kwargs)
         super(LongNameField, self).__init__(*args, **kw)
+
+
+add_introspection_rules([
+    ([ShortNameField], [], {}),
+], ["^devilry\.apps\.core\.models\.custom_db_fields\.ShortNameField"])
+add_introspection_rules([
+    ([LongNameField], [], {}),
+], ["^devilry\.apps\.core\.models\.custom_db_fields\.LongNameField"])
