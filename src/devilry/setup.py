@@ -13,6 +13,7 @@ setup(
                         'django-haystack',
                         'pysolr',
                         'httplib2',
+                        'South',
                         #'flup',
                         #'PyYAML',
                         'django-celery',

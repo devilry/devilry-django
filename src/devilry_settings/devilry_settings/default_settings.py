@@ -44,6 +44,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'gunicorn',
                   'extjs4',
                   'haystack',
+                  'south',
                   'celery_haystack',
 
                   'devilry.apps.core',
