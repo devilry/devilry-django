@@ -62,15 +62,6 @@ Ubuntu Linux
     $ sudo apt-get install fabric build-essential python-dev python-virtualenv
 
 
-Setup a buildout cache (optional)
-=================================================================
-
-You should setup your `buildout
-cache <https://github.com/devilry/devilry-django/wiki/Use-a-global-buildout-config-to-speed-up-bin-buildout>`_
-if you plan to do any development. This will make any up re-run of
-buildout (the dependency/build system we use).
-
-
 Setup the development virtualenv
 =================================================================
 ::
