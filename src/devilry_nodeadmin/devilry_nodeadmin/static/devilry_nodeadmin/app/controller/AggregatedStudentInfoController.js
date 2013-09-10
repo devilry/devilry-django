@@ -1,4 +1,4 @@
-Ext.define('devilry_examiner.controller.AggregatedStudentInfoController', {
+Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
     extend: 'Ext.app.Controller',
 
     views: [

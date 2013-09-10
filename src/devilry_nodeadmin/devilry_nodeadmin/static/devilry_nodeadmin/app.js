@@ -44,7 +44,7 @@ Ext.application({
         this.route.add( "", 'showDefault' );
         this.route.add( "/node/", 'showDefault' );
         this.route.add( "/node/:node_id", 'showChildren' );
-      this.route.add( "/aggstud/", 'showAggregatedStudentInfo' );
+      this.route.add( "/aggregatedstudentinfo/", 'showAggregatedStudentInfo' );
         this.route.start();
     },
 
@@ -106,7 +106,7 @@ Ext.application({
             this.setPrimaryContent({
             xtype: 'aggregatedstudentinfo'
         });
-  }
+  },
 
     //
 
