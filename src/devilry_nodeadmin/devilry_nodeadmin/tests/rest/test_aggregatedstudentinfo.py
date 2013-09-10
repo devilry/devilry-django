@@ -10,27 +10,28 @@ from devilry.utils.rest_testclient import RestClient
 class TestRestAggregatedStudentInfo(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
-        #self.testhelper.add(nodes='uni:admin(uniadmin)',
-                            #subjects=['duck2000:admin(adminone,admintwo):ln(Something fancy)',
-                                      #'duck3000',
-                                      #'duck1000:admin(adminone)',
-                                      #'duck4000:admin(adminone,admintwo,singleadmin)'])
         self.client = RestClient()
+        self.testhelper.add(nodes='uni:admin(uniadmin)',
+                            subjects=['sub'],
+                            periods=['p1:begins(-1)'],
+                            assignments=['a1'])
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2):examiner(examiner1).d1:ends(5)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2:ends(10)')
+        self.group = self.testhelper.sub_p1_a1_g1
 
 
-    def _get(self, **data):
-        return self.client.rest_get(reverse('devilry_examiner-rest-assignmentlisting'), **data)
+    def _get(self, id):
+        return self.client.rest_get(reverse('devilry_nodeadmin-aggregatedstudentinfo', kwargs={'id': id}))
 
-    def _getas(self, username, **data):
+    def _getas(self, username, id):
         self.client.login(username=username, password='test')
-        return self._get(**data)
+        return self._get(id)
 
     def test_get(self):
-        self.testhelper.create_user('examiner1')
-        content, response = self._getas('examiner1')
+        content, response = self._getas('uniadmin', self.testhelper.student1.id)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(content, ['Hello', 'world'])
 
     def test_get_noauth(self):
-        content, response = self._get()
+        content, response = self._get(self.testhelper.student1.id)
         self.assertEquals(response.status_code, 401)
