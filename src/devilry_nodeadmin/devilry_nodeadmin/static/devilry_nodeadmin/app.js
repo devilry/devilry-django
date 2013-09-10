@@ -30,7 +30,8 @@ Ext.application({
 
     controllers: [
         'NodeBrowserController',
-        'DashboardController'
+        'DashboardController',
+      'AggregatedStudentInfoController'
     ],
 
     refs: [{
@@ -43,6 +44,7 @@ Ext.application({
         this.route.add( "", 'showDefault' );
         this.route.add( "/node/", 'showDefault' );
         this.route.add( "/node/:node_id", 'showChildren' );
+      this.route.add( "/aggstud/", 'showAggregatedStudentInfo' );
         this.route.start();
     },
 
@@ -99,6 +101,12 @@ Ext.application({
             node_pk: node_pk
         });
     },
+
+  showAggregatedStudentInfo: function(routeInfo) {
+            this.setPrimaryContent({
+            xtype: 'aggregatedstudentinfo'
+        });
+  }
 
     //
 
