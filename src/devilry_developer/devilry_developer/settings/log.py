@@ -20,7 +20,7 @@ def create_logging_conf(logdir):
                 'class': 'logging.StreamHandler'
             },
             'allButExceptionTracebacks': {
-                'level': 'ERROR',
+                'level': 'DEBUG',
                 'formatter': 'verbose',
                 'class': 'logging.FileHandler',
                 'filename': join(logdir, 'all-but-exceptiontracebacks.devilry.log'),
@@ -29,7 +29,7 @@ def create_logging_conf(logdir):
                 'level': 'ERROR',
                 'formatter': 'verbose',
                 'class': 'logging.FileHandler',
-                'filename': join(logdir, 'db.devilry.log')
+                'filename': join(logdir, 'dberrors.devilry.log')
             },
             'dbdebugfile': { # Shows the SQL statements
                 'level': 'DEBUG',
@@ -71,6 +71,7 @@ def create_logging_conf(logdir):
             'django.db.backends': {
                 'handlers': ['allButExceptionTracebacks',
                              'dbfile',
+                             #'console', # Comment in to see SQL statements in the log
                              'dbdebugfile' # Not useful for production since SQL statement logging is disabled when DEBUG=False.
                             ],
                 'level': 'DEBUG',

@@ -1,4 +1,4 @@
-import json
+from urllib import urlencode
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from datetime import datetime
@@ -153,7 +153,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
                        subjects=['sub'],
                        periods=['p1'],
                        assignments=['a1'])
-        self.a1id = self.testhelper.sub_p1_a1.id
+        self.a1 = self.testhelper.sub_p1_a1
         self.testhelper.create_user('user1')
         self.testhelper.create_user('user2')
         self.testhelper.create_user('user3')
@@ -161,7 +161,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
 
     def test_update_group(self):
         self.assertEquals(AssignmentGroup.objects.all().count(), 0)
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1)
         self.assertEquals(manager.group.id, None)
         manager.update_group(name='Nametest', is_open=False)
         self.assertIsNotNone(manager.group.id)
@@ -169,18 +169,9 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         self.assertEquals(manager.group.is_open, False)
         self.assertEquals(AssignmentGroup.objects.all().count(), 1)
 
-    def test_existinggroup(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1')
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id, self.testhelper.sub_p1_a1_g1.id)
-        self.assertEquals(manager.group.id, self.testhelper.sub_p1_a1_g1.id)
-        with self.assertRaises(AssignmentGroup.DoesNotExist):
-            GroupManager(self.testhelper.notusedforanything, self.a1id, 10000000)
-        with self.assertRaises(AssignmentGroup.DoesNotExist):
-            GroupManager(self.testhelper.notusedforanything, 10000000, self.testhelper.sub_p1_a1_g1.id)
-
     def test_create_first_deadline_not_available(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1')
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id, self.testhelper.sub_p1_a1_g1.id)
+        manager = GroupManager(self.testhelper.notusedforanything, group=self.testhelper.sub_p1_a1_g1)
         self.assertEquals(manager.group.id, self.testhelper.sub_p1_a1_g1.id)
         manager.create_first_deadline_if_available()
         self.assertEquals(manager.group.deadlines.count(), 0)
@@ -190,7 +181,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         g1 = self.testhelper.sub_p1_a1_g1
         g1.parentnode.first_deadline = datetime(2005, 1, 1)
         g1.parentnode.save()
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id, g1.id)
+        manager = GroupManager(self.testhelper.notusedforanything, group=g1)
         self.assertEquals(manager.group.id, self.testhelper.sub_p1_a1_g1.id)
         manager.create_first_deadline_if_available()
         self.assertEquals(manager.group.deadlines.count(), 1)
@@ -201,7 +192,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
     #
 
     def test_update_examiners_create(self):
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1)
         manager.group.save()
         manager.update_examiners([self.create_examinerdict(username='user1')])
         examiners = manager.get_group_from_db().examiners.all()
@@ -218,14 +209,14 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
                           set([self.testhelper.user1.id, self.testhelper.user2.id]))
 
     def test_update_examiners_create_duplicate(self):
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1)
         manager.group.save()
         manager.group.examiners.create(user=self.testhelper.user1)
         with self.assertRaises(ValidationError):
             manager.update_examiners([self.create_examinerdict(username='user1')])
 
     def test_update_examiners_delete(self):
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1)
         manager.group.save()
         manager.group.examiners.create(user=self.testhelper.user1)
         manager.group.examiners.create(user=self.testhelper.user2)
@@ -234,7 +225,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         self.assertEquals(len(examiners), 0)
 
     def test_update_examiners_complex(self):
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1)
         manager.group.save()
         manager.group.examiners.create(user=self.testhelper.user1)
         manager.group.examiners.create(user=self.testhelper.user2)
@@ -253,7 +244,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
     #
 
     def test_update_candidates_create(self):
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1)
         manager.group.save()
         manager.update_candidates([self.create_candidatedict(username='user1')])
         candidates = manager.get_group_from_db().candidates.all()
@@ -271,7 +262,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
                           set([self.testhelper.user1.id, self.testhelper.user2.id]))
 
     def test_update_candidates_create_candidate_id(self):
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1)
         manager.group.save()
         manager.update_candidates([self.create_candidatedict(username='user1',
                                                              candidate_id='secret')])
@@ -280,7 +271,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
         self.assertEquals(created.candidate_id, 'secret')
 
     def test_update_candidates_create_duplicate_allowed(self):
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1)
         manager.group.save()
         created = manager.group.candidates.create(student=self.testhelper.user1)
         # Does not raise exception, event if they are the same user
@@ -291,7 +282,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
 
     def test_update_candidates_delete(self):
         superuser = self.testhelper.create_superuser('superuser')
-        manager = GroupManager(superuser, self.a1id)
+        manager = GroupManager(superuser, self.a1)
         manager.group.save()
         manager.group.candidates.create(student=self.testhelper.user1)
         manager.group.candidates.create(student=self.testhelper.user2)
@@ -301,7 +292,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
 
     def test_update_candidates_delete_as_nobody(self):
         nobody = self.testhelper.create_user('nobody')
-        manager = GroupManager(nobody, self.a1id)
+        manager = GroupManager(nobody, self.a1)
         manager.group.save()
         manager.group.candidates.create(student=self.testhelper.user1)
         manager.group.candidates.create(student=self.testhelper.user2)
@@ -310,7 +301,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
 
     def test_update_candidates_complex(self):
         superuser = self.testhelper.create_superuser('superuser')
-        manager = GroupManager(superuser, self.a1id)
+        manager = GroupManager(superuser, self.a1)
         manager.group.save()
         manager.group.candidates.create(student=self.testhelper.user1)
         manager.group.candidates.create(student=self.testhelper.user2)
@@ -328,7 +319,7 @@ class TestGroupManager(TestCase, GroupManagerTestMixin):
     #
 
     def test_update_tags(self):
-        manager = GroupManager(self.testhelper.notusedforanything, self.a1id)
+        manager = GroupManager(self.testhelper.notusedforanything, self.a1)
         manager.group.save()
         manager.update_tags([self.create_tagdict('mytag')])
         tags = manager.get_group_from_db().tags.all()
@@ -358,8 +349,11 @@ class TestGroupRest(TestCase, GroupManagerTestMixin):
         self.testhelper.create_superuser('grandma')
         self.a1id = self.testhelper.sub_p1_a1.id
 
-    def _geturl(self, assignment_id):
-        return '/devilry_subjectadmin/rest/group/{0}/'.format(assignment_id)
+    def _geturl(self, assignment_id, querystringParams=None):
+        url = '/devilry_subjectadmin/rest/group/{0}/'.format(assignment_id)
+        if querystringParams:
+            url = '{}?{}'.format(url, urlencode(querystringParams))
+        return url
 
     def _postas(self, username, assignment_id, data={}):
         self.client.login(username=username, password='test')
@@ -483,9 +477,9 @@ class TestGroupRest(TestCase, GroupManagerTestMixin):
     # PUT
     #
     #
-    def _putas(self, username, assignment_id, data={}):
+    def _putas(self, username, assignment_id, data={}, querystringParams={}):
         self.client.login(username=username, password='test')
-        return self.client.rest_put(self._geturl(assignment_id), data)
+        return self.client.rest_put(self._geturl(assignment_id, querystringParams), data)
 
     def _add_group(self, name, candidates, examiners):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate({candidates}):examiner({examiners})'.format(**vars()))
@@ -614,6 +608,76 @@ class TestGroupRest(TestCase, GroupManagerTestMixin):
                  'deadlines': 'should be ignored'}]
         content, response = self._putas('a1admin', self.a1id, data)
         self.assertEquals(response.status_code, 200)
+
+    def test_put_examinersonly(self):
+        group = self._add_group('g1', candidates='candidate2', examiners='examiner2')
+        self.assertEquals(group.name, 'g1')
+        self.assertEquals(group.is_open, True)
+        data = [{'id': group.id,
+                 'name': 'changed',
+                 'is_open': False,
+                 'examiners': [self.create_examinerdict(username='examiner1')],
+                 'candidates': [self.create_candidatedict(username='candidate1')],
+                 'tags': [self.create_tagdict('mytag')]}]
+        content, response = self._putas('a1admin', self.a1id, data, {
+            'examinersOnly': 'true'
+        })
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 1)
+        first = content[0]
+
+        self.assertEquals(first['name'], 'g1') #Unchanged
+        self.assertEquals(first['is_open'], True) #Unchanged
+
+        # Tags (unchanged)
+        self.assertEquals(len(first['tags']), 0)
+
+        # Examiners (changed)
+        self.assertEquals(len(first['examiners']), 1)
+        examiner = first['examiners'][0]
+        self.assertEquals(examiner['user']['id'], self.testhelper.examiner1.id)
+
+        ## Candidates (unchanged)
+        self.assertEquals(len(first['candidates']), 1)
+        candidate = first['candidates'][0]
+        self.assertEquals(candidate['user']['id'], self.testhelper.candidate2.id)
+
+
+    def test_put_tagsonly(self):
+        group = self._add_group('g1', candidates='candidate2', examiners='examiner2')
+        self.assertEquals(group.name, 'g1')
+        self.assertEquals(group.is_open, True)
+        data = [{'id': group.id,
+                 'name': 'changed',
+                 'is_open': False,
+                 'examiners': [self.create_examinerdict(username='examiner1')],
+                 'candidates': [self.create_candidatedict(username='candidate1')],
+                 'tags': [self.create_tagdict('mytag')]}]
+        content, response = self._putas('a1admin', self.a1id, data, {
+            'tagsOnly': 'true'
+        })
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(content), 1)
+        first = content[0]
+
+        self.assertEquals(first['name'], 'g1') #Unchanged
+        self.assertEquals(first['is_open'], True) #Unchanged
+
+        # Tags (changed)
+        self.assertEquals(len(first['tags']), 1)
+        tag = first['tags'][0]
+        self.assertEquals(tag['tag'], 'mytag')
+
+        # Examiners (unchanged)
+        self.assertEquals(len(first['examiners']), 1)
+        examiner = first['examiners'][0]
+        self.assertEquals(examiner['user']['id'], self.testhelper.examiner2.id)
+
+        ## Candidates (unchanged)
+        self.assertEquals(len(first['candidates']), 1)
+        candidate = first['candidates'][0]
+        self.assertEquals(candidate['user']['id'], self.testhelper.candidate2.id)
+
 
     #
     #

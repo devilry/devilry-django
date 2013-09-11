@@ -335,8 +335,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         this.manageStudentsController.notifyMultipleGroupsChange({
             scope: this,
             success: function() {
-                // TODO: Notify user about successs
+                // TODO: Notify user about success
             }
+        }, {
+            examinersOnly: true
         });
     },
 
@@ -377,6 +379,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             success: function() {
                 this._onRandomDistributeExaminersSuccess(resultsByExaminer);
             }
+        }, {
+            examinersOnly: true
         });
     },
     _onRandomDistributeExaminersSuccess: function(resultsByExaminer) {
@@ -411,6 +415,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             success: function() {
                 // TODO: Notify user about successs
             }
+        }, {
+            examinersOnly: true
         });
     },
 
@@ -423,7 +429,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
         Ext.Array.each(this.groupRecords, function(groupRecord) {
             groupRecord.set('examiners', []);
         }, this);
-        this.manageStudentsController.notifyMultipleGroupsChange();
+        this.manageStudentsController.notifyMultipleGroupsChange({
+        }, {
+            examinersOnly: true
+        });
     },
 
 
@@ -461,6 +470,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             scope: this,
             success: function() {
             }
+        }, {
+            tagsOnly: true
         });
     },
     _showTagsDefaultView: function() {
@@ -478,6 +489,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
             scope: this,
             success: function() {
             }
+        }, {
+            tagsOnly: true
         });
     },
 
@@ -491,6 +504,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.MultipleGroupsSelecte
     _onClearTagsConfirmed: function() {
         Ext.Array.each(this.groupRecords, function(groupRecord) {
             groupRecord.set('tags', []);
+        }, {
+            tagsOnly: true
         }, this);
         this.manageStudentsController.notifyMultipleGroupsChange();
     },

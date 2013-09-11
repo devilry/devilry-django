@@ -163,6 +163,7 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
     },
     _onGroupsProxyError: function(proxy, response, operation) {
         this._onProxyError(response, operation);
+        this._loadGroupsStore(); // NOTE: Required because a failed sync will have changed the client side groups, but the remote groups are unchanged.
     },
     _onRelatedStudentsProxyError: function(proxy, response, operation) {
         this._onProxyError(response, operation);
@@ -226,6 +227,11 @@ Ext.define('devilry_subjectadmin.controller.AddGroups', {
 
     _onLoadRelatedExaminersStoreSuccess: function() {
         this.getGroupsStore().setAssignment(this.assignmentRecord.get('id'));
+        this._loadGroupsStore();
+    },
+
+    _loadGroupsStore: function() {
+        this.getOverview().setLoading(true);
         this.getGroupsStore().load({
             scope: this,
             callback: function(records, operation) {

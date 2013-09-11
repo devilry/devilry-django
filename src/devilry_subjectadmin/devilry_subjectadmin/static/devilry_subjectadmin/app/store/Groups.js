@@ -15,6 +15,17 @@ Ext.define('devilry_subjectadmin.store.Groups', {
     },
 
 
+    setApiOptions: function(options) {
+        console.log(this.getProxy().extraParams);
+        var defaults = {
+            examinersOnly: undefined,
+            tagsOnly: undefined
+        };
+        options = Ext.merge({}, defaults, options);
+        Ext.apply(this.getProxy().extraParams, options);
+    },
+
+
     //
     //
     // Sorting

@@ -11,10 +11,11 @@ from os.path import abspath, dirname, join
 from {basemodule} import *
 
 basedir = abspath(dirname(__file__))
+logdir = join(basedir, 'log')
 MEDIA_ROOT = join(basedir, "filestore")
 DATABASES['default']['NAME'] = join(basedir, 'db.sqlite3')
 DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(basedir, 'deliverystorehier')
-LOGGING = create_logging_conf(basedir)
+LOGGING = create_logging_conf(logdir)
 """
 
 

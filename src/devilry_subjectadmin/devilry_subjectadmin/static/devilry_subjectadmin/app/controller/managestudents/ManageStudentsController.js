@@ -425,8 +425,8 @@ Ext.define('devilry_subjectadmin.controller.managestudents.ManageStudentsControl
     /** Used by related controllers (MultipleGroupsSelectedViewPlugin) to
      * notify this controller when multiple groups have changed, and needs to
      * be saved. */
-    notifyMultipleGroupsChange: function(callbackconfig) {
-        this._notifyGroupsChange(callbackconfig);
+    notifyMultipleGroupsChange: function(callbackconfig, apiOptions) {
+        this._notifyGroupsChange(callbackconfig, false, apiOptions);
     },
 
     /** Used by related controllers (SingleGroupSelectedViewPlugin) to notify this
@@ -471,8 +471,12 @@ Ext.define('devilry_subjectadmin.controller.managestudents.ManageStudentsControl
         }, true); // reloadOnError=true
     },
 
-    _notifyGroupsChange: function(callbackconfig, reloadOnError) {
+    _notifyGroupsChange: function(callbackconfig, reloadOnError, apiOptions) {
         this._maskListOfGroups();
+        if(Ext.isEmpty(apiOptions)) {
+            apiOptions = {};
+        }
+        this.getGroupsStore().setApiOptions(apiOptions);
         this.getGroupsStore().sync({
             scope: this,
             success: function(batch, options) {

@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.db.models import Q
 from django.db import transaction
 from django.db.models import Count
@@ -17,6 +16,7 @@ from devilry.apps.core.models.deliverytypes import NON_ELECTRONIC
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import AssignmentGroupTag
 from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import Assignment
 
 from .errors import ValidationErrorResponse
 from .errors import NotFoundError
@@ -194,14 +194,16 @@ class GroupSerializer(object):
 
 
 class GroupManager(object):
-    def __init__(self, user, assignment_id, group_id=None):
+    def __init__(self, user, assignment=None, group=None, createmode=False, usercache=None):
         self.user = user
-        self.assignment_id = assignment_id
-        if group_id:
-            self.group = AssignmentGroup.objects.get(parentnode_id=assignment_id,
-                                                     id=group_id)
+        self.createmode = createmode
+        self.usercache = usercache
+        if group:
+            self.group = group
+        elif assignment:
+            self.group = AssignmentGroup(parentnode=assignment)
         else:
-            self.group = AssignmentGroup(parentnode_id=assignment_id)
+            raise ValueError('One of assignment or group must be supplied.')
         self.serializer = GroupSerializer(self.group)
 
     def get_group_from_db(self):
@@ -222,15 +224,25 @@ class GroupManager(object):
         self.group.tags.create(tag=tag)
 
     def update_tags(self, tagdicts):
-        AssignmentGroupTag.objects.filter(assignment_group=self.group).delete()
+        if not self.createmode:
+            AssignmentGroupTag.objects.filter(assignment_group=self.group).delete()
         for tagdict in tagdicts:
             self._create_tag(tag=tagdict['tag'])
 
     def _get_user(self, user_id):
+        if self.usercache != None:
+            try:
+                return self.usercache[user_id]
+            except KeyError:
+                pass
         try:
-            return User.objects.get(id=user_id)
+            user = User.objects.get(id=user_id)
         except ObjectDoesNotExist, e:
             raise ValidationError('User with ID={0} does not exist'.format(user_id))
+        else:
+            if self.usercache:
+                self.usercache[user_id] = user
+            return user
 
     def _create_examiner(self, user_id):
         user = self._get_user(user_id)
@@ -250,20 +262,24 @@ class GroupManager(object):
 
         Any examiner not identified by their ``id`` in ``examinerdicts`` is DELETED.
         """
-        to_delete = {}
-        for examiner in self.group.examiners.all():
-            to_delete[examiner.id] = examiner
+        if not self.createmode:
+            to_delete = {}
+            for examiner in self.group.examiners.all():
+                to_delete[examiner.id] = examiner
         for examinerdict in examinerdicts:
             examiner_id = examinerdict['id']
             isnew = examiner_id == None
             if isnew:
                 user_id = examinerdict['user']['id']
                 self._create_examiner(user_id)
+            elif self.createmode:
+                raise ValueError('Can not update examiners when createmode=True.')
             else:
                 # Can not change existing examiners, only delete them
                 del to_delete[examiner_id] # Remove existing from to_delete (thus, to_delete will be correct after the loop)
-        for examiner in to_delete.itervalues():
-            examiner.delete()
+        if not self.createmode:
+            for examiner in to_delete.itervalues():
+                examiner.delete()
 
     def _create_candidate(self, user_id, candidate_id):
         user = self._get_user(user_id)
@@ -290,9 +306,10 @@ class GroupManager(object):
         Any existing candidate not identified by their ``id`` in
         ``candidatedicts`` is DELETED.
         """
-        existing_by_id = {}
-        for candidate in self.group.candidates.all():
-            existing_by_id[candidate.id] = candidate
+        if not self.createmode:
+            existing_by_id = {}
+            for candidate in self.group.candidates.all():
+                existing_by_id[candidate.id] = candidate
         for candidatedict in candidatedicts:
             id = candidatedict['id']
             isnew = id == None
@@ -300,17 +317,20 @@ class GroupManager(object):
                 user_id = candidatedict['user']['id']
                 candidate_id = candidatedict['candidate_id']
                 self._create_candidate(user_id=user_id, candidate_id=candidate_id)
+            elif self.createmode:
+                raise ValueError('Can not update candidates when createmode=True.')
             else:
                 existing_candidate = existing_by_id[id]
                 self._update_candate(existing_candidate, candidatedict['candidate_id'])
                 del existing_by_id[id] # Remove existing from existing_by_id (which becomes to_delete) (thus, to_delete will be correct after the loop)
-        to_delete = existing_by_id
-        if len(to_delete) > 0:
-            if self.group.can_delete(self.user):
-                for candidate in to_delete.itervalues():
-                    candidate.delete()
-            else:
-                raise PermissionDeniedError('You do not have permission to remove students from this group. Only superusers can remove students from groups with deliveries.')
+        if not self.createmode:
+            to_delete = existing_by_id
+            if len(to_delete) > 0:
+                if self.group.can_delete(self.user):
+                    for candidate in to_delete.itervalues():
+                        candidate.delete()
+                else:
+                    raise PermissionDeniedError('You do not have permission to remove students from this group. Only superusers can remove students from groups with deliveries.')
 
     def delete(self):
         if self.group.can_delete(self.user):
@@ -522,10 +542,26 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
         """
         datalist = self.CONTENT
         created_groups = []
+        usercache = {}
+
+        try:
+            assignment = Assignment.objects.filter(id=assignment_id)\
+                    .select_related(
+                            'parentnode',
+                            'parentnode__parentnode')\
+                    .prefetch_related(
+                            'admins',
+                            'parentnode__admins',
+                            'parentnode__parentnode__admins'
+                            )\
+                    .get()
+        except Assignment.DoesNotExist:
+            raise NotFoundError('No assignment with ID={} exists.'.format(assignment_id))
+
         with transaction.commit_on_success():
             for data in datalist:
                 try:
-                    manager = GroupManager(request.user, assignment_id)
+                    manager = GroupManager(request.user, assignment, createmode=True, usercache={})
                     manager.update_group(name=data['name'],
                                          is_open=data['is_open'])
                     manager.create_first_deadline_if_available()
@@ -543,96 +579,94 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
     def _not_found_response(self, assignment_id, group_id):
         raise NotFoundError('Group with assignment_id={assignment_id} and id={group_id} not found'.format(**vars()))
 
+
+    def _update_examinersonly(self, manager, data):
+        manager.update_examiners(data['examiners'])
+
+    def _update_tagsonly(self, manager, data):
+        manager.update_tags(data['tags'])
+
+    def _update_all(self, manager, data):
+        manager.update_group(name=data['name'],
+                             is_open=data['is_open'])
+        manager.update_examiners(data['examiners'])
+        manager.update_candidates(data['candidates'])
+        manager.update_tags(data['tags'])
+
+    def _query_groups_by_id(self, groupids):
+        qry = AssignmentGroup.objects.filter(id__in=groupids)
+        qry = qry.select_related('feedback')
+        qry = qry.prefetch_related(
+            'deadlines',
+            'tags',
+            'examiners', 'examiners__user',
+            'examiners__user__devilryuserprofile',
+            'candidates', 'candidates__student',
+            'candidates__student__devilryuserprofile')
+        return qry.all()
+
     def put(self, request, assignment_id):
         if request.META.get('X_DEVILRY_DELETEHACK'):
             # NOTE: This is only a workaround for the limitations of the Django test client in version 1.4. DELETE with request data is supported in 1.5.
             return self.delete(request, assignment_id)
+
+        examinersOnly = request.GET.get('examinersOnly') == 'true'
+        tagsOnly = request.GET.get('tagsOnly') == 'true'
+        if examinersOnly and tagsOnly:
+            raise BadRequestFieldError('examinersOnly', 'You can only set one of these to true: examinersOnly and tagsOnly.')
+        if examinersOnly:
+            update_method = self._update_examinersonly
+        elif tagsOnly:
+            update_method = self._update_tagsonly
+        else:
+            update_method = self._update_all
+
         datalist = self.CONTENT
         updated_groups = []
+        usercache = {} # Internal cache to avoid looking up the same users multiple times
+        groupids = []
+        data_by_groupid = {}
+        for data in datalist:
+            if data['id'] == None:
+                raise BadRequestFieldError('id', 'Required.')
+            group_id = data['id']
+            groupids.append(group_id)
+            data_by_groupid[group_id] = data
+        groups = self._query_groups_by_id(groupids)
+        if len(groups) != len(datalist):
+            raise NotFoundError('One or more of the requested groups does not exist.'.format(**vars()))
         with transaction.commit_on_success():
-            for data in datalist:
-                if data['id'] == None:
-                    raise BadRequestFieldError('id', 'Required.')
-                group_id = data['id']
+            for group in groups:
+                manager = GroupManager(request.user, assignment_id, group=group, usercache=usercache)
                 try:
-                    manager = GroupManager(request.user, assignment_id, group_id)
-                except AssignmentGroup.DoesNotExist:
-                    self._not_found_response(assignment_id, group_id)
-                try:
-                    manager.update_group(name=data['name'],
-                                         is_open=data['is_open'])
-                    manager.update_examiners(data['examiners'])
-                    manager.update_candidates(data['candidates'])
-                    manager.update_tags(data['tags'])
+                    update_method(manager, data_by_groupid[group.id])
                 except ValidationError, e:
                     raise ValidationErrorResponse(e)
                 else:
-                    logger.info('User=%s updated AssignmentGroup id=%s', self.user, group_id)
-                    updated_groups.append(manager.group)
-            return Response(200, updated_groups)
+                    logger.info('User=%s updated AssignmentGroup id=%s', self.user, group.id)
+                    updated_groups.append(manager.group.id)
+            return Response(200, self._query_groups_by_id(updated_groups))
 
     def delete(self, request, assignment_id):
         datalist = self.CONTENT
-        deleted_groups = []
+
+        groupids = []
+        for data in datalist:
+            if data['id'] == None:
+                raise BadRequestFieldError('id', 'Required.')
+            group_id = data['id']
+            groupids.append(group_id)
+
+        groups = self._query_groups_by_id(groupids)
+        if len(groups) != len(datalist):
+            raise NotFoundError('One or more of the requested groups does not exist.'.format(**vars()))
         with transaction.commit_on_success():
-            for data in datalist:
-                if data['id'] == None:
-                    raise BadRequestFieldError('id', 'Required.')
-                group_id = data['id']
-                try:
-                    manager = GroupManager(request.user, assignment_id, group_id)
-                except AssignmentGroup.DoesNotExist:
-                    self._not_found_response(assignment_id, group_id)
+            for group in groups:
+                manager = GroupManager(request.user, assignment_id, group)
                 try:
                     manager.delete()
                 except ValidationError, e:
                     raise ValidationErrorResponse(e)
                 else:
-                    logger.warning('User=%s deleted AssignmentGroup id=%s', self.user, group_id)
-                    deleted_groups.append(group_id)
+                    logger.warning('User=%s deleted AssignmentGroup id=%s', self.user, group.id)
             return Response(204, '')
-
-
-
-#class InstanceGroupRest(SelfdocumentingGroupApiMixin, InstanceModelView):
-    #resource = GroupResource
-    #form = GroupForm
-    #permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
-
-    #def _not_found_response(self, assignment_id, group_id):
-        #raise NotFoundError('Group with assignment_id={assignment_id} and id={group_id} not found'.format(**vars()))
-
-    #def get(self, request, assignment_id, group_id):
-        #"""
-        #Returns aggregated data for the requested AssignmentGroup and related data:
-
-        #{responsetable}
-        #"""
-        #return super(InstanceGroupRest, self).get(request, id=group_id)
-
-    #def put(self, request, assignment_id, group_id):
-        #"""
-        ## Parameters
-        #{parameterstable}
-
-        ## Returns (the same as GET)
-        #An object/map with the following attributes:
-        #{responsetable}
-        #"""
-        #data = self.CONTENT
-        #try:
-            #manager = GroupManager(request.user, assignment_id, group_id)
-        #except AssignmentGroup.DoesNotExist:
-            #self._not_found_response(assignment_id, group_id)
-        #with transaction.commit_on_success():
-            #try:
-                #manager.update_group(name=data['name'],
-                                     #is_open=data['is_open'])
-                #manager.update_examiners(data['examiners'])
-                #manager.update_candidates(data['candidates'])
-                #manager.update_tags(data['tags'])
-            #except ValidationError, e:
-                #raise ValidationErrorResponse(e)
-            #else:
-                #logger.info('User=%s updated AssignmentGroup id=%s', self.user, group_id)
-                #return Response(200, manager.group)

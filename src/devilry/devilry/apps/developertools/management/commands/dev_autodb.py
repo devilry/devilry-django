@@ -248,6 +248,12 @@ class Command(BaseCommand):
         self._addRelatedStudentsFromList(period, medium_students_usernames)
         self._addRelatedStudentsFromList(period, bad_students_usernames)
 
+    def _create_numbered_students(self, count):
+        usernames = ['student{}'.format(i) for i in xrange(count)]
+        usernamesAndFullnames = [(username, username.capitalize()) for username in usernames]
+        self.create_users(usernamesAndFullnames)
+        return usernames
+
     def _set_first_deadlines(self, period, days_after_pubtime=2):
         for assignment in period.assignments.all():
             logging.info('Setting first_deadline on %s', assignment)
@@ -320,12 +326,14 @@ class Command(BaseCommand):
 
         assignmentnames = [name.split(':')[0] for name in assignments]
         periodnames = self._onlyNames(periods)
+        extra_numbered_students = self._create_numbered_students(2000)
         for periodname in periodnames:
             periodpath = 'duckburgh.ifi;duck1010.' + periodname
             logging.info('Creating %s', periodpath)
             period = self.testhelper.get_object_from_path(periodpath)
             self._set_first_deadlines(period)
             self._addRelatedStudents(period)
+            self._addRelatedStudentsFromList(period, extra_numbered_students)
             self._addRelatedExaminers(period)
             self._addBadGroups(periodpath, assignmentnames, anotherTryVerdict, failedVerdict)
             self._addMediumGroups(periodpath, assignmentnames, anotherTryVerdict, okVerdict)
@@ -431,7 +439,8 @@ class Command(BaseCommand):
                     return examiner + ',' + 'thor' # Make thor examiner on all of the same groups as scrooge
                 else:
                     return examiner
-        raise LookupError('No examiner defined for {0}'.format(username))
+        return None
+        #raise LookupError('No examiner defined for {0}'.format(username))
 
     def _getTagsFor(self, username):
         tags = []
@@ -488,9 +497,9 @@ class Command(BaseCommand):
                            ('fethry', 'Fethry Duck')])
         self._distributeStudentToExaminers()
         logging.info('Generating data (nodes, periods, subjects, deliveries...). Run with -v3 for more details.')
+        self.create_duck1010()
         self.create_duck2500p()
         self.create_duck4000()
         self.create_duck6000()
         self.create_duck1100()
-        self.create_duck1010()
         self._unset_groupnames()
