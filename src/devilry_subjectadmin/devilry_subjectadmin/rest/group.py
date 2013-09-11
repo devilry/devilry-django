@@ -1,4 +1,3 @@
-from datetime import datetime
 from django.db.models import Q
 from django.db import transaction
 from django.db.models import Count
@@ -591,48 +590,3 @@ class ListOrCreateGroupRest(SelfdocumentingGroupApiMixin, ListOrCreateModelView)
                     logger.warning('User=%s deleted AssignmentGroup id=%s', self.user, group_id)
                     deleted_groups.append(group_id)
             return Response(204, '')
-
-
-
-#class InstanceGroupRest(SelfdocumentingGroupApiMixin, InstanceModelView):
-    #resource = GroupResource
-    #form = GroupForm
-    #permissions = (IsAuthenticated, IsAssignmentAdminAssignmentIdKwarg)
-
-    #def _not_found_response(self, assignment_id, group_id):
-        #raise NotFoundError('Group with assignment_id={assignment_id} and id={group_id} not found'.format(**vars()))
-
-    #def get(self, request, assignment_id, group_id):
-        #"""
-        #Returns aggregated data for the requested AssignmentGroup and related data:
-
-        #{responsetable}
-        #"""
-        #return super(InstanceGroupRest, self).get(request, id=group_id)
-
-    #def put(self, request, assignment_id, group_id):
-        #"""
-        ## Parameters
-        #{parameterstable}
-
-        ## Returns (the same as GET)
-        #An object/map with the following attributes:
-        #{responsetable}
-        #"""
-        #data = self.CONTENT
-        #try:
-            #manager = GroupManager(request.user, assignment_id, group_id)
-        #except AssignmentGroup.DoesNotExist:
-            #self._not_found_response(assignment_id, group_id)
-        #with transaction.commit_on_success():
-            #try:
-                #manager.update_group(name=data['name'],
-                                     #is_open=data['is_open'])
-                #manager.update_examiners(data['examiners'])
-                #manager.update_candidates(data['candidates'])
-                #manager.update_tags(data['tags'])
-            #except ValidationError, e:
-                #raise ValidationErrorResponse(e)
-            #else:
-                #logger.info('User=%s updated AssignmentGroup id=%s', self.user, group_id)
-                #return Response(200, manager.group)
