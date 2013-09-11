@@ -157,11 +157,12 @@ class TestDelivery(TestCase, TestHelper):
         self.add_delivery("inf1100.period1.assignment0.g1", self.goodFile)
 
         # Hard deadlines
+        # - As of https://github.com/devilry/devilry-django/issues/434,
+        #   we no longer check hard deadlines in core.
         assignment = self.inf1100_period1_assignment0
         assignment.deadline_handling = 1
         assignment.save()
-        with self.assertRaises(ValidationError):
-            self.add_delivery("inf1100.period1.assignment0.g1", self.goodFile)
+        self.add_delivery("inf1100.period1.assignment0.g1", self.goodFile)
 
 
     def test_override_autoset(self):
