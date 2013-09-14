@@ -5,7 +5,9 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
         'aggregatedstudentview.AggregatedStudentInfoOverview'
     ],
 
-    stores: [],
+    stores: [
+      'AggregatedStudentInfoStore'
+    ],
 
     init: function() {
         this.control({
@@ -16,13 +18,19 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
     },
 
     _onRender: function() {
-        console.log('Render');
-    }
+      console.log('Render');
+      
+      this.getAggregatedStudentInfoStoreStore().load({
+        scope: this,
+        callback: function(records, operation) {
+          console.log(records);
+          this._onLoadSuccess();
+        }
+      });
+      
+    },
 
-    //_onLoadSuccess: function(records) {
-        //this.getAllWhereIsAdminList().update({
-            //loadingtext: null,
-            //list: this._flattenListOfActive(records)
-        //});
-    //}
+    _onLoadSuccess: function(records) {
+      console.log('Suksess');
+    }
 });

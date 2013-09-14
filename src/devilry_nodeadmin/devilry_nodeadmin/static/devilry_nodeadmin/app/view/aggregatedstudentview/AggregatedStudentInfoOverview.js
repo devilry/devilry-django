@@ -3,7 +3,8 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
   alias: 'widget.aggregatedstudentinfo',
   cls: 'dashboard',
   title: 'Aggregated Student Info',
-  
+
+  store: 'AggregatedStudentInfoStore',
   layout: 'fit',
   padding: '40',
   autoScroll: true,
