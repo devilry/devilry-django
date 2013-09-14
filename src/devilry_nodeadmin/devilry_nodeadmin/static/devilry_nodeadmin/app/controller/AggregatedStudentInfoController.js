@@ -9,7 +9,7 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
 
     init: function() {
         this.control({
-            'viewport dashboard': {
+            'viewport aggregatedstudentinfo': {
                 render: this._onRender
             }
         });
