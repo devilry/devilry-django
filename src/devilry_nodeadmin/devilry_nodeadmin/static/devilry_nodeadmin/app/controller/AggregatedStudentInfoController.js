@@ -42,7 +42,6 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
 
     _onLoadSuccess: function(records) {
       console.log('Sucess');
-      console.log(this.getAggregatedStudentInfoBox());
       console.log(records[0].data);
       this.getAggregatedStudentInfoBox().update({data: records[0].data});
     },

@@ -81,6 +81,7 @@ class AggregatedStudentInfo(Resource):
             subject = period.parentnode
 
             if not subject.short_name in grouped_by_subject:
+                #grouped_by_subject['] = self._serialize_subject(subject)
                 grouped_by_subject[subject.short_name] = self._serialize_subject(subject)
 
             periodsdict = grouped_by_subject[subject.short_name]['periods']
@@ -122,6 +123,6 @@ class AggregatedStudentInfo(Resource):
                 'assignment_group__parentnode__short_name',
                 )
         return {
-            'user': serialize_user(userobj)
-            # 'grouped_by_hierarky': self._group_candidates_by_hierarky(candidates),
+            'user': serialize_user(userobj),
+            'grouped_by_hierarky': self._group_candidates_by_hierarky(candidates),
         }

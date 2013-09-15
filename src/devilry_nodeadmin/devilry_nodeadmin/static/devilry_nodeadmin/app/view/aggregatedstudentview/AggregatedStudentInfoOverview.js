@@ -15,8 +15,28 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
     itemId: 'AggregatedStudentInfoBox',
     //html: '<h1> Hello World </h1>',
     tpl: ['<h1>Aggregert Studentinformasjon</h1>',
-         '<h2>{data.user.displayname}</h2>',
-         '<h3>{data.user.email}</h3>']
+          '<h2>{data.user.displayname} / {data.user.username}</h2>',
+              '<tpl for="data.grouped_by_hierarky">',
+          '{[this.help(values)]}',
+                  '<p> {values} </p>',
+                  '<tpl foreach=".">',
+          '<p>{.}</p>',
+          '<tpl for=".">',
+          '{[this.help(values)]}',
+          '</tpl>',
+          '{[this.help(values)]}',
+                      '<p> {long_name} </p>',
+                  '</tpl>',
+              '</tpl>',{
+
+                help: function(rec) {
+                  console.log(rec);
+                  
+                }
+
+                
+                
+              }]
     
   }]
 

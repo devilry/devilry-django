@@ -2,7 +2,8 @@ Ext.define('devilry_nodeadmin.model.AggregatedStudentInfoModel', {
     extend: 'Ext.data.Model',
 
     fields: [
-        {name: 'user', type: 'auto'}
+      {name: 'user', type: 'auto'},
+      {name: 'grouped_by_hierarky', type: 'auto'}
     ],
 
     proxy: {
