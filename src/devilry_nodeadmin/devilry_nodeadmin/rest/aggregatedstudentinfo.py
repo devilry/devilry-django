@@ -101,6 +101,8 @@ class AggregatedStudentInfo(Resource):
 
     @RESTfulResponse()
     def get(self, request, user_id, **kwargs):
+        # # Hack to force json return.
+        # request.META['HTTP_ACCEPT'] = 'application/json'
         try:
             userobj = User.objects.get(id=user_id)
         except User.DoesNotExist:
@@ -120,6 +122,6 @@ class AggregatedStudentInfo(Resource):
                 'assignment_group__parentnode__short_name',
                 )
         return {
-            'user': serialize_user(userobj),
-            'grouped_by_hierarky': self._group_candidates_by_hierarky(candidates),
+            'user': serialize_user(userobj)
+            # 'grouped_by_hierarky': self._group_candidates_by_hierarky(candidates),
         }

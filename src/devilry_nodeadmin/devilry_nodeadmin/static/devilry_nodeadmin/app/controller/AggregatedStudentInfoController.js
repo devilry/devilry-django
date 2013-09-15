@@ -5,6 +5,11 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
         'aggregatedstudentview.AggregatedStudentInfoOverview'
     ],
 
+  refs: [
+    {ref: 'AggregatedStudentInfoBox',
+     selector: '#AggregatedStudentInfoBox'
+    }],
+
     stores: [
       'AggregatedStudentInfoStore'
     ],
@@ -24,13 +29,26 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
         scope: this,
         callback: function(records, operation) {
           console.log(records);
-          this._onLoadSuccess();
+          if (operation.success) {
+            this._onLoadSuccess(records);
+          } else {
+            this._onLoadFailure();
+          }
+          
         }
       });
       
     },
 
     _onLoadSuccess: function(records) {
-      console.log('Suksess');
-    }
+      console.log('Sucess');
+      console.log(this.getAggregatedStudentInfoBox());
+      console.log(records[0].data);
+      this.getAggregatedStudentInfoBox().update({data: records[0].data});
+    },
+
+  _onLoadFailure: function(records){
+    console.log('failure');
+  }
+
 });
