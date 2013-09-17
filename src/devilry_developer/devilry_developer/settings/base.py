@@ -31,6 +31,7 @@ INSTALLED_APPS += [
     'devilry.apps.asminimalaspossible_gradeeditor',
     'seleniumhelpers',
     'djangosenchatools',
+    'raven.contrib.django.raven_compat', # Sentry client (Raven)
     'devilry_sandbox',
 
     'devilry_examiner',
@@ -187,3 +188,13 @@ CACHES = {
 #
 ##############################################################
 #INSTALLED_APPS += ['rosetta']
+
+
+##############################################################
+#
+# Sentry
+#
+##############################################################
+RAVEN_CONFIG = {
+    'dsn': 'http://85cc6c611c904a0ebb4afd363fe60fe4:32988134adad4044bc7d13f85f318498@localhost:9000/2',
+}

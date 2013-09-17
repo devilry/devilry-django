@@ -14,6 +14,10 @@ def create_logging_conf(logdir):
         },
 
         'handlers': {
+            'sentry': {
+                'level': 'DEBUG',
+                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
+            },
             'console': {
                 'level': 'DEBUG',
                 'formatter': 'verbose',
@@ -58,7 +62,7 @@ def create_logging_conf(logdir):
         },
         'loggers': {
             'devilry.utils.logexceptionsmiddleware': {
-                'handlers': ['exceptionTracebacksFile', 'console'],
+                'handlers': ['exceptionTracebacksFile', 'console', 'sentry'],
                 'level': 'ERROR',
                 'propagate': False
             },
@@ -79,6 +83,7 @@ def create_logging_conf(logdir):
             'devilry.utils.devilry_email': {
                 'handlers': ['allButExceptionTracebacks',
                              'emailfile',
+                             'sentry',
                              #'console', # Uncomment this if you want to see every email sent in the console, however it is probably more useful to use emailfile
                             ],
                 'level': 'DEBUG',
@@ -97,6 +102,7 @@ def create_logging_conf(logdir):
             },
             '': {
                 'handlers': ['allButExceptionTracebacks',
+                             'sentry',
                              'console'],
                 'level': 'DEBUG',
                 'propagate': False
