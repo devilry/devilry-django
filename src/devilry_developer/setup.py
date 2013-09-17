@@ -13,7 +13,7 @@ setup(name = 'devilry_developer',
                           'devilry_extjsextras',
                           'django_seleniumhelpers', 'django_extjs4',
                           'devilry_examiner',
-                          'raven', # Sentry client for testing
+#                          'raven', # Sentry client for testing
                           ],
       include_package_data=True,
       long_description = open('README.rst').read(),
