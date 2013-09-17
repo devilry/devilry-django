@@ -12,7 +12,7 @@ urlpatterns = patterns('devilry_nodeadmin.rest',
         name='devilry_nodeadmin-rest_toplevel_nodes'),
     url(r'^node/details/(?P<id>\d+)$', NodeDetails.as_view(),
         name='devilry_nodeadmin-rest_node_details'),
-    url(r'^aggregatedstudentinfo/(?P<user_id>\d+)$', AggregatedStudentInfo.as_view(),
+    url(r'^aggregatedstudentinfo/(?P<user_id>\d+)(\.(?P<_format>[a-zA-Z]+))?$', AggregatedStudentInfo.as_view(),
         name='devilry_nodeadmin-aggregatedstudentinfo'),
 
 )

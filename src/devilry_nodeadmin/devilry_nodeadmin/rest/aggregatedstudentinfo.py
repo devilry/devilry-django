@@ -1,18 +1,39 @@
-from datetime import datetime
 from simple_rest import Resource
 from simple_rest.response import RESTfulResponse
 from django.db.models import Q
 from django.contrib.auth.models import User
 
-from devilry.utils import OrderedDict
 from devilry_rest.auth import authentication_required
 from devilry_rest.serializehelpers import format_datetime
 from devilry_rest.serializehelpers import serialize_user
-from devilry_rest.serializehelpers import format_timedelta
+#from devilry_rest.serializehelpers import format_timedelta
 from devilry.apps.core.models import Node
 from devilry.apps.core.models import Candidate
 #from devilry.apps.core.models import RelatedStudent
 
+
+
+class MappedList(list):
+    """
+    A ordered-dict-like object that serializes to a list.
+    """
+    def __init__(self):
+        self._itemsdict = {}
+
+    def __getitem__(self, key):
+        return self._itemsdict[key]
+
+    def __setitem__(self, key, value):
+        if key in self._itemsdict:
+            raise ValueError('key {} already in the list'.format(key))
+        self._itemsdict[key] = value
+        super(MappedList, self).append(value)
+
+    def __contains__(self, key):
+        return key in self._itemsdict
+
+    def append(self, value):
+        raise NotImplementedError()
 
 
 @authentication_required
@@ -23,7 +44,7 @@ class AggregatedStudentInfo(Resource):
             'id': subject.id,
             'short_name': subject.short_name,
             'long_name': subject.long_name,
-            'periods': OrderedDict()
+            'periods': MappedList()
         }
 
     def _serialize_period(self, period):
@@ -34,7 +55,7 @@ class AggregatedStudentInfo(Resource):
             'start_time': format_datetime(period.start_time),
             'end_time': format_datetime(period.end_time),
             'is_active': period.is_active(),
-            'assignments': OrderedDict()
+            'assignments': MappedList()
         }
 
     def _serialize_assignment(self, assignment):
@@ -73,7 +94,7 @@ class AggregatedStudentInfo(Resource):
         }
 
     def _group_candidates_by_hierarky(self, candidates):
-        grouped_by_subject = OrderedDict()
+        grouped_by_subject = MappedList()
         for candidate in candidates:
             group = candidate.assignment_group
             assignment = group.parentnode
