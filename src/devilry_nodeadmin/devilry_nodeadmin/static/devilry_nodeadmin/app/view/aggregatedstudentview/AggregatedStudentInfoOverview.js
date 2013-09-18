@@ -20,12 +20,25 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
                       '<p> {long_name} </p>',
                       '<tpl for="periods">',
                           '<p> {long_name} </p>',
-                      '</tpl>',
-              '</tpl>',
+                          '<tpl for="assignments">',
+                              '<p> {long_name} </p>',
+                              '<tpl for="groups">',
+                                  '<p> {status} </p>',
+                                  '<tpl if="active_feedback">',
+                                      '<tpl if="active_feedback.feedback.is_passing_grade">',
+                                          '<p> Approved </p>',
+                                      '<tpl else>',
+                                          '<p> Not Approved </p>',
+                                      '</tpl>',
+                                  '</tpl>',
+                              '</tpl>',
+                          '</tpl>',
+                      '</tpl>', 
+               '</tpl>',
               {
 
                 help: function(rec) {
-                  console.log(rec);
+                  console.log("TPL: " + rec);
                   
                 }
 
