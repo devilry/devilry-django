@@ -5,14 +5,15 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
         'aggregatedstudentview.AggregatedStudentInfoOverview'
     ],
 
-  refs: [
-    {ref: 'AggregatedStudentInfoBox',
-     selector: '#AggregatedStudentInfoBox'
+    refs: [{
+        ref: 'AggregatedStudentInfo',
+        selector: 'aggregatedstudentinfo'
+    }, {
+        ref: 'AggregatedStudentInfoBox',
+        selector: 'aggregatedstudentinfo #AggregatedStudentInfoBox'
     }],
 
-    stores: [
-      'AggregatedStudentInfoStore'
-    ],
+    models: ['AggregatedStudentInfo'],
 
     init: function() {
         this.control({
@@ -23,31 +24,28 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
     },
 
     _onRender: function() {
-      console.log('Render');
-      
-      this.getAggregatedStudentInfoStoreStore().load({
-        scope: this,
-        callback: function(records, operation) {
-          console.log(records);
-          if (operation.success) {
-            this._onLoadSuccess(records);
-          } else {
-            this._onLoadFailure();
-          }
-          
-        }
-      });
-      
+        var user_id = this.getAggregatedStudentInfo().user_id;
+        console.log('Render', user_id);
+        this.getAggregatedStudentInfoModel().load(user_id, {
+            scope: this,
+            callback: function(records, operation) {
+                console.log(records);
+                if (operation.success) {
+                    this._onLoadSuccess(records);
+                } else {
+                    this._onLoadFailure();
+                }
+            }
+        });
     },
 
-    _onLoadSuccess: function(records) {
-      console.log('Sucess');
-      console.log(records[0].data);
-      this.getAggregatedStudentInfoBox().update({data: records[0].data});
+    _onLoadSuccess: function(record) {
+        console.log('Sucess');
+        console.log(record.data);
+        this.getAggregatedStudentInfoBox().update({data: record.data});
     },
 
-  _onLoadFailure: function(records){
-    console.log('failure');
-  }
-
+    _onLoadFailure: function(records){
+        console.log('failure');
+    }
 });
