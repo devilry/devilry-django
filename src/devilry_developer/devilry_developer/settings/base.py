@@ -195,6 +195,9 @@ CACHES = {
 # Sentry
 #
 ##############################################################
-RAVEN_CONFIG = {
-    'dsn': 'http://85cc6c611c904a0ebb4afd363fe60fe4:32988134adad4044bc7d13f85f318498@localhost:9000/2',
-}
+# RAVEN_CONFIG = {
+#     'dsn': 'http://85cc6c611c904a0ebb4afd363fe60fe4:32988134adad4044bc7d13f85f318498@localhost:9000/2',
+# }
+# RAVEN_CONFIG = {
+#     'dsn': 'http://af983b0d5d9f4959ba56621c08097937:c9ca9e42d7ac48f582a899f56222b846@localhost:9000/2',
+# }
