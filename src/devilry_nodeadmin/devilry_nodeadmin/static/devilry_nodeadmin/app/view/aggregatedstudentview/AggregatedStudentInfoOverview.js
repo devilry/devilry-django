@@ -4,8 +4,6 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
   cls: 'bootstrap',
   title: 'Aggregated Student Info',
 
-  store: 'AggregatedStudentInfoStore',
-
   layout: 'fit',
   padding: '40',
   autoScroll: true,
