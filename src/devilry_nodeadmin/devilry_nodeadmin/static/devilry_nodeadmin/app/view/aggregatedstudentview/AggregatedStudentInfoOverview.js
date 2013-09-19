@@ -12,7 +12,7 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
     xtype: 'box',
     itemId: 'AggregatedStudentInfoBox',
     //html: '<h1> Hello World </h1>',
-    tpl: ['<h1>', gettext('Aggregert Studentinformasjon'), '</h1>',
+    tpl: ['<h1>', gettext('Aggregated Student Information'), '</h1>',
           '<h2>{data.user.displayname} / {data.user.username} / {data.user.email}</h2>',
               '<tpl for="data.grouped_by_hierarky">',
                     '<div class="devilry_focuscontainer" style="padding: 20px; margin-bottom: 20px;">',
