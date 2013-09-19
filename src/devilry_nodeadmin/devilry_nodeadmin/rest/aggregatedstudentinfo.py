@@ -47,7 +47,7 @@ class AggregatedStudentInfo(Resource):
             'periods': MappedList()
         }
 
-    def _serialize_period(self, period):
+    def _serialize_period(self, period, userobj):
         return {
             'id': period.id,
             'short_name': period.short_name,
@@ -55,6 +55,7 @@ class AggregatedStudentInfo(Resource):
             'start_time': format_datetime(period.start_time),
             'end_time': format_datetime(period.end_time),
             'is_active': period.is_active(),
+            'is_relatedstudent': period.relatedstudent_set.filter(user=userobj).exists(),
             'assignments': MappedList()
         }
 
@@ -93,7 +94,7 @@ class AggregatedStudentInfo(Resource):
             'active_feedback': self._serialize_active_feedback(group)
         }
 
-    def _group_candidates_by_hierarky(self, candidates):
+    def _group_candidates_by_hierarky(self, candidates, userobj):
         grouped_by_subject = MappedList()
         for candidate in candidates:
             group = candidate.assignment_group
@@ -107,7 +108,7 @@ class AggregatedStudentInfo(Resource):
 
             periodsdict = grouped_by_subject[subject.short_name]['periods']
             if not period.short_name in periodsdict:
-                periodsdict[period.short_name] = self._serialize_period(period)
+                periodsdict[period.short_name] = self._serialize_period(period, userobj)
 
             assignmentsdict = periodsdict[period.short_name]['assignments']
             if not assignment.short_name in assignmentsdict:
@@ -145,5 +146,5 @@ class AggregatedStudentInfo(Resource):
                 )
         return {
             'user': serialize_user(userobj),
-            'grouped_by_hierarky': self._group_candidates_by_hierarky(candidates),
+            'grouped_by_hierarky': self._group_candidates_by_hierarky(candidates, userobj),
         }
