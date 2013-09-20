@@ -56,6 +56,7 @@ class AggregatedStudentInfo(Resource):
             'end_time': format_datetime(period.end_time),
             'is_active': period.is_active(),
             'is_relatedstudent': period.relatedstudent_set.filter(user=userobj).exists(),
+            'qualified_forexams': True, #TODO fix api
             'assignments': MappedList()
         }
 

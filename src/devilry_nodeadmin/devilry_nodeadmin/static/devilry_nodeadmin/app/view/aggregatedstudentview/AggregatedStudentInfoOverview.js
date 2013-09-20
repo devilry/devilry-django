@@ -11,9 +11,9 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
   items: [{
     xtype: 'box',
     itemId: 'AggregatedStudentInfoBox',
-    //html: '<h1> Hello World </h1>',
-    tpl: ['<h1>', gettext('Aggregated Student Information'), '</h1>',
-          '<h2>{data.user.displayname} / {data.user.username} / {data.user.email}</h2>',
+    tpl: ['<div class=devilry_focuscontainer style="padding: 20px; margin-bottom: 20px;">', '<h1>', gettext('Aggregated Student Information'), '</h1>',
+          '<h3>{data.user.displayname}</h3> <h4>{data.user.username} / {data.user.email}</h4>',
+          '</div>',
               '<tpl for="data.grouped_by_hierarky">',
                     '<div class="devilry_focuscontainer" style="padding: 20px; margin-bottom: 20px;">',
                       '<h2> {long_name} </h2>',
@@ -22,10 +22,11 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
                           '<table class="table table-condensed">',
                           '<tr>',
                           '<tpl if="is_relatedstudent">',
-                              '<td><span class="label label-success">', gettext('Registred as student on period'), '</span></td>',
+                              '<td style="width: 100px"><span class="label label-success">', gettext('Registred as student on period'), '</span></td>',
                           '<tpl else>',
                               '<td><span class="label label-important">', gettext('Not registred as student on period'), '</span></td>',
                           '</tpl>',
+                            '<td> <span class="label label-success"> Qualified for exams</span></td>',
                           '</tr>',
                           '</table>',
                           '<table class="table table-striped table-bordered table-hover">',
@@ -51,6 +52,7 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
                       '</tpl>',
                     '</div>', 
                 '</tpl>',
+
               {
 
                 help: function(rec) {
