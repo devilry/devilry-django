@@ -18,7 +18,10 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
         'Groups'
     ],
 
-
+  sharedData: Ext.define('sharedData', { 
+    singleton: true,
+    removeFromSelectionMode: false, 
+  }) ,
     /**
      * Get the main view for managestudents.
      * @return {devilry_subjectadmin.view.managestudents.Overview} The overview.
@@ -180,8 +183,21 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     },
 
 
+    // _isInAddToSelectionMenu: function(button) {
+    //     return button.up('#replaceSelectionMenu') === undefined;
+    // },
+
+
     _isInAddToSelectionMenu: function(button) {
-        return button.up('#replaceSelectionMenu') === undefined;
+      
+      if(button.up('#removeFromSelectionMenu')) {
+        sharedData.removeFromSelectionMode = true;
+      }
+
+      if((button.up('#replaceSelectionMenu') === undefined) && (button.up('#removeFromSelectionMenu') === undefined)) {
+        return true;
+      }
+     return false;
     },
 
 
@@ -522,8 +538,15 @@ Ext.define('devilry_subjectadmin.controller.managestudents.Select', {
     },
 
     _selectBy: function(fn, scope, keepExisting) {
-        var groupRecords = this._findGroupRecordsBy(fn, scope);
+      var groupRecords = this._findGroupRecordsBy(fn, scope);
+
+      if(sharedData.removeFromSelectionMode){
+        this._deselectGroupRecords(groupRecords);
+        sharedData.removeFromSelectionMode = false;
+      } else {
         this._selectGroupRecords(groupRecords, keepExisting);
+      }
+
     },
 
     /** Select the given group records.

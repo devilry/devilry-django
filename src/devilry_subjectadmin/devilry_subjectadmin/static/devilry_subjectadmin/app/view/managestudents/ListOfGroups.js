@@ -75,7 +75,18 @@ Ext.define('devilry_subjectadmin.view.managestudents.ListOfGroups' ,{
                             hideOnClick: false,
                             menu: this._createSelectMenu({
                                 title: gettext('Add to current selection'),
-                                itemId: 'addToSelectionMenu'
+                                itemId: 'addToSelectionMenu',
+                              cls: 'addToSelectionMenu'
+                            })
+                        }, {
+                            itemId: 'removeFromSelectionButton',
+                            cls: 'removeFromSelectionButton',
+                            text: gettext('Remove from current selection'),
+                            hideOnClick: false,
+                            menu: this._createSelectMenu({
+                                title: gettext('Remove from current selection'),
+                                itemId: 'removeFromSelectionMenu',
+                              cls: 'removeFromSelectionMenu'
                             })
                         }]
                     }
