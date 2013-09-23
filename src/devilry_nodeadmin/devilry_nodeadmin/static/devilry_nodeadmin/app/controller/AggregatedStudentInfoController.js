@@ -25,11 +25,9 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
 
     _onRender: function() {
         var user_id = this.getAggregatedStudentInfo().user_id;
-        console.log('Render', user_id);
         this.getAggregatedStudentInfoModel().load(user_id, {
             scope: this,
             callback: function(records, operation) {
-                console.log(records);
                 if (operation.success) {
                     this._onLoadSuccess(records);
                 } else {
@@ -40,12 +38,10 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
     },
 
     _onLoadSuccess: function(record) {
-        console.log('Sucess');
-        console.log(record.data);
         this.getAggregatedStudentInfoBox().update({data: record.data});
     },
 
     _onLoadFailure: function(records){
-        console.log('failure');
+        //TODO
     }
 });
