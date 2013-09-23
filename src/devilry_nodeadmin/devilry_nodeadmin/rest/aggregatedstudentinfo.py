@@ -1,5 +1,6 @@
 from simple_rest import Resource
 from simple_rest.response import RESTfulResponse
+from django.conf import settings
 from django.db.models import Q
 from django.contrib.auth.models import User
 
@@ -10,6 +11,8 @@ from devilry_rest.serializehelpers import serialize_user
 from devilry.apps.core.models import Node
 from devilry.apps.core.models import Candidate
 #from devilry.apps.core.models import RelatedStudent
+from devilry_qualifiesforexam.models import QualifiesForFinalExam
+from devilry_qualifiesforexam.models import Status
 
 
 
@@ -47,7 +50,22 @@ class AggregatedStudentInfo(Resource):
             'periods': MappedList()
         }
 
-    def _serialize_period(self, period, userobj):
+    def _serialize_period(self, period, userobj, devilry_qualifiesforexam_enabled):
+        qualifies = None
+
+        if devilry_qualifiesforexam_enabled:
+            try:
+                status = Status.get_current_status(period)
+            except Status.DoesNotExist:
+                pass
+            else:
+                if status.status == Status.READY:
+                    try:
+                        qualification_status = status.students.get(relatedstudent__user=userobj)
+                        qualifies = qualification_status.qualifies
+                    except QualifiesForFinalExam.DoesNotExist:
+                        pass
+
         return {
             'id': period.id,
             'short_name': period.short_name,
@@ -56,7 +74,7 @@ class AggregatedStudentInfo(Resource):
             'end_time': format_datetime(period.end_time),
             'is_active': period.is_active(),
             'is_relatedstudent': period.relatedstudent_set.filter(user=userobj).exists(),
-            'qualified_forexams': True, #TODO fix api
+            'qualified_forexams': qualifies,
             'assignments': MappedList()
         }
 
@@ -95,7 +113,7 @@ class AggregatedStudentInfo(Resource):
             'active_feedback': self._serialize_active_feedback(group)
         }
 
-    def _group_candidates_by_hierarky(self, candidates, userobj):
+    def _group_candidates_by_hierarky(self, candidates, userobj, devilry_qualifiesforexam_enabled):
         grouped_by_subject = MappedList()
         for candidate in candidates:
             group = candidate.assignment_group
@@ -109,7 +127,7 @@ class AggregatedStudentInfo(Resource):
 
             periodsdict = grouped_by_subject[subject.short_name]['periods']
             if not period.short_name in periodsdict:
-                periodsdict[period.short_name] = self._serialize_period(period, userobj)
+                periodsdict[period.short_name] = self._serialize_period(period, userobj, devilry_qualifiesforexam_enabled)
 
             assignmentsdict = periodsdict[period.short_name]['assignments']
             if not assignment.short_name in assignmentsdict:
@@ -131,6 +149,7 @@ class AggregatedStudentInfo(Resource):
             userobj = User.objects.get(id=user_id)
         except User.DoesNotExist:
             return None, 404
+        devilry_qualifiesforexam_enabled = 'devilry_qualifiesforexam' in settings.INSTALLED_APPS
         adminuserobj = self.request.user
         nodepks_where_is_admin = Node._get_nodepks_where_isadmin(adminuserobj)
         candidates = Candidate.objects.filter(student=userobj)
@@ -147,5 +166,5 @@ class AggregatedStudentInfo(Resource):
                 )
         return {
             'user': serialize_user(userobj),
-            'grouped_by_hierarky': self._group_candidates_by_hierarky(candidates, userobj),
+            'grouped_by_hierarky': self._group_candidates_by_hierarky(candidates, userobj, devilry_qualifiesforexam_enabled),
         }
