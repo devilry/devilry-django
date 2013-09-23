@@ -141,7 +141,7 @@ class AggregatedStudentInfo(Resource):
                 Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=nodepks_where_is_admin))
         candidates = candidates.order_by(
                 'assignment_group__parentnode__parentnode__parentnode__short_name',
-                'assignment_group__parentnode__parentnode__start_time',
+                '-assignment_group__parentnode__parentnode__start_time',
                 'assignment_group__parentnode__publishing_time',
                 'assignment_group__parentnode__short_name',
                 )
