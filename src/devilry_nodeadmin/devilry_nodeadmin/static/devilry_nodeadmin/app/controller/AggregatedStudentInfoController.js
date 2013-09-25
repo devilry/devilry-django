@@ -6,11 +6,14 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
     ],
 
     refs: [{
-        ref: 'AggregatedStudentInfo',
+        ref: 'aggregatedStudentInfo',
         selector: 'aggregatedstudentinfo'
     }, {
-        ref: 'AggregatedStudentInfoBox',
-        selector: 'aggregatedstudentinfo #AggregatedStudentInfoBox'
+        ref: 'aggregatedStudentInfoBox',
+        selector: 'aggregatedstudentinfo #aggregatedStudentInfoBox'
+    }, {
+        ref: 'headerBox',
+        selector: 'aggregatedstudentinfo #headerBox'
     }, {
         ref: 'userSearchBox',
         selector: 'aggregatedstudentinfo autocompleteuserwidget#userSearchBox'
@@ -44,6 +47,7 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
     },
 
     _onLoadSuccess: function(record) {
+        this.getHeaderBox().update({data: record.data});
         this.getAggregatedStudentInfoBox().update({data: record.data});
     },
 

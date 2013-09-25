@@ -10,43 +10,53 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
 
   items: [{
       xtype: 'container',
+      layout: 'column',
       items: [{
           xtype: 'box',
-          cls: 'bootstrap',
-          margin: '0 0 4px 0',
-          html: [
-              '<strong>',
-                  gettext('Find details about another student:'),
-              '</strong>'
-              ].join('')
+          itemId: 'headerBox',
+          columnWidth: 1.0,
+          tpl: [
+              '<h1 style="margin-top: 0;">', gettext('Student Information'), '</h1>',
+              '<dl>',
+                '<dt>', gettext('Name') ,'</dt>',
+                '<dd>',
+                    '<tpl if="data.user.full_name">',
+                        '{data.user.full_name}',
+                    '<tpl else>',
+                        '<em class="text-warning">', gettext('Name missing'), '</em>',
+                    '</tpl>',
+                    '{data.user.name}',
+                '<dd>',
+                '<dt>', gettext('Username') ,'</dt>',
+                '<dd>{data.user.username}<dd>',
+                '<dt>', gettext('Email') ,'</dt>',
+                '<dd>{data.user.email}<dd>',
+              '</dl>'
+          ]
       }, {
-          xtype: 'autocompleteuserwidget',
-          itemId: 'userSearchBox',
-          fieldLabel: '',
-          emptyText: gettext('Search by name, username or email...'),
-          width: 300
+          xtype: 'container',
+          width: 320,
+          items: [{
+              xtype: 'box',
+              cls: 'bootstrap',
+              margin: '0 0 4px 0',
+              html: [
+                  '<strong>',
+                      gettext('Find details about another student:'),
+                  '</strong>'
+                  ].join('')
+          }, {
+              xtype: 'autocompleteuserwidget',
+              itemId: 'userSearchBox',
+              fieldLabel: '',
+              emptyText: gettext('Search by name, username or email...'),
+              width: 300
+          }]
       }]
   }, {
     xtype: 'box',
-    itemId: 'AggregatedStudentInfoBox',
+    itemId: 'aggregatedStudentInfoBox',
     tpl: [
-        '<div style="padding: 20px; margin-bottom: 20px;">', '<h1>', gettext('Student Information'), '</h1>',
-          '<dl>',
-            '<dt>', gettext('Name') ,'</dt>',
-            '<dd>',
-                '<tpl if="data.user.full_name">',
-                    '{data.user.full_name}',
-                '<tpl else>',
-                    '<em class="text-warning">', gettext('Name missing'), '</em>',
-                '</tpl>',
-                '{data.user.name}',
-            '<dd>',
-            '<dt>', gettext('Username') ,'</dt>',
-            '<dd>{data.user.username}<dd>',
-            '<dt>', gettext('Email') ,'</dt>',
-            '<dd>{data.user.email}<dd>',
-          '</dl>',
-          '</div>',
               '<tpl for="data.grouped_by_hierarky">',
                     '<div class="devilry_focuscontainer" style="padding: 20px; margin-bottom: 20px;">',
                       '<h2> {long_name} </h2>',
