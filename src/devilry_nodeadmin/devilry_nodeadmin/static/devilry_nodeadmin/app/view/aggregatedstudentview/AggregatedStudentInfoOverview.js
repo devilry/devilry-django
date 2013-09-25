@@ -30,7 +30,7 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
     xtype: 'box',
     itemId: 'AggregatedStudentInfoBox',
     tpl: [
-        '<div class=devilry_focuscontainer style="padding: 20px; margin-bottom: 20px;">', '<h1>', gettext('Aggregated Student Information'), '</h1>',
+        '<div style="padding: 20px; margin-bottom: 20px;">', '<h1>', gettext('Student Information'), '</h1>',
           '<dl>',
             '<dt>', gettext('Name') ,'</dt>',
             '<dd>',

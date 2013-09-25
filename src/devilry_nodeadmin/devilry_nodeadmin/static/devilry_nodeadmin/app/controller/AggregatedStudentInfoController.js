@@ -11,6 +11,9 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
     }, {
         ref: 'AggregatedStudentInfoBox',
         selector: 'aggregatedstudentinfo #AggregatedStudentInfoBox'
+    }, {
+        ref: 'userSearchBox',
+        selector: 'aggregatedstudentinfo autocompleteuserwidget#userSearchBox'
     }],
 
     models: ['AggregatedStudentInfo'],
@@ -19,6 +22,9 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
         this.control({
             'viewport aggregatedstudentinfo': {
                 render: this._onRender
+            },
+            'viewport aggregatedstudentinfo autocompleteuserwidget#userSearchBox': {
+                userSelected: this._onUserSelected
             }
         });
     },
@@ -43,5 +49,11 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
 
     _onLoadFailure: function(records){
         //TODO
+    },
+
+    _onUserSelected: function(combo, userRecord) {
+        console.log(userRecord);
+        this.getUserSearchBox().clearValue();
+        this.application.route.navigate(devilry_nodeadmin.utils.UrlLookup.aggregatedstudentinfo(userRecord.get('id')));
     }
 });
