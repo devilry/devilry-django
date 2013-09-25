@@ -21,6 +21,7 @@ Ext.define('devilry_nodeadmin.view.dashboard.DashboardOverview', {
             items: [{
                 xtype: 'box',
                 cls: 'bootstrap',
+                margin: '15 0 4px 0',
                 html: [
                     '<strong>',
                         gettext('Find details about a student:'),

@@ -4,11 +4,29 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
   cls: 'bootstrap',
   title: 'Aggregated Student Info',
 
-  layout: 'fit',
+  //layout: 'fit',
   padding: '40',
   autoScroll: true,
 
   items: [{
+      xtype: 'container',
+      items: [{
+          xtype: 'box',
+          cls: 'bootstrap',
+          margin: '0 0 4px 0',
+          html: [
+              '<strong>',
+                  gettext('Find details about another student:'),
+              '</strong>'
+              ].join('')
+      }, {
+          xtype: 'autocompleteuserwidget',
+          itemId: 'userSearchBox',
+          fieldLabel: '',
+          emptyText: gettext('Search by name, username or email...'),
+          width: 300
+      }]
+  }, {
     xtype: 'box',
     itemId: 'AggregatedStudentInfoBox',
     tpl: [
