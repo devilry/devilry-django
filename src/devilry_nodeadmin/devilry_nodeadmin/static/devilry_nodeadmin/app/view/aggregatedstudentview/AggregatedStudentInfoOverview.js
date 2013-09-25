@@ -37,8 +37,8 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
           '<tr class="info"> <td>', gettext('Assignment'), '</td> <td>', gettext('Feedback Status'), '</td>', '</tr>',
                           '<tpl for="assignments">',
                               '<tr>',
-                              '<td> <a href="{[this.getAssignmentUrl(values)]}"> {long_name} </a></td>',
                               '<tpl for="groups">',
+                                  '<td> <a href="{[this.getGroupUrl(parent, values)]}">{parent.long_name}</a></td>',
                                   '<td style="width: 200px;">',
                                   '<tpl if="status === \'corrected\'">',
                                       '<strong class="grade">',
@@ -68,10 +68,10 @@ Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOv
 
               {
 
-                getAssignmentUrl: function(assignment) {
-                    return Ext.String.format('{0}/devilry_subjectadmin/#/assignment/{1}/',
+                getGroupUrl: function(assignment, group) {
+                    return Ext.String.format('{0}/devilry_subjectadmin/#/assignment/{1}/@@manage-students/@@select/{2}',
                                              window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
-                                             assignment.id);
+                                             assignment.id, group.id);
                 }
 
                 
