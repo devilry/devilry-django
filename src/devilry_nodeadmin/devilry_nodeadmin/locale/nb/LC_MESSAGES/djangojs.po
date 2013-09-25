@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-05-01 11:05+0200\n"
+"POT-Creation-Date: 2013-09-25 12:33+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,79 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:19
+msgid "Student Information"
+msgstr "Studentinformasjon"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:21
+msgid "Name"
+msgstr "Navn"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:26
+msgid "Name missing"
+msgstr "Mangler navn"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:30
+msgid "Username"
+msgstr "brukernavn"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:32
+msgid "Email"
+msgstr "E-post"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:45
+msgid "Find details about another student:"
+msgstr "Hent opp detaljer om annen student"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:52
+#: static/devilry_nodeadmin/app/view/dashboard/DashboardOverview.js:34
+msgid "Search by name, username or email..."
+msgstr "Søk på navn, brukernavn eller e-post"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:67
+msgid "Registred as student on period"
+msgstr "Registrert som student på semesteret"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:69
+msgid "Not registred as student on period"
+msgstr "Ikke registrert som student på semesteret"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:72
+msgid "No information on exam qualification"
+msgstr "Ingen informasjon om eksamenskvalifikasjon tilgjengelig"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:74
+msgid "Qualified for final exam"
+msgstr "Kan gå opp til eksamen"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:76
+msgid "Not Qualified for final exam"
+msgstr "Kan ikke gå opp til eksamen"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:80
+msgid "Assignment"
+msgstr "Oppgaver"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:80
+msgid "Feedback Status"
+msgstr "Status tilbakemelding"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:91
+msgid "Passed"
+msgstr "Bestått"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:93
+msgid "Failed"
+msgstr "Ikke bestått"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:97
+msgid "Waiting for deliveries, or for deadline to expire"
+msgstr "Venter på innlevering eller at fristen utløper"
+
+#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:100
+msgid "Waiting for feedback"
+msgstr "Venter på tilbakemelding"
 
 #: static/devilry_nodeadmin/app/view/dashboard/BetaWarning.js:7
 msgid ""
@@ -33,6 +106,10 @@ msgstr ""
 msgid "to the alternative interface"
 msgstr "til den gamle versjonen"
 
+#: static/devilry_nodeadmin/app/view/dashboard/DashboardOverview.js:27
+msgid "Find details about a student:"
+msgstr "Hent opp detaljer om student"
+
 #: static/devilry_nodeadmin/app/view/dashboard/ToplevelNodeList.js:17
 msgid ""
 "These are only the nodes you control. Select an element to see the child "
@@ -48,7 +125,7 @@ msgstr "Kurs"
 
 #: static/devilry_nodeadmin/app/view/dashboard/ToplevelNodeList.js:19
 msgid "periods"
-msgstr ""
+msgstr "semester"
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:10
 msgid "to the top"
@@ -105,7 +182,7 @@ msgstr ""
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:31
 msgid "subject"
-msgstr ""
+msgstr "kurs"
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:41
 msgid ""
@@ -117,7 +194,7 @@ msgstr ""
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:43
 msgid "nodes"
-msgstr ""
+msgstr "noder"
 
 #~ msgid "About"
 #~ msgstr "Om"
