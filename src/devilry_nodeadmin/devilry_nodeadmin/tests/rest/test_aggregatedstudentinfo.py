@@ -29,7 +29,32 @@ class TestRestAggregatedStudentInfo(TestCase):
     def test_get(self):
         content, response = self._getas('uniadmin', self.testhelper.student1.id)
         self.assertEquals(response.status_code, 200)
-        #self.assertEquals(content, ['Hello', 'world'])
+
+        user = {u'username': u'student1', 
+                u'displayname': u'student1', 
+                u'id': 2, u'full_name': None, 
+                u'email': u'student1@example.com'} 
+        self.assertEquals(content['user'], user)
+
+        grouped_by_hierarky = content['grouped_by_hierarky'][0]
+        self.assertEquals(set(grouped_by_hierarky.keys()), set([u'long_name', u'id', u'short_name', u'periods']))
+
+        period = grouped_by_hierarky['periods'][0]
+        self.assertEquals(set(period.keys()), set([u'short_name', u'assignments', 
+                                          u'is_relatedstudent', u'start_time', 
+                                          u'is_active', u'qualified_forexams', 
+                                          u'long_name', u'end_time', u'id']))
+
+
+
+        assignments = period['assignments'][0]
+        self.assertEquals(set(period.keys()), set([u'short_name', u'assignments', 
+                                                   u'is_relatedstudent', u'start_time', 
+                                                   u'is_active', u'qualified_forexams', 
+                                                   u'long_name', u'end_time', u'id']))
+
+        groups = assignments['groups'][0]
+        self.assertEquals(set(groups.keys()), set([u'status', u'active_feedback', u'id']))
 
     def test_get_noauth(self):
         content, response = self._get(self.testhelper.student1.id)
