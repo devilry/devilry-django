@@ -55,6 +55,7 @@ def syncdb():
     Run ``bin/django_dev.py syncdb -v0 --noinput``
     """
     local('bin/django_dev.py syncdb -v0 --noinput')
+    local('bin/django_dev.py migrate -v0 --noinput')
 
 @task
 def reset_db():
