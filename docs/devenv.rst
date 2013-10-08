@@ -59,7 +59,7 @@ Ubuntu Linux
 ------------------------------------------------
 ::
 
-    $ sudo apt-get install fabric build-essential python-dev python-virtualenv
+    $ sudo apt-get install fabric build-essential python-dev python-virtualenv libncurses5-dev
 
 
 Setup the development virtualenv
