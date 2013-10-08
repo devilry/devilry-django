@@ -8,5 +8,9 @@ Ext.define('devilry_nodeadmin.utils.UrlLookup', {
 
     nodeChildren: function( node_id ) {
         return Ext.String.format('#/rest/{0}/children', node_id );
+    },
+
+    aggregatedstudentinfo: function(user_id) {
+        return Ext.String.format('/aggregatedstudentinfo/{0}', user_id);
     }
 });

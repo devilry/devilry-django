@@ -59,7 +59,8 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
                 return false; // break
             }
             path.push(item.text);
-        }, this);
+        }, this, true);
+        path.reverse();
         return path.join('.');
     }
 });
