@@ -5,14 +5,15 @@ How to release a new Devilry version
 In the devilry-django repo
 ##########################
 
-1. Update the version number in ``src/devilry/setup.py`` and ``src/devilry/devilry/version.py``
-2. Update the version number in ``docs/conf.py``.
-3. Commit the version changes.
-4. Tag the release::
+1. Make sure you build any changed ExtJS apps (see :doc:`javascript`).
+2. Update the version number in ``src/devilry/setup.py`` and ``src/devilry/devilry/version.py``
+3. Update the version number in ``docs/conf.py``.
+4. Commit the version changes.
+5. Tag the release::
 
     $ git tag vX.Y.Z
 
-5. Push the changes::
+6. Push the changes::
 
     $ git push
     $ git push --tags
