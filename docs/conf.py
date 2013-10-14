@@ -49,7 +49,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.intersphin
 # built documents.
 #
 # The short X.Y version.
-version = '1.3.2'
+version = '1.3.3'
 devilry_releasetype = ''
 # The full version, including alpha/beta/rc tags.
 release = '{0}-{1}'.format(version, devilry_releasetype)
