@@ -9,11 +9,12 @@ In the devilry-django repo
 2. Update the version number in ``src/devilry/setup.py`` and ``src/devilry/devilry/version.py``
 3. Update the version number in ``docs/conf.py``.
 4. Commit the version changes.
-5. Tag the release::
+5. Add a releasenotes document in ``docs/``.
+6. Tag the release::
 
     $ git tag vX.Y.Z
 
-6. Push the changes::
+7. Push the changes::
 
     $ git push
     $ git push --tags
@@ -32,7 +33,8 @@ In the devilry-deploy repo
 2. Update the revision id in ``${buildout:extends}`` and
    ``${download-devilryrepo}`` in ``buildout/buildout-base.cfg``. Must use TAG,
    not branch name.
-3. Tag the release and push just like you did for devilry-django above.
+3. Add migration guide to ``docs/src/``, and remember to add the guide to ``migrationguidelisting.rst``.
+4. Tag the release and push just like you did for devilry-django above.
 
 
 In the devilry-userdoc repo
