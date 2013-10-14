@@ -56,7 +56,6 @@ Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
     },
 
     _onUserSelected: function(combo, userRecord) {
-        console.log(userRecord);
         this.getUserSearchBox().clearValue();
         this.application.route.navigate(devilry_nodeadmin.utils.UrlLookup.aggregatedstudentinfo(userRecord.get('id')));
     }
