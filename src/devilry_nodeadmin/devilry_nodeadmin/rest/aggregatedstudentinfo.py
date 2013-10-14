@@ -151,13 +151,14 @@ class AggregatedStudentInfo(Resource):
             return None, 404
         devilry_qualifiesforexam_enabled = 'devilry_qualifiesforexam' in settings.INSTALLED_APPS
         adminuserobj = self.request.user
-        nodepks_where_is_admin = Node._get_nodepks_where_isadmin(adminuserobj)
         candidates = Candidate.objects.filter(student=userobj)
-        candidates = candidates.filter(
-                Q(assignment_group__parentnode__admins=adminuserobj) | \
-                Q(assignment_group__parentnode__parentnode__admins=adminuserobj) | \
-                Q(assignment_group__parentnode__parentnode__parentnode__admins=adminuserobj) | \
-                Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=nodepks_where_is_admin))
+        if not adminuserobj.is_superuser:
+            nodepks_where_is_admin = Node._get_nodepks_where_isadmin(adminuserobj)
+            candidates = candidates.filter(
+                    Q(assignment_group__parentnode__admins=adminuserobj) | \
+                    Q(assignment_group__parentnode__parentnode__admins=adminuserobj) | \
+                    Q(assignment_group__parentnode__parentnode__parentnode__admins=adminuserobj) | \
+                    Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=nodepks_where_is_admin))
         candidates = candidates.order_by(
                 'assignment_group__parentnode__parentnode__parentnode__short_name',
                 '-assignment_group__parentnode__parentnode__start_time',
