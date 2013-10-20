@@ -65,7 +65,7 @@ Ext.define('devilry.extjshelpers.assignmentgroup.FileMetaBrowserPanel', {
         var files = this.callParent(arguments);
         return {
             files: files,
-            downloadAllUrl: Ext.String.format("{0}/student/show-delivery/filedownload/{1}",
+            downloadAllUrl: Ext.String.format("{0}/student/show-delivery/compressedfiledownload/{1}",
                 DevilrySettings.DEVILRY_URLPATH_PREFIX, this.deliveryid)
         };
     }
