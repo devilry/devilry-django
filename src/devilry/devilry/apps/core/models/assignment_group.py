@@ -210,18 +210,25 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         return u', '.join([c.student.username for c in self.candidates.all()])
 
-    def get_candidates(self):
-        """ Get a string containing all candiates in the group separated by
+    def get_candidates(self, separator=u', '):
+        """
+        Get a string containing all candiates in the group separated by
         comma and a space, like: ``superman, spiderman, batman`` for normal
         assignments, and something like: ``321, 1533, 111`` for anonymous
         assignments.
-        """
-        return u', '.join([c.identifier for c in self.candidates.all()])
 
-    def get_examiners(self):
-        """ Get a string contaning all examiners in the group separated by
-        comma (``','``). """
-        return u', '.join([examiner.user.username for examiner in self.examiners.all()])
+        :param separator: The unicode string used to separate candidates. Defaults to ``u', '``.
+        """
+        return separator.join([c.identifier for c in self.candidates.all()])
+
+    def get_examiners(self, separator=u', '):
+        """
+        Get a string contaning the username of all examiners in the group separated by
+        comma (``','``).
+
+        :param separator: The unicode string used to separate candidates. Defaults to ``u', '``.
+        """
+        return separator.join([examiner.user.username for examiner in self.examiners.all()])
 
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)
