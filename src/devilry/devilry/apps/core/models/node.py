@@ -109,8 +109,14 @@ class Node(models.Model, BaseNode, Etag):
 
     @classmethod
     def _get_nodepks_where_isadmin(cls, user_obj):
-        """ Get a list with the primary key of all nodes where the given
-        `user_obj` is admin. """
+        """
+        Get a list with the primary key of all nodes where the given
+        `user_obj` is admin.
+
+        WARNING:
+        This method is not private! It is used by many models in core,
+        and in ``devilry_nodeadmin.rest.aggregatedstudentinfo``.
+        """
         admnodes = Node.objects.filter(admins=user_obj)
         l = []
         def add_admnodes(admnodes):

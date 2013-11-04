@@ -3,7 +3,7 @@ import zipfile
 from os import stat
 from mimetypes import guess_type
 from time import mktime
-import json
+import posixpath
 
 from django.views.generic import (TemplateView, View)
 from django.shortcuts import render, get_object_or_404
@@ -17,7 +17,7 @@ from devilry.utils.filewrapperwithexplicitclose import FileWrapperWithExplicitCl
 from devilry.restful.serializers import (serialize, SerializableResult,
                                          ErrorMsgSerializableResult,
                                          ForbiddenSerializableResult)
-from devilry.restful.extjshacks import extjshacks, extjswrap
+from devilry.restful.extjshacks import extjshacks
 
 import restful
 from restful import (RestfulSimplifiedDelivery, RestfulSimplifiedFileMeta,
@@ -143,14 +143,18 @@ class CompressedFileDownloadView(View):
                     or request.user.is_superuser \
                     or assignment_group.parentnode.is_admin(request.user)):
             return HttpResponseForbidden("Forbidden")
-        zip_file_name = str(delivery.delivered_by) + ".zip"
+        dirname = '{}-{}-delivery{}'.format(
+                assignment_group.parentnode.get_path(),
+                assignment_group.get_candidates(separator='_'),
+                delivery.number)
+        zip_file_name = u'{}.zip'.format(dirname)
 
         tempfile = NamedTemporaryFile()
         zip_file = zipfile.ZipFile(tempfile, 'w');
 
         for filemeta in delivery.filemetas.all():
             file_content = filemeta.deliverystore.read_open(filemeta)
-            zip_file.write(file_content.name, filemeta.filename)
+            zip_file.write(file_content.name, posixpath.join(dirname, filemeta.filename))
         zip_file.close()
 
         tempfile.seek(0)
