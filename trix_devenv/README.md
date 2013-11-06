@@ -1,8 +1,8 @@
-Development setup for the Trix system on top of Devilry. Follow the
-instructions for setting up a Devilry development environment (see
+Development setup for the Trix system on top of Devilry.
+
+Follow the instructions for setting up a Devilry development environment (see
 http://devilry.readthedocs.org), but use ``trix_devenv/`` instead of
 ``devenv/``.
-
 
 ## Add Trix to settings
 
@@ -36,3 +36,20 @@ required. For now, we have simply left the stuff above commented out.
 ## Tips
 Use ``bin/fab autodb:no_groups=yes`` instead of ``bin/fab autodb`` to generate
 a bit less data. Devilry groups is not used by Trix, so you do not need them.
+
+
+## The package trix_SOMETHING is dirty?
+You may get some warnings like this when you re-run ``fab bootstrap``:
+
+    The package 'trix_extjshelpers' is dirty.
+    Do you want to update it anyway? [yes/No/all]
+
+That is because the repos are not clean (``git status`` on them reports changed or untracked files).
+
+
+## Editing in the Trix repos fetched by buildout?
+This is perfectly safe. As you can see from the section about dirty packages
+above, buildout even warns when you are in danger of overwriting local changes.
+We also setup a custom default push url to an url that works when you have
+push-permissions to the repos. If you are working on a fork, you may want to
+modify the pushurl in ``trix_devenv/buildout.cfg`` and re-run fab bootstrap.
