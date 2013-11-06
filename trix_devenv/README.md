@@ -29,7 +29,7 @@ url:
 We should create a set of custom settings-files and a ``default_trix_urls.py``
 in the ``trix``-package, and couple that with overrides for all the
 ``django_*``-sections from ``development-base.cfg`` in
-``trix_devenv/buildout.cfg`` That way, none of the paching above would be
+``trix_devenv/buildout.cfg`` That way, none of the patching above would be
 required. For now, we have simply left the stuff above commented out.
 
 
