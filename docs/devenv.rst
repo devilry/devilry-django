@@ -62,6 +62,18 @@ Ubuntu Linux
     $ sudo apt-get install fabric build-essential python-dev python-virtualenv libncurses5-dev
 
 
+Arch Linux
+------------------------------------------------
+(may be incomplete)
+
+Install required system packages::
+
+    $ packman -S python2 fabric python2-virtualenv
+
+
+
+
+
 Setup the development virtualenv
 =================================================================
 ::
@@ -70,7 +82,8 @@ Setup the development virtualenv
     $ fab bootstrap
 
 .. note::
-   $ fab bootstrap might not work even if the right tools in `Ubuntu
+
+   ``fab bootstrap`` might not work even if the right tools in `Ubuntu
    Linux`_ are installed. It is possible that the creation of
    the virtual environment will fail because it either installs *setuptools* or
    *distribute* into the environment. To use *distribute* you must
@@ -78,8 +91,26 @@ Setup the development virtualenv
    must set the VIRTUALENV_DISTRIBUTE environment variable.
    
 .. note::
+
    If you get any trouble with ncurses linking during installation, make sure you have the development version
    of the ncurses library installed.
+
+.. note::
+
+    If you get ``"Error: Couldn't install: readline".``, you may try to debug
+    it, or you could simply remove ``readline`` and ``ipython`` from
+    ``development-base.cfg``.
+
+
+.. note::
+
+    On some systems (E.g.: ArchLinux) the `virtualenv2` command has to be
+    called instead of ``virtualenv``. To trick fabric into calling virtualenv2,
+    you can use::
+
+        $ ln -s `which virtualenv2` virtualenv
+        $ PATH="$PATH:." fab bootstrap
+
 
 Next steps
 =================================================================
