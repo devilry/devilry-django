@@ -41,7 +41,15 @@ INSTALLED_APPS += [
     # Not apps, but here for the Django test system to discover them:
     'devilry.utils',
     'devilry.restful',
-    'devilry.simplified']
+    'devilry.simplified',
+
+
+    ## For Trix development
+    #'trix',
+    #'trix_extjshelpers',
+    #'trix_restful',
+    #'trix_simplified',
+]
 
 
 INTERNAL_IPS = ["127.0.0.1"]

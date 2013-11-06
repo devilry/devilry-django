@@ -10,7 +10,7 @@ After setting up a development environment, you will have to patch the
 Devilry/Django settings to develop Trix.
 
 ### INSTALLED_APPS
-Update ``src/devilry_settings/devilry_settings/default_settings.py`` with the
+Update ``src/devilry_developer/devilry_developer/settings/base.py`` with the
 following at the end of ``INSTALLED_APPS``:
 
     'trix',
@@ -19,7 +19,8 @@ following at the end of ``INSTALLED_APPS``:
     'trix_simplified'
 
 ### URLs
-Update ``src/devilry_settings/devilry_settings/default_settings.py`` with:
+Update ``src/devilry_developer/devilry_developer/dev_urls`` with the following
+url:
 
     (r'^trix/', include('trix.urls')),
 
