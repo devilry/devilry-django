@@ -61,10 +61,10 @@ db_and_deliveries_stash/
 .idea/
 
 # devenv
-devenv/*
-!devenv/fabfile.py
-!devenv/README.md
-!devenv/buildout.cfg
+*devenv/*
+!*devenv/fabfile.py
+!*devenv/README.md
+!*devenv/buildout.cfg
 
 # docs/
 docs/.Python
@@ -117,6 +117,10 @@ awsdemo/virtualenv/
 src/django_seleniumhelpers/
 src/djangosenchatools/
 src/django_devserver/
+src/trix/
+src/trix_extjshelpers/
+src/trix_restful/
+src/trix_simplified/
 
 # npm installs
 node_modules/
