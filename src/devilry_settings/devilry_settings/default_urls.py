@@ -30,5 +30,8 @@ devilry_urls = ((r'^student/', include('devilry.apps.student.urls')),
                 (r'^devilry_qualifiesforexam_approved/', include('devilry_qualifiesforexam_approved.urls')),
                 (r'^devilry_qualifiesforexam_points/', include('devilry_qualifiesforexam_points.urls')),
                 (r'^devilry_qualifiesforexam_select/', include('devilry_qualifiesforexam_select.urls')),
+
+                #(r'^trix/', include('trix.urls')),
+
                 (r'^$', frontpage),
                )

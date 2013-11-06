@@ -88,7 +88,12 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry_qualifiesforexam_approved',
                   'devilry_qualifiesforexam_points',
                   'devilry_qualifiesforexam_select',
-                  'devilry_mathjax'
+                  'devilry_mathjax',
+
+                  #'trix',
+                  #'trix_extjshelpers',
+                  #'trix_restful',
+                  #'trix_simplified',
                  ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
