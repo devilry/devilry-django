@@ -34,6 +34,7 @@ INSTALLED_APPS += [
     # 'raven.contrib.django.raven_compat', # Sentry client (Raven)
     'devilry_sandbox',
 
+    'devilry_developer',
     'devilry_examiner',
     'devilry_rest',
     'simple_rest',
@@ -97,10 +98,6 @@ PASSWORD_HASHERS = (
 #DEVILRY_USERADMIN_PASSWORD_HELPMESSAGE = 'Passwords are handled by Our Awesome External User Management System. Follow <a href="https://awesome.example.com">this link</a> to reset passwords.'
 
 
-##################################################################################
-# Celery
-##################################################################################
-CELERY_ALWAYS_EAGER = True
 
 ##################################################################################
 # Haystack (search)
@@ -206,3 +203,16 @@ CACHES = {
 # RAVEN_CONFIG = {
 #     'dsn': 'http://85cc6c611c904a0ebb4afd363fe60fe4:32988134adad4044bc7d13f85f318498@localhost:9000/2',
 # }
+
+
+##################################################################################
+# Celery
+##################################################################################
+CELERY_ALWAYS_EAGER = True
+#CELERY_ALWAYS_EAGER = False
+#CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+#BROKER_URL = 'django://'
+#INSTALLED_APPS.append('kombu.transport.django')
+#EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+#CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
