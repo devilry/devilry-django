@@ -44,7 +44,6 @@ INSTALLED_APPS += [
     'devilry.restful',
     'devilry.simplified',
 
-
     ## For Trix development
     #'trix',
     #'trix_extjshelpers',
@@ -209,10 +208,14 @@ CACHES = {
 # Celery
 ##################################################################################
 CELERY_ALWAYS_EAGER = True
+
+## For testing celery
 #CELERY_ALWAYS_EAGER = False
 #CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 #BROKER_URL = 'django://'
-#INSTALLED_APPS.append('kombu.transport.django')
+#INSTALLED_APPS += ['kombu.transport.django']
+
+## For testing django-celery-email
+#INSTALLED_APPS += ['djcelery_email']
 #EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 #CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
