@@ -76,8 +76,12 @@ Ext.define('devilry_subjectadmin.store.Groups', {
     },
 
     _getLastname: function(fullname) {
-        var split = fullname.split(/\s+/);
-        return split[split.length-1];
+        if(Ext.isEmpty(fullname)) {
+            return '';
+        } else {
+            var split = fullname.split(/\s+/);
+            return split[split.length-1];
+        }
     },
 
     _sortByLastname: function(recordA, recordB) {
