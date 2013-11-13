@@ -5,7 +5,12 @@ How to release a new Devilry version
 In the devilry-django repo
 ##########################
 
-1. Make sure you build any changed ExtJS apps (see :doc:`javascript`).
+1. Make sure you build and commit any changed ExtJS apps (see
+   :doc:`javascript`). You will want to test that the built JS is working
+   correctly with::
+
+      $ bin/django_noextjsdebug.py runserver
+
 2. Update the version number in ``src/devilry/setup.py`` and ``src/devilry/devilry/version.py``
 3. Update the version number in ``docs/conf.py``.
 4. Commit the version changes.
