@@ -11,15 +11,18 @@ In the devilry-django repo
 
       $ bin/django_noextjsdebug.py runserver
 
-2. Update the version number in ``src/devilry/setup.py`` and ``src/devilry/devilry/version.py``
-3. Update the version number in ``docs/conf.py``.
-4. Commit the version changes.
-5. Add a releasenotes document in ``docs/``.
-6. Tag the release::
+2. Update the version number in::
+   
+      src/devilry/setup.py src/devilry/devilry/version.py docs/conf.py
+
+3. Commit the version changes.
+4. Add a releasenotes document in ``docs/releasenotes-X.Y.Z.rst``, and commit
+   the new file.
+5. Tag the release::
 
     $ git tag vX.Y.Z
 
-7. Push the changes::
+6. Push the changes::
 
     $ git push
     $ git push --tags
