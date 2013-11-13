@@ -42,7 +42,8 @@ In the devilry-deploy repo
 3. Update the revision id in ``${buildout:extends}`` and
    ``${download-devilryrepo}`` in ``buildout/buildout-base.cfg``. Must use TAG,
    not branch name.
-4. Tag the release and push just like you did for devilry-django above.
+4. Make sure all the changes from the steps above are committed.
+5. Tag the release and push just like you did for devilry-django above.
 
 
 In the devilry-userdoc repo
