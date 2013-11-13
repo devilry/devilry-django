@@ -41,7 +41,17 @@ In the devilry-deploy repo
 2. Update the version number in ``docs/src/conf.py``
 3. Update the revision id in ``${buildout:extends}`` and
    ``${download-devilryrepo}`` in ``buildout/buildout-base.cfg``. Must use TAG,
-   not branch name.
+   not branch name. Should end up with something like this::
+
+       [buildout]
+       extends = https://raw.github.com/devilry/devilry-django/vX.Y.Z/versions.cfg
+
+       ...
+
+       [download-devilryrepo]
+       ...
+       rev = vX.Y.Z
+
 4. Make sure all the changes from the steps above are committed.
 5. Tag the release and push just like you did for devilry-django above.
 
