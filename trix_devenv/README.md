@@ -34,8 +34,11 @@ required. For now, we have simply left the stuff above commented out.
 
 
 ## Tips
-Use ``bin/fab autodb:no_groups=yes`` instead of ``bin/fab autodb`` to generate
-a bit less data. Devilry groups is not used by Trix, so you do not need them.
+
+- Use ``bin/fab autodb:no_groups=yes`` instead of ``bin/fab autodb`` to generate
+  a bit less data. Devilry groups is not used by Trix, so you do not need them.
+- `devilry-deploy <http://devilry-deploy.readthedocs.org/>`_ has a Vagrant
+  setup for testing Trix in a VM.
 
 
 ## The package trix_SOMETHING is dirty?
