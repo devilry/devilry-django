@@ -19,7 +19,7 @@ following at the end of ``INSTALLED_APPS``:
     'trix_simplified'
 
 ### URLs
-Update ``src/devilry_developer/devilry_developer/dev_urls`` with the following
+Update ``src/devilry_developer/devilry_developer/dev_urls.py`` with the following
 url:
 
     (r'^trix/', include('trix.urls')),
