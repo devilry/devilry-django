@@ -20,6 +20,16 @@ from model_utils import Etag
 import deliverytypes
 
 
+
+class AssignmentExaminerManager(models.Manager):
+    def where_is_examiner(self, user):
+        return self.get_query_set().filter(assignmentgroups__examiners__user=user).distinct()
+
+    def active(self, user):
+        now = datetime.now()
+        return self.where_is_examiner(user).filter(publishing_time__lt=now, parentnode__end_time__gt=now)
+
+
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
 
@@ -89,6 +99,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         assignment. This is metadata that the UI can use where it is
         natural.
     """
+    examiner_objects = AssignmentExaminerManager()
 
     DEADLINEHANDLING_SOFT = 0
     DEADLINEHANDLING_HARD = 1
