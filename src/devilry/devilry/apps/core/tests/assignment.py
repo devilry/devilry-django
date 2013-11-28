@@ -228,3 +228,39 @@ class TestAssignmentCanDelete(TestCase, TestHelper):
         self.assertTrue(assignment.can_delete(self.uniadm))
         self.add_delivery("sub.p1.a1.g1", self.goodFile)
         self.assertFalse(assignment.can_delete(self.uniadm))
+
+
+class TestExaminerAssignmentManager(TestCase):
+    def setUp(self):
+        self.testhelper = TestHelper()
+
+    def test_where_is_examiner(self):
+        self.testhelper.add(nodes='uni',
+                subjects=['sub'],
+                periods=['period1'], # 2 months ago
+                assignments=['week1'], # 2 months + 1day ago
+                assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
+        self.testhelper.add_to_path('uni;sub.period1.week1.g1:candidate(student1):examiner(otherexaminer)')
+        qry = Assignment.examiner_objects.where_is_examiner(self.testhelper.examiner1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], self.testhelper.sub_period1_week1)
+
+    def test_active(self):
+        self.testhelper.add(nodes='uni',
+                subjects=['sub'],
+                periods=[
+                    'period0:begins(-12):ends(6)', # 12-6 months ago (inactive)
+                    'period1:begins(-2):ends(6)',  # -2 to +4 months (active)
+                    'period2:begins(12):ends(6)',  # In 12-18 months (inactive)
+                    ],
+                assignments=['week1:pub(1)'],
+                assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
+        self.testhelper.add_to_path('uni;sub.period1.week2.g1:candidate(student1):examiner(otherexaminer)')
+
+        qry = Assignment.examiner_objects.active(self.testhelper.examiner1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], self.testhelper.sub_period1_week1)
+
+        # make sure we are not getting false positives
+        self.assertEquals(Assignment.examiner_objects.where_is_examiner(self.testhelper.examiner1).count(), 3)
+        self.assertEquals(Assignment.examiner_objects.where_is_examiner(self.testhelper.otherexaminer).count(), 1)
