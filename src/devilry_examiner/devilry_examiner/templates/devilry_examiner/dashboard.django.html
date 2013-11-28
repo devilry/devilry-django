@@ -2,9 +2,9 @@
 
 {% block body %}
     <div class="container">
-        <ul>
+        <ul class="active-assignment-listing">
         {% for assignment in active_assignments %}
-            <li>{{ assignment}}</li>
+            <li class="active-assignment-listing-item">{{ assignment}}</li>
         {% endfor %}
         </ul>
     </div>
