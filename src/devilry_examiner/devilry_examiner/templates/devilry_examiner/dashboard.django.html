@@ -2,6 +2,10 @@
 
 {% block body %}
     <div class="container">
-        Hello world
+        <ul>
+        {% for assignment in active_assignments %}
+            <li>{{ assignment}}</li>
+        {% endfor %}
+        </ul>
     </div>
 {% endblock %}
