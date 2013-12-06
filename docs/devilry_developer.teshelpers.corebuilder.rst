@@ -59,6 +59,7 @@ sense when testing:
   ``add_delivery_after_deadline`` and ``add_delivery_before_deadline`` for more
   control.
 - Default ``publishing_time`` for assignments is *now*.
+- UserBuilder defaults to setting email to ``<username>@example.com``.
 
 These defaults are all handled in the constructor of their builder-class. All
 the defaults can be overridden by specifying a value for them.

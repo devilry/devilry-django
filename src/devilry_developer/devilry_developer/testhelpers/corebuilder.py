@@ -23,6 +23,7 @@ class ReloadableDbBuilderInterface(object):
 
 class UserBuilder(ReloadableDbBuilderInterface):
     def __init__(self, username, full_name=None, email=None):
+        email = email or u'{}@example.com'.format(username)
         self.user = User(username=username, email=email)
         self.user.set_password('test')
         self.user.full_clean()
