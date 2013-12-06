@@ -137,12 +137,12 @@ class GroupBuilder(CoreBuilderBase):
 
     def add_students(self, *users):
         for user in users:
-            self.group.students.create(student=user)
+            self.group.candidates.create(student=user)
         return self
 
     def add_candidates(self, *candidates):
         for candidate in candidates:
-            self.group.students.add(candidate)
+            self.group.candidates.add(candidate)
         return self
 
     def add_examiners(self, *users):
