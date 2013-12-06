@@ -32,7 +32,7 @@
         {% endcomment %}
     </head>
 
-    <body>
+    <body id="{% block bodyid %}{% endblock %}">
         {% block body %}{% endblock %}
     </body>
 </html>
