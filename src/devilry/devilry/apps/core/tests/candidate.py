@@ -76,3 +76,16 @@ class TestCandidate(TestCase, TestHelper):
         candidate.student.devilryuserprofile.save()
         candidate_db = Candidate.objects.get(id=candidate.id) # Must be re-fetched to avoid reading student from cache
         self.assertEquals(candidate_db.full_name, 'Changed Name')
+
+    def test_displayname(self):
+        peterpan = self.create_user('peterpan', fullname='Peter Pan')
+        g1 = self.inf1100_autumn_assignment1_g1
+        candidate = g1.candidates.create(student=peterpan)
+        self.assertEquals(candidate.displayname, 'Peter Pan')
+
+        peterpan.devilryuserprofile.full_name = None
+        peterpan.devilryuserprofile.save()
+        self.assertEquals(Candidate.objects.get(id=candidate.id).displayname, 'peterpan')
+        g1.parentnode.anonymous = True
+        g1.parentnode.save()
+        self.assertEquals(Candidate.objects.get(id=candidate.id).displayname, 'candidate-id missing')
