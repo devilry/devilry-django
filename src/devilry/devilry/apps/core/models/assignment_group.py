@@ -30,6 +30,36 @@ class GroupPopNotCandiateError(GroupPopValueError):
     """
 
 
+
+class ExaminerAssignmentGroupManager(models.Manager):
+    def where_is_examiner(self, user):
+        """
+        Returns a queryset with all AssignmentGroups where the given ``user`` is examiner.
+
+        WARNING: You should normally not use this directly because it gives the
+        examiner information from expired periods (which they are not supposed
+        to get). Use :meth:`.active` instead.
+        """
+        return self.get_query_set().filter(examiners__user=user).distinct()
+
+    def active(self, user):
+        """
+        Returns a queryset with all AssignmentGroups on active Assignments
+        where the given ``user`` is examiner.
+
+        NOTE: This returns all groups that the given ``user`` has examiner-rights for.
+        """
+        now = datetime.now()
+        return self.where_is_examiner(user).filter(
+                parentnode__publishing_time__lt=now,
+                parentnode__parentnode__end_time__gt=now).distinct()
+
+
+class DefaultAssignmentGroupManager(models.Manager):
+    pass
+
+
+
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     """
@@ -77,6 +107,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
        A DateTimeField containing the etag for this object.
     """
+
+    objects = DefaultAssignmentGroupManager()
+    examiner_objects = ExaminerAssignmentGroupManager()
 
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True,
