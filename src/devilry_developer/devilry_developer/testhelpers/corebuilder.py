@@ -1,4 +1,5 @@
 from django.contrib.auth.models import User
+from datetime import datetime
 
 from devilry.apps.core.models import Node
 from devilry.apps.core.models import Subject
@@ -75,7 +76,7 @@ class BaseNodeBuilderBase(CoreBuilderBase):
             'long_name': long_name or short_name
         }
         full_kwargs.update(kwargs)
-        setattr(self.object_attribute_name, self.modelcls.objects.create(**full_kwargs))
+        setattr(self, self.object_attribute_name, self.modelcls.objects.create(**full_kwargs))
 
 
 
@@ -91,6 +92,8 @@ class FileMetaBuilder(CoreBuilderBase):
 
 class DeliveryBuilder(CoreBuilderBase):
     def __init__(self, **kwargs):
+        if not 'time_of_delivery' in kwargs:
+            kwargs['time_of_delivery'] = datetime.now()
         self.delivery = Delivery.objects.create(**kwargs)
 
     def _save(self):
@@ -167,13 +170,18 @@ class AssignmentBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'assignment'
     modelcls = Assignment
 
+    def __init__(self, *args, **kwargs):
+        if not 'publishing_time' in kwargs:
+            kwargs['publishing_time'] = datetime.now()
+        super(AssignmentBuilder, self).__init__(*args, **kwargs)
+
     def add_group(self, *args, **kwargs):
         kwargs['parentnode'] = self.assignment
         return GroupBuilder(*args, **kwargs)
 
 
 
-class PeriodBuilder(CoreBuilderBase):
+class PeriodBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'period'
     modelcls = Period
 
@@ -182,7 +190,7 @@ class PeriodBuilder(CoreBuilderBase):
         return AssignmentBuilder(*args, **kwargs)
 
 
-class SubjectBuilder(CoreBuilderBase):
+class SubjectBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'subject'
     modelcls = Subject
 
@@ -190,8 +198,32 @@ class SubjectBuilder(CoreBuilderBase):
         kwargs['parentnode'] = self.subject
         return PeriodBuilder(*args, **kwargs)
 
+    def add_6month_active_period(self, *args, **kwargs):
+        kwargs['parentnode'] = self.subject
+        if 'start_time' in kwargs or 'end_time' in kwargs:
+            raise ValueError('add_6month_active_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
+        kwargs['start_time'] = DateTimeBuilder.now().minus(days=30*3)
+        kwargs['end_time'] = DateTimeBuilder.now().plus(days=30*3)
+        return self.add_period(*args, **kwargs)
 
-class NodeBuilder(CoreBuilderBase):
+    def add_6month_lastyear_period(self, *args, **kwargs):
+        kwargs['parentnode'] = self.subject
+        if 'start_time' in kwargs or 'end_time' in kwargs:
+            raise ValueError('add_6month_lastyear_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
+        kwargs['start_time'] = DateTimeBuilder.now().minus(days=365 - 30*3)
+        kwargs['end_time'] = DateTimeBuilder.now().minus(days=365 + 30*3)
+        return self.add_period(*args, **kwargs)
+
+    def add_6month_nextyear_period(self, *args, **kwargs):
+        kwargs['parentnode'] = self.subject
+        if 'start_time' in kwargs or 'end_time' in kwargs:
+            raise ValueError('add_6month_nextyear_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
+        kwargs['start_time'] = DateTimeBuilder.now().plus(days=365 - 30*3)
+        kwargs['end_time'] = DateTimeBuilder.now().plus(days=365 + 30*3)
+        return self.add_period(*args, **kwargs)
+
+
+class NodeBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'node'
     modelcls = Node
 

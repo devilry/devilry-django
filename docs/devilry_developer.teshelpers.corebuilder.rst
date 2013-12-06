@@ -37,7 +37,7 @@ period that started 3 months ago and ends in 3 months, with a single assignment
     peterpan = UserBuilder(username='peterpan')
     NodeBuilder('duckuniversity')\
         .add_subject('duck1010')\
-        .add_6month_active_period('p1')\
+        .add_6month_active_period('current')\
         .add_assignment('week1')\
         .add_group(students=[peterpan.user])\
         .add_deadline_in_x_weeks(weeks=1)\
@@ -58,6 +58,10 @@ sense when testing:
 - Time of delivery (for ``add_delivery()``) default to *now*. Use
   ``add_delivery_after_deadline`` and ``add_delivery_before_deadline`` for more
   control.
+- Default ``publishing_time`` for assignments is *now*.
+
+These defaults are all handled in the constructor of their builder-class. All
+the defaults can be overridden by specifying a value for them.
 
 
 
