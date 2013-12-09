@@ -186,6 +186,11 @@ class PeriodBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'period'
     modelcls = Period
 
+
+    @classmethod
+    def quickadd_ducku_duck1010_current(cls):
+        return SubjectBuilder.quickadd_ducku_duck1010().add_6month_active_period('current')
+
     def add_assignment(self, *args, **kwargs):
         kwargs['parentnode'] = self.period
         return AssignmentBuilder(*args, **kwargs)
@@ -194,6 +199,10 @@ class PeriodBuilder(BaseNodeBuilderBase):
 class SubjectBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'subject'
     modelcls = Subject
+
+    @classmethod
+    def quickadd_ducku_duck1010(cls):
+        return NodeBuilder('ducku').add_subject('duck1010')
 
     def add_period(self, *args, **kwargs):
         kwargs['parentnode'] = self.subject
