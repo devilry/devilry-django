@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from devilry.apps.core.testhelper import TestHelper
-from devilry_developer.testhelpers.corebuilder import NodeBuilder
+from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
@@ -13,10 +13,7 @@ class TestSingleGroupOverview(TestCase):
         self.testhelper = TestHelper()
         self.examiner1 = UserBuilder('examiner1').user
         self.student1 = UserBuilder('student1').user
-        self.week1builder = NodeBuilder('ducku')\
-                .add_subject('duck1010')\
-                .add_6month_active_period('current')\
-                .add_assignment('week1')
+        self.week1builder = PeriodBuilder.quickadd_ducku_duck1010_current().add_assignment('week1')
 
     def _getas(self, username, groupid, *args, **kwargs):
         self.client.login(username=username, password='test')
@@ -24,7 +21,9 @@ class TestSingleGroupOverview(TestCase):
                 *args, **kwargs)
 
     def test_header(self):
-        groupbuilder = self.week1builder.add_group(students=[self.student1], examiners=[self.examiner1])
+        groupbuilder = self.week1builder.add_group(
+            students=[self.student1],
+            examiners=[self.examiner1])
         response = self._getas('examiner1', groupbuilder.group.id)
         self.assertEquals(response.status_code, 200)
         html = response.content
