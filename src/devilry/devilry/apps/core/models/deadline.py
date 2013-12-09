@@ -12,6 +12,7 @@ from abstract_is_admin import AbstractIsAdmin
 from node import Node
 
 
+
 class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate):
     """ A deadline on an `AssignmentGroup`_. A deadline contains zero or more
     `deliveries <Delivery>`_, the time of the deadline and an optional text.
@@ -31,6 +32,8 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     .. attribute:: deliveries
 
         A django ``RelatedManager`` that holds the `deliveries <Delivery>`_ on this group.
+        NOTE: You should normally not use this directly, but rather use meth:`.query_successful_deliveries`.
+
 
     .. attribute:: deliveries_available_before_deadline
 
@@ -140,11 +143,18 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         return Q(assignment_group__examiners__user=user_obj)
 
 
+    def query_successful_deliveries(self):
+        """
+        Returns a django QuerySet that filters all the successful `deliveries
+        <Delivery>`_ on this group.
+        """
+        return self.deliveries.filter(successful=True)
+
     def is_empty(self):
         """
         Returns ``True`` if this Deadline does not contain any deliveries.
         """
-        return self.deliveries.count() == 0
+        return self.query_successful_deliveries().count() == 0
 
     def can_delete(self, user_obj):
         """
@@ -182,6 +192,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
                                 feedbacks_published=self.feedbacks_published)
         deadlinecopy.full_clean()
         deadlinecopy.save()
-        for delivery in self.deliveries.all():
+        for delivery in self.query_successful_deliveries():
             delivery.copy(deadlinecopy)
         return deadlinecopy

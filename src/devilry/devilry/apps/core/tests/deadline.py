@@ -112,3 +112,13 @@ class TestDeadline(TestCase, TestHelper):
             self.assertEquals(delivery.deadline.deadline, deliverycopy.deadline.deadline)
             self.assertEquals(delivery.delivered_by, deliverycopy.delivered_by)
             self.assertEquals(delivery.alias_delivery, deliverycopy.alias_delivery)
+
+    def test_query_successful_deliveries(self):
+        self.add_to_path('uni:admin(uniadm);sub.p1:begins(-2).a1.g1:candidate(stud1).d1:ends(5)')
+        deadline = self.sub_p1_a1_g1_d1
+        delivery1 = self.add_delivery("sub.p1.a1.g1", self.goodFile)
+        delivery2 = self.add_delivery("sub.p1.a1.g1", self.goodFile)
+        delivery2.successful = False
+        delivery2.save()
+        self.assertEquals(deadline.query_successful_deliveries().count(), 1)
+        self.assertEquals(deadline.query_successful_deliveries()[0], delivery1)
