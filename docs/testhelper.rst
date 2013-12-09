@@ -5,6 +5,10 @@ devilry.apps.core.testhelper --- Create core test data
 ================================================================
 
 
+.. deprecated:: 1.4
+    Use :doc:`devilry_developer.teshelpers.corebuilder` instead.
+
+
 Example
 #######
 
