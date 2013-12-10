@@ -1,28 +1,50 @@
 {% extends "devilry_examiner/base.django.html" %}
-{% load i18n %}
+{% load i18n devilry_examiner_tags%}
 
 {% block bodyid %}allgroupsoverview{% endblock %}
 
 {% block body %}
+<div class="container">
+  <ol class="breadcrumb">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Library</a></li>
+    <li class="active">Data</li>
+  </ol>
 
-<h1>{{ assignment.long_name }}</h1>
-<h2>{{ assignment.parentnode.parentnode.long_name }}</h2>
-<h3>{{ assignment.parentnode.long_name }}</h3>
+  <h1>{{ assignment.long_name }}</h1>
+  <div class="subheader">
+    {{ assignment.parentnode.parentnode.long_name}} &mdash; {{ assignment.parentnode.long_name }}
+  </div>
 
-<p> 
-<ul>
+
+</div>
+
+
+<div> 
+
 {% for group in assignment.assignmentgroups.all %}
-<li>             
-  {% for candidate in group.candidates.all %}
-      {% if not forloop.first %}
-          ,
-      {% endif %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <h2 class="text-muted">
+        {% for candidate in group.candidates.all %}
+        {% if not forloop.first %}
+        ,
+        {% endif %}
+        
+        {{ candidate.displayname }}
+        {% endfor %}
+      </h2>
+      {{ group.get_status|status:"Halla" }}
+    </div>
+    <div class="col-sm-4">
       
-      {{ candidate.displayname }}
-  {% endfor %}
-</li>
-{% endfor%}
-</ul>
+      <button type="button" class="btn btn-default hidden-xs">Default</button>
+    </div>
 
-</p>
+  </div><!-- row -->
+</div>
+{% endfor%}
+
+</div>
 {% endblock %}
