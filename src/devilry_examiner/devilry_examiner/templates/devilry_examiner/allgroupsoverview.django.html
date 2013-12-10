@@ -19,6 +19,15 @@
 
 </div>
 
+<div class="container">
+  <div class="row">
+  <a class="btn btn-default" href="#" role="button">Waiting for feedback</a>
+  <a class="btn btn-default" href="#" role="button">Waiting for deliveries</a>
+  <a class="btn btn-default" href="#" role="button">Corrected</a>
+  <a class="btn btn-default" href="#" role="button">All</a>
+  </div>
+</div>
+
 
 <div> 
 
@@ -26,7 +35,7 @@
 <div class="container">
   <div class="row">
     <div class="col-sm-8">
-      <h2 class="text-muted">
+      <h2 class="text-primary">
         {% for candidate in group.candidates.all %}
         {% if not forloop.first %}
         ,
@@ -35,11 +44,19 @@
         {{ candidate.displayname }}
         {% endfor %}
       </h2>
-      {{ group.get_status|status:"Halla" }}
+      <p class="text-muted">{{ group.get_status|formatted_status }}</p>
     </div>
     <div class="col-sm-4">
-      
-      <button type="button" class="btn btn-default hidden-xs">Default</button>
+      <h1>
+        {% if group.get_status == "waiting-for-deliveries" %}
+        <button type="button" class="btn btn-default hidden
+                                     hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+        {% else %}
+        <button type="button" class="btn btn-default
+                                     hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+        {% endif %}
+
+      </h1>
     </div>
 
   </div><!-- row -->
