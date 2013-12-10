@@ -5,9 +5,24 @@
 
 {% block body %}
 
-<h1>Hello World!</h1>
-
 <h1>{{ assignment.long_name }}</h1>
+<h2>{{ assignment.parentnode.parentnode.long_name }}</h2>
+<h3>{{ assignment.parentnode.long_name }}</h3>
 
+<p> 
+<ul>
+{% for group in assignment.assignmentgroups.all %}
+<li>             
+  {% for candidate in group.candidates.all %}
+      {% if not forloop.first %}
+          ,
+      {% endif %}
+      
+      {{ candidate.displayname }}
+  {% endfor %}
+</li>
+{% endfor%}
+</ul>
 
+</p>
 {% endblock %}
