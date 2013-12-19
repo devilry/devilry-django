@@ -20,14 +20,31 @@ from model_utils import Etag
 import deliverytypes
 
 
+class ExaminerAssignmentQuerySet(models.query.QuerySet):
+    """
+    Returns a queryset with all Assignments  where the given ``user`` is examiner.
+
+    WARNING: You should normally not use this directly because it gives the
+    examiner information from expired periods (which in most cases are not necessary
+    to get). Use :meth:`.active` instead.
+    """
+    def filter_is_examiner(self, user):
+        return self.filter(assignmentgroups__examiners__user=user).distinct()
+
+    def filter_is_active(self):
+        now = datetime.now()
+        return self.filter(publishing_time__lt=now, parentnode__end_time__gt=now)
+
 
 class ExaminerAssignmentManager(models.Manager):
-    def where_is_examiner(self, user):
-        return self.get_query_set().filter(assignmentgroups__examiners__user=user).distinct()
+    def get_queryset(self):
+        return ExaminerAssignmentQuerySet(self.model, using=self._db)
 
-    def active(self, user):
-        now = datetime.now()
-        return self.where_is_examiner(user).filter(publishing_time__lt=now, parentnode__end_time__gt=now)
+    def filter_is_examiner(self, user):
+        return self.get_queryset().filter_is_examiner(user)
+
+    def filter_is_active(self, user):
+        return self.get_queryset().filter_is_active()
 
 
 class DefaultAssignmentManager(models.Manager):

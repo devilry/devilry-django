@@ -11,4 +11,4 @@ class SingleGroupOverview(DetailView):
     context_object_name = 'group'
 
     def get_queryset(self):
-        return AssignmentGroup.examiner_objects.active(self.request.user)
+        return AssignmentGroup.examiner_objects.filter_is_examiner(self.request.user).filter_is_active()

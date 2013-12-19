@@ -10,4 +10,9 @@ class AllGroupsOverview(DetailView):
     pk_url_kwarg = 'assignmentid'
 
     def get_queryset(self):
-        return Assignment.examiner_objects.where_is_examiner(self.request.user)
+        if self.request.GET.get('waiting_for_feedback'):
+            print "hei"
+        else:
+            print "heia"
+
+        return Assignment.examiner_objects.filter_is_examiner(self.request.user)
