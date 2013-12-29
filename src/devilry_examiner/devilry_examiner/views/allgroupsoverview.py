@@ -11,7 +11,7 @@ class AllGroupsOverview(DetailView):
 
     def get_queryset(self):
         if self.request.GET.get('waiting_for_feedback'):
-            print "hei"
+            print "hei: ", self.request.GET.get('waiting_for_feedback')
         else:
             print "heia"
 
