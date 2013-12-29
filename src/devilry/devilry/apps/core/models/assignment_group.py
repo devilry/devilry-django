@@ -121,6 +121,15 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     .. attribute:: etag
 
        A DateTimeField containing the etag for this object.
+
+    .. attribute:: delivery_status
+
+       A CharField containing the status of the group.
+       Valid status values:
+           * "no-deadlines"
+           * "corrected"
+           * "closed-without-feedback"
+           * "waiting-for-something"
     """
 
     objects = DefaultAssignmentGroupManager()
@@ -134,6 +143,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             help_text = 'If this is checked, the group can add deliveries.')
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
     etag = models.DateTimeField(auto_now_add=True)
+    delivery_status = models.CharField(max_length=30, blank=True, null=True, help_text='The delivery_status of a group')
 
     class Meta:
         app_label = 'core'

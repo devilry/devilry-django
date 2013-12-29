@@ -37,6 +37,11 @@ class ExaminerAssignmentQuerySet(models.query.QuerySet):
 
 
 class ExaminerAssignmentManager(models.Manager):
+    """
+    Reflect custom QuerySet methods for custom QuerySet
+    more info: https://github.com/devilry/devilry-django/issues/491
+    """
+
     def get_queryset(self):
         return ExaminerAssignmentQuerySet(self.model, using=self._db)
 
