@@ -33,18 +33,23 @@
                     <strong class="deadline-datetime text-muted">{{ deadline.deadline|date:"DATETIME_FORMAT" }}</strong>
                 </div>
             </div>
-            {% for delivery in deadline.query_successful_deliveries %}
-                <div class="row delivery">
-                    <div class="col-sm-8">
-                        <a href="#">
-                            {% blocktrans with number=delivery.number %}Delivery #{{ number }}{% endblocktrans %}
-                        </a>
+            <div class="rowlisting rowlisting-striped rowlisting-bordered">
+                {% for delivery in deadline.query_successful_deliveries %}
+                    <div class="row delivery">
+                        <div class="col-sm-8">
+                            <h3>
+                                <a href="#">
+                                    {% blocktrans with number=delivery.number %}Delivery #{{ number }}{% endblocktrans %}
+                                </a>
+                            </h3>
+                            {{ delivery.feedback.feedback_ }}
+                        </div>
+                        <div class="col-sm-4">
+                            <span class="text-muted hidden-xs">{{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}</span>
+                        </div>
                     </div>
-                    <div class="col-sm-4">
-                        <span class="text-muted hidden-xs">{{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}</span>
-                    </div>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     {% endfor %}
 {% endblock %}

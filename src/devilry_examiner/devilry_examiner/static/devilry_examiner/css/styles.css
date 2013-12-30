@@ -7330,3 +7330,26 @@ i.fa-spinner.fa-spin.hugespinner {
   font-size: 60px;
   line-height: 70px;
 }
+.rowlisting.rowlisting-striped > .row:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+.rowlisting.rowlisting-bordered > .row {
+  border-width: 1px 1px 0 1px;
+  border-style: solid;
+  border-color: #dddddd;
+}
+.rowlisting.rowlisting-bordered > .row:last-child {
+  border-width: 1px;
+}
+.rowlisting .row {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+.rowlisting .row h2,
+.rowlisting .row h3,
+.rowlisting .row h4 {
+  font-size: 17px;
+  line-height: 23px;
+  margin: 0;
+  padding: 0;
+}
