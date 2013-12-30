@@ -74,7 +74,6 @@ class DefaultAssignmentGroupManager(models.Manager):
     pass
 
 
-
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     """
@@ -151,11 +150,13 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     def save(self, *args, **kwargs):
         create_dummy_deadline = False
-        if self.id == None and self.parentnode.delivery_types == deliverytypes.NON_ELECTRONIC:
+        if self.id is None and self.parentnode.delivery_types == deliverytypes.NON_ELECTRONIC:
             create_dummy_deadline = True
         super(AssignmentGroup, self).save(*args, **kwargs)
         if create_dummy_deadline:
             self.deadlines.create(deadline=self.parentnode.parentnode.end_time)
+
+        self._convert_status_to_deliverystatus()
 
     @classmethod
     def q_is_admin(cls, user_obj):
@@ -298,7 +299,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """ Return True if user is examiner on this assignment group """
         return self.examiners.filter(user__id=user_obj.pk).count() > 0
 
-
     def can_delete(self, user_obj):
         """
         Check if the given user is permitted to delete this AssignmentGroup. A user is
@@ -411,6 +411,40 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             delivery.save(autoset_number=False,
                           autoset_time_of_delivery=False)
 
+    def _convert_status_to_deliverystatus(self):
+        """
+        Get the status of the group. Calculated with this algorithm:
+
+        - If open:
+            - If before deadline:
+                - ``waiting-for-deliveries``
+            - If after deadline:
+                - ``waiting-for-feedback``
+            - If no deadlines
+                - ``no-deadlines``
+        - If closed:
+            - If feedback:
+                - ``corrected``
+            - If not:
+                - ``closed-without-feedback``
+
+        :return:
+            One of ``waiting-for-deliveries``, ``waiting-for-feedback``,
+            ``no-deadlines``, ``corrected`` or ``closed-without-feedback``.
+        """
+        if self.is_open:
+            deadlines = self.deadlines.all()
+            deadlinecount = len(deadlines)
+            if deadlinecount == 0:
+                self.delivery_status = 'no-deadlines'
+            else:
+                self.delivery_status = 'waiting-for-something'
+        else:
+            if self.feedback:
+                self.delivery_status = 'corrected'
+            else:
+                self.delivery_status = 'closed-without-feedback'
+
     def _merge_examiners_into(self, target):
         target_examiners = set([e.user.id for e in target.examiners.all()])
         for examiner in self.examiners.all():
@@ -513,7 +547,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         for source in sources:
             source.merge_into(target) # Source is deleted after this
-
 
     def get_status(self):
         """
