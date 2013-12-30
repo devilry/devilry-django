@@ -1,0 +1,69 @@
+{% extends "devilry_examiner/base.django.html" %}
+{% load i18n devilry_examiner_tags%}
+
+{% block bodyid %}allgroupsoverview{% endblock %}
+
+{% block body %}
+<div class="container">
+  <ol class="breadcrumb">
+    <li><a href="#">Home</a></li>
+    <li><a href="#">Library</a></li>
+    <li class="active">Data</li>
+  </ol>
+
+  <h1>{{ assignment.long_name }}</h1>
+  <div class="subheader">
+    {{ assignment.parentnode.parentnode.long_name}} &mdash; {{ assignment.parentnode.long_name }}
+  </div>
+
+
+<div class="container">
+  <div class="row">
+  <a class="btn btn-default" href="?waiting_for_feedback=1" role="button">Waiting for feedback</a>
+  <a class="btn btn-default" href="#" role="button">Waiting for deliveries</a>
+  <a class="btn btn-default" href="#" role="button">Corrected</a>
+  <a class="btn btn-default" href="#" role="button">All</a>
+  </div>
+</div>
+
+
+</div>
+
+
+
+<div> 
+
+{% for group in assignment.assignmentgroups.all %}
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <h2 class="text-primary">
+        {% for candidate in group.candidates.all %}
+        {% if not forloop.first %}
+        ,
+        {% endif %}
+        
+        {{ candidate.displayname }}
+        {% endfor %}
+      </h2>
+      <p class="text-muted">{{ group.get_status|formatted_status }}</p>
+    </div>
+    <div class="col-sm-4">
+      <h1>
+        {% if group.get_status == "waiting-for-deliveries" %}
+        <button type="button" class="btn btn-default hidden
+                                     hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+        {% else %}
+        <button type="button" class="btn btn-default
+                                     hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+        {% endif %}
+
+      </h1>
+    </div>
+
+  </div><!-- row -->
+</div>
+{% endfor%}
+
+</div>
+{% endblock %}

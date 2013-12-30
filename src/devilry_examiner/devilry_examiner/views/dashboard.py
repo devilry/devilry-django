@@ -3,7 +3,6 @@ from django.views.generic import TemplateView
 from devilry.apps.core.models import Assignment
 
 
-
 class DashboardView(TemplateView):
     template_name = "devilry_examiner/dashboard.django.html"
 
