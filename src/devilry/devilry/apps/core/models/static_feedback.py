@@ -125,6 +125,12 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         group.feedback = self
         group.save()
 
+    def _set_as_last_feedback_on_delivery(self):
+        self.delivery.last_feedback = self
+        self.delivery.save(
+            autoset_time_of_delivery=False,
+            autoset_number=False)
+
     def _close_group(self):
         self.delivery.deadline.assignment_group.is_open = False
         self.delivery.deadline.assignment_group.save()
@@ -132,6 +138,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
     def save(self, *args, **kwargs):
         autoclose_group = kwargs.pop('autoclose_group', True)
         autoset_as_active_feedback_on_group = kwargs.pop('autoset_as_active_feedback_on_group', True)
+        autoset_as_last_feedback_on_delivery = kwargs.pop('autoset_as_last_feedback_on_delivery', True)
         autoset_timestamp_to_now = kwargs.pop('autoset_timestamp_to_now', True)
         if autoset_timestamp_to_now:
             self.save_timestamp = datetime.now()
@@ -140,6 +147,8 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             self._close_group()
         if autoset_as_active_feedback_on_group:
             self._set_as_active_feedback_on_group()
+        if autoset_as_last_feedback_on_delivery:
+            self._set_as_last_feedback_on_delivery()
         self._publish_if_allowed()
 
     def __unicode__(self):
@@ -154,8 +163,8 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             via any grade editors.
 
         .. warning::
-            This does not autoset the feedback as active on the group. You
-            need to handle that yourself after the copy.
+            This does not autoset the feedback as active on the group or as latest on the delivery.
+            You need to handle that yourself after the copy.
         """
         feedbackcopy = StaticFeedback(delivery=newdelivery,
                                       rendered_view=self.rendered_view,
@@ -167,5 +176,6 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         feedbackcopy.full_clean()
         feedbackcopy.save(autoclose_group=False,
                           autoset_as_active_feedback_on_group=False,
+                          autoset_as_last_feedback_on_delivery=False,
                           autoset_timestamp_to_now=False)
         return feedbackcopy

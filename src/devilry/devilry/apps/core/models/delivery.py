@@ -62,6 +62,18 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     .. attribute:: copy_of
 
         Link to a delivery that this delivery is a copy of. This is set by :meth:`.copy`.
+
+    .. attribute:: last_feedback
+
+       The last `StaticFeedback`_ on this delivery. This is updated each time a feedback is added.
+
+    .. attribute:: copy_of
+
+        If this delivery is a copy of another delivery, this ForeignKey points to that other delivery.
+
+    .. attribute:: copies
+
+        The reverse of ``copy_of`` - a queryset that returns all copies of this delivery.
     """
     #DELIVERY_NOT_CORRECTED = 0
     #DELIVERY_CORRECTED = 1
@@ -93,6 +105,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                 related_name='copies',
                                 on_delete=models.SET_NULL,
                                 help_text='Link to a delivery that this delivery is a copy of. This is set by the copy-method.')
+    last_feedback = models.OneToOneField("StaticFeedback", blank=True, null=True, related_name='latest_feedback_for_delivery')
 
     def _delivered_too_late(self):
         """ Compares the deadline and time of delivery.
@@ -224,12 +237,18 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                 time_of_delivery=self.time_of_delivery,
                                 delivered_by=self.delivered_by,
                                 alias_delivery=self.alias_delivery,
+                                last_feedback = None,
                                 copy_of=self)
+        def save_deliverycopy():
+            deliverycopy.save(autoset_time_of_delivery=False,
+                              autoset_number=False)
         deliverycopy.full_clean()
-        deliverycopy.save(autoset_time_of_delivery=False,
-                          autoset_number=False)
+        save_deliverycopy()
         for filemeta in self.filemetas.all():
             filemeta.copy(deliverycopy)
-        for staticfeedback in self.feedbacks.all():
-            staticfeedback.copy(deliverycopy)
+        for index, staticfeedback in enumerate(self.feedbacks.order_by('-save_timestamp')):
+            staticfeedbackcopy = staticfeedback.copy(deliverycopy)
+            if index == 0:
+                deliverycopy.last_feedback = staticfeedbackcopy
+                save_deliverycopy()
         return deliverycopy
