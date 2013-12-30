@@ -1,9 +1,11 @@
 from django import template
 from django.utils.translation import ugettext_lazy as _
+from django.template.defaultfilters import stringfilter
 
 register = template.Library()
 
 @register.filter(name='formatted_status')
+@stringfilter
 def formatted_status(value):
     if value == 'waiting-for-feedback':
         return _("Waiting for feedback")
@@ -17,8 +19,16 @@ def formatted_status(value):
         return _("Closed without feedback")
     return value
 
+@register.filter
+def format_is_passing_grade(is_passing_grade):
+    if is_passing_grade:
+        return _('passed')
+    else:
+        return _('failed')
+
 
 @register.filter(name='status_to_buttontext')
+@stringfilter
 def status_to_buttontext(value):
     if value == 'waiting-for-feedback':
         return _("Write feedback")
@@ -33,17 +43,18 @@ def status_to_buttontext(value):
     return value
 
 
-@register.filter(name='group_delivery_status_to_bootstrapclass')
+@register.filter
+def feedback_to_bootstrapclass(feedback):
+    if feedback.is_passing_grade:
+        return 'success'
+    else:
+        return 'warning'
+
+@register.filter
 def group_delivery_status_to_bootstrapclass(group):
     if group.delivery_status == 'waiting-for-something':
         return "muted"
-    elif group.delivery_status == 'no-deadlines':
-        return "danger"
     elif group.delivery_status == 'corrected':
-        if group.feedback.is_passing_grade:
-            return "success"
-        else:
-            return "warning"
-    elif group.delivery_status == 'closed-without-feedback':
+        return feedback_to_bootstrapclass(group.feedback)
+    else:
         return "danger"
-    return value
