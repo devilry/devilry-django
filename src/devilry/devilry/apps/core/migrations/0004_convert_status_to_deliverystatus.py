@@ -11,10 +11,8 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName". 
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-        
         for assignment_group in orm.AssignmentGroup.objects.all().iterator():
             assignment_group.save()
-        
 
     def backwards(self, orm):
         "Write your backwards methods here."
@@ -117,6 +115,7 @@ class Migration(DataMigration):
             'delivered_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Candidate']", 'null': 'True', 'on_delete': 'models.SET_NULL', 'blank': 'True'}),
             'delivery_type': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'last_feedback': ('django.db.models.fields.related.OneToOneField', [], {'blank': 'True', 'related_name': "'latest_feedback_for_delivery'", 'unique': 'True', 'null': 'True', 'to': "orm['core.StaticFeedback']"}),
             'number': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'successful': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'time_of_delivery': ('django.db.models.fields.DateTimeField', [], {})
