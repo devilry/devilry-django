@@ -79,6 +79,7 @@ Ext.define('devilry_subjectadmin.view.createnewperiod.CreateNewPeriod', {
                     xtype: 'devilry_extjsextras-datetimefield',
                     fieldLabel: gettext('Start time'),
                     width: 300,
+                    itemId: 'new_period_start_time',
                     cls: 'start_time_field',
                     allowBlank: false,
                     name: 'start_time'
@@ -87,6 +88,7 @@ Ext.define('devilry_subjectadmin.view.createnewperiod.CreateNewPeriod', {
                     fieldLabel: gettext('End time'),
                     width: 300,
                     allowBlank: false,
+                    id: 'new_period_end_time',
                     cls: 'end_time_field',
                     name: 'end_time'
                 }],

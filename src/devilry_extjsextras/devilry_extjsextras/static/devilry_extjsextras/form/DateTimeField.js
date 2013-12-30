@@ -162,9 +162,9 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
     
     getValue: function(){
         var value = null;
-        var date = this.getDateField().getSubmitValue()
+        var date = this.getDateField().getSubmitValue();
         if (date){
-            var time = this.getTimeField().getSubmitValue()
+            var time = this.getTimeField().getSubmitValue();
             if (time){
                 var format = this.getFormat();
                 value = Ext.Date.parse(date + ' ' + time, format);
@@ -176,7 +176,7 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
     },
     
     getSubmitValue: function(){   
-        var format = this.getFormat()
+        var format = this.getFormat();
         var value = this.getValue();
         return value ? Ext.Date.format(value, format) : null;        
     },
@@ -187,6 +187,11 @@ Ext.define('devilry_extjsextras.form.DateTimeField', {
         }
         this.getDateField().setValue(value);
         this.getTimeField().setValue(value);
+    },
+
+    setMinimumValue: function(value) {
+        //this.getDateField().setValue(value);
+        this.getDateField().setMinValue(value);
     },
     
     getFormat: function(){

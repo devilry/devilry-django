@@ -29,10 +29,28 @@ class GroupPopNotCandiateError(GroupPopValueError):
     that is not on the group.
     """
 
+class ExaminerAssignmentGroupQuerySet(models.query.QuerySet):
+    """
+    Returns a queryset with all AssignmentGroups where the given ``user`` is examiner.
+
+    WARNING: You should normally not use this directly because it gives the
+    examiner information from expired periods (which in most cases are not necessary
+    to get). Use :meth:`.active` instead.
+    """
+    def filter_is_examiner(self, user):
+        return self.filter(examiners__user=user).distinct()
+
+    def filter_is_active(self):
+        now = datetime.now()
+        return self.filter(parentnode__publishing_time__lt=now,
+                           parentnode__parentnode__end_time__gt=now).distinct()
 
 
 class ExaminerAssignmentGroupManager(models.Manager):
-    def where_is_examiner(self, user):
+    def get_queryset(self):
+        return ExaminerAssignmentGroupQuerySet(self.model, using=self._db)
+
+    def filter_is_examiner(self, user):
         """
         Returns a queryset with all AssignmentGroups where the given ``user`` is examiner.
 
@@ -40,19 +58,16 @@ class ExaminerAssignmentGroupManager(models.Manager):
         examiner information from expired periods (which they are not supposed
         to get). Use :meth:`.active` instead.
         """
-        return self.get_query_set().filter(examiners__user=user).distinct()
+        return self.get_queryset().filter_is_examiner(user)
 
-    def active(self, user):
+    def filter_is_active(self):
         """
         Returns a queryset with all AssignmentGroups on active Assignments
         where the given ``user`` is examiner.
 
         NOTE: This returns all groups that the given ``user`` has examiner-rights for.
         """
-        now = datetime.now()
-        return self.where_is_examiner(user).filter(
-                parentnode__publishing_time__lt=now,
-                parentnode__parentnode__end_time__gt=now).distinct()
+        return self.get_queryset().filter_is_active()
 
 
 class DefaultAssignmentGroupManager(models.Manager):
@@ -106,6 +121,15 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     .. attribute:: etag
 
        A DateTimeField containing the etag for this object.
+
+    .. attribute:: delivery_status
+
+       A CharField containing the status of the group.
+       Valid status values:
+           * "no-deadlines"
+           * "corrected"
+           * "closed-without-feedback"
+           * "waiting-for-something"
     """
 
     objects = DefaultAssignmentGroupManager()
@@ -119,6 +143,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             help_text = 'If this is checked, the group can add deliveries.')
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
     etag = models.DateTimeField(auto_now_add=True)
+    delivery_status = models.CharField(max_length=30, blank=True, null=True, help_text='The delivery_status of a group')
 
     class Meta:
         app_label = 'core'

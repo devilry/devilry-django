@@ -43,8 +43,13 @@ Ext.define('devilry_subjectadmin.controller.CreateNewPeriod', {
     init: function() {
         this.control({
             'viewport createnewperiod form': {
-                render: this._onRender
+                render: this._onRender,
             },
+            
+            'viewport createnewperiod #new_period_start_time': {
+                change: this._setMinimumValueOnEndTime
+            },
+
             'viewport createnewperiod #saveButton': {
                 click: this._onSave
             },
@@ -53,6 +58,11 @@ Ext.define('devilry_subjectadmin.controller.CreateNewPeriod', {
                 blur: this._onLongNameBlur
             }
         });
+    },
+
+    _setMinimumValueOnEndTime: function(datefield, newFullValue, oldFullValue) {
+        endtime = Ext.getCmp("new_period_end_time");
+        endtime.setMinimumValue(newFullValue);
     },
 
     _onRender: function() {
