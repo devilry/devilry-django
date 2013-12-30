@@ -222,7 +222,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         feedbacks into ``newdeadline``. Sets the ``copy_of`` attribute of the
         created delivery.
 
-        .. note:: Always run this is a transaction.
+        .. note:: Always run this in a transaction.
 
         .. warning::
             This does not autoset the latest feedback as active on the group.
