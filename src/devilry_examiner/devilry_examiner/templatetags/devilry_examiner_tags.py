@@ -31,3 +31,19 @@ def status_to_buttontext(value):
     elif value == 'closed-without-feedback':
         return _("Closed without feedback")
     return value
+
+
+@register.filter(name='group_delivery_status_to_bootstrapclass')
+def group_delivery_status_to_bootstrapclass(group):
+    if group.delivery_status == 'waiting-for-something':
+        return "muted"
+    elif group.delivery_status == 'no-deadlines':
+        return "danger"
+    elif group.delivery_status == 'corrected':
+        if group.feedback.is_passing_grade:
+            return "success"
+        else:
+            return "warning"
+    elif group.delivery_status == 'closed-without-feedback':
+        return "danger"
+    return value
