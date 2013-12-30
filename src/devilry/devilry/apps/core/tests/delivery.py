@@ -278,3 +278,22 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(feedbacks[1].is_passing_grade, True)
         self.assertEquals(feedbacks[1].save_timestamp, datetime(2010, 1, 1, 0, 0, 0))
         self.assertEquals(feedbacks[1].rendered_view, 'Better')
+        self.assertEquals(copy.last_feedback, feedbacks[1])
+
+
+    def test_last_feedback(self):
+        self._create_testdata()
+        assignmentgroup = self.inf1100_period1_assignment1_g3
+        delivery = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile,
+            time_of_delivery=datetime(2005, 1, 1))
+        self.assertIsNone(delivery.last_feedback)
+        feedback = self.add_feedback(delivery=delivery,
+            verdict={'grade': 'C', 'points':40, 'is_passing_grade':True},
+            rendered_view='Better',
+            timestamp=datetime(2010, 1, 1, 0, 0, 0))
+        self.assertEquals(delivery.last_feedback, feedback)
+        feedback2 = self.add_feedback(delivery=delivery,
+            verdict={'grade': 'A', 'points':90, 'is_passing_grade':True},
+            rendered_view='Good',
+            timestamp=datetime(2010, 1, 1, 0, 0, 0))
+        self.assertEquals(delivery.last_feedback, feedback2)
