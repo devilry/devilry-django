@@ -32,7 +32,6 @@ Essential information for new developers
 * :ref:`buildout`
 * :ref:`testsuite`
 * :doc:`devilry_developer.teshelpers.corebuilder`
-* :ref:`testhelper`
 * :ref:`javascript`
 * More info available on the `Developer wiki page <https://github.com/devilry/devilry-django/wiki/Developer>`_.
 

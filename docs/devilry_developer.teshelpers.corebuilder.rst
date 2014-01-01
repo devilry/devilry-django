@@ -1,11 +1,20 @@
-************************************************
-Setup devilry core data structures for tests
-************************************************
+************************************************************
+corebuilder --- Setup devilry core data structures for tests
+************************************************************
 
 .. module:: devilry_developer.testhelpers.corebuilder
 
 :mod:`devilry_developer.testhelpers.corebuilder` is a module that makes it easy to create :mod:`devilry.apps.core.models` data for
 tests.
+
+
+When to use
+===========
+Use this for end-to-end tests and tests where you really need real data. Always
+try to mock objects instead of creating real data unless you are actually testing
+something that needs real data. Use https://pypi.python.org/pypi/mock to mock your
+tests.
+
 
 Howto
 =====
@@ -85,6 +94,9 @@ the change has made it to the database. All our builders implement
 
 
 
+API
+===
+
 .. py:class:: ReloadableDbBuilderInterface
 
     All the builders implement this interface.
@@ -103,6 +115,9 @@ the change has made it to the database. All our builders implement
 
 
 .. py:class:: UserBuilder
+
+    Creates a User object for testing. Also creates the DevilryUserProfile,
+    and methods for editing both the User and the profile.
 
     .. py:method:: __init__(username, full_name=None, email=None)
 
