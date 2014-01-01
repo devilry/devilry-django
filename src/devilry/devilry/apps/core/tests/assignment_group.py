@@ -3,6 +3,8 @@ from datetime import datetime, timedelta
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
+from devilry_developer.testhelpers.corebuilder import NodeBuilder
+from devilry_developer.testhelpers.corebuilder import UserBuilder
 from ..models import AssignmentGroup
 from ..models.assignment_group import GroupPopNotCandiateError
 from ..models.assignment_group import GroupPopToFewCandiatesError
@@ -669,18 +671,19 @@ class TestExaminerAssignmentGroupManager(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
 
-    def test_where_is_examiner(self):
+    def test_filter_is_examiner(self):
         self.testhelper.add(nodes='uni',
                 subjects=['sub'],
                 periods=['period1'], # 2 months ago
                 assignments=['week1'], # 2 months + 1day ago
                 assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
         self.testhelper.add_to_path('uni;sub.period1.week1.g1:candidate(student1):examiner(otherexaminer)')
-        qry = AssignmentGroup.examiner_objects.where_is_examiner(self.testhelper.examiner1)
+        qry = AssignmentGroup.examiner_objects.filter_is_examiner(self.testhelper.examiner1)
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], self.testhelper.sub_period1_week1_g1)
 
-    def test_active(self):
+    # def test_filter_is_active(self):
+    def test_filter_examiner_has_access(self):
         self.testhelper.add(nodes='uni',
                 subjects=['sub'],
                 periods=[
@@ -692,10 +695,10 @@ class TestExaminerAssignmentGroupManager(TestCase):
                 assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
         self.testhelper.add_to_path('uni;sub.period1.week2.g1:candidate(student1):examiner(otherexaminer)')
 
-        qry = AssignmentGroup.examiner_objects.active(self.testhelper.examiner1)
+        qry = AssignmentGroup.examiner_objects.filter_examiner_has_access(self.testhelper.examiner1)
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], self.testhelper.sub_period1_week1_g1)
 
         # make sure we are not getting false positives
-        self.assertEquals(AssignmentGroup.examiner_objects.where_is_examiner(self.testhelper.examiner1).count(), 3)
-        self.assertEquals(AssignmentGroup.examiner_objects.where_is_examiner(self.testhelper.otherexaminer).count(), 1)
+        self.assertEquals(AssignmentGroup.examiner_objects.filter_is_examiner(self.testhelper.examiner1).count(), 3)
+        self.assertEquals(AssignmentGroup.examiner_objects.filter_is_examiner(self.testhelper.otherexaminer).count(), 1)
