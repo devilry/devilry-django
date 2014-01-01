@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from datetime import datetime
+from datetime import timedelta
 
 from devilry.apps.core.models import Node
 from devilry.apps.core.models import Subject
@@ -113,17 +114,23 @@ class DeadlineBuilder(CoreBuilderBase):
         kwargs['deadline'] = self.deadline
         return DeliveryBuilder(**kwargs)
 
-    def add_delivery_after_deadline(self, timedeltaobj, **kwargs):
+    def add_delivery_after_deadline(self, timedeltaobject, **kwargs):
         if 'time_of_delivery' in kwargs:
             raise ValueError('add_delivery_after_deadline does not accept ``time_of_delivery`` as kwarg, it sets it automatically.')
-        kwargs['time_of_delivery'] = self.deadline.deadline + timedeltaobj
+        kwargs['time_of_delivery'] = self.deadline.deadline + timedeltaobject
         return self.add_delivery(**kwargs)
 
-    def add_delivery_before_deadline(self, timedeltaobj, **kwargs):
+    def add_delivery_before_deadline(self, timedeltaobject, **kwargs):
         if 'time_of_delivery' in kwargs:
             raise ValueError('add_delivery_before_deadline does not accept ``time_of_delivery`` as kwarg, it sets it automatically.')
-        kwargs['time_of_delivery'] = self.deadline.deadline - timedeltaobj
+        kwargs['time_of_delivery'] = self.deadline.deadline - timedeltaobject
         return self.add_delivery(**kwargs)
+
+    def add_delivery_x_hours_after_deadline(self, hours, **kwargs):
+        self.add_delivery_after_deadline(timedelta(hours=hours))
+
+    def add_delivery_x_hours_before_deadline(self, hours, **kwargs):
+        self.add_delivery_before_deadline(timedelta(hours=hours))
 
 
 class AssignmentGroupBuilder(CoreBuilderBase):
