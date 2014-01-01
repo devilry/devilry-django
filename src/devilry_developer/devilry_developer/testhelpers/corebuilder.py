@@ -129,8 +129,6 @@ class DeadlineBuilder(CoreBuilderBase):
 class AssignmentGroupBuilder(CoreBuilderBase):
     def __init__(self, students=[], candidates=[], examiners=[], **kwargs):
         self.group = AssignmentGroup.objects.create(**kwargs)
-        if students and candidates:
-            raise ValueError('Provide one of ``students`` or ``candidates``.')
         self.add_students(*students)
         self.add_candidates(*candidates)
         self.add_examiners(*examiners)
