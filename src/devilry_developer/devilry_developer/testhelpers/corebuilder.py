@@ -194,7 +194,7 @@ class PeriodBuilder(BaseNodeBuilderBase):
 
     @classmethod
     def quickadd_ducku_duck1010_current(cls):
-        return SubjectBuilder.quickadd_ducku_duck1010().add_6month_active_period('current')
+        return SubjectBuilder.quickadd_ducku_duck1010().add_6month_active_period(short_name='current')
 
     def add_assignment(self, *args, **kwargs):
         kwargs['parentnode'] = self.period
@@ -213,29 +213,35 @@ class SubjectBuilder(BaseNodeBuilderBase):
         kwargs['parentnode'] = self.subject
         return PeriodBuilder(*args, **kwargs)
 
-    def add_6month_active_period(self, *args, **kwargs):
+    def add_6month_active_period(self, **kwargs):
         kwargs['parentnode'] = self.subject
         if 'start_time' in kwargs or 'end_time' in kwargs:
             raise ValueError('add_6month_active_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
         kwargs['start_time'] = DateTimeBuilder.now().minus(days=30*3)
         kwargs['end_time'] = DateTimeBuilder.now().plus(days=30*3)
-        return self.add_period(*args, **kwargs)
+        if not 'short_name' in kwargs:
+            kwargs['short_name'] = 'active'
+        return self.add_period(**kwargs)
 
-    def add_6month_lastyear_period(self, *args, **kwargs):
+    def add_6month_lastyear_period(self, **kwargs):
         kwargs['parentnode'] = self.subject
         if 'start_time' in kwargs or 'end_time' in kwargs:
             raise ValueError('add_6month_lastyear_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
         kwargs['start_time'] = DateTimeBuilder.now().minus(days=365 - 30*3)
         kwargs['end_time'] = DateTimeBuilder.now().minus(days=365 + 30*3)
-        return self.add_period(*args, **kwargs)
+        if not 'short_name' in kwargs:
+            kwargs['short_name'] = 'lastyear'
+        return self.add_period(**kwargs)
 
-    def add_6month_nextyear_period(self, *args, **kwargs):
+    def add_6month_nextyear_period(self, **kwargs):
         kwargs['parentnode'] = self.subject
         if 'start_time' in kwargs or 'end_time' in kwargs:
             raise ValueError('add_6month_nextyear_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
         kwargs['start_time'] = DateTimeBuilder.now().plus(days=365 - 30*3)
         kwargs['end_time'] = DateTimeBuilder.now().plus(days=365 + 30*3)
-        return self.add_period(*args, **kwargs)
+        if not 'short_name' in kwargs:
+            kwargs['short_name'] = 'nextyear'
+        return self.add_period(**kwargs)
 
 
 class NodeBuilder(BaseNodeBuilderBase):

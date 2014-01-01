@@ -203,23 +203,37 @@ API
 
     .. py:method:: add_6month_active_period(*args, **kwargs)
 
-        Shortcut for adding :meth:`.add_period` with ``start_time`` ``3*30`` days ago, and ``end_time`` in ``3*30`` days. ``args`` and ``kwargs`` is forwarded to ``add_period``, but with ``start_time`` and ``end_time`` set in ``kwargs``.
+        Shortcut for adding :meth:`.add_period` with ``start_time`` ``3*30``
+        days ago, and ``end_time`` in ``3*30`` days. ``args`` and ``kwargs``
+        is forwarded to ``add_period``, but with ``start_time`` and
+        ``end_time`` set in ``kwargs``.
 
-        :rtype: :class:`.SubjectBuilder`.
+        If no ``short_name`` is provided, it defaults to ``active``.
+
+        :rtype: :class:`.PeriodBuilder`.
 
 
     .. py:method:: add_6month_lastyear_period(*args, **kwargs)
 
-        Shortcut for adding :meth:`.add_period` with ``start_time`` ``365-30*3`` days ago, and ``end_time`` ``365+3*30`` days ago. ``args`` and ``kwargs`` is forwarded to ``add_period``, but with ``start_time`` and ``end_time`` set in ``kwargs``.
+        Shortcut for adding :meth:`.add_period` with ``start_time``
+        ``365-30*3`` days ago, and ``end_time`` ``365+3*30`` days ago.
+        ``args`` and ``kwargs`` is forwarded to ``add_period``, but with
+        ``start_time`` and ``end_time`` set in ``kwargs``.
 
-        :rtype: :class:`.SubjectBuilder`.
+        If no ``short_name`` is provided, it defaults to ``lastyear``.
+        :rtype: :class:`.PeriodBuilder`.
 
 
     .. py:method:: add_6month_nextyear_period(*args, **kwargs)
 
-        Shortcut for adding :meth:`.add_period` with ``start_time`` in ``365-30*3`` days, and ``end_time`` in ``365+3*30`` days. ``args`` and ``kwargs`` is forwarded to ``add_period``, but with ``start_time`` and ``end_time`` set in ``kwargs``.
+        Shortcut for adding :meth:`.add_period` with ``start_time`` in
+        ``365-30*3`` days, and ``end_time`` in ``365+3*30`` days. ``args`` and
+        ``kwargs`` is forwarded to ``add_period``, but with ``start_time`` and
+        ``end_time`` set in ``kwargs``.
 
-        :rtype: :class:`.SubjectBuilder`.
+        If no ``short_name`` is provided, it defaults to ``nextyear``.
+
+        :rtype: :class:`.PeriodBuilder`.
 
 
 .. py:class:: PeriodBuilder
