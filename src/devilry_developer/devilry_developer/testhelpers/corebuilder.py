@@ -29,10 +29,10 @@ class UserBuilder(ReloadableDbBuilderInterface):
         self.user.set_password('test')
         self.user.full_clean()
         self.user.save()
+        profile = self.user.get_profile()
         if full_name:
-            profile = self.user.get_profile()
             profile.full_name = full_name
-            profile.save()
+        profile.save()
 
     def update(self, **attributes):
         for attrname, value in attributes.iteritems():
