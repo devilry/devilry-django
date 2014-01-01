@@ -12,9 +12,7 @@ When to use
 ===========
 Use this for end-to-end tests and tests where you really need real data. Always
 try to mock objects instead of creating real data unless you are actually testing
-something that needs real data. Use https://pypi.python.org/pypi/mock to mock your
-tests.
-
+something that needs real data. See :doc:`mock`.
 
 Howto
 =====
@@ -26,6 +24,7 @@ suffixed with ``Builder``.
 
 Using the builders is very easy::
 
+    from devilry_developer.testhelpers.corebuilder import NodeBuilder
     duck1010builder = NodeBuilder('duckuniversity').add_subject('duck1010')
     assert(duck1010builder.subject == Subject.objects.get(short_name='duck1010'))
 
@@ -40,6 +39,8 @@ period that started 3 months ago and ends in 3 months, with a single assignment
 (week1), with a single group, with deadline one week from now with a single
 ``helloworld.txt`` delivery::
 
+    from devilry_developer.testhelpers.corebuilder import NodeBuilder
+    from devilry_developer.testhelpers.corebuilder import UserBuilder
     peterpan = UserBuilder(username='peterpan')
     helloworld_filemetabuilder = NodeBuilder('ducku')\
         .add_subject('duck1010')\
@@ -54,6 +55,8 @@ period that started 3 months ago and ends in 3 months, with a single assignment
 Since we often need to add a single subject or a single active period, we have
 shortcuts for that::
 
+    from devilry_developer.testhelpers.corebuilder import SubjectBuilder
+    from devilry_developer.testhelpers.corebuilder import PeriodBuilder
     duck1010_builder = SubjectBuilder.quickadd_ducku_duck1010()
     currentperiod_builder = PeriodBuilder.quickadd_ducku_duck1010_current()
 
