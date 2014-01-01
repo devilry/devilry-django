@@ -65,15 +65,62 @@ sense when testing:
 - ``long_name`` is set to ``short_name`` when it is not specified explicitly.
 - All BaseNodes (the models with short and long name) takes the ``short_name``
   as the first argument and the ``long_name`` as the second argument.
-- Time of delivery (for ``add_delivery()``) default to *now*. Use
-  ``add_delivery_after_deadline`` and ``add_delivery_before_deadline`` for more
-  control.
+- Time of delivery (for :class:`DeliveryBuilder` and :meth:`DealdineBuilder.add_delivery`)
+  default to *now*.
 - Default ``publishing_time`` for assignments is *now*.
 - UserBuilder defaults to setting email to ``<username>@example.com``.
 
 These defaults are all handled in the constructor of their builder-class. All
 the defaults can be overridden by specifying a value for them.
 
+
+Reload from DB
+==============
+You often need to create an object that is changed by
+the code you are testing, and then check that
+the change has made it to the database. All our builders implement
+:class:`ReloadableDbBuilderInterface` which includes
+:meth:`~ReloadableDbBuilderInterface.reload_from_db`.
+
+
+
+
+.. py:class:: ReloadableDbBuilderInterface
+
+    All the builders implement this interface.
+
+    .. py:method:: update(**attributes)
+
+        Update the object wrapped by the builder with the given attributes.
+        Saves the object, and reloads it from the database.
+
+    .. py:method:: reload_from_db(**attributes)
+
+        Reloads the object wrapped by the builder from the database.
+        Perfect when you create an object that is changed by
+        the code you are testing, and you want to check that
+        the change has made it to the database.
+
+
+.. py:class:: UserBuilder
+
+    .. py:method:: __init__(username, full_name=None, email=None)
+
+        Creates a new User.
+
+        :param username: The username of the new user.
+        :param full_name: Optional full_name. Defaults to ``None``.
+        :param email: Optional email. Defaults to ``<username>@example.com.
+
+    .. py:method:: update(**attributes)
+
+        Update the User with the given attributes.
+        Reloads the object from the database.
+
+    .. py:method:: update_profile(**attributes)
+
+        Update the DevilryUserProfile with the given attributes.
+        Reloads the object from the database.
 
 
 .. py:class:: NodeBuilder
@@ -132,7 +179,7 @@ the defaults can be overridden by specifying a value for them.
         to :class:`.PeriodBuilder` with ``kwargs['parentnode']`` set to
         this :obj:`.subject`.
 
-        :rtype: :class:`.SubjectBuilder`.
+        :rtype: :class:`.PeriodBuilder`.
 
 
     .. py:method:: add_6month_active_period(*args, **kwargs)
@@ -162,7 +209,6 @@ the defaults can be overridden by specifying a value for them.
 
         The :class:`~devilry.apps.core.models.Period` wrapped by this builder.
 
-
     .. py:method:: __init__(short_name, long_name=None, **kwargs)
 
         Creates a new :class:`~devilry.apps.core.models.Period` with the given attributes.
@@ -171,6 +217,13 @@ the defaults can be overridden by specifying a value for them.
         :param long_name: The ``long_name`` of the Period. Defaults to ``short_name`` if ``None``.
         :param kwargs: Other arguments for the Period constructor.
 
+    .. py:method:: add_assignment(*args, **kwargs)
+
+        Adds an assignment to the period. ``args`` and ``kwargs`` are forwarded
+        to :class:`.AssignmentBuilder` with ``kwargs['parentnode']`` set to
+        this :obj:`.period`.
+
+        :rtype: :class:`.AssignmentBuilder`.
 
     .. py:classmethod:: quickadd_ducku_duck1010_current()
 
@@ -182,3 +235,204 @@ the defaults can be overridden by specifying a value for them.
         This is not just to save a couple of letters, but also to
         promote a common setup for simple tests.
 
+
+
+.. py:class:: AssignmentBuilder
+
+    .. py:attribute:: assignment
+
+        The :class:`~devilry.apps.core.models.Assignment` wrapped by this builder.
+
+    .. py:method:: __init__(short_name, long_name=None, **kwargs)
+
+        Creates a new :class:`~devilry.apps.core.models.Assignment` with the given attributes.
+
+        :param short_name: The ``short_name`` of the Assignment.
+        :param long_name: The ``long_name`` of the Assignment. Defaults to ``short_name`` if ``None``.
+        :param publishing_time: The ``publishing_time`` of the Assignment. Defaults to now.
+        :param kwargs: Other arguments for the Assignment constructor.
+
+    .. py:method:: add_group(*args, **kwargs)
+
+        Adds an assignment group to the period. ``args`` and ``kwargs`` are forwarded
+        to :class:`.AssignmentGroupBuilder` with ``kwargs['parentnode']`` set to
+        this :obj:`.assignment`.
+
+        :rtype: :class:`.AssignmentGroupBuilder`.
+
+
+
+.. py:class:: AssignmentGroupBuilder
+
+    .. py:attribute:: assignment_group
+
+        The :class:`~devilry.apps.core.models.AssignmentGroup` wrapped by this builder.
+
+    .. py:method:: __init__(students=[], candidates=[], examiners=[], **kwargs)
+
+        Creates a new :class:`~devilry.apps.core.models.AssignmentGroup` with the given attributes.
+
+        :param students: Forwarded to :meth:`add_students`.
+        :param candidates: Forwarded to :meth:`add_candidates`.
+        :param examiners: Forwarded to :meth:`add_examiners`.
+        :param kwargs: Arguments for the AssignmentGroup constructor.
+
+    .. py:method:: add_students(*users)
+
+        Add the given users as candidates without a candidate ID on this assignment group.
+
+        :return: ``self`` (to enable us to nest the method call).
+
+    .. py:method:: add_examiners(*users)
+
+        Add the given users as examiners on this assignment group.
+
+        :return: ``self`` (to enable us to nest the method call).
+
+    .. py:method:: add_students(*candidates)
+
+        Add the given candidates to this assignment group.
+        
+        :param candidates: :class:`devilry.apps.core.models.Candidate` objects.
+        :return: ``self`` (to enable us to nest the method call).
+
+    .. py:method:: add_deadline(*args, **kwargs)
+
+        Adds an deadline to the assignment. ``args`` and ``kwargs`` are forwarded
+        to :class:`.DeadlineBuilder` with ``kwargs['assignment_group']`` set to
+        this :obj:`.assignment_group`.
+
+        :rtype: :class:`.AssignmentGroupBuilder`.
+
+    .. py:method:: add_deadline_in_x_weeks(weeks, *args, **kwargs)
+
+        Calls :meth:`.add_deadline` with ``kwargs[deadline]`` set
+        ``weeks`` weeks in the future.
+
+        :rtype: :class:`.AssignmentGroupBuilder`.
+
+    .. py:method:: add_deadline_x_weeks_ago(weeks, *args, **kwargs)
+
+        Calls :meth:`.add_deadline` with ``kwargs[deadline]`` set
+        ``weeks`` weeks in the past.
+
+        :rtype: :class:`.DeadlineBuilder`.
+
+
+.. py:class:: DeadlineBuilder
+
+    .. py:attribute:: deadline
+
+        The :class:`~devilry.apps.core.models.Deadline` wrapped by this builder.
+
+    .. py:method:: __init__(**kwargs)
+
+        Creates a new :class:`~devilry.apps.core.models.AssignmentGroup` with the given attributes.
+
+        :param kwargs: Arguments for the Deadline constructor.
+
+    .. py:method:: add_delivery(**kwargs)
+
+        Adds an delivery to the deadline. ``args`` and ``kwargs`` are forwarded
+        to :class:`.DeliveryBuilder` with ``kwargs['deadline']`` set to
+        this :obj:`.deadline`.
+
+        :param kwargs: Extra kwargs for the :class:`.DeliveryBuilder` constructor.
+        :rtype: :class:`.DeliveryBuilder`.
+
+    .. py:method:: add_delivery_after_deadline(timedeltaobject, **kwargs)
+
+        Add a delivery ``timedeltaobject`` time after this deadline expires.
+
+        Shortcut that calls :meth:`.add_delivery` with ``kwargs['time_of_delivery']`` set
+        to ``deadline.deadline + timedeltaobject``.
+
+        Example - add delivery 3 weeks and 2 hours after deadline::
+
+            from datetime import datetime, timedelta
+            deadlinebuilder = DeadlineBuilder(deadline=datetime(2010, 1, 1))
+            deadlinebuilder.add_delivery_after_deadline(timedelta(weeks=3, hours=2))
+
+        :param kwargs: Extra kwargs for the :class:`.DeliveryBuilder` constructor.
+        :rtype: :class:`.DeliveryBuilder`.
+
+    .. py:method:: add_delivery_before_deadline(timedeltaobject, **kwargs)
+
+        Add a delivery ``timedeltaobject`` time before this deadline expires.
+
+        Shortcut that calls :meth:`.add_delivery` with ``kwargs['time_of_delivery']`` set
+        to ``deadline.deadline + timedeltaobject``.
+
+        Example - add delivery 5 hours before deadline::
+
+            from datetime import datetime, timedelta
+            deadlinebuilder = DeadlineBuilder(deadline=datetime(2010, 1, 1))
+            deadlinebuilder.add_delivery_before_deadline(timedelta(hours=5))
+
+        :param kwargs: Extra kwargs for the :class:`.DeliveryBuilder` constructor.
+        :rtype: :class:`.DeliveryBuilder`.
+
+    .. py:method:: add_delivery_x_hours_after_deadline(timedeltaobject, **kwargs)
+
+        Add a delivery ``hours`` hours after this deadline expires.
+
+        Shortcut that calls :meth:`.add_delivery_after_deadline` with
+        timedeltaobject set to ``timedelta(hours=hours)``.
+
+        :param hours: Number of hours.
+        :param kwargs: Extra kwargs for the :class:`.DeliveryBuilder` constructor.
+        :rtype: :class:`.DeliveryBuilder`.
+
+    .. py:method:: add_delivery_x_hours_before_deadline(timedeltaobject, **kwargs)
+
+        Add a delivery ``hours`` hours before this deadline expires.
+
+        Shortcut that calls :meth:`.add_delivery_before_deadline` with
+        timedeltaobject set to ``timedelta(hours=hours)``.
+
+        :param hours: Number of hours.
+        :param kwargs: Extra kwargs for the :class:`.DeliveryBuilder` constructor.
+        :rtype: :class:`.DeliveryBuilder`.
+
+
+
+.. py:class:: DeliveryBuilder
+
+    .. py:attribute:: delivery
+
+        The :class:`~devilry.apps.core.models.Delivery` wrapped by this builder.
+
+    .. py:method:: __init__(**kwargs)
+
+        Creates a new :class:`~devilry.apps.core.models.Delivery` with the given attributes.
+        If ``time_of_delivery`` is not provided, it defaults to *now*.
+
+        :param kwargs: Arguments for the Delivery constructor.
+
+    .. py:method:: add_filemeta(**kwargs)
+
+        Adds a filemeta to the delivery. ``args`` and ``kwargs`` are forwarded
+        to :class:`.FilteMetaBuilder` with ``kwargs['delivery']`` set to
+        this :obj:`.delivery`.
+
+        :param kwargs: Kwargs for the :class:`.FileMetaBuilder` constructor.
+        :rtype: :class:`.FileMetaBuilder`.
+
+
+
+.. py:class:: FileMetaBuilder
+
+    .. py:attribute:: delivery
+
+        The :class:`~devilry.apps.core.models.Delivery` wrapped by this builder.
+
+    .. py:method:: __init__(delivery, filename, data)
+
+        Creates a new :class:`~devilry.apps.core.models.FileMeta`. Since FileMeta
+        just points to files on disk,  and creating those files requires iterators
+        and extra stuff that is almost never needed for tests, we provide an
+        easier method for creating files with FileMetaBuilder.
+
+        :param delivery: The Delivery object.
+        :param filename: A filename.
+        :param data: The file contents as a string.
