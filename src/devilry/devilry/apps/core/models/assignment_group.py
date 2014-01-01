@@ -43,6 +43,7 @@ class ExaminerAssignmentGroupQuerySet(models.query.QuerySet):
     def filter_is_active(self):
         now = datetime.now()
         return self.filter(parentnode__publishing_time__lt=now,
+                           parentnode__parentnode__start_time__lt=now,
                            parentnode__parentnode__end_time__gt=now).distinct()
 
     def filter_examiner_has_access(self, user):

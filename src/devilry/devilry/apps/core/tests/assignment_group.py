@@ -3,7 +3,8 @@ from datetime import datetime, timedelta
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
-from devilry_developer.testhelpers.corebuilder import NodeBuilder
+from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from ..models import AssignmentGroup
 from ..models.assignment_group import GroupPopNotCandiateError
@@ -672,33 +673,49 @@ class TestExaminerAssignmentGroupManager(TestCase):
         self.testhelper = TestHelper()
 
     def test_filter_is_examiner(self):
-        self.testhelper.add(nodes='uni',
-                subjects=['sub'],
-                periods=['period1'], # 2 months ago
-                assignments=['week1'], # 2 months + 1day ago
-                assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
-        self.testhelper.add_to_path('uni;sub.period1.week1.g1:candidate(student1):examiner(otherexaminer)')
-        qry = AssignmentGroup.examiner_objects.filter_is_examiner(self.testhelper.examiner1)
-        self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], self.testhelper.sub_period1_week1_g1)
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_current().add_assignment('week1')
+        group1builder = week1.add_group().add_examiners(examiner1)
 
-    # def test_filter_is_active(self):
+        # Add another group to make sure we do not get false positives
+        week1.add_group().add_examiners(UserBuilder('examiner2').user)
+
+        qry = AssignmentGroup.examiner_objects.filter_is_examiner(examiner1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], group1builder.group)
+
+    def test_filter_is_active(self):
+        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
+        currentgroupbuilder = duck1010builder.add_6month_active_period()\
+            .add_assignment('week1').add_group()
+
+        # Add inactive groups to make sure we get no false positives
+        duck1010builder.add_6month_lastyear_period().add_assignment('week1').add_group()
+        duck1010builder.add_6month_nextyear_period().add_assignment('week1').add_group()
+
+        qry = AssignmentGroup.examiner_objects.filter_is_active()
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], currentgroupbuilder.group)
+
+
     def test_filter_examiner_has_access(self):
-        self.testhelper.add(nodes='uni',
-                subjects=['sub'],
-                periods=[
-                    'period0:begins(-12):ends(6)', # 12-6 months ago (inactive)
-                    'period1:begins(-2):ends(6)',  # -2 to +4 months (active)
-                    'period2:begins(12):ends(6)',  # In 12-18 months (inactive)
-                    ],
-                assignments=['week1:pub(1)'],
-                assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
-        self.testhelper.add_to_path('uni;sub.period1.week2.g1:candidate(student1):examiner(otherexaminer)')
+        examiner1 = UserBuilder('examiner1').user
+        otherexaminer = UserBuilder('otherexaminer').user
+        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
+        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
+        currentgroupbuilder = activeassignmentbuilder.add_group().add_examiners(examiner1)
 
-        qry = AssignmentGroup.examiner_objects.filter_examiner_has_access(self.testhelper.examiner1)
+        # Add inactive groups and a group with another examiner to make sure we get no false positives
+        duck1010builder.add_6month_lastyear_period().add_assignment('week1')\
+            .add_group().add_examiners(examiner1)
+        duck1010builder.add_6month_nextyear_period().add_assignment('week1')\
+            .add_group().add_examiners(examiner1)
+        activeassignmentbuilder.add_group().add_examiners(otherexaminer)
+
+        qry = AssignmentGroup.examiner_objects.filter_examiner_has_access(examiner1)
         self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], self.testhelper.sub_period1_week1_g1)
+        self.assertEquals(qry[0], currentgroupbuilder.group)
 
         # make sure we are not getting false positives
-        self.assertEquals(AssignmentGroup.examiner_objects.filter_is_examiner(self.testhelper.examiner1).count(), 3)
-        self.assertEquals(AssignmentGroup.examiner_objects.filter_is_examiner(self.testhelper.otherexaminer).count(), 1)
+        self.assertEquals(AssignmentGroup.examiner_objects.filter_is_examiner(examiner1).count(), 3)
+        self.assertEquals(AssignmentGroup.examiner_objects.filter_is_examiner(otherexaminer).count(), 1)
