@@ -126,7 +126,7 @@ class DeadlineBuilder(CoreBuilderBase):
         return self.add_delivery(**kwargs)
 
 
-class GroupBuilder(CoreBuilderBase):
+class AssignmentGroupBuilder(CoreBuilderBase):
     def __init__(self, students=[], candidates=[], examiners=[], **kwargs):
         self.group = AssignmentGroup.objects.create(**kwargs)
         if students and candidates:
@@ -178,7 +178,7 @@ class AssignmentBuilder(BaseNodeBuilderBase):
 
     def add_group(self, *args, **kwargs):
         kwargs['parentnode'] = self.assignment
-        return GroupBuilder(*args, **kwargs)
+        return AssignmentGroupBuilder(*args, **kwargs)
 
 
 
