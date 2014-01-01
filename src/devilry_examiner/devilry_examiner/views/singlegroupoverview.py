@@ -11,7 +11,7 @@ class SingleGroupOverview(DetailView):
     context_object_name = 'group'
 
     def get_queryset(self):
-        return AssignmentGroup.examiner_objects.filter_is_examiner(self.request.user).filter_is_active()
+        return AssignmentGroup.objects.filter_examiner_has_access(self.request.user)
 
     # def get_context_data(self, **kwargs):
     #     context = super(SingleGroupOverview, self).get_context_data(**kwargs)

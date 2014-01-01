@@ -15,4 +15,4 @@ class AllGroupsOverview(DetailView):
         else:
             print "heia"
 
-        return Assignment.examiner_objects.filter_is_examiner(self.request.user)
+        return Assignment.objects.filter_examiner_has_access(self.request.user)
