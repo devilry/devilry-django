@@ -38,6 +38,9 @@ class AssignmentQuerySet(models.query.QuerySet):
             parentnode__start_time__lt=now,
             parentnode__end_time__gt=now)
 
+    def filter_examiner_has_access(self, user):
+        return self.filter_is_active().filter_is_examiner(user)
+
 
 class AssignmentManager(models.Manager):
     """
@@ -54,6 +57,13 @@ class AssignmentManager(models.Manager):
     def filter_is_active(self):
         return self.get_queryset().filter_is_active()
 
+    def filter_examiner_has_access(self, user):
+        """
+        Returns a queryset with all active assignments where the given ``user`` is examiner.
+
+        NOTE: This returns all assignments that the given ``user`` has examiner-rights for.
+        """
+        return self.get_queryset().filter_examiner_has_access(user)
 
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):

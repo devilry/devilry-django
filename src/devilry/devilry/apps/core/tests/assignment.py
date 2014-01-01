@@ -249,7 +249,6 @@ class TestAssignmentManager(TestCase):
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], week1builder.assignment)
 
-
     def test_filter_is_active(self):
         duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
         activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
@@ -261,3 +260,25 @@ class TestAssignmentManager(TestCase):
         qry = Assignment.objects.filter_is_active()
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], activeassignmentbuilder.assignment)
+
+    def test_filter_examiner_has_access(self):
+        examiner1 = UserBuilder('examiner1').user
+        otherexaminer = UserBuilder('otherexaminer').user
+        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
+        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
+        currentgroupbuilder = activeassignmentbuilder.add_group().add_examiners(examiner1)
+
+        # Add inactive groups and a group with another examiner to make sure we get no false positives
+        duck1010builder.add_6month_lastyear_period().add_assignment('week1')\
+            .add_group().add_examiners(examiner1)
+        duck1010builder.add_6month_nextyear_period().add_assignment('week1')\
+            .add_group().add_examiners(examiner1)
+        activeassignmentbuilder.add_group().add_examiners(otherexaminer)
+
+        qry = Assignment.objects.filter_examiner_has_access(examiner1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], activeassignmentbuilder.assignment)
+
+        # make sure we are not getting false positives
+        self.assertEquals(Assignment.objects.filter_is_examiner(examiner1).count(), 3)
+        self.assertEquals(Assignment.objects.filter_is_examiner(otherexaminer).count(), 1)
