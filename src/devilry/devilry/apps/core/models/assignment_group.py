@@ -45,6 +45,9 @@ class ExaminerAssignmentGroupQuerySet(models.query.QuerySet):
         return self.filter(parentnode__publishing_time__lt=now,
                            parentnode__parentnode__end_time__gt=now).distinct()
 
+    def filter_examiner_has_access(self, user):
+        return self.filter_is_active().filter_is_examiner(user)
+
 
 class ExaminerAssignmentGroupManager(models.Manager):
     def get_queryset(self):
@@ -62,12 +65,18 @@ class ExaminerAssignmentGroupManager(models.Manager):
 
     def filter_is_active(self):
         """
+        Returns a queryset with all AssignmentGroups on active Assignments.
+        """
+        return self.get_queryset().filter_is_active()
+
+    def filter_examiner_has_access(self, user):
+        """
         Returns a queryset with all AssignmentGroups on active Assignments
         where the given ``user`` is examiner.
 
         NOTE: This returns all groups that the given ``user`` has examiner-rights for.
         """
-        return self.get_queryset().filter_is_active()
+        return self.get_queryset().filter_examiner_has_access(user)
 
 
 class DefaultAssignmentGroupManager(models.Manager):
