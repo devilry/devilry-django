@@ -4,8 +4,11 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
-
 from django.db.models import Q
+
+from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry_developer.testhelpers.corebuilder import SubjectBuilder
+from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from ..models import Period, Assignment, Candidate
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
@@ -230,37 +233,31 @@ class TestAssignmentCanDelete(TestCase, TestHelper):
         self.assertFalse(assignment.can_delete(self.uniadm))
 
 
-class TestExaminerAssignmentManager(TestCase):
+class TestAssignmentManager(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
 
-    def test_where_is_examiner(self):
-        self.testhelper.add(nodes='uni',
-                subjects=['sub'],
-                periods=['period1'], # 2 months ago
-                assignments=['week1'], # 2 months + 1day ago
-                assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
-        self.testhelper.add_to_path('uni;sub.period1.week1.g1:candidate(student1):examiner(otherexaminer)')
-        qry = Assignment.examiner_objects.where_is_examiner(self.testhelper.examiner1)
+    def test_filter_is_examiner(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1builder = PeriodBuilder.quickadd_ducku_duck1010_current().add_assignment('week1')
+        group1builder = week1builder.add_group().add_examiners(examiner1)
+
+        # Add another group to make sure we do not get false positives
+        week1builder.add_group().add_examiners(UserBuilder('examiner2').user)
+
+        qry = Assignment.objects.filter_is_examiner(examiner1)
         self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], self.testhelper.sub_period1_week1)
+        self.assertEquals(qry[0], week1builder.assignment)
 
-    def test_active(self):
-        self.testhelper.add(nodes='uni',
-                subjects=['sub'],
-                periods=[
-                    'period0:begins(-12):ends(6)', # 12-6 months ago (inactive)
-                    'period1:begins(-2):ends(6)',  # -2 to +4 months (active)
-                    'period2:begins(12):ends(6)',  # In 12-18 months (inactive)
-                    ],
-                assignments=['week1:pub(1)'],
-                assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
-        self.testhelper.add_to_path('uni;sub.period1.week2.g1:candidate(student1):examiner(otherexaminer)')
 
-        qry = Assignment.examiner_objects.active(self.testhelper.examiner1)
+    def test_filter_is_active(self):
+        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
+        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
+
+        # Add inactive groups to make sure we get no false positives
+        duck1010builder.add_6month_lastyear_period().add_assignment('week1')
+        duck1010builder.add_6month_nextyear_period().add_assignment('week1')
+
+        qry = Assignment.objects.filter_is_active()
         self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], self.testhelper.sub_period1_week1)
-
-        # make sure we are not getting false positives
-        self.assertEquals(Assignment.examiner_objects.where_is_examiner(self.testhelper.examiner1).count(), 3)
-        self.assertEquals(Assignment.examiner_objects.where_is_examiner(self.testhelper.otherexaminer).count(), 1)
+        self.assertEquals(qry[0], activeassignmentbuilder.assignment)

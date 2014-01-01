@@ -20,7 +20,7 @@ from model_utils import Etag
 import deliverytypes
 
 
-class ExaminerAssignmentQuerySet(models.query.QuerySet):
+class AssignmentQuerySet(models.query.QuerySet):
     """
     Returns a queryset with all Assignments  where the given ``user`` is examiner.
 
@@ -33,27 +33,27 @@ class ExaminerAssignmentQuerySet(models.query.QuerySet):
 
     def filter_is_active(self):
         now = datetime.now()
-        return self.filter(publishing_time__lt=now, parentnode__end_time__gt=now)
+        return self.filter(
+            publishing_time__lt=now,
+            parentnode__start_time__lt=now,
+            parentnode__end_time__gt=now)
 
 
-class ExaminerAssignmentManager(models.Manager):
+class AssignmentManager(models.Manager):
     """
     Reflect custom QuerySet methods for custom QuerySet
     more info: https://github.com/devilry/devilry-django/issues/491
     """
 
     def get_queryset(self):
-        return ExaminerAssignmentQuerySet(self.model, using=self._db)
+        return AssignmentQuerySet(self.model, using=self._db)
 
     def filter_is_examiner(self, user):
         return self.get_queryset().filter_is_examiner(user)
 
-    def filter_is_active(self, user):
+    def filter_is_active(self):
         return self.get_queryset().filter_is_active()
 
-
-class DefaultAssignmentManager(models.Manager):
-    pass
 
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
@@ -125,8 +125,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         assignment. This is metadata that the UI can use where it is
         natural.
     """
-    objects = DefaultAssignmentManager()
-    examiner_objects = ExaminerAssignmentManager()
+    objects = AssignmentManager()
 
     DEADLINEHANDLING_SOFT = 0
     DEADLINEHANDLING_HARD = 1
