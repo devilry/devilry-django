@@ -124,7 +124,8 @@ API
 
     .. py:method:: __init__(username, full_name=None, email=None)
 
-        Creates a new User.
+        Creates a new User with password set to test, and the
+        :class:`devilry.apps.core.models.DevilryUserProfile` created.
 
         :param username: The username of the new user.
         :param full_name: Optional full_name. Defaults to ``None``.
@@ -137,8 +138,8 @@ API
 
     .. py:method:: update_profile(**attributes)
 
-        Update the DevilryUserProfile with the given attributes.
-        Reloads the object from the database.
+        Update the :class:`devilry.apps.core.models.DevilryUserProfile`
+        with the given attributes. Reloads the object from the database.
 
 
 .. py:class:: NodeBuilder
