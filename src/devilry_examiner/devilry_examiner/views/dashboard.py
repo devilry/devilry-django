@@ -8,5 +8,5 @@ class DashboardView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
-        context['active_assignments'] = Assignment.objects.filter_examiner_has_access(self.request.user)
+        context['active_assignments'] = Assignment.objects.filter_examiner_has_access(self.request.user).order_by('-publishing_time')
         return context

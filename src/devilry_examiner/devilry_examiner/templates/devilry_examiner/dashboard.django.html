@@ -7,10 +7,11 @@
     <div class="container">
     	<table class="table table-striped table-bordered active-assignment-listing">
         	{% for assignment in active_assignments %}
-            	<tr class="active-assignment-listing-item">
+            	<tr class="active-assignment-listing-item assignment-{{ assignment.get_path }}">
                     <td class="col-sm-8">
-		            	{{ assignment.parentnode.parentnode.short_name }}.{{ assignment.parentnode.short_name }}
-		            	- {{ assignment.long_name }}
+		            	<strong><a href="#" class="assignmentname">
+                            {{ assignment.parentnode.parentnode.short_name }}.{{ assignment.parentnode.short_name }} - {{ assignment.long_name }}
+                        </a></strong>
 		            </td>
                     <td class="text-right hidden-xs">
 						

@@ -1,27 +1,43 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from devilry.apps.core.testhelper import TestHelper
 from devilry_developer.testhelpers.soupselect import cssFind
+from devilry_developer.testhelpers.soupselect import cssGet
+from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry_developer.testhelpers.corebuilder import UserBuilder
 
 
 class TestDashboardView(TestCase):
     def setUp(self):
-        self.testhelper = TestHelper()
+        self.examiner1 = UserBuilder('examiner1').user
 
     def _getas(self, username, *args, **kwargs):
         self.client.login(username=username, password='test')
         return self.client.get(reverse('devilry_examiner_dashboard'), *args, **kwargs)
 
     def test_list_single(self):
-        self.testhelper.add(nodes='uni',
-                subjects=['sub'],
-                periods=['period1:begins(-2)'], # 2 months ago
-                assignments=['week2:pub(1)'], # 2 months + 1day ago
-                assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
+        currentperiodbuilder = PeriodBuilder.quickadd_ducku_duck1010_current()
+        currentperiodbuilder.add_assignment('week1', 'Week 1')\
+            .add_group().add_examiners(self.examiner1)
         response = self._getas('examiner1')
         self.assertEquals(response.status_code, 200)
         html = response.content
-        listitems = cssFind(html, 'li.active-assignment-listing-item')
-        self.assertEquals(len(listitems), 1)
-        self.assertEquals(listitems[0].text.strip(), 'sub.period1.week2')
+        self.assertEquals(len(cssFind(html, '.active-assignment-listing-item')), 1)
+        self.assertEquals(cssGet(html, '.assignment-duck1010.current.week1 .assignmentname').text.strip(),
+            'duck1010.current - Week 1')
+
+
+    def test_list_ordering(self):
+        currentperiodbuilder = PeriodBuilder.quickadd_ducku_duck1010_current()
+        for short_name in ('week1', 'week2', 'week3'):
+            currentperiodbuilder.add_assignment(short_name)\
+                .add_group().add_examiners(self.examiner1)
+        response = self._getas('examiner1')
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertEquals(len(cssFind(html, '.active-assignment-listing-item')), 3)
+        names = [name.text.strip() for name in cssFind(html, '.assignmentname')]
+        self.assertEquals(names, [
+            'duck1010.current - week3',
+            'duck1010.current - week2',
+            'duck1010.current - week1'])
