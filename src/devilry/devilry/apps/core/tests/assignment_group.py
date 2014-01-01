@@ -668,7 +668,7 @@ class TestAssignmentGroupUserIds(TestCase):
                  self.testhelper.a1adm.id, self.testhelper.a1adm2.id]))
 
 
-class TestExaminerAssignmentGroupManager(TestCase):
+class TestAssignmentGroupManager(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
 
@@ -680,7 +680,7 @@ class TestExaminerAssignmentGroupManager(TestCase):
         # Add another group to make sure we do not get false positives
         week1.add_group().add_examiners(UserBuilder('examiner2').user)
 
-        qry = AssignmentGroup.examiner_objects.filter_is_examiner(examiner1)
+        qry = AssignmentGroup.objects.filter_is_examiner(examiner1)
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], group1builder.group)
 
@@ -693,7 +693,7 @@ class TestExaminerAssignmentGroupManager(TestCase):
         duck1010builder.add_6month_lastyear_period().add_assignment('week1').add_group()
         duck1010builder.add_6month_nextyear_period().add_assignment('week1').add_group()
 
-        qry = AssignmentGroup.examiner_objects.filter_is_active()
+        qry = AssignmentGroup.objects.filter_is_active()
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], currentgroupbuilder.group)
 
@@ -712,10 +712,10 @@ class TestExaminerAssignmentGroupManager(TestCase):
             .add_group().add_examiners(examiner1)
         activeassignmentbuilder.add_group().add_examiners(otherexaminer)
 
-        qry = AssignmentGroup.examiner_objects.filter_examiner_has_access(examiner1)
+        qry = AssignmentGroup.objects.filter_examiner_has_access(examiner1)
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], currentgroupbuilder.group)
 
         # make sure we are not getting false positives
-        self.assertEquals(AssignmentGroup.examiner_objects.filter_is_examiner(examiner1).count(), 3)
-        self.assertEquals(AssignmentGroup.examiner_objects.filter_is_examiner(otherexaminer).count(), 1)
+        self.assertEquals(AssignmentGroup.objects.filter_is_examiner(examiner1).count(), 3)
+        self.assertEquals(AssignmentGroup.objects.filter_is_examiner(otherexaminer).count(), 1)

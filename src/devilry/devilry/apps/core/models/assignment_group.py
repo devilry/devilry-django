@@ -29,7 +29,7 @@ class GroupPopNotCandiateError(GroupPopValueError):
     that is not on the group.
     """
 
-class ExaminerAssignmentGroupQuerySet(models.query.QuerySet):
+class AssignmentGroupQuerySet(models.query.QuerySet):
     """
     Returns a queryset with all AssignmentGroups where the given ``user`` is examiner.
 
@@ -50,9 +50,9 @@ class ExaminerAssignmentGroupQuerySet(models.query.QuerySet):
         return self.filter_is_active().filter_is_examiner(user)
 
 
-class ExaminerAssignmentGroupManager(models.Manager):
+class AssignmentGroupManager(models.Manager):
     def get_queryset(self):
-        return ExaminerAssignmentGroupQuerySet(self.model, using=self._db)
+        return AssignmentGroupQuerySet(self.model, using=self._db)
 
     def filter_is_examiner(self, user):
         """
@@ -79,9 +79,6 @@ class ExaminerAssignmentGroupManager(models.Manager):
         """
         return self.get_queryset().filter_examiner_has_access(user)
 
-
-class DefaultAssignmentGroupManager(models.Manager):
-    pass
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
@@ -141,8 +138,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
            * "waiting-for-something"
     """
 
-    objects = DefaultAssignmentGroupManager()
-    examiner_objects = ExaminerAssignmentGroupManager()
+    objects = AssignmentGroupManager()
 
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True,
