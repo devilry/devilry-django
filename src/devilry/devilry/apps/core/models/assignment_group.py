@@ -17,17 +17,20 @@ class GroupPopValueError(ValueError):
     Base class for exceptions raised by meth:`AssignmentGroup.pop_candidate`.
     """
 
+
 class GroupPopToFewCandiatesError(GroupPopValueError):
     """
     Raised when meth:`AssignmentGroup.pop_candidate` is called on a group with
     1 or less candidates.
     """
 
+
 class GroupPopNotCandiateError(GroupPopValueError):
     """
     Raised when meth:`AssignmentGroup.pop_candidate` is called with a candidate
     that is not on the group.
     """
+
 
 class AssignmentGroupQuerySet(models.query.QuerySet):
     """
@@ -78,7 +81,6 @@ class AssignmentGroupManager(models.Manager):
         NOTE: This returns all groups that the given ``user`` has examiner-rights for.
         """
         return self.get_queryset().filter_examiner_has_access(user)
-
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
@@ -468,7 +470,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def _set_latest_feedback_as_active(self):
         from .static_feedback import StaticFeedback
         feedbacks = StaticFeedback.objects.order_by('-save_timestamp').filter(delivery__deadline__assignment_group=self)[:1]
-        self.feedback = None # NOTE: Required to avoid IntegrityError caused by non-unique feedback_id
+        self.feedback = None  # NOTE: Required to avoid IntegrityError caused by non-unique feedback_id
         self.save()
         if len(feedbacks) == 1:
             latest_feedback = feedbacks[0]
@@ -575,24 +577,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             One of ``waiting-for-deliveries``, ``waiting-for-feedback``,
             ``no-deadlines``, ``corrected`` or ``closed-without-feedback``.
         """
-        if self.is_open:
+        if self.delivery_status == 'waiting-for-something':
             deadlines = self.deadlines.all()
             deadlinecount = len(deadlines)
-            if deadlinecount == 0:
-                return 'no-deadlines'
+            active_deadline = deadlines[deadlinecount-1]
+            now = datetime.now()
+            if active_deadline.deadline > now:
+                return 'waiting-for-deliveries'
             else:
-                active_deadline = deadlines[deadlinecount-1]
-                now = datetime.now()
-                if active_deadline.deadline > now:
-                    return 'waiting-for-deliveries'
-                else:
-                    return 'waiting-for-feedback'
+                return 'waiting-for-feedback'
         else:
-            if self.feedback:
-                return 'corrected'
-            else:
-                return 'closed-without-feedback'
-
+            return self.delivery_status
 
     def get_all_admin_ids(self):
         return self.parentnode.get_all_admin_ids()
