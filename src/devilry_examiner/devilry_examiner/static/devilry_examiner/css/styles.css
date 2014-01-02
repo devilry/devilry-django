@@ -7370,3 +7370,11 @@ table.infolistingtable tr td p:first-child,
 table.infolistingtable tr th p:first-child {
   padding-top: 0;
 }
+/*
+Extends the .page-header bootstrap3 component with support for a block-level subheader.
+*/
+.page-header.page-header-with-subheader .subheader {
+  color: #999999;
+  margin: 0;
+  padding: 0;
+}
