@@ -41,6 +41,9 @@ class AssignmentQuerySet(models.query.QuerySet):
     def filter_examiner_has_access(self, user):
         return self.filter_is_active().filter_is_examiner(user)
 
+    def filter_by_status(self, status):
+        return self.filter(assignmentgroups__delivery_status__iexact=status)
+
 
 class AssignmentManager(models.Manager):
     """
@@ -64,6 +67,9 @@ class AssignmentManager(models.Manager):
         NOTE: This returns all assignments that the given ``user`` has examiner-rights for.
         """
         return self.get_queryset().filter_examiner_has_access(user)
+
+    def filter_by_status(self, status):
+        return self.get_queryset().filter_by_status(status)
 
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
