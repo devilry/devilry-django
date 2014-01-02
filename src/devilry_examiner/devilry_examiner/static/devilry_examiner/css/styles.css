@@ -7330,26 +7330,43 @@ i.fa-spinner.fa-spin.hugespinner {
   font-size: 60px;
   line-height: 70px;
 }
-.rowlisting.rowlisting-striped > .row:nth-child(odd) {
-  background-color: #f9f9f9;
+/*
+Extgends the bootstrap .table styles with styles appropriate for listing
+information in a two column layout with:
+
+Column1
+	A title (h2, h3 or h4)
+	Metadata in paragraphs
+Column2
+	Metadata in paragraphs.
+
+Heading (h2, h3 and h4) is re-styled with a larger than normal font (same size for all
+heading types), but without any margin or padding.
+
+Paragraphs (p) is re-styled to have a small top-padding unless it is the first child,
+in which case it has no top padding.
+
+*/
+table.infolistingtable {
+  border: 1px solid #dddddd;
 }
-.rowlisting.rowlisting-bordered > .row {
-  border-width: 1px 1px 0 1px;
-  border-style: solid;
-  border-color: #dddddd;
-}
-.rowlisting.rowlisting-bordered > .row:last-child {
-  border-width: 1px;
-}
-.rowlisting .row {
-  padding-top: 6px;
-  padding-bottom: 6px;
-}
-.rowlisting .row h2,
-.rowlisting .row h3,
-.rowlisting .row h4 {
+table.infolistingtable tr td h2,
+table.infolistingtable tr th h2,
+table.infolistingtable tr td h3,
+table.infolistingtable tr th h3,
+table.infolistingtable tr td h4,
+table.infolistingtable tr th h4 {
   font-size: 17px;
   line-height: 23px;
   margin: 0;
   padding: 0;
+}
+table.infolistingtable tr td p,
+table.infolistingtable tr th p {
+  padding: 5px 0 0 0;
+  margin: 0;
+}
+table.infolistingtable tr td p:first-child,
+table.infolistingtable tr th p:first-child {
+  padding-top: 0;
 }
