@@ -18,12 +18,12 @@
   </div>
 
 <div class="container">
-  <div class="row">
+  <p>
   <a class="btn btn-default" href="?waiting_for_feedback=1" role="button">Waiting for feedback</a>
   <a class="btn btn-default" href="#" role="button">Waiting for deliveries</a>
   <a class="btn btn-default" href="#" role="button">Corrected</a>
   <a class="btn btn-default" href="#" role="button">All</a>
-  </div>
+  </p>
 </div>
 
 
@@ -33,37 +33,43 @@
 
 <div> 
 
-{% for group in assignment.assignmentgroups.all %}
+
 <div class="container">
-  <div class="row">
-    <div class="col-sm-8">
-      <h2 class="text-primary">
-        {% for candidate in group.candidates.all %}
-        {% if not forloop.first %}
-        ,
-        {% endif %}
+  <table class="table table-striped infolistingtable">
+    {% for group in assignment.assignmentgroups.all %}
+      <tr class="group">
+        <td class="titled-cell">
+          <h3>
+            <a href="#">
+            {% for candidate in group.candidates.all %}
+            {% if not forloop.first %}
+            ,
+            {% endif %}
+            
+            {{ candidate.displayname }}
+            {% endfor %}
+            </a>
+          </h3>
         
-        {{ candidate.displayname }}
-        {% endfor %}
-      </h2>
-      <p class="text-muted">{{ group.get_status|formatted_status }}</p>
-    </div>
-    <div class="col-sm-4">
-      <h1>
-        {% if group.get_status == "waiting-for-deliveries" %}
-        <button type="button" class="btn btn-default hidden
-                                     hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
-        {% else %}
-        <button type="button" class="btn btn-default
-                                     hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
-        {% endif %}
+          <p class="text-success">{{ group.get_status|formatted_status }}</p>
+        </td>
 
-      </h1>
-    </div>
+        <td class="hidden-xs">
+          {% if group.get_status == "waiting-for-deliveries" %}
+          <button type="button" class="btn btn-default hidden
+                                       hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+          {% else %}
+          <button type="button" class="btn btn-default
+                                       hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+          {% endif %}
 
-  </div><!-- row -->
-</div>
-{% endfor%}
+        </td>
+      </tr>
+
+    {% endfor%}
+  </table><!-- row -->
+</div><!-- container -->
+
 
 </div>
 {% endblock %}
