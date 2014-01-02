@@ -282,3 +282,16 @@ class TestAssignmentManager(TestCase):
         # make sure we are not getting false positives
         self.assertEquals(Assignment.objects.filter_is_examiner(examiner1).count(), 3)
         self.assertEquals(Assignment.objects.filter_is_examiner(otherexaminer).count(), 1)
+
+    def test_filter_by_status(self):
+        examiner1 = UserBuilder('examiner1').user
+        user1 = UserBuilder('student1').user
+        user2 = UserBuilder('student2').user
+
+        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
+        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
+        currentgroupbuilder = activeassignmentbuilder.add_group().add_examiners(examiner1)
+        currentgroupbuilder.add_students(user1)
+        currentgroupbuilder.add_candidates(user1)
+        self.assertEquals(True, True)
+        
