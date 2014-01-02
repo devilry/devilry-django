@@ -52,6 +52,9 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
     def filter_examiner_has_access(self, user):
         return self.filter_is_active().filter_is_examiner(user)
 
+    def filter_by_status(self, status):
+        return self.filter(delivery_status=status)
+
 
 class AssignmentGroupManager(models.Manager):
     def get_queryset(self):
@@ -81,6 +84,9 @@ class AssignmentGroupManager(models.Manager):
         NOTE: This returns all groups that the given ``user`` has examiner-rights for.
         """
         return self.get_queryset().filter_examiner_has_access(user)
+
+    def filter_by_status(self, status):
+        return self.get_queryset().filter_by_status(status)
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
