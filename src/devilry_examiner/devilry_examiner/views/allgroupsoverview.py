@@ -11,8 +11,10 @@ class AllGroupsOverview(DetailView):
 
     def get_queryset(self):
         if self.request.GET.get('waiting_for_feedback'):
-            print "hei: ", self.request.GET.get('waiting_for_feedback')
+            return Assignment.objects.filter_examiner_has_access(self.request.user).filter_by_status('waiting-for-feedback')
+        elif self.request.GET.get('corrected'):
+            return Assignment.objects.filter_examiner_has_access(self.request.user).filter_by_status('corrected')
+        elif self.request.GET.get('waiting_for_deliveries'):
+            return Assignment.objects.filter_examiner_has_access(self.request.user).filter_by_status('waiting-for-deliveries')
         else:
-            print "heia"
-
-        return Assignment.objects.filter_examiner_has_access(self.request.user)
+            return Assignment.objects.filter_examiner_has_access(self.request.user)
