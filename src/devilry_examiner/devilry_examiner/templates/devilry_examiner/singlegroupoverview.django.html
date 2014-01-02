@@ -39,10 +39,10 @@
                 </h2>
                 <p class="text-muted deadline-datetime">{{ deadline.deadline|date:"DATETIME_FORMAT" }}</p>
             </div>
-            <div class="rowlisting rowlisting-striped rowlisting-bordered">
+            <table class="table table-striped infolistingtable">
                 {% for delivery in deadline.query_successful_deliveries %}
-                    <div class="row delivery">
-                        <div class="col-sm-8">
+                    <tr class="delivery delivery-{{ delivery.id }}">
+                        <td class="titled-cell">
                             <h3>
                                 <a href="#">
                                     {% blocktrans with number=delivery.number %}Delivery #{{ number }}{% endblocktrans %}
@@ -56,15 +56,15 @@
                             {% else %}
                                 <p class="text-muted">{% trans "No feedback" %}</p>
                             {% endif %}
-                        </div>
-                        <div class="col-sm-4 text-right">
-                            <span class="text-muted hidden-xs">{{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}</span>
-                        </div>
-                    </div>
+                        </td>
+                        <td class="text-right hidden-xs text-muted">
+                            <p class="time_of_delivery">{{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}</p>
+                        </td>
+                    </tr>
                 {% empty %}
                     <p class="text-warning no-deliveries-message">{% trans "No deliveries" %}</p>
                 {% endfor %}
-            </div>
+            </table>
         </div>
     {% endfor %}
 {% endblock %}
