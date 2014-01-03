@@ -56,12 +56,12 @@
                                 </a>
                             </h3>
                             {% if delivery.last_feedback %}
-                                <p class="text-{{ delivery.last_feedback|feedback_to_bootstrapclass }}">
-                                    {{ delivery.last_feedback.grade }}
-                                    ({{ delivery.last_feedback.is_passing_grade|format_is_passing_grade }})
+                                <p class="text-{{ delivery.last_feedback|feedback_to_bootstrapclass }} last-feedback">
+                                    <span class="feedback-grade">{{ delivery.last_feedback.grade }}</span>
+                                    (<span class="feedback-is_passing_grade">{{ delivery.last_feedback.is_passing_grade|format_is_passing_grade }}</span>)
                                 </p>
                             {% else %}
-                                <p class="text-muted">{% trans "No feedback" %}</p>
+                                <p class="text-muted no-feedback-message">{% trans "No feedback" %}</p>
                             {% endif %}
                         </td>
                         <td class="text-right hidden-xs text-muted">

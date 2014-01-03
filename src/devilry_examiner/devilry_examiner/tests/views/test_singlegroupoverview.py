@@ -9,6 +9,13 @@ from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
 
 
+
+_DJANGO_ISODATETIMEFORMAT = 'Y-m-d H:i'
+
+def _isoformat_datetime(datetimeobj):
+    return datetimeobj.strftime('%Y-%m-%d %H:%M')
+
+
 class TestSingleGroupOverview(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
@@ -52,14 +59,14 @@ class TestSingleGroupOverview(TestCase):
         groupbuilder = self.week1builder.add_group(
                 examiners=[self.examiner1])
         deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1, text='This is the deadline text.')
-        with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+        with self.settings(DATETIME_FORMAT=_DJANGO_ISODATETIMEFORMAT, USE_L10N=False):
             response = self._getas('examiner1', groupbuilder.group.id)
         self.assertEquals(response.status_code, 200)
         html = response.content
         self.assertEquals(cssGet(html, '.deadlinebox h2 .deadline-header-prefix').text.strip(),
             'Deadline 1')
         self.assertEquals(cssGet(html, '.deadlinebox h2 .deadline-datetime').text.strip(),
-            deadlinebuilder.deadline.deadline.strftime('%Y-%m-%d %H:%M'))
+            _isoformat_datetime(deadlinebuilder.deadline.deadline))
         self.assertEquals(cssGet(html, '.deadlinebox .deadline-text').text.strip(),
             'This is the deadline text.')
 
@@ -77,7 +84,7 @@ class TestSingleGroupOverview(TestCase):
         deadline2 = groupbuilder.add_deadline_in_x_weeks(weeks=1).deadline
         deadline3 = groupbuilder.add_deadline_in_x_weeks(weeks=2).deadline
         deadline1 = groupbuilder.add_deadline_x_weeks_ago(weeks=1).deadline
-        with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+        with self.settings(DATETIME_FORMAT=_DJANGO_ISODATETIMEFORMAT, USE_L10N=False):
             response = self._getas('examiner1', groupbuilder.group.id)
         self.assertEquals(response.status_code, 200)
         html = response.content
@@ -85,4 +92,66 @@ class TestSingleGroupOverview(TestCase):
         self.assertEquals(prefixes, ['Deadline 3', 'Deadline 2', 'Deadline 1'])
         datetimes = map(lambda element: element.text.strip(), cssFind(html, '.deadline-datetime'))
         self.assertEquals(datetimes,
-            [deadline.deadline.strftime('%Y-%m-%d %H:%M') for deadline in (deadline3, deadline2, deadline1)])
+            [_isoformat_datetime(deadline.deadline) for deadline in (deadline3, deadline2, deadline1)])
+
+    def test_no_deliveries_on_deadline(self):
+        groupbuilder = self.week1builder.add_group(
+                examiners=[self.examiner1])
+        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        response = self._getas('examiner1', groupbuilder.group.id)
+        html = response.content
+        self.assertEquals(cssGet(html, '.deadlinebox .no-deliveries-message').text.strip(),
+            'No deliveries')
+
+    def test_delivery_render(self):
+        groupbuilder = self.week1builder.add_group(
+                examiners=[self.examiner1])
+        delivery = groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery().delivery
+        with self.settings(DATETIME_FORMAT=_DJANGO_ISODATETIMEFORMAT, USE_L10N=False):
+            response = self._getas('examiner1', groupbuilder.group.id)
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertEquals(cssGet(html, '.delivery h3 a').text.strip(), 'Delivery #1')
+        self.assertEquals(cssGet(html, '.delivery .no-feedback-message').text.strip(), 'No feedback')
+        self.assertEquals(cssGet(html, '.delivery .time_of_delivery').text.strip(),
+            _isoformat_datetime(delivery.time_of_delivery))
+
+    def test_delivery_render_passed_grade(self):
+        groupbuilder = self.week1builder.add_group(
+                examiners=[self.examiner1])
+        delivery = groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_feedback(
+                grade='10/20',
+                points=10,
+                is_passing_grade=True,
+                saved_by=self.examiner1)
+        response = self._getas('examiner1', groupbuilder.group.id)
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertEquals(cssGet(html, '.delivery .last-feedback .feedback-grade').text.strip(),
+            '10/20')
+        self.assertEquals(cssGet(html, '.delivery .last-feedback .feedback-is_passing_grade').text.strip(),
+            'passed')
+        self.assertIn('text-success', cssGet(html, '.delivery .last-feedback')['class'])
+
+    def test_delivery_render_failed_grade(self):
+        groupbuilder = self.week1builder.add_group(
+                examiners=[self.examiner1])
+        delivery = groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_feedback(
+                grade='2/20',
+                points=2,
+                is_passing_grade=False,
+                saved_by=self.examiner1)
+        response = self._getas('examiner1', groupbuilder.group.id)
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertEquals(cssGet(html, '.delivery .last-feedback .feedback-grade').text.strip(),
+            '2/20')
+        self.assertEquals(cssGet(html, '.delivery .last-feedback .feedback-is_passing_grade').text.strip(),
+            'failed')
+        self.assertIn('text-warning', cssGet(html, '.delivery .last-feedback')['class'])
+
