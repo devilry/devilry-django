@@ -1,5 +1,6 @@
 {% extends "devilry_examiner/base.django.html" %}
 {% load i18n %}
+{% load url from future %}
 
 {% block title %}{% trans "Examiner dashboard" %}{% endblock %}
 
@@ -9,7 +10,7 @@
         	{% for assignment in active_assignments %}
             	<tr class="active-assignment-listing-item assignment-{{ assignment.get_path }}">
                     <td>
-		            	<h2><a href="{% url devilry_examiner_allgroupsoverview assignment.id %}" class="assignmentname">
+		            	<h2><a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}" class="assignmentname">
                             {{ assignment.parentnode.parentnode.short_name }}.{{ assignment.parentnode.short_name }} - {{ assignment.long_name }}
                         </a></h2>
 		            </td>
