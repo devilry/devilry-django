@@ -37,7 +37,9 @@
         <div class="container deadlinebox">
             <div class="deadline-header">
                 <h2>
-                    {% blocktrans with number=forloop.revcounter %}Deadline {{ number }}{% endblocktrans %}
+                    <span class="deadline-header-prefix">
+                        {% blocktrans with number=forloop.revcounter %}Deadline {{ number }}{% endblocktrans %}
+                    </span>
                     <small class="deadline-datetime">{{ deadline.deadline|date:"DATETIME_FORMAT" }}</small>
                 </h2>
                 {% if deadline.text %}

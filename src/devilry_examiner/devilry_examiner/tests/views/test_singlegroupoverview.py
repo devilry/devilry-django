@@ -50,14 +50,14 @@ class TestSingleGroupOverview(TestCase):
 
     def test_deadline_render(self):
         groupbuilder = self.week1builder.add_group(
-                students=[self.student1],
                 examiners=[self.examiner1])
         deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1, text='This is the deadline text.')
         with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
             response = self._getas('examiner1', groupbuilder.group.id)
         self.assertEquals(response.status_code, 200)
         html = response.content
-        self.assertTrue(cssGet(html, '.deadlinebox h2').text.strip().startswith('Deadline 1'))
+        self.assertEquals(cssGet(html, '.deadlinebox h2 .deadline-header-prefix').text.strip(),
+            'Deadline 1')
         self.assertEquals(cssGet(html, '.deadlinebox h2 .deadline-datetime').text.strip(),
             deadlinebuilder.deadline.deadline.strftime('%Y-%m-%d %H:%M'))
         self.assertEquals(cssGet(html, '.deadlinebox .deadline-text').text.strip(),
@@ -65,9 +65,24 @@ class TestSingleGroupOverview(TestCase):
 
     def test_deadline_render_no_text(self):
         groupbuilder = self.week1builder.add_group(
-                students=[self.student1],
                 examiners=[self.examiner1])
         deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
         response = self._getas('examiner1', groupbuilder.group.id)
         html = response.content
         self.assertEquals(len(cssFind(html, '.deadlinebox .deadline-text')), 0)
+
+    def test_deadline_ordering(self):
+        groupbuilder = self.week1builder.add_group(
+                examiners=[self.examiner1])
+        deadline2 = groupbuilder.add_deadline_in_x_weeks(weeks=1).deadline
+        deadline3 = groupbuilder.add_deadline_in_x_weeks(weeks=2).deadline
+        deadline1 = groupbuilder.add_deadline_x_weeks_ago(weeks=1).deadline
+        with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+            response = self._getas('examiner1', groupbuilder.group.id)
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        prefixes = map(lambda element: element.text.strip(), cssFind(html, '.deadline-header-prefix'))
+        self.assertEquals(prefixes, ['Deadline 3', 'Deadline 2', 'Deadline 1'])
+        datetimes = map(lambda element: element.text.strip(), cssFind(html, '.deadline-datetime'))
+        self.assertEquals(datetimes,
+            [deadline.deadline.strftime('%Y-%m-%d %H:%M') for deadline in (deadline3, deadline2, deadline1)])
