@@ -47,3 +47,27 @@ class TestSingleGroupOverview(TestCase):
             'Week 1 &mdash; Student One')
         self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(),
             'duck1010, active')
+
+    def test_deadline_render(self):
+        groupbuilder = self.week1builder.add_group(
+                students=[self.student1],
+                examiners=[self.examiner1])
+        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1, text='This is the deadline text.')
+        with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+            response = self._getas('examiner1', groupbuilder.group.id)
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertTrue(cssGet(html, '.deadlinebox h2').text.strip().startswith('Deadline 1'))
+        self.assertEquals(cssGet(html, '.deadlinebox h2 .deadline-datetime').text.strip(),
+            deadlinebuilder.deadline.deadline.strftime('%Y-%m-%d %H:%M'))
+        self.assertEquals(cssGet(html, '.deadlinebox .deadline-text').text.strip(),
+            'This is the deadline text.')
+
+    def test_deadline_render_no_text(self):
+        groupbuilder = self.week1builder.add_group(
+                students=[self.student1],
+                examiners=[self.examiner1])
+        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        response = self._getas('examiner1', groupbuilder.group.id)
+        html = response.content
+        self.assertEquals(len(cssFind(html, '.deadlinebox .deadline-text')), 0)

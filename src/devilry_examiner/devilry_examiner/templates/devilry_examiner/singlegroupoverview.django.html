@@ -34,12 +34,15 @@
     </div>
 
     {% for deadline in group.deadlines.all %}
-        <div class="container deadline">
+        <div class="container deadlinebox">
             <div class="deadline-header">
                 <h2>
                     {% blocktrans with number=forloop.revcounter %}Deadline {{ number }}{% endblocktrans %}
                     <small class="deadline-datetime">{{ deadline.deadline|date:"DATETIME_FORMAT" }}</small>
                 </h2>
+                {% if deadline.text %}
+                    <p class="text-muted deadline-text text-pre-wrap">{{ deadline.text }}</p>
+                {% endif %}
             </div>
             <table class="table table-striped infolistingtable">
                 {% for delivery in deadline.query_successful_deliveries %}
