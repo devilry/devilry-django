@@ -1,4 +1,5 @@
 {% extends "devilry_examiner/base.django.html" %}
+{% load url from future %}
 {% load i18n %}
 {% load devilry_examiner_tags %}
 
@@ -21,6 +22,12 @@
                 {{ group.subject.long_name }} {{ group.period.long_name }}
             </p>
         </div>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
+            <li><a href="{% url 'devilry_examiner_dashboard' %}">{% trans "Examiner" %}</a></li>
+            <li><a href="{% url 'devilry_examiner_allgroupsoverview' group.assignment.id %}">{{ group.assignment.get_path }}</a></li>
+            <li class="active">{{ group.get_students }}</li>
+        </ol>
 
         <div class="alert alert-{{ group|group_delivery_status_to_bootstrapclass }}">
             <strong>{% trans "Status" %}: {{ group.delivery_status|formatted_status }}</strong>
