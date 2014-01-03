@@ -9,14 +9,7 @@
     <div class="container">
         <div class="page-header page-header-with-subheader">
             <h1>
-                {% for candidate in group.candidates.all %}
-                    {% if not forloop.first %}
-                        ,
-                    {% endif %}
-                    {{ candidate.displayname }}
-                {% endfor %}
-                &mdash;
-                {{ group.assignment.long_name }}
+                {{ group.assignment.long_name }} &mdash; {{ group.long_displayname }}
             </h1>
             <p class="subheader">
                 {{ group.subject.long_name }} {{ group.period.long_name }}
