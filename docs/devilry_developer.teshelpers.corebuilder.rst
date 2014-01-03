@@ -444,20 +444,74 @@ API
 
     .. py:method:: add_filemeta(**kwargs)
 
-        Adds a filemeta to the delivery. ``args`` and ``kwargs`` are forwarded
+        Adds a filemeta to the delivery. ``kwargs`` is forwarded
         to :class:`.FilteMetaBuilder` with ``kwargs['delivery']`` set to
         this :obj:`.delivery`.
 
         :param kwargs: Kwargs for the :class:`.FileMetaBuilder` constructor.
         :rtype: :class:`.FileMetaBuilder`.
 
+    .. py:method:: add_feedback(**kwargs)
+
+        Adds a feedback to the delivery. ``kwargs`` is forwarded to
+        :class:`.StaticFeedbackBuilder` with ``kwargs['delivery']`` set to
+        this :obj:`.delivery`.
+
+        Example::
+
+            deliverybuilder.add_feedback(
+                points=10,
+                grade='10/100',
+                is_passing_grade=False,
+                saved_by=UserBuilder('testuser').user
+            )
+
+        :param kwargs: Kwargs for the :class:`.StaticFeedbackBuilder` constructor.
+        :rtype: :class:`.StaticFeedbackBuilder`.
+
+    .. py:method:: add_passed_feedback(**kwargs)
+
+        Shortcut that adds a passed feedback to the delivery. ``kwargs`` is
+        forwarded to :meth:`.add_feedback` with:
+
+        - ``points=1``
+        - ``grade="Passed"``
+        - ``is_passing_grade=True``
+
+        Example::
+
+            deliverybuilder.add_passed_feedback(saved_by=UserBuilder('testuser').user)
+
+        :param kwargs:
+            Extra kwargs for :meth:`.add_feedback`. Is updated with
+            :points, grade and is_passing_grade as documented above.
+        :rtype: :class:`.StaticFeedbackBuilder`.
+
+    .. py:method:: add_failed_feedback(**kwargs)
+
+        Shortcut that adds a failed feedback to the delivery. ``kwargs`` is
+        forwarded to :meth:`.add_feedback` with:
+
+        - ``points=0``
+        - ``grade="Failed"``
+        - ``is_passing_grade=False``
+
+        Example::
+
+            deliverybuilder.add_failed_feedback(saved_by=UserBuilder('testuser').user)
+
+        :param kwargs:
+            Extra kwargs for :meth:`.add_feedback`. Is updated with
+            :points, grade and is_passing_grade as documented above.
+        :rtype: :class:`.StaticFeedbackBuilder`.
+
 
 
 .. py:class:: FileMetaBuilder
 
-    .. py:attribute:: delivery
+    .. py:attribute:: filemeta
 
-        The :class:`~devilry.apps.core.models.Delivery` wrapped by this builder.
+        The :class:`~devilry.apps.core.models.FileMeta` wrapped by this builder.
 
     .. py:method:: __init__(delivery, filename, data)
 
@@ -469,3 +523,17 @@ API
         :param delivery: The Delivery object.
         :param filename: A filename.
         :param data: The file contents as a string.
+
+
+
+.. py:class:: StaticFeedbackBuilder
+
+    .. py:attribute:: feedback
+
+        The :class:`~devilry.apps.core.models.StaticFeedback` wrapped by this builder.
+
+    .. py:method:: __init__(**kwargs)
+
+        Creates a new :class:`~devilry.apps.core.models.StaticFeedback` with the given attributes.
+
+        :param kwargs: Arguments for the StaticFeedback constructor.

@@ -129,6 +129,13 @@ class DeliveryBuilder(CoreBuilderBase):
         kwargs['delivery'] = self.delivery
         return StaticFeedbackBuilder(**kwargs)
 
+    def add_failed_feedback(self, **kwargs):
+        kwargs['points'] = 0
+        kwargs['grade'] = 'Failed'
+        kwargs['is_passing_grade'] = False
+        kwargs['delivery'] = self.delivery
+        return StaticFeedbackBuilder(**kwargs)
+
 
 class DeadlineBuilder(CoreBuilderBase):
     object_attribute_name = 'deadline'
