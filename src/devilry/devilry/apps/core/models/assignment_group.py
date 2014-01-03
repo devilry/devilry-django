@@ -328,7 +328,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         an administrator. Use :meth:`get_candidates`
         instead.
         """
-        return u', '.join([c.student.username for c in self.candidates.all()])
+        return u', '.join([c.student.username for c in self.candidates.select_related('student')])
 
     def get_candidates(self, separator=u', '):
         """
@@ -348,7 +348,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         :param separator: The unicode string used to separate candidates. Defaults to ``u', '``.
         """
-        return separator.join([examiner.user.username for examiner in self.examiners.all()])
+        return separator.join([examiner.user.username for examiner in self.examiners.select_related('user')])
 
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)
