@@ -7,6 +7,7 @@ from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from ..models import AssignmentGroup
+from ..models import Candidate
 from ..models.assignment_group import GroupPopNotCandiateError
 from ..models.assignment_group import GroupPopToFewCandiatesError
 from ..models import Delivery
@@ -666,6 +667,43 @@ class TestAssignmentGroupUserIds(TestCase):
                  self.testhelper.infadm2.id, self.testhelper.subadm.id,
                  self.testhelper.subadm2.id, self.testhelper.p1adm.id,
                  self.testhelper.a1adm.id, self.testhelper.a1adm2.id]))
+
+
+
+
+
+class TestAssignmentGroup2(TestCase):
+    """
+    Test AssignmentGroup using the next generation less coupled testing frameworks.
+    """
+    def test_short_displayname_empty(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertEquals(group1builder.group.short_displayname, unicode(group1builder.group.id))
+
+    def test_short_displayname_students(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+            .add_assignment('assignment1')\
+            .add_group().add_students(
+                UserBuilder('student1').user,
+                UserBuilder('student2').user)
+        self.assertEquals(group1builder.group.short_displayname, 'student1, student2')
+
+    def test_short_displayname_anonymous_candidates(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+            .add_assignment('assignment1', anonymous=True)\
+            .add_group().add_candidates(
+                Candidate(student=UserBuilder('student1').user, candidate_id="aa"),
+                Candidate(student=UserBuilder('student2').user, candidate_id="bb"))
+        self.assertEquals(group1builder.group.short_displayname, 'aa, bb')
+
+    def test_short_displayname_named(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+            .add_assignment('assignment1')\
+            .add_group(name='My group')
+        self.assertEquals(group1builder.group.short_displayname, 'My group')
+
 
 
 class TestAssignmentGroupManager(TestCase):

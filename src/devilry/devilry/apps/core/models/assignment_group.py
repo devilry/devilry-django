@@ -268,6 +268,27 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         return self.parentnode
 
+    @property
+    def short_displayname(self):
+        """
+        A short displayname for the group. If the assignment is anonymous,
+        we list the candidate IDs. If the group has a name, the name is used,
+        else we fall back to the usernames. If the group has no name and no
+        students, we use the ID.
+
+        .. seealso:: https://github.com/devilry/devilry-django/issues/498
+        """
+        if self.assignment.anonymous:
+            out = self.get_candidates()
+        elif self.name:
+            out = self.name
+        else:
+            out = self.get_students()
+        if out == '':
+            return unicode(self.id)
+        else:
+            return out
+
     def __unicode__(self):
         return u'id={id} path={path} candidates=({candidates})'.format(id=self.id,
                                                                        path=self.parentnode.get_path(),
