@@ -59,8 +59,9 @@ class CoreBuilderBase(ReloadableDbBuilderInterface):
         getattr(self, self.object_attribute_name).save()
 
     def update(self, **attributes):
+        obj = getattr(self, self.object_attribute_name)
         for attrname, value in attributes.iteritems():
-            setattr(self.node, attrname, value)
+            setattr(obj, attrname, value)
         self._save()
         self.reload_from_db()
 
