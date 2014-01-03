@@ -17,15 +17,15 @@ class TestDashboardView(TestCase):
 
     def test_list_single(self):
         currentperiodbuilder = PeriodBuilder.quickadd_ducku_duck1010_current()
-        currentperiodbuilder.add_assignment('week1', 'Week 1')\
-            .add_group().add_examiners(self.examiner1)
+        week1builder = currentperiodbuilder.add_assignment('week1', 'Week 1')
+        week1builder.add_group().add_examiners(self.examiner1)
         response = self._getas('examiner1')
         self.assertEquals(response.status_code, 200)
         html = response.content
         self.assertEquals(len(cssFind(html, '.active-assignment-listing-item')), 1)
-        self.assertEquals(cssGet(html, '.assignment-duck1010.current.week1 .assignmentname').text.strip(),
-            'duck1010.current - Week 1')
-
+        linktag = cssGet(html, '.assignment-duck1010.current.week1 a.assignmentname')
+        self.assertEquals(linktag.text.strip(), 'duck1010.current - Week 1')
+        self.assertEquals(linktag['href'], '/devilry_examiner/allgroupsoverview/{}'.format(week1builder.assignment.id))
 
     def test_list_ordering(self):
         currentperiodbuilder = PeriodBuilder.quickadd_ducku_duck1010_current()
