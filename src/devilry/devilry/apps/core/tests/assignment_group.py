@@ -732,9 +732,6 @@ class TestAssignmentGroup2(TestCase):
 
 
 class TestAssignmentGroupManager(TestCase):
-    def setUp(self):
-        self.testhelper = TestHelper()
-
     def test_filter_is_examiner(self):
         examiner1 = UserBuilder('examiner1').user
         week1 = PeriodBuilder.quickadd_ducku_duck1010_current().add_assignment('week1')
