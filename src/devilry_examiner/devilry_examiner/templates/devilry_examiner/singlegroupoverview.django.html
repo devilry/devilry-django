@@ -26,7 +26,7 @@
             <li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
             <li><a href="{% url 'devilry_examiner_dashboard' %}">{% trans "Examiner" %}</a></li>
             <li><a href="{% url 'devilry_examiner_allgroupsoverview' group.assignment.id %}">{{ group.assignment.get_path }}</a></li>
-            <li class="active">{{ group.get_students }}</li>
+            <li class="active">{{ group.short_displayname }}</li>
         </ol>
 
         <div class="alert alert-{{ group|group_delivery_status_to_bootstrapclass }}">
