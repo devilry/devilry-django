@@ -67,7 +67,7 @@ class CoreBuilderBase(ReloadableDbBuilderInterface):
 
     def reload_from_db(self):
         obj = getattr(self, self.object_attribute_name)
-        setattr(self, self.object_attribute_name, obj.__class__.objects.create(pk=obj.pk))
+        setattr(self, self.object_attribute_name, obj.__class__.objects.get(pk=obj.pk))
 
 
 class BaseNodeBuilderBase(CoreBuilderBase):
