@@ -38,18 +38,12 @@
 
 <div class="container">
   <table class="table table-striped infolistingtable">
-    {% for group in assignment.assignmentgroups.all %}
+    {% for group in groups %}
       <tr class="group">
         <td class="titled-cell">
           <h3>
             <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
-            {% for candidate in group.candidates.all %}
-            {% if not forloop.first %}
-            ,
-            {% endif %}
-            
-            {{ candidate.displayname }}
-            {% endfor %}
+              {{ group.long_displayname }}
             </a>
           </h3>
         
