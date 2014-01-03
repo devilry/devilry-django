@@ -163,14 +163,20 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         ordering = ['id']
 
     def save(self, *args, **kwargs):
+        """
+        :param update_delivery_status:
+            Update the ``delivery_status``? This is a somewhat expensive
+            operation, so we provide the option to avoid it if needed.
+            Defaults to ``True``.
+        """
         create_dummy_deadline = False
         if self.id is None and self.parentnode.delivery_types == deliverytypes.NON_ELECTRONIC:
             create_dummy_deadline = True
+        if kwargs.pop('update_delivery_status', True):
+            self._set_delivery_status()
         super(AssignmentGroup, self).save(*args, **kwargs)
         if create_dummy_deadline:
             self.deadlines.create(deadline=self.parentnode.parentnode.end_time)
-
-        self._convert_status_to_deliverystatus()
 
     @classmethod
     def q_is_admin(cls, user_obj):
@@ -472,34 +478,32 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             delivery.save(autoset_number=False,
                           autoset_time_of_delivery=False)
 
-    def _convert_status_to_deliverystatus(self):
+    def _set_delivery_status(self):
         """
-        Get the status of the group. Calculated with this algorithm:
+        Set the ``delivery_status``. Calculated with this algorithm:
 
         - If open:
-            - If before deadline:
-                - ``waiting-for-deliveries``
-            - If after deadline:
-                - ``waiting-for-feedback``
             - If no deadlines
                 - ``no-deadlines``
+            - Else:
+                - ``waiting-for-something``
         - If closed:
             - If feedback:
                 - ``corrected``
             - If not:
                 - ``closed-without-feedback``
 
+        .. warning:: Only sets ``delivery_status``, does not save.
+
         :return:
             One of ``waiting-for-deliveries``, ``waiting-for-feedback``,
             ``no-deadlines``, ``corrected`` or ``closed-without-feedback``.
         """
         if self.is_open:
-            deadlines = self.deadlines.all()
-            deadlinecount = len(deadlines)
-            if deadlinecount == 0:
-                self.delivery_status = 'no-deadlines'
-            else:
+            if self.deadlines.exists():
                 self.delivery_status = 'waiting-for-something'
+            else:
+                self.delivery_status = 'no-deadlines'
         else:
             if self.feedback:
                 self.delivery_status = 'corrected'

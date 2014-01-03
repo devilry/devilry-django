@@ -609,40 +609,34 @@ class TestAssignmentGroupSplit(TestCase):
 
 class TestAssignmentGroupStatus(TestCase):
     def setUp(self):
-        self.testhelper = TestHelper()
-        self.testhelper.add(nodes="uni",
-                            subjects=["sub"],
-                            periods=["p1:begins(-1)"], # 30days
-                            assignments=['a1:pub(25)'], # 5days ago
-                            assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
-        self.g1 = self.testhelper.sub_p1_a1_g1
+        self.group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+            .add_assignment('assignment1')\
+            .add_group()
 
     def test_no_deadlines(self):
-        self.assertEquals(self.g1.get_status(), 'no-deadlines')
+        self.assertEquals(self.group1builder.group.delivery_status, 'no-deadlines')
+        self.assertEquals(self.group1builder.group.get_status(), 'no-deadlines')
 
     def test_waiting_for_deliveries(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)') # 5day after publishing time, with is 5days ago.
-        self.assertEquals(self.g1.get_status(), 'waiting-for-deliveries')
+        self.group1builder.add_deadline_in_x_weeks(weeks=1)
+        self.assertEquals(self.group1builder.group.delivery_status, 'waiting-for-something')
+        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-deliveries')
 
     def test_waiting_for_feedback(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)') # 1day after publishing time, with is 5days ago.
-        self.assertEquals(self.g1.get_status(), 'waiting-for-feedback')
+        self.group1builder.add_deadline_x_weeks_ago(weeks=1)
+        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-feedback')
 
     def test_corrected(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)')
-        delivery = self.testhelper.add_delivery('uni;sub.p1.a1.g1')
-        self.testhelper.add_feedback(delivery=delivery,
-                                     verdict={'grade': 'A', 'points':100, 'is_passing_grade':True})
-        g1 = self.testhelper.reload_from_db(self.g1)
-        g1.is_open = False
-        g1.save()
-        self.assertEquals(g1.get_status(), 'corrected')
+        self.group1builder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_passed_feedback(saved_by=UserBuilder('testuser').user)
+        self.assertEquals(self.group1builder.group.delivery_status, 'corrected')
+        self.assertEquals(self.group1builder.group.get_status(), 'corrected')
 
     def test_closed_without_feedback(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)')
-        self.g1.is_open = False
-        self.g1.save()
-        self.assertEquals(self.g1.get_status(), 'closed-without-feedback')
+        self.group1builder.update(is_open=False)
+        self.assertEquals(self.group1builder.group.delivery_status, 'closed-without-feedback')
+        self.assertEquals(self.group1builder.group.get_status(), 'closed-without-feedback')
 
 
 
