@@ -84,6 +84,8 @@ class BaseNodeBuilderBase(CoreBuilderBase):
 
 
 class FileMetaBuilder(CoreBuilderBase):
+    object_attribute_name = 'filemeta'
+
     def __init__(self, delivery, filename, data):
         self.filemeta = FileMeta.objects.create(delivery, filename=filename, size=0)
         f = FileMeta.deliverystore.write_open(self.filemeta)
@@ -94,6 +96,8 @@ class FileMetaBuilder(CoreBuilderBase):
 
 
 class DeliveryBuilder(CoreBuilderBase):
+    object_attribute_name = 'delivery'
+
     def __init__(self, **kwargs):
         if not 'time_of_delivery' in kwargs:
             kwargs['time_of_delivery'] = datetime.now()
@@ -108,6 +112,8 @@ class DeliveryBuilder(CoreBuilderBase):
 
 
 class DeadlineBuilder(CoreBuilderBase):
+    object_attribute_name = 'deadline'
+
     def __init__(self, **kwargs):
         self.deadline = Deadline.objects.create(**kwargs)
 
@@ -135,6 +141,8 @@ class DeadlineBuilder(CoreBuilderBase):
 
 
 class AssignmentGroupBuilder(CoreBuilderBase):
+    object_attribute_name = 'group'
+
     def __init__(self, students=[], candidates=[], examiners=[], **kwargs):
         self.group = AssignmentGroup.objects.create(**kwargs)
         self.add_students(*students)
