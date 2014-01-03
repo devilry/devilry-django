@@ -58,7 +58,7 @@ shortcuts for that::
     from devilry_developer.testhelpers.corebuilder import SubjectBuilder
     from devilry_developer.testhelpers.corebuilder import PeriodBuilder
     duck1010_builder = SubjectBuilder.quickadd_ducku_duck1010()
-    currentperiod_builder = PeriodBuilder.quickadd_ducku_duck1010_current()
+    currentperiod_builder = PeriodBuilder.quickadd_ducku_duck1010_active()
 
 
 .. note::
@@ -258,7 +258,7 @@ API
 
         :rtype: :class:`.AssignmentBuilder`.
 
-    .. py:classmethod:: quickadd_ducku_duck1010_current()
+    .. py:classmethod:: quickadd_ducku_duck1010_active()
 
         When we need just a single active period, we use this shortcut
         method instead of writing::

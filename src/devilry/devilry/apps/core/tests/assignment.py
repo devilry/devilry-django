@@ -239,7 +239,7 @@ class TestAssignmentManager(TestCase):
 
     def test_filter_is_examiner(self):
         examiner1 = UserBuilder('examiner1').user
-        week1builder = PeriodBuilder.quickadd_ducku_duck1010_current().add_assignment('week1')
+        week1builder = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
         group1builder = week1builder.add_group().add_examiners(examiner1)
 
         # Add another group to make sure we do not get false positives

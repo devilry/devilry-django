@@ -609,7 +609,7 @@ class TestAssignmentGroupSplit(TestCase):
 
 class TestAssignmentGroupStatus(TestCase):
     def setUp(self):
-        self.group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+        self.group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')\
             .add_group()
 
@@ -671,13 +671,13 @@ class TestAssignmentGroup2(TestCase):
     Test AssignmentGroup using the next generation less coupled testing frameworks.
     """
     def test_short_displayname_empty(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')\
             .add_group()
         self.assertEquals(group1builder.group.short_displayname, unicode(group1builder.group.id))
 
     def test_short_displayname_students(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')\
             .add_group().add_students(
                 UserBuilder('student1').user,
@@ -685,7 +685,7 @@ class TestAssignmentGroup2(TestCase):
         self.assertEquals(group1builder.group.short_displayname, 'student1, student2')
 
     def test_short_displayname_anonymous_candidates(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1', anonymous=True)\
             .add_group().add_candidates(
                 Candidate(student=UserBuilder('student1').user, candidate_id="aa"),
@@ -693,20 +693,20 @@ class TestAssignmentGroup2(TestCase):
         self.assertEquals(group1builder.group.short_displayname, 'aa, bb')
 
     def test_short_displayname_named(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')\
             .add_group(name='My group')
         self.assertEquals(group1builder.group.short_displayname, 'My group')
 
 
     def test_long_displayname_empty(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')\
             .add_group()
         self.assertEquals(group1builder.group.long_displayname, unicode(group1builder.group.id))
 
     def test_long_displayname_students(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')\
             .add_group().add_students(
                 UserBuilder('student1', full_name=u'Student One \u00E5').user,
@@ -714,7 +714,7 @@ class TestAssignmentGroup2(TestCase):
         self.assertEquals(group1builder.group.long_displayname, u'Student One \u00E5, student2')
 
     def test_long_displayname_anonymous_candidates(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1', anonymous=True)\
             .add_group().add_candidates(
                 Candidate(student=UserBuilder('student1').user, candidate_id="aa"),
@@ -722,7 +722,7 @@ class TestAssignmentGroup2(TestCase):
         self.assertEquals(group1builder.group.long_displayname, 'aa, bb')
 
     def test_long_displayname_named(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')\
             .add_group(name='My group').add_students(
                 UserBuilder('student1', full_name=u'Student One \u00E5').user,
@@ -734,7 +734,7 @@ class TestAssignmentGroup2(TestCase):
 class TestAssignmentGroupManager(TestCase):
     def test_filter_is_examiner(self):
         examiner1 = UserBuilder('examiner1').user
-        week1 = PeriodBuilder.quickadd_ducku_duck1010_current().add_assignment('week1')
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
         group1builder = week1.add_group().add_examiners(examiner1)
 
         # Add another group to make sure we do not get false positives
