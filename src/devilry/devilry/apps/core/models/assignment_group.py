@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db.models import Q
 from django.db import models
 from django.db import transaction
+from django.utils.translation import ugettext_lazy as _
 
 from node import Node
 from abstract_is_admin import AbstractIsAdmin
@@ -156,7 +157,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             help_text = 'If this is checked, the group can add deliveries.')
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
     etag = models.DateTimeField(auto_now_add=True)
-    delivery_status = models.CharField(max_length=30, blank=True, null=True, help_text='The delivery_status of a group')
+    delivery_status = models.CharField(max_length=30, blank=True, null=True,
+        help_text='The delivery_status of a group',
+        choices=(
+            ("no-deadlines", _("No deadlines")),
+            ("corrected", _("Corrected")),
+            ("closed-without-feedback", _("Closed without feedback")),
+            ("waiting-for-something", _("Waiting for something")),
+        ))
 
     class Meta:
         app_label = 'core'
