@@ -109,7 +109,8 @@ class DeliveryBuilder(CoreBuilderBase):
     def __init__(self, **kwargs):
         if not 'time_of_delivery' in kwargs:
             kwargs['time_of_delivery'] = datetime.now()
-        self.delivery = Delivery.objects.create(**kwargs)
+        self.delivery = Delivery(**kwargs)
+        self.delivery.save(autoset_time_of_delivery=False)
 
     def _save(self):
         self.delivery.save(autoset_time_of_delivery=False)
