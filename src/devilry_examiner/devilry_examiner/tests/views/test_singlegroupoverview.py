@@ -155,3 +155,22 @@ class TestSingleGroupOverview(TestCase):
             'failed')
         self.assertIn('text-warning', cssGet(html, '.delivery .last-feedback')['class'])
 
+    def test_delivery_order(self):
+        groupbuilder = self.week1builder.add_group(
+                examiners=[self.examiner1])
+        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        delivery1 = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10).delivery
+        delivery2 = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=5).delivery
+        delivery3 = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
+        with self.settings(DATETIME_FORMAT=_DJANGO_ISODATETIMEFORMAT, USE_L10N=False):
+            response = self._getas('examiner1', groupbuilder.group.id)
+        html = response.content
+        deliveries = map(lambda element: element.text.strip(), cssFind(html, '.delivery h3 a'))
+        self.assertEquals(deliveries,
+            ['Delivery #3', 'Delivery #2', 'Delivery #1'])
+        datetimes = map(lambda element: element.text.strip(), cssFind(html, '.delivery .time_of_delivery'))
+        self.assertEquals(datetimes, [
+            _isoformat_datetime(delivery3.time_of_delivery),
+            _isoformat_datetime(delivery2.time_of_delivery),
+            _isoformat_datetime(delivery1.time_of_delivery),
+        ])
