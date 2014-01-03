@@ -9,6 +9,7 @@ from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import StaticFeedback
 from devilry.apps.core.models import FileMeta
 
 from .datebuilder import DateTimeBuilder
@@ -95,6 +96,13 @@ class FileMetaBuilder(CoreBuilderBase):
         self.filemeta.save()
 
 
+class StaticFeedbackBuilder(CoreBuilderBase):
+    object_attribute_name = 'feedback'
+
+    def __init__(self, **kwargs):
+        self.feedback = StaticFeedback.objects.create(**kwargs)
+
+
 class DeliveryBuilder(CoreBuilderBase):
     object_attribute_name = 'delivery'
 
@@ -109,6 +117,17 @@ class DeliveryBuilder(CoreBuilderBase):
     def add_filemeta(self, **kwargs):
         kwargs['delivery'] = self.delivery
         return FileMetaBuilder(**kwargs)
+
+    def add_feedback(self, **kwargs):
+        kwargs['delivery'] = self.delivery
+        return StaticFeedbackBuilder(**kwargs)
+
+    def add_passed_feedback(self, **kwargs):
+        kwargs['points'] = 1
+        kwargs['grade'] = 'Passed'
+        kwargs['is_passing_grade'] = True
+        kwargs['delivery'] = self.delivery
+        return StaticFeedbackBuilder(**kwargs)
 
 
 class DeadlineBuilder(CoreBuilderBase):
