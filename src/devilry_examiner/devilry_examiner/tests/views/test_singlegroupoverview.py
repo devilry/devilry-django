@@ -12,8 +12,9 @@ class TestSingleGroupOverview(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.examiner1 = UserBuilder('examiner1').user
-        self.student1 = UserBuilder('student1').user
-        self.week1builder = PeriodBuilder.quickadd_ducku_duck1010_current().add_assignment('week1')
+        self.student1 = UserBuilder('student1', full_name="Student One").user
+        self.week1builder = PeriodBuilder.quickadd_ducku_duck1010_current()\
+            .add_assignment('week1', long_name='Week 1')
 
     def _getas(self, username, groupid, *args, **kwargs):
         self.client.login(username=username, password='test')
@@ -27,7 +28,7 @@ class TestSingleGroupOverview(TestCase):
         response = self._getas('examiner1', groupbuilder.group.id)
         self.assertEquals(response.status_code, 200)
         html = response.content
-        print html
-        #pageheader = cssGet(html, '.assignmentheader h1').strip()
-        #self.assertEquals(len(listitems), 1)
-        #self.assertEquals(listitems[0].text.strip(), 'sub.period1.week2')
+        self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
+            'Week 1 &mdash; Student One')
+        self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(),
+            'duck1010, current')
