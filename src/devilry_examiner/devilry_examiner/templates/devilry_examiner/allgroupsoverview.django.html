@@ -1,5 +1,6 @@
 {% extends "devilry_examiner/base.django.html" %}
 {% load i18n devilry_examiner_tags%}
+{% load url from future %}
 
 {% block bodyid %}allgroupsoverview{% endblock %}
 
@@ -40,7 +41,7 @@
       <tr class="group">
         <td class="titled-cell">
           <h3>
-            <a href="#">
+            <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
             {% for candidate in group.candidates.all %}
             {% if not forloop.first %}
             ,
