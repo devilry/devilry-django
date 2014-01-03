@@ -2,9 +2,21 @@
 {% load i18n %}
 {% load url from future %}
 
-{% block title %}{% trans "Examiner dashboard" %}{% endblock %}
+{% block title %}{% trans "Examiner" %}{% endblock %}
 
 {% block body %}
+    <div class="container">
+        <div class="page-header page-header-with-subheader">
+            <h1>{% trans "Examiner" %}</h1>
+            <p class="subheader">
+                {% trans "Dashboard for the examiner role. You use this role to provide feedback to students." %}
+            </p>
+        </div>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
+            <li class="active">{% trans "Examiner" %}</li>
+        </ol>
+    </div>
     <div class="container">
         <table class="table table-striped infolistingtable active-assignment-listing">
         	{% for assignment in active_assignments %}
