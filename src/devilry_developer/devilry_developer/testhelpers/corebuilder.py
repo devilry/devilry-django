@@ -230,7 +230,7 @@ class PeriodBuilder(BaseNodeBuilderBase):
     @classmethod
     def quickadd_ducku_duck1010_active(cls):
         return SubjectBuilder.quickadd_ducku_duck1010()\
-            .add_6month_active_period(short_name='active')
+            .add_6month_active_period()
 
     def add_assignment(self, *args, **kwargs):
         kwargs['parentnode'] = self.period
