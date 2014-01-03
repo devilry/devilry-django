@@ -145,6 +145,7 @@ class DeadlineBuilder(CoreBuilderBase):
 
     def add_delivery(self, **kwargs):
         kwargs['deadline'] = self.deadline
+        kwargs['successful'] = kwargs.get('successful', True)
         return DeliveryBuilder(**kwargs)
 
     def add_delivery_after_deadline(self, timedeltaobject, **kwargs):

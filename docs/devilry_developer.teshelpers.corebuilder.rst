@@ -366,9 +366,9 @@ API
 
     .. py:method:: add_delivery(**kwargs)
 
-        Adds an delivery to the deadline. ``args`` and ``kwargs`` are forwarded
+        Adds a delivery to the deadline. ``args`` and ``kwargs`` are forwarded
         to :class:`.DeliveryBuilder` with ``kwargs['deadline']`` set to
-        this :obj:`.deadline`.
+        this :obj:`.deadline` and ``kwargs['successful']`` defaulting to ``True``.
 
         :param kwargs: Extra kwargs for the :class:`.DeliveryBuilder` constructor.
         :rtype: :class:`.DeliveryBuilder`.
