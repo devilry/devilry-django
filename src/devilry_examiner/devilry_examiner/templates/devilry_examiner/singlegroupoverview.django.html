@@ -51,7 +51,7 @@
                     <tr class="delivery delivery-{{ delivery.id }}">
                         <td class="titled-cell">
                             <h3>
-                                <a href="#">
+                                <a href="{% url 'devilry_examiner_singledeliveryview' delivery.id %}">
                                     {% blocktrans with number=delivery.number %}Delivery #{{ number }}{% endblocktrans %}
                                 </a>
                             </h3>
