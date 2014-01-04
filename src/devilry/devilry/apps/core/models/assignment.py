@@ -71,9 +71,6 @@ class AssignmentManager(models.Manager):
         """
         return self.get_queryset().filter_examiner_has_access(user)
 
-    def filter_by_status(self, status):
-        return self.get_queryset().filter_by_status(status)
-
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
