@@ -6,6 +6,7 @@ from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.dashboard import DashboardView
 from .views.singlegroupoverview import SingleGroupOverview
 from .views.allgroupsoverview import AllGroupsOverview
+from .views.singledelivery import SingleDeliveryView
 
 i18n_packages = get_javascript_catalog_packages(
     #'devilry_examiner',
@@ -21,6 +22,9 @@ urlpatterns = patterns('devilry_examiner',
                        url('^singlegroupoverview/(?P<groupid>\d+)$',
                            login_required(SingleGroupOverview.as_view()),
                            name='devilry_examiner_singlegroupoverview'),
+                       url('^singledelivery/(?P<deliveryid>\d+)$',
+                           login_required(SingleDeliveryView.as_view()),
+                           name='devilry_examiner_singledeliveryview'),
                        url('^i18n.js$', javascript_catalog,
                            kwargs={'packages': i18n_packages},
                            name='devilry_examiner_i18n')

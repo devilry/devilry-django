@@ -1,0 +1,33 @@
+{% extends "devilry_examiner/base.django.html" %}
+{% load url from future %}
+{% load i18n %}
+{% load devilry_examiner_tags %}
+
+{% block body %}
+    <div class="container">
+        <div class="page-header page-header-with-subheader">
+            <h1>
+                {{ group.assignment.long_name }} &mdash; {{ group.long_displayname }}
+            </h1>
+            <p class="subheader">
+                {{ group.subject.long_name }}, {{ group.period.long_name }}
+            </p>
+        </div>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
+            <li><a href="{% url 'devilry_examiner_dashboard' %}">{% trans "Examiner" %}</a></li>
+            <li><a href="{% url 'devilry_examiner_allgroupsoverview' group.assignment.id %}">{{ group.assignment.get_path }}</a></li>
+            <li class="active">{{ group.short_displayname }}</li>
+        </ol>
+
+        <div class="alert alert-{{ group|group_delivery_status_to_bootstrapclass }}">
+            <strong>{% trans "Status" %}: {{ group.get_status|formatted_status }}</strong>
+            {% if group.delivery_status == 'corrected' %}
+                <p><small>
+                    {% trans "Grade" %}: {{ group.feedback.grade }}
+                    ({{ group.feedback.is_passing_grade|format_is_passing_grade }})
+                </small></p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
