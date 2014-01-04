@@ -61,3 +61,28 @@ class TestSingleDeliveryView(TestCase):
             'Week 1 &mdash; Student One')
         self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(),
             'Delivery 1/1-{}'.format(_isoformat_datetime(deliverybuilder.delivery.time_of_delivery)))
+
+
+    def test_after_deadline(self):
+        delivery = self.week1builder\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_after_deadline(hours=1).delivery
+        response = self._getas('examiner1', delivery.id)
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertEquals(cssGet(html, '.after_deadline_message').text.strip(),
+            'This delivery was added 1 hour after the deadline.The group has no other deliveries for this deadline.')
+
+    def test_after_deadline_other_deliveries(self):
+        deadlinebuilder = self.week1builder\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)
+        delivery1 = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
+        delivery2 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=1).delivery
+        response = self._getas('examiner1', delivery2.id)
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertEquals(
+            cssGet(html, '.after_deadline_message').text.strip(),
+            'This delivery was added 1 hour after the deadline.The group has made at least one more delivery for this deadline.Browse other deliveries.')

@@ -26,5 +26,18 @@
             <li><a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">{{ delivery.deadline.assignment_group.short_displayname }}</a></li>
             <li class="active">#{{ delivery.number }}</li>
         </ol>
+
+        {% if delivery.after_deadline %}
+            <div class="alert alert-danger after_deadline_message">
+                <strong>{% trans "This delivery was added 1 hour after the deadline." %}</strong>
+                {% if delivery.deadline.successful_delivery_count > 1 %}
+                    {% trans "The group has made at least one more delivery for this deadline." %}
+                    <a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">
+                        {% trans "Browse other deliveries" %}</a>.
+                {% else %}
+                    {% trans "The group has no other deliveries for this deadline." %}
+                {% endif %}
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
