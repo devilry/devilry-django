@@ -163,7 +163,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
     @property
     def successful_delivery_count(self):
-        self.query_successful_deliveries().count()
+        return self.query_successful_deliveries().count()
     
 
     def is_empty(self):
