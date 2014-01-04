@@ -86,3 +86,25 @@ class TestSingleDeliveryView(TestCase):
         self.assertEquals(
             cssGet(html, '.after_deadline_message').text.strip(),
             'This delivery was added 1 hour after the deadline.The group has made at least one more delivery for this deadline.Browse other deliveries.')
+
+
+    def test_not_last_delivery_message_not_shown_on_last(self):
+        delivery = self.week1builder\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1).delivery
+        response = self._getas('examiner1', delivery.id)
+        html = response.content
+        self.assertFalse(cssExists(html, '.not_last_delivery_message'))
+
+    def test_not_last_delivery_message(self):
+        deadlinebuilder = self.week1builder\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)
+        delivery1 = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
+        delivery2 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=1).delivery
+        response = self._getas('examiner1', delivery1.id)
+        html = response.content
+        self.assertEquals(
+            cssGet(html, '.not_last_delivery_message').text.strip(),
+            'This delivery is not the last delivery made by this group on this assignment.Browse other deliveries.')
