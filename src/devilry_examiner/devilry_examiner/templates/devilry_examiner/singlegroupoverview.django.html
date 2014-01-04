@@ -23,7 +23,7 @@
         </ol>
 
         <div class="alert alert-{{ group|group_delivery_status_to_bootstrapclass }}">
-            <strong>{% trans "Status" %}: {{ group.delivery_status|formatted_status }}</strong>
+            <strong>{% trans "Status" %}: {{ group.get_status|formatted_status }}</strong>
             {% if group.delivery_status == 'corrected' %}
                 <p><small>
                     {% trans "Grade" %}: {{ group.feedback.grade }}
