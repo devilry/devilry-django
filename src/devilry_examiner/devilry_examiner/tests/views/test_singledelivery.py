@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from devilry.apps.core.testhelper import TestHelper
 from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry_developer.testhelpers.corebuilder import DeliveryBuilder
 from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import cssExists
@@ -19,7 +19,7 @@ def _isoformat_datetime(datetimeobj):
 
 class TestSingleDeliveryView(TestCase):
     def setUp(self):
-        self.testhelper = TestHelper()
+        DeliveryBuilder.set_memory_deliverystore()
         self.examiner1 = UserBuilder('examiner1').user
         self.student1 = UserBuilder('student1', full_name="Student One").user
         self.duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
@@ -60,4 +60,4 @@ class TestSingleDeliveryView(TestCase):
         self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
             'Week 1 &mdash; Student One')
         self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(),
-            'Delivery 1/1, {}'.format(_isoformat_datetime(deliverybuilder.delivery.time_of_delivery)))
+            'Delivery 1/1-{}'.format(_isoformat_datetime(deliverybuilder.delivery.time_of_delivery)))

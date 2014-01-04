@@ -7,27 +7,24 @@
     <div class="container">
         <div class="page-header page-header-with-subheader">
             <h1>
-                {{ group.assignment.long_name }} &mdash; {{ group.long_displayname }}
+                {{ delivery.deadline.assignment_group.assignment.long_name }} &mdash; {{ delivery.deadline.assignment_group.long_displayname }}
             </h1>
             <p class="subheader">
-                {{ group.subject.long_name }}, {{ group.period.long_name }}
+                <span class="deliverynumber_and_total">
+                    {% blocktrans with number=delivery.number total=delivery.deadline.assignment_group.successful_delivery_count %}
+                        Delivery {{ number }}/{{ total }}
+                    {% endblocktrans %}
+                </span>
+                -
+                <span class="time_of_delivery">{{ delivery.time_of_delivery }}</span>
             </p>
         </div>
         <ol class="breadcrumb">
             <li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
             <li><a href="{% url 'devilry_examiner_dashboard' %}">{% trans "Examiner" %}</a></li>
-            <li><a href="{% url 'devilry_examiner_allgroupsoverview' group.assignment.id %}">{{ group.assignment.get_path }}</a></li>
-            <li class="active">{{ group.short_displayname }}</li>
+            <li><a href="{% url 'devilry_examiner_allgroupsoverview' delivery.deadline.assignment_group.assignment.id %}">{{ delivery.deadline.assignment_group.assignment.get_path }}</a></li>
+            <li><a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">{{ delivery.deadline.assignment_group.short_displayname }}</a></li>
+            <li class="active">#{{ delivery.number }}</li>
         </ol>
-
-        <div class="alert alert-{{ group|group_delivery_status_to_bootstrapclass }}">
-            <strong>{% trans "Status" %}: {{ group.get_status|formatted_status }}</strong>
-            {% if group.delivery_status == 'corrected' %}
-                <p><small>
-                    {% trans "Grade" %}: {{ group.feedback.grade }}
-                    ({{ group.feedback.is_passing_grade|format_is_passing_grade }})
-                </small></p>
-            {% endif %}
-        </div>
     </div>
 {% endblock %}
