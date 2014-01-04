@@ -39,5 +39,13 @@
                 {% endif %}
             </div>
         {% endif %}
+
+        {% if not delivery.is_last_delivery %}
+            <div class="alert alert-warning not_last_delivery_message">
+                {% trans "This delivery is not the last delivery made by this group on this assignment." %}
+                <a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">
+                        {% trans "Browse other deliveries" %}</a>.
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
