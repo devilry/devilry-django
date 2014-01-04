@@ -63,9 +63,23 @@
                             {% else %}
                                 <p class="text-muted no-feedback-message">{% trans "No feedback" %}</p>
                             {% endif %}
+                            {% if delivery.after_deadline %}
+                                <p class="after_deadline_message visible-xs"><strong class="text-danger">
+                                    {% blocktrans with timeafter=delivery.deadline.deadline|timesince:delivery.time_of_delivery %}
+                                        {{ timeafter }} after the deadline
+                                    {% endblocktrans %}
+                                </strong></p>
+                            {% endif %}
                         </td>
-                        <td class="text-right hidden-xs text-muted">
-                            <p class="time_of_delivery">{{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}</p>
+                        <td class="text-right hidden-xs">
+                            <p class="time_of_delivery text-muted">{{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}</p>
+                            {% if delivery.after_deadline %}
+                                <p class="after_deadline_message"><strong class="text-danger">
+                                    {% blocktrans with timeafter=delivery.deadline.deadline|timesince:delivery.time_of_delivery %}
+                                        {{ timeafter }} after the deadline
+                                    {% endblocktrans %}
+                                </strong></p>
+                            {% endif %}
                         </td>
                     </tr>
                 {% empty %}
