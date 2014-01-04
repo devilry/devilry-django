@@ -1,7 +1,6 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from devilry.apps.core.testhelper import TestHelper
 from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
@@ -19,7 +18,6 @@ def _isoformat_datetime(datetimeobj):
 
 class TestSingleGroupOverview(TestCase):
     def setUp(self):
-        self.testhelper = TestHelper()
         self.examiner1 = UserBuilder('examiner1').user
         self.student1 = UserBuilder('student1', full_name="Student One").user
         self.duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
