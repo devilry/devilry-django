@@ -160,6 +160,12 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         """
         return self.deliveries.filter(successful=True)
 
+
+    @property
+    def successful_delivery_count(self):
+        self.query_successful_deliveries().count()
+    
+
     def is_empty(self):
         """
         Returns ``True`` if this Deadline does not contain any deliveries.
