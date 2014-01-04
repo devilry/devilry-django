@@ -204,6 +204,10 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     def q_is_examiner(cls, user_obj):
         return Q(successful=True) & Q(deadline__assignment_group__examiners__user=user_obj)
 
+    @property
+    def is_last_delivery(self):
+        return self.deadline.assignment_group.successful_delivery_count == self.number
+
     def add_file(self, filename, iterable_data):
         """ Add a file to the delivery.
 

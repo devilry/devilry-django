@@ -303,6 +303,21 @@ class TestDelivery(TestCase, TestHelper):
         self.assertEquals(delivery.last_feedback, feedback2)
 
 
+    def test_is_last_delivery(self):
+        deadlinebuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)
+        delivery1 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=1).delivery
+        delivery2 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=2).delivery
+        delivery3 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=3, successful=False).delivery
+        self.assertFalse(delivery3.successful)
+        self.assertTrue(delivery2.is_last_delivery)
+        self.assertFalse(delivery1.is_last_delivery)
+        self.assertFalse(delivery3.is_last_delivery)
+
+
+
 class TestDeliveryManager(TestCase):
     def setUp(self):
         DeliveryBuilder.set_memory_deliverystore()
