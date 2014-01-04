@@ -166,10 +166,10 @@ class DeadlineBuilder(CoreBuilderBase):
         return self.add_delivery(**kwargs)
 
     def add_delivery_x_hours_after_deadline(self, hours, **kwargs):
-        return self.add_delivery_after_deadline(timedelta(hours=hours))
+        return self.add_delivery_after_deadline(timedelta(hours=hours), **kwargs)
 
     def add_delivery_x_hours_before_deadline(self, hours, **kwargs):
-        return self.add_delivery_before_deadline(timedelta(hours=hours))
+        return self.add_delivery_before_deadline(timedelta(hours=hours), **kwargs)
 
 
 class AssignmentGroupBuilder(CoreBuilderBase):
