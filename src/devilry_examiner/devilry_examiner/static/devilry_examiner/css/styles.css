@@ -7402,6 +7402,22 @@ Extends bootstrap alerts.
 .alert-muted .alert-link {
   color: #626262;
 }
+ul.list-truly-inline {
+  display: inline-block;
+}
+ul.list-inline.list-inline-commaseparated li {
+  padding-right: 0;
+  padding-left: 8px;
+}
+ul.list-inline.list-inline-commaseparated li:after {
+  content: ', ';
+}
+ul.list-inline.list-inline-commaseparated li:first-child {
+  padding-left: 0;
+}
+ul.list-inline.list-inline-commaseparated li:last-child:after {
+  content: '';
+}
 .alert.feedback_gradebox {
   position: relative;
   padding-right: 200px;
@@ -7411,4 +7427,7 @@ Extends bootstrap alerts.
   right: 15px;
   top: 50%;
   margin-top: -17px;
+}
+.delivery_files {
+  margin-bottom: 20px;
 }

@@ -51,11 +51,40 @@
                         {% trans "Browse other deliveries" %}</a>.
             </div>
         {% endif %}
+
+        {% with filemetacount=delivery.filemetas.count %}
+            {% if filemetacount > 0 %}
+                <div class="delivery_files">
+                    {% if filemetacount == 1 %}
+                        {% for filemeta in delivery.filemetas.all %}
+                            <a href="#" class="btn btn-default">
+                                <i class="fa fa-download"></i>
+                                {{ filemeta.filename }}
+                            </a>
+                        {% endfor %}
+                    {% else %}
+                        <a href="#" class="btn btn-default">
+                            <i class="fa fa-download"></i>
+                            {% trans "Download files" %}
+                        </a>
+                        {% spaceless %}
+                            (<ul class="list-inline list-truly-inline list-inline-commaseparated">
+                                {% for filemeta in delivery.filemetas.all %}
+                                    <li>
+                                        <a href="#">{{ filemeta.filename }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>)
+                        {% endspaceless %}
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endwith %}
     </div>
+
     {% if edit_feedback %}
         <div class="container edit-feedback-box">
-            {# {% include "devilry_examiner/edit-feedback.django.html" %} #}
-            Edit
+            {% include "devilry_examiner/edit-feedback.django.html" %}
         </div>
     {% else %}
         <div class="container read-feedback-box">

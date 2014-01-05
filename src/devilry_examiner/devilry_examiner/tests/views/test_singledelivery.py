@@ -144,3 +144,44 @@ class TestSingleDeliveryView(TestCase):
         self.assertIn('alert-warning', cssGet(html, '.read-feedback-box .feedback_gradebox')['class'])
         self.assertEquals(cssGet(html, '.read-feedback-box .feedback_rendered_view').text.strip(),
             'This is a test.')
+
+
+    def test_filemeta_links_nofiles(self):
+        deliverybuilder = self.week1builder\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        response = self._getas('examiner1', deliverybuilder.delivery.id)
+        html = response.content
+        self.assertFalse(cssExists(html, '.delivery_files'))
+
+    def test_filemeta_links_single(self):
+        deliverybuilder = self.week1builder\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        deliverybuilder.add_filemeta(filename='testfile.txt', data='test')
+        response = self._getas('examiner1', deliverybuilder.delivery.id)
+        html = response.content
+        self.assertTrue(cssExists(html, '.delivery_files'))
+        self.assertEquals(len(cssFind(html, '.delivery_files a')), 1)
+        self.assertTrue(cssExists(html, '.delivery_files .btn'))
+        self.assertEquals(cssGet(html, '.delivery_files a.btn').text.strip(),
+            'testfile.txt')
+
+    def test_filemeta_links_multi(self):
+        deliverybuilder = self.week1builder\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        deliverybuilder.add_filemeta( filename='b.txt', data='test')
+        deliverybuilder.add_filemeta(filename='a.txt', data='test')
+        response = self._getas('examiner1', deliverybuilder.delivery.id)
+        html = response.content
+        self.assertTrue(cssExists(html, '.delivery_files'))
+        self.assertEquals(len(cssFind(html, '.delivery_files a')), 3) # One for the "Download files"-button and one for each file
+        self.assertTrue(cssExists(html, '.delivery_files .btn'))
+        self.assertEquals(cssGet(html, '.delivery_files .btn').text.strip(),
+            'Download files')
+        filenames = map(lambda e: e.text.strip(), cssFind(html, '.delivery_files ul li'))
+        self.assertEquals(filenames, ['a.txt', 'b.txt'])

@@ -1,0 +1,24 @@
+// Extends bootstrap list styles.
+
+
+ul.list-truly-inline {
+	display: inline-block;	
+}
+
+ul.list-inline.list-inline-commaseparated {
+	li {
+		padding-right: 0;
+		padding-left: 8px;
+		&:after {
+			content: ', ';
+		}
+		&:first-child {
+			padding-left: 0;
+		}
+		&:last-child {
+			&:after {
+				content: '';
+			}
+		}
+	}
+}
