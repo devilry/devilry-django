@@ -7402,3 +7402,13 @@ Extends bootstrap alerts.
 .alert-muted .alert-link {
   color: #626262;
 }
+.alert.staticfeedback_gradebox {
+  position: relative;
+  padding-right: 200px;
+}
+.alert.staticfeedback_gradebox .btn {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  margin-top: -17px;
+}

@@ -8,7 +8,7 @@ module.exports = (grunt) ->
                 #files: ['app/coffee/*.coffee']
             less:
                 tasks: 'less'
-                files: ['less/*.less']
+                files: ['less/*.less', 'less/views/*.less']
         #coffee:
             #compile:
                 #options:
