@@ -464,6 +464,13 @@ DeliveryBuilder
         to :class:`.FilteMetaBuilder` with ``kwargs['delivery']`` set to
         this :obj:`.delivery`.
 
+        Example::
+
+            deliverybuilder.add_filemeta(
+                filename='test.txt',
+                data='This is a test.'
+            )
+
         :param kwargs: Kwargs for the :class:`.FileMetaBuilder` constructor.
         :rtype: :class:`.FileMetaBuilder`.
 
