@@ -5,24 +5,27 @@
 {% load i18n %}
 
 <div class="edit-feedback">
-	<div class="edit-feedback-grading-system">
+	<div class="edit-feedback-grading-system container">
 		TODO: Grade editor.
 	</div>
 	<div class="edit-feedback-text-editor">
-		TODO: Feedback text editor.
+		{% include "devilry_feedbackeditor_simple/javascriptimports.django.html" %}
+		{% include "devilry_feedbackeditor_simple/editor.django.html" with js_editor_api_name=DevilryFeedbackEditor box_id="DevilryFeedbackEditor" %}
 	</div>
 	<div class="edit-feedback-footer">
-		<div class="row">
-			<div class="col-sm-6 result-preview"></div>
-			<div class="col-sm-6 result-actions text-right">
-				<button class="btn btn-default publish-feedback-without-preview">
-					{% trans "Publish" %}
-					<small>({% trans "without preview" %})</small>
-				</button>
-				<button class="btn btn-success btn-lg preview-feedback">
-					<i class="fa fa-chevron-circle-right"></i>
-					{% trans "Preview" %}
-				</button>
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 result-preview"></div>
+				<div class="col-sm-6 result-actions text-right">
+					<button class="btn btn-default publish-feedback-without-preview">
+						{% trans "Publish" %}
+						<small>({% trans "without preview" %})</small>
+					</button>
+					<button class="btn btn-success btn-lg preview-feedback">
+						<i class="fa fa-chevron-circle-right"></i>
+						{% trans "Preview" %}
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
