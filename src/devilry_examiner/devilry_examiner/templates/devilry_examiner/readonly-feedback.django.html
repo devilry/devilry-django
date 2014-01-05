@@ -8,10 +8,10 @@
 {% load i18n %}
 {% load devilry_examiner_tags %}
 
-<div class="alert alert-{{ feedback|feedback_to_bootstrapclass }} staticfeedback_gradebox">
-    <strong>{% trans "Grade" %}:</strong> {{ feedback.grade }}
-    ({{ feedback.is_passing_grade|format_is_passing_grade }})
+<div class="alert alert-{{ feedback|feedback_to_bootstrapclass }} feedback_gradebox">
+    <strong>{% trans "Grade" %}:</strong> <span class="feedback_grade">{{ feedback.grade }}</span>
+    (<span class="feedback_is_passing_grade">{{ feedback.is_passing_grade|format_is_passing_grade }}</span>)
     {% block alertboxbutton %}{% endblock alertboxbutton %}
 </div>
 
-<div class="staticfeedback_rendered_view">{{ feedback.rendered_view|safe }}</div>
+<div class="feedback_rendered_view">{{ feedback.rendered_view|safe }}</div>

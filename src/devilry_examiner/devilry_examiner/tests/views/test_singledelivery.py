@@ -108,3 +108,39 @@ class TestSingleDeliveryView(TestCase):
         self.assertEquals(
             cssGet(html, '.not_last_delivery_message').text.strip(),
             'This delivery is not the last delivery made by this group on this assignment.Browse other deliveries.')
+
+
+    def test_show_edit_feedback_when_no_feedback(self):
+        delivery = self.week1builder\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1).delivery
+        response = self._getas('examiner1', delivery.id)
+        html = response.content
+        self.assertIsNone(delivery.last_feedback)
+        self.assertTrue(cssExists(html, '.edit-feedback-box'))
+        self.assertFalse(cssExists(html, '.read-feedback-box'))
+
+    def test_readonly_feedback_render(self):
+        feedback = self.week1builder\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)\
+            .add_feedback(
+                points=10,
+                grade='10/100',
+                is_passing_grade=False,
+                saved_by=UserBuilder('testuser').user,
+                rendered_view='This is a test.'
+            ).feedback
+        response = self._getas('examiner1', feedback.delivery.id)
+        html = response.content
+        self.assertFalse(cssExists(html, '.edit-feedback-box'))
+        self.assertTrue(cssExists(html, '.read-feedback-box'))
+        self.assertEquals(cssGet(html, '.read-feedback-box .feedback_gradebox .feedback_grade').text.strip(),
+            '10/100')
+        self.assertEquals(cssGet(html, '.read-feedback-box .feedback_gradebox .feedback_is_passing_grade').text.strip(),
+            'failed')
+        self.assertIn('alert-warning', cssGet(html, '.read-feedback-box .feedback_gradebox')['class'])
+        self.assertEquals(cssGet(html, '.read-feedback-box .feedback_rendered_view').text.strip(),
+            'This is a test.')

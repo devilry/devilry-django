@@ -19,3 +19,16 @@ class SingleDeliveryView(DetailView):
                 'deadline__assignment_group__parentnode__parentnode', # Period
                 'deadline__assignment_group__parentnode__parentnode__parentnode', # Subject
                 )
+
+    def get_context_data(self, **kwargs):
+        context = super(SingleDeliveryView, self).get_context_data(**kwargs)
+        delivery = self.object
+
+        edit_feedback = False
+        if delivery.last_feedback is None:
+            edit_feedback = True
+        elif delivery.last_feedback and self.request.GET.get('edit_feedback', False) == 'true':
+            edit_feedback = True
+        context['edit_feedback'] = edit_feedback
+
+        return context
