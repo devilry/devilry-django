@@ -31,7 +31,7 @@ Using the builders is very easy::
 They can all easily be updated with new attributes::
 
     duck1010builder.update(long_name='DUCK1010 - Programming')
-    assert(duck1010builder.subject.short_name == 'duck1010')
+    assert(duck1010builder.subject.long_name == 'DUCK1010 - Programming')
 
 And they have sane defaults optimized for testing, so you can easily create a
 deeply nested core object. This creates the duck1010-subject with an active
