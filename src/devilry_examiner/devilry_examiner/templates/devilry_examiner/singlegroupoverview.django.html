@@ -3,6 +3,9 @@
 {% load i18n %}
 {% load devilry_examiner_tags %}
 
+{% block title %}
+    {{ group.long_displayname }} - {{ group.assignment.long_name }}
+{% endblock title %}
 
 {% block body %}
     <div class="container">
