@@ -2,8 +2,28 @@
 	An include file that provides an edit feedback view that
 	can be used to edit feedback (also usable when editing in in bulk).
 {% endcomment %}
+{% load i18n %}
 
-
-<div class="">
-	
+<div class="edit-feedback">
+	<div class="edit-feedback-grading-system">
+		TODO: Grade editor.
+	</div>
+	<div class="edit-feedback-text-editor">
+		TODO: Feedback text editor.
+	</div>
+	<div class="edit-feedback-footer">
+		<div class="row">
+			<div class="col-sm-6 result-preview"></div>
+			<div class="col-sm-6 result-actions text-right">
+				<button class="btn btn-default publish-feedback-without-preview">
+					{% trans "Publish" %}
+					<small>({% trans "without preview" %})</small>
+				</button>
+				<button class="btn btn-success btn-lg preview-feedback">
+					<i class="fa fa-chevron-circle-right"></i>
+					{% trans "Preview" %}
+				</button>
+			</div>
+		</div>
+	</div>
 </div>
