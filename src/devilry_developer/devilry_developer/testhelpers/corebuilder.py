@@ -88,7 +88,7 @@ class FileMetaBuilder(CoreBuilderBase):
     object_attribute_name = 'filemeta'
 
     def __init__(self, delivery, filename, data):
-        self.filemeta = FileMeta.objects.create(delivery, filename=filename, size=0)
+        self.filemeta = FileMeta.objects.create(delivery=delivery, filename=filename, size=0)
         f = FileMeta.deliverystore.write_open(self.filemeta)
         f.write(data)
         f.close()
