@@ -97,8 +97,8 @@ the change has made it to the database. All our builders implement
 
 
 
-API
-===
+ReloadableDbBuilderInterface
+============================
 
 .. py:class:: ReloadableDbBuilderInterface
 
@@ -117,6 +117,8 @@ API
         the change has made it to the database.
 
 
+UserBuilder
+===========
 .. py:class:: UserBuilder
 
     Creates a User object for testing. Also creates the DevilryUserProfile,
@@ -142,6 +144,8 @@ API
         with the given attributes. Reloads the object from the database.
 
 
+NodeBuilder
+===========
 .. py:class:: NodeBuilder
 
     .. py:attribute:: node
@@ -165,6 +169,8 @@ API
         :rtype: :class:`.SubjectBuilder`.
 
 
+SubjectBuilder
+==============
 .. py:class:: SubjectBuilder
 
     .. py:attribute:: subject
@@ -236,6 +242,8 @@ API
         :rtype: :class:`.PeriodBuilder`.
 
 
+PeriodBuilder
+=============
 .. py:class:: PeriodBuilder
 
     .. py:attribute:: period
@@ -270,6 +278,8 @@ API
 
 
 
+AssignmentBuilder
+=================
 .. py:class:: AssignmentBuilder
 
     .. py:attribute:: assignment
@@ -295,6 +305,8 @@ API
 
 
 
+AssignmentGroupBuilder
+======================
 .. py:class:: AssignmentGroupBuilder
 
     .. py:attribute:: assignment_group
@@ -352,6 +364,8 @@ API
         :rtype: :class:`.DeadlineBuilder`.
 
 
+DeadlineBuilder
+===============
 .. py:class:: DeadlineBuilder
 
     .. py:attribute:: deadline
@@ -429,6 +443,8 @@ API
 
 
 
+DeliveryBuilder
+===============
 .. py:class:: DeliveryBuilder
 
     .. py:attribute:: delivery
@@ -507,6 +523,8 @@ API
 
 
 
+FileMetaBuilder
+===============
 .. py:class:: FileMetaBuilder
 
     .. py:attribute:: filemeta
@@ -526,6 +544,8 @@ API
 
 
 
+StaticFeedbackBuilder
+=====================
 .. py:class:: StaticFeedbackBuilder
 
     .. py:attribute:: feedback
