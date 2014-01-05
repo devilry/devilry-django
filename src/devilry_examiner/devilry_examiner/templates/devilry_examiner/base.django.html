@@ -11,7 +11,7 @@
         {#TODO: Favicons (we have a includable template somewhere for it) #}
         {#<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">#}
 
-        <title>{% block title %}{% trans "Devilry examiner" %}{% endblock title %}</title>
+        <title>{% block title %}{% endblock title %} - {% trans "Devilry examiner" %}</title>
 
         {% block css %}
             <link href='{% static "devilry_examiner/css/styles.css" %}' rel="stylesheet">
