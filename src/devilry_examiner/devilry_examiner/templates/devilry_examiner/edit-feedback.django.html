@@ -10,7 +10,7 @@
 	</div>
 	<div class="edit-feedback-text-editor">
 		{% include "devilry_feedbackeditor_simple/javascriptimports.django.html" %}
-		{% include "devilry_feedbackeditor_simple/editor.django.html" with js_editor_api_name=DevilryFeedbackEditor box_id="DevilryFeedbackEditor" %}
+		{% include "devilry_feedbackeditor_simple/editor.django.html" with js_editor_api_name=js_editor_api_name %}
 	</div>
 	<div class="edit-feedback-footer">
 		<div class="container">
@@ -30,3 +30,7 @@
 		</div>
 	</div>
 </div>
+
+<script>
+	new window.devilry_examiner_edit_feedback.EditFeedback("{{ js_editor_api_name }}");
+</script>

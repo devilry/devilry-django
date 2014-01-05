@@ -1,11 +1,5 @@
 {% comment %}
 Template parameters:
-	box_id
-		A globally unique ID that we can use to refer to this editor.
-		This ensures that a parent template can include multiple 
-		instances of this editor on the same page.
-		This ID is not only unique, but it is a unique prefix, so we can
-		expect that any ID using this as prefix will also be unique.
 	js_editor_api_name
 		The name we have to give our input API. We have to implement
 		the editor interface and set
@@ -19,6 +13,10 @@ Template parameters:
 				Return the raw text currently typed into the editor by the user.
 			get_rendered_view()
 				Return the HTML rendered version of the current text in the editor.
+
+		The ``js_editor_api_name`` is also suitable as the ID of the container wrapping
+		the editor. It is not only unique, but it is also a unique prefix, so we can
+		expect that any ID using this as prefix will also be unique.
 	raw_text
 		The initial raw text (if any).
 
@@ -56,13 +54,13 @@ Requirements for new editors that wants to be accepted into the Devilry repo:
 {% load static %}
 {% load i18n %}
 
-<div id="{{ box_id }}" class="container devilry_feedbackeditor_simple">
+<div id="{{ js_editor_api_name }}" class="container devilry_feedbackeditor_simple">
 	<form role="form">
-		<label for="{{ box_id }}-editor" class="sr-only">{% trans "Feedback text" %}</label>
-		<textarea id="{{ box_id }}-editor" class="form-control devilry_feedbackeditor_simple-editor">{{ raw_text }}</textarea>
+		<label for="{{ js_editor_api_name }}-editor" class="sr-only">{% trans "Feedback text" %}</label>
+		<textarea id="{{ js_editor_api_name }}-editor" class="form-control devilry_feedbackeditor_simple-editor">{{ raw_text }}</textarea>
 	</form>
 
 	<script>
-		window["{{ js_editor_api_name }}"] = new devilry_feedbackeditor_simple.Editor($('#{{ box_id }}-editor'));
+		window["{{ js_editor_api_name }}"] = new devilry_feedbackeditor_simple.Editor($('#{{ js_editor_api_name }}-editor'));
 	</script>
 </div>

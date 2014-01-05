@@ -1,6 +1,7 @@
 {% extends "devilry_examiner/base.django.html" %}
 {% load url from future %}
 {% load i18n %}
+{% load static %}
 {% load devilry_examiner_tags %}
 
 {% block title %}
@@ -84,7 +85,8 @@
 
     {% if edit_feedback %}
         <div class="edit-feedback-box">
-            {% include "devilry_examiner/edit-feedback.django.html" %}
+            <script src="{% static 'devilry_examiner/js/edit_feedback.js' %}"></script>
+            {% include "devilry_examiner/edit-feedback.django.html" with js_editor_api_name="DevilryFeedbackEditor" %}
         </div>
     {% else %}
         <div class="container read-feedback-box">
