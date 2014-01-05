@@ -3,8 +3,9 @@
 {% load i18n %}
 {% load devilry_examiner_tags %}
 
+{# NOTE: The title is in a bit strange order because we want the most important information to visible in the tab (the name of the group, and the assignment). #}
 {% block title %}
-    {{ group.long_displayname }} - {{ group.assignment.long_name }}
+    {{ group.short_displayname }} - {{ group.assignment.short_name }} - {{ group.assignment.parentnode.get_path }}
 {% endblock title %}
 
 {% block body %}
