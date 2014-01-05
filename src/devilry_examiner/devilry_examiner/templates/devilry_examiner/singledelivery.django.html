@@ -3,6 +3,10 @@
 {% load i18n %}
 {% load devilry_examiner_tags %}
 
+{% block title %}
+{{ delivery.deadline.assignment_group.short_displayname }} #{{ delivery.number }} - {{ delivery.deadline.assignment_group.assignment.get_path }}
+{% endblock %}
+
 {% block body %}
     <div class="container">
         <div class="page-header page-header-with-subheader">
