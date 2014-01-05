@@ -11,6 +11,8 @@
         {#TODO: Favicons (we have a includable template somewhere for it) #}
         {#<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">#}
 
+        <script type="text/javascript" src="{% static "devilry_extjsextras/consolefallback.js" %}"></script>
+
         <title>{% block title %}{% endblock title %} - {% trans "Devilry examiner" %}</title>
 
         {% block css %}
