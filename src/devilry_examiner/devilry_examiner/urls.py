@@ -6,6 +6,7 @@ from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.dashboard import DashboardView
 from .views.singlegroupoverview import SingleGroupOverview
 from .views.allgroupsoverview import AllGroupsOverview
+from .views.allgroupsoverview import WaitingForFeedbackOverview
 from .views.singledelivery import SingleDeliveryView
 
 i18n_packages = get_javascript_catalog_packages(
@@ -19,6 +20,9 @@ urlpatterns = patterns('devilry_examiner',
                        url('^allgroupsoverview/(?P<assignmentid>\d+)$',
                            login_required(AllGroupsOverview.as_view()),
                            name='devilry_examiner_allgroupsoverview'),
+                       url('^allgroupsoverview/(?P<assignmentid>\d+)/waiting_for_feedback$',
+                           login_required(WaitingForFeedbackOverview.as_view()),
+                           name='devilry_examiner_waiting_for_feedback'),
                        url('^singlegroupoverview/(?P<groupid>\d+)$',
                            login_required(SingleGroupOverview.as_view()),
                            name='devilry_examiner_singlegroupoverview'),
