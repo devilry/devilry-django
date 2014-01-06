@@ -1,9 +1,9 @@
 {% comment %}
 Template parameters:
-	js_editor_api_name
+	unique_prefix
 		The name we have to give our input API. We have to implement
 		the editor interface and set
-		``window[js_editor_api_name] = OurEditorInterfaceImplementation``.
+		``window[unique_prefix] = OurEditorInterfaceImplementation``.
 
 		This is the API that the parent template uses to request data when
 		needed (for publish, save, etc.).
@@ -14,7 +14,7 @@ Template parameters:
 			get_rendered_view()
 				Return the HTML rendered version of the current text in the editor.
 
-		The ``js_editor_api_name`` is also suitable as the ID of the container wrapping
+		The ``unique_prefix`` is also suitable as the ID of the container wrapping
 		the editor. It is not only unique, but it is also a unique prefix, so we can
 		expect that any ID using this as prefix will also be unique.
 	raw_text
@@ -54,13 +54,16 @@ Requirements for new editors that wants to be accepted into the Devilry repo:
 {% load static %}
 {% load i18n %}
 
-<div id="{{ js_editor_api_name }}" class="container devilry_feedbackeditor_simple">
-	<form role="form">
-		<label for="{{ js_editor_api_name }}-editor" class="sr-only">{% trans "Feedback text" %}</label>
-		<textarea id="{{ js_editor_api_name }}-editor" class="form-control devilry_feedbackeditor_simple-editor">{{ raw_text }}</textarea>
-	</form>
+<div id="{{ unique_prefix }}" class="container devilry_feedbackeditor_simple">
+    <form role="form">
+        <label for="{{ unique_prefix }}-editor" class="sr-only">
+            {% trans "Feedback text" %}
+        </label>
+        <textarea id="{{ unique_prefix }}-editor" class="form-control devilry_feedbackeditor_simple-editor">{{ raw_text }}</textarea>
+    </form>
 
-	<script>
-		window["{{ js_editor_api_name }}"] = new devilry_feedbackeditor_simple.Editor($('#{{ js_editor_api_name }}-editor'));
-	</script>
+    <script>
+        window["{{ unique_prefix }}"] = new devilry_feedbackeditor_simple.Editor(
+            $('#{{ unique_prefix }}-editor'));
+    </script>
 </div>

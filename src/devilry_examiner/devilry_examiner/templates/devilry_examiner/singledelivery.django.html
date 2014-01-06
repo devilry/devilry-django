@@ -86,7 +86,7 @@
     {% if edit_feedback %}
         <div class="edit-feedback-box">
             <script src="{% static 'devilry_examiner/js/edit_feedback.js' %}"></script>
-            {% include "devilry_examiner/edit-feedback.django.html" with js_editor_api_name="DevilryFeedbackEditor" %}
+            {% include "devilry_examiner/edit-feedback.django.html" with unique_name="DevilryFeedbackEditor" %}
         </div>
     {% else %}
         <div class="container read-feedback-box">
