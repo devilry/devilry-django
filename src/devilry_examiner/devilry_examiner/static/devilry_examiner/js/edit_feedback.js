@@ -22,8 +22,12 @@
     };
 
     EditFeedback.prototype._onClickPreview = function(e) {
+      var html, raw_text;
       e.preventDefault();
-      return console.log('_onClickPreview');
+      console.log('_onClickPreview');
+      raw_text = this.editor_api.get_raw_text();
+      html = this.editor_api.get_html();
+      return console.log(html, raw_text);
     };
 
     return EditFeedback;

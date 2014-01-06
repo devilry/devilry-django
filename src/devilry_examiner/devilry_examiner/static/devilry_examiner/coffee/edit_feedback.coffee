@@ -15,6 +15,9 @@ class EditFeedback
   _onClickPreview: (e) =>
     e.preventDefault()
     console.log '_onClickPreview'
+    raw_text = @editor_api.get_raw_text()
+    html = @editor_api.get_html()
+    console.log html, raw_text
 
 window.devilry_examiner_edit_feedback = {
   EditFeedback: EditFeedback

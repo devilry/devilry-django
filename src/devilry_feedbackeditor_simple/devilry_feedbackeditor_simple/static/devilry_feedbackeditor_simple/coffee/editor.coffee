@@ -1,5 +1,5 @@
 class Editor
-    constructor: (@$textarea) ->
+  constructor: (@$textarea) ->
 
   get_raw_text: ->
     return @$textarea.val()
@@ -9,7 +9,7 @@ class Editor
     div.appendChild(document.createTextNode(@get_raw_text()))
     return div.innerHTML
 
-  get_rendered_view: ->
+  get_html: ->
     return "<div style='white-space: pre-wrap'>#{@_get_escaped_raw_text()}</div>"
 
 
