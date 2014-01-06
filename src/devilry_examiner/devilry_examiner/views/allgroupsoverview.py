@@ -35,7 +35,7 @@ class WaitingForFeedbackOverview(AllGroupsOverview):
         # Need to get queryset from custom manager.
         # Get only AssignmentGroup within same assignment
         groups = AssignmentGroup.objects.get_queryset().filter(parentnode__id=self.object.id)
-        groups = groups.filter_examiner_has_access(self.request.user).filter_by_status('waiting-for-feedback')
+        groups = groups.filter_examiner_has_access(self.request.user).filter_by_status('waiting-for-something')
 
         context['groups'] = groups
         # context['groups'].filter_by_status('corrected')
