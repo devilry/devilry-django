@@ -4,6 +4,10 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
+from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry_developer.testhelpers.corebuilder import SubjectBuilder
+from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry_developer.testhelpers.corebuilder import DeliveryBuilder
 from ..models import Delivery
 from ..models import deliverytypes
 from ..testhelper import TestHelper
@@ -297,3 +301,97 @@ class TestDelivery(TestCase, TestHelper):
             rendered_view='Good',
             timestamp=datetime(2010, 1, 1, 0, 0, 0))
         self.assertEquals(delivery.last_feedback, feedback2)
+
+
+    def test_is_last_delivery(self):
+        deadlinebuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)
+        delivery1 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=1).delivery
+        delivery2 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=2).delivery
+        delivery3 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=3, successful=False).delivery
+        self.assertFalse(delivery3.successful)
+        self.assertTrue(delivery2.is_last_delivery)
+        self.assertFalse(delivery1.is_last_delivery)
+        self.assertFalse(delivery3.is_last_delivery)
+
+
+
+class TestDeliveryManager(TestCase):
+    def setUp(self):
+        DeliveryBuilder.set_memory_deliverystore()
+        self.examiner1 = UserBuilder('examiner1').user
+
+    def test_filter_is_examiner(self):
+        week1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')
+        delivery = week1builder.add_group(examiners=[self.examiner1])\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1).delivery
+
+        # Add another group to make sure we do not get false positives
+        week1builder.add_group().add_examiners(UserBuilder('examiner2').user)
+
+        qry = Delivery.objects.filter_is_examiner(self.examiner1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], delivery)
+
+    def test_filter_is_active(self):
+        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
+        activedelivery = duck1010builder.add_6month_active_period()\
+            .add_assignment('week1')\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1).delivery
+
+        # Add inactive groups to make sure we get no false positives
+        duck1010builder.add_6month_lastyear_period()\
+            .add_assignment('week1')\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        duck1010builder.add_6month_nextyear_period()\
+            .add_assignment('week1')\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+
+        self.assertEquals(len(Delivery.objects.all()), 3)
+        qry = Delivery.objects.filter_is_active()
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], activedelivery)
+
+
+    def test_filter_examiner_has_access(self):
+        otherexaminer = UserBuilder('otherexaminer').user
+        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
+        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
+        activedelivery = activeassignmentbuilder\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1).delivery
+
+        # Add deliveries on inactive assignments and on a group with another examiner to make sure we get no false positives
+        duck1010builder.add_6month_lastyear_period()\
+            .add_assignment('week1')\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        duck1010builder.add_6month_nextyear_period()\
+            .add_assignment('week1')\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        activeassignmentbuilder\
+            .add_group(examiners=[otherexaminer])\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+
+        qry = Delivery.objects.filter_examiner_has_access(self.examiner1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], activedelivery)
+
+        # make sure we are not getting false positives
+        self.assertEquals(Delivery.objects.filter_is_examiner(self.examiner1).count(), 3)
+        self.assertEquals(Delivery.objects.filter_is_examiner(otherexaminer).count(), 1)

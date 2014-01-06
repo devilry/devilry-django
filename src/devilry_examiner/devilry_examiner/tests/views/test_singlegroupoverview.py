@@ -1,12 +1,12 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from devilry.apps.core.testhelper import TestHelper
 from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
+from devilry_developer.testhelpers.soupselect import cssExists
 
 
 
@@ -18,7 +18,6 @@ def _isoformat_datetime(datetimeobj):
 
 class TestSingleGroupOverview(TestCase):
     def setUp(self):
-        self.testhelper = TestHelper()
         self.examiner1 = UserBuilder('examiner1').user
         self.student1 = UserBuilder('student1', full_name="Student One").user
         self.duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
@@ -116,6 +115,7 @@ class TestSingleGroupOverview(TestCase):
         self.assertEquals(cssGet(html, '.delivery .no-feedback-message').text.strip(), 'No feedback')
         self.assertEquals(cssGet(html, '.delivery .time_of_delivery').text.strip(),
             _isoformat_datetime(delivery.time_of_delivery))
+        self.assertFalse(cssExists(html, '.delivery .after_deadline_message'))
 
     def test_delivery_render_passed_grade(self):
         groupbuilder = self.week1builder.add_group(
@@ -154,6 +154,17 @@ class TestSingleGroupOverview(TestCase):
         self.assertEquals(cssGet(html, '.delivery .last-feedback .feedback-is_passing_grade').text.strip(),
             'failed')
         self.assertIn('text-warning', cssGet(html, '.delivery .last-feedback')['class'])
+
+    def test_delivery_render_after_deadline(self):
+        groupbuilder = self.week1builder.add_group(
+                examiners=[self.examiner1])
+        delivery = groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_after_deadline(hours=2).delivery
+        response = self._getas('examiner1', groupbuilder.group.id)
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertEquals(cssGet(html, '.delivery .after_deadline_message').text.strip(),
+            "2 hours after the deadline")
 
     def test_delivery_order(self):
         groupbuilder = self.week1builder.add_group(

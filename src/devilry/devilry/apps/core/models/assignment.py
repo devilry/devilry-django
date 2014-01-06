@@ -21,17 +21,20 @@ import deliverytypes
 
 
 class AssignmentQuerySet(models.query.QuerySet):
-    """
-    Returns a queryset with all Assignments  where the given ``user`` is examiner.
-
-    WARNING: You should normally not use this directly because it gives the
-    examiner information from expired periods (which in most cases are not necessary
-    to get). Use :meth:`.active` instead.
-    """
     def filter_is_examiner(self, user):
+        """
+        Returns a queryset with all Assignments  where the given ``user`` is examiner.
+
+        WARNING: You should normally not use this directly because it gives the
+        examiner information from expired periods (which in most cases are not necessary
+        to get). Use :meth:`.filter_examiner_has_access` instead.
+        """
         return self.filter(assignmentgroups__examiners__user=user).distinct()
 
     def filter_is_active(self):
+        """
+        Returns all active assignments (published assignments within a period that is currently started and not ended).
+        """
         now = datetime.now()
         return self.filter(
             publishing_time__lt=now,
@@ -39,10 +42,10 @@ class AssignmentQuerySet(models.query.QuerySet):
             parentnode__end_time__gt=now)
 
     def filter_examiner_has_access(self, user):
+        """
+        Returns all assignments that the given ``user`` has access to as examiner.
+        """
         return self.filter_is_active().filter_is_examiner(user)
-
-    def filter_by_status(self, status):
-        return self.filter(assignmentgroups__delivery_status__iexact=status)
 
 
 class AssignmentManager(models.Manager):
@@ -67,9 +70,6 @@ class AssignmentManager(models.Manager):
         NOTE: This returns all assignments that the given ``user`` has examiner-rights for.
         """
         return self.get_queryset().filter_examiner_has_access(user)
-
-    def filter_by_status(self, status):
-        return self.get_queryset().filter_by_status(status)
 
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):

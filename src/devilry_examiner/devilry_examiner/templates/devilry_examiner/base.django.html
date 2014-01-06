@@ -8,15 +8,16 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        {#TODO: Favicons (we have a includable template somewhere for it) #}
-        {#<link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">#}
-
-        <title>{% block title %}{% trans "Devilry examiner" %}{% endblock title %}</title>
+        {% include "devilry_theme/favicons.django.html" %}
+        <script type="text/javascript" src="{% static "devilry_extjsextras/consolefallback.js" %}"></script>
+        <title>{% block title %}{% endblock title %} - {% trans "Devilry examiner" %}</title>
 
         {% block css %}
             <link href='{% static "devilry_examiner/css/styles.css" %}' rel="stylesheet">
         {% endblock %}
 
+
+        <script src="{% static 'devilry_examiner/bower/components/jquery/jquery.min.js' %}"></script>
 
         {% comment %}
         TODO: Add these to bower and update the paths (if we want to support IE8)
@@ -32,8 +33,7 @@
         {% endcomment %}
     </head>
 
-    <body id="{% block bodyid %}{% endblock %}">
+    <body>
         {% block body %}{% endblock %}
     </body>
 </html>
-

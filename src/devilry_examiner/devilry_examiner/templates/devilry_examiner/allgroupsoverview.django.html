@@ -2,7 +2,10 @@
 {% load i18n devilry_examiner_tags%}
 {% load url from future %}
 
-{% block bodyid %}allgroupsoverview{% endblock %}
+
+{% block title %}
+    {{ assignment.short_name }} - {{ assignment.parentnode.get_path }}
+{% endblock title %}
 
 {% block body %}
 <div class="container">

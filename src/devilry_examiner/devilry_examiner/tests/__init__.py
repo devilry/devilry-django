@@ -1,3 +1,4 @@
 from .rest.assignmentlisting import TestRestAssignmentListing
 from .views.test_dashboard import TestDashboardView
 from .views.test_singlegroupoverview import TestSingleGroupOverview
+from .views.test_singledelivery import TestSingleDeliveryView

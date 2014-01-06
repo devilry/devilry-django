@@ -10,8 +10,59 @@ from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, Node
 import deliverytypes
 
 
-# TODO: Constraint: Can only be delivered by a person in the assignment group?
-#                   Or maybe an administrator?
+
+class DeliveryQuerySet(models.query.QuerySet):
+    """
+    Returns a queryset with all Deliveries where the given ``user`` is examiner.
+
+    WARNING: You should normally not use this directly because it gives the
+    examiner information from expired periods (which in most cases are not necessary
+    to get). Use :meth:`.active` instead.
+    """
+    def filter_is_examiner(self, user):
+        return self.filter(deadline__assignment_group__examiners__user=user).distinct()
+
+    def filter_is_active(self):
+        now = datetime.now()
+        return self.filter(
+            deadline__assignment_group__parentnode__publishing_time__lt=now,
+            deadline__assignment_group__parentnode__parentnode__start_time__lt=now,
+            deadline__assignment_group__parentnode__parentnode__end_time__gt=now).distinct()
+
+    def filter_examiner_has_access(self, user):
+        return self.filter_is_active().filter_is_examiner(user)
+
+
+class DeliveryManager(models.Manager):
+    def get_queryset(self):
+        return DeliveryQuerySet(self.model, using=self._db)
+
+    def filter_is_examiner(self, user):
+        """
+        Returns a queryset with all Deliveries where the given ``user`` is examiner.
+
+        WARNING: You should normally not use this directly because it gives the
+        examiner information from expired periods (which they are not supposed
+        to get). Use :meth:`.active` instead.
+        """
+        return self.get_queryset().filter_is_examiner(user)
+
+    def filter_is_active(self):
+        """
+        Returns a queryset with all Deliveries on active Assignments.
+        """
+        return self.get_queryset().filter_is_active()
+
+    def filter_examiner_has_access(self, user):
+        """
+        Returns a queryset with all Deliveries on active Assignments
+        where the given ``user`` is examiner.
+
+        NOTE: This returns all groups that the given ``user`` has examiner-rights for.
+        """
+        return self.get_queryset().filter_examiner_has_access(user)
+
+
 class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
@@ -77,6 +128,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     """
     #DELIVERY_NOT_CORRECTED = 0
     #DELIVERY_CORRECTED = 1
+    objects = DeliveryManager()
 
     delivery_type = models.PositiveIntegerField(default=deliverytypes.ELECTRONIC,
                                                 verbose_name = "Type of delivery",
@@ -151,6 +203,10 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(successful=True) & Q(deadline__assignment_group__examiners__user=user_obj)
+
+    @property
+    def is_last_delivery(self):
+        return self.deadline.assignment_group.successful_delivery_count == self.number
 
     def add_file(self, filename, iterable_data):
         """ Add a file to the delivery.

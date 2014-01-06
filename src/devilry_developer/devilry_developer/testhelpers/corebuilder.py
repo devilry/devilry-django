@@ -11,7 +11,7 @@ from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
 from devilry.apps.core.models import FileMeta
-
+from devilry.apps.core.deliverystore import MemoryDeliveryStore
 from .datebuilder import DateTimeBuilder
 
 
@@ -88,7 +88,7 @@ class FileMetaBuilder(CoreBuilderBase):
     object_attribute_name = 'filemeta'
 
     def __init__(self, delivery, filename, data):
-        self.filemeta = FileMeta.objects.create(delivery, filename=filename, size=0)
+        self.filemeta = FileMeta.objects.create(delivery=delivery, filename=filename, size=0)
         f = FileMeta.deliverystore.write_open(self.filemeta)
         f.write(data)
         f.close()
@@ -105,6 +105,10 @@ class StaticFeedbackBuilder(CoreBuilderBase):
 
 class DeliveryBuilder(CoreBuilderBase):
     object_attribute_name = 'delivery'
+
+    @classmethod
+    def set_memory_deliverystore(cls):
+        FileMeta.deliverystore = MemoryDeliveryStore()
 
     def __init__(self, **kwargs):
         if not 'time_of_delivery' in kwargs:
@@ -162,10 +166,10 @@ class DeadlineBuilder(CoreBuilderBase):
         return self.add_delivery(**kwargs)
 
     def add_delivery_x_hours_after_deadline(self, hours, **kwargs):
-        return self.add_delivery_after_deadline(timedelta(hours=hours))
+        return self.add_delivery_after_deadline(timedelta(hours=hours), **kwargs)
 
     def add_delivery_x_hours_before_deadline(self, hours, **kwargs):
-        return self.add_delivery_before_deadline(timedelta(hours=hours))
+        return self.add_delivery_before_deadline(timedelta(hours=hours), **kwargs)
 
 
 class AssignmentGroupBuilder(CoreBuilderBase):

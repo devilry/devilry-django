@@ -486,6 +486,15 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             delivery.save(autoset_number=False,
                           autoset_time_of_delivery=False)
 
+
+    @property
+    def successful_delivery_count(self):
+        from .delivery import Delivery
+        return Delivery.objects.filter(
+            successful=True,
+            deadline__assignment_group=self).count()
+    
+
     def _set_delivery_status(self):
         """
         Set the ``delivery_status``. Calculated with this algorithm:

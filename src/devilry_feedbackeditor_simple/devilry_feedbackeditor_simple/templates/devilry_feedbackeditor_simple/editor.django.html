@@ -1,0 +1,69 @@
+{% comment %}
+Template parameters:
+	unique_prefix
+		The name we have to give our input API. We have to implement
+		the editor interface and set
+		``window[unique_prefix] = OurEditorInterfaceImplementation``.
+
+		This is the API that the parent template uses to request data when
+		needed (for publish, save, etc.).
+		It has to provide the following methods:
+
+			get_raw_text()
+				Return the raw text currently typed into the editor by the user.
+			get_html()
+				Return the HTML rendered version of the current text in the editor.
+
+		The ``unique_prefix`` is also suitable as the ID of the container wrapping
+		the editor. It is not only unique, but it is also a unique prefix, so we can
+		expect that any ID using this as prefix will also be unique.
+	raw_text
+		The initial raw text (if any).
+
+
+What can editors expect?
+
+- jQuery is available.
+- The CSS of bootstrap3 is available, but not the javascript components.
+- The template has the full page width available (it is not wrapped in a conainer that
+  defines any padding or margins). Unless the editor has very complex
+  needs, this means that it should be wrapped in a bootstrap container (<div class="container">),
+  but we do not wrap it by default because complex editors should be able to render
+  themselves (perhaps they need multiple containers).
+
+
+Requirements for new editors that wants to be accepted into the Devilry repo:
+
+- The wrapper div must have a class that matches or is suffixed by the name of
+  the python module (use as suffix if the module provides multiple editors).
+- It must not use uneeded javascript libraries. This means that each javascript
+  library included must be added for a good reason (and you need to be able and
+  prepared to defend the choice).
+- Must have good test coverage.
+- Must NOT dump debug info to the browser console.
+- Must NOT add uneeded data like to the global javascript scope. Only add the
+  APIs that actually needs to be global to the global scope.
+- Must use bootstrap3 CSS where appropriate. Do not add your own
+  CSS that solves the same things that bootstrap does. This means
+  that you should use the bootstrap layout model, button
+  classes, and form classes unless you have a _very_ good
+  reason not to do so.
+- Mark any strings for translation using the Django translation system.
+{% endcomment %}
+
+{% load static %}
+{% load i18n %}
+
+<div id="{{ unique_prefix }}" class="container devilry_feedbackeditor_simple">
+    <form role="form">
+        <label for="{{ unique_prefix }}-editor" class="sr-only">
+            {% trans "Feedback text" %}
+        </label>
+        <textarea id="{{ unique_prefix }}-editor" class="form-control devilry_feedbackeditor_simple-editor">{{ raw_text }}</textarea>
+    </form>
+
+    <script>
+        window["{{ unique_prefix }}"] = new devilry_feedbackeditor_simple.Editor(
+            $('#{{ unique_prefix }}-editor'));
+    </script>
+</div>

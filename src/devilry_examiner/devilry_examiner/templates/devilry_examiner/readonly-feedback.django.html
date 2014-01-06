@@ -1,0 +1,17 @@
+{% comment %}
+	A include template that renders a feedback read-only view. It includes a
+	block within the alert-box showing the grade that can be used by
+	extending templates to add a button (used to add an "Edit feedback" button)
+	in readonly-feedback-with-editbutton.django.html.
+{% endcomment %}
+
+{% load i18n %}
+{% load devilry_examiner_tags %}
+
+<div class="alert alert-{{ feedback|feedback_to_bootstrapclass }} feedback_gradebox">
+    <strong>{% trans "Grade" %}:</strong> <span class="feedback_grade">{{ feedback.grade }}</span>
+    (<span class="feedback_is_passing_grade">{{ feedback.is_passing_grade|format_is_passing_grade }}</span>)
+    {% block alertboxbutton %}{% endblock alertboxbutton %}
+</div>
+
+<div class="feedback_rendered_view">{{ feedback.rendered_view|safe }}</div>

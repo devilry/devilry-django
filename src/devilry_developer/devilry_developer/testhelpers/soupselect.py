@@ -138,7 +138,7 @@ def cssFind(html, selector):
 
 def cssGet(html, selector):
     """
-    Same as :func:`.htmlselect`, but returns the first match.
+    Same as :func:`.cssFind`, but returns the first match.
 
     Added by Espen A. Kristiansen to make it even easier to use for testing.
     """
@@ -146,3 +146,12 @@ def cssGet(html, selector):
         return cssFind(html, selector)[0]
     except IndexError as e:
         raise IndexError('Could not find {}.'.format(selector))
+
+def cssExists(html, selector):
+    """
+    Same as :func:`.cssFind`, but returns ``True`` if the selector matches at least one item.
+
+    Added by Espen A. Kristiansen to make it even easier to use for testing.
+    """
+    matches = cssFind(html, selector)
+    return bool(len(matches))

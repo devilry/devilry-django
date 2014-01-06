@@ -31,7 +31,7 @@ Using the builders is very easy::
 They can all easily be updated with new attributes::
 
     duck1010builder.update(long_name='DUCK1010 - Programming')
-    assert(duck1010builder.subject.short_name == 'duck1010')
+    assert(duck1010builder.subject.long_name == 'DUCK1010 - Programming')
 
 And they have sane defaults optimized for testing, so you can easily create a
 deeply nested core object. This creates the duck1010-subject with an active
@@ -97,8 +97,8 @@ the change has made it to the database. All our builders implement
 
 
 
-API
-===
+ReloadableDbBuilderInterface
+============================
 
 .. py:class:: ReloadableDbBuilderInterface
 
@@ -117,6 +117,8 @@ API
         the change has made it to the database.
 
 
+UserBuilder
+===========
 .. py:class:: UserBuilder
 
     Creates a User object for testing. Also creates the DevilryUserProfile,
@@ -142,6 +144,8 @@ API
         with the given attributes. Reloads the object from the database.
 
 
+NodeBuilder
+===========
 .. py:class:: NodeBuilder
 
     .. py:attribute:: node
@@ -165,6 +169,8 @@ API
         :rtype: :class:`.SubjectBuilder`.
 
 
+SubjectBuilder
+==============
 .. py:class:: SubjectBuilder
 
     .. py:attribute:: subject
@@ -236,6 +242,8 @@ API
         :rtype: :class:`.PeriodBuilder`.
 
 
+PeriodBuilder
+=============
 .. py:class:: PeriodBuilder
 
     .. py:attribute:: period
@@ -270,6 +278,8 @@ API
 
 
 
+AssignmentBuilder
+=================
 .. py:class:: AssignmentBuilder
 
     .. py:attribute:: assignment
@@ -295,6 +305,8 @@ API
 
 
 
+AssignmentGroupBuilder
+======================
 .. py:class:: AssignmentGroupBuilder
 
     .. py:attribute:: assignment_group
@@ -352,6 +364,8 @@ API
         :rtype: :class:`.DeadlineBuilder`.
 
 
+DeadlineBuilder
+===============
 .. py:class:: DeadlineBuilder
 
     .. py:attribute:: deadline
@@ -429,6 +443,8 @@ API
 
 
 
+DeliveryBuilder
+===============
 .. py:class:: DeliveryBuilder
 
     .. py:attribute:: delivery
@@ -447,6 +463,13 @@ API
         Adds a filemeta to the delivery. ``kwargs`` is forwarded
         to :class:`.FilteMetaBuilder` with ``kwargs['delivery']`` set to
         this :obj:`.delivery`.
+
+        Example::
+
+            deliverybuilder.add_filemeta(
+                filename='test.txt',
+                data='This is a test.'
+            )
 
         :param kwargs: Kwargs for the :class:`.FileMetaBuilder` constructor.
         :rtype: :class:`.FileMetaBuilder`.
@@ -507,6 +530,8 @@ API
 
 
 
+FileMetaBuilder
+===============
 .. py:class:: FileMetaBuilder
 
     .. py:attribute:: filemeta
@@ -526,6 +551,8 @@ API
 
 
 
+StaticFeedbackBuilder
+=====================
 .. py:class:: StaticFeedbackBuilder
 
     .. py:attribute:: feedback
