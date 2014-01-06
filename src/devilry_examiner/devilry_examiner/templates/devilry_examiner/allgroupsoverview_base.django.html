@@ -1,0 +1,71 @@
+{% extends "devilry_examiner/base.django.html" %}
+{% load i18n devilry_examiner_tags%}
+{% load url from future %}
+
+{% block bodyid %}allgroupsoverview{% endblock %}
+
+{% block body %}
+<div class="container">
+  <div class="page-header page-header-with-subheader">
+    <h1>{{ assignment.long_name }}</h1>
+    <p class="subheader">
+      {{ assignment.parentnode.parentnode.long_name}} &mdash; {{ assignment.parentnode.long_name }}
+    </p>
+  </div>
+  <ol class="breadcrumb">
+    <li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
+    <li><a href="{% url 'devilry_examiner_dashboard' %}">{% trans "Examiner" %}</a></li>
+    <li class="active">{{ assignment.get_path }}</li>
+  </ol>
+</div>
+
+<div class="container">
+  <p>
+  <a class="btn btn-default" href="#" role="button">Waiting for feedback</a>
+  <a class="btn btn-default" href="#" role="button">Waiting for deliveries</a>
+  <a class="btn btn-default" href="#" role="button">Corrected</a>
+  <a class="btn btn-default active" href="#" role="button">All</a>
+  </p>
+</div>
+
+
+</div>
+
+
+
+<div> 
+
+{% block content %}
+  <div class="container">
+    <table class="table table-striped infolistingtable">
+      {% for group in groups %}
+      <tr class="group">
+        <td class="titled-cell">
+          <h3>
+            <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
+              {{ group.long_displayname }}
+            </a>
+          </h3>
+          
+          <p class="text-success">{{ group.get_status|formatted_status }}</p>
+        </td>
+
+        <td class="hidden-xs">
+          {% if group.get_status == "waiting-for-deliveries" %}
+          <button type="button" class="btn btn-default hidden
+                                       hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+          {% else %}
+          <button type="button" class="btn btn-default
+                                       hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+          {% endif %}
+
+        </td>
+      </tr>
+
+      {% endfor%}
+    </table><!-- row -->
+  </div><!-- container -->
+{% endblock content %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "devilry_examiner/allgroupsoverview_base.django.html" %}
+{% load i18n devilry_examiner_tags%}
+{% load url from future %}
+
+{% block bodyid %}waiting-for-feedback-overview{% endblock %}
+
+{% block content %}
+  <div class="container">
+    <table class="table table-striped infolistingtable">
+      {% for group in groups %}
+      <tr class="group">
+        <td class="titled-cell">
+          <h3>
+            <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
+              {{ group.long_displayname }}
+            </a>
+          </h3>
+          
+          <p class="text-success">{{ group.get_status|formatted_status }}</p>
+        </td>
+
+        <td class="hidden-xs">
+          {% if group.get_status == "waiting-for-deliveries" %}
+          <button type="button" class="btn btn-default hidden
+                                       hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+          {% else %}
+          <button type="button" class="btn btn-default
+                                       hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+          {% endif %}
+
+        </td>
+      </tr>
+
+      {% endfor%}
+    </table><!-- row -->
+  </div><!-- container -->
+
+{% endblock content %}
