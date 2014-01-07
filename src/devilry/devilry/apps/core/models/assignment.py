@@ -140,6 +140,35 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         A DateTimeField containing an optional first deadline for this
         assignment. This is metadata that the UI can use where it is
         natural.
+
+    .. attribute:: max_points
+
+        An IntegerField that contains the maximum number of points possible to achieve on
+        this assignment. This field may be ``None``, and it is normally set by the
+        grading system plugin.
+
+    .. attribute:: passing_grade_min_points
+
+        An IntegerField that contains the minimum number of points required to
+        achive a passing grade on this assignment. This means that any feedback
+        with more this number of points or more is considered a passing grade.
+
+        WARNING: Changing this does not have any effect on existing feedback.
+        To actually change existing feedback, you would have to update all
+        feedback on the assignment, effectively creating new StaticFeedbacks
+        from the latest published FeedbackDrafts for each AssignmentGroup.
+
+    .. attribute:: points_to_grade_mapper
+
+        Configures how points should be mapped to a grade. Valid choices:
+
+        - ``passed-failed`` - Points is mapped directly to passed/failed.
+          Posive points results in passing grade, and zero and negative points
+          results in a failing grade.
+        - ``raw-points`` - The grade is ``<points>/<max-points>``.
+        - ``table-lookup`` - Points is mapped to a grade via a table lookup.
+          This means that someone configures a mapping from point thresholds
+          to grades using :class:`devilry.apps.core.models.PointRangeToGrade`.
     """
     objects = AssignmentManager()
 
@@ -179,6 +208,17 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     scale_points_percent = models.PositiveIntegerField(default=100,
                                                        help_text='Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.')
     first_deadline = models.DateTimeField(blank=True, null=True)
+
+    max_points = models.IntegerField(null=True, blank=True)
+    passing_grade_min_points = models.IntegerField(null=True, blank=True)
+    points_to_grade_mapper = models.CharField(
+        max_length=25, blank=True, null=True,
+        default='passed-failed',
+        choices=(
+            ("passed-failed", _("Passed/failed")),
+            ("raw-points", _("Raw points")),
+            ("custom-table", _("Custom table")),
+        ))
 
 
     @classmethod
