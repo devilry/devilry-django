@@ -34,11 +34,9 @@ class WaitingForFeedbackOverview(AllGroupsOverview):
     def get_context_data(self, **kwargs):
         context = super(WaitingForFeedbackOverview, self).get_context_data(**kwargs)
 
-        # Need to get queryset from custom manager.
-        # Get only AssignmentGroup within same assignment
-        groups = AssignmentGroup.objects.get_queryset().filter(parentnode__id=self.object.id)
-        groups = groups.filter_examiner_has_access(self.request.user).filter_by_status('waiting-for-something')
-        paginator = Paginator(groups, 3)
+        groups = context['groups']
+        groups = groups.filter_by_status('waiting-for-something')
+        paginator = Paginator(groups, 2)
 
         page = self.request.GET.get('page')
         try:
