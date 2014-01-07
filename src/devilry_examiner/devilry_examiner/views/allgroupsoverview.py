@@ -1,6 +1,8 @@
 from django.views.generic import DetailView
 from django.views.generic import TemplateView
-
+from django.core.paginator import Paginator
+from django.core.paginator import EmptyPage
+from django.core.paginator import PageNotAnInteger
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 
@@ -36,8 +38,18 @@ class WaitingForFeedbackOverview(AllGroupsOverview):
         # Get only AssignmentGroup within same assignment
         groups = AssignmentGroup.objects.get_queryset().filter(parentnode__id=self.object.id)
         groups = groups.filter_examiner_has_access(self.request.user).filter_by_status('waiting-for-something')
+        paginator = Paginator(groups, 3)
 
-        context['groups'] = groups
-        # context['groups'].filter_by_status('corrected')
+        page = self.request.GET.get('page')
+        try:
+            group_page = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            group_page = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            group_page = paginator.page(paginator.num_pages)
+
+        context['groups'] = group_page
 
         return context
