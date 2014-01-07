@@ -14,6 +14,7 @@ setup(name = 'devilry_developer',
                           'django_seleniumhelpers', 'django_extjs4',
                           'devilry_examiner',
                           'devilry_feedbackeditor_simple',
+                          'devilry_gradingsystem',
                           'BeautifulSoup', # For testing with devilry_developer.testhelpers.soupselect
                           'sphinx_rtd_theme', # For building the docs with the read-the-docs theme (see /reporoot/docs/conf.py)
 #                          'raven', # Sentry client for testing
