@@ -481,8 +481,10 @@ class Command(BaseCommand):
         verbosity = get_verbosity(options)
         self.no_groups = options['no_groups']
         setup_logging(verbosity)
-        logging.info('Running manage.py flush')
-        management.call_command('flush', verbosity=0, interactive=False)
+
+        # NOTE: Not running flush - it messes up migrations
+        #logging.info('Running manage.py flush')
+        #management.call_command('flush', verbosity=0, interactive=False)
 
         self.testhelper = TestHelper()
 #        from django.db import transaction
