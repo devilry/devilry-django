@@ -7,6 +7,19 @@ from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 
 
+def get_paginated_page(paginator, page):
+    try:
+        paginated_page = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        paginated_page = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        paginated_page = paginator.page(paginator.num_pages)
+
+    return paginated_page
+
+
 class AllGroupsOverview(DetailView):
     template_name = "devilry_examiner/allgroupsoverview_base.django.html"
     model = Assignment
@@ -36,18 +49,10 @@ class WaitingForFeedbackOverview(AllGroupsOverview):
 
         groups = context['groups']
         groups = groups.filter_by_status('waiting-for-something')
-        paginator = Paginator(groups, 2)
+        paginator = Paginator(groups, 2, orphans=2)
 
         page = self.request.GET.get('page')
-        try:
-            group_page = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            group_page = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            group_page = paginator.page(paginator.num_pages)
 
-        context['groups'] = group_page
+        context['groups'] = get_paginated_page(paginator, page)
 
         return context
