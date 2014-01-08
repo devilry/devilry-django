@@ -9,13 +9,90 @@ from django.db.models import Q
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from ..models import Period, Assignment, Candidate
+from devilry.apps.core.models import Period
+from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import Candidate
+from devilry.apps.core.models import PointToGradeMap
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
 
 
 
-class TestAssignment(TestCase, TestHelper):
+
+class TestAssignment(TestCase):
+
+    def test_points_is_passing_grade(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                passing_grade_min_points=1).assignment
+        self.assertTrue(assignment1.points_is_passing_grade(1))
+        self.assertFalse(assignment1.points_is_passing_grade(0))
+
+    def test_points_to_grade_passed_failed(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                points_to_grade_mapper='passed-failed').assignment
+        self.assertEquals(assignment1.points_to_grade(0), 'Failed')
+        self.assertEquals(assignment1.points_to_grade(1), 'Passed')
+
+    def test_points_to_grade_points(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                points_to_grade_mapper='raw-points',
+                max_points=10).assignment
+        self.assertEquals(assignment1.points_to_grade(0), '0/10')
+        self.assertEquals(assignment1.points_to_grade(1), '1/10')
+        self.assertEquals(assignment1.points_to_grade(10), '10/10')
+
+    def test_points_to_grade_custom_table(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                points_to_grade_mapper='custom-table',
+                max_points=10).assignment
+        pointtogrademap = PointToGradeMap.objects.create(
+            assignment=assignment1)
+        pointtogrademap.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=10,
+            grade='Ok'
+        )
+        pointtogrademap.clean()
+        pointtogrademap.save()
+        self.assertEquals(assignment1.points_to_grade(5), 'Ok')
+
+    def test_has_valid_grading_setup_invalid(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1').assignment
+        self.assertFalse(assignment1.has_valid_grading_setup())
+
+    def test_has_valid_grading_setup_valid_no_table(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                passing_grade_min_points=0,
+                max_points=1,
+                points_to_grade_mapper='passed-failed').assignment
+        self.assertTrue(assignment1.has_valid_grading_setup())
+
+    def test_has_valid_grading_setup_valid_table(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                passing_grade_min_points=0,
+                max_points=1,
+                points_to_grade_mapper='custom-table').assignment
+        self.assertFalse(assignment1.has_valid_grading_setup())
+        pointtogrademap = PointToGradeMap.objects.create(
+            assignment=assignment1)
+        pointtogrademap.invalid = False
+        pointtogrademap.save()
+        self.assertTrue(assignment1.has_valid_grading_setup())
+
+
+
+class TestAssignmentOld(TestCase, TestHelper):
+    """
+    Do not add new tests to this testcase, use TestAssignment and
+    corebuilder instead.
+    """
 
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",

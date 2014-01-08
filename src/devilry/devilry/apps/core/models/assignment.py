@@ -4,6 +4,7 @@ from django.utils.translation import ugettext as _
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
+from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.conf import settings
 
@@ -219,6 +220,48 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             ("raw-points", _("Raw points")),
             ("custom-table", _("Custom table")),
         ))
+
+    def has_valid_grading_setup(self):
+        """
+        Checks if this assignment is configured correctly for grading.
+        """
+        if self.max_points is None or self.passing_grade_min_points is None or self.points_to_grade_mapper is None:
+            return False
+        else:
+            if self.points_to_grade_mapper == 'custom-table':
+                try:
+                    pointtogrademap = self.pointtogrademap
+                except ObjectDoesNotExist:
+                    return False
+                else:
+                    return not pointtogrademap.invalid
+            else:
+                return True
+
+    def points_is_passing_grade(self, points):
+        """
+        Checks if the given points represents a passing grade.
+
+        WARNING: This will only work if ``passing_grade_min_points`` is set. The best
+        way to check that is with :meth:`.has_valid_grading_setup`.
+        """
+        return points >= self.passing_grade_min_points
+
+    def points_to_grade(self, points):
+        """
+        Convert the given points into a grade.
+
+        WARNING: This will not work if :meth:`.has_valid_grading_setup` is not ``True``.
+        """
+        if self.points_to_grade_mapper == 'passed-failed':
+            if points == 0:
+                return 'Failed'
+            else:
+                return 'Passed'
+        elif self.points_to_grade_mapper == 'raw-points':
+            return u'{}/{}'.format(points, self.max_points)
+        else:
+            return self.pointtogrademap.points_to_grade(points).grade
 
 
     @classmethod
