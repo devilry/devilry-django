@@ -34,7 +34,11 @@ class AllGroupsOverview(DetailView):
         groups = AssignmentGroup.objects.get_queryset().filter(parentnode__id=self.object.id)
         groups = groups.filter_examiner_has_access(self.request.user)
 
-        context['groups'] = groups
+        paginator = Paginator(groups, 4, orphans=3)
+        page = self.request.GET.get('page')
+
+        context['groups'] = get_paginated_page(paginator, page)
+        context['allgroups'] = groups
         return context
 
     def get_queryset(self):
@@ -47,7 +51,7 @@ class WaitingForFeedbackOverview(AllGroupsOverview):
     def get_context_data(self, **kwargs):
         context = super(WaitingForFeedbackOverview, self).get_context_data(**kwargs)
 
-        groups = context['groups']
+        groups = context['allgroups']
         groups = groups.filter_by_status('waiting-for-something')
         paginator = Paginator(groups, 2, orphans=2)
 
