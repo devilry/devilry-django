@@ -65,10 +65,27 @@ class PointToGradeMap(models.Model):
             self.invalid = False
 
 
-    # def update_mapping(self, *point_to_grade_list):
-    #     """
-    #     """
-    #     for minimum_points, 
+    def create_map(self, *minimum_points_to_grade_list):
+        for index, entry in enumerate(minimum_points_to_grade_list):
+            minimum_points, grade = entry
+            if index == len(minimum_points_to_grade_list) - 1:
+                maximum_points = self.assignment.max_points
+            else:
+                maximum_points = minimum_points_to_grade_list[index+1][0] - 1
+            self.pointrangetograde_set.create(
+                grade=grade,
+                minimum_points=minimum_points,
+                maximum_points=maximum_points
+            )
+
+    def clear_map(self):
+        self.pointrangetograde_set.all().delete()
+
+    def recreate_map(self, *minimum_points_to_grade_list):
+        """
+        """
+        self.clear_map()
+        self.create_map(*minimum_points_to_grade_list)
 
     def points_to_grade(self, points):
         """

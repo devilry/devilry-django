@@ -291,3 +291,49 @@ class TestPointToGradeMap(TestCase):
         self.assertTrue(point_to_grade_map.invalid)
         with self.assertRaises(GapsInMapValidationError):
             point_to_grade_map.clean()
+
+    def test_create_map(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        point_to_grade_map.create_map(
+            (0, 'Bad'),
+            (30, 'Better'),
+            (60, 'Good'))
+        self.assertEquals(point_to_grade_map.pointrangetograde_set.count(), 3)
+        bad, better, good = point_to_grade_map.pointrangetograde_set.all()
+        self.assertEquals(bad.minimum_points, 0)
+        self.assertEquals(bad.maximum_points, 29)
+        self.assertEquals(bad.grade, 'Bad')
+        self.assertEquals(better.minimum_points, 30)
+        self.assertEquals(better.maximum_points, 59)
+        self.assertEquals(better.grade, 'Better')
+        self.assertEquals(good.minimum_points, 60)
+        self.assertEquals(good.maximum_points, 100)
+        self.assertEquals(good.grade, 'Good')
+
+    def test_clear_map(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=30,
+            grade='Bad'
+        )
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=32,
+            maximum_points=100,
+            grade='Better'
+        )
+        self.assertEquals(point_to_grade_map.pointrangetograde_set.count(), 2)
+        point_to_grade_map.clear_map()
+        self.assertEquals(point_to_grade_map.pointrangetograde_set.count(), 0)
+
+    def test_recreate_map(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        point_to_grade_map.create_map(
+            (0, 'Bad'),
+            (30, 'Better'),
+            (60, 'Good'))
+        self.assertEquals(point_to_grade_map.pointrangetograde_set.count(), 3)
+        bad, better, good = point_to_grade_map.pointrangetograde_set.all()
+        self.assertEquals(bad.grade, 'Bad')
+        self.assertEquals(better.grade, 'Better')
+        self.assertEquals(good.grade, 'Good')
