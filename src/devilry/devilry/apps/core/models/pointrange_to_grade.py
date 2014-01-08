@@ -5,6 +5,38 @@ from django.core.exceptions import ValidationError
 from .assignment import Assignment
 
 
+
+class PointToGradeMap(models.Model):
+    """
+    Data structure to store the mapping from a point ranges to grades
+    when using custom-table.
+
+    The basic idea is described in https://github.com/devilry/devilry-django/issues/511,
+    but we decided to add this OneToOne table to represent a mapping table
+    to avoid adding complexity to Assignment that is only needed when the
+    custom-table ``points_to_grade_mapper`` is used.
+
+    .. attribute:: assignment
+
+        Foreign Key to the assignment.
+    """
+    assignment = models.OneToOneField(Assignment)
+
+    class Meta:
+        app_label = 'core'
+
+
+    # def update_mapping(self, *point_to_grade_list):
+    #     """
+    #     """
+    #     for minimum_points, 
+
+    def __unicode__(self):
+        return u'Point to grade map for {}'.format(self.assignment.get_path())
+
+
+
+
 class PointRangeToGradeMapQueryset(models.query.QuerySet):
     def filter_overlapping_ranges(self, start, end):
         return self.filter(
@@ -28,7 +60,7 @@ class PointRangeToGradeMapManager(models.Manager):
         between the start and the end.
 
         This is perfect for checking if a range can be added to an assignment
-        (needs ``.filter(assignment=assignment)`` in addition to this filter).
+        (needs ``.filter(point_to_grade_map=assignment.pointtogrademap)`` in addition to this filter).
         """
         return self.get_queryset().filter_overlapping_ranges(start, end)
 
@@ -36,13 +68,14 @@ class PointRangeToGradeMapManager(models.Manager):
 
 class PointRangeToGrade(models.Model):
     """
-    Data structure to store the mapping from point to grade when using custom-table.
+    Data structure to store the mapping from a single point-range to grade
+    when using custom-table.
 
     First described in https://github.com/devilry/devilry-django/issues/511.
 
-    .. attribute:: assignment
+    .. attribute:: point_to_grade_map
 
-        Foreign Key to the assignment.
+        Foreign Key to the PointToGradeMap.
 
     .. attribute:: minimum_points
 
@@ -56,13 +89,13 @@ class PointRangeToGrade(models.Model):
         The grade that this entry represents a match for.
     """
     objects = PointRangeToGradeMapManager()
-    assignment = models.ForeignKey(Assignment)
+    point_to_grade_map = models.ForeignKey(PointToGradeMap)
     minimum_points = models.IntegerField()
     maximum_points = models.IntegerField()
     grade = models.CharField(max_length=12)
     
     class Meta:
-        unique_together = ('assignment', 'grade')
+        unique_together = ('point_to_grade_map', 'grade')
         app_label = 'core'
         ordering = ['minimum_points']
 
@@ -71,12 +104,11 @@ class PointRangeToGrade(models.Model):
             raise ValidationError('Minimum points can not be equal to or greater than maximum points.')
         overlapping_ranges = self.__class__.objects\
             .filter_overlapping_ranges(self.minimum_points, self.maximum_points) \
-            .filter(assignment=self.assignment)
+            .filter(point_to_grade_map=self.point_to_grade_map)
         if self.id != None:
             overlapping_ranges = overlapping_ranges.exclude(id=self.id)
         if overlapping_ranges.exists():
             raise ValidationError('One or more PointRangeToGrade overlaps with this range.')
 
     def __unicode__(self):
-        return u'{0}: {1}-{2}={3}'.format(self.assignment.get_path(),
-            self.minimum_points, self.maximum_points, self.grade)
+        return u'{1}-{2}={3}'.format(self.minimum_points, self.maximum_points, self.grade)

@@ -5,16 +5,17 @@ from django.db import IntegrityError
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry.apps.core.models import PointRangeToGrade
+from devilry.apps.core.models import PointToGradeMap
 
 
 class TestPointRangeToGradeManager(TestCase):
     def setUp(self):
-        self.assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment')
+        self.assignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment').assignment
+        self.point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
 
     def test_filter_overlapping_ranges(self):
-        assignment = self.assignmentbuilder.assignment
-        pointrange_to_grade = assignment.pointrangetograde_set.create(
+        pointrange_to_grade = self.point_to_grade_map.pointrangetograde_set.create(
             minimum_points=10,
             maximum_points=20,
             grade='D'
@@ -32,11 +33,11 @@ class TestPointRangeToGradeManager(TestCase):
 class TestPointRangeToGrade(TestCase):
     def setUp(self):
         self.periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
-        self.assignmentbuilder = self.periodbuilder.add_assignment('assignment')
+        self.assignment = self.periodbuilder.add_assignment('assignment').assignment
 
     def test_clean_max_smaller_than_min_fails(self):
         pointrange_to_grade = PointRangeToGrade(
-            assignment=self.assignmentbuilder.assignment,
+            point_to_grade_map=PointToGradeMap.objects.create(assignment=self.assignment),
             minimum_points=2,
             maximum_points=1,
             grade='D'
@@ -46,7 +47,7 @@ class TestPointRangeToGrade(TestCase):
 
     def test_clean_max_equal_to_min_works(self):
         pointrange_to_grade = PointRangeToGrade(
-            assignment=self.assignmentbuilder.assignment,
+            point_to_grade_map=PointToGradeMap.objects.create(assignment=self.assignment),
             minimum_points=1,
             maximum_points=1,
             grade='D'
@@ -56,7 +57,7 @@ class TestPointRangeToGrade(TestCase):
 
     def test_clean_max_greater_than_min_works(self):
         pointrange_to_grade = PointRangeToGrade(
-            assignment=self.assignmentbuilder.assignment,
+            point_to_grade_map=PointToGradeMap.objects.create(assignment=self.assignment),
             minimum_points=0,
             maximum_points=1,
             grade='D'
@@ -65,14 +66,14 @@ class TestPointRangeToGrade(TestCase):
 
 
     def test_clean_overlapping_other_on_same_assignment_fails(self):
-        assignment = self.assignmentbuilder.assignment
-        pointrange_to_grade = assignment.pointrangetograde_set.create(
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        pointrange_to_grade = point_to_grade_map.pointrangetograde_set.create(
             minimum_points=10,
             maximum_points=20,
             grade='D'
         )
         pointrange_to_grade = PointRangeToGrade(
-            assignment=assignment,
+            point_to_grade_map=point_to_grade_map,
             minimum_points=12,
             maximum_points=18,
             grade='C'
@@ -82,7 +83,7 @@ class TestPointRangeToGrade(TestCase):
 
     def test_clean_existing_does_not_match_overlapping_range(self):
         pointrange_to_grade = PointRangeToGrade(
-            assignment=self.assignmentbuilder.assignment,
+            point_to_grade_map=PointToGradeMap.objects.create(assignment=self.assignment),
             minimum_points=12,
             maximum_points=18,
             grade='C'
@@ -93,13 +94,13 @@ class TestPointRangeToGrade(TestCase):
     def test_clean_does_not_match_overlapping_range_in_other_assignments(self):
         assignment2 = self.periodbuilder.add_assignment('assignment2').assignment
         pointrange_to_grade = PointRangeToGrade(
-            assignment=self.assignmentbuilder.assignment,
+            point_to_grade_map=PointToGradeMap.objects.create(assignment=self.assignment),
             minimum_points=12,
             maximum_points=18,
             grade='D'
         )
         PointRangeToGrade(
-            assignment=assignment2,
+            point_to_grade_map=PointToGradeMap.objects.create(assignment=assignment2),
             minimum_points=10,
             maximum_points=20,
             grade='C'
@@ -107,14 +108,15 @@ class TestPointRangeToGrade(TestCase):
         pointrange_to_grade.clean()
 
     def test_clean_not_unique_grade(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
         PointRangeToGrade(
-            assignment=self.assignmentbuilder.assignment,
+            point_to_grade_map=point_to_grade_map,
             minimum_points=1,
             maximum_points=2,
             grade='C'
         ).save()
         pointrange_to_grade = PointRangeToGrade(
-            assignment=self.assignmentbuilder.assignment,
+            point_to_grade_map=point_to_grade_map,
             minimum_points=5,
             maximum_points=6,
             grade='C'
@@ -125,25 +127,25 @@ class TestPointRangeToGrade(TestCase):
         # Does not fail when in another assignment
         assignment2 = self.periodbuilder.add_assignment('assignment2').assignment
         pointrange_to_grade = PointRangeToGrade(
-            assignment=assignment2,
+            point_to_grade_map=PointToGradeMap.objects.create(assignment=assignment2),
             minimum_points=5,
             maximum_points=6,
             grade='C'
         ).save()
 
     def test_ordering(self):
-        assignment = self.assignmentbuilder.assignment
-        f = assignment.pointrangetograde_set.create(
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        f = point_to_grade_map.pointrangetograde_set.create(
             minimum_points=0,
             maximum_points=20,
             grade='F'
         )
-        e = assignment.pointrangetograde_set.create(
+        e = point_to_grade_map.pointrangetograde_set.create(
             minimum_points=21,
             maximum_points=40,
             grade='E'
         )
-        d = assignment.pointrangetograde_set.create(
+        d = point_to_grade_map.pointrangetograde_set.create(
             minimum_points=41,
             maximum_points=50,
             grade='D'
