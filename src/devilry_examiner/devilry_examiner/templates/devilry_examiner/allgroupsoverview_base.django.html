@@ -34,7 +34,6 @@
 
 
 
-<div> 
 
 {% block content %}
   <div class="container">
@@ -48,7 +47,7 @@
             </a>
           </h3>
           
-          <p class="text-success">{{ group.get_status|formatted_status }}</p>
+          <p class="text-{{ group|group_delivery_status_to_bootstrapclass }}">{{ group.get_status|formatted_status }}</p>
         </td>
 
         <td class="hidden-xs">
@@ -65,8 +64,28 @@
 
       {% endfor%}
     </table><!-- row -->
+
+  <div class="pagination">
+    <span class="step-links">
+      {% if groups.has_previous %}
+      <a href="?page={{ groups.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ groups.number }} of {{ groups.paginator.num_pages }}.
+      </span>
+
+      {% if groups.has_next %}
+      <a href="?page={{ groups.next_page_number }}">next</a>
+      {% endif %}
+    </span>
+  </div>
+
   </div><!-- container -->
+
+
+
 {% endblock content %}
 
-</div>
-{% endblock %}
+
+{% endblock body%}
