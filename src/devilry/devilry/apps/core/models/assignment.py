@@ -210,8 +210,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                                                        help_text='Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.')
     first_deadline = models.DateTimeField(blank=True, null=True)
 
-    max_points = models.IntegerField(null=True, blank=True)
-    passing_grade_min_points = models.IntegerField(null=True, blank=True)
+    max_points = models.PositiveIntegerField(null=True, blank=True,
+        default=1)
+    passing_grade_min_points = models.PositiveIntegerField(null=True, blank=True,
+        default=1)
     points_to_grade_mapper = models.CharField(
         max_length=25, blank=True, null=True,
         default='passed-failed',

@@ -168,8 +168,8 @@ class PointRangeToGrade(models.Model):
     """
     objects = PointRangeToGradeMapManager()
     point_to_grade_map = models.ForeignKey(PointToGradeMap)
-    minimum_points = models.IntegerField()
-    maximum_points = models.IntegerField()
+    minimum_points = models.PositiveIntegerField()
+    maximum_points = models.PositiveIntegerField()
     grade = models.CharField(max_length=12)
     
     class Meta:
