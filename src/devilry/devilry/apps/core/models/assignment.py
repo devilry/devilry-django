@@ -170,6 +170,11 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         - ``table-lookup`` - Points is mapped to a grade via a table lookup.
           This means that someone configures a mapping from point thresholds
           to grades using :class:`devilry.apps.core.models.PointRangeToGrade`.
+
+    .. attribute:: grading_system_plugin_id
+
+        A CharField containing the ID of the grading system plugin this
+        assignment uses.
     """
     objects = AssignmentManager()
 
@@ -222,6 +227,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             ("raw-points", _("Raw points")),
             ("custom-table", _("Custom table")),
         ))
+    grading_system_plugin_id = models.CharField(
+        max_length=300, blank=True, null=True)
 
     def has_valid_grading_setup(self):
         """
