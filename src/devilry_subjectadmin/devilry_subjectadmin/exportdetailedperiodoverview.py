@@ -69,11 +69,11 @@ class ExportDetailedPeriodOverviewBase(object):
                     feedback.points,
                     self.strformat_is_passing_grade(feedback.is_passing_grade)]
         elif self.gradedetails == 'grade':
-            return feedback.grade
+            return [feedback.grade]
         elif self.gradedetails == 'points':
-            return str(feedback.points)
+            return [str(feedback.points)]
         elif self.gradedetails == 'is_passing_grade':
-            return self.strformat_is_passing_grade(feedback.is_passing_grade)
+            return [self.strformat_is_passing_grade(feedback.is_passing_grade)]
 
     def get_fullname_utf8(self, user):
         full_name = user.get_profile().full_name
