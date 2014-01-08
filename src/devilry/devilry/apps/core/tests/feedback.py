@@ -3,11 +3,149 @@ from datetime import datetime, timedelta
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from ..models import StaticFeedback
-from ..testhelper import TestHelper
+from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry_developer.testhelpers.corebuilder import DeliveryBuilder
+from devilry.apps.core.models import StaticFeedback
+from devilry.apps.core.testhelper import TestHelper
 
-class TestFeedback(TestCase, TestHelper):
+class TestStaticFeedback(TestCase, TestHelper):
 
+    def setUp(self):
+        DeliveryBuilder.set_memory_deliverystore()
+        self.assignment1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        self.testuser = UserBuilder('testuser').user
+
+    def test_save_groupclose(self):
+        # Setup
+        groupbuilder = self.assignment1builder.add_group()
+        delivery = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1).delivery
+        feedback = StaticFeedback(
+            delivery=delivery,
+            points=10,
+            grade='A',
+            saved_by=self.testuser,
+            is_passing_grade=True
+        )
+
+        # Test
+        self.assertTrue(groupbuilder.group.is_open)
+        feedback.save()
+        groupbuilder.reload_from_db()
+        self.assertFalse(groupbuilder.group.is_open)
+
+    def test_save_groupclose_False(self):
+        # Setup
+        groupbuilder = self.assignment1builder.add_group()
+        delivery = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1).delivery
+        feedback = StaticFeedback(
+            delivery=delivery,
+            points=10,
+            grade='A',
+            saved_by=self.testuser,
+            is_passing_grade=True
+        )
+
+        # Test
+        self.assertTrue(groupbuilder.group.is_open)
+        feedback.save(autoclose_group=False)
+        groupbuilder.reload_from_db()
+        self.assertTrue(groupbuilder.group.is_open)
+
+
+    def test_save_autoset_as_active_feedback_on_group(self):
+        # Setup
+        groupbuilder = self.assignment1builder.add_group()
+        delivery = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1).delivery
+        feedback = StaticFeedback(
+            delivery=delivery,
+            points=10,
+            grade='A',
+            saved_by=self.testuser,
+            is_passing_grade=True
+        )
+
+        # Test
+        self.assertIsNone(groupbuilder.group.feedback)
+        feedback.save()
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.feedback, feedback)
+
+    def test_save_autoset_as_active_feedback_on_group_False(self):
+        # Setup
+        groupbuilder = self.assignment1builder.add_group()
+        delivery = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1).delivery
+        feedback = StaticFeedback(
+            delivery=delivery,
+            points=10,
+            grade='A',
+            saved_by=self.testuser,
+            is_passing_grade=True
+        )
+
+        # Test
+        self.assertIsNone(groupbuilder.group.feedback)
+        feedback.save(autoset_as_active_feedback_on_group=False)
+        groupbuilder.reload_from_db()
+        self.assertIsNone(groupbuilder.group.feedback)
+
+
+    def test_save_autoset_as_last_feedback_on_delivery(self):
+        # Setup
+        deliverybuilder = self.assignment1builder.add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        feedback = StaticFeedback(
+            delivery=deliverybuilder.delivery,
+            points=10,
+            grade='A',
+            saved_by=self.testuser,
+            is_passing_grade=True
+        )
+
+        # Test
+        self.assertIsNone(deliverybuilder.delivery.last_feedback)
+        feedback.save()
+        deliverybuilder.reload_from_db()
+        self.assertEquals(deliverybuilder.delivery.last_feedback, feedback)
+
+    def test_save_autoset_as_last_feedback_on_delivery_False(self):
+        # Setup
+        deliverybuilder = self.assignment1builder.add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        feedback = StaticFeedback(
+            delivery=deliverybuilder.delivery,
+            points=10,
+            grade='A',
+            saved_by=self.testuser,
+            is_passing_grade=True
+        )
+
+        # Test
+        self.assertIsNone(deliverybuilder.delivery.last_feedback)
+        feedback.save(autoset_as_last_feedback_on_delivery=False)
+        deliverybuilder.reload_from_db()
+        self.assertIsNone(deliverybuilder.delivery.last_feedback)
+
+
+
+class TestStaticFeedbackOld(TestCase, TestHelper):
+    """
+    WARNING: Old tests for StaticFeedback using TestHelper. We should
+    NOT add new tests here, and the tests should be updated and
+    moved to TestStaticFeedback if we update any of the tested 
+    methods, or need to add more tests.
+    """
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
                  subjects=["inf1100"],
@@ -25,18 +163,6 @@ class TestFeedback(TestCase, TestHelper):
         self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
         self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
         self.add_delivery("inf1100.old_period.assignment1.g1", self.goodFile)
-
-    def test_create_new_groupclose(self):
-        self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1:candidate(student1):examiner(examiner1).d1:ends(10)')
-        delivery = self.add_delivery("inf1100.period1.assignment1.group1",
-                                     {'good.py': "print 'hello world'"})
-        group = delivery.deadline.assignment_group
-        group.is_open = True
-        group.save()
-        self.assertTrue(group.is_open)
-        feedback = self.add_feedback(delivery,
-                                     verdict={"grade": "C", "points": 85, "is_passing_grade": True})
-        self.assertFalse(group.is_open)
 
     def test_where_is_candidate(self):
         self.assertEquals(StaticFeedback.where_is_candidate(self.student1).count(), 0)
