@@ -6,6 +6,16 @@ from .assignment import Assignment
 
 
 
+class NonzeroSmallesMinimalPointsValidationError(ValidationError):
+    pass
+
+class InvalidLargestMaximumPointsValidationError(ValidationError):
+    pass
+
+class GapsInMapValidationError(ValidationError):
+    pass
+
+
 class PointToGradeMap(models.Model):
     """
     Data structure to store the mapping from a point ranges to grades
@@ -19,11 +29,40 @@ class PointToGradeMap(models.Model):
     .. attribute:: assignment
 
         Foreign Key to the assignment.
+
+    .. attribute:: invalid
+
+        This is set to ``True`` when the map has been invalidated because of 
+        changes to :attr:`devilry.apps.core.models.Assignment.max_points`,
+        or when the map has been created, but it is empty.
     """
     assignment = models.OneToOneField(Assignment)
+    invalid = models.BooleanField(default=True)
+
 
     class Meta:
         app_label = 'core'
+
+    def clean(self):
+        mapentries = list(self.pointrangetograde_set.all())
+        if len(mapentries) == 0:
+            self.invalid = True
+        else:
+            first_entry = mapentries[0]
+            if first_entry.minimum_points != 0:
+                raise NonzeroSmallesMinimalPointsValidationError('The first entry in the map must have minimum_points set to 0 (current value is {}).'.format(
+                    first_entry.minimum_points))
+            last_entry = mapentries[-1]
+            if last_entry.maximum_points != self.assignment.max_points:
+                raise InvalidLargestMaximumPointsValidationError('The last entry in the map must have maximum_points set to the maximum points allowed on the assignment ({}).'.format(
+                    self.assignment.max_points))
+            expected_minimum_points = 0
+            for mapentry in mapentries:
+                if mapentry.minimum_points != expected_minimum_points:
+                    raise GapsInMapValidationError(u'{} must have minimum_points set to {} to avoid gaps in the point to grade map.'.format(
+                        mapentry, expected_minimum_points))
+                expected_minimum_points = mapentry.maximum_points + 1
+            self.invalid = False
 
 
     # def update_mapping(self, *point_to_grade_list):
@@ -133,4 +172,4 @@ class PointRangeToGrade(models.Model):
             raise ValidationError('One or more PointRangeToGrade overlaps with this range.')
 
     def __unicode__(self):
-        return u'{1}-{2}={3}'.format(self.minimum_points, self.maximum_points, self.grade)
+        return u'{}-{}={}'.format(self.minimum_points, self.maximum_points, self.grade)

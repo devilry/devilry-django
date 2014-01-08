@@ -6,6 +6,9 @@ from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry.apps.core.models import PointRangeToGrade
 from devilry.apps.core.models import PointToGradeMap
+from devilry.apps.core.models.pointrange_to_grade import NonzeroSmallesMinimalPointsValidationError
+from devilry.apps.core.models.pointrange_to_grade import InvalidLargestMaximumPointsValidationError
+from devilry.apps.core.models.pointrange_to_grade import GapsInMapValidationError
 
 
 class TestPointRangeToGradeManager(TestCase):
@@ -178,7 +181,8 @@ class TestPointRangeToGrade(TestCase):
 class TestPointToGradeMap(TestCase):
     def setUp(self):
         self.periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
-        self.assignment = self.periodbuilder.add_assignment('assignment').assignment
+        self.assignment = self.periodbuilder.add_assignment('assignment',
+            max_points=100).assignment
 
     def test_points_to_grade_matches(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
@@ -198,3 +202,92 @@ class TestPointToGradeMap(TestCase):
         self.assertEquals(point_to_grade_map.points_to_grade(21), e)
         with self.assertRaises(PointRangeToGrade.DoesNotExist):
             point_to_grade_map.points_to_grade(41)
+
+    def test_clean_no_entries(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        self.assertTrue(point_to_grade_map.invalid)
+        point_to_grade_map.invalid = True
+        self.assertEquals(point_to_grade_map.pointrangetograde_set.count(), 0)
+        point_to_grade_map.clean()
+        self.assertTrue(point_to_grade_map.invalid)
+
+    def test_clean_single_entry_valid(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=100,
+            grade='Good'
+        )
+        self.assertTrue(point_to_grade_map.invalid)
+        point_to_grade_map.clean()
+        self.assertFalse(point_to_grade_map.invalid)
+
+    def test_clean_multientry_valid(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=30,
+            grade='Bad'
+        )
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=31,
+            maximum_points=70,
+            grade='Better'
+        )
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=71,
+            maximum_points=100,
+            grade='Good'
+        )
+        self.assertTrue(point_to_grade_map.invalid)
+        point_to_grade_map.clean()
+        self.assertFalse(point_to_grade_map.invalid)
+
+
+    def test_clean_invalid_first_minimum_points(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=1,
+            maximum_points=30,
+            grade='Bad'
+        )
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=31,
+            maximum_points=100,
+            grade='Better'
+        )
+        self.assertTrue(point_to_grade_map.invalid)
+        with self.assertRaises(NonzeroSmallesMinimalPointsValidationError):
+            point_to_grade_map.clean()
+
+    def test_clean_invalid_first_maximum_points(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=30,
+            grade='Bad'
+        )
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=31,
+            maximum_points=70,
+            grade='Better'
+        )
+        self.assertTrue(point_to_grade_map.invalid)
+        with self.assertRaises(InvalidLargestMaximumPointsValidationError):
+            point_to_grade_map.clean()
+
+    def test_clean_invalid_first_maximum_points(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=30,
+            grade='Bad'
+        )
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=32,
+            maximum_points=100,
+            grade='Better'
+        )
+        self.assertTrue(point_to_grade_map.invalid)
+        with self.assertRaises(GapsInMapValidationError):
+            point_to_grade_map.clean()
