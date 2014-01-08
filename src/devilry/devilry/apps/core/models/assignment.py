@@ -164,8 +164,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Configures how points should be mapped to a grade. Valid choices:
 
         - ``passed-failed`` - Points is mapped directly to passed/failed.
-          Posive points results in passing grade, and zero and negative points
-          results in a failing grade.
+          Zero points results in a failing grade, other points results in
+          a passing grade.
         - ``raw-points`` - The grade is ``<points>/<max-points>``.
         - ``table-lookup`` - Points is mapped to a grade via a table lookup.
           This means that someone configures a mapping from point thresholds
@@ -237,6 +237,56 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                     return not pointtogrademap.invalid
             else:
                 return True
+
+    def setup_for_passed_failed_grading(self):
+        """
+        Setup for the *passed-failed* ``points_to_grade_mapper``.
+        Sets :attr:`.max_points` to ``1`` and :attr:`.passing_grade_min_points` to ``1``,
+        but does not save the Assignment.
+        """
+        self.max_points = 1
+        self.passing_grade_min_points = 1
+
+    def setup_for_raw_points_grading(self, max_points, passing_grade_min_points):
+        """
+        Setup for the *raw-points* ``points_to_grade_mapper``.
+        Sets :attr:`.max_points` and :attr:`.passing_grade_min_points` to
+        the given values, but does not save the Assignment.
+
+        :param max_points:
+            A value for :attr:`.max_points`.
+        :param passing_grade_min_points:
+            A value for :attr:`.passing_grade_min_points`.
+        """
+        self.max_points = max_points
+        self.passing_grade_min_points = passing_grade_min_points
+
+    def setup_for_custom_table_grading(self, max_points, passing_grade_min_points):
+        """
+        Setup for the *custom-table* ``points_to_grade_mapper``.
+
+        Sets :attr:`.max_points` and :attr:`.passing_grade_min_points` to
+        the given values, but does not save the Assignment. Creates a
+        :class:`~devilry.apps.core.models.PointToGradeMap` for the
+        assignment if one does not exist.
+
+        This means that a call to this function, followed by a save will
+        have the assignment ready to configure the PointToGradeMap.
+
+        :param max_points:
+            A value for :attr:`.max_points`.
+        :param passing_grade_min_points:
+            A value for :attr:`.passing_grade_min_points`.
+        """
+        self.max_points = max_points
+        self.passing_grade_min_points = passing_grade_min_points
+        from .pointrange_to_grade import PointToGradeMap
+        try:
+            pointtogrademap = self.pointtogrademap
+        except ObjectDoesNotExist:
+            PointToGradeMap.objects.create(
+                assignment=self)            
+
 
     def points_is_passing_grade(self, points):
         """
