@@ -234,8 +234,6 @@ class TestAssignmentCanDelete(TestCase, TestHelper):
 
 
 class TestAssignmentManager(TestCase):
-    def setUp(self):
-        self.testhelper = TestHelper()
 
     def test_filter_is_examiner(self):
         examiner1 = UserBuilder('examiner1').user
