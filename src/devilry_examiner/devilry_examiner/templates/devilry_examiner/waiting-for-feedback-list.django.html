@@ -16,54 +16,7 @@
 {% endblock navbar %}
 
 {% block content %}
-  <div class="container">
-    <table class="table table-striped infolistingtable">
-      {% for group in groups %}
-      <tr class="group">
-        <td class="titled-cell">
-          <h3>
-            <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
-              {{ group.long_displayname }}
-            </a>
-          </h3>
-          
-          <p class="text-success">{{ group.get_status|formatted_status }}</p>
-        </td>
 
-        <td class="hidden-xs">
-          {% if group.get_status == "waiting-for-deliveries" %}
-          <button type="button" class="btn btn-default hidden
-                                       hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
-          {% else %}
-          <button type="button" class="btn btn-default
-                                       hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
-          {% endif %}
-
-        </td>
-      </tr>
-
-      {% endfor%}
-    </table><!-- row -->
-
-
-  <div class="pagination">
-    <span class="step-links">
-      {% if groups.has_previous %}
-      <a href="?page={{ groups.previous_page_number }}">previous</a>
-      {% endif %}
-
-      <span class="current">
-        Page {{ groups.number }} of {{ groups.paginator.num_pages }}.
-      </span>
-
-      {% if groups.has_next %}
-      <a href="?page={{ groups.next_page_number }}">next</a>
-      {% endif %}
-    </span>
-  </div>
-
-  </div><!-- container -->
-
-
+{{ block.super }}
 
 {% endblock content %}
