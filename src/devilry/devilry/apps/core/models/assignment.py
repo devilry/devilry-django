@@ -244,6 +244,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Sets :attr:`.max_points` to ``1`` and :attr:`.passing_grade_min_points` to ``1``,
         but does not save the Assignment.
         """
+        self.points_to_grade_mapper = 'passed-failed'
         self.max_points = 1
         self.passing_grade_min_points = 1
 
@@ -258,6 +259,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         :param passing_grade_min_points:
             A value for :attr:`.passing_grade_min_points`.
         """
+        self.points_to_grade_mapper = 'raw-points'
         self.max_points = max_points
         self.passing_grade_min_points = passing_grade_min_points
 
@@ -278,6 +280,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         :param passing_grade_min_points:
             A value for :attr:`.passing_grade_min_points`.
         """
+        self.points_to_grade_mapper = 'custom-table'
         self.max_points = max_points
         self.passing_grade_min_points = passing_grade_min_points
         from .pointrange_to_grade import PointToGradeMap

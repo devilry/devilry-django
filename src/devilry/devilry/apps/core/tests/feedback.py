@@ -137,6 +137,21 @@ class TestStaticFeedback(TestCase, TestHelper):
         deliverybuilder.reload_from_db()
         self.assertIsNone(deliverybuilder.delivery.last_feedback)
 
+    def test_from_points(self):
+        self.assignment1builder.assignment.setup_for_raw_points_grading(
+            passing_grade_min_points=4,
+            max_points=10)
+        self.assignment1builder.assignment.save()
+        self.assignment1builder.reload_from_db()
+        deliverybuilder = self.assignment1builder.add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        feedback = StaticFeedback.from_points(
+            assignment=self.assignment1builder.assignment,
+            points=5)
+        self.assertEquals(feedback.grade, '5/10')
+        self.assertEquals(feedback.points, 5)
+        self.assertTrue(feedback.is_passing_grade)
 
 
 class TestStaticFeedbackOld(TestCase, TestHelper):

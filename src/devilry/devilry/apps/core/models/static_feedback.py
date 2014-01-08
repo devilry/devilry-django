@@ -113,6 +113,47 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         """
         return Q(delivery__deadline__assignment_group__examiners__user=user_obj)
 
+    @classmethod
+    def from_points(cls, assignment, points, **kwargs):
+        """
+        Shortcut method to initialize the StaticFeedback object
+        from points. We take the assignment as argument instead
+        of looking it up via ``self.delivery.deadline.assignment_group``
+        because we want to to be efficient when creating feedback in bulk.
+
+        Initializes a StaticFeedback with the given points, with grade
+        and is_passing_grade inferred from the points with the help
+        of :meth:`devilry.apps.core.models.Assignment.points_to_grade`
+        and :meth:`devilry.apps.core.models.Assignment.points_is_passing_grade`.
+
+
+        Example::
+
+            feedback = StaticFeedback.from_points(
+                assignment=myassignment,
+                points=10,
+                delivery=mydelivery,
+                saved_by=someuser)
+            assert(feedback.id == None)
+            assert(feedback.grade != None)
+
+        :param assignment:
+            An Assignment object. Should be the assignment where delivery
+            this feedback is for belongs, but that is not checked.
+        :param points:
+            The number of points for the feedback.
+        :param kwargs:
+            Extra kwargs for the StaticFeedback constructor.
+        :return: An (unsaved) StaticFeedback.
+        """
+        is_passing_grade = assignment.points_is_passing_grade(points)
+        grade = assignment.points_to_grade(points)
+        return cls(
+            points=points,
+            is_passing_grade=is_passing_grade,
+            grade=grade
+        )
+
     def _publish_if_allowed(self):
         assignment = self.delivery.deadline.assignment_group.parentnode
         if assignment.examiners_publish_feedbacks_directly:
