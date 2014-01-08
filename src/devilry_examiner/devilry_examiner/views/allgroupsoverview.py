@@ -60,3 +60,37 @@ class WaitingForFeedbackOverview(AllGroupsOverview):
         context['groups'] = get_paginated_page(paginator, page)
 
         return context
+
+
+class WaitingForDeliveriesOverview(AllGroupsOverview):
+    template_name = "devilry_examiner/waiting-for-deliveries-overview.django.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(WaitingForDeliveriesOverview, self).get_context_data(**kwargs)
+
+        groups = context['allgroups']
+        groups = groups.filter_by_status('waiting-for-something')
+        paginator = Paginator(groups, 2, orphans=2)
+
+        page = self.request.GET.get('page')
+
+        context['groups'] = get_paginated_page(paginator, page)
+
+        return context
+
+
+class CorrectedOverview(AllGroupsOverview):
+    template_name = "devilry_examiner/corrected-overview.django.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(CorrectedOverview, self).get_context_data(**kwargs)
+
+        groups = context['allgroups']
+        groups = groups.filter_by_status('corrected')
+        paginator = Paginator(groups, 2, orphans=2)
+
+        page = self.request.GET.get('page')
+
+        context['groups'] = get_paginated_page(paginator, page)
+
+        return context
