@@ -28,6 +28,27 @@ class TestPointRangeToGradeManager(TestCase):
         self.assertTrue(PointRangeToGrade.objects.filter_overlapping_ranges(8, 22).exists())
         self.assertFalse(PointRangeToGrade.objects.filter_overlapping_ranges(21, 22).exists())
 
+    def test_filter_grades_matching_points(self):
+        pointrange_to_grade = self.point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=9,
+            grade='F'
+        )
+        pointrange_to_grade = self.point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=10,
+            maximum_points=20,
+            grade='E'
+        )
+        pointrange_to_grade = self.point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=21,
+            maximum_points=30,
+            grade='D'
+        )
+        self.assertEquals(PointRangeToGrade.objects.filter_grades_matching_points(9).get().grade, 'F')
+        self.assertEquals(PointRangeToGrade.objects.filter_grades_matching_points(10).get().grade, 'E')
+        self.assertEquals(PointRangeToGrade.objects.filter_grades_matching_points(20).get().grade, 'E')
+        self.assertEquals(PointRangeToGrade.objects.filter_grades_matching_points(21).get().grade, 'D')
+
 
 
 class TestPointRangeToGrade(TestCase):
@@ -151,3 +172,29 @@ class TestPointRangeToGrade(TestCase):
             grade='D'
         )
         self.assertEquals(list(PointRangeToGrade.objects.all()), [f, e, d])
+
+
+
+class TestPointToGradeMap(TestCase):
+    def setUp(self):
+        self.periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
+        self.assignment = self.periodbuilder.add_assignment('assignment').assignment
+
+    def test_points_to_grade_matches(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        f = point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=20,
+            grade='F'
+        )
+        e = point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=21,
+            maximum_points=40,
+            grade='E'
+        )
+        self.assertEquals(point_to_grade_map.points_to_grade(0), f)
+        self.assertEquals(point_to_grade_map.points_to_grade(12), f)
+        self.assertEquals(point_to_grade_map.points_to_grade(20), f)
+        self.assertEquals(point_to_grade_map.points_to_grade(21), e)
+        with self.assertRaises(PointRangeToGrade.DoesNotExist):
+            point_to_grade_map.points_to_grade(41)

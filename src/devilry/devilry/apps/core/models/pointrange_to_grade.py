@@ -31,6 +31,15 @@ class PointToGradeMap(models.Model):
     #     """
     #     for minimum_points, 
 
+    def points_to_grade(self, points):
+        """
+        Convert the given ``points`` to a grade using this PointToGradeMap.
+
+        :raises PointRangeToGrade.DoesNotExist:
+            If no grade matching the given points exist.
+        """
+        return self.pointrangetograde_set.filter_grades_matching_points(points).get()
+
     def __unicode__(self):
         return u'Point to grade map for {}'.format(self.assignment.get_path())
 
@@ -43,6 +52,12 @@ class PointRangeToGradeMapQueryset(models.query.QuerySet):
             Q(minimum_points__lte=start, maximum_points__gte=start) |
             Q(minimum_points__lte=end, maximum_points__gte=end) |
             Q(minimum_points__gte=start, maximum_points__lte=end))
+
+    def filter_grades_matching_points(self, points):
+        return self.filter(
+            minimum_points__lte=points,
+            maximum_points__gte=points
+        )
 
 
 class PointRangeToGradeMapManager(models.Manager):
@@ -63,6 +78,13 @@ class PointRangeToGradeMapManager(models.Manager):
         (needs ``.filter(point_to_grade_map=assignment.pointtogrademap)`` in addition to this filter).
         """
         return self.get_queryset().filter_overlapping_ranges(start, end)
+
+    def filter_grades_matching_points(self, points):
+        """
+        Filter all PointRangeToGrade objects where ``points`` is between
+        ``minimum_points`` and ``maximum_points`` including both ends.
+        """
+        return self.get_queryset().filter_grades_matching_points(points)
 
 
 
