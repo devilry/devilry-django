@@ -120,36 +120,44 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             deadline.feedbacks_published = True
             deadline.save()
 
-    def _set_as_active_feedback_on_group(self):
-        group = self.delivery.deadline.assignment_group
-        group.feedback = self
-        group.save()
-
-    def _set_as_last_feedback_on_delivery(self):
-        self.delivery.last_feedback = self
-        self.delivery.save(
-            autoset_time_of_delivery=False,
-            autoset_number=False)
-
     def _close_group(self):
         self.delivery.deadline.assignment_group.is_open = False
         self.delivery.deadline.assignment_group.save()
 
+
     def save(self, *args, **kwargs):
-        autoclose_group = kwargs.pop('autoclose_group', True)
-        autoset_as_active_feedback_on_group = kwargs.pop('autoset_as_active_feedback_on_group', True)
-        autoset_as_last_feedback_on_delivery = kwargs.pop('autoset_as_last_feedback_on_delivery', True)
+        """
+        :param autoset_timestamp_to_now:
+            Automatically set the ``timestamp``-attribute of this model
+            to *now*? Defaults to ``True``.
+        :param autoupdate_related_models:
+            Automatically update related models:
+
+            - Sets the ``last_feedback``-attribute of ``self.delivery`` and saved the delivery.
+            - Sets the ``feedback`` and ``is_open`` attributes of
+              ``self.delivery.deadline.assignment_group`` to this feedback, and ``False``.
+              Saves the AssignmentGroup.
+
+            Defaults to ``True``.
+        """
+        autoupdate_related_models = kwargs.pop('autoupdate_related_models', True)
         autoset_timestamp_to_now = kwargs.pop('autoset_timestamp_to_now', True)
         if autoset_timestamp_to_now:
             self.save_timestamp = datetime.now()
         super(StaticFeedback, self).save(*args, **kwargs)
-        if autoclose_group:
-            self._close_group()
-        if autoset_as_active_feedback_on_group:
-            self._set_as_active_feedback_on_group()
-        if autoset_as_last_feedback_on_delivery:
-            self._set_as_last_feedback_on_delivery()
-        self._publish_if_allowed()
+        if autoupdate_related_models:
+            delivery = self.delivery
+            self.delivery.last_feedback = self
+            self.delivery.save(
+                autoset_time_of_delivery=False,
+                autoset_number=False)
+
+            group = delivery.deadline.assignment_group
+            group.feedback = self
+            group.is_open = False
+            group.save()
+            self._publish_if_allowed()
+
 
     def __unicode__(self):
         return "StaticFeedback on %s" % self.delivery
@@ -174,8 +182,6 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
                                       save_timestamp=self.save_timestamp,
                                       saved_by=self.saved_by)
         feedbackcopy.full_clean()
-        feedbackcopy.save(autoclose_group=False,
-                          autoset_as_active_feedback_on_group=False,
-                          autoset_as_last_feedback_on_delivery=False,
+        feedbackcopy.save(autoupdate_related_models=False,
                           autoset_timestamp_to_now=False)
         return feedbackcopy

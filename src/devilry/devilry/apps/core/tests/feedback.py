@@ -53,7 +53,7 @@ class TestStaticFeedback(TestCase, TestHelper):
 
         # Test
         self.assertTrue(groupbuilder.group.is_open)
-        feedback.save(autoclose_group=False)
+        feedback.save(autoupdate_related_models=False)
         groupbuilder.reload_from_db()
         self.assertTrue(groupbuilder.group.is_open)
 
@@ -94,7 +94,7 @@ class TestStaticFeedback(TestCase, TestHelper):
 
         # Test
         self.assertIsNone(groupbuilder.group.feedback)
-        feedback.save(autoset_as_active_feedback_on_group=False)
+        feedback.save(autoupdate_related_models=False)
         groupbuilder.reload_from_db()
         self.assertIsNone(groupbuilder.group.feedback)
 
@@ -133,7 +133,7 @@ class TestStaticFeedback(TestCase, TestHelper):
 
         # Test
         self.assertIsNone(deliverybuilder.delivery.last_feedback)
-        feedback.save(autoset_as_last_feedback_on_delivery=False)
+        feedback.save(autoupdate_related_models=False)
         deliverybuilder.reload_from_db()
         self.assertIsNone(deliverybuilder.delivery.last_feedback)
 
