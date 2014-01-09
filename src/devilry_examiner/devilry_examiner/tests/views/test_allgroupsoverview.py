@@ -50,6 +50,15 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
         response = self._getas('examiner2', assignment.id)
         self.assertEquals(response.status_code, 200)
 
+    def test_no_deadlines(self):
+        self.week1builder.add_group(students=[self.student1],
+                                    examiners=[self.examiner2])
+        assignment = self.week1builder.assignment
+        response = self._getas('examiner2', assignment.id)
+        html = response.content
+        deliverystatus = cssGet(html, 
+                                '.infolistingtable .group .groupinfo .deliverystatus').text.strip()
+        self.assertEquals(deliverystatus, 'No deadlines')
 
 class TestWaitingForFeedbackOverview(TestCase, HeaderTest):
     def setUp(self):
