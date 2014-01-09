@@ -15,6 +15,12 @@ class GradingSystemPluginInterface(object):
     #: This attribute MUST be overidden by each plugin.
     id = None
 
+    #: The title of the plugin. Should be a short title, and it should be translated.
+    title = None
+
+    #: The description of the plugin. Should be translated. Shown with css ``white-space:pre-wrap``.
+    description = None
+
     #: ``True`` if the plugin require configuration before it can be used.
     #: If a plugin sets this to ``True``, :meth:`is_configured_correctly`
     #: and :meth:`.get_configuration_url` must be overridden.
