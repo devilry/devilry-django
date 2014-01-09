@@ -9,7 +9,22 @@ from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import cssExists
 
 
-class TestAllGroupsOverview(TestCase):
+class HeaderTest(object):
+    def test_header(self):
+        groupbuilder = self.week1builder.add_group(
+            students=[self.student1],
+            examiners=[self.examiner1])
+        assignment = self.week1builder.assignment
+        response = self._getas('examiner1', assignment.id)
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
+                          'Week 1')
+        self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(),
+                          'duck1010 &mdash; active')
+
+
+class TestAllGroupsOverview(TestCase, HeaderTest):
     def setUp(self):
         self.examiner1 = UserBuilder('examiner1').user
         self.examiner2 = UserBuilder('examiner2').user
@@ -36,7 +51,7 @@ class TestAllGroupsOverview(TestCase):
         self.assertEquals(response.status_code, 200)
 
 
-class TestWaitingForFeedbackOverview(TestCase):
+class TestWaitingForFeedbackOverview(TestCase, HeaderTest):
     def setUp(self):
         self.examiner1 = UserBuilder('examiner1').user
         self.examiner2 = UserBuilder('examiner2').user
@@ -63,7 +78,7 @@ class TestWaitingForFeedbackOverview(TestCase):
         self.assertEquals(response.status_code, 200)
 
 
-class TestWaitingForDeliveriesOverview(TestCase):
+class TestWaitingForDeliveriesOverview(TestCase, HeaderTest):
     def setUp(self):
         self.examiner1 = UserBuilder('examiner1').user
         self.examiner2 = UserBuilder('examiner2').user
@@ -90,7 +105,7 @@ class TestWaitingForDeliveriesOverview(TestCase):
         self.assertEquals(response.status_code, 200)
 
 
-class TestCorrectedOverview(TestCase):
+class TestCorrectedOverview(TestCase, HeaderTest):
     def setUp(self):
         self.examiner1 = UserBuilder('examiner1').user
         self.examiner2 = UserBuilder('examiner2').user
