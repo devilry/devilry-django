@@ -1,12 +1,14 @@
-from devilry.apps.core.models import Delivery
-
-
 # from django.core.urlresolvers import reverse
 # from django.views.generic import FormView
 from django.views.generic.detail import SingleObjectMixin
 # from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django import forms
+from django.views.generic import FormView
+
+from devilry.apps.core.models import Delivery
+from devilry_gradingsystem.models import FeedbackDraft
 
 
 
@@ -59,7 +61,8 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
     # TODO: Redirect on GET when not configured correctly!
 
     def set_delivery_and_last_draft(self):
-        self.delivery = self.get_object()
+        self.object = self.get_object()
+        self.delivery = self.object
         self.last_draft = None
         if self.delivery.devilry_gradingsystem_feedbackdraft_set.count() > 0:
             self.last_draft = self.delivery.devilry_gradingsystem_feedbackdraft_set.all()[0]
@@ -67,3 +70,33 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
     def get_success_url(self):
         return reverse('devilry_examiner_singledeliveryview',
             kwargs={'deliveryid': self.delivery.id})
+
+
+
+class FeedbackEditorFormBase(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.last_draft = kwargs.pop('last_draft')
+        super(FeedbackEditorFormBase, self).__init__(*args, **kwargs)
+        self._add_feedbacktext_field()
+
+    def _add_feedbacktext_field(self):
+        if self.last_draft:
+            feedbacktext_editor = self.last_draft.feedbacktext_editor
+        else:
+            feedbacktext_editor = FeedbackDraft.DEFAULT_FEEDBACKTEXT_EDITOR
+        self.fields['feedbacktext'] = forms.CharField(widget=forms.Textarea)
+
+
+class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
+    def get_form_kwargs(self):
+        kwargs = super(FeedbackEditorFormView, self).get_form_kwargs()
+        kwargs['last_draft'] = self.last_draft
+        return kwargs
+
+    def get(self, *args, **kwargs):
+        self.set_delivery_and_last_draft()
+        return super(FeedbackEditorFormView, self).get(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        self.set_delivery_and_last_draft()
+        return super(FeedbackEditorFormView, self).get(*args, **kwargs)
