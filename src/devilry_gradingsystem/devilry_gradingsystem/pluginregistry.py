@@ -35,7 +35,7 @@ class GradingSystemPluginInterface(object):
 
         MUST be implemented when :obj:`.sets_passing_grade_min_points_automatically` is ``True``.
         """
-         raise NotImplementedError("get_passing_grade_min_points() MUST be implemented when sets_passing_grade_min_points_automatically is True")
+        raise NotImplementedError("get_passing_grade_min_points() MUST be implemented when sets_passing_grade_min_points_automatically is True")
 
     def is_configured(self):
         """
@@ -105,4 +105,6 @@ class GradingSystemPluginRegistry(object):
             raise GradingSystemPluginNotInRegistryError('Grading system plugin with ID={} is not in the registry.'.format(id))
 
 
+#: The grading system plugin registry. An instance of :class:`GradingSystemPluginRegistry`.
+#: Plugins register themselves through this instance.
 gradingsystempluginregistry = GradingSystemPluginRegistry()

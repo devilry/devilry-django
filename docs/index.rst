@@ -47,7 +47,7 @@ Extending Devilry
 ----------------------------------------------------------------------
 
 * :doc:`extend_devilry`
-* **Plugins:** :ref:`plugins`, :ref:`Overview <apps.gradeeditors>`,
+* **Plugins:** :ref:`plugins`, :doc:`Grading system plugins <devilry_gradingsystem>`,
   :doc:`Qualifies for exam <devilry_qualifiesforexam>`.
 * **Apps**: Read the `Django docs <https://www.djangoproject.com/>`_.
 
