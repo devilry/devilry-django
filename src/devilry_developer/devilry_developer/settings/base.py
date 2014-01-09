@@ -38,6 +38,7 @@ INSTALLED_APPS += [
     'devilry_examiner',
     'devilry_feedbackeditor_simple',
     'devilry_gradingsystem',
+    'devilry_gradingsystemplugin_points',
     'devilry_rest',
     'simple_rest',
 
