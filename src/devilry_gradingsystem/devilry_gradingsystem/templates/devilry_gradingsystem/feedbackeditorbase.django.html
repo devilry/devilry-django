@@ -1,0 +1,12 @@
+{% extends "devilry_examiner/singledelivery_base.django.html" %}
+{% load i18n %}
+
+{% block title %}
+{% trans "Edit" %} {{ block.super }}
+{% endblock %}
+
+{% block pagecontent %}
+    {# <div class="container read-feedback-box"> #}
+        {# {% include "devilry_examiner/readonly-feedback-with-editbutton.django.html" with feedback=delivery.last_feedback only %} #}
+    {# </div> #}
+{% endblock pagecontent %}
