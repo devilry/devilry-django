@@ -1,4 +1,21 @@
 {% extends "devilry_examiner/base.django.html" %}
+
+{% comment %}
+This is the base template for the singledelivery view in devilry_examiner,
+and the base template for ANY grading system plugin.
+
+Child templates should override the ``pagecontent`` block. The base template
+for grading plugins should override ``title`` and add a prefix/suffix to
+distinguish editing from viewing.
+
+Expected template variables
+===========================
+
+delivery
+    A devilry.apps.core.models.Delivery object.
+{% endcomment %}
+
+
 {% load url from future %}
 {% load i18n %}
 {% load static %}
