@@ -29,6 +29,7 @@ class SingleDeliveryView(DetailView):
             edit_feedback = True
         elif delivery.last_feedback and self.request.GET.get('edit_feedback', False) == 'true':
             edit_feedback = True
-        context['edit_feedback'] = edit_feedback
-
+        if edit_feedback:
+            # TODO: Redirect to edit feedback view of the current grading system
+            pass
         return context
