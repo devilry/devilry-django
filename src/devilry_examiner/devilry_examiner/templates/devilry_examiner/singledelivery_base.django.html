@@ -13,6 +13,8 @@ Expected template variables
 
 delivery
     A devilry.apps.core.models.Delivery object.
+valid_grading_system_setup
+    Is the grading system configured in a way that makes giving feedback possible?
 {% endcomment %}
 
 
@@ -49,8 +51,14 @@ delivery
             <li class="active">#{{ delivery.number }}</li>
         </ol>
 
+        <div class="alert alert-danger">
+            <strong>{% trans "Error" %}:</strong>            
+            {% trans "You can not provide feedback for this assignment because the course admin(s) have not configured the grading system correctly. If a course admin visits this assignment using the course admin role, they will get a message with instructions for how to fix this." %}
+        </div>
+
+
         {% if delivery.after_deadline %}
-            <div class="alert alert-danger after_deadline_message">
+            <div class="alert alert-warning after_deadline_message">
                 <strong>{% trans "This delivery was added 1 hour after the deadline." %}</strong>
                 {% if delivery.deadline.successful_delivery_count > 1 %}
                     {% trans "The group has made at least one more delivery for this deadline." %}

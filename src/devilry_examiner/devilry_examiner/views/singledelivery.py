@@ -23,13 +23,13 @@ class SingleDeliveryView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(SingleDeliveryView, self).get_context_data(**kwargs)
         delivery = self.object
+        
+        assignment = delivery.deadline.assignment_group.assignment
+        context['valid_grading_system_setup'] = assignment.has_valid_grading_setup()
 
-        edit_feedback = False
-        if delivery.last_feedback is None:
-            edit_feedback = True
-        elif delivery.last_feedback and self.request.GET.get('edit_feedback', False) == 'true':
-            edit_feedback = True
+        edit_feedback = delivery.last_feedback and self.request.GET.get('edit_feedback', False) == 'true'
         if edit_feedback:
-            # TODO: Redirect to edit feedback view of the current grading system
-            pass
+            if assignment.has_valid_grading_setup():
+                # TODO: Redirect to edit feedback view of the current grading system
+                pass
         return context

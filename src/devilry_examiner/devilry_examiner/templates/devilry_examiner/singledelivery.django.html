@@ -2,7 +2,17 @@
 {% load i18n %}
 
 {% block pagecontent %}
-    <div class="container read-feedback-box">
-        {% include "devilry_examiner/readonly-feedback-with-editbutton.django.html" with feedback=delivery.last_feedback only %}
-    </div>
+    {% if delivery.last_feedback %}
+        <div class="container read-feedback-box">
+            {% include "devilry_examiner/readonly-feedback-with-editbutton.django.html" with feedback=delivery.last_feedback only %}
+        </div>
+    {% else %}
+        <div class="container no-feedback-box">
+            <a href="?edit_feedback=true" class="btn btn-default btn">
+                <i class="fa fa-edit"></i>
+                {% trans "Provide feedback" %}
+            </a>
+            {% trans "No feedback on this delivery." %}
+        </div>
+    {% endif %}
 {% endblock pagecontent %}
