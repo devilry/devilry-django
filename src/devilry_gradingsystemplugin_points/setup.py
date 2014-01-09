@@ -9,6 +9,7 @@ setup(name = 'devilry_gradingsystemplugin_points',
       packages=find_packages(exclude=['ez_setup']),
       install_requires = [
           'setuptools',
+          'django-crispy-forms',
       ],
       include_package_data=True,
       long_description = 'Grading system plugin.',
