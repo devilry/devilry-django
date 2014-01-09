@@ -4,6 +4,8 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django import forms
 from django.views.generic import FormView
+from django.shortcuts import redirect
+from django.http import HttpResponseBadRequest
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
@@ -29,6 +31,28 @@ class FeedbackEditorSingleDeliveryObjectMixin(SingleObjectMixin):
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return super(FeedbackEditorSingleDeliveryObjectMixin, self).dispatch(*args, **kwargs)
+
+    def _setup_common_data(self):
+        self.object = self.get_object()
+        self.delivery = self.object
+        self.last_draft = None
+        if self.delivery.devilry_gradingsystem_feedbackdraft_set.count() > 0:
+            self.last_draft = self.delivery.devilry_gradingsystem_feedbackdraft_set.all()[0]
+
+    def get(self, *args, **kwargs):
+        self._setup_common_data()
+        assignment = self.delivery.deadline.assignment_group.assignment
+        if not assignment.has_valid_grading_setup():
+            return redirect('devilry_examiner_singledeliveryview', deliveryid=self.delivery.id)
+        return super(FeedbackEditorSingleDeliveryObjectMixin, self).get(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        self._setup_common_data()
+        assignment = self.delivery.deadline.assignment_group.assignment
+        if not assignment.has_valid_grading_setup():
+            return HttpResponseBadRequest('Grading system is not set up correctly')
+        return super(FeedbackEditorSingleDeliveryObjectMixin, self).post(*args, **kwargs)
+
 
     def get_queryset(self):
         """
@@ -57,15 +81,6 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
     Base mixin class for all feedback editor views.
     """
 
-    # TODO: Redirect on GET when not configured correctly!
-
-    def set_delivery_and_last_draft(self):
-        self.object = self.get_object()
-        self.delivery = self.object
-        self.last_draft = None
-        if self.delivery.devilry_gradingsystem_feedbackdraft_set.count() > 0:
-            self.last_draft = self.delivery.devilry_gradingsystem_feedbackdraft_set.all()[0]
-
     def get_success_url(self):
         return reverse('devilry_examiner_singledeliveryview',
             kwargs={'deliveryid': self.delivery.id})
@@ -84,7 +99,6 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
             draft.staticfeedback = StaticFeedback.from_points(assignment, points)
             draft.staticfeedback.save()
         draft.save()
-
 
 
 
@@ -107,11 +121,3 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
         kwargs = super(FeedbackEditorFormView, self).get_form_kwargs()
         kwargs['last_draft'] = self.last_draft
         return kwargs
-
-    def get(self, *args, **kwargs):
-        self.set_delivery_and_last_draft()
-        return super(FeedbackEditorFormView, self).get(*args, **kwargs)
-
-    def post(self, *args, **kwargs):
-        self.set_delivery_and_last_draft()
-        return super(FeedbackEditorFormView, self).post(*args, **kwargs)
