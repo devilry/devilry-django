@@ -88,7 +88,7 @@ class GradingSystemPluginRegistry(object):
         self.items = {}
 
     def add(self, registryitemcls):
-        if not issubclass(registryitemcls):
+        if not issubclass(registryitemcls, GradingSystemPluginInterface):
             raise NotGradingSystemPluginError('Items added to GradingSystemPluginRegistry must be subclasses of GradingSystemPluginInterface.')
         self.items[registryitemcls.id] = registryitemcls
 
