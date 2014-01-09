@@ -51,10 +51,13 @@ valid_grading_system_setup
             <li class="active">#{{ delivery.number }}</li>
         </ol>
 
-        <div class="alert alert-danger">
-            <strong>{% trans "Error" %}:</strong>            
-            {% trans "You can not provide feedback for this assignment because the course admin(s) have not configured the grading system correctly. If a course admin visits this assignment using the course admin role, they will get a message with instructions for how to fix this." %}
-        </div>
+        {% if not valid_grading_system_setup %}            
+            <div class="alert alert-danger">
+                <strong>{% trans "Error" %}:</strong>            
+                {% trans "You can not provide feedback for this assignment because the course admin(s) have not configured the grading system correctly. If a course admin visits this assignment using the course admin role, they will get a message with instructions for how to fix this." %}
+            </div>
+        {% endif %}
+
 
 
         {% if delivery.after_deadline %}
