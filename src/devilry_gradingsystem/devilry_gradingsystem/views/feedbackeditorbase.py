@@ -58,6 +58,12 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
 
     # TODO: Redirect on GET when not configured correctly!
 
+    def set_delivery_and_last_draft(self):
+        self.delivery = self.get_object()
+        self.last_draft = None
+        if self.delivery.devilry_gradingsystem_feedbackdraft_set.count() > 0:
+            self.last_draft = self.delivery.devilry_gradingsystem_feedbackdraft_set.all()[0]
+
     def get_success_url(self):
         return reverse('devilry_examiner_singledeliveryview',
-            kwargs={'deliveryid': self.object.id})
+            kwargs={'deliveryid': self.delivery.id})

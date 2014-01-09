@@ -12,7 +12,16 @@ class FeedbackDraft(models.Model):
     Created by examiners when they provide feedback. A StaticFeedback is
     automatically created when a FeedbackDraft is published.
     """
+    DEFAULT_FEEDBACKTEXT_EDITOR = 'devilry-markdown'
+
     delivery = models.ForeignKey(Delivery, related_name='devilry_gradingsystem_feedbackdraft_set')
+    feedbacktext_editor = models.CharField(
+        default=DEFAULT_FEEDBACKTEXT_EDITOR,
+        max_length='20',
+        choices=(
+            ('devilry-markdown', 'Markdown editor'),
+            ('wysiwyg-html', 'WYSIWYG html')
+        ))
     feedbacktext_raw = models.TextField(
         blank=True, null=True)
     feedbacktext_html = models.TextField(
@@ -40,3 +49,7 @@ class FeedbackDraft(models.Model):
     def save(self, *args, **kwargs):
         self.save_timestamp = datetime.now()
         super(FeedbackDraft, self).save(*args, **kwargs)
+
+
+    class Meta:
+        ordering = ['-save_timestamp']
