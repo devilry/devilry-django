@@ -110,7 +110,7 @@ class TestSingleDeliveryView(TestCase):
             'This delivery is not the last delivery made by this group on this assignment.Browse other deliveries.')
 
 
-    def test_show_edit_feedback_when_no_feedback(self):
+    def test_show_render_no_feedback(self):
         delivery = self.week1builder\
             .add_group(examiners=[self.examiner1])\
             .add_deadline_x_weeks_ago(weeks=1)\
@@ -118,8 +118,10 @@ class TestSingleDeliveryView(TestCase):
         response = self._getas('examiner1', delivery.id)
         html = response.content
         self.assertIsNone(delivery.last_feedback)
-        self.assertTrue(cssExists(html, '.edit-feedback-box'))
         self.assertFalse(cssExists(html, '.read-feedback-box'))
+        self.assertTrue(cssExists(html, '.no-feedback-box'))
+        self.assertEquals(cssGet(html, '.no-feedback-box').text.strip(),
+            'Provide feedbackNo feedback on this delivery.')
 
     def test_readonly_feedback_render(self):
         feedback = self.week1builder\
@@ -135,7 +137,7 @@ class TestSingleDeliveryView(TestCase):
             ).feedback
         response = self._getas('examiner1', feedback.delivery.id)
         html = response.content
-        self.assertFalse(cssExists(html, '.edit-feedback-box'))
+        self.assertFalse(cssExists(html, '.no-feedback-box'))
         self.assertTrue(cssExists(html, '.read-feedback-box'))
         self.assertEquals(cssGet(html, '.read-feedback-box .feedback_gradebox .feedback_grade').text.strip(),
             '10/100')
