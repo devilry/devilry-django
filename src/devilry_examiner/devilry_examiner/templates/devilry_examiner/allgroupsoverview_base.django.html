@@ -36,18 +36,19 @@
 
 
 {% block content %}
-  <div class="container">
+  <div class="container grouplistingbox">
     <table class="table table-striped infolistingtable">
       {% for group in groups %}
       <tr class="group">
-        <td class="titled-cell">
+        <td class="titled-cell groupinfo">
           <h3>
             <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
               {{ group.long_displayname }}
             </a>
           </h3>
           
-          <p class="text-{{ group|group_delivery_status_to_bootstrapclass }}">{{ group.get_status|formatted_status }}</p>
+          <p class="text-{{
+          group|group_delivery_status_to_bootstrapclass }} deliverystatus">{{ group.get_status|formatted_status }}</p>
         </td>
 
         <td class="hidden-xs">
