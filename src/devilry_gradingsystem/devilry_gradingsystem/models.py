@@ -45,6 +45,8 @@ class FeedbackDraft(models.Model):
                 self.staticfeedback = None # We should NEVER set staticfeedback if published is not True
         else:
             raise ValidationError('FeedbackDraft is immutable (it can not be changed).')
+        if self.published and self.staticfeedack is None:
+            raise ValidationError('Published FeedbackDraft requires a StaticFeedback.')
 
     def save(self, *args, **kwargs):
         self.save_timestamp = datetime.now()

@@ -1,13 +1,12 @@
-# from django.core.urlresolvers import reverse
-# from django.views.generic import FormView
+from django.core.urlresolvers import reverse
 from django.views.generic.detail import SingleObjectMixin
-# from django.views.generic import TemplateView
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django import forms
 from django.views.generic import FormView
 
 from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import StaticFeedback
 from devilry_gradingsystem.models import FeedbackDraft
 
 
@@ -71,6 +70,22 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
         return reverse('devilry_examiner_singledeliveryview',
             kwargs={'deliveryid': self.delivery.id})
 
+    def create_feedbackdraft(self, points, feedbacktext_raw, feedbacktext_html, publish=False):
+        draft = FeedbackDraft.objects.create(
+            delivery=self.delivery,
+            points=points,
+            feedbacktext_raw=feedbacktext_raw,
+            feedbacktext_html=feedbacktext_html,
+            saved_by=self.request.user
+        )
+        if publish:
+            draft.published = True
+            assignment = self.delivery.deadline.assignment_group.assignment
+            draft.staticfeedback = StaticFeedback.from_points(assignment, points)
+            draft.staticfeedback.save()
+        draft.save()
+
+
 
 
 class FeedbackEditorFormBase(forms.Form):
@@ -99,4 +114,4 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
 
     def post(self, *args, **kwargs):
         self.set_delivery_and_last_draft()
-        return super(FeedbackEditorFormView, self).get(*args, **kwargs)
+        return super(FeedbackEditorFormView, self).post(*args, **kwargs)
