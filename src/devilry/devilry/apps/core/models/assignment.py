@@ -8,6 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.conf import settings
 
+from devilry_gradingsystem.pluginregistrt import gradingsystempluginregistry
 from basenode import BaseNode
 from node import Node
 from period import Period
@@ -247,11 +248,20 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             else:
                 return True
 
+    def get_gradingsystem_plugin_api(self):
+        """
+        Shortcut for ``devilry_gradingsystem.pluginregistrt.gradingsystempluginregistry.get(self.grading_system_plugin_id)``.
+        """
+        return gradingsystempluginregistry.get(self.grading_system_plugin_id)
+
     def setup_for_passed_failed_grading(self):
         """
         Setup for the *passed-failed* ``points_to_grade_mapper``.
         Sets :attr:`.max_points` to ``1`` and :attr:`.passing_grade_min_points` to ``1``,
         but does not save the Assignment.
+
+        NOTE: The defaults for :attr:`.max_points`, :attr:`.passing_grade_min_points` and
+        :attr:`.points_to_grade_mapper` matches the values set by this method.
         """
         self.points_to_grade_mapper = 'passed-failed'
         self.max_points = 1
