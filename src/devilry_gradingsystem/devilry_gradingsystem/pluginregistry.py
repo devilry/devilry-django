@@ -31,6 +31,11 @@ class GradingSystemPluginInterface(object):
     #: :meth:`.get_passing_grade_min_points`.
     sets_passing_grade_min_points_automatically = False
 
+    #: ``True`` if the plugin sets :attr:`devilry.apps.core.models.Assignment.max_points`
+    #: automatically. If this is ``True``, the plugin must implement
+    #: :meth:`.get_max_points`.
+    sets_max_points_automatically = False
+
     def __init__(self, assignment):
        self.assignment = assignment
 
@@ -42,6 +47,15 @@ class GradingSystemPluginInterface(object):
         MUST be implemented when :obj:`.sets_passing_grade_min_points_automatically` is ``True``.
         """
         raise NotImplementedError("get_passing_grade_min_points() MUST be implemented when sets_passing_grade_min_points_automatically is True")
+
+    def get_max_points(self):
+        """
+        Get the value for :attr:`devilry.apps.core.models.Assignment.max_points`
+        for this assignment.
+
+        MUST be implemented when :obj:`.sets_max_points_automatically` is ``True``.
+        """
+        raise NotImplementedError("get_max_points() MUST be implemented when sets_max_points_automatically is True")
 
     def is_configured(self):
         """
