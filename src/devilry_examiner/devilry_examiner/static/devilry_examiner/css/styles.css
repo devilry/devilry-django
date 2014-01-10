@@ -7431,21 +7431,19 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .delivery_files {
   margin-bottom: 20px;
 }
-.devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit {
+.devilry_gradingsystem_feedbackbuttonholder {
   box-sizing: border-box;
 }
-.devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button {
+.devilry_gradingsystem_feedbackbuttonholder button {
   display: block;
   width: 100%;
   margin-left: 0;
   margin-right: 0;
+  margin-bottom: 5px;
   box-sizing: border-box;
 }
-.devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button i {
+.devilry_gradingsystem_feedbackbuttonholder button i {
   display: none;
-}
-.devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=submit_preview] {
-  margin-bottom: 5px;
 }
 .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=submit_publish] {
   display: none;
@@ -7472,6 +7470,35 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   }
   .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=submit_save_draft],
   .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=submit_publish] {
+    margin-top: 4px;
+  }
+}
+.devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-preview {
+  margin-top: 20px;
+}
+@media (min-width: 600px) {
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-preview {
+    border-top: 1px solid #eeeeee;
+    padding-top: 10px;
+    position: relative;
+  }
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-preview button {
+    display: inline-block;
+    width: auto;
+  }
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-preview button i {
+    display: inline;
+  }
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-preview button[name=submit_publish] {
+    position: absolute;
+    right: 0;
+    top: 10px;
+  }
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-preview button[name=submit_publish] {
+    display: inline-block;
+    margin-left: 10px;
+  }
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-preview button[name=submit_edit_draft] {
     margin-top: 4px;
   }
 }

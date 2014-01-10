@@ -5,21 +5,19 @@
 
 
 .devilry_gradingsystem_feedbackbuttonholder {
-	&.devilry_gradingsystem_feedbackbuttonholder-edit {
+	box-sizing: border-box;
+	button {
+		display: block;
+		width: 100%;
+		margin-left: 0;
+		margin-right: 0;
+		margin-bottom: 5px;
 		box-sizing: border-box;
-		button {
-			display: block;
-			width: 100%;
-			margin-left: 0;
-			margin-right: 0;
-			box-sizing: border-box;
-			i {
-				display: none;
-			}
+		i {
+			display: none;
 		}
-		button[name=submit_preview] {
-			margin-bottom: 5px;
-		}
+	}
+	&.devilry_gradingsystem_feedbackbuttonholder-edit {
 		button[name=submit_publish] {
 			display: none;
 		}
@@ -39,14 +37,40 @@
 				right: 0;
 				top: 0;
 			}
-			button[name=submit_save_draft] {
-			}
 			button[name=submit_publish] {
 				display: inline-block;
 				margin-left: 10px;
 			}
 			button[name=submit_save_draft],
 			button[name=submit_publish] {
+				margin-top: 4px;
+			}
+		}
+	}
+
+	&.devilry_gradingsystem_feedbackbuttonholder-preview {
+		margin-top: 20px;
+		@media (min-width: 600px) {
+			border-top: 1px solid @gray-lighter;
+			padding-top: 10px;
+			position: relative;
+			button {
+				display: inline-block;
+				width: auto;
+				i {
+					display: inline;
+				}
+			}
+			button[name=submit_publish] {
+				position: absolute;
+				right: 0;
+				top: 10px;
+			}
+			button[name=submit_publish] {
+				display: inline-block;
+				margin-left: 10px;
+			}
+			button[name=submit_edit_draft] {
 				margin-top: 4px;
 			}
 		}

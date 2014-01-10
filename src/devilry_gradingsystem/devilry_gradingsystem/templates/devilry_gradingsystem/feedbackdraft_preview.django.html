@@ -15,12 +15,12 @@
     {% include "devilry_examiner/readonly-feedback.django.html" with feedback=unsaved_staticfeedback only %}
     <form method='post'>
     <div class="devilry_gradingsystem_feedbackbuttonholder devilry_gradingsystem_feedbackbuttonholder-preview">
-        <button type="submit" class="btn btn-default" name="submit_edit_draft">
-            {% trans "Edit draft" %}
-        </button>
         <button type="submit" class="btn btn-success btn-lg" name="submit_publish">
-            <i class="fa fa-chevron-right"></i>
             {% trans "Publish" %}
+        </button>
+        <button type="submit" class="btn btn-default" name="submit_edit_draft">
+            <i class="fa fa-edit"></i>
+            {% trans "Edit draft" %}
         </button>
     </div>
     </form>
