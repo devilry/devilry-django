@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.conf import settings
 
-from devilry_gradingsystem.pluginregistrt import gradingsystempluginregistry
+from devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from basenode import BaseNode
 from node import Node
 from period import Period
