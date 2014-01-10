@@ -63,7 +63,7 @@ class TestFeedbackEditorView(TestCase):
         self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
         response = self._post_as(self.examiner1, {
             'points': '20',
-            'publish': 'publish'
+            'submit_publish': 'publish'
         })
         self.assertEquals(delivery.feedbacks.count(), 1)
         html = response.content

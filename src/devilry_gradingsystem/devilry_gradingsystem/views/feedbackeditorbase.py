@@ -156,7 +156,7 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
         pass
 
     def form_valid(self, form):
-        publish = 'publish' in self.request.POST
+        publish = 'submit_publish' in self.request.POST
         self.save_pluginspecific_state(form)
         self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
         return super(FeedbackEditorFormView, self).form_valid(form)
