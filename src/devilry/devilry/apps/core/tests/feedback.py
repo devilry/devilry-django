@@ -9,7 +9,7 @@ from devilry_developer.testhelpers.corebuilder import DeliveryBuilder
 from devilry.apps.core.models import StaticFeedback
 from devilry.apps.core.testhelper import TestHelper
 
-class TestStaticFeedback(TestCase, TestHelper):
+class TestStaticFeedback(TestCase):
 
     def setUp(self):
         DeliveryBuilder.set_memory_deliverystore()
