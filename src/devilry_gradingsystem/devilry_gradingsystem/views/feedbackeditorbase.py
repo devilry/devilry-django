@@ -2,10 +2,13 @@ from django.core.urlresolvers import reverse
 from django.views.generic.detail import SingleObjectMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
+from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.views.generic import FormView
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
+from crispy_forms.layout import ButtonHolder
+from crispy_forms.layout import Submit
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
@@ -120,8 +123,65 @@ class FeedbackEditorFormBase(forms.Form):
             required=False)
 
 
+
+class DefaultSubmitButton(Submit):
+    field_classes = 'btn btn-default'
+
+
+class FeedbackEditorButtonHolder(ButtonHolder):
+    def __init__(self):
+        super(FeedbackEditorButtonHolder, self).__init__(
+            DefaultSubmitButton('save_draft', _('Save draft')),
+            Submit('publish', _('Publish'))
+        )
+
+
 class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
     def get_form_kwargs(self):
         kwargs = super(FeedbackEditorFormView, self).get_form_kwargs()
         kwargs['last_draft'] = self.last_draft
         return kwargs
+
+    def get_success_url(self):
+        publish = 'publish' in self.request.POST
+        if publish:
+            return super(FeedbackEditorFormView, self).get_success_url()
+        else:
+            return self.request.path
+
+    def get_points_from_form(self, form):
+        raise NotImplementedError()
+
+    def get_create_feedbackdraft_kwargs(self, form, publish):
+        return {
+           'feedbacktext_raw': form.cleaned_data['feedbacktext'],
+           'feedbacktext_html': form.cleaned_data['feedbacktext'],
+           'publish': publish,
+           'points': self.get_points_from_form(form)
+        }
+
+    def save_pluginspecific_state(self, form):
+        """
+        Save extra state that is specific to this plugin. I.E: Input from
+        users that has no corresponding field in FeedbackDraft, and has to be
+        stored in the data models for the plugin.
+        """
+        pass
+
+    def form_valid(self, form):
+        publish = 'publish' in self.request.POST
+        self.save_pluginspecific_state(form)
+        self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
+        return super(FeedbackEditorFormView, self).form_valid(form)
+
+
+    def get_initial_from_last_draft(self):
+        return {
+            'feedbacktext': self.last_draft.feedbacktext_raw
+        }
+
+    def get_initial(self):
+        initial = {}
+        if self.last_draft:
+            initial = self.get_initial_from_last_draft()
+        return initial

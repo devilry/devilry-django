@@ -5,9 +5,9 @@
 {% trans "Edit" %} {{ block.super }}
 {% endblock title %}
 
-{% block pagecontent %}
-    TODO
-    {# <div class="container read-feedback-box"> #}
-        {# {% include "devilry_examiner/readonly-feedback-with-editbutton.django.html" with feedback=delivery.last_feedback only %} #}
-    {# </div> #}
-{% endblock pagecontent %}
+{% block breadcrumbtail %}
+{{ block.super }}
+<li class="active">{% trans "Edit feedback" %}</li>
+{% endblock breadcrumbtail %}
+
+{% block pagecontent %}{% endblock pagecontent %}
