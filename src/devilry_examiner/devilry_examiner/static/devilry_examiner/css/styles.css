@@ -7502,3 +7502,42 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
     margin-top: 4px;
   }
 }
+.EditMarkdownWidget .btn-toolbar,
+.EditMarkdownWidget .AceEditor {
+  display: none;
+}
+.EditMarkdownWidget .AceEditor {
+  margin-top: 4px;
+  border: 1px solid #eeeeee;
+  height: 150px;
+}
+@media (min-height: 450px) {
+  .EditMarkdownWidget .AceEditor {
+    height: 250px;
+  }
+}
+@media (min-height: 550px) {
+  .EditMarkdownWidget .AceEditor {
+    height: 350px;
+  }
+}
+@media (min-height: 650px) {
+  .EditMarkdownWidget .AceEditor {
+    height: 450px;
+  }
+}
+@media (min-height: 750px) {
+  .EditMarkdownWidget .AceEditor {
+    height: 550px;
+  }
+}
+.EditMarkdownWidget textarea.AceEditorTargetTextarea {
+  color: #999999;
+  font-size: 12px;
+  overflow: hidden;
+}
+.EditMarkdownWidget textarea.AceEditorTargetTextarea:focus {
+  color: #222;
+  font-size: 14px;
+  overflow: auto;
+}

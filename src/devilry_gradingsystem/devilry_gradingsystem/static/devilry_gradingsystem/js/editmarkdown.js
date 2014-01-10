@@ -6,16 +6,24 @@
     function EditMarkdownWidget(options) {
       this._onInsertUrl = __bind(this._onInsertUrl, this);
       this._onChange = __bind(this._onChange, this);
+      this._onFocusTextArea = __bind(this._onFocusTextArea, this);
       var aceboxid;
       this.id = options.id, this.translations = options.translations;
       this.$wrapper = this.$textarea = $("#" + this.id + "_wrapper");
       this.$textarea = $("#" + this.id);
+      this.$toolbar = this.$wrapper.find('.btn-toolbar');
       aceboxid = "" + this.id + "_aceeditor";
+      this.$editordiv = $("#" + aceboxid);
       this.editor = ace.edit(aceboxid);
       this._configure();
       this._setupToolbar();
       this._setInitialValues();
       this.editor.on('change', this._onChange);
+      if (this.$textarea.val() === '') {
+        this.$textarea.on('focus', this._onFocusTextArea);
+      } else {
+        this._show();
+      }
     }
 
     EditMarkdownWidget.prototype._setInitialValues = function() {
@@ -36,45 +44,56 @@
       return session.setUseSoftTabs(true);
     };
 
+    EditMarkdownWidget.prototype._show = function() {
+      this.$textarea.hide();
+      this.$toolbar.show();
+      this.$editordiv.show();
+      return this.editor.focus();
+    };
+
+    EditMarkdownWidget.prototype._onFocusTextArea = function() {
+      return this._show();
+    };
+
     EditMarkdownWidget.prototype._onChange = function() {
       return this.$textarea.val(this.editor.getSession().getValue());
     };
 
     EditMarkdownWidget.prototype._setupToolbar = function() {
       var _this = this;
-      this.$wrapper.find('.btn-toolbar .markdownH1').on('click', function(e) {
+      this.$toolbar.find('.markdownH1').on('click', function(e) {
         e.preventDefault();
         return _this._surroundSelectionWith('\n\n# ', '\n', _this.translations.heading);
       });
-      this.$wrapper.find('.btn-toolbar .markdownH2').on('click', function(e) {
+      this.$toolbar.find('.markdownH2').on('click', function(e) {
         e.preventDefault();
         return _this._surroundSelectionWith('\n\n## ', '\n', _this.translations.heading);
       });
-      this.$wrapper.find('.btn-toolbar .markdownH3').on('click', function(e) {
+      this.$toolbar.find('.markdownH3').on('click', function(e) {
         e.preventDefault();
         return _this._surroundSelectionWith('\n\n### ', '\n', _this.translations.heading);
       });
-      this.$wrapper.find('.btn-toolbar .markdownBoldButton').on('click', function(e) {
+      this.$toolbar.find('.markdownBoldButton').on('click', function(e) {
         e.preventDefault();
         return _this._surroundSelectionWith('**', '**');
       });
-      this.$wrapper.find('.btn-toolbar .markdownItalicButton').on('click', function(e) {
+      this.$toolbar.find('.markdownItalicButton').on('click', function(e) {
         e.preventDefault();
         return _this._surroundSelectionWith('_', '_');
       });
-      this.$wrapper.find('.btn-toolbar .markdownBulletlistButton').on('click', function(e) {
+      this.$toolbar.find('.markdownBulletlistButton').on('click', function(e) {
         e.preventDefault();
         return _this._surroundSelectionWith('\n* ', '\n');
       });
-      this.$wrapper.find('.btn-toolbar .markdownNumberedlistButton').on('click', function(e) {
+      this.$toolbar.find('.markdownNumberedlistButton').on('click', function(e) {
         e.preventDefault();
         return _this._surroundSelectionWith('\n1. ', '\n');
       });
-      this.$wrapper.find('.btn-toolbar .markdownBlockquoteButton').on('click', function(e) {
+      this.$toolbar.find('.markdownBlockquoteButton').on('click', function(e) {
         e.preventDefault();
         return _this._surroundSelectionWith('\n> ', '\n');
       });
-      return this.$wrapper.find('.btn-toolbar .markdownUrlButton').on('click', this._onInsertUrl);
+      return this.$toolbar.find('.markdownUrlButton').on('click', this._onInsertUrl);
     };
 
     EditMarkdownWidget.prototype._surroundSelectionWith = function(before, after, emptyText) {

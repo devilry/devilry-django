@@ -1,3 +1,9 @@
+.MarkdownEditorSizeAdjust(@size) {
+    @media (min-height: @size) {
+        height: @size - 200px;
+    }
+}
+
 
 .delivery_files {
  	margin-bottom: @line-height-computed;
@@ -73,6 +79,36 @@
 			button[name=submit_edit_draft] {
 				margin-top: 4px;
 			}
+		}
+	}
+}
+
+
+
+.EditMarkdownWidget {
+	.btn-toolbar, .AceEditor {
+		display: none;		
+	}
+
+	.AceEditor {
+		margin-top: 4px;
+		border: 1px solid @gray-lighter;
+        height: 150px;
+        .MarkdownEditorSizeAdjust(450px);
+        .MarkdownEditorSizeAdjust(550px);
+        .MarkdownEditorSizeAdjust(650px);
+        .MarkdownEditorSizeAdjust(750px);
+        // .MarkdownEditorSizeAdjust(850px);
+	}
+
+	textarea.AceEditorTargetTextarea {
+		color: @gray-light;
+		font-size: @font-size-small;
+		overflow: hidden;
+		&:focus {
+			color: #222;
+			font-size: @font-size-base;
+			overflow: auto;
 		}
 	}
 }

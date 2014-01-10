@@ -20,9 +20,9 @@
             <a href="#" tabindex="-1" class="btn btn-default markdownBlockquoteButton"><i class="fa fa-quote-left"></i></a>
         </div>
     </div>
-    <div id="{{ field.auto_id }}_aceeditor" class="AceEditor" style="height: 300px;"></div>
-    <textarea id="{{ field.auto_id }}" name="{{ field.name }}" rows="10"
-        class="AceEditorTargetTextarea form-control sr-only">{{field.value}}</textarea>
+    <div id="{{ field.auto_id }}_aceeditor" class="AceEditor"></div>
+    <textarea id="{{ field.auto_id }}" name="{{ field.name }}" rows="3"
+        class="AceEditorTargetTextarea form-control">{{field.value}}</textarea>
 </div>
 
 <script src='{% static "devilry_gradingsystem/bower/components/ace-builds/src-min-noconflict/ace.js" %}'></script>
