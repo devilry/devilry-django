@@ -151,7 +151,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         return cls(
             points=points,
             is_passing_grade=is_passing_grade,
-            grade=grade
+            grade=grade, **kwargs
         )
 
     def _publish_if_allowed(self):
