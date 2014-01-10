@@ -12,7 +12,7 @@
 
 {% block pagecontent %}
 <div class="container read-feedback-box">
-    {% include "devilry_examiner/readonly-feedback.django.html" with feedback=unsaved_staticfeedback only %}
+    {% include "devilry_examiner/readonly-feedback.django.html" with feedback=unsaved_staticfeedback %}
     <form method='post'>
     <div class="devilry_gradingsystem_feedbackbuttonholder devilry_gradingsystem_feedbackbuttonholder-preview">
         <button type="submit" class="btn btn-success btn-lg" name="submit_publish">

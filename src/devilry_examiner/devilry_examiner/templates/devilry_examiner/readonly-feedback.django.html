@@ -8,10 +8,19 @@
 {% load i18n %}
 {% load devilry_examiner_tags %}
 
+{% include "markup/mathjaxheader.django.html" %}
+
 <div class="alert alert-{{ feedback|feedback_to_bootstrapclass }} feedback_gradebox">
     <strong>{% trans "Grade" %}:</strong> <span class="feedback_grade">{{ feedback.grade }}</span>
     (<span class="feedback_is_passing_grade">{{ feedback.is_passing_grade|format_is_passing_grade }}</span>)
     {% block alertboxbutton %}{% endblock alertboxbutton %}
 </div>
 
-<div class="feedback_rendered_view">{{ feedback.rendered_view|safe }}</div>
+<div class="feedback_rendered_view" id="feedback_rendered_view">{{ feedback.rendered_view|safe }}</div>
+
+
+{% if DEVILRY_ENABLE_MATHJAX %}
+<script>
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, 'feedback_rendered_view']);
+</script>
+{% endif %}
