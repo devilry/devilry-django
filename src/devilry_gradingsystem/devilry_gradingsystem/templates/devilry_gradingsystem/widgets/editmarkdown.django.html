@@ -5,19 +5,26 @@
     {{ field.label_tag }}
     <div class="btn-toolbar" role="toolbar">
         <div class="btn-group">
-            <a href="#" tabindex="-1" class="btn btn-default markdownH1">h1</a>
-            <a href="#" tabindex="-1" class="btn btn-default markdownH2">h2</a>
-            <a href="#" tabindex="-1" class="btn btn-default markdownH3">h3</a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownH1" title='{% trans "Heading 1" %}'>h1</a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownH2" title='{% trans "Heading 2" %}'>h2</a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownH3" title='{% trans "Heading 3" %}'>h3</a>
         </div>
         <div class="btn-group">
-            <a href="#" tabindex="-1" class="btn btn-default markdownBoldButton"><i class="fa fa-bold"></i></a>
-            <a href="#" tabindex="-1" class="btn btn-default markdownItalicButton"><i class="fa fa-italic"></i></a>
-            <a href="#" tabindex="-1" class="btn btn-default markdownUrlButton"><i class="fa fa-link"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownBoldButton" title='{% trans "Bold" %}'><i class="fa fa-bold"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownItalicButton" title='{% trans "Italic" %}'><i class="fa fa-italic"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownUrlButton" title='{% trans "Insert link" %}'><i class="fa fa-link"></i></a>
         </div>
         <div class="btn-group">
-            <a href="#" tabindex="-1" class="btn btn-default markdownBulletlistButton"><i class="fa fa-list-ul"></i></a>
-            <a href="#" tabindex="-1" class="btn btn-default markdownNumberedlistButton"><i class="fa fa-list-ol"></i></a>
-            <a href="#" tabindex="-1" class="btn btn-default markdownBlockquoteButton"><i class="fa fa-quote-left"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownBulletlistButton" title='{% trans "Unordered list" %}'><i class="fa fa-list-ul"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownNumberedlistButton" title='{% trans "Ordered list" %}'><i class="fa fa-list-ol"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownBlockquoteButton" title='{% trans "Blockquote" %}'><i class="fa fa-quote-left"></i></a>
+        </div>
+        <div class="btn-group">
+            <a href="#" tabindex="-1" class="btn btn-default markdownCodeButton" title='{% trans "Programming code" %}'><i class="fa fa-code"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownMathBlockButton" title='{% trans "LaTeX mathematics" %}'>f(a)</a>
+        </div>
+        <div class="btn-group">
+            <a href="#" tabindex="-1" class="btn btn-default markdownHelp" title='{% trans "Help" %}'><i class="fa fa-question"></i></a>
         </div>
     </div>
     <div id="{{ field.auto_id }}_aceeditor" class="AceEditor"></div>
@@ -31,7 +38,8 @@
     new window.devilry_gradingsystem.EditMarkdownWidget({
         id: "{{ field.auto_id }}",
         translations: {
-            "heading": '{% trans "Heading" %}'
+            "heading": '{% trans "Heading" %}',
+            "programminglanguage": '{% trans "Programming language" %}'
         }
     });
 </script>

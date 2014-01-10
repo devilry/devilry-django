@@ -93,11 +93,19 @@
         e.preventDefault();
         return _this._surroundSelectionWith('\n> ', '\n');
       });
+      this.$toolbar.find('.markdownCodeButton').on('click', function(e) {
+        e.preventDefault();
+        return _this._surroundSelectionWith('\n``` ', '\n\n```\n', _this.translations.programminglanguage);
+      });
+      this.$toolbar.find('.markdownMathBlockButton').on('click', function(e) {
+        e.preventDefault();
+        return _this._surroundSelectionWith('\n$mathblock$\n', '\n$/mathblock$\n', 'x + 2 = 4');
+      });
       return this.$toolbar.find('.markdownUrlButton').on('click', this._onInsertUrl);
     };
 
     EditMarkdownWidget.prototype._surroundSelectionWith = function(before, after, emptyText) {
-      var newlines, noSelection, selectedText, selectionRange;
+      var beforesplit, currentcolumn, currentrow, newlines_before, newlines_selectedText, newlines_total, newtext, noSelection, selectedText, selectionRange, startcolumn;
       if (emptyText == null) {
         emptyText = 'tekst';
       }
@@ -107,13 +115,25 @@
       if (noSelection) {
         selectedText = emptyText;
       }
-      this.editor.insert("" + before + selectedText + after);
+      currentrow = selectionRange.start.row;
+      currentcolumn = selectionRange.start.column;
+      newtext = "" + before + selectedText + after;
+      this.editor.insert(newtext);
       if (noSelection) {
-        newlines = before.split('\n').length - 1;
-        selectionRange.start.row += newlines;
-        selectionRange.end.row = selectionRange.start.row;
-        selectionRange.start.column += before.length - newlines;
-        selectionRange.end.column += selectionRange.start.column + emptyText.length;
+        newlines_total = newtext.split('\n').length - 1;
+        newlines_before = before.split('\n').length - 1;
+        newlines_selectedText = selectedText.split('\n').length - 1;
+        selectionRange.start.row = currentrow + newlines_before;
+        selectionRange.end.row = selectionRange.start.row + newlines_selectedText;
+        startcolumn = 0;
+        beforesplit = before.split('\n');
+        if (beforesplit.length === 1) {
+          startcolumn = currentcolumn + before.length;
+        } else {
+          startcolumn = beforesplit[beforesplit.length - 1].length;
+        }
+        selectionRange.start.column = startcolumn;
+        selectionRange.end.column = selectionRange.start.column + emptyText.length;
         this.editor.getSelection().setSelectionRange(selectionRange);
       }
       return this.editor.focus();

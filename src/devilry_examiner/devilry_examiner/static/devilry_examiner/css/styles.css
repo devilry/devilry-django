@@ -7825,6 +7825,10 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .EditMarkdownWidget .AceEditor {
   display: none;
 }
+.EditMarkdownWidget .btn-toolbar .markdownMathBlockButton {
+  font-style: italic;
+  font-family: Georgia, "Times New Roman", Times, serif;
+}
 .EditMarkdownWidget .AceEditor {
   margin-top: 4px;
   border: 1px solid #eeeeee;

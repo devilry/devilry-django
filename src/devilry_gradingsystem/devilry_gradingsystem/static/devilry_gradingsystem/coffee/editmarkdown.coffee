@@ -69,6 +69,12 @@ class EditMarkdownWidget
         @$toolbar.find('.markdownBlockquoteButton').on 'click', (e) =>
             e.preventDefault()
             @_surroundSelectionWith('\n> ', '\n')
+        @$toolbar.find('.markdownCodeButton').on 'click', (e) =>
+            e.preventDefault()
+            @_surroundSelectionWith('\n``` ', '\n\n```\n', @translations.programminglanguage)
+        @$toolbar.find('.markdownMathBlockButton').on 'click', (e) =>
+            e.preventDefault()
+            @_surroundSelectionWith('\n$mathblock$\n', '\n$/mathblock$\n', 'x + 2 = 4')
         @$toolbar.find('.markdownUrlButton').on('click', @_onInsertUrl)
 
     _surroundSelectionWith: (before, after, emptyText='tekst') ->
@@ -77,13 +83,24 @@ class EditMarkdownWidget
         noSelection = selectedText == ''
         if noSelection
             selectedText = emptyText
-        @editor.insert("#{before}#{selectedText}#{after}")
+        currentrow = selectionRange.start.row
+        currentcolumn = selectionRange.start.column
+        newtext = "#{before}#{selectedText}#{after}"
+        @editor.insert(newtext)
         if noSelection
-            newlines = before.split('\n').length - 1
-            selectionRange.start.row += newlines
-            selectionRange.end.row = selectionRange.start.row
-            selectionRange.start.column += before.length - newlines
-            selectionRange.end.column += selectionRange.start.column + emptyText.length
+            newlines_total = newtext.split('\n').length - 1
+            newlines_before = before.split('\n').length - 1
+            newlines_selectedText = selectedText.split('\n').length - 1
+            selectionRange.start.row = currentrow + newlines_before
+            selectionRange.end.row = selectionRange.start.row + newlines_selectedText
+            startcolumn = 0
+            beforesplit = before.split('\n')
+            if beforesplit.length == 1
+                startcolumn = currentcolumn + before.length
+            else
+                startcolumn = beforesplit[beforesplit.length-1].length
+            selectionRange.start.column = startcolumn
+            selectionRange.end.column = selectionRange.start.column + emptyText.length
             @editor.getSelection().setSelectionRange(selectionRange)
         @editor.focus()
 
