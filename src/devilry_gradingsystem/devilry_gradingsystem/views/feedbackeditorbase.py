@@ -8,6 +8,7 @@ from django.views.generic import FormView
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
 
+from devilry.apps.markup.parse_markdown import markdown_full
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
 from devilry_gradingsystem.models import FeedbackDraft
@@ -154,7 +155,7 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
     def get_create_feedbackdraft_kwargs(self, form, publish):
         return {
            'feedbacktext_raw': form.cleaned_data['feedbacktext'],
-           'feedbacktext_html': form.cleaned_data['feedbacktext'],
+           'feedbacktext_html': markdown_full(form.cleaned_data['feedbacktext']),
            'publish': publish,
            'points': self.get_points_from_form(form)
         }
