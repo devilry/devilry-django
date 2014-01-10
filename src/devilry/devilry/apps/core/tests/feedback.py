@@ -9,7 +9,7 @@ from devilry_developer.testhelpers.corebuilder import DeliveryBuilder
 from devilry.apps.core.models import StaticFeedback
 from devilry.apps.core.testhelper import TestHelper
 
-class TestStaticFeedback(TestCase, TestHelper):
+class TestStaticFeedback(TestCase):
 
     def setUp(self):
         DeliveryBuilder.set_memory_deliverystore()
@@ -138,11 +138,10 @@ class TestStaticFeedback(TestCase, TestHelper):
         self.assertIsNone(deliverybuilder.delivery.last_feedback)
 
     def test_from_points(self):
-        self.assignment1builder.assignment.setup_for_raw_points_grading(
+        self.assignment1builder.update(
+            points_to_grade_mapper='raw-points',
             passing_grade_min_points=4,
             max_points=10)
-        self.assignment1builder.assignment.save()
-        self.assignment1builder.reload_from_db()
         deliverybuilder = self.assignment1builder.add_group()\
             .add_deadline_in_x_weeks(weeks=1)\
             .add_delivery_x_hours_before_deadline(hours=1)

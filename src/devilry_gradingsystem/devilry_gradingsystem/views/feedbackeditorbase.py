@@ -86,7 +86,7 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
             kwargs={'deliveryid': self.delivery.id})
 
     def create_feedbackdraft(self, points, feedbacktext_raw, feedbacktext_html, publish=False):
-        draft = FeedbackDraft.objects.create(
+        draft = FeedbackDraft(
             delivery=self.delivery,
             points=points,
             feedbacktext_raw=feedbacktext_raw,
@@ -97,6 +97,8 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
             draft.published = True
             assignment = self.delivery.deadline.assignment_group.assignment
             draft.staticfeedback = StaticFeedback.from_points(assignment, points)
+            draft.staticfeedback.delivery = self.delivery
+            draft.staticfeedback.saved_by = self.request.user
             draft.staticfeedback.save()
         draft.save()
 
@@ -113,7 +115,9 @@ class FeedbackEditorFormBase(forms.Form):
             feedbacktext_editor = self.last_draft.feedbacktext_editor
         else:
             feedbacktext_editor = FeedbackDraft.DEFAULT_FEEDBACKTEXT_EDITOR
-        self.fields['feedbacktext'] = forms.CharField(widget=forms.Textarea)
+        self.fields['feedbacktext'] = forms.CharField(
+            widget=forms.Textarea,
+            required=False)
 
 
 class FeedbackEditorFormView(FeedbackEditorMixin, FormView):

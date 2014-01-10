@@ -65,26 +65,6 @@ class TestAssignment(TestCase):
             .add_assignment('assignment1').assignment
         self.assertTrue(assignment1.has_valid_grading_setup())
 
-    def test_has_valid_grading_setup_valid_raw_points(self):
-        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                passing_grade_min_points=0,
-                max_points=1,
-                points_to_grade_mapper='passed-failed').assignment
-        self.assertTrue(assignment1.has_valid_grading_setup())
-
-    def test_has_valid_grading_setup_valid_table(self):
-        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                passing_grade_min_points=0,
-                max_points=1,
-                points_to_grade_mapper='custom-table').assignment
-        self.assertFalse(assignment1.has_valid_grading_setup())
-        pointtogrademap = PointToGradeMap.objects.create(
-            assignment=assignment1)
-        pointtogrademap.invalid = False
-        pointtogrademap.save()
-        self.assertTrue(assignment1.has_valid_grading_setup())
 
 
 

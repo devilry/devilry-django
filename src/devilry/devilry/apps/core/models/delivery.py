@@ -206,7 +206,24 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     @property
     def is_last_delivery(self):
+        """
+        Returns ``True`` if this is the last delivery for this AssignmentGroup.
+        """
         return self.deadline.assignment_group.successful_delivery_count == self.number
+
+    @property
+    def assignment_group(self):
+        """
+        Shortcut for ``self.deadline.assignment_group.assignment``.
+        """
+        return self.deadline.assignment_group
+
+    @property
+    def assignment(self):
+        """
+        Shortcut for ``self.deadline.assignment_group.assignment``.
+        """
+        return self.assignment_group.assignment
 
     def add_file(self, filename, iterable_data):
         """ Add a file to the delivery.

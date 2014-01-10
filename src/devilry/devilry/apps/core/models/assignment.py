@@ -231,13 +231,28 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     grading_system_plugin_id = models.CharField(
         max_length=300, blank=True, null=True)
 
+
+    def get_gradingsystem_plugin_api(self):
+        """
+        Shortcut for ``devilry_gradingsystem.pluginregistrt.gradingsystempluginregistry.get(self.grading_system_plugin_id)(self)``.
+        """
+        ApiClass = gradingsystempluginregistry.get(self.grading_system_plugin_id)
+        return ApiClass(self)
+
     def has_valid_grading_setup(self):
         """
         Checks if this assignment is configured correctly for grading.
         """
-        if self.max_points is None or self.passing_grade_min_points is None or self.points_to_grade_mapper is None:
+        if self.max_points is None \
+                or self.passing_grade_min_points is None \
+                or self.points_to_grade_mapper is None \
+                or self.grading_system_plugin_id is None \
+                or not self.grading_system_plugin_id in gradingsystempluginregistry:
             return False
         else:
+            pluginapi = self.get_gradingsystem_plugin_api()
+            if pluginapi.requires_configuration and not pluginapi.is_configured():
+                return False
             if self.points_to_grade_mapper == 'custom-table':
                 try:
                     pointtogrademap = self.pointtogrademap
@@ -248,66 +263,44 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             else:
                 return True
 
-    def get_gradingsystem_plugin_api(self):
+    def setup_grading(self,
+            grading_system_plugin_id, points_to_grade_mapper,
+            passing_grade_min_points=None, max_points=None):
         """
-        Shortcut for ``devilry_gradingsystem.pluginregistrt.gradingsystempluginregistry.get(self.grading_system_plugin_id)``.
-        """
-        return gradingsystempluginregistry.get(self.grading_system_plugin_id)
+        Setup all of the simple parts of the grading system:
+        - :attr:`.grading_system_plugin_id`
+        - :attr:`.points_to_grade_mapper`
+        - :attr:`.passing_grade_min_points`
+        - :attr:`.max_points`
 
-    def setup_for_passed_failed_grading(self):
+        Does not setup:
+        - Grading system plugin specific configuration.
+        - A :class:`~devilry.apps.core.models.PointToGradeMap`.
         """
-        Setup for the *passed-failed* ``points_to_grade_mapper``.
-        Sets :attr:`.max_points` to ``1`` and :attr:`.passing_grade_min_points` to ``1``,
-        but does not save the Assignment.
-
-        NOTE: The defaults for :attr:`.max_points`, :attr:`.passing_grade_min_points` and
-        :attr:`.points_to_grade_mapper` matches the values set by this method.
-        """
-        self.points_to_grade_mapper = 'passed-failed'
-        self.max_points = 1
-        self.passing_grade_min_points = 1
-
-    def setup_for_raw_points_grading(self, max_points, passing_grade_min_points):
-        """
-        Setup for the *raw-points* ``points_to_grade_mapper``.
-        Sets :attr:`.max_points` and :attr:`.passing_grade_min_points` to
-        the given values, but does not save the Assignment.
-
-        :param max_points:
-            A value for :attr:`.max_points`.
-        :param passing_grade_min_points:
-            A value for :attr:`.passing_grade_min_points`.
-        """
-        self.points_to_grade_mapper = 'raw-points'
-        self.max_points = max_points
+        self.grading_system_plugin_id = grading_system_plugin_id
+        self.points_to_grade_mapper = points_to_grade_mapper
+        pluginapi = self.get_gradingsystem_plugin_api()
+        if pluginapi.sets_passing_grade_min_points_automatically:
+            passing_grade_min_points = pluginapi.get_passing_grade_min_points()
+        if pluginapi.sets_max_points_automatically:
+            max_points = pluginapi.get_max_points()
         self.passing_grade_min_points = passing_grade_min_points
-
-    def setup_for_custom_table_grading(self, max_points, passing_grade_min_points):
-        """
-        Setup for the *custom-table* ``points_to_grade_mapper``.
-
-        Sets :attr:`.max_points` and :attr:`.passing_grade_min_points` to
-        the given values, but does not save the Assignment. Creates a
-        :class:`~devilry.apps.core.models.PointToGradeMap` for the
-        assignment if one does not exist.
-
-        This means that a call to this function, followed by a save will
-        have the assignment ready to configure the PointToGradeMap.
-
-        :param max_points:
-            A value for :attr:`.max_points`.
-        :param passing_grade_min_points:
-            A value for :attr:`.passing_grade_min_points`.
-        """
-        self.points_to_grade_mapper = 'custom-table'
         self.max_points = max_points
-        self.passing_grade_min_points = passing_grade_min_points
+
+
+    def get_point_to_grade_map(self):
+        """
+        Get the :class:`~devilry.apps.core.models.PointToGradeMap` for this assinment,
+        creating if first if it does not exist.
+        """
         from .pointrange_to_grade import PointToGradeMap
         try:
             pointtogrademap = self.pointtogrademap
         except ObjectDoesNotExist:
-            PointToGradeMap.objects.create(
-                assignment=self)            
+            pointtogrademap = PointToGradeMap.objects.create(
+                assignment=self)
+        return self.pointtogrademap
+
 
 
     def points_is_passing_grade(self, points):

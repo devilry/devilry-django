@@ -316,6 +316,19 @@ class TestDelivery(TestCase, TestHelper):
         self.assertFalse(delivery1.is_last_delivery)
         self.assertFalse(delivery3.is_last_delivery)
 
+    def test_assignment_property(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')
+        delivery = assignmentbuilder.add_group()\
+            .add_deadline_in_x_weeks(weeks=1).add_delivery().delivery
+        self.assertEquals(delivery.assignment, assignmentbuilder.assignment)
+
+    def test_assignment_group_property(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1').add_group()
+        delivery = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1).add_delivery().delivery
+        self.assertEquals(delivery.assignment_group, groupbuilder.group)
 
 
 class TestDeliveryManager(TestCase):
