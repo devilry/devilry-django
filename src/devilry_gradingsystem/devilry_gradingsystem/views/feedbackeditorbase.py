@@ -7,8 +7,7 @@ from django import forms
 from django.views.generic import FormView
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
-from crispy_forms.layout import ButtonHolder
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Div
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
@@ -121,16 +120,23 @@ class FeedbackEditorFormBase(forms.Form):
 
 
 
-class DefaultSubmitButton(Submit):
-    field_classes = 'btn btn-default'
+# class DefaultSubmitButton(Submit):
+#     field_classes = 'btn btn-default btn-lg'
+
+# class MainSubmitButton(Submit):
+#     field_classes = 'btn btn-success btn-lg pull-right'
 
 
-class FeedbackEditorButtonHolder(ButtonHolder):
-    def __init__(self):
-        super(FeedbackEditorButtonHolder, self).__init__(
-            DefaultSubmitButton('save_draft', _('Save draft')),
-            Submit('publish', _('Publish'))
-        )
+# class FeedbackEditorButtonHolder(ButtonHolder):
+#     def __init__(self):
+#         super(FeedbackEditorButtonHolder, self).__init__(
+#             MainSubmitButton('preview', _('Preview')), # Must be first to ensure that hitting enter triggers this submit
+#             DefaultSubmitButton('save_draft', _('Save draft')),
+#             DefaultSubmitButton('publish', _('Publish <small>(without preview)</small>')),
+#         )
+
+class FeedbackEditorButtonHolder(Div):
+    template = "devilry_gradingsystem/feedbackbuttonholder.django.html"
 
 
 class FeedbackEditorFormView(FeedbackEditorMixin, FormView):

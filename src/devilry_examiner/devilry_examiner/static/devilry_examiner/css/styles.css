@@ -7431,3 +7431,47 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .delivery_files {
   margin-bottom: 20px;
 }
+.devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit {
+  box-sizing: border-box;
+}
+.devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button {
+  display: block;
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+  box-sizing: border-box;
+}
+.devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button i {
+  display: none;
+}
+.devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=preview] {
+  margin-bottom: 5px;
+}
+.devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=publish] {
+  display: none;
+}
+@media (min-width: 600px) {
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit {
+    position: relative;
+  }
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button {
+    display: inline-block;
+    width: auto;
+  }
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button i {
+    display: inline;
+  }
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=preview] {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=publish] {
+    display: inline-block;
+    margin-left: 10px;
+  }
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=save_draft],
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=publish] {
+    margin-top: 4px;
+  }
+}
