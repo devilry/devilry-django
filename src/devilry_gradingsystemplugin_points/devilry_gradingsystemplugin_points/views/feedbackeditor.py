@@ -38,6 +38,13 @@ class PointsFeedbackEditorView(FeedbackEditorFormView):
     template_name = 'devilry_gradingsystemplugin_points/feedbackeditor.django.html'
     form_class = PointsFeedbackEditorForm
 
+    def get_success_url(self):
+        publish = 'publish' in self.request.POST
+        if publish:
+            return super(PointsFeedbackEditorView, self).get_success_url()
+        else:
+            return self.request.path
+
     def form_valid(self, form):
         publish = 'publish' in self.request.POST
         #save_draft = 'save_draft' in self.request.POST
