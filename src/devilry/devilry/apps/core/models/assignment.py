@@ -276,20 +276,14 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Does not setup:
         - Grading system plugin specific configuration.
         - A :class:`~devilry.apps.core.models.PointToGradeMap`.
-
-        :raise ValueError: In the following cases:
-            - ``passing_grade_min_points`` is specified and the plugin is
-              configured to handle that, or the reverse case.
-            - ``max_points`` is specified and the plugin is configured
-              to handle that, or the reverse case.
         """
-        pluginapi = self.get_gradingsystem_plugin_api(grading_system_plugin_id)
+        self.grading_system_plugin_id = grading_system_plugin_id
+        self.points_to_grade_mapper = points_to_grade_mapper
+        pluginapi = self.get_gradingsystem_plugin_api()
         if pluginapi.sets_passing_grade_min_points_automatically:
             passing_grade_min_points = pluginapi.get_passing_grade_min_points()
         if pluginapi.sets_max_points_automatically:
             max_points = pluginapi.get_max_points()
-        self.points_to_grade_mapper = points_to_grade_mapper
-        self.grading_system_plugin_id = grading_system_plugin_id
         self.passing_grade_min_points = passing_grade_min_points
         self.max_points = max_points
 
