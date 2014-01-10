@@ -5,14 +5,12 @@
 {% block bodyid %}waiting-for-feedback-overview{% endblock %}
 
 {% block navbar %}
-<div class="container">
-  <p>
-  <a class="btn btn-default" href="#" role="button">Waiting for feedback</a>
-  <a class="btn btn-default active" href="#" role="button">Waiting for deliveries</a>
-  <a class="btn btn-default" href="#" role="button">Corrected</a>
-  <a class="btn btn-default" href="#" role="button">All</a>
-  </p>
-</div>
+  <a class="btn btn-default" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/waiting_for_feedback" role="button">Waiting for feedback</a>
+  <a class="btn btn-default active" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/waiting_for_deliveries" role="button">Waiting for deliveries</a>
+  <a class="btn btn-default" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/corrected" role="button">Corrected</a>
+  <a class="btn btn-default" href="{% url
+  'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id
+  }}" role="button">All</a>
 {% endblock navbar %}
 
 {% block content %}
