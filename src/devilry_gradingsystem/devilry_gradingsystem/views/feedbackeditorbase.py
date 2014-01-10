@@ -98,10 +98,7 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
         )
         if publish:
             draft.published = True
-            assignment = self.delivery.deadline.assignment_group.assignment
-            draft.staticfeedback = StaticFeedback.from_points(assignment, points)
-            draft.staticfeedback.delivery = self.delivery
-            draft.staticfeedback.saved_by = self.request.user
+            draft.staticfeedback = draft.to_staticfeedback()
             draft.staticfeedback.save()
         draft.save()
 
