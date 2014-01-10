@@ -19,21 +19,22 @@
   </ol>
 </div>
 
-{% block navbar %}
+
 <div class="container">
   <p>
-  <a class="btn btn-default" href="#" role="button">Waiting for feedback</a>
-  <a class="btn btn-default" href="#" role="button">Waiting for deliveries</a>
-  <a class="btn btn-default" href="#" role="button">Corrected</a>
-  <a class="btn btn-default active" href="#" role="button">All</a>
+{% block navbar %}
+  <a class="btn btn-default" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/waiting_for_feedback" role="button">Waiting for feedback</a>
+  <a class="btn btn-default" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/waiting_for_deliveries" role="button">Waiting for deliveries</a>
+  <a class="btn btn-default" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/corrected" role="button">Corrected</a>
+  <a class="btn btn-default active" href="{% url
+  'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id
+  }}" role="button">All</a>
+{% endblock navbar %}
   </p>
 </div>
-{% endblock navbar %}
+
 
 </div>
-
-
-
 
 {% block content %}
   <div class="container grouplistingbox">
@@ -66,21 +67,25 @@
       {% endfor%}
     </table><!-- row -->
 
-  <div class="pagination">
-    <span class="step-links">
+
+    <ul class="pager">
       {% if groups.has_previous %}
-      <a href="?page={{ groups.previous_page_number }}">previous</a>
+      <li><a href="?page={{ groups.previous_page_number }}">previous</a></li>
+      {% else %}
+      <li class="disabled"><a href="?page={{ groups.previous_page_number }}">previous</a></li>
       {% endif %}
 
-      <span class="current">
-        Page {{ groups.number }} of {{ groups.paginator.num_pages }}.
-      </span>
+      <!-- <span class="current"> -->
+      <!--   Page {{ groups.number }} of {{ groups.paginator.num_pages }}. -->
+      <!-- </span> -->
 
       {% if groups.has_next %}
-      <a href="?page={{ groups.next_page_number }}">next</a>
+      <li><a href="?page={{ groups.next_page_number }}">next</a></li>
+      {% else %}
+      <li class="disabled"><a href="?page={{ groups.next_page_number }}">next</a></li>
       {% endif %}
-    </span>
-  </div>
+    </ul>
+
 
   </div><!-- container -->
 
