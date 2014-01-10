@@ -48,7 +48,9 @@ valid_grading_system_setup
             <li><a href="{% url 'devilry_examiner_dashboard' %}">{% trans "Examiner" %}</a></li>
             <li><a href="{% url 'devilry_examiner_allgroupsoverview' delivery.deadline.assignment_group.assignment.id %}">{{ delivery.deadline.assignment_group.assignment.get_path }}</a></li>
             <li><a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">{{ delivery.deadline.assignment_group.short_displayname }}</a></li>
-            <li class="active">#{{ delivery.number }}</li>
+            {% block breadcrumbtail %}
+                <li><a href="{% url 'devilry_examiner_singledeliveryview' delivery.id %}">#{{ delivery.number }}</a></li>
+            {% endblock breadcrumbtail %}
         </ol>
 
         {% if not valid_grading_system_setup %}            
