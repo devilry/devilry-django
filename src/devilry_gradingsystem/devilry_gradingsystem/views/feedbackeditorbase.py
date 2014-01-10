@@ -174,8 +174,14 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
         self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
         return super(FeedbackEditorFormView, self).form_valid(form)
 
+
+    def get_initial_from_last_draft(self):
+        return {
+            'feedbacktext': self.last_draft.feedbacktext_raw
+        }
+
     def get_initial(self):
         initial = {}
         if self.last_draft:
-            initial['feedbacktext'] = self.last_draft.feedbacktext_raw
+            initial = self.get_initial_from_last_draft()
         return initial

@@ -4,7 +4,6 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.layout import Field
 
-from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorMixin
 from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormBase
 from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormView
 from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorButtonHolder
@@ -29,10 +28,9 @@ class PointsFeedbackEditorView(FeedbackEditorFormView):
     template_name = 'devilry_gradingsystemplugin_points/feedbackeditor.django.html'
     form_class = PointsFeedbackEditorForm
 
-    def get_initial(self):
-        initial = super(PointsFeedbackEditorView, self).get_initial()
-        if self.last_draft:
-            initial['points'] = self.last_draft.points
+    def get_initial_from_last_draft(self):
+        initial = super(PointsFeedbackEditorView, self).get_initial_from_last_draft()
+        initial['points'] = self.last_draft.points
         return initial
 
     def get_points_from_form(self, form):
