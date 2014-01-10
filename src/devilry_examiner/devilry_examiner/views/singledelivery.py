@@ -1,4 +1,5 @@
 from django.views.generic import DetailView
+from django.shortcuts import redirect
 #from django.http import Http404
 
 from devilry.apps.core.models import Delivery
@@ -20,16 +21,19 @@ class SingleDeliveryView(DetailView):
                 'deadline__assignment_group__parentnode__parentnode__parentnode', # Subject
                 )
 
+    def get(self, *args, **kwargs):
+        edit_feedback = self.request.GET.get('edit_feedback', False) == 'true'
+        if edit_feedback:
+            delivery = self.get_object()
+            assignment = delivery.assignment
+            if assignment.has_valid_grading_setup():
+                return redirect(assignment.get_gradingsystem_plugin_api().get_edit_feedback_url(delivery.id))
+        else:
+            return super(SingleDeliveryView, self).get(*args, **kwargs)
+
+
     def get_context_data(self, **kwargs):
         context = super(SingleDeliveryView, self).get_context_data(**kwargs)
         delivery = self.object
-        
-        assignment = delivery.deadline.assignment_group.assignment
-        context['valid_grading_system_setup'] = assignment.has_valid_grading_setup()
-
-        edit_feedback = delivery.last_feedback and self.request.GET.get('edit_feedback', False) == 'true'
-        if edit_feedback:
-            if assignment.has_valid_grading_setup():
-                # TODO: Redirect to edit feedback view of the current grading system
-                pass
+        context['valid_grading_system_setup'] = delivery.assignment.has_valid_grading_setup()
         return context
