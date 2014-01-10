@@ -119,22 +119,6 @@ class FeedbackEditorFormBase(forms.Form):
             required=False)
 
 
-
-# class DefaultSubmitButton(Submit):
-#     field_classes = 'btn btn-default btn-lg'
-
-# class MainSubmitButton(Submit):
-#     field_classes = 'btn btn-success btn-lg pull-right'
-
-
-# class FeedbackEditorButtonHolder(ButtonHolder):
-#     def __init__(self):
-#         super(FeedbackEditorButtonHolder, self).__init__(
-#             MainSubmitButton('preview', _('Preview')), # Must be first to ensure that hitting enter triggers this submit
-#             DefaultSubmitButton('save_draft', _('Save draft')),
-#             DefaultSubmitButton('publish', _('Publish <small>(without preview)</small>')),
-#         )
-
 class FeedbackEditorButtonHolder(Div):
     template = "devilry_gradingsystem/feedbackbuttonholder.django.html"
 
