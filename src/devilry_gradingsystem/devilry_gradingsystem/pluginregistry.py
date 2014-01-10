@@ -61,9 +61,11 @@ class GradingSystemPluginInterface(object):
         raise NotImplementedError('get_configuration_url() MUST be implemented when requires_configuration is True')
 
 
-    def get_edit_feedback_url(self):
+    def get_edit_feedback_url(self, deliveryid):
         """
-        Get the configuration URL for this plugin for this assignment.
+        Get the feedback editing URL for this plugin for the given ``deliveryid``.
+
+        :param deliveryid: The ID of the delivery to provide feedback for.
         """
         raise NotImplementedError("get_edit_feedback_url() MUST be implemented")
 
