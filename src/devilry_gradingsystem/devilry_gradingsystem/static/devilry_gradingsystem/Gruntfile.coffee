@@ -3,15 +3,15 @@ module.exports = (grunt) ->
         pkg: grunt.file.readJSON('package.json')
         watch:
             coffee_editor:
-                tasks: 'coffee:editor'
+                tasks: 'coffee:editmarkdown'
                 files: ['coffee/*.coffee']
         coffee:
-            editor:
+            editmarkdown:
                 files:
-                    'js/editor.js': 'coffee/editor.coffee'
+                    'js/editmarkdown.js': 'coffee/editmarkdown.coffee'
     })
     grunt.loadNpmTasks('grunt-contrib-watch')
     grunt.loadNpmTasks('grunt-contrib-coffee')
     grunt.registerTask('default', [
-        'coffee:editor'
+        'coffee:editmarkdown'
     ])

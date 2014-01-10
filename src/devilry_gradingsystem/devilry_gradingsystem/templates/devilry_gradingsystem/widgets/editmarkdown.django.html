@@ -1,25 +1,37 @@
 {% load i18n %}
+{% load static %}
 
 <div id="{{ field.auto_id }}_wrapper" class="EditMarkdownWidget form-group">
     {{ field.label_tag }}
     <div class="btn-toolbar" role="toolbar">
         <div class="btn-group">
-            <a href="#" class="btn btn-default markdownH1">h1</a>
-            <a href="#" class="btn btn-default markdownH2">h2</a>
-            <a href="#" class="btn btn-default markdownH3">h3</a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownH1">h1</a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownH2">h2</a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownH3">h3</a>
         </div>
         <div class="btn-group">
-            <a href="#" class="btn btn-default markdownBoldButton"><i class="fa fa-bold"></i></a>
-            <a href="#" class="btn btn-default markdownItalicButton"><i class="fa fa-italic"></i></a>
-            <a href="#" class="btn btn-default markdownUrlButton"><i class="fa fa-link"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownBoldButton"><i class="fa fa-bold"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownItalicButton"><i class="fa fa-italic"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownUrlButton"><i class="fa fa-link"></i></a>
         </div>
         <div class="btn-group">
-            <a href="#" class="btn btn-default markdownBulletlistButton"><i class="fa fa-list-ul"></i></a>
-            <a href="#" class="btn btn-default markdownNumberedlistButton"><i class="fa fa-list-ol"></i></a>
-            <a href="#" class="btn btn-default markdownBlockquoteButton"><i class="fa fa-quote-left"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownBulletlistButton"><i class="fa fa-list-ul"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownNumberedlistButton"><i class="fa fa-list-ol"></i></a>
+            <a href="#" tabindex="-1" class="btn btn-default markdownBlockquoteButton"><i class="fa fa-quote-left"></i></a>
         </div>
     </div>
-    <div id="{{ field.auto_id }}_aceeditor" class="AceEditor"></div>
+    <div id="{{ field.auto_id }}_aceeditor" class="AceEditor" style="height: 300px;"></div>
     <textarea id="{{ field.auto_id }}" name="{{ field.name }}" rows="10"
-        class="AceEditorTargetTextarea form-control">{{field.value}}</textarea>
+        class="AceEditorTargetTextarea form-control sr-only">{{field.value}}</textarea>
 </div>
+
+<script src='{% static "devilry_gradingsystem/bower/components/ace-builds/src-min-noconflict/ace.js" %}'></script>
+<script src='{% static "devilry_gradingsystem/js/editmarkdown.js" %}'></script>
+<script>
+    new window.devilry_gradingsystem.EditMarkdownWidget({
+        id: "{{ field.auto_id }}",
+        translations: {
+            "heading": '{% trans "Heading" %}'
+        }
+    });
+</script>
