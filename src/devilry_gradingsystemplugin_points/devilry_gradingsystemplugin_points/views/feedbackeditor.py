@@ -45,6 +45,12 @@ class PointsFeedbackEditorView(FeedbackEditorFormView):
         else:
             return self.request.path
 
+    def get_initial(self):
+        initial = super(PointsFeedbackEditorView, self).get_initial()
+        if self.last_draft:
+            initial['points'] = self.last_draft.points
+        return initial
+
     def form_valid(self, form):
         publish = 'publish' in self.request.POST
         #save_draft = 'save_draft' in self.request.POST

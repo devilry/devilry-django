@@ -125,3 +125,9 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
         kwargs = super(FeedbackEditorFormView, self).get_form_kwargs()
         kwargs['last_draft'] = self.last_draft
         return kwargs
+
+    def get_initial(self):
+        initial = {}
+        if self.last_draft:
+            initial['feedbacktext'] = self.last_draft.feedbacktext_raw
+        return initial
