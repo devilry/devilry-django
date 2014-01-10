@@ -6,7 +6,6 @@ from crispy_forms.layout import Field
 
 from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormBase
 from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormView
-from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorButtonHolder
 from devilry_gradingsystem.models import FeedbackDraft
 
 
@@ -18,10 +17,9 @@ class PointsFeedbackEditorForm(FeedbackEditorFormBase):
         super(PointsFeedbackEditorForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Field('points'),
-            'feedbacktext',
-            FeedbackEditorButtonHolder()
+            Field('points')
         )
+        self.add_common_layout_elements()
 
 
 class PointsFeedbackEditorView(FeedbackEditorFormView):

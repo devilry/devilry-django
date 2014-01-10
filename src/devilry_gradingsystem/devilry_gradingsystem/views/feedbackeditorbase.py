@@ -7,11 +7,12 @@ from django import forms
 from django.views.generic import FormView
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
-from crispy_forms.layout import Div
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
 from devilry_gradingsystem.models import FeedbackDraft
+from devilry_gradingsystem.widgets.editmarkdown import EditMarkdownLayoutObject
+from devilry_gradingsystem.widgets.editfeedbackbuttonbar import EditFeedbackButtonBar
 
 
 
@@ -117,12 +118,21 @@ class FeedbackEditorFormBase(forms.Form):
         else:
             feedbacktext_editor = FeedbackDraft.DEFAULT_FEEDBACKTEXT_EDITOR
         self.fields['feedbacktext'] = forms.CharField(
-            widget=forms.Textarea,
+            label=_('Feedback text'),
             required=False)
 
+    def get_feedbacktext_layout_elements(self):
+        return [EditMarkdownLayoutObject()]
 
-class FeedbackEditorButtonHolder(Div):
-    template = "devilry_gradingsystem/feedbackbuttonholder.django.html"
+    def get_submitbuttons_layout_elements(self):
+        return [EditFeedbackButtonBar()]
+
+    def add_common_layout_elements(self):
+        for element in self.get_feedbacktext_layout_elements():
+            self.helper.layout.append(element)
+        for element in self.get_submitbuttons_layout_elements():
+            self.helper.layout.append(element)
+
 
 
 class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
