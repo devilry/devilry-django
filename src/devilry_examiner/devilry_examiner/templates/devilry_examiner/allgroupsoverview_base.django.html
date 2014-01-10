@@ -55,10 +55,10 @@
         <td class="hidden-xs">
           {% if group.get_status == "waiting-for-deliveries" %}
           <button type="button" class="btn btn-default hidden
-                                       hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+                                       hidden-xs pull-right">{{ group.get_status|status_to_buttontext}}</button>
           {% else %}
           <button type="button" class="btn btn-default
-                                       hidden-xs">{{ group.get_status|status_to_buttontext}}</button>
+                                       hidden-xs pull-right">{{ group.get_status|status_to_buttontext}}</button>
           {% endif %}
 
         </td>
@@ -72,7 +72,7 @@
       {% if groups.has_previous %}
       <li><a href="?page={{ groups.previous_page_number }}">previous</a></li>
       {% else %}
-      <li class="disabled"><a href="?page={{ groups.previous_page_number }}">previous</a></li>
+      <li class="disabled"><a href="#">previous</a></li>
       {% endif %}
 
       <!-- <span class="current"> -->
@@ -82,7 +82,7 @@
       {% if groups.has_next %}
       <li><a href="?page={{ groups.next_page_number }}">next</a></li>
       {% else %}
-      <li class="disabled"><a href="?page={{ groups.next_page_number }}">next</a></li>
+      <li class="disabled"><a href="#">next</a></li>
       {% endif %}
     </ul>
 
