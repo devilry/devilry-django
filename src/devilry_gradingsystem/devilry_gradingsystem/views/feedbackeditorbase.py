@@ -98,8 +98,10 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
         if publish:
             draft.published = True
             draft.staticfeedback = draft.to_staticfeedback()
+            draft.staticfeedback.full_clean()
             draft.staticfeedback.save()
         draft.save()
+        return draft
 
 
 
@@ -130,7 +132,7 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
         return kwargs
 
     def get_success_url(self):
-        publish = 'publish' in self.request.POST
+        publish = 'submit_publish' in self.request.POST
         if publish:
             return super(FeedbackEditorFormView, self).get_success_url()
         else:
@@ -157,9 +159,15 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
 
     def form_valid(self, form):
         publish = 'submit_publish' in self.request.POST
+        preview = 'submit_preview' in self.request.POST
         self.save_pluginspecific_state(form)
-        self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
-        return super(FeedbackEditorFormView, self).form_valid(form)
+        draft = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
+        if preview:
+            return redirect('devilry_gradingsystem_feedbackdraft_preview',
+                deliveryid=self.delivery.id,
+                draftid=draft.id)
+        else:
+            return super(FeedbackEditorFormView, self).form_valid(form)
 
 
     def get_initial_from_last_draft(self):
