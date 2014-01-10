@@ -10,7 +10,7 @@ How we configure the grading system on an assignment
 #. Select a grading system plugin.
 #. Configure the grading system plugin (plugins can opt out of this step by
    setting :obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.requires_configuration`).
-# Configure the maximum number of points possible (plugins can opt out of this step by setting :obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.sets_max_points_automatically`).
+#. Configure the maximum number of points possible (plugins can opt out of this step by setting :obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.sets_max_points_automatically`).
 #. Choose how students are graded:
     - Passed failed
     - Raw points
@@ -23,8 +23,6 @@ How we configure the grading system on an assignment
 
 Creating a Plugin
 =================
-
-
 A grading system plugin must implement the
 :class:`devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface`, and
 it must register the implemented class with 
