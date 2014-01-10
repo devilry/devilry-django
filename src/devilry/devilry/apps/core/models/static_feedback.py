@@ -114,12 +114,10 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         return Q(delivery__deadline__assignment_group__examiners__user=user_obj)
 
     @classmethod
-    def from_points(cls, assignment, points, **kwargs):
+    def from_points(cls, points, assignment=None, **kwargs):
         """
         Shortcut method to initialize the StaticFeedback object
-        from points. We take the assignment as argument instead
-        of looking it up via ``self.delivery.deadline.assignment_group``
-        because we want to to be efficient when creating feedback in bulk.
+        from points.
 
         Initializes a StaticFeedback with the given points, with grade
         and is_passing_grade inferred from the points with the help
@@ -137,15 +135,24 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             assert(feedback.id == None)
             assert(feedback.grade != None)
 
+        :param points:
+            The number of points for the feedback.
         :param assignment:
             An Assignment object. Should be the assignment where delivery
             this feedback is for belongs, but that is not checked.
-        :param points:
-            The number of points for the feedback.
+
+            Defaults to ``self.delivery.deadline.assignment_group.assignment``.
+    
+            We provide the ability to take the assignment as argument instead
+            of looking it up via ``self.delivery.deadline.assignment_group``
+            because we want to to be efficient when creating feedback in bulk.
+
         :param kwargs:
             Extra kwargs for the StaticFeedback constructor.
         :return: An (unsaved) StaticFeedback.
         """
+        if not assignment:
+            assignment = kwargs['delivery'].assignment
         is_passing_grade = assignment.points_is_passing_grade(points)
         grade = assignment.points_to_grade(points)
         return cls(
