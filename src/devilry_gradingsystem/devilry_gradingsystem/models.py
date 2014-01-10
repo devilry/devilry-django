@@ -52,6 +52,12 @@ class FeedbackDraft(models.Model):
         self.save_timestamp = datetime.now()
         super(FeedbackDraft, self).save(*args, **kwargs)
 
+    def to_staticfeedback(self, assignment=None):
+        return StaticFeedback.from_points(self.points,
+            assignment=assignment,
+            delivery=self.delivery,
+            rendered_view=self.feedbacktext_html,
+            saved_by=self.saved_by)
 
     class Meta:
         ordering = ['-save_timestamp']
