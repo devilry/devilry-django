@@ -100,13 +100,79 @@ guide. All they need to do is to override the norwegian translation in their ``s
     from django_decoupled_docs.registry import decoupled_docs_registry
     from django_decoupled_docs.registry import DocProxy
 
-    decoupled_docs_registry.add('my-markdown-editor/tutorial', DocProxy(
+    decoupled_docs_registry.override('my-markdown-editor/tutorial', DocProxy(
         nb = 'http://intranet.example.com/superapp/markdown-editor-tutorial.html',
     ))
 
 This replaces the default Norwegian guide with the local guide. If they have
 any English speaking users, those users will still get the default English
 guide.
+
+
+Handling links to versioned documentation
+=========================================
+To provide links to versioned documentation, you just have to provide your own ``DocProxy`` subclass. Example::
+
+    from myapp import version
+
+    class VersionedDocProxy(DocProxy):
+        def parse_url(self, request, url):
+            return url.format(version=version)    
+
+
+And then you can use ``VersionedDocProxy`` as follows::
+
+    decoupled_docs_registry.add('my-markdown-editor/tutorial', DocProxy(
+        # The default english docs
+        default = 'http://read-the-docs.org/my-markdown-editor/en/{version}/tutorial.html',
+
+        # The Norwegian Bokmaal translation
+        nb = 'http://read-the-docs.org/my-markdown-editor/nb/{version}/tutorial.html',
+    ))
+
+
+Avoid having to register static URLs
+====================================
+You probably do not want to type something like::
+
+    http://read-the-docs.org/my-markdown-editor/<ACTUAL PATH TO ARTICLE>
+    
+for each help article. To avoid this, you should create ``DocProxy`` subclasses for each
+of your documentation sources. For a read-the-docs DocProxy, you could do something like this::
+
+    from django_decoupled_docs.registry import DocProxy
+
+    class ReadTheDocsDocProxy(DocProxy):
+        #: The name of the repo (the first path of the URL)
+        reponame = None
+    
+        def add_for_language(self, documentation_id, languagecode, path):
+            url = 'http://read-the-docs.org/{reponame}/{languagecode}/latest/{path}'.format(
+                reponame=self.reponame, languagecode=languagecode, path=path)
+            super(ReadTheDocsDocProxy, self).add_for_language(
+                documentation_id, languagecode, url)
+
+
+    class MyRepoReadTheDocsDocProxy(ReadTheDocsDocProxy):
+        reponame = 'my-repo'
+
+
+And then use ``MyRepoReadTheDocsDocProxy`` and other similar specialized
+``DocProxy``-implementations instead of ``DocProxy``::
+
+    from django_decoupled_docs.registry import decoupled_docs_registry
+    from django_decoupled_docs.registry import DocProxy
+
+    decoupled_docs_registry.add('my-markdown-editor/tutorial', MyRepoReadTheDocsDocProxy(
+        # The default english docs
+        default = 'tutorial.html',
+        nb = 'tutorial.html'
+    ))
+
+.. note::
+
+    This could, of course, be simplified further if we just override ``__init__``
+    to avoid having to re-type ``tutorial.html`` for each language.
 
 
 
