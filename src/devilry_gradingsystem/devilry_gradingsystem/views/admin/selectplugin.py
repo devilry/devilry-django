@@ -1,4 +1,6 @@
 from django.views.generic import DetailView
+from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
 
 from devilry.apps.core.models import Assignment
 from devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
@@ -15,6 +17,31 @@ class SelectPluginView(DetailView):
             .select_related(
                 'parentnode', # Period
                 'parentnode__parentnode') # Subject
+
+    def _get_next_page_url(self, selected_plugin_id):
+        assignment = self.get_object()
+        PluginApiClass = gradingsystempluginregistry.get(selected_plugin_id)
+        pluginapi = PluginApiClass(assignment)
+        if pluginapi.requires_configuration:
+            return pluginapi.get_configuration_url()
+        elif pluginapi.sets_max_points_automatically:
+            # TODO: Update to the specify points view
+            return reverse('devilry_gradingsystem_admin_selectplugin', kwargs={
+                'assignmentid': assignment.id,
+            })
+        else:
+            # TODO: Update to the "Choose how students are graded" view
+            return reverse('devilry_gradingsystem_admin_selectplugin', kwargs={
+                'assignmentid': assignment.id,
+            })
+
+
+    def get(self, *args, **kwargs):
+        selected_plugin_id = self.request.GET.get('selected_plugin_id')
+        if selected_plugin_id:
+            return redirect(self._get_next_page_url(selected_plugin_id))
+        else:
+            return super(SelectPluginView, self).get(*args, **kwargs)
 
 
     def get_context_data(self, **kwargs):
