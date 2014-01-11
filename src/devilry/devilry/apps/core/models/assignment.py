@@ -49,6 +49,12 @@ class AssignmentQuerySet(models.query.QuerySet):
         """
         return self.filter_is_active().filter_is_examiner(user)
 
+    def filter_admin_has_access(self, user):
+        if user.is_superuser:
+            return self.all()
+        else:
+            return self.filter(Assignment.q_is_admin(user)).distinct()
+
 
 class AssignmentManager(models.Manager):
     """
@@ -72,6 +78,18 @@ class AssignmentManager(models.Manager):
         NOTE: This returns all assignments that the given ``user`` has examiner-rights for.
         """
         return self.get_queryset().filter_examiner_has_access(user)
+
+    def filter_admin_has_access(self, user):
+        """
+        Returns a queryset with all active assignments where the given
+        ``user`` is admin, including assignment where the user is admin higher
+        up in the hierarchy.
+
+        NOTE: This returns all assignments that the given ``user`` has admin-rights for.
+        """
+        return self.get_queryset().filter_admin_has_access(user)
+
+
 
 
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):

@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q
 
 from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry_developer.testhelpers.corebuilder import NodeBuilder
 from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry.apps.core.models import Period
@@ -291,6 +292,47 @@ class TestAssignmentCanDelete(TestCase, TestHelper):
 
 
 class TestAssignmentManager(TestCase):
+
+    def test_filter_admin_has_access_directly_on_assignment(self):
+        admin1 = UserBuilder('admin1').user
+        periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
+        assignment1 = periodbuilder.add_assignment('assignment1').add_admins(admin1).assignment
+        periodbuilder.add_assignment('assignment2')
+        qry = Assignment.objects.filter_admin_has_access(admin1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], assignment1)
+
+    def test_filter_admin_has_access_recursive_from_subject(self):
+        admin1 = UserBuilder('admin1').user
+        nodebuilder = NodeBuilder('docku')
+        assignment1 = nodebuilder.add_subject('subject1')\
+            .add_admins(admin1)\
+            .add_6month_active_period()\
+            .add_assignment('assignment1').assignment
+        nodebuilder.add_subject('subject2')\
+            .add_6month_active_period()\
+            .add_assignment('assignment2')
+        qry = Assignment.objects.filter_admin_has_access(admin1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], assignment1)
+
+    def test_filter_admin_has_access_recursive_from_node(self):
+        admin1 = UserBuilder('admin1').user
+        nodebuilder = NodeBuilder('docku')
+        assignment1 = nodebuilder\
+            .add_childnode('science')\
+                .add_admins(admin1)\
+            .add_childnode('inf')\
+            .add_subject('subject1')\
+            .add_6month_active_period()\
+            .add_assignment('assignment1').assignment
+        nodebuilder\
+            .add_subject('subject2')\
+            .add_6month_active_period()\
+            .add_assignment('assignment2')
+        qry = Assignment.objects.filter_admin_has_access(admin1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], assignment1)
 
     def test_filter_is_examiner(self):
         examiner1 = UserBuilder('examiner1').user
