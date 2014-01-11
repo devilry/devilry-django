@@ -82,6 +82,11 @@ class BaseNodeBuilderBase(CoreBuilderBase):
         full_kwargs.update(kwargs)
         setattr(self, self.object_attribute_name, self.modelcls.objects.create(**full_kwargs))
 
+    def add_admins(self, *users):
+        for user in users:
+            obj = getattr(self, self.object_attribute_name)
+            obj.admins.add(user)
+        return self
 
 
 class FileMetaBuilder(CoreBuilderBase):
