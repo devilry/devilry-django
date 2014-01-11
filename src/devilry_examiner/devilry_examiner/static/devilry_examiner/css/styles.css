@@ -7752,6 +7752,7 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 }
 .devilry_gradingsystem_feedbackbuttonholder {
   box-sizing: border-box;
+  margin-bottom: 20px;
 }
 .devilry_gradingsystem_feedbackbuttonholder button {
   display: block;
