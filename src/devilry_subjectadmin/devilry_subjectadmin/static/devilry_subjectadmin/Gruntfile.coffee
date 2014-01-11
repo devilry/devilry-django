@@ -3,16 +3,16 @@ module.exports = (grunt) ->
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json')
     watch:
-      coffee_edit_feedback:
-        tasks: 'coffee:edit_feedback'
-        files: ['coffee/*.coffee']
+      #coffee_edit_feedback:
+        #tasks: 'coffee:edit_feedback'
+        #files: ['coffee/*.coffee']
       less:
         tasks: 'less'
         files: ['less/*.less', 'less/views/*.less']
-    coffee:
-      edit_feedback:
-        files:
-          'js/edit_feedback.js': 'coffee/edit_feedback.coffee'
+    #coffee:
+      #edit_feedback:
+        #files:
+          #'js/edit_feedback.js': 'coffee/edit_feedback.coffee'
     less:
       development:
         options:
@@ -25,5 +25,6 @@ module.exports = (grunt) ->
   grunt.loadNpmTasks('grunt-contrib-coffee')
   grunt.loadNpmTasks('grunt-contrib-less')
   grunt.registerTask('default', [
-    'coffee:editor'
+    'less'
+    #'coffee:editor'
   ])
