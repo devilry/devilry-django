@@ -117,6 +117,9 @@ class GradingSystemPluginRegistry(object):
     def __contains__(self, id):
         return id in self.items
 
+    def __len__(self):
+        return len(self.items)
+
     def get(self, id):
         """
         Get a grading plugin API class by its ID.
@@ -125,6 +128,10 @@ class GradingSystemPluginRegistry(object):
             return self.items[id]
         except KeyError:
             raise GradingSystemPluginNotInRegistryError('Grading system plugin with ID={} is not in the registry.'.format(id))
+
+    def iter_with_assignment(self, assignment):
+        for item in self.items.itervalues():
+            yield item(assignment)
 
 
 #: The grading system plugin registry. An instance of :class:`GradingSystemPluginRegistry`.
