@@ -293,3 +293,7 @@ class NodeBuilder(BaseNodeBuilderBase):
     def add_subject(self, *args, **kwargs):
         kwargs['parentnode'] = self.node
         return SubjectBuilder(*args, **kwargs)
+
+    def add_childnode(self, *args, **kwargs):
+        kwargs['parentnode'] = self.node
+        return NodeBuilder(*args, **kwargs)

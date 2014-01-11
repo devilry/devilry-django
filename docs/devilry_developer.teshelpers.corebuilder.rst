@@ -160,6 +160,14 @@ NodeBuilder
         :param long_name: The ``long_name`` of the Node. Defaults to ``short_name`` if ``None``.
         :param kwargs: Other arguments for the Node constructor.
 
+    .. py:method:: add_node(*args, **kwargs)
+
+        Adds a childnode to the node. ``args`` and ``kwargs`` are forwarded
+        to :class:`.NodeBuilder` with ``kwargs['parentnode']`` set to
+        this  :obj:`.node`.
+
+        :rtype: :class:`.NodeBuilder`.
+
     .. py:method:: add_subject(*args, **kwargs)
 
         Adds a subject to the node. ``args`` and ``kwargs`` are forwarded
