@@ -235,6 +235,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     first_deadline = models.DateTimeField(blank=True, null=True)
 
     max_points = models.PositiveIntegerField(null=True, blank=True,
+        verbose_name=_('Maximum points'),
+        help_text=_('Specify the maximum number of points possible for this assignment.'),
         default=1)
     passing_grade_min_points = models.PositiveIntegerField(null=True, blank=True,
         default=1)
