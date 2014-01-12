@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from .assignment import Assignment
 
@@ -50,8 +51,9 @@ class PointToGradeMap(models.Model):
         else:
             first_entry = mapentries[0]
             if first_entry.minimum_points != 0:
-                raise NonzeroSmallesMinimalPointsValidationError('The first entry in the map must have minimum_points set to 0 (current value is {}).'.format(
-                    first_entry.minimum_points))
+                raise NonzeroSmallesMinimalPointsValidationError(
+                    _('The smallest entry in the map must have minimum points set to 0 (current value is {minimum_points}).').format(
+                        minimum_points=first_entry.minimum_points))
             last_entry = mapentries[-1]
             if last_entry.maximum_points != self.assignment.max_points:
                 raise InvalidLargestMaximumPointsValidationError('The last entry in the map must have maximum_points set to the maximum points allowed on the assignment ({}).'.format(
