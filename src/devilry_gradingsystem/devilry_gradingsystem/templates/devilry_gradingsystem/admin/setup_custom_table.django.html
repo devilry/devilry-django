@@ -1,10 +1,18 @@
 {% extends "devilry_gradingsystem/admin/base.django.html" %}
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block body %}
     <div class="container">
         <div class="page-header">
             <h1>{% trans "TODO" %}</h1>
         </div>
+
+        {% for errormessage in validationerrors %}
+            <div class="alert alert-danger">
+                {{ errormessage }}
+            </div>
+        {% endfor %}
+        {% crispy formset formsethelper %}
     </div>
 {% endblock body %}
