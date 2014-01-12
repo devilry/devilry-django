@@ -37,3 +37,4 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
     #         self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
     #             'How would you like to configure the plugin?')
     #         self.assertEquals(len(cssFind(html, '.devilry_gradingsystem_selectplugin_box')), 2)
+    
