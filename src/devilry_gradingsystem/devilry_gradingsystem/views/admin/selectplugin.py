@@ -9,7 +9,7 @@ class SelectPluginView(AssignmentDetailView):
     template_name = 'devilry_gradingsystem/admin/selectplugin.django.html'
 
     def _get_next_page_url(self, selected_plugin_id):
-        assignment = self.get_object()
+        assignment = self.object
         PluginApiClass = gradingsystempluginregistry.get(selected_plugin_id)
         pluginapi = PluginApiClass(assignment)
         if pluginapi.requires_configuration:
@@ -22,6 +22,11 @@ class SelectPluginView(AssignmentDetailView):
     def get(self, *args, **kwargs):
         selected_plugin_id = self.request.GET.get('selected_plugin_id')
         if selected_plugin_id:
+            self.object = self.get_object()
+            assignment = self.object
+            assignment.grading_system_plugin_id = selected_plugin_id
+            assignment.full_clean()
+            assignment.save()
             return redirect(self._get_next_page_url(selected_plugin_id))
         else:
             return super(SelectPluginView, self).get(*args, **kwargs)
