@@ -1,22 +1,12 @@
-from django.views.generic import DetailView
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 
-from devilry.apps.core.models import Assignment
 from devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
+from .base import AssignmentDetailView
 
 
-class SelectPluginView(DetailView):
+class SelectPluginView(AssignmentDetailView):
     template_name = 'devilry_gradingsystem/admin/selectplugin.django.html'
-    model = Assignment
-    pk_url_kwarg = 'assignmentid'
-    context_object_name = 'assignment'
-
-    def get_queryset(self):
-        return Assignment.objects.filter_admin_has_access(self.request.user)\
-            .select_related(
-                'parentnode', # Period
-                'parentnode__parentnode') # Subject
 
     def _get_next_page_url(self, selected_plugin_id):
         assignment = self.get_object()

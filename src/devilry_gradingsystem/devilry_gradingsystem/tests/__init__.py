@@ -1,2 +1,2 @@
-from .test_views_feedbackdraft_preview import *
-from .test_views_admin_selectplugin import *
+from .views.test_feedbackdraft_preview import *
+from .views.admin.test_selectplugin import *

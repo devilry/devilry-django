@@ -42,8 +42,12 @@ The user selects one of the possible values for :attr:`devilry.apps.core.models.
     - Raw points
     - Custom table
 
+5 - Configure the points to grade mapping table (only if ``custom-table``)
+--------------------------------------------------------------------------
+If the user selected ``custom-table``, they need to setup that table.
 
-5 - Configure required points to pass
+
+6 - Configure required points to pass
 -------------------------------------
 The user selects the number of points required to pass the assignment
 (:attr:`devilry.apps.core.models.Assignment.passing_grade_min_points`).
