@@ -110,19 +110,37 @@ class GradingSystemPluginRegistry(object):
         self.items = {}
 
     def add(self, registryitemcls):
+        """
+        Add a plugin to the registry.
+
+        :param registryitemcls:
+            A subclass of :class:`.GradingSystemPluginInterface`.
+
+        :raise NotGradingSystemPluginError:
+            If ``registryitemcls`` is not a subclass of :class:`.GradingSystemPluginInterface`.
+        """
         if not issubclass(registryitemcls, GradingSystemPluginInterface):
             raise NotGradingSystemPluginError('Items added to GradingSystemPluginRegistry must be subclasses of GradingSystemPluginInterface.')
         self.items[registryitemcls.id] = registryitemcls
 
     def __contains__(self, id):
+        """
+        Check if a plugin with the the given ``id`` is in the registry.
+        """
         return id in self.items
 
     def __len__(self):
+        """
+        Get the number of plugins in the registry.
+        """
         return len(self.items)
 
     def get(self, id):
         """
         Get a grading plugin API class by its ID.
+
+        :raise GradingSystemPluginNotInRegistryError:
+            If the plugin is not found in the registry.
         """
         try:
             return self.items[id]
@@ -130,6 +148,11 @@ class GradingSystemPluginRegistry(object):
             raise GradingSystemPluginNotInRegistryError('Grading system plugin with ID={} is not in the registry.'.format(id))
 
     def iter_with_assignment(self, assignment):
+        """
+        Returns an iterator over instances of all the plugins in the registry.
+        Each instance is constructed with the given ``assignment`` as their
+        first and only argument.
+        """
         for item in self.items.itervalues():
             yield item(assignment)
 
