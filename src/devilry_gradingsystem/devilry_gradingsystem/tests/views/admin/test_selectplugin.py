@@ -33,7 +33,7 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
         with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
             self.assertIn(MockPointsPluginApi.id, myregistry)
             response = self.get_as(nobody, {
-                'selected_plugin_id': MockPointsPluginApi.id
+                'grading_system_plugin_id': MockPointsPluginApi.id
             })
             self.assertEquals(response.status_code, 404)
 
@@ -54,7 +54,7 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
         myregistry.add(MockRequiresConfigurationPluginApi)
         with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1, {
-                'selected_plugin_id': MockRequiresConfigurationPluginApi.id
+                'grading_system_plugin_id': MockRequiresConfigurationPluginApi.id
             })
             self.assertEquals(response.status_code, 302)
             self.assertEquals(response["Location"],
@@ -69,7 +69,7 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
         myregistry.add(MockPointsPluginApi)
         with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1, {
-                'selected_plugin_id': MockPointsPluginApi.id
+                'grading_system_plugin_id': MockPointsPluginApi.id
             })
             self.assertEquals(response.status_code, 302)
             self.assertTrue(response["Location"].endswith(
@@ -78,3 +78,13 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
             self.assignmentbuilder.reload_from_db()
             self.assertEquals(self.assignmentbuilder.assignment.grading_system_plugin_id,
                 MockPointsPluginApi.id)
+
+    def test_next_page_invalid_pluginid(self):
+        myregistry = GradingSystemPluginRegistry()
+        myregistry.add(MockPointsPluginApi)
+        with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
+            response = self.get_as(self.admin1, {
+                'grading_system_plugin_id': 'doesnotexist'
+            })
+            self.assertEquals(response.status_code, 200)
+            self.assertIn('Invalid grading system plugin ID: doesnotexist', response.content)

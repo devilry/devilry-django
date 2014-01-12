@@ -7,6 +7,10 @@
             <h1>{% trans "How would you like to provide feedback to your students?" %}</h1>
         </div>
 
+        {% if form.errors %}
+            {% include "devilry_subjectadmin/include/django_formerrors_as_alertboxes.django.html" with form=form %}
+        {% endif %}
+
         <div class="alert alert-warning">
             <strong>{% trans "Warning" %}:</strong>
             {% trans "This selection can not be reverted. You will have to re-run this wizard later to change your selection." %}
@@ -19,7 +23,7 @@
             <div class="devilry_gradingsystem_selectplugin_box">
                 <h2>{{ plugin.title }}</h2>
                 <p>{{ plugin.description }}</p>
-                <a class="btn btn-default" href="?selected_plugin_id={{ plugin.id }}">{% trans "Use this" %}</a>
+                <a class="btn btn-default" href="?grading_system_plugin_id={{ plugin.id }}">{% trans "Use this" %}</a>
             </div>
         {% endfor %}
     </div>
