@@ -4,15 +4,22 @@
 {% block body %}
     <div class="container">
         <div class="page-header">
-            <h1>{% trans "How would you like to configure the plugin?" %}</h1>
+            <h1>{% trans "How would you like to provide feedback to your students?" %}</h1>
         </div>
+
+        <div class="alert alert-warning">
+            <strong>{% trans "Warning" %}:</strong>
+            {% trans "This selection can not be reverted. You will have to re-run this wizard later to change your selection." %}
+        </div>
+        <p>
+            {% trans "Please select how you provide feedback to your students from the list below. Your selection starts a wizard that you have to complete before any deliveries can be corrected on this assignment." %}
+        </p>
 
         {% for plugin in pluginregistry %}
             <div class="devilry_gradingsystem_selectplugin_box">
-                <h2>
-                    <a href="?selected_plugin_id={{ plugin.id }}">{{ plugin.title }}</a>
-                </h2>
+                <h2>{{ plugin.title }}</h2>
                 <p>{{ plugin.description }}</p>
+                <a class="btn btn-default" href="?selected_plugin_id={{ plugin.id }}">{% trans "Use this" %}</a>
             </div>
         {% endfor %}
     </div>
