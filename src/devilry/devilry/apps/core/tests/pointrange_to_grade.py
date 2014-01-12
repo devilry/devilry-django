@@ -292,6 +292,24 @@ class TestPointToGradeMap(TestCase):
         with self.assertRaises(GapsInMapValidationError):
             point_to_grade_map.clean()
 
+    def test_as_choices(self):
+        point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=30,
+            grade='Bad'
+        )
+        point_to_grade_map.pointrangetograde_set.create(
+            minimum_points=32,
+            maximum_points=100,
+            grade='Better'
+        )
+        self.assertEquals(point_to_grade_map.as_choices(), [
+            (0, 'Bad'),
+            (32, 'Better')
+        ])
+
+
     def test_create_map(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
         point_to_grade_map.create_map(

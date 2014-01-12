@@ -96,6 +96,15 @@ class PointToGradeMap(models.Model):
         """
         return self.pointrangetograde_set.filter_grades_matching_points(points).get()
 
+    def as_choices(self):
+        """
+        Get as a list of tuples compatible with the choices argument for
+        django ChoiceField and TypedChoiceField with coerce set to ``int``.
+        """
+        return [(pointrange.minimum_points, pointrange.grade) \
+            for pointrange in self.pointrangetograde_set.all()]
+
+
     def __unicode__(self):
         return u'Point to grade map for {}'.format(self.assignment.get_path())
 
