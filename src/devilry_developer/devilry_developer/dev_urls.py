@@ -12,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^devilry_examiner/', include('devilry_examiner.urls')),
     url(r'^devilry_gradingsystem/', include('devilry_gradingsystem.urls')),
     url(r'^devilry_gradingsystemplugin_points/', include('devilry_gradingsystemplugin_points.urls')),
+    url(r'^devilry_gradingsystemplugin_approved/', include('devilry_gradingsystemplugin_approved.urls')),
 
     ## For Trix-development
     #(r'^trix/', include('trix.urls')),
