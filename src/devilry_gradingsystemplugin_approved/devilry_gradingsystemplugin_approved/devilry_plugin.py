@@ -14,4 +14,4 @@ class ApprovedPluginApi(GradingSystemPluginInterface):
         return reverse('devilry_gradingsystemplugin_approved_feedbackeditor', kwargs={'deliveryid': deliveryid})
 
 
-gradingsystempluginregistry.add(PointsPluginApi)
+gradingsystempluginregistry.add(ApprovedPluginApi)
