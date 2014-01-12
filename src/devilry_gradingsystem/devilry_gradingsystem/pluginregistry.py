@@ -37,7 +37,7 @@ class GradingSystemPluginInterface(object):
     sets_max_points_automatically = False
 
     def __init__(self, assignment):
-       self.assignment = assignment
+        self.assignment = assignment
 
     def get_passing_grade_min_points(self):
         """
