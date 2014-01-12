@@ -19,6 +19,14 @@ class AdminViewTestMixin(object):
         self.login(user)
         return self.client.get(self.url, *args, **kwargs)
 
+    def post_as(self, user, *args, **kwargs):
+        """
+        Login as the given user and run self.client.post(). Assumes
+        that self.url is defined.
+        """
+        self.login(user)
+        return self.client.post(self.url, *args, **kwargs)
+
     def test_get_not_admin_404(self):
         nobody = UserBuilder('nobody').user
         response = self.get_as(nobody)

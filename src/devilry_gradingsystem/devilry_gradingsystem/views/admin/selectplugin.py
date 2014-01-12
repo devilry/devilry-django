@@ -1,10 +1,11 @@
+from django.views.generic import DetailView
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django import forms
 
 from devilry.apps.core.models import Assignment
 from devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
-from .base import AssignmentDetailView
+from .base import AssignmentSingleObjectMixin
 
 
 class AssignmentForm(forms.ModelForm):
@@ -20,7 +21,7 @@ class AssignmentForm(forms.ModelForm):
         return grading_system_plugin_id
 
 
-class SelectPluginView(AssignmentDetailView):
+class SelectPluginView(AssignmentSingleObjectMixin, DetailView):
     template_name = 'devilry_gradingsystem/admin/selectplugin.django.html'
 
     def _get_next_page_url(self, grading_system_plugin_id):

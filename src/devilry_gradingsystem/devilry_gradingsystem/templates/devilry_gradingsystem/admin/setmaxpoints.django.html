@@ -1,10 +1,16 @@
 {% extends "devilry_gradingsystem/admin/base.django.html" %}
 {% load i18n %}
+{% load crispy_forms_tags %}
 
 {% block body %}
     <div class="container">
         <div class="page-header">
-            <h1>{% trans "TODO" %}</h1>
+            <h1>{% trans "Configure the maximum possible number of points" %}</h1>
         </div>
+        <p>
+            {% blocktrans with plugintitle=pluginapi.title %}The result of grading with the selected grading system, &ldquo;{{ plugintitle }}&rdquo;, is a number between zero and a value you have to configure. Please configure the maximum possible number of points.{% endblocktrans %}
+        </p>
+
+        {% crispy form %}
     </div>
 {% endblock body %}

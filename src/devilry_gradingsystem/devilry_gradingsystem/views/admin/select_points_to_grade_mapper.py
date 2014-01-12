@@ -2,8 +2,10 @@
 # from django.shortcuts import redirect
 
 from devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
-from .base import AssignmentDetailView
+from django.views.generic import View
+
+from .base import AssignmentSingleObjectRequiresValidPluginMixin
 
 
-class SelectPointsToGradeMapperView(AssignmentDetailView):
+class SelectPointsToGradeMapperView(View):
     template_name = 'devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html'
