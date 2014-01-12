@@ -10,7 +10,7 @@ from devilry_developer.testhelpers.soupselect import cssExists
 from devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
 
 from .base import AdminViewTestMixin
-# from .base import MockApprovedPluginApi
+from .base import MockApprovedPluginApi
 from .base import MockPointsPluginApi
 # from .base import MockRequiresConfigurationPluginApi
 
@@ -46,6 +46,20 @@ class TestSetMaxPointsView(TestCase, AdminViewTestMixin):
                 'Configure the maximum possible number of points')
             self.assertTrue(cssExists(html, '#id_max_points'))
             self.assertEquals(cssGet(html, '#id_max_points')['value'], '1')  # The default value
+
+    def test_sets_max_points_automatically(self):
+        myregistry = GradingSystemPluginRegistry()
+        myregistry.add(MockApprovedPluginApi)
+        self.assignmentbuilder.update(grading_system_plugin_id=MockApprovedPluginApi.id)
+        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
+            response = self.get_as(self.admin1)
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(response["Location"].endswith(
+                reverse('devilry_gradingsystem_admin_select_points_to_grade_mapper', kwargs={
+                    'assignmentid': self.assignmentbuilder.assignment.id})))
+            self.assignmentbuilder.reload_from_db()
+            self.assertEquals(self.assignmentbuilder.assignment.max_points,
+                MockApprovedPluginApi(self.assignmentbuilder.assignment).get_max_points())
 
     def test_render_default_to_current_value(self):
         myregistry = GradingSystemPluginRegistry()
