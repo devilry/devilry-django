@@ -235,6 +235,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     first_deadline = models.DateTimeField(blank=True, null=True)
 
     max_points = models.PositiveIntegerField(null=True, blank=True,
+        verbose_name=_('Maximum points'),
+        help_text=_('Specify the maximum number of points possible for this assignment.'),
         default=1)
     passing_grade_min_points = models.PositiveIntegerField(null=True, blank=True,
         default=1)
@@ -252,7 +254,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     def get_gradingsystem_plugin_api(self):
         """
-        Shortcut for ``devilry_gradingsystem.pluginregistrt.gradingsystempluginregistry.get(self.grading_system_plugin_id)(self)``.
+        Shortcut for ``devilry_gradingsystem.pluginregistry.gradingsystempluginregistry.get(self.grading_system_plugin_id)(self)``.
+
+        See: :meth:`devilry_gradingsystem.pluginregistry.GradingSystemPluginRegistry.get`.
         """
         ApiClass = gradingsystempluginregistry.get(self.grading_system_plugin_id)
         return ApiClass(self)
@@ -286,12 +290,14 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             passing_grade_min_points=None, max_points=None):
         """
         Setup all of the simple parts of the grading system:
+        
         - :attr:`.grading_system_plugin_id`
         - :attr:`.points_to_grade_mapper`
         - :attr:`.passing_grade_min_points`
         - :attr:`.max_points`
 
         Does not setup:
+
         - Grading system plugin specific configuration.
         - A :class:`~devilry.apps.core.models.PointToGradeMap`.
         """

@@ -7,18 +7,58 @@
 How we configure the grading system on an assignment
 ====================================================
 
-#. Select a grading system plugin.
-#. Configure the grading system plugin (plugins can opt out of this step by
-   setting :obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.requires_configuration`).
-#. Configure the maximum number of points possible (plugins can opt out of this step by setting :obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.sets_max_points_automatically`).
-#. Choose how students are graded:
+1 - Select a grading system plugin.
+-----------------------------------
+User selects one of the plugins in the :obj:`devilry_gradingsystem.pluginregistry.gradingsystempluginregistry`.
+
+
+2 - Configure the grading system plugin
+---------------------------------------
+User configures the grading system using the view pointed to by
+:meth:`devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.get_configuration_url`.
+
+.. note::
+
+	This step is skipped unless the plugin has set
+	:obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.requires_configuration`
+	to ``True``
+
+
+3 - Configure the maximum number of points possible
+---------------------------------------------------
+User sets the maximum number of points possible.
+
+.. note::
+
+	Plugins can opt out of this step by setting
+	:obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.sets_max_points_automatically`
+	to ``True``
+
+
+4 - Choose how students are graded
+----------------------------------
+The user selects one of the possible values for :attr:`devilry.apps.core.models.Assignment.points_to_grade_mapper`):
     - Passed failed
     - Raw points
     - Custom table
-#. Configure required points to pass (plugins can opt out of this step by setting :obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.sets_passing_grade_min_points_automatically`):
-    - If ``raw-points`` or ``passed-failed``: Select a number of points between ``0`` and ``max_points``, including both ends.
-    - If custom table: Select a grade from the table.
-      
+
+5 - Configure the points to grade mapping table (only if ``custom-table``)
+--------------------------------------------------------------------------
+If the user selected ``custom-table``, they need to setup that table.
+
+
+6 - Configure required points to pass
+-------------------------------------
+The user selects the number of points required to pass the assignment
+(:attr:`devilry.apps.core.models.Assignment.passing_grade_min_points`).
+How they do this depends on the ``points_to_grade_mapper``:
+
+- If ``raw-points`` or ``passed-failed``: Select a number of points between ``0`` and ``max_points``, including both ends.
+- If custom table: Select a grade from the table.    
+
+.. note::
+
+	Plugins can opt out of this step by setting :obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.sets_passing_grade_min_points_automatically`)  
 
 
 Creating a Plugin
