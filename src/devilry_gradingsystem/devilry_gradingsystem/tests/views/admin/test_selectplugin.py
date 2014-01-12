@@ -47,7 +47,7 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
             html = response.content
             self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
                 'How would you like to provide feedback to your students?')
-            self.assertEquals(len(cssFind(html, '.devilry_gradingsystem_selectplugin_box')), 2)
+            self.assertEquals(len(cssFind(html, '.devilry_gradingsystem_verbose_selectbox')), 2)
 
     def test_next_page_requires_configuration(self):
         myregistry = GradingSystemPluginRegistry()
