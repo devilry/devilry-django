@@ -37,10 +37,28 @@
 </div>
 
 {% block content %}
+    <ul class="pager">
+      {% if groups.has_previous %}
+      <li><a href="?page={{ groups.previous_page_number }}">previous</a></li>
+      {% else %}
+      <li class="disabled"><a href="#">previous</a></li>
+      {% endif %}
+
+      <!-- <span class="current"> -->
+      <!--   Page {{ groups.number }} of {{ groups.paginator.num_pages }}. -->
+      <!-- </span> -->
+
+      {% if groups.has_next %}
+      <li><a href="?page={{ groups.next_page_number }}">next</a></li>
+      {% else %}
+      <li class="disabled"><a href="#">next</a></li>
+      {% endif %}
+    </ul>
   <div class="container grouplistingbox">
     <table class="table table-striped infolistingtable">
       {% for group in groups %}
       <tr class="group">
+        <td><input type="checkbox" name="todelete" value="bjall"/></td>
         <td class="titled-cell groupinfo">
           <h3>
             <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
@@ -67,23 +85,7 @@
     </table><!-- row -->
 
 
-    <ul class="pager">
-      {% if groups.has_previous %}
-      <li><a href="?page={{ groups.previous_page_number }}">previous</a></li>
-      {% else %}
-      <li class="disabled"><a href="#">previous</a></li>
-      {% endif %}
 
-      <!-- <span class="current"> -->
-      <!--   Page {{ groups.number }} of {{ groups.paginator.num_pages }}. -->
-      <!-- </span> -->
-
-      {% if groups.has_next %}
-      <li><a href="?page={{ groups.next_page_number }}">next</a></li>
-      {% else %}
-      <li class="disabled"><a href="#">next</a></li>
-      {% endif %}
-    </ul>
 
 
   </div><!-- container -->
