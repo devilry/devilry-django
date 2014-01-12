@@ -37,7 +37,8 @@
 </div>
 
 {% block content %}
-    <ul class="pager">
+<div class="container">
+    <ul class="pager pull-right">
       {% if groups.has_previous %}
       <li><a href="?page={{ groups.previous_page_number }}">previous</a></li>
       {% else %}
@@ -54,6 +55,7 @@
       <li class="disabled"><a href="#">next</a></li>
       {% endif %}
     </ul>
+</div>
   <div class="container grouplistingbox">
     <table class="table table-striped infolistingtable">
       {% for group in groups %}
