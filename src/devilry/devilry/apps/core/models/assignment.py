@@ -167,6 +167,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         this assignment. This field may be ``None``, and it is normally set by the
         grading system plugin.
 
+        DO NOT UPDATE MANUALLY. You can safely set an initial value for this 
+        manually when you create a new assignment, but when you update this
+        field, do so using :meth:`.set_max_points`.
+
     .. attribute:: passing_grade_min_points
 
         An IntegerField that contains the minimum number of points required to
@@ -251,6 +255,23 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     grading_system_plugin_id = models.CharField(
         max_length=300, blank=True, null=True)
 
+    def set_max_points(self, max_points):
+        """
+        Sets :attr:`.max_points`, and invalidates any
+        :class:`~devilry.apps.core.models.PointToGradeMap` configured for this
+        assignment if the new value for ``max_points`` differs from the old one.
+
+        Invalidating the PointToGradeMap ensures that the course admin
+        has to re-evaluate the grade to point mapping when they change ``max_points``.
+        """
+        if self.max_points != max_points:
+            self.max_points = max_points
+            try:
+                pointtogrademap = self.pointtogrademap
+            except ObjectDoesNotExist:
+                pass
+            else:
+                pointtogrademap.invalid = True
 
     def get_gradingsystem_plugin_api(self):
         """
