@@ -263,6 +263,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         Invalidating the PointToGradeMap ensures that the course admin
         has to re-evaluate the grade to point mapping when they change ``max_points``.
+
+        NOTE: This saves the PointToGradeMap, but not the assignment.
         """
         if self.max_points != max_points:
             self.max_points = max_points
@@ -272,6 +274,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 pass
             else:
                 pointtogrademap.invalid = True
+                pointtogrademap.save()
 
     def get_gradingsystem_plugin_api(self):
         """

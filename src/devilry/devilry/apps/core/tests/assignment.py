@@ -66,7 +66,19 @@ class TestAssignment(TestCase):
             .add_assignment('assignment1').assignment
         self.assertTrue(assignment1.has_valid_grading_setup())
 
-
+    def test_set_max_points(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                points_to_grade_mapper='custom-table',
+                max_points=10)
+        pointtogrademap = PointToGradeMap.objects.create(
+            invalid=False,
+            assignment=assignmentbuilder.assignment)
+        assignmentbuilder.assignment.set_max_points(20)
+        assignmentbuilder.assignment.save()
+        assignmentbuilder.reload_from_db()
+        self.assertEquals(assignmentbuilder.assignment.max_points, 20)
+        self.assertTrue(assignmentbuilder.assignment.pointtogrademap.invalid)
 
 
 class TestAssignmentOld(TestCase, TestHelper):
