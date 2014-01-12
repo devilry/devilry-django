@@ -15,7 +15,7 @@ from .base import AdminViewTestMixin
 
 
 
-class TestSetMaxPointsView(TestCase, AdminViewTestMixin):
+class TestSetupCustomTableView(TestCase, AdminViewTestMixin):
 
     def setUp(self):
         self.admin1 = UserBuilder('admin1').user
