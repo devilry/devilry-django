@@ -22,7 +22,15 @@ class PassingGradeMinPointsForm(forms.ModelForm):
         fields = ['passing_grade_min_points']
 
     def __init__(self, *args, **kwargs):
+        assignment = kwargs['instance']
         super(PassingGradeMinPointsForm, self).__init__(*args, **kwargs)
+
+        if assignment.points_to_grade_mapper == 'custom-table':
+            self.fields['passing_grade_min_points'] = forms.TypedChoiceField(
+                coerce=int,
+                choices=assignment.get_point_to_grade_map().as_choices()
+            )
+
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Field('passing_grade_min_points'),

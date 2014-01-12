@@ -73,6 +73,28 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
             html = response.content
             self.assertEquals(cssGet(html, '#id_passing_grade_min_points')['value'], '2030')
 
+    def test_render_custom_table(self):
+        myregistry = GradingSystemPluginRegistry()
+        myregistry.add(MockPointsPluginApi)
+        self.assignmentbuilder.update(
+            grading_system_plugin_id=MockPointsPluginApi.id,
+            points_to_grade_mapper='custom-table')
+        self.assignmentbuilder.assignment.get_point_to_grade_map().create_map(
+            (0, 'Bad'),
+            (30, 'Better'),
+            (60, 'Good'))
+        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
+            response = self.get_as(self.admin1)
+            self.assertEquals(response.status_code, 200)
+            html = response.content
+            self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
+                'Select the grade required to pass')
+            self.assertTrue(cssExists(html, '#id_passing_grade_min_points'))
+            self.assertEquals(len(cssFind(html, '#id_passing_grade_min_points option')), 3)
+            self.assertEquals(cssGet(html, '#id_passing_grade_min_points option[value=0]').text.strip(), 'Bad')
+            self.assertEquals(cssGet(html, '#id_passing_grade_min_points option[value=30]').text.strip(), 'Better')
+            self.assertEquals(cssGet(html, '#id_passing_grade_min_points option[value=60]').text.strip(), 'Good')
+
 
     def test_post_valid_form(self):
         myregistry = GradingSystemPluginRegistry()
