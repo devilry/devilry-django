@@ -1,1 +1,1 @@
-from .test_views_feedbackeditor import *
+from .test_views_feedbackeditor import TestFeedbackEditorView
