@@ -253,6 +253,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             ("custom-table", _("Custom table")),
         ))
     grading_system_plugin_id = models.CharField(
+        default='devilry_gradingsystemplugin_approved',
         max_length=300, blank=True, null=True)
 
     def set_max_points(self, max_points):

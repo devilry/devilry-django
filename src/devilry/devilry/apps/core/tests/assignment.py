@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from mock import patch
 
 from django.test import TestCase
 from django.contrib.auth.models import User
@@ -14,6 +15,8 @@ from devilry.apps.core.models import Period
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import PointToGradeMap
+from devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
 
@@ -64,7 +67,15 @@ class TestAssignment(TestCase):
     def test_has_valid_grading_setup_valid_by_default(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1').assignment
-        self.assertTrue(assignment1.has_valid_grading_setup())
+
+        # Mock the gradingsystempluginregistry
+        myregistry = GradingSystemPluginRegistry()
+        class MockApprovedPluginApi(GradingSystemPluginInterface):
+            id = 'devilry_gradingsystemplugin_approved'
+        myregistry.add(MockApprovedPluginApi)
+
+        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
+            self.assertTrue(assignment1.has_valid_grading_setup())
 
     def test_set_max_points(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
