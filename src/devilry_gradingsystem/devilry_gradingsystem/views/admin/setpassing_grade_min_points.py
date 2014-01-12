@@ -5,7 +5,7 @@ from django import forms
 
 from devilry.apps.core.models import Assignment
 from devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
-from .base import AssignmentSingleObjectMixin
+from .base import AssignmentSingleObjectRequiresValidPluginMixin
 
 
 class PointsToGradeMapperForm(forms.ModelForm):
@@ -14,7 +14,7 @@ class PointsToGradeMapperForm(forms.ModelForm):
         fields = ['passing_grade_min_points']
 
 
-class SetPassingGradeMinPointsView(AssignmentSingleObjectMixin, DetailView):
+class SetPassingGradeMinPointsView(AssignmentSingleObjectRequiresValidPluginMixin, DetailView):
     template_name = 'devilry_gradingsystem/admin/setpassing_grade_min_points.django.html'
 
     def _get_next_page_url(self, passing_grade_min_points):

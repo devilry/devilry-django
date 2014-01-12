@@ -18,10 +18,19 @@ class SelectPointsToGradeMapperView(AssignmentSingleObjectRequiresValidPluginMix
 
     def _get_next_page_url(self, points_to_grade_mapper):
         assignment = self.object
-        # TODO: Update
-        return reverse('devilry_gradingsystem_admin_setmaxpoints', kwargs={
-            'assignmentid': assignment.id,
-        })
+        pluginapi = assignment.get_gradingsystem_plugin_api()
+        if points_to_grade_mapper == 'custom-table':
+            return reverse('devilry_gradingsystem_admin_setup_custom_table', kwargs={
+                'assignmentid': assignment.id,
+            })
+        elif pluginapi.sets_passing_grade_min_points_automatically:
+            return reverse('devilry_gradingsystem_admin_summary', kwargs={
+                'assignmentid': assignment.id,
+            })
+        else:
+            return reverse('devilry_gradingsystem_admin_setpassing_grade_min_points', kwargs={
+                'assignmentid': assignment.id,
+            })
 
     def get(self, *args, **kwargs):
         points_to_grade_mapper = self.request.GET.get('points_to_grade_mapper')
