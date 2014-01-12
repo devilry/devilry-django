@@ -12,6 +12,7 @@ from .views.admin.setpassing_grade_min_points import SetPassingGradeMinPointsVie
 urlpatterns = patterns('devilry_gradingsystem',
     url('^feedbackdraft_preview/(?P<deliveryid>\d+)/(?P<draftid>\d+)$', FeedbackDraftPreviewView.as_view(),
         name='devilry_gradingsystem_feedbackdraft_preview'),
+    
     url('^admin/selectplugin/(?P<assignmentid>\d+)$', SelectPluginView.as_view(),
         name='devilry_gradingsystem_admin_selectplugin'),
     url('^admin/setmaxpoints/(?P<assignmentid>\d+)$', SetMaxPointsView.as_view(),

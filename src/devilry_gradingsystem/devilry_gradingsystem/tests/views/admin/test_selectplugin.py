@@ -60,3 +60,15 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
             self.assertEquals(response["Location"],
                 'http://testserver/mock/requiresconfiguration/configure/{}'.format(
                     self.assignmentbuilder.assignment.id))
+
+    def test_next_page_no_configuration_required(self):
+        myregistry = GradingSystemPluginRegistry()
+        myregistry.add(MockPointsPluginApi)
+        with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
+            response = self.get_as(self.admin1, {
+                'selected_plugin_id': MockPointsPluginApi.id
+            })
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(response["Location"].endswith(
+                reverse('devilry_gradingsystem_admin_setmaxpoints', kwargs={
+                    'assignmentid': self.assignmentbuilder.assignment.id})))
