@@ -5,7 +5,7 @@ from devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 
 
-class PointsPluginApi(GradingSystemPluginInterface):
+class ApprovedPluginApi(GradingSystemPluginInterface):
     id = 'devilry_gradingsystemplugin_approved'
     title = _('Specify approved or not approved delivery attempt')
     description = _('Provide a single checkbox which conclude the attempt to be approved when checked')
