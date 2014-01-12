@@ -5,7 +5,7 @@ from .views.feedbackdraft_preview import FeedbackDraftPreviewView
 from .views.admin.selectplugin import SelectPluginView
 from .views.admin.setmaxpoints import SetMaxPointsView
 from .views.admin.select_points_to_grade_mapper import SelectPointsToGradeMapperView
-# from .views.admin.setup_custom_table import SetupCustomTableView
+from .views.admin.setup_custom_table import SetupCustomTableView
 # from .views.admin.setpassing_grade_min_points import SetPassingGradeMinPointsView
 
 
@@ -19,8 +19,8 @@ urlpatterns = patterns('devilry_gradingsystem',
         name='devilry_gradingsystem_admin_setmaxpoints'),
     url('^admin/select_points_to_grade_mapper/(?P<assignmentid>\d+)$', SelectPointsToGradeMapperView.as_view(),
         name='devilry_gradingsystem_admin_select_points_to_grade_mapper'),
-    # url('^admin/setup_custom_table/(?P<assignmentid>\d+)$', SetupCustomTableView.as_view(),
-        # name='devilry_gradingsystem_admin_setup_custom_table'),
+    url('^admin/setup_custom_table/(?P<assignmentid>\d+)$', SetupCustomTableView.as_view(),
+        name='devilry_gradingsystem_admin_setup_custom_table'),
     # url('^admin/setpassing_grade_min_points/(?P<assignmentid>\d+)$', SetPassingGradeMinPointsView.as_view(),
         # name='devilry_gradingsystem_admin_setpassing_grade_min_points'),
 )

@@ -15,7 +15,7 @@
             {% trans "What should the end result of grading a student be?" %}
         </p>
 
-        <div class="devilry_gradingsystem_verbose_selectbox">
+        <div class="devilry_gradingsystem_verbose_selectbox passed-failed_points_to_grade_mapper_box">
             <h2>{% trans "Passed or failed" %}</h2>
             <p>
                 {% trans "Students see their result as passed or failed." %}
@@ -26,7 +26,7 @@
             <a class="btn btn-default" href="?points_to_grade_mapper=passed-failed">{% trans "Use this" %}</a>
         </div>
 
-        <div class="devilry_gradingsystem_verbose_selectbox">
+        <div class="devilry_gradingsystem_verbose_selectbox raw-points_points_to_grade_mapper_box">
             <h2>{% trans "Points" %}</h2>
             <p>
                 {% trans "Students see their result as points/max-points, and they can see if the number of points is a passing or a failing grade." %}
@@ -34,13 +34,13 @@
                     {% trans "You select the number of points required to pass in the next step of this wizard." %}
                 {% endif %}
             </p>
-            <a class="btn btn-default" href="?points_to_grade_mapper=passed-failed">{% trans "Use this" %}</a>
+            <a class="btn btn-default" href="?points_to_grade_mapper=raw-points">{% trans "Use this" %}</a>
         </div>
 
-        <div class="devilry_gradingsystem_verbose_selectbox">
+        <div class="devilry_gradingsystem_verbose_selectbox custom-table_points_to_grade_mapper_box">
             <h2>{% trans "Map points to grade" %}</h2>
             <p>{% trans "You set up a table mapping points to a grade. Use this if you want to grade your students according to some scale, such as A-F." %}</p>
-            <a class="btn btn-default" href="?points_to_grade_mapper=passed-failed">{% trans "Use this" %}</a>
+            <a class="btn btn-default" href="?points_to_grade_mapper=custom-table">{% trans "Use this" %}</a>
         </div>
     </div>
 {% endblock body %}

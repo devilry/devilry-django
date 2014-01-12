@@ -43,3 +43,34 @@ class TestSelectPointsToGradeMapperView(TestCase, AdminViewTestMixin):
             self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
                 'How are students graded?')
             self.assertEquals(len(cssFind(html, '.devilry_gradingsystem_verbose_selectbox')), 3)
+
+            self.assertEquals(cssGet(html, '.passed-failed_points_to_grade_mapper_box h2').text.strip(),
+                'Passed or failed')
+            self.assertEquals(cssGet(html, '.passed-failed_points_to_grade_mapper_box a.btn')['href'],
+                '?points_to_grade_mapper=passed-failed')
+
+            self.assertEquals(cssGet(html, '.raw-points_points_to_grade_mapper_box h2').text.strip(),
+                'Points')
+            self.assertEquals(cssGet(html, '.raw-points_points_to_grade_mapper_box a.btn')['href'],
+                '?points_to_grade_mapper=raw-points')
+
+            self.assertEquals(cssGet(html, '.custom-table_points_to_grade_mapper_box h2').text.strip(),
+                'Map points to grade')
+            self.assertEquals(cssGet(html, '.custom-table_points_to_grade_mapper_box a.btn')['href'],
+                '?points_to_grade_mapper=custom-table')
+
+    def test_next_page_select_passing_grade_min_points(self):
+        myregistry = GradingSystemPluginRegistry()
+        myregistry.add(MockPointsPluginApi)
+        with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
+            response = self.get_as(self.admin1, {
+                'points_to_grade_mapper': 'approved-failed'
+            })
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(response["Location"].endswith(
+                reverse('devilry_gradingsystem_admin_setup_custom_table', kwargs={
+                    'assignmentid': self.assignmentbuilder.assignment.id,
+                })))
+            self.assignmentbuilder.reload_from_db()
+            self.assertEquals(self.assignmentbuilder.assignment.grading_system_plugin_id,
+                MockRequiresConfigurationPluginApi.id)
