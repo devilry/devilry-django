@@ -3,6 +3,12 @@
 {% load crispy_forms_tags %}
 
 {% block pagecontent %}
+<div class="container">
+  <h2>{% trans "You are now correcting the following groups in bulk" %}</h2>
+  {% for group in groups %}
+  <p>{{ group }}</p>
+  {% endfor  %}
+</div>
     <div class="container">
         {% crispy form %}
     </div>
