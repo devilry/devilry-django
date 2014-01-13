@@ -1,6 +1,7 @@
 {% extends "devilry_gradingsystem/admin/base.django.html" %}
 {% load i18n %}
 {% load crispy_forms_tags %}
+{% load url from future %}
 
 {% block body %}
     <div class="container">
@@ -13,6 +14,15 @@
                 {{ errormessage }}
             </div>
         {% endfor %}
-        {% crispy formset formsethelper %}
+
+        <form action='{% url "devilry_gradingsystem_admin_setup_custom_table" assignmentid=assignment.id %}' method="POST">
+            {% crispy formset formsethelper %}
+            <button type="submit" name="submit_add_rows" class="btn btn-default btn-sm">
+                <i class="fa fa-plus"></i>
+                {% trans "Add more rows" %}
+            </button>
+            <hr>
+            <button type="submit" name="submit_save" class="btn btn-primary">{% trans "Save" %}</button>
+        </form>
     </div>
 {% endblock body %}
