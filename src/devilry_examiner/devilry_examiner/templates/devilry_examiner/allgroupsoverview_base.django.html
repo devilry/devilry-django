@@ -61,12 +61,12 @@
 
   <div class="container grouplistingbox">
 
-    <form action="{% url 'devilry_examiner_dashboard' %}bulktest/" method="post">{% csrf_token %}
+    <form action="{{ assignment|get_feedback_url }}" method="get">{% csrf_token %}
 
     <table class="table table-striped infolistingtable">
       {% for group in groups %}
       <tr class="group">
-        <td><input type="checkbox" name="edit" value="{{ group.id }}"/></td>
+        <td><input type="checkbox" name="edit" value="{{ group.id }}" /></td>
         <td class="titled-cell groupinfo">
           <h3>
             <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
