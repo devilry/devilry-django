@@ -276,6 +276,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             else:
                 pointtogrademap.invalid = True
                 pointtogrademap.save()
+        if self.passing_grade_min_points > self.max_points:
+            self.passing_grade_min_points = self.max_points
 
     def get_gradingsystem_plugin_api(self):
         """
@@ -458,6 +460,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                                                                               start_time=self.parentnode.start_time))
         if self.first_deadline:
             self._clean_first_deadline()
+        if self.passing_grade_min_points > self.max_points:
+            raise ValidationError(
+                _('The minumum number of points required to pass must be less than the maximum number of points possible on the assignment. The current maximum is {max_points}').format(
+                    max_points=self.max_points))
 
 
     def is_empty(self):
