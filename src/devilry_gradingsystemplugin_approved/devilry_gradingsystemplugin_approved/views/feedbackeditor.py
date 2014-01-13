@@ -4,6 +4,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.layout import Field
 
+from devilry.apps.core.models import AssignmentGroup
 from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormBase
 from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormView
 from devilry_gradingsystem.views.feedbackbulkeditorbase import FeedbackBulkEditorFormBase
@@ -60,8 +61,21 @@ class ApprovedFeedbackBulkEditorView(FeedbackBulkEditorFormView):
 
     def get_initial_from_last_draft(self):
         initial = super(ApprovedFeedbackBulkEditorView, self).get_initial_from_last_draft()
-        initial['points'] = True
+        initial['points'] = False
         return initial
+
+    def get_context_data(self, **kwargs):
+        context = super(ApprovedFeedbackBulkEditorView, self).get_context_data(**kwargs)
+
+        ids = self.request.GET.getlist('edit')
+        groups = AssignmentGroup.objects.get_queryset().filter(id__in=ids)
+
+        context['groups'] = groups
+        return context
+
+    def get(self, *args, **kwargs):
+        print "GET: ", self.request.GET
+        return super(ApprovedFeedbackBulkEditorView, self).get(*args, **kwargs)
 
     def get_points_from_form(self, form):
         if form.cleaned_data['points']:

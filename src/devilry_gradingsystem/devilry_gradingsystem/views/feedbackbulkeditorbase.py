@@ -11,6 +11,7 @@ from django.http import HttpResponseBadRequest
 from devilry.apps.markup.parse_markdown import markdown_full
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import StaticFeedback
 from devilry_gradingsystem.models import FeedbackDraft
 from devilry_gradingsystem.widgets.editmarkdown import EditMarkdownLayoutObject
@@ -49,6 +50,7 @@ class FeedbackBulkEditorAssignmentObjectMixin(SingleObjectMixin):
         return super(FeedbackBulkEditorAssignmentObjectMixin, self).get(*args, **kwargs)
 
     def post(self, *args, **kwargs):
+        print "Post after dispatch?"
         self._setup_common_data()
         assignment = self.object
         if not assignment.has_valid_grading_setup():
@@ -58,7 +60,7 @@ class FeedbackBulkEditorAssignmentObjectMixin(SingleObjectMixin):
 
     def get_queryset(self):
         """
-        Ensure we only match deliveries where the current user has access
+        Ensure we only match assignments where the current user has access
         as an examiner.
         """
         return Assignment.objects.filter_examiner_has_access(self.request.user)
@@ -81,21 +83,27 @@ class FeedbackBulkEditorMixin(FeedbackBulkEditorAssignmentObjectMixin):
             kwargs={'assignmentid': self.assignment.id})
 
     def create_feedbackdraft(self, points, feedbacktext_raw, feedbacktext_html, publish=False):
-        pass
-        # draft = FeedbackDraft(
-        #     delivery=self.delivery,
-        #     points=points,
-        #     feedbacktext_raw=feedbacktext_raw,
-        #     feedbacktext_html=feedbacktext_html,
-        #     saved_by=self.request.user
-        # )
-        # if publish:
-        #     draft.published = True
-        #     draft.staticfeedback = draft.to_staticfeedback()
-        #     draft.staticfeedback.full_clean()
-        #     draft.staticfeedback.save()
-        # draft.save()
-        # return draft
+
+
+        ids = self.request.GET.getlist('edit')
+        groups = AssignmentGroup.objects.get_queryset().filter(id__in=ids)
+
+        for group in groups:
+            delivery = group.get_active_deadline().query_successful_deliveries()[0]
+            draft = FeedbackDraft(
+                delivery=delivery,
+                points=points,
+                feedbacktext_raw=feedbacktext_raw,
+                feedbacktext_html=feedbacktext_html,
+                saved_by=self.request.user
+            )
+            if publish:
+                draft.published = True
+                draft.staticfeedback = draft.to_staticfeedback()
+                draft.staticfeedback.full_clean()
+                draft.staticfeedback.save()
+            draft.save()
+        return draft
 
 
 class FeedbackBulkEditorFormBase(forms.Form):
@@ -158,15 +166,16 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
     def form_valid(self, form):
         publish = 'submit_publish' in self.request.POST
         preview = 'submit_preview' in self.request.POST
-        print
-        print
-        print self.request.POST
-        print
-        print
-
 
         self.save_pluginspecific_state(form)
-        # draft = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
+
+        print
+        print
+        print self.request
+        print
+        print
+
+        draft = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
         # if preview:
         #     return redirect('devilry_gradingsystem_feedbackdraft_preview',
         #         deliveryid=self.delivery.id,
@@ -177,7 +186,7 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
 
     def get_initial_from_last_draft(self):
         return {
-            'feedbacktext': 'HOI'
+            'feedbacktext': ''
         }
 
     def get_initial(self):
