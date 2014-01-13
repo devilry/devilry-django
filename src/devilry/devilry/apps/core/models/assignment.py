@@ -248,9 +248,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         max_length=25, blank=True, null=True,
         default='passed-failed',
         choices=(
-            ("passed-failed", _("Passed/failed")),
-            ("raw-points", _("Raw points")),
-            ("custom-table", _("Custom table")),
+            ("passed-failed", _("Passed or failed")),
+            ("raw-points", _("Points")),
+            ("custom-table", _("Map points to grade")),
         ))
     grading_system_plugin_id = models.CharField(
         default='devilry_gradingsystemplugin_approved',
