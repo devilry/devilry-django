@@ -40,7 +40,7 @@ class TestSelectPointsToGradeMapperView(TestCase, AdminViewTestMixin):
             self.assertEquals(response.status_code, 200)
             html = response.content
             self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
-                'How are students graded?')
+                'How are results presented to the student?')
             self.assertEquals(len(cssFind(html, '.devilry_gradingsystem_verbose_selectbox')), 3)
 
             self.assertEquals(cssGet(html, '.passed-failed_points_to_grade_mapper_box h2').text.strip(),
