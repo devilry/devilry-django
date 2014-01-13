@@ -99,7 +99,9 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
     def test_post_valid_form(self):
         myregistry = GradingSystemPluginRegistry()
         myregistry.add(MockPointsPluginApi)
-        self.assignmentbuilder.update(grading_system_plugin_id=MockPointsPluginApi.id)
+        self.assignmentbuilder.update(
+            grading_system_plugin_id=MockPointsPluginApi.id,
+            max_points=200 )
         with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
             response = self.post_as(self.admin1, {
                 'passing_grade_min_points': 100
@@ -126,3 +128,20 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
             self.assertEquals(self.assignmentbuilder.assignment.passing_grade_min_points, 10) # Unchanged
             html = response.content
             self.assertIn('Ensure this value is greater than or equal to 0', html)
+
+    def test_post_larger_than_max_points_shows_error(self):
+        myregistry = GradingSystemPluginRegistry()
+        myregistry.add(MockPointsPluginApi)
+        self.assignmentbuilder.update(
+            grading_system_plugin_id=MockPointsPluginApi.id,
+            max_points=100,
+            passing_grade_min_points=10
+        )
+        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
+            response = self.post_as(self.admin1, {
+                'passing_grade_min_points': 200
+            })
+            self.assertEquals(response.status_code, 200)
+            self.assertEquals(self.assignmentbuilder.assignment.passing_grade_min_points, 10) # Unchanged
+            html = response.content
+            self.assertIn('The minumum number of points required to pass must be less than the maximum number of points possible on the assignment', html)

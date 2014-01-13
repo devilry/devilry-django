@@ -44,17 +44,17 @@ class TestSelectPointsToGradeMapperView(TestCase, AdminViewTestMixin):
             self.assertEquals(len(cssFind(html, '.devilry_gradingsystem_verbose_selectbox')), 3)
 
             self.assertEquals(cssGet(html, '.passed-failed_points_to_grade_mapper_box h2').text.strip(),
-                'Passed or failed')
+                'As passed or failed')
             self.assertEquals(cssGet(html, '.passed-failed_points_to_grade_mapper_box a.btn')['href'],
                 '?points_to_grade_mapper=passed-failed')
 
             self.assertEquals(cssGet(html, '.raw-points_points_to_grade_mapper_box h2').text.strip(),
-                'Points')
+                'As points')
             self.assertEquals(cssGet(html, '.raw-points_points_to_grade_mapper_box a.btn')['href'],
                 '?points_to_grade_mapper=raw-points')
 
             self.assertEquals(cssGet(html, '.custom-table_points_to_grade_mapper_box h2').text.strip(),
-                'Map points to grade')
+                'As a text looked up in a custom table')
             self.assertEquals(cssGet(html, '.custom-table_points_to_grade_mapper_box a.btn')['href'],
                 '?points_to_grade_mapper=custom-table')
 
