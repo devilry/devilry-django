@@ -4,6 +4,8 @@ from django.shortcuts import redirect
 from django import forms
 
 from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import StaticFeedback
+from devilry_gradingsystem.models import FeedbackDraft
 from .base import AssignmentSingleObjectMixin
 
 
@@ -20,4 +22,7 @@ class SummaryView(AssignmentSingleObjectMixin, DetailView):
                 context['invalid_grading_system_plugin_id'] = True
         else:
             context['no_grading_system_plugin_id'] = True
+
+        context['no_staticfeedbacks'] = not StaticFeedback.objects.filter(delivery__deadline__assignment_group__parentnode=assignment).exists()
+        context['no_feedbackdrafts'] = not FeedbackDraft.objects.filter(delivery__deadline__assignment_group__parentnode=assignment).exists()
         return context

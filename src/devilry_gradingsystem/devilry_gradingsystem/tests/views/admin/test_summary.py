@@ -33,5 +33,5 @@ class TestSummaryView(TestCase, AdminViewTestMixin):
             response = self.get_as(self.admin1)
             self.assertEquals(response.status_code, 200)
             html = response.content
-            # self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
-                # 'How are students graded?')
+            self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
+                'Grading system')
