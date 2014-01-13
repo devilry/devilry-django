@@ -52,7 +52,6 @@ class SetPassingGradeMinPointsCommonMixin(AssignmentSingleObjectRequiresValidPlu
     def add_common_context_data(self, context):
         context['pluginapi'] = self.get_pluginapi()
         context['current_step'] = self.get_wizard_step_map().get_by_slug('setpassing_grade_min_points')
-        print self.get_wizard_step_map().get_by_slug('setpassing_grade_min_points').get_previous_url()
 
     def get_success_url(self):
         return reverse('devilry_gradingsystem_admin_summary', kwargs={

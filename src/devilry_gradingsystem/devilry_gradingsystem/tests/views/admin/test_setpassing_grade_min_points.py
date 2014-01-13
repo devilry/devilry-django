@@ -43,7 +43,7 @@ class TestSetPassingGradeMinPointsView(TestCase, AdminViewTestMixin):
             self.assertEquals(response.status_code, 200)
             html = response.content
             self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
-                'Configure the minumum number of points required to pass')
+                'Set the minumum number of points required to pass')
             self.assertTrue(cssExists(html, '#id_passing_grade_min_points'))
             self.assertEquals(cssGet(html, '#id_passing_grade_min_points')['value'], '1')  # The default value
 
