@@ -5,6 +5,7 @@
     <div class="container">
         <div class="page-header">
             <h1>{% trans "How are results presented to the student?" %}</h1>
+            {% include "devilry_gradingsystem/admin/currentprogress.django.html" %}
         </div>
 
         {% if form.errors %}
@@ -19,7 +20,7 @@
                     {% trans "You select the number of points required to pass in the next step of this wizard." %}
                 {% endif %}
             </p>
-            <a class="btn btn-default" href="?points_to_grade_mapper=passed-failed">{% trans "Use this" %}</a>
+            {% include  "devilry_gradingsystem/admin/use-this-button.django.html" with href="?points_to_grade_mapper=passed-failed" %}
         </div>
 
         <div class="devilry_gradingsystem_verbose_selectbox raw-points_points_to_grade_mapper_box">
@@ -30,13 +31,15 @@
                     {% trans "You select the number of points required to pass in the next step of this wizard." %}
                 {% endif %}
             </p>
-            <a class="btn btn-default" href="?points_to_grade_mapper=raw-points">{% trans "Use this" %}</a>
+            {% include  "devilry_gradingsystem/admin/use-this-button.django.html" with href="?points_to_grade_mapper=raw-points" %}
         </div>
 
         <div class="devilry_gradingsystem_verbose_selectbox custom-table_points_to_grade_mapper_box">
             <h2>{% trans "As a text looked up in a custom table" %}</h2>
             <p>{% trans "You set up a table mapping points to a grade. Use this if you want to grade your students according to some scale, such as A-F." %}</p>
-            <a class="btn btn-default" href="?points_to_grade_mapper=custom-table">{% trans "Use this" %}</a>
+            {% include  "devilry_gradingsystem/admin/use-this-button.django.html" with href="?points_to_grade_mapper=custom-table" %}
         </div>
+
+        {% include  "devilry_gradingsystem/admin/backbutton-bar.django.html" %}
     </div>
 {% endblock body %}

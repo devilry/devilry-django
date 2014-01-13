@@ -9,6 +9,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.layout import Field
 from crispy_forms.layout import Submit
+from crispy_forms.layout import HTML
 from crispy_forms.layout import ButtonHolder
 
 from devilry.apps.core.models import Assignment
@@ -24,11 +25,9 @@ class MaxPointsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(MaxPointsForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
+        self.helper.form_tag = False
         self.helper.layout = Layout(
-            Field('max_points'),
-            ButtonHolder(
-                Submit('submit', _('Save'))
-            )
+            Field('max_points')
         )
 
 
@@ -43,7 +42,9 @@ class SetMaxPointsComminMixin(AssignmentSingleObjectRequiresValidPluginMixin):
             return None
 
     def add_common_context_data(self, context):
-        context['pluginapi'] = self.get_pluginapi()
+        pluginapi = self.get_pluginapi()
+        context['pluginapi'] = pluginapi
+        context['current_step'] = self.get_wizard_step_map().get_by_slug('setmaxpoints')
 
     def get_success_url(self):
         return reverse('devilry_gradingsystem_admin_select_points_to_grade_mapper', kwargs={

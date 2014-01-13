@@ -1,5 +1,6 @@
 {% extends "devilry_gradingsystem/admin/base.django.html" %}
 {% load i18n %}
+{% load url from future %}
 
 {% block body %}
     <div class="container">
@@ -23,8 +24,17 @@
             <div class="devilry_gradingsystem_verbose_selectbox">
                 <h2>{{ plugin.title }}</h2>
                 <p>{{ plugin.description }}</p>
-                <a class="btn btn-default" href="?grading_system_plugin_id={{ plugin.id }}">{% trans "Use this" %}</a>
+                <a class="btn btn-primary" href="?grading_system_plugin_id={{ plugin.id }}">
+                    {% trans "Use this" %}
+                    <i class="fa fa-step-forward"></i>
+                </a>
             </div>
         {% endfor %}
+
+        <hr>
+        <a href="{% url 'devilry_gradingsystem_admin_summary' assignment.id %}" class="btn btn-default">
+            <i class="fa fa-step-backward"></i>
+            {% trans "Previous" %}
+        </a>
     </div>
 {% endblock body %}
