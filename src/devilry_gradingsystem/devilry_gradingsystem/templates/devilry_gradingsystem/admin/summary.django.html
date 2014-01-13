@@ -29,19 +29,14 @@
                     <th>{% trans "How are results presented to the student?" %}</th>
                     <td>{{ assignment.get_points_to_grade_mapper_display }}</td>
                 </tr>
-                {% if not pluginapi.sets_max_points_automatically %}
-                    <tr>
-                        <th>{% trans "Maximum possible number of points" %}</th>
-                        <td>{{ assignment.max_points }}</td>
-                    </tr>
-                {% endif %}
-
-                {% if not pluginapi.sets_passing_grade_min_points_automatically %}
-                    <tr>
-                        <th>{% trans "Minumum number of points required to pass" %}</th>
-                        <td>{{ assignment.passing_grade_min_points }}</td>
-                    </tr>
-                {% endif %}
+                <tr>
+                    <th>{% trans "Maximum possible number of points" %}</th>
+                    <td>{{ assignment.max_points }}</td>
+                </tr>
+                <tr>
+                    <th>{% trans "Minumum number of points required to pass" %}</th>
+                    <td>{{ assignment.passing_grade_min_points }}</td>
+                </tr>
             </table>
         {% endif %}
 
