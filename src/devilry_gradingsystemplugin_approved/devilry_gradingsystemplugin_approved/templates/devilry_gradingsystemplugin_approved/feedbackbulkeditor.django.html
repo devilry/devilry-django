@@ -1,0 +1,9 @@
+{% extends "devilry_gradingsystem/feedbackbulkeditorbase.django.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block pagecontent %}
+    <div class="container">
+        {% crispy form %}
+    </div>
+{% endblock pagecontent %}

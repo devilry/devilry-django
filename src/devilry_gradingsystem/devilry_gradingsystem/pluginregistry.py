@@ -83,6 +83,13 @@ class GradingSystemPluginInterface(object):
         """
         raise NotImplementedError("get_edit_feedback_url() MUST be implemented")
 
+    def get_bulkedit_feedback_url(self, assignmentid):
+        """
+        Get the feedback editing URL for this plugin for the given ``assignmentid``.
+
+        :param deliveryid: The ID of the delivery to provide feedback for.
+        """
+        raise NotImplementedError("get_edit_feedback_url() MUST be implemented")
 
 class GradingSystemPluginNotInRegistryError(Exception):
     """

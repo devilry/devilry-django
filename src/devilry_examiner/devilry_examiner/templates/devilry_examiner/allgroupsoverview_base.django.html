@@ -36,6 +36,8 @@
 
 </div>
 
+
+
 {% block content %}
 <div class="container">
     <ul class="pager pull-right">
@@ -56,11 +58,15 @@
       {% endif %}
     </ul>
 </div>
+
   <div class="container grouplistingbox">
+
+    <form action="{% url 'devilry_examiner_dashboard' %}bulktest/" method="post">{% csrf_token %}
+
     <table class="table table-striped infolistingtable">
       {% for group in groups %}
       <tr class="group">
-        <td><input type="checkbox" name="todelete" value="bjall"/></td>
+        <td><input type="checkbox" name="edit" value="{{ group.id }}"/></td>
         <td class="titled-cell groupinfo">
           <h3>
             <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
@@ -85,8 +91,8 @@
 
       {% endfor%}
     </table><!-- row -->
-
-
+    <input type="submit" value="Submit" />
+    </form>
 
 
 

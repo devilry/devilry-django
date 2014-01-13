@@ -1,10 +1,12 @@
 from django.views.generic import DetailView
+from django.views.generic import FormView
 from django.views.generic import TemplateView
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
+from ..forms import BulkForm
 
 
 def get_paginated_page(paginator, page):
@@ -34,7 +36,7 @@ class AllGroupsOverview(DetailView):
         groups = AssignmentGroup.objects.get_queryset().filter(parentnode__id=self.object.id)
         groups = groups.filter_examiner_has_access(self.request.user)
 
-        paginator = Paginator(groups, 4, orphans=3)
+        paginator = Paginator(groups, 100, orphans=3)
         page = self.request.GET.get('page')
 
         context['groups'] = get_paginated_page(paginator, page)
@@ -53,7 +55,7 @@ class WaitingForFeedbackOverview(AllGroupsOverview):
 
         groups = context['allgroups']
         groups = groups.filter_by_status('waiting-for-something')
-        paginator = Paginator(groups, 2, orphans=2)
+        paginator = Paginator(groups, 100, orphans=2)
 
         page = self.request.GET.get('page')
 
@@ -70,7 +72,7 @@ class WaitingForDeliveriesOverview(AllGroupsOverview):
 
         groups = context['allgroups']
         groups = groups.filter_by_status('waiting-for-something')
-        paginator = Paginator(groups, 2, orphans=2)
+        paginator = Paginator(groups, 100, orphans=2)
 
         page = self.request.GET.get('page')
 
@@ -87,10 +89,27 @@ class CorrectedOverview(AllGroupsOverview):
 
         groups = context['allgroups']
         groups = groups.filter_by_status('corrected')
-        paginator = Paginator(groups, 2, orphans=2)
+        paginator = Paginator(groups, 100, orphans=2)
 
         page = self.request.GET.get('page')
 
         context['groups'] = get_paginated_page(paginator, page)
 
+        return context
+
+
+class BulkTest(FormView):
+    template_name = "devilry_examiner/bulktest.django.html"
+    form_class = BulkForm
+
+    def get_context_data(self, **kwargs):
+        context = super(BulkTest, self).get_context_data(**kwargs)
+
+        print
+        print
+        print self.request.POST
+        print
+        print
+
+        context['groups'] = self.request.POST.getlist('edit')
         return context

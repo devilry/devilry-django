@@ -21,5 +21,8 @@ class ApprovedPluginApi(GradingSystemPluginInterface):
     def get_max_points(self):
         return 1
 
+    def get_bulkedit_feedback_url(self, assignmentid):
+        pass
+
 
 gradingsystempluginregistry.add(ApprovedPluginApi)

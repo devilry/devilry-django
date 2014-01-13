@@ -1,0 +1,13 @@
+{% extends "devilry_examiner/base.django.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans "Examiner" %}{% endblock %}
+
+{% block body %}
+<h1>Hello World</h1>
+
+{% for group in groups %}
+<p>{{ group }}</p>
+{% endfor %}
+{% endblock %}

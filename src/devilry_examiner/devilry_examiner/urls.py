@@ -9,6 +9,7 @@ from .views.allgroupsoverview import AllGroupsOverview
 from .views.allgroupsoverview import WaitingForFeedbackOverview
 from .views.allgroupsoverview import WaitingForDeliveriesOverview
 from .views.allgroupsoverview import CorrectedOverview
+from .views.allgroupsoverview import BulkTest
 from .views.singledelivery import SingleDeliveryView
 
 i18n_packages = get_javascript_catalog_packages(
@@ -31,6 +32,9 @@ urlpatterns = patterns('devilry_examiner',
                        url('^allgroupsoverview/(?P<assignmentid>\d+)/corrected$',
                            login_required(CorrectedOverview.as_view()),
                            name='devilry_examiner_corrected'),
+                       url('^bulktest/$',
+                           login_required(BulkTest.as_view()),
+                           name='devilry_examiner_bulktest'),
                        url('^singlegroupoverview/(?P<groupid>\d+)$',
                            login_required(SingleGroupOverview.as_view()),
                            name='devilry_examiner_singlegroupoverview'),
