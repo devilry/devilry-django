@@ -16,6 +16,9 @@ class InvalidLargestMaximumPointsValidationError(ValidationError):
 class GapsInMapValidationError(ValidationError):
     pass
 
+class DuplicateGradeError(Exception):
+    pass
+
 
 class PointToGradeMap(models.Model):
     """
@@ -68,8 +71,14 @@ class PointToGradeMap(models.Model):
 
 
     def create_map(self, *minimum_points_to_grade_list):
+        gradeset = set()
         for index, entry in enumerate(minimum_points_to_grade_list):
             minimum_points, grade = entry
+            if grade in gradeset:
+                raise DuplicateGradeError(
+                    _('{grade} occurs multiple times in the map. A grade must be unique within the map.'.format(
+                        grade=grade)))
+            gradeset.add(grade)
             if index == len(minimum_points_to_grade_list) - 1:
                 maximum_points = self.assignment.max_points
             else:
