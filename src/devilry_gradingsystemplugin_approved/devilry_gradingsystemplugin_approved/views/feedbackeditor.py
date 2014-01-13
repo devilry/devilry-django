@@ -11,8 +11,8 @@ from devilry_gradingsystem.models import FeedbackDraft
 
 class ApprovedFeedbackEditorForm(FeedbackEditorFormBase):
     points = forms.BooleanField(
-        label=_('Approved'),
-        help_text=_('Check if delivery is Approved.'),
+        label=_('Passed?'),
+        help_text=_('Check to provide a passing grade.'),
         required=False)
 
     def __init__(self, *args, **kwargs):
