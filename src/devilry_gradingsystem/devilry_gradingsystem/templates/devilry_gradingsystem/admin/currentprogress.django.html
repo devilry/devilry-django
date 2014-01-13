@@ -1,0 +1,14 @@
+{% load i18n %}
+
+<p class="text-muted">{% blocktrans with number=current_step.get_number total=current_step.get_total %}Step {{number}}/{{total}}{% endblocktrans %}</p>
+<div class="progress">
+    <div class="progress-bar {% if current_step.is_last %}progress-bar-success{% endif %}"
+            role="progressbar"
+            aria-valuenow="{{ current_step.get_percent }}"
+            aria-valuemin="0" aria-valuemax="100"
+            style="width: {{ current_step.get_percent }}%;">
+        <span class="sr-only">
+            {% blocktrans with percent=current_step.get_percent %}{{percent}}% Complete{% endblocktrans %}
+        </span>
+    </div>
+</div>

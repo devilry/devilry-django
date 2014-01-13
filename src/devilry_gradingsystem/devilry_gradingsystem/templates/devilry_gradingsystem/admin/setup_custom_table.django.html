@@ -7,8 +7,8 @@
     <div class="container">
         <div class="page-header">
             <h1>{% trans "Map points to grade" %}</h1>
+            {% include "devilry_gradingsystem/admin/currentprogress.django.html" %}
         </div>
-
         <p>{% trans "Setup how you wish to map points to grade. Specify the grade in the first column, and the minimum number of points required to get that grade in the second column. The first row must have the value 0 in the second column." %}</p>
     </div>
 
@@ -26,8 +26,7 @@
                         <i class="fa fa-plus"></i>
                         {% trans "Add more rows" %}
                     </button>
-                    <hr>
-                    <button type="submit" name="submit_save" class="btn btn-primary">{% trans "Save" %}</button>
+                    {% include  "devilry_gradingsystem/admin/backandforward-bar.django.html" %}
                 </form>
             </div>
 

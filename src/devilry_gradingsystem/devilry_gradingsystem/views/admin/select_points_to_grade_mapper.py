@@ -47,4 +47,5 @@ class SelectPointsToGradeMapperView(AssignmentSingleObjectRequiresValidPluginMix
         context = super(SelectPointsToGradeMapperView, self).get_context_data(**kwargs)
         context['pluginapi'] = self.object.get_gradingsystem_plugin_api()
         context['form'] = getattr(self, 'form', None)
+        context['current_step'] = self.get_wizard_step_map().get_by_slug('select_points_to_grade_mapper')
         return context

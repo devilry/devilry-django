@@ -1,0 +1,13 @@
+{% load i18n %}
+
+{% if current_step.is_last %}
+    <a class="btn btn-success" href="{{ href }}">
+        <i class="fa fa-check"></i>
+        {% trans "Use this" %}
+    </a>
+{% else %}
+    <a class="btn btn-primary" href="{{ href }}">
+        {% trans "Use this" %}
+        <i class="fa fa-step-forward"></i>
+    </a>
+{% endif %}

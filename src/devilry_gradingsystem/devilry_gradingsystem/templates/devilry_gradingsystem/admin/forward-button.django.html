@@ -1,0 +1,13 @@
+{% load i18n %}
+
+{% if current_step.is_last %}
+    <button class="btn btn-success pull-right" type="submit">
+        <i class="fa fa-check"></i>
+        {% trans "Finish" %}
+    </button>
+{% else %}
+    <button class="btn btn-primary pull-right" type="submit">
+        {% trans "Next" %}
+        <i class="fa fa-step-forward"></i>
+    </button>
+{% endif %}

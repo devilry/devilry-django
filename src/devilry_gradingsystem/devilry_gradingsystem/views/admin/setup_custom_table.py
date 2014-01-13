@@ -106,6 +106,7 @@ class SetupCustomTableView(AssignmentSingleObjectRequiresValidPluginMixin, Detai
         context['formset'] = self.formset
         context['formsethelper'] = PointRangeToGradeFormSetHelper()
         context['validationerrors'] = getattr(self, 'validationerrors', None)
+        context['current_step'] = self.get_wizard_step_map().get_by_slug('setup_custom_table')
         return context
 
     def get_success_url(self):

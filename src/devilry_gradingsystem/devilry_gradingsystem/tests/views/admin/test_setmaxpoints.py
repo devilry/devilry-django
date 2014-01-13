@@ -43,7 +43,7 @@ class TestSetMaxPointsView(TestCase, AdminViewTestMixin):
             self.assertEquals(response.status_code, 200)
             html = response.content
             self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
-                'Configure the maximum possible number of points')
+                'Set the maximum possible number of points')
             self.assertTrue(cssExists(html, '#id_max_points'))
             self.assertEquals(cssGet(html, '#id_max_points')['value'], '1')  # The default value
 
