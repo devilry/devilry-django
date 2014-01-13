@@ -22,7 +22,7 @@ class ApprovedPluginApi(GradingSystemPluginInterface):
         return 1
 
     def get_bulkedit_feedback_url(self, assignmentid):
-        pass
+        return reverse('devilry_gradingsystemplugin_approved_feedbackbulkeditor', kwargs={'assignmentid': assignmentid})
 
 
 gradingsystempluginregistry.add(ApprovedPluginApi)
