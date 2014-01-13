@@ -74,7 +74,7 @@ class TestFeedbackEditorView(TestCase):
         self.assertTrue(response['Location'].endswith(self.url))
 
     def test_post_publish_redirect_to_successurl(self):
-        response = self._post_as(self.examiner1, {'points': '20', 'publish': 'publish'})
+        response = self._post_as(self.examiner1, {'points': '20', 'submit_publish': 'publish'})
         successurl = reverse('devilry_examiner_singledeliveryview',
             kwargs={'deliveryid': self.deliverybuilder.delivery.id})
         self.assertTrue(response['Location'].endswith(successurl))

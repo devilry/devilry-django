@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from .assignment import Assignment
 
@@ -13,6 +14,9 @@ class InvalidLargestMaximumPointsValidationError(ValidationError):
     pass
 
 class GapsInMapValidationError(ValidationError):
+    pass
+
+class DuplicateGradeError(Exception):
     pass
 
 
@@ -50,8 +54,9 @@ class PointToGradeMap(models.Model):
         else:
             first_entry = mapentries[0]
             if first_entry.minimum_points != 0:
-                raise NonzeroSmallesMinimalPointsValidationError('The first entry in the map must have minimum_points set to 0 (current value is {}).'.format(
-                    first_entry.minimum_points))
+                raise NonzeroSmallesMinimalPointsValidationError(
+                    _('The smallest entry in the map must have minimum points set to 0 (current value is {minimum_points}).').format(
+                        minimum_points=first_entry.minimum_points))
             last_entry = mapentries[-1]
             if last_entry.maximum_points != self.assignment.max_points:
                 raise InvalidLargestMaximumPointsValidationError('The last entry in the map must have maximum_points set to the maximum points allowed on the assignment ({}).'.format(
@@ -66,8 +71,14 @@ class PointToGradeMap(models.Model):
 
 
     def create_map(self, *minimum_points_to_grade_list):
+        gradeset = set()
         for index, entry in enumerate(minimum_points_to_grade_list):
             minimum_points, grade = entry
+            if grade in gradeset:
+                raise DuplicateGradeError(
+                    _('{grade} occurs multiple times in the map. A grade must be unique within the map.'.format(
+                        grade=grade)))
+            gradeset.add(grade)
             if index == len(minimum_points_to_grade_list) - 1:
                 maximum_points = self.assignment.max_points
             else:
@@ -95,6 +106,15 @@ class PointToGradeMap(models.Model):
             If no grade matching the given points exist.
         """
         return self.pointrangetograde_set.filter_grades_matching_points(points).get()
+
+    def as_choices(self):
+        """
+        Get as a list of tuples compatible with the choices argument for
+        django ChoiceField and TypedChoiceField with coerce set to ``int``.
+        """
+        return [(pointrange.minimum_points, pointrange.grade) \
+            for pointrange in self.pointrangetograde_set.all()]
+
 
     def __unicode__(self):
         return u'Point to grade map for {}'.format(self.assignment.get_path())

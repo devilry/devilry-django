@@ -56,10 +56,12 @@ class SetMaxPointsDisplay(SetMaxPointsComminMixin, DetailView):
     def get(self, *args, **kwargs):
         pluginapi = self.get_pluginapi()
         if pluginapi and pluginapi.sets_max_points_automatically:
-            assignment.max_points = pluginapi.get_max_points()
+            self.object = self.get_object()
+            assignment = self.object
+            assignment.set_max_points(pluginapi.get_max_points())
             assignment.full_clean()
             assignment.save()
-            redirect(self.get_success_url())
+            return redirect(self.get_success_url())
         else:
             return super(SetMaxPointsDisplay, self).get(*args, **kwargs)
 

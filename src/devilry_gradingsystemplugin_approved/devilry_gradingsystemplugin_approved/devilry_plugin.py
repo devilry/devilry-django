@@ -9,8 +9,8 @@ class ApprovedPluginApi(GradingSystemPluginInterface):
     id = 'devilry_gradingsystemplugin_approved'
     sets_passing_grade_min_points_automatically = True
     sets_max_points_automatically = True
-    title = _('Specify approved or not approved delivery attempt')
-    description = _('Provide a single checkbox which conclude the attempt to be approved when checked')
+    title = _('Select passed or failed')
+    description = _('Provides a single checkbox that can be checked to provide a passing grade.')
 
     def get_edit_feedback_url(self, deliveryid):
         return reverse('devilry_gradingsystemplugin_approved_feedbackeditor', kwargs={'deliveryid': deliveryid})
