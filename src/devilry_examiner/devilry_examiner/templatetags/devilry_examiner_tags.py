@@ -26,6 +26,10 @@ def format_is_passing_grade(is_passing_grade):
     else:
         return _('failed')
 
+@register.filter
+def get_feedback_url(assignment):
+    return assignment.get_gradingsystem_plugin_api().get_bulkedit_feedback_url(assignment.id)
+
 
 @register.filter(name='status_to_buttontext')
 @stringfilter
