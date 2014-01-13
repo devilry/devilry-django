@@ -27,6 +27,7 @@ class PassingGradeMinPointsForm(forms.ModelForm):
 
         if assignment.points_to_grade_mapper == 'custom-table':
             self.fields['passing_grade_min_points'] = forms.TypedChoiceField(
+                label=_('Select the grade required to pass the assignment'),
                 coerce=int,
                 choices=assignment.get_point_to_grade_map().as_choices()
             )
