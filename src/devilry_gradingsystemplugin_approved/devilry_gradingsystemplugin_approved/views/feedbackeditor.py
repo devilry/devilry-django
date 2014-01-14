@@ -59,9 +59,9 @@ class ApprovedFeedbackBulkEditorView(FeedbackBulkEditorFormView):
     template_name = 'devilry_gradingsystemplugin_approved/feedbackbulkeditor.django.html'
     form_class = ApprovedFeedbackBulkEditorForm
 
-    def get_initial_from_last_draft(self):
-        initial = super(ApprovedFeedbackBulkEditorView, self).get_initial_from_last_draft()
-        initial['points'] = False
+    def get_initial_from_draft(self, draft):
+        initial = super(ApprovedFeedbackBulkEditorView, self).get_initial_from_draft(draft)
+        initial['points'] = draft.points
         return initial
 
     def get_context_data(self, **kwargs):
