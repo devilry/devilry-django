@@ -168,14 +168,7 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(content['number_of_deliveries'], 3)
         self.assertEquals(content['number_of_candidates'], 5)
         self.assertEquals(content['has_valid_grading_setup'], True)
-        self.assertEquals(content['gradeeditor'], {
-            u'gradeeditorid': u'approved',
-            u'title': u'Approved/not approved',
-            u'shortformat': {
-                u'widget': u'bool',
-                u'shorthelp': u'Must be one of: true, false.'
-            }
-        })
+        self.assertEquals(content['gradingsystemplugin_title'], 'Select passed or failed')
         self.assertEquals(set(content.keys()),
                           set(['short_name', 'long_name', 'admins', 'etag',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
@@ -184,9 +177,9 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous',
                                'number_of_deliveries', 'number_of_groups',
-                               'number_of_candidates', 'gradeeditor',
+                               'number_of_candidates',
                                'number_of_groups_where_is_examiner',
-                               'has_valid_grading_setup']))
+                               'has_valid_grading_setup', 'gradingsystemplugin_title']))
 
     def test_get_admins(self):
         self.client.login(username='duck2000admin', password='test')
@@ -318,9 +311,9 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'scale_points_percent', 'deadline_handling',
                                'first_deadline', 'breadcrumb', 'anonymous',
                                'number_of_deliveries', 'number_of_groups',
-                               'number_of_candidates', 'gradeeditor',
+                               'number_of_candidates',
                                'number_of_groups_where_is_examiner',
-                               'has_valid_grading_setup']))
+                               'has_valid_grading_setup', 'gradingsystemplugin_title']))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 
