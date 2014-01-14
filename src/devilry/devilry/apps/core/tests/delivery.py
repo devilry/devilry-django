@@ -9,6 +9,7 @@ from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import DeliveryBuilder
 from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import deliverytypes
 from devilry.apps.core.testhelper import TestHelper
 
@@ -45,6 +46,45 @@ class TestDelivery(TestCase):
             .add_deadline_in_x_weeks(weeks=1).add_delivery().delivery
         self.assertEquals(delivery.assignment_group, groupbuilder.group)
 
+    def test_autoset_last_delivery_on_group_new_successful(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group()
+        deadline = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1).deadline
+        delivery = Delivery.objects.create(
+            deadline=deadline,
+            successful=True)
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_delivery, delivery)
+        self.assertEquals(delivery.last_delivery_by_group, groupbuilder.group)
+
+    def test_do_not_autoset_last_delivery_on_group_when_not_successful(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group()
+        deadline = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1).deadline
+        delivery = Delivery.objects.create(
+            deadline=deadline,
+            successful=False)
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_delivery_id, None)
+        with self.assertRaises(AssignmentGroup.DoesNotExist):
+            x = delivery.last_delivery_by_group
+
+    def test_do_not_autoset_last_delivery_on_group_when_false(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group()
+        deadline = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1).deadline
+        delivery = Delivery(
+            deadline=deadline,
+            successful=False)
+        delivery.save(autoset_last_delivery_on_group=False)
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_delivery_id, None)
 
 
 

@@ -133,6 +133,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
        The last `StaticFeedback`_ (by save timestamp) on this assignmentgroup.
 
+    .. attribute:: last_delivery
+
+       The last :class:`devilry.apps.core.models.Delivery` on this assignmentgroup.
+
     .. attribute:: etag
 
        A DateTimeField containing the etag for this object.
@@ -141,6 +145,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
        A CharField containing the status of the group.
        Valid status values:
+
            * "no-deadlines"
            * "corrected"
            * "closed-without-feedback"
@@ -156,6 +161,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     is_open = models.BooleanField(blank=True, default=True,
             help_text = 'If this is checked, the group can add deliveries.')
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
+    last_delivery = models.OneToOneField("Delivery", blank=True, null=True,
+        related_name='last_delivery_by_group')
     etag = models.DateTimeField(auto_now_add=True)
     delivery_status = models.CharField(max_length=30, blank=True, null=True,
         help_text='The delivery_status of a group',

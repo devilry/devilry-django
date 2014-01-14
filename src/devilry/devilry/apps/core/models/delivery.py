@@ -268,19 +268,33 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             Automatically set ``time_of_delivery`` to *now*? Defaults to ``True``.
         :param autoset_number:
             Automatically number the delivery if it is successful? Defaults to ``True``.
+        :param autoset_last_delivery_on_group:
+            Automatically set the last_delivery attribute of the group
+            if the ``id`` is ``None`` and ``successful`` is ``True``?
+            Defaults to ``True``.
         """
+        autoset_last_delivery_on_group = kwargs.pop('autoset_last_delivery_on_group', True)
         autoset_time_of_delivery = kwargs.pop('autoset_time_of_delivery', True)
+        autoset_number = kwargs.pop('autoset_number', True)
+
         if autoset_time_of_delivery:
             # NOTE: We remove timezoneinfo and microseconds to make the timestamp more portable, and easier to compare.
             now = datetime.now().replace(microsecond=0, tzinfo=None)
             self.time_of_delivery = now
-        autoset_number = kwargs.pop('autoset_number', True)
         if autoset_number:
             if self.successful:
                 self._set_number()
             else:
                 self.number = 0 # NOTE: Number is 0 until the delivery is successful
+
+        is_new = self.id is None
         super(Delivery, self).save(*args, **kwargs)
+
+        if autoset_last_delivery_on_group and is_new and self.successful:
+            group = self.assignment_group
+            group.last_delivery = self
+            group.save(update_delivery_status=False)
+
 
     def __unicode__(self):
         return (u'Delivery(id={id}, number={number}, group={group}, '
