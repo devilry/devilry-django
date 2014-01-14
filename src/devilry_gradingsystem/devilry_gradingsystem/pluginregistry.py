@@ -89,7 +89,7 @@ class GradingSystemPluginInterface(object):
 
         :param deliveryid: The ID of the delivery to provide feedback for.
         """
-        raise NotImplementedError("get_edit_feedback_url() MUST be implemented")
+        raise NotImplementedError("get_bulkedit_feedback_url() MUST be implemented")
 
 class GradingSystemPluginNotInRegistryError(Exception):
     """

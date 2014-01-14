@@ -64,18 +64,8 @@ class ApprovedFeedbackBulkEditorView(FeedbackBulkEditorFormView):
         initial['points'] = draft.points
         return initial
 
-    def get_context_data(self, **kwargs):
-        context = super(ApprovedFeedbackBulkEditorView, self).get_context_data(**kwargs)
-
-        ids = self.request.GET.getlist('edit')
-        groups = AssignmentGroup.objects.get_queryset().filter(id__in=ids)
-
-        context['groups'] = groups
-        return context
-
-    def get(self, *args, **kwargs):
-        print "GET: ", self.request.GET
-        return super(ApprovedFeedbackBulkEditorView, self).get(*args, **kwargs)
+    def get_default_points_value(self):
+        return False
 
     def get_points_from_form(self, form):
         if form.cleaned_data['points']:

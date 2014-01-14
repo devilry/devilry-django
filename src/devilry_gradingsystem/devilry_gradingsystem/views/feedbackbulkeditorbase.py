@@ -18,9 +18,6 @@ from devilry_gradingsystem.models import FeedbackDraft
 from devilry_gradingsystem.widgets.editmarkdown import EditMarkdownLayoutObject
 from devilry_gradingsystem.widgets.editfeedbackbuttonbar import EditFeedbackButtonBar
 
-def get_redirect_url(draft_ids):
-    pass
-
 
 class FeedbackBulkEditorAssignmentObjectMixin(SingleObjectMixin):
     """
@@ -52,7 +49,6 @@ class FeedbackBulkEditorAssignmentObjectMixin(SingleObjectMixin):
         return super(FeedbackBulkEditorAssignmentObjectMixin, self).get(*args, **kwargs)
 
     def post(self, *args, **kwargs):
-        print "Post after dispatch?"
         self._setup_common_data()
         assignment = self.object
         if not assignment.has_valid_grading_setup():
@@ -79,14 +75,20 @@ class FeedbackBulkEditorMixin(FeedbackBulkEditorAssignmentObjectMixin):
     """
     Base mixin class for all feedback editor views.
     """
+    def get_context_data(self, **kwargs):
+        context = super(FeedbackBulkEditorMixin, self).get_context_data(**kwargs)
+
+        ids = self.request.GET.getlist('edit')
+        groups = AssignmentGroup.objects.get_queryset().filter(id__in=ids)
+
+        context['groups'] = groups
+        return context
 
     def get_success_url(self):
         return reverse('devilry_examiner_allgroupsoverview',
             kwargs={'assignmentid': self.assignment.id})
 
     def create_feedbackdraft(self, points, feedbacktext_raw, feedbacktext_html, publish=False):
-
-
         ids = self.request.GET.getlist('edit')
         groups = AssignmentGroup.objects.get_queryset().filter(id__in=ids)
         draft = None
@@ -136,7 +138,6 @@ class FeedbackBulkEditorFormBase(forms.Form):
             self.helper.layout.append(element)
 
 
-
 class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
     def get_form_kwargs(self):
         kwargs = super(FeedbackBulkEditorFormView, self).get_form_kwargs()
@@ -150,6 +151,9 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
             return self.request.path
 
     def get_points_from_form(self, form):
+        raise NotImplementedError()
+
+    def get_default_points_value(self):
         raise NotImplementedError()
 
     def get_create_feedbackdraft_kwargs(self, form, publish):
@@ -203,5 +207,5 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
         else:
             return {
                 'feedbacktext': '',
-                'points': False
+                'points': self.get_default_points_value()
             }
