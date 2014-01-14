@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.utils.http import urlencode
 from django.views.generic.detail import SingleObjectMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -17,7 +18,8 @@ from devilry_gradingsystem.models import FeedbackDraft
 from devilry_gradingsystem.widgets.editmarkdown import EditMarkdownLayoutObject
 from devilry_gradingsystem.widgets.editfeedbackbuttonbar import EditFeedbackButtonBar
 
-
+def get_redirect_url(draft_ids):
+    pass
 
 
 class FeedbackBulkEditorAssignmentObjectMixin(SingleObjectMixin):
@@ -87,6 +89,8 @@ class FeedbackBulkEditorMixin(FeedbackBulkEditorAssignmentObjectMixin):
 
         ids = self.request.GET.getlist('edit')
         groups = AssignmentGroup.objects.get_queryset().filter(id__in=ids)
+        draft = None
+        draft_ids = []
 
         for group in groups:
             delivery = group.get_active_deadline().query_successful_deliveries()[0]
@@ -103,7 +107,8 @@ class FeedbackBulkEditorMixin(FeedbackBulkEditorAssignmentObjectMixin):
                 draft.staticfeedback.full_clean()
                 draft.staticfeedback.save()
             draft.save()
-        return draft
+            draft_ids.append(draft.id)
+        return {'draft': draft, 'draft_ids': draft_ids}
 
 
 class FeedbackBulkEditorFormBase(forms.Form):
@@ -169,19 +174,21 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
 
         self.save_pluginspecific_state(form)
 
-        print
-        print
-        print self.request
-        print
-        print
+        # print "{}?{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
+        #                          kwargs = {'assignmentid':self.object.id}), urlencode([('draftid', 3), ('draftid', 5)]))
 
-        draft = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
-        # if preview:
-        #     return redirect('devilry_gradingsystem_feedbackdraft_preview',
-        #         deliveryid=self.delivery.id,
-        #         draftid=draft.id)
-        # else:
-        return super(FeedbackBulkEditorFormView, self).form_valid(form)
+
+        drafts = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
+
+        redirect_url = "{}?{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
+                                              kwargs={'assignmentid': self.object.id, 
+                                                      'draftid': drafts['draft'].id}), 
+                                      urlencode([('draftid', drafts['draft_ids'])], doseq=True))
+
+        if preview:
+            return redirect(redirect_url)
+        else:
+            return super(FeedbackBulkEditorFormView, self).form_valid(form)
 
 
     def get_initial_from_last_draft(self):
