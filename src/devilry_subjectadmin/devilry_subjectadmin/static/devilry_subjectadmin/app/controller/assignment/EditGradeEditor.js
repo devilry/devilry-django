@@ -54,9 +54,8 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
 
 
     _onEdit: function() {
-        this.application.route.navigate(
-            devilry_subjectadmin.utils.UrlLookup.editGradeEditor(
-                this.assignmentRecord.get('id')));
+        window.location.href = devilry_subjectadmin.utils.UrlLookup.editGradeEditor(
+                this.assignmentRecord.get('id'));
     },
 
 
