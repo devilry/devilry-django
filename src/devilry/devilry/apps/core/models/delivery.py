@@ -318,7 +318,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         .. note:: Always run this in a transaction.
 
         .. warning::
-            This does not autoset the latest feedback as active on the group.
+            This does not autoset the latest feedback as ``feedback`` or
+            the ``last_delivery`` on the group.
             You need to handle that yourself after the copy.
 
         :return: The newly created, cleaned and saved delivery.
@@ -334,7 +335,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                 copy_of=self)
         def save_deliverycopy():
             deliverycopy.save(autoset_time_of_delivery=False,
-                              autoset_number=False)
+                              autoset_number=False,
+                              autoset_last_delivery_on_group=False)
         deliverycopy.full_clean()
         save_deliverycopy()
         for filemeta in self.filemetas.all():
