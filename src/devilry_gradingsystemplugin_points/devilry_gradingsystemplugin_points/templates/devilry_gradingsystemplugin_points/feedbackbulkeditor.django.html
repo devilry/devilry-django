@@ -1,0 +1,38 @@
+{% extends "devilry_gradingsystem/feedbackbulkeditorbase.django.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load url from future %}
+
+{% block pagecontent %}
+
+
+
+<div class="container">
+
+{% if groups %}
+  <h2>{% trans "You are now correcting the following groups in bulk" %}</h2>
+  {% for group in groups %}
+  <p>{{ group }}</p>
+  {% endfor  %}
+
+</div>
+    <div class="container">
+        {% crispy form %}
+    </div>
+
+
+{% else %}
+<div class="alert alert-warning">
+  <strong>{% trans "You must select at least one assignment group to edit" %} </strong>
+
+  <p><small>
+      {% trans "Go to the overview to make selections" %}:  
+      <a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}"> {% trans "All groups on this assignment" %}</a>
+  </small></p>
+
+</div>
+{% endif %}
+
+
+
+{% endblock pagecontent %}

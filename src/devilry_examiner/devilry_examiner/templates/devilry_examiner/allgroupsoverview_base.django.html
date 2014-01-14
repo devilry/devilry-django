@@ -36,11 +36,37 @@
 
 </div>
 
+
+
 {% block content %}
+<div class="container">
+    <ul class="pager pull-right">
+      {% if groups.has_previous %}
+      <li><a href="?page={{ groups.previous_page_number }}">previous</a></li>
+      {% else %}
+      <li class="disabled"><a href="#">previous</a></li>
+      {% endif %}
+
+      <!-- <span class="current"> -->
+      <!--   Page {{ groups.number }} of {{ groups.paginator.num_pages }}. -->
+      <!-- </span> -->
+
+      {% if groups.has_next %}
+      <li><a href="?page={{ groups.next_page_number }}">next</a></li>
+      {% else %}
+      <li class="disabled"><a href="#">next</a></li>
+      {% endif %}
+    </ul>
+</div>
+
   <div class="container grouplistingbox">
+
+    <form action="{{ assignment|get_feedback_url }}" method="get">{% csrf_token %}
+
     <table class="table table-striped infolistingtable">
       {% for group in groups %}
       <tr class="group">
+        <td><input type="checkbox" name="edit" value="{{ group.id }}" /></td>
         <td class="titled-cell groupinfo">
           <h3>
             <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
@@ -65,25 +91,9 @@
 
       {% endfor%}
     </table><!-- row -->
+    <input type="submit" value="Submit" />
+    </form>
 
-
-    <ul class="pager">
-      {% if groups.has_previous %}
-      <li><a href="?page={{ groups.previous_page_number }}">previous</a></li>
-      {% else %}
-      <li class="disabled"><a href="#">previous</a></li>
-      {% endif %}
-
-      <!-- <span class="current"> -->
-      <!--   Page {{ groups.number }} of {{ groups.paginator.num_pages }}. -->
-      <!-- </span> -->
-
-      {% if groups.has_next %}
-      <li><a href="?page={{ groups.next_page_number }}">next</a></li>
-      {% else %}
-      <li class="disabled"><a href="#">next</a></li>
-      {% endif %}
-    </ul>
 
 
   </div><!-- container -->

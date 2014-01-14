@@ -2,6 +2,7 @@ from django.conf.urls.defaults import patterns
 from django.conf.urls.defaults import url
 
 from .views.feedbackdraft_preview import FeedbackDraftPreviewView
+from .views.feedbackdraft_bulkpreview import FeedbackDraftBulkPreviewView
 from .views.admin.summary import SummaryView
 from .views.admin.selectplugin import SelectPluginView
 from .views.admin.setmaxpoints import SetMaxPointsView
@@ -13,7 +14,8 @@ from .views.admin.setpassing_grade_min_points import SetPassingGradeMinPointsVie
 urlpatterns = patterns('devilry_gradingsystem',
     url('^feedbackdraft_preview/(?P<deliveryid>\d+)/(?P<draftid>\d+)$', FeedbackDraftPreviewView.as_view(),
         name='devilry_gradingsystem_feedbackdraft_preview'),
-
+    url('^feedbackdraft_bulkpreview/(?P<assignmentid>\d+)/(?P<draftid>\d+)$', FeedbackDraftBulkPreviewView.as_view(),
+        name='devilry_gradingsystem_feedbackdraft_bulkpreview'),
     url('^admin/summary/(?P<assignmentid>\d+)$', SummaryView.as_view(),
         name='devilry_gradingsystem_admin_summary'),
     url('^admin/selectplugin/(?P<assignmentid>\d+)$', SelectPluginView.as_view(),
