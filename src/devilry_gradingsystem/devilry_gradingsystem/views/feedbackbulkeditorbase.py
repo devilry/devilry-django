@@ -181,14 +181,10 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
 
         self.save_pluginspecific_state(form)
 
-        # print "{}?{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
-        #                          kwargs = {'assignmentid':self.object.id}), urlencode([('draftid', 3), ('draftid', 5)]))
-
-
         drafts = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
 
         if preview:
-            return redirect(_get_preview_redirect_url(drafts))
+            return redirect(self._get_preview_redirect_url(drafts))
         else:
             return super(FeedbackBulkEditorFormView, self).form_valid(form)
 
