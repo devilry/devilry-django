@@ -32,6 +32,10 @@ class AssignmentResourceMixin(object):
         if isinstance(instance, self.model) and instance.first_deadline:
             return format_datetime(instance.first_deadline)
 
+    def has_valid_grading_setup(self):
+        if isinstance(instance, self.model):
+            return instance.has_valid_grading_setup()
+
 
 class AssignmentResource(AssignmentResourceMixin, BaseNodeInstanceResource):
     model = Assignment
@@ -46,7 +50,8 @@ class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResour
                                           'breadcrumb', 'number_of_groups',
                                           'number_of_deliveries',
                                           'number_of_groups_where_is_examiner',
-                                          'number_of_candidates', 'gradeeditor')
+                                          'number_of_candidates', 'gradeeditor',
+                                          'has_valid_grading_setup')
 
     def _serialize_shortformat(self, config, shortformat):
         if shortformat:
