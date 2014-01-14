@@ -1,3 +1,4 @@
+from .test_forms import *
 from .rest.assignmentlisting import TestRestAssignmentListing
 from .views.test_dashboard import TestDashboardView
 from .views.test_singlegroupoverview import TestSingleGroupOverview
