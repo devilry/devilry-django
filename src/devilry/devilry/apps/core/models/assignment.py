@@ -256,6 +256,15 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         default='devilry_gradingsystemplugin_approved',
         max_length=300, blank=True, null=True)
 
+
+    @property
+    def subject(self):
+        return self.parentnode.parentnode
+
+    @property
+    def period(self):
+        return self.parentnode
+
     def set_max_points(self, max_points):
         """
         Sets :attr:`.max_points`, and invalidates any
