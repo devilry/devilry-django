@@ -18,7 +18,8 @@ i18n_packages = get_javascript_catalog_packages('devilry_subjectadmin', 'devilry
 
 urlpatterns = patterns('devilry_subjectadmin',
                        url('^rest/', include('devilry_subjectadmin.rest.urls')),
-                       url('^$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view())))),
+                       url('^$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view()))),
+                          name='devilry_subjectadmin'),
                        url('^emptytestview', emptyview), # NOTE: Only used for testing
                        url('^export/periodoverview/(?P<id>[^/]+)$',
                             login_required(ExportDetailedPeriodOverview.as_view()),

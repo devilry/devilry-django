@@ -1,0 +1,12 @@
+{% extends "devilry_gradingsystem/admin/base.django.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}
+{% trans "Reconfigure the grading system" %}
+{% endblock title %}
+
+{% block breadcrumbtail %}
+{{ block.super }}
+<li class="active">{% trans "Reconfigure" %}</li>
+{% endblock breadcrumbtail %}

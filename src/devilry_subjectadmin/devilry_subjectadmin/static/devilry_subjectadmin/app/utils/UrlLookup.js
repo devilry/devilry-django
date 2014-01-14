@@ -33,7 +33,9 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     },
 
     editGradeEditor: function(assignment_id) {
-        return Ext.String.format('#/assignment/{0}/@@grade-editor/', assignment_id);
+        return Ext.String.format('{0}/devilry_gradingsystem/admin/summary/{1}',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
+            assignment_id);
     },
     changeGradeEditor: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@grade-editor/change', assignment_id);
@@ -121,18 +123,16 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     //
     //
     examinerGroupOverview: function(group_id) {
-        return Ext.String.format('{0}/examiner/assignmentgroup/{1}',
+        return Ext.String.format('{0}/devilry_examiner/singlegroupoverview/{1}',
             window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
             group_id);
     },
     examinerGroupsOverviewTodo: function(assignment_id) {
-        return Ext.String.format('{0}/examiner/assignment/{1}',
+        return Ext.String.format('{0}/devilry_examiner/allgroupsoverview/{1}',
             window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
             assignment_id);
     },
     examinerGroupsOverviewStudents: function(assignment_id) {
-        return Ext.String.format('{0}/examiner/assignment/{1}#students',
-            window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
-            assignment_id);
+        return this.examinerGroupsOverviewTodo(assignment_id);
     }
 });

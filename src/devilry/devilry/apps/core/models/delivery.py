@@ -209,7 +209,13 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """
         Returns ``True`` if this is the last delivery for this AssignmentGroup.
         """
-        return self.deadline.assignment_group.successful_delivery_count == self.number
+        from .assignment_group import AssignmentGroup
+        try:
+            last_delivery = self.last_delivery_by_group
+        except AssignmentGroup.DoesNotExist:
+            return False
+        else:
+            return True
 
     @property
     def assignment_group(self):
@@ -268,19 +274,33 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             Automatically set ``time_of_delivery`` to *now*? Defaults to ``True``.
         :param autoset_number:
             Automatically number the delivery if it is successful? Defaults to ``True``.
+        :param autoset_last_delivery_on_group:
+            Automatically set the last_delivery attribute of the group
+            if the ``id`` is ``None`` and ``successful`` is ``True``?
+            Defaults to ``True``.
         """
+        autoset_last_delivery_on_group = kwargs.pop('autoset_last_delivery_on_group', True)
         autoset_time_of_delivery = kwargs.pop('autoset_time_of_delivery', True)
+        autoset_number = kwargs.pop('autoset_number', True)
+
         if autoset_time_of_delivery:
             # NOTE: We remove timezoneinfo and microseconds to make the timestamp more portable, and easier to compare.
             now = datetime.now().replace(microsecond=0, tzinfo=None)
             self.time_of_delivery = now
-        autoset_number = kwargs.pop('autoset_number', True)
         if autoset_number:
             if self.successful:
                 self._set_number()
             else:
                 self.number = 0 # NOTE: Number is 0 until the delivery is successful
+
+        is_new = self.id is None
         super(Delivery, self).save(*args, **kwargs)
+
+        if autoset_last_delivery_on_group and is_new and self.successful:
+            group = self.assignment_group
+            group.last_delivery = self
+            group.save(update_delivery_status=False)
+
 
     def __unicode__(self):
         return (u'Delivery(id={id}, number={number}, group={group}, '
@@ -298,7 +318,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         .. note:: Always run this in a transaction.
 
         .. warning::
-            This does not autoset the latest feedback as active on the group.
+            This does not autoset the latest feedback as ``feedback`` or
+            the ``last_delivery`` on the group.
             You need to handle that yourself after the copy.
 
         :return: The newly created, cleaned and saved delivery.
@@ -314,7 +335,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                 copy_of=self)
         def save_deliverycopy():
             deliverycopy.save(autoset_time_of_delivery=False,
-                              autoset_number=False)
+                              autoset_number=False,
+                              autoset_last_delivery_on_group=False)
         deliverycopy.full_clean()
         save_deliverycopy()
         for filemeta in self.filemetas.all():

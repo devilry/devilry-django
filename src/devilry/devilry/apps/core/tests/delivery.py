@@ -8,11 +8,93 @@ from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import DeliveryBuilder
-from ..models import Delivery
-from ..models import deliverytypes
-from ..testhelper import TestHelper
+from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import deliverytypes
+from devilry.apps.core.testhelper import TestHelper
 
-class TestDelivery(TestCase, TestHelper):
+
+
+class TestDelivery(TestCase):
+    def setUp(self):
+        DeliveryBuilder.set_memory_deliverystore()
+
+    def test_is_last_delivery(self):
+        deadlinebuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)
+        delivery1 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=1).delivery
+        delivery2 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=2).delivery
+        delivery3 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=3, successful=False).delivery
+        self.assertFalse(delivery3.successful)
+        self.assertTrue(delivery2.is_last_delivery)
+        self.assertFalse(delivery1.is_last_delivery)
+        self.assertFalse(delivery3.is_last_delivery)
+
+    def test_assignment_property(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')
+        delivery = assignmentbuilder.add_group()\
+            .add_deadline_in_x_weeks(weeks=1).add_delivery().delivery
+        self.assertEquals(delivery.assignment, assignmentbuilder.assignment)
+
+    def test_assignment_group_property(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1').add_group()
+        delivery = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1).add_delivery().delivery
+        self.assertEquals(delivery.assignment_group, groupbuilder.group)
+
+    def test_autoset_last_delivery_on_group_new_successful(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group()
+        deadline = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1).deadline
+        delivery = Delivery.objects.create(
+            deadline=deadline,
+            successful=True)
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_delivery, delivery)
+        self.assertEquals(delivery.last_delivery_by_group, groupbuilder.group)
+
+    def test_do_not_autoset_last_delivery_on_group_when_not_successful(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group()
+        deadline = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1).deadline
+        delivery = Delivery.objects.create(
+            deadline=deadline,
+            successful=False)
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_delivery_id, None)
+        with self.assertRaises(AssignmentGroup.DoesNotExist):
+            x = delivery.last_delivery_by_group
+
+    def test_do_not_autoset_last_delivery_on_group_when_false(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group()
+        deadline = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1).deadline
+        delivery = Delivery(
+            deadline=deadline,
+            successful=False)
+        delivery.save(autoset_last_delivery_on_group=False)
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_delivery_id, None)
+
+
+
+class TestDeliveryOld(TestCase, TestHelper):
+    """
+    WARNING: Old tests for Delivery using TestHelper. We should
+    NOT add new tests here, and the tests should be updated and
+    moved to TestStaticFeedback if we update any of the tested 
+    methods, or need to add more tests.
+    """
     def setUp(self):
         TestHelper.set_memory_deliverystore()
 
@@ -302,33 +384,6 @@ class TestDelivery(TestCase, TestHelper):
             timestamp=datetime(2010, 1, 1, 0, 0, 0))
         self.assertEquals(delivery.last_feedback, feedback2)
 
-
-    def test_is_last_delivery(self):
-        deadlinebuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('week1')\
-            .add_group()\
-            .add_deadline_in_x_weeks(weeks=1)
-        delivery1 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=1).delivery
-        delivery2 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=2).delivery
-        delivery3 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=3, successful=False).delivery
-        self.assertFalse(delivery3.successful)
-        self.assertTrue(delivery2.is_last_delivery)
-        self.assertFalse(delivery1.is_last_delivery)
-        self.assertFalse(delivery3.is_last_delivery)
-
-    def test_assignment_property(self):
-        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('week1')
-        delivery = assignmentbuilder.add_group()\
-            .add_deadline_in_x_weeks(weeks=1).add_delivery().delivery
-        self.assertEquals(delivery.assignment, assignmentbuilder.assignment)
-
-    def test_assignment_group_property(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('week1').add_group()
-        delivery = groupbuilder\
-            .add_deadline_in_x_weeks(weeks=1).add_delivery().delivery
-        self.assertEquals(delivery.assignment_group, groupbuilder.group)
 
 
 class TestDeliveryManager(TestCase):

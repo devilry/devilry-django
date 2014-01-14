@@ -133,6 +133,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
        The last `StaticFeedback`_ (by save timestamp) on this assignmentgroup.
 
+    .. attribute:: last_delivery
+
+       The last :class:`devilry.apps.core.models.Delivery` on this assignmentgroup.
+
     .. attribute:: etag
 
        A DateTimeField containing the etag for this object.
@@ -141,6 +145,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
        A CharField containing the status of the group.
        Valid status values:
+
            * "no-deadlines"
            * "corrected"
            * "closed-without-feedback"
@@ -156,6 +161,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     is_open = models.BooleanField(blank=True, default=True,
             help_text = 'If this is checked, the group can add deliveries.')
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
+    last_delivery = models.OneToOneField("Delivery", blank=True, null=True,
+        related_name='last_delivery_by_group')
     etag = models.DateTimeField(auto_now_add=True)
     delivery_status = models.CharField(max_length=30, blank=True, null=True,
         help_text='The delivery_status of a group',
@@ -436,9 +443,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         groupcopy = AssignmentGroup(parentnode=self.parentnode,
                                     name=self.name,
-                                    is_open=self.is_open)
+                                    is_open=self.is_open,
+                                    delivery_status=self.delivery_status)
         groupcopy.full_clean()
-        groupcopy.save()
+        groupcopy.save(update_delivery_status=False)
         for tagobj in self.tags.all():
             groupcopy.tags.create(tag=tagobj.tag)
         for examiner in self.examiners.all():
@@ -446,6 +454,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         for deadline in self.deadlines.all():
             deadline.copy(groupcopy)
         groupcopy._set_latest_feedback_as_active()
+        groupcopy._set_last_delivery()
+        groupcopy.save(update_delivery_status=False)
         return groupcopy
 
     def pop_candidate(self, candidate):
@@ -545,11 +555,20 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         from .static_feedback import StaticFeedback
         feedbacks = StaticFeedback.objects.order_by('-save_timestamp').filter(delivery__deadline__assignment_group=self)[:1]
         self.feedback = None  # NOTE: Required to avoid IntegrityError caused by non-unique feedback_id
-        self.save()
         if len(feedbacks) == 1:
             latest_feedback = feedbacks[0]
             self.feedback = latest_feedback
-            self.save()
+
+    def _set_last_delivery(self):
+        from .delivery import Delivery
+        try:
+            last_delivery = Delivery.objects.filter(
+                successful=True,
+                deadline__assignment_group=self).order_by('-time_of_delivery')[0]
+        except IndexError:
+            self.last_delivery = None
+        else:
+            self.last_delivery = last_delivery
 
     def merge_into(self, target):
         """
@@ -620,6 +639,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target.recalculate_delivery_numbers()
             self.delete()
         target._set_latest_feedback_as_active()
+        target._set_last_delivery()
+        target.save()
 
     @classmethod
     def merge_many_groups(self, sources, target):

@@ -257,6 +257,7 @@ class TestAssignmentGroupSplit(TestCase):
         self._create_testdata()
         g1 = self.testhelper.sub_p1_a1_g1
         g1copy = g1.copy_all_except_candidates()
+        g1copy = self.testhelper.reload_from_db(g1copy)
 
         # Basics
         self.assertEquals(g1copy.name, 'Stuff')
@@ -293,6 +294,9 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(g1copy.feedback.save_timestamp, datetime(2010, 1, 1))
         self.assertEquals(g1copy.feedback.rendered_view, 'Better')
         self.assertEquals(g1copy.feedback.points, 40)
+
+        # last_delivery
+        self.assertEquals(g1copy.last_delivery.filemetas.all()[0].filename, 'thirdtry.py')
 
     def test_pop_candidate(self):
         self._create_testdata()
@@ -375,6 +379,11 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(target.name, 'The target')
         self.assertEquals(target.is_open, True)
 
+    def test_merge_into_last_delivery(self):
+        source, target = self._create_mergetestdata()
+        source.merge_into(target)
+        target = self.testhelper.reload_from_db(target)
+        self.assertEquals(target.last_delivery.filemetas.all()[0].filename, 'b.py')
 
     def test_merge_into_candidates(self):
         source, target = self._create_mergetestdata()
