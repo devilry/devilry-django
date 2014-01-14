@@ -22,7 +22,17 @@ class GroupIdsForm(forms.Form):
     """
     Form to get a list of group ids that we know the given 
     examiner user can access, and that we know is within
-    the given assignment.
+    the given assignment. Usage::
+
+        from devilry_examiner.forms import GroupIdsForm
+        form = GroupIdsForm(request.POST,
+            user=request.user,
+            assignment=myassignment)
+        if form.is_valid():
+            # form.cleaned_groups is the queryset of validated groups...
+            groups = form.cleaned_groups
+            groups = groups.order_by('last_delivery__time_of_delivery')
+            ...
 
     WARNING: You can not use this to render a HTML form, only to parse the
     input from a form that you render yourself, typically a form with
