@@ -31,6 +31,8 @@
             </div>
         {% endfor %}
 
+        <p>{% trans "If none of the choices for configuring the grading system fit your needs, please go back to the previous page, and read about plugins." %}
+
         <hr>
         <a href="{% url 'devilry_gradingsystem_admin_summary' assignment.id %}" class="btn btn-default">
             <i class="fa fa-step-backward"></i>
