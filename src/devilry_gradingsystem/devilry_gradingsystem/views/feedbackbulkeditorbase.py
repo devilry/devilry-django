@@ -145,7 +145,7 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
     def get_success_url(self):
         publish = 'submit_publish' in self.request.POST
         if publish:
-            return self.request.path # super(FeedbackBulkEditorFormView, self).get_success_url()
+            return super(FeedbackBulkEditorFormView, self).get_success_url()
         else:
             return self.request.path
 
