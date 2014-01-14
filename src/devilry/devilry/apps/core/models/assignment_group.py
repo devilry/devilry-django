@@ -446,7 +446,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                                     is_open=self.is_open,
                                     delivery_status=self.delivery_status)
         groupcopy.full_clean()
-        groupcopy.save()
+        groupcopy.save(update_delivery_status=False)
         for tagobj in self.tags.all():
             groupcopy.tags.create(tag=tagobj.tag)
         for examiner in self.examiners.all():
@@ -555,11 +555,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         from .static_feedback import StaticFeedback
         feedbacks = StaticFeedback.objects.order_by('-save_timestamp').filter(delivery__deadline__assignment_group=self)[:1]
         self.feedback = None  # NOTE: Required to avoid IntegrityError caused by non-unique feedback_id
-        self.save()
         if len(feedbacks) == 1:
             latest_feedback = feedbacks[0]
             self.feedback = latest_feedback
-            self.save()
 
     def _set_last_delivery(self):
         from .delivery import Delivery
