@@ -13,6 +13,7 @@ from ..models.assignment_group import GroupPopToFewCandiatesError
 from ..models import Delivery
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
+from devilry.apps.core.models import deliverytypes
 
 
 class TestAssignmentGroup(TestCase, TestHelper):
@@ -618,9 +619,9 @@ class TestAssignmentGroupSplit(TestCase):
 
 class TestAssignmentGroupStatus(TestCase):
     def setUp(self):
-        self.group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
+        self.assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        self.group1builder = self.assignmentbuilder.add_group()
 
     def test_no_deadlines(self):
         self.assertEquals(self.group1builder.group.delivery_status, 'no-deadlines')
@@ -646,6 +647,22 @@ class TestAssignmentGroupStatus(TestCase):
         self.group1builder.update(is_open=False)
         self.assertEquals(self.group1builder.group.delivery_status, 'closed-without-feedback')
         self.assertEquals(self.group1builder.group.get_status(), 'closed-without-feedback')
+
+    def test_non_electronic_always_waiting_for_feedback_before_deadline(self):
+        self.assignmentbuilder.update(
+            delivery_types = deliverytypes.NON_ELECTRONIC
+        )
+        self.group1builder.add_deadline_in_x_weeks(weeks=1)
+        self.group1builder.reload_from_db()
+        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-feedback')
+
+    def test_non_electronic_always_waiting_for_feedback_after_deadline(self):
+        self.assignmentbuilder.update(
+            delivery_types = deliverytypes.NON_ELECTRONIC
+        )
+        self.group1builder.add_deadline_x_weeks_ago(weeks=1)
+        self.group1builder.reload_from_db()
+        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-feedback')
 
 
 
