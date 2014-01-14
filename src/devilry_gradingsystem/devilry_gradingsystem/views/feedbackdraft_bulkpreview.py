@@ -1,6 +1,7 @@
 from django.views.generic import DetailView
 from django.shortcuts import redirect
 from django.http import Http404
+from django.utils.http import urlencode
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import StaticFeedback
@@ -38,6 +39,9 @@ class FeedbackDraftBulkPreviewView(DetailView):
     def post(self, *args, **kwargs):
         self.object = self.get_object()
         assignment = self.object
+        print
+        print self.kwargs
+        print
         if 'submit_publish' in self.request.POST:
             for draftid in self.request.GET.getlist('draftid'):
                 draft = self.get_feedbackdraft(draftid)
@@ -47,4 +51,7 @@ class FeedbackDraftBulkPreviewView(DetailView):
                 draft.staticfeedback.save()
             return redirect('devilry_examiner_allgroupsoverview', assignmentid=assignment.id)
         else:
-            return redirect(assignment.get_gradingsystem_plugin_api().get_bulkedit_feedback_url(assignment.id))
+            redirect_url = assignment.get_gradingsystem_plugin_api().get_bulkedit_feedback_url(assignment.id)
+            redirect_url = redirect_url + '?' + urlencode({'edit': self.request.GET.getlist('edit')}, doseq=True)
+
+            return redirect(redirect_url)
