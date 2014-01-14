@@ -13,5 +13,7 @@ class PointsPluginApi(GradingSystemPluginInterface):
     def get_edit_feedback_url(self, deliveryid):
         return reverse('devilry_gradingsystemplugin_points_feedbackeditor', kwargs={'deliveryid': deliveryid})
 
+    def get_bulkedit_feedback_url(self, assignmentid):
+        return reverse('devilry_gradingsystemplugin_points_feedbackbulkeditor', kwargs={'assignmentid': assignmentid})
 
 gradingsystempluginregistry.add(PointsPluginApi)
