@@ -160,6 +160,13 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
            'points': self.get_points_from_form(form)
         }
 
+
+    def _get_preview_redirect_url(self, drafts):
+       return "{}?{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
+                                              kwargs={'assignmentid': self.object.id, 
+                                                      'draftid': drafts['draft'].id}), 
+                                      urlencode([('draftid', drafts['draft_ids'])], doseq=True))
+
     def save_pluginspecific_state(self, form):
         """
         Save extra state that is specific to this plugin. I.E: Input from
@@ -180,13 +187,8 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
 
         drafts = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
 
-        redirect_url = "{}?{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
-                                              kwargs={'assignmentid': self.object.id, 
-                                                      'draftid': drafts['draft'].id}), 
-                                      urlencode([('draftid', drafts['draft_ids'])], doseq=True))
-
         if preview:
-            return redirect(redirect_url)
+            return redirect(_get_preview_redirect_url(drafts))
         else:
             return super(FeedbackBulkEditorFormView, self).form_valid(form)
 
