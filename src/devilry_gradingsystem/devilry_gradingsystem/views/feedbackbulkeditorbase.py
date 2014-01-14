@@ -162,7 +162,7 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
 
 
     def _get_preview_redirect_url(self, drafts, grouplist):
-       return "{}?{}{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
+       return "{}?{}&{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
                                               kwargs={'assignmentid': self.object.id, 
                                                       'draftid': drafts['draft'].id}), 
                                urlencode([('draftid', drafts['draft_ids'])], doseq=True),
@@ -185,15 +185,23 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
         drafts = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
 
         if preview:
-            return redirect(self._get_preview_redirect_url(drafts))
+            return redirect(self._get_preview_redirect_url(drafts, self.request.GET))
         else:
             return super(FeedbackBulkEditorFormView, self).form_valid(form)
 
 
-    def get_initial_from_last_draft(self):
+    def get_initial_from_draft(self, draft):
         return {
-            'feedbacktext': ''
+            'feedbacktext': draft.feedbacktext_raw
         }
 
     def get_initial(self):
-        return self.get_initial_from_last_draft()
+        draftid = self.request.GET.get('draftid', False)
+        if draftid:
+            draft = FeedbackDraft.objects.get(id=draftid)
+            return self.get_initial_from_draft(draft)
+        else:
+            return {
+                'feedbacktext': '',
+                'points': False
+            }
