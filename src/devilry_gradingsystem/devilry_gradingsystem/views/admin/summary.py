@@ -26,4 +26,9 @@ class SummaryView(AssignmentSingleObjectMixin, DetailView):
             context['no_grading_system_plugin_id'] = True
         context['has_staticfeedbacks'] = StaticFeedback.objects.filter(delivery__deadline__assignment_group__parentnode=assignment).exists()
         context['has_feedbackdrafts'] = FeedbackDraft.objects.filter(delivery__deadline__assignment_group__parentnode=assignment).exists()
+
+        if assignment.subject.is_admin(self.request.user):
+            context['is_subjectadmin'] = True
+        elif assignment.period.is_admin(self.request.user):
+            context['is_periodadmin'] = True
         return context

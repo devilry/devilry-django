@@ -2,6 +2,7 @@ from mock import patch
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
+from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.soupselect import cssGet
@@ -101,3 +102,51 @@ class TestSummaryView(TestCase, AdminViewTestMixin):
             self.assertEquals(response.status_code, 200)
             html = response.content
             self.assertIn('You SHOULD NOT reconfigure the grading system for this assignment.', html)
+
+
+class TestSummaryViewBreadcrumb(TestCase, AdminViewTestMixin):
+
+    def setUp(self):
+        self.admin1 = UserBuilder('admin1').user
+        self.subjectbuilder = SubjectBuilder.quickadd_ducku_duck1010()
+        self.periodbuilder = self.subjectbuilder.add_6month_active_period()
+        self.assignmentbuilder = self.periodbuilder.add_assignment('myassignment')
+        self.url = reverse('devilry_gradingsystem_admin_summary', kwargs={
+            'assignmentid': self.assignmentbuilder.assignment.id,
+        })
+
+    def test_subjectadmin(self):
+        self.subjectbuilder.add_admins(self.admin1)
+        response = self.get_as(self.admin1)
+        html = response.content
+        breadcrumb = cssFind(html, 'ol.breadcrumb li')
+        self.assertEquals(len(breadcrumb), 6)
+        self.assertEquals(breadcrumb[0].text, 'Home')
+        self.assertEquals(breadcrumb[1].text, 'Subject administrator')
+        self.assertEquals(breadcrumb[2].text, 'duck1010')
+        self.assertEquals(breadcrumb[3].text, 'active')
+        self.assertEquals(breadcrumb[4].text, 'myassignment')
+        self.assertEquals(breadcrumb[5].text, 'Grading system')
+
+    def test_periodadmin(self):
+        self.periodbuilder.add_admins(self.admin1)
+        response = self.get_as(self.admin1)
+        html = response.content
+        breadcrumb = cssFind(html, 'ol.breadcrumb li')
+        self.assertEquals(len(breadcrumb), 5)
+        self.assertEquals(breadcrumb[0].text, 'Home')
+        self.assertEquals(breadcrumb[1].text, 'Subject administrator')
+        self.assertEquals(breadcrumb[2].text, 'duck1010.active')
+        self.assertEquals(breadcrumb[3].text, 'myassignment')
+        self.assertEquals(breadcrumb[4].text, 'Grading system')
+
+    def test_assignmentadmin(self):
+        self.assignmentbuilder.add_admins(self.admin1)
+        response = self.get_as(self.admin1)
+        html = response.content
+        breadcrumb = cssFind(html, 'ol.breadcrumb li')
+        self.assertEquals(len(breadcrumb), 4)
+        self.assertEquals(breadcrumb[0].text, 'Home')
+        self.assertEquals(breadcrumb[1].text, 'Subject administrator')
+        self.assertEquals(breadcrumb[2].text, 'duck1010.active.myassignment')
+        self.assertEquals(breadcrumb[3].text, 'Grading system')

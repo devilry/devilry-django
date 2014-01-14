@@ -1,6 +1,36 @@
 {% extends "devilry_subjectadmin/base.django.html" %}
 {% load i18n %}
+{% load url from future %}
 
 {% block title %}
 {% trans "Grading system" %}
 {% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <div class="page-header">
+            <h1>
+                {% block heading %}{% endblock heading %}
+            </h1>
+        </div>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
+            <li><a href="{% url 'devilry_subjectadmin' %}">{% trans "Subject administrator" %}</a></li>
+            {% if is_subjectadmin %}
+                <li><a href="{% url 'devilry_subjectadmin' %}#/subject/{{ assignment.subject.id }}/">{{ assignment.subject.short_name }}</a></li>
+                <li><a href="{% url 'devilry_subjectadmin' %}#/period/{{ assignment.period.id }}/">{{ assignment.period.short_name }}</a></li>
+                <li><a href="{% url 'devilry_subjectadmin' %}#/assignment/{{ assignment.id }}/">{{ assignment.short_name }}</a></li>
+            {% elif is_periodadmin %}
+                <li><a href="{% url 'devilry_subjectadmin' %}#/period/{{ assignment.period.id }}/">{{ assignment.period.get_path }}</a></li>
+                <li><a href="{% url 'devilry_subjectadmin' %}#/assignment/{{ assignment.id }}/">{{ assignment.short_name }}</a></li>
+            {% else %}
+                <li><a href="{% url 'devilry_subjectadmin' %}#/assignment/{{ assignment.id }}/">{{ assignment.get_path }}</a></li>
+            {% endif %}
+            {% block breadcrumbtail %}
+                <li><a href="{% url 'devilry_gradingsystem_admin_summary' assignment.id %}">{% trans "Grading system" %}</a></li>
+            {% endblock breadcrumbtail %}
+        </ol>
+        {% block subheading %}{% endblock subheading %}
+    </div>
+    {% block content %}{% endblock content %}
+{% endblock body %}

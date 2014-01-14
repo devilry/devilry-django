@@ -1,14 +1,19 @@
-{% extends "devilry_gradingsystem/admin/base.django.html" %}
+{% extends "devilry_gradingsystem/admin/reconfigurebase.django.html" %}
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% load url from future %}
 
-{% block body %}
+{% block heading %}
+    {% trans "Map points to grade" %}
+{% endblock heading %}
+
+{% block subheading %}
+    {% include "devilry_gradingsystem/admin/currentprogress.django.html" %}
+{% endblock subheading %}
+
+
+{% block content %}
     <div class="container">
-        <div class="page-header">
-            <h1>{% trans "Map points to grade" %}</h1>
-            {% include "devilry_gradingsystem/admin/currentprogress.django.html" %}
-        </div>
         <p>{% trans "Setup how you wish to map points to grade. Specify the grade in the first column, and the minimum number of points required to get that grade in the second column. The first row must have the value 0 in the second column." %}</p>
     </div>
 
@@ -44,4 +49,4 @@
             </div>
         </div>
     </div>
-{% endblock body %}
+{% endblock content %}

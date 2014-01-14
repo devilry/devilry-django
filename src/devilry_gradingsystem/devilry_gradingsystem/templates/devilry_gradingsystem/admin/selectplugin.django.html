@@ -1,13 +1,13 @@
-{% extends "devilry_gradingsystem/admin/base.django.html" %}
+{% extends "devilry_gradingsystem/admin/reconfigurebase.django.html" %}
 {% load i18n %}
 {% load url from future %}
 
-{% block body %}
-    <div class="container">
-        <div class="page-header">
-            <h1>{% trans "How would you like to provide feedback to your students?" %}</h1>
-        </div>
+{% block heading %}
+    {% trans "How would you like to provide feedback to your students?" %}
+{% endblock heading %}
 
+{% block content %}
+    <div class="container">
         {% if form.errors %}
             {% include "devilry_subjectadmin/include/django_formerrors_as_alertboxes.django.html" with form=form %}
         {% endif %}
@@ -39,4 +39,4 @@
             {% trans "Previous" %}
         </a>
     </div>
-{% endblock body %}
+{% endblock content %}
