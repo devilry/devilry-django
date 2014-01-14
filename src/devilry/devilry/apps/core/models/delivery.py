@@ -209,7 +209,13 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """
         Returns ``True`` if this is the last delivery for this AssignmentGroup.
         """
-        return self.deadline.assignment_group.successful_delivery_count == self.number
+        from .assignment_group import AssignmentGroup
+        try:
+            last_delivery = self.last_delivery_by_group
+        except AssignmentGroup.DoesNotExist:
+            return False
+        else:
+            return True
 
     @property
     def assignment_group(self):
