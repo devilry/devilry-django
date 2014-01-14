@@ -161,11 +161,12 @@ class FeedbackBulkEditorFormView(FeedbackBulkEditorMixin, FormView):
         }
 
 
-    def _get_preview_redirect_url(self, drafts):
-       return "{}?{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
+    def _get_preview_redirect_url(self, drafts, grouplist):
+       return "{}?{}{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
                                               kwargs={'assignmentid': self.object.id, 
                                                       'draftid': drafts['draft'].id}), 
-                                      urlencode([('draftid', drafts['draft_ids'])], doseq=True))
+                               urlencode([('draftid', drafts['draft_ids'])], doseq=True),
+                               urlencode(grouplist, doseq=True))
 
     def save_pluginspecific_state(self, form):
         """
