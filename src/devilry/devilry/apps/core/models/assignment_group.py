@@ -443,7 +443,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         groupcopy = AssignmentGroup(parentnode=self.parentnode,
                                     name=self.name,
-                                    is_open=self.is_open)
+                                    is_open=self.is_open,
+                                    delivery_status=self.delivery_status)
         groupcopy.full_clean()
         groupcopy.save()
         for tagobj in self.tags.all():
@@ -453,6 +454,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         for deadline in self.deadlines.all():
             deadline.copy(groupcopy)
         groupcopy._set_latest_feedback_as_active()
+        groupcopy._set_last_delivery()
+        groupcopy.save(update_delivery_status=False)
         return groupcopy
 
     def pop_candidate(self, candidate):
@@ -558,6 +561,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             self.feedback = latest_feedback
             self.save()
 
+    def _set_last_delivery(self):
+        from .delivery import Delivery
+        try:
+            last_delivery = Delivery.objects.filter(
+                successful=True,
+                deadline__assignment_group=self).order_by('-time_of_delivery')[0]
+        except IndexError:
+            self.last_delivery = None
+        else:
+            self.last_delivery = last_delivery
+
     def merge_into(self, target):
         """
         Merge this AssignmentGroup into the ``target`` AssignmentGroup.
@@ -627,6 +641,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target.recalculate_delivery_numbers()
             self.delete()
         target._set_latest_feedback_as_active()
+        target._set_last_delivery()
+        target.save()
 
     @classmethod
     def merge_many_groups(self, sources, target):
