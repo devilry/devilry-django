@@ -6,6 +6,7 @@ from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
 from devilry.apps.core.models import Deadline
+from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models.deadline import NewerDeadlineExistsError
 from devilry.apps.core.models import deliverytypes
 from devilry.apps.core.testhelper import TestHelper
@@ -190,6 +191,39 @@ class TestDeadline(TestCase):
                 deadline_datetime=DateTimeBuilder.now().plus(days=1))
         group1builder.reload_from_db()
         self.assertEquals(group1builder.group.deadlines.count(), 1)
+
+    def test_smart_create_non_electronic(self):
+        assignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', delivery_types=deliverytypes.NON_ELECTRONIC).assignment
+        group1 = AssignmentGroup(parentnode=assignment)
+        group2 = AssignmentGroup(parentnode=assignment)
+        for group in group1, group2:
+            group.save(autocreate_first_deadline_for_nonelectronic=False)
+        deadline_datetime = Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=10))
+        result = Deadline.objects.smart_create(
+            assignment.assignmentgroups.all(),
+            deadline_datetime=deadline_datetime,
+            text='Hello world')
+        self.assertIsNone(result)
+        self.assertEquals(group1.deadlines.count(), 1)
+
+        group1 = AssignmentGroup.objects.get(id=group1.id) # Reload from db
+        created_deadline = group1.deadlines.all()[0]
+        self.assertEquals(created_deadline.deadline, deadline_datetime)
+        self.assertEquals(created_deadline.text, 'Hello world')
+        self.assertEquals(group1.last_deadline, created_deadline)
+        self.assertEquals(group1.last_deadline.deliveries.count(), 1)
+        self.assertEquals(group1.last_deadline.deliveries.all()[0], group1.last_delivery)
+        self.assertTrue(group1.last_delivery.successful)
+        self.assertEquals(group1.last_delivery.number, 1)
+
+        group2 = AssignmentGroup.objects.get(id=group2.id) # Reload from db
+        self.assertEquals(group2.deadlines.all()[0].deadline, deadline_datetime)
+        self.assertEquals(group2.last_deadline, group2.deadlines.all()[0])
+        self.assertEquals(group2.last_deadline.deliveries.count(), 1)
+        self.assertEquals(group2.last_deadline.deliveries.all()[0], group2.last_delivery)
+        self.assertTrue(group2.last_delivery.successful)
+        self.assertEquals(group2.last_delivery.number, 1)
 
 
 class TestDeadlineOld(TestCase, TestHelper):

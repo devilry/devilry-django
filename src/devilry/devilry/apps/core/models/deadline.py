@@ -52,14 +52,12 @@ class DeadlineQuerySet(models.query.QuerySet):
         assignment = groups[0].assignment # NOTE: We assume all groups are within the same assignment - as documented
         time_of_delivery = datetime.now().replace(microsecond=0, tzinfo=None)
         if assignment.delivery_types == deliverytypes.NON_ELECTRONIC:
-            raise ValueError('smart_create does not support NON_ELECTRONIC assignments yet - those assignments create their own deadlines automatically')
-            """
             from .delivery import Delivery
 
             # DB query 6 - create deliveries
-            deliveries_to_create = [Delivery(deadline=deadline, time_of_delivery=time_of_delivery, number=1)\
+            deliveries_to_create = [Delivery(deadline=deadline, time_of_delivery=time_of_delivery, number=1, successful=True)\
                 for deadline in created_deadlines]
-            Delivery.objects.bulk_create()
+            Delivery.objects.bulk_create(deliveries_to_create)
 
             # DB query 7 - fetch created deliveries
             created_deliveries = Delivery.objects.filter(
@@ -70,13 +68,12 @@ class DeadlineQuerySet(models.query.QuerySet):
             # DB query 8 - Update groups, including last_delivery
             with transaction.commit_on_success(): # NOTE: Using a transaction should lead to one huge query commited at the end of the block
                 for delivery in created_deliveries:
-                    group = delivery.deadline.group
+                    group = delivery.deadline.assignment_group
                     group.last_delivery = delivery
                     group.is_open = True
                     group.delivery_status = "waiting-for-something"
                     group.last_deadline = delivery.deadline
                     group.save()
-            """
 
         else:
             # DB query 5 - Update groups
