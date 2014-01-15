@@ -137,6 +137,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
        The last :class:`devilry.apps.core.models.Delivery` on this assignmentgroup.
 
+    .. attribute:: last_deadline
+
+       The last :class:`devilry.apps.core.models.Deadline` for this assignmentgroup.
+
     .. attribute:: etag
 
        A DateTimeField containing the etag for this object.
@@ -163,6 +167,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
     last_delivery = models.OneToOneField("Delivery", blank=True, null=True,
         related_name='last_delivery_by_group')
+    last_deadline = models.OneToOneField("Deadline", blank=True, null=True,
+        related_name='last_deadline_for_group')
     etag = models.DateTimeField(auto_now_add=True)
     delivery_status = models.CharField(max_length=30, blank=True, null=True,
         help_text='The delivery_status of a group',
@@ -608,6 +614,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         from .deadline import Deadline
         from .delivery import Delivery
         with transaction.commit_on_success():
+            # Unset last_deadline - if we not do this, we will get
+            # ``IntegrityError: column last_deadline_id is not unique``
+            # if the last deadline after the merge is self.last_deadline
+            self.last_deadline = None
+            self.save(update_delivery_status=False)
+
             # Copies
             Delivery.objects.filter(deadline__assignment_group=self,
                                     copy_of__deadline__assignment_group=target).delete()

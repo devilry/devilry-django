@@ -39,6 +39,78 @@ class TestDeadline(TestCase):
         groupbuilder.reload_from_db()
         self.assertEquals(groupbuilder.group.delivery_status, 'waiting-for-something')
 
+    def test_set_last_deadline_on_group_single(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertIsNone(groupbuilder.group.last_deadline)
+        deadline = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=3))
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_deadline, deadline)
+
+    def test_set_last_deadline_on_group_newest(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertIsNone(groupbuilder.group.last_deadline)
+        deadline2 = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        deadline1 = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=5))
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_deadline, deadline2)
+
+    def test_set_last_deadline_on_group_newest_even_when_edited(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertIsNone(groupbuilder.group.last_deadline)
+        deadline2 = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        deadline1 = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=5))
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_deadline, deadline2)
+        deadline1.deadline = DateTimeBuilder.now().plus(days=20)
+        deadline1.save()
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_deadline, deadline1)
+
+    def test_set_last_deadline_on_group_copy(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertIsNone(groupbuilder.group.last_deadline)
+        deadline2 = Deadline(assignment_group=groupbuilder.group, deadline=DateTimeBuilder.now().plus(days=10))
+        deadline1 = Deadline(assignment_group=groupbuilder.group, deadline=DateTimeBuilder.now().plus(days=5))
+        # Copy cleans deadlines before save, so we have to do that for the assertEquals below to match
+        for deadline in deadline1, deadline2:
+            deadline.clean()
+            deadline.save()
+        groupbuilder.reload_from_db()
+        groupcopy = groupbuilder.group.copy_all_except_candidates()
+        self.assertEquals(groupcopy.last_deadline.deadline, deadline2.deadline)
+
+    def test_set_last_deadline_on_group_merge(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        group2builder = assignmentbuilder.add_group()
+        deadline2 = group2builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        deadline3 = group1builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=15))
+        deadline1 = group1builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=5))
+        group2builder.group.merge_into(group1builder.group)
+        group1builder.reload_from_db()
+        self.assertEquals(group1builder.group.last_deadline, deadline3)
+
+    def test_set_last_deadline_on_group_merge_reverse_direction(self): # Direction of the merge should not matter
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        group2builder = assignmentbuilder.add_group()
+        deadline2 = group2builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        deadline3 = group1builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=15))
+        deadline1 = group1builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=5))
+        group1builder.group.merge_into(group2builder.group)
+        group2builder.reload_from_db()
+        self.assertEquals(group2builder.group.last_deadline, deadline3)
+
 
 
 class TestDeadlineOld(TestCase, TestHelper):

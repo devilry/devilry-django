@@ -103,18 +103,23 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     def save(self, *args, **kwargs):
         created = self.id == None
         super(Deadline, self).save(*args, **kwargs)
+        group = self.assignment_group
+
+        # Only update the AssignmentGroup if needed.
+        # See https://github.com/devilry/devilry-django/issues/502
+        groupsave_needed = False
         if created:
-            # Update the AssignmentGroup if needed.
-            # See https://github.com/devilry/devilry-django/issues/502
-            groupsave_needed = False
-            if not self.assignment_group.is_open:
+            if not group.is_open:
                 groupsave_needed = True
-                self.assignment_group.is_open = True
-            if self.assignment_group.delivery_status == 'no-deadlines':
+                group.is_open = True
+            if group.delivery_status == 'no-deadlines':
                 groupsave_needed = True
-                self.assignment_group.delivery_status = 'waiting-for-something'
-            if groupsave_needed:
-                self.assignment_group.save(update_delivery_status=False)
+                group.delivery_status = 'waiting-for-something'
+        if group.last_deadline == None or group.last_deadline.deadline < self.deadline:
+            group.last_deadline = self
+            groupsave_needed = True
+        if groupsave_needed:
+            group.save(update_delivery_status=False)
 
     def __unicode__(self):
         return unicode(self.deadline)
