@@ -50,3 +50,18 @@ class TestGroupIdsForm(TestCase):
         self.assertTrue(form.is_valid())
         self.assertEquals(set(form.cleaned_groups), set([group1, group2]))
         self.assertEquals(set(form.cleaned_data['group_ids']), set([group1.id, group2.id]))
+
+    def test_render_as_hiddenfields(self):
+        group1 = self.assignmentbuilder.add_group(examiners=[self.examiner1]).group
+        group2 = self.assignmentbuilder.add_group(examiners=[self.examiner1]).group
+        formdata = {
+            'group_ids': [group1.id, group2.id]
+        }
+        form = GroupIdsForm(formdata,
+            user=self.examiner1,
+            assignment=self.assignmentbuilder.assignment)
+        fields = form.hidden_fields()
+        self.assertEquals(len(fields), 1)
+        self.assertEquals(unicode(fields[0]).count('input'), 2)
+        self.assertEquals(unicode(fields[0]).count('type="hidden"'), 2)
+        self.assertEquals(fields[0].name, 'group_ids')

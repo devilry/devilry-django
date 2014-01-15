@@ -41,7 +41,7 @@ class GroupIdsForm(forms.Form):
     group_ids = TypedMultipleChoiceFieldWithoutChoices(
         required=True,
         coerce=int,
-        widget=forms.HiddenInput())
+        widget=forms.MultipleHiddenInput())
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
