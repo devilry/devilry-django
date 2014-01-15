@@ -8,6 +8,7 @@ from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from assignment_group import AssignmentGroup
 from abstract_is_admin import AbstractIsAdmin
+import deliverytypes
 
 from node import Node
 
@@ -101,6 +102,12 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         super(Deadline, self).clean(*args, **kwargs)
 
     def save(self, *args, **kwargs):
+        """
+        :param autocreate_delivery_if_nonelectronic:
+            Autocreate a delivery if this save creates the deadline,
+            and the assignment is non-electronic. Defaults to ``True``.
+        """
+        autocreate_delivery_if_nonelectronic = kwargs.pop('autocreate_delivery_if_nonelectronic', True)
         created = self.id == None
         super(Deadline, self).save(*args, **kwargs)
         group = self.assignment_group
@@ -115,9 +122,18 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
             if group.delivery_status == 'no-deadlines':
                 groupsave_needed = True
                 group.delivery_status = 'waiting-for-something'
+            if autocreate_delivery_if_nonelectronic and group.assignment.delivery_types == deliverytypes.NON_ELECTRONIC:
+                from .delivery import Delivery
+                delivery = Delivery(
+                    deadline=self,
+                    number=1)
+                delivery.save(autoset_number=False, autoset_last_delivery_on_group=False)
+                group.last_delivery = delivery
+                groupsave_needed = True
         if group.last_deadline == None or group.last_deadline.deadline < self.deadline:
             group.last_deadline = self
             groupsave_needed = True
+
         if groupsave_needed:
             group.save(update_delivery_status=False)
 

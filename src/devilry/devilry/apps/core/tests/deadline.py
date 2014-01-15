@@ -5,8 +5,9 @@ from django.test import TestCase
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
-from ..models import Deadline
-from ..testhelper import TestHelper
+from devilry.apps.core.models import Deadline
+from devilry.apps.core.models import deliverytypes
+from devilry.apps.core.testhelper import TestHelper
 
 
 
@@ -111,6 +112,34 @@ class TestDeadline(TestCase):
         group2builder.reload_from_db()
         self.assertEquals(group2builder.group.last_deadline, deadline3)
 
+
+    def test_do_not_autocreate_delivery_if_electronic(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        deadline = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        self.assertEquals(deadline.deliveries.count(), 0)
+
+    def test_autocreate_delivery_if_nonelectronic(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                delivery_types=deliverytypes.NON_ELECTRONIC)\
+            .add_group()
+        deadline = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        self.assertEquals(deadline.deliveries.count(), 1)
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_delivery, deadline.deliveries.all()[0])
+
+    def test_autocreate_delivery_if_nonelectronic_false(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                delivery_types=deliverytypes.NON_ELECTRONIC)\
+            .add_group()
+        deadline = Deadline(
+            assignment_group=groupbuilder.group,
+            deadline=DateTimeBuilder.now().plus(days=10))
+        deadline.save(autocreate_delivery_if_nonelectronic=False)
+        self.assertEquals(deadline.deliveries.count(), 0)
 
 
 class TestDeadlineOld(TestCase, TestHelper):
