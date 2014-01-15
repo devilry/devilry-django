@@ -8,11 +8,48 @@ from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
 from ..models import Deadline
 from ..testhelper import TestHelper
 
-TestHelper.set_memory_deliverystore()
 
-class TestDeadline(TestCase, TestHelper):
 
+class TestDeadline(TestCase):
+    def test_create_deadline_opens_assignmentgroup(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        groupbuilder.update(is_open=False)
+        groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=3))
+        groupbuilder.reload_from_db()
+        self.assertTrue(groupbuilder.group.is_open)
+
+    def test_update_deadline_does_not_change_assignmentgroup_is_open(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        deadline = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=3))
+        groupbuilder.update(is_open=False)
+        deadline.save()
+        groupbuilder.reload_from_db()
+        self.assertFalse(groupbuilder.group.is_open)
+
+    def test_create_deadline_changes_assignmentgroup_delivery_status(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertEquals(groupbuilder.group.delivery_status, 'no-deadlines')
+        groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=3))
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.delivery_status, 'waiting-for-something')
+
+
+
+class TestDeadlineOld(TestCase, TestHelper):
+    """
+    WARNING: Old tests for Deadline using TestHelper. We should
+    NOT add new tests here, and the tests should be updated and
+    moved to TestDeadline if we update any of the tested 
+    methods, or need to add more tests.
+    """
     def setUp(self):
+        TestHelper.set_memory_deliverystore()
         self.goodFile = {"good.py": "print awesome"}
         self.okVerdict = {"grade": "C", "points": 85, "is_passing_grade": True}
 
@@ -116,31 +153,3 @@ class TestDeadline(TestCase, TestHelper):
         delivery2.save()
         self.assertEquals(deadline.query_successful_deliveries().count(), 1)
         self.assertEquals(deadline.query_successful_deliveries()[0], delivery1)
-
-    def test_create_deadline_opens_assignmentgroup(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.update(is_open=False)
-        groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=3))
-        groupbuilder.reload_from_db()
-        self.assertTrue(groupbuilder.group.is_open)
-
-    def test_update_deadline_does_not_change_assignmentgroup_is_open(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        deadline = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=3))
-        groupbuilder.update(is_open=False)
-        deadline.save()
-        groupbuilder.reload_from_db()
-        self.assertFalse(groupbuilder.group.is_open)
-
-    def test_create_deadline_changes_assignmentgroup_delivery_status(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        self.assertEquals(groupbuilder.group.delivery_status, 'no-deadlines')
-        groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=3))
-        groupbuilder.reload_from_db()
-        self.assertEquals(groupbuilder.group.delivery_status, 'waiting-for-something')
