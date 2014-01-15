@@ -35,7 +35,7 @@ class DeadlineQuerySet(models.query.QuerySet):
         groups = groupqueryset.all()
         if len(groups) == 0:
             return []
-        
+
         # DB query 3 - create deadlines
         deadlines_to_create = [Deadline(assignment_group=group, deadline=deadline_datetime, text=text)\
             for group in groups]
@@ -48,6 +48,17 @@ class DeadlineQuerySet(models.query.QuerySet):
                 deadline=deadline_datetime,
                 text=text).select_related('assignment_group')
         created_deadlines = get_created_deadlines()
+
+
+        def save_group(deadline, last_delivery=None):
+            group = deadline.assignment_group
+            group.is_open = True
+            group.delivery_status = "waiting-for-something"
+            group.last_deadline = deadline
+            if last_delivery:
+                group.last_delivery = last_delivery
+            group.save(update_delivery_status=False,
+                autocreate_first_deadline_for_nonelectronic=False)
 
         assignment = groups[0].assignment # NOTE: We assume all groups are within the same assignment - as documented
         time_of_delivery = datetime.now().replace(microsecond=0, tzinfo=None)
@@ -68,22 +79,13 @@ class DeadlineQuerySet(models.query.QuerySet):
             # DB query 8 - Update groups, including last_delivery
             with transaction.commit_on_success(): # NOTE: Using a transaction should lead to one huge query commited at the end of the block
                 for delivery in created_deliveries:
-                    group = delivery.deadline.assignment_group
-                    group.last_delivery = delivery
-                    group.is_open = True
-                    group.delivery_status = "waiting-for-something"
-                    group.last_deadline = delivery.deadline
-                    group.save()
+                    save_group(delivery.deadline, delivery)
 
         else:
             # DB query 5 - Update groups
             with transaction.commit_on_success(): # NOTE: Using a transaction should lead to one huge query commited at the end of the block
                 for deadline in created_deadlines:
-                    group = deadline.assignment_group
-                    group.is_open = True
-                    group.delivery_status = "waiting-for-something"
-                    group.last_deadline = deadline
-                    group.save()
+                    save_group(deadline)
 
         if query_created_deadlines:
             return get_created_deadlines()
