@@ -6,6 +6,7 @@ from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
 from devilry.apps.core.models import Deadline
+from devilry.apps.core.models.deadline import NewerDeadlineExistsError
 from devilry.apps.core.models import deliverytypes
 from devilry.apps.core.testhelper import TestHelper
 
@@ -140,6 +141,55 @@ class TestDeadline(TestCase):
             deadline=DateTimeBuilder.now().plus(days=10))
         deadline.save(autocreate_delivery_if_nonelectronic=False)
         self.assertEquals(deadline.deliveries.count(), 0)
+
+    def test_smart_create_electronic(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        group2builder = assignmentbuilder.add_group()
+        deadline_datetime = Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=10))
+        result = Deadline.objects.smart_create(
+            assignmentbuilder.assignment.assignmentgroups.all(),
+            deadline_datetime=deadline_datetime,
+            text='Hello world')
+        self.assertIsNone(result)
+
+        group1builder.reload_from_db()
+        self.assertEquals(group1builder.group.deadlines.count(), 1)
+        created_deadline = group1builder.group.deadlines.all()[0]
+        self.assertEquals(created_deadline.deadline, deadline_datetime)
+        self.assertEquals(created_deadline.text, 'Hello world')
+        self.assertEquals(group1builder.group.last_deadline, created_deadline)
+        self.assertEquals(group1builder.group.last_deadline.deliveries.count(), 0)
+
+        group2builder.reload_from_db()
+        self.assertEquals(group2builder.group.deadlines.all()[0].deadline, deadline_datetime)
+        self.assertEquals(group2builder.group.last_deadline, group2builder.group.deadlines.all()[0])
+
+    def test_smart_create_no_text(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        deadline_datetime = Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=10))
+        Deadline.objects.smart_create(
+            assignmentbuilder.assignment.assignmentgroups.all(),
+            deadline_datetime=deadline_datetime)
+        group1builder.reload_from_db()
+        self.assertEquals(group1builder.group.last_deadline.deadline, deadline_datetime)
+        self.assertEquals(group1builder.group.last_deadline.text, None)
+
+    def test_smart_create_newer_exists(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        group1builder.add_deadline_in_x_weeks(weeks=2)
+        self.assertEquals(group1builder.group.deadlines.count(), 1)
+        with self.assertRaises(NewerDeadlineExistsError):
+            Deadline.objects.smart_create(
+                assignmentbuilder.assignment.assignmentgroups.all(),
+                deadline_datetime=DateTimeBuilder.now().plus(days=1))
+        group1builder.reload_from_db()
+        self.assertEquals(group1builder.group.deadlines.count(), 1)
 
 
 class TestDeadlineOld(TestCase, TestHelper):

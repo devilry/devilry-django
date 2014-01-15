@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-
+from django.db import transaction
 from datetime import datetime
 
 from abstract_is_examiner import AbstractIsExaminer
@@ -11,6 +11,123 @@ from abstract_is_admin import AbstractIsAdmin
 import deliverytypes
 
 from node import Node
+
+
+
+class NewerDeadlineExistsError(Exception):
+    """
+    Exception raised by :meth:DeadlineManager.smart_create``.
+    """
+
+
+class DeadlineQuerySet(models.query.QuerySet):
+    def smart_create(self, groupqueryset, deadline_datetime, text=None,
+            query_created_deadlines=False):
+
+        # We do this because we want to make it easy to compare deadlines based on their datetime.
+        deadline_datetime = Deadline.reduce_datetime_precision(deadline_datetime)
+
+        # DB query 1 - Check that no newer deadlines exist
+        if groupqueryset.filter(last_deadline__deadline__gt=deadline_datetime).exists():
+            raise NewerDeadlineExistsError()
+
+        # DB query 2 - get all the groups
+        groups = groupqueryset.all()
+        if len(groups) == 0:
+            return []
+        
+        # DB query 3 - create deadlines
+        deadlines_to_create = [Deadline(assignment_group=group, deadline=deadline_datetime, text=text)\
+            for group in groups]
+        self.bulk_create(deadlines_to_create)
+
+        # DB query 4 - Fetch created deadlines
+        def get_created_deadlines():
+            return Deadline.objects.filter(
+                assignment_group__in=groups,
+                deadline=deadline_datetime,
+                text=text).select_related('assignment_group')
+        created_deadlines = get_created_deadlines()
+
+        assignment = groups[0].assignment # NOTE: We assume all groups are within the same assignment - as documented
+        time_of_delivery = datetime.now().replace(microsecond=0, tzinfo=None)
+        if assignment.delivery_types == deliverytypes.NON_ELECTRONIC:
+            raise ValueError('smart_create does not support NON_ELECTRONIC assignments yet - those assignments create their own deadlines automatically')
+            """
+            from .delivery import Delivery
+
+            # DB query 6 - create deliveries
+            deliveries_to_create = [Delivery(deadline=deadline, time_of_delivery=time_of_delivery, number=1)\
+                for deadline in created_deadlines]
+            Delivery.objects.bulk_create()
+
+            # DB query 7 - fetch created deliveries
+            created_deliveries = Delivery.objects.filter(
+                deadline__assignment_group__in=groups,
+                time_of_delivery=time_of_delivery).select_related(
+                    'deadline', 'deadline__assignment_group')
+
+            # DB query 8 - Update groups, including last_delivery
+            with transaction.commit_on_success(): # NOTE: Using a transaction should lead to one huge query commited at the end of the block
+                for delivery in created_deliveries:
+                    group = delivery.deadline.group
+                    group.last_delivery = delivery
+                    group.is_open = True
+                    group.delivery_status = "waiting-for-something"
+                    group.last_deadline = delivery.deadline
+                    group.save()
+            """
+
+        else:
+            # DB query 5 - Update groups
+            with transaction.commit_on_success(): # NOTE: Using a transaction should lead to one huge query commited at the end of the block
+                for deadline in created_deadlines:
+                    group = deadline.assignment_group
+                    group.is_open = True
+                    group.delivery_status = "waiting-for-something"
+                    group.last_deadline = deadline
+                    group.save()
+
+        if query_created_deadlines:
+            return get_created_deadlines()
+
+            
+
+
+class DeadlineManager(models.Manager):
+    def get_queryset(self):
+        return DeadlineQuerySet(self.model, using=self._db)
+
+    def smart_create(self, groupqueryset, deadline_datetime, text=None, query_created_deadlines=False):
+        """
+        Creates deadlines for all groups in the given QuerySet of AssignmentGroups.
+
+        Algorighm:
+
+        1. Create deadlines in bulk.
+        2. If assignment is ``NON_ELECTRONIC``, create a delivery for each of the created deadlines.
+        3. Update all the groups in groupqueryset() with ``is_open=True``, 
+           ``delivery_status="waiting-for-something"``, ``last_deadline=<newly created deadline>``
+           and ``last_delivery=<created delivery>`` (if a delivery was created in step 2).
+
+        :param groupqueryset:
+            A QuerySet of AssignmentGroup objects. MUST match groups within a single assignment.
+        :param deadline_datetime:
+            The datetime of the deadline. The function runs this through
+            :meth:`Deadline.reduce_datetime_precision` before using it.
+        :param text: The deadline text. Defaults to ``None``.
+        :param query_created_deadlines:
+            Perform a query for the created deadlines at the end of the method.
+
+        :raise NewerDeadlineExistsError:
+            When one of the groups in the ``groupqueryset`` has a ``last_deadline``
+            that is newer than ``deadline_datetime``
+
+        First described in https://github.com/devilry/devilry-django/issues/514.
+        """
+        return self.get_queryset().smart_create(groupqueryset, deadline_datetime, text)
+
+
 
 
 
@@ -48,6 +165,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         :class:`Delivery`. See also :attr:`Assignment.examiners_publish_feedbacks_directly`.
 
     """
+    objects = DeadlineManager()
     assignment_group = models.ForeignKey(AssignmentGroup,
             related_name='deadlines')
     deadline = models.DateTimeField(help_text='The time of the deadline.')
@@ -67,8 +185,17 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         ordering = ['-deadline']
 
 
+    @classmethod
+    def reduce_datetime_precision(cls, datetimeobj):
+        """
+        Reduce the precition of the ``datetimeobj`` to make it easier to compare.
+
+        :return: A copy of ``datetimeobj`` with microsecond set to ``0``, and tzinfo set to ``None``.
+        """
+        return datetimeobj.replace(microsecond=0, tzinfo=None)
+
     def remove_microsec(self):
-        self.deadline = self.deadline.replace(microsecond=0, tzinfo=None) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
+        self.deadline = Deadline.reduce_datetime_precision(self.deadline) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
 
     def _clean_deadline(self):
         self.remove_microsec()
