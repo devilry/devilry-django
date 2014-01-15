@@ -189,9 +189,15 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             Update the ``delivery_status``? This is a somewhat expensive
             operation, so we provide the option to avoid it if needed.
             Defaults to ``True``.
+        :param autocreate_first_deadline_for_nonelectronic:
+            Autocreate the first deadline if non-electronic assignment?
+            Defaults to ``True``.
         """
+        autocreate_first_deadline_for_nonelectronic = kwargs.pop('autocreate_first_deadline_for_nonelectronic', True)
         create_dummy_deadline = False
-        if self.id is None and self.parentnode.delivery_types == deliverytypes.NON_ELECTRONIC:
+        if autocreate_first_deadline_for_nonelectronic \
+                and self.id is None \
+                and self.parentnode.delivery_types == deliverytypes.NON_ELECTRONIC:
             create_dummy_deadline = True
         if kwargs.pop('update_delivery_status', True):
             self._set_delivery_status()
