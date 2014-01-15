@@ -49,7 +49,6 @@ class DeadlineQuerySet(models.query.QuerySet):
                 text=text).select_related('assignment_group')
         created_deadlines = get_created_deadlines()
 
-
         def save_group(deadline, last_delivery=None):
             group = deadline.assignment_group
             group.is_open = True
@@ -76,16 +75,14 @@ class DeadlineQuerySet(models.query.QuerySet):
                 time_of_delivery=time_of_delivery).select_related(
                     'deadline', 'deadline__assignment_group')
 
-            # DB query 8 - Update groups, including last_delivery
-            with transaction.commit_on_success(): # NOTE: Using a transaction should lead to one huge query commited at the end of the block
-                for delivery in created_deliveries:
-                    save_group(delivery.deadline, delivery)
+            # DB query 8...N - Update groups, including last_delivery
+            for delivery in created_deliveries:
+                save_group(delivery.deadline, delivery)
 
         else:
-            # DB query 5 - Update groups
-            with transaction.commit_on_success(): # NOTE: Using a transaction should lead to one huge query commited at the end of the block
-                for deadline in created_deadlines:
-                    save_group(deadline)
+            # DB query 5...N - Update groups
+            for deadline in created_deadlines:
+                save_group(deadline)
 
         if query_created_deadlines:
             return get_created_deadlines()
