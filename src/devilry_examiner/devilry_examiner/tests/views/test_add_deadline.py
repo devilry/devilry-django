@@ -33,5 +33,5 @@ class TestAddDeadlineView(TestCase):
         html = response.content
         self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
             'Add deadline')
-        # self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(),
-            # "duck1010 active Assignment One")
+        self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(),
+            "Assignment One &mdash; duck1010, active")

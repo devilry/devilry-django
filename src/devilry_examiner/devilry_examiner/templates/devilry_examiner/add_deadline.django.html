@@ -12,11 +12,17 @@
     <div class="page-header page-header-with-subheader">
         <h1>{% trans "Add deadline" %}</h1>
         <p class="subheader">
-            {{ assignment.long_name }} &mdash;
-            {{ assignment.parentnode.parentnode.long_name}} &mdash;
-            {{ assignment.parentnode.long_name }}
+            {{ assignment.long_name }} &mdash; {{ assignment.parentnode.parentnode.long_name}}, {{ assignment.parentnode.long_name }}
         </p>
     </div>
+
+    <h2>Selected</h2>
+    <ul>
+    {% for group in group_ids_form.cleaned_groups %}
+        <li>{{ group.long_displayname }}</li>
+    {% endfor %}
+    </ul>
+
     {% crispy form %}
 </div>
 {% endblock %}
