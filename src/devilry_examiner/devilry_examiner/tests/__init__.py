@@ -7,3 +7,4 @@ from .views.test_allgroupsoverview import TestAllGroupsOverview
 from .views.test_allgroupsoverview import TestWaitingForFeedbackOverview
 from .views.test_allgroupsoverview import TestWaitingForDeliveriesOverview
 from .views.test_allgroupsoverview import TestCorrectedOverview
+from .views.test_add_deadline import TestAddDeadlineView

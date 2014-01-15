@@ -1,0 +1,22 @@
+{% extends "devilry_examiner/base.django.html" %}
+{% load i18n %}
+{% load url from future %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% trans "Add deadline" %} - {{ assignment.short_name }} - {{ assignment.parentnode.get_path }}
+{% endblock title %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header page-header-with-subheader">
+        <h1>{% trans "Add deadline" %}</h1>
+        <p class="subheader">
+            {{ assignment.long_name }} &mdash;
+            {{ assignment.parentnode.parentnode.long_name}} &mdash;
+            {{ assignment.parentnode.long_name }}
+        </p>
+    </div>
+    {% crispy form %}
+</div>
+{% endblock %}

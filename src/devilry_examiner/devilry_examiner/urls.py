@@ -11,6 +11,7 @@ from .views.allgroupsoverview import WaitingForDeliveriesOverview
 from .views.allgroupsoverview import CorrectedOverview
 from .views.allgroupsoverview import BulkTest
 from .views.singledelivery import SingleDeliveryView
+from .views.add_deadline import AddDeadlineView
 
 i18n_packages = get_javascript_catalog_packages(
     #'devilry_examiner',
@@ -41,6 +42,9 @@ urlpatterns = patterns('devilry_examiner',
                        url('^singledelivery/(?P<deliveryid>\d+)$',
                            login_required(SingleDeliveryView.as_view()),
                            name='devilry_examiner_singledeliveryview'),
+                       url('^add_deadline/(?P<assignmentid>\d+)$',
+                           login_required(AddDeadlineView.as_view()),
+                           name='devilry_examiner_add_deadline'),
                        url('^i18n.js$', javascript_catalog,
                            kwargs={'packages': i18n_packages},
                            name='devilry_examiner_i18n')
