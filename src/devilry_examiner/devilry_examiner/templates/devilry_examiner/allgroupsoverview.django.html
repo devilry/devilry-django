@@ -15,11 +15,6 @@
       {{ assignment.parentnode.parentnode.long_name}} &mdash; {{ assignment.parentnode.long_name }}
     </p>
   </div>
-  <ol class="breadcrumb">
-    <li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
-    <li><a href="{% url 'devilry_examiner_dashboard' %}">{% trans "Examiner" %}</a></li>
-    <li class="active">{{ assignment.get_path }}</li>
-  </ol>
 </div>
 
 
