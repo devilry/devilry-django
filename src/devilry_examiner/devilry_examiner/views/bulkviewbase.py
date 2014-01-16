@@ -20,6 +20,8 @@ class BulkViewBase(DetailView):
     #: the user to :meth:`get_cancel_url`.
     form_class = None
 
+    groupidsform_class = GroupIdsForm
+
     #: Reselect the originally selected groups when redirecting back to the overview?
     #: Setting this to ``False`` deletes selected_group_ids from the session in form_valid().
     reselect_groups_on_success = True
@@ -59,6 +61,9 @@ class BulkViewBase(DetailView):
     def get_form_class(self):
         return self.form_class
 
+    def get_groupidsform_class(self):
+        return self.groupidsform_class
+
     def get(self, *args, **kwargs):
         # Redirect to POST to make it easier to debug/play with the initial post data
         return self.post(*args, **kwargs)
@@ -72,6 +77,9 @@ class BulkViewBase(DetailView):
 
     def is_primary_submit(self):
         return 'submit_primary' in self.request.POST
+
+    def groupids_form_invalid(self, groupidsform):
+        raise Http404
 
     def post(self, *args, **kwargs):
         """
@@ -99,6 +107,7 @@ class BulkViewBase(DetailView):
 
         context_data = {'object': self.object}
 
+        form = None
         if self.is_primary_submit():
             form = self.get_form_class()(self.request.POST, **common_form_kwargs)
             if form.is_valid():
@@ -108,9 +117,9 @@ class BulkViewBase(DetailView):
         else:
             # When redirected from another view like allgroupview with a list of group_ids
             # - we use a GroupIdsForm to parse the list
-            groupidsform = GroupIdsForm(self.get_initial_formdata(), **common_form_kwargs)
+            groupidsform = self.get_groupidsform_class()(self.get_initial_formdata(), **common_form_kwargs)
+            context_data['group_ids_form'] = groupidsform
             if groupidsform.is_valid():
-                context_data['group_ids_form'] = groupidsform
                 groupids = groupidsform.cleaned_data['group_ids']
                 if self.set_selected_group_ids:
                     self.request.session['selected_group_ids'] = groupids
@@ -120,7 +129,7 @@ class BulkViewBase(DetailView):
                     initial=initial,
                     **common_form_kwargs)
             else:
-                raise Http404
+                self.groupids_form_invalid(groupidsform)
 
         # Build context just like DetailView.get, but add group_ids_form if initial load
         context_data['form'] = form

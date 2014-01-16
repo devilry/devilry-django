@@ -22,7 +22,20 @@ from devilry_examiner.forms import GroupIdsForm
 
 
 
-class FeedbackBulkEditorFormBase(GroupIdsForm):
+class FeedbackBulkEditorGroupIdsForm(GroupIdsForm):
+    def clean(self):
+        cleaned_data = super(FeedbackBulkEditorGroupIdsForm, self).clean()
+        if hasattr(self, 'cleaned_groups'):
+            cleaned_groups = self.cleaned_groups
+            groups_with_no_deliveries = cleaned_groups.filter(last_delivery=None)
+            if groups_with_no_deliveries.exists():
+                raise forms.ValidationError(_('One or more of the selected groups has no deliveries.'))
+            else:
+                self.cleaned_groups = cleaned_groups
+        return cleaned_data
+
+
+class FeedbackBulkEditorFormBase(FeedbackBulkEditorGroupIdsForm):
     def __init__(self, *args, **kwargs):
         super(FeedbackBulkEditorFormBase, self).__init__(*args, **kwargs)
         self._add_feedbacktext_field()
@@ -47,7 +60,11 @@ class FeedbackBulkEditorFormBase(GroupIdsForm):
         self.helper.layout.append('group_ids')
 
 
+
+
 class FeedbackBulkEditorFormView(BulkViewBase):
+    groupidsform_class = FeedbackBulkEditorGroupIdsForm
+
     def get_form_kwargs(self):
         kwargs = super(FeedbackBulkEditorFormView, self).get_form_kwargs()
         return kwargs
@@ -122,6 +139,9 @@ class FeedbackBulkEditorFormView(BulkViewBase):
                 'points': self.get_default_points_value()
             }
 
+    def groupids_form_invalid(self, groupidsform):
+        # We handle errors in the template
+        pass
 
     def get(self, *args, **kwargs):
         assignment = self.get_object()

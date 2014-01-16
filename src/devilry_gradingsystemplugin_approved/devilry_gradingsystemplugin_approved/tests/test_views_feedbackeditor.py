@@ -70,7 +70,6 @@ class TestFeedbackEditorView(TestCase):
 
     def test_post_draft_redirect_back_to_self(self):
         response = self._post_as(self.examiner1, {'points': 'on'})
-        print self.url
         self.assertTrue(response['Location'].endswith(self.url))
 
     def test_post_publish_redirect_to_successurl(self):
@@ -107,11 +106,6 @@ class TestFeedbackBulkEditorView(TestCase):
         self._login(user)
         return self.client.post(self.url, *args, **kwargs)
 
-    def test_no_group_ids(self):
-        response = self._post_as(self.examiner1)
-        self.assertEquals(response.status_code, 404)
-        html = response.content
-
     def test_get_not_examiner_404(self):
         groupbuilder = self.assignment1builder.add_group()
         nobody = UserBuilder('nobody').user
@@ -119,6 +113,22 @@ class TestFeedbackBulkEditorView(TestCase):
             'group_ids': groupbuilder.group.id
         })
         self.assertEquals(response.status_code, 404)
+
+    def test_no_group_ids_shows_errormessage(self):
+        self.assignment1builder.add_group(examiners=[self.examiner1])
+        response = self._post_as(self.examiner1)
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertIn('You have to select at least one group to perform a bulk action.', html)
+
+    def test_no_delivery_shows_errormessage(self):
+        groupbuilder = self.assignment1builder.add_group(examiners=[self.examiner1])
+        response = self._post_as(self.examiner1, {
+            'group_ids': groupbuilder.group.id
+        })
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertIn('One or more of the selected groups has no deliveries.', html)
 
     def test_render(self):
         groupbuilder = self.assignment1builder.add_group(examiners=[self.examiner1])

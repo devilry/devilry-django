@@ -8,12 +8,16 @@
 
 
 <div class="container">
-    <h2>{% trans "You are now correcting the following groups in bulk" %}</h2>
-    {% for group in group_ids_form.cleaned_groups %}
-        <p>{{ group }}</p>
-    {% endfor  %}
+    {% if not group_ids_form.is_valid %}
+        {% include "devilry_examiner/include/django_formerrors_as_alertboxes.django.html" with form=group_ids_form %}
+    {% else %}
+        <h2>{% trans "You are now correcting the following groups in bulk" %}</h2>
+        {% for group in group_ids_form.cleaned_groups %}
+            <p>{{ group }}</p>
+        {% endfor  %}
 
-    {% crispy form %}
+        {% crispy form %}
+    {% endif %}
 </div>
 
 {% endblock pagecontent %}

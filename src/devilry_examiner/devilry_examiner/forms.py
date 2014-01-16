@@ -1,5 +1,6 @@
 from django import forms
 from devilry.apps.core.models import AssignmentGroup
+from django.utils.translation import ugettext_lazy as _
 
 
 class BulkForm(forms.Form):
@@ -39,7 +40,7 @@ class GroupIdsForm(forms.Form):
     checkboxes with ``name="group_ids"``.
     """
     group_ids = TypedMultipleChoiceFieldWithoutChoices(
-        required=True,
+        required=False,
         coerce=int,
         widget=forms.MultipleHiddenInput())
 
@@ -60,4 +61,6 @@ class GroupIdsForm(forms.Form):
                     self.assignment.get_path()))
             else:
                 self.cleaned_groups = cleaned_groups
+        else:
+            raise forms.ValidationError(_('You have to select at least one group to perform a bulk action.'))
         return cleaned_data
