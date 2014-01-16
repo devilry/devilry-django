@@ -7721,6 +7721,12 @@ Extends bootstrap alerts.
 .alert-muted .alert-link {
   color: #626262;
 }
+.devilry-alert-container {
+  margin-bottom: 20px;
+}
+.devilry-alert-container .alert {
+  margin-bottom: 0;
+}
 ul.list-truly-inline {
   display: inline-block;
 }

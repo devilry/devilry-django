@@ -53,35 +53,37 @@ valid_grading_system_setup
             {% endblock breadcrumbtail %}
         </ol>
 
-        {% if not valid_grading_system_setup %}            
-            <div class="alert alert-danger">
-                <strong>{% trans "Error" %}:</strong>            
-                {% trans "You can not provide feedback for this assignment because the course admin(s) have not configured the grading system correctly. If a course admin visits this assignment using the course admin role, they will get a message with instructions for how to fix this." %}
-            </div>
-        {% endif %}
 
+        {% block alerts %}
+            {% if not valid_grading_system_setup %}
+                <div class="alert alert-danger">
+                    <strong>{% trans "Error" %}:</strong>            
+                    {% trans "You can not provide feedback for this assignment because the course admin(s) have not configured the grading system correctly. If a course admin visits this assignment using the course admin role, they will get a message with instructions for how to fix this." %}
+                </div>
+            {% endif %}
 
-
-        {% if delivery.after_deadline %}
-            <div class="alert alert-warning after_deadline_message">
-                <strong>{% trans "This delivery was added 1 hour after the deadline." %}</strong>
-                {% if delivery.deadline.successful_delivery_count > 1 %}
-                    {% trans "The group has made at least one more delivery for this deadline." %}
-                    <a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">
-                        {% trans "Browse other deliveries" %}</a>.
-                {% else %}
-                    {% trans "The group has no other deliveries for this deadline." %}
+            <div class="devilry-alert-container">
+                {% if delivery.after_deadline %}
+                    <div class="alert alert-warning after_deadline_message">
+                        <strong>{% trans "This delivery was added 1 hour after the deadline." %}</strong>
+                        {% if delivery.deadline.successful_delivery_count > 1 %}
+                            {% trans "The group has made at least one more delivery for this deadline." %}
+                            <a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">
+                                {% trans "Browse other deliveries" %}</a>.
+                        {% else %}
+                            {% trans "The group has no other deliveries for this deadline." %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+                {% if not delivery.is_last_delivery %}
+                    <div class="alert alert-warning not_last_delivery_message">
+                        {% trans "This delivery is not the last delivery made by this group on this assignment." %}
+                        <a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">
+                                {% trans "Browse other deliveries" %}</a>.
+                    </div>
                 {% endif %}
             </div>
-        {% endif %}
-
-        {% if not delivery.is_last_delivery %}
-            <div class="alert alert-warning not_last_delivery_message">
-                {% trans "This delivery is not the last delivery made by this group on this assignment." %}
-                <a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">
-                        {% trans "Browse other deliveries" %}</a>.
-            </div>
-        {% endif %}
+        {% endblock alerts %}
 
         {% with filemetacount=delivery.filemetas.count %}
             {% if filemetacount > 0 %}
