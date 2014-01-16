@@ -39,12 +39,12 @@ class AddDeadlineForm(GroupIdsForm):
         help_text=_('Format: "YYYY-MM-DD hh:mm".'),
     )
     text = forms.CharField(
-        label=_('Text'),
+        label=_('About this deadline'),
         help_text=_('Why are you adding this deadline? Make this informative, and remember that this information may be important for course administrators if they need to move the deadline.'),
         widget=forms.Textarea(attrs={'rows': 7}),
         required=False)
     no_text = forms.BooleanField(
-        label=_('I do not want to provide a deadline text.'),
+        label=_('I do not want to provide an "About this deadline" message.'),
         help_text=_('You should normally tell your students why they get a new deadline. If some rare cases this makes no sense, so you can select this option to avoid specifying a text.'),
         required=False, initial=False)
 
@@ -58,7 +58,7 @@ class AddDeadlineForm(GroupIdsForm):
         text = cleaned_data.get('text', None)
         no_text = cleaned_data.get('no_text', False)
         if not text and not no_text:
-            error_message = _('You must specify a deadline text, or select that you do not want to specify any text.')
+            error_message = _('You must specify an "About this deadline" message, or select that you do not want to specify a message.')
             self._errors["text"] = self.error_class([error_message])
             self._errors["no_text"] = self.error_class([error_message])
             if 'text' in cleaned_data:
@@ -66,7 +66,7 @@ class AddDeadlineForm(GroupIdsForm):
             if 'no_text' in cleaned_data:
                 del cleaned_data['no_text']
         if text and no_text:
-            error_message = _('If you do not want to provide a deadline text, you have to clear the text field.')
+            error_message = _('If you do not want to provide an "About this deadline" message, you have to clear the text field.')
             self._errors["text"] = self.error_class([error_message])
             self._errors["no_text"] = self.error_class([error_message])
             if 'text' in cleaned_data:

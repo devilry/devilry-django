@@ -166,7 +166,7 @@ class TestAddDeadlineView(TestCase):
         self.assertEquals(response.status_code, 200)
         group1builder.reload_from_db()
         self.assertEquals(group1builder.group.last_deadline, None)
-        self.assertIn('You must specify a deadline text, or select that you do not want to specify any text.',
+        self.assertIn('You must specify an &quot;About this deadline&quot; message, or select that you do not want to specify a message.',
             response.content)
 
     def test_post_no_text_checked_and_text_provided(self):
@@ -183,5 +183,5 @@ class TestAddDeadlineView(TestCase):
         self.assertEquals(response.status_code, 200)
         group1builder.reload_from_db()
         self.assertEquals(group1builder.group.last_deadline, None)
-        self.assertIn('If you do not want to provide a deadline text, you have to clear the text field.',
+        self.assertIn('If you do not want to provide an &quot;About this deadline&quot; message, you have to clear the text field.',
             response.content)
