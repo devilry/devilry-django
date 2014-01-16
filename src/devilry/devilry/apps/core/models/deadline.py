@@ -24,6 +24,7 @@ class NewerDeadlineExistsError(Exception):
 
 class DeadlineQuerySet(models.query.QuerySet):
     def smart_create(self, groupqueryset, deadline_datetime, text=None,
+            why_created=None, added_by=None,
             query_created_deadlines=False):
 
         # We do this because we want to make it easy to compare deadlines based on their datetime.
@@ -39,8 +40,14 @@ class DeadlineQuerySet(models.query.QuerySet):
             return []
 
         # DB query 3 - create deadlines
-        deadlines_to_create = [Deadline(assignment_group=group, deadline=deadline_datetime, text=text)\
-            for group in groups]
+        def init_deadline(group):
+            return Deadline(
+                assignment_group=group,
+                deadline=deadline_datetime,
+                text=text,
+                why_created=why_created,
+                added_by=added_by)
+        deadlines_to_create = map(init_deadline, groups)
         self.bulk_create(deadlines_to_create)
 
         # DB query 4 - Fetch created deadlines
