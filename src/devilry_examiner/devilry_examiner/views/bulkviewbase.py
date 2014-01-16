@@ -41,6 +41,12 @@ class BulkViewBase(DetailView):
     def get_cancel_url(self):
         return self.get_success_url()
 
+    def get_initial(self):
+        """
+        Get initial form data (just like Django FormView).
+        """
+        return {}
+
     def get_initial_formdata(self):
         """
         Get the initial POST data - only here to let us debug with group_ids in querystring.
@@ -106,8 +112,10 @@ class BulkViewBase(DetailView):
                 groupids = groupidsform.cleaned_data['group_ids']
                 if self.set_selected_group_ids:
                     self.request.session['selected_group_ids'] = groupids
+                initial = self.get_initial()
+                initial['group_ids'] = groupids
                 form = self.get_form_class()(
-                    initial={'group_ids': groupids},
+                    initial=initial,
                     **common_form_kwargs)
             else:
                 raise Http404
