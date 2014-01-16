@@ -47,6 +47,13 @@ class AddDeadlineForm(GroupIdsForm):
         label=_('I do not want to provide an "About this deadline" message.'),
         help_text=_('You should normally tell your students why they get a new deadline. If some rare cases this makes no sense, so you can select this option to avoid specifying a text.'),
         required=False, initial=False)
+    why_created = forms.ChoiceField(
+        required=False,
+        widget=forms.HiddenInput,
+        choices=(
+            (None, 'unknown'),
+            ('examiner-gave-another-chance', 'Another chance.'))
+        )
 
     def clean(self):
         cleaned_data = super(AddDeadlineForm, self).clean()
@@ -84,6 +91,7 @@ class AddDeadlineForm(GroupIdsForm):
             'text',
             'no_text',
             'group_ids',
+            'why_created',
             HTML('<hr>'),
             ButtonHolder(
                 Submit('submit_primary', _('Add deadline'), css_class='pull-right'),
@@ -100,8 +108,7 @@ class AddDeadlineView(BulkViewBase):
     group (I.E. after failing a single group):
 
     - Can specify ``success_url`` and ``cancel_url`` in the querystring.
-    - We inherit the ability to specify ``group_ids`` in the querystring from BulkViewBase.
-    - Can specify ``initial_text`` in the querystring, to provide a default
+    - Can specify ``give_another_chance`` in the querystring, to provide a default
       message that examiners can use, edit or clear.
     """
     template_name = "devilry_examiner/add_deadline.django.html"
@@ -111,7 +118,9 @@ class AddDeadlineView(BulkViewBase):
         Deadline.objects.smart_create(
             form.cleaned_groups,
             deadline_datetime=form.cleaned_data['deadline'],
-            text=form.cleaned_data['text'])
+            text=form.cleaned_data['text'],
+            added_by=self.request.user,
+            why_created=form.cleaned_data['why_created'])
         return super(AddDeadlineView, self).form_valid(form)
 
     def get_success_url(self):
@@ -124,12 +133,14 @@ class AddDeadlineView(BulkViewBase):
 
 
     def get_initial(self):
-        if 'initial_text' in self.get_initial_formdata():
-            return {
-                'text': self.get_initial_formdata()['initial_text']
-            }
-        else:
-            return {}
+        initial = {}
+        data = self.get_initial_formdata()
+        if 'give_another_chance' in data:
+            initial.update({
+                'text': _('I have given you a new chance to pass this assignment. Read your last feedback for information about why you did not pass, and why you have been given another chance.'),
+                'why_created': 'examiner-gave-another-chance'
+            })
+        return initial
 
     def get_context_data(self, **kwargs):
         context = super(AddDeadlineView, self).get_context_data(**kwargs)

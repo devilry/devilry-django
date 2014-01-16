@@ -1,3 +1,4 @@
+from urllib import urlencode
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
@@ -25,8 +26,12 @@ class TestAddDeadlineView(TestCase):
         return self.client.get(self.url, *args, **kwargs)
 
     def _postas(self, user, *args, **kwargs):
+        querystring = kwargs.pop('querystring', None)
+        url = self.url
+        if querystring:
+            url = '{}?{}'.format(url, urlencode(querystring))
         self.client.login(username=user.username, password='test')
-        return self.client.post(self.url, *args, **kwargs)
+        return self.client.post(url, *args, **kwargs)
 
 
     ##############################
@@ -83,18 +88,20 @@ class TestAddDeadlineView(TestCase):
         self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(),
             "Assignment One &mdash; duck1010, active")
 
-    def test_initial_text(self):
+    def test_give_another_chance_sets_initial_text(self):
         group1 = self.assignment1builder\
             .add_group(examiners=[self.examiner1]).group
         response = self._postas(self.examiner1, {
             'group_ids': [group1.id],
-            'initial_text': 'This is some initial text'
+            'give_another_chance': 'true'
         })
         self.assertEquals(response.status_code, 200)
         html = response.content
         self.assertEquals(cssGet(html, 'form #id_text').text.strip(),
-            "This is some initial text")
-
+            "I have given you a new chance to pass this assignment. Read your last feedback for information about why you did not pass, and why you have been given another chance.")
+        self.assertEquals(cssGet(html, 'form #id_why_created')['value'],
+            'examiner-gave-another-chance')
+        self.assertEquals(cssGet(html, 'form #id_why_created')['type'], 'hidden')
 
 
     ##########################################
@@ -115,7 +122,8 @@ class TestAddDeadlineView(TestCase):
         group1builder.reload_from_db()
         self.assertEquals(group1builder.group.last_deadline.deadline, deadline_datetime)
         self.assertEquals(group1builder.group.last_deadline.text, 'Hello world')
-
+        self.assertEquals(group1builder.group.last_deadline.why_created, '')
+        self.assertEquals(group1builder.group.last_deadline.added_by, self.examiner1)
 
     def test_post_multiple(self):
         group1builder = self.assignment1builder\
@@ -138,6 +146,22 @@ class TestAddDeadlineView(TestCase):
         group2builder.reload_from_db()
         self.assertEquals(group2builder.group.last_deadline.deadline, deadline_datetime)
         self.assertEquals(group2builder.group.last_deadline.text, 'Hello world')
+
+
+    def test_post_why_created(self):
+        group1builder = self.assignment1builder\
+            .add_group(examiners=[self.examiner1])
+        deadline_datetime = Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=10))
+        response = self._postas(self.examiner1, {
+            'group_ids': [group1builder.group.id],
+            'deadline': isoformat_datetime(deadline_datetime),
+            'text': 'Hello world',
+            'why_created': 'examiner-gave-another-chance',
+            'submit_primary': 'i18nlabel'
+        })
+        self.assertEquals(response.status_code, 302)
+        group1builder.reload_from_db()
+        self.assertEquals(group1builder.group.last_deadline.why_created, 'examiner-gave-another-chance')
 
     def test_post_no_text(self):
         group1builder = self.assignment1builder\
