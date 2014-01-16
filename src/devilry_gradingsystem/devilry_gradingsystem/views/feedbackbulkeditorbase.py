@@ -167,7 +167,7 @@ class FeedbackBulkEditorFormView(BulkViewBase):
         draft_ids = []
 
         for group in groups:
-            delivery = group.get_active_deadline().query_successful_deliveries()[0]
+            delivery = group.last_delivery
             draft = FeedbackDraft(
                 delivery=delivery,
                 points=points,

@@ -111,6 +111,7 @@ class BulkViewBase(DetailView):
         if self.is_primary_submit():
             form = self.get_form_class()(self.request.POST, **common_form_kwargs)
             if form.is_valid():
+                context_data['selected_groups'] = form.cleaned_groups
                 return self.form_valid(form)
         elif 'submit_cancel' in self.request.POST:
             return redirect(self.get_cancel_url())
@@ -121,6 +122,7 @@ class BulkViewBase(DetailView):
             context_data['group_ids_form'] = groupidsform
             if groupidsform.is_valid():
                 groupids = groupidsform.cleaned_data['group_ids']
+                context_data['selected_groups'] = groupidsform.cleaned_groups
                 if self.set_selected_group_ids:
                     self.request.session['selected_group_ids'] = groupids
                 initial = self.get_initial()
