@@ -132,7 +132,9 @@ class DeadlineManager(models.Manager):
 
         First described in https://github.com/devilry/devilry-django/issues/514.
         """
-        return self.get_queryset().smart_create(groupqueryset, deadline_datetime, text)
+        return self.get_queryset().smart_create(groupqueryset, deadline_datetime, text,
+            why_created=why_created, added_by=added_by,
+            query_created_deadlines=query_created_deadlines)
 
 
 
