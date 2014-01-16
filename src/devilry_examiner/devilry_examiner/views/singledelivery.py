@@ -28,8 +28,8 @@ class SingleDeliveryView(DetailView):
             assignment = delivery.assignment
             if assignment.has_valid_grading_setup():
                 return redirect(assignment.get_gradingsystem_plugin_api().get_edit_feedback_url(delivery.id))
-        else:
-            return super(SingleDeliveryView, self).get(*args, **kwargs)
+
+        return super(SingleDeliveryView, self).get(*args, **kwargs)
 
 
     def get_context_data(self, **kwargs):
