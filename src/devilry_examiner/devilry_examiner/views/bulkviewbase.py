@@ -70,6 +70,8 @@ class BulkViewBase(DetailView):
             del self.request.session['selected_group_ids']
         return redirect(self.get_success_url())
 
+    def is_primary_submit(self):
+        return 'submit_primary' in self.request.POST
 
     def post(self, *args, **kwargs):
         """
@@ -97,7 +99,7 @@ class BulkViewBase(DetailView):
 
         context_data = {'object': self.object}
 
-        if 'submit_primary' in self.request.POST:
+        if self.is_primary_submit():
             form = self.get_form_class()(self.request.POST, **common_form_kwargs)
             if form.is_valid():
                 return self.form_valid(form)
@@ -105,7 +107,7 @@ class BulkViewBase(DetailView):
             return redirect(self.get_cancel_url())
         else:
             # When redirected from another view like allgroupview with a list of group_ids
-            # - we use a GroupIdsForm to parse the list 
+            # - we use a GroupIdsForm to parse the list
             groupidsform = GroupIdsForm(self.get_initial_formdata(), **common_form_kwargs)
             if groupidsform.is_valid():
                 context_data['group_ids_form'] = groupidsform
