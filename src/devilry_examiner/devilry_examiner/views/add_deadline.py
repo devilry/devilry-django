@@ -36,7 +36,7 @@ class DevilryDatetimeFormField(forms.DateTimeField):
 class AddDeadlineForm(GroupIdsForm):
     deadline = DevilryDatetimeFormField(
         label=_('Deadline'),
-        help_text=_('Format YYYY-MM-DD hh:mm'),
+        help_text=_('Format: "YYYY-MM-DD hh:mm".'),
     )
     text = forms.CharField(
         label=_('Text'),
@@ -59,6 +59,14 @@ class AddDeadlineForm(GroupIdsForm):
         no_text = cleaned_data.get('no_text', False)
         if not text and not no_text:
             error_message = _('You must specify a deadline text, or select that you do not want to specify any text.')
+            self._errors["text"] = self.error_class([error_message])
+            self._errors["no_text"] = self.error_class([error_message])
+            if 'text' in cleaned_data:
+                del cleaned_data['text']
+            if 'no_text' in cleaned_data:
+                del cleaned_data['no_text']
+        if text and no_text:
+            error_message = _('If you do not want to provide a deadline text, you have to clear the text field.')
             self._errors["text"] = self.error_class([error_message])
             self._errors["no_text"] = self.error_class([error_message])
             if 'text' in cleaned_data:
@@ -94,6 +102,14 @@ class AddDeadlineView(BulkViewBase):
             deadline_datetime=form.cleaned_data['deadline'],
             text=form.cleaned_data['text'])
         return super(AddDeadlineView, self).form_valid(form)
+
+    def get_initial(self):
+        if 'initial_text' in self.get_initial_formdata():
+            return {
+                'text': self.get_initial_formdata()['initial_text']
+            }
+        else:
+            return {}
 
     def get_context_data(self, **kwargs):
         context = super(AddDeadlineView, self).get_context_data(**kwargs)

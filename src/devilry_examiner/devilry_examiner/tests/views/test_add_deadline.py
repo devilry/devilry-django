@@ -83,6 +83,19 @@ class TestAddDeadlineView(TestCase):
         self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(),
             "Assignment One &mdash; duck1010, active")
 
+    def test_initial_text(self):
+        group1 = self.assignment1builder\
+            .add_group(examiners=[self.examiner1]).group
+        response = self._postas(self.examiner1, {
+            'group_ids': [group1.id],
+            'initial_text': 'This is some initial text'
+        })
+        self.assertEquals(response.status_code, 200)
+        html = response.content
+        self.assertEquals(cssGet(html, 'form #id_text').text.strip(),
+            "This is some initial text")
+
+
 
     ##########################################
     # Form handling
@@ -141,7 +154,6 @@ class TestAddDeadlineView(TestCase):
         self.assertEquals(group1builder.group.last_deadline.deadline, deadline_datetime)
         self.assertEquals(group1builder.group.last_deadline.text, '')
 
-
     def test_post_no_text_checkbox_required(self):
         group1builder = self.assignment1builder\
             .add_group(examiners=[self.examiner1])
@@ -155,4 +167,21 @@ class TestAddDeadlineView(TestCase):
         group1builder.reload_from_db()
         self.assertEquals(group1builder.group.last_deadline, None)
         self.assertIn('You must specify a deadline text, or select that you do not want to specify any text.',
+            response.content)
+
+    def test_post_no_text_checked_and_text_provided(self):
+        group1builder = self.assignment1builder\
+            .add_group(examiners=[self.examiner1])
+        deadline_datetime = Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=10))
+        response = self._postas(self.examiner1, {
+            'group_ids': [group1builder.group.id],
+            'deadline': isoformat_datetime(deadline_datetime),
+            'submit_primary': 'i18nlabel',
+            'no_text': 'on',
+            'text': 'Test'
+        })
+        self.assertEquals(response.status_code, 200)
+        group1builder.reload_from_db()
+        self.assertEquals(group1builder.group.last_deadline, None)
+        self.assertIn('If you do not want to provide a deadline text, you have to clear the text field.',
             response.content)
