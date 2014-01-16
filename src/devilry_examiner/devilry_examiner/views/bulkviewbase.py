@@ -78,7 +78,7 @@ class BulkViewBase(DetailView):
 
         context_data = {'object': self.object}
 
-        if 'submit_add_deadline' in self.request.POST:
+        if 'submit_primary' in self.request.POST:
             form = self.get_form_class()(self.request.POST, **common_form_kwargs)
             if form.is_valid():
                 return self.form_valid(form)
