@@ -198,11 +198,8 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         """
         return datetimeobj.replace(microsecond=0, second=0, tzinfo=None)
 
-    def remove_microsec(self):
-        self.deadline = Deadline.reduce_datetime_precision(self.deadline) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
-
     def _clean_deadline(self):
-        self.remove_microsec()
+        self.deadline = Deadline.reduce_datetime_precision(self.deadline) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
         qry = Q(deadline=self.deadline, assignment_group=self.assignment_group)
         if self.id:
             qry &= ~Q(id=self.id)
