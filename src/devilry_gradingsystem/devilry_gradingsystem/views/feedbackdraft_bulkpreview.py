@@ -6,6 +6,8 @@ from django.utils.http import urlencode
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import StaticFeedback
 from devilry_gradingsystem.models import FeedbackDraft
+from .feedbackbulkeditorbase import FeedbackBulkEditorGroupIdsForm
+
 
 
 class FeedbackDraftBulkPreviewView(DetailView):
@@ -16,6 +18,21 @@ class FeedbackDraftBulkPreviewView(DetailView):
 
     def get_queryset(self):
         return Assignment.objects.filter_examiner_has_access(self.request.user)
+
+    def get_object(self):
+        assignment = super(FeedbackDraftBulkPreviewView, self).get_object()
+        if not 'selected_group_ids' in self.request.session:
+            raise Http404
+        else:
+            selected_group_ids = self.request.session['selected_group_ids']
+            form = FeedbackBulkEditorGroupIdsForm({
+                'group_ids': selected_group_ids
+            }, assignment=assignment, user=self.request.user)
+            if form.is_valid():
+                self.selected_groups = form.cleaned_groups
+            else:
+                raise Http404
+        return assignment
 
     def get_feedbackdraft(self, draftid):
         try:
@@ -29,6 +46,7 @@ class FeedbackDraftBulkPreviewView(DetailView):
         # delivery = self.object
         context['unsaved_staticfeedback'] = draft.to_staticfeedback()
         context['valid_grading_system_setup'] = True
+        print self.selected_groups
         return context
 
     def post(self, *args, **kwargs):

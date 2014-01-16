@@ -54,9 +54,13 @@ class BulkViewBase(DetailView):
         Get the initial POST data - only here to let us debug with group_ids in querystring.
         """
         if self.request.method == 'POST':
-            return self.request.POST
+            querydict = self.request.POST
         else:
-            return self.request.GET
+            querydict = self.request.GET
+        if 'selected_group_ids' in self.request.session:
+            querydict = querydict.copy()
+            querydict.setlist('group_ids', self.request.session['selected_group_ids'])
+        return querydict
 
     def get_form_class(self):
         return self.form_class
