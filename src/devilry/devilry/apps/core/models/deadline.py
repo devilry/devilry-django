@@ -103,7 +103,9 @@ class DeadlineManager(models.Manager):
     def get_queryset(self):
         return DeadlineQuerySet(self.model, using=self._db)
 
-    def smart_create(self, groupqueryset, deadline_datetime, text=None, query_created_deadlines=False):
+    def smart_create(self, groupqueryset, deadline_datetime, text=None,
+            why_created=None, added_by=None,
+            query_created_deadlines=False):
         """
         Creates deadlines for all groups in the given QuerySet of AssignmentGroups.
 
