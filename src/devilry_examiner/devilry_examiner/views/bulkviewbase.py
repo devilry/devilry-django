@@ -11,6 +11,13 @@ class BulkViewBase(DetailView):
     model = Assignment
     pk_url_kwarg = 'assignmentid'
     context_object_name = 'assignment'
+
+    #: The form.
+    #: The primary submit button (the one that submits your form for 
+    #: saving), must be named ``submit_primary``.
+    #: You must also provide a ``submit_cancel`` button that can be
+    #: clicked to cancel the "wizard". Clicking the cancel button takes
+    #: the user to :meth:`get_cancel_url`.
     form_class = None
 
     #: Reselect the originally selected groups when redirecting back to the overview?
@@ -30,6 +37,9 @@ class BulkViewBase(DetailView):
 
     def get_success_url(self):
         return reverse('devilry_examiner_allgroupsoverview', kwargs={'assignmentid': self.object.id})
+
+    def get_cancel_url(self):
+        return self.get_success_url()
 
     def get_initial_formdata(self):
         """
@@ -54,10 +64,13 @@ class BulkViewBase(DetailView):
             del self.request.session['selected_group_ids']
         return redirect(self.get_success_url())
 
+
     def post(self, *args, **kwargs):
         """
         Verfies that we get a list of at least one group_ids, and that all group_ids
         are for groups within this assignment where the requesting user is examiner.
+
+        Expects that the name of the primary submit button of the form is ``submit_primary``.
 
         On the initial visit (before posting the form), we add ``group_ids_form``
         to the context, so you can get it in ``get_context_data``, or just use it
@@ -82,8 +95,8 @@ class BulkViewBase(DetailView):
             form = self.get_form_class()(self.request.POST, **common_form_kwargs)
             if form.is_valid():
                 return self.form_valid(form)
-        elif 'submit_go_back' in self.request.POST:
-            return redirect(self.get_success_url())
+        elif 'submit_cancel' in self.request.POST:
+            return redirect(self.get_cancel_url())
         else:
             # When redirected from another view like allgroupview with a list of group_ids
             # - we use a GroupIdsForm to parse the list 
