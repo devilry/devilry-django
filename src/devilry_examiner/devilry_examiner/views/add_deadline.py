@@ -45,7 +45,7 @@ class AddDeadlineForm(GroupIdsForm):
         required=False)
     no_text = forms.BooleanField(
         label=_('I do not want to provide an "About this deadline" message.'),
-        help_text=_('You should normally tell your students why they get a new deadline. If some rare cases this makes no sense, so you can select this option to avoid specifying a text.'),
+        help_text=_('You should normally tell your students why they get a new deadline. In some rare cases this makes no sense, so you can select this option to avoid specifying a text.'),
         required=False, initial=False)
     why_created = forms.ChoiceField(
         required=False,
