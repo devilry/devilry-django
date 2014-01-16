@@ -6,6 +6,7 @@
 
 {% block body %}
 <div class="container">
+
   <div class="page-header page-header-with-subheader">
     <h1>{{ assignment.long_name }}</h1>
     <p class="subheader">
@@ -21,43 +22,43 @@
 
 
 <div class="container">
-  <p>
-{% block navbar %}
-  <a class="btn btn-default" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/waiting_for_feedback" role="button">Waiting for feedback</a>
-  <a class="btn btn-default" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/waiting_for_deliveries" role="button">Waiting for deliveries</a>
-  <a class="btn btn-default" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/corrected" role="button">Corrected</a>
-  <a class="btn btn-default active" href="{% url
-  'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id
-  }}" role="button">All</a>
-{% endblock navbar %}
-  </p>
-</div>
+  {% block navbar %}
 
+  <ul class="nav nav-tabs">
+    <li><a href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">Waiting for feedback</a></li>
+    <li><a href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">Waiting for deliveries</a></li>
+    <li><a href="{% url 'devilry_examiner_corrected' assignment.id %}">Corrected</a></li>
+    <li class="active"><a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">All</a></li>
+  </ul>
+
+  {% endblock navbar %}
 
 </div>
 
+
+</div>
 
 
 {% block content %}
-<div class="container">
-    <ul class="pager pull-right">
-      {% if groups.has_previous %}
-      <li><a href="?page={{ groups.previous_page_number }}">previous</a></li>
-      {% else %}
-      <li class="disabled"><a href="#">previous</a></li>
-      {% endif %}
+<!-- <div class="container"> -->
+<!--     <ul class="pager pull-right"> -->
+<!--       {% if groups.has_previous %} -->
+<!--       <li><a href="?page={{ groups.previous_page_number }}">previous</a></li> -->
+<!--       {% else %} -->
+<!--       <li class="disabled"><a href="#">previous</a></li> -->
+<!--       {% endif %} -->
 
-      <!-- <span class="current"> -->
-      <!--   Page {{ groups.number }} of {{ groups.paginator.num_pages }}. -->
-      <!-- </span> -->
+<!--       <\!-- <span class="current"> -\-> -->
+<!--       <\!--   Page {{ groups.number }} of {{ groups.paginator.num_pages }}. -\-> -->
+<!--       <\!-- </span> -\-> -->
 
-      {% if groups.has_next %}
-      <li><a href="?page={{ groups.next_page_number }}">next</a></li>
-      {% else %}
-      <li class="disabled"><a href="#">next</a></li>
-      {% endif %}
-    </ul>
-</div>
+<!--       {% if groups.has_next %} -->
+<!--       <li><a href="?page={{ groups.next_page_number }}">next</a></li> -->
+<!--       {% else %} -->
+<!--       <li class="disabled"><a href="#">next</a></li> -->
+<!--       {% endif %} -->
+<!--     </ul> -->
+<!-- </div> -->
 
   <div class="container grouplistingbox">
 

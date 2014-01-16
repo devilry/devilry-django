@@ -5,12 +5,12 @@
 {% block bodyid %}waiting-for-feedback-overview{% endblock %}
 
 {% block navbar %}
-  <a class="btn btn-default" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/waiting_for_feedback" role="button">Waiting for feedback</a>
-  <a class="btn btn-default active" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/waiting_for_deliveries" role="button">Waiting for deliveries</a>
-  <a class="btn btn-default" href="{% url 'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id }}/corrected" role="button">Corrected</a>
-  <a class="btn btn-default" href="{% url
-  'devilry_examiner_dashboard' %}allgroupsoverview/{{ assignment.id
-  }}" role="button">All</a>
+  <ul class="nav nav-tabs">
+    <li><a href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">Waiting for feedback</a></li>
+    <li class="active"><a href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">Waiting for deliveries</a></li>
+    <li><a href="{% url 'devilry_examiner_corrected' assignment.id %}">Corrected</a></li>
+    <li><a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">All</a></li>
+  </ul>
 {% endblock navbar %}
 
 {% block content %}
