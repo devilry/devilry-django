@@ -3,6 +3,8 @@ from django.db import models
 from django.db.models import Q
 from django.db import transaction
 from datetime import datetime
+from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
@@ -160,6 +162,26 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         :class:`StaticFeedback` objects associated with this Deadline through a
         :class:`Delivery`. See also :attr:`Assignment.examiners_publish_feedbacks_directly`.
 
+    .. attribute:: added_by
+
+        The User that added this deadline.
+        Can be ``None``, and all deadlines created before Devilry
+        version ``1.4.0`` has this set to ``None``.
+
+        .. versionadded:: 1.4.0
+
+    .. attribute:: why_created
+
+        Why was this deadline created? Valid choices:
+
+        - ``None``: Why the deadline was created is unknown.
+        - ``"examiner-gave-another-chance"``: Created because the examiner
+          elected to give the student another chance to pass the assignment.
+
+        Can be ``None``, and all deadlines created before Devilry
+        version ``1.4.0`` has this set to ``None``.
+
+        .. versionadded:: 1.4.0
     """
     objects = DeadlineManager()
     assignment_group = models.ForeignKey(AssignmentGroup,
@@ -173,6 +195,17 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     feedbacks_published = models.BooleanField(default=False,
                                               help_text='If this is ``True``, the student can see all '\
                                                           'StaticFeedbacks associated with this Deadline')
+    added_by = models.ForeignKey(User,
+        null=True, blank=True, default=None,
+        on_delete=models.SET_NULL)
+    why_created = models.CharField(
+        null=True, blank=True, default=None,
+        max_length=50,
+        choices=(
+            (None, _('Unknown.')),
+            ('examiner-gave-another-chance', _('Examiner gave the student another chance.')),
+        )
+    )
 
     class Meta:
         app_label = 'core'
