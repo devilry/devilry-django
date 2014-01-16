@@ -185,3 +185,44 @@ class TestSingleGroupOverview(TestCase):
             _isoformat_datetime(delivery2.time_of_delivery),
             _isoformat_datetime(delivery1.time_of_delivery),
         ])
+
+    def test_give_another_chance(self):
+        groupbuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])
+        deliverybuilder = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        deliverybuilder.add_failed_feedback(saved_by=UserBuilder('testuser').user)
+        response = self._getas('examiner1', groupbuilder.group.id)
+        html = response.content
+
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.feedback, deliverybuilder.delivery.last_feedback)
+        self.assertEquals(groupbuilder.group.delivery_status, 'corrected')
+        self.assertFalse(groupbuilder.group.feedback.is_passing_grade)
+        self.assertTrue(cssExists(html, '.devilry_give_another_chance_box'))
+        box = cssGet(html, '.devilry_give_another_chance_box')
+        self.assertIn('The last feedback for this group is a failing grade.', box.text.strip())
+        self.assertEquals(cssGet(html, '.devilry_give_another_chance_box form input[name=group_ids]')['value'],
+            str(groupbuilder.group.id))
+        self.assertEquals(cssGet(html, '.devilry_give_another_chance_box form input[name=give_another_chance]')['value'],
+            'true')
+        self.assertEquals(cssGet(html, '.devilry_give_another_chance_box form input[name=success_url]')['value'],
+            reverse('devilry_examiner_singlegroupoverview', kwargs={'groupid': groupbuilder.group.id}))
+        self.assertEquals(cssGet(html, '.devilry_give_another_chance_box form input[name=cancel_url]')['value'],
+            reverse('devilry_examiner_singlegroupoverview', kwargs={'groupid': groupbuilder.group.id}))
+
+    def test_give_another_chance_only_when_failed(self):
+        groupbuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])
+        deliverybuilder = groupbuilder\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        deliverybuilder.add_passed_feedback(saved_by=UserBuilder('testuser').user)
+        response = self._getas('examiner1', groupbuilder.group.id)
+        html = response.content
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.feedback, deliverybuilder.delivery.last_feedback)
+        self.assertEquals(groupbuilder.group.delivery_status, 'corrected')
+        self.assertTrue(groupbuilder.group.feedback.is_passing_grade)
+        self.assertFalse(cssExists(html, '.devilry_give_another_chance_box'))

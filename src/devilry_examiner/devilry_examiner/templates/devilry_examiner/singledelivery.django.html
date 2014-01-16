@@ -7,8 +7,13 @@
 
 {% block pagecontent %}
     {% if delivery.last_feedback %}
-        <div class="container read-feedback-box">
-            {% include "devilry_examiner/readonly-feedback-with-editbutton.django.html" with feedback=delivery.last_feedback %}
+        <div class="container">
+            {% if delivery.last_feedback == delivery.assignment_group.feedback %}
+                {% include "devilry_examiner/include/give_another_chance_question.django.html" with group=delivery.assignment_group %}
+            {% endif %}
+            <div class="read-feedback-box">
+                {% include "devilry_examiner/readonly-feedback-with-editbutton.django.html" with feedback=delivery.last_feedback %}
+            </div>
         </div>
     {% else %}
         <div class="container no-feedback-box">

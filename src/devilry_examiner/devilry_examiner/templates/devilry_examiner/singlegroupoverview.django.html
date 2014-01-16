@@ -34,6 +34,8 @@
                 </small></p>
             {% endif %}
         </div>
+
+        {% include "devilry_examiner/include/give_another_chance_question.django.html" with group=group %}
     </div>
 
     {% for deadline in group.deadlines.all %}
