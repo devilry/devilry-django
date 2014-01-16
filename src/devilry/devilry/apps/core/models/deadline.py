@@ -184,11 +184,19 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     @classmethod
     def reduce_datetime_precision(cls, datetimeobj):
         """
-        Reduce the precition of the ``datetimeobj`` to make it easier to compare.
+        Reduce the precition of the ``datetimeobj`` to make it easier to
+        compare and harder to make distinct deadlines that is basically the
+        same time. We:
 
-        :return: A copy of ``datetimeobj`` with microsecond set to ``0``, and tzinfo set to ``None``.
+        - Set seconds and microseconds to ``0``. This makes "Friday 14:59",
+          "Friday 14:59:00" and "Friday 14:59:59" equal. We do not allow
+          specifying seconds in the UI, and handling this right in the core
+          makes this easier to handle across the board.
+        - Set tzinfo to None. We do not support timezones in Devilry, so including it makes no sense.
+
+        :return: A copy of ``datetimeobj`` with second and microsecond set to ``0``, and tzinfo set to ``None``.
         """
-        return datetimeobj.replace(microsecond=0, tzinfo=None)
+        return datetimeobj.replace(microsecond=0, second=0, tzinfo=None)
 
     def remove_microsec(self):
         self.deadline = Deadline.reduce_datetime_precision(self.deadline) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
