@@ -93,6 +93,17 @@ class AddDeadlineForm(GroupIdsForm):
 
 
 class AddDeadlineView(BulkViewBase):
+    """
+    A bulk view for adding deadlines to one or more groups.
+
+    Provides a few tools useful when adding deadline for a single
+    group (I.E. after failing a single group):
+
+    - Can specify ``success_url`` and ``cancel_url`` in the querystring.
+    - We inherit the ability to specify ``group_ids`` in the querystring from BulkViewBase.
+    - Can specify ``initial_text`` in the querystring, to provide a default
+      message that examiners can use, edit or clear.
+    """
     template_name = "devilry_examiner/add_deadline.django.html"
     form_class = AddDeadlineForm
 
@@ -102,6 +113,15 @@ class AddDeadlineView(BulkViewBase):
             deadline_datetime=form.cleaned_data['deadline'],
             text=form.cleaned_data['text'])
         return super(AddDeadlineView, self).form_valid(form)
+
+    def get_success_url(self):
+        return self.request.GET.get('success_url',
+            super(AddDeadlineView, self).get_success_url())
+
+    def get_cancel_url(self):
+        return self.request.GET.get('cancel_url',
+            super(AddDeadlineView, self).get_success_url())
+
 
     def get_initial(self):
         if 'initial_text' in self.get_initial_formdata():
