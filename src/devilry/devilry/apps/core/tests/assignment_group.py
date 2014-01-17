@@ -758,6 +758,69 @@ class TestAssignmentGroup2(TestCase):
 
 
 class TestAssignmentGroupManager(TestCase):
+
+    def test_filter_waiting_for_deliveries(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
+        group1builder = week1.add_group().add_examiners(examiner1)
+        group2builder = week1.add_group().add_examiners(examiner1)
+        group1builder.add_deadline_in_x_weeks(weeks=1)
+        group2builder.add_deadline_x_weeks_ago(weeks=1)
+        qry = AssignmentGroup.objects.filter_waiting_for_deliveries()
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], group1builder.group)
+
+    def test_filter_waiting_for_deliveries_nonelectronic(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1',
+            delivery_types=deliverytypes.NON_ELECTRONIC)
+        group1builder = week1.add_group().add_examiners(examiner1)
+        group2builder = week1.add_group().add_examiners(examiner1)
+        group1builder.add_deadline_in_x_weeks(weeks=1)
+        group2builder.add_deadline_x_weeks_ago(weeks=1)
+        qry = AssignmentGroup.objects.filter_waiting_for_deliveries()
+        self.assertEquals(qry.count(), 0)
+
+
+    def test_filter_waiting_for_feedback(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
+        group1builder = week1.add_group().add_examiners(examiner1)
+        group2builder = week1.add_group().add_examiners(examiner1)
+        group1builder.add_deadline_in_x_weeks(weeks=1)
+        group2builder.add_deadline_x_weeks_ago(weeks=1)
+        qry = AssignmentGroup.objects.filter_waiting_for_feedback()
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], group2builder.group)
+
+    def test_filter_waiting_for_feedback_nonelectronic(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1',
+            delivery_types=deliverytypes.NON_ELECTRONIC)
+        group1builder = week1.add_group().add_examiners(examiner1)
+        group2builder = week1.add_group().add_examiners(examiner1)
+        group1builder.add_deadline_in_x_weeks(weeks=1)
+        group2builder.add_deadline_x_weeks_ago(weeks=1)
+        qry = AssignmentGroup.objects.filter_waiting_for_feedback()
+        self.assertEquals(qry.count(), 2)
+
+    def test_filter_waiting_for_feedback_nesting(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
+        group1builder = week1.add_group().add_examiners(examiner1)
+        group2builder = week1.add_group().add_examiners(examiner1)
+        group3builder = week1.add_group()
+
+        group1builder.add_deadline_x_weeks_ago(weeks=1)
+        group2builder.add_deadline_in_x_weeks(weeks=1)
+        group3builder.add_deadline_x_weeks_ago(weeks=1)
+
+        self.assertEquals(AssignmentGroup.objects.filter_waiting_for_feedback().count(), 2)
+        self.assertEquals(AssignmentGroup.objects.filter_examiner_has_access(examiner1).count(), 2)
+        qry = AssignmentGroup.objects.filter_examiner_has_access(examiner1).filter_waiting_for_feedback()
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], group1builder.group)
+
     def test_filter_is_examiner(self):
         examiner1 = UserBuilder('examiner1').user
         week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
