@@ -15,7 +15,6 @@ devilry_header2_role
     - ``subjectadmin``
     - ``student``
     - ``nodeadmin``
-    - ``loading`` - Show ``Loading...`` and let the legacy JS api update it.
 
 Usage
 =====
@@ -37,11 +36,12 @@ Simple: EVERYTHING is prefixed with ``devilry_header2``. This includes:
 
 {% load i18n %}
 {% load static %}
+{% load url from future %}
 
 <link href='{% static "devilry_header/css/styles.css" %}' rel="stylesheet">
 
 <div class="devilry_header2 {% if devilry_header2_role %}devilry_header2_role_{{ devilry_header2_role }}{% endif %}">
-    <a class="devilry_header2_brand">
+    <a class="devilry_header2_brand" href="{% url 'devilry_frontpage' %}">
         <span class="devilry_header2_brand_devilry">Devilry</span>
         <span class="devilry_header2_brand_rolecontainer">
             {% comment %}                
@@ -49,7 +49,6 @@ Simple: EVERYTHING is prefixed with ``devilry_header2``. This includes:
                 shows one depending on the devilry_header2_role_* class set on
                 the top container.
             {% endcomment %}
-
             <span class="devilry_header2_brand_role devilry_header2_brand_role_student">
                 {% trans "Student" %}
             </span>
@@ -62,29 +61,26 @@ Simple: EVERYTHING is prefixed with ``devilry_header2``. This includes:
             <span class="devilry_header2_brand_role devilry_header2_brand_role_nodeadmin">
                 {% trans "Node administrator" %}
             </span>
-
-            {# For the legacy compatibility layer that sets the devilry_header2_role_* using javascript #}
-            <span class="devilry_header2_brand_role devilry_header2_brand_role_loading">
-                {% trans "Loading" %}...
-            </span>
         </span>
     </a>
 
-    <a class="devilry_header2_search" title='{% trans "Search" %}'
-            href="#">
-        <i class="devilry_header2_fa devilry_header2_fa-search"></i>
-        <span class="sr-only">{% trans "Search" %}</span>
-    </a>
-
-    <a class="devilry_header2_userprofile" title='{% trans "User profile" %}'
-            href="#">
-        <i class="devilry_header2_fa devilry_header2_fa-user"></i>
-        <span class="sr-only">{% trans "User profile" %}</span>
-    </a>
-
-    <a class="devilry_header2_signout" title='{% trans "Log out" %}'
-            href="#">
-        <i class="devilry_header2_fa devilry_header2_fa-sign-out"></i>
-        <span class="sr-only">{% trans "Log out" %}</span>
-    </a>
+    <div class="devilry_header2_buttonbar">
+        {% spaceless %}
+        <a class="devilry_header2_btn devilry_header2_search" title='{% trans "Search" %}'
+                href="#">
+            <i class="devilry_header2_fa devilry_header2_fa-search"></i>
+            <span class="sr-only">{% trans "Search" %}</span>
+        </a>
+        <a class="devilry_header2_btn devilry_header2_userprofile" title='{% trans "User profile" %}'
+                href="#">
+            <i class="devilry_header2_fa devilry_header2_fa-user"></i>
+            <span class="sr-only">{% trans "User profile" %}</span>
+        </a>
+        <a class="devilry_header2_btn devilry_header2_signout" title='{% trans "Log out" %}'
+                href="#">
+            <i class="devilry_header2_fa devilry_header2_fa-sign-out"></i>
+            <span class="sr-only">{% trans "Log out" %}</span>
+        </a>
+        {% endspaceless %}
+    </div>
 </div>

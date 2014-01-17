@@ -34,6 +34,7 @@
     </head>
 
     <body>
+        {% include "devilry_header/header2include.django.html" with devilry_header2_role="examiner" only %}
         {% block body %}{% endblock %}
     </body>
 </html>
