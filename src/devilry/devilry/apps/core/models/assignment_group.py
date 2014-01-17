@@ -56,6 +56,19 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
     def filter_by_status(self, status):
         return self.filter(delivery_status=status)
 
+    def filter_waiting_for_feedback(self):
+        now = datetime.now()
+        return self.filter(
+            Q(parentnode__delivery_types=deliverytypes.NON_ELECTRONIC, delivery_status="waiting-for-something") |
+            Q(parentnode__delivery_types=deliverytypes.ELECTRONIC, delivery_status="waiting-for-something", last_deadline__deadline__lte=now))
+
+    def filter_waiting_for_deliveries(self):
+        now = datetime.now()
+        return self.filter(
+            parentnode__delivery_types=deliverytypes.ELECTRONIC,
+            delivery_status="waiting-for-something",
+            last_deadline__deadline__gt=now)
+
 
 class AssignmentGroupManager(models.Manager):
     def get_queryset(self):
@@ -88,6 +101,12 @@ class AssignmentGroupManager(models.Manager):
 
     def filter_by_status(self, status):
         return self.get_queryset().filter_by_status(status)
+
+    def filter_waiting_for_feedback(self):
+        return self.get_queryset().filter_waiting_for_feedback()
+
+    def filter_waiting_for_deliveries(self):
+        return self.get_queryset().filter_waiting_for_deliveries()
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
