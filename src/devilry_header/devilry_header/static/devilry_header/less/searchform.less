@@ -1,7 +1,13 @@
 .devilry_header2 {
 	.devilry_header2_searchform {
 		box-sizing: border-box;
-		position: relative;
+		position: absolute;
+		right: (@header-button-width * 2);
+		top: 0;
+		margin: 0;
+		width: @header-button-width;
+		overflow: hidden;
+
 		margin: 0;
 		padding: 0;
 		// overflow: hidden;
@@ -11,8 +17,6 @@
 			position: absolute;
 			height: @header-height;
 			padding: 0;
-			// top: 0;
-			// bottom: 1px;
 			left: @header-button-width;
 			right: 0;
 			border: none;
@@ -21,6 +25,11 @@
 			&:focus {
 				outline: none;
 			}
+		}
+		// Animate showing the search field on hover
+		.devilry_header2_transition(width 0.3s ease);
+		&:hover {
+			width: 250px;
 		}
 	}
 }

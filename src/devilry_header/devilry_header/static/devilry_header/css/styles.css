@@ -1248,10 +1248,17 @@
 }
 .devilry_header2 .devilry_header2_searchform {
   box-sizing: border-box;
-  position: relative;
+  position: absolute;
+  right: 100px;
+  top: 0;
+  width: 50px;
+  overflow: hidden;
   margin: 0;
   padding: 0;
   background-color: #fff;
+  transition: width 0.3s ease;
+  -webkit-transition: width 0.3s ease;
+  -moz-transition: width 0.3s ease;
 }
 .devilry_header2 .devilry_header2_searchform input[name="search"] {
   box-sizing: border-box;
@@ -1267,6 +1274,9 @@
 .devilry_header2 .devilry_header2_searchform input[name="search"]:focus {
   outline: none;
 }
+.devilry_header2 .devilry_header2_searchform:hover {
+  width: 250px;
+}
 @media (max-width: 767px) {
   .devilry_header2.devilry_header2_responsive {
     height: 80px;
@@ -1275,24 +1285,13 @@
     display: block;
   }
   .devilry_header2.devilry_header2_responsive .devilry_header2_searchform {
+    position: relative;
+    right: 0;
     display: block;
-  }
-}
-@media (min-width: 768px) {
-  .devilry_header2.devilry_header2_responsive .devilry_header2_searchform {
-    position: absolute;
-    right: 100px;
-    top: 0;
-    margin: 0;
-    padding: 0;
-    width: 50px;
-    overflow: hidden;
-    transition: width 0.3s ease;
-    -webkit-transition: width 0.3s ease;
-    -moz-transition: width 0.3s ease;
-  }
-  .devilry_header2.devilry_header2_responsive .devilry_header2_searchform:hover {
-    width: 250px;
+    width: auto;
+    transition: none;
+    -webkit-transition: none;
+    -moz-transition: none;
   }
 }
 .devilry_header2 {

@@ -1,7 +1,6 @@
 .devilry_header2 {
 
 	&.devilry_header2_responsive {
-
 		@media (max-width: @header-screen-small-max) {
 			height: (@header-height * 2);
 			a.devilry_header2_brand {
@@ -9,32 +8,11 @@
 			}
 			// display: block;
 			.devilry_header2_searchform {
+				position: relative;
+				right: 0;
 				display: block;
-				input[name="search"] {
-				}
-			}
-		}
-		@media (min-width: @header-screen-large-min) {
-			.devilry_header2_searchform {
-				position: absolute;
-				right: (@header-button-width * 2);
-				top: 0;
-				margin: 0;
-				padding: 0;
-				width: @header-button-width;
-				// width: 200px;
-				overflow: hidden;
-				input[name="search"] {
-					// margin-right:
-				}
-
-				// Animate showing the search field on hover
-				transition: width 0.3s ease;
-				-webkit-transition: width 0.3s ease;
-				-moz-transition: width 0.3s ease;
-				&:hover {
-					width: 250px;
-				}
+				width: auto;
+				.devilry_header2_transition(none);
 			}
 		}
 	}
