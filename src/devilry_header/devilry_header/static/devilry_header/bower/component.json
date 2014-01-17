@@ -1,0 +1,7 @@
+{
+  "name": "devilry_header",
+  "version": "2.0.0",
+  "dependencies": {
+    "font-awesome": "git://github.com/FortAwesome/Font-Awesome.git#~4.0.3"
+  }
+}
