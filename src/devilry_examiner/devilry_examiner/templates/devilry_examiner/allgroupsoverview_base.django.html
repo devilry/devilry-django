@@ -106,8 +106,8 @@
           <button type="button" class="btn btn-default hidden
                                        hidden-xs pull-right">{{ group.get_status|status_to_buttontext}}</button>
           {% else %}
-          <button type="button" class="btn btn-default
-                                       hidden-xs pull-right">{{ group.get_status|status_to_buttontext}}</button>
+          <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singledeliveryview' group.last_delivery.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
+
           {% endif %}
 
         </td>
@@ -115,7 +115,7 @@
 
       {% endfor%}
     </table><!-- row -->
-    <input type="submit" value="Submit" />
+    <input type="submit" class="btn btn-primary" value="Submit" />
     </form>
 
 

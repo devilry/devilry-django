@@ -11,10 +11,12 @@
     {% if group_ids_form and not group_ids_form.is_valid %}
         {% include "devilry_examiner/include/django_formerrors_as_alertboxes.django.html" with form=group_ids_form %}
     {% else %}
-        <h2>{% trans "You are now correcting the following groups in bulk" %}</h2>
-        {% for group in selected_groups %}
-            <p>{{ group }}</p>
-        {% endfor  %}
+    <span class="text-muted">{% trans "Edit feedback for" %}:</span>
+    <ul class="list-inline text-muted">
+      {% for group in group_ids_form.cleaned_groups %}
+      <li>{{ group.long_displayname }}</li>
+      {% endfor %}
+    </ul>
 
         {% crispy form %}
     {% endif %}
