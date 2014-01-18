@@ -6,6 +6,7 @@ from crispy_forms.layout import Layout
 from crispy_forms.layout import Field
 from crispy_forms.layout import Submit
 from crispy_forms.bootstrap import FieldWithButtons
+from devilry_search.search_helper import SearchHelper
 
 
 class SearchForm(forms.Form):
@@ -40,5 +41,32 @@ class SearchView(TemplateView):
         context['form'] = form
         return self.render_to_response(context)
 
+    def _prepare_search(self, searchqueryset):
+        limit = 100
+        return [match for match in searchqueryset[:limit] if match != None]
+
     def form_valid(self, form, context):
+        search_helper = SearchHelper(self.request.user, form.cleaned_data['search'])
+        print
         print 'Form:', form
+        print search_helper.get_student_results()
+        print search_helper.get_examiner_results()
+        print search_helper.get_admin_results()
+        print
+
+        student_results = self._prepare_search(search_helper.get_student_results())
+        examiner_results = self._prepare_search(search_helper.get_examiner_results())
+        admin_results = self._prepare_search(search_helper.get_admin_results())
+        searchcategorycount = len([c for c in (student_results, examiner_results, admin_results) if c])
+        try:
+            columnsize = 12/searchcategorycount
+        except ZeroDivisionError:
+            columnsize = 12
+        context.update({
+            'student_results': student_results,
+            'examiner_results': examiner_results,
+            'admin_results': admin_results,
+            'searchcategorycount': searchcategorycount,
+            'columnsize': columnsize
+        })
+        print searchcategorycount

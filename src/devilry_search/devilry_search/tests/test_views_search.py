@@ -10,7 +10,6 @@ from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import cssExists
 
 
-
 class TestSearchView(TestCase):
     def setUp(self):
         self.testuser = UserBuilder('testuser').user
@@ -31,6 +30,3 @@ class TestSearchView(TestCase):
         self.assertEquals(response.status_code, 200)
         html = response.content
         self.assertEquals(cssGet(html, '#id_search').value, None)
-
-    def test_search(self):
-        pass
