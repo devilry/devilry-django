@@ -1,0 +1,12 @@
+{% extends "devilry_search/base.django.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block body %}
+    <div class="container">
+        <div class="page-header">
+            <h1>{% trans "Search" %}</h1>
+        </div>
+        {% crispy form %}
+    </div>
+{% endblock body %}
