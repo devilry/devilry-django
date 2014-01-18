@@ -1166,24 +1166,30 @@
   content: "\f196";
 }
 .devilry_header2 .devilry_header2_buttonbar {
+  box-sizing: border-box;
   position: absolute;
   right: 0;
   top: 0;
 }
-.devilry_header2 .devilry_header2_buttonbar a.devilry_header2_btn {
+.devilry_header2 .devilry_header2_btn {
+  box-sizing: border-box;
   width: 50px;
   background-color: #212121;
   height: 40px;
   display: inline-block;
   font-size: 20px;
   color: #c8c8c8;
+  border: none;
+  padding: 0;
+  margin: 0;
   line-height: 40px;
   text-align: center;
 }
-.devilry_header2 .devilry_header2_buttonbar a.devilry_header2_btn:hover {
+.devilry_header2 .devilry_header2_btn:hover {
   color: #ffffff;
 }
 .devilry_header2 a.devilry_header2_brand {
+  box-sizing: border-box;
   background-color: red;
   display: inline-block;
   height: 40px;
@@ -1201,6 +1207,7 @@
   text-decoration: none;
 }
 .devilry_header2 a.devilry_header2_brand .devilry_header2_brand_role {
+  box-sizing: border-box;
   display: none;
 }
 .devilry_header2.devilry_header2_role_student a.devilry_header2_brand {
@@ -1239,9 +1246,58 @@
 .devilry_header2.devilry_header2_role_nodeadmin a.devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_nodeadmin {
   display: inline;
 }
+.devilry_header2 .devilry_header2_searchform {
+  box-sizing: border-box;
+  position: absolute;
+  right: 100px;
+  top: 0;
+  width: 50px;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background-color: #fff;
+  transition: width 0.3s ease;
+  -webkit-transition: width 0.3s ease;
+  -moz-transition: width 0.3s ease;
+}
+.devilry_header2 .devilry_header2_searchform input[name="search"] {
+  box-sizing: border-box;
+  position: absolute;
+  height: 40px;
+  padding: 0;
+  left: 50px;
+  right: 0;
+  border: none;
+  padding-left: 8px;
+  width: 100%;
+}
+.devilry_header2 .devilry_header2_searchform input[name="search"]:focus {
+  outline: none;
+}
+.devilry_header2 .devilry_header2_searchform:hover {
+  width: 250px;
+}
+@media (max-width: 767px) {
+  .devilry_header2.devilry_header2_responsive {
+    height: 80px;
+  }
+  .devilry_header2.devilry_header2_responsive a.devilry_header2_brand {
+    display: block;
+  }
+  .devilry_header2.devilry_header2_responsive .devilry_header2_searchform {
+    position: relative;
+    right: 0;
+    display: block;
+    width: auto;
+    transition: none;
+    -webkit-transition: none;
+    -moz-transition: none;
+  }
+}
 .devilry_header2 {
   height: 40px;
   background-color: #191919;
   position: relative;
   box-shadow: 0 0px 7px #1e1e1e;
+  box-sizing: border-box;
 }

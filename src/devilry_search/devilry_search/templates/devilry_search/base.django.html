@@ -8,16 +8,14 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+        <title>{% block title %}{% trans "Search" %}{% endblock title %} - Devilry</title>
         {% include "devilry_theme/favicons.django.html" %}
+
+        {# NOTE: We just need to get bootstrap3 from somewhere, and we use devilry_examiner styles #}
+        <link href='{% static "devilry_examiner/css/styles.css" %}' rel="stylesheet">
+
         <script type="text/javascript" src="{% static "devilry_extjsextras/consolefallback.js" %}"></script>
-        <title>{% block title %}{% endblock title %} - {% trans "Devilry examiner" %}</title>
-
-        {% block css %}
-            <link href='{% static "devilry_examiner/css/styles.css" %}' rel="stylesheet">
-        {% endblock %}
-
-
-        <script src="{% static 'devilry_examiner/bower/components/jquery/jquery.min.js' %}"></script>
+        {#<script src="{% static 'devilry_examiner/bower/components/jquery/jquery.min.js' %}"></script>#}
 
         {% comment %}
         TODO: Add these to bower and update the paths (if we want to support IE8)
@@ -31,7 +29,7 @@
     </head>
 
     <body>
-        {% include "devilry_header/header2include.django.html" with devilry_header2_role="examiner" only %}
+        {% include "devilry_header/header2include.django.html" only %}
         {% block body %}{% endblock %}
     </body>
 </html>

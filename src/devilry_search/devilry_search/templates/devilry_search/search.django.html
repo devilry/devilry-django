@@ -1,0 +1,77 @@
+{% extends "devilry_search/base.django.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block body %}
+    <div class="container">
+        <div class="page-header">
+            <h1>{% trans "Search" %}</h1>
+        </div>
+        {% crispy form %}
+
+    </div>
+    <div class="container">
+        <div class="row">
+
+            {% if student_results %}            
+                <div class="col-sm-{{ columnsize }}">
+                    {% if searchcategorycount > 1 %}
+                        <h2>{% trans "Content where you are student" %}</h2>
+                    {% endif %}
+                    {% for result in student_results %}
+                        <div class="searchresult">
+                            <h3>
+                                <a href="#">
+                                    {{ result.id }}
+                                </a>
+                            </h3>
+                            <p class="subtitle">
+                                {{ result.object.get_path }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if examiner_results %}            
+                <div class="col-sm-{{ columnsize }}">
+                    {% if searchcategorycount > 1 %}
+                        <h2>{% trans "Content where you are examiner" %}</h2>
+                    {% endif %}
+                    {% for result in examiner_results %}
+                        <div class="searchresult">
+                            <h3>
+                                <a href="#">
+                                    {{ result.id }}
+                                </a>
+                            </h3>
+                            <p class="subtitle">
+                                {{ result.object.get_path }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if admin_results %}            
+                <div class="col-sm-{{ columnsize }}">
+                    {% if searchcategorycount > 1 %}
+                        <h2>{% trans "Content where you are admin" %}</h2>
+                    {% endif %}
+                    {% for result in admin_results %}
+                        <div class="searchresult">
+                            <h3>
+                                <a href="#">
+                                    {{ result.id }}
+                                </a>
+                            </h3>
+                            <p class="subtitle">
+                                {{ result.object.get_path }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>        
+    </div>
+{% endblock body %}

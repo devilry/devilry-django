@@ -18,7 +18,7 @@ i18n_packages = get_javascript_catalog_packages(
     'devilry_extjsextras', 'devilry.apps.core')
 
 urlpatterns = patterns('devilry_examiner',
-                       url('^rest/', include('devilry_examiner.rest.urls')),
+                       #url('^rest/', include('devilry_examiner.rest.urls')),
                        url('^$', login_required(DashboardView.as_view()),
                            name='devilry_examiner_dashboard'),
                        url('^allgroupsoverview/(?P<assignmentid>\d+)$',

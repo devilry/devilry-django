@@ -97,11 +97,11 @@ class TestAddDeadlineView(TestCase):
         })
         self.assertEquals(response.status_code, 200)
         html = response.content
-        self.assertEquals(cssGet(html, 'form #id_text').text.strip(),
+        self.assertEquals(cssGet(html, '#id_text').text.strip(),
             "I have given you a new chance to pass this assignment. Read your last feedback for information about why you did not pass, and why you have been given another chance.")
-        self.assertEquals(cssGet(html, 'form #id_why_created')['value'],
+        self.assertEquals(cssGet(html, '#id_why_created')['value'],
             'examiner-gave-another-chance')
-        self.assertEquals(cssGet(html, 'form #id_why_created')['type'], 'hidden')
+        self.assertEquals(cssGet(html, '#id_why_created')['type'], 'hidden')
 
 
     ##########################################
