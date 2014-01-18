@@ -31,3 +31,6 @@ class TestSearchView(TestCase):
         self.assertEquals(response.status_code, 200)
         html = response.content
         self.assertEquals(cssGet(html, '#id_search').value, None)
+
+    def test_search(self):
+        pass
