@@ -7790,6 +7790,29 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .delivery_files {
   margin-bottom: 20px;
 }
+.feedback_rendered_view {
+  background-color: #fff;
+  padding: 15px;
+  color: #323232;
+}
+.feedback_rendered_view h1 {
+  font-size: 30px;
+}
+.feedback_rendered_view h2 {
+  font-size: 23px;
+}
+.feedback_rendered_view h3 {
+  font-size: 18px;
+}
+.feedback_rendered_view h4 {
+  font-size: 14px;
+}
+.feedback_rendered_view h5 {
+  font-size: 12px;
+}
+.feedback_rendered_view h6 {
+  font-size: 12px;
+}
 .devilry_gradingsystem_feedbackbuttonholder {
   box-sizing: border-box;
   margin-bottom: 20px;
@@ -7904,4 +7927,7 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   color: #222;
   font-size: 14px;
   overflow: auto;
+}
+body {
+  background-image: url('../images/groovepaper.png');
 }
