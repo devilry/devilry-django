@@ -63,26 +63,6 @@
 
 
 {% block content %}
-<!-- <div class="container"> -->
-<!--     <ul class="pager pull-right"> -->
-<!--       {% if groups.has_previous %} -->
-<!--       <li><a href="?page={{ groups.previous_page_number }}">previous</a></li> -->
-<!--       {% else %} -->
-<!--       <li class="disabled"><a href="#">previous</a></li> -->
-<!--       {% endif %} -->
-
-<!--       <\!-- <span class="current"> -\-> -->
-<!--       <\!--   Page {{ groups.number }} of {{ groups.paginator.num_pages }}. -\-> -->
-<!--       <\!-- </span> -\-> -->
-
-<!--       {% if groups.has_next %} -->
-<!--       <li><a href="?page={{ groups.next_page_number }}">next</a></li> -->
-<!--       {% else %} -->
-<!--       <li class="disabled"><a href="#">next</a></li> -->
-<!--       {% endif %} -->
-<!--     </ul> -->
-<!-- </div> -->
-
   <div class="container grouplistingbox">
 
     <form action="{{ assignment|get_feedback_url }}" method="get">{% csrf_token %}
@@ -105,17 +85,33 @@
           {% if group.get_status == "waiting-for-deliveries" %}
           <button type="button" class="btn btn-default hidden
                                        hidden-xs pull-right">{{ group.get_status|status_to_buttontext}}</button>
+          {% elif group.get_status == "waiting-for-feedback" %}
+          
+              {% if group.last_delivery %}
+
+                  <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singledeliveryview' group.last_delivery.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
+
+              {% else %}
+          
+                  <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singlegroupoverview' group.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
+
+              {% endif %}
+
           {% else %}
-          <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singledeliveryview' group.last_delivery.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
+
+                  <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singlegroupoverview' group.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
 
           {% endif %}
 
         </td>
       </tr>
 
-      {% endfor%}
+      {% endfor %}
     </table><!-- row -->
-    <input type="submit" class="btn btn-primary" value="Submit" />
+    
+    {% if groups %}
+        <input type="submit" class="btn btn-primary" value="Submit" />
+    {% endif %}
     </form>
 
 
