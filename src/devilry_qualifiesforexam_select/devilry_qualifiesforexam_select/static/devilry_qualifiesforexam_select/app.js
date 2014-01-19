@@ -15,7 +15,7 @@ Ext.application({
         'Ext.layout.container.Border',
         'Ext.layout.container.Column',
         'Ext.form.field.ComboBox',
-        'devilry_header.Header',
+        'devilry_header.Header2',
         'devilry_extjsextras.FloatingAlertmessageList'
     ],
 
@@ -39,7 +39,7 @@ Ext.application({
                 xtype: 'container',
                 layout: 'border',
                 items: [{
-                    xtype: 'devilryheader',
+                    xtype: 'devilryheader2',
                     region: 'north',
                     navclass: 'subjectadmin'
                 }, {
