@@ -77,10 +77,10 @@ Simple: EVERYTHING is prefixed with ``devilry_header2``. This includes:
             <i class="devilry_header2_fa devilry_header2_fa-user"></i>
             <span class="sr-only">{% trans "User profile" %}</span>
         </a>
-        <a class="devilry_header2_btn devilry_header2_signout" title='{% trans "Log out" %}'
-                href="#">
+        <a class="devilry_header2_btn devilry_header2_signout" title='{% trans "Sign out" %}'
+                href="{{ DEVILRY_LOGOUT_URL }}">
             <i class="devilry_header2_fa devilry_header2_fa-sign-out"></i>
-            <span class="sr-only">{% trans "Log out" %}</span>
+            <span class="sr-only">{% trans "Sign out" %}</span>
         </a>
         {% endspaceless %}
     </div>
