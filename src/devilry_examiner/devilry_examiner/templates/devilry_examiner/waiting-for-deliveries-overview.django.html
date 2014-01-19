@@ -13,8 +13,16 @@
   </ul>
 {% endblock navbar %}
 
-{% block content %}
 
+
+{% block content %}
+{% if not groups %}
+  <div class="container">
+      <div class="alert alert-success }}">
+          <strong>{% trans "There are no groups waiting for deliveries" %}</strong>
+      </div>
+  </div>
+{% endif %}
 {{ block.super }}
 
 {% endblock content %}
