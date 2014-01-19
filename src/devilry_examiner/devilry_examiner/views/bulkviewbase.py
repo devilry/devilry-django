@@ -57,7 +57,7 @@ class BulkViewBase(DetailView):
             querydict = self.request.POST
         else:
             querydict = self.request.GET
-        if 'selected_group_ids' in self.request.session:
+        if 'selected_group_ids' in self.request.session and not 'group_ids' in querydict:
             querydict = querydict.copy()
             querydict.setlist('group_ids', self.request.session['selected_group_ids'])
         return querydict

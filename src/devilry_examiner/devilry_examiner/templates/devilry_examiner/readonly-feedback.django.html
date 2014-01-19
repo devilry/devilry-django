@@ -16,7 +16,9 @@
     {% block alertboxbutton %}{% endblock alertboxbutton %}
 </div>
 
-<div class="feedback_rendered_view" id="feedback_rendered_view">{{ feedback.rendered_view|safe }}</div>
+{% if feedback.rendered_view %}
+    <div class="feedback_rendered_view" id="feedback_rendered_view">{{ feedback.rendered_view|safe }}</div>    
+{% endif %}
 
 
 {% if DEVILRY_ENABLE_MATHJAX %}
