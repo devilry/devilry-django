@@ -54,9 +54,7 @@ class WaitingForFeedbackOverview(AllGroupsOverview):
         context = super(WaitingForFeedbackOverview, self).get_context_data(**kwargs)
 
         groups = context['allgroups']
-        print groups
         groups = groups.filter_waiting_for_feedback()
-        print groups
         paginator = Paginator(groups, 100, orphans=2)
 
         page = self.request.GET.get('page')
