@@ -46,28 +46,29 @@ Simple: EVERYTHING is prefixed with ``devilry_header2``. This includes:
 <link href='{% static "devilry_header/css/styles.css" %}' rel="stylesheet">
 
 <div class="devilry_header2 {% if not devilry_header2_nonresponsive %}devilry_header2_responsive{% endif %} {% if devilry_header2_role %}devilry_header2_role_{{ devilry_header2_role }}{% endif %}">
-    <a class="devilry_header2_brand" href="{% url 'devilry_frontpage' %}">
-        <span class="devilry_header2_brand_devilry">Devilry</span>
-        <span class="devilry_header2_brand_rolecontainer">
+    <div class="devilry_header2_brand">
+        {% spaceless %}
+            <a class="devilry_header2_brand_devilry" href="{% url 'devilry_frontpage' %}">Devilry</a>
+
             {% comment %}                
                 The CSS makes all of these be invisible by default, and only
                 shows one depending on the devilry_header2_role_* class set on
                 the top container.
             {% endcomment %}
-            <span class="devilry_header2_brand_role devilry_header2_brand_role_student">
+            <a class="devilry_header2_brand_role devilry_header2_brand_role_student" href="{% url 'devilry_student' %}">
                 {% trans "Student" %}
-            </span>
-            <span class="devilry_header2_brand_role devilry_header2_brand_role_examiner">
+            </a>
+            <a class="devilry_header2_brand_role devilry_header2_brand_role_examiner" href="{% url 'devilry_examiner_dashboard' %}">
                 {% trans "Examiner" %}
-            </span>
-            <span class="devilry_header2_brand_role devilry_header2_brand_role_subjectadmin">
+            </a>
+            <a class="devilry_header2_brand_role devilry_header2_brand_role_subjectadmin" href="{% url 'devilry_subjectadmin' %}">
                 {% trans "Subject administrator" %}
-            </span>
-            <span class="devilry_header2_brand_role devilry_header2_brand_role_nodeadmin">
+            </a>
+            <a class="devilry_header2_brand_role devilry_header2_brand_role_nodeadmin" href="{% url 'devilry_nodeadmin' %}">
                 {% trans "Node administrator" %}
-            </span>
-        </span>
-    </a>
+            </a>
+        {% endspaceless %}
+    </div>
 
     <div class="devilry_header2_buttonbar">
         {% spaceless %}

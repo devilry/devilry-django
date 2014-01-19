@@ -1,42 +1,58 @@
 .devilry_header2_rolespan(@role, @bgcolor) {
-	&.devilry_header2_role_@{role} a.devilry_header2_brand {
-		background-color: @bgcolor;
-		&:hover {
-			background-color: lighten(@bgcolor, 6%);
-		}
-
+	&.devilry_header2_role_@{role} .devilry_header2_brand  {
 		.devilry_header2_brand_role.devilry_header2_brand_role_@{role} {
-			display: inline;
+			display: inline-block;
+			background-color: @bgcolor;
+			&:hover {
+				background-color: lighten(@bgcolor, 6%);
+			}
 		}
 	}
 }
 
 .devilry_header2 {
-	a.devilry_header2_brand {
+	.devilry_header2_brand {
     	box-sizing: border-box;
-		background-color: red;
+		// background-color: rgb(50, 50, 50);
 		display: inline-block;
 		height: @header-height;
-		line-height: @header-height;
-		color: rgb(30, 30, 30);
-		padding-right: 15px;
 		font-size: 14px;
-		font-weight: bold;
 		
-		// Add the logo on the left hand side
-		padding-left: 40px;
-        background-image: url('../resources/images/devilrylogo_small.png');
-        background-repeat: no-repeat;
-        background-position: 15px center;
-
-        &:hover {
+		a {
+			// color: rgb(30, 30, 30);
 			text-decoration: none;
-        }
+			display: inline-block;
+			margin: 0;
+			line-height: @header-height;
+			height: @header-height;
+		}
+		a.devilry_header2_brand_devilry {
+			padding-right: 10px;
+			color: rgb(200, 200, 200);
 
-		.devilry_header2_brand_role {
+			// Add the logo on the left hand side
+			padding-left: 40px;
+	        background-image: url('../resources/images/devilrylogo_small.png');
+	        background-repeat: no-repeat;
+	        background-position: 15px center;
+	        
+			&:hover {
+				color: rgb(255, 255, 255);
+			}
+		}
+
+		a.devilry_header2_brand_role {
     		box-sizing: border-box;
 			display: none;
+			padding-right: 15px;
+			padding-left: 15px;
+			color: rgb(20, 20, 20);
+			// font-size: 12px;
+			&:hover {
+				color: rgb(255, 255, 255);
+			}
 		}
+
 	}
 
 	.devilry_header2_rolespan(student, @student-bgcolor);
