@@ -63,6 +63,13 @@
 
 
 {% block content %}
+{% if not groups %}
+  <div class="container">
+      <div class="alert alert-success }}">
+          <strong>{% trans "There are no groups on this assignment" %}</strong>
+      </div>
+  </div>
+{% else %}
   <div class="container grouplistingbox">
 
     <form action="{{ assignment|get_feedback_url }}" method="get">{% csrf_token %}
@@ -117,6 +124,9 @@
 
 
   </div><!-- container -->
+
+{% endif %}
+
   {% endblock content %}
 
 {% else %}

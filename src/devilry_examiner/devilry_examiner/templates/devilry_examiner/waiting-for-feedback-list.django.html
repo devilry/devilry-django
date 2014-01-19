@@ -15,7 +15,15 @@
 {% endblock navbar %}
 
 {% block content %}
-
+{% if not groups %}
+  <div class="container">
+      <div class="alert alert-success }}">
+          <strong>{% trans "There are no groups awaiting feedback" %}</strong>
+      </div>
+  </div>
+<!-- {% else %} -->
+<!--   <h1>INGEN GRUPPER</h1> -->
+{% endif %}
 {{ block.super }}
 
 {% endblock content %}
