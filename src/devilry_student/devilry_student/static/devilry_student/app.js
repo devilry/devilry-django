@@ -33,7 +33,7 @@ Ext.application({
         'Ext.resizer.SplitterTracker',
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
-        'devilry_header.Header',
+        'devilry_header.Header2',
         'devilry_header.Breadcrumbs'
     ],
 
@@ -67,7 +67,7 @@ Ext.application({
             xtype: 'container',
             layout: 'border',
             items: [{
-                xtype: 'devilryheader',
+                xtype: 'devilryheader2',
                 region: 'north',
                 navclass: 'student',
                 breadcrumbs: this.breadcrumbs
