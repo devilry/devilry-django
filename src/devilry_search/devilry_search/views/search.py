@@ -62,4 +62,3 @@ class SearchView(TemplateView):
             'searchcategorycount': searchcategorycount,
             'columnsize': columnsize
         })
-        print searchcategorycount
