@@ -4,7 +4,11 @@
 
 {% block bodyid %}allgroupsoverview{% endblock %}
 
+
+
 {% block body %}
+
+
 <div class="container">
 
   <div class="page-header page-header-with-subheader">
@@ -20,7 +24,7 @@
   </ol>
 </div>
 
-
+{% if assignment.has_valid_grading_setup %}
 <div class="container">
   {% block navbar %}
 
@@ -31,8 +35,27 @@
     <li class="active"><a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">All</a></li>
   </ul>
 
-  {% endblock navbar %}
 
+
+
+  {% endblock navbar %}
+    <ul class="pager pull-right">
+      {% if groups.has_previous %}
+      <li><a href="?page={{ groups.previous_page_number }}">previous</a></li>
+      {% else %}
+      <li class="disabled"><a href="#">previous</a></li>
+      {% endif %}
+
+      <!-- <span class="current"> --> 
+      <!--   Page {{ groups.number }} of {{ groups.paginator.num_pages }}. --> 
+      <!-- </span> --> 
+
+      {% if groups.has_next %} 
+      <li><a href="?page={{ groups.next_page_number }}">next</a></li>
+      {% else %}
+      <li class="disabled"><a href="#">next</a></li>
+      {% endif %}
+    </ul>
 </div>
 
 
@@ -83,8 +106,8 @@
           <button type="button" class="btn btn-default hidden
                                        hidden-xs pull-right">{{ group.get_status|status_to_buttontext}}</button>
           {% else %}
-          <button type="button" class="btn btn-default
-                                       hidden-xs pull-right">{{ group.get_status|status_to_buttontext}}</button>
+          <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singledeliveryview' group.last_delivery.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
+
           {% endif %}
 
         </td>
@@ -92,16 +115,30 @@
 
       {% endfor%}
     </table><!-- row -->
-    <input type="submit" value="Submit" />
+    <input type="submit" class="btn btn-primary" value="Submit" />
     </form>
 
 
 
   </div><!-- container -->
+  {% endblock content %}
+
+{% else %}
+  <div class="container">
+        <div class="alert alert-danger">
+            <strong>{% trans "The grading system is not configured correctly." %}</strong>
+                <p><small>
+                    {% trans "This means that you are not able to correct any of the submitted deliveries. Notify the course administrator which need to setup up the grading system for this assignment" %}
+                </small></p>
+        </div>
+  </div>
+{% endif %}
 
 
 
-{% endblock content %}
+
+
+
 
 
 {% endblock body%}

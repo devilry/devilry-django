@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-06 17:44+0200\n"
+"POT-Creation-Date: 2014-01-18 19:40+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,13 +18,33 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: models/assignment.py:181
+#: models/assignment.py:242
+msgid "Maximum points"
+msgstr "Maksimalt antall poeng"
+
+#: models/assignment.py:243
+msgid "Specify the maximum number of points possible for this assignment."
+msgstr "Angi det maksimale antall poeng for denne oppgaven."
+
+#: models/assignment.py:251
+msgid "As passed or failed"
+msgstr "Ved Godkjent eller Ikke Godkjent"
+
+#: models/assignment.py:252
+msgid "As points"
+msgstr "Ved poeng"
+
+#: models/assignment.py:253
+msgid "As a text looked up in a custom table"
+msgstr "Som en karakter gitt av en oppslagstabell"
+
+#: models/assignment.py:442
 msgid ""
 "Submission date can not be before the publishing time ({publishing_time}) of "
 "the assignment."
-msgstr ""
+msgstr "Innleveringsfristen kan ikke settes til et tidligere tidspunkt enn publiseringsdatoen: ({publishing_time}) for denne oppgaven."
 
-#: models/assignment.py:184
+#: models/assignment.py:445
 #, fuzzy
 msgid ""
 "Submission date must be within it's {period_term} ({start_time} - "
@@ -33,41 +53,72 @@ msgstr ""
 "Første innleveringsfrist må være innenfor sitt {period_term} ({start_time} - "
 "{end_time})."
 
-#: models/assignment.py:185
+#: models/assignment.py:446
 msgid "period"
-msgstr ""
+msgstr "semester"
 
-#: models/assignment.py:203
+#: models/assignment.py:464
 msgid ""
 "The publishing time, {publishing_time}, is invalid. It must be within it's "
 "period, {period}, which lasts from {start_time} to {end_time}"
-msgstr ""
+msgstr "Publiseringsdatoen er ugyldig. Den kan kun settes innenfor semesterets tidsforløp fra {start_time} til {end_time}"
+
+#: models/assignment.py:474
+msgid ""
+"The minumum number of points required to pass must be less than the maximum "
+"number of points possible on the assignment. The current maximum is "
+"{max_points}"
+msgstr "Antall poeng for bestått karakter må være mindre enn maksimalt antall oppnåelige poeng. Nåværende makspoeng er: {max_points}"
+
+#: models/assignment_group.py:195
+msgid "No deadlines"
+msgstr "Ingen innleveringsfrister"
+
+#: models/assignment_group.py:196
+msgid "Corrected"
+msgstr "Rettet"
+
+#: models/assignment_group.py:197
+msgid "Closed without feedback"
+msgstr "Lukket uten tilbakemelding"
+
+#: models/assignment_group.py:198
+msgid "Waiting for something"
+msgstr "Venter på noe"
 
 #: models/basenode.py:52
 msgid "Path"
-msgstr ""
+msgstr "Vei"
 
 #: models/basenode.py:61
 msgid "Administrators"
-msgstr ""
+msgstr "Administrator"
 
-#: models/custom_db_fields.py:18
+#: models/custom_db_fields.py:19
 msgid "Short name"
-msgstr ""
+msgstr "Forkortet navn"
 
-#: models/custom_db_fields.py:21
+#: models/custom_db_fields.py:22
 msgid "Max 20 characters. Only numbers, lowercase characters, '_' and '-'. "
-msgstr ""
+msgstr "Maksimalt 20 tegn. Kun nummer, små bokstaver, '_' og '-'."
 
-#: models/custom_db_fields.py:30
+#: models/custom_db_fields.py:31
 msgid "Can only contain numbers, lowercase letters, '_' and '-'. "
-msgstr ""
+msgstr "Kan kun bestå av nummer, små bokstaver, '_' og '-'."
 
-#: models/custom_db_fields.py:39
+#: models/custom_db_fields.py:40
 msgid ""
 "A longer name, more descriptive than \"Short name\". This is the name "
 "visible to students."
-msgstr ""
+msgstr "Fullstendig navn. Vises til studentene"
+
+#: models/deadline.py:216
+msgid "Unknown."
+msgstr "Ukjent"
+
+#: models/deadline.py:217
+msgid "Examiner gave the student another chance."
+msgstr "Ny innleveringsfrist er gitt stu"
 
 #: models/node.py:86
 msgid "A node can not be it's own parent."
@@ -92,6 +143,18 @@ msgstr ""
 
 #: models/period.py:109
 msgid "Start time must be before end time."
+msgstr ""
+
+#: models/pointrange_to_grade.py:58
+msgid ""
+"The smallest entry in the map must have minimum points set to 0 (current "
+"value is {minimum_points})."
+msgstr ""
+
+#: models/pointrange_to_grade.py:79
+msgid ""
+"{grade} occurs multiple times in the map. A grade must be unique within the "
+"map."
 msgstr ""
 
 #~ msgid "First deadline cannot be before publishing time."

@@ -54,7 +54,7 @@ class WaitingForFeedbackOverview(AllGroupsOverview):
         context = super(WaitingForFeedbackOverview, self).get_context_data(**kwargs)
 
         groups = context['allgroups']
-        groups = groups.filter_by_status('waiting-for-something')
+        groups = groups.filter_by_status('waiting-for-feedback')
         paginator = Paginator(groups, 100, orphans=2)
 
         page = self.request.GET.get('page')
@@ -71,7 +71,7 @@ class WaitingForDeliveriesOverview(AllGroupsOverview):
         context = super(WaitingForDeliveriesOverview, self).get_context_data(**kwargs)
 
         groups = context['allgroups']
-        groups = groups.filter_by_status('waiting-for-something')
+        groups = groups.filter_by_status('waiting-for-deliveries')
         paginator = Paginator(groups, 100, orphans=2)
 
         page = self.request.GET.get('page')
