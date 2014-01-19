@@ -1165,13 +1165,13 @@
 .devilry_header2_fa-plus-square-o:before {
   content: "\f196";
 }
-.devilry_header2 .devilry_header2_buttonbar {
+#devilry_header2 .devilry_header2_buttonbar {
   box-sizing: border-box;
   position: absolute;
   right: 0;
   top: 0;
 }
-.devilry_header2 .devilry_header2_btn {
+#devilry_header2 .devilry_header2_btn {
   box-sizing: border-box;
   width: 50px;
   background-color: #212121;
@@ -1185,23 +1185,23 @@
   line-height: 40px;
   text-align: center;
 }
-.devilry_header2 .devilry_header2_btn:hover {
+#devilry_header2 .devilry_header2_btn:hover {
   color: #ffffff;
 }
-.devilry_header2 .devilry_header2_brand {
+#devilry_header2 .devilry_header2_brand {
   box-sizing: border-box;
   display: inline-block;
   height: 40px;
   font-size: 14px;
 }
-.devilry_header2 .devilry_header2_brand a {
+#devilry_header2 .devilry_header2_brand a {
   text-decoration: none;
   display: inline-block;
   margin: 0;
   line-height: 40px;
   height: 40px;
 }
-.devilry_header2 .devilry_header2_brand a.devilry_header2_brand_devilry {
+#devilry_header2 .devilry_header2_brand a.devilry_header2_brand_devilry {
   padding-right: 10px;
   color: #c8c8c8;
   padding-left: 40px;
@@ -1209,48 +1209,48 @@
   background-repeat: no-repeat;
   background-position: 15px center;
 }
-.devilry_header2 .devilry_header2_brand a.devilry_header2_brand_devilry:hover {
+#devilry_header2 .devilry_header2_brand a.devilry_header2_brand_devilry:hover {
   color: #ffffff;
 }
-.devilry_header2 .devilry_header2_brand a.devilry_header2_brand_role {
+#devilry_header2 .devilry_header2_brand a.devilry_header2_brand_role {
   box-sizing: border-box;
   display: none;
   padding-right: 15px;
   padding-left: 15px;
   color: #141414;
 }
-.devilry_header2 .devilry_header2_brand a.devilry_header2_brand_role:hover {
+#devilry_header2 .devilry_header2_brand a.devilry_header2_brand_role:hover {
   color: #ffffff;
 }
-.devilry_header2.devilry_header2_role_student .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_student {
+#devilry_header2.devilry_header2_role_student .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_student {
   display: inline-block;
   background-color: #77b300;
 }
-.devilry_header2.devilry_header2_role_student .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_student:hover {
+#devilry_header2.devilry_header2_role_student .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_student:hover {
   background-color: #8bd200;
 }
-.devilry_header2.devilry_header2_role_examiner .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_examiner {
+#devilry_header2.devilry_header2_role_examiner .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_examiner {
   display: inline-block;
   background-color: #0077b3;
 }
-.devilry_header2.devilry_header2_role_examiner .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_examiner:hover {
+#devilry_header2.devilry_header2_role_examiner .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_examiner:hover {
   background-color: #008bd2;
 }
-.devilry_header2.devilry_header2_role_subjectadmin .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_subjectadmin {
+#devilry_header2.devilry_header2_role_subjectadmin .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_subjectadmin {
   display: inline-block;
   background-color: #ffcc00;
 }
-.devilry_header2.devilry_header2_role_subjectadmin .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_subjectadmin:hover {
+#devilry_header2.devilry_header2_role_subjectadmin .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_subjectadmin:hover {
   background-color: #ffd21f;
 }
-.devilry_header2.devilry_header2_role_nodeadmin .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_nodeadmin {
+#devilry_header2.devilry_header2_role_nodeadmin .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_nodeadmin {
   display: inline-block;
   background-color: #ff9900;
 }
-.devilry_header2.devilry_header2_role_nodeadmin .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_nodeadmin:hover {
+#devilry_header2.devilry_header2_role_nodeadmin .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_nodeadmin:hover {
   background-color: #ffa51f;
 }
-.devilry_header2 .devilry_header2_searchform {
+#devilry_header2 .devilry_header2_searchform {
   box-sizing: border-box;
   position: absolute;
   right: 100px;
@@ -1264,7 +1264,7 @@
   -webkit-transition: width 0.3s ease;
   -moz-transition: width 0.3s ease;
 }
-.devilry_header2 .devilry_header2_searchform input[name="search"] {
+#devilry_header2 .devilry_header2_searchform input[name="search"] {
   box-sizing: border-box;
   position: absolute;
   height: 40px;
@@ -1275,20 +1275,44 @@
   padding-left: 8px;
   width: 100%;
 }
-.devilry_header2 .devilry_header2_searchform input[name="search"]:focus {
+#devilry_header2 .devilry_header2_searchform input[name="search"]:focus {
   outline: none;
 }
-.devilry_header2 .devilry_header2_searchform:hover {
+#devilry_header2 .devilry_header2_searchform:hover {
   width: 250px;
 }
+#devilry_header2.devilry_header2_extjs #devilry_header2_extjsbreadcrumb {
+  display: none;
+}
+#devilry_header2.devilry_header2_extjs.devilry_header2_extjs_with_breadcrumb {
+  height: 70px;
+}
+#devilry_header2.devilry_header2_extjs.devilry_header2_extjs_with_breadcrumb #devilry_header2_extjsbreadcrumb {
+  display: block;
+  background-color: #282828;
+}
+#devilry_header2.devilry_header2_extjs.devilry_header2_extjs_with_breadcrumb #devilry_header2_extjsbreadcrumb .devilry_header2_breadcrumbwrapper {
+  display: block;
+}
+#devilry_header2.devilry_header2_extjs.devilry_header2_extjs_with_breadcrumb #devilry_header2_extjsbreadcrumb .devilry_header2_breadcrumbwrapper .devilry_header_breadcrumbcomponent {
+  display: block;
+}
+#devilry_header2.devilry_header2_extjs.devilry_header2_extjs_with_breadcrumb #devilry_header2_extjsbreadcrumb .devilry_header2_breadcrumbwrapper .devilry_header_breadcrumbcomponent ul.devilry_header_breadcrumb {
+  display: block;
+  overflow: hidden;
+  white-space: nowrap;
+}
+#devilry_header2.devilry_header2_extjs.devilry_header2_extjs_with_breadcrumb #devilry_header2_extjsbreadcrumb .devilry_header2_breadcrumbwrapper .devilry_header_breadcrumbcomponent ul.devilry_header_breadcrumb li {
+  display: inline;
+}
 @media (max-width: 767px) {
-  .devilry_header2.devilry_header2_responsive {
+  #devilry_header2.devilry_header2_responsive {
     height: 80px;
   }
-  .devilry_header2.devilry_header2_responsive a.devilry_header2_brand {
+  #devilry_header2.devilry_header2_responsive a.devilry_header2_brand {
     display: block;
   }
-  .devilry_header2.devilry_header2_responsive .devilry_header2_searchform {
+  #devilry_header2.devilry_header2_responsive .devilry_header2_searchform {
     position: relative;
     right: 0;
     display: block;
@@ -1298,7 +1322,7 @@
     -moz-transition: none;
   }
 }
-.devilry_header2 {
+#devilry_header2 {
   height: 40px;
   background-color: #191919;
   position: relative;
