@@ -45,7 +45,7 @@ Simple: EVERYTHING is prefixed with ``devilry_header2``. This includes:
 
 <link href='{% static "devilry_header/css/styles.css" %}' rel="stylesheet">
 
-<div id="devilry_header2" class="devilry_header2 {% if not devilry_header2_nonresponsive %}devilry_header2_responsive{% endif %} {% if devilry_header2_role %}devilry_header2_role_{{ devilry_header2_role }}{% endif %}">
+<div id="devilry_header2" class="{% if devilry_header2_extjs %}devilry_header2_extjs{% else %}devilry_header2_responsive{% endif %} {% if devilry_header2_role %}devilry_header2_role_{{ devilry_header2_role }}{% endif %}">
     <div class="devilry_header2_brand">
         {% spaceless %}
             <a class="devilry_header2_brand_devilry" href="{% url 'devilry_frontpage' %}">Devilry</a>
@@ -69,6 +69,10 @@ Simple: EVERYTHING is prefixed with ``devilry_header2``. This includes:
             </a>
         {% endspaceless %}
     </div>
+
+    {% if devilry_header2_extjs %}
+        <div id="devilry_header2_extjsbreadcrumb"></div>
+    {% endif %}
 
     <div class="devilry_header2_buttonbar">
         {% spaceless %}
