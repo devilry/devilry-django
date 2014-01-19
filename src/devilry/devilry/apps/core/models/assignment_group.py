@@ -711,6 +711,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                 deadlinecount = len(deadlines)
                 active_deadline = deadlines[deadlinecount-1]
                 now = datetime.now()
+                print
+                print
+                print
+                print active_deadline, self.last_deadline
+                print
+                print
+                print
+                print
                 if active_deadline.deadline > now:
                     return 'waiting-for-deliveries'
                 else:
