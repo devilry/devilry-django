@@ -47,15 +47,6 @@ class SearchView(TemplateView):
 
     def form_valid(self, form, context):
         search_helper = SearchHelper(self.request.user, form.cleaned_data['search'])
-        print
-        print search_helper.get_student_results()
-        print search_helper.get_examiner_results()
-        print search_helper.get_admin_results()
-        # x = search_helper.get_student_results()[0]
-        # print dir(x)
-        # print x.content_type()
-        print
-
         student_results = self._prepare_search(search_helper.get_student_results())
         examiner_results = self._prepare_search(search_helper.get_examiner_results())
         admin_results = self._prepare_search(search_helper.get_admin_results())
