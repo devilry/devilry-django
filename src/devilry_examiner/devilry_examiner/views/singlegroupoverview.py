@@ -14,8 +14,6 @@ def get_previous_and_next_group_waiting_for_feedback(examineruser, current_group
     next = None
     previous = None
     for group in groups:
-        print group.id, current_group.id, previous
-
         if use_next:
             next = group
             break
