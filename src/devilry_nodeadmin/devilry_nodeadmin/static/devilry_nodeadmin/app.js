@@ -23,7 +23,7 @@ if(Ext.isEmpty(querystring.routeTo)) {
             'Ext.selection.DataViewModel',
             'Ext.selection.Model',
 
-            'devilry_header.Header',
+            'devilry_header.Header2',
             'devilry_header.Breadcrumbs',
 
             'devilry_extjsextras.Router',
@@ -73,7 +73,7 @@ if(Ext.isEmpty(querystring.routeTo)) {
                 layout: 'border',
                 split: true,
                 items: [{
-                    xtype: 'devilryheader',
+                    xtype: 'devilryheader2',
                     region: 'north',
                     navclass: 'nodeadmin',
                     breadcrumbs: this.breadcrumbs
