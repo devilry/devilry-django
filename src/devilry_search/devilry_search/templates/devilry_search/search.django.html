@@ -1,35 +1,33 @@
 {% extends "devilry_search/base.django.html" %}
 {% load crispy_forms_tags %}
 {% load i18n %}
+{% load url from future %}
 
 {% block body %}
     <div class="container">
         <div class="page-header">
             <h1>{% trans "Search" %}</h1>
+            <p class="text-muted">
+                {% trans "You can search for anything that you have access to in Devilry." %}
+            </p>
         </div>
         {% crispy form %}
-
     </div>
     <div class="container">
         <div class="row">
-
             {% if student_results %}            
                 <div class="col-sm-{{ columnsize }}">
                     {% if searchcategorycount > 1 %}
                         <h2>{% trans "Content where you are student" %}</h2>
                     {% endif %}
-                    {% for result in student_results %}
-                        <div class="searchresult">
-                            <h3>
-                                <a href="#">
-                                    {{ result.id }}
-                                </a>
-                            </h3>
-                            <p class="subtitle">
-                                {{ result.object.get_path }}
-                            </p>
-                        </div>
-                    {% endfor %}
+                    <div class="list-group">
+                        {% for result in student_results %}
+                            <a href="{% url 'devilry_student' %}#/group/{{ result.pk }}/" class="list-group-item">
+                                <h4 class="list-group-item-heading">{{ result.title }}</h4>
+                                <p class="list-group-item-text text-muted">{{ result.path }}</p>
+                            </a>
+                        {% endfor %}
+                    </div>
                 </div>
             {% endif %}
 
@@ -38,18 +36,23 @@
                     {% if searchcategorycount > 1 %}
                         <h2>{% trans "Content where you are examiner" %}</h2>
                     {% endif %}
-                    {% for result in examiner_results %}
-                        <div class="searchresult">
-                            <h3>
-                                <a href="#">
-                                    {{ result.id }}
+                    <div class="list-group">
+                        {% for result in examiner_results %}
+                            {% if result.content_type == "core.assignmentgroup" %}
+                                <a href="{% url 'devilry_examiner_singlegroupoverview' result.pk %}/" class="list-group-item">
+                                    <span class="badge">{% trans "Group" %}</span>
+                                    <h4 class="list-group-item-heading">{{ result.title }}</h4>
+                                    <p class="list-group-item-text text-muted">{{ result.path }}</p>
                                 </a>
-                            </h3>
-                            <p class="subtitle">
-                                {{ result.object.get_path }}
-                            </p>
-                        </div>
-                    {% endfor %}
+                            {% else %}
+                                <a href="{% url 'devilry_examiner_allgroupsoverview' result.pk %}/" class="list-group-item">
+                                    <span class="badge">{% trans "Assignment" %}</span>
+                                    <h4 class="list-group-item-heading">{{ result.title }}</h4>
+                                    <p class="list-group-item-text text-muted">{{ result.path }}</p>
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             {% endif %}
 
@@ -58,18 +61,42 @@
                     {% if searchcategorycount > 1 %}
                         <h2>{% trans "Content where you are admin" %}</h2>
                     {% endif %}
-                    {% for result in admin_results %}
-                        <div class="searchresult">
-                            <h3>
-                                <a href="#">
-                                    {{ result.id }}
+                    <div class="list-group">
+                        {% for result in admin_results %}
+                            {% if result.content_type == "core.assignmentgroup" %}
+                                <a href="{% url 'devilry_subjectadmin_group' result.pk %}/" class="list-group-item">
+                                    <span class="badge">{% trans "Group" %}</span>
+                                    <h4 class="list-group-item-heading">{{ result.title }}</h4>
+                                    <p class="list-group-item-text text-muted">{{ result.path }}</p>
                                 </a>
-                            </h3>
-                            <p class="subtitle">
-                                {{ result.object.get_path }}
-                            </p>
-                        </div>
-                    {% endfor %}
+                            {% elif result.content_type == "core.assignment" %}
+                                <a href="{% url 'devilry_subjectadmin_assignment' result.pk %}/" class="list-group-item">
+                                    <span class="badge">{% trans "Assignment" %}</span>
+                                    <h4 class="list-group-item-heading">{{ result.title }}</h4>
+                                    <p class="list-group-item-text text-muted">{{ result.path }}</p>
+                                </a>
+                            {% elif result.content_type == "core.period" %}
+                                <a href="{% url 'devilry_subjectadmin_period' result.pk %}/" class="list-group-item">
+                                    <span class="badge">{% trans "Period" %}</span>
+                                    <h4 class="list-group-item-heading">{{ result.title }}</h4>
+                                    <p class="list-group-item-text text-muted">{{ result.path }}</p>
+                                </a>
+                            {% elif result.content_type == "core.subject" %}
+                                <a href="{% url 'devilry_subjectadmin_subject' result.pk %}/" class="list-group-item">
+                                    <span class="badge">{% trans "Subject" %}</span>
+                                    <h4 class="list-group-item-heading">{{ result.title }}</h4>
+                                    <p class="list-group-item-text text-muted">{{ result.path }}</p>
+                                </a>
+                            {% elif result.content_type == "core.node" %}
+                                <a href="{% url 'devilry_nodeadmin_node' result.pk %}/" class="list-group-item">
+                                    <span class="badge">{% trans "Node" %}</span>
+                                    <h4 class="list-group-item-heading">{{ result.title }}</h4>
+                                    <p class="list-group-item-text text-muted">{{ result.path }}</p>
+                                </a>
+                            {% else %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
             {% endif %}
         </div>        
