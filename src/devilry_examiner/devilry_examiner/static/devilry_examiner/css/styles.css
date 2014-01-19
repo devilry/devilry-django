@@ -7817,6 +7817,9 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .feedback_rendered_view h6 {
   font-size: 12px;
 }
+.feedback_rendered_view p:last-child {
+  margin-bottom: 0;
+}
 .devilry_gradingsystem_feedbackbuttonholder {
   box-sizing: border-box;
   margin-bottom: 20px;
