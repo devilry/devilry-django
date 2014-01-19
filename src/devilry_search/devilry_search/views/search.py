@@ -6,13 +6,13 @@ from crispy_forms.layout import Layout
 from crispy_forms.layout import Field
 from crispy_forms.layout import Submit
 from crispy_forms.bootstrap import FieldWithButtons
+
 from devilry_search.search_helper import SearchHelper
 
 
 class SearchForm(forms.Form):
     search = forms.CharField(
         label=_('Search'),
-        help_text=_('TODO'),
         required=False)
 
     def __init__(self, *args, **kwargs):
@@ -47,13 +47,6 @@ class SearchView(TemplateView):
 
     def form_valid(self, form, context):
         search_helper = SearchHelper(self.request.user, form.cleaned_data['search'])
-        print
-        print 'Form:', form
-        print search_helper.get_student_results()
-        print search_helper.get_examiner_results()
-        print search_helper.get_admin_results()
-        print
-
         student_results = self._prepare_search(search_helper.get_student_results())
         examiner_results = self._prepare_search(search_helper.get_examiner_results())
         admin_results = self._prepare_search(search_helper.get_admin_results())
@@ -69,4 +62,3 @@ class SearchView(TemplateView):
             'searchcategorycount': searchcategorycount,
             'columnsize': columnsize
         })
-        print searchcategorycount

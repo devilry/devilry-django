@@ -16,6 +16,18 @@ from .models import Examiner
 class AdminsSearchIndex(BaseIndex):
     admin_ids = indexes.MultiValueField(model_attr='get_all_admin_ids')
 
+    #: The title of the item - typically a non-unique name for the item
+    title = indexes.CharField()
+
+    #: The unique path of the item - typically shown alongside the title
+    path = indexes.CharField()
+
+    def prepare_title(self, obj):
+        return obj.long_name
+
+    def prepare_path(self, obj):
+        return obj.get_path()
+
 
 class NodeIndex(AdminsSearchIndex):
     def index_queryset(self):
@@ -108,6 +120,11 @@ class AssignmentGroupIndex(AdminsSearchIndex):
     def prepare_is_published(self, obj):
         return obj.parentnode.publishing_time < datetime.now()
 
+    def prepare_title(self, obj):
+        return obj.long_displayname
+
+    def prepare_path(self, obj):
+        return u'{}.{}'.format(obj.assignment.get_path(), obj.short_displayname)
 
 
 site.register(AssignmentGroup, AssignmentGroupIndex)
