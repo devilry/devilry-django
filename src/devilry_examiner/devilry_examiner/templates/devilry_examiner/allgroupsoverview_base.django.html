@@ -31,7 +31,9 @@
 
             <ul class="list-group">
                 <li class="list-group-item"><a href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">{% trans "Waiting for feedback" %}</a></li>
-                <li class="list-group-item"><a href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">{% trans "Waiting for deliveries" %}</a></li>
+                {% if assignment.delivery_types == 0 %}                    
+                    <li class="list-group-item"><a href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">{% trans "Waiting for deliveries" %}</a></li>
+                {% endif %}
                 <li class="list-group-item"><a href="{% url 'devilry_examiner_corrected' assignment.id %}">{% trans "Corrected" %}</a></li>
                 <li class="list-group-item"><a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">{% trans "All" %}</a></li>
             </ul>
