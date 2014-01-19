@@ -39,13 +39,13 @@
                     <div class="list-group">
                         {% for result in examiner_results %}
                             {% if result.content_type == "core.assignmentgroup" %}
-                                <a href="{% url 'devilry_examiner_singlegroupoverview' result.pk %}/" class="list-group-item">
+                                <a href="{% url 'devilry_examiner_singlegroupoverview' result.pk %}" class="list-group-item">
                                     <span class="badge">{% trans "Group" %}</span>
                                     <h4 class="list-group-item-heading">{{ result.title }}</h4>
                                     <p class="list-group-item-text text-muted">{{ result.path }}</p>
                                 </a>
                             {% else %}
-                                <a href="{% url 'devilry_examiner_allgroupsoverview' result.pk %}/" class="list-group-item">
+                                <a href="{% url 'devilry_examiner_allgroupsoverview' result.pk %}" class="list-group-item">
                                     <span class="badge">{% trans "Assignment" %}</span>
                                     <h4 class="list-group-item-heading">{{ result.title }}</h4>
                                     <p class="list-group-item-text text-muted">{{ result.path }}</p>
@@ -64,31 +64,31 @@
                     <div class="list-group">
                         {% for result in admin_results %}
                             {% if result.content_type == "core.assignmentgroup" %}
-                                <a href="{% url 'devilry_subjectadmin_group' result.pk %}/" class="list-group-item">
+                                <a href="{% url 'devilry_subjectadmin_group' result.pk %}" class="list-group-item">
                                     <span class="badge">{% trans "Group" %}</span>
                                     <h4 class="list-group-item-heading">{{ result.title }}</h4>
                                     <p class="list-group-item-text text-muted">{{ result.path }}</p>
                                 </a>
                             {% elif result.content_type == "core.assignment" %}
-                                <a href="{% url 'devilry_subjectadmin_assignment' result.pk %}/" class="list-group-item">
+                                <a href="{% url 'devilry_subjectadmin_assignment' result.pk %}" class="list-group-item">
                                     <span class="badge">{% trans "Assignment" %}</span>
                                     <h4 class="list-group-item-heading">{{ result.title }}</h4>
                                     <p class="list-group-item-text text-muted">{{ result.path }}</p>
                                 </a>
                             {% elif result.content_type == "core.period" %}
-                                <a href="{% url 'devilry_subjectadmin_period' result.pk %}/" class="list-group-item">
+                                <a href="{% url 'devilry_subjectadmin_period' result.pk %}" class="list-group-item">
                                     <span class="badge">{% trans "Period" %}</span>
                                     <h4 class="list-group-item-heading">{{ result.title }}</h4>
                                     <p class="list-group-item-text text-muted">{{ result.path }}</p>
                                 </a>
                             {% elif result.content_type == "core.subject" %}
-                                <a href="{% url 'devilry_subjectadmin_subject' result.pk %}/" class="list-group-item">
+                                <a href="{% url 'devilry_subjectadmin_subject' result.pk %}" class="list-group-item">
                                     <span class="badge">{% trans "Subject" %}</span>
                                     <h4 class="list-group-item-heading">{{ result.title }}</h4>
                                     <p class="list-group-item-text text-muted">{{ result.path }}</p>
                                 </a>
                             {% elif result.content_type == "core.node" %}
-                                <a href="{% url 'devilry_nodeadmin_node' result.pk %}/" class="list-group-item">
+                                <a href="{% url 'devilry_nodeadmin_node' result.pk %}" class="list-group-item">
                                     <span class="badge">{% trans "Node" %}</span>
                                     <h4 class="list-group-item-heading">{{ result.title }}</h4>
                                     <p class="list-group-item-text text-muted">{{ result.path }}</p>
