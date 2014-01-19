@@ -34,7 +34,7 @@ if(Ext.isEmpty(querystring.routeTo)) {
             'devilry_extjsextras.Router',
             'devilry_extjsextras.RouteNotFound',
             'devilry_extjsextras.AlertMessage',
-            'devilry_header.Header',
+            'devilry_header.Header2',
             'devilry_subjectadmin.utils.Breadcrumbs',
             'devilry_subjectadmin.utils.UrlLookup',
             'devilry_extjsextras.form.DateField',
@@ -176,7 +176,7 @@ if(Ext.isEmpty(querystring.routeTo)) {
             });
             this.viewport.removeAll();
             this.viewport.add([{
-                xtype: 'devilryheader',
+                xtype: 'devilryheader2',
                 region: 'north',
                 navclass: this.userInfoRecord.isSubjectPeriodOrAssignmentAdmin()? 'subjectadmin': 'nodeadmin',
                 breadcrumbs: this.breadcrumbs

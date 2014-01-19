@@ -49,6 +49,7 @@ Ext.define('devilry_header.Header', {
      */
 
     constructor: function(config) {
+        console.warn('Rendering the OLD header (devilry_header.Header).');
         if(Ext.isEmpty(config.cls)) {
             config.cls = 'devilryheader';
         } else {
