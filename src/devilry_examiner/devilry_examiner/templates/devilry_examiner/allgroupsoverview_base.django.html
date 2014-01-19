@@ -2,9 +2,6 @@
 {% load i18n devilry_examiner_tags%}
 {% load url from future %}
 
-{% block bodyid %}allgroupsoverview{% endblock %}
-
-
 
 {% block body %}
 
@@ -25,7 +22,7 @@
 </div>
 
 {% if assignment.has_valid_grading_setup %}
-<div class="container">
+<div class="container allgroupoverview-focusarea">
     <div class="row">
 
         <div class="col-sm-3">
@@ -172,11 +169,13 @@ $(function () {
         e.preventDefault();
     });
     $('#grouplist_table td.checkbox_cell').on('click', function (e) {
-        console.log('click');
         var $checkbox = $(this).find(':checkbox');
         $checkbox.prop('checked', !$checkbox.prop('checked'));
         e.preventDefault();
-
+    });
+    $('#grouplist_table td.checkbox_cell input').on('click', function (e) {
+        // Preven the listener above when we manage to actually hit the checkbox instead of the cell.
+        e.stopPropagation();
     });
     
 });

@@ -7791,6 +7791,20 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   top: 50%;
   margin-top: -17px;
 }
+.allgroupoverview-focusarea table#grouplist_table td.checkbox_cell {
+  cursor: pointer;
+  position: relative;
+  width: 65px;
+}
+.allgroupoverview-focusarea table#grouplist_table td.checkbox_cell:hover {
+  background-color: #428bca;
+}
+.allgroupoverview-focusarea table#grouplist_table td.checkbox_cell input[type=checkbox] {
+  position: absolute;
+  top: 33%;
+  left: 28px;
+  cursor: pointer;
+}
 .delivery_files {
   margin-bottom: 20px;
 }
