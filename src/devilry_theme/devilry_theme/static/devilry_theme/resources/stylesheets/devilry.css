@@ -362,8 +362,8 @@ input, textarea, select {
   display: block !important;
   visibility: hidden !important;
   position: absolute!important;
-  left: -10000px !important;
-  top: -10000px !important;
+  left: -10000px!important;
+  top: -10000px!important;
 }
 
 /* line 75, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/core/_core.scss */
@@ -386,11 +386,10 @@ input, textarea, select {
 /* line 92, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/core/_core.scss */
 .x-css-shadow {
   position: absolute;
-  -moz-border-radius: 5px 5px;
   -webkit-border-radius: 5px 5px;
-  -o-border-radius: 5px 5px;
+  -moz-border-radius: 5px 5px;
   -ms-border-radius: 5px 5px;
-  -khtml-border-radius: 5px 5px;
+  -o-border-radius: 5px 5px;
   border-radius: 5px 5px;
 }
 
@@ -764,8 +763,7 @@ tr.x-container:before {
   padding: 2px;
   border: 1px solid;
   border-color: #e0e0e0;
-  background-image: none;
-  background-color: white;
+  background: white;
 }
 /* line 38, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_loadmask.scss */
 .x-mask-msg div {
@@ -827,7 +825,7 @@ tr.x-container:before {
   color: #000;
   font: normal 13px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   border: 1px solid;
-  border-color: #ddd #bbb #bbb #ddd;
+  border-color: #dddddd #bbbbbb #bbbbbb #dddddd;
   background-color: #fff;
 }
 
@@ -1334,9 +1332,8 @@ tr.x-container:before {
 /* line 108, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/layout/_layout.scss */
 .x-accordion-hd {
   background: #e5e5e5 !important;
-  -moz-box-shadow: inset 0 0 0 0 #e5e5e5;
   -webkit-box-shadow: inset 0 0 0 0 #e5e5e5;
-  -o-box-shadow: inset 0 0 0 0 #e5e5e5;
+  -moz-box-shadow: inset 0 0 0 0 #e5e5e5;
   box-shadow: inset 0 0 0 0 #e5e5e5;
 }
 /* line 112, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/layout/_layout.scss */
@@ -1383,9 +1380,8 @@ tr.x-container:before {
 /* line 155, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/layout/_layout.scss */
 .x-accordion-hd-sibling-expanded {
   border-top-color: #e0e0e0 !important;
-  -moz-box-shadow: inset 0 1px 0 0 white;
   -webkit-box-shadow: inset 0 1px 0 0 white;
-  -o-box-shadow: inset 0 1px 0 0 white;
+  -moz-box-shadow: inset 0 1px 0 0 white;
   box-shadow: inset 0 1px 0 0 white;
 }
 
@@ -2026,17 +2022,17 @@ tr.x-container:before {
 /* line 50, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
 .x-html h1 {
   font-size: 2em;
-  margin: .67em 0;
+  margin: 0.67em 0;
 }
 /* line 51, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
 .x-html h2 {
   font-size: 1.5em;
-  margin: .75em 0;
+  margin: 0.75em 0;
 }
 /* line 52, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
 .x-html h3 {
   font-size: 1.17em;
-  margin: .83em 0;
+  margin: 0.83em 0;
 }
 /* line 62, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_html.scss */
 .x-html h4,
@@ -2515,11 +2511,10 @@ tr.x-container:before {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-small {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 2px 2px 2px 2px;
   border-width: 1px;
@@ -2530,7 +2525,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #ffffff, #eeeeee);
   background-image: -moz-linear-gradient(top, #ffffff, #eeeeee);
   background-image: -o-linear-gradient(top, #ffffff, #eeeeee);
-  background-image: -ms-linear-gradient(top, #ffffff, #eeeeee);
   background-image: linear-gradient(top, #ffffff, #eeeeee);
 }
 
@@ -2544,11 +2538,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-small {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px;
@@ -2721,7 +2714,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -2734,7 +2726,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -2748,7 +2739,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -moz-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -o-linear-gradient(top, #c7c7c7, #e0e0e0);
-  background-image: -ms-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: linear-gradient(top, #c7c7c7, #e0e0e0);
 }
 
@@ -2761,7 +2751,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #ffffff, #f5f5f5);
   background-image: -moz-linear-gradient(top, #ffffff, #f5f5f5);
   background-image: -o-linear-gradient(top, #ffffff, #f5f5f5);
-  background-image: -ms-linear-gradient(top, #ffffff, #f5f5f5);
   background-image: linear-gradient(top, #ffffff, #f5f5f5);
 }
 /* line 858, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -2903,11 +2892,10 @@ tr.x-container:before {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-medium {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -2918,7 +2906,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #ffffff, #eeeeee);
   background-image: -moz-linear-gradient(top, #ffffff, #eeeeee);
   background-image: -o-linear-gradient(top, #ffffff, #eeeeee);
-  background-image: -ms-linear-gradient(top, #ffffff, #eeeeee);
   background-image: linear-gradient(top, #ffffff, #eeeeee);
 }
 
@@ -2932,11 +2919,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-medium {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px;
@@ -2994,7 +2980,8 @@ tr.x-container:before {
 }
 
 /* line 665, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-medium-icon button, .x-btn-default-medium-icon a {
+.x-btn-default-medium-icon button,
+.x-btn-default-medium-icon a {
   padding: 0;
 }
 /* line 669, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -3014,7 +3001,8 @@ tr.x-container:before {
 }
 
 /* line 687, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-medium-icon-text-left button, .x-btn-default-medium-icon-text-left a {
+.x-btn-default-medium-icon-text-left button,
+.x-btn-default-medium-icon-text-left a {
   height: 24px;
 }
 /* line 690, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -3038,7 +3026,8 @@ tr.x-container:before {
 }
 
 /* line 713, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-medium-icon-text-right button, .x-btn-default-medium-icon-text-right a {
+.x-btn-default-medium-icon-text-right button,
+.x-btn-default-medium-icon-text-right a {
   height: 24px;
 }
 /* line 716, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -3106,7 +3095,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -3119,7 +3107,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -3133,7 +3120,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -moz-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -o-linear-gradient(top, #c7c7c7, #e0e0e0);
-  background-image: -ms-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: linear-gradient(top, #c7c7c7, #e0e0e0);
 }
 
@@ -3146,7 +3132,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #ffffff, #f5f5f5);
   background-image: -moz-linear-gradient(top, #ffffff, #f5f5f5);
   background-image: -o-linear-gradient(top, #ffffff, #f5f5f5);
-  background-image: -ms-linear-gradient(top, #ffffff, #f5f5f5);
   background-image: linear-gradient(top, #ffffff, #f5f5f5);
 }
 /* line 858, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -3288,11 +3273,10 @@ tr.x-container:before {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-large {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -3303,7 +3287,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #ffffff, #eeeeee);
   background-image: -moz-linear-gradient(top, #ffffff, #eeeeee);
   background-image: -o-linear-gradient(top, #ffffff, #eeeeee);
-  background-image: -ms-linear-gradient(top, #ffffff, #eeeeee);
   background-image: linear-gradient(top, #ffffff, #eeeeee);
 }
 
@@ -3317,11 +3300,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-large {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px;
@@ -3379,7 +3361,8 @@ tr.x-container:before {
 }
 
 /* line 665, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-large-icon button, .x-btn-default-large-icon a {
+.x-btn-default-large-icon button,
+.x-btn-default-large-icon a {
   padding: 0;
 }
 /* line 669, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -3399,7 +3382,8 @@ tr.x-container:before {
 }
 
 /* line 687, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-large-icon-text-left button, .x-btn-default-large-icon-text-left a {
+.x-btn-default-large-icon-text-left button,
+.x-btn-default-large-icon-text-left a {
   height: 32px;
 }
 /* line 690, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -3423,7 +3407,8 @@ tr.x-container:before {
 }
 
 /* line 713, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-large-icon-text-right button, .x-btn-default-large-icon-text-right a {
+.x-btn-default-large-icon-text-right button,
+.x-btn-default-large-icon-text-right a {
   height: 32px;
 }
 /* line 716, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -3491,7 +3476,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -3504,7 +3488,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -3518,7 +3501,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -moz-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -o-linear-gradient(top, #c7c7c7, #e0e0e0);
-  background-image: -ms-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: linear-gradient(top, #c7c7c7, #e0e0e0);
 }
 
@@ -3531,7 +3513,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #ffffff, #f5f5f5);
   background-image: -moz-linear-gradient(top, #ffffff, #f5f5f5);
   background-image: -o-linear-gradient(top, #ffffff, #f5f5f5);
-  background-image: -ms-linear-gradient(top, #ffffff, #f5f5f5);
   background-image: linear-gradient(top, #ffffff, #f5f5f5);
 }
 /* line 858, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -3673,11 +3654,10 @@ tr.x-container:before {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-toolbar-small {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 2px 2px 2px 2px;
   border-width: 1px;
@@ -3694,11 +3674,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-toolbar-small {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px;
@@ -3753,7 +3732,8 @@ tr.x-container:before {
 }
 
 /* line 665, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-small-icon button, .x-btn-default-toolbar-small-icon a {
+.x-btn-default-toolbar-small-icon button,
+.x-btn-default-toolbar-small-icon a {
   padding: 0;
 }
 /* line 669, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -3773,7 +3753,8 @@ tr.x-container:before {
 }
 
 /* line 687, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-small-icon-text-left button, .x-btn-default-toolbar-small-icon-text-left a {
+.x-btn-default-toolbar-small-icon-text-left button,
+.x-btn-default-toolbar-small-icon-text-left a {
   height: 16px;
 }
 /* line 690, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -3797,7 +3778,8 @@ tr.x-container:before {
 }
 
 /* line 713, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-small-icon-text-right button, .x-btn-default-toolbar-small-icon-text-right a {
+.x-btn-default-toolbar-small-icon-text-right button,
+.x-btn-default-toolbar-small-icon-text-right a {
   height: 16px;
 }
 /* line 716, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -3865,7 +3847,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -3878,7 +3859,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -3892,7 +3872,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -moz-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -o-linear-gradient(top, #c7c7c7, #e0e0e0);
-  background-image: -ms-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: linear-gradient(top, #c7c7c7, #e0e0e0);
 }
 
@@ -4028,11 +4007,10 @@ tr.x-container:before {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-toolbar-medium {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -4049,11 +4027,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-toolbar-medium {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px;
@@ -4108,7 +4085,8 @@ tr.x-container:before {
 }
 
 /* line 665, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-medium-icon button, .x-btn-default-toolbar-medium-icon a {
+.x-btn-default-toolbar-medium-icon button,
+.x-btn-default-toolbar-medium-icon a {
   padding: 0;
 }
 /* line 669, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -4128,7 +4106,8 @@ tr.x-container:before {
 }
 
 /* line 687, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-medium-icon-text-left button, .x-btn-default-toolbar-medium-icon-text-left a {
+.x-btn-default-toolbar-medium-icon-text-left button,
+.x-btn-default-toolbar-medium-icon-text-left a {
   height: 24px;
 }
 /* line 690, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -4152,7 +4131,8 @@ tr.x-container:before {
 }
 
 /* line 713, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-medium-icon-text-right button, .x-btn-default-toolbar-medium-icon-text-right a {
+.x-btn-default-toolbar-medium-icon-text-right button,
+.x-btn-default-toolbar-medium-icon-text-right a {
   height: 24px;
 }
 /* line 716, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -4220,7 +4200,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -4233,7 +4212,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -4247,7 +4225,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -moz-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -o-linear-gradient(top, #c7c7c7, #e0e0e0);
-  background-image: -ms-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: linear-gradient(top, #c7c7c7, #e0e0e0);
 }
 
@@ -4383,11 +4360,10 @@ tr.x-container:before {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-default-toolbar-large {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -4404,11 +4380,10 @@ tr.x-container:before {
 .x-nbr .x-btn-default-toolbar-large {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px;
@@ -4463,7 +4438,8 @@ tr.x-container:before {
 }
 
 /* line 665, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-large-icon button, .x-btn-default-toolbar-large-icon a {
+.x-btn-default-toolbar-large-icon button,
+.x-btn-default-toolbar-large-icon a {
   padding: 0;
 }
 /* line 669, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -4483,7 +4459,8 @@ tr.x-container:before {
 }
 
 /* line 687, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-large-icon-text-left button, .x-btn-default-toolbar-large-icon-text-left a {
+.x-btn-default-toolbar-large-icon-text-left button,
+.x-btn-default-toolbar-large-icon-text-left a {
   height: 32px;
 }
 /* line 690, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -4507,7 +4484,8 @@ tr.x-container:before {
 }
 
 /* line 713, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-default-toolbar-large-icon-text-right button, .x-btn-default-toolbar-large-icon-text-right a {
+.x-btn-default-toolbar-large-icon-text-right button,
+.x-btn-default-toolbar-large-icon-text-right a {
   height: 32px;
 }
 /* line 716, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -4575,7 +4553,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -4588,7 +4565,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -moz-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: -o-linear-gradient(top, #fbfbfb, #e9e9e9);
-  background-image: -ms-linear-gradient(top, #fbfbfb, #e9e9e9);
   background-image: linear-gradient(top, #fbfbfb, #e9e9e9);
 }
 
@@ -4602,7 +4578,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -moz-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: -o-linear-gradient(top, #c7c7c7, #e0e0e0);
-  background-image: -ms-linear-gradient(top, #c7c7c7, #e0e0e0);
   background-image: linear-gradient(top, #c7c7c7, #e0e0e0);
 }
 
@@ -4764,11 +4739,10 @@ tr.x-container:before {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-group-default-framed {
-  -moz-border-radius: 2px;
   -webkit-border-radius: 2px;
-  -o-border-radius: 2px;
+  -moz-border-radius: 2px;
   -ms-border-radius: 2px;
-  -khtml-border-radius: 2px;
+  -o-border-radius: 2px;
   border-radius: 2px;
   padding: 1px 1px 1px 1px;
   border-width: 1px;
@@ -4785,11 +4759,10 @@ tr.x-container:before {
 .x-nbr .x-btn-group-default-framed {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000202px 1000202px;
@@ -4829,9 +4802,8 @@ tr.x-container:before {
 /* line 60, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_btn-group.scss */
 .x-btn-group-default-framed {
   border-color: #d0d0d0;
-  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
 }
 
@@ -4846,15 +4818,9 @@ tr.x-container:before {
   background: #dfdfdf;
   -moz-border-radius-topleft: 2px;
   -webkit-border-top-left-radius: 2px;
-  -o-border-top-left-radius: 2px;
-  -ms-border-top-left-radius: 2px;
-  -khtml-border-top-left-radius: 2px;
   border-top-left-radius: 2px;
   -moz-border-radius-topright: 2px;
   -webkit-border-top-right-radius: 2px;
-  -o-border-top-right-radius: 2px;
-  -ms-border-top-right-radius: 2px;
-  -khtml-border-top-right-radius: 2px;
   border-top-right-radius: 2px;
 }
 
@@ -4896,7 +4862,6 @@ tr.x-container:before {
   background-image: -webkit-linear-gradient(top, #777777, #656565);
   background-image: -moz-linear-gradient(top, #777777, #656565);
   background-image: -o-linear-gradient(top, #777777, #656565);
-  background-image: -ms-linear-gradient(top, #777777, #656565);
   background-image: linear-gradient(top, #777777, #656565);
 }
 
@@ -4973,7 +4938,7 @@ tr.x-container:before {
 }
 /* line 108, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_datepicker.scss */
 .x-datepicker-month span {
-  color: #fff !important;
+  color: white !important;
 }
 /* line 112, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_datepicker.scss */
 .x-datepicker-month .x-btn-split-right {
@@ -5016,7 +4981,6 @@ table.x-datepicker-inner th {
   background-image: -webkit-linear-gradient(top, #f1f1f1, #dfdfdf);
   background-image: -moz-linear-gradient(top, #f1f1f1, #dfdfdf);
   background-image: -o-linear-gradient(top, #f1f1f1, #dfdfdf);
-  background-image: -ms-linear-gradient(top, #f1f1f1, #dfdfdf);
   background-image: linear-gradient(top, #f1f1f1, #dfdfdf);
   cursor: default;
 }
@@ -5098,7 +5062,6 @@ table.x-datepicker-inner .x-datepicker-disabled a {
   background-image: -webkit-linear-gradient(top, #ffffff, #f8f8f8 49%, #f2f2f2 51%, #f4f4f4);
   background-image: -moz-linear-gradient(top, #ffffff, #f8f8f8 49%, #f2f2f2 51%, #f4f4f4);
   background-image: -o-linear-gradient(top, #ffffff, #f8f8f8 49%, #f2f2f2 51%, #f4f4f4);
-  background-image: -ms-linear-gradient(top, #ffffff, #f8f8f8 49%, #f2f2f2 51%, #f4f4f4);
   background-image: linear-gradient(top, #ffffff, #f8f8f8 49%, #f2f2f2 51%, #f4f4f4);
   text-align: center;
 }
@@ -5273,7 +5236,7 @@ table.x-datepicker-inner .x-datepicker-disabled a {
 
 /* line 12, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_colorpicker.scss */
 .x-color-picker a {
-  border: 1px solid #fff;
+  border: 1px solid white;
   float: left;
   padding: 2px;
   text-decoration: none;
@@ -5462,16 +5425,14 @@ table.x-datepicker-inner .x-datepicker-disabled a {
   background-image: -webkit-linear-gradient(top, #eeeeee, #dcdcdc);
   background-image: -moz-linear-gradient(top, #eeeeee, #dcdcdc);
   background-image: -o-linear-gradient(top, #eeeeee, #dcdcdc);
-  background-image: -ms-linear-gradient(top, #eeeeee, #dcdcdc);
   background-image: linear-gradient(top, #eeeeee, #dcdcdc);
   margin: 0px;
   border: 1px solid #9d9d9d;
   cursor: pointer;
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
 }
 
@@ -5584,13 +5545,12 @@ table.x-datepicker-inner .x-datepicker-disabled a {
   background-image: -webkit-linear-gradient(top, #f9f9f9, #e3e4e6);
   background-image: -moz-linear-gradient(top, #f9f9f9, #e3e4e6);
   background-image: -o-linear-gradient(top, #f9f9f9, #e3e4e6);
-  background-image: -ms-linear-gradient(top, #f9f9f9, #e3e4e6);
   background-image: linear-gradient(top, #f9f9f9, #e3e4e6);
 }
 
 /* line 73, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-accordion-item .x-grid-header-ct {
-  border-width: 0 0 1px 0!important;
+  border-width: 0 0 1px 0 !important;
 }
 
 /* line 77, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -5603,7 +5563,6 @@ table.x-datepicker-inner .x-datepicker-disabled a {
   border-top: 0 none;
   border-bottom: 0 none;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.3);
-  color: null;
   font: normal 13px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-image: none;
   background-color: #c5c5c5;
@@ -5611,7 +5570,6 @@ table.x-datepicker-inner .x-datepicker-disabled a {
   background-image: -webkit-linear-gradient(top, #f9f9f9, #e3e4e6);
   background-image: -moz-linear-gradient(top, #f9f9f9, #e3e4e6);
   background-image: -o-linear-gradient(top, #f9f9f9, #e3e4e6);
-  background-image: -ms-linear-gradient(top, #f9f9f9, #e3e4e6);
   background-image: linear-gradient(top, #f9f9f9, #e3e4e6);
 }
 
@@ -5653,7 +5611,6 @@ table.x-datepicker-inner .x-datepicker-disabled a {
   background-image: -webkit-linear-gradient(top, #dfdfdf, #dfdfdf 39%, #d5d5d5 40%, #d5d5d5);
   background-image: -moz-linear-gradient(top, #dfdfdf, #dfdfdf 39%, #d5d5d5 40%, #d5d5d5);
   background-image: -o-linear-gradient(top, #dfdfdf, #dfdfdf 39%, #d5d5d5 40%, #d5d5d5);
-  background-image: -ms-linear-gradient(top, #dfdfdf, #dfdfdf 39%, #d5d5d5 40%, #d5d5d5);
   background-image: linear-gradient(top, #dfdfdf, #dfdfdf 39%, #d5d5d5 40%, #d5d5d5);
 }
 
@@ -5731,7 +5688,6 @@ table.x-datepicker-inner .x-datepicker-disabled a {
 }
 /* line 199, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-row .x-grid-cell {
-  color: null;
   font: normal 13px/17px "Ubuntu", "Helvetica Neue", Helvetica, Arial, sans-serif;
   background-color: white;
   border-color: #ededed;
@@ -5851,7 +5807,6 @@ table.x-datepicker-inner .x-datepicker-disabled a {
   background-image: -webkit-linear-gradient(left, #f6f6f6, #e9e9e9);
   background-image: -moz-linear-gradient(left, #f6f6f6, #e9e9e9);
   background-image: -o-linear-gradient(left, #f6f6f6, #e9e9e9);
-  background-image: -ms-linear-gradient(left, #f6f6f6, #e9e9e9);
   background-image: linear-gradient(left, #f6f6f6, #e9e9e9);
 }
 
@@ -5882,7 +5837,6 @@ browsers will do whacky things with it.
   background-image: -webkit-linear-gradient(left, #0064cd, #0058b3);
   background-image: -moz-linear-gradient(left, #0064cd, #0058b3);
   background-image: -o-linear-gradient(left, #0064cd, #0058b3);
-  background-image: -ms-linear-gradient(left, #0064cd, #0058b3);
   background-image: linear-gradient(left, #0064cd, #0058b3);
 }
 
@@ -5895,7 +5849,7 @@ browsers will do whacky things with it.
 
 /* line 347, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-grid-cell-selected {
-  background-color: #B8CFEE !important;
+  background-color: #b8cfee !important;
 }
 
 /* line 353, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
@@ -6120,7 +6074,8 @@ browsers will do whacky things with it.
 /* IE6, IE7, and all IE Quirks mode need line-height to be the same as checkbox height or the header/row height will be too tall */
 /* line 573, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_grid.scss */
 .x-quirks .x-ie .x-grid-row-checker,
-.x-quirks .x-ie .x-column-header-checkbox .x-column-header-text, .x-ie7m .x-grid-row-checker, .x-ie7m .x-column-header-checkbox .x-column-header-text {
+.x-quirks .x-ie .x-column-header-checkbox .x-column-header-text, .x-ie7m .x-grid-row-checker,
+.x-ie7m .x-column-header-checkbox .x-column-header-text {
   line-height: 14px;
 }
 
@@ -6966,7 +6921,7 @@ textarea.x-form-invalid-field {
 
 /* line 12, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/form/_checkboxgroup.scss */
 .x-form-invalid .x-form-checkboxgroup-body {
-  border: 1px solid #c30!important;
+  border: 1px solid #cc3300 !important;
   background: transparent repeat-x bottom;
   background-image: url('../images/grid/invalid_line.gif');
   padding: 1px 3px 0 3px;
@@ -6982,7 +6937,7 @@ textarea.x-form-invalid-field {
 /* line 27, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/form/_checkboxgroup.scss */
 .x-form-check-group-label {
   color: #333;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid #333333;
   margin: 0 30px 5px 0;
   padding: 2px;
 }
@@ -7034,14 +6989,12 @@ textarea.x-form-invalid-field {
 /* line 49, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-wrap-focus .x-form-trigger-over {
   background-position: -68px 0;
-  border-bottom-color: null;
 }
 
 /* line 58, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
 .x-form-trigger-click,
 .x-form-trigger-wrap-focus .x-form-trigger-click {
   background-position: -34px 0;
-  border-bottom-color: null;
 }
 
 /* line 66, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/form/_triggerfield.scss */
@@ -7055,15 +7008,9 @@ textarea.x-form-invalid-field {
 .x-pickerfield-open .x-form-field {
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
-  -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
   -moz-border-radius-bottomright: 0;
   -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
-  -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
   border-bottom-right-radius: 0;
 }
 
@@ -7071,21 +7018,12 @@ textarea.x-form-invalid-field {
 .x-pickerfield-open-above .x-form-field {
   -moz-border-radius-bottomleft: 3px;
   -webkit-border-bottom-left-radius: 3px;
-  -o-border-bottom-left-radius: 3px;
-  -ms-border-bottom-left-radius: 3px;
-  -khtml-border-bottom-left-radius: 3px;
   border-bottom-left-radius: 3px;
   -moz-border-radius-topleft: 0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
-  -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
   border-top-left-radius: 0;
   -moz-border-radius-topright: 0;
   -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
-  -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
   border-top-right-radius: 0;
 }
 
@@ -7491,11 +7429,9 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(top, #f0f0f0, #d7d7d7);
-  -moz-box-shadow: white 0 1px 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset;
 }
 
@@ -7567,100 +7503,34 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(right, #f0f0f0, #d7d7d7);
-}
-
-/* line 416, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-default-top {
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
-  -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
-  border-bottom-left-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
-  -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
-  border-bottom-right-radius: null;
-}
-/* line 420, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-default-right {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
-  -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
-  -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
-  border-bottom-left-radius: null;
-}
-/* line 424, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-default-bottom {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
-  -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
-  -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
-  border-top-right-radius: null;
-}
-/* line 428, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-default-left {
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
-  -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
-  border-top-right-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
-  -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
-  border-bottom-right-radius: null;
 }
 
 /* line 434, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-top {
-  -moz-box-shadow: white 0 1px 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset;
 }
 
 /* line 438, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-right {
-  -moz-box-shadow: white -1px 0 0px 0 inset;
   -webkit-box-shadow: white -1px 0 0px 0 inset;
-  -o-box-shadow: white -1px 0 0px 0 inset;
+  -moz-box-shadow: white -1px 0 0px 0 inset;
   box-shadow: white -1px 0 0px 0 inset;
 }
 
 /* line 442, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-bottom {
-  -moz-box-shadow: white 0 -1px 0px 0 inset;
   -webkit-box-shadow: white 0 -1px 0px 0 inset;
-  -o-box-shadow: white 0 -1px 0px 0 inset;
+  -moz-box-shadow: white 0 -1px 0px 0 inset;
   box-shadow: white 0 -1px 0px 0 inset;
 }
 
 /* line 446, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-left {
-  -moz-box-shadow: white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 1px 0 0px 0 inset;
-  -o-box-shadow: white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 1px 0 0px 0 inset;
   box-shadow: white 1px 0 0px 0 inset;
 }
 
@@ -7695,11 +7565,9 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(top, #f0f0f0, #d7d7d7);
-  -moz-box-shadow: white 0 1px 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset;
 }
 
@@ -7801,17 +7669,15 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(right, #f0f0f0, #d7d7d7);
 }
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-panel-default-framed {
-  -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  -o-border-radius: 4px;
+  -moz-border-radius: 4px;
   -ms-border-radius: 4px;
-  -khtml-border-radius: 4px;
+  -o-border-radius: 4px;
   border-radius: 4px;
   padding: 4px 4px 4px 4px;
   border-width: 1px;
@@ -7828,11 +7694,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-default-framed {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1000404px;
@@ -7873,27 +7738,15 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-top {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
-  -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
-  -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 0;
   -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
-  -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
   border-bottom-right-radius: 0;
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
-  -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 3px 5px 4px 5px;
   border-width: 1px 1px 0 1px;
@@ -7904,7 +7757,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(top, #f0f0f0, #d7d7d7);
 }
 
@@ -7918,11 +7770,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-top {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1000000px;
@@ -7962,27 +7813,15 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-right {
   -moz-border-radius-topleft: 0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
-  -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
   border-top-left-radius: 0;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
-  -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
-  -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
-  -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 5px 4px 5px 4px;
   border-width: 1px 1px 1px 0;
@@ -7993,7 +7832,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(right, #f0f0f0, #d7d7d7);
 }
 
@@ -8007,11 +7845,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-right {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000004px 1100400px;
@@ -8052,27 +7889,15 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-bottom {
   -moz-border-radius-topleft: 0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
-  -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
   border-top-left-radius: 0;
   -moz-border-radius-topright: 0;
   -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
-  -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
   border-top-right-radius: 0;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
-  -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
-  -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 3px 5px 4px 5px;
   border-width: 0 1px 1px 1px;
@@ -8083,7 +7908,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(top, #f0f0f0, #d7d7d7);
 }
 
@@ -8097,11 +7921,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-bottom {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000000px 1000404px;
@@ -8141,27 +7964,15 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-left {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
-  -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 0;
   -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
-  -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
   border-top-right-radius: 0;
   -moz-border-radius-bottomright: 0;
   -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
-  -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
   border-bottom-right-radius: 0;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
-  -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 5px 4px 5px 4px;
   border-width: 1px 0 1px 1px;
@@ -8172,7 +7983,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(right, #f0f0f0, #d7d7d7);
 }
 
@@ -8186,11 +7996,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-left {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000400px 1100004px;
@@ -8229,33 +8038,29 @@ textarea.x-form-invalid-field {
 
 /* line 399, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-framed-top {
-  -moz-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
 }
 
 /* line 403, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-framed-right {
-  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
 }
 
 /* line 407, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-framed-bottom {
-  -moz-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
 }
 
 /* line 411, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-framed-left {
-  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
 }
 
@@ -8281,11 +8086,10 @@ textarea.x-form-invalid-field {
 
 /* line 468, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-default-framed-collapsed {
-  -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  -o-border-radius: 4px;
+  -moz-border-radius: 4px;
   -ms-border-radius: 4px;
-  -khtml-border-radius: 4px;
+  -o-border-radius: 4px;
   border-radius: 4px;
 }
 
@@ -8293,27 +8097,15 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-collapsed-top {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
-  -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
-  -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
-  -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
-  -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 3px 5px 4px 5px;
   border-width: 1px;
@@ -8324,7 +8116,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(top, #f0f0f0, #d7d7d7);
 }
 
@@ -8338,11 +8129,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-collapsed-top {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1000404px;
@@ -8382,27 +8172,15 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-collapsed-right {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
-  -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
-  -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
-  -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
-  -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 5px 4px 5px 4px;
   border-width: 1px;
@@ -8413,7 +8191,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(right, #f0f0f0, #d7d7d7);
 }
 
@@ -8427,11 +8204,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-collapsed-right {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1100404px;
@@ -8472,27 +8248,15 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-collapsed-bottom {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
-  -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
-  -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
-  -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
-  -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 3px 5px 4px 5px;
   border-width: 1px;
@@ -8503,7 +8267,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(top, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(top, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(top, #f0f0f0, #d7d7d7);
 }
 
@@ -8517,11 +8280,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-collapsed-bottom {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1000404px;
@@ -8561,27 +8323,15 @@ textarea.x-form-invalid-field {
 .x-panel-header-default-framed-collapsed-left {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
-  -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
-  -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
-  -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
-  -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 5px 4px 5px 4px;
   border-width: 1px;
@@ -8592,7 +8342,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -moz-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: -o-linear-gradient(right, #f0f0f0, #d7d7d7);
-  background-image: -ms-linear-gradient(right, #f0f0f0, #d7d7d7);
   background-image: linear-gradient(right, #f0f0f0, #d7d7d7);
 }
 
@@ -8606,11 +8355,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-panel-header-default-framed-collapsed-left {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000404px 1100404px;
@@ -8686,11 +8434,10 @@ textarea.x-form-invalid-field {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-tip {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 2px 2px 2px 2px;
   border-width: 1px;
@@ -8707,11 +8454,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-tip {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px;
@@ -8854,9 +8600,8 @@ textarea.x-form-invalid-field {
 /* line 137, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_qtip.scss */
 .x-form-invalid-tip {
   border-color: #a1311f;
-  -moz-box-shadow: #d87166 0 1px 0px 0 inset, #d87166 0 -1px 0px 0 inset, #d87166 -1px 0 0px 0 inset, #d87166 1px 0 0px 0 inset;
   -webkit-box-shadow: #d87166 0 1px 0px 0 inset, #d87166 0 -1px 0px 0 inset, #d87166 -1px 0 0px 0 inset, #d87166 1px 0 0px 0 inset;
-  -o-box-shadow: #d87166 0 1px 0px 0 inset, #d87166 0 -1px 0px 0 inset, #d87166 -1px 0 0px 0 inset, #d87166 1px 0 0px 0 inset;
+  -moz-box-shadow: #d87166 0 1px 0px 0 inset, #d87166 0 -1px 0px 0 inset, #d87166 -1px 0 0px 0 inset, #d87166 1px 0 0px 0 inset;
   box-shadow: #d87166 0 1px 0px 0 inset, #d87166 0 -1px 0px 0 inset, #d87166 -1px 0 0px 0 inset, #d87166 1px 0 0px 0 inset;
 }
 
@@ -8877,11 +8622,10 @@ textarea.x-form-invalid-field {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-form-invalid-tip-default {
-  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  -o-border-radius: 5px;
+  -moz-border-radius: 5px;
   -ms-border-radius: 5px;
-  -khtml-border-radius: 5px;
+  -o-border-radius: 5px;
   border-radius: 5px;
   padding: 4px 4px 4px 4px;
   border-width: 1px;
@@ -8898,11 +8642,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-form-invalid-tip-default {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100505px 1000505px;
@@ -9108,11 +8851,10 @@ textarea.x-form-invalid-field {
   position: relative;
   border-width: 1px;
   border-style: solid;
-  -moz-border-radius: 0;
   -webkit-border-radius: 0;
-  -o-border-radius: 0;
+  -moz-border-radius: 0;
   -ms-border-radius: 0;
-  -khtml-border-radius: 0;
+  -o-border-radius: 0;
   border-radius: 0;
   overflow: hidden;
   height: 20px;
@@ -9124,11 +8866,10 @@ textarea.x-form-invalid-field {
   overflow: hidden;
   position: absolute;
   width: 0;
-  -moz-border-radius: 0;
   -webkit-border-radius: 0;
-  -o-border-radius: 0;
+  -moz-border-radius: 0;
   -ms-border-radius: 0;
-  -khtml-border-radius: 0;
+  -o-border-radius: 0;
   border-radius: 0;
   border-right: 1px solid;
   border-top: 1px solid;
@@ -9170,7 +8911,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #d1d1d1, #b8b8b8 50%, #ababab 51%, #9e9e9e);
   background-image: -moz-linear-gradient(top, #d1d1d1, #b8b8b8 50%, #ababab 51%, #9e9e9e);
   background-image: -o-linear-gradient(top, #d1d1d1, #b8b8b8 50%, #ababab 51%, #9e9e9e);
-  background-image: -ms-linear-gradient(top, #d1d1d1, #b8b8b8 50%, #ababab 51%, #9e9e9e);
   background-image: linear-gradient(top, #d1d1d1, #b8b8b8 50%, #ababab 51%, #9e9e9e);
 }
 /* line 103, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_progress-bar.scss */
@@ -9301,7 +9041,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #efefef, #f5f5f5);
   background-image: -moz-linear-gradient(top, #efefef, #f5f5f5);
   background-image: -o-linear-gradient(top, #efefef, #f5f5f5);
-  background-image: -ms-linear-gradient(top, #efefef, #f5f5f5);
   background-image: linear-gradient(top, #efefef, #f5f5f5);
 }
 
@@ -9376,20 +9115,18 @@ textarea.x-form-invalid-field {
 
 /* line 58, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-collapsed .x-window-header-vertical {
-  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  -o-border-radius: 5px;
+  -moz-border-radius: 5px;
   -ms-border-radius: 5px;
-  -khtml-border-radius: 5px;
+  -o-border-radius: 5px;
   border-radius: 5px;
 }
 /* line 61, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-collapsed .x-window-header-horizontal {
-  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  -o-border-radius: 5px;
+  -moz-border-radius: 5px;
   -ms-border-radius: 5px;
-  -khtml-border-radius: 5px;
+  -o-border-radius: 5px;
   border-radius: 5px;
 }
 /* line 66, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
@@ -9446,15 +9183,13 @@ textarea.x-form-invalid-field {
 /* line 159, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-default {
   border-color: #cbcbcb;
-  -moz-border-radius: 5px 5px;
   -webkit-border-radius: 5px 5px;
-  -o-border-radius: 5px 5px;
+  -moz-border-radius: 5px 5px;
   -ms-border-radius: 5px 5px;
-  -khtml-border-radius: 5px 5px;
+  -o-border-radius: 5px 5px;
   border-radius: 5px 5px;
-  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
 }
 
@@ -9462,27 +9197,15 @@ textarea.x-form-invalid-field {
 .x-window-default {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
-  -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
-  -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
-  -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
-  -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 4px 4px 4px 4px;
   border-width: 1px;
@@ -9499,11 +9222,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-default {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000505px;
@@ -9568,27 +9290,15 @@ textarea.x-form-invalid-field {
 .x-window-header-default-top {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
-  -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
-  -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 0;
   -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
-  -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
   border-bottom-right-radius: 0;
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
-  -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 4px 5px 0 5px;
   border-width: 1px 1px 0 1px;
@@ -9605,11 +9315,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-top {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000000px;
@@ -9650,27 +9359,15 @@ textarea.x-form-invalid-field {
 .x-window-header-default-right {
   -moz-border-radius-topleft: 0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
-  -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
   border-top-left-radius: 0;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
-  -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
-  -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
-  -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 5px 4px 5px 0;
   border-width: 1px 1px 1px 0;
@@ -9687,11 +9384,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-right {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000005px 1000500px;
@@ -9732,27 +9428,15 @@ textarea.x-form-invalid-field {
 .x-window-header-default-bottom {
   -moz-border-radius-topleft: 0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
-  -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
   border-top-left-radius: 0;
   -moz-border-radius-topright: 0;
   -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
-  -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
   border-top-right-radius: 0;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
-  -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
-  -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 0 5px 4px 5px;
   border-width: 0 1px 1px 1px;
@@ -9769,11 +9453,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-bottom {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000000px 1000505px;
@@ -9814,27 +9497,15 @@ textarea.x-form-invalid-field {
 .x-window-header-default-left {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
-  -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 0;
   -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
-  -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
   border-top-right-radius: 0;
   -moz-border-radius-bottomright: 0;
   -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
-  -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
   border-bottom-right-radius: 0;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
-  -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 5px 0px 5px 4px;
   border-width: 1px 0 1px 1px;
@@ -9851,11 +9522,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-left {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000500px 1000005px;
@@ -9896,27 +9566,15 @@ textarea.x-form-invalid-field {
 .x-window-header-default-collapsed-top {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
-  -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
-  -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
-  -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
-  -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 4px 5px 4px 5px;
   border-width: 1px;
@@ -9933,11 +9591,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-collapsed-top {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000505px;
@@ -9978,27 +9635,15 @@ textarea.x-form-invalid-field {
 .x-window-header-default-collapsed-right {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
-  -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
-  -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
-  -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
-  -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 5px 4px 5px 4px;
   border-width: 1px;
@@ -10015,11 +9660,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-collapsed-right {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000505px;
@@ -10060,27 +9704,15 @@ textarea.x-form-invalid-field {
 .x-window-header-default-collapsed-bottom {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
-  -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
-  -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
-  -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
-  -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 4px 5px 4px 5px;
   border-width: 1px;
@@ -10097,11 +9729,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-collapsed-bottom {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000505px;
@@ -10142,27 +9773,15 @@ textarea.x-form-invalid-field {
 .x-window-header-default-collapsed-left {
   -moz-border-radius-topleft: 5px;
   -webkit-border-top-left-radius: 5px;
-  -o-border-top-left-radius: 5px;
-  -ms-border-top-left-radius: 5px;
-  -khtml-border-top-left-radius: 5px;
   border-top-left-radius: 5px;
   -moz-border-radius-topright: 5px;
   -webkit-border-top-right-radius: 5px;
-  -o-border-top-right-radius: 5px;
-  -ms-border-top-right-radius: 5px;
-  -khtml-border-top-right-radius: 5px;
   border-top-right-radius: 5px;
   -moz-border-radius-bottomright: 5px;
   -webkit-border-bottom-right-radius: 5px;
-  -o-border-bottom-right-radius: 5px;
-  -ms-border-bottom-right-radius: 5px;
-  -khtml-border-bottom-right-radius: 5px;
   border-bottom-right-radius: 5px;
   -moz-border-radius-bottomleft: 5px;
   -webkit-border-bottom-left-radius: 5px;
-  -o-border-bottom-left-radius: 5px;
-  -ms-border-bottom-left-radius: 5px;
-  -khtml-border-bottom-left-radius: 5px;
   border-bottom-left-radius: 5px;
   padding: 5px 4px 5px 4px;
   border-width: 1px;
@@ -10179,11 +9798,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-window-header-default-collapsed-left {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1000505px 1000505px;
@@ -10222,33 +9840,29 @@ textarea.x-form-invalid-field {
 
 /* line 217, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-header-default-top {
-  -moz-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
 }
 
 /* line 221, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-header-default-right {
-  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset;
 }
 
 /* line 225, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-header-default-bottom {
-  -moz-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
 }
 
 /* line 229, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_window.scss */
 .x-window-header-default-left {
-  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset, white 0 -1px 0px 0 inset, white 1px 0 0px 0 inset;
 }
 
@@ -10317,7 +9931,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #fefdfd, #f2f2f2);
   background-image: -moz-linear-gradient(top, #fefdfd, #f2f2f2);
   background-image: -o-linear-gradient(top, #fefdfd, #f2f2f2);
-  background-image: -ms-linear-gradient(top, #fefdfd, #f2f2f2);
   background-image: linear-gradient(top, #fefdfd, #f2f2f2);
   font-size: 13px;
 }
@@ -10474,27 +10087,15 @@ textarea.x-form-invalid-field {
 .x-tab-default-top {
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
-  -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
-  -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
   -moz-border-radius-bottomright: 0;
   -webkit-border-bottom-right-radius: 0;
-  -o-border-bottom-right-radius: 0;
-  -ms-border-bottom-right-radius: 0;
-  -khtml-border-bottom-right-radius: 0;
   border-bottom-right-radius: 0;
   -moz-border-radius-bottomleft: 0;
   -webkit-border-bottom-left-radius: 0;
-  -o-border-bottom-left-radius: 0;
-  -ms-border-bottom-left-radius: 0;
-  -khtml-border-bottom-left-radius: 0;
   border-bottom-left-radius: 0;
   padding: 3px 3px 0 3px;
   border-width: 1px 1px 0 1px;
@@ -10505,7 +10106,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #dcdcdc, #eaeaea);
   background-image: -moz-linear-gradient(top, #dcdcdc, #eaeaea);
   background-image: -o-linear-gradient(top, #dcdcdc, #eaeaea);
-  background-image: -ms-linear-gradient(top, #dcdcdc, #eaeaea);
   background-image: linear-gradient(top, #dcdcdc, #eaeaea);
 }
 
@@ -10519,11 +10119,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-tab-default-top {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100404px 1000000px;
@@ -10563,27 +10162,15 @@ textarea.x-form-invalid-field {
 .x-tab-default-bottom {
   -moz-border-radius-topleft: 0;
   -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
-  -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
   border-top-left-radius: 0;
   -moz-border-radius-topright: 0;
   -webkit-border-top-right-radius: 0;
-  -o-border-top-right-radius: 0;
-  -ms-border-top-right-radius: 0;
-  -khtml-border-top-right-radius: 0;
   border-top-right-radius: 0;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
-  -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
-  -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   padding: 0 3px 3px 3px;
   border-width: 0 1px 1px 1px;
@@ -10594,7 +10181,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(bottom, #dcdcdc, #eaeaea);
   background-image: -moz-linear-gradient(bottom, #dcdcdc, #eaeaea);
   background-image: -o-linear-gradient(bottom, #dcdcdc, #eaeaea);
-  background-image: -ms-linear-gradient(bottom, #dcdcdc, #eaeaea);
   background-image: linear-gradient(bottom, #dcdcdc, #eaeaea);
 }
 
@@ -10608,11 +10194,10 @@ textarea.x-form-invalid-field {
 .x-nbr .x-tab-default-bottom {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100000px 1000404px;
@@ -10737,9 +10322,8 @@ textarea.x-form-invalid-field {
 
 /* line 124, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_tab.scss */
 .x-tab-default-top {
-  -moz-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   box-shadow: white 0 1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   border-bottom: 1px solid #e0e0e0 !important;
 }
@@ -10772,14 +10356,12 @@ textarea.x-form-invalid-field {
 
 /* line 163, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_tab.scss */
 .x-tab-default-bottom {
-  -moz-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   border-top: 1px solid #e0e0e0 !important;
-  -moz-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   -webkit-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
-  -o-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
+  -moz-box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
   box-shadow: white 0 -1px 0px 0 inset, white -1px 0 0px 0 inset, white 1px 0 0px 0 inset;
 }
 /* line 178, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_tab.scss */
@@ -10813,7 +10395,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #ffffff, #ffffff);
   background-image: -moz-linear-gradient(top, #ffffff, #ffffff);
   background-image: -o-linear-gradient(top, #ffffff, #ffffff);
-  background-image: -ms-linear-gradient(top, #ffffff, #ffffff);
   background-image: linear-gradient(top, #ffffff, #ffffff);
 }
 /* line 203, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_tab.scss */
@@ -10870,7 +10451,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #e7e6e6, #eeeaea 25%, #f2eeee 45%);
   background-image: -moz-linear-gradient(top, #e7e6e6, #eeeaea 25%, #f2eeee 45%);
   background-image: -o-linear-gradient(top, #e7e6e6, #eeeaea 25%, #f2eeee 45%);
-  background-image: -ms-linear-gradient(top, #e7e6e6, #eeeaea 25%, #f2eeee 45%);
   background-image: linear-gradient(top, #e7e6e6, #eeeaea 25%, #f2eeee 45%);
 }
 
@@ -10882,7 +10462,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(bottom, #e7e6e6, #eeeaea 25%, #f2eeee 45%);
   background-image: -moz-linear-gradient(bottom, #e7e6e6, #eeeaea 25%, #f2eeee 45%);
   background-image: -o-linear-gradient(bottom, #e7e6e6, #eeeaea 25%, #f2eeee 45%);
-  background-image: -ms-linear-gradient(bottom, #e7e6e6, #eeeaea 25%, #f2eeee 45%);
   background-image: linear-gradient(bottom, #e7e6e6, #eeeaea 25%, #f2eeee 45%);
 }
 
@@ -10903,7 +10482,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #ffffff, #eaeaea);
   background-image: -moz-linear-gradient(top, #ffffff, #eaeaea);
   background-image: -o-linear-gradient(top, #ffffff, #eaeaea);
-  background-image: -ms-linear-gradient(top, #ffffff, #eaeaea);
   background-image: linear-gradient(top, #ffffff, #eaeaea);
 }
 
@@ -10915,7 +10493,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(bottom, #ffffff, #eaeaea);
   background-image: -moz-linear-gradient(bottom, #ffffff, #eaeaea);
   background-image: -o-linear-gradient(bottom, #ffffff, #eaeaea);
-  background-image: -ms-linear-gradient(bottom, #ffffff, #eaeaea);
   background-image: linear-gradient(bottom, #ffffff, #eaeaea);
 }
 
@@ -10938,7 +10515,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(top, #ffffff, #ffffff);
   background-image: -moz-linear-gradient(top, #ffffff, #ffffff);
   background-image: -o-linear-gradient(top, #ffffff, #ffffff);
-  background-image: -ms-linear-gradient(top, #ffffff, #ffffff);
   background-image: linear-gradient(top, #ffffff, #ffffff);
 }
 
@@ -10952,7 +10528,6 @@ textarea.x-form-invalid-field {
   background-image: -webkit-linear-gradient(bottom, #ffffff, #ffffff);
   background-image: -moz-linear-gradient(bottom, #ffffff, #ffffff);
   background-image: -o-linear-gradient(bottom, #ffffff, #ffffff);
-  background-image: -ms-linear-gradient(bottom, #ffffff, #ffffff);
   background-image: linear-gradient(bottom, #ffffff, #ffffff);
 }
 
@@ -11463,16 +11038,13 @@ a.x-tab-close-btn:hover {
 
 /* line 6, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_drawcomponent.scss */
 .x-surface {
-  display: -moz-inline-box;
-  -moz-box-orient: vertical;
+  display: -moz-inline-stack;
   display: inline-block;
   vertical-align: middle;
   *vertical-align: auto;
-  overflow: hidden;
-}
-/* line 7, ../../../../../../../../../../../Library/Ruby/Gems/1.8/gems/compass-0.11.7/frameworks/compass/stylesheets/compass/css3/_inline-block.scss */
-.x-surface {
+  zoom: 1;
   *display: inline;
+  overflow: hidden;
 }
 
 /* line 11, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_drawcomponent.scss */
@@ -11558,11 +11130,10 @@ svg, vml {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-primary-large {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -11573,7 +11144,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #1b8aff, #0070e7 50%, #0064cd 51%, #0058b3);
   background-image: -moz-linear-gradient(top, #1b8aff, #0070e7 50%, #0064cd 51%, #0058b3);
   background-image: -o-linear-gradient(top, #1b8aff, #0070e7 50%, #0064cd 51%, #0058b3);
-  background-image: -ms-linear-gradient(top, #1b8aff, #0070e7 50%, #0064cd 51%, #0058b3);
   background-image: linear-gradient(top, #1b8aff, #0070e7 50%, #0064cd 51%, #0058b3);
 }
 
@@ -11587,11 +11157,10 @@ svg, vml {
 .x-nbr .x-btn-primary-large {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px;
@@ -11649,7 +11218,8 @@ svg, vml {
 }
 
 /* line 665, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-primary-large-icon button, .x-btn-primary-large-icon a {
+.x-btn-primary-large-icon button,
+.x-btn-primary-large-icon a {
   padding: 0;
 }
 /* line 669, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -11669,7 +11239,8 @@ svg, vml {
 }
 
 /* line 687, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-primary-large-icon-text-left button, .x-btn-primary-large-icon-text-left a {
+.x-btn-primary-large-icon-text-left button,
+.x-btn-primary-large-icon-text-left a {
   height: 32px;
 }
 /* line 690, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -11693,7 +11264,8 @@ svg, vml {
 }
 
 /* line 713, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-primary-large-icon-text-right button, .x-btn-primary-large-icon-text-right a {
+.x-btn-primary-large-icon-text-right button,
+.x-btn-primary-large-icon-text-right a {
   height: 32px;
 }
 /* line 716, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -11760,7 +11332,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #017dff, #0064cd 50%, #0058b3 51%, #004b9a);
   background-image: -moz-linear-gradient(top, #017dff, #0064cd 50%, #0058b3 51%, #004b9a);
   background-image: -o-linear-gradient(top, #017dff, #0064cd 50%, #0058b3 51%, #004b9a);
-  background-image: -ms-linear-gradient(top, #017dff, #0064cd 50%, #0058b3 51%, #004b9a);
   background-image: linear-gradient(top, #017dff, #0064cd 50%, #0058b3 51%, #004b9a);
 }
 
@@ -11773,7 +11344,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #017dff, #0064cd 50%, #0058b3 51%, #004b9a);
   background-image: -moz-linear-gradient(top, #017dff, #0064cd 50%, #0058b3 51%, #004b9a);
   background-image: -o-linear-gradient(top, #017dff, #0064cd 50%, #0058b3 51%, #004b9a);
-  background-image: -ms-linear-gradient(top, #017dff, #0064cd 50%, #0058b3 51%, #004b9a);
   background-image: linear-gradient(top, #017dff, #0064cd 50%, #0058b3 51%, #004b9a);
 }
 
@@ -11786,7 +11356,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #004b9a, #0064cd);
   background-image: -moz-linear-gradient(top, #004b9a, #0064cd);
   background-image: -o-linear-gradient(top, #004b9a, #0064cd);
-  background-image: -ms-linear-gradient(top, #004b9a, #0064cd);
   background-image: linear-gradient(top, #004b9a, #0064cd);
 }
 
@@ -11799,7 +11368,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #5dacff, #399aff);
   background-image: -moz-linear-gradient(top, #5dacff, #399aff);
   background-image: -o-linear-gradient(top, #5dacff, #399aff);
-  background-image: -ms-linear-gradient(top, #5dacff, #399aff);
   background-image: linear-gradient(top, #5dacff, #399aff);
 }
 
@@ -11927,11 +11495,10 @@ svg, vml {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-danger-large {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -11942,7 +11509,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
   background-image: -moz-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
   background-image: -o-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
-  background-image: -ms-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
   background-image: linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
 }
 
@@ -11956,11 +11522,10 @@ svg, vml {
 .x-nbr .x-btn-danger-large {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px;
@@ -12018,7 +11583,8 @@ svg, vml {
 }
 
 /* line 665, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-danger-large-icon button, .x-btn-danger-large-icon a {
+.x-btn-danger-large-icon button,
+.x-btn-danger-large-icon a {
   padding: 0;
 }
 /* line 669, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12038,7 +11604,8 @@ svg, vml {
 }
 
 /* line 687, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-danger-large-icon-text-left button, .x-btn-danger-large-icon-text-left a {
+.x-btn-danger-large-icon-text-left button,
+.x-btn-danger-large-icon-text-left a {
   height: 32px;
 }
 /* line 690, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12062,7 +11629,8 @@ svg, vml {
 }
 
 /* line 713, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-danger-large-icon-text-right button, .x-btn-danger-large-icon-text-right a {
+.x-btn-danger-large-icon-text-right button,
+.x-btn-danger-large-icon-text-right a {
   height: 32px;
 }
 /* line 716, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12129,7 +11697,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: -moz-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: -o-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
-  background-image: -ms-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
 }
 
@@ -12142,7 +11709,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: -moz-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: -o-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
-  background-image: -ms-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
 }
 
@@ -12155,7 +11721,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #721c15, #9d261d);
   background-image: -moz-linear-gradient(top, #721c15, #9d261d);
   background-image: -o-linear-gradient(top, #721c15, #9d261d);
-  background-image: -ms-linear-gradient(top, #721c15, #9d261d);
   background-image: linear-gradient(top, #721c15, #9d261d);
 }
 
@@ -12168,7 +11733,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #e36f66, #dd5248);
   background-image: -moz-linear-gradient(top, #e36f66, #dd5248);
   background-image: -o-linear-gradient(top, #e36f66, #dd5248);
-  background-image: -ms-linear-gradient(top, #e36f66, #dd5248);
   background-image: linear-gradient(top, #e36f66, #dd5248);
 }
 
@@ -12296,11 +11860,10 @@ svg, vml {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-danger-medium {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -12311,7 +11874,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
   background-image: -moz-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
   background-image: -o-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
-  background-image: -ms-linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
   background-image: linear-gradient(top, #d83a2e, #b32b21 50%, #9d261d 51%, #872119);
 }
 
@@ -12325,11 +11887,10 @@ svg, vml {
 .x-nbr .x-btn-danger-medium {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px;
@@ -12387,7 +11948,8 @@ svg, vml {
 }
 
 /* line 665, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-danger-medium-icon button, .x-btn-danger-medium-icon a {
+.x-btn-danger-medium-icon button,
+.x-btn-danger-medium-icon a {
   padding: 0;
 }
 /* line 669, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12407,7 +11969,8 @@ svg, vml {
 }
 
 /* line 687, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-danger-medium-icon-text-left button, .x-btn-danger-medium-icon-text-left a {
+.x-btn-danger-medium-icon-text-left button,
+.x-btn-danger-medium-icon-text-left a {
   height: 24px;
 }
 /* line 690, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12431,7 +11994,8 @@ svg, vml {
 }
 
 /* line 713, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-danger-medium-icon-text-right button, .x-btn-danger-medium-icon-text-right a {
+.x-btn-danger-medium-icon-text-right button,
+.x-btn-danger-medium-icon-text-right a {
   height: 24px;
 }
 /* line 716, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12498,7 +12062,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: -moz-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: -o-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
-  background-image: -ms-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
 }
 
@@ -12511,7 +12074,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: -moz-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: -o-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
-  background-image: -ms-linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
   background-image: linear-gradient(top, #c83025, #9d261d 50%, #872119 51%, #721c15);
 }
 
@@ -12524,7 +12086,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #721c15, #9d261d);
   background-image: -moz-linear-gradient(top, #721c15, #9d261d);
   background-image: -o-linear-gradient(top, #721c15, #9d261d);
-  background-image: -ms-linear-gradient(top, #721c15, #9d261d);
   background-image: linear-gradient(top, #721c15, #9d261d);
 }
 
@@ -12537,7 +12098,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #e36f66, #dd5248);
   background-image: -moz-linear-gradient(top, #e36f66, #dd5248);
   background-image: -o-linear-gradient(top, #e36f66, #dd5248);
-  background-image: -ms-linear-gradient(top, #e36f66, #dd5248);
   background-image: linear-gradient(top, #e36f66, #dd5248);
 }
 
@@ -12665,11 +12225,10 @@ svg, vml {
 
 /* line 69, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/mixins/_frame.scss */
 .x-btn-inverse-medium {
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 3px 3px 3px 3px;
   border-width: 1px;
@@ -12680,7 +12239,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #3f3f3f, #262626 50%, #191919 51%, #0c0c0c);
   background-image: -moz-linear-gradient(top, #3f3f3f, #262626 50%, #191919 51%, #0c0c0c);
   background-image: -o-linear-gradient(top, #3f3f3f, #262626 50%, #191919 51%, #0c0c0c);
-  background-image: -ms-linear-gradient(top, #3f3f3f, #262626 50%, #191919 51%, #0c0c0c);
   background-image: linear-gradient(top, #3f3f3f, #262626 50%, #191919 51%, #0c0c0c);
 }
 
@@ -12694,11 +12252,10 @@ svg, vml {
 .x-nbr .x-btn-inverse-medium {
   padding: 0 !important;
   border-width: 0 !important;
-  -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
-  -o-border-radius: 0px;
+  -moz-border-radius: 0px;
   -ms-border-radius: 0px;
-  -khtml-border-radius: 0px;
+  -o-border-radius: 0px;
   border-radius: 0px;
   background-color: transparent;
   background-position: 1100303px 1000303px;
@@ -12756,7 +12313,8 @@ svg, vml {
 }
 
 /* line 665, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-inverse-medium-icon button, .x-btn-inverse-medium-icon a {
+.x-btn-inverse-medium-icon button,
+.x-btn-inverse-medium-icon a {
   padding: 0;
 }
 /* line 669, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12776,7 +12334,8 @@ svg, vml {
 }
 
 /* line 687, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-inverse-medium-icon-text-left button, .x-btn-inverse-medium-icon-text-left a {
+.x-btn-inverse-medium-icon-text-left button,
+.x-btn-inverse-medium-icon-text-left a {
   height: 24px;
 }
 /* line 690, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12800,7 +12359,8 @@ svg, vml {
 }
 
 /* line 713, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
-.x-btn-inverse-medium-icon-text-right button, .x-btn-inverse-medium-icon-text-right a {
+.x-btn-inverse-medium-icon-text-right button,
+.x-btn-inverse-medium-icon-text-right a {
   height: 24px;
 }
 /* line 716, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_button.scss */
@@ -12867,7 +12427,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #333333, #191919 50%, #0c0c0c 51%, #000000);
   background-image: -moz-linear-gradient(top, #333333, #191919 50%, #0c0c0c 51%, #000000);
   background-image: -o-linear-gradient(top, #333333, #191919 50%, #0c0c0c 51%, #000000);
-  background-image: -ms-linear-gradient(top, #333333, #191919 50%, #0c0c0c 51%, #000000);
   background-image: linear-gradient(top, #333333, #191919 50%, #0c0c0c 51%, #000000);
 }
 
@@ -12880,7 +12439,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #333333, #191919 50%, #0c0c0c 51%, #000000);
   background-image: -moz-linear-gradient(top, #333333, #191919 50%, #0c0c0c 51%, #000000);
   background-image: -o-linear-gradient(top, #333333, #191919 50%, #0c0c0c 51%, #000000);
-  background-image: -ms-linear-gradient(top, #333333, #191919 50%, #0c0c0c 51%, #000000);
   background-image: linear-gradient(top, #333333, #191919 50%, #0c0c0c 51%, #000000);
 }
 
@@ -12893,7 +12451,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #000000, #191919);
   background-image: -moz-linear-gradient(top, #000000, #191919);
   background-image: -o-linear-gradient(top, #000000, #191919);
-  background-image: -ms-linear-gradient(top, #000000, #191919);
   background-image: linear-gradient(top, #000000, #191919);
 }
 
@@ -12906,7 +12463,6 @@ svg, vml {
   background-image: -webkit-linear-gradient(top, #606060, #4f4f4f);
   background-image: -moz-linear-gradient(top, #606060, #4f4f4f);
   background-image: -o-linear-gradient(top, #606060, #4f4f4f);
-  background-image: -ms-linear-gradient(top, #606060, #4f4f4f);
   background-image: linear-gradient(top, #606060, #4f4f4f);
 }
 
@@ -13029,16 +12585,15 @@ svg, vml {
 
 /* line 241, ../sass/_button-uis.scss */
 .x-btn-focus {
-  outline: 1px dotted #666;
+  outline: 1px dotted #666666;
 }
 
 /* line 245, ../sass/_button-uis.scss */
 .x-btn-default-small, .x-btn-primary-small, .x-btn-danger-small {
-  -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  -o-border-radius: 4px;
+  -moz-border-radius: 4px;
   -ms-border-radius: 4px;
-  -khtml-border-radius: 4px;
+  -o-border-radius: 4px;
   border-radius: 4px;
 }
 /* line 247, ../sass/_button-uis.scss */
@@ -13049,11 +12604,10 @@ svg, vml {
 
 /* line 253, ../sass/_button-uis.scss */
 .x-btn-default-medium, .x-btn-primary-medium, .x-btn-danger-medium {
-  -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
-  -o-border-radius: 4px;
+  -moz-border-radius: 4px;
   -ms-border-radius: 4px;
-  -khtml-border-radius: 4px;
+  -o-border-radius: 4px;
   border-radius: 4px;
 }
 /* line 255, ../sass/_button-uis.scss */
@@ -13064,11 +12618,10 @@ svg, vml {
 
 /* line 262, ../sass/_button-uis.scss */
 .x-btn-default-large, .x-btn-primary-large, .x-btn-danger-large {
-  -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  -o-border-radius: 5px;
+  -moz-border-radius: 5px;
   -ms-border-radius: 5px;
-  -khtml-border-radius: 5px;
+  -o-border-radius: 5px;
   border-radius: 5px;
 }
 /* line 264, ../sass/_button-uis.scss */
@@ -13121,19 +12674,18 @@ textarea,
 input.x-form-text,
 .x-border-box .x-field-default-toolbar .x-form-text,
 textarea.x-form-field {
+  -webkit-transition: border linear, box-shadow linear;
+  -webkit-transition-delay: 0.2s, 0.2s;
   -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
-  -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
   -o-transition: border linear 0.2s, box-shadow linear 0.2s;
   transition: border linear 0.2s, box-shadow linear 0.2s;
-  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  -o-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-  -moz-border-radius: 3px;
   -webkit-border-radius: 3px;
-  -o-border-radius: 3px;
+  -moz-border-radius: 3px;
   -ms-border-radius: 3px;
-  -khtml-border-radius: 3px;
+  -o-border-radius: 3px;
   border-radius: 3px;
   padding: 4px 6px;
   height: auto;
@@ -13144,9 +12696,8 @@ input:focus,
 textarea:focus {
   outline: 0;
   border-color: rgba(82, 168, 236, 0.8);
-  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
   -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
-  -o-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
+  -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
   box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6);
 }
 
@@ -13154,11 +12705,10 @@ textarea:focus {
 input[type=file]:focus,
 input[type=checkbox]:focus,
 select:focus {
-  -moz-box-shadow: none;
   -webkit-box-shadow: none;
-  -o-box-shadow: none;
+  -moz-box-shadow: none;
   box-shadow: none;
-  outline: 1px dotted #666;
+  outline: 1px dotted #666666;
 }
 
 /* line 65, ../sass/_devilry_forms.scss */
@@ -13186,11 +12736,10 @@ select:focus {
   margin: 2px 0;
   display: inline-block;
   font-size: 12px;
-  -moz-border-radius: 3px 3px 3px 3px;
   -webkit-border-radius: 3px 3px 3px 3px;
-  -o-border-radius: 3px 3px 3px 3px;
+  -moz-border-radius: 3px 3px 3px 3px;
   -ms-border-radius: 3px 3px 3px 3px;
-  -khtml-border-radius: 3px 3px 3px 3px;
+  -o-border-radius: 3px 3px 3px 3px;
   border-radius: 3px 3px 3px 3px;
 }
 
@@ -13224,11 +12773,10 @@ select:focus {
 /* line 26, ../sass/_grid.scss */
 .x-grid table.x-grid-table tr.x-grid-row td.x-grid-cell-row-checker.devilry-grid-cell-row-checker-bigbutton .x-grid-cell-inner .x-grid-row-checker:hover {
   background-color: #ddd;
-  -moz-border-radius: 6px;
   -webkit-border-radius: 6px;
-  -o-border-radius: 6px;
+  -moz-border-radius: 6px;
   -ms-border-radius: 6px;
-  -khtml-border-radius: 6px;
+  -o-border-radius: 6px;
   border-radius: 6px;
   border-color: #bbb;
 }
@@ -13269,11 +12817,10 @@ select:focus {
   margin: 2px 0;
   display: inline-block;
   font-size: 12px;
-  -moz-border-radius: 3px 3px 3px 3px;
   -webkit-border-radius: 3px 3px 3px 3px;
-  -o-border-radius: 3px 3px 3px 3px;
+  -moz-border-radius: 3px 3px 3px 3px;
   -ms-border-radius: 3px 3px 3px 3px;
-  -khtml-border-radius: 3px 3px 3px 3px;
+  -o-border-radius: 3px 3px 3px 3px;
   border-radius: 3px 3px 3px 3px;
 }
 
@@ -13439,13 +12986,13 @@ select:focus {
 
 /* line 3, ../sass/_combobox.scss */
 .x-boundlist ul li.x-boundlist-item {
-  border: 1px solid #fff;
+  border: 1px solid white;
   background-color: #fff;
   color: #191919;
 }
 /* line 8, ../sass/_combobox.scss */
 .x-boundlist ul li.x-boundlist-item-over {
-  border: 1px solid #ccc;
+  border: 1px solid #cccccc;
   background-color: #eee;
   color: #191919;
 }
@@ -13490,15 +13037,9 @@ You only need something like this extjs code to make it work:
 .x-panel.devilry_discussionview_container > .x-panel-body > .x-panel.x-panel-collapsed > .x-panel-header {
   -moz-border-radius-bottomleft: 4px;
   -webkit-border-bottom-left-radius: 4px;
-  -o-border-bottom-left-radius: 4px;
-  -ms-border-bottom-left-radius: 4px;
-  -khtml-border-bottom-left-radius: 4px;
   border-bottom-left-radius: 4px;
   -moz-border-radius-bottomright: 4px;
   -webkit-border-bottom-right-radius: 4px;
-  -o-border-bottom-right-radius: 4px;
-  -ms-border-bottom-right-radius: 4px;
-  -khtml-border-bottom-right-radius: 4px;
   border-bottom-right-radius: 4px;
   background-color: #fff;
 }
@@ -13507,18 +13048,12 @@ You only need something like this extjs code to make it work:
   cursor: pointer;
   background-image: none;
   background-color: #efefef;
-  border: 1px solid #E5E5E5;
+  border: 1px solid #e5e5e5;
   -moz-border-radius-topleft: 4px;
   -webkit-border-top-left-radius: 4px;
-  -o-border-top-left-radius: 4px;
-  -ms-border-top-left-radius: 4px;
-  -khtml-border-top-left-radius: 4px;
   border-top-left-radius: 4px;
   -moz-border-radius-topright: 4px;
   -webkit-border-top-right-radius: 4px;
-  -o-border-top-right-radius: 4px;
-  -ms-border-top-right-radius: 4px;
-  -khtml-border-top-right-radius: 4px;
   border-top-right-radius: 4px;
 }
 /* line 42, ../sass/_devilry_discussionview.scss */
@@ -13571,17 +13106,16 @@ You only need something like this extjs code to make it work:
 
 /* line 5, ../sass/_devilry_extras.scss */
 .devilry_subtlebg {
-  background-image: url("../bgimages/tiny_grid_light.png");
+  background-image: url("../bgimages/groovepaper.png");
 }
 
 /* line 10, ../sass/_devilry_extras.scss */
 .devilry_focuscontainer {
   background-color: #fff;
   border-radius: 6px;
-  border: 1px solid #ccc;
-  -moz-box-shadow: inset -1px -1px 1px 0px #888888;
+  border: 1px solid #cccccc;
   -webkit-box-shadow: inset -1px -1px 1px 0px #888888;
-  -o-box-shadow: inset -1px -1px 1px 0px #888888;
+  -moz-box-shadow: inset -1px -1px 1px 0px #888888;
   box-shadow: inset -1px -1px 1px 0px #888888;
 }
 
@@ -13598,16 +13132,16 @@ You only need something like this extjs code to make it work:
   background-image: none !important;
   border-radius: 6px;
   padding: 8px 12px 8px 12px !important;
-  border: 1px solid #bbb;
-  background-color: #fff !important;
+  border: 1px solid #bbbbbb;
+  background-color: white !important;
   cursor: help;
-  color: #333 !important;
+  color: #333333 !important;
   font-size: 13px !important;
 }
 
 /* line 23, ../sass/_devilry_maskstyles.scss */
 .devilry-white-mask {
-  background-color: #fff !important;
+  background-color: white !important;
   filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
   opacity: 0.8;
 }
@@ -13625,9 +13159,8 @@ You only need something like this extjs code to make it work:
   border-style: solid;
   background-image: none;
   background-color: #aed48e;
-  -moz-box-shadow: #c9e2b3 0 1px 0px 0 inset;
   -webkit-box-shadow: #c9e2b3 0 1px 0px 0 inset;
-  -o-box-shadow: #c9e2b3 0 1px 0px 0 inset;
+  -moz-box-shadow: #c9e2b3 0 1px 0px 0 inset;
   box-shadow: #c9e2b3 0 1px 0px 0 inset;
 }
 
@@ -13667,96 +13200,31 @@ You only need something like this extjs code to make it work:
   background-color: #aed48e;
 }
 
-/* line 416, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-helpsidebar-top {
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
-  -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
-  border-bottom-left-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
-  -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
-  border-bottom-right-radius: null;
-}
-/* line 420, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-helpsidebar-right {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
-  -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-bottomleft: null;
-  -webkit-border-bottom-left-radius: null;
-  -o-border-bottom-left-radius: null;
-  -ms-border-bottom-left-radius: null;
-  -khtml-border-bottom-left-radius: null;
-  border-bottom-left-radius: null;
-}
-/* line 424, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-helpsidebar-bottom {
-  -moz-border-radius-topleft: null;
-  -webkit-border-top-left-radius: null;
-  -o-border-top-left-radius: null;
-  -ms-border-top-left-radius: null;
-  -khtml-border-top-left-radius: null;
-  border-top-left-radius: null;
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
-  -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
-  border-top-right-radius: null;
-}
-/* line 428, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
-.x-panel-collapsed .x-panel-header-helpsidebar-left {
-  -moz-border-radius-topright: null;
-  -webkit-border-top-right-radius: null;
-  -o-border-top-right-radius: null;
-  -ms-border-top-right-radius: null;
-  -khtml-border-top-right-radius: null;
-  border-top-right-radius: null;
-  -moz-border-radius-bottomright: null;
-  -webkit-border-bottom-right-radius: null;
-  -o-border-bottom-right-radius: null;
-  -ms-border-bottom-right-radius: null;
-  -khtml-border-bottom-right-radius: null;
-  border-bottom-right-radius: null;
-}
-
 /* line 434, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-helpsidebar-top {
-  -moz-box-shadow: #c9e2b3 0 1px 0px 0 inset;
   -webkit-box-shadow: #c9e2b3 0 1px 0px 0 inset;
-  -o-box-shadow: #c9e2b3 0 1px 0px 0 inset;
+  -moz-box-shadow: #c9e2b3 0 1px 0px 0 inset;
   box-shadow: #c9e2b3 0 1px 0px 0 inset;
 }
 
 /* line 438, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-helpsidebar-right {
-  -moz-box-shadow: #c9e2b3 -1px 0 0px 0 inset;
   -webkit-box-shadow: #c9e2b3 -1px 0 0px 0 inset;
-  -o-box-shadow: #c9e2b3 -1px 0 0px 0 inset;
+  -moz-box-shadow: #c9e2b3 -1px 0 0px 0 inset;
   box-shadow: #c9e2b3 -1px 0 0px 0 inset;
 }
 
 /* line 442, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-helpsidebar-bottom {
-  -moz-box-shadow: #c9e2b3 0 -1px 0px 0 inset;
   -webkit-box-shadow: #c9e2b3 0 -1px 0px 0 inset;
-  -o-box-shadow: #c9e2b3 0 -1px 0px 0 inset;
+  -moz-box-shadow: #c9e2b3 0 -1px 0px 0 inset;
   box-shadow: #c9e2b3 0 -1px 0px 0 inset;
 }
 
 /* line 446, ../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/resources/themes/stylesheets/ext4/default/widgets/_panel.scss */
 .x-panel-header-helpsidebar-left {
-  -moz-box-shadow: #c9e2b3 1px 0 0px 0 inset;
   -webkit-box-shadow: #c9e2b3 1px 0 0px 0 inset;
-  -o-box-shadow: #c9e2b3 1px 0 0px 0 inset;
+  -moz-box-shadow: #c9e2b3 1px 0 0px 0 inset;
   box-shadow: #c9e2b3 1px 0 0px 0 inset;
 }
 
@@ -13802,7 +13270,7 @@ You only need something like this extjs code to make it work:
 /* Error */
 /* line 4, ../sass/pygments/_tango.scss */
 .codehilite .g {
-  color: #000000;
+  color: black;
 }
 
 /* Generic */
@@ -13815,13 +13283,13 @@ You only need something like this extjs code to make it work:
 /* Keyword */
 /* line 6, ../sass/pygments/_tango.scss */
 .codehilite .l {
-  color: #000000;
+  color: black;
 }
 
 /* Literal */
 /* line 7, ../sass/pygments/_tango.scss */
 .codehilite .n {
-  color: #000000;
+  color: black;
 }
 
 /* Name */
@@ -13834,7 +13302,7 @@ You only need something like this extjs code to make it work:
 /* Operator */
 /* line 9, ../sass/pygments/_tango.scss */
 .codehilite .x {
-  color: #000000;
+  color: black;
 }
 
 /* Other */
@@ -13901,7 +13369,7 @@ You only need something like this extjs code to make it work:
 /* Generic.Heading */
 /* line 19, ../sass/pygments/_tango.scss */
 .codehilite .gi {
-  color: #00A000;
+  color: #00a000;
 }
 
 /* Generic.Inserted */
@@ -13983,7 +13451,7 @@ You only need something like this extjs code to make it work:
 /* Keyword.Type */
 /* line 31, ../sass/pygments/_tango.scss */
 .codehilite .ld {
-  color: #000000;
+  color: black;
 }
 
 /* Literal.Date */
@@ -14014,13 +13482,13 @@ You only need something like this extjs code to make it work:
 /* Name.Builtin */
 /* line 36, ../sass/pygments/_tango.scss */
 .codehilite .nc {
-  color: #000000;
+  color: black;
 }
 
 /* Name.Class */
 /* line 37, ../sass/pygments/_tango.scss */
 .codehilite .no {
-  color: #000000;
+  color: black;
 }
 
 /* Name.Constant */
@@ -14046,7 +13514,7 @@ You only need something like this extjs code to make it work:
 /* Name.Exception */
 /* line 41, ../sass/pygments/_tango.scss */
 .codehilite .nf {
-  color: #000000;
+  color: black;
 }
 
 /* Name.Function */
@@ -14058,19 +13526,19 @@ You only need something like this extjs code to make it work:
 /* Name.Label */
 /* line 43, ../sass/pygments/_tango.scss */
 .codehilite .nn {
-  color: #000000;
+  color: black;
 }
 
 /* Name.Namespace */
 /* line 44, ../sass/pygments/_tango.scss */
 .codehilite .nx {
-  color: #000000;
+  color: black;
 }
 
 /* Name.Other */
 /* line 45, ../sass/pygments/_tango.scss */
 .codehilite .py {
-  color: #000000;
+  color: black;
 }
 
 /* Name.Property */
@@ -14083,7 +13551,7 @@ You only need something like this extjs code to make it work:
 /* Name.Tag */
 /* line 47, ../sass/pygments/_tango.scss */
 .codehilite .nv {
-  color: #000000;
+  color: black;
 }
 
 /* Name.Variable */
@@ -14204,19 +13672,19 @@ You only need something like this extjs code to make it work:
 /* Name.Builtin.Pseudo */
 /* line 66, ../sass/pygments/_tango.scss */
 .codehilite .vc {
-  color: #000000;
+  color: black;
 }
 
 /* Name.Variable.Class */
 /* line 67, ../sass/pygments/_tango.scss */
 .codehilite .vg {
-  color: #000000;
+  color: black;
 }
 
 /* Name.Variable.Global */
 /* line 68, ../sass/pygments/_tango.scss */
 .codehilite .vi {
-  color: #000000;
+  color: black;
 }
 
 /* Name.Variable.Instance */
