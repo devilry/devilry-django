@@ -3,6 +3,7 @@ from django.shortcuts import redirect
 #from django.http import Http404
 
 from devilry.apps.core.models import Delivery
+from .singlegroupoverview import get_previous_and_next_group_waiting_for_feedback
 
 
 class SingleDeliveryView(DetailView):
@@ -36,4 +37,8 @@ class SingleDeliveryView(DetailView):
         context = super(SingleDeliveryView, self).get_context_data(**kwargs)
         delivery = self.object
         context['valid_grading_system_setup'] = delivery.assignment.has_valid_grading_setup()
+        previous, next = get_previous_and_next_group_waiting_for_feedback(
+            self.request.user, delivery.assignment_group)
+        context['previous_group_waiting_for_feedback'] = previous
+        context['next_group_waiting_for_feedback'] = next
         return context

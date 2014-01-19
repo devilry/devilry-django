@@ -6,6 +6,12 @@
 {% endblock breadcrumbtail %}
 
 
+{% block headertop %}
+    {% include "devilry_examiner/include/navigate_todolist.django.html" with group=delivery.assignment_group %}
+{% endblock headertop %}
+
+
+
 {% block alerts %}
 {{ block.super }}
     {% if delivery.last_feedback == delivery.assignment_group.feedback %}

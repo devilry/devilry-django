@@ -30,6 +30,7 @@ valid_grading_system_setup
 {% block body %}
     <div class="container">
         <div class="page-header page-header-with-subheader">
+            {% block headertop %}{% endblock headertop %}
             <h1>
                 {{ delivery.deadline.assignment_group.assignment.long_name }} &mdash; {{ delivery.deadline.assignment_group.long_displayname }}
             </h1>

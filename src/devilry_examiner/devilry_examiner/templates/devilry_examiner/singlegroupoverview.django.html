@@ -11,6 +11,7 @@
 {% block body %}
     <div class="container">
         <div class="page-header page-header-with-subheader">
+            {% include "devilry_examiner/include/navigate_todolist.django.html" %}
             <h1>
                 {{ group.assignment.long_name }} &mdash; {{ group.long_displayname }}
             </h1>

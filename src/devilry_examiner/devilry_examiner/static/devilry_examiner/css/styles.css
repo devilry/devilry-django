@@ -7935,6 +7935,12 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   font-size: 14px;
   overflow: auto;
 }
+@media (min-width: 768px) {
+  .navigate-todolist {
+    float: right;
+    margin: 0 0 20px 20px;
+  }
+}
 body {
   background-image: url('../images/groovepaper.png');
 }
