@@ -2,6 +2,7 @@
 {% load i18n devilry_examiner_tags%}
 {% load url from future %}
 
+{% block title %}{{ assignment.short_name }} - {{ assignment.period.get_path }}{% endblock title %}
 
 {% block body %}
 
@@ -66,6 +67,9 @@
                 <p>
                     <button class="btn btn-default" id="select_all_button">
                         {% trans "Select All" %}
+                    </button>
+                    <button class="btn btn-default" id="deselect_all_button">
+                        {% trans "Deselect All" %}
                     </button>
                 </p>
             {% endif %}
@@ -165,7 +169,11 @@
 <script>
 $(function () {
     $('#select_all_button').on('click', function (e) {
-        $('#grouplist_table').find(':checkbox').prop('checked', 'checked');
+        $('#grouplist_table').find(':checkbox').prop('checked', true);
+        e.preventDefault();
+    });
+    $('#deselect_all_button').on('click', function (e) {
+        $('#grouplist_table').find(':checkbox').prop('checked', false);
         e.preventDefault();
     });
     $('#grouplist_table td.checkbox_cell').on('click', function (e) {
