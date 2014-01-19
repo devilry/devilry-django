@@ -18,19 +18,35 @@
         </ol>
     </div>
     <div class="container">
-        <table class="table table-striped infolistingtable active-assignment-listing">
-        	{% for assignment in active_assignments %}
-            	<tr class="active-assignment-listing-item assignment-{{ assignment.get_path }}">
-                    <td>
-		            	<h2><a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}" class="assignmentname">
-                            {{ assignment.parentnode.parentnode.short_name }}.{{ assignment.parentnode.short_name }} - {{ assignment.long_name }}
-                        </a></h2>
-		            </td>
-                    <td class="text-right hidden-xs">
-						
-                    </td>
-        		</tr>
-    	    {% endfor %}
-    	</table>
+        <div class="row">
+            <div class="col-sm-9">
+                <table class="table table-striped infolistingtable active-assignment-listing">
+                	{% for assignment in active_assignments %}
+                    	<tr class="active-assignment-listing-item assignment-{{ assignment.get_path }}">
+                            <td>
+        		            	<h2><a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}" class="assignmentname">
+                                    {{ assignment.parentnode.parentnode.short_name }}.{{ assignment.parentnode.short_name }} - {{ assignment.long_name }}
+                                </a></h2>
+        		            </td>
+                            <td class="text-right hidden-xs">
+        						
+                            </td>
+                		</tr>
+            	    {% endfor %}
+            	</table>
+            </div>
+            <div class="col-sm-3">
+                <p>
+                    <strong>{% trans "New to Devilry? Do you want to become more efficient?" %}</strong>
+                    <small class="text-muted">Check out Examiner section of the official Devilry documentation.</small>
+                </p>
+                <p>
+                    <a class="btn btn-default" href="https://devilry-userdoc.readthedocs.org" target="_blank">
+                        <i class="fa fa-question-circle"></i>
+                        {% trans "Official documentation" %}
+                    </a>
+                </p>
+            </div>
+        </div>
     </div>
 {% endblock %}
