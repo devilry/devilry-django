@@ -13,7 +13,7 @@ class SearchHelper(object):
         self.searchstring = searchstring
 
     def _query(self, search_queryset):
-        return search_queryset.auto_query(self.searchstring).load_all()
+        return search_queryset.auto_query(self.searchstring)
 
     def get_student_results(self):
         search_queryset = SearchQuerySet()\
