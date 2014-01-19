@@ -4,24 +4,17 @@
 
 {% block bodyid %}waiting-for-feedback-overview{% endblock %}
 
-{% block navbar %}
-  <ul class="nav nav-tabs">
-    <li><a href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">Waiting for feedback</a></li>
-    <li class="active"><a href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">Waiting for deliveries</a></li>
-    <li><a href="{% url 'devilry_examiner_corrected' assignment.id %}">Corrected</a></li>
-    <li><a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">All</a></li>
-  </ul>
-{% endblock navbar %}
+
 
 
 
 {% block content %}
 {% if not groups %}
-  <div class="container">
-      <div class="alert alert-success }}">
+
+      <div class="alert alert-muted }}">
           <strong>{% trans "There are no groups waiting for deliveries" %}</strong>
       </div>
-  </div>
+
 {% endif %}
 {{ block.super }}
 
