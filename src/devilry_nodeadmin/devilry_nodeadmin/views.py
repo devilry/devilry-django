@@ -1,4 +1,7 @@
 from django.utils.translation import ugettext as _
+from django.views.generic import View
+from django.http import HttpResponseRedirect
+from django.core.urlresolvers import reverse
 from extjs4.views import Extjs4AppView
 
 class AppView(Extjs4AppView):
@@ -6,3 +9,13 @@ class AppView(Extjs4AppView):
     appname = 'devilry_nodeadmin'
     css_staticpath = 'devilry_theme/resources/stylesheets/devilry.css'
     title = _('Devilry - Node administrator')
+
+
+
+class RedirectToNodeAdminAppView(View):
+    pathformat = None
+
+    def get(self, request, **kwargs):
+        path = self.pathformat.format(**kwargs)
+        url = '{}?routeTo={}'.format(reverse('devilry_nodeadmin'), path)
+        return HttpResponseRedirect(url)

@@ -1,0 +1,10 @@
+{
+  "name": "devilry_subjectadmin",
+  "devDependencies": {
+    "coffee-script": "1.6.x",
+    "grunt": "~0.4.1",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-contrib-less": "~0.8.2"
+  }
+}

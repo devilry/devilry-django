@@ -2,25 +2,241 @@ from django.core.exceptions import ValidationError
 from datetime import timedelta
 from django.test import TestCase
 
-from ..models import Deadline
-from ..testhelper import TestHelper
+from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
+from devilry.apps.core.models import Deadline
+from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models.deadline import NewerDeadlineExistsError
+from devilry.apps.core.models import deliverytypes
+from devilry.apps.core.testhelper import TestHelper
 
-TestHelper.set_memory_deliverystore()
 
-class TestDeadline(TestCase, TestHelper):
 
+class TestDeadline(TestCase):
+    def test_create_deadline_opens_assignmentgroup(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        groupbuilder.update(is_open=False)
+        groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=3))
+        groupbuilder.reload_from_db()
+        self.assertTrue(groupbuilder.group.is_open)
+
+    def test_update_deadline_does_not_change_assignmentgroup_is_open(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        deadline = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=3))
+        groupbuilder.update(is_open=False)
+        deadline.save()
+        groupbuilder.reload_from_db()
+        self.assertFalse(groupbuilder.group.is_open)
+
+    def test_create_deadline_changes_assignmentgroup_delivery_status(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertEquals(groupbuilder.group.delivery_status, 'no-deadlines')
+        groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=3))
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.delivery_status, 'waiting-for-something')
+
+    def test_set_last_deadline_on_group_single(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertIsNone(groupbuilder.group.last_deadline)
+        deadline = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=3))
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_deadline, deadline)
+
+    def test_set_last_deadline_on_group_newest(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertIsNone(groupbuilder.group.last_deadline)
+        deadline2 = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        deadline1 = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=5))
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_deadline, deadline2)
+
+    def test_set_last_deadline_on_group_newest_even_when_edited(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertIsNone(groupbuilder.group.last_deadline)
+        deadline2 = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        deadline1 = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=5))
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_deadline, deadline2)
+        deadline1.deadline = DateTimeBuilder.now().plus(days=20)
+        deadline1.save()
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_deadline, deadline1)
+
+    def test_set_last_deadline_on_group_copy(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertIsNone(groupbuilder.group.last_deadline)
+        deadline2 = Deadline(assignment_group=groupbuilder.group, deadline=DateTimeBuilder.now().plus(days=10))
+        deadline1 = Deadline(assignment_group=groupbuilder.group, deadline=DateTimeBuilder.now().plus(days=5))
+        # Copy cleans deadlines before save, so we have to do that for the assertEquals below to match
+        for deadline in deadline1, deadline2:
+            deadline.clean()
+            deadline.save()
+        groupbuilder.reload_from_db()
+        groupcopy = groupbuilder.group.copy_all_except_candidates()
+        self.assertEquals(groupcopy.last_deadline.deadline, deadline2.deadline)
+
+    def test_set_last_deadline_on_group_merge(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        group2builder = assignmentbuilder.add_group()
+        deadline2 = group2builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        deadline3 = group1builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=15))
+        deadline1 = group1builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=5))
+        group2builder.group.merge_into(group1builder.group)
+        group1builder.reload_from_db()
+        self.assertEquals(group1builder.group.last_deadline, deadline3)
+
+    def test_set_last_deadline_on_group_merge_reverse_direction(self): # Direction of the merge should not matter
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        group2builder = assignmentbuilder.add_group()
+        deadline2 = group2builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        deadline3 = group1builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=15))
+        deadline1 = group1builder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=5))
+        group1builder.group.merge_into(group2builder.group)
+        group2builder.reload_from_db()
+        self.assertEquals(group2builder.group.last_deadline, deadline3)
+
+
+    def test_do_not_autocreate_delivery_if_electronic(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        deadline = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        self.assertEquals(deadline.deliveries.count(), 0)
+
+    def test_autocreate_delivery_if_nonelectronic(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                delivery_types=deliverytypes.NON_ELECTRONIC)\
+            .add_group()
+        deadline = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
+        self.assertEquals(deadline.deliveries.count(), 1)
+        groupbuilder.reload_from_db()
+        self.assertEquals(groupbuilder.group.last_delivery, deadline.deliveries.all()[0])
+
+    def test_autocreate_delivery_if_nonelectronic_false(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                delivery_types=deliverytypes.NON_ELECTRONIC)\
+            .add_group()
+        deadline = Deadline(
+            assignment_group=groupbuilder.group,
+            deadline=DateTimeBuilder.now().plus(days=10))
+        deadline.save(autocreate_delivery_if_nonelectronic=False)
+        self.assertEquals(deadline.deliveries.count(), 0)
+
+    def test_smart_create_electronic(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        group2builder = assignmentbuilder.add_group()
+        deadline_datetime = Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=10))
+        result = Deadline.objects.smart_create(
+            assignmentbuilder.assignment.assignmentgroups.all(),
+            deadline_datetime=deadline_datetime,
+            text='Hello world')
+        self.assertIsNone(result)
+
+        group1builder.reload_from_db()
+        self.assertEquals(group1builder.group.deadlines.count(), 1)
+        created_deadline = group1builder.group.deadlines.all()[0]
+        self.assertEquals(created_deadline.deadline, deadline_datetime)
+        self.assertEquals(created_deadline.text, 'Hello world')
+        self.assertEquals(group1builder.group.last_deadline, created_deadline)
+        self.assertEquals(group1builder.group.last_deadline.deliveries.count(), 0)
+
+        group2builder.reload_from_db()
+        self.assertEquals(group2builder.group.deadlines.all()[0].deadline, deadline_datetime)
+        self.assertEquals(group2builder.group.last_deadline, group2builder.group.deadlines.all()[0])
+
+    def test_smart_create_no_text(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        deadline_datetime = Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=10))
+        Deadline.objects.smart_create(
+            assignmentbuilder.assignment.assignmentgroups.all(),
+            deadline_datetime=deadline_datetime)
+        group1builder.reload_from_db()
+        self.assertEquals(group1builder.group.last_deadline.deadline, deadline_datetime)
+        self.assertEquals(group1builder.group.last_deadline.text, None)
+
+    def test_smart_create_newer_exists(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        group1builder.add_deadline_in_x_weeks(weeks=2)
+        self.assertEquals(group1builder.group.deadlines.count(), 1)
+        with self.assertRaises(NewerDeadlineExistsError):
+            Deadline.objects.smart_create(
+                assignmentbuilder.assignment.assignmentgroups.all(),
+                deadline_datetime=DateTimeBuilder.now().plus(days=1))
+        group1builder.reload_from_db()
+        self.assertEquals(group1builder.group.deadlines.count(), 1)
+
+    def test_smart_create_non_electronic(self):
+        assignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', delivery_types=deliverytypes.NON_ELECTRONIC).assignment
+        group1 = AssignmentGroup(parentnode=assignment)
+        group2 = AssignmentGroup(parentnode=assignment)
+        for group in group1, group2:
+            group.save(autocreate_first_deadline_for_nonelectronic=False)
+        deadline_datetime = Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=10))
+        result = Deadline.objects.smart_create(
+            assignment.assignmentgroups.all(),
+            deadline_datetime=deadline_datetime,
+            text='Hello world')
+        self.assertIsNone(result)
+        self.assertEquals(group1.deadlines.count(), 1)
+
+        group1 = AssignmentGroup.objects.get(id=group1.id) # Reload from db
+        created_deadline = group1.deadlines.all()[0]
+        self.assertEquals(created_deadline.deadline, deadline_datetime)
+        self.assertEquals(created_deadline.text, 'Hello world')
+        self.assertEquals(group1.last_deadline, created_deadline)
+        self.assertEquals(group1.last_deadline.deliveries.count(), 1)
+        self.assertEquals(group1.last_deadline.deliveries.all()[0], group1.last_delivery)
+        self.assertTrue(group1.last_delivery.successful)
+        self.assertEquals(group1.last_delivery.number, 1)
+
+        group2 = AssignmentGroup.objects.get(id=group2.id) # Reload from db
+        self.assertEquals(group2.deadlines.all()[0].deadline, deadline_datetime)
+        self.assertEquals(group2.last_deadline, group2.deadlines.all()[0])
+        self.assertEquals(group2.last_deadline.deliveries.count(), 1)
+        self.assertEquals(group2.last_deadline.deliveries.all()[0], group2.last_delivery)
+        self.assertTrue(group2.last_delivery.successful)
+        self.assertEquals(group2.last_delivery.number, 1)
+
+
+class TestDeadlineOld(TestCase, TestHelper):
+    """
+    WARNING: Old tests for Deadline using TestHelper. We should
+    NOT add new tests here, and the tests should be updated and
+    moved to TestDeadline if we update any of the tested 
+    methods, or need to add more tests.
+    """
     def setUp(self):
+        TestHelper.set_memory_deliverystore()
         self.goodFile = {"good.py": "print awesome"}
         self.okVerdict = {"grade": "C", "points": 85, "is_passing_grade": True}
-
-    def test_create_new_groupclose(self):
-        self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1')
-        group = self.inf1100_period1_assignment1_group1
-        group.is_open = False
-        group.save()
-        self.assertFalse(group.is_open)
-        deadline = group.deadlines.create(deadline=group.parentnode.parentnode.start_time + timedelta(0, 10))
-        self.assertTrue(group.is_open)
 
     def test_publish_feedbacks_directly(self):
         self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1:candidate(student1):examiner(examiner1).d1:ends(10)')
@@ -112,3 +328,13 @@ class TestDeadline(TestCase, TestHelper):
             self.assertEquals(delivery.deadline.deadline, deliverycopy.deadline.deadline)
             self.assertEquals(delivery.delivered_by, deliverycopy.delivered_by)
             self.assertEquals(delivery.alias_delivery, deliverycopy.alias_delivery)
+
+    def test_query_successful_deliveries(self):
+        self.add_to_path('uni:admin(uniadm);sub.p1:begins(-2).a1.g1:candidate(stud1).d1:ends(5)')
+        deadline = self.sub_p1_a1_g1_d1
+        delivery1 = self.add_delivery("sub.p1.a1.g1", self.goodFile)
+        delivery2 = self.add_delivery("sub.p1.a1.g1", self.goodFile)
+        delivery2.successful = False
+        delivery2.save()
+        self.assertEquals(deadline.query_successful_deliveries().count(), 1)
+        self.assertEquals(deadline.query_successful_deliveries()[0], delivery1)

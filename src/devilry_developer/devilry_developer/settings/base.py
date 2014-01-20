@@ -35,8 +35,6 @@ INSTALLED_APPS += [
     'devilry_sandbox',
 
     'devilry_developer',
-    'devilry_examiner',
-    'devilry_rest',
     'simple_rest',
 
     # Not apps, but here for the Django test system to discover them:
@@ -57,6 +55,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 EXTJS4_DEBUG = True
 STATIC_ROOT = 'static'
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 DEVILRY_ENABLE_MATHJAX = True
 
@@ -167,10 +166,12 @@ MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.apps.developertools.middlewa
 # Logging
 #######################################################################
 
-MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + [
-    'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware',
+if not 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:
+    MIDDLEWARE_CLASSES.append('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
+
+# MIDDLEWARE_CLASSES += [
     #'devilry.utils.profile.ProfilerMiddleware' # Enable profiling. Just add ?prof=yes to any url to see a profile report
-]
+# ]
 
 
 ##############################################################

@@ -1,0 +1,26 @@
+{% extends "devilry_gradingsystem/admin/reconfigurebase.django.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load url from future %}
+
+{% block heading %}
+    {% trans "Set the maximum possible number of points" %}
+{% endblock heading %}
+
+{% block subheading %}
+    {% include "devilry_gradingsystem/admin/currentprogress.django.html" %}
+{% endblock subheading %}
+
+
+{% block content %}
+    <div class="container">
+        <p>
+            {% blocktrans with plugintitle=pluginapi.title %}The result of grading with the selected grading system, &ldquo;{{ plugintitle }}&rdquo;, is a number between zero and a value you have to configure. Please configure the maximum possible number of points.{% endblocktrans %}
+        </p>
+
+        <form action="{% url 'devilry_gradingsystem_admin_setmaxpoints' assignment.id %}" role="form" method="post">
+            {% crispy form %}
+            {% include  "devilry_gradingsystem/admin/backandforward-bar.django.html" %}
+        </form>
+    </div>
+{% endblock content %}

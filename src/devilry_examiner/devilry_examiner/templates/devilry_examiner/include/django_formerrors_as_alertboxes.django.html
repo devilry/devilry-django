@@ -1,0 +1,10 @@
+{% load i18n %}
+
+{% for errorlist in form.errors.itervalues %}
+    {% for error in errorlist %}
+        <div class="alert alert-danger">
+            <strong>{% trans "Error" %}:</strong>
+            {{ error }}
+        </div>        
+    {% endfor %}
+{% endfor %}

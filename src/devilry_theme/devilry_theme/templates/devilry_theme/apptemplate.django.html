@@ -66,5 +66,10 @@
 
     {% block head-post %}{% endblock %}
 </head>
-<body class="{% block bodyclass%}{% endblock %}">{% block body %}{% endblock %}</body>
+<body class="{% block bodyclass%}{% endblock %}">
+    {% block header %}
+        {% include "devilry_header/header2_extjsinclude.django.html" %}
+    {% endblock header %}
+    {% block body %}{% endblock %}
+</body>
 </html>

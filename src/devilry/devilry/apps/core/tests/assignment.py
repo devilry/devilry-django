@@ -1,18 +1,102 @@
 from datetime import datetime, timedelta
+from mock import patch
 
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
-
 from django.db.models import Q
-from ..models import Period, Assignment, Candidate
+
+from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry_developer.testhelpers.corebuilder import NodeBuilder
+from devilry_developer.testhelpers.corebuilder import SubjectBuilder
+from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry.apps.core.models import Period
+from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import Candidate
+from devilry.apps.core.models import PointToGradeMap
+from devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
 
 
 
-class TestAssignment(TestCase, TestHelper):
+
+class TestAssignment(TestCase):
+
+    def test_points_is_passing_grade(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                passing_grade_min_points=1).assignment
+        self.assertTrue(assignment1.points_is_passing_grade(1))
+        self.assertFalse(assignment1.points_is_passing_grade(0))
+
+    def test_points_to_grade_passed_failed(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                points_to_grade_mapper='passed-failed').assignment
+        self.assertEquals(assignment1.points_to_grade(0), 'Failed')
+        self.assertEquals(assignment1.points_to_grade(1), 'Passed')
+
+    def test_points_to_grade_points(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                points_to_grade_mapper='raw-points',
+                max_points=10).assignment
+        self.assertEquals(assignment1.points_to_grade(0), '0/10')
+        self.assertEquals(assignment1.points_to_grade(1), '1/10')
+        self.assertEquals(assignment1.points_to_grade(10), '10/10')
+
+    def test_points_to_grade_custom_table(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                points_to_grade_mapper='custom-table',
+                max_points=10).assignment
+        pointtogrademap = PointToGradeMap.objects.create(
+            assignment=assignment1)
+        pointtogrademap.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=10,
+            grade='Ok'
+        )
+        pointtogrademap.clean()
+        pointtogrademap.save()
+        self.assertEquals(assignment1.points_to_grade(5), 'Ok')
+
+    def test_has_valid_grading_setup_valid_by_default(self):
+        assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1').assignment
+
+        # Mock the gradingsystempluginregistry
+        myregistry = GradingSystemPluginRegistry()
+        class MockApprovedPluginApi(GradingSystemPluginInterface):
+            id = 'devilry_gradingsystemplugin_approved'
+        myregistry.add(MockApprovedPluginApi)
+
+        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
+            self.assertTrue(assignment1.has_valid_grading_setup())
+
+    def test_set_max_points(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                points_to_grade_mapper='custom-table',
+                max_points=10)
+        pointtogrademap = PointToGradeMap.objects.create(
+            invalid=False,
+            assignment=assignmentbuilder.assignment)
+        assignmentbuilder.assignment.set_max_points(20)
+        assignmentbuilder.assignment.save()
+        assignmentbuilder.reload_from_db()
+        self.assertEquals(assignmentbuilder.assignment.max_points, 20)
+        self.assertTrue(assignmentbuilder.assignment.pointtogrademap.invalid)
+
+
+class TestAssignmentOld(TestCase, TestHelper):
+    """
+    Do not add new tests to this testcase, use TestAssignment and
+    corebuilder instead.
+    """
 
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
@@ -230,37 +314,91 @@ class TestAssignmentCanDelete(TestCase, TestHelper):
         self.assertFalse(assignment.can_delete(self.uniadm))
 
 
-class TestExaminerAssignmentManager(TestCase):
-    def setUp(self):
-        self.testhelper = TestHelper()
+class TestAssignmentManager(TestCase):
 
-    def test_where_is_examiner(self):
-        self.testhelper.add(nodes='uni',
-                subjects=['sub'],
-                periods=['period1'], # 2 months ago
-                assignments=['week1'], # 2 months + 1day ago
-                assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
-        self.testhelper.add_to_path('uni;sub.period1.week1.g1:candidate(student1):examiner(otherexaminer)')
-        qry = Assignment.examiner_objects.where_is_examiner(self.testhelper.examiner1)
+    def test_filter_admin_has_access_directly_on_assignment(self):
+        admin1 = UserBuilder('admin1').user
+        periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
+        assignment1 = periodbuilder.add_assignment('assignment1').add_admins(admin1).assignment
+        periodbuilder.add_assignment('assignment2')
+        qry = Assignment.objects.filter_admin_has_access(admin1)
         self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], self.testhelper.sub_period1_week1)
+        self.assertEquals(qry[0], assignment1)
 
-    def test_active(self):
-        self.testhelper.add(nodes='uni',
-                subjects=['sub'],
-                periods=[
-                    'period0:begins(-12):ends(6)', # 12-6 months ago (inactive)
-                    'period1:begins(-2):ends(6)',  # -2 to +4 months (active)
-                    'period2:begins(12):ends(6)',  # In 12-18 months (inactive)
-                    ],
-                assignments=['week1:pub(1)'],
-                assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
-        self.testhelper.add_to_path('uni;sub.period1.week2.g1:candidate(student1):examiner(otherexaminer)')
-
-        qry = Assignment.examiner_objects.active(self.testhelper.examiner1)
+    def test_filter_admin_has_access_recursive_from_subject(self):
+        admin1 = UserBuilder('admin1').user
+        nodebuilder = NodeBuilder('docku')
+        assignment1 = nodebuilder.add_subject('subject1')\
+            .add_admins(admin1)\
+            .add_6month_active_period()\
+            .add_assignment('assignment1').assignment
+        nodebuilder.add_subject('subject2')\
+            .add_6month_active_period()\
+            .add_assignment('assignment2')
+        qry = Assignment.objects.filter_admin_has_access(admin1)
         self.assertEquals(qry.count(), 1)
-        self.assertEquals(qry[0], self.testhelper.sub_period1_week1)
+        self.assertEquals(qry[0], assignment1)
+
+    def test_filter_admin_has_access_recursive_from_node(self):
+        admin1 = UserBuilder('admin1').user
+        nodebuilder = NodeBuilder('docku')
+        assignment1 = nodebuilder\
+            .add_childnode('science')\
+                .add_admins(admin1)\
+            .add_childnode('inf')\
+            .add_subject('subject1')\
+            .add_6month_active_period()\
+            .add_assignment('assignment1').assignment
+        nodebuilder\
+            .add_subject('subject2')\
+            .add_6month_active_period()\
+            .add_assignment('assignment2')
+        qry = Assignment.objects.filter_admin_has_access(admin1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], assignment1)
+
+    def test_filter_is_examiner(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1builder = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
+        group1builder = week1builder.add_group().add_examiners(examiner1)
+
+        # Add another group to make sure we do not get false positives
+        week1builder.add_group().add_examiners(UserBuilder('examiner2').user)
+
+        qry = Assignment.objects.filter_is_examiner(examiner1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], week1builder.assignment)
+
+    def test_filter_is_active(self):
+        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
+        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
+
+        # Add inactive groups to make sure we get no false positives
+        duck1010builder.add_6month_lastyear_period().add_assignment('week1')
+        duck1010builder.add_6month_nextyear_period().add_assignment('week1')
+
+        qry = Assignment.objects.filter_is_active()
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], activeassignmentbuilder.assignment)
+
+    def test_filter_examiner_has_access(self):
+        examiner1 = UserBuilder('examiner1').user
+        otherexaminer = UserBuilder('otherexaminer').user
+        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
+        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
+        currentgroupbuilder = activeassignmentbuilder.add_group().add_examiners(examiner1)
+
+        # Add inactive groups and a group with another examiner to make sure we get no false positives
+        duck1010builder.add_6month_lastyear_period().add_assignment('week1')\
+            .add_group().add_examiners(examiner1)
+        duck1010builder.add_6month_nextyear_period().add_assignment('week1')\
+            .add_group().add_examiners(examiner1)
+        activeassignmentbuilder.add_group().add_examiners(otherexaminer)
+
+        qry = Assignment.objects.filter_examiner_has_access(examiner1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], activeassignmentbuilder.assignment)
 
         # make sure we are not getting false positives
-        self.assertEquals(Assignment.examiner_objects.where_is_examiner(self.testhelper.examiner1).count(), 3)
-        self.assertEquals(Assignment.examiner_objects.where_is_examiner(self.testhelper.otherexaminer).count(), 1)
+        self.assertEquals(Assignment.objects.filter_is_examiner(examiner1).count(), 3)
+        self.assertEquals(Assignment.objects.filter_is_examiner(otherexaminer).count(), 1)

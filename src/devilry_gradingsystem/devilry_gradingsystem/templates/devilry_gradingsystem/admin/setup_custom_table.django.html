@@ -1,0 +1,52 @@
+{% extends "devilry_gradingsystem/admin/reconfigurebase.django.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load url from future %}
+
+{% block heading %}
+    {% trans "Map points to grade" %}
+{% endblock heading %}
+
+{% block subheading %}
+    {% include "devilry_gradingsystem/admin/currentprogress.django.html" %}
+{% endblock subheading %}
+
+
+{% block content %}
+    <div class="container">
+        <p>{% trans "Setup how you wish to map points to grade. Specify the grade in the first column, and the minimum number of points required to get that grade in the second column. The first row must have the value 0 in the second column." %}</p>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8">
+                {% for errormessage in validationerrors %}
+                    <div class="alert alert-danger">
+                        {{ errormessage }}
+                    </div>
+                {% endfor %}
+                <form action='{% url "devilry_gradingsystem_admin_setup_custom_table" assignmentid=assignment.id %}' method="POST">
+                    {% crispy formset formsethelper %}
+                    <button type="submit" name="submit_add_rows" class="btn btn-default btn-sm">
+                        <i class="fa fa-plus"></i>
+                        {% trans "Add more rows" %}
+                    </button>
+                    {% include  "devilry_gradingsystem/admin/backandforward-bar.django.html" %}
+                </form>
+            </div>
+
+            <div class="col-sm-4">
+                <br class="visible-xs">
+                <p><strong>{% trans "Example" %}:</strong></p>
+                <table class="table table-bordered">
+                    <tr><td>F</td><td>0</td></tr>
+                    <tr><td>E</td><td>20</td></tr>
+                    <tr><td>D</td><td>40</td></tr>
+                    <tr><td>C</td><td>60</td></tr>
+                    <tr><td>B</td><td>85</td></tr>
+                    <tr><td>A</td><td>92</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

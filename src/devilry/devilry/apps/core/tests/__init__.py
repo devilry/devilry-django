@@ -3,6 +3,7 @@ from .node import *
 from .subject import *
 from .period import *
 from .assignment import *
+from .pointrange_to_grade import *
 from .assignment_group import *
 from .candidate import *
 from .delivery import *

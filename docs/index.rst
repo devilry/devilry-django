@@ -31,7 +31,8 @@ Essential information for new developers
 * :ref:`sourceorganized`
 * :ref:`buildout`
 * :ref:`testsuite`
-* :ref:`testhelper`
+* :doc:`devilry_developer.teshelpers.corebuilder`
+* :doc:`mock`
 * :ref:`javascript`
 * More info available on the `Developer wiki page <https://github.com/devilry/devilry-django/wiki/Developer>`_.
 
@@ -46,7 +47,7 @@ Extending Devilry
 ----------------------------------------------------------------------
 
 * :doc:`extend_devilry`
-* **Plugins:** :ref:`plugins`, :ref:`Overview <apps.gradeeditors>`,
+* **Plugins:** :ref:`plugins`, :doc:`Grading system plugins <devilry_gradingsystem>`,
   :doc:`Qualifies for exam <devilry_qualifiesforexam>`.
 * **Apps**: Read the `Django docs <https://www.djangoproject.com/>`_.
 
@@ -91,6 +92,7 @@ Table of contents
     sourceorganized
     buildout
     testsuite
+    devilry_developer.teshelpers.corebuilder
     testhelper
     extend_devilry
     create_app

@@ -12,7 +12,7 @@ Ext.application({
         'Ext.layout.container.Column',
         'Ext.form.field.ComboBox',
         'Ext.layout.container.Border',
-        'devilry_header.Header',
+        'devilry_header.Header2',
         'devilry_header.Breadcrumbs'
     ],
 
@@ -28,7 +28,7 @@ Ext.application({
             }]
         });
 
-        this.headercontainer = Ext.widget('devilryheader', {
+        this.headercontainer = Ext.widget('devilryheader2', {
             // cls: 'devilry_subtlebg',
             navclass: 'subjectadmin',
             breadcrumbs: this.breadcrumbs,

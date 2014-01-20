@@ -10,8 +10,59 @@ from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, Node
 import deliverytypes
 
 
-# TODO: Constraint: Can only be delivered by a person in the assignment group?
-#                   Or maybe an administrator?
+
+class DeliveryQuerySet(models.query.QuerySet):
+    """
+    Returns a queryset with all Deliveries where the given ``user`` is examiner.
+
+    WARNING: You should normally not use this directly because it gives the
+    examiner information from expired periods (which in most cases are not necessary
+    to get). Use :meth:`.active` instead.
+    """
+    def filter_is_examiner(self, user):
+        return self.filter(deadline__assignment_group__examiners__user=user).distinct()
+
+    def filter_is_active(self):
+        now = datetime.now()
+        return self.filter(
+            deadline__assignment_group__parentnode__publishing_time__lt=now,
+            deadline__assignment_group__parentnode__parentnode__start_time__lt=now,
+            deadline__assignment_group__parentnode__parentnode__end_time__gt=now).distinct()
+
+    def filter_examiner_has_access(self, user):
+        return self.filter_is_active().filter_is_examiner(user)
+
+
+class DeliveryManager(models.Manager):
+    def get_queryset(self):
+        return DeliveryQuerySet(self.model, using=self._db)
+
+    def filter_is_examiner(self, user):
+        """
+        Returns a queryset with all Deliveries where the given ``user`` is examiner.
+
+        WARNING: You should normally not use this directly because it gives the
+        examiner information from expired periods (which they are not supposed
+        to get). Use :meth:`.active` instead.
+        """
+        return self.get_queryset().filter_is_examiner(user)
+
+    def filter_is_active(self):
+        """
+        Returns a queryset with all Deliveries on active Assignments.
+        """
+        return self.get_queryset().filter_is_active()
+
+    def filter_examiner_has_access(self, user):
+        """
+        Returns a queryset with all Deliveries on active Assignments
+        where the given ``user`` is examiner.
+
+        NOTE: This returns all groups that the given ``user`` has examiner-rights for.
+        """
+        return self.get_queryset().filter_examiner_has_access(user)
+
+
 class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
@@ -62,9 +113,22 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     .. attribute:: copy_of
 
         Link to a delivery that this delivery is a copy of. This is set by :meth:`.copy`.
+
+    .. attribute:: last_feedback
+
+       The last `StaticFeedback`_ on this delivery. This is updated each time a feedback is added.
+
+    .. attribute:: copy_of
+
+        If this delivery is a copy of another delivery, this ForeignKey points to that other delivery.
+
+    .. attribute:: copies
+
+        The reverse of ``copy_of`` - a queryset that returns all copies of this delivery.
     """
     #DELIVERY_NOT_CORRECTED = 0
     #DELIVERY_CORRECTED = 1
+    objects = DeliveryManager()
 
     delivery_type = models.PositiveIntegerField(default=deliverytypes.ELECTRONIC,
                                                 verbose_name = "Type of delivery",
@@ -93,6 +157,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                 related_name='copies',
                                 on_delete=models.SET_NULL,
                                 help_text='Link to a delivery that this delivery is a copy of. This is set by the copy-method.')
+    last_feedback = models.OneToOneField("StaticFeedback", blank=True, null=True, related_name='latest_feedback_for_delivery')
 
     def _delivered_too_late(self):
         """ Compares the deadline and time of delivery.
@@ -139,6 +204,33 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     def q_is_examiner(cls, user_obj):
         return Q(successful=True) & Q(deadline__assignment_group__examiners__user=user_obj)
 
+    @property
+    def is_last_delivery(self):
+        """
+        Returns ``True`` if this is the last delivery for this AssignmentGroup.
+        """
+        from .assignment_group import AssignmentGroup
+        try:
+            last_delivery = self.last_delivery_by_group
+        except AssignmentGroup.DoesNotExist:
+            return False
+        else:
+            return True
+
+    @property
+    def assignment_group(self):
+        """
+        Shortcut for ``self.deadline.assignment_group.assignment``.
+        """
+        return self.deadline.assignment_group
+
+    @property
+    def assignment(self):
+        """
+        Shortcut for ``self.deadline.assignment_group.assignment``.
+        """
+        return self.assignment_group.assignment
+
     def add_file(self, filename, iterable_data):
         """ Add a file to the delivery.
 
@@ -182,19 +274,33 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             Automatically set ``time_of_delivery`` to *now*? Defaults to ``True``.
         :param autoset_number:
             Automatically number the delivery if it is successful? Defaults to ``True``.
+        :param autoset_last_delivery_on_group:
+            Automatically set the last_delivery attribute of the group
+            if the ``id`` is ``None`` and ``successful`` is ``True``?
+            Defaults to ``True``.
         """
+        autoset_last_delivery_on_group = kwargs.pop('autoset_last_delivery_on_group', True)
         autoset_time_of_delivery = kwargs.pop('autoset_time_of_delivery', True)
+        autoset_number = kwargs.pop('autoset_number', True)
+
         if autoset_time_of_delivery:
             # NOTE: We remove timezoneinfo and microseconds to make the timestamp more portable, and easier to compare.
             now = datetime.now().replace(microsecond=0, tzinfo=None)
             self.time_of_delivery = now
-        autoset_number = kwargs.pop('autoset_number', True)
         if autoset_number:
             if self.successful:
                 self._set_number()
             else:
                 self.number = 0 # NOTE: Number is 0 until the delivery is successful
+
+        is_new = self.id is None
         super(Delivery, self).save(*args, **kwargs)
+
+        if autoset_last_delivery_on_group and is_new and self.successful:
+            group = self.assignment_group
+            group.last_delivery = self
+            group.save(update_delivery_status=False)
+
 
     def __unicode__(self):
         return (u'Delivery(id={id}, number={number}, group={group}, '
@@ -209,10 +315,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         feedbacks into ``newdeadline``. Sets the ``copy_of`` attribute of the
         created delivery.
 
-        .. note:: Always run this is a transaction.
+        .. note:: Always run this in a transaction.
 
         .. warning::
-            This does not autoset the latest feedback as active on the group.
+            This does not autoset the latest feedback as ``feedback`` or
+            the ``last_delivery`` on the group.
             You need to handle that yourself after the copy.
 
         :return: The newly created, cleaned and saved delivery.
@@ -224,12 +331,19 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                 time_of_delivery=self.time_of_delivery,
                                 delivered_by=self.delivered_by,
                                 alias_delivery=self.alias_delivery,
+                                last_feedback = None,
                                 copy_of=self)
+        def save_deliverycopy():
+            deliverycopy.save(autoset_time_of_delivery=False,
+                              autoset_number=False,
+                              autoset_last_delivery_on_group=False)
         deliverycopy.full_clean()
-        deliverycopy.save(autoset_time_of_delivery=False,
-                          autoset_number=False)
+        save_deliverycopy()
         for filemeta in self.filemetas.all():
             filemeta.copy(deliverycopy)
-        for staticfeedback in self.feedbacks.all():
-            staticfeedback.copy(deliverycopy)
+        for index, staticfeedback in enumerate(self.feedbacks.order_by('-save_timestamp')):
+            staticfeedbackcopy = staticfeedback.copy(deliverycopy)
+            if index == 0:
+                deliverycopy.last_feedback = staticfeedbackcopy
+                save_deliverycopy()
         return deliverycopy

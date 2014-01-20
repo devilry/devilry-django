@@ -1,0 +1,97 @@
+{% extends "devilry_examiner/base.django.html" %}
+{% load url from future %}
+{% load i18n %}
+{% load devilry_examiner_tags %}
+
+{# NOTE: The title is in a bit strange order because we want the most important information to visible in the tab (the name of the group, and the assignment). #}
+{% block title %}
+    {{ group.short_displayname }} - {{ group.assignment.short_name }} - {{ group.assignment.parentnode.get_path }}
+{% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <div class="page-header page-header-with-subheader">
+            {% include "devilry_examiner/include/navigate_todolist.django.html" %}
+            <h1>
+                {{ group.assignment.long_name }} &mdash; {{ group.long_displayname }}
+            </h1>
+            <p class="subheader">
+                {{ group.subject.long_name }}, {{ group.period.long_name }}
+            </p>
+        </div>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
+            <li><a href="{% url 'devilry_examiner_dashboard' %}">{% trans "Examiner" %}</a></li>
+            <li><a href="{% url 'devilry_examiner_allgroupsoverview' group.assignment.id %}">{{ group.assignment.get_path }}</a></li>
+            <li class="active">{{ group.short_displayname }}</li>
+        </ol>
+
+        <div class="alert alert-{{ group|group_delivery_status_to_bootstrapclass }}">
+            <strong>{% trans "Status" %}: {{ group.get_status|formatted_status }}</strong>
+            {% if group.delivery_status == 'corrected' %}
+                <p><small>
+                    {% trans "Grade" %}: {{ group.feedback.grade }}
+                    ({{ group.feedback.is_passing_grade|format_is_passing_grade }})
+                </small></p>
+            {% endif %}
+        </div>
+
+        {% include "devilry_examiner/include/give_another_chance_question.django.html" with group=group %}
+    </div>
+
+    {% for deadline in group.deadlines.all %}
+        <div class="container deadlinebox">
+            <div class="deadline-header">
+                <h2>
+                    <span class="deadline-header-prefix">
+                        {% blocktrans with number=forloop.revcounter %}Deadline {{ number }}{% endblocktrans %}
+                    </span>
+                    <small class="deadline-datetime">{{ deadline.deadline|date:"DATETIME_FORMAT" }}</small>
+                </h2>
+                {% if deadline.text %}
+                    <p class="text-muted deadline-text text-pre-wrap">{{ deadline.text }}</p>
+                {% endif %}
+            </div>
+            <table class="table table-striped infolistingtable">
+                {% for delivery in deadline.query_successful_deliveries %}
+                    <tr class="delivery delivery-{{ delivery.id }}">
+                        <td class="titled-cell">
+                            <h3>
+                                <a href="{% url 'devilry_examiner_singledeliveryview' delivery.id %}">
+                                    {% blocktrans with number=delivery.number %}Delivery #{{ number }}{% endblocktrans %}
+                                </a>
+                            </h3>
+                            {% if delivery.last_feedback %}
+                                <p class="text-{{ delivery.last_feedback|feedback_to_bootstrapclass }} last-feedback">
+                                    <span class="feedback-grade">{{ delivery.last_feedback.grade }}</span>
+                                    (<span class="feedback-is_passing_grade">{{ delivery.last_feedback.is_passing_grade|format_is_passing_grade }}</span>)
+                                </p>
+                            {% else %}
+                                <p class="text-muted no-feedback-message">{% trans "No feedback" %}</p>
+                            {% endif %}
+                            {% if delivery.after_deadline %}
+                                <p class="after_deadline_message visible-xs"><strong class="text-danger">
+                                    {% blocktrans with timeafter=delivery.deadline.deadline|timesince:delivery.time_of_delivery %}
+                                        {{ timeafter }} after the deadline
+                                    {% endblocktrans %}
+                                </strong></p>
+                            {% endif %}
+                        </td>
+                        <td class="text-right hidden-xs">
+                            <p class="time_of_delivery text-muted">{{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}</p>
+                            {% if delivery.after_deadline %}
+                                <p class="after_deadline_message"><strong class="text-danger">
+                                    {% blocktrans with timeafter=delivery.deadline.deadline|timesince:delivery.time_of_delivery %}
+                                        {{ timeafter }} after the deadline
+                                    {% endblocktrans %}
+                                </strong></p>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <p class="text-warning no-deliveries-message">{% trans "No deliveries" %}</p>
+                {% endfor %}
+            </table>
+        </div>
+    {% endfor %}
+{% endblock %}

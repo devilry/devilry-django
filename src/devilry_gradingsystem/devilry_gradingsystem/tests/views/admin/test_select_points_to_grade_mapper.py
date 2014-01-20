@@ -1,0 +1,109 @@
+from mock import patch
+from django.core.urlresolvers import reverse
+from django.test import TestCase
+
+from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry_developer.testhelpers.soupselect import cssGet
+from devilry_developer.testhelpers.soupselect import cssFind
+from devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+
+from .base import AdminViewTestMixin
+from .base import MockApprovedPluginApi
+from .base import MockPointsPluginApi
+
+
+class TestSelectPointsToGradeMapperView(TestCase, AdminViewTestMixin):
+
+    def setUp(self):
+        self.admin1 = UserBuilder('admin1').user
+        self.assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_admins(self.admin1)
+        self.url = reverse('devilry_gradingsystem_admin_select_points_to_grade_mapper', kwargs={
+            'assignmentid': self.assignmentbuilder.assignment.id,
+        })
+
+    def test_invalid_pluginid_404(self):
+        myregistry = GradingSystemPluginRegistry()
+        self.assignmentbuilder.update(grading_system_plugin_id=1001)
+        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
+            response = self.get_as(self.admin1)
+            self.assertEquals(response.status_code, 404)
+
+    def test_render(self):
+        myregistry = GradingSystemPluginRegistry()
+        myregistry.add(MockPointsPluginApi)
+        self.assignmentbuilder.update(grading_system_plugin_id=MockPointsPluginApi.id)
+        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
+            response = self.get_as(self.admin1)
+            self.assertEquals(response.status_code, 200)
+            html = response.content
+            self.assertEquals(cssGet(html, '.page-header h1').text.strip(),
+                'How are results presented to the student?')
+            self.assertEquals(len(cssFind(html, '.devilry_gradingsystem_verbose_selectbox')), 3)
+
+            self.assertEquals(cssGet(html, '.passed-failed_points_to_grade_mapper_box h2').text.strip(),
+                'As passed or failed')
+            self.assertEquals(cssGet(html, '.passed-failed_points_to_grade_mapper_box a.btn')['href'],
+                '?points_to_grade_mapper=passed-failed')
+
+            self.assertEquals(cssGet(html, '.raw-points_points_to_grade_mapper_box h2').text.strip(),
+                'As points')
+            self.assertEquals(cssGet(html, '.raw-points_points_to_grade_mapper_box a.btn')['href'],
+                '?points_to_grade_mapper=raw-points')
+
+            self.assertEquals(cssGet(html, '.custom-table_points_to_grade_mapper_box h2').text.strip(),
+                'As a text looked up in a custom table')
+            self.assertEquals(cssGet(html, '.custom-table_points_to_grade_mapper_box a.btn')['href'],
+                '?points_to_grade_mapper=custom-table')
+
+    def test_next_page_select_passing_grade_min_points(self):
+        myregistry = GradingSystemPluginRegistry()
+        myregistry.add(MockPointsPluginApi)
+        self.assignmentbuilder.update(grading_system_plugin_id=MockPointsPluginApi.id)
+        self.assertFalse(MockPointsPluginApi.sets_passing_grade_min_points_automatically)
+        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
+            response = self.get_as(self.admin1, {
+                'points_to_grade_mapper': 'passed-failed'
+            })
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(response["Location"].endswith(
+                reverse('devilry_gradingsystem_admin_setpassing_grade_min_points', kwargs={
+                    'assignmentid': self.assignmentbuilder.assignment.id,
+                })))
+            self.assignmentbuilder.reload_from_db()
+            self.assertEquals(self.assignmentbuilder.assignment.points_to_grade_mapper, 'passed-failed')
+
+    def test_next_page_custom_table(self):
+        myregistry = GradingSystemPluginRegistry()
+        myregistry.add(MockPointsPluginApi)
+        self.assignmentbuilder.update(grading_system_plugin_id=MockPointsPluginApi.id)
+        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
+            response = self.get_as(self.admin1, {
+                'points_to_grade_mapper': 'custom-table'
+            })
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(response["Location"].endswith(
+                reverse('devilry_gradingsystem_admin_setup_custom_table', kwargs={
+                    'assignmentid': self.assignmentbuilder.assignment.id,
+                })))
+            self.assignmentbuilder.reload_from_db()
+            self.assertEquals(self.assignmentbuilder.assignment.points_to_grade_mapper, 'custom-table')
+
+    def test_next_page_finished(self):
+        myregistry = GradingSystemPluginRegistry()
+        myregistry.add(MockApprovedPluginApi)
+        self.assignmentbuilder.update(grading_system_plugin_id=MockApprovedPluginApi.id)
+        self.assertTrue(MockApprovedPluginApi.sets_passing_grade_min_points_automatically)
+        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
+            response = self.get_as(self.admin1, {
+                'points_to_grade_mapper': 'passed-failed'
+            })
+            self.assertEquals(response.status_code, 302)
+            self.assertTrue(response["Location"].endswith(
+                reverse('devilry_gradingsystem_admin_summary', kwargs={
+                    'assignmentid': self.assignmentbuilder.assignment.id,
+                })))
+            self.assignmentbuilder.reload_from_db()
+            self.assertEquals(self.assignmentbuilder.assignment.points_to_grade_mapper, 'passed-failed')

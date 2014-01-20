@@ -1,0 +1,25 @@
+{% extends "devilry_gradingsystem/admin/reconfigurebase.django.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load url from future %}
+
+{% block heading %}
+    {% if assignment.points_to_grade_mapper == 'custom-table' %}
+        {% trans "Select the grade required to pass" %}
+    {% else %}
+        {% trans "Set the minumum number of points required to pass" %}
+    {% endif %}
+{% endblock heading %}
+
+{% block subheading %}
+    {% include "devilry_gradingsystem/admin/currentprogress.django.html" %}
+{% endblock subheading %}
+
+{% block content %}
+    <div class="container">
+        <form action="{% url 'devilry_gradingsystem_admin_setpassing_grade_min_points' assignment.id %}" role="form" method="post">
+            {% crispy form %}
+            {% include  "devilry_gradingsystem/admin/backandforward-bar.django.html" %}
+        </form>
+    </div>
+{% endblock content %}

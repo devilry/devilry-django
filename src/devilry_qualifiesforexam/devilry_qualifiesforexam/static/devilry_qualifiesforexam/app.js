@@ -19,8 +19,9 @@ Ext.application({
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',
-        'devilry_header.Header',
+        'devilry_header.Header2',
         'devilry_qualifiesforexam.utils.Breadcrumbs',
+        'devilry_authenticateduserinfo.UserInfo',
 //        'devilry_subjectadmin.utils.UrlLookup',
         'devilry_extjsextras.FloatingAlertmessageList'
     ],
@@ -37,7 +38,7 @@ Ext.application({
         selector: 'viewport floatingalertmessagelist#appAlertmessagelist'
     }, {
         ref: 'header',
-        selector: 'viewport devilryheader'
+        selector: 'viewport devilryheader2'
     }],
 
     launch: function() {
@@ -51,7 +52,6 @@ Ext.application({
         });
         this.viewport.setLoading();
         devilry_authenticateduserinfo.UserInfo.load(this._onUserInfoLoaded, this);
-        
     },
 
     _onUserInfoLoaded: function(userInfoRecord) {
@@ -63,7 +63,7 @@ Ext.application({
         });
         this.viewport.removeAll();
         this.viewport.add([{
-            xtype: 'devilryheader',
+            xtype: 'devilryheader2',
             region: 'north',
             navclass: 'subjectadmin',
             breadcrumbs: this.breadcrumbs

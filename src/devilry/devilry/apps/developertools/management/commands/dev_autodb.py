@@ -155,7 +155,13 @@ class Command(BaseCommand):
                                                  rendered_view=rendered_view_anothertry)
                     self.testhelper.add_to_path(path + '.d2:ends(14)')
                 if since_pubishingtime.days >= 13:
-                    self.testhelper.add_delivery(path, {'stillbad.py': ['print ', 'bah']}, time_of_delivery=-1)
+                    self.testhelper.add_delivery(path,
+                        {
+                            u'stillbad.py': ['print ', 'bah'],
+                            u'notes.txt': ['Some notes here.'],
+                            u'Noen ganger er det \u00C5lr\u00E6it.txt': ['Testfile for long filename with unicode characters in the filename.']
+                        },
+                        time_of_delivery=-1)
                     self.testhelper.add_feedback(path, verdict=failedVerdict,
                                                  rendered_view=rendered_view_failed)
 
@@ -475,8 +481,10 @@ class Command(BaseCommand):
         verbosity = get_verbosity(options)
         self.no_groups = options['no_groups']
         setup_logging(verbosity)
-        logging.info('Running manage.py flush')
-        management.call_command('flush', verbosity=0, interactive=False)
+
+        # NOTE: Not running flush - it messes up migrations
+        #logging.info('Running manage.py flush')
+        #management.call_command('flush', verbosity=0, interactive=False)
 
         self.testhelper = TestHelper()
 #        from django.db import transaction

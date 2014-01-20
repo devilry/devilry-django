@@ -122,13 +122,30 @@ Ext.define('devilry_header.Breadcrumbs', {
     },
 
     draw: function() {
+        var header2el = Ext.get('devilry_header2');
+        var header2Component = null;
+        if(!Ext.isEmpty(header2el)) {
+            var components = Ext.ComponentQuery.query('devilryheader2');
+            if(components.length == 1) {
+                header2Component = components[0];
+            }
+        } else {
+            console.warn('Could not find #devilry_header2 when drawing the breadcrumb.')
+        }
+
         if(this.breadcrumbs.length === 0) {
             this.hide();
+            if(header2Component != null) {
+                header2Component.resizeHeaderForNoBreadcrumbs();
+            }
         } else {
             this.show();
             this.update({
                 breadcrumbs: this.breadcrumbs
             });
+            if(header2Component != null) {
+                header2Component.resizeHeaderForBreadcrumbs();
+            }
         }
     },
 

@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db.models import Q
 from django.db import models
 from django.db import transaction
+from django.utils.translation import ugettext_lazy as _
 
 from node import Node
 from abstract_is_admin import AbstractIsAdmin
@@ -17,17 +18,95 @@ class GroupPopValueError(ValueError):
     Base class for exceptions raised by meth:`AssignmentGroup.pop_candidate`.
     """
 
+
 class GroupPopToFewCandiatesError(GroupPopValueError):
     """
     Raised when meth:`AssignmentGroup.pop_candidate` is called on a group with
     1 or less candidates.
     """
 
+
 class GroupPopNotCandiateError(GroupPopValueError):
     """
     Raised when meth:`AssignmentGroup.pop_candidate` is called with a candidate
     that is not on the group.
     """
+
+
+class AssignmentGroupQuerySet(models.query.QuerySet):
+    """
+    Returns a queryset with all AssignmentGroups where the given ``user`` is examiner.
+
+    WARNING: You should normally not use this directly because it gives the
+    examiner information from expired periods (which in most cases are not necessary
+    to get). Use :meth:`.active` instead.
+    """
+    def filter_is_examiner(self, user):
+        return self.filter(examiners__user=user).distinct()
+
+    def filter_is_active(self):
+        now = datetime.now()
+        return self.filter(parentnode__publishing_time__lt=now,
+                           parentnode__parentnode__start_time__lt=now,
+                           parentnode__parentnode__end_time__gt=now).distinct()
+
+    def filter_examiner_has_access(self, user):
+        return self.filter_is_active().filter_is_examiner(user)
+
+    def filter_by_status(self, status):
+        return self.filter(delivery_status=status)
+
+    def filter_waiting_for_feedback(self):
+        now = datetime.now()
+        return self.filter(
+            Q(parentnode__delivery_types=deliverytypes.NON_ELECTRONIC, delivery_status="waiting-for-something") |
+            Q(parentnode__delivery_types=deliverytypes.ELECTRONIC, delivery_status="waiting-for-something", last_deadline__deadline__lte=now))
+
+    def filter_waiting_for_deliveries(self):
+        now = datetime.now()
+        return self.filter(
+            parentnode__delivery_types=deliverytypes.ELECTRONIC,
+            delivery_status="waiting-for-something",
+            last_deadline__deadline__gt=now)
+
+
+class AssignmentGroupManager(models.Manager):
+    def get_queryset(self):
+        return AssignmentGroupQuerySet(self.model, using=self._db)
+
+    def filter_is_examiner(self, user):
+        """
+        Returns a queryset with all AssignmentGroups where the given ``user`` is examiner.
+
+        WARNING: You should normally not use this directly because it gives the
+        examiner information from expired periods (which they are not supposed
+        to get). Use :meth:`.active` instead.
+        """
+        return self.get_queryset().filter_is_examiner(user)
+
+    def filter_is_active(self):
+        """
+        Returns a queryset with all AssignmentGroups on active Assignments.
+        """
+        return self.get_queryset().filter_is_active()
+
+    def filter_examiner_has_access(self, user):
+        """
+        Returns a queryset with all AssignmentGroups on active Assignments
+        where the given ``user`` is examiner.
+
+        NOTE: This returns all groups that the given ``user`` has examiner-rights for.
+        """
+        return self.get_queryset().filter_examiner_has_access(user)
+
+    def filter_by_status(self, status):
+        return self.get_queryset().filter_by_status(status)
+
+    def filter_waiting_for_feedback(self):
+        return self.get_queryset().filter_waiting_for_feedback()
+
+    def filter_waiting_for_deliveries(self):
+        return self.get_queryset().filter_waiting_for_deliveries()
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
@@ -73,10 +152,30 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
        The last `StaticFeedback`_ (by save timestamp) on this assignmentgroup.
 
+    .. attribute:: last_delivery
+
+       The last :class:`devilry.apps.core.models.Delivery` on this assignmentgroup.
+
+    .. attribute:: last_deadline
+
+       The last :class:`devilry.apps.core.models.Deadline` for this assignmentgroup.
+
     .. attribute:: etag
 
        A DateTimeField containing the etag for this object.
+
+    .. attribute:: delivery_status
+
+       A CharField containing the status of the group.
+       Valid status values:
+
+           * "no-deadlines"
+           * "corrected"
+           * "closed-without-feedback"
+           * "waiting-for-something"
     """
+
+    objects = AssignmentGroupManager()
 
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(max_length=30, blank=True, null=True,
@@ -85,16 +184,42 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     is_open = models.BooleanField(blank=True, default=True,
             help_text = 'If this is checked, the group can add deliveries.')
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
+    last_delivery = models.OneToOneField("Delivery", blank=True, null=True,
+        related_name='last_delivery_by_group')
+    last_deadline = models.OneToOneField("Deadline", blank=True, null=True,
+        related_name='last_deadline_for_group')
     etag = models.DateTimeField(auto_now_add=True)
+    delivery_status = models.CharField(max_length=30, blank=True, null=True,
+        help_text='The delivery_status of a group',
+        choices=(
+            ("no-deadlines", _("No deadlines")),
+            ("corrected", _("Corrected")),
+            ("closed-without-feedback", _("Closed without feedback")),
+            ("waiting-for-something", _("Waiting for something")),
+        ))
 
     class Meta:
         app_label = 'core'
         ordering = ['id']
 
     def save(self, *args, **kwargs):
+        """
+        :param update_delivery_status:
+            Update the ``delivery_status``? This is a somewhat expensive
+            operation, so we provide the option to avoid it if needed.
+            Defaults to ``True``.
+        :param autocreate_first_deadline_for_nonelectronic:
+            Autocreate the first deadline if non-electronic assignment?
+            Defaults to ``True``.
+        """
+        autocreate_first_deadline_for_nonelectronic = kwargs.pop('autocreate_first_deadline_for_nonelectronic', True)
         create_dummy_deadline = False
-        if self.id == None and self.parentnode.delivery_types == deliverytypes.NON_ELECTRONIC:
+        if autocreate_first_deadline_for_nonelectronic \
+                and self.id is None \
+                and self.parentnode.delivery_types == deliverytypes.NON_ELECTRONIC:
             create_dummy_deadline = True
+        if kwargs.pop('update_delivery_status', True):
+            self._set_delivery_status()
         super(AssignmentGroup, self).save(*args, **kwargs)
         if create_dummy_deadline:
             self.deadlines.create(deadline=self.parentnode.parentnode.end_time)
@@ -195,6 +320,53 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         return self.parentnode
 
+    @property
+    def short_displayname(self):
+        """
+        A short displayname for the group. If the assignment is anonymous,
+        we list the candidate IDs. If the group has a name, the name is used,
+        else we fall back to a comma separated list of usernames. If the group has no name and no
+        students, we use the ID.
+
+        .. seealso:: https://github.com/devilry/devilry-django/issues/498
+        """
+        if self.assignment.anonymous:
+            out = self.get_candidates()
+        elif self.name:
+            out = self.name
+        else:
+            out = self.get_students()
+        if out == '':
+            return unicode(self.id)
+        else:
+            return out
+
+    @property
+    def long_displayname(self):
+        """
+        A long displayname for the group. If the assignment is anonymous,
+        we list the candidate IDs.
+
+        If the assignment is not anonymous, we use a comma separated list of
+        the displaynames (full names with fallback to username) of the
+        students. If the group has a name, we use the groupname with the names
+        of the students in parenthesis.
+
+        .. seealso:: https://github.com/devilry/devilry-django/issues/499
+        """
+        if self.assignment.anonymous:
+            out = self.get_candidates()
+        else:
+            candidates = self.candidates.select_related('student', 'student__devilryuserprofile')
+            names = [candidate.student.devilryuserprofile.get_displayname() for candidate in candidates]
+            out = u', '.join(names)
+            if self.name:
+                out = u'{} ({})'.format(self.name, out)
+        if out == '':
+            return unicode(self.id)
+        else:
+            return out
+
     def __unicode__(self):
         return u'id={id} path={path} candidates=({candidates})'.format(id=self.id,
                                                                        path=self.parentnode.get_path(),
@@ -208,7 +380,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         an administrator. Use :meth:`get_candidates`
         instead.
         """
-        return u', '.join([c.student.username for c in self.candidates.all()])
+        return u', '.join([c.student.username for c in self.candidates.select_related('student')])
 
     def get_candidates(self, separator=u', '):
         """
@@ -228,7 +400,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         :param separator: The unicode string used to separate candidates. Defaults to ``u', '``.
         """
-        return separator.join([examiner.user.username for examiner in self.examiners.all()])
+        return separator.join([examiner.user.username for examiner in self.examiners.select_related('user')])
 
     def is_admin(self, user_obj):
         return self.parentnode.is_admin(user_obj)
@@ -239,7 +411,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def is_examiner(self, user_obj):
         """ Return True if user is examiner on this assignment group """
         return self.examiners.filter(user__id=user_obj.pk).count() > 0
-
 
     def can_delete(self, user_obj):
         """
@@ -303,9 +474,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         groupcopy = AssignmentGroup(parentnode=self.parentnode,
                                     name=self.name,
-                                    is_open=self.is_open)
+                                    is_open=self.is_open,
+                                    delivery_status=self.delivery_status)
         groupcopy.full_clean()
-        groupcopy.save()
+        groupcopy.save(update_delivery_status=False)
         for tagobj in self.tags.all():
             groupcopy.tags.create(tag=tagobj.tag)
         for examiner in self.examiners.all():
@@ -313,6 +485,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         for deadline in self.deadlines.all():
             deadline.copy(groupcopy)
         groupcopy._set_latest_feedback_as_active()
+        groupcopy._set_last_delivery()
+        groupcopy.save(update_delivery_status=False)
         return groupcopy
 
     def pop_candidate(self, candidate):
@@ -353,6 +527,47 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             delivery.save(autoset_number=False,
                           autoset_time_of_delivery=False)
 
+
+    @property
+    def successful_delivery_count(self):
+        from .delivery import Delivery
+        return Delivery.objects.filter(
+            successful=True,
+            deadline__assignment_group=self).count()
+    
+
+    def _set_delivery_status(self):
+        """
+        Set the ``delivery_status``. Calculated with this algorithm:
+
+        - If open:
+            - If no deadlines
+                - ``no-deadlines``
+            - Else:
+                - ``waiting-for-something``
+        - If closed:
+            - If feedback:
+                - ``corrected``
+            - If not:
+                - ``closed-without-feedback``
+
+        .. warning:: Only sets ``delivery_status``, does not save.
+
+        :return:
+            One of ``waiting-for-deliveries``, ``waiting-for-feedback``,
+            ``no-deadlines``, ``corrected`` or ``closed-without-feedback``.
+        """
+        if self.is_open:
+            if self.deadlines.exists():
+                self.delivery_status = 'waiting-for-something'
+            else:
+                self.delivery_status = 'no-deadlines'
+        else:
+            if self.feedback:
+                self.delivery_status = 'corrected'
+            else:
+                self.delivery_status = 'closed-without-feedback'
+
     def _merge_examiners_into(self, target):
         target_examiners = set([e.user.id for e in target.examiners.all()])
         for examiner in self.examiners.all():
@@ -370,12 +585,21 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def _set_latest_feedback_as_active(self):
         from .static_feedback import StaticFeedback
         feedbacks = StaticFeedback.objects.order_by('-save_timestamp').filter(delivery__deadline__assignment_group=self)[:1]
-        self.feedback = None # NOTE: Required to avoid IntegrityError caused by non-unique feedback_id
-        self.save()
+        self.feedback = None  # NOTE: Required to avoid IntegrityError caused by non-unique feedback_id
         if len(feedbacks) == 1:
             latest_feedback = feedbacks[0]
             self.feedback = latest_feedback
-            self.save()
+
+    def _set_last_delivery(self):
+        from .delivery import Delivery
+        try:
+            last_delivery = Delivery.objects.filter(
+                successful=True,
+                deadline__assignment_group=self).order_by('-time_of_delivery')[0]
+        except IndexError:
+            self.last_delivery = None
+        else:
+            self.last_delivery = last_delivery
 
     def merge_into(self, target):
         """
@@ -415,6 +639,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         from .deadline import Deadline
         from .delivery import Delivery
         with transaction.commit_on_success():
+            # Unset last_deadline - if we not do this, we will get
+            # ``IntegrityError: column last_deadline_id is not unique``
+            # if the last deadline after the merge is self.last_deadline
+            self.last_deadline = None
+            self.save(update_delivery_status=False)
+
             # Copies
             Delivery.objects.filter(deadline__assignment_group=self,
                                     copy_of__deadline__assignment_group=target).delete()
@@ -446,6 +676,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target.recalculate_delivery_numbers()
             self.delete()
         target._set_latest_feedback_as_active()
+        target._set_last_delivery()
+        target.save()
 
     @classmethod
     def merge_many_groups(self, sources, target):
@@ -456,46 +688,32 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         for source in sources:
             source.merge_into(target) # Source is deleted after this
 
-
     def get_status(self):
         """
-        Get the status of the group. Calculated with this algorithm:
+        Get the status of the group. Calculated with this algorithm::
 
-        - If open:
-            - If before deadline:
-                - ``waiting-for-deliveries``
-            - If after deadline:
-                - ``waiting-for-feedback``
-            - If no deadlines
-                - ``no-deadlines``
-        - If closed:
-            - If feedback:
-                - ``corrected``
-            - If not:
-                - ``closed-without-feedback``
-
-        :return:
-            One of ``waiting-for-deliveries``, ``waiting-for-feedback``,
-            ``no-deadlines``, ``corrected`` or ``closed-without-feedback``.
+            if ``delivery_status == 'waiting-for-something'``
+                if assignment.delivery_types==NON_ELECTRONIC:
+                    "waiting-for-feedback"
+                else
+                    if before deadline
+                        "waiting-for-deliveries"
+                    if after deadline:
+                        "waiting-for-feedback"
+            else
+                delivery_status
         """
-        if self.is_open:
-            deadlines = self.deadlines.all()
-            deadlinecount = len(deadlines)
-            if deadlinecount == 0:
-                return 'no-deadlines'
+        if self.delivery_status == 'waiting-for-something':
+            if self.assignment.delivery_types == deliverytypes.NON_ELECTRONIC:
+                return 'waiting-for-feedback'
             else:
-                active_deadline = deadlines[deadlinecount-1]
                 now = datetime.now()
-                if active_deadline.deadline > now:
+                if self.last_deadline.deadline > now:
                     return 'waiting-for-deliveries'
                 else:
                     return 'waiting-for-feedback'
         else:
-            if self.feedback:
-                return 'corrected'
-            else:
-                return 'closed-without-feedback'
-
+            return self.delivery_status
 
     def get_all_admin_ids(self):
         return self.parentnode.get_all_admin_ids()

@@ -6,12 +6,12 @@ from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Examiner
 from devilry.utils.restformat import format_datetime
 from devilry.utils.restformat import format_timedelta
+from devilry_gradingsystem.pluginregistry import GradingSystemPluginNotInRegistryError
 from .auth import IsAssignmentAdmin
 from .auth import periodadmin_required
 from .viewbase import BaseNodeInstanceModelView
 from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
-from devilry.apps.gradeeditors import gradeeditor_registry
 
 
 
@@ -33,6 +33,7 @@ class AssignmentResourceMixin(object):
             return format_datetime(instance.first_deadline)
 
 
+
 class AssignmentResource(AssignmentResourceMixin, BaseNodeInstanceResource):
     model = Assignment
     fields = ('id', 'parentnode', 'short_name', 'long_name', 'etag',
@@ -42,11 +43,10 @@ class AssignmentResource(AssignmentResourceMixin, BaseNodeInstanceResource):
 
 class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResource):
     model = Assignment
-    fields = AssignmentResource.fields + ('can_delete', 'admins', 'inherited_admins',
-                                          'breadcrumb', 'number_of_groups',
-                                          'number_of_deliveries',
-                                          'number_of_groups_where_is_examiner',
-                                          'number_of_candidates', 'gradeeditor')
+    fields = AssignmentResource.fields + (
+        'can_delete', 'admins', 'inherited_admins', 'breadcrumb', 'number_of_groups',
+        'number_of_deliveries', 'number_of_groups_where_is_examiner', 'number_of_candidates',
+        'gradingsystemplugin_title', 'has_valid_grading_setup')
 
     def _serialize_shortformat(self, config, shortformat):
         if shortformat:
@@ -57,22 +57,21 @@ class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResour
         else:
             return None
 
-    def gradeeditor(self, instance):
-        if isinstance(instance, self.model):
-            config = instance.gradeeditor_config
-            gradeeditorid = config.gradeeditorid
-            gradeeditor = gradeeditor_registry[config.gradeeditorid]
-            return {
-                'gradeeditorid': gradeeditorid,
-                'title': gradeeditor.title,
-                'shortformat': self._serialize_shortformat(config, gradeeditor.shortformat)
-            }
-
     def number_of_groups_where_is_examiner(self, instance):
         if isinstance(instance, self.model):
             return Examiner.objects.filter(
                 user = self.view.request.user,
                 assignmentgroup__parentnode=instance).count()
+
+    def gradingsystemplugin_title(self, instance):
+        if isinstance(instance, self.model):
+            try:
+                pluginapi = instance.get_gradingsystem_plugin_api()
+            except GradingSystemPluginNotInRegistryError:
+                return None
+            else:
+                return unicode(pluginapi.title)
+
 
 
 class ListOrCreateAssignmentRest(BaseNodeListOrCreateView):

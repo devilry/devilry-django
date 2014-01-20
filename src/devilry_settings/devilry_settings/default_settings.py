@@ -18,7 +18,7 @@ TIME_ZONE = 'Europe/Oslo'
 SITE_ID = 1
 USE_I18N = True
 USE_L10N = True
-DATETIME_FORMAT = "N j, Y, H:i"
+FORMAT_MODULE_PATH = 'devilry_settings.formats'
 LOGIN_URL = '/authenticate/login'
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
@@ -89,6 +89,11 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry_qualifiesforexam_points',
                   'devilry_qualifiesforexam_select',
                   'devilry_mathjax',
+                  'devilry_examiner',
+                  'devilry_gradingsystem',
+                  'devilry_gradingsystemplugin_points',
+                  'devilry_gradingsystemplugin_approved',
+                  'devilry_rest',
                  ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
@@ -96,6 +101,7 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.i18n",
                                "django.core.context_processors.media",
                                "django.core.context_processors.debug",
+                               "django.core.context_processors.request",
                                'django.contrib.messages.context_processors.messages',
                                'extjs4.context_processors.extjs4',
                                'devilry.apps.theme.templatecontext.template_variables')

@@ -1,0 +1,22 @@
+{% load i18n %}
+{% load url from future %}
+
+{% if group.delivery_status == "corrected" and not group.feedback.is_passing_grade and group.assignment.is_electronic %}
+    <div class="alert alert-info devilry_give_another_chance_box">
+        <p>
+            <strong>{% trans "Give another chance?" %}</strong>
+            {% trans "The last feedback for this group is a failing grade. If appropriate, you can give them another chance. To give them another chance, you need to give them a deadline where they can make another delivery." %}
+        </p>
+        <p>
+            <form class="form" action="{% url 'devilry_examiner_add_deadline' group.assignment.id %}" method="get">
+                <input type="hidden" name="group_ids" value="{{ group.id }}">
+                <input type="hidden" name="give_another_chance" value="true">
+                <input type="hidden" name="success_url" value="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
+                <input type="hidden" name="cancel_url" value="{{ request.get_full_path }}">
+                <button class="btn btn-default" type="submit">
+                    {% trans "Add new deadline" %}
+                </button>
+            </form>
+        </a>
+    </div>
+{% endif %}

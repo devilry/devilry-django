@@ -1,0 +1,39 @@
+{% extends "devilry_search/base.django.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block body %}
+<div class="container">
+        <div class="page-header page-header-with-subheader">
+            <h1>{% trans "About" %}</h1>
+            <p class="subheader">
+                {% trans "Below you can see information about your profile that is stored in Devilry. Report if the" %} 
+                <a href="{{ wrong_info_url }}"> 
+                    {% trans " information is wrong" %}
+                </a>
+            </p>
+        </div>
+
+        <table class="table">
+            <tr>
+                <td> {% trans "Name" %} </td>
+                <td> {{ user.devilryuserprofile.full_name }} </td>
+            </tr>
+            <tr>
+                <td> {% trans "Email Address" %} </td>
+                <td> {{ user.email }} </td>
+            </tr>
+            <tr>
+                <td> {% trans "Username" %} </td>
+                <td> {{ user.username }} </td>
+            </tr>
+            <tr>
+                <td> {% trans "Last login" %} </td>
+                <td> {{ user.last_login }} </td>
+            </tr>
+        </table>
+
+        <a href="{{ logout_url }}" class="btn btn-primary btn-lg" role="button">{% trans "Sign out" %}</a>
+
+</div>
+{% endblock body %}

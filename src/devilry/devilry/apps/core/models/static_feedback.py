@@ -113,6 +113,54 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         """
         return Q(delivery__deadline__assignment_group__examiners__user=user_obj)
 
+    @classmethod
+    def from_points(cls, points, assignment=None, **kwargs):
+        """
+        Shortcut method to initialize the StaticFeedback object
+        from points.
+
+        Initializes a StaticFeedback with the given points, with grade
+        and is_passing_grade inferred from the points with the help
+        of :meth:`devilry.apps.core.models.Assignment.points_to_grade`
+        and :meth:`devilry.apps.core.models.Assignment.points_is_passing_grade`.
+
+
+        Example::
+
+            feedback = StaticFeedback.from_points(
+                assignment=myassignment,
+                points=10,
+                delivery=mydelivery,
+                saved_by=someuser)
+            assert(feedback.id == None)
+            assert(feedback.grade != None)
+
+        :param points:
+            The number of points for the feedback.
+        :param assignment:
+            An Assignment object. Should be the assignment where delivery
+            this feedback is for belongs, but that is not checked.
+
+            Defaults to ``self.delivery.deadline.assignment_group.assignment``.
+    
+            We provide the ability to take the assignment as argument instead
+            of looking it up via ``self.delivery.deadline.assignment_group``
+            because we want to to be efficient when creating feedback in bulk.
+
+        :param kwargs:
+            Extra kwargs for the StaticFeedback constructor.
+        :return: An (unsaved) StaticFeedback.
+        """
+        if not assignment:
+            assignment = kwargs['delivery'].assignment
+        is_passing_grade = assignment.points_is_passing_grade(points)
+        grade = assignment.points_to_grade(points)
+        return cls(
+            points=points,
+            is_passing_grade=is_passing_grade,
+            grade=grade, **kwargs
+        )
+
     def _publish_if_allowed(self):
         assignment = self.delivery.deadline.assignment_group.parentnode
         if assignment.examiners_publish_feedbacks_directly:
@@ -120,27 +168,44 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             deadline.feedbacks_published = True
             deadline.save()
 
-    def _set_as_active_feedback_on_group(self):
-        group = self.delivery.deadline.assignment_group
-        group.feedback = self
-        group.save()
-
     def _close_group(self):
         self.delivery.deadline.assignment_group.is_open = False
         self.delivery.deadline.assignment_group.save()
 
+
     def save(self, *args, **kwargs):
-        autoclose_group = kwargs.pop('autoclose_group', True)
-        autoset_as_active_feedback_on_group = kwargs.pop('autoset_as_active_feedback_on_group', True)
+        """
+        :param autoset_timestamp_to_now:
+            Automatically set the ``timestamp``-attribute of this model
+            to *now*? Defaults to ``True``.
+        :param autoupdate_related_models:
+            Automatically update related models:
+
+            - Sets the ``last_feedback``-attribute of ``self.delivery`` and saved the delivery.
+            - Sets the ``feedback`` and ``is_open`` attributes of
+              ``self.delivery.deadline.assignment_group`` to this feedback, and ``False``.
+              Saves the AssignmentGroup.
+
+            Defaults to ``True``.
+        """
+        autoupdate_related_models = kwargs.pop('autoupdate_related_models', True)
         autoset_timestamp_to_now = kwargs.pop('autoset_timestamp_to_now', True)
         if autoset_timestamp_to_now:
             self.save_timestamp = datetime.now()
         super(StaticFeedback, self).save(*args, **kwargs)
-        if autoclose_group:
-            self._close_group()
-        if autoset_as_active_feedback_on_group:
-            self._set_as_active_feedback_on_group()
-        self._publish_if_allowed()
+        if autoupdate_related_models:
+            delivery = self.delivery
+            self.delivery.last_feedback = self
+            self.delivery.save(
+                autoset_time_of_delivery=False,
+                autoset_number=False)
+
+            group = delivery.deadline.assignment_group
+            group.feedback = self
+            group.is_open = False
+            group.save()
+            self._publish_if_allowed()
+
 
     def __unicode__(self):
         return "StaticFeedback on %s" % self.delivery
@@ -154,8 +219,8 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             via any grade editors.
 
         .. warning::
-            This does not autoset the feedback as active on the group. You
-            need to handle that yourself after the copy.
+            This does not autoset the feedback as active on the group or as latest on the delivery.
+            You need to handle that yourself after the copy.
         """
         feedbackcopy = StaticFeedback(delivery=newdelivery,
                                       rendered_view=self.rendered_view,
@@ -165,7 +230,6 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
                                       save_timestamp=self.save_timestamp,
                                       saved_by=self.saved_by)
         feedbackcopy.full_clean()
-        feedbackcopy.save(autoclose_group=False,
-                          autoset_as_active_feedback_on_group=False,
+        feedbackcopy.save(autoupdate_related_models=False,
                           autoset_timestamp_to_now=False)
         return feedbackcopy

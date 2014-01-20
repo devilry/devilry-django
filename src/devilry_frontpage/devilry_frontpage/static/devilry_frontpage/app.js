@@ -31,7 +31,7 @@ Ext.application({
 
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
-        'devilry_header.Header',
+        'devilry_header.Header2',
         'devilry_header.Breadcrumbs'
     ],
 
@@ -47,7 +47,7 @@ Ext.application({
         this.viewport = Ext.create('Ext.container.Viewport', {
             layout: 'border',
             items: [{
-                xtype: 'devilryheader',
+                xtype: 'devilryheader2',
                 region: 'north',
                 navclass: 'no_role'
             }, {

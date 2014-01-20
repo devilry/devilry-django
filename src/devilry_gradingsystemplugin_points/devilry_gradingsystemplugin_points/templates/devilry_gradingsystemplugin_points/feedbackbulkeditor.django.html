@@ -1,0 +1,54 @@
+{% extends "devilry_gradingsystem/feedbackbulkeditorbase.django.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load url from future %}
+
+{% block pagecontent %}
+
+<div class="container">
+    {% if group_ids_form and not group_ids_form.is_valid %}
+        {% include "devilry_examiner/include/django_formerrors_as_alertboxes.django.html" with form=group_ids_form %}
+    {% else %}
+    <span class="text-muted">{% trans "Edit feedback for" %}:</span>
+    <ul class="list-inline text-muted">
+      {% for group in group_ids_form.cleaned_groups %}
+      <li>{{ group.long_displayname }}</li>
+      {% endfor %}
+    </ul>
+
+        {% crispy form %}
+    {% endif %}
+</div>
+
+<!-- <div class="container"> -->
+
+<!-- {% if groups %} -->
+<!--     <span class="text-muted">{% trans "Edit feedback for" %}:</span> -->
+<!--     <ul class="list-inline text-muted"> -->
+<!--     {% for group in group_ids_form.cleaned_groups %} -->
+<!--         <li>{{ group.long_displayname }}</li> -->
+<!--     {% endfor %} -->
+<!--     </ul> -->
+
+
+<!-- </div> -->
+<!--     <div class="container"> -->
+<!--         {% crispy form %} -->
+<!--     </div> -->
+
+
+<!-- {% else %} -->
+<!-- <div class="alert alert-warning"> -->
+<!--   <strong>{% trans "You must select at least one assignment group to edit" %} </strong> -->
+
+<!--   <p><small> -->
+<!--       {% trans "Go to the overview to make selections" %}:   -->
+<!--       <a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}"> {% trans "All groups on this assignment" %}</a> -->
+<!--   </small></p> -->
+
+<!-- </div> -->
+<!-- {% endif %} -->
+
+
+
+{% endblock pagecontent %}

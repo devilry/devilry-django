@@ -1,0 +1,42 @@
+{% load i18n %}
+{% load url from future %}
+
+
+
+<div class="navigate-todolist">
+    {% if previous_group_waiting_for_feedback %}
+        <a href="{% url 'devilry_examiner_last_delivery_or_groupoverview' groupid=previous_group_waiting_for_feedback.id %}"
+                class="btn btn-default btn-lg"
+                title="{% trans 'Previous group waiting for feedback' %}: {{ previous_group_waiting_for_feedback.long_displayname }}">
+            <i class="fa fa-chevron-left"></i>
+        </a>
+    {% endif %}
+    {% if previous_group_waiting_for_feedback or next_group_waiting_for_feedback %}
+        <a href="{% url 'devilry_examiner_waiting_for_feedback' assignmentid=group.assignment.id %}"
+                class="btn btn-default btn-lg"
+                title='{% trans "List all groups waiting for feedback" %}'>
+            <i class="fa fa-th-list"></i>
+        </a>
+    {% endif %}
+    {% if next_group_waiting_for_feedback %}
+        <a href="{% url 'devilry_examiner_last_delivery_or_groupoverview' groupid=next_group_waiting_for_feedback.id %}"
+                class="btn btn-default btn-lg"
+                title="{% trans 'Next group waiting for feedback' %}: {{ next_group_waiting_for_feedback.long_displayname }}">
+            <i class="fa fa-chevron-right"></i>
+        </a>
+    {% endif %}
+</div>
+
+
+<script>
+$(function () {
+    $('#select_all_button').on('click', function (e) {
+        $('#grouplist_table').find(':checkbox').prop('checked', true);
+        e.preventDefault();
+    });
+
+    $('.navigate-todolist a').tooltip({
+        'placement': 'bottom'
+    });
+});
+</script>

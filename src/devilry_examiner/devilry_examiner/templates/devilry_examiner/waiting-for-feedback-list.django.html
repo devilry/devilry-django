@@ -1,0 +1,18 @@
+{% extends "devilry_examiner/allgroupsoverview_base.django.html" %}
+{% load i18n devilry_examiner_tags%}
+{% load url from future %}
+
+{% block bodyid %}waiting-for-feedback-overview{% endblock %}
+
+
+{% block content %}
+{% if not groups %}
+
+      <div class="alert alert-muted }}">
+          <strong>{% trans "There are no groups awaiting feedback" %}</strong>
+      </div>
+
+{% endif %}
+{{ block.super }}
+
+{% endblock content %}

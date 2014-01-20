@@ -3,12 +3,17 @@ from datetime import datetime, timedelta
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
+from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry_developer.testhelpers.corebuilder import SubjectBuilder
+from devilry_developer.testhelpers.corebuilder import UserBuilder
 from ..models import AssignmentGroup
+from ..models import Candidate
 from ..models.assignment_group import GroupPopNotCandiateError
 from ..models.assignment_group import GroupPopToFewCandiatesError
 from ..models import Delivery
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
+from devilry.apps.core.models import deliverytypes
 
 
 class TestAssignmentGroup(TestCase, TestHelper):
@@ -253,6 +258,7 @@ class TestAssignmentGroupSplit(TestCase):
         self._create_testdata()
         g1 = self.testhelper.sub_p1_a1_g1
         g1copy = g1.copy_all_except_candidates()
+        g1copy = self.testhelper.reload_from_db(g1copy)
 
         # Basics
         self.assertEquals(g1copy.name, 'Stuff')
@@ -289,6 +295,9 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(g1copy.feedback.save_timestamp, datetime(2010, 1, 1))
         self.assertEquals(g1copy.feedback.rendered_view, 'Better')
         self.assertEquals(g1copy.feedback.points, 40)
+
+        # last_delivery
+        self.assertEquals(g1copy.last_delivery.filemetas.all()[0].filename, 'thirdtry.py')
 
     def test_pop_candidate(self):
         self._create_testdata()
@@ -371,6 +380,11 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(target.name, 'The target')
         self.assertEquals(target.is_open, True)
 
+    def test_merge_into_last_delivery(self):
+        source, target = self._create_mergetestdata()
+        source.merge_into(target)
+        target = self.testhelper.reload_from_db(target)
+        self.assertEquals(target.last_delivery.filemetas.all()[0].filename, 'b.py')
 
     def test_merge_into_candidates(self):
         source, target = self._create_mergetestdata()
@@ -605,40 +619,50 @@ class TestAssignmentGroupSplit(TestCase):
 
 class TestAssignmentGroupStatus(TestCase):
     def setUp(self):
-        self.testhelper = TestHelper()
-        self.testhelper.add(nodes="uni",
-                            subjects=["sub"],
-                            periods=["p1:begins(-1)"], # 30days
-                            assignments=['a1:pub(25)'], # 5days ago
-                            assignmentgroups=['g1:candidate(student1):examiner(examiner1)'])
-        self.g1 = self.testhelper.sub_p1_a1_g1
+        self.assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        self.group1builder = self.assignmentbuilder.add_group()
 
     def test_no_deadlines(self):
-        self.assertEquals(self.g1.get_status(), 'no-deadlines')
+        self.assertEquals(self.group1builder.group.delivery_status, 'no-deadlines')
+        self.assertEquals(self.group1builder.group.get_status(), 'no-deadlines')
 
     def test_waiting_for_deliveries(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)') # 5day after publishing time, with is 5days ago.
-        self.assertEquals(self.g1.get_status(), 'waiting-for-deliveries')
+        self.group1builder.add_deadline_in_x_weeks(weeks=1)
+        self.assertEquals(self.group1builder.group.delivery_status, 'waiting-for-something')
+        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-deliveries')
 
     def test_waiting_for_feedback(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)') # 1day after publishing time, with is 5days ago.
-        self.assertEquals(self.g1.get_status(), 'waiting-for-feedback')
+        self.group1builder.add_deadline_x_weeks_ago(weeks=1)
+        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-feedback')
 
     def test_corrected(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)')
-        delivery = self.testhelper.add_delivery('uni;sub.p1.a1.g1')
-        self.testhelper.add_feedback(delivery=delivery,
-                                     verdict={'grade': 'A', 'points':100, 'is_passing_grade':True})
-        g1 = self.testhelper.reload_from_db(self.g1)
-        g1.is_open = False
-        g1.save()
-        self.assertEquals(g1.get_status(), 'corrected')
+        self.group1builder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_passed_feedback(saved_by=UserBuilder('testuser').user)
+        self.assertEquals(self.group1builder.group.delivery_status, 'corrected')
+        self.assertEquals(self.group1builder.group.get_status(), 'corrected')
 
     def test_closed_without_feedback(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(10)')
-        self.g1.is_open = False
-        self.g1.save()
-        self.assertEquals(self.g1.get_status(), 'closed-without-feedback')
+        self.group1builder.update(is_open=False)
+        self.assertEquals(self.group1builder.group.delivery_status, 'closed-without-feedback')
+        self.assertEquals(self.group1builder.group.get_status(), 'closed-without-feedback')
+
+    def test_non_electronic_always_waiting_for_feedback_before_deadline(self):
+        self.assignmentbuilder.update(
+            delivery_types = deliverytypes.NON_ELECTRONIC
+        )
+        self.group1builder.add_deadline_in_x_weeks(weeks=1)
+        self.group1builder.reload_from_db()
+        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-feedback')
+
+    def test_non_electronic_always_waiting_for_feedback_after_deadline(self):
+        self.assignmentbuilder.update(
+            delivery_types = deliverytypes.NON_ELECTRONIC
+        )
+        self.group1builder.add_deadline_x_weeks_ago(weeks=1)
+        self.group1builder.reload_from_db()
+        self.assertEquals(self.group1builder.group.get_status(), 'waiting-for-feedback')
 
 
 
@@ -663,3 +687,184 @@ class TestAssignmentGroupUserIds(TestCase):
                  self.testhelper.infadm2.id, self.testhelper.subadm.id,
                  self.testhelper.subadm2.id, self.testhelper.p1adm.id,
                  self.testhelper.a1adm.id, self.testhelper.a1adm2.id]))
+
+
+
+
+
+class TestAssignmentGroup2(TestCase):
+    """
+    Test AssignmentGroup using the next generation less coupled testing frameworks.
+    """
+    def test_short_displayname_empty(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertEquals(group1builder.group.short_displayname, unicode(group1builder.group.id))
+
+    def test_short_displayname_students(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group().add_students(
+                UserBuilder('student1').user,
+                UserBuilder('student2').user)
+        self.assertEquals(group1builder.group.short_displayname, 'student1, student2')
+
+    def test_short_displayname_anonymous_candidates(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', anonymous=True)\
+            .add_group().add_candidates(
+                Candidate(student=UserBuilder('student1').user, candidate_id="aa"),
+                Candidate(student=UserBuilder('student2').user, candidate_id="bb"))
+        self.assertEquals(group1builder.group.short_displayname, 'aa, bb')
+
+    def test_short_displayname_named(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(name='My group')
+        self.assertEquals(group1builder.group.short_displayname, 'My group')
+
+
+    def test_long_displayname_empty(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertEquals(group1builder.group.long_displayname, unicode(group1builder.group.id))
+
+    def test_long_displayname_students(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group().add_students(
+                UserBuilder('student1', full_name=u'Student One \u00E5').user,
+                UserBuilder('student2').user)
+        self.assertEquals(group1builder.group.long_displayname, u'Student One \u00E5, student2')
+
+    def test_long_displayname_anonymous_candidates(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', anonymous=True)\
+            .add_group().add_candidates(
+                Candidate(student=UserBuilder('student1').user, candidate_id="aa"),
+                Candidate(student=UserBuilder('student2').user, candidate_id="bb"))
+        self.assertEquals(group1builder.group.long_displayname, 'aa, bb')
+
+    def test_long_displayname_named(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(name='My group').add_students(
+                UserBuilder('student1', full_name=u'Student One \u00E5').user,
+                UserBuilder('student2').user)
+        self.assertEquals(group1builder.group.long_displayname, u'My group (Student One \u00E5, student2)')
+
+
+
+class TestAssignmentGroupManager(TestCase):
+
+    def test_filter_waiting_for_deliveries(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
+        group1builder = week1.add_group().add_examiners(examiner1)
+        group2builder = week1.add_group().add_examiners(examiner1)
+        group1builder.add_deadline_in_x_weeks(weeks=1)
+        group2builder.add_deadline_x_weeks_ago(weeks=1)
+        qry = AssignmentGroup.objects.filter_waiting_for_deliveries()
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], group1builder.group)
+
+    def test_filter_waiting_for_deliveries_nonelectronic(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1',
+            delivery_types=deliverytypes.NON_ELECTRONIC)
+        group1builder = week1.add_group().add_examiners(examiner1)
+        group2builder = week1.add_group().add_examiners(examiner1)
+        group1builder.add_deadline_in_x_weeks(weeks=1)
+        group2builder.add_deadline_x_weeks_ago(weeks=1)
+        qry = AssignmentGroup.objects.filter_waiting_for_deliveries()
+        self.assertEquals(qry.count(), 0)
+
+
+    def test_filter_waiting_for_feedback(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
+        group1builder = week1.add_group().add_examiners(examiner1)
+        group2builder = week1.add_group().add_examiners(examiner1)
+        group1builder.add_deadline_in_x_weeks(weeks=1)
+        group2builder.add_deadline_x_weeks_ago(weeks=1)
+        qry = AssignmentGroup.objects.filter_waiting_for_feedback()
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], group2builder.group)
+
+    def test_filter_waiting_for_feedback_nonelectronic(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1',
+            delivery_types=deliverytypes.NON_ELECTRONIC)
+        group1builder = week1.add_group().add_examiners(examiner1)
+        group2builder = week1.add_group().add_examiners(examiner1)
+        group1builder.add_deadline_in_x_weeks(weeks=1)
+        group2builder.add_deadline_x_weeks_ago(weeks=1)
+        qry = AssignmentGroup.objects.filter_waiting_for_feedback()
+        self.assertEquals(qry.count(), 2)
+
+    def test_filter_waiting_for_feedback_nesting(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
+        group1builder = week1.add_group().add_examiners(examiner1)
+        group2builder = week1.add_group().add_examiners(examiner1)
+        group3builder = week1.add_group()
+
+        group1builder.add_deadline_x_weeks_ago(weeks=1)
+        group2builder.add_deadline_in_x_weeks(weeks=1)
+        group3builder.add_deadline_x_weeks_ago(weeks=1)
+
+        self.assertEquals(AssignmentGroup.objects.filter_waiting_for_feedback().count(), 2)
+        self.assertEquals(AssignmentGroup.objects.filter_examiner_has_access(examiner1).count(), 2)
+        qry = AssignmentGroup.objects.filter_examiner_has_access(examiner1).filter_waiting_for_feedback()
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], group1builder.group)
+
+    def test_filter_is_examiner(self):
+        examiner1 = UserBuilder('examiner1').user
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
+        group1builder = week1.add_group().add_examiners(examiner1)
+
+        # Add another group to make sure we do not get false positives
+        week1.add_group().add_examiners(UserBuilder('examiner2').user)
+
+        qry = AssignmentGroup.objects.filter_is_examiner(examiner1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], group1builder.group)
+
+    def test_filter_is_active(self):
+        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
+        currentgroupbuilder = duck1010builder.add_6month_active_period()\
+            .add_assignment('week1').add_group()
+
+        # Add inactive groups to make sure we get no false positives
+        duck1010builder.add_6month_lastyear_period().add_assignment('week1').add_group()
+        duck1010builder.add_6month_nextyear_period().add_assignment('week1').add_group()
+
+        qry = AssignmentGroup.objects.filter_is_active()
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], currentgroupbuilder.group)
+
+
+    def test_filter_examiner_has_access(self):
+        examiner1 = UserBuilder('examiner1').user
+        otherexaminer = UserBuilder('otherexaminer').user
+        duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
+        activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
+        currentgroupbuilder = activeassignmentbuilder.add_group().add_examiners(examiner1)
+
+        # Add inactive groups and a group with another examiner to make sure we get no false positives
+        duck1010builder.add_6month_lastyear_period().add_assignment('week1')\
+            .add_group().add_examiners(examiner1)
+        duck1010builder.add_6month_nextyear_period().add_assignment('week1')\
+            .add_group().add_examiners(examiner1)
+        activeassignmentbuilder.add_group().add_examiners(otherexaminer)
+
+        qry = AssignmentGroup.objects.filter_examiner_has_access(examiner1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], currentgroupbuilder.group)
+
+        # make sure we are not getting false positives
+        self.assertEquals(AssignmentGroup.objects.filter_is_examiner(examiner1).count(), 3)
+        self.assertEquals(AssignmentGroup.objects.filter_is_examiner(otherexaminer).count(), 1)

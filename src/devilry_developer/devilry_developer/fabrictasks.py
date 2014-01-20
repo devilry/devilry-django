@@ -88,7 +88,7 @@ def autodb(no_groups=False):
         autodb_args = '--no-groups'
     reset_db()
     local('bin/django_test.py dev_autodb -v2 {}'.format(autodb_args))
-    local('bin/django_dev.py rebuild_index')
+    local('bin/django_dev.py rebuild_index --noinput')
 
 
 def _gzip_file(infile):

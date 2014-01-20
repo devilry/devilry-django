@@ -75,6 +75,17 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
         self.update_identifier(anonymous)
         super(Candidate, self).save(*args, **kwargs)
 
+    @property
+    def displayname(self):
+        """
+        Return a name for the candidate, preferrably the full name, but use the
+        ``identifier`` if that is not available.
+        """
+        if self.full_name:
+            return self.full_name
+        else:
+            return self.identifier
+
 
 def sync_candidate_with_user_on_change(sender, **kwargs):
     """

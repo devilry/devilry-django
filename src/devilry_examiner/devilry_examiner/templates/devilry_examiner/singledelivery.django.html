@@ -1,0 +1,36 @@
+{% extends "devilry_examiner/singledelivery_base.django.html" %}
+{% load i18n %}
+
+{% block breadcrumbtail %}
+    <li class="active">#{{ delivery.number }}</li>
+{% endblock breadcrumbtail %}
+
+
+{% block headertop %}
+    {% include "devilry_examiner/include/navigate_todolist.django.html" with group=delivery.assignment_group %}
+{% endblock headertop %}
+
+
+
+{% block alerts %}
+{{ block.super }}
+    {% if delivery.last_feedback == delivery.assignment_group.feedback %}
+        {% include "devilry_examiner/include/give_another_chance_question.django.html" with group=delivery.assignment_group %}
+    {% endif %}
+{% endblock alerts %}
+
+{% block pagecontent %}
+    {% if delivery.last_feedback %}
+        <div class="container read-feedback-box">
+            {% include "devilry_examiner/readonly-feedback-with-editbutton.django.html" with feedback=delivery.last_feedback %}
+        </div>
+    {% else %}
+        <div class="container no-feedback-box">
+            <a href="?edit_feedback=true" class="btn btn-default btn">
+                <i class="fa fa-edit"></i>
+                {% trans "Provide feedback" %}
+            </a>
+            {% trans "No feedback on this delivery." %}
+        </div>
+    {% endif %}
+{% endblock pagecontent %}
