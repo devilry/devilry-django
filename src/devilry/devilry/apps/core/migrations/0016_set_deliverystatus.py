@@ -11,20 +11,18 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName". 
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-
-        # Datamigration that sets last_deadline on all groups within active periods.
-        # now = datetime.datetime.now()
-        # active_deadlines = orm.Deadline.objects\
-        #     .filter(assignment_group__parentnode__parentnode__end_time__gt=now)\
-        #     .order_by('-deadline')\
-        #     .select_related('assignment_group')
-        # migrated_group_ids = set()
-        # for deadline in active_deadlines:
-        #     group = deadline.assignment_group
-        #     if not group.id in migrated_group_ids:
-        #         migrated_group_ids.add(group.id)
-        #         group.last_deadline = deadline
-        #         group.save()
+        for group in orm.AssignmentGroup.objects.iterator():
+            if group.is_open:
+                if group.last_deadline:
+                    group.delivery_status = 'waiting-for-something'
+                else:
+                    group.delivery_status = 'no-deadlines'
+            else:
+                if group.feedback:
+                    group.delivery_status = 'corrected'
+                else:
+                    group.delivery_status = 'closed-without-feedback'
+            group.save()
 
     def backwards(self, orm):
         "Write your backwards methods here."
