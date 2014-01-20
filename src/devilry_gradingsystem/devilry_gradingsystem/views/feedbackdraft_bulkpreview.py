@@ -45,7 +45,6 @@ class FeedbackDraftBulkPreviewView(DetailView):
         draft = self.get_feedbackdraft(self.kwargs['draftid'])
         context['unsaved_staticfeedback'] = draft.to_staticfeedback()
         context['valid_grading_system_setup'] = True
-        print self.selected_groups
         return context
 
     def post(self, *args, **kwargs):
