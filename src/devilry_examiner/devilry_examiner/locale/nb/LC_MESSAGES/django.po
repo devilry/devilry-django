@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-20 01:13+0100\n"
+"POT-Creation-Date: 2014-01-20 02:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,69 +49,66 @@ msgstr "Hjem"
 msgid "Examiner"
 msgstr "Retter"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:33
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:34
 #: templatetags/devilry_examiner_tags.py:11
 msgid "Waiting for feedback"
 msgstr "Venter på tilbakemelding"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:35
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:37
 #: templatetags/devilry_examiner_tags.py:13
 #: templatetags/devilry_examiner_tags.py:40
 msgid "Waiting for deliveries"
 msgstr "Venter på innleveringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:37
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:40
 #: templatetags/devilry_examiner_tags.py:17
 msgid "Corrected"
 msgstr "Ferdig rettet"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:38
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:42
 msgid "All"
 msgstr "Alle"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:50
-#, fuzzy
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:54
 msgid "Previous"
 msgstr "Forhåndsvisning"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:61
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:65
 msgid "Next"
 msgstr "Neste"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:72
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:76
 msgid "Select All"
 msgstr "Velg alle"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:75
-#, fuzzy
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:79
 msgid "Deselect All"
-msgstr "Velg alle"
+msgstr "Fjern markeringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:82
-#, fuzzy
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:86
 msgid "Download all deliveries"
-msgstr "Ingen innleveringer"
+msgstr "Last ned alle innleveringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:112
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:116
 #: templates/devilry_examiner/readonly-feedback.django.html:14
 #: templates/devilry_examiner/singlegroupoverview.django.html:33
 msgid "Grade"
 msgstr "Karakter"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:150
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:154
 #: templatetags/devilry_examiner_tags.py:38
 msgid "Write feedback"
 msgstr "Gi tilbakemelding"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:151
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:155
 msgid "to selected"
 msgstr "til valgte"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:168
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:172
 msgid "The grading system is not configured correctly."
 msgstr "Karaktersystem er ikke konfigurert riktig"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:170
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:174
 msgid ""
 "This means that you are not able to correct any of the submitted deliveries. "
 "Notify the course administrator which need to setup up the grading system "
@@ -141,21 +138,13 @@ msgstr ""
 msgid "New to Devilry? Do you want to become more efficient?"
 msgstr "Er Devilry nytt og ukjent? Vil du øke effektiviten?"
 
+#: templates/devilry_examiner/dashboard.django.html:41
+msgid "Check out Examiner section of the official Devilry documentation."
+msgstr "Sjekk ut avsnittet om Retterrollen i den offisielle dokumentasjonen"
+
 #: templates/devilry_examiner/dashboard.django.html:46
 msgid "Official documentation"
-msgstr "Offisiel dokumentasjon"
-
-#: templates/devilry_examiner/edit-feedback.django.html:30
-msgid "Publish"
-msgstr "Publiser"
-
-#: templates/devilry_examiner/edit-feedback.django.html:31
-msgid "without preview"
-msgstr "uten forhåndsvisning"
-
-#: templates/devilry_examiner/edit-feedback.django.html:35
-msgid "Preview"
-msgstr "Forhåndsvisning"
+msgstr "Offisiell dokumentasjon"
 
 #: templates/devilry_examiner/readonly-feedback-with-editbutton.django.html:7
 msgid "Edit feedback"
@@ -287,15 +276,15 @@ msgstr ""
 msgid "Add new deadline"
 msgstr "Legg til ny innleveringsfrist"
 
-#: templates/devilry_examiner/include/navigate_todolist.django.html:9
+#: templates/devilry_examiner/include/navigate_todolist.django.html:10
 msgid "Previous group waiting for feedback"
 msgstr "Forrige gruppe som avventer tilbakemelding"
 
-#: templates/devilry_examiner/include/navigate_todolist.django.html:16
+#: templates/devilry_examiner/include/navigate_todolist.django.html:17
 msgid "List all groups waiting for feedback"
 msgstr "Liste over alle grupper som avventer tilbakemelding"
 
-#: templates/devilry_examiner/include/navigate_todolist.django.html:23
+#: templates/devilry_examiner/include/navigate_todolist.django.html:24
 msgid "Next group waiting for feedback"
 msgstr "Neste gruppe som avventer tilbakemelding"
 
@@ -391,3 +380,12 @@ msgstr ""
 "Du har fått en ny sjanse til å levere et forbedret forsøk. Les den siste "
 "tilbakemeldingen for informasjon om hvorfor du ikke bestod og hva du må "
 "forbedre."
+
+#~ msgid "Publish"
+#~ msgstr "Publiser"
+
+#~ msgid "without preview"
+#~ msgstr "uten forhåndsvisning"
+
+#~ msgid "Preview"
+#~ msgstr "Forhåndsvisning"
