@@ -6,7 +6,7 @@ Release Notes 1.4.0
 New Examiner Interface
 =======================
 The biggest new feature in Devilry 1.4.0 is the completely overhauled and new Examiner interface.
-Fully responsive and mobile friendly design will make the examination workflow a lot more convenient.
+Fully responsive and mobile friendly design will make the task of correcting a lot easier.
 
 New Grading System Plugin Architecture
 ========================================
