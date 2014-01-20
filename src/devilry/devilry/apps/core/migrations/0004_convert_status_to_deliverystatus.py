@@ -11,8 +11,8 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName". 
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-        for assignment_group in orm.AssignmentGroup.objects.all().iterator():
-            assignment_group.save()
+        #for assignment_group in orm.AssignmentGroup.objects.all():
+        #    assignment_group.save()
 
     def backwards(self, orm):
         "Write your backwards methods here."
