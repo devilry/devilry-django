@@ -27,6 +27,7 @@ class AllGroupsOverview(DetailView):
     model = Assignment
     context_object_name = 'assignment'
     pk_url_kwarg = 'assignmentid'
+    currentpage = 'all'
 
     def get_context_data(self, **kwargs):
         if 'selected_group_ids' in self.request.session:
@@ -44,6 +45,7 @@ class AllGroupsOverview(DetailView):
 
         context['groups'] = get_paginated_page(paginator, page)
         context['allgroups'] = groups
+        context['currentpage'] = self.currentpage
         return context
 
     def get_queryset(self):
@@ -52,6 +54,7 @@ class AllGroupsOverview(DetailView):
 
 class WaitingForFeedbackOverview(AllGroupsOverview):
     template_name = "devilry_examiner/waiting-for-feedback-list.django.html"
+    currentpage = 'waiting_for_feedback'
 
     def get_context_data(self, **kwargs):
         context = super(WaitingForFeedbackOverview, self).get_context_data(**kwargs)
@@ -69,6 +72,7 @@ class WaitingForFeedbackOverview(AllGroupsOverview):
 
 class WaitingForDeliveriesOverview(AllGroupsOverview):
     template_name = "devilry_examiner/waiting-for-deliveries-overview.django.html"
+    currentpage = 'waiting_for_deliveries'
 
     def get_context_data(self, **kwargs):
         context = super(WaitingForDeliveriesOverview, self).get_context_data(**kwargs)
@@ -86,6 +90,7 @@ class WaitingForDeliveriesOverview(AllGroupsOverview):
 
 class CorrectedOverview(AllGroupsOverview):
     template_name = "devilry_examiner/corrected-overview.django.html"
+    currentpage = 'corrected'
 
     def get_context_data(self, **kwargs):
         context = super(CorrectedOverview, self).get_context_data(**kwargs)

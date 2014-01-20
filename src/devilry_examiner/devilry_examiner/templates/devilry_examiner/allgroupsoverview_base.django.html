@@ -30,20 +30,16 @@
             {% block navbar %}
 
             <ul class="list-group">
-                <li class="list-group-item" >
-                    <a href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">{% trans "Waiting for feedback" %}</a>
-                </li>
+                <a class="list-group-item {% if currentpage == 'waiting_for_feedback' %}active{% endif %}"
+                 href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">{% trans "Waiting for feedback" %}</a>
                 {% if assignment.is_electronic %}                    
-                    <li class="list-group-item">
-                        <a href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">{% trans "Waiting for deliveries" %}</a>
-                    </li>
+                    <a class="list-group-item {% if currentpage == 'waiting_for_deliveries' %}active{% endif %}"
+                     href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">{% trans "Waiting for deliveries" %}</a>
                 {% endif %}
-                <li class="list-group-item">
-                    <a href="{% url 'devilry_examiner_corrected' assignment.id %}">{% trans "Corrected" %}</a>
-                </li>
-                <li class="list-group-item">
-                    <a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">{% trans "All" %}</a>
-                </li>
+                <a class="list-group-item {% if currentpage == 'corrected' %}active{% endif %}"
+                 href="{% url 'devilry_examiner_corrected' assignment.id %}">{% trans "Corrected" %}</a>
+                <a class="list-group-item {% if currentpage == 'all' %}active{% endif %}"
+                 href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">{% trans "All" %}</a>
             </ul>
 
             {% endblock navbar %}
