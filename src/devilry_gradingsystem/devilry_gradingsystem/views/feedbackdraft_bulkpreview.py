@@ -43,7 +43,6 @@ class FeedbackDraftBulkPreviewView(DetailView):
     def get_context_data(self, **kwargs):
         context = super(FeedbackDraftBulkPreviewView, self).get_context_data(**kwargs)
         draft = self.get_feedbackdraft(self.kwargs['draftid'])
-        # delivery = self.object
         context['unsaved_staticfeedback'] = draft.to_staticfeedback()
         context['valid_grading_system_setup'] = True
         print self.selected_groups
@@ -52,11 +51,9 @@ class FeedbackDraftBulkPreviewView(DetailView):
     def post(self, *args, **kwargs):
         self.object = self.get_object()
         assignment = self.object
-        print
-        print self.kwargs
-        print
+      
         if 'submit_publish' in self.request.POST:
-            for draftid in self.request.GET.getlist('draftid'):
+            for draftid in self.request.session['draft_ids']:
                 draft = self.get_feedbackdraft(draftid)
                 draft.published = True
                 draft.staticfeedback = draft.to_staticfeedback()
@@ -65,6 +62,5 @@ class FeedbackDraftBulkPreviewView(DetailView):
             return redirect('devilry_examiner_allgroupsoverview', assignmentid=assignment.id)
         else:
             redirect_url = assignment.get_gradingsystem_plugin_api().get_bulkedit_feedback_url(assignment.id)
-            redirect_url = redirect_url + '?' + urlencode({'edit': self.request.GET.getlist('edit')}, doseq=True) + '&draftid=' + self.kwargs['draftid']
 
             return redirect(redirect_url)

@@ -95,11 +95,9 @@ class FeedbackBulkEditorFormView(BulkViewBase):
         }
 
     def _get_preview_redirect_url(self, drafts, grouplist):
-       return "{}?{}&{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
+       return "{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
                                               kwargs={'assignmentid': self.object.id, 
-                                                      'draftid': drafts['draft'].id}), 
-                               urlencode([('draftid', drafts['draft_ids'])], doseq=True),
-                               urlencode(grouplist, doseq=True))
+                                                      'draftid': drafts['draft'].id}))
 
     def save_pluginspecific_state(self, form):
         """
@@ -116,6 +114,7 @@ class FeedbackBulkEditorFormView(BulkViewBase):
         self.save_pluginspecific_state(form)
 
         drafts = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
+        self.request.session['draft_ids'] = drafts['draft_ids']
 
         if preview:
             return redirect(self._get_preview_redirect_url(drafts, self.request.GET))
@@ -129,7 +128,9 @@ class FeedbackBulkEditorFormView(BulkViewBase):
         }
 
     def get_initial(self):
-        draftid = self.request.GET.get('draftid', False)
+        if 'draft_ids' in self.request.session:
+            draftid = self.request.session['draft_ids'][0] # Just take one of the drafts they are all the same
+            del self.request.session['draft_ids']
         if draftid:
             draft = FeedbackDraft.objects.get(id=draftid)
             return self.get_initial_from_draft(draft)
@@ -138,6 +139,8 @@ class FeedbackBulkEditorFormView(BulkViewBase):
                 'feedbacktext': '',
                 'points': self.get_default_points_value()
             }
+
+        
 
     def groupids_form_invalid(self, groupidsform):
         # We handle errors in the template
