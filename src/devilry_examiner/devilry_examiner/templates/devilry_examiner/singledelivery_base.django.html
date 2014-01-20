@@ -116,15 +116,6 @@ valid_grading_system_setup
         {% endwith %}
     </div>
 
-{% comment %}    
-    {% if edit_feedback %}
-        <div class="edit-feedback-box">
-            <script src="{% static 'devilry_examiner/js/edit_feedback.js' %}"></script>
-            {% include "devilry_examiner/edit-feedback.django.html" with unique_name="DevilryFeedbackEditor" %}
-        </div>
-    {% endif %}
-{% endcomment %}
-
     {% block pagecontent %}{% endblock pagecontent %}
 
 {% endblock %}
