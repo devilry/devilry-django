@@ -265,6 +265,23 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def period(self):
         return self.parentnode
 
+
+    def is_electronic(self):
+        """
+        Returns ``True`` if :attr:`.deliverytypes` is ``0`` (electric).
+
+        .. versionadded:: 1.4.0
+        """
+        return self.delivery_types == deliverytypes.ELECTRONIC
+
+    def is_nonelectronic(self):
+        """
+        Returns ``True`` if :attr:`.deliverytypes` is ``1`` (non-electric).
+
+        .. versionadded:: 1.4.0
+        """
+        return self.delivery_types == deliverytypes.NON_ELECTRONIC
+
     def set_max_points(self, max_points):
         """
         Sets :attr:`.max_points`, and invalidates any
