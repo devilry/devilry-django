@@ -217,6 +217,9 @@ DEVILRY_QUALIFIESFOREXAM_PLUGINS = [
 ]
 
 
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+
 #: Deadline handling method:
 #:
 #:    0: Soft deadlines
