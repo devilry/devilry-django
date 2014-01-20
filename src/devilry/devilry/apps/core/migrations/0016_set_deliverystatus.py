@@ -11,7 +11,7 @@ class Migration(DataMigration):
         # Note: Don't use "from appname.models import ModelName". 
         # Use orm.ModelName to refer to models in this application,
         # and orm['appname.ModelName'] for models in other applications.
-        for group in orm.AssignmentGroup.objects.iterate():
+        for group in orm.AssignmentGroup.objects.iterator():
             if group.is_open:
                 if group.last_deadline:
                     group.delivery_status = 'waiting-for-something'

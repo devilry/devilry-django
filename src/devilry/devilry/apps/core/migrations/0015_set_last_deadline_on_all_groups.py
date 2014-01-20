@@ -15,7 +15,7 @@ class Migration(DataMigration):
             .order_by('-deadline')\
             .select_related('assignment_group')
         migrated_group_ids = set()
-        for deadline in active_deadlines.iterate():
+        for deadline in active_deadlines.iterator():
             group = deadline.assignment_group
             if not group.id in migrated_group_ids:
                 migrated_group_ids.add(group.id)
