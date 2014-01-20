@@ -185,9 +185,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             help_text = 'If this is checked, the group can add deliveries.')
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
     last_delivery = models.OneToOneField("Delivery", blank=True, null=True,
-        related_name='last_delivery_by_group')
+        related_name='last_delivery_by_group', on_delete=models.SET_NULL)
     last_deadline = models.OneToOneField("Deadline", blank=True, null=True,
-        related_name='last_deadline_for_group')
+        related_name='last_deadline_for_group', on_delete=models.SET_NULL)
     etag = models.DateTimeField(auto_now_add=True)
     delivery_status = models.CharField(max_length=30, blank=True, null=True,
         help_text='The delivery_status of a group',
