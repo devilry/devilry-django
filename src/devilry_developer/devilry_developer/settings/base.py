@@ -35,12 +35,6 @@ INSTALLED_APPS += [
     'devilry_sandbox',
 
     'devilry_developer',
-    'devilry_examiner',
-    'devilry_feedbackeditor_simple',
-    'devilry_gradingsystem',
-    'devilry_gradingsystemplugin_points',
-    'devilry_gradingsystemplugin_approved',
-    'devilry_rest',
     'simple_rest',
 
     # Not apps, but here for the Django test system to discover them:
