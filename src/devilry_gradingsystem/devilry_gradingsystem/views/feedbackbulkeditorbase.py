@@ -129,10 +129,9 @@ class FeedbackBulkEditorFormView(BulkViewBase):
 
     def get_initial(self):
         if 'draft_ids' in self.request.session:
-            draftid = self.request.session['draft_ids'][0] # Just take one of the drafts they are all the same
-            del self.request.session['draft_ids']
-        if draftid:
+            draftid = self.request.session['draft_ids'][0] # Just take one of the drafts they are all the sam
             draft = FeedbackDraft.objects.get(id=draftid)
+            del self.request.session['draft_ids']
             return self.get_initial_from_draft(draft)
         else:
             return {
@@ -156,6 +155,8 @@ class FeedbackBulkEditorFormView(BulkViewBase):
         assignment = self.get_object()
         if not assignment.has_valid_grading_setup():
             return HttpResponseBadRequest('Grading system is not set up correctly')
+        elif 'submit_save_draft' in self.request.POST:
+            return redirect(self.request.path)
         return super(FeedbackBulkEditorFormView, self).post(*args, **kwargs)
 
 
