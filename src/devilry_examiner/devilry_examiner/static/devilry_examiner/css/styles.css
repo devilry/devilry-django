@@ -7805,6 +7805,9 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   left: 28px;
   cursor: pointer;
 }
+.allgroupoverview-focusarea .btn-toolbar {
+  margin-bottom: 5px;
+}
 .delivery_files {
   margin-bottom: 20px;
 }

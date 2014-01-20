@@ -89,6 +89,12 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'devilry_qualifiesforexam_points',
                   'devilry_qualifiesforexam_select',
                   'devilry_mathjax',
+                  'devilry_examiner',
+                  'devilry_feedbackeditor_simple',
+                  'devilry_gradingsystem',
+                  'devilry_gradingsystemplugin_points',
+                  'devilry_gradingsystemplugin_approved',
+                  'devilry_rest',
                  ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
