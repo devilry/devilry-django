@@ -22,6 +22,7 @@ if(Ext.isEmpty(querystring.routeTo)) {
             'Ext.form.field.ComboBox',
             'Ext.selection.DataViewModel',
             'Ext.selection.Model',
+            'Ext.layout.container.Anchor',
 
             'devilry_header.Header2',
             'devilry_header.Breadcrumbs',
