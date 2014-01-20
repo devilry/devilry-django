@@ -29,6 +29,9 @@ class AllGroupsOverview(DetailView):
     pk_url_kwarg = 'assignmentid'
 
     def get_context_data(self, **kwargs):
+        if 'selected_group_ids' in self.request.session:
+            del self.request.session['selected_group_ids']
+
         context = super(AllGroupsOverview, self).get_context_data(**kwargs)
 
         # Need to get queryset from custom manager.
