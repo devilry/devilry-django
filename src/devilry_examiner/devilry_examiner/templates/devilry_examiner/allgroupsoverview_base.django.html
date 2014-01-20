@@ -31,7 +31,7 @@
 
             <ul class="list-group">
                 <li class="list-group-item"><a href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">{% trans "Waiting for feedback" %}</a></li>
-                {% if assignment.delivery_types == 0 %}                    
+                {% if assignment.is_electronic %}                    
                     <li class="list-group-item"><a href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">{% trans "Waiting for deliveries" %}</a></li>
                 {% endif %}
                 <li class="list-group-item"><a href="{% url 'devilry_examiner_corrected' assignment.id %}">{% trans "Corrected" %}</a></li>
@@ -43,7 +43,7 @@
 
         <div class="col-sm-9">
             {% if groups %}
-                <div class="pull-right">
+                <div class="pull-right btn-group">
                     {% if groups.has_previous %}
                         <a href="?page={{ groups.previous_page_number }}" class="btn btn-default">
                             <i class="fa fa-chevron-left"></i>
@@ -67,12 +67,21 @@
                     {% endif %}
                 </div>
                 <p>
-                    <button class="btn btn-default" id="select_all_button">
-                        {% trans "Select All" %}
-                    </button>
-                    <button class="btn btn-default" id="deselect_all_button">
-                        {% trans "Deselect All" %}
-                    </button>
+                    <div class="btn-group">
+                        <button class="btn btn-default" id="select_all_button">
+                            {% trans "Select All" %}
+                        </button>
+                        <button class="btn btn-default" id="deselect_all_button">
+                            {% trans "Deselect All" %}
+                        </button>
+                    </div>
+
+                    {% if assignment.is_electronic %}
+                        <a href="{% url 'devilry_oldexaminer_compressedfiledownload' assignment.id %}" class="btn btn-default">
+                            <i class="fa fa-download"></i>
+                            {% trans "Download all deliveries" %}
+                        </a>                        
+                    {% endif %}
                 </p>
             {% endif %}
 
