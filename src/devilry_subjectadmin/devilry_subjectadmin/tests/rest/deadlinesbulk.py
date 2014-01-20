@@ -120,7 +120,7 @@ class TestRestDeadlinesBulkCreate(TestCase):
         for group in self._itergroups():
             deadlines = group.deadlines.all().order_by('-deadline')
             self.assertEquals(group.feedback, None)
-        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        new_deadline = datetime(2004, 12, 24, 20, 30)
         content, response = self._postas('adm', {'deadline': format_datetime(new_deadline),
                                                  'text': 'Created',
                                                  'createmode': 'failed'})
@@ -134,7 +134,7 @@ class TestRestDeadlinesBulkCreate(TestCase):
         self.assertFalse(g1.is_open)
 
 
-        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        new_deadline = datetime(2004, 12, 24, 20, 30)
         self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 0)
         content, response = self._postas('adm', {'deadline': format_datetime(new_deadline),
                                                  'text': 'Created',
@@ -167,7 +167,7 @@ class TestRestDeadlinesBulkCreate(TestCase):
         # g2 has no feedback
         self.assertEquals(self.testhelper.sub_p1_a1_g2.feedback, None)
 
-        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        new_deadline = datetime(2004, 12, 24, 20, 30)
         self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 0)
         content, response = self._postas('adm', {'deadline': format_datetime(new_deadline),
                                                  'text': 'Created',
@@ -194,7 +194,7 @@ class TestRestDeadlinesBulkCreate(TestCase):
         self.testhelper.add_to_path('uni;sub.p1.a1.extragroup')
         self.assertEquals(self.testhelper.sub_p1_a1_extragroup.deadlines.count(), 0)
 
-        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        new_deadline = datetime(2004, 12, 24, 20, 30)
         self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 0)
         content, response = self._postas('adm', {'deadline': format_datetime(new_deadline),
                                                  'text': 'Created',
@@ -221,7 +221,7 @@ class TestRestDeadlinesBulkCreate(TestCase):
         self.assertEquals(self.testhelper.sub_p1_a1_g1.deadlines.count(), 1)
         self.assertEquals(self.testhelper.sub_p1_a1_g2.deadlines.count(), 1)
 
-        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        new_deadline = datetime(2004, 12, 24, 20, 30)
         self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 0)
         content, response = self._postas('adm', {'deadline': format_datetime(new_deadline),
                                                  'text': 'Created',
@@ -246,7 +246,7 @@ class TestRestDeadlinesBulkCreate(TestCase):
         self.assertEquals(deadlines[0].text, 'Created')
 
     def test_post_createmode_specific_groups_nogroups(self):
-        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        new_deadline = datetime(2004, 12, 24, 20, 30)
         self.assertEquals(Deadline.objects.filter(deadline=new_deadline).count(), 0)
         content, response = self._postas('adm', {'deadline': format_datetime(new_deadline),
                                                  'text': 'Created',
@@ -312,9 +312,9 @@ class TestRestDeadlinesBulkUpdateReadOrDelete(TestCase):
     def test_put(self):
         self.assertEquals(self.testhelper.sub_p1_a1.publishing_time, datetime(2000, 1, 1, 22, 30, 51))
         self.assertEquals(self.testhelper.sub_p1_a1_g1_d1.deadline,
-                          datetime(2000, 1, 1, 22, 30, 51) + timedelta(days=5))
+                          datetime(2000, 1, 1, 22, 30) + timedelta(days=5))
 
-        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        new_deadline = datetime(2004, 12, 24, 20, 30)
         content, response = self._putas('adm', {'deadline': format_datetime(new_deadline),
                                                 'text': 'Hello'})
         self.assertEquals(response.status_code, 200)
@@ -332,9 +332,9 @@ class TestRestDeadlinesBulkUpdateReadOrDelete(TestCase):
     def test_put_nonetext(self):
         self.assertEquals(self.testhelper.sub_p1_a1.publishing_time, datetime(2000, 1, 1, 22, 30, 51))
         self.assertEquals(self.testhelper.sub_p1_a1_g1_d1.deadline,
-                          datetime(2000, 1, 1, 22, 30, 51) + timedelta(days=5))
+                          datetime(2000, 1, 1, 22, 30) + timedelta(days=5))
 
-        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        new_deadline = datetime(2004, 12, 24, 20, 30)
         content, response = self._putas('adm', {'deadline': format_datetime(new_deadline),
                                                 'text': None})
         self.assertEquals(response.status_code, 200)
@@ -357,13 +357,13 @@ class TestRestDeadlinesBulkUpdateReadOrDelete(TestCase):
         self.assertEquals(response.status_code, 403)
 
     def test_put_with_bulkdeadline_id(self):
-        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        new_deadline = datetime(2004, 12, 24, 20, 30)
         content, response = self._putas('adm', {'deadline': format_datetime(new_deadline),
                                                 'bulkdeadline_id': 'ignored'})
         self.assertEquals(response.status_code, 200)
 
     def test_put_group_ids(self):
-        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        new_deadline = datetime(2004, 12, 24, 20, 30)
         g1 = self.testhelper.sub_p1_a1_g1
         g2 = self.testhelper.sub_p1_a1_g2
         self.assertEquals(g1.deadlines.count(), 1)
@@ -410,14 +410,14 @@ class TestRestDeadlinesBulkUpdateReadOrDelete(TestCase):
 
     def test_delete_sanity(self):
         # Test that the deadline method actually does what it is supposed to do (only deletes what it should delete)
-        new_deadline = datetime(2004, 12, 24, 20, 30, 40)
+        new_deadline = datetime(2004, 12, 24, 20, 30)
         created_deadline = None
         for groupnum in xrange(2):
             group = getattr(self.testhelper, 'sub_p1_a1_g{0}'.format(groupnum))
             self.assertEquals(1, group.deadlines.count())
             created_deadline = group.deadlines.create(deadline=new_deadline) # NOTE: Does not matter which deadline object we user, since we only need the datetime and text to generate bulkdeadline_id
             self.assertEquals(2, group.deadlines.count())
-        self.testhelper.sub_p1_a1_g2.deadlines.create(deadline=datetime(2006, 12, 24, 20, 30, 40))
+        self.testhelper.sub_p1_a1_g2.deadlines.create(deadline=datetime(2006, 12, 24, 20, 30))
 
         self.testhelper.create_superuser('superuser')
         content, response = self._deleteas('superuser', deadline=created_deadline)
