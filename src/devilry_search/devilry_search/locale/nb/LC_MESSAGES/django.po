@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-19 17:13+0100\n"
+"POT-Creation-Date: 2014-01-20 03:50+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,47 +24,80 @@ msgstr "Om meg"
 
 #: templates/devilry_search/about_me.django.html:10
 msgid ""
-"Below you can see information about your profile that is stored in Devilry"
-msgstr "I tabellen under vises informasjon om din profil som er lagret i Devilry"
+"Below you can see information about your profile that is stored in Devilry. "
+"Report if the"
+msgstr ""
+"I tabellen under vises informasjon om din profil som er lagret i Devilry. Rapporter dersom"
 
-#: templates/devilry_search/about_me.django.html:16
+#: templates/devilry_search/about_me.django.html:12
+msgid " information is wrong"
+msgstr "informasjonen er feilaktig"
+
+#: templates/devilry_search/about_me.django.html:19
 msgid "Name"
 msgstr "Navn"
 
-#: templates/devilry_search/about_me.django.html:20
+#: templates/devilry_search/about_me.django.html:23
 msgid "Email Address"
 msgstr "E-postadresse"
 
-#: templates/devilry_search/about_me.django.html:24
+#: templates/devilry_search/about_me.django.html:27
 msgid "Username"
 msgstr "Brukernavn"
 
-#: templates/devilry_search/about_me.django.html:28
+#: templates/devilry_search/about_me.django.html:31
 msgid "Last login"
 msgstr "Sist innlogget"
 
-#: templates/devilry_search/about_me.django.html:33
-msgid "Log Out"
-msgstr "Logg Ut"
+#: templates/devilry_search/about_me.django.html:36
+msgid "Sign out"
+msgstr "Logg ut"
 
 #: templates/devilry_search/base.django.html:11
-#: templates/devilry_search/search.django.html:8 views/search.py:14
+#: templates/devilry_search/search.django.html:9 views/search.py:15
 #: views/search.py:26
 msgid "Search"
 msgstr "Søk"
 
-#: templates/devilry_search/search.django.html:19
+#: templates/devilry_search/search.django.html:11
+#, fuzzy
+msgid "You can search for anything that you have access to in Devilry."
+msgstr ""
+"I tabellen under vises informasjon om din profil som er lagret i Devilry"
+
+#: templates/devilry_search/search.django.html:21
 msgid "Content where you are student"
 msgstr "Innhold hvor du er student"
 
-#: templates/devilry_search/search.django.html:39
+#: templates/devilry_search/search.django.html:37
 msgid "Content where you are examiner"
 msgstr "Innhold hvor du er retter"
 
-#: templates/devilry_search/search.django.html:59
+#: templates/devilry_search/search.django.html:43
+#: templates/devilry_search/search.django.html:68
+msgid "Group"
+msgstr "Gruppe"
+
+#: templates/devilry_search/search.django.html:49
+#: templates/devilry_search/search.django.html:74
+msgid "Assignment"
+msgstr "Oppgave"
+
+#: templates/devilry_search/search.django.html:62
 msgid "Content where you are admin"
 msgstr "Innhold hvor du er administrator"
 
-#: views/search.py:15
-msgid "TODO"
-msgstr ""
+#: templates/devilry_search/search.django.html:80
+msgid "Period"
+msgstr "Semester"
+
+#: templates/devilry_search/search.django.html:86
+msgid "Subject"
+msgstr "Emne"
+
+#: templates/devilry_search/search.django.html:92
+msgid "Node"
+msgstr "Node"
+
+#~ msgid "Log Out"
+#~ msgstr "Logg Ut"
