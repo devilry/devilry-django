@@ -30,12 +30,20 @@
             {% block navbar %}
 
             <ul class="list-group">
-                <li class="list-group-item"><a href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">{% trans "Waiting for feedback" %}</a></li>
+                <li class="list-group-item" >
+                    <a href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">{% trans "Waiting for feedback" %}</a>
+                </li>
                 {% if assignment.is_electronic %}                    
-                    <li class="list-group-item"><a href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">{% trans "Waiting for deliveries" %}</a></li>
+                    <li class="list-group-item">
+                        <a href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">{% trans "Waiting for deliveries" %}</a>
+                    </li>
                 {% endif %}
-                <li class="list-group-item"><a href="{% url 'devilry_examiner_corrected' assignment.id %}">{% trans "Corrected" %}</a></li>
-                <li class="list-group-item"><a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">{% trans "All" %}</a></li>
+                <li class="list-group-item">
+                    <a href="{% url 'devilry_examiner_corrected' assignment.id %}">{% trans "Corrected" %}</a>
+                </li>
+                <li class="list-group-item">
+                    <a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">{% trans "All" %}</a>
+                </li>
             </ul>
 
             {% endblock navbar %}
@@ -66,7 +74,7 @@
                         </button>
                     {% endif %}
                 </div>
-                <p>
+                <div class="btn-toolbar" role="toolbar">
                     <div class="btn-group">
                         <button class="btn btn-default" id="select_all_button">
                             {% trans "Select All" %}
@@ -82,7 +90,7 @@
                             {% trans "Download all deliveries" %}
                         </a>                        
                     {% endif %}
-                </p>
+                </div>
             {% endif %}
 
             {% block content %}
