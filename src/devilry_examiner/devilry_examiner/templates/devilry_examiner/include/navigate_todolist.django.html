@@ -2,7 +2,7 @@
 {% load url from future %}
 
 
-<div class="navigate-todolist">
+<div class="navigate-todolist btn-group btn-group-lg">
     {% if previous_group_waiting_for_feedback %}
         <a href="{% url 'devilry_examiner_last_delivery_or_groupoverview' groupid=previous_group_waiting_for_feedback.id %}"
                 class="btn btn-default"
