@@ -87,7 +87,7 @@ class GradingSystemPluginInterface(object):
         """
         Get the feedback editing URL for this plugin for the given ``assignmentid``.
 
-        :param deliveryid: The ID of the delivery to provide feedback for.
+        :param assignmentid: The ID of the delivery to provide feedback for.
         """
         raise NotImplementedError("get_bulkedit_feedback_url() MUST be implemented")
 
