@@ -10,6 +10,7 @@ setup(name = 'devilry_gradingsystem',
       install_requires = [
           'setuptools',
           'django-crispy-forms',
+          'django_decoupled_docs',
       ],
       include_package_data=True,
       long_description = 'Grading system plugin framework, base classes, base templates, etc.',

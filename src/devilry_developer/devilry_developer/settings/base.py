@@ -35,6 +35,7 @@ INSTALLED_APPS += [
     'devilry_sandbox',
 
     'devilry_developer',
+    'django_decoupled_docs',
     'simple_rest',
 
     # Not apps, but here for the Django test system to discover them:

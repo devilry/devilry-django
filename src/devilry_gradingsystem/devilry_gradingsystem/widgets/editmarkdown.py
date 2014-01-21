@@ -12,6 +12,5 @@ class EditMarkdownLayoutObject(LayoutObject):
         field_instance = form.fields['feedbacktext']
         bound_field = BoundField(form, field_instance, 'feedbacktext')
         #print dir(bound_field)
-        return render_to_string(self.template, Context({
-            'field': bound_field
-        }))
+        context['field'] = bound_field
+        return render_to_string(self.template, context)
