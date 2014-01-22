@@ -54,21 +54,9 @@ class TestAddDeadlineView(TestCase):
         })
         self.assertEquals(response.status_code, 404)
 
-    def test_get_200_when_examiner(self):
-        group1 = self.assignment1builder\
-            .add_group(examiners=[self.examiner1]).group
-        response = self._getas(self.examiner1, {
-            'group_ids': [group1.id]
-        })
-        self.assertEquals(response.status_code, 200)
-
-    def test_get_404_when_not_examiner(self):
-        group1 = self.assignment1builder\
-            .add_group().group # Not adding any examiners.
-        response = self._getas(self.examiner1, {
-            'group_ids': [group1.id]
-        })
-        self.assertEquals(response.status_code, 404)
+    def test_get_405(self):
+        response = self._getas(self.examiner1)
+        self.assertEquals(response.status_code, 405)
 
 
     #######################################
@@ -93,7 +81,7 @@ class TestAddDeadlineView(TestCase):
             .add_group(examiners=[self.examiner1]).group
         response = self._postas(self.examiner1, {
             'group_ids': [group1.id],
-            'give_another_chance': 'true'
+            'give_another_chance': 'on'
         })
         self.assertEquals(response.status_code, 200)
         html = response.content
@@ -116,7 +104,7 @@ class TestAddDeadlineView(TestCase):
             'group_ids': [group1builder.group.id],
             'deadline': isoformat_datetime(deadline_datetime),
             'text': 'Hello world',
-            'submit_primary': 'i18nlabel'
+            'add_deadline_form': 'i18nlabel'
         })
         self.assertEquals(response.status_code, 302)
         group1builder.reload_from_db()
@@ -135,7 +123,7 @@ class TestAddDeadlineView(TestCase):
             'group_ids': [group1builder.group.id, group2builder.group.id],
             'deadline': isoformat_datetime(deadline_datetime),
             'text': 'Hello world',
-            'submit_primary': 'i18nlabel'
+            'add_deadline_form': 'i18nlabel'
         })
         self.assertEquals(response.status_code, 302)
 
@@ -157,7 +145,7 @@ class TestAddDeadlineView(TestCase):
             'deadline': isoformat_datetime(deadline_datetime),
             'text': 'Hello world',
             'why_created': 'examiner-gave-another-chance',
-            'submit_primary': 'i18nlabel'
+            'add_deadline_form': 'i18nlabel'
         })
         self.assertEquals(response.status_code, 302)
         group1builder.reload_from_db()
@@ -170,7 +158,7 @@ class TestAddDeadlineView(TestCase):
         response = self._postas(self.examiner1, {
             'group_ids': [group1builder.group.id],
             'deadline': isoformat_datetime(deadline_datetime),
-            'submit_primary': 'i18nlabel',
+            'add_deadline_form': 'i18nlabel',
             'no_text': 'on'
         })
         self.assertEquals(response.status_code, 302)
@@ -185,7 +173,7 @@ class TestAddDeadlineView(TestCase):
         response = self._postas(self.examiner1, {
             'group_ids': [group1builder.group.id],
             'deadline': isoformat_datetime(deadline_datetime),
-            'submit_primary': 'i18nlabel'
+            'add_deadline_form': 'i18nlabel'
         })
         self.assertEquals(response.status_code, 200)
         group1builder.reload_from_db()
@@ -200,7 +188,7 @@ class TestAddDeadlineView(TestCase):
         response = self._postas(self.examiner1, {
             'group_ids': [group1builder.group.id],
             'deadline': isoformat_datetime(deadline_datetime),
-            'submit_primary': 'i18nlabel',
+            'add_deadline_form': 'i18nlabel',
             'no_text': 'on',
             'text': 'Test'
         })

@@ -2,28 +2,72 @@ from django.views.generic.detail import DetailView
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.http import Http404
+from django import forms
 from devilry.apps.core.models import Assignment
 from devilry_examiner.forms import GroupIdsForm
 
 
 
+class OptionsForm(GroupIdsForm):
+    success_url = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput())
+    cancel_url = forms.CharField(
+        required=False,
+        widget=forms.HiddenInput())
+
+
+
 class BulkViewBase(DetailView):
+    """
+    Handles the bulk action on selected groups workflow.
+
+    How it works
+    ============
+    We only allow POST requests.
+    
+    Options form
+    ------------
+    We define an options form that is validated on the first POST. This form
+    should inherit from :class:`.OptionsForm`, which validates the ID of the
+    selected groups.
+
+    Primary forms
+    -------------
+    We also define one or more primary forms. A primary form is a form that the user
+    interracts with. Lets use the bulk create feedback preview view as an example. In this
+    view, we create two primary forms:
+
+    1. The form wrapping the publish button. This form has the view as POST url and the group
+       IDs and any other options (first given in the options form), in hidden fields.
+    2. The form wrapping the edit draft button. This form has the edit draft view as the
+       POST url and the group IDs and any other options (first given in the options form),
+       in hidden fields.
+
+    As we can see, the common feature of the forms is that they forward the data first given
+    in the options form. Handling this is easy:
+
+    1. Make sure all primary forms inherit from the options form.
+    2. Make sure to initialize all primary forms with ``request.POST`` as input.
+       We handle this automatically.
+    3. Only validate the submitted form.
+       We handle this automatically.
+    """
     model = Assignment
     pk_url_kwarg = 'assignmentid'
     context_object_name = 'assignment'
 
-    #: The form.
-    #: The primary submit button (the one that submits your form for 
-    #: saving), must be named ``submit_primary``.
-    #: You must also provide a ``submit_cancel`` button that can be
-    #: clicked to cancel the "wizard". Clicking the cancel button takes
-    #: the user to :meth:`get_cancel_url`.
-    form_class = None
+    #: We only allow POST requests
+    http_method_names = ['post']
 
-    groupidsform_class = GroupIdsForm
+    #: The form used to parse initial options.
+    optionsform_class = OptionsForm
+
+    #: Dictionary mapping submit button name to primary form class.
+    primaryform_classes = {}
 
     #: Reselect the originally selected groups when redirecting back to the overview?
-    #: Setting this to ``False`` deletes selected_group_ids from the session in form_valid().
+    #: Setting this to ``False`` deletes selected_group_ids from the session in submitted_primaryform_valid().
     reselect_groups_on_success = True
 
     #: Set ``selected_group_ids`` in the session? This is required if you want back
@@ -31,113 +75,190 @@ class BulkViewBase(DetailView):
     #: version of the view, set this to ``False``.
     set_selected_group_ids = True
 
+
     def get_queryset(self):
+        """
+        Should not have to override this, but it may be useful to override it
+        to add extra ``select_related`` or ``prefetch_related``.
+        """
         return Assignment.objects.filter_examiner_has_access(self.request.user)\
             .select_related(
                 'parentnode', # Period
                 'parentnode__parentnode') # Subject
 
     def get_success_url(self):
-        return reverse('devilry_examiner_allgroupsoverview', kwargs={'assignmentid': self.object.id})
+        if self.optionsdict['success_url']:
+            return self.optionsdict['success_url']
+        else:
+            return reverse('devilry_examiner_allgroupsoverview', kwargs={'assignmentid': self.object.id})
 
     def get_cancel_url(self):
-        return self.get_success_url()
-
-    def get_initial(self):
-        """
-        Get initial form data (just like Django FormView).
-        """
-        return {}
-
-    def get_initial_formdata(self):
-        """
-        Get the initial POST data - only here to let us debug with group_ids in querystring.
-        """
-        if self.request.method == 'POST':
-            querydict = self.request.POST
+        if self.optionsdict['cancel_url']:
+            return self.optionsdict['cancel_url']
         else:
-            querydict = self.request.GET
-        if 'selected_group_ids' in self.request.session and not 'group_ids' in querydict:
-            querydict = querydict.copy()
-            querydict.setlist('group_ids', self.request.session['selected_group_ids'])
-        return querydict
+            return self.get_success_url()
 
-    def get_form_class(self):
-        return self.form_class
 
-    def get_groupidsform_class(self):
-        return self.groupidsform_class
+    @property
+    def optionsdict(self):
+        return self.__optionsform.cleaned_data
+    
+    @property
+    def selected_groups(self):
+        return self.__optionsform.cleaned_groups
+    
 
-    def get(self, *args, **kwargs):
-        # Redirect to POST to make it easier to debug/play with the initial post data
-        return self.post(*args, **kwargs)
 
-    def form_valid(self, form):
-        if self.set_selected_group_ids \
-                and 'selected_group_ids' in self.request.session \
-                and not self.reselect_groups_on_success:
-            del self.request.session['selected_group_ids']
+    #
+    #
+    # Options form
+    #
+    #
+
+    def optionsform_invalid(self, groupidsform):
+        """
+        Called if the options for is not valid. Should raise an exception,
+        or return a HttpResponse. Defaults to raising the django.http.Http404
+        exception.
+        """
+        raise Http404
+
+    def get_optionsform_class(self):
+        return self.optionsform_class
+
+    def optionsform_valid(self, context_data):
+        """
+        Called on the first POST request if the options form is valid.
+
+        The ``context_data`` will contain the following data:
+
+            primaryforms
+                Dict of all primary forms returned by :meth:`.get_primaryform_classes`
+                initialized with :meth:`.get_primaryform_initial_data`. The key 
+                is the submit button name from get_primaryform_classes.
+
+        Defaults to calling :meth:`.render_view` with the given ``context_data``.
+        """
+        return self.render_view(context_data)
+
+    #
+    #
+    # Primary forms
+    #
+    #
+
+    def get_primaryform_classes(self):
+        """
+        Return a dict mapping submit button name to form class.
+
+        ALL forms MUST inherit from :obj:`.optionsform_class`.
+        """
+        return self.primaryform_classes
+
+    def get_primaryform_initial_data(self, formclass):
+        """
+        Get initial form data for the given primary ``formclass`` (just like Django FormView.get_initial()).
+        """
+        return self.optionsdict.copy()
+
+    def submitted_primaryform_valid(self, form, context_data):
+        """
+        Called when the submitted primary form is valid. If you need special Handling
+        for each primary form, use ``isintance(form, MyFormClass)``.
+
+        The default action is to redirect to the success url.
+        """
+        # if self.set_selected_group_ids \
+        #         and 'selected_group_ids' in self.request.session \
+        #         and not self.reselect_groups_on_success:
+        #     del self.request.session['selected_group_ids']
         return redirect(self.get_success_url())
 
-    def is_primary_submit(self):
-        return 'submit_primary' in self.request.POST
+    def submitted_primaryform_invalid(self, form, context_data):
+        """
+        Called when the submitted primaryform is invalid. ``context_data``
+        will contain the same data as it does in :meth:`.optionsform_valid`.
+        """
+        return self.render_view(context_data)
 
-    def groupids_form_invalid(self, groupidsform):
-        raise Http404
+
+    #
+    #
+    # Handle POST requests - should not have to override any of these methods
+    #
+    #
+
+    def get_common_form_kwargs(self):
+        return dict(assignment=self.assignment, user=self.request.user)
+
+    def _initialize_primaryforms(self):
+        forms = {}
+        submitted_primaryform = None
+        for submitname, formclass in self.get_primaryform_classes().iteritems():
+            submitted = submitname in self.request.POST
+            if submitted:
+                form = formclass(self.request.POST, **self.get_common_form_kwargs())
+                submitted_primaryform = form
+            else:
+                form = formclass(initial=self.get_primaryform_initial_data(formclass),
+                    **self.get_common_form_kwargs())
+            forms[submitname] = form
+        return forms, submitted_primaryform
 
     def post(self, *args, **kwargs):
         """
-        Verfies that we get a list of at least one group_ids, and that all group_ids
-        are for groups within this assignment where the requesting user is examiner.
+        Routes POST requests to methods that can be overridden in subclasses:
 
-        Expects that the name of the primary submit button of the form is ``submit_primary``.
-
-        On the initial visit (before posting the form), we add ``group_ids_form``
-        to the context, so you can get it in ``get_context_data``, or just use it
-        to list the selected groups in the template like so::
-
-            <ul>
-                {% for group in group_ids_form.cleaned_groups %}
-                    <li>{{ group.long_displayname }}</li>
-                {% endfor %}
-            </ul>
-
-        On each request, we add ``form`` to the template context.
+        - If ``submit_cancel`` in POST, redirect to :meth:`.get_cancel_url`.
+        - Else:
+            - Validate :meth:`.get_optionsform_class`.
+            - If the options for is valid:
+                - If one of the keys in :meth:`.get_primaryform_classes` is in POST
+                    - Validate the submitted form.
+                    - If the submitted form is valid:
+                        - Return :meth:`.submitted_primaryform_valid`
+                    - Else:
+                        - Return :meth:`.submitted_primaryform_invalid`
+                - Else:
+                    - Return :meth:`.optionsform_valid`.
+            - If the options for is NOT valid:
+                - Return :meth:`.optionsform_invalid`.
         """
         self.object = self.get_object()
-        assignment = self.object
-        self.groups = None
-        common_form_kwargs = dict(assignment=assignment, user=self.request.user)
+        self.assignment = self.object
 
-        context_data = {'object': self.object}
-
-        form = None
-        if self.is_primary_submit():
-            form = self.get_form_class()(self.request.POST, **common_form_kwargs)
-            if form.is_valid():
-                context_data['selected_groups'] = form.cleaned_groups
-                return self.form_valid(form)
-        elif 'submit_cancel' in self.request.POST:
+        if 'submit_cancel' in self.request.POST:
             return redirect(self.get_cancel_url())
         else:
-            # When redirected from another view like allgroupview with a list of group_ids
-            # - we use a GroupIdsForm to parse the list
-            groupidsform = self.get_groupidsform_class()(self.get_initial_formdata(), **common_form_kwargs)
-            context_data['group_ids_form'] = groupidsform
-            if groupidsform.is_valid():
-                groupids = groupidsform.cleaned_data['group_ids']
-                context_data['selected_groups'] = groupidsform.cleaned_groups
-                if self.set_selected_group_ids:
-                    self.request.session['selected_group_ids'] = groupids
-                initial = self.get_initial()
-                initial['group_ids'] = groupids
-                form = self.get_form_class()(
-                    initial=initial,
-                    **common_form_kwargs)
+            # NOTE: We ALWAYS validate the options form, to ensure all forms inherit
+            #       from it, and to ensure we always have the options available.
+            optionsform = self.get_optionsform_class()(self.request.POST, **self.get_common_form_kwargs())
+            if optionsform.is_valid():
+                self.__optionsform = optionsform
+                context_data = {}
+                forms, submitted_primaryform = self._initialize_primaryforms()
+                context_data['primaryforms'] = forms
+                if submitted_primaryform:
+                    if submitted_primaryform.is_valid():
+                        return self.submitted_primaryform_valid(submitted_primaryform, context_data)
+                    else:
+                        return self.submitted_primaryform_invalid(submitted_primaryform, context_data)
+                else:
+                    return self.optionsform_valid(context_data)
             else:
-                self.groupids_form_invalid(groupidsform)
+                return self.optionsform_invalid(optionsform)
 
-        # Build context just like DetailView.get, but add group_ids_form if initial load
-        context_data['form'] = form
+
+    def render_view(self, context_data):
+        """
+        Render the template with the given ``context_data``. Calls
+        ``self.get_context_data(**context_data)``, so you should
+        override ``get_context_data`` instead of this method to
+        add template variables.
+
+        Should not have to override this method, but you will
+        probably want to call it from some of your ``_valid(...)``
+        and ``_invalid(...)`` methods.
+        """
         context = self.get_context_data(**context_data)
         return self.render_to_response(context)
