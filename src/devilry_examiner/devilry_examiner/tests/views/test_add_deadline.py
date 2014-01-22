@@ -26,12 +26,8 @@ class TestAddDeadlineView(TestCase):
         return self.client.get(self.url, *args, **kwargs)
 
     def _postas(self, user, *args, **kwargs):
-        querystring = kwargs.pop('querystring', None)
-        url = self.url
-        if querystring:
-            url = '{}?{}'.format(url, urlencode(querystring))
         self.client.login(username=user.username, password='test')
-        return self.client.post(url, *args, **kwargs)
+        return self.client.post(self.url, *args, **kwargs)
 
 
     ##############################
