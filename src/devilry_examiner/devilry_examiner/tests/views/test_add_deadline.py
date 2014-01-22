@@ -77,6 +77,9 @@ class TestAddDeadlineView(TestCase):
         self.assertTrue(cssExists(html, 'input[name=why_created]'))
         self.assertTrue(cssExists(html, 'textarea[name=text]'))
         self.assertTrue(cssExists(html, 'input[name=no_text]'))
+        self.assertTrue(cssExists(html, '[name=add_deadline_form]'))
+        self.assertTrue(cssExists(html, '[name=submit_cancel]'))
+
 
     def test_give_another_chance_sets_initial_text(self):
         group1 = self.assignment1builder\
