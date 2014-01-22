@@ -755,6 +755,45 @@ class TestAssignmentGroup2(TestCase):
                 UserBuilder('student2').user)
         self.assertEquals(group1builder.group.long_displayname, u'My group (Student One \u00E5, student2)')
 
+    def test_close_groups(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        group2builder = assignmentbuilder.add_group()
+        group3builder = assignmentbuilder.add_group()
+        for groupbuilder in (group1builder, group2builder, group3builder):
+            self.assertTrue(groupbuilder.group.is_open)
+            self.assertEquals(groupbuilder.group.delivery_status, 'no-deadlines')
+        AssignmentGroup.objects.filter(id__in=(group1builder.group.id, group2builder.group.id))\
+            .close_groups()
+        group1builder.reload_from_db()
+        group2builder.reload_from_db()
+        group3builder.reload_from_db()
+        self.assertFalse(group1builder.group.is_open)
+        self.assertFalse(group2builder.group.is_open)
+        self.assertTrue(group3builder.group.is_open)
+        self.assertEquals(group1builder.group.delivery_status, 'closed-without-feedback')
+        self.assertEquals(group2builder.group.delivery_status, 'closed-without-feedback')
+        self.assertEquals(group3builder.group.delivery_status, 'no-deadlines')
+
+
+    def test_close_groups_queryset_vs_manual(self):
+        # Checks that AssignmentGroup.objects.close_groups() works the same as closing and calling save()
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        group2builder = assignmentbuilder.add_group()
+        AssignmentGroup.objects.filter(id=group1builder.group.id).close_groups()
+        group2builder.group.is_open = False
+        group2builder.group.save()
+        group1builder.reload_from_db()
+        group2builder.reload_from_db()
+        self.assertFalse(group1builder.group.is_open)
+        self.assertFalse(group2builder.group.is_open)
+        self.assertEquals(group1builder.group.delivery_status, 'closed-without-feedback')
+        self.assertEquals(group2builder.group.delivery_status, 'closed-without-feedback')
+
+
 
 
 class TestAssignmentGroupManager(TestCase):

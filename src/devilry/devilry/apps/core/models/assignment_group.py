@@ -69,10 +69,19 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             delivery_status="waiting-for-something",
             last_deadline__deadline__gt=now)
 
+    def close_groups(self):
+        return self.update(
+            is_open=False,
+            delivery_status='closed-without-feedback'
+        )
+
 
 class AssignmentGroupManager(models.Manager):
     def get_queryset(self):
         return AssignmentGroupQuerySet(self.model, using=self._db)
+
+    def filter(self, *args, **kwargs):
+        return self.get_queryset().filter(*args, **kwargs)
 
     def filter_is_examiner(self, user):
         """
@@ -107,6 +116,13 @@ class AssignmentGroupManager(models.Manager):
 
     def filter_waiting_for_deliveries(self):
         return self.get_queryset().filter_waiting_for_deliveries()
+
+    def close_groups(self):
+        """
+        Performs an efficient update of all the groups in the queryset
+        setting ``is_open=False`` and ``delivery_status="closed-without-feedback"``.
+        """
+        return self.get_queryset().close_groups()
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
