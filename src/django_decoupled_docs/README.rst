@@ -124,7 +124,7 @@ And then you can use ``VersionedDocProxy`` as follows::
 
     decoupled_docs_registry.add('my-markdown-editor/tutorial', DocProxy(
         # The default english docs
-        default = 'http://read-the-docs.org/my-markdown-editor/en/{version}/tutorial.html',
+        en = 'http://read-the-docs.org/my-markdown-editor/en/{version}/tutorial.html',
 
         # The Norwegian Bokmaal translation
         nb = 'http://read-the-docs.org/my-markdown-editor/nb/{version}/tutorial.html',
