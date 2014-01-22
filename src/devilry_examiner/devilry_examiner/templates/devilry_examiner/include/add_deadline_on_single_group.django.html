@@ -10,7 +10,7 @@ Required template context variables:
 {% endcomment %}
 {% load i18n %}
 {% load url from future %}
-<form class="form-inline form-inline-render-inline-block" action="{% url 'devilry_examiner_add_deadline' group.assignment.id %}" method="get">
+<form class="form-inline form-inline-render-inline-block" action="{% url 'devilry_examiner_add_deadline' group.assignment.id %}" method="post">
     <input type="hidden" name="group_ids" value="{{ group.id }}">
     <input type="hidden" name="give_another_chance" value="true">
     <input type="hidden" name="success_url" value="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
