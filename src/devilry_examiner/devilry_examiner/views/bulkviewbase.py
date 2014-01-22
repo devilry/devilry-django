@@ -101,10 +101,24 @@ class BulkViewBase(DetailView):
 
     @property
     def optionsdict(self):
+        """
+        Get the cleaned data from the options form.
+
+        This is available in all of the ``*_valid`` and ``*_invalid`` methods
+        except ``optionsform_invalid``. When it is not available, it raises
+        AttributeError.
+
+        Available in the template context under the same name.
+        """
         return self.__optionsform.cleaned_data
     
     @property
     def selected_groups(self):
+        """
+        Get the QuerySet for the selected groups.
+
+        Available just like :class:`.optionsdict`.
+        """
         return self.__optionsform.cleaned_groups
     
 
@@ -266,6 +280,9 @@ class BulkViewBase(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(BulkViewBase, self).get_context_data(**kwargs)
-        context['optionsdict'] = self.optionsdict
-        context['selected_groups'] = self.selected_groups
+        try:
+            context['optionsdict'] = self.optionsdict
+            context['selected_groups'] = self.selected_groups
+        except AttributeError:
+            pass
         return context
