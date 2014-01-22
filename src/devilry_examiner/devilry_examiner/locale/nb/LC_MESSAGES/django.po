@@ -269,8 +269,7 @@ msgid ""
 msgstr ""
 "Den siste tilbakemeldingen gitt til denne gruppen var en ikke bestått "
 "karakter. Dersom det er nødvendig kan du gi en ny sjanse til å levere "
-"forbedret utgave. For å gjøre dette må definere en ny innleveringsfrist på "
-"gruppen"
+"forbedret utgave. For å gjøre dette må du gi gruppen en ny innleveringsfrist."
 
 #: templates/devilry_examiner/include/give_another_chance_question.django.html:17
 msgid "Add new deadline"
