@@ -1,0 +1,32 @@
+{% extends "devilry_examiner/base.django.html" %}
+{% load i18n %}
+{% load url from future %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {% trans "Add deadline" %} - {{ assignment.short_name }} - {{ assignment.parentnode.get_path }}
+{% endblock title %}
+
+{% block body %}
+<div class="container">
+    <div class="page-header page-header-with-subheader">
+        <h1>{% trans "Close groups" %}</h1>
+        <p class="subheader">
+            {{ assignment.long_name }} &mdash; {{ assignment.parentnode.parentnode.long_name}}, {{ assignment.parentnode.long_name }}
+        </p>
+    </div>
+
+    <h2>{% trans "Close the following groups?" %}</h2>
+    <ul class="list-inline">
+        {% for group in selected_groups %}
+            <li>{{ group.long_displayname }}</li>
+        {% endfor %}
+    </ul>
+
+    <p class="text-muted">
+        {% trans "Closing a group without feedback, indicates the the group will get the lowest possible score on the assignment. You can regret this choice at any time, and give the group another chance." %}
+    </p>
+
+    {% crispy primaryforms.close_groups_confirm_form %}
+</div>
+{% endblock %}
