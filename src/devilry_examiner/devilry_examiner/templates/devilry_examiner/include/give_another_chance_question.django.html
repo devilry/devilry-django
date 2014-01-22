@@ -1,3 +1,16 @@
+{% comment %}
+
+Include template to "give another chance" to a group when they have been given
+a failing grade. We show this on the delivery where the feedback was given,
+and on the singlegroupoverview for any corrected group with failing grade.
+
+Required template context variables:
+
+    group
+        The AssignmentGroup.
+    request
+        Will be available as long as you do not supply the ``only`` parameter to the include tag.
+{% endcomment %}
 {% load i18n %}
 {% load url from future %}
 
@@ -8,15 +21,7 @@
             {% trans "The last feedback for this group is a failing grade. If appropriate, you can give them another chance. To give them another chance, you need to give them a deadline where they can make another delivery." %}
         </p>
         <p>
-            <form class="form" action="{% url 'devilry_examiner_add_deadline' group.assignment.id %}" method="get">
-                <input type="hidden" name="group_ids" value="{{ group.id }}">
-                <input type="hidden" name="give_another_chance" value="true">
-                <input type="hidden" name="success_url" value="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
-                <input type="hidden" name="cancel_url" value="{{ request.get_full_path }}">
-                <button class="btn btn-default" type="submit">
-                    {% trans "Add new deadline" %}
-                </button>
-            </form>
-        </a>
+            {% include "devilry_examiner/include/add_deadline_on_single_group.django.html" %}
+        </p>
     </div>
 {% endif %}
