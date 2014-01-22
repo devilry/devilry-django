@@ -262,3 +262,10 @@ class BulkViewBase(DetailView):
         """
         context = self.get_context_data(**context_data)
         return self.render_to_response(context)
+
+
+    def get_context_data(self, **kwargs):
+        context = super(BulkViewBase, self).get_context_data(**kwargs)
+        context['optionsdict'] = self.optionsdict
+        context['selected_groups'] = self.selected_groups
+        return context
