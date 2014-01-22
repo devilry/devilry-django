@@ -125,27 +125,19 @@
                             </td>
 
                             <td class="hidden-xs">
-                                {% if group.get_status == "waiting-for-deliveries" %}
-                                <button type="button" class="btn btn-default hidden
-                                                             hidden-xs pull-right">{{ group.get_status|status_to_buttontext}}</button>
-                                {% elif group.get_status == "waiting-for-feedback" %}
-                                
-                                {% if group.last_delivery %}
-
-                                <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singledeliveryview' group.last_delivery.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
-
-                                {% else %}
-                                
-                                <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singlegroupoverview' group.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
-
+                                {% if group.get_status == "waiting-for-feedback" %}
+                                    <a class="btn btn-default pull-right"
+                                            href="{% url 'devilry_examiner_last_delivery_or_groupoverview' group.id %}"
+                                            role="button">
+                                        {% trans "Write feedback" %}
+                                    </a>
+                                {% elif group.get_status == 'corrected' %}
+                                    <a class="btn btn-default hidden-xs pull-right"
+                                          href="{% url 'devilry_examiner_singledeliveryview' group.last_delivery.id %}"
+                                            role="button">
+                                        {% trans "Show feedback" %}
+                                    </a>
                                 {% endif %}
-
-                                {% else %}
-
-                                <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singlegroupoverview' group.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
-
-                                {% endif %}
-
                             </td>
                         </tr>
 
