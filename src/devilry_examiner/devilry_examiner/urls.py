@@ -1,6 +1,5 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib.auth.decorators import login_required
-from django.views.i18n import javascript_catalog
 
 from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.dashboard import DashboardView
@@ -14,12 +13,8 @@ from .views.singledelivery import SingleDeliveryView
 from .views.add_deadline import AddDeadlineView
 from .views.lastdelivery_or_groupoverview_redirect import LastDeliveryOrGroupOverviewRedirectView
 
-i18n_packages = get_javascript_catalog_packages(
-    #'devilry_examiner',
-    'devilry_extjsextras', 'devilry.apps.core')
 
-urlpatterns = patterns(
-    'devilry_examiner',
+urlpatterns = patterns('devilry_examiner',
     #url('^rest/', include('devilry_examiner.rest.urls')),
     url('^$', login_required(DashboardView.as_view()),
         name='devilry_examiner_dashboard'),
@@ -47,14 +42,9 @@ urlpatterns = patterns(
         login_required(SingleDeliveryView.as_view()),
         name='devilry_examiner_singledeliveryview'),
     url('^last_delivery_or_groupoverview/(?P<groupid>\d+)$',
-        login_required(
-            LastDeliveryOrGroupOverviewRedirectView.as_view(
-            )),
+        login_required(LastDeliveryOrGroupOverviewRedirectView.as_view()),
         name='devilry_examiner_last_delivery_or_groupoverview'),
     url('^add_deadline/(?P<assignmentid>\d+)$',
         login_required(AddDeadlineView.as_view()),
-        name='devilry_examiner_add_deadline'),
-    url('^i18n.js$', javascript_catalog,
-        kwargs={'packages': i18n_packages},
-        name='devilry_examiner_i18n')
+        name='devilry_examiner_add_deadline'))
 )
