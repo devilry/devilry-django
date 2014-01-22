@@ -101,7 +101,7 @@ class AddDeadlineForm(AddDeadlineOptionsForm):
             'why_created',
             HTML('<hr>'),
             ButtonHolder(
-                Submit('submit_primary', _('Add deadline'), css_class='pull-right'),
+                Submit('add_deadline_form', _('Add deadline'), css_class='pull-right'),
                 DefaultSubmit('submit_cancel', _('Cancel')),
             )
         )
