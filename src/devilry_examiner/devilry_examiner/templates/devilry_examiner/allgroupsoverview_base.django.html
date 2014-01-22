@@ -108,15 +108,18 @@
                                     </a>
                                 </h3>
                                 
-                                <p class="text-{{ group|group_delivery_status_to_bootstrapclass }} deliverystatus">{{ group.get_status|formatted_status }}
+                                <p class="text-{{ group|group_delivery_status_to_bootstrapclass }} deliverystatus">
+                                    {{ group.get_status|formatted_status }}
 
-                               {% if group.delivery_status == 'corrected' %}
-                                    &mdash;
-                                <small>
-                                        {% trans "Grade" %}: {{ group.feedback.grade }}
-                                        ({{ group.feedback.is_passing_grade|format_is_passing_grade }})
-                                </small>
-                                {% endif %}
+                                    {% if group.delivery_status == 'corrected' %}
+                                        &mdash;
+                                        <small>
+                                            {% trans "Grade" %}: {{ group.feedback.grade }}
+                                            ({{ group.feedback.is_passing_grade|format_is_passing_grade }})
+                                        </small>
+                                    {% elif group.get_status == 'waiting-for-feedback' and group.assignment.is_electronic and not group.last_delivery %}
+                                        <small class="text-warning">({% trans "No deliveries" %})</small>
+                                    {% endif %}
                                 </p>
  
                             </td>
