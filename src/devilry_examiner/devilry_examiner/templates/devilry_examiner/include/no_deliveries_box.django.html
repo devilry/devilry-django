@@ -21,7 +21,7 @@ Required template context variables:
         <p>
             {% include "devilry_examiner/include/add_deadline_on_single_group.django.html" %}
             
-            <form class="form-inline form-inline-render-inline-block" action="{% url 'devilry_examiner_add_deadline' group.assignment.id %}" method="get">
+            <form class="form-inline form-inline-render-inline-block" action="{% url 'devilry_examiner_close_groups' group.assignment.id %}" method="post">
                 <input type="hidden" name="group_ids" value="{{ group.id }}">
                 <input type="hidden" name="success_url" value="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
                 <input type="hidden" name="cancel_url" value="{{ request.get_full_path }}">

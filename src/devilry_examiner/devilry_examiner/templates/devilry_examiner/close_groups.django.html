@@ -16,14 +16,16 @@
         </p>
     </div>
 
-    <h2>{% trans "Close the following groups?" %}</h2>
+    <div class="alert alert-info">
+    <strong>{% trans "Please confirm that you want to close the following groups" %}:</strong>
     <ul class="list-inline">
         {% for group in selected_groups %}
             <li>{{ group.long_displayname }}</li>
         {% endfor %}
     </ul>
+    </div>
 
-    <p class="text-muted">
+    <p>
         {% trans "Closing a group without feedback, indicates the the group will get the lowest possible score on the assignment. You can regret this choice at any time, and give the group another chance." %}
     </p>
 
