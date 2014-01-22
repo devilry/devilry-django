@@ -17,6 +17,9 @@ from devilry.apps.core.models import deliverytypes
 
 
 class TestAssignmentGroup(TestCase, TestHelper):
+    """
+    Do NOT add new tests here, add them to TestAssignmentGroup2.
+    """
 
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
@@ -776,7 +779,6 @@ class TestAssignmentGroup2(TestCase):
         self.assertEquals(group2builder.group.delivery_status, 'closed-without-feedback')
         self.assertEquals(group3builder.group.delivery_status, 'no-deadlines')
 
-
     def test_close_groups_queryset_vs_manual(self):
         # Checks that AssignmentGroup.objects.close_groups() works the same as closing and calling save()
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -792,6 +794,29 @@ class TestAssignmentGroup2(TestCase):
         self.assertFalse(group2builder.group.is_open)
         self.assertEquals(group1builder.group.delivery_status, 'closed-without-feedback')
         self.assertEquals(group2builder.group.delivery_status, 'closed-without-feedback')
+
+
+    def test_add_nonelectronic_delivery(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        group1builder = assignmentbuilder.add_group()
+        group2builder = assignmentbuilder.add_group()
+        group3builder = assignmentbuilder.add_group()
+        for groupbuilder in (group1builder, group2builder, group3builder):
+            groupbuilder.add_deadline_in_x_weeks(weeks=1)
+            self.assertEquals(groupbuilder.group.last_delivery, None)
+
+        testuser = UserBuilder('testuser').user
+        AssignmentGroup.objects.filter(id__in=(group1builder.group.id, group2builder.group.id))\
+            .add_nonelectronic_delivery()
+        group1builder.reload_from_db()
+        group2builder.reload_from_db()
+        group3builder.reload_from_db()
+
+        for groupbuilder in group1builder, group2builder:
+            self.assertEquals(groupbuilder.group.last_delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
+            self.assertTrue(groupbuilder.group.last_delivery.successful)
+        self.assertEquals(group3builder.group.last_delivery, None)
 
 
 

@@ -75,6 +75,13 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             delivery_status='closed-without-feedback'
         )
 
+    def add_nonelectronic_delivery(self):
+        for group in self.all():
+            group.last_deadline.deliveries.create(
+                delivery_type=deliverytypes.NON_ELECTRONIC,
+                successful=True)
+
+
 
 class AssignmentGroupManager(models.Manager):
     def get_queryset(self):
@@ -123,6 +130,14 @@ class AssignmentGroupManager(models.Manager):
         setting ``is_open=False`` and ``delivery_status="closed-without-feedback"``.
         """
         return self.get_queryset().close_groups()
+
+    def add_nonelectronic_delivery(self):
+        """
+        Add non-electronic delivery to all the groups in the queryset.
+
+        Assumes that all the groups has ``last_deadline`` set.
+        """
+        return self.get_queryset().add_nonelectronic_delivery()
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
