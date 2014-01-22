@@ -193,3 +193,60 @@ class TestAddDeadlineView(TestCase):
         self.assertEquals(group1builder.group.last_deadline, None)
         self.assertIn('If you do not want to provide an &quot;About this deadline&quot; message, you have to clear the text field.',
             response.content)
+
+
+    #
+    #
+    # Cancel and success urls
+    #
+    #
+    def test_custom_success_url(self):
+        group1builder = self.assignment1builder\
+            .add_group(examiners=[self.examiner1])
+        deadline_datetime = Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=10))
+        response = self._postas(self.examiner1, {
+            'group_ids': [group1builder.group.id],
+            'deadline': isoformat_datetime(deadline_datetime),
+            'text': 'Hello world',
+            'success_url': '/my/test',
+            'add_deadline_form': 'i18nlabel'
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue(response['Location'].endswith('/my/test'))
+
+    def test_custom_cancel_url(self):
+        group1builder = self.assignment1builder\
+            .add_group(examiners=[self.examiner1])
+        response = self._postas(self.examiner1, {
+            'group_ids': [group1builder.group.id],
+            'cancel_url': '/my/test',
+            'submit_cancel': 'i18nlabel'
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue(response['Location'].endswith('/my/test'))
+
+
+    def test_default_success_url(self):
+        group1builder = self.assignment1builder\
+            .add_group(examiners=[self.examiner1])
+        deadline_datetime = Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=10))
+        response = self._postas(self.examiner1, {
+            'group_ids': [group1builder.group.id],
+            'deadline': isoformat_datetime(deadline_datetime),
+            'text': 'Hello world',
+            'add_deadline_form': 'i18nlabel'
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue(response['Location'].endswith(
+            reverse('devilry_examiner_allgroupsoverview', kwargs={'assignmentid': self.assignment1builder.assignment.id})))
+
+    def test_default_cancel_url(self):
+        group1builder = self.assignment1builder\
+            .add_group(examiners=[self.examiner1])
+        response = self._postas(self.examiner1, {
+            'group_ids': [group1builder.group.id],
+            'submit_cancel': 'i18nlabel'
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue(response['Location'].endswith(
+            reverse('devilry_examiner_allgroupsoverview', kwargs={'assignmentid': self.assignment1builder.assignment.id})))
