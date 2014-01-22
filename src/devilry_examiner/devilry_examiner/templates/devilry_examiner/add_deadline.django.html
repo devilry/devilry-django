@@ -18,9 +18,9 @@
 
     <span class="text-muted">{% trans "Add deadline for" %}:</span>
     <ul class="list-inline text-muted">
-    {% for group in group_ids_form.cleaned_groups %}
-        <li>{{ group.long_displayname }}</li>
-    {% endfor %}
+        {% for group in selected_groups %}
+            <li>{{ group.long_displayname }}</li>
+        {% endfor %}
     </ul>
 
     {% crispy primaryforms.add_deadline_form %}
