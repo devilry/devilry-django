@@ -223,10 +223,10 @@ class BulkViewBase(DetailView):
         """
         Routes POST requests to methods that can be overridden in subclasses:
 
-        - If ``submit_cancel`` in POST, redirect to :meth:`.get_cancel_url`.
-        - Else:
-            - Validate :meth:`.get_optionsform_class`.
-            - If the options for is valid:
+        - Validate :meth:`.get_optionsform_class`.
+        - If the options for is valid:
+            - If ``submit_cancel`` in POST, redirect to :meth:`.get_cancel_url`.
+            - Else:
                 - If one of the keys in :meth:`.get_primaryform_classes` is in POST
                     - Validate the submitted form.
                     - If the submitted form is valid:
@@ -235,20 +235,20 @@ class BulkViewBase(DetailView):
                         - Return :meth:`.submitted_primaryform_invalid`
                 - Else:
                     - Return :meth:`.optionsform_valid`.
-            - If the options for is NOT valid:
-                - Return :meth:`.optionsform_invalid`.
+        - If the options for is NOT valid:
+            - Return :meth:`.optionsform_invalid`.
         """
         self.object = self.get_object()
         self.assignment = self.object
 
-        if 'submit_cancel' in self.request.POST:
-            return redirect(self.get_cancel_url())
-        else:
-            # NOTE: We ALWAYS validate the options form, to ensure all forms inherit
-            #       from it, and to ensure we always have the options available.
-            optionsform = self.get_optionsform_class()(self.request.POST, **self.get_common_form_kwargs())
-            if optionsform.is_valid():
-                self.__optionsform = optionsform
+        # NOTE: We ALWAYS validate the options form, to ensure all forms inherit
+        #       from it, and to ensure we always have the options available.
+        optionsform = self.get_optionsform_class()(self.request.POST, **self.get_common_form_kwargs())
+        if optionsform.is_valid():
+            self.__optionsform = optionsform
+            if 'submit_cancel' in self.request.POST:
+                return redirect(self.get_cancel_url())
+            else:
                 context_data = {}
                 forms, submitted_primaryform = self._initialize_primaryforms()
                 context_data['primaryforms'] = forms
@@ -259,8 +259,8 @@ class BulkViewBase(DetailView):
                         return self.submitted_primaryform_invalid(submitted_primaryform, context_data)
                 else:
                     return self.optionsform_valid(context_data)
-            else:
-                return self.optionsform_invalid(optionsform)
+        else:
+            return self.optionsform_invalid(optionsform)
 
 
     def render_view(self, context_data):
