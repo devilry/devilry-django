@@ -37,6 +37,7 @@
         </div>
 
         {% include "devilry_examiner/include/give_another_chance_question.django.html" with group=group %}
+        {% include "devilry_examiner/include/no_deliveries_box.django.html" with group=group %}
     </div>
 
     {% for deadline in group.deadlines.all %}
