@@ -43,5 +43,5 @@ class CloseGroupsView(BulkViewBase):
     }
 
     def submitted_primaryform_valid(self, form, context_data):
-        self.selected_groups.update(is_open=False)
+        self.selected_groups.close_groups()
         return super(CloseGroupsView, self).submitted_primaryform_valid(form, context_data)
