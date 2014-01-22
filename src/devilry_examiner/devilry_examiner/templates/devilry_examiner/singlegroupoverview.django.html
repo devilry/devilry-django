@@ -33,6 +33,10 @@
                     {% trans "Grade" %}: {{ group.feedback.grade }}
                     ({{ group.feedback.is_passing_grade|format_is_passing_grade }})
                 </small></p>
+            {% elif group.delivery_status == 'closed-without-feedback' %}
+                <p><small>
+                    {% trans "The group was closed without getting any feedback. This means that, as far as Devilry is concerned, this groups got the lowest possible score on this assignment (zero points)." %}
+                </small></p>
             {% endif %}
         </div>
 

@@ -14,7 +14,7 @@ Required template context variables:
 {% load i18n %}
 {% load url from future %}
 
-{% if group.delivery_status == "corrected" and not group.feedback.is_passing_grade and group.assignment.is_electronic %}
+{% if group.can_be_given_another_chance %}
     <div class="alert alert-info devilry_give_another_chance_box">
         <p>
             <strong>{% trans "Give another chance?" %}</strong>
