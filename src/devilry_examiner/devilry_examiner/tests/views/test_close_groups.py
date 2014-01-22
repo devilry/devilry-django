@@ -90,6 +90,7 @@ class TestCloseGroupsView(TestCase):
         self.assertEquals(response.status_code, 302)
         group1builder.reload_from_db()
         self.assertFalse(group1builder.group.is_open)
+        self.assertEquals(group1builder.group.delivery_status, 'closed-without-feedback')
 
     def test_post_multiple(self):
         group1builder = self.assignment1builder\
@@ -106,6 +107,8 @@ class TestCloseGroupsView(TestCase):
         group2builder.reload_from_db()
         self.assertFalse(group1builder.group.is_open)
         self.assertFalse(group2builder.group.is_open)
+        self.assertEquals(group1builder.group.delivery_status, 'closed-without-feedback')
+        self.assertEquals(group2builder.group.delivery_status, 'closed-without-feedback')
 
 
 
