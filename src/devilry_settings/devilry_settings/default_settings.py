@@ -46,6 +46,7 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'haystack',
                   'south',
                   'celery_haystack',
+                  'django_decoupled_docs',
 
                   'devilry.apps.core',
                   'devilry.apps.theme',
