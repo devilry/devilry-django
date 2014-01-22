@@ -12,6 +12,7 @@ from .views.allgroupsoverview import BulkTest
 from .views.singledelivery import SingleDeliveryView
 from .views.add_deadline import AddDeadlineView
 from .views.close_groups import CloseGroupsView
+from .views.add_nonelectronic_delivery import AddNonElectronicDeliveryView
 from .views.lastdelivery_or_groupoverview_redirect import LastDeliveryOrGroupOverviewRedirectView
 
 
@@ -50,5 +51,8 @@ urlpatterns = patterns('devilry_examiner',
         name='devilry_examiner_add_deadline'),
     url('^close_groups/(?P<assignmentid>\d+)$',
         login_required(CloseGroupsView.as_view()),
-        name='devilry_examiner_close_groups')
+        name='devilry_examiner_close_groups'),
+    url('^add_nonelectronic_delivery/(?P<assignmentid>\d+)$',
+        login_required(AddNonElectronicDeliveryView.as_view()),
+        name='devilry_examiner_add_nonelectronic_delivery')
 )
