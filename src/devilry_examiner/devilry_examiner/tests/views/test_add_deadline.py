@@ -59,7 +59,7 @@ class TestAddDeadlineView(TestCase):
     # Initial rendering
     #######################################
 
-    def test_header(self):
+    def test_render(self):
         group1 = self.assignment1builder\
             .add_group(examiners=[self.examiner1]).group
         response = self._postas(self.examiner1, {
@@ -71,6 +71,12 @@ class TestAddDeadlineView(TestCase):
             'Add deadline')
         self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(),
             "Assignment One &mdash; duck1010, active")
+        self.assertTrue(cssExists(html, 'input[name=success_url]'))
+        self.assertTrue(cssExists(html, 'input[name=cancel_url]'))
+        self.assertTrue(cssExists(html, 'input[name=group_ids]'))
+        self.assertTrue(cssExists(html, 'input[name=why_created]'))
+        self.assertTrue(cssExists(html, 'textarea[name=text]'))
+        self.assertTrue(cssExists(html, 'input[name=no_text]'))
 
     def test_give_another_chance_sets_initial_text(self):
         group1 = self.assignment1builder\

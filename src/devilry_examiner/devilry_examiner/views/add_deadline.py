@@ -98,6 +98,8 @@ class AddDeadlineForm(AddDeadlineOptionsForm):
             'text',
             'no_text',
             'group_ids',
+            'success_url',
+            'cancel_url',
             'why_created',
             HTML('<hr>'),
             ButtonHolder(
