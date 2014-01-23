@@ -5,6 +5,8 @@ from django.views.generic import View
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
+from django.db.models import Count
+
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 from ..forms import BulkForm
@@ -35,11 +37,19 @@ class AllGroupsOverview(DetailView):
             del self.request.session['selected_group_ids']
 
         context = super(AllGroupsOverview, self).get_context_data(**kwargs)
+        assignment = self.object
 
         # Need to get queryset from custom manager.
         # Get only AssignmentGroup within same assignment
-        groups = AssignmentGroup.objects.get_queryset().filter(parentnode__id=self.object.id)
-        groups = groups.filter_examiner_has_access(self.request.user)
+        groups = AssignmentGroup.objects.get_queryset()\
+            .filter(parentnode__id=self.object.id)\
+            .filter_examiner_has_access(self.request.user)
+
+        context['count_all'] = groups.count()
+        context['count_waiting_for_feedback'] = groups.filter_waiting_for_feedback().count()
+        if assignment.is_electronic:
+            context['count_waiting_for_deliveries'] = groups.filter_waiting_for_deliveries().count()
+        context['count_corrected'] = groups.filter_by_status('corrected').count()
 
         paginator = Paginator(groups, 100, orphans=3)
         page = self.request.GET.get('page')
