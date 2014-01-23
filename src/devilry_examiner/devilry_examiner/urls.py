@@ -11,7 +11,6 @@ from .views.allgroupsoverview import WaitingForFeedbackOverview
 from .views.allgroupsoverview import WaitingForFeedbackOrAllRedirectView
 from .views.allgroupsoverview import WaitingForDeliveriesOverview
 from .views.allgroupsoverview import CorrectedOverview
-from .views.allgroupsoverview import BulkTest
 from .views.singledelivery import SingleDeliveryView
 from .views.add_deadline import AddDeadlineView
 from .views.close_groups import CloseGroupsView
@@ -40,9 +39,6 @@ urlpatterns = patterns('devilry_examiner',
     url('^allgroupsoverview/(?P<assignmentid>\d+)/corrected$',
         login_required(CorrectedOverview.as_view()),
         name='devilry_examiner_corrected'),
-    url('^bulktest/$',
-        login_required(BulkTest.as_view()),
-        name='devilry_examiner_bulktest'),
     url('^singlegroupoverview/(?P<groupid>\d+)$',
         login_required(SingleGroupOverview.as_view()),
         name='devilry_examiner_singlegroupoverview'),

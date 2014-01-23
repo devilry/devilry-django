@@ -2,7 +2,6 @@ from django.shortcuts import redirect
 from django.views.generic import DetailView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import View
-from django.views.generic import FormView
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
@@ -106,26 +105,6 @@ class CorrectedOverview(AllGroupsOverview):
         context['groups'] = get_paginated_page(paginator, page)
 
         return context
-
-
-
-
-class BulkTest(FormView):
-    template_name = "devilry_examiner/bulktest.django.html"
-    form_class = BulkForm
-
-    def get_context_data(self, **kwargs):
-        context = super(BulkTest, self).get_context_data(**kwargs)
-
-        print
-        print
-        print self.request.POST
-        print
-        print
-
-        context['groups'] = self.request.POST.getlist('edit')
-        return context
-
 
 
 
