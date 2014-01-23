@@ -31,6 +31,8 @@
             {% block navbar %}
 
             <ul class="list-group">
+                <a class="list-group-item {% if currentpage == 'all' %}active{% endif %}"
+                 href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">{% trans "All" %}</a>
                 <a class="list-group-item {% if currentpage == 'waiting_for_feedback' %}active{% endif %}"
                  href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">{% trans "Waiting for feedback" %}</a>
                 {% if assignment.is_electronic %}                    
@@ -39,8 +41,6 @@
                 {% endif %}
                 <a class="list-group-item {% if currentpage == 'corrected' %}active{% endif %}"
                  href="{% url 'devilry_examiner_corrected' assignment.id %}">{% trans "Corrected" %}</a>
-                <a class="list-group-item {% if currentpage == 'all' %}active{% endif %}"
-                 href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">{% trans "All" %}</a>
             </ul>
 
             {% endblock navbar %}
