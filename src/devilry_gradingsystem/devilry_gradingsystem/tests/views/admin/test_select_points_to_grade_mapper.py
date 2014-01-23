@@ -102,7 +102,7 @@ class TestSelectPointsToGradeMapperView(TestCase, AdminViewTestMixin):
             })
             self.assertEquals(response.status_code, 302)
             self.assertTrue(response["Location"].endswith(
-                reverse('devilry_gradingsystem_admin_summary', kwargs={
+                reverse('devilry_gradingsystem_admin_setpassing_grade_min_points', kwargs={
                     'assignmentid': self.assignmentbuilder.assignment.id,
                 })))
             self.assignmentbuilder.reload_from_db()
