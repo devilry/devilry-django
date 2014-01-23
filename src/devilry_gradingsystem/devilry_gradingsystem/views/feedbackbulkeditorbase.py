@@ -19,7 +19,7 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import StaticFeedback
 from devilry_gradingsystem.models import FeedbackDraft
 from devilry_gradingsystem.widgets.editmarkdown import EditMarkdownLayoutObject
-from devilry_gradingsystem.widgets.editfeedbackbuttonbar import EditFeedbackButtonBar
+from devilry_gradingsystem.widgets.editfeedbackbuttonbar import BulkEditFeedbackButtonBar
 from devilry_examiner.views.bulkviewbase import BulkViewBase
 from devilry_examiner.views.bulkviewbase import OptionsForm
 
@@ -62,7 +62,7 @@ class FeedbackBulkEditorFormBase(FeedbackBulkEditorOptionsForm):
         return [EditMarkdownLayoutObject()]
 
     def get_submitbuttons_layout_elements(self):
-        return [EditFeedbackButtonBar()]
+        return [BulkEditFeedbackButtonBar()]
 
     def add_common_layout_elements(self):
         for element in self.get_feedbacktext_layout_elements():
