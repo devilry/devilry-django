@@ -8,3 +8,5 @@ from .views.test_allgroupsoverview import TestWaitingForFeedbackOverview
 from .views.test_allgroupsoverview import TestWaitingForDeliveriesOverview
 from .views.test_allgroupsoverview import TestCorrectedOverview
 from .views.test_add_deadline import TestAddDeadlineView
+from .views.test_close_groups import TestCloseGroupsView
+from .views.test_add_nonelectronic_delivery import TestAddNonElectronicDeliveryView

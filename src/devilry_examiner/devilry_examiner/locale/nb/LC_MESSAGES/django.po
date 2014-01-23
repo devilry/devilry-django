@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-20 02:31+0100\n"
+"POT-Creation-Date: 2014-01-23 03:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,7 +24,7 @@ msgstr "Du må velge minst en gruppe for å utføre bulkoperasjoner"
 
 #: templates/devilry_examiner/add_deadline.django.html:7
 #: templates/devilry_examiner/add_deadline.django.html:13
-#: views/add_deadline.py:97
+#: views/add_deadline.py:106
 msgid "Add deadline"
 msgstr "Legg til innleveringsfrist"
 
@@ -32,83 +32,135 @@ msgstr "Legg til innleveringsfrist"
 msgid "Add deadline for"
 msgstr "Legg til innleveringsfrist for"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:19
-#: templates/devilry_examiner/dashboard.django.html:16
+#: templates/devilry_examiner/add_nonelectronic_delivery.django.html:7
+#: templates/devilry_examiner/add_nonelectronic_delivery.django.html:13
+#: views/add_nonelectronic_delivery.py:30
+msgid "Add non-electronic delivery"
+msgstr "Legg til ikke-elektronisk innlevering"
+
+#: templates/devilry_examiner/add_nonelectronic_delivery.django.html:20
+msgid ""
+"Please confirm that you want to add a non-electronic delivery to the "
+"following groups"
+msgstr ""
+"Bekreft at du ønsker å lukke legge til en ikke-elektroniske innlevering på "
+"følgende grupper"
+
+#: templates/devilry_examiner/add_nonelectronic_delivery.django.html:29
+msgid ""
+"Adding a non-electronic delivery should be the last option when no other "
+"solution is possible, or when you actually want students to make paper "
+"deliveries on an assignment configured for electronic delivery. If a student "
+"sends you a delivery through alternative channels, when they should have "
+"used Devilry, please fail them, or give them a new deadline with a clear "
+"message stating that the deadline was added because they have to use Devilry "
+"for electronic deliveries."
+msgstr ""
+"Å legge til en ikke-elektronisk innlevering bør være siste utvei når ingen "
+"annen løsning er mulig, eller når du faktisk ønsker at noen studenter skal "
+"levere papirinnleveringer på oppgaver konfigurert for elektronisk "
+"innlevering. Hvis en student sender deg en innlevering gjennom alternative "
+"kanaler når de skulle ha levert via Devilry, venligst enten gi de stryk-"
+"karakter, eller gi de en ny innleveringsfrist med klar beskjed om at fristen "
+"ble lagt til fordi de må bruke Devilry til elektronisk innleveringer."
+
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:20
+#: templates/devilry_examiner/dashboard.django.html:17
 #: templates/devilry_examiner/singledelivery_base.django.html:48
 #: templates/devilry_examiner/singlegroupoverview.django.html:23
 msgid "Home"
 msgstr "Hjem"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:20
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:21
 #: templates/devilry_examiner/bulktest.django.html:5
-#: templates/devilry_examiner/dashboard.django.html:5
-#: templates/devilry_examiner/dashboard.django.html:10
-#: templates/devilry_examiner/dashboard.django.html:17
+#: templates/devilry_examiner/dashboard.django.html:6
+#: templates/devilry_examiner/dashboard.django.html:11
+#: templates/devilry_examiner/dashboard.django.html:18
 #: templates/devilry_examiner/singledelivery_base.django.html:49
 #: templates/devilry_examiner/singlegroupoverview.django.html:24
 msgid "Examiner"
 msgstr "Retter"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:34
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:35
 #: templatetags/devilry_examiner_tags.py:11
 msgid "Waiting for feedback"
 msgstr "Venter på tilbakemelding"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:37
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:38
 #: templatetags/devilry_examiner_tags.py:13
 #: templatetags/devilry_examiner_tags.py:40
 msgid "Waiting for deliveries"
 msgstr "Venter på innleveringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:40
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:41
 #: templatetags/devilry_examiner_tags.py:17
 msgid "Corrected"
 msgstr "Ferdig rettet"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:42
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:43
 msgid "All"
 msgstr "Alle"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:54
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:49
+#: templates/devilry_examiner/dashboard.django.html:46
+msgid "New to Devilry? Do you want to become more efficient?"
+msgstr "Er Devilry nytt og ukjent? Vil du øke effektiviten?"
+
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:52
+msgid "Check out the getting started guide"
+msgstr "Ta en titt på nybegynnerguiden"
+
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:66
 msgid "Previous"
 msgstr "Forhåndsvisning"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:65
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:77
 msgid "Next"
 msgstr "Neste"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:76
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:88
 msgid "Select All"
 msgstr "Velg alle"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:79
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:91
 msgid "Deselect All"
 msgstr "Fjern markeringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:86
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:98
 msgid "Download all deliveries"
 msgstr "Last ned alle innleveringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:116
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:129
 #: templates/devilry_examiner/readonly-feedback.django.html:14
 #: templates/devilry_examiner/singlegroupoverview.django.html:33
 msgid "Grade"
 msgstr "Karakter"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:154
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:133
+#: templates/devilry_examiner/singlegroupoverview.django.html:97
+msgid "No deliveries"
+msgstr "Ingen innleveringer"
+
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:135
+#, python-format
+msgid "Next deadline in %(timeuntildeadline)s"
+msgstr "Neste innleveringsfrist om %(timeuntildeadline)s"
+
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:146
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:163
 #: templatetags/devilry_examiner_tags.py:38
 msgid "Write feedback"
 msgstr "Gi tilbakemelding"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:155
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:164
 msgid "to selected"
 msgstr "til valgte"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:172
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:181
 msgid "The grading system is not configured correctly."
 msgstr "Karaktersystem er ikke konfigurert riktig"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:174
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:183
 msgid ""
 "This means that you are not able to correct any of the submitted deliveries. "
 "Notify the course administrator which need to setup up the grading system "
@@ -122,11 +174,31 @@ msgstr ""
 msgid "Devilry examiner"
 msgstr "Devilry Retter"
 
+#: templates/devilry_examiner/close_groups.django.html:7
+#: templates/devilry_examiner/close_groups.django.html:13
+#: views/close_groups.py:30
+msgid "Close groups"
+msgstr "Lukk gruppene"
+
+#: templates/devilry_examiner/close_groups.django.html:20
+msgid "Please confirm that you want to close the following groups"
+msgstr "Bekreft at du ønsker å lukke følgende grupper"
+
+#: templates/devilry_examiner/close_groups.django.html:29
+msgid ""
+"Closing a group without feedback, indicates the the group will get the "
+"lowest possible score on the assignment. You can regret this choice at any "
+"time, and give the group another chance."
+msgstr ""
+"Hvis du lukker en gruppe uten å gi tilbakemelding, indikerer du at gruppen "
+"skal ha laveste mulige poengsum på oppgaven. Du kan angre på dette valget "
+"når som helst, og gi gruppen et nytt forsøk."
+
 #: templates/devilry_examiner/corrected-overview.django.html:12
 msgid "There are no groups that are corrected"
 msgstr "Det er ingen grupper som er rettet"
 
-#: templates/devilry_examiner/dashboard.django.html:12
+#: templates/devilry_examiner/dashboard.django.html:13
 msgid ""
 "Dashboard for the examiner role. You use this role to provide feedback to "
 "students."
@@ -134,15 +206,20 @@ msgstr ""
 "Forsiden for rettere. Du vil velge rollen retter når du vil gi "
 "tilbakemeldinger til studenter"
 
-#: templates/devilry_examiner/dashboard.django.html:40
-msgid "New to Devilry? Do you want to become more efficient?"
-msgstr "Er Devilry nytt og ukjent? Vil du øke effektiviten?"
+#: templates/devilry_examiner/dashboard.django.html:34
+#, python-format
+msgid "%(count_waiting_for_feedback)s waiting for feedback"
+msgstr "%(count_waiting_for_feedback)s venter på tilbakemelding"
 
-#: templates/devilry_examiner/dashboard.django.html:41
+#: templates/devilry_examiner/dashboard.django.html:37
+msgid "No groups waiting for feedback."
+msgstr "Ingen venter på tilbakemelding"
+
+#: templates/devilry_examiner/dashboard.django.html:47
 msgid "Check out Examiner section of the official Devilry documentation."
 msgstr "Sjekk ut avsnittet om Retterrollen i den offisielle dokumentasjonen"
 
-#: templates/devilry_examiner/dashboard.django.html:46
+#: templates/devilry_examiner/dashboard.django.html:52
 msgid "Official documentation"
 msgstr "Offisiell dokumentasjon"
 
@@ -186,31 +263,44 @@ msgstr ""
 "Kursadministrasjonen vil få instruksjoner om hvordan dette kan løses ved å "
 "besøke oppgaven gjennom Kursadministratorrollen."
 
-#: templates/devilry_examiner/singledelivery_base.django.html:69
-msgid "This delivery was added 1 hour after the deadline."
+#: templates/devilry_examiner/singledelivery_base.django.html:70
+#, fuzzy, python-format
+msgid "This delivery was added %(timesincedeadline)s before the deadline."
 msgstr "Denne innleveringen ble lagt til en time etter fristen"
 
-#: templates/devilry_examiner/singledelivery_base.django.html:71
+#: templates/devilry_examiner/singledelivery_base.django.html:73
 msgid "The group has made at least one more delivery for this deadline."
 msgstr "Gruppen har lagt til flere oppgaver på denne fristen"
 
-#: templates/devilry_examiner/singledelivery_base.django.html:73
-#: templates/devilry_examiner/singledelivery_base.django.html:83
+#: templates/devilry_examiner/singledelivery_base.django.html:75
+#: templates/devilry_examiner/singledelivery_base.django.html:85
 msgid "Browse other deliveries"
 msgstr "Bla gjennom andre innleveringer"
 
-#: templates/devilry_examiner/singledelivery_base.django.html:75
+#: templates/devilry_examiner/singledelivery_base.django.html:77
 msgid "The group has no other deliveries for this deadline."
 msgstr "Gruppen har ingen innleveringen på denne fristen."
 
-#: templates/devilry_examiner/singledelivery_base.django.html:81
+#: templates/devilry_examiner/singledelivery_base.django.html:83
 msgid ""
 "This delivery is not the last delivery made by this group on this assignment."
 msgstr ""
 "Denne innleveringen er ikke den seneste innleveringen gruppen har lastet opp "
 "på denne oppgaven."
 
-#: templates/devilry_examiner/singledelivery_base.django.html:102
+#: templates/devilry_examiner/singledelivery_base.django.html:90
+msgid ""
+"This is the last delivery made by this group, but it was NOT added to their "
+"last deadline."
+msgstr ""
+"Denne innleveringen er den seneste innleveringen gruppen har lastet opp på "
+"denne oppgaven. Den ble IKKE lastet opp på deres siste innleveringsfrist."
+
+#: templates/devilry_examiner/singledelivery_base.django.html:92
+msgid "Browse all deliveries made by the group"
+msgstr ""
+
+#: templates/devilry_examiner/singledelivery_base.django.html:111
 msgid "Download files"
 msgstr "Last ned filer"
 
@@ -218,22 +308,32 @@ msgstr "Last ned filer"
 msgid "Status"
 msgstr "Status"
 
-#: templates/devilry_examiner/singlegroupoverview.django.html:47
+#: templates/devilry_examiner/singlegroupoverview.django.html:38
+msgid ""
+"The group was closed without getting any feedback. This means that, as far "
+"as Devilry is concerned, this groups got the lowest possible score on this "
+"assignment (zero points)."
+msgstr ""
+"Gruppen ble lukket uten at de fikk noen tilbakemelding. Dette betyr at "
+"Devilry regner poengsummen til gruppen på denne oppgaven som laveste mulige "
+"poengsum (0 poeng)."
+
+#: templates/devilry_examiner/singlegroupoverview.django.html:52
 #, python-format
 msgid "Deadline %(number)s"
 msgstr "Innleveringsfrist nr %(number)s"
 
-#: templates/devilry_examiner/singlegroupoverview.django.html:61
+#: templates/devilry_examiner/singlegroupoverview.django.html:66
 #, python-format
 msgid "Delivery #%(number)s"
 msgstr "Innlevering #%(number)s"
 
-#: templates/devilry_examiner/singlegroupoverview.django.html:70
+#: templates/devilry_examiner/singlegroupoverview.django.html:75
 msgid "No feedback"
 msgstr "Ingen tilbakemelding"
 
-#: templates/devilry_examiner/singlegroupoverview.django.html:74
-#: templates/devilry_examiner/singlegroupoverview.django.html:84
+#: templates/devilry_examiner/singlegroupoverview.django.html:79
+#: templates/devilry_examiner/singlegroupoverview.django.html:89
 #, python-format
 msgid ""
 "\n"
@@ -245,10 +345,6 @@ msgstr ""
 "innleveringsfristen\n"
 "                                    "
 
-#: templates/devilry_examiner/singlegroupoverview.django.html:92
-msgid "No deliveries"
-msgstr "Ingen innleveringer"
-
 #: templates/devilry_examiner/waiting-for-deliveries-overview.django.html:15
 msgid "There are no groups waiting for deliveries"
 msgstr "Det er ingen grupper som venter på innleveringer"
@@ -257,11 +353,19 @@ msgstr "Det er ingen grupper som venter på innleveringer"
 msgid "There are no groups awaiting feedback"
 msgstr "Det er ingen grupper som avventer tilbakemelding"
 
-#: templates/devilry_examiner/include/give_another_chance_question.django.html:7
+#: templates/devilry_examiner/include/add_deadline_on_single_group.django.html:19
+msgid "Add new deadline"
+msgstr "Legg til ny innleveringsfrist"
+
+#: templates/devilry_examiner/include/add_deadline_on_single_group.django.html:20
+msgid "Give another chance"
+msgstr "Gi nytt forsøk"
+
+#: templates/devilry_examiner/include/give_another_chance_question.django.html:20
 msgid "Give another chance?"
 msgstr "Gi nytt forsøk?"
 
-#: templates/devilry_examiner/include/give_another_chance_question.django.html:8
+#: templates/devilry_examiner/include/give_another_chance_question.django.html:21
 msgid ""
 "The last feedback for this group is a failing grade. If appropriate, you can "
 "give them another chance. To give them another chance, you need to give them "
@@ -269,12 +373,7 @@ msgid ""
 msgstr ""
 "Den siste tilbakemeldingen gitt til denne gruppen var en ikke bestått "
 "karakter. Dersom det er nødvendig kan du gi en ny sjanse til å levere "
-"forbedret utgave. For å gjøre dette må definere en ny innleveringsfrist på "
-"gruppen"
-
-#: templates/devilry_examiner/include/give_another_chance_question.django.html:17
-msgid "Add new deadline"
-msgstr "Legg til ny innleveringsfrist"
+"forbedret utgave. For å gjøre dette må du gi gruppen en ny innleveringsfrist."
 
 #: templates/devilry_examiner/include/navigate_todolist.django.html:10
 msgid "Previous group waiting for feedback"
@@ -288,6 +387,33 @@ msgstr "Liste over alle grupper som avventer tilbakemelding"
 msgid "Next group waiting for feedback"
 msgstr "Neste gruppe som avventer tilbakemelding"
 
+#: templates/devilry_examiner/include/no_deliveries_box.django.html:18
+msgid "This group has no deliveries"
+msgstr "Denne gruppen har ingen innleveringer"
+
+#: templates/devilry_examiner/include/no_deliveries_box.django.html:19
+msgid "You have to choose one of the following options"
+msgstr "Du må velge en av følgende alternativer"
+
+#: templates/devilry_examiner/include/no_deliveries_box.django.html:29
+msgid "Fail the group"
+msgstr "Gi stryk-karakter til gruppen"
+
+#: templates/devilry_examiner/include/no_deliveries_box.django.html:30
+msgid "Close the group without feedback"
+msgstr "Lukk gruppen uten tilbakemelding"
+
+#: templates/devilry_examiner/include/no_deliveries_box.django.html:35
+msgid ""
+"If the group has made a delivery outside Devilry (paper, email, etc), you "
+"should add a \"non-electronic\" delivery that you can correct just like any "
+"other delivery."
+msgstr ""
+
+#: templates/devilry_examiner/include/no_deliveries_box.django.html:44
+msgid "Add \"non-electronic\" delivery"
+msgstr ""
+
 #: templatetags/devilry_examiner_tags.py:15
 #: templatetags/devilry_examiner_tags.py:42
 msgid "No deadlines"
@@ -300,17 +426,17 @@ msgstr "Lukket uten tilbakemelding"
 
 #: templatetags/devilry_examiner_tags.py:25
 msgid "passed"
-msgstr "godkjent"
+msgstr "bestått"
 
 #: templatetags/devilry_examiner_tags.py:27
 msgid "failed"
-msgstr "ikke godkjent"
+msgstr "ikke bestått"
 
 #: templatetags/devilry_examiner_tags.py:44
 msgid "Show feedback"
 msgstr "Vis tilbakemelding"
 
-#: views/add_deadline.py:26
+#: views/add_deadline.py:27
 msgid ""
 "Enter a valid date/time. Example \"2014-12-24 18:00\" to specify Dec 24 2014 "
 "6pm."
@@ -318,19 +444,19 @@ msgstr ""
 "Skriv inn gyldig tidspunkt: For eksempel: \"2014-12-24 18:00\" for å angi "
 "24. Desemeber 2014 klokka 18:00"
 
-#: views/add_deadline.py:38
+#: views/add_deadline.py:45
 msgid "Deadline"
 msgstr "Innleveringsfrist"
 
-#: views/add_deadline.py:39
+#: views/add_deadline.py:46
 msgid "Format: \"YYYY-MM-DD hh:mm\"."
 msgstr "Format: \"ÅÅÅÅ-MM-DD tt:mm\"."
 
-#: views/add_deadline.py:42
+#: views/add_deadline.py:49
 msgid "About this deadline"
 msgstr "Om denne innleveringsfristen"
 
-#: views/add_deadline.py:43
+#: views/add_deadline.py:50
 msgid ""
 "Why are you adding this deadline? Make this informative, and remember that "
 "this information may be important for course administrators if they need to "
@@ -339,11 +465,11 @@ msgstr ""
 "Hvorfor legger du til en innleveringsfrist? Gjør denne informativ for å "
 "hjelpe kursadministrasjonen dersom fristen senere flyttes."
 
-#: views/add_deadline.py:47
+#: views/add_deadline.py:54
 msgid "I do not want to provide an \"About this deadline\" message."
 msgstr "Jeg vil ikke angi en \"Om denne fristen\" beskjed"
 
-#: views/add_deadline.py:48
+#: views/add_deadline.py:55
 msgid ""
 "You should normally tell your students why they get a new deadline. In some "
 "rare cases this makes no sense, so you can select this option to avoid "
@@ -352,14 +478,14 @@ msgstr ""
 "Du bør normalt sett begrunne hvorfor du gir en ny innleveringsfrist. I de "
 "tilfeller hvor det ikke er av betydning kan du velge å ikke angi begrunnelse."
 
-#: views/add_deadline.py:68
+#: views/add_deadline.py:75
 msgid ""
 "You must specify an \"About this deadline\" message, or select that you do "
 "not want to specify a message."
 msgstr ""
 "Du må angi en \"Om denne fristen\" beskjed eller velge at du ikke ønsker det."
 
-#: views/add_deadline.py:76
+#: views/add_deadline.py:83
 msgid ""
 "If you do not want to provide an \"About this deadline\" message, you have "
 "to clear the text field."
@@ -367,11 +493,12 @@ msgstr ""
 "Dersom du ikke ønsker å angi en \"Om denne fristen\" beskjed må du fjerne "
 "teksten i feltet"
 
-#: views/add_deadline.py:98
+#: views/add_deadline.py:107 views/add_nonelectronic_delivery.py:31
+#: views/close_groups.py:31
 msgid "Cancel"
 msgstr "Avbryt"
 
-#: views/add_deadline.py:140
+#: views/add_deadline.py:142
 msgid ""
 "I have given you a new chance to pass this assignment. Read your last "
 "feedback for information about why you did not pass, and why you have been "

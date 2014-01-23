@@ -69,10 +69,26 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             delivery_status="waiting-for-something",
             last_deadline__deadline__gt=now)
 
+    def close_groups(self):
+        return self.update(
+            is_open=False,
+            delivery_status='closed-without-feedback'
+        )
+
+    def add_nonelectronic_delivery(self):
+        for group in self.all():
+            group.last_deadline.deliveries.create(
+                delivery_type=deliverytypes.NON_ELECTRONIC,
+                successful=True)
+
+
 
 class AssignmentGroupManager(models.Manager):
     def get_queryset(self):
         return AssignmentGroupQuerySet(self.model, using=self._db)
+
+    def filter(self, *args, **kwargs):
+        return self.get_queryset().filter(*args, **kwargs)
 
     def filter_is_examiner(self, user):
         """
@@ -107,6 +123,21 @@ class AssignmentGroupManager(models.Manager):
 
     def filter_waiting_for_deliveries(self):
         return self.get_queryset().filter_waiting_for_deliveries()
+
+    def close_groups(self):
+        """
+        Performs an efficient update of all the groups in the queryset
+        setting ``is_open=False`` and ``delivery_status="closed-without-feedback"``.
+        """
+        return self.get_queryset().close_groups()
+
+    def add_nonelectronic_delivery(self):
+        """
+        Add non-electronic delivery to all the groups in the queryset.
+
+        Assumes that all the groups has ``last_deadline`` set.
+        """
+        return self.get_queryset().add_nonelectronic_delivery()
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
@@ -298,6 +329,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def q_is_examiner(cls, user_obj):
         return Q(examiners__user=user_obj)
 
+
+    @property
+    def can_be_given_another_chance(self):
+        """
+        ``True`` if the group can be given another chance (if failing grade or closed without feedback).
+        """
+        if self.assignment.is_electronic:
+            return (self.delivery_status == "corrected" and not self.feedback.is_passing_grade) \
+                or self.delivery_status == 'closed-without-feedback'
+        else:
+            return False
 
     @property
     def subject(self):
