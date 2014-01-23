@@ -1,6 +1,7 @@
 {% extends "devilry_examiner/base.django.html" %}
 {% load i18n devilry_examiner_tags%}
 {% load url from future %}
+{% load django_decoupled_docs_tags %}
 
 {% block title %}{{ assignment.short_name }} - {{ assignment.period.get_path }}{% endblock title %}
 
@@ -43,6 +44,17 @@
             </ul>
 
             {% endblock navbar %}
+
+            <p>
+                <strong>{% trans "New to Devilry? Do you want to become more efficient?" %}</strong>
+                {% if assignment.is_electronic %}
+                    <a href="{% decoupled_docs_url 'devilry_examiner/gettingstarted-electronic' %}">
+                        {% trans "Check out the getting started guide" %}</a>.
+                {% else %}
+                    {# <a href="{% decoupled_docs_url 'devilry_examiner/gettingstarted-nonelectronic' %}"> #}
+                        {# {% trans "Check out the getting started guide" %}</a>. #}
+                {% endif %}
+            </p>
         </div>
 
         <div class="col-sm-9">

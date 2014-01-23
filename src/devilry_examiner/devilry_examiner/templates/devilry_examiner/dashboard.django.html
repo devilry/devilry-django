@@ -1,6 +1,7 @@
 {% extends "devilry_examiner/base.django.html" %}
 {% load i18n %}
 {% load url from future %}
+{% load django_decoupled_docs_tags %}
 
 {% block title %}{% trans "Examiner" %}{% endblock %}
 
@@ -28,9 +29,6 @@
                                     {{ assignment.parentnode.parentnode.short_name }}.{{ assignment.parentnode.short_name }} - {{ assignment.long_name }}
                                 </a></h2>
         		            </td>
-                            <td class="text-right hidden-xs">
-        						
-                            </td>
                 		</tr>
             	    {% endfor %}
             	</table>
@@ -41,7 +39,7 @@
                     <small class="text-muted">{% trans "Check out Examiner section of the official Devilry documentation." %}</small>
                 </p>
                 <p>
-                    <a class="btn btn-default" href="https://devilry-userdoc.readthedocs.org" target="_blank">
+                    <a class="btn btn-default" href="{% decoupled_docs_url 'devilry_examiner/official-documentation' %}" target="_blank">
                         <i class="fa fa-question-circle"></i>
                         {% trans "Official documentation" %}
                     </a>

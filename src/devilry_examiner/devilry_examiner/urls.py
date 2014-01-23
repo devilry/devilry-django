@@ -1,6 +1,8 @@
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib.auth.decorators import login_required
 
+from django_decoupled_docs.registry import documentationregistry
+from devilry_settings.docproxies import DevilryUserDocsProxy
 from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.dashboard import DashboardView
 from .views.singlegroupoverview import SingleGroupOverview
@@ -56,3 +58,12 @@ urlpatterns = patterns('devilry_examiner',
         login_required(AddNonElectronicDeliveryView.as_view()),
         name='devilry_examiner_add_nonelectronic_delivery')
 )
+
+
+documentationregistry.add('devilry_examiner/official-documentation', DevilryUserDocsProxy(
+    en=''))
+
+documentationregistry.add('devilry_examiner/gettingstarted-electronic', DevilryUserDocsProxy(
+    en='examiner_electronic_guide.html'))
+# documentationregistry.add('devilry_examiner/gettingstarted-nonelectronic', DevilryUserDocsProxy(
+#     en='examiner_electronic_guide.html'))
