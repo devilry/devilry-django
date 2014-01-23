@@ -1,5 +1,7 @@
 {% extends "devilry_examiner/allgroupsoverview.django.html" %}
 {% load i18n %}
+{% load crispy_forms_tags %}
+{% load url from future %}
 
 {% block title %}
 {% trans "Edit" %} {{ block.super }}
@@ -10,4 +12,22 @@
 <li class="active">{% trans "Edit feedback" %}</li>
 {% endblock breadcrumbtail %}
 
-{% block pagecontent %}{% endblock pagecontent %}
+{% block pagecontent %}
+<div class="container">
+    {% if optionsform and not optionsform.is_valid %}
+        {% include "devilry_examiner/include/django_formerrors_as_alertboxes.django.html" with form=optionsform %}
+    {% else %}
+        {% block edit_feedback_for_list %}
+           <span class="text-muted">{% trans "Edit feedback for" %}:</span>
+            <ul class="list-inline text-muted">
+                {% for group in selected_groups %}
+                    <li>{{ group.long_displayname }}</li>
+                {% endfor %}
+            </ul>       
+        {% endblock edit_feedback_for_list %}
+        {% block edit_draft_form %}
+            {% crispy primaryforms.submit_publish %}
+        {% endblock edit_draft_form %}
+    {% endif %}
+</div>
+{% endblock pagecontent %}

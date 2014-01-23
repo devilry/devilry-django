@@ -26,7 +26,8 @@ from devilry_examiner.views.bulkviewbase import OptionsForm
 
 
 class FeedbackBulkEditorOptionsForm(OptionsForm):
-    draft_id = forms.IntegerField(required=False)
+    draft_id = forms.IntegerField(required=False,
+        widget=forms.HiddenInput)
 
     def clean_draft_id(self):
         draft_id = self.cleaned_data['draft_id']
@@ -69,7 +70,7 @@ class FeedbackBulkEditorFormBase(FeedbackBulkEditorOptionsForm):
         for element in self.get_submitbuttons_layout_elements():
             self.helper.layout.append(element)
         self.helper.layout.append('group_ids')
-
+        self.helper.layout.append('draft_id')
 
 
 
@@ -139,16 +140,15 @@ class FeedbackBulkEditorFormView(BulkViewBase):
             draft = FeedbackDraft.objects.get(id=draftid)
             if draft.delivery.assignment != self.assignment:
                 raise Http404()
-            return self.get_initial_from_draft(draft)
+            extra_data = self.get_initial_from_draft(draft)
         else:
-            return {
+            extra_data = {
                 'feedbacktext': '',
                 'points': self.get_default_points_value()
-            }        
-
-    def groupids_form_invalid(self, groupidsform):
-        # We handle errors in the template
-        pass
+            }
+        initial = super(FeedbackBulkEditorFormView, self).get_primaryform_initial_data(formclass)
+        extra_data.update(initial)
+        return extra_data
 
     def get(self, *args, **kwargs):
         assignment = self.get_object()
@@ -163,7 +163,6 @@ class FeedbackBulkEditorFormView(BulkViewBase):
         elif 'submit_save_draft' in self.request.POST:
             return redirect(self.request.path)
         return super(FeedbackBulkEditorFormView, self).post(*args, **kwargs)
-
 
     def get_context_data(self, **kwargs):
         context = super(FeedbackBulkEditorFormView, self).get_context_data(**kwargs)

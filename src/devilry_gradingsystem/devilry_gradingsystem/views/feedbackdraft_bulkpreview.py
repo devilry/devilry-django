@@ -22,12 +22,6 @@ class FeedbackDraftBulkPreviewView(DetailView):
         assignment = super(FeedbackDraftBulkPreviewView, self).get_object()
         return assignment
 
-    def get_feedbackdraft(self, draftid):
-        try:
-            return FeedbackDraft.objects.get(id=draftid)
-        except FeedbackDraft.DoesNotExist:
-            raise Http404('Feedback draft with ID={} does not exist.'.format(draftid))
-
     def _get_sessionkey(self):
         randomkey = self.kwargs['randomkey']
         return 'devilry_gradingsystem_draftids_{}'.format(randomkey)
@@ -39,17 +33,22 @@ class FeedbackDraftBulkPreviewView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(FeedbackDraftBulkPreviewView, self).get_context_data(**kwargs)
-        draft = self.get_feedbackdraft(self.kwargs['draftid'])
-        context['unsaved_staticfeedback'] = draft.to_staticfeedback()
-        context['valid_grading_system_setup'] = True
 
         drafts = list(self._get_drafts().select_related(
             'delivery', 'delivery__deadline', 'delivery__deadline__assignment_group'))
+
+        draft = drafts[0]
+        context['unsaved_staticfeedback'] = draft.to_staticfeedback()
+        context['valid_grading_system_setup'] = self.object.has_valid_grading_setup()
+
         group_ids = [draft.delivery.assignment_group.id for draft in drafts]
-        edit_draft_form = FeedbackBulkEditorOptionsForm(initial={
-            'group_ids': group_ids,
-            'draft_id': drafts[0].id
-        })
+        edit_draft_form = FeedbackBulkEditorOptionsForm(
+            user=self.request.user,
+            assignment=self.object,
+            initial={
+                'group_ids': group_ids,
+                'draft_id': drafts[0].id}
+        )
         context['edit_draft_form'] = edit_draft_form
 
         return context
