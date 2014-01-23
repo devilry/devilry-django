@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-23 01:06+0100\n"
+"POT-Creation-Date: 2014-01-23 03:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,94 +64,103 @@ msgstr ""
 "karakter, eller gi de en ny innleveringsfrist med klar beskjed om at fristen "
 "ble lagt til fordi de må bruke Devilry til elektronisk innleveringer."
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:19
-#: templates/devilry_examiner/dashboard.django.html:16
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:20
+#: templates/devilry_examiner/dashboard.django.html:17
 #: templates/devilry_examiner/singledelivery_base.django.html:48
 #: templates/devilry_examiner/singlegroupoverview.django.html:23
 msgid "Home"
 msgstr "Hjem"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:20
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:21
 #: templates/devilry_examiner/bulktest.django.html:5
-#: templates/devilry_examiner/dashboard.django.html:5
-#: templates/devilry_examiner/dashboard.django.html:10
-#: templates/devilry_examiner/dashboard.django.html:17
+#: templates/devilry_examiner/dashboard.django.html:6
+#: templates/devilry_examiner/dashboard.django.html:11
+#: templates/devilry_examiner/dashboard.django.html:18
 #: templates/devilry_examiner/singledelivery_base.django.html:49
 #: templates/devilry_examiner/singlegroupoverview.django.html:24
 msgid "Examiner"
 msgstr "Retter"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:34
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:35
 #: templatetags/devilry_examiner_tags.py:11
 msgid "Waiting for feedback"
 msgstr "Venter på tilbakemelding"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:37
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:38
 #: templatetags/devilry_examiner_tags.py:13
 #: templatetags/devilry_examiner_tags.py:40
 msgid "Waiting for deliveries"
 msgstr "Venter på innleveringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:40
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:41
 #: templatetags/devilry_examiner_tags.py:17
 msgid "Corrected"
 msgstr "Ferdig rettet"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:42
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:43
 msgid "All"
 msgstr "Alle"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:54
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:49
+#: templates/devilry_examiner/dashboard.django.html:46
+msgid "New to Devilry? Do you want to become more efficient?"
+msgstr "Er Devilry nytt og ukjent? Vil du øke effektiviten?"
+
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:52
+msgid "Check out the getting started guide"
+msgstr "Ta en titt på nybegynnerguiden"
+
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:66
 msgid "Previous"
 msgstr "Forhåndsvisning"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:65
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:77
 msgid "Next"
 msgstr "Neste"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:76
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:88
 msgid "Select All"
 msgstr "Velg alle"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:79
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:91
 msgid "Deselect All"
 msgstr "Fjern markeringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:86
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:98
 msgid "Download all deliveries"
 msgstr "Last ned alle innleveringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:117
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:129
 #: templates/devilry_examiner/readonly-feedback.django.html:14
 #: templates/devilry_examiner/singlegroupoverview.django.html:33
 msgid "Grade"
 msgstr "Karakter"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:121
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:133
 #: templates/devilry_examiner/singlegroupoverview.django.html:97
 msgid "No deliveries"
 msgstr "Ingen innleveringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:132
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:149
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:135
+#, python-format
+msgid "Next deadline in %(timeuntildeadline)s"
+msgstr "Neste innleveringsfrist om %(timeuntildeadline)s"
+
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:146
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:163
 #: templatetags/devilry_examiner_tags.py:38
 msgid "Write feedback"
 msgstr "Gi tilbakemelding"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:138
-#: templatetags/devilry_examiner_tags.py:44
-msgid "Show feedback"
-msgstr "Vis tilbakemelding"
-
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:150
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:164
 msgid "to selected"
 msgstr "til valgte"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:167
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:181
 msgid "The grading system is not configured correctly."
 msgstr "Karaktersystem er ikke konfigurert riktig"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:169
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:183
 msgid ""
 "This means that you are not able to correct any of the submitted deliveries. "
 "Notify the course administrator which need to setup up the grading system "
@@ -189,7 +198,7 @@ msgstr ""
 msgid "There are no groups that are corrected"
 msgstr "Det er ingen grupper som er rettet"
 
-#: templates/devilry_examiner/dashboard.django.html:12
+#: templates/devilry_examiner/dashboard.django.html:13
 msgid ""
 "Dashboard for the examiner role. You use this role to provide feedback to "
 "students."
@@ -197,15 +206,20 @@ msgstr ""
 "Forsiden for rettere. Du vil velge rollen retter når du vil gi "
 "tilbakemeldinger til studenter"
 
-#: templates/devilry_examiner/dashboard.django.html:40
-msgid "New to Devilry? Do you want to become more efficient?"
-msgstr "Er Devilry nytt og ukjent? Vil du øke effektiviten?"
+#: templates/devilry_examiner/dashboard.django.html:34
+#, python-format
+msgid "%(count_waiting_for_feedback)s waiting for feedback"
+msgstr "%(count_waiting_for_feedback)s venter på tilbakemelding"
 
-#: templates/devilry_examiner/dashboard.django.html:41
+#: templates/devilry_examiner/dashboard.django.html:37
+msgid "No groups waiting for feedback."
+msgstr "Ingen venter på tilbakemelding"
+
+#: templates/devilry_examiner/dashboard.django.html:47
 msgid "Check out Examiner section of the official Devilry documentation."
 msgstr "Sjekk ut avsnittet om Retterrollen i den offisielle dokumentasjonen"
 
-#: templates/devilry_examiner/dashboard.django.html:46
+#: templates/devilry_examiner/dashboard.django.html:52
 msgid "Official documentation"
 msgstr "Offisiell dokumentasjon"
 
@@ -249,31 +263,32 @@ msgstr ""
 "Kursadministrasjonen vil få instruksjoner om hvordan dette kan løses ved å "
 "besøke oppgaven gjennom Kursadministratorrollen."
 
-#: templates/devilry_examiner/singledelivery_base.django.html:69
-msgid "This delivery was added 1 hour after the deadline."
+#: templates/devilry_examiner/singledelivery_base.django.html:70
+#, fuzzy, python-format
+msgid "This delivery was added %(timesincedeadline)s before the deadline."
 msgstr "Denne innleveringen ble lagt til en time etter fristen"
 
-#: templates/devilry_examiner/singledelivery_base.django.html:71
+#: templates/devilry_examiner/singledelivery_base.django.html:73
 msgid "The group has made at least one more delivery for this deadline."
 msgstr "Gruppen har lagt til flere oppgaver på denne fristen"
 
-#: templates/devilry_examiner/singledelivery_base.django.html:73
-#: templates/devilry_examiner/singledelivery_base.django.html:83
+#: templates/devilry_examiner/singledelivery_base.django.html:75
+#: templates/devilry_examiner/singledelivery_base.django.html:85
 msgid "Browse other deliveries"
 msgstr "Bla gjennom andre innleveringer"
 
-#: templates/devilry_examiner/singledelivery_base.django.html:75
+#: templates/devilry_examiner/singledelivery_base.django.html:77
 msgid "The group has no other deliveries for this deadline."
 msgstr "Gruppen har ingen innleveringen på denne fristen."
 
-#: templates/devilry_examiner/singledelivery_base.django.html:81
+#: templates/devilry_examiner/singledelivery_base.django.html:83
 msgid ""
 "This delivery is not the last delivery made by this group on this assignment."
 msgstr ""
 "Denne innleveringen er ikke den seneste innleveringen gruppen har lastet opp "
 "på denne oppgaven."
 
-#: templates/devilry_examiner/singledelivery_base.django.html:88
+#: templates/devilry_examiner/singledelivery_base.django.html:90
 msgid ""
 "This is the last delivery made by this group, but it was NOT added to their "
 "last deadline."
@@ -281,11 +296,11 @@ msgstr ""
 "Denne innleveringen er den seneste innleveringen gruppen har lastet opp på "
 "denne oppgaven. Den ble IKKE lastet opp på deres siste innleveringsfrist."
 
-#: templates/devilry_examiner/singledelivery_base.django.html:90
+#: templates/devilry_examiner/singledelivery_base.django.html:92
 msgid "Browse all deliveries made by the group"
 msgstr ""
 
-#: templates/devilry_examiner/singledelivery_base.django.html:109
+#: templates/devilry_examiner/singledelivery_base.django.html:111
 msgid "Download files"
 msgstr "Last ned filer"
 
@@ -416,6 +431,10 @@ msgstr "bestått"
 #: templatetags/devilry_examiner_tags.py:27
 msgid "failed"
 msgstr "ikke bestått"
+
+#: templatetags/devilry_examiner_tags.py:44
+msgid "Show feedback"
+msgstr "Vis tilbakemelding"
 
 #: views/add_deadline.py:27
 msgid ""

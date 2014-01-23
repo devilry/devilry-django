@@ -31,7 +31,7 @@
                             <p class="list-group-item-text">
                                 {% if assignment.count_waiting_for_feedback %}
                                     <span class="text-warning">
-                                        {% blocktrans with count_waiting_for_feedback=assignment.count_waiting_for_feedback %}{{ count_waiting_for_feedback }} groups waiting for feedback{% endblocktrans %}
+                                        {% blocktrans with count_waiting_for_feedback=assignment.count_waiting_for_feedback %}{{ count_waiting_for_feedback }} waiting for feedback{% endblocktrans %}
                                     </span>
                                 {% else %}
                                     <small class="text-muted">{% trans "No groups waiting for feedback." %}</small>
