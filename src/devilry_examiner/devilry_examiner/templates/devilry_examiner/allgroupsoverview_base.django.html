@@ -47,13 +47,8 @@
 
             <p>
                 <strong>{% trans "New to Devilry? Do you want to become more efficient?" %}</strong>
-                {% if assignment.is_electronic %}
-                    <a href="{% decoupled_docs_url 'devilry_examiner/gettingstarted-electronic' %}">
-                        {% trans "Check out the getting started guide" %}</a>.
-                {% else %}
-                    {# <a href="{% decoupled_docs_url 'devilry_examiner/gettingstarted-nonelectronic' %}"> #}
-                        {# {% trans "Check out the getting started guide" %}</a>. #}
-                {% endif %}
+                <a href="{% decoupled_docs_url 'devilry_examiner/gettingstarted' %}">
+                    {% trans "Check out the getting started guide" %}</a>.
             </p>
         </div>
 

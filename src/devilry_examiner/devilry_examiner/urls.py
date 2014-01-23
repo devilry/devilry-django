@@ -60,10 +60,5 @@ urlpatterns = patterns('devilry_examiner',
 )
 
 
-documentationregistry.add('devilry_examiner/official-documentation', DevilryUserDocsProxy(
-    en=''))
-
-documentationregistry.add('devilry_examiner/gettingstarted-electronic', DevilryUserDocsProxy(
-    en='examiner_electronic_guide.html'))
-# documentationregistry.add('devilry_examiner/gettingstarted-nonelectronic', DevilryUserDocsProxy(
-#     en='examiner_electronic_guide.html'))
+documentationregistry.add('devilry_examiner/gettingstarted', DevilryUserDocsProxy(
+    en='examiner.html'))
