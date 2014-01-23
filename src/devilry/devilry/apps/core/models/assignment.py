@@ -282,6 +282,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         return self.delivery_types == deliverytypes.NON_ELECTRONIC
 
+    def set_passing_grade_min_points(self, passing_grade_min_points):
+        self.passing_grade_min_points = passing_grade_min_points
+
     def set_max_points(self, max_points):
         """
         Sets :attr:`.max_points`, and invalidates any
