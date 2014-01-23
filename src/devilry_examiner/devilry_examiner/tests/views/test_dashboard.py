@@ -23,9 +23,9 @@ class TestDashboardView(TestCase):
         self.assertEquals(response.status_code, 200)
         html = response.content
         self.assertEquals(len(cssFind(html, '.active-assignment-listing-item')), 1)
-        linktag = cssGet(html, '.assignment-duck1010.active.week1 a.assignmentname')
+        linktag = cssGet(html, 'a.assignment-duck1010.active.week1')
         self.assertEquals(linktag.text.strip(), 'duck1010.active - Week 1')
-        self.assertEquals(linktag['href'], '/devilry_examiner/allgroupsoverview/{}'.format(week1builder.assignment.id))
+        self.assertEquals(linktag['href'], '/devilry_examiner/allgroupsoverview/{}/waiting_for_feedback_or_all'.format(week1builder.assignment.id))
 
     def test_list_ordering(self):
         currentperiodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()

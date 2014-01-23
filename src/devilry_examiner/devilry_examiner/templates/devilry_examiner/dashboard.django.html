@@ -25,7 +25,7 @@
                     {% for assignment in active_assignments %}
                         <a href="{% url 'devilry_examiner_waiting_for_feedback_or_all' assignment.id %}"
                                 class="list-group-item active-assignment-listing-item assignment-{{ assignment.get_path }}">
-                            <h4 class="list-group-item-heading">
+                            <h4 class="list-group-item-heading assignmentname">
                                 {{ assignment.parentnode.parentnode.short_name }}.{{ assignment.parentnode.short_name }} - {{ assignment.long_name }}
                             </h4>
                             <p class="list-group-item-text">
