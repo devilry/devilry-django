@@ -129,7 +129,7 @@ class BulkViewBase(DetailView):
     #
     #
 
-    def optionsform_invalid(self, groupidsform):
+    def optionsform_invalid(self, optionsform):
         """
         Called if the options for is not valid. Should raise an exception,
         or return a HttpResponse. Defaults to raising the django.http.Http404

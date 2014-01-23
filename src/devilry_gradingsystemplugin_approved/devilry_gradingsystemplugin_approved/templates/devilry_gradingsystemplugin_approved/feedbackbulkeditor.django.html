@@ -5,20 +5,17 @@
 
 {% block pagecontent %}
 
-
-
 <div class="container">
-    {% if group_ids_form and not group_ids_form.is_valid %}
-        {% include "devilry_examiner/include/django_formerrors_as_alertboxes.django.html" with form=group_ids_form %}
+    {% if optionsform and not optionsform.is_valid %}
+        {% include "devilry_examiner/include/django_formerrors_as_alertboxes.django.html" with form=optionsform %}
     {% else %}
-    <span class="text-muted">{% trans "Edit feedback for" %}:</span>
-    <ul class="list-inline text-muted">
-      {% for group in group_ids_form.cleaned_groups %}
-      <li>{{ group.long_displayname }}</li>
-      {% endfor %}
-    </ul>
-
-        {% crispy form %}
+        <span class="text-muted">{% trans "Edit feedback for" %}:</span>
+        <ul class="list-inline text-muted">
+            {% for group in selected_groups %}
+                <li>{{ group.long_displayname }}</li>
+            {% endfor %}
+        </ul>
+        {% crispy primaryforms.submit_publish %}
     {% endif %}
 </div>
 
