@@ -1,6 +1,8 @@
+from django.shortcuts import redirect
 from django.views.generic import DetailView
+from django.views.generic.detail import SingleObjectMixin
+from django.views.generic import View
 from django.views.generic import FormView
-from django.views.generic import TemplateView
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
@@ -106,6 +108,8 @@ class CorrectedOverview(AllGroupsOverview):
         return context
 
 
+
+
 class BulkTest(FormView):
     template_name = "devilry_examiner/bulktest.django.html"
     form_class = BulkForm
@@ -121,3 +125,26 @@ class BulkTest(FormView):
 
         context['groups'] = self.request.POST.getlist('edit')
         return context
+
+
+
+
+class WaitingForFeedbackOrAllRedirectView(SingleObjectMixin, View):
+    model = Assignment
+    context_object_name = 'assignment'
+    pk_url_kwarg = 'assignmentid'
+
+    def get(self, *args, **kwargs):
+        assignment = self.get_object()
+        has_waiting_for_feedback = AssignmentGroup.objects\
+            .filter_examiner_has_access(self.request.user)\
+            .filter(parentnode=assignment)\
+            .filter_waiting_for_feedback().exists()
+        if has_waiting_for_feedback:
+            viewname = 'devilry_examiner_waiting_for_feedback'
+        else:
+            viewname = 'devilry_examiner_allgroupsoverview'
+        return redirect(viewname, assignmentid=assignment.id)
+
+    def get_queryset(self):
+        return Assignment.objects.filter_examiner_has_access(self.request.user)

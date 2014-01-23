@@ -8,6 +8,7 @@ from .views.dashboard import DashboardView
 from .views.singlegroupoverview import SingleGroupOverview
 from .views.allgroupsoverview import AllGroupsOverview
 from .views.allgroupsoverview import WaitingForFeedbackOverview
+from .views.allgroupsoverview import WaitingForFeedbackOrAllRedirectView
 from .views.allgroupsoverview import WaitingForDeliveriesOverview
 from .views.allgroupsoverview import CorrectedOverview
 from .views.allgroupsoverview import BulkTest
@@ -29,6 +30,9 @@ urlpatterns = patterns('devilry_examiner',
         login_required(
             WaitingForFeedbackOverview.as_view()),
         name='devilry_examiner_waiting_for_feedback'),
+    url('^allgroupsoverview/(?P<assignmentid>\d+)/waiting_for_feedback_or_all$',
+        login_required(WaitingForFeedbackOrAllRedirectView.as_view()),
+        name='devilry_examiner_waiting_for_feedback_or_all'),
     url('^allgroupsoverview/(?P<assignmentid>\d+)/waiting_for_deliveries$',
         login_required(
             WaitingForDeliveriesOverview.as_view()),
