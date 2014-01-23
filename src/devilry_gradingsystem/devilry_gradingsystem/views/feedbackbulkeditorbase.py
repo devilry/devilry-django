@@ -137,7 +137,7 @@ class FeedbackBulkEditorFormView(BulkViewBase):
 
     def get_primaryform_initial_data(self, formclass):
         if self.optionsdict['draft_id']:
-            draft = FeedbackDraft.objects.get(id=draftid)
+            draft = FeedbackDraft.objects.get(id=self.optionsdict['draft_id'])
             if draft.delivery.assignment != self.assignment:
                 raise Http404()
             extra_data = self.get_initial_from_draft(draft)
