@@ -21,17 +21,25 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-9">
-                <table class="table table-striped infolistingtable active-assignment-listing">
-                	{% for assignment in active_assignments %}
-                    	<tr class="active-assignment-listing-item assignment-{{ assignment.get_path }}">
-                            <td>
-        		            	<h2><a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}" class="assignmentname">
-                                    {{ assignment.parentnode.parentnode.short_name }}.{{ assignment.parentnode.short_name }} - {{ assignment.long_name }}
-                                </a></h2>
-        		            </td>
-                		</tr>
-            	    {% endfor %}
-            	</table>
+                <div class="list-group active-assignment-listing">
+                    {% for assignment in active_assignments %}
+                        <a href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}"
+                                class="list-group-item active-assignment-listing-item assignment-{{ assignment.get_path }}">
+                            <h4 class="list-group-item-heading">
+                                {{ assignment.parentnode.parentnode.short_name }}.{{ assignment.parentnode.short_name }} - {{ assignment.long_name }}
+                            </h4>
+                            <p class="list-group-item-text">
+                                {% if assignment.count_waiting_for_feedback %}
+                                    <span class="text-warning">
+                                        {% blocktrans with count_waiting_for_feedback=assignment.count_waiting_for_feedback %}{{ count_waiting_for_feedback }} groups waiting for feedback{% endblocktrans %}
+                                    </span>
+                                {% else %}
+                                    <small class="text-muted">{% trans "No groups waiting for feedback." %}</small>
+                                {% endif %}
+                            </p>
+                        </a>
+                    {% endfor %}
+                </div>
             </div>
             <div class="col-sm-3">
                 <p>
