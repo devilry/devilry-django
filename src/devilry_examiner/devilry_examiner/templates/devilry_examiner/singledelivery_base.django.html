@@ -67,7 +67,7 @@ valid_grading_system_setup
                 {% if delivery.after_deadline %}
                     <div class="bs-callout bs-callout-warning after_deadline_message">
                         <strong>
-                            {% blocktrans with timesincedeadline=delivery.deadline.deadline|timesince:delivery.time_of_delivery %}This delivery was added {{ timesincedeadline }} before the deadline.{% endblocktrans %}
+                            {% blocktrans with timesincedeadline=delivery.deadline.deadline|timesince:delivery.time_of_delivery %}This delivery was added {{ timesincedeadline }} after the deadline.{% endblocktrans %}
                         </strong>
                         {% if delivery.deadline.successful_delivery_count > 1 %}
                             {% trans "The group has made at least one more delivery for this deadline." %}
