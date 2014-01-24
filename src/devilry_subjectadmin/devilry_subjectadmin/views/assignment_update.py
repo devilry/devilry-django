@@ -47,3 +47,6 @@ class AssignmentUpdateView(UpdateView):
 
     def get_success_url(self):
         return reverse('devilry_subjectadmin_assignment', kwargs=self.kwargs)
+
+    def get_queryset(self):
+        return Assignment.where_is_admin_or_superadmin(self.request.user)

@@ -24,6 +24,21 @@ class TestAssignmentUpdateView(TestCase):
         url = reverse('devilry_subjectadmin_assignment_update', kwargs={'id': id})
         return self.client.post(url, *args, **kwargs)
 
+    def test_only_admin(self):
+        periodadmin = UserBuilder('periodadmin').user
+        assignmentadmin = UserBuilder('assignmentadmin').user
+        nobody = UserBuilder('nobody').user
+        superuser = UserBuilder('superuser', is_superuser=True).user
+        periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_admins(periodadmin)
+        assignment1builder = periodbuilder.add_assignment('assignment1')\
+            .add_admins(assignmentadmin)
+
+        self.assertEquals(self._getas(assignment1builder.assignment.id, periodadmin).status_code, 200)
+        self.assertEquals(self._getas(assignment1builder.assignment.id, assignmentadmin).status_code, 200)
+        self.assertEquals(self._getas(assignment1builder.assignment.id, superuser).status_code, 200)
+        self.assertEquals(self._getas(assignment1builder.assignment.id, nobody).status_code, 404)
+
     def test_render(self):
         periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_admins(self.testuser)
