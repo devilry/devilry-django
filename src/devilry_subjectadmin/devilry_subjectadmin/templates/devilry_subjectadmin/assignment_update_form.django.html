@@ -2,6 +2,8 @@
 {% load crispy_forms_tags %}
 {% load i18n %}
 
+{% block title %}{% trans "Edit" %} - {{ assignment.get_path }}{% endblock title %}
+
 {% block body %}
     <div class="container">
         <div class="page-header">
