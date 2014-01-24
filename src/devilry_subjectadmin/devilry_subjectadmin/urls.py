@@ -7,6 +7,7 @@ from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.extjsapp import AppView
 from .views.redirectviews import RedirectToSubjectAdminAppView
 from .views.redirectviews import RedirectToGroupAdminAppView
+from .views.assignment_update import AssignmentUpdateView
 from .exportdetailedperiodoverview import ExportDetailedPeriodOverview
 
 
@@ -34,8 +35,12 @@ urlpatterns = patterns(
     url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
         name='devilry_subjectadmin_i18n'),
 
+    url('assignment/(?P<id>\d+)/update',
+        login_required(AssignmentUpdateView.as_view()),
+        name='devilry_subjectadmin_assignment_update'),
+
     # Views that just redirect to ``/devilry_subjectadmin/#<some-path>``
-    url('^subject/(?P<id>[^/]+)',
+    url('^subject/(?P<id>\d+)',
         login_required(RedirectToSubjectAdminAppView.as_view(pathformat='/subject/{id}/')),
         name='devilry_subjectadmin_subject'),
 

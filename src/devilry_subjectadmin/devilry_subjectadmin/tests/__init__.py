@@ -14,3 +14,4 @@ from .addgroups import *
 from .deadlines import *
 from .exportdetailedperiodoverview import *
 from .passedpreviousperiod import *
+from .views.test_assignment_update import *

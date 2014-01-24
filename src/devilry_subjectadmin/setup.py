@@ -15,6 +15,7 @@ setup(name = 'devilry_subjectadmin',
                           'django_seleniumhelpers', 'django_extjs4',
                           'djangosenchatools', 'djangorestframework',
                           'openpyxl',
+                          'django-crispy-forms',
                           'numpy'
                           ],
       include_package_data=True,
