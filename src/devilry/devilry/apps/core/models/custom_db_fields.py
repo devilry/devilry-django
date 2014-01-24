@@ -21,8 +21,8 @@ class ShortNameField(models.SlugField):
             help_text=_(
                 'A short name with at most 20 letters. Can only contain lowercase '
                 'english letters (a-z), numbers, underscore ("_") and hyphen ("-""). '
-                'This is used the the regular name takes to much space. Be VERY careful '
-                'about changing the Short name - it is typically used as an identifier '
+                'This is used when the the regular name takes to much space. Be VERY careful '
+                'about changing the short name - it is typically used as an identifier '
                 'when importing and exporting data from Devilry.'))
         kw.update(kwargs)
         super(ShortNameField, self).__init__(*args, **kw)
