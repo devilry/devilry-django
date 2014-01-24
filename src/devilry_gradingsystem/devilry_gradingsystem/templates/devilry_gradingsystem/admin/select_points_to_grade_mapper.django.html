@@ -15,7 +15,7 @@
             {% include "devilry_subjectadmin/include/django_formerrors_as_alertboxes.django.html" with form=form %}
         {% endif %}
 
-        <div class="devilry_gradingsystem_verbose_selectbox passed-failed_points_to_grade_mapper_box">
+        <div class="devilry-verbose-selectbox devilry_gradingsystem_verbose_selectbox passed-failed_points_to_grade_mapper_box">
             <h2>{% trans "As passed or failed" %}</h2>
             <p>
                 {% trans "Students see their result as passed or failed." %}
@@ -26,7 +26,7 @@
             {% include  "devilry_gradingsystem/admin/use-this-button.django.html" with href="?points_to_grade_mapper=passed-failed" %}
         </div>
 
-        <div class="devilry_gradingsystem_verbose_selectbox raw-points_points_to_grade_mapper_box">
+        <div class="devilry-verbose-selectbox devilry_gradingsystem_verbose_selectbox raw-points_points_to_grade_mapper_box">
             <h2>{% trans "As points" %}</h2>
             <p>
                 {% trans "Students see their result as points/max-points, and they can see if the number of points is a passing or a failing grade." %}
@@ -37,7 +37,7 @@
             {% include  "devilry_gradingsystem/admin/use-this-button.django.html" with href="?points_to_grade_mapper=raw-points" %}
         </div>
 
-        <div class="devilry_gradingsystem_verbose_selectbox custom-table_points_to_grade_mapper_box">
+        <div class="devilry-verbose-selectbox devilry_gradingsystem_verbose_selectbox custom-table_points_to_grade_mapper_box">
             <h2>{% trans "As a text looked up in a custom table" %}</h2>
             <p>{% trans "You set up a table mapping points to a grade. Use this if you want to grade your students according to some scale, such as A-F." %}</p>
             {% include  "devilry_gradingsystem/admin/use-this-button.django.html" with href="?points_to_grade_mapper=custom-table" %}

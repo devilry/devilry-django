@@ -7290,3 +7290,22 @@ td.visible-print {
 .fa-plus-square-o:before {
   content: "\f196";
 }
+.devilry-verbose-selectbox {
+  background-color: #ffffff;
+  margin: 0 0 15px 0;
+  padding: 15px;
+  border: 1px solid #eeeeee;
+}
+.devilry-verbose-selectbox h2 {
+  font-size: 20px;
+  margin: 0 0 10px 0;
+}
+.devilry-focusbox {
+  background-color: #ffffff;
+  margin: 0 0 15px 0;
+  padding: 15px;
+  border: 1px solid #eeeeee;
+}
+body {
+  background-image: url('../images/groovepaper.png');
+}

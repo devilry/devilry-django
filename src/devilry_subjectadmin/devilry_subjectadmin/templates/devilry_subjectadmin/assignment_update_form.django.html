@@ -14,6 +14,9 @@
             {% include "devilry_subjectadmin/include/assignment_breadcrumb.django.html" %}
             <li class="active">{% trans "Edit" %}</li>
         </ol>
-        {% crispy form %}
+
+        <div class="devilry-focusbox">
+            {% crispy form %}
+        </div>
     </div>
 {% endblock body %}
