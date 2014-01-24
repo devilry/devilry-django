@@ -100,6 +100,13 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
     },
 
 
+    updateAssignment: function(assignment_id) {
+        return Ext.String.format('{0}/devilry_subjectadmin/assignment/{1}/update',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
+            assignment_id);
+    },
+
+
     //
     //
     // In the nodeadmin UI

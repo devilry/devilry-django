@@ -6,6 +6,10 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditDeadlineHandling', {
     mixins: {
         'handleProxyError': 'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
     },
+    
+    requires: [
+        'devilry_subjectadmin.utils.UrlLookup'
+    ],
 
     views: [
         'assignment.EditDeadlineHandlingPanel',
@@ -103,11 +107,12 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditDeadlineHandling', {
     //
     //////////////////////////////////
     _showEditView: function() {
-        this.getCardContainer().getLayout().setActiveItem('editDeadlineHandling');
-        this.getDeadlineHandlingField().setValue(this.assignmentRecord.get('deadline_handling'));
-        Ext.defer(function() {
-            this.getFormPanel().down('checkbox').focus();
-        }, 100, this);
+        // this.getCardContainer().getLayout().setActiveItem('editDeadlineHandling');
+        // this.getDeadlineHandlingField().setValue(this.assignmentRecord.get('deadline_handling'));
+        // Ext.defer(function() {
+        //     this.getFormPanel().down('checkbox').focus();
+        // }, 100, this);
+        window.location.href = devilry_subjectadmin.utils.UrlLookup.updateAssignment(this.assignmentRecord.get('id'));
     },
 
     _onRenderForm: function() {
