@@ -38,7 +38,7 @@ class TestAssignmentUpdateView(TestCase):
         self.assertEquals(response.status_code, 200)
         html = response.content
         self.assertEquals(cssGet(html, 'input[name=long_name]')['value'], 'Assignment One')
-        self.assertEquals(cssGet(html, 'input[name=deadline_handling]')['value'], '1')
+        self.assertEquals(cssGet(html, 'select[name=deadline_handling] option[value=1]')['selected'], 'selected')
         self.assertEquals(cssGet(html, 'input[name=publishing_time]')['value'],
             isoformat_datetime(publishing_time))
         self.assertEquals(cssGet(html, 'input[name=short_name]')['value'], 'assignment1')
