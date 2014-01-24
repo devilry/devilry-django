@@ -14,7 +14,7 @@ class AssignmentUpdateForm(forms.ModelForm):
         label=_('Publishing time'),
         help_text=_('The time when the assignment is to be published (visible to students and examiners). Format: "YYYY-MM-DD hh:mm".'),
     )
-    
+
     class Meta:
         model = Assignment
         fields = ['long_name', 'short_name', 'publishing_time', 'anonymous', 'deadline_handling']
@@ -28,9 +28,7 @@ class AssignmentUpdateForm(forms.ModelForm):
             'publishing_time',
             'anonymous',
             'deadline_handling',
-            HTML('<div class="alert alert-warning"><p>'),
-            HTML(_('Be very careful about changing the Short name - it is typically used as an identifier when importing and exporting data from Devilry.')),
-            HTML('</p>'),
+            HTML('<div class="alert alert-warning">'),
             'short_name',
             HTML('</div>'),
             HTML('<hr>'),
