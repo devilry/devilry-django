@@ -44,7 +44,7 @@ class ApprovedFeedbackEditorView(FeedbackEditorFormView):
 class ApprovedFeedbackBulkEditorForm(FeedbackBulkEditorFormBase):
     points = forms.BooleanField(
         label=_('Approved'),
-        help_text=_('Check if delivery is Approved.'),
+        help_text=_('Check to provide a passing grade.'),
         required=False)
 
     def __init__(self, *args, **kwargs):
