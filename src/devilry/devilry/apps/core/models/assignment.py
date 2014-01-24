@@ -242,6 +242,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     deadline_handling = models.PositiveIntegerField(
         default=settings.DEFAULT_DEADLINE_HANDLING_METHOD,
         verbose_name=_('Deadline handling'),
+        choices=(
+            (DEADLINEHANDLING_SOFT, _('Soft deadlines')),
+            (DEADLINEHANDLING_HARD, _('Hard deadlines'))
+        ),
         help_text=_(
             'With HARD deadlines, students will be unable to make deliveries when a deadline has expired. '
             'With SOFT deadlines students will be able to make deliveries after the deadline '
