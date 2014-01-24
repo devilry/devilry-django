@@ -34,4 +34,4 @@ urlpatterns = patterns('devilry_gradingsystem',
 
 
 documentationregistry.add('devilry_gradingsystem/markdown', DevilryUserDocsProxy(
-    en='devilry_gradingsystem/markdown.html'))
+    en='markdown.html'))
