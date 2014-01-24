@@ -59,7 +59,7 @@ class EditMarkdownWidget
             @_surroundSelectionWith('**', '**')
         @$toolbar.find('.markdownItalicButton').on 'click', (e) =>
             e.preventDefault()
-            @_surroundSelectionWith('_', '_')
+            @_surroundSelectionWith('*', '*')
         @$toolbar.find('.markdownBulletlistButton').on 'click', (e) =>
             e.preventDefault()
             @_surroundSelectionWith('\n* ', '\n')
