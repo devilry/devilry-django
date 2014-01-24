@@ -7,8 +7,8 @@ from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 
 class PointsPluginApi(GradingSystemPluginInterface):
     id = 'devilry_gradingsystemplugin_points'
-    title = _('Specify a number of points in an input field')
-    description = _('Provides a form with a single field where a number of points is specified. The lowest possible number is zero, and you specify the maximum number of points allowed for this assignment.')
+    title = _('Points')
+    description = _('Choose a number between zero and a maximum that you specify on the next page.')
 
     def get_edit_feedback_url(self, deliveryid):
         return reverse('devilry_gradingsystemplugin_points_feedbackeditor', kwargs={'deliveryid': deliveryid})

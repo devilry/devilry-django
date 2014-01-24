@@ -124,7 +124,7 @@ And then you can use ``VersionedDocProxy`` as follows::
 
     decoupled_docs_registry.add('my-markdown-editor/tutorial', DocProxy(
         # The default english docs
-        default = 'http://read-the-docs.org/my-markdown-editor/en/{version}/tutorial.html',
+        en = 'http://read-the-docs.org/my-markdown-editor/en/{version}/tutorial.html',
 
         # The Norwegian Bokmaal translation
         nb = 'http://read-the-docs.org/my-markdown-editor/nb/{version}/tutorial.html',
@@ -143,27 +143,26 @@ of your documentation sources. For a read-the-docs DocProxy, you could do someth
     from django_decoupled_docs.registry import DocProxy
 
     class ReadTheDocsDocProxy(DocProxy):
-        #: The name of the repo (the first path of the URL)
-        reponame = None
+        #: The name of the project (the first path of the URL)
+        projectname = None
     
-        def add_for_language(self, documentation_id, languagecode, path):
-            url = 'http://read-the-docs.org/{reponame}/{languagecode}/latest/{path}'.format(
-                reponame=self.reponame, languagecode=languagecode, path=path)
-            super(ReadTheDocsDocProxy, self).add_for_language(
-                documentation_id, languagecode, url)
+        def add_for_language(self, languagecode, path):
+            url = 'http://read-the-docs.org/{projectname}/{languagecode}/latest/{path}'.format(
+                projectname=self.projectname, languagecode=languagecode, path=path)
+            super(ReadTheDocsDocProxy, self).add_for_language(languagecode, url)
 
 
-    class MyRepoReadTheDocsDocProxy(ReadTheDocsDocProxy):
-        reponame = 'my-repo'
+    class MyProjectReadTheDocsDocProxy(ReadTheDocsDocProxy):
+        projectname = 'my-project'
 
 
-And then use ``MyRepoReadTheDocsDocProxy`` and other similar specialized
+And then use ``MyProjectReadTheDocsDocProxy`` and other similar specialized
 ``DocProxy``-implementations instead of ``DocProxy``::
 
     from django_decoupled_docs.registry import decoupled_docs_registry
     from django_decoupled_docs.registry import DocProxy
 
-    decoupled_docs_registry.add('my-markdown-editor/tutorial', MyRepoReadTheDocsDocProxy(
+    decoupled_docs_registry.add('my-markdown-editor/tutorial', MyProjectReadTheDocsDocProxy(
         # The default english docs
         default = 'tutorial.html',
         nb = 'tutorial.html'

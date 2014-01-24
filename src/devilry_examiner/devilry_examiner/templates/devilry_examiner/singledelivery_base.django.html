@@ -66,7 +66,9 @@ valid_grading_system_setup
             <div class="devilry-bs-callout-container">
                 {% if delivery.after_deadline %}
                     <div class="bs-callout bs-callout-warning after_deadline_message">
-                        <strong>{% trans "This delivery was added 1 hour after the deadline." %}</strong>
+                        <strong>
+                            {% blocktrans with timesincedeadline=delivery.deadline.deadline|timesince:delivery.time_of_delivery %}This delivery was added {{ timesincedeadline }} after the deadline.{% endblocktrans %}
+                        </strong>
                         {% if delivery.deadline.successful_delivery_count > 1 %}
                             {% trans "The group has made at least one more delivery for this deadline." %}
                             <a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">
@@ -81,6 +83,13 @@ valid_grading_system_setup
                         {% trans "This delivery is not the last delivery made by this group on this assignment." %}
                         <a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">
                                 {% trans "Browse other deliveries" %}</a>.
+                    </div>
+                {% endif %}
+                {% if delivery.is_last_delivery and delivery.deadline != delivery.assignment_group.last_deadline %}
+                    <div class="bs-callout bs-callout-warning not_last_delivery_message">
+                        {% trans "This is the last delivery made by this group, but it was NOT added to their last deadline." %}
+                        <a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">
+                                {% trans "Browse all deliveries made by the group" %}</a>.
                     </div>
                 {% endif %}
             </div>

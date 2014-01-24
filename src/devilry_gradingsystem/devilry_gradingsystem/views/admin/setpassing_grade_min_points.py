@@ -63,10 +63,10 @@ class SetPassingGradeMinPointsDisplay(SetPassingGradeMinPointsCommonMixin, Detai
 
     def get(self, *args, **kwargs):
         pluginapi = self.get_pluginapi()
-        if pluginapi and pluginapi.sets_max_points_automatically:
+        if pluginapi and pluginapi.sets_passing_grade_min_points_automatically:
             self.object = self.get_object()
             assignment = self.object
-            assignment.set_max_points(pluginapi.get_max_points())
+            assignment.set_passing_grade_min_points(pluginapi.get_passing_grade_min_points())
             assignment.full_clean()
             assignment.save()
             return redirect(self.get_success_url())

@@ -23,10 +23,6 @@ class SelectPointsToGradeMapperView(AssignmentSingleObjectRequiresValidPluginMix
             return reverse('devilry_gradingsystem_admin_setup_custom_table', kwargs={
                 'assignmentid': assignment.id,
             })
-        elif pluginapi.sets_passing_grade_min_points_automatically:
-            return reverse('devilry_gradingsystem_admin_summary', kwargs={
-                'assignmentid': assignment.id,
-            })
         else:
             return reverse('devilry_gradingsystem_admin_setpassing_grade_min_points', kwargs={
                 'assignmentid': assignment.id,

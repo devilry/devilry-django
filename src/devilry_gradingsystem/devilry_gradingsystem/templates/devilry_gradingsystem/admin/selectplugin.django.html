@@ -21,7 +21,7 @@
         </p>
 
         {% for plugin in pluginregistry %}
-            <div class="devilry_gradingsystem_verbose_selectbox">
+            <div class="devilry-verbose-selectbox devilry_gradingsystem_verbose_selectbox">
                 <h2>{{ plugin.title }}</h2>
                 <p>{{ plugin.description }}</p>
                 <a class="btn btn-primary" href="?grading_system_plugin_id={{ plugin.id }}">

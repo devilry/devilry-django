@@ -13,6 +13,8 @@ setup(name = 'devilry_examiner',
                           'devilry',
                           'devilry_rest',
                           'mock',
+                          'django-crispy-forms',
+                          'django_decoupled_docs'
                           ],
       include_package_data=True,
       long_description = open(join(this_dir, 'README.rst')).read().strip(),

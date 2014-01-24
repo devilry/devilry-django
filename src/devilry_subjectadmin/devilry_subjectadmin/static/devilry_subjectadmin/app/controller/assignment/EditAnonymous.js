@@ -7,6 +7,10 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
         'handleProxyError': 'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
     },
 
+    requires: [
+        'devilry_subjectadmin.utils.UrlLookup'
+    ],
+
     views: [
         'assignment.EditAnonymousPanel',
         'assignment.EditAnonymousWidget'
@@ -100,11 +104,12 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditAnonymous', {
     //
     //////////////////////////////////
     _showEditView: function() {
-        this.getCardContainer().getLayout().setActiveItem('editAnonymous');
-        this.getAnonymousField().setValue(this.assignmentRecord.get('anonymous'));
-        Ext.defer(function() {
-            this.getFormPanel().down('checkbox').focus();
-        }, 100, this);
+        // this.getCardContainer().getLayout().setActiveItem('editAnonymous');
+        // this.getAnonymousField().setValue(this.assignmentRecord.get('anonymous'));
+        // Ext.defer(function() {
+        //     this.getFormPanel().down('checkbox').focus();
+        // }, 100, this);
+        window.location.href = devilry_subjectadmin.utils.UrlLookup.updateAssignment(this.assignmentRecord.get('id'));
     },
 
     _onRenderForm: function() {

@@ -6,6 +6,10 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
     mixins: {
         'handleProxyError': 'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin'
     },
+    
+    requires: [
+        'devilry_subjectadmin.utils.UrlLookup'
+    ],
 
     views: [
         'assignment.EditPublishingTimePanel',
@@ -107,11 +111,12 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditPublishingTime', {
     //////////////////////////////////
 
     _showEditView: function() {
-        this.getCardContainer().getLayout().setActiveItem('editPublishingTime');
-        this.getPublishingTimeField().setValue(this.assignmentRecord.get('publishing_time'));
-        Ext.defer(function() {
-            this.getFormPanel().down('devilry_extjsextras-datetimefield').focus();
-        }, 200, this);
+        // this.getCardContainer().getLayout().setActiveItem('editPublishingTime');
+        // this.getPublishingTimeField().setValue(this.assignmentRecord.get('publishing_time'));
+        // Ext.defer(function() {
+        //     this.getFormPanel().down('devilry_extjsextras-datetimefield').focus();
+        // }, 200, this);
+        window.location.href = devilry_subjectadmin.utils.UrlLookup.updateAssignment(this.assignmentRecord.get('id'));
     },
 
     _onRenderForm: function() {

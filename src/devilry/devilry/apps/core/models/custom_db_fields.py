@@ -1,4 +1,4 @@
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db import models
 from south.modelsinspector import add_introspection_rules
@@ -19,8 +19,11 @@ class ShortNameField(models.SlugField):
             verbose_name = _('Short name'),
             db_index = True,
             help_text=_(
-                "Max 20 characters. Only numbers, lowercase characters, '_' " \
-                    "and '-'. " ))
+                'A short name with at most 20 letters. Can only contain lowercase '
+                'english letters (a-z), numbers, underscore ("_") and hyphen ("-"). '
+                'This is used when the the regular name takes to much space. Be VERY careful '
+                'about changing the short name - it is typically used as an identifier '
+                'when importing and exporting data from Devilry.'))
         kw.update(kwargs)
         super(ShortNameField, self).__init__(*args, **kw)
 
@@ -34,11 +37,8 @@ class ShortNameField(models.SlugField):
 class LongNameField(models.CharField):
     def __init__(self, *args, **kwargs):
         kw = dict(max_length=100,
-            verbose_name='Long name',
-            db_index = True,
-            help_text=_(
-                'A longer name, more descriptive than "Short name". '\
-                'This is the name visible to students.'))
+            verbose_name='Name',
+            db_index = True)
         kw.update(kwargs)
         super(LongNameField, self).__init__(*args, **kw)
 

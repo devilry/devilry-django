@@ -1,0 +1,24 @@
+{% extends "devilry_subjectadmin/base.django.html" %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block title %}{% trans "Edit" %} - {{ assignment.get_path }}{% endblock title %}
+
+{% block body %}
+    <div class="container">
+        <div class="page-header">
+            <h1>
+                {% trans "Edit" %}
+                <small>{{ assignment.get_path }}</small>
+            </h1>
+        </div>
+        <ol class="breadcrumb">
+            {% include "devilry_subjectadmin/include/assignment_breadcrumb.django.html" %}
+            <li class="active">{% trans "Edit" %}</li>
+        </ol>
+
+        <div class="devilry-focusbox">
+            {% crispy form %}
+        </div>
+    </div>
+{% endblock body %}

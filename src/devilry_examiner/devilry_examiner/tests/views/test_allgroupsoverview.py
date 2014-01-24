@@ -139,3 +139,46 @@ class TestCorrectedOverview(TestCase, HeaderTest):
         assignment = self.week1builder.assignment
         response = self._getas('examiner2', assignment.id)
         self.assertEquals(response.status_code, 200)
+
+
+
+
+class TestWaitingForFeedbackOrAllRedirectView(TestCase):
+    def setUp(self):
+        self.examiner1 = UserBuilder('examiner1').user
+        self.student1 = UserBuilder('student1').user
+        self.week1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')
+
+    def _getas(self, username, assignmentid, *args, **kwargs):
+        self.client.login(username=username, password='test')
+        return self.client.get(reverse('devilry_examiner_waiting_for_feedback_or_all',
+            kwargs={'assignmentid': assignmentid}), *args, **kwargs)
+
+    def test_404_when_not_examiner(self):
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        self.assertEquals(response.status_code, 404)
+
+    def test_302_when_examiner(self):
+        self.week1builder.add_group(examiners=[self.examiner1])
+        assignment = self.week1builder.assignment
+        response = self._getas('examiner1', assignment.id)
+        self.assertEquals(response.status_code, 302)
+
+    def test_no_waiting_for_feedback_examiner(self):
+        self.week1builder.add_group(examiners=[self.examiner1])
+        assignment = self.week1builder.assignment
+        response = self._getas('examiner1', assignment.id)
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue(response['Location'].endswith(
+            reverse('devilry_examiner_allgroupsoverview', kwargs={'assignmentid': self.week1builder.assignment.id})))
+
+    def test_has_waiting_for_feedback_examiner(self):
+        self.week1builder.add_group(examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery()
+        assignment = self.week1builder.assignment
+        response = self._getas('examiner1', assignment.id)
+        self.assertEquals(response.status_code, 302)
+        self.assertTrue(response['Location'].endswith(
+            reverse('devilry_examiner_waiting_for_feedback', kwargs={'assignmentid': self.week1builder.assignment.id})))

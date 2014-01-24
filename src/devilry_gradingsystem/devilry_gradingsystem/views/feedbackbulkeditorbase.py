@@ -1,9 +1,12 @@
+from datetime import datetime
+from random import randint
 from django.core.urlresolvers import reverse
 from django.utils.http import urlencode
 from django.views.generic.detail import SingleObjectMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
+from django.http import Http404
 from django import forms
 # from django.views.generic import FormView
 from django.shortcuts import redirect
@@ -16,15 +19,24 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import StaticFeedback
 from devilry_gradingsystem.models import FeedbackDraft
 from devilry_gradingsystem.widgets.editmarkdown import EditMarkdownLayoutObject
-from devilry_gradingsystem.widgets.editfeedbackbuttonbar import EditFeedbackButtonBar
+from devilry_gradingsystem.widgets.editfeedbackbuttonbar import BulkEditFeedbackButtonBar
 from devilry_examiner.views.bulkviewbase import BulkViewBase
-from devilry_examiner.forms import GroupIdsForm
+from devilry_examiner.views.bulkviewbase import OptionsForm
 
 
 
-class FeedbackBulkEditorGroupIdsForm(GroupIdsForm):
+class FeedbackBulkEditorOptionsForm(OptionsForm):
+    draft_id = forms.IntegerField(required=False,
+        widget=forms.HiddenInput)
+
+    def clean_draft_id(self):
+        draft_id = self.cleaned_data['draft_id']
+        if draft_id != None and not FeedbackDraft.objects.filter(id=draft_id).exists():
+            raise forms.ValidationError("Invalid draft ID: {}.".format(draft_id))
+        return draft_id
+
     def clean(self):
-        cleaned_data = super(FeedbackBulkEditorGroupIdsForm, self).clean()
+        cleaned_data = super(FeedbackBulkEditorOptionsForm, self).clean()
         if hasattr(self, 'cleaned_groups'):
             cleaned_groups = self.cleaned_groups
             groups_with_no_deliveries = cleaned_groups.filter(last_delivery=None)
@@ -35,7 +47,7 @@ class FeedbackBulkEditorGroupIdsForm(GroupIdsForm):
         return cleaned_data
 
 
-class FeedbackBulkEditorFormBase(FeedbackBulkEditorGroupIdsForm):
+class FeedbackBulkEditorFormBase(FeedbackBulkEditorOptionsForm):
     def __init__(self, *args, **kwargs):
         super(FeedbackBulkEditorFormBase, self).__init__(*args, **kwargs)
         self._add_feedbacktext_field()
@@ -50,7 +62,7 @@ class FeedbackBulkEditorFormBase(FeedbackBulkEditorGroupIdsForm):
         return [EditMarkdownLayoutObject()]
 
     def get_submitbuttons_layout_elements(self):
-        return [EditFeedbackButtonBar()]
+        return [BulkEditFeedbackButtonBar()]
 
     def add_common_layout_elements(self):
         for element in self.get_feedbacktext_layout_elements():
@@ -58,32 +70,29 @@ class FeedbackBulkEditorFormBase(FeedbackBulkEditorGroupIdsForm):
         for element in self.get_submitbuttons_layout_elements():
             self.helper.layout.append(element)
         self.helper.layout.append('group_ids')
-
+        self.helper.layout.append('draft_id')
 
 
 
 class FeedbackBulkEditorFormView(BulkViewBase):
-    groupidsform_class = FeedbackBulkEditorGroupIdsForm
+    optionsform_class = FeedbackBulkEditorOptionsForm
 
-    def get_form_kwargs(self):
-        kwargs = super(FeedbackBulkEditorFormView, self).get_form_kwargs()
-        return kwargs
-
-    def get_success_url(self):
-        publish = 'submit_publish' in self.request.POST
-        if publish:
-            return super(FeedbackBulkEditorFormView, self).get_success_url()
-        else:
-            return self.request.path
-
-    def is_primary_submit(self):
-        return 'submit_publish' in self.request.POST or 'submit_preview' in self.request.POST
+    def get_primaryform_classes(self):
+        return {
+            'submit_publish': self.form_class,
+            'submit_preview': self.form_class,
+        }
 
     def get_points_from_form(self, form):
         raise NotImplementedError()
 
     def get_default_points_value(self):
         raise NotImplementedError()
+
+    def optionsform_invalid(self, optionsform):
+        return self.render_view({
+            'optionsform': optionsform
+        })
 
     def get_create_feedbackdraft_kwargs(self, form, publish):
         return {
@@ -94,10 +103,9 @@ class FeedbackBulkEditorFormView(BulkViewBase):
            'points': self.get_points_from_form(form)
         }
 
-    def _get_preview_redirect_url(self, drafts, grouplist):
+    def _get_preview_redirect_url(self, randomkey):
        return "{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
-                                              kwargs={'assignmentid': self.object.id, 
-                                                      'draftid': drafts['draft'].id}))
+            kwargs={'assignmentid': self.object.id, 'randomkey': randomkey}))
 
     def save_pluginspecific_state(self, form):
         """
@@ -107,19 +115,19 @@ class FeedbackBulkEditorFormView(BulkViewBase):
         """
         pass
 
-    def form_valid(self, form):
+    def submitted_primaryform_valid(self, form, context_data):
         publish = 'submit_publish' in self.request.POST
         preview = 'submit_preview' in self.request.POST
 
         self.save_pluginspecific_state(form)
-
-        drafts = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
-        self.request.session['draft_ids'] = drafts['draft_ids']
-
+        draft_ids = self.create_feedbackdrafts(**self.get_create_feedbackdraft_kwargs(form, publish))
         if preview:
-            return redirect(self._get_preview_redirect_url(drafts, self.request.GET))
+            randomkey = '{}.{}'.format(datetime.now().strftime('%Y-%m-%d_%H-%M-%S-%f'), randint(0, 10000000))
+            sessionkey = 'devilry_gradingsystem_draftids_{}'.format(randomkey)
+            self.request.session[sessionkey] = draft_ids
+            return redirect(self._get_preview_redirect_url(randomkey))
         else:
-            return super(FeedbackBulkEditorFormView, self).form_valid(form)
+            return super(FeedbackBulkEditorFormView, self).submitted_primaryform_valid(form, context_data)
 
 
     def get_initial_from_draft(self, draft):
@@ -127,23 +135,20 @@ class FeedbackBulkEditorFormView(BulkViewBase):
             'feedbacktext': draft.feedbacktext_raw
         }
 
-    def get_initial(self):
-        if 'draft_ids' in self.request.session:
-            draftid = self.request.session['draft_ids'][0] # Just take one of the drafts they are all the sam
-            draft = FeedbackDraft.objects.get(id=draftid)
-            del self.request.session['draft_ids']
-            return self.get_initial_from_draft(draft)
+    def get_primaryform_initial_data(self, formclass):
+        if self.optionsdict['draft_id']:
+            draft = FeedbackDraft.objects.get(id=self.optionsdict['draft_id'])
+            if draft.delivery.assignment != self.assignment:
+                raise Http404()
+            extra_data = self.get_initial_from_draft(draft)
         else:
-            return {
+            extra_data = {
                 'feedbacktext': '',
                 'points': self.get_default_points_value()
             }
-
-        
-
-    def groupids_form_invalid(self, groupidsform):
-        # We handle errors in the template
-        pass
+        initial = super(FeedbackBulkEditorFormView, self).get_primaryform_initial_data(formclass)
+        extra_data.update(initial)
+        return extra_data
 
     def get(self, *args, **kwargs):
         assignment = self.get_object()
@@ -159,17 +164,14 @@ class FeedbackBulkEditorFormView(BulkViewBase):
             return redirect(self.request.path)
         return super(FeedbackBulkEditorFormView, self).post(*args, **kwargs)
 
-
     def get_context_data(self, **kwargs):
         context = super(FeedbackBulkEditorFormView, self).get_context_data(**kwargs)
         assignment = self.object
         context['valid_grading_system_setup'] = assignment.has_valid_grading_setup()
         return context
 
-    def create_feedbackdraft(self, groups, points, feedbacktext_raw, feedbacktext_html, publish=False):
-        draft = None
+    def create_feedbackdrafts(self, groups, points, feedbacktext_raw, feedbacktext_html, publish=False):
         draft_ids = []
-
         for group in groups:
             delivery = group.last_delivery
             draft = FeedbackDraft(
@@ -186,4 +188,4 @@ class FeedbackBulkEditorFormView(BulkViewBase):
                 draft.staticfeedback.save()
             draft.save()
             draft_ids.append(draft.id)
-        return {'draft': draft, 'draft_ids': draft_ids}
+        return draft_ids

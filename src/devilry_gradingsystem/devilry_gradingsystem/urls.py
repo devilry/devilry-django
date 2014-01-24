@@ -1,6 +1,8 @@
 from django.conf.urls.defaults import patterns
 from django.conf.urls.defaults import url
 
+from django_decoupled_docs.registry import documentationregistry
+from devilry_settings.docproxies import DevilryUserDocsProxy
 from .views.feedbackdraft_preview import FeedbackDraftPreviewView
 from .views.feedbackdraft_bulkpreview import FeedbackDraftBulkPreviewView
 from .views.admin.summary import SummaryView
@@ -14,7 +16,7 @@ from .views.admin.setpassing_grade_min_points import SetPassingGradeMinPointsVie
 urlpatterns = patterns('devilry_gradingsystem',
     url('^feedbackdraft_preview/(?P<deliveryid>\d+)/(?P<draftid>\d+)$', FeedbackDraftPreviewView.as_view(),
         name='devilry_gradingsystem_feedbackdraft_preview'),
-    url('^feedbackdraft_bulkpreview/(?P<assignmentid>\d+)/(?P<draftid>\d+)$', FeedbackDraftBulkPreviewView.as_view(),
+    url('^feedbackdraft_bulkpreview/(?P<assignmentid>\d+)/(?P<randomkey>[0-9_.-]+)$', FeedbackDraftBulkPreviewView.as_view(),
         name='devilry_gradingsystem_feedbackdraft_bulkpreview'),
     url('^admin/summary/(?P<assignmentid>\d+)$', SummaryView.as_view(),
         name='devilry_gradingsystem_admin_summary'),
@@ -29,3 +31,7 @@ urlpatterns = patterns('devilry_gradingsystem',
     url('^admin/setpassing_grade_min_points/(?P<assignmentid>\d+)$', SetPassingGradeMinPointsView.as_view(),
         name='devilry_gradingsystem_admin_setpassing_grade_min_points'),
 )
+
+
+documentationregistry.add('devilry_gradingsystem/markdown', DevilryUserDocsProxy(
+    en='markdown.html'))

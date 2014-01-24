@@ -58,10 +58,18 @@ In the devilry-deploy repo
 
 In the devilry-userdoc repo
 ###########################
-.. note:: this is not needed for RC, Beta releases.
 
 1. Update the version number in ``conf.py``
-2. Tag the release and push just like you did for devilry-django above.
+2. Create a BRANCH named by the version number on the following format: ``X.Y.Z``. Take a look at the output from::
+
+     $ git branch -a
+
+   if you are unsure about the version branch naming format.
+3. Push the branch
+4. Go to https://readthedocs.org/dashboard/devilry-userdoc/versions/, and
+   mark the branch as active. You may have to
+   `force a rebuild <https://readthedocs.org/builds/devilry-userdoc/>`_
+   before the branch becomes visible.
 
 
 .. note:: We plan on making this more streamlined in the future --- see :devilryissue:`384`.

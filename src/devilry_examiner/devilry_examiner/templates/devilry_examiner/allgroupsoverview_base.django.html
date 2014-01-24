@@ -1,6 +1,7 @@
 {% extends "devilry_examiner/base.django.html" %}
 {% load i18n devilry_examiner_tags%}
 {% load url from future %}
+{% load django_decoupled_docs_tags %}
 
 {% block title %}{{ assignment.short_name }} - {{ assignment.period.get_path }}{% endblock title %}
 
@@ -30,19 +31,37 @@
             {% block navbar %}
 
             <ul class="list-group">
+                <a class="list-group-item {% if currentpage == 'all' %}active{% endif %}"
+                        href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">
+                    <span class="badge">{{ count_all }}</span>
+                    {% trans "All" %}
+                </a>
                 <a class="list-group-item {% if currentpage == 'waiting_for_feedback' %}active{% endif %}"
-                 href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">{% trans "Waiting for feedback" %}</a>
+                        href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">
+                    <span class="badge">{{ count_waiting_for_feedback }}</span>
+                    {% trans "Waiting for feedback" %}
+                </a>
                 {% if assignment.is_electronic %}                    
                     <a class="list-group-item {% if currentpage == 'waiting_for_deliveries' %}active{% endif %}"
-                     href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">{% trans "Waiting for deliveries" %}</a>
+                            href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">
+                        <span class="badge">{{ count_waiting_for_deliveries }}</span>
+                        {% trans "Waiting for deliveries" %}
+                    </a>
                 {% endif %}
                 <a class="list-group-item {% if currentpage == 'corrected' %}active{% endif %}"
-                 href="{% url 'devilry_examiner_corrected' assignment.id %}">{% trans "Corrected" %}</a>
-                <a class="list-group-item {% if currentpage == 'all' %}active{% endif %}"
-                 href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">{% trans "All" %}</a>
+                        href="{% url 'devilry_examiner_corrected' assignment.id %}">
+                    <span class="badge">{{ count_corrected }}</span>
+                    {% trans "Corrected" %}
+                </a>
             </ul>
 
             {% endblock navbar %}
+
+            <p>
+                <strong>{% trans "New to Devilry? Do you want to become more efficient?" %}</strong>
+                <a href="{% decoupled_docs_url 'devilry_examiner/gettingstarted' %}">
+                    {% trans "Check out the getting started guide" %}</a>.
+            </p>
         </div>
 
         <div class="col-sm-9">
@@ -108,41 +127,38 @@
                                     </a>
                                 </h3>
                                 
-                                <p class="text-{{ group|group_delivery_status_to_bootstrapclass }} deliverystatus">{{ group.get_status|formatted_status }}
+                                <p class="text-{{ group|group_delivery_status_to_bootstrapclass }} deliverystatus">
+                                    {{ group.get_status|formatted_status }}
 
-                               {% if group.delivery_status == 'corrected' %}
-                                    &mdash;
-                                <small>
-                                        {% trans "Grade" %}: {{ group.feedback.grade }}
-                                        ({{ group.feedback.is_passing_grade|format_is_passing_grade }})
-                                </small>
-                                {% endif %}
+                                    {% if group.delivery_status == 'corrected' %}
+                                        &mdash;
+                                        <small>
+                                            {% trans "Grade" %}: {{ group.feedback.grade }}
+                                            ({{ group.feedback.is_passing_grade|format_is_passing_grade }})
+                                        </small>
+                                    {% elif group.get_status == 'waiting-for-feedback' and group.assignment.is_electronic and not group.last_delivery %}
+                                        <small class="text-warning">({% trans "No deliveries" %})</small>
+                                    {% elif group.get_status == 'waiting-for-deliveries' %}
+                                        <small class="text-muted">({% blocktrans with timeuntildeadline=group.last_deadline.deadline|timeuntil %}Next deadline in {{ timeuntildeadline }}{% endblocktrans %})</small>
+                                    {% endif %}
                                 </p>
  
                             </td>
 
                             <td class="hidden-xs">
-                                {% if group.get_status == "waiting-for-deliveries" %}
-                                <button type="button" class="btn btn-default hidden
-                                                             hidden-xs pull-right">{{ group.get_status|status_to_buttontext}}</button>
-                                {% elif group.get_status == "waiting-for-feedback" %}
-                                
-                                {% if group.last_delivery %}
-
-                                <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singledeliveryview' group.last_delivery.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
-
-                                {% else %}
-                                
-                                <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singlegroupoverview' group.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
-
+                                {% if group.get_status == "waiting-for-feedback" %}
+                                    <a class="btn btn-default pull-right"
+                                            href="{% url 'devilry_examiner_last_delivery_or_groupoverview' group.id %}"
+                                            role="button">
+                                        {% trans "Write feedback" %}
+                                    </a>
+                                {# {% elif group.get_status == 'corrected' %} #}
+                                    {# <a class="btn btn-default hidden-xs pull-right" #}
+                                          {# href="{% url 'devilry_examiner_singledeliveryview' group.last_delivery.id %}" #}
+                                            {# role="button"> #}
+                                        {# {% trans "Show feedback" %} #}
+                                    {# </a> #}
                                 {% endif %}
-
-                                {% else %}
-
-                                <a class="btn btn-default hidden-xs pull-right" href="{% url 'devilry_examiner_singlegroupoverview' group.id %}" role="button">{{ group.get_status|status_to_buttontext}}</a>
-
-                                {% endif %}
-
                             </td>
                         </tr>
 

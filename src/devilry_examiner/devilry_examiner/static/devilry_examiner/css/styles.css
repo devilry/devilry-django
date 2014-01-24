@@ -7781,6 +7781,10 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .table-striped > tbody > tr:nth-child(odd) > th {
   background-color: #ffffff;
 }
+.form-inline.form-inline-render-inline-block {
+  display: inline-block;
+  margin: 5px 5px 0 0;
+}
 .alert.feedback_gradebox {
   position: relative;
   padding-right: 200px;

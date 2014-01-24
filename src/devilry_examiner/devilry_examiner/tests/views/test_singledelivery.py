@@ -75,13 +75,13 @@ class TestSingleDeliveryView(TestCase):
             .add_group(examiners=[self.examiner1])\
             .add_deadline_x_weeks_ago(weeks=1)
         delivery1 = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
-        delivery2 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=1).delivery
+        delivery2 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=4).delivery
         response = self._getas('examiner1', delivery2.id)
         self.assertEquals(response.status_code, 200)
         html = response.content
         self.assertEquals(
             cssGet(html, '.after_deadline_message').text.strip(),
-            'This delivery was added 1 hour after the deadline.The group has made at least one more delivery for this deadline.Browse other deliveries.')
+            'This delivery was added 4 hours after the deadline.The group has made at least one more delivery for this deadline.Browse other deliveries.')
 
 
     def test_not_last_delivery_message_not_shown_on_last(self):

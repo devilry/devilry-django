@@ -141,9 +141,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
     },
 
     _onRename: function() {
-        Ext.create('devilry_subjectadmin.view.RenameBasenodeWindow', {
-            basenodeRecord: this.assignmentRecord
-        }).show();
+        window.location.href = devilry_subjectadmin.utils.UrlLookup.updateAssignment(this.assignment_id);
     },
     _onDelete: function() {
         var short_description = this._getPath();

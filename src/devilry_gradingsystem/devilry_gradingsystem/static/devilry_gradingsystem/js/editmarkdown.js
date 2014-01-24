@@ -79,7 +79,7 @@
       });
       this.$toolbar.find('.markdownItalicButton').on('click', function(e) {
         e.preventDefault();
-        return _this._surroundSelectionWith('_', '_');
+        return _this._surroundSelectionWith('*', '*');
       });
       this.$toolbar.find('.markdownBulletlistButton').on('click', function(e) {
         e.preventDefault();

@@ -1,5 +1,6 @@
 {% load i18n %}
 {% load static %}
+{% load django_decoupled_docs_tags %}
 
 <div id="{{ field.auto_id }}_wrapper" class="EditMarkdownWidget form-group">
     {{ field.label_tag }}
@@ -24,7 +25,12 @@
             <a href="#" tabindex="-1" class="btn btn-default markdownMathBlockButton" title='{% trans "LaTeX mathematics" %}'>f(a)</a>
         </div>
         <div class="btn-group">
-            <a href="#" tabindex="-1" class="btn btn-default markdownHelp" title='{% trans "Help" %}'><i class="fa fa-question"></i></a>
+            <a href="{% decoupled_docs_url 'devilry_gradingsystem/markdown' %}"
+                    tabindex="-1"
+                    class="btn btn-default markdownHelp"
+                    target='_blank',
+                    title='{% trans "Help" %}'>
+                <i class="fa fa-question"></i></a>
         </div>
     </div>
     <div id="{{ field.auto_id }}_aceeditor" class="AceEditor"></div>

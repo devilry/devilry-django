@@ -214,11 +214,18 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     parentnode = models.ForeignKey(Period, related_name='assignments',
                                    verbose_name='Period')
     etag = models.DateTimeField(auto_now_add=True)
-    publishing_time = models.DateTimeField(verbose_name="Publishing time",
-                                           help_text='The time when the assignment is to be published (visible to students and examiners).')
+    publishing_time = models.DateTimeField(
+        verbose_name=_("Publishing time"),
+        help_text=_('The time when the assignment is to be published (visible to students and examiners).'))
     anonymous = models.BooleanField(default=False,
-                                    verbose_name="Anonymous",
-                                    help_text='Specifies if this assignment is anonymous.')
+        verbose_name=_("Anonymous?"),
+        help_text=_(
+            'On anonymous assignments, examiners and students can NOT see each other and '
+            'they can NOT communicate. '
+            'If an assignment is anonymous, examiners see candidate-id instead of any '
+            'personal information about the students. '
+            'This means that anonymous assignments is perfect for exams, and for assignments '
+            'where you do not want prior experiences with a student to affect results.'))
     students_can_see_points = models.BooleanField(default=True,
             verbose_name="Students can see points")
     admins = models.ManyToManyField(User, blank=True,
@@ -232,8 +239,21 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     delivery_types = models.PositiveIntegerField(default=deliverytypes.ELECTRONIC,
                                                  choices=deliverytypes.as_choices_tuple(),
                                                  help_text='This option controls what types of deliveries this assignment accepts. See the Delivery documentation for more info.')
-    deadline_handling = models.PositiveIntegerField(default=settings.DEFAULT_DEADLINE_HANDLING_METHOD,
-                                                    help_text='This option controls how devilry handles deadlines. 0=Soft, 1=Hard. See the Delivery documentation for more info.')
+    deadline_handling = models.PositiveIntegerField(
+        default=settings.DEFAULT_DEADLINE_HANDLING_METHOD,
+        verbose_name=_('Deadline handling'),
+        choices=(
+            (DEADLINEHANDLING_SOFT, _('Soft deadlines')),
+            (DEADLINEHANDLING_HARD, _('Hard deadlines'))
+        ),
+        help_text=_(
+            'With HARD deadlines, students will be unable to make deliveries when a deadline has expired. '
+            'With SOFT deadlines students will be able to make deliveries after the deadline '
+            'has expired. All deliveries after their deadline are clearly highligted. '
+            'NOTE: Devilry is designed from the bottom up to gracefully handle SOFT '
+            'deadlines. Students have to perform an extra confirm-step when adding '
+            'deliveries after their active deadline, and assignments where the deadline has '
+            'expired is clearly marked for both students and examiners.'))
     scale_points_percent = models.PositiveIntegerField(default=100,
                                                        help_text='Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.')
     first_deadline = models.DateTimeField(blank=True, null=True)
@@ -281,6 +301,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         .. versionadded:: 1.4.0
         """
         return self.delivery_types == deliverytypes.NON_ELECTRONIC
+
+    def set_passing_grade_min_points(self, passing_grade_min_points):
+        self.passing_grade_min_points = passing_grade_min_points
 
     def set_max_points(self, max_points):
         """

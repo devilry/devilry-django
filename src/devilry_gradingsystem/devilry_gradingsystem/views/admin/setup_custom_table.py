@@ -110,10 +110,7 @@ class SetupCustomTableView(AssignmentSingleObjectRequiresValidPluginMixin, Detai
         return context
 
     def get_success_url(self):
-        if self.assignment.get_gradingsystem_plugin_api().sets_passing_grade_min_points_automatically:
-            viewname = 'devilry_gradingsystem_admin_summary'
-        else:
-            viewname = 'devilry_gradingsystem_admin_setpassing_grade_min_points'
+        viewname = 'devilry_gradingsystem_admin_setpassing_grade_min_points'
         return reverse(viewname, kwargs={
             'assignmentid': self.object.id
         })

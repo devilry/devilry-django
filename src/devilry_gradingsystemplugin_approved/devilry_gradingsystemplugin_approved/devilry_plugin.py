@@ -9,7 +9,7 @@ class ApprovedPluginApi(GradingSystemPluginInterface):
     id = 'devilry_gradingsystemplugin_approved'
     sets_passing_grade_min_points_automatically = True
     sets_max_points_automatically = True
-    title = _('Select passed or failed')
+    title = _('Passed/failed')
     description = _('Provides a single checkbox that can be checked to provide a passing grade.')
 
     def get_edit_feedback_url(self, deliveryid):

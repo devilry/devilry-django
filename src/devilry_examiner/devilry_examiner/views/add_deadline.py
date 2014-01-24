@@ -16,6 +16,7 @@ from devilry.apps.core.models import Assignment
 from devilry_examiner.forms import GroupIdsForm
 from .crispylayout import DefaultSubmit
 from .bulkviewbase import BulkViewBase
+from .bulkviewbase import OptionsForm
 
 
 
@@ -25,15 +26,23 @@ class DevilryDatetimeFormField(forms.DateTimeField):
         error_messages = kwargs.pop('error_messages', {
             'invalid': _('Enter a valid date/time. Example "2014-12-24 18:00" to specify Dec 24 2014 6pm.')
         })
+        widget = kwargs.pop('widget', forms.DateTimeInput(format='%Y-%m-%d %H:%M'))
         kwargs.update({
             'input_formats': input_formats,
-            'error_messages': error_messages
+            'error_messages': error_messages,
+            'widget': widget
         })
         super(DevilryDatetimeFormField, self).__init__(**kwargs)
 
 
+class AddDeadlineOptionsForm(OptionsForm):
+    give_another_chance = forms.BooleanField(
+        required=False,
+        initial=False,
+        widget=forms.HiddenInput())
 
-class AddDeadlineForm(GroupIdsForm):
+
+class AddDeadlineForm(AddDeadlineOptionsForm):
     deadline = DevilryDatetimeFormField(
         label=_('Deadline'),
         help_text=_('Format: "YYYY-MM-DD hh:mm".'),
@@ -91,10 +100,12 @@ class AddDeadlineForm(GroupIdsForm):
             'text',
             'no_text',
             'group_ids',
+            'success_url',
+            'cancel_url',
             'why_created',
             HTML('<hr>'),
             ButtonHolder(
-                Submit('submit_primary', _('Add deadline'), css_class='pull-right'),
+                Submit('add_deadline_form', _('Add deadline'), css_class='pull-right'),
                 DefaultSubmit('submit_cancel', _('Cancel')),
             )
         )
@@ -112,36 +123,25 @@ class AddDeadlineView(BulkViewBase):
       message that examiners can use, edit or clear.
     """
     template_name = "devilry_examiner/add_deadline.django.html"
-    form_class = AddDeadlineForm
+    optionsform_class = AddDeadlineOptionsForm
+    primaryform_classes = {
+        'add_deadline_form': AddDeadlineForm
+    }
 
-    def form_valid(self, form):
+    def submitted_primaryform_valid(self, form, context_data):
         Deadline.objects.smart_create(
             form.cleaned_groups,
             deadline_datetime=form.cleaned_data['deadline'],
             text=form.cleaned_data['text'],
             added_by=self.request.user,
             why_created=form.cleaned_data['why_created'])
-        return super(AddDeadlineView, self).form_valid(form)
+        return super(AddDeadlineView, self).submitted_primaryform_valid(form, context_data)
 
-    def get_success_url(self):
-        return self.request.GET.get('success_url',
-            super(AddDeadlineView, self).get_success_url())
-
-    def get_cancel_url(self):
-        return self.request.GET.get('cancel_url',
-            super(AddDeadlineView, self).get_success_url())
-
-
-    def get_initial(self):
-        initial = {}
-        data = self.get_initial_formdata()
-        if 'give_another_chance' in data:
+    def get_primaryform_initial_data(self, formclass):
+        initial = super(AddDeadlineView, self).get_primaryform_initial_data(formclass)
+        if self.optionsdict['give_another_chance']:
             initial.update({
                 'text': _('I have given you a new chance to pass this assignment. Read your last feedback for information about why you did not pass, and why you have been given another chance.'),
                 'why_created': 'examiner-gave-another-chance'
             })
         return initial
-
-    def get_context_data(self, **kwargs):
-        context = super(AddDeadlineView, self).get_context_data(**kwargs)
-        return context
