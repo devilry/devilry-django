@@ -1,1 +1,1 @@
-devilry_version = '1.4.1'
+devilry_version = '1.4.2'
