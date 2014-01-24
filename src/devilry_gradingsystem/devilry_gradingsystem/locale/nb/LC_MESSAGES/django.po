@@ -3,57 +3,64 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: devilry_gradingsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-20 04:21+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-01-24 06:34+0100\n"
+"PO-Revision-Date: 2014-01-24 06:35+0100\n"
+"Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 1.6.3\n"
 
+#: templates/devilry_gradingsystem/bulkeditfeedbackbuttonbar.django.html:7
 #: templates/devilry_gradingsystem/editfeedbackbuttonbar.django.html:7
-#: templates/devilry_gradingsystem/feedbackdraft_bulkpreview.django.html:5
+#: templates/devilry_gradingsystem/feedbackdraft_bulkpreview.django.html:6
 #: templates/devilry_gradingsystem/feedbackdraft_preview.django.html:5
 msgid "Preview"
 msgstr "Forhåndsvisning"
+
+#: templates/devilry_gradingsystem/bulkeditfeedbackbuttonbar.django.html:10
+#: templates/devilry_gradingsystem/editfeedbackbuttonbar.django.html:13
+#: templates/devilry_gradingsystem/feedbackdraft_bulkpreview.django.html:21
+#: templates/devilry_gradingsystem/feedbackdraft_preview.django.html:19
+msgid "Publish"
+msgstr "Publiser"
+
+#: templates/devilry_gradingsystem/bulkeditfeedbackbuttonbar.django.html:11
+#: templates/devilry_gradingsystem/editfeedbackbuttonbar.django.html:14
+msgid "without preview"
+msgstr "uten forhåndsvisning"
 
 #: templates/devilry_gradingsystem/editfeedbackbuttonbar.django.html:10
 msgid "Save draft"
 msgstr "Lagre utkast"
 
-#: templates/devilry_gradingsystem/editfeedbackbuttonbar.django.html:13
-#: templates/devilry_gradingsystem/feedbackdraft_bulkpreview.django.html:19
-#: templates/devilry_gradingsystem/feedbackdraft_preview.django.html:19
-msgid "Publish"
-msgstr "Publiser"
-
-#: templates/devilry_gradingsystem/editfeedbackbuttonbar.django.html:14
-msgid "without preview"
-msgstr "uten forhåndsvisning"
-
-#: templates/devilry_gradingsystem/feedbackbulkeditorbase.django.html:5
+#: templates/devilry_gradingsystem/feedbackbulkeditorbase.django.html:7
 #: templates/devilry_gradingsystem/feedbackeditorbase.django.html:5
 msgid "Edit"
 msgstr "Endre"
 
-#: templates/devilry_gradingsystem/feedbackbulkeditorbase.django.html:10
+#: templates/devilry_gradingsystem/feedbackbulkeditorbase.django.html:12
 #: templates/devilry_gradingsystem/feedbackeditorbase.django.html:10
 msgid "Edit feedback"
 msgstr "Endre tilbakemelding"
 
-#: templates/devilry_gradingsystem/feedbackdraft_bulkpreview.django.html:10
+#: templates/devilry_gradingsystem/feedbackbulkeditorbase.django.html:21
+msgid "Edit feedback for"
+msgstr "Rediger tilbakemelding for"
+
+#: templates/devilry_gradingsystem/feedbackdraft_bulkpreview.django.html:11
 #: templates/devilry_gradingsystem/feedbackdraft_preview.django.html:10
 msgid "Preview feedback"
 msgstr "Forhåndsvis tilbakemelding"
 
-#: templates/devilry_gradingsystem/feedbackdraft_bulkpreview.django.html:23
+#: templates/devilry_gradingsystem/feedbackdraft_bulkpreview.django.html:28
 #: templates/devilry_gradingsystem/feedbackdraft_preview.django.html:23
 msgid "Edit draft"
 msgstr "Endre utkast"
@@ -64,19 +71,11 @@ msgid "Previous"
 msgstr "Forrige"
 
 #: templates/devilry_gradingsystem/admin/base.django.html:6
-#: templates/devilry_gradingsystem/admin/base.django.html:30
+#: templates/devilry_gradingsystem/admin/base.django.html:19
 #: templates/devilry_gradingsystem/admin/summary.django.html:6
 #: templates/devilry_gradingsystem/admin/summary.django.html:15
 msgid "Grading system"
 msgstr "Karaktersystem"
-
-#: templates/devilry_gradingsystem/admin/base.django.html:17
-msgid "Home"
-msgstr "Hjem"
-
-#: templates/devilry_gradingsystem/admin/base.django.html:18
-msgid "Subject administrator"
-msgstr "Kursadministrator"
 
 #: templates/devilry_gradingsystem/admin/currentprogress.django.html:3
 #, python-format
@@ -118,14 +117,14 @@ msgstr "Som bestått eller ikke bestått"
 
 #: templates/devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html:21
 msgid "Students see their result as passed or failed."
-msgstr "Studentene ser resultatet som bestått ikke bestått"
+msgstr "Studentene ser resultatet som bestått ikke bestått."
 
 #: templates/devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html:23
 #: templates/devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html:34
 msgid ""
 "You select the number of points required to pass in the next step of this "
 "wizard."
-msgstr "Du bestemmet antall poeng nødvendig for å bestå i neste steg"
+msgstr "Du bestemmer antall poeng nødvendig for å bestå i neste steg."
 
 #: templates/devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html:30
 msgid "As points"
@@ -136,8 +135,8 @@ msgid ""
 "Students see their result as points/max-points, and they can see if the "
 "number of points is a passing or a failing grade."
 msgstr ""
-"Studentene ser resultat som antall oppnådde poeng og i tillegg se om det er "
-"nok til å bestå"
+"Studentene ser resultat som antall oppnådde poeng, og om oppnådd poengsum er "
+"nok til å bestå."
 
 #: templates/devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html:41
 msgid "As a text looked up in a custom table"
@@ -415,67 +414,67 @@ msgstr ""
 "kildekodeprosjektet Devilry direkte på %(websitelink)s.\n"
 "            "
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:8
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:9
 msgid "Heading 1"
 msgstr "Overskrift 1"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:9
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:10
 msgid "Heading 2"
 msgstr "Overskrift 2"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:10
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:11
 msgid "Heading 3"
 msgstr "Overskrift 3"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:13
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:14
 msgid "Bold"
 msgstr "Fet"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:14
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:15
 msgid "Italic"
 msgstr "Kursiv"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:15
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:16
 msgid "Insert link"
 msgstr "Sett inn link"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:18
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:19
 msgid "Unordered list"
 msgstr "Uordned liste"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:19
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:20
 msgid "Ordered list"
 msgstr "Ordna liste"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:20
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:21
 msgid "Blockquote"
 msgstr "Sitat"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:23
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:24
 msgid "Programming code"
 msgstr "Programmeringskode"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:24
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:25
 msgid "LaTeX mathematics"
 msgstr "LaTeX matematikk"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:27
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:32
 msgid "Help"
 msgstr "Hjelp"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:41
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:47
 msgid "Heading"
 msgstr "Overskrift"
 
-#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:42
+#: templates/devilry_gradingsystem/widgets/editmarkdown.django.html:48
 msgid "Programming language"
 msgstr "Programmeringsspråk"
 
-#: views/feedbackbulkeditorbase.py:32
+#: views/feedbackbulkeditorbase.py:44
 msgid "One or more of the selected groups has no deliveries."
 msgstr "En eller flere av de valgte gruppene har ingen innleveringer"
 
-#: views/feedbackbulkeditorbase.py:46 views/feedbackeditorbase.py:122
+#: views/feedbackbulkeditorbase.py:58 views/feedbackeditorbase.py:122
 msgid "Feedback text"
 msgstr "Tilbakemeldingstekst"
 
@@ -490,3 +489,9 @@ msgstr "Velg hvordan resultatene skal presenteres"
 #: views/admin/setpassing_grade_min_points.py:30
 msgid "Select the grade required to pass the assignment"
 msgstr "Velg karakteren som er nødvendig for å bestå oppgaven"
+
+#~ msgid "Home"
+#~ msgstr "Hjem"
+
+#~ msgid "Subject administrator"
+#~ msgstr "Kursadministrator"
