@@ -155,3 +155,6 @@ def cssExists(html, selector):
     """
     matches = cssFind(html, selector)
     return bool(len(matches))
+
+def prettyhtml(html):
+    return BeautifulSoup(html).prettify()
