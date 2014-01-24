@@ -26,9 +26,11 @@ class DevilryDatetimeFormField(forms.DateTimeField):
         error_messages = kwargs.pop('error_messages', {
             'invalid': _('Enter a valid date/time. Example "2014-12-24 18:00" to specify Dec 24 2014 6pm.')
         })
+        widget = kwargs.pop('widget', forms.DateTimeInput(format='%Y-%m-%d %H:%M'))
         kwargs.update({
             'input_formats': input_formats,
-            'error_messages': error_messages
+            'error_messages': error_messages,
+            'widget': widget
         })
         super(DevilryDatetimeFormField, self).__init__(**kwargs)
 
