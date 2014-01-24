@@ -4,9 +4,9 @@ from django.views.i18n import javascript_catalog
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
 from devilry_settings.i18n import get_javascript_catalog_packages
-from .views import AppView
-from .views import RedirectToSubjectAdminAppView
-from .views import RedirectToGroupAdminAppView
+from .views.extjsapp import AppView
+from .views.redirectviews import RedirectToSubjectAdminAppView
+from .views.redirectviews import RedirectToGroupAdminAppView
 from .exportdetailedperiodoverview import ExportDetailedPeriodOverview
 
 
