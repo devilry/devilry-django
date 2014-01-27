@@ -46,7 +46,9 @@ class AssignmentInstanceResource(AssignmentResourceMixin, BaseNodeInstanceResour
     fields = AssignmentResource.fields + (
         'can_delete', 'admins', 'inherited_admins', 'breadcrumb', 'number_of_groups',
         'number_of_deliveries', 'number_of_groups_where_is_examiner', 'number_of_candidates',
-        'gradingsystemplugin_title', 'has_valid_grading_setup')
+        'gradingsystemplugin_title', 'has_valid_grading_setup',
+        'max_points', 'passing_grade_min_points', 'points_to_grade_mapper',
+        'grading_system_plugin_id')
 
     def _serialize_shortformat(self, config, shortformat):
         if shortformat:

@@ -31,7 +31,11 @@ Ext.define('devilry_subjectadmin.model.Assignment', {
         {name: 'number_of_candidates',  type: 'int', persist: false},
         {name: 'number_of_groups_where_is_examiner',  type: 'int', persist: false},
         {name: 'has_valid_grading_setup', type: 'bool', persist: false},
-        {name: 'gradingsystemplugin_title', type: 'string', persist: false}
+        {name: 'gradingsystemplugin_title', type: 'string', persist: false},
+        {name: 'max_points', type: 'int'},
+        {name: 'passing_grade_min_points', type: 'int'},
+        {name: 'points_to_grade_mapper', type: 'string'},
+        {name: 'grading_system_plugin_id', type: 'string'}
     ],
 
     proxy: {
