@@ -86,7 +86,7 @@ valid_grading_system_setup
                     </div>
                 {% endif %}
                 {% if delivery.is_last_delivery and delivery.deadline != delivery.assignment_group.last_deadline %}
-                    <div class="bs-callout bs-callout-warning not_last_delivery_message">
+                    <div class="bs-callout bs-callout-warning last_delivery_but_not_on_last_deadline_message">
                         {% trans "This is the last delivery made by this group, but it was NOT added to their last deadline." %}
                         <a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">
                                 {% trans "Browse all deliveries made by the group" %}</a>.
