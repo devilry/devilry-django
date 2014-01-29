@@ -211,11 +211,9 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """
         from .assignment_group import AssignmentGroup
         try:
-            last_delivery = self.assignment_group.last_delivery
+            return self.assignment_group.last_delivery == self
         except AssignmentGroup.DoesNotExist:
             return False
-        else:
-            return True
 
     @property
     def assignment_group(self):

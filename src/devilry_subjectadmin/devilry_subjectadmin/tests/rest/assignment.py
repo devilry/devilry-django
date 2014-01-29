@@ -179,7 +179,9 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'number_of_deliveries', 'number_of_groups',
                                'number_of_candidates',
                                'number_of_groups_where_is_examiner',
-                               'has_valid_grading_setup', 'gradingsystemplugin_title']))
+                               'has_valid_grading_setup', 'gradingsystemplugin_title',
+                               'max_points', 'points_to_grade_mapper', 'grading_system_plugin_id', 'passing_grade_min_points'
+                               ]))
 
     def test_get_admins(self):
         self.client.login(username='duck2000admin', password='test')
@@ -313,7 +315,9 @@ class TestRestInstanceAssignmentRest(TestCase):
                                'number_of_deliveries', 'number_of_groups',
                                'number_of_candidates',
                                'number_of_groups_where_is_examiner',
-                               'has_valid_grading_setup', 'gradingsystemplugin_title']))
+                               'has_valid_grading_setup', 'gradingsystemplugin_title',
+                               'max_points', 'points_to_grade_mapper', 'grading_system_plugin_id', 'passing_grade_min_points'
+                               ]))
         updated = Assignment.objects.get(id=self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(updated.long_name, 'Updated')
 
