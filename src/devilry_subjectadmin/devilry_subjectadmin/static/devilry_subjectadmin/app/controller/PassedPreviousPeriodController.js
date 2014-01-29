@@ -113,7 +113,8 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
 
         var grading_system_plugin_id = this.assignmentRecord.get('grading_system_plugin_id');
         if(grading_system_plugin_id !== "devilry_gradingsystemplugin_approved") {
-            var gradingsystemplugin_title = this.assignmentRecord('gradingsystemplugin_title');
+            this.getOverview().setLoading(false);
+            var gradingsystemplugin_title = this.assignmentRecord.get('gradingsystemplugin_title');
             this.getUnsupportedGradeEditor().updateData({
                 gradingsystem: Ext.String.format('<em>{0}</em>', gradingsystemplugin_title)
             });
