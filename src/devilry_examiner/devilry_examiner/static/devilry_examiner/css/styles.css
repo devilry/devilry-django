@@ -7796,14 +7796,22 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   margin-top: -17px;
 }
 .allgroupoverview-focusarea table#grouplist_table td.checkbox_cell {
-  cursor: pointer;
-  position: relative;
   width: 65px;
+  height: 65px;
+  box-sizing: border-box;
+  padding: 0;
 }
-.allgroupoverview-focusarea table#grouplist_table td.checkbox_cell:hover {
+.allgroupoverview-focusarea table#grouplist_table td.checkbox_cell .checkbox_cell_inner {
+  cursor: pointer;
+  height: 65px;
+  width: 65px;
+  box-sizing: border-box;
+  position: relative;
+}
+.allgroupoverview-focusarea table#grouplist_table td.checkbox_cell .checkbox_cell_inner:hover {
   background-color: #428bca;
 }
-.allgroupoverview-focusarea table#grouplist_table td.checkbox_cell input[type=checkbox] {
+.allgroupoverview-focusarea table#grouplist_table td.checkbox_cell .checkbox_cell_inner input[type=checkbox] {
   position: absolute;
   top: 33%;
   left: 28px;
