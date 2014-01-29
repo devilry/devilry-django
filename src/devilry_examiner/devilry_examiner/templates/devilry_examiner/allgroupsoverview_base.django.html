@@ -119,7 +119,11 @@
                     <table class="table table-striped infolistingtable" id="grouplist_table">
                         {% for group in groups %}
                         <tr class="group">
-                            <td class="checkbox_cell"><input type="checkbox" name="group_ids" value="{{ group.id }}" /></td>
+                            <td class="checkbox_cell">
+                                <div class="checkbox_cell_inner">
+                                    <input type="checkbox" name="group_ids" value="{{ group.id }}" />
+                                </div>
+                            </td>
                             <td class="titled-cell groupinfo">
                                 <h3>
                                     <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">

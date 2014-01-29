@@ -31,43 +31,27 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid', {
             menuDisabled: true,
             renderer: this._renderGradeColumn,
             sortable: false,
-            editor: this._getEditor(this.gradeeditor.shortformat.widget)
+            editor: this._getEditor()
         });
     },
 
     _getEditor:function (widget) {
-        var editor = {
-            allowBlank: false
+        return {
+            allowBlank: false,
+            xtype: 'textfield'
         };
-        if(widget === 'bool') {
-            editor.xtype = 'textfield';
-        } else if(widget === 'num-of-total') {
-            editor.xtype = 'numberfield';
-            editor.minValue = 0;
-        } else {
-            throw Ext.String.format("Unsupported widget: {0}", widget);
-        }
-        return editor;
     },
 
     _renderGradeColumn: function(value, unused2, record) {
-        var displayValue = value;
-        if(this.gradeeditor.shortformat.widget === 'bool') {
-            displayValue = Ext.String.format(
+        var displayValue = Ext.String.format(
                 '<span class="text-success">{0}</span>',
                 gettext('Passed'));
-        }
+
         var oldgroup = record.get('oldgroup');
         if(oldgroup === null) {
             return displayValue;
         } else {
-            var autodetectedMsg;
-            if(this.gradeeditor.shortformat.widget === 'bool') {
-                autodetectedMsg = gettext('Autodetected');
-            } else {
-                autodetectedMsg = Ext.String.format('{0}: {1}',
-                    gettext('Autodetected'), oldgroup.feedback_shortformat);
-            }
+            var autodetectedMsg = gettext('Autodetected');
             return Ext.String.format(
                 '{0} <div class="autodetected"><small class="muted">{1}</small></div>',
                 displayValue, autodetectedMsg);
