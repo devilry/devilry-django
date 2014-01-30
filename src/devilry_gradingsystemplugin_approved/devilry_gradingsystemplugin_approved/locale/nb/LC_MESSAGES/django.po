@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devilry_gradingsystemplugin_approved\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-24 06:22+0100\n"
+"POT-Creation-Date: 2014-01-30 09:42+0100\n"
 "PO-Revision-Date: 2014-01-24 06:24+0100\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -27,17 +27,10 @@ msgid ""
 "Provides a single checkbox that can be checked to provide a passing grade."
 msgstr "Viser en boks som kan klikkes for å gi bestått karakter."
 
-#: views/feedbackeditor.py:17
+#: views/feedbackeditor.py:17 views/feedbackeditor.py:46
 msgid "Passed?"
-msgstr "Ikke bestått"
+msgstr "Bestått?"
 
 #: views/feedbackeditor.py:18 views/feedbackeditor.py:47
 msgid "Check to provide a passing grade."
 msgstr "Velg denne for å gi bestått karakter."
-
-#: views/feedbackeditor.py:46
-msgid "Approved"
-msgstr "Bestått"
-
-#~ msgid "Check if delivery is Approved."
-#~ msgstr "Velg denne hvis oppgaven er bestått"
