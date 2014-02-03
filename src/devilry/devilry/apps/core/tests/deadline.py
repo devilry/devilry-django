@@ -129,6 +129,7 @@ class TestDeadline(TestCase):
             .add_group()
         deadline = groupbuilder.group.deadlines.create(deadline=DateTimeBuilder.now().plus(days=10))
         self.assertEquals(deadline.deliveries.count(), 1)
+        self.assertTrue(deadline.deliveries.all()[0].successful)
         groupbuilder.reload_from_db()
         self.assertEquals(groupbuilder.group.last_delivery, deadline.deliveries.all()[0])
 
