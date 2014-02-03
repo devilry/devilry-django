@@ -216,7 +216,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     .. attribute:: students_can_not_create_groups_after
 
         Students can not create project groups after this time. Ignored if
-        :attr:`.students_can_create_groups` is ``False``. DateTimeField.
+        :attr:`.students_can_create_groups` is ``False``.
+
+        DateTimeField that defaults to ``None`` (null).
     """
     objects = AssignmentManager()
 
