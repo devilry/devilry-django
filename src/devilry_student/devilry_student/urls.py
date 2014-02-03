@@ -17,12 +17,15 @@ def emptyview(request):
 
 
 urlpatterns = patterns('devilry_student',
-                       url('^$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view()))),
-                           name='devilry_student'),
-                       url('^rest/', include('devilry_student.rest.urls')),
-                       url('^emptytestview', emptyview), # NOTE: Only used for testing
-                       url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
-                           name='devilry_student_i18n'),
-                       url(r'^show_delivery/(?P<delivery_id>\d+)$', 'views.show_delivery.show_delivery',
-                           name='devilry_student_show_delivery')
-                      )
+    url('^$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view()))),
+       name='devilry_student'),
+    url('^rest/', include('devilry_student.rest.urls')),
+    url('^emptytestview', emptyview), # NOTE: Only used for testing
+    url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
+       name='devilry_student_i18n'),
+    url(r'^show_delivery/(?P<delivery_id>\d+)$', 'views.show_delivery.show_delivery',
+       name='devilry_student_show_delivery'),
+    #url(r'^groupinvite/create(?P<group_id>\d+)$'),
+    #url(r'^groupinvite/accept(?P<invite_id>\d+)$'),
+    #url(r'^groupinvite/reject(?P<invite_id>\d+)$'),
+)
