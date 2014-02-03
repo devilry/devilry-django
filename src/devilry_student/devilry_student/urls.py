@@ -4,7 +4,7 @@ from django.views.i18n import javascript_catalog
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
 from devilry_settings.i18n import get_javascript_catalog_packages
-from .views import AppView
+from .views.extjsapp import AppView
 
 
 i18n_packages = get_javascript_catalog_packages('devilry_student', 'devilry_header', 'devilry_extjsextras', 'devilry.apps.core')
@@ -23,6 +23,6 @@ urlpatterns = patterns('devilry_student',
                        url('^emptytestview', emptyview), # NOTE: Only used for testing
                        url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
                            name='devilry_student_i18n'),
-                       url(r'^show_delivery/(?P<delivery_id>\d+)$', 'views.show_delivery',
+                       url(r'^show_delivery/(?P<delivery_id>\d+)$', 'views.show_delivery.show_delivery',
                            name='devilry_student_show_delivery')
                       )
