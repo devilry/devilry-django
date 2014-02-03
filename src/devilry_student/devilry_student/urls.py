@@ -25,7 +25,8 @@ urlpatterns = patterns('devilry_student',
        name='devilry_student_i18n'),
     url(r'^show_delivery/(?P<delivery_id>\d+)$', 'views.show_delivery.show_delivery',
        name='devilry_student_show_delivery'),
-    #url(r'^groupinvite/create(?P<group_id>\d+)$'),
-    #url(r'^groupinvite/accept(?P<invite_id>\d+)$'),
-    #url(r'^groupinvite/reject(?P<invite_id>\d+)$'),
+    #url(r'^groupinvite/create/(?P<group_id>\d+)$'),
+    #url(r'^groupinvite/list$'), # List invites in active periods
+    #url(r'^groupinvite/show/(?P<invite_id>\d+)$'),
+    #url(r'^groupinvite/leave/(?P<group_id>\d+)$')
 )
