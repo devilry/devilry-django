@@ -198,6 +198,25 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         A CharField containing the ID of the grading system plugin this
         assignment uses.
+
+
+    .. attribute:: students_can_create_groups
+
+        BooleanField specifying if students can join/leave groups on
+        their own.
+
+        If this is ``True`` students should be allowed to join/leave groups.
+        If :attr:`.students_can_not_create_groups_after` is specified, this
+        students can not create groups after ``students_can_not_create_groups_after``
+        even if this is ``True``.
+
+        This does not in any way affect an admins ability to organize students
+        in groups manually.
+
+    .. attribute:: students_can_not_create_groups_after
+
+        Students can not create project groups after this time. Ignored if
+        :attr:`.students_can_create_groups` is ``False``. DateTimeField.
     """
     objects = AssignmentManager()
 
@@ -275,6 +294,15 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     grading_system_plugin_id = models.CharField(
         default='devilry_gradingsystemplugin_approved',
         max_length=300, blank=True, null=True)
+
+    students_can_create_groups = models.BooleanField(
+        default=False,
+        verbose_name=_(u'Students can create project groups?'),
+        help_text=_(u'Select this if students should be allowed to join/leave groups. Even if this is not selected, you can still organize your students in groups manually.'))
+    students_can_not_create_groups_after = models.DateTimeField(
+        default=None, null=True, blank=True,
+        verbose_name=_(u'Students can not create project groups after'),
+        help_text=_(u'Students can not create project groups after this time. Ignored if "Students can create project groups" is not selected.'))
 
 
     @property
