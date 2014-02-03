@@ -6,11 +6,12 @@ from .assignment_group import AssignmentGroup
 
 class GroupInvite(models.Model):
     group = models.ForeignKey(AssignmentGroup)
-    invite_sent_datetime = models.DatetimeField(default=datetime.now)
-    sent_to = models.ForeignKey(User)
-    accepted_datetime = models.DatetimeField(
+    invite_sent_datetime = models.DateTimeField(default=datetime.now)
+    sent_by = models.ForeignKey(User, related_name='groupinvite_sent_by_set')
+    sent_to = models.ForeignKey(User, related_name='groupinvite_sent_to_set')
+    accepted_datetime = models.DateTimeField(
         default=None, blank=True, null=True)
-    rejected_datetime = models.DatetimeField(
+    rejected_datetime = models.DateTimeField(
         default=None, blank=True, null=True)
 
     class Meta:
