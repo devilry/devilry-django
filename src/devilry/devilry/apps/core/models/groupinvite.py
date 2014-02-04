@@ -64,6 +64,6 @@ class GroupInvite(models.Model):
         assignment = self.group.assignment
         if assignment.students_can_create_groups:
             if assignment.students_can_not_create_groups_after and assignment.students_can_not_create_groups_after < datetime.now():
-                raise ValidationError(_('Creating project groups without administrator approval is not allowed anymore. Please contact you course administrator if you think this is wrong.'))
+                raise ValidationError(_('Creating project groups without administrator approval is not allowed on this assignment anymore. Please contact you course administrator if you think this is wrong.'))
         else:
-            raise ValidationError(_('This assignment does not allow project groups.'))
+            raise ValidationError(_('This assignment does not allow students to form project groups on their own.'))

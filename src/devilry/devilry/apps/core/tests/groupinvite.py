@@ -41,7 +41,8 @@ class TestGroupInvite(TestCase):
                 passing_grade_min_points=1,
                 students_can_create_groups=True)\
             .add_group(students=[self.testuser1]).group
-        with self.assertRaises(ValidationError):
+        with self.assertRaisesRegexp(ValidationError,
+                r'^.*The user sending an invite must be a Candiate on the group.*$'):
             GroupInvite(group=group, sent_by=self.testuser2, sent_to=self.testuser3).clean()
 
     def test_can_not_invite_groupmember(self):
@@ -50,7 +51,8 @@ class TestGroupInvite(TestCase):
                 passing_grade_min_points=1,
                 students_can_create_groups=True)\
             .add_group(students=[self.testuser1, self.testuser2]).group
-        with self.assertRaises(ValidationError):
+        with self.assertRaisesRegexp(ValidationError,
+                r'^.*The student is already a member of the group.*$'):
             GroupInvite(group=group, sent_by=self.testuser1, sent_to=self.testuser2).clean()
 
     def test_can_not_invite_self(self):
@@ -59,7 +61,8 @@ class TestGroupInvite(TestCase):
                 passing_grade_min_points=1,
                 students_can_create_groups=True)\
             .add_group(students=[self.testuser1]).group
-        with self.assertRaises(ValidationError):
+        with self.assertRaisesRegexp(ValidationError,
+                r'^.*The student is already a member of the group.*$'):
             GroupInvite(group=group, sent_by=self.testuser1, sent_to=self.testuser1).clean()
 
     def test_only_when_allowed_on_assignment(self):
@@ -72,7 +75,8 @@ class TestGroupInvite(TestCase):
             group=group,
             sent_by=self.testuser1,
             sent_to=self.testuser2)
-        with self.assertRaises(ValidationError):
+        with self.assertRaisesRegexp(ValidationError,
+                r'^.*This assignment does not allow students to form project groups on their own.*$'):
             invite.full_clean()
 
     def test_students_can_not_create_groups_after(self):
@@ -86,5 +90,21 @@ class TestGroupInvite(TestCase):
             group=group,
             sent_by=self.testuser1,
             sent_to=self.testuser2)
-        with self.assertRaises(ValidationError):
+        with self.assertRaisesRegexp(ValidationError,
+                r'^.*Creating project groups without administrator approval is not allowed on this assignment anymore.*$'):
             invite.full_clean()
+
+    # def test_invited_student_must_be_relatedstudent(self):
+    #     group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+    #         .add_assignment('assignment1',
+    #             passing_grade_min_points=1,
+    #             students_can_not_create_groups_after=DateTimeBuilder.now().minus(days=1),
+    #             students_can_create_groups=True)\
+    #         .add_group(students=[self.testuser1]).group
+    #     invite = GroupInvite(
+    #         group=group,
+    #         sent_by=self.testuser1,
+    #         sent_to=self.testuser2)
+    #     with self.assertRaisesRegexp(ValidationError,
+    #             r'^.*Creating project groups without administrator approval is not allowed on this assignment anymore.*$'):
+    #         invite.full_clean()
