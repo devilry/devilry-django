@@ -5,7 +5,7 @@ from django.template.defaultfilters import filesizeformat
 #from urlparse import urlparse
 
 from devilry.apps.core.models import StaticFeedback
-from devilry.utils.devilry_email import send_email
+from devilry.utils.devilry_email import send_message
 from devilry_student.rest.add_delivery import successful_delivery_signal
 from devilry.defaults.encoding import CHARSET
 from devilry.utils.create_absolute_url import create_absolute_url
@@ -50,7 +50,7 @@ def on_new_staticfeedback(sender, **kwargs):
                                     delivery = delivery.number,
                                     url = url,
                                     **unicode_kw))
-    send_email(user_list, email_subject, email_message)
+    send_message(email_subject, email_message, *user_list)
 
 post_save.connect(on_new_staticfeedback,
                   sender=StaticFeedback, dispatch_uid='send_email_to_students_new_staticfeedback')
@@ -89,6 +89,6 @@ def on_new_successful_delivery(sender, delivery, **kwargs):
                                     time_of_delivery = delivery.time_of_delivery.isoformat(),
                                     files = files,
                                     url = url))
-    send_email(user_list, email_subject, email_message)
+    send_message(email_subject, email_message, *user_list)
 
 successful_delivery_signal.connect(on_new_successful_delivery, dispatch_uid='send_email_to_students_new_delivery')

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.shortcuts import render
 from django.views.generic import View
 
-from devilry.utils.devilry_email import send_email
+from devilry.utils.devilry_email import send_message
 from devilry.utils.create_absolute_url import create_absolute_url
 
 
@@ -43,7 +43,7 @@ class EmailSendingDebug(View):
                                    frontpageurl=create_absolute_url(reverse('devilry_frontpage')),
                                    superuseremail=request.user.email)
 
-        send_email([user], subject, body)
+        send_message(subject, body, user)
         return render(request, 'send_email_to_users/email_sending_debug.django.html',
                       {'email': user.email,
                        'subject': subject,

@@ -7,7 +7,7 @@ from django.conf import settings
 logger = logging.getLogger(__name__)
 
 
-def send_email(user_objects_to_send_to, subject, message):
+def send_message(subject, message, *user_objects_to_send_to):
     if not settings.DEVILRY_SEND_EMAIL_TO_USERS:
         return
 
