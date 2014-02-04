@@ -298,6 +298,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
                 from .delivery import Delivery
                 delivery = Delivery(
                     deadline=self,
+                    successful=True,
                     number=1)
                 delivery.save(autoset_number=False, autoset_last_delivery_on_group=False)
                 group.last_delivery = delivery
