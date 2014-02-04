@@ -1,0 +1,4 @@
+{% load i18n %}{% blocktrans %}{{ sent_by_displayname }} invited you to join their project
+group for {{ subject }} {{ assignment }}.
+Accept or reject the offer here:{% endblocktrans %}
+{{ url }}

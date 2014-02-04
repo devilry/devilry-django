@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
 from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.extjsapp import AppView
+from .views.groupinvite_show import GroupInviteShowView
 
 
 i18n_packages = get_javascript_catalog_packages('devilry_student', 'devilry_header', 'devilry_extjsextras', 'devilry.apps.core')
@@ -27,6 +28,8 @@ urlpatterns = patterns('devilry_student',
        name='devilry_student_show_delivery'),
     #url(r'^groupinvite/create/(?P<group_id>\d+)$'),
     #url(r'^groupinvite/list$'), # List invites in active periods
-    #url(r'^groupinvite/show/(?P<invite_id>\d+)$'),
+    url(r'^groupinvite/show/(?P<invite_id>\d+)$',
+        login_required(GroupInviteShowView.as_view()),
+        name='devilry_student_groupinvite_show'),
     #url(r'^groupinvite/leave/(?P<group_id>\d+)$')
 )

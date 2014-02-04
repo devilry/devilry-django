@@ -2,7 +2,7 @@ from smtplib import SMTPException
 import logging
 from django.core.mail import send_mail
 from django.conf import settings
-
+from django.template.loader import render_to_string
 
 logger = logging.getLogger(__name__)
 
@@ -36,3 +36,8 @@ def send_message(subject, message, *user_objects_to_send_to):
                          'Body:\n{message}'.format(emails = ','.join(emails),
                                                    subject = subject,
                                                    message = message))
+
+
+def send_templated_message(subject, template_name, template_dictionary, *user_objects_to_send_to):
+    message = render_to_string(template_name, template_dictionary)
+    send_message(subject, message, *user_objects_to_send_to)
