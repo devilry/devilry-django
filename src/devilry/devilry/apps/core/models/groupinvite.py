@@ -67,3 +67,7 @@ class GroupInvite(models.Model):
                 raise ValidationError(_('Creating project groups without administrator approval is not allowed on this assignment anymore. Please contact you course administrator if you think this is wrong.'))
         else:
             raise ValidationError(_('This assignment does not allow students to form project groups on their own.'))
+
+        period = assignment.period
+        if not period.relatedstudent_set.filter(user=self.sent_to).exists():
+            raise ValidationError(_('The invited student is not registered on this subject.'))
