@@ -50,15 +50,21 @@
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
-                            <th>{% trans "Sent to" %}</th>
-                            <th>{% trans "Sent by" %}</th>
+                            <th>{% trans "Name" %}</th>
+                            <th>{% trans "Invited by" %}</th>
                             <th>{% trans "Sent time" %}</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for invite in unanswered_sent_invites %}                
                             <tr>
-                                <td>{{ invite.sent_to.devilryuserprofile.get_displayname }}</td>
+                                <td>
+                                    <a href="#" class="btn btn-danger btn-xs">
+                                        {% trans "Delete" %}
+                                    </a>
+                                    &nbsp;
+                                    {{ invite.sent_to.devilryuserprofile.get_displayname }}
+                                </td>
                                 <td>{{ invite.sent_by.devilryuserprofile.get_displayname }}</td>
                                 <td>{{ invite.sent_datetime|date:"DATETIME_FORMAT" }}</td>
                             </tr>

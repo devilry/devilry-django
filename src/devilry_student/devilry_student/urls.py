@@ -30,7 +30,7 @@ urlpatterns = patterns('devilry_student',
        name='devilry_student_show_delivery'),
     url(r'^groupinvite/overview/(?P<group_id>\d+)$',
         login_required(GroupInviteOverviewView.as_view()),
-        name='devilry_student_groupinvite_create'),
+        name='devilry_student_groupinvite_overview'),
     #url(r'^groupinvite/list$'), # List invites in active periods?
     url(r'^groupinvite/show/(?P<invite_id>\d+)$',
         login_required(GroupInviteShowView.as_view()),

@@ -89,7 +89,7 @@ class GroupInviteOverviewView(DetailView):
             return self.get(*args, **kwargs)
 
     def get_success_url(self):
-        return reverse('devilry_student_groupinvite_create', kwargs=self.kwargs)
+        return reverse('devilry_student_groupinvite_overview', kwargs=self.kwargs)
 
     def form_valid(self, form):
         form.cleaned_invite.save()
