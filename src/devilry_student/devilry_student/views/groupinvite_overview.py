@@ -50,7 +50,7 @@ class CreateForm(forms.ModelForm):
         self.helper.layout = Layout(
             'sent_to',
             ButtonHolder(
-                Submit('submit', _('Send invite'))
+                Submit('submit', _('Send invitation'))
             )
         )
 
@@ -93,6 +93,7 @@ class GroupInviteOverviewView(DetailView):
 
     def form_valid(self, form):
         form.cleaned_invite.save()
+        form.cleaned_invite.send_invite_notification(self.request)
         return redirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
