@@ -82,6 +82,10 @@ class GroupInvite(models.Model):
             raise ValidationError('The user sending an invite must be a Candiate on the group.')
         if self.sent_to and self.group.candidates.filter(student=self.sent_to).exists():
             raise ValidationError(_(u'The student is already a member of the group.'))
+        if GroupInvite.objects.filter_no_response()\
+                .filter(group=self.group, sent_to=self.sent_to)\
+                .exclude(id=self.id).exists():
+            raise ValidationError(_('The student is already invited to join the group, but they have not responded yet'))
 
         assignment = self.group.assignment
         if assignment.students_can_create_groups:

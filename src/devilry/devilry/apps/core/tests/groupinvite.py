@@ -57,13 +57,24 @@ class TestGroupInvite(TestCase):
 
     def test_can_not_invite_self(self):
         group = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_relatedstudents(self.testuser2)\
+            .add_relatedstudents(self.testuser1)\
             .add_assignment('assignment1',
                 students_can_create_groups=True)\
             .add_group(students=[self.testuser1]).group
         with self.assertRaisesRegexp(ValidationError,
                 r'^.*The student is already a member of the group.*$'):
             GroupInvite(group=group, sent_by=self.testuser1, sent_to=self.testuser1).clean()
+
+    def test_can_not_invite_someone_that_already_has_invite_for_group(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser2)\
+            .add_assignment('assignment1',
+                students_can_create_groups=True)\
+            .add_group(students=[self.testuser1]).group
+        GroupInvite(group=group, sent_by=self.testuser1, sent_to=self.testuser2).save()
+        with self.assertRaisesRegexp(ValidationError,
+                r'^.*The student is already invited to join the group, but they have not responded yet.*$'):
+            GroupInvite(group=group, sent_by=self.testuser1, sent_to=self.testuser2).clean()
 
     def test_only_when_allowed_on_assignment(self):
         group = PeriodBuilder.quickadd_ducku_duck1010_active()\
