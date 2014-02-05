@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.rest_testclient import RestClient
+from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
 
 
 
@@ -33,7 +34,8 @@ class TestRestAggregatedGroupInfo(TestCase):
         self.assertEquals(set(content.keys()),
                           set(['id', 'name', 'is_open', 'candidates', 'examiners',
                                'deadlines', 'active_feedback', 'status',
-                               'deadline_handling', 'breadcrumbs', 'delivery_types', 'is_relatedstudent_on_period']))
+                               'deadline_handling', 'breadcrumbs', 'delivery_types',
+                               'is_relatedstudent_on_period', 'students_can_create_groups_now']))
         self.assertEquals(content['id'], self.group.id)
         self.assertEquals(content['name'], 'g1')
         self.assertEquals(content['is_open'], True)
@@ -67,6 +69,32 @@ class TestRestAggregatedGroupInfo(TestCase):
         content, response = self._getas('student1')
         examiners = content['examiners']
         self.assertEquals(examiners, None)
+
+    def test_students_can_create_groups_now_true(self):
+        self.group.parentnode.students_can_create_groups = True
+        self.group.parentnode.save()
+        content, response = self._getas('student1')
+        self.assertTrue(content['students_can_create_groups_now'])
+
+    def test_students_can_create_groups_now_false(self):
+        self.group.parentnode.students_can_create_groups = False
+        self.group.parentnode.save()
+        content, response = self._getas('student1')
+        self.assertFalse(content['students_can_create_groups_now'])
+
+    def test_students_can_create_groups_now_true_and_future(self):
+        self.group.parentnode.students_can_create_groups = True
+        self.group.parentnode.students_can_not_create_groups_after = DateTimeBuilder.now().plus(days=2)
+        self.group.parentnode.save()
+        content, response = self._getas('student1')
+        self.assertTrue(content['students_can_create_groups_now'])
+
+    def test_students_can_create_groups_now_true_and_future(self):
+        self.group.parentnode.students_can_create_groups = True
+        self.group.parentnode.students_can_not_create_groups_after = DateTimeBuilder.now().minus(days=2)
+        self.group.parentnode.save()
+        content, response = self._getas('student1')
+        self.assertFalse(content['students_can_create_groups_now'])
 
     def test_deadlines(self):
         content, response = self._getas('student1')

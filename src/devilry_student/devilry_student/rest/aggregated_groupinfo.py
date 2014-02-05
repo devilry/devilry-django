@@ -35,9 +35,11 @@ def pretty_filesize(num):
 class GroupResource(ModelResource, GroupResourceHelpersMixin):
     fields = ('id', 'name', 'is_open', 'candidates', 'deadlines', 'active_feedback',
               'deadline_handling', 'breadcrumbs', 'examiners', 'delivery_types',
-              'status', 'is_relatedstudent_on_period')
+              'status', 'is_relatedstudent_on_period', 'students_can_create_groups_now')
     model = AssignmentGroup
 
+    def students_can_create_groups_now(self, instance):
+        return instance.assignment.students_can_create_groups_now
 
     def candidates(self, instance):
         return map(self.format_candidate, instance.candidates.all())
