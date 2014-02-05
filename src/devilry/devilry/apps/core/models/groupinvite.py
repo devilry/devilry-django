@@ -20,6 +20,11 @@ class GroupInviteQuerySet(models.query.QuerySet):
     def filter_no_response(self):
         return self.filter(accepted=None)
 
+    def filter_unanswered_received_invites(self, user):
+        return self.filter_no_response().filter(sent_to=user)
+
+    def filter_unanswered_sent_invites(self, group):
+        return self.filter_no_response().filter(group=group)
 
 class GroupInviteManager(models.Manager):
     def get_queryset(self):
@@ -39,6 +44,12 @@ class GroupInviteManager(models.Manager):
 
     def filter_no_response(self):
         return self.get_queryset().filter_no_response()
+
+    def filter_unanswered_received_invites(self, user):
+        return self.get_queryset().filter_unanswered_received_invites(user)
+
+    def filter_unanswered_sent_invites(self, group):
+        return self.get_queryset().filter_unanswered_sent_invites(group)
 
 
 class GroupInvite(models.Model):
