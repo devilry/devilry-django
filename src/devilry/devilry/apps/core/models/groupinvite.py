@@ -75,6 +75,14 @@ class GroupInvite(models.Model):
     class Meta:
         app_label = 'core'
 
+
+    def get_sent_to_groups_queryset(self):
+        """
+        Returns a queryset matching all groups where the ``sent_to`` user is a candidate.
+        """
+        return AssignmentGroup.objects.filter_is_candidate(self.sent_to).filter(
+                parentnode=self.group.parentnode)
+
     def clean(self):
         if self.accepted and not self.responded_datetime:
             self.responded_datetime = datetime.now()
@@ -99,8 +107,7 @@ class GroupInvite(models.Model):
             raise ValidationError(_('The invited student is not registered on this subject.'))
 
         if self.accepted != None:
-            groups = list(AssignmentGroup.objects.filter_is_candidate(self.sent_to).filter(
-                parentnode=self.group.parentnode))
+            groups = list(self.get_sent_to_groups_queryset())
             if len(groups) > 1:
                 raise ValidationError(_('The invited student is in more than one project group on this assignment, and can not join your group.'))
             elif len(groups) == 1:
@@ -108,11 +115,33 @@ class GroupInvite(models.Model):
                     raise ValidationError(_('The invited student is already in a project group.'))
 
     def respond(self, accepted):
+        """
+        Accept or reject the invite. If accepted, the user is added to the group
+        using this algorithm::
+
+            If the student is in a group on the assignment:
+                Join that group with the group that sent the invite.
+            Else:
+                Add the student as a candidate on the group that sent the invite.
+
+        In any case, a notification email is sent to the user that sent the
+        invite.
+        """
         self.accepted = accepted
         self.responded_datetime = datetime.now()
         self.full_clean()
         self.save()
         self._send_response_notification()
+        if accepted:
+            self._accept()
+
+    def _accept(self):
+        try:
+            existing_group = self.get_sent_to_groups_queryset().get()
+        except AssignmentGroup.DoesNotExist:
+            self.group.candidates.create(student=self.sent_to)
+        else:
+            existing_group.merge_into(self.group)
 
     def _send_response_notification(self):
         sent_to_displayname = self.sent_to.devilryuserprofile.get_displayname()

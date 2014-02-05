@@ -11,6 +11,7 @@ from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
 from devilry.apps.core.models import GroupInvite
+from devilry.apps.core.models import AssignmentGroup
 
 
 class TestGroupInvite(TestCase):
@@ -97,7 +98,6 @@ class TestGroupInvite(TestCase):
         GroupInvite(group=group2, sent_by=self.testuser1, sent_to=self.testuser2,
                 accepted=True).clean()
 
-
     def test_only_when_allowed_on_assignment(self):
         group = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_relatedstudents(self.testuser2)\
@@ -141,7 +141,7 @@ class TestGroupInvite(TestCase):
                 r'^.*The invited student is not registered on this subject.*$'):
             invite.full_clean()
 
-    def test_respond(self):
+    def test_respond_reject(self):
         group = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_relatedstudents(self.testuser2)\
             .add_assignment('assignment1', students_can_create_groups=True)\
@@ -154,10 +154,49 @@ class TestGroupInvite(TestCase):
         self.assertIsNone(invite.accepted)
 
         before = datetime.now()
-        invite.respond(accepted=True)
+        invite.respond(accepted=False)
         after = datetime.now()
-        self.assertTrue(invite.accepted)
+        self.assertFalse(invite.accepted)
         self.assertTrue(invite.responded_datetime >= before and invite.responded_datetime <= after)
+        self.assertTrue(group.candidates.count(), 1)
+
+    def test_respond_accept_merge_groups(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser2)\
+            .add_assignment('assignment1', students_can_create_groups=True)
+        group = assignmentbuilder.add_group(students=[self.testuser1]).group
+        sent_to_group = assignmentbuilder.add_group(students=[self.testuser2]).group
+        invite = GroupInvite(
+            group=group,
+            sent_by=self.testuser1,
+            sent_to=self.testuser2)
+        invite.save()
+        self.assertEquals(AssignmentGroup.objects.count(), 2)
+        invite.respond(accepted=True)
+        self.assertTrue(invite.accepted)
+        self.assertTrue(group.candidates.count(), 2)
+        self.assertEquals(set([c.student for c in group.candidates.all()]),
+            set([self.testuser1, self.testuser2]))
+        self.assertEquals(AssignmentGroup.objects.count(), 1)
+        self.assertFalse(AssignmentGroup.objects.filter(id=sent_to_group.id).exists())
+
+    def test_respond_accept_add_candidate(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser2)\
+            .add_assignment('assignment1', students_can_create_groups=True)\
+            .add_group(students=[self.testuser1]).group
+        invite = GroupInvite(
+            group=group,
+            sent_by=self.testuser1,
+            sent_to=self.testuser2)
+        invite.save()
+        self.assertEquals(AssignmentGroup.objects.count(), 1)
+        invite.respond(accepted=True)
+        self.assertTrue(invite.accepted)
+        self.assertTrue(group.candidates.count(), 2)
+        self.assertEquals(set([c.student for c in group.candidates.all()]),
+            set([self.testuser1, self.testuser2]))
+        self.assertEquals(AssignmentGroup.objects.count(), 1)
 
     def test_accepted_email(self):
         group = PeriodBuilder.quickadd_ducku_duck1010_active()\
