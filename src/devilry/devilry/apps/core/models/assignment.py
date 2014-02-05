@@ -315,6 +315,14 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def period(self):
         return self.parentnode
 
+    @property
+    def students_can_create_groups_now(self):
+        """
+        Return ``True`` if :attr:`students_can_create_groups` is ``True``, and
+        :attr:`students_can_not_create_groups_after` is in the future or ``None``.
+        """
+        return self.students_can_create_groups \
+            and (self.students_can_not_create_groups_after == None or self.students_can_not_create_groups_after > datetime.now())
 
     def is_electronic(self):
         """
