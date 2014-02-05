@@ -102,11 +102,8 @@ class GroupInviteOverviewView(DetailView):
             context['form'] = CreateForm(**self._form_kwargs())
         else:
             context['form'] = self.invalidform
-        for invite in GroupInvite.objects.all():
-            print invite.group
         context['unanswered_received_invites'] = GroupInvite.objects\
             .filter_unanswered_received_invites(self.request.user)\
             .filter(group__parentnode=group.parentnode)
-        print context['unanswered_received_invites']
         context['unanswered_sent_invites'] = GroupInvite.objects.filter_unanswered_sent_invites(group)
         return context

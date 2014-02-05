@@ -8,3 +8,4 @@ from .rest.results import TestRestResults
 from .groupinfoui import TestGroupInfoUI
 from .groupinfoui import TestAddDeliveryUI
 from .dashboardui import TestDashboardUI
+from .views.test_groupinvite_overview import TestGroupInviteOverviewView
