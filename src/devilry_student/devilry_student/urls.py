@@ -8,6 +8,7 @@ from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.extjsapp import AppView
 from .views.groupinvite_overview import GroupInviteOverviewView
 from .views.groupinvite_show import GroupInviteShowView
+from .views.groupinvite_delete import GroupInviteDeleteView
 
 
 i18n_packages = get_javascript_catalog_packages('devilry_student', 'devilry_header', 'devilry_extjsextras', 'devilry.apps.core')
@@ -31,9 +32,11 @@ urlpatterns = patterns('devilry_student',
     url(r'^groupinvite/overview/(?P<group_id>\d+)$',
         login_required(GroupInviteOverviewView.as_view()),
         name='devilry_student_groupinvite_overview'),
-    #url(r'^groupinvite/list$'), # List invites in active periods?
     url(r'^groupinvite/show/(?P<invite_id>\d+)$',
         login_required(GroupInviteShowView.as_view()),
         name='devilry_student_groupinvite_show'),
+    url(r'^groupinvite/remove/(?P<invite_id>\d+)$',
+        login_required(GroupInviteDeleteView.as_view()),
+        name='devilry_student_groupinvite_delete'),
     #url(r'^groupinvite/leave/(?P<group_id>\d+)$')
 )

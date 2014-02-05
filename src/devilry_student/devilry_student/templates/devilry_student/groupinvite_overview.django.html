@@ -2,6 +2,7 @@
 
 {% load crispy_forms_tags %}
 {% load i18n %}
+{% load url from future %}
 
 {% block title %}{% trans "Project group" %}{% endblock title %}
 
@@ -59,11 +60,13 @@
                         {% for invite in unanswered_sent_invites %}                
                             <tr>
                                 <td>
-                                    <a href="#" class="btn btn-danger btn-xs">
+                                    <a href="{% url 'devilry_student_groupinvite_delete' invite.id %}" class="btn btn-danger btn-xs">
                                         {% trans "Delete" %}
                                     </a>
                                     &nbsp;
-                                    {{ invite.sent_to.devilryuserprofile.get_displayname }}
+                                    <span class="invite_sent_to_displayname">
+                                        {{ invite.sent_to.devilryuserprofile.get_displayname }}
+                                    </span>
                                 </td>
                                 <td>{{ invite.sent_by.devilryuserprofile.get_displayname }}</td>
                                 <td>{{ invite.sent_datetime|date:"DATETIME_FORMAT" }}</td>
