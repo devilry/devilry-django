@@ -104,7 +104,7 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
                     gettext('You can cooperate with other students on this assignment.'),
                 '</small></p>',
                 '<strong><a href="groupinvite/overview/{groupinfo.id}">',
-                    gettext('Create group'),
+                    gettext('Create/edit group'),
                 '</strong></a>',
             '</div>',
         '</tpl>',
