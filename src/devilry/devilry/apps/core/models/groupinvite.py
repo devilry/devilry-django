@@ -98,6 +98,15 @@ class GroupInvite(models.Model):
         if not period.relatedstudent_set.filter(user=self.sent_to).exists():
             raise ValidationError(_('The invited student is not registered on this subject.'))
 
+        if self.accepted != None:
+            groups = list(AssignmentGroup.objects.filter_is_candidate(self.sent_to).filter(
+                parentnode=self.group.parentnode))
+            if len(groups) > 1:
+                raise ValidationError(_('The invited student is in more than one project group on this assignment, and can not join your group.'))
+            elif len(groups) == 1:
+                if groups[0].candidates.count() > 1:
+                    raise ValidationError(_('The invited student is already in a project group.'))
+
     def respond(self, accepted):
         self.accepted = accepted
         self.responded_datetime = datetime.now()

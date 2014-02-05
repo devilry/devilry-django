@@ -76,6 +76,28 @@ class TestGroupInvite(TestCase):
                 r'^.*The student is already invited to join the group, but they have not responded yet.*$'):
             GroupInvite(group=group, sent_by=self.testuser1, sent_to=self.testuser2).clean()
 
+    def test_can_not_invite_someone_that_is_already_in_projectgroup(self):
+        periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser2)
+        assignment1builder = periodbuilder.add_assignment('assignment1',
+                students_can_create_groups=True)
+        assignment2builder = periodbuilder.add_assignment('assignment2',
+                students_can_create_groups=True)
+
+        assignment1builder.add_group(students=[self.testuser2, self.testuser3]).group
+        group1 = assignment1builder.add_group(students=[self.testuser1]).group
+        group2 = assignment2builder.add_group(students=[self.testuser1]).group
+
+        with self.assertRaisesRegexp(ValidationError,
+                r'^.*The invited student is already in a project group.*$'):
+            GroupInvite(group=group1, sent_by=self.testuser1, sent_to=self.testuser2,
+                accepted=True).clean()
+
+        # Ensure we are not affected by having groups in other assignments
+        GroupInvite(group=group2, sent_by=self.testuser1, sent_to=self.testuser2,
+                accepted=True).clean()
+
+
     def test_only_when_allowed_on_assignment(self):
         group = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_relatedstudents(self.testuser2)\
@@ -89,6 +111,7 @@ class TestGroupInvite(TestCase):
         with self.assertRaisesRegexp(ValidationError,
                 r'^.*This assignment does not allow students to form project groups on their own.*$'):
             invite.full_clean()
+
 
     def test_students_can_not_create_groups_after(self):
         group = PeriodBuilder.quickadd_ducku_duck1010_active()\
