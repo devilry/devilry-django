@@ -6,5 +6,5 @@ from django import forms
 #     name = forms.CharField()
 
 
-class GroupInviteShowView(FormView):
+class GroupInviteRespondView(FormView):
     pass

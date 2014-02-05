@@ -191,7 +191,7 @@ class GroupInvite(models.Model):
         assignment = self.group.assignment
         subject = _('Project group invite for {assignment}').format(assignment=assignment.get_path())
         template_name = 'devilry_core/groupinvite_invite.django.txt'
-        url = request.build_absolute_uri(reverse('devilry_student_groupinvite_show', kwargs={'invite_id': self.id}))
+        url = request.build_absolute_uri(reverse('devilry_student_groupinvite_respond', kwargs={'invite_id': self.id}))
         send_templated_message(subject, template_name, {
             'sent_by_displayname': sent_by_displayname,
             'assignment': assignment.long_name,

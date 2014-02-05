@@ -256,6 +256,6 @@ class TestGroupInvite(TestCase):
             u'testuser1 invited you to join their project\ngroup for duck1010 assignment1.',
             mail.outbox[0].body)
         self.assertIn(
-            'http://example.com{}'.format(reverse('devilry_student_groupinvite_show',
+            'http://example.com{}'.format(reverse('devilry_student_groupinvite_respond',
                 kwargs={'invite_id': invite.id})),
             mail.outbox[0].body)
