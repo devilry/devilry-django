@@ -38,7 +38,7 @@ class CreateForm(forms.ModelForm):
     def _sent_to_choices(self):
         users = self._sent_to_choices_queryset()
         choices = [(user.id, user.devilryuserprofile.get_displayname()) for user in users]
-        choices.insert(0, ('', '-'*20))
+        choices.insert(0, ('', ''))
         return choices
 
     def __init__(self, *args, **kwargs):

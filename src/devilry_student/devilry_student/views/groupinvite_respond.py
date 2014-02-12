@@ -23,10 +23,5 @@ class GroupInviteRespondView(DetailView):
         self.group = invite.group
 
         accepted = 'accept_invite' in self.request.POST
-        print
-        print
-        print accepted
-        print
-        print
         invite.respond(accepted=accepted)
         return redirect(self.get_success_url())
