@@ -4,7 +4,7 @@ from devilry_subjectadminadd import AdminAddBase
 
 
 class Command(AdminAddBase):
-    args = '<subject-short_name>'
+    args = '<subject-short_name> <period short name>'
     help = 'Clear period admins (removes all subject admins on a subject).'
 
     def handle(self, *args, **options):
