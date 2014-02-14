@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
+from devilry.apps.core.models import GroupInvite
 from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import prettyhtml
@@ -31,14 +32,12 @@ class TestGroupInviteOverviewView(TestCase):
         html = response.content
         self.assertEquals(cssGet(html, 'h1').text.strip(), 'Project groupduck1010.active.assignment1')
 
-    def test_list_relatedstudents(self):
+    def test_only_if_student(self):
         group = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')\
-            .add_group(students=[self.testuser]).group
+            .add_group().group
         response = self._getas(group.id, self.testuser)
-        self.assertEquals(response.status_code, 200)
-        html = response.content
-        self.assertEquals(cssGet(html, 'h1').text.strip(), 'Project groupduck1010.active.assignment1')
+        self.assertEquals(response.status_code, 404)
 
     def test_send_invite_to_selectlist(self):
         UserBuilder('ignoreduser')
@@ -61,3 +60,38 @@ class TestGroupInviteOverviewView(TestCase):
         html = self._getas(group.id, alreadyingroupuser1).content
         send_to_options = [e.text.strip() for e in cssFind(html, '#id_sent_to option')]
         self.assertEquals(send_to_options, ['', 'matchuser1', 'Match User Two'])
+
+
+    def test_send_to_post(self):
+        inviteuser = UserBuilder('inviteuser').user
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser, inviteuser)\
+            .add_assignment('assignment1', students_can_create_groups=True)\
+            .add_group(students=[self.testuser]).group
+
+        self.assertEquals(GroupInvite.objects.count(), 0)
+        response = self._postas(group.id, self.testuser, {
+            'sent_to': inviteuser.id
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(GroupInvite.objects.count(), 1)
+        invite = GroupInvite.objects.all()[0]
+        self.assertEquals(invite.sent_by, self.testuser)
+        self.assertEquals(invite.sent_to, inviteuser)
+        self.assertEquals(invite.accepted, None)
+
+    def test_send_to_post_notrelated(self):
+        inviteuser = UserBuilder('inviteuser').user
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser)\
+            .add_assignment('assignment1', students_can_create_groups=True)\
+            .add_group(students=[self.testuser]).group
+
+        self.assertEquals(GroupInvite.objects.count(), 0)
+        response = self._postas(group.id, self.testuser, {
+            'sent_to': inviteuser.id
+        })
+        self.assertEquals(response.status_code, 200)
+        self.assertIn(
+            'Select a valid choice. {} is not one of the available choices.'.format(inviteuser.id),
+            response.content)

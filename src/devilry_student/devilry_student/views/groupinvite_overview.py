@@ -48,7 +48,7 @@ class CreateForm(forms.ModelForm):
         cleaned_data = super(CreateForm, self).clean()
         sent_to_userid = cleaned_data.get('sent_to')
         if sent_to_userid:
-            sent_to = self._sent_to_choices_queryset().get(id=sent_to_userid)
+            sent_to = GroupInvite.send_invite_to_choices_queryset(self.group).get(id=sent_to_userid)
             invite = GroupInvite(group=self.group, sent_by=self.sent_by, sent_to=sent_to)
             invite.full_clean()
             self.cleaned_invite = invite
