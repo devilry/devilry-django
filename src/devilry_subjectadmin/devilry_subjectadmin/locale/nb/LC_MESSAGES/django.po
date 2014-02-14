@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devilry_subjectadmin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-24 05:58+0100\n"
-"PO-Revision-Date: 2014-01-24 06:02+0100\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"POT-Creation-Date: 2014-02-14 10:16+0100\n"
+"PO-Revision-Date: 2014-02-14 10:18+0100\n"
+"Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: nb\n"
 "MIME-Version: 1.0\n"
@@ -36,8 +36,9 @@ msgstr "Det gitte valget matchet ingen grupper."
 msgid "The same user can not be examiner multiple times on the same group."
 msgstr "Den samme brukeren kan ikke være retter flere ganger på samme gruppe."
 
-#: templates/devilry_subjectadmin/assignment_update_form.django.html:9
-#: templates/devilry_subjectadmin/assignment_update_form.django.html:15
+#: templates/devilry_subjectadmin/assignment_update_form.django.html:5
+#: templates/devilry_subjectadmin/assignment_update_form.django.html:11
+#: templates/devilry_subjectadmin/assignment_update_form.django.html:17
 msgid "Edit"
 msgstr "Rediger"
 
@@ -69,7 +70,25 @@ msgstr ""
 "Tidspunktet når oppgaven skal gjøres synlig for studenter og rettere. Format "
 "\"ÅÅÅÅ-MM-DD tt:mm\"."
 
-#: views/assignment_update.py:36
+#: views/assignment_update.py:19
+msgid "Students can not create project groups after"
+msgstr "Studenter kan ikke lage prosjektgrupper etter"
+
+#: views/assignment_update.py:20
+msgid ""
+"Students can not create project groups after this time. Ignored if "
+"\"Students can create project groups\" is not selected. Format: \"YYYY-MM-DD "
+"hh:mm\"."
+msgstr ""
+"Studenter kan ikke lage prosjektgrupper etter dette tidspunket. Ignorert "
+"hvis \"Studenter kan lage prosjektgrupper\" ikke er valgt. Format: \"ÅÅÅÅ-MM-"
+"DD tt:mm\"."
+
+#: views/assignment_update.py:42
+msgid "Allow students to form project groups?"
+msgstr "Tillat studenter å lage prosjektgrupper på eget initiativ?"
+
+#: views/assignment_update.py:48
 msgid "Save"
 msgstr "Lagre"
 

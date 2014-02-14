@@ -32,14 +32,11 @@ class AssignmentUpdateForm(forms.ModelForm):
         super(AssignmentUpdateForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.layout = Layout(
-            Fieldset(
-                _('Stuff'),
-                Field('long_name', css_class='input-lg'),
-                'short_name',
-                'publishing_time',
-                'anonymous',
-                'deadline_handling'
-            ),
+            Field('long_name', css_class='input-lg'),
+            'short_name',
+            'publishing_time',
+            'anonymous',
+            'deadline_handling',
 
             Fieldset(
                 _('Allow students to form project groups?'),
