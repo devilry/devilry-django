@@ -259,3 +259,25 @@ class TestGroupInvite(TestCase):
             'http://example.com{}'.format(reverse('devilry_student_groupinvite_respond',
                 kwargs={'invite_id': invite.id})),
             mail.outbox[0].body)
+
+
+    def test_send_invite_to_choices_queryset(self):
+        UserBuilder('ignoreduser')
+        alreadyingroupuser1 = UserBuilder('alreadyingroupuser1').user
+        alreadyingroupuser2 = UserBuilder('alreadyingroupuser2').user
+        hasinviteuser = UserBuilder('hasinviteuser').user
+        matchuser1 = UserBuilder('matchuser1').user
+        matchuser2 = UserBuilder('matchuser2').user
+
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(
+                alreadyingroupuser1, alreadyingroupuser2, hasinviteuser,
+                matchuser1, matchuser2)\
+            .add_assignment('assignment1', students_can_create_groups=True)\
+            .add_group(students=[alreadyingroupuser1, alreadyingroupuser2]).group
+        group.groupinvite_set.create(
+            sent_by=alreadyingroupuser1,
+            sent_to=hasinviteuser)
+
+        can_invite_users = set(GroupInvite.send_invite_to_choices_queryset(group))
+        self.assertEquals(can_invite_users, set([matchuser1, matchuser2]))
