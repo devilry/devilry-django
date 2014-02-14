@@ -10,3 +10,4 @@ from .groupinfoui import TestAddDeliveryUI
 from .dashboardui import TestDashboardUI
 from .views.test_groupinvite_overview import TestGroupInviteOverviewView
 from .views.test_groupinvite_respond import TestGroupInviteRespondView
+from .views.test_groupinvite_delete import TestGroupInviteDeleteView
