@@ -95,3 +95,19 @@ class TestGroupInviteOverviewView(TestCase):
         self.assertIn(
             'Select a valid choice. {} is not one of the available choices.'.format(inviteuser.id),
             response.content)
+
+    def test_send_to_post_groupinvite_not_allowed(self):
+        inviteuser = UserBuilder('inviteuser').user
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser, inviteuser)\
+            .add_assignment('assignment1', students_can_create_groups=False)\
+            .add_group(students=[self.testuser]).group
+
+        self.assertEquals(GroupInvite.objects.count(), 0)
+        response = self._postas(group.id, self.testuser, {
+            'sent_to': inviteuser.id
+        })
+        self.assertEquals(response.status_code, 200)
+        self.assertIn(
+            'This assignment does not allow students to form project groups on their own.',
+            response.content)
