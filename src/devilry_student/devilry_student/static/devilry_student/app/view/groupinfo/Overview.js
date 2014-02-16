@@ -35,7 +35,7 @@ Ext.define('devilry_student.view.groupinfo.Overview' ,{
         xtype: 'container',
         region: 'west',
         autoScroll: true,
-        width: 200,
+        width: 250,
         padding: 20,
         itemId: 'metadataContainer'
     }, {
