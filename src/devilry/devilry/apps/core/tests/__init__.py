@@ -13,3 +13,4 @@ from .memorydeliverystore import *
 from .fsdeliverystore import *
 from .testhelper import *
 from .devilryuserprofile import *
+from .groupinvite import *

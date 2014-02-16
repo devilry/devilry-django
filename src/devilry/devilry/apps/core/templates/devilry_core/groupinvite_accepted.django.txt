@@ -1,0 +1,2 @@
+{% load i18n %}{% blocktrans %}{{ sent_to_displayname }} accepted the invite to join your project
+group for {{ subject }} {{ assignment }}{% endblocktrans %}

@@ -17,9 +17,11 @@ from .static_feedback import StaticFeedback
 from .filemeta import FileMeta
 from .devilryuserprofile import DevilryUserProfile
 from .examiner import Examiner
+from .groupinvite import GroupInvite
 
 __all__ = ("AbstractIsAdmin", "AbstractIsExaminer", "AbstractIsCandidate",
            "BaseNode", "Node", "Subject", "Period", 'RelatedExaminer', 'RelatedStudent',
            "RelatedStudentKeyValue", "Assignment", "AssignmentGroup",
            "AssignmentGroupTag", "Delivery", "Deadline", "Candidate", "StaticFeedback",
-           "FileMeta", "DevilryUserProfile", 'PeriodApplicationKeyValue', 'Examiner')
+           "FileMeta", "DevilryUserProfile", 'PeriodApplicationKeyValue', 'Examiner',
+           'GroupInvite')

@@ -12,9 +12,11 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
         '</div>',
 
         '<div class="candidatesblock">',
-            '<tpl if="groupinfo.candidates.length &gt; 1">',
-                '<h3>', gettext('Students'), '</h3>',
-                '<ul class="studentslist class="unstyled">',
+            '<tpl if="groupinfo.candidates.length &gt; 1 || groupinfo.students_can_create_groups_now">',
+                '<h3>',
+                    gettext('Group members'),
+                '</h3>',
+                '<ul class="studentslist unstyled">',
                 '<tpl for="groupinfo.candidates">',
                     '<li>',
                         '<a href="mailto:{user.email}">',
@@ -23,6 +25,11 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
                     '</li>',
                 '</tpl>',
                 '</ul>',
+                '<tpl if="groupinfo.students_can_create_groups_now">',
+                    '<strong><a href="groupinvite/overview/{groupinfo.id}">',
+                        gettext('Invite students to the group'),
+                    '</strong></a>',
+                '</tpl>',
             '</tpl>',
         '</div>',
 
@@ -96,7 +103,6 @@ Ext.define('devilry_student.view.groupinfo.GroupMetadata' ,{
                 '</p>',
             '</div>',
         '</tpl>',
-
 
         '<div class="deliveriesblock">',
             '<h3>', gettext('Deliveries'), '</h3>',

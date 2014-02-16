@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
 from ..models import AssignmentGroup
 from ..models import Candidate
 from ..models.assignment_group import GroupPopNotCandiateError
@@ -896,6 +897,58 @@ class TestAssignmentGroupManager(TestCase):
         qry = AssignmentGroup.objects.filter_is_examiner(examiner1)
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], group1builder.group)
+
+    def test_filter_is_published(self):
+        periodbuilder = SubjectBuilder.quickadd_ducku_duck1010()\
+            .add_period('period1',
+                start_time=DateTimeBuilder.now().minus(days=60),
+                end_time=DateTimeBuilder.now().plus(days=60))
+        group1 = periodbuilder.add_assignment('assignment1',
+                publishing_time=DateTimeBuilder.now().minus(days=30))\
+            .add_group().group
+        periodbuilder.add_assignment('assignment2',
+                publishing_time=DateTimeBuilder.now().plus(days=10))\
+            .add_group()
+        periodbuilder.add_assignment('assignment3',
+                publishing_time=DateTimeBuilder.now().plus(days=50))\
+            .add_group()
+        qry = AssignmentGroup.objects.filter_is_published()
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], group1)
+
+    def test_filter_is_candidate(self):
+        student1 = UserBuilder('student1').user
+        otherstudent = UserBuilder('otherstudent').user
+        periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
+        group1 = periodbuilder.add_assignment('assignment1')\
+            .add_group(students=[student1]).group
+        periodbuilder.add_assignment('assignment2')\
+            .add_group(students=[otherstudent])
+        group3 = periodbuilder.add_assignment('assignment3')\
+            .add_group(students=[student1]).group
+        qry = AssignmentGroup.objects.filter_is_candidate(student1)
+        self.assertEquals(qry.count(), 2)
+        self.assertEquals(set(qry), set([group1, group3]))
+
+    def test_filter_student_has_access(self):
+        student1 = UserBuilder('student1').user
+        otherstudent = UserBuilder('otherstudent').user
+        periodbuilder = SubjectBuilder.quickadd_ducku_duck1010()\
+            .add_period('period1',
+                start_time=DateTimeBuilder.now().minus(days=60),
+                end_time=DateTimeBuilder.now().plus(days=60))
+        group1 = periodbuilder.add_assignment('assignment1',
+                publishing_time=DateTimeBuilder.now().minus(days=30))\
+            .add_group(students=[student1]).group
+        periodbuilder.add_assignment('assignment2',
+                publishing_time=DateTimeBuilder.now().minus(days=10))\
+            .add_group(students=[otherstudent])
+        periodbuilder.add_assignment('assignment3',
+                publishing_time=DateTimeBuilder.now().plus(days=50))\
+            .add_group(students=[student1])
+        qry = AssignmentGroup.objects.filter_student_has_access(student1)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], group1)
 
     def test_filter_is_active(self):
         duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
