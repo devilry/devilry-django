@@ -16,7 +16,8 @@ Ext.define('devilry_student.model.GroupInfo', {
         {name: 'delivery_types', type: 'int'},
         {name: 'active_feedback', type: 'auto'},
         {name: 'is_relatedstudent_on_period', type: 'auto'},
-        {name: 'is_registrated', type: 'bool'}
+        {name: 'is_registrated', type: 'bool'},
+        {name: 'students_can_create_groups_now', type: 'bool'}
     ],
 
     proxy: {

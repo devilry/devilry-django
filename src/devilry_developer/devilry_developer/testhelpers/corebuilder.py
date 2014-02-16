@@ -238,6 +238,14 @@ class PeriodBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'period'
     modelcls = Period
 
+    def __init__(self, *args, **kwargs):
+        relatedstudents = kwargs.pop('relatedstudents', None)
+        relatedexaminers = kwargs.pop('relatedexaminers', None)
+        if relatedstudents:
+            self.add_relatedstudents(*relatedstudents)
+        if relatedexaminers:
+            self.add_relatedexaminers(*relatedexaminers)
+        super(PeriodBuilder, self).__init__(*args, **kwargs)
 
     @classmethod
     def quickadd_ducku_duck1010_active(cls):
@@ -247,6 +255,18 @@ class PeriodBuilder(BaseNodeBuilderBase):
     def add_assignment(self, *args, **kwargs):
         kwargs['parentnode'] = self.period
         return AssignmentBuilder(*args, **kwargs)
+
+    def add_relatedstudents(self, *users):
+        for user in users:
+            self.period.relatedstudent_set.create(
+                user=user)
+        return self
+
+    def add_relatedexaminers(self, *users):
+        for user in users:
+            self.period.relatedexaminer_set.create(
+                user=user)
+        return self
 
 
 class SubjectBuilder(BaseNodeBuilderBase):

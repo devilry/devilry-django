@@ -44,14 +44,23 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
     def filter_is_examiner(self, user):
         return self.filter(examiners__user=user).distinct()
 
+    def filter_is_candidate(self, user):
+        return self.filter(candidates__student=user).distinct()
+
+    def filter_is_published(self):
+        return self.filter(parentnode__publishing_time__lt=datetime.now())
+
     def filter_is_active(self):
         now = datetime.now()
-        return self.filter(parentnode__publishing_time__lt=now,
-                           parentnode__parentnode__start_time__lt=now,
-                           parentnode__parentnode__end_time__gt=now).distinct()
+        return self.filter_is_published().filter(
+            parentnode__parentnode__start_time__lt=now,
+            parentnode__parentnode__end_time__gt=now)
 
     def filter_examiner_has_access(self, user):
         return self.filter_is_active().filter_is_examiner(user)
+
+    def filter_student_has_access(self, user):
+        return self.filter_is_published().filter_is_candidate(user)
 
     def filter_by_status(self, status):
         return self.filter(delivery_status=status)
@@ -96,9 +105,25 @@ class AssignmentGroupManager(models.Manager):
 
         WARNING: You should normally not use this directly because it gives the
         examiner information from expired periods (which they are not supposed
-        to get). Use :meth:`.active` instead.
+        to get). Use :meth:`.filter_examiner_has_access` instead.
         """
         return self.get_queryset().filter_is_examiner(user)
+
+    def filter_is_candidate(self, user):
+        """
+        Returns a queryset with all AssignmentGroups where the given ``user`` is candidate.
+
+        WARNING: You should normally not use this directly because it gives the
+        student information from unpublished assignments (which they are not supposed
+        to get). Use :meth:`.filter_student_has_access` instead.
+        """
+        return self.get_queryset().filter_is_candidate(user)
+
+    def filter_is_published(self):
+        """
+        Returns a queryset with all AssignmentGroups on published Assignments.
+        """
+        return self.get_queryset().filter_is_published()
 
     def filter_is_active(self):
         """
@@ -114,6 +139,15 @@ class AssignmentGroupManager(models.Manager):
         NOTE: This returns all groups that the given ``user`` has examiner-rights for.
         """
         return self.get_queryset().filter_examiner_has_access(user)
+
+    def filter_student_has_access(self, user):
+        """
+        Returns a queryset with all AssignmentGroups on published Assignments
+        where the given ``user`` is a candidate.
+
+        NOTE: This returns all groups that the given ``user`` has student-rights for.
+        """
+        return self.get_queryset().filter_student_has_access(user)
 
     def filter_by_status(self, status):
         return self.get_queryset().filter_by_status(status)

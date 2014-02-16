@@ -1,0 +1,28 @@
+{
+  "name": "font-awesome",
+  "repo": "FortAwesome/Font-Awesome",
+  "description": "Font Awesome",
+  "version": "4.0.3",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "SIL, MIT, CC BY 3.0",
+  "styles": [
+    "css/font-awesome.css"
+  ],
+  "fonts": [
+    "fonts/fontawesome-webfont.eot",
+    "fonts/fontawesome-webfont.svg",
+    "fonts/fontawesome-webfont.ttf",
+    "fonts/fontawesome-webfont.woff",
+    "fonts/FontAwesome.otf"
+  ],
+  "gitHead": "0373b63c16d7aa31b6715c3f81a98a2ffb9f40a6",
+  "readme": "#[Font Awesome v4.0.3](http://fontawesome.io)\n###the iconic font designed for Bootstrap\n\nFont Awesome is a full suite of 369 pictographic icons for easy scalable vector graphics on websites, created and\nmaintained by [Dave Gandy](http://twitter.com/davegandy). Stay up to date [@fontawesome](http://twitter.com/fontawesome).\n\nGet started at http://fontawesome.io!\n\n##License\n- The Font Awesome font is licensed under the SIL OFL 1.1:\n  - http://scripts.sil.org/OFL\n- Font Awesome CSS, LESS, and SASS files are licensed under the MIT License:\n  - http://opensource.org/licenses/mit-license.html\n- The Font Awesome documentation is licensed under the CC BY 3.0 License:\n  - http://creativecommons.org/licenses/by/3.0/\n- Attribution is no longer required as of Font Awesome 3.0, but much appreciated:\n  - `Font Awesome by Dave Gandy - http://fontawesome.io`\n- Full details: http://fontawesome.io/license\n\n##Changelog\n- v3.0.0 - all icons redesigned from scratch, optimized for Bootstrap's 14px default\n- v3.0.1 - much improved rendering in webkit, various bug fixes\n- v3.0.2 - much improved rendering and alignment in IE7\n- v3.1.0 - Added 54 icons, icon stacking styles, flipping and rotating icons, removed SASS support\n- [v3.1.1 GitHub milestones](https://github.com/FortAwesome/Font-Awesome/issues?milestone=4&page=1&state=closed)\n- [v3.2.0 GitHub milestones](https://github.com/FortAwesome/Font-Awesome/issues?milestone=3&page=1&state=closed)\n- [v3.2.1 GitHub milestones](https://github.com/FortAwesome/Font-Awesome/issues?milestone=5&page=1&state=closed)\n- [v4.0.0 GitHub milestones](https://github.com/FortAwesome/Font-Awesome/issues?milestone=2&page=1&state=closed)\n- [v4.0.1 GitHub milestones](https://github.com/FortAwesome/Font-Awesome/issues?milestone=7&page=1&state=closed)\n- [v4.0.2 GitHub milestones](https://github.com/FortAwesome/Font-Awesome/issues?milestone=8&page=1&state=closed)\n- [v4.0.3 GitHub milestones](https://github.com/FortAwesome/Font-Awesome/issues?milestone=9&page=1&state=closed)\n\n##Versioning\n\nFont Awesome will be maintained under the Semantic Versioning guidelines as much as possible. Releases will be numbered with the following format:\n\n`<major>.<minor>.<patch>`\n\nAnd constructed with the following guidelines:\n\n* Breaking backward compatibility bumps the major (and resets the minor and patch)\n* New additions, including new icons, without breaking backward compatibility bumps the minor (and resets the patch)\n* Bug fixes and misc changes bumps the patch\n\nFor more information on SemVer, please visit http://semver.org.\n\n##Author\n- Email: dave@fontawesome.io\n- Twitter: http://twitter.com/davegandy\n- GitHub: https://github.com/davegandy\n- Work: Lead Product Designer @ http://kyru.us\n\n##Component\nTo include as a [component](http://github.com/component/component), just run\n\n    $ component install FortAwesome/Font-Awesome\n\nOr add\n\n    \"FortAwesome/Font-Awesome\": \"*\"\n\nto the `dependencies` in your `component.json`.\n\n## Hacking on Font Awesome\n\nFrom the root of the repository, install the tools used to develop.\n\n    $ bundle install\n    $ npm install\n\nBuild the project and documentation:\n\n    $ bundle exec jekyll build\n\nOr serve it on a local server on http://localhost:7998/Font-Awesome/:\n\n    $ bundle exec jekyll serve\n",
+  "readmeFilename": "README.md",
+  "_id": "Font-Awesome@4.0.3",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/FortAwesome/Font-Awesome.git"
+  }
+}
