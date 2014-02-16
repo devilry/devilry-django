@@ -24,9 +24,7 @@
                 <div class="alert alert-success">
                     <p>
                         <strong>{% trans "You have been invited to join a group!" %}</strong>
-                        {% blocktrans with sent_by=invite.sent_by.devilryuserprofile.get_displayname %}
-                            {{ sent_by }} invited you to join their group.
-                        {% endblocktrans %}
+                        {% blocktrans with sent_by=invite.sent_by.devilryuserprofile.get_displayname %}{{ sent_by }} invited you to join their group.{% endblocktrans %}
                     </p>
                     <p>
                         <a class="btn btn-default" href="{% url 'devilry_student_groupinvite_respond' invite.id %}">
