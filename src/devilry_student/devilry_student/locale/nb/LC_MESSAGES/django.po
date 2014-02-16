@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devilry_student\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-16 16:13+0100\n"
-"PO-Revision-Date: 2014-02-16 16:13+0100\n"
+"POT-Creation-Date: 2014-02-16 16:40+0100\n"
+"PO-Revision-Date: 2014-02-16 16:41+0100\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: nb\n"
@@ -38,22 +38,27 @@ msgstr "Filnavnet må være unikt"
 msgid "Devilry student"
 msgstr "Devilry student"
 
-#: templates/devilry_student/groupinvite_delete.django.html:6
-#: templates/devilry_student/groupinvite_delete.django.html:12
+#: templates/devilry_student/groupinvite_delete.django.html:7
+#: templates/devilry_student/groupinvite_delete.django.html:13
 msgid "Delete group invite"
 msgstr "Slett gruppeinvitasjon"
 
-#: templates/devilry_student/groupinvite_delete.django.html:19
+#: templates/devilry_student/groupinvite_delete.django.html:20
 #, python-format
 msgid "Are you sure you want to delete the invite for %(user)s?"
 msgstr "Er du sikker på at du vil slette invitasjonen til %(user)s?"
 
-#: templates/devilry_student/groupinvite_delete.django.html:20
+#: templates/devilry_student/groupinvite_delete.django.html:21
+msgid "Cancel"
+msgstr "Avbryt"
+
+#: templates/devilry_student/groupinvite_delete.django.html:22
 msgid "Delete invite"
 msgstr "Slett invitasjon"
 
 #: templates/devilry_student/groupinvite_overview.django.html:7
 #: templates/devilry_student/groupinvite_overview.django.html:13
+#: templates/devilry_student/groupinvite_overview.django.html:18
 msgid "Project group"
 msgstr "Prosjektgruppe"
 
@@ -128,6 +133,14 @@ msgstr "Avslå invitasjon"
 #: templates/devilry_student/groupinvite_respond.django.html:33
 msgid "Accept invitation"
 msgstr "Aksepter invitasjon"
+
+#: templates/devilry_student/include/group_breadcrumb.django.html:4
+msgid "Home"
+msgstr "Hjem"
+
+#: templates/devilry_student/include/group_breadcrumb.django.html:5
+msgid "History"
+msgstr "Historikk"
 
 #: views/extjsapp.py:9
 msgid "Devilry - Student"
