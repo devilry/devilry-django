@@ -11,12 +11,12 @@
         <div class="page-header">
             <h1>
                 {% trans "Project group" %}
-                <small>{{ group.assignment.get_path }}</small>
             </h1>
         </div>
-        {# <ol class="breadcrumb"> #}
-            {# <li class="active">{% trans "Edit" %}</li> #}
-        {# </ol> #}
+        <ol class="breadcrumb">
+            {% include "devilry_student/include/group_breadcrumb.django.html" %}
+            <li class="active">{% trans "Project group" %}</li>
+        </ol>
 
 
         {% if unanswered_received_invites.exists %}

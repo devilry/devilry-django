@@ -30,7 +30,7 @@ class TestGroupInviteOverviewView(TestCase):
         response = self._getas(group.id, self.testuser)
         self.assertEquals(response.status_code, 200)
         html = response.content
-        self.assertEquals(cssGet(html, 'h1').text.strip(), 'Project groupduck1010.active.assignment1')
+        self.assertEquals(cssGet(html, 'h1').text.strip(), 'Project group')
 
     def test_only_if_student(self):
         group = PeriodBuilder.quickadd_ducku_duck1010_active()\
