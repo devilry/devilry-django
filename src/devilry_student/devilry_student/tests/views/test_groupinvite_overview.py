@@ -39,7 +39,7 @@ class TestGroupInviteOverviewView(TestCase):
         response = self._getas(group.id, self.testuser)
         self.assertEquals(response.status_code, 404)
 
-    def test_send_invite_to_selectlist(self):
+    def test_render_send_invite_to_selectlist(self):
         UserBuilder('ignoreduser')
         alreadyingroupuser1 = UserBuilder('alreadyingroupuser1').user
         alreadyingroupuser2 = UserBuilder('alreadyingroupuser2').user
@@ -60,6 +60,35 @@ class TestGroupInviteOverviewView(TestCase):
         html = self._getas(group.id, alreadyingroupuser1).content
         send_to_options = [e.text.strip() for e in cssFind(html, '#id_sent_to option')]
         self.assertEquals(send_to_options, ['', 'matchuser1', 'Match User Two'])
+
+
+    def test_render_waiting_for_response_from(self):
+        inviteuser1 = UserBuilder('inviteuser1').user
+        inviteuser2 = UserBuilder('inviteuser2').user
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', students_can_create_groups=True)\
+            .add_group(students=[self.testuser]).group
+        for inviteuser in (inviteuser1, inviteuser2):
+            group.groupinvite_set.create(
+                sent_by=self.testuser,
+                sent_to=inviteuser)
+
+        html = self._getas(group.id, self.testuser).content
+        names = [element.text.strip() for element in \
+            cssFind(html, '#devilry_student_groupinvite_overview_waiting_for_response_from .invite_sent_to_displayname')]
+        self.assertEquals(set(names), set(['inviteuser1', 'inviteuser2']))
+
+
+    def test_render_current_group_members(self):
+        otheruser = UserBuilder('otheruser').user
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', students_can_create_groups=True)\
+            .add_group(students=[self.testuser, otheruser]).group
+
+        html = self._getas(group.id, self.testuser).content
+        names = [element.text.strip() for element in \
+            cssFind(html, '#devilry_student_groupinvite_overview_already_in_group .groupmember_username')]
+        self.assertEquals(set(names), set(['testuser', 'otheruser']))
 
 
     def test_send_to_post(self):

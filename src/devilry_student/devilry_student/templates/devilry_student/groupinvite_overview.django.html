@@ -47,7 +47,7 @@
 
         {% if unanswered_sent_invites.exists %}        
             <h3>{% trans "Waiting for response from" %}</h3>
-            <div class="table-responsive">
+            <div id="devilry_student_groupinvite_overview_waiting_for_response_from" class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
@@ -79,7 +79,7 @@
 
         {% if group.candidates.count > 1 %}
             <h3>{% trans "Current group members" %}</h3>
-            <div class="table-responsive">
+            <div id="devilry_student_groupinvite_overview_already_in_group" class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
@@ -92,7 +92,7 @@
                         {% for candidate in group.candidates.all %}                
                             <tr>
                                 <td>{{ candidate.student.devilryuserprofile.full_name }}</td>
-                                <td>{{ candidate.student.username }}</td>
+                                <td class="groupmember_username">{{ candidate.student.username }}</td>
                                 <td>{{ candidate.student.email }}</td>
                             </tr>
                         {% endfor %}
