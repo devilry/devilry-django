@@ -819,6 +819,35 @@ class TestAssignmentGroup2(TestCase):
             self.assertTrue(groupbuilder.group.last_delivery.successful)
         self.assertEquals(group3builder.group.last_delivery, None)
 
+    def test_can_be_given_another_chance_nonelectronic(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', delivery_types=deliverytypes.NON_ELECTRONIC)\
+            .add_group().group
+        self.assertFalse(group.can_be_given_another_chance)
+
+    def test_can_be_given_another_chance_closed_without_feedback(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', delivery_types=deliverytypes.ELECTRONIC)\
+            .add_group()
+        self.assertFalse(groupbuilder.group.can_be_given_another_chance)
+        groupbuilder.update(is_open=False)
+        self.assertTrue(groupbuilder.group.can_be_given_another_chance)
+
+    def test_can_be_given_another_chance_closed_without_feedback(self):
+        testuser = UserBuilder('testuser').user
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', delivery_types=deliverytypes.ELECTRONIC)
+        group1builder = assignmentbuilder.add_group()
+        group2builder = assignmentbuilder.add_group()
+        group1builder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_passed_feedback(saved_by=testuser)
+        group2builder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_failed_feedback(saved_by=testuser)
+
+        self.assertFalse(group1builder.group.can_be_given_another_chance)
+        self.assertTrue(group2builder.group.can_be_given_another_chance)
 
 
 
