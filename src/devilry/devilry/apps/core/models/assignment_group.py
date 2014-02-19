@@ -376,6 +376,19 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             return False
 
     @property
+    def missing_expected_delivery(self):
+        """
+        Return ``True`` if the group has no deliveries, and we are expecting
+        them to have made at least one delivery on the last deadline.
+        """
+        if self.assignment.is_electronic and self.get_status() == "waiting-for-feedback":
+            if not self.last_delivery:
+                return True
+            elif self.last_deadline and self.last_delivery.deadline != self.last_deadline:
+                return True
+        return False
+
+    @property
     def subject(self):
         """
         Shortcut for ``parentnode.parentnode.parentnode``.
