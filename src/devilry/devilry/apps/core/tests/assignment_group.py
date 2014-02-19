@@ -833,7 +833,7 @@ class TestAssignmentGroup2(TestCase):
         groupbuilder.update(is_open=False)
         self.assertTrue(groupbuilder.group.can_be_given_another_chance)
 
-    def test_can_be_given_another_chance_closed_without_feedback(self):
+    def test_can_be_given_another_chance_failed_grade(self):
         testuser = UserBuilder('testuser').user
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1', delivery_types=deliverytypes.ELECTRONIC)
