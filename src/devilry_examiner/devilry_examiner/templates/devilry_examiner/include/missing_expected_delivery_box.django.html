@@ -12,8 +12,8 @@ Required template context variables:
 {% load i18n %}
 {% load url from future %}
 
-{% if group.assignment.is_electronic and group.get_status == "waiting-for-feedback" and not group.last_delivery %}
-    <div class="alert alert-warning devilry_no_deliveries_box">
+{% if group.missing_expected_delivery %}
+    <div class="alert alert-warning devilry_missing_expected_delivery_box">
         <p>
             <strong>{% trans "This group has no deliveries" %}.</strong>
             {% trans "You have to choose one of the following options" %}:

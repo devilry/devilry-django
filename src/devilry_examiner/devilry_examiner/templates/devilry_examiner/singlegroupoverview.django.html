@@ -41,8 +41,39 @@
         </div>
 
         {% include "devilry_examiner/include/give_another_chance_question.django.html" with group=group %}
-        {% include "devilry_examiner/include/no_deliveries_box.django.html" with group=group %}
+        {% include "devilry_examiner/include/missing_expected_delivery_box.django.html" with group=group %}
     </div>
+
+
+    {# Make it possible to add deadlines and non-electronic deliveries at any time on electronic assignments #}
+    {# NOTE: This if is because we do not want double up with buttons when the warning/info boxes included above is rendered #}
+    {% if group.assignment.is_electronic and not group.missing_expected_delivery %}
+        <div class="container">
+            {% if not group.should_ask_if_examiner_want_to_give_another_chance %}
+                <form class="form-inline form-inline-render-inline-block devilry_add_deadline_anytime_form"
+                        action="{% url 'devilry_examiner_add_deadline' group.assignment.id %}"
+                        method="post">
+                    <input type="hidden" name="group_ids" value="{{ group.id }}">
+                    <input type="hidden" name="success_url" value="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
+                    <input type="hidden" name="cancel_url" value="{{ request.get_full_path }}">
+                    <button class="btn btn-default" type="submit">
+                        <i class="fa fa-plus"></i>
+                        {% trans "Add deadline" %}
+                    </button>
+                </form>
+            {% endif %}
+            <form class="form-inline form-inline-render-inline-block devilry_add_nonelectronic_delivery_anytime_form"
+                    action="{% url 'devilry_examiner_add_nonelectronic_delivery' group.assignment.id %}"
+                    method="post">
+                <input type="hidden" name="group_ids" value="{{ group.id }}">
+                <input type="hidden" name="success_url" value="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
+                <input type="hidden" name="cancel_url" value="{{ request.get_full_path }}">
+                <button class="btn btn-default" type="submit">
+                    {% trans 'Add "non-electronic" delivery' %}
+                </button>
+            </form>
+        </div>
+    {% endif %}
 
     {% for deadline in group.deadlines.all %}
         <div class="container deadlinebox">

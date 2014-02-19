@@ -7,6 +7,7 @@ from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import cssExists
+from devilry_developer.testhelpers.soupselect import prettyhtml
 
 
 
@@ -226,3 +227,23 @@ class TestSingleGroupOverview(TestCase):
         self.assertEquals(groupbuilder.group.delivery_status, 'corrected')
         self.assertTrue(groupbuilder.group.feedback.is_passing_grade)
         self.assertFalse(cssExists(html, '.devilry_give_another_chance_box'))
+
+    def test_add_deadline_anytime_form(self):
+        groupbuilder = self.week1builder.add_group(examiners=[self.examiner1])
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        html = self._getas('examiner1', groupbuilder.group.id).content
+        self.assertTrue(cssExists(html, '.devilry_add_deadline_anytime_form'))
+        self.assertFalse(cssExists(html, '.devilry_give_another_chance_box'))
+
+    def test_missing_expected_delivery_box(self):
+        groupbuilder = self.week1builder.add_group(examiners=[self.examiner1])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        html = self._getas('examiner1', groupbuilder.group.id).content
+        self.assertTrue(cssExists(html, '.devilry_missing_expected_delivery_box'))
+
+    def test_add_nonelectronic_delivery_anytime_form(self):
+        groupbuilder = self.week1builder.add_group(examiners=[self.examiner1])
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        html = self._getas('examiner1', groupbuilder.group.id).content
+        self.assertTrue(cssExists(html, '.devilry_add_nonelectronic_delivery_anytime_form'))
+        self.assertFalse(cssExists(html, '.devilry_missing_expected_delivery_box'))
