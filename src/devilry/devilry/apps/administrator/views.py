@@ -6,7 +6,6 @@ from django.shortcuts import render
 from devilry.utils.module import dump_all_into_dict
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.gradeeditors.restful import administrator as gradeeditors_restful
-from devilry.apps.examiner.views import CompressedFileDownloadView
 import restful
 
 
@@ -46,8 +45,3 @@ class RestfulSimplifiedViewWithGradeEditors(RestfulSimplifiedView):
     def edit_context(self, context):
         context['restfulapi'] = dump_all_into_dict(restful);
         context['gradeeditors'] = dump_all_into_dict(gradeeditors_restful);
-
-
-class AdminCompressedFileDownloadView(CompressedFileDownloadView):
-    def _create_assignment_group_qry(self, request, assignment):
-        return AssignmentGroup.where_is_admin_or_superadmin(request.user).filter(parentnode=assignment)

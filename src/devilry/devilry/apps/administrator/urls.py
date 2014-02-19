@@ -5,8 +5,7 @@ from django.contrib.auth.decorators import login_required
 from devilry_settings.i18n import get_javascript_catalog_packages
 from restful import administrator_restful
 from views import (MainView, RestfulSimplifiedView,
-                   RestfulSimplifiedViewWithGradeEditors,
-                   AdminCompressedFileDownloadView)
+                   RestfulSimplifiedViewWithGradeEditors)
 
 i18n_packages = get_javascript_catalog_packages('devilry.apps.administrator', 'devilry.apps.examiner', 'devilry.apps.extjshelpers', 'devilry_header', 'devilry.apps.core')
 
@@ -25,8 +24,6 @@ urlpatterns = patterns('devilry.apps.administrator',
                        RestfulSimplifiedViewWithGradeEditors.as_url('assignmentgroup',
                                                                     'administrator/assignmentgroupview.django.js'),
                        url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
-                           name='devilry_administrator_i18n'),
-                       url(r'^assignment/compressedfiledownload/(?P<assignmentid>\d+)$',
-                           login_required(AdminCompressedFileDownloadView.as_view()))
+                           name='devilry_administrator_i18n')
                       )
 urlpatterns += administrator_restful
