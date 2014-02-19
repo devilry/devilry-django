@@ -1,14 +1,3 @@
-if(Ext.Loader.getConfig('enabled')) {
-    Ext.Loader.setConfig({
-        enabled: true,
-        paths: {
-            'devilry': DevilrySettings.DEVILRY_STATIC_URL + '/extjs_classes'
-        }
-    });
-    Ext.syncRequire('devilry.extjshelpers.RestProxy');
-}
-
-
 var querystring = Ext.Object.fromQueryString(window.location.search);
 if(Ext.isEmpty(querystring.routeTo)) {
     Ext.application({
