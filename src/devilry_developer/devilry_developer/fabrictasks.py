@@ -190,7 +190,7 @@ def restore_db(sqldumpfile):
     local('sqlite3 db.sqlite3 < {sqldumpfile}'.format(**vars()))
 
 @task
-def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False):
+def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False, no_buildserver=False):
     """
     Use ``bin/django_dev.py senchatoolsbuild`` to build the app with the given
     ``appname``.
@@ -204,8 +204,18 @@ def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False):
         or new files. Set to ``true`` to not generate JSB-file, or set to
         ``next`` and use --watch to generate the jsb-file at startup, but
         not when the watcher triggers re-build.
+    :param no_buildserver:
+        Do not run the buildserver.
+
+    Workaround if the buildserver hangs (gets lots of 500 responses):
+
+        $ bin/django_extjsbuild.py runserver 127.0.0.1:15041
+        ... and in another shell:
+        $ bin/fab jsbuild:devilry_subjectadmin,no_buildserver=true
     """
     extra_args = []
+    if no_buildserver:
+        extra_args.append('--dont-use-buildserver')
     if nocompress:
         extra_args.append('--nocompress')
     if watch:
