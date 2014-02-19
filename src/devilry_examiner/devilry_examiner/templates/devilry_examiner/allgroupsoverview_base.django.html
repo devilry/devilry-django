@@ -100,7 +100,7 @@
                     </div>
 
                     {% if assignment.is_electronic %}
-                        <a href="{% url 'devilry_oldexaminer_compressedfiledownload' assignment.id %}" class="btn btn-default">
+                        <a href="{% url 'devilry_examiner_downloadalldeliveries_on_assignment' assignment.id %}" class="btn btn-default">
                             <i class="fa fa-download"></i>
                             {% trans "Download all deliveries" %}
                         </a>                        
