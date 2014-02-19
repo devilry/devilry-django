@@ -365,7 +365,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
 
     @property
-    def can_be_given_another_chance(self):
+    def should_ask_if_examiner_want_to_give_another_chance(self):
         """
         ``True`` if the group can be given another chance (if failing grade or closed without feedback).
         """
