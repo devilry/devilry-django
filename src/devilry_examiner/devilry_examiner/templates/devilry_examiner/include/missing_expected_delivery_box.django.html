@@ -26,8 +26,8 @@ Required template context variables:
                 <input type="hidden" name="success_url" value="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
                 <input type="hidden" name="cancel_url" value="{{ request.get_full_path }}">
                 <button class="btn btn-default" type="submit">
-                    {% trans "Fail the group" %}<br>
-                    <small class="text-muted">({% trans "Close the group without feedback" %})</small>
+                    {% trans "Close group without feedback" %}<br>
+                    <small class="text-muted">({% trans "They should have delivered, but did not do so" %})</small>
                 </button>
             </form>
         </p>
