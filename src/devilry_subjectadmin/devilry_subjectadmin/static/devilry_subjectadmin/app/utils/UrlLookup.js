@@ -37,9 +37,7 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
             window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
             assignment_id);
     },
-    changeGradeEditor: function(assignment_id) {
-        return Ext.String.format('#/assignment/{0}/@@grade-editor/change', assignment_id);
-    },
+
     passedPreviousPeriod: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@passed-previous-period', assignment_id);
     },

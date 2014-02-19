@@ -45,7 +45,6 @@ if(Ext.isEmpty(querystring.routeTo)) {
             'assignment.EditAnonymous',
             'assignment.EditDeadlineHandling',
             'assignment.EditGradeEditor',
-            'GradeEditor',
             'managestudents.ManageStudentsController',
             'managestudents.Select',
             'managestudents.NoGroupSelectedViewPlugin',
@@ -264,8 +263,6 @@ if(Ext.isEmpty(querystring.routeTo)) {
             this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@edit/:bulkdeadline_id", 'bulkEditDeadlines');
             this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/@@add", 'bulkAddDeadlines');
             this.route.add("/assignment/:assignment_id/@@bulk-manage-deadlines/:bulkdeadline_id", 'bulkManageDeadlines');
-            this.route.add("/assignment/:assignment_id/@@grade-editor/", 'gradeEditor');
-            this.route.add("/assignment/:assignment_id/@@grade-editor/change", 'changeGradeEditor');
             this.route.add("/assignment/:assignment_id/@@passed-previous-period", 'passedPreviousPeriod');
             this.route.start();
         },
@@ -364,20 +361,6 @@ if(Ext.isEmpty(querystring.routeTo)) {
                 xtype: 'assignmentoverview',
                 url: routeInfo.url,
                 assignment_id: assignment_id
-            });
-        },
-
-        gradeEditor: function(routeInfo, assignment_id) {
-            this.setPrimaryContent({
-                xtype: 'gradeeditoroverview',
-                assignment_id: assignment_id
-            });
-        },
-        changeGradeEditor: function(routeInfo, assignment_id) {
-            this.setPrimaryContent({
-                xtype: 'gradeeditoroverview',
-                assignment_id: assignment_id,
-                changeGradeEditor: true
             });
         },
 
