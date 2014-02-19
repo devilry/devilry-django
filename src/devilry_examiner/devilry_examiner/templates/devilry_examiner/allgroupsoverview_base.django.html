@@ -126,9 +126,10 @@
                             </td>
                             <td class="titled-cell groupinfo">
                                 <h3>
-                                    <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}">
-                                        {{ group.long_displayname }}
-                                    </a>
+                                    <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}" class="group_long_displayname">{{ group.long_displayname }}</a>
+                                    {% if not group.assignment.anonymous %}
+                                        <small class="group_short_displayname">({{ group.short_displayname }})</small>
+                                    {% endif %}
                                 </h3>
                                 
                                 <p class="text-{{ group|group_delivery_status_to_bootstrapclass }} deliverystatus">
