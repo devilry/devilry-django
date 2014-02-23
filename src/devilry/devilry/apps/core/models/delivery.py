@@ -294,7 +294,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         is_new = self.id is None
         super(Delivery, self).save(*args, **kwargs)
 
-        if autoset_last_delivery_on_group and is_new and self.successful:
+        if autoset_last_delivery_on_group and self.successful:
             group = self.assignment_group
             group.last_delivery = self
             group.save(update_delivery_status=False)
