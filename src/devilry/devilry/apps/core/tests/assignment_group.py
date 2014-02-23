@@ -819,6 +819,71 @@ class TestAssignmentGroup2(TestCase):
             self.assertTrue(groupbuilder.group.last_delivery.successful)
         self.assertEquals(group3builder.group.last_delivery, None)
 
+    def test_should_ask_if_examiner_want_to_give_another_chance_nonelectronic(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', delivery_types=deliverytypes.NON_ELECTRONIC)\
+            .add_group().group
+        self.assertFalse(group.should_ask_if_examiner_want_to_give_another_chance)
+
+    def test_should_ask_if_examiner_want_to_give_another_chance_closed_without_feedback(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', delivery_types=deliverytypes.ELECTRONIC)\
+            .add_group()
+        self.assertFalse(groupbuilder.group.should_ask_if_examiner_want_to_give_another_chance)
+        groupbuilder.update(is_open=False)
+        self.assertTrue(groupbuilder.group.should_ask_if_examiner_want_to_give_another_chance)
+
+    def test_should_ask_if_examiner_want_to_give_another_chance_failed_grade(self):
+        testuser = UserBuilder('testuser').user
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', delivery_types=deliverytypes.ELECTRONIC)
+        group1builder = assignmentbuilder.add_group()
+        group2builder = assignmentbuilder.add_group()
+        group1builder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_passed_feedback(saved_by=testuser)
+        group2builder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_failed_feedback(saved_by=testuser)
+
+        self.assertFalse(group1builder.group.should_ask_if_examiner_want_to_give_another_chance)
+        self.assertTrue(group2builder.group.should_ask_if_examiner_want_to_give_another_chance)
+
+
+    def test_not_missing_expected_delivery_nonelectronic(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', delivery_types=deliverytypes.NON_ELECTRONIC)\
+            .add_group().group
+        self.assertFalse(group.missing_expected_delivery)
+
+    def test_not_missing_expected_delivery_not_waiting_for_feedback(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group().group
+        self.assertFalse(group.missing_expected_delivery)
+
+    def test_missing_expected_delivery_no_deliveries(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.assertTrue(groupbuilder.group.missing_expected_delivery)
+
+    def test_missing_expected_delivery_delivery_not_on_last_deadline(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        groupbuilder.add_deadline_x_weeks_ago(weeks=2).add_delivery()
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.assertTrue(groupbuilder.group.missing_expected_delivery)
+
+    def test_not_missing_expected_delivery_delivery_on_last_deadline(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        groupbuilder.add_deadline_x_weeks_ago(weeks=2)
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1).add_delivery()
+        self.assertFalse(groupbuilder.group.missing_expected_delivery)
 
 
 

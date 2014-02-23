@@ -365,15 +365,31 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
 
     @property
-    def can_be_given_another_chance(self):
+    def should_ask_if_examiner_want_to_give_another_chance(self):
         """
-        ``True`` if the group can be given another chance (if failing grade or closed without feedback).
+        ``True`` if the current state of the group is such that the examiner should
+        be asked if they want to give them another chance.
+        
+        ``True`` if corrected with failing grade or closed without feedback.
         """
         if self.assignment.is_electronic:
             return (self.delivery_status == "corrected" and not self.feedback.is_passing_grade) \
                 or self.delivery_status == 'closed-without-feedback'
         else:
             return False
+
+    @property
+    def missing_expected_delivery(self):
+        """
+        Return ``True`` if the group has no deliveries, and we are expecting
+        them to have made at least one delivery on the last deadline.
+        """
+        if self.assignment.is_electronic and self.get_status() == "waiting-for-feedback":
+            if not self.last_delivery:
+                return True
+            elif self.last_deadline and self.last_delivery.deadline != self.last_deadline:
+                return True
+        return False
 
     @property
     def subject(self):

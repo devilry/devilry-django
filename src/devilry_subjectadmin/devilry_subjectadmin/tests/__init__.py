@@ -8,7 +8,6 @@ from .managestudents import *
 from .managestudents_multiselect import *
 from .managestudents_singleselect import *
 from .rest import *
-from .gradeeditor import *
 from .relatedusersui import *
 from .addgroups import *
 from .deadlines import *

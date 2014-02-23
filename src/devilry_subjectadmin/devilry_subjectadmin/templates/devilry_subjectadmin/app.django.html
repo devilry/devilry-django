@@ -6,13 +6,3 @@
     {% include "markup/mathjaxheader.django.html" %}
     <script type="text/javascript" src="{% url devilry_subjectadmin_i18n %}"></script>
 {%  endblock %}
-
-
-{% block head_postapp %}
-    <script type="text/javascript">
-        {#NOTE: This is required for thee old restful API classes.#}
-        Ext.Ajax.defaultHeaders = Ext.apply(Ext.Ajax.defaultHeaders || {}, {
-            'X_DEVILRY_USE_EXTJS': true
-        });
-    </script>
-{% endblock %}

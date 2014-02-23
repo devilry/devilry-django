@@ -2,18 +2,12 @@ Ext.define('devilry_subjectadmin.controller.assignment.EditGradeEditor', {
     extend: 'Ext.app.Controller',
 
     requires: [
-        'devilry.gradeeditors.ConfigEditorWidget',
         'devilry_subjectadmin.utils.UrlLookup',
         'Ext.window.MessageBox'
     ],
 
     views: [
         'assignment.GradeEditorSelectWidget'
-    ],
-
-    models: [
-        'GradeEditorConfig',
-        'GradeEditorRegistryItem'
     ],
 
     refs: [{

@@ -2,6 +2,7 @@
 
 {% load crispy_forms_tags %}
 {% load i18n %}
+{% load url from future %}
 
 {% block title %}{% trans "Delete group invite" %}{% endblock title %}
 
@@ -14,10 +15,11 @@
             </h1>
         </div>
 
-        <div class="alert alert-warning">
+        <div class="devilry-focusbox">
             <form action="" method="post">{% csrf_token %}
                 <p>{% blocktrans with user=groupinvite.sent_to.devilryuserprofile.get_displayname %}Are you sure you want to delete the invite for {{ user }}?{% endblocktrans %}</p>
-                <button type="submit" class="btn btn-default">{% trans 'Delete invite' %}</button>
+                <a class="btn btn-default" href="{% url 'devilry_student_groupinvite_overview' groupinvite.group.id %}">{% trans "Cancel" %}</a>
+                <button type="submit" class="btn btn-danger">{% trans 'Delete invite' %}</button>
             </form>
         </div>
     </div>

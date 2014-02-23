@@ -1,0 +1,6 @@
+{% load i18n %}
+{% load url from future %}
+
+<li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
+<li><a href="{% url 'devilry_student' %}#/browsegrouped/history">{% trans "History" %}</a></li>
+<li><a href="{% url 'devilry_student' %}#/group/{{ group.id }}/">{{ group.assignment.get_path }}</a></li>

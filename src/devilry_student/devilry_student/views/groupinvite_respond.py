@@ -2,6 +2,7 @@ from django.views.generic.detail import DetailView
 from django import forms
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 
 from devilry.apps.core.models import GroupInvite
 
@@ -23,5 +24,16 @@ class GroupInviteRespondView(DetailView):
         self.group = invite.group
 
         accepted = 'accept_invite' in self.request.POST
-        invite.respond(accepted=accepted)
-        return redirect(self.get_success_url())
+        try:
+            invite.respond(accepted=accepted)
+        except ValidationError as e:
+            self.errormessage = ' '.join(e.messages)
+            return self.get(*args, **kwargs)
+        else:
+            return redirect(self.get_success_url())
+
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupInviteRespondView, self).get_context_data(**kwargs)
+        context['errormessage'] = getattr(self, 'errormessage', None)
+        return context

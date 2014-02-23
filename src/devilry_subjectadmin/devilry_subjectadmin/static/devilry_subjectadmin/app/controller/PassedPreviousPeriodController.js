@@ -7,12 +7,10 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         'devilry_subjectadmin.utils.BasenodeBreadcrumbMixin',
         'devilry_subjectadmin.utils.DjangoRestframeworkProxyErrorMixin',
         'devilry_subjectadmin.utils.LoadAssignmentMixin',
-        'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin',
-        'devilry_subjectadmin.utils.LoadGradeEditorMixin'
+        'devilry_subjectadmin.utils.DjangoRestframeworkLoadFailureMixin'
     ],
 
     requires: [
-        'devilry.gradeeditors.EditManyDraftEditorWindow',
         'devilry_extjsextras.DjangoRestframeworkProxyErrorHandler'
     ],
 
@@ -21,9 +19,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
     ],
 
     models: [
-        'Assignment',
-        'GradeEditorConfig',
-        'GradeEditorRegistryItem'
+        'Assignment'
     ],
     stores: ['PassedPreviousPeriodItems'],
 
@@ -209,7 +205,6 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
 
     _onNextButton: function() {
         var store = this.getPassedPreviousPeriodItemsStore();
-        // var gradeeditor = this.assignmentRecord.get('gradeeditor');
 
         // Filter out all non-selected
         var selModel = this.getGroupsGrid().getSelectionModel();
@@ -218,15 +213,9 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         });
 
         // Set default values in the store
-        //var boolwidget = gradeeditor.shortformat.widget === 'bool';
         store.each(function(record) {
             var oldgroup = record.get('oldgroup');
             var value = 'true';
-            // if(oldgroup !== null) {
-                // value = oldgroup.feedback_shortformat;
-            // } else if(boolwidget) {
-                // value = 'true';
-            // }
             if(value !== null) {
                 record.set('newfeedback_shortformat', value);
                 record.commit();
@@ -238,13 +227,11 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         wrapper.removeAll();
         wrapper.add({
             xtype: 'confirmpassedpreviousgroupsgrid',
-            //gradeeditor: gradeeditor
         });
 
         // Customize the sidebar help
         this.getPageTwoSidebar().update({
             period_term: gettext('period'),
-            // shorthelp: gradeeditor.shortformat.shorthelp,
             gradingsystem: Ext.String.format('<em>{0}</em>', this.assignmentRecord.get('gradingsystemplugin_title')),
             needsGradeFormatExplained: false,
             loading: false

@@ -87,6 +87,28 @@ class GroupInvite(models.Model):
         app_label = 'core'
 
 
+
+    @staticmethod
+    def send_invite_to_choices_queryset(group):
+        """
+        Returns a queryset of users that can be invited to the given group.
+
+        Will we all relatedstudents on the period, excluding:
+        - Students with an unanswered invite to the group.
+        - Students already in the group.
+        """
+        students_in_group = [c.student.id for c in group.candidates.all()]
+        students_invited_to_group = [invite.sent_to.id \
+            for invite in GroupInvite.objects.filter_unanswered_sent_invites(group)]
+        users = User.objects.filter(relatedstudent__period=group.period)\
+            .exclude(id__in=students_in_group)\
+            .exclude(id__in=students_invited_to_group)\
+            .order_by('devilryuserprofile__full_name', 'username')\
+            .select_related('devilryuserprofile')
+        return users
+
+
+
     def get_sent_to_groups_queryset(self):
         """
         Returns a queryset matching all groups where the ``sent_to`` user is a candidate.

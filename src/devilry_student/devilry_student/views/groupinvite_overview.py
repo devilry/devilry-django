@@ -12,9 +12,10 @@ from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import GroupInvite
 
 
+
 class CreateForm(forms.ModelForm):
     sent_to = forms.TypedChoiceField(
-        label=_('Send invite to'),
+        label=_('Send invitation to'),
         choices=[],
         required=True,
         coerce=int,
@@ -24,19 +25,8 @@ class CreateForm(forms.ModelForm):
         model = AssignmentGroup
         fields = ['sent_to']
 
-    def _sent_to_choices_queryset(self):
-        students_in_group = [c.student.id for c in self.group.candidates.all()]
-        students_invited_to_group = [invite.sent_to.id \
-            for invite in GroupInvite.objects.filter_unanswered_sent_invites(self.group)]
-        users = User.objects.filter(relatedstudent__period=self.group.period)\
-            .exclude(id__in=students_in_group)\
-            .exclude(id__in=students_invited_to_group)\
-            .order_by('devilryuserprofile__full_name', 'username')\
-            .select_related('devilryuserprofile')
-        return users
-
     def _sent_to_choices(self):
-        users = self._sent_to_choices_queryset()
+        users = GroupInvite.send_invite_to_choices_queryset(self.group)
         choices = [(user.id, user.devilryuserprofile.get_displayname()) for user in users]
         choices.insert(0, ('', ''))
         return choices
@@ -58,7 +48,7 @@ class CreateForm(forms.ModelForm):
         cleaned_data = super(CreateForm, self).clean()
         sent_to_userid = cleaned_data.get('sent_to')
         if sent_to_userid:
-            sent_to = self._sent_to_choices_queryset().get(id=sent_to_userid)
+            sent_to = GroupInvite.send_invite_to_choices_queryset(self.group).get(id=sent_to_userid)
             invite = GroupInvite(group=self.group, sent_by=self.sent_by, sent_to=sent_to)
             invite.full_clean()
             self.cleaned_invite = invite

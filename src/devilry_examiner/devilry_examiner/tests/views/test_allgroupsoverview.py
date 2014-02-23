@@ -60,6 +60,29 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
                                 '.infolistingtable .group .groupinfo .deliverystatus').text.strip()
         self.assertEquals(deliverystatus, 'No deadlines')
 
+    def test_group_naming(self):
+        self.week1builder.add_group(
+            students=[self.student1],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id).content
+        self.assertEquals(cssGet(html, '.infolistingtable .group .groupinfo h3 .group_long_displayname').text.strip(),
+            'Student One')
+        self.assertEquals(cssGet(html, '.infolistingtable .group .groupinfo h3 .group_short_displayname').text.strip(),
+            '(student1)')
+
+    def test_group_naming_anonymous(self):
+        self.week1builder.update(anonymous=True)
+        self.week1builder.add_group(
+            students=[self.student1],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id).content
+        self.assertEquals(
+            cssGet(html, '.infolistingtable .group .groupinfo h3 .group_long_displayname').text.strip(),
+            'candidate-id missing')
+        self.assertFalse(cssExists(html,
+            '.infolistingtable .group .groupinfo h3 .group_short_displayname'))
+
+
 class TestWaitingForFeedbackOverview(TestCase, HeaderTest):
     def setUp(self):
         self.examiner1 = UserBuilder('examiner1').user

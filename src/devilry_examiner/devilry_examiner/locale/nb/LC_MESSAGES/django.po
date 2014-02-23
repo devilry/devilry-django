@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devilry_examiner\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-24 07:23+0100\n"
-"PO-Revision-Date: 2014-01-24 07:25+0100\n"
+"POT-Creation-Date: 2014-02-19 22:22+0100\n"
+"PO-Revision-Date: 2014-02-19 22:23+0100\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: nb\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.3\n"
+"X-Generator: Poedit 1.6.4\n"
 
 #: forms.py:65
 msgid "You have to select at least one group to perform a bulk action."
@@ -24,6 +24,7 @@ msgstr "Du må velge minst en gruppe for å utføre bulkoperasjoner"
 
 #: templates/devilry_examiner/add_deadline.django.html:7
 #: templates/devilry_examiner/add_deadline.django.html:13
+#: templates/devilry_examiner/singlegroupoverview.django.html:61
 #: views/add_deadline.py:108
 msgid "Add deadline"
 msgstr "Legg til innleveringsfrist"
@@ -131,37 +132,37 @@ msgstr "Fjern markeringer"
 msgid "Download all deliveries"
 msgstr "Last ned alle innleveringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:136
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:141
 #: templates/devilry_examiner/readonly-feedback.django.html:14
 #: templates/devilry_examiner/singlegroupoverview.django.html:33
 msgid "Grade"
 msgstr "Karakter"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:140
-#: templates/devilry_examiner/singlegroupoverview.django.html:97
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:145
+#: templates/devilry_examiner/singlegroupoverview.django.html:128
 msgid "No deliveries"
 msgstr "Ingen innleveringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:142
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:147
 #, python-format
 msgid "Next deadline in %(timeuntildeadline)s"
 msgstr "Neste innleveringsfrist om %(timeuntildeadline)s"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:153
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:170
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:158
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:175
 #: templatetags/devilry_examiner_tags.py:38
 msgid "Write feedback"
 msgstr "Gi tilbakemelding"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:171
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:176
 msgid "to selected"
 msgstr "til valgte"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:188
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:193
 msgid "The grading system is not configured correctly."
 msgstr "Karaktersystem er ikke konfigurert riktig"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:190
+#: templates/devilry_examiner/allgroupsoverview_base.django.html:195
 msgid ""
 "This means that you are not able to correct any of the submitted deliveries. "
 "Notify the course administrator which need to setup up the grading system "
@@ -315,22 +316,27 @@ msgstr ""
 "Devilry regner poengsummen til gruppen på denne oppgaven som laveste mulige "
 "poengsum (0 poeng)."
 
-#: templates/devilry_examiner/singlegroupoverview.django.html:52
+#: templates/devilry_examiner/singlegroupoverview.django.html:72
+#: templates/devilry_examiner/include/missing_expected_delivery_box.django.html:44
+msgid "Add \"non-electronic\" delivery"
+msgstr "Legg til \"ikke-elektronisk\" innlevering"
+
+#: templates/devilry_examiner/singlegroupoverview.django.html:83
 #, python-format
 msgid "Deadline %(number)s"
 msgstr "Innleveringsfrist nr %(number)s"
 
-#: templates/devilry_examiner/singlegroupoverview.django.html:66
+#: templates/devilry_examiner/singlegroupoverview.django.html:97
 #, python-format
 msgid "Delivery #%(number)s"
 msgstr "Innlevering #%(number)s"
 
-#: templates/devilry_examiner/singlegroupoverview.django.html:75
+#: templates/devilry_examiner/singlegroupoverview.django.html:106
 msgid "No feedback"
 msgstr "Ingen tilbakemelding"
 
-#: templates/devilry_examiner/singlegroupoverview.django.html:79
-#: templates/devilry_examiner/singlegroupoverview.django.html:89
+#: templates/devilry_examiner/singlegroupoverview.django.html:110
+#: templates/devilry_examiner/singlegroupoverview.django.html:120
 #, python-format
 msgid ""
 "\n"
@@ -372,6 +378,32 @@ msgstr ""
 "karakter. Dersom det er nødvendig kan du gi en ny sjanse til å levere "
 "forbedret utgave. For å gjøre dette må du gi gruppen en ny innleveringsfrist."
 
+#: templates/devilry_examiner/include/missing_expected_delivery_box.django.html:18
+msgid "This group has no deliveries"
+msgstr "Denne gruppen har ingen innleveringer"
+
+#: templates/devilry_examiner/include/missing_expected_delivery_box.django.html:19
+msgid "You have to choose one of the following options"
+msgstr "Du må velge en av følgende alternativer"
+
+#: templates/devilry_examiner/include/missing_expected_delivery_box.django.html:29
+msgid "Close group without feedback"
+msgstr "Lukk gruppen uten tilbakemelding"
+
+#: templates/devilry_examiner/include/missing_expected_delivery_box.django.html:30
+msgid "They should have delivered, but did not do so"
+msgstr "Skulle ha levert, men har ikke gjort det"
+
+#: templates/devilry_examiner/include/missing_expected_delivery_box.django.html:35
+msgid ""
+"If the group has made a delivery outside Devilry (paper, email, etc), you "
+"should add a \"non-electronic\" delivery that you can correct just like any "
+"other delivery."
+msgstr ""
+"Hvis gruppen har levert utenfor Devilry (papir, epost, e.l.), kan du legge "
+"til en \"ikke-elektronisk\" innlevering som du kan rette akkurat som en "
+"vanlig innlevering."
+
 #: templates/devilry_examiner/include/navigate_todolist.django.html:10
 msgid "Previous group waiting for feedback"
 msgstr "Forrige gruppe som avventer tilbakemelding"
@@ -383,36 +415,6 @@ msgstr "Liste over alle grupper som avventer tilbakemelding"
 #: templates/devilry_examiner/include/navigate_todolist.django.html:24
 msgid "Next group waiting for feedback"
 msgstr "Neste gruppe som avventer tilbakemelding"
-
-#: templates/devilry_examiner/include/no_deliveries_box.django.html:18
-msgid "This group has no deliveries"
-msgstr "Denne gruppen har ingen innleveringer"
-
-#: templates/devilry_examiner/include/no_deliveries_box.django.html:19
-msgid "You have to choose one of the following options"
-msgstr "Du må velge en av følgende alternativer"
-
-#: templates/devilry_examiner/include/no_deliveries_box.django.html:29
-msgid "Fail the group"
-msgstr "Gi stryk-karakter til gruppen"
-
-#: templates/devilry_examiner/include/no_deliveries_box.django.html:30
-msgid "Close the group without feedback"
-msgstr "Lukk gruppen uten tilbakemelding"
-
-#: templates/devilry_examiner/include/no_deliveries_box.django.html:35
-msgid ""
-"If the group has made a delivery outside Devilry (paper, email, etc), you "
-"should add a \"non-electronic\" delivery that you can correct just like any "
-"other delivery."
-msgstr ""
-"Hvis gruppen har levert utenfor Devilry (papir, epost, e.l.), kan du legge "
-"til en \"ikke-elektronisk\" innlevering som du kan rette akkurat som en "
-"vanlig innlevering."
-
-#: templates/devilry_examiner/include/no_deliveries_box.django.html:44
-msgid "Add \"non-electronic\" delivery"
-msgstr "Legg til \"ikke-elektronisk\" innlevering"
 
 #: templatetags/devilry_examiner_tags.py:15
 #: templatetags/devilry_examiner_tags.py:42
@@ -507,6 +509,9 @@ msgstr ""
 "Du har fått en ny sjanse til å levere et forbedret forsøk. Les den siste "
 "tilbakemeldingen for informasjon om hvorfor du ikke bestod og hva du må "
 "forbedre."
+
+#~ msgid "Fail the group"
+#~ msgstr "Gi stryk-karakter til gruppen"
 
 #~ msgid "Check out Examiner section of the official Devilry documentation."
 #~ msgstr "Sjekk ut avsnittet om Retterrollen i den offisielle dokumentasjonen"

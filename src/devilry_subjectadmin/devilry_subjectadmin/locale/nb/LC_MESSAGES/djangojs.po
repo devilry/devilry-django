@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devilry_subjectadmin JS\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-24 05:58+0100\n"
+"POT-Creation-Date: 2014-02-14 10:16+0100\n"
 "PO-Revision-Date: 2014-01-24 06:06+0100\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,7 +68,7 @@ msgstr "Legg til studenter"
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:123
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:276
 #: static/devilry_subjectadmin/app/controller/GradeEditor.js:361
-#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:272
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:273
 #: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:198
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:192
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:223
@@ -235,7 +235,7 @@ msgid "Create %(period_term)s"
 msgstr "Legg til %(period_term)s"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:94
-#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:245
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:246
 #: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:111
 #: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:31
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:256
@@ -325,7 +325,7 @@ msgstr "Lagre og fortsett å redigere"
 msgid "Passed previously"
 msgstr "Bestått tidligere"
 
-#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:183
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:184
 msgid ""
 "We did not detect any groups that Devilry does not believe should be "
 "ignored. Use the checkbox below the table to see and select ignored groups."
@@ -334,11 +334,11 @@ msgstr ""
 "en knapp under tabellen som du kan klikke på for å se og velge ignorerte "
 "grupper."
 
-#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:292
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:293
 msgid "Marked %(count)s groups as previously passed."
 msgstr "Markerte %(count)s grupper som tidligere bestått."
 
-#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:321
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:322
 msgid ""
 "At least one group has an invalid grade. Please review the help for the "
 "grade format in the sidebar."
@@ -739,9 +739,9 @@ msgstr "Inkluder tags"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:149
 msgid ""
-"Check this to tag the added students with the tags they have on "
-"%(periodpath)s. Keep this checked if you are unsure of what to do. When this "
-"is checked, tags are displayed in the second column of the table."
+"Check this to tag the added students with the tags they have on %(periodpath)"
+"s. Keep this checked if you are unsure of what to do. When this is checked, "
+"tags are displayed in the second column of the table."
 msgstr ""
 "Velg denne for å tagge alle studenten som legges til med taggene de har på "
 "%(periodpath)s. Behold denne som valgt hvis du er usikker på hva du bør "
@@ -1569,7 +1569,7 @@ msgstr "Venter på tilbakemelding"
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:98
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:32
 #: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:19
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:58
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:48
 msgid "Passed"
 msgstr "Bestått"
 
@@ -2482,8 +2482,8 @@ msgstr "Erstatt retter(e)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:64
 msgid ""
-"Replace the examiners on the selected groups with one or more new "
-"examiner(s)."
+"Replace the examiners on the selected groups with one or more new examiner"
+"(s)."
 msgstr "Erstatt retterne på valgte grupper med en eller flere nye retter(e)."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:66
@@ -2886,8 +2886,7 @@ msgstr "Organiser grupper som går på samme gruppetimer eller i samme klasse."
 msgid "Mark suspected cheaters."
 msgstr "Marker grupper som mistenkes for juks."
 
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:66
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:69
+#: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:54
 msgid "Autodetected"
 msgstr "Funnet automatisk"
 
@@ -3080,8 +3079,8 @@ msgid ""
 "These are the examiners that can be added to any assignments within the "
 "%(period_term)s."
 msgstr ""
-"Dette er retterne som kan legges til på oppgaver i inneværende "
-"%(period_term)s."
+"Dette er retterne som kan legges til på oppgaver i inneværende %(period_term)"
+"s."
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:31
 msgid "Removing examiners"
