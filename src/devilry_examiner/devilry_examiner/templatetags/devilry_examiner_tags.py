@@ -27,6 +27,14 @@ def format_is_passing_grade(is_passing_grade):
         return _('failed')
 
 @register.filter
+def formatted_delivery_count(count):
+    if count == 0:
+        return _("No deliveries")
+    if count == 1:
+        return _("{0} delivery received".format(count))
+    return _("{0} deliveries received".format(count))
+
+@register.filter
 def get_feedback_url(assignment):
     return assignment.get_gradingsystem_plugin_api().get_bulkedit_feedback_url(assignment.id)
 
