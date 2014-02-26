@@ -144,9 +144,9 @@
                                     {% elif group.get_status == 'waiting-for-feedback' and group.assignment.is_electronic and not group.last_delivery %}
                                         <small class="text-warning">({% trans "No deliveries" %})</small>
                                     {% elif group.get_status == 'waiting-for-deliveries' %}
-                                        <small class="text-warning">({{ group.successful_delivery_count|formatted_delivery_count }}</small>
+                                        <small class="text-muted">({{ group.successful_delivery_count|formatted_delivery_count }}</small>
                                         &ndash;
-                                        <small class="text-muted">{% blocktrans with timeuntildeadline=group.last_deadline.deadline|timeuntil %}Next deadline in {{ timeuntildeadline }}{% endblocktrans %}) </small>
+                                        <small class="text-muted">{% blocktrans with timeuntildeadline=group.last_deadline.deadline|timeuntil %}Next deadline in {{ timeuntildeadline }}{% endblocktrans %})</small>
                                     {% endif %}
                                 </p>
  
