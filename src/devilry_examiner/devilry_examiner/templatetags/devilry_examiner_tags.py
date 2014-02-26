@@ -31,8 +31,8 @@ def formatted_delivery_count(count):
     if count == 0:
         return _("No deliveries")
     if count == 1:
-        return _("{0} delivery received".format(count))
-    return _("{0} deliveries received".format(count))
+        return _("{0} delivery received").format(count)
+    return _("{0} deliveries received").format(count)
 
 @register.filter
 def get_feedback_url(assignment):
