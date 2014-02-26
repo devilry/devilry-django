@@ -4,6 +4,7 @@ from django.utils.translation import ugettext as _
 from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 
 from abstract_is_admin import AbstractIsAdmin
 from abstract_is_examiner import AbstractIsExaminer
@@ -155,11 +156,14 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             assignment = kwargs['delivery'].assignment
         is_passing_grade = assignment.points_is_passing_grade(points)
         grade = assignment.points_to_grade(points)
-        return cls(
+        feedback = cls(
             points=points,
             is_passing_grade=is_passing_grade,
             grade=grade, **kwargs
         )
+        feedback.clean(assignment=assignment)
+        return feedback
+
 
     def _publish_if_allowed(self):
         assignment = self.delivery.deadline.assignment_group.parentnode
@@ -205,6 +209,14 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             group.is_open = False
             group.save()
             self._publish_if_allowed()
+
+    def clean(self, assignment=None):
+        if not assignment: # See from_points() for why we do this
+            assignment = self.delivery.assignment
+        max_points = assignment.max_points
+        if self.points > max_points:
+            raise ValidationError(_('You are not allowed to give more than {max_points} points on this assignment.').format(
+                max_points=max_points))
 
 
     def __unicode__(self):

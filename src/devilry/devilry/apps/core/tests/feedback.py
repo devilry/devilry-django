@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.test import TestCase
+from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
@@ -151,6 +152,20 @@ class TestStaticFeedback(TestCase):
         self.assertEquals(feedback.grade, '5/10')
         self.assertEquals(feedback.points, 5)
         self.assertTrue(feedback.is_passing_grade)
+
+    def test_clean_over_max_points(self):
+        self.assignment1builder.update(
+            points_to_grade_mapper='raw-points',
+            passing_grade_min_points=4,
+            max_points=19)
+        deliverybuilder = self.assignment1builder.add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        with self.assertRaisesRegexp(ValidationError,
+                '.*You are not allowed to give more than 19 points on this assignment.*'):
+            feedback = StaticFeedback.from_points(
+                assignment=self.assignment1builder.assignment,
+                points=20)
 
 
 class TestStaticFeedbackOld(TestCase, TestHelper):
