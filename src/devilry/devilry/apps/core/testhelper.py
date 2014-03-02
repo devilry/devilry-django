@@ -435,7 +435,8 @@ class TestHelper(object):
 
         assignment = Assignment(parentnode=parentnode, short_name=assignment_name,
             long_name=assignment_name.capitalize(), publishing_time=publishing_time,
-            delivery_types=delivery_types)
+            delivery_types=delivery_types,
+            max_points=200)
         try:
             assignment.full_clean()
             assignment.save()
