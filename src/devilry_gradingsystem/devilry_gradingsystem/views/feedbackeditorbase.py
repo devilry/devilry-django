@@ -110,6 +110,7 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
 class FeedbackEditorFormBase(forms.Form):
     def __init__(self, *args, **kwargs):
         self.last_draft = kwargs.pop('last_draft')
+        self.assignment = kwargs.pop('assignment')
         super(FeedbackEditorFormBase, self).__init__(*args, **kwargs)
         self._add_feedbacktext_field()
 
@@ -140,6 +141,7 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
     def get_form_kwargs(self):
         kwargs = super(FeedbackEditorFormView, self).get_form_kwargs()
         kwargs['last_draft'] = self.last_draft
+        kwargs['assignment'] = self.delivery.deadline.assignment_group.assignment
         return kwargs
 
     def get_success_url(self):

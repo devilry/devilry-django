@@ -12,17 +12,30 @@ from devilry_gradingsystem.models import FeedbackDraft
 from devilry_examiner.views.bulkviewbase import BulkViewBase
 
 
-class PointsFeedbackEditorForm(FeedbackEditorFormBase):
-    points = forms.IntegerField(
-        label=_('Points'))
-
-    def __init__(self, *args, **kwargs):
-        super(PointsFeedbackEditorForm, self).__init__(*args, **kwargs)
+class PointsFeedbackEditorFormMixin(object):
+    """
+    Common mixin for bulk and single editing forms. They both render the same
+    form, but they inherit from different superclasses.
+    """
+    def setup_form(self):
+        self.fields['points'] = forms.IntegerField(
+            required=True,
+            min_value = 0,
+            max_value = self.assignment.max_points,
+            help_text = _('Number between 0 and {max_points}.').format(
+                max_points=self.assignment.max_points),
+            label=_('Points'))
         self.helper = FormHelper()
         self.helper.layout = Layout(
             Field('points')
         )
         self.add_common_layout_elements()
+
+
+class PointsFeedbackEditorForm(FeedbackEditorFormBase, PointsFeedbackEditorFormMixin):
+    def __init__(self, *args, **kwargs):
+        super(PointsFeedbackEditorForm, self).__init__(*args, **kwargs)
+        self.setup_form()        
 
 
 class PointsFeedbackEditorView(FeedbackEditorFormView):
@@ -37,17 +50,15 @@ class PointsFeedbackEditorView(FeedbackEditorFormView):
     def get_points_from_form(self, form):
         return form.cleaned_data['points']
 
-class PointsFeedbackBulkEditorForm(FeedbackBulkEditorFormBase):
+
+
+class PointsFeedbackBulkEditorForm(FeedbackBulkEditorFormBase, PointsFeedbackEditorFormMixin):
     points = forms.IntegerField(
         label=_('Points'))
 
     def __init__(self, *args, **kwargs):
         super(PointsFeedbackBulkEditorForm, self).__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.layout = Layout(
-            Field('points')
-        )
-        self.add_common_layout_elements()
+        self.setup_form()
 
 class PointsFeedbackBulkEditorView(FeedbackBulkEditorFormView):
     template_name = 'devilry_gradingsystemplugin_points/feedbackbulkeditor.django.html'

@@ -69,6 +69,17 @@ class TestFeedbackEditorView(TestCase):
         html = response.content
         self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
 
+    def test_post_draft_over_max_points(self):
+        delivery = self.deliverybuilder.delivery
+        self.assertEquals(delivery.feedbacks.count(), 0)
+        self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
+        response = self._post_as(self.examiner1, {
+            'points': '200'
+        })
+        self.assertEquals(delivery.feedbacks.count(), 0)
+        self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
+        self.assertIn('Ensure this value is less than or equal to 100', response.content)
+
     def test_post_draft_redirect_back_to_self(self):
         response = self._post_as(self.examiner1, {'points': '20'})
         self.assertTrue(response['Location'].endswith(self.url))
