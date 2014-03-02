@@ -253,6 +253,7 @@ class BulkViewBase(DetailView):
                 forms, submitted_primaryform = self._initialize_primaryforms()
                 context_data['primaryforms'] = forms
                 if submitted_primaryform:
+                    context_data['submitted_primaryform'] = submitted_primaryform
                     if submitted_primaryform.is_valid():
                         return self.submitted_primaryform_valid(submitted_primaryform, context_data)
                     else:
