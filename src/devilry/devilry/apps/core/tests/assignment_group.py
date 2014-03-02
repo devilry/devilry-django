@@ -229,6 +229,8 @@ class TestAssignmentGroupSplit(TestCase):
 
     def _create_testdata(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2,student3):examiner(examiner1,examiner2,examiner3)')
+        self.testhelper.sub_p1_a1.max_points = 100
+        self.testhelper.sub_p1_a1.save()
 
         # Add d1 and deliveries
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(1)')

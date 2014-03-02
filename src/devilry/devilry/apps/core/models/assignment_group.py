@@ -617,6 +617,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         for number, delivery in enumerate(qry, 1):
             delivery.number = number
             delivery.save(autoset_number=False,
+                          autoset_last_delivery_on_group=False,
                           autoset_time_of_delivery=False)
 
 
@@ -761,6 +762,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                                 continue
                         delivery.deadline = matching_deadline
                         delivery.save(autoset_time_of_delivery=False,
+                                      autoset_last_delivery_on_group=False,
                                       autoset_number=False)
                 except Deadline.DoesNotExist:
                     deadline.assignment_group = target
