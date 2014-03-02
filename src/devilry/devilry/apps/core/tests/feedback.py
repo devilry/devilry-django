@@ -187,7 +187,7 @@ class TestStaticFeedbackOld(TestCase, TestHelper):
                  deadlines=['d1'])
         # file and verdict
         self.goodFile = {"good.py": "print awesome"}
-        self.okVerdict = {"grade": "C", "points": 85, "is_passing_grade": True}
+        self.okVerdict = {"grade": "C", "points": 1, "is_passing_grade": True}
 
         self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
         self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
