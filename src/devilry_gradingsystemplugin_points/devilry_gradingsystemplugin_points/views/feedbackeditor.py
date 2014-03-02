@@ -53,9 +53,6 @@ class PointsFeedbackEditorView(FeedbackEditorFormView):
 
 
 class PointsFeedbackBulkEditorForm(FeedbackBulkEditorFormBase, PointsFeedbackEditorFormMixin):
-    points = forms.IntegerField(
-        label=_('Points'))
-
     def __init__(self, *args, **kwargs):
         super(PointsFeedbackBulkEditorForm, self).__init__(*args, **kwargs)
         self.setup_form()
