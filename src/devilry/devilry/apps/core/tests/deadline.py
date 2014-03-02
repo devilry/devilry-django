@@ -237,7 +237,7 @@ class TestDeadlineOld(TestCase, TestHelper):
     def setUp(self):
         TestHelper.set_memory_deliverystore()
         self.goodFile = {"good.py": "print awesome"}
-        self.okVerdict = {"grade": "C", "points": 85, "is_passing_grade": True}
+        self.okVerdict = {"grade": "C", "points": 1, "is_passing_grade": True}
 
     def test_publish_feedbacks_directly(self):
         self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1:candidate(student1):examiner(examiner1).d1:ends(10)')
