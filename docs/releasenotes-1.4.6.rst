@@ -7,3 +7,5 @@ Bugfixes and improvements:
 - https://github.com/devilry/devilry-django/issues/536
 - https://github.com/devilry/devilry-django/issues/538
 - https://github.com/devilry/devilry-django/issues/539
+- https://github.com/devilry/devilry-django/issues/549
+- https://github.com/devilry/devilry-django/issues/547
