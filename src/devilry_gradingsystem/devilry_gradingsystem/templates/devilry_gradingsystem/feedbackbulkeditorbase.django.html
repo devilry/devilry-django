@@ -26,7 +26,11 @@
             </ul>       
         {% endblock edit_feedback_for_list %}
         {% block edit_draft_form %}
-            {% crispy primaryforms.submit_publish %}
+            {% if submitted_primaryform %}
+                {% crispy submitted_primaryform %}
+            {% else %}
+                {% crispy primaryforms.submit_publish %}
+            {% endif %}
         {% endblock edit_draft_form %}
     {% endif %}
 </div>
