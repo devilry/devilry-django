@@ -37,6 +37,9 @@ INSTALLED_APPS += [
     'devilry_developer',
     'simple_rest',
 
+    # Django Apps used by the tests
+    'devilry.apps.core.tests.devilry_core_testapp',
+
     # Not apps, but here for the Django test system to discover them:
     'devilry.utils',
     'devilry.restful',
