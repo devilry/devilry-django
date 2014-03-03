@@ -17,9 +17,9 @@ from ..models.model_utils import EtagMismatchException
 from devilry.apps.core.models import deliverytypes
 
 
-class TestAssignmentGroup(TestCase, TestHelper):
+class TestAssignmentGroupOld(TestCase, TestHelper):
     """
-    Do NOT add new tests here, add them to TestAssignmentGroup2.
+    Do NOT add new tests here, add them to TestAssignmentGroup.
     """
 
     def setUp(self):
@@ -698,7 +698,7 @@ class TestAssignmentGroupUserIds(TestCase):
 
 
 
-class TestAssignmentGroup2(TestCase):
+class TestAssignmentGroup(TestCase):
     """
     Test AssignmentGroup using the next generation less coupled testing frameworks.
     """
@@ -886,6 +886,18 @@ class TestAssignmentGroup2(TestCase):
         groupbuilder.add_deadline_x_weeks_ago(weeks=2)
         groupbuilder.add_deadline_x_weeks_ago(weeks=1).add_delivery()
         self.assertFalse(groupbuilder.group.missing_expected_delivery)
+
+    def test_create_x_groups(self):
+        assignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1').assignment
+        self.assertEquals(AssignmentGroup.objects.count(), 0)
+        created_groupsA = AssignmentGroup.objects.create_x_groups(assignment, 3)
+        created_groupsB = AssignmentGroup.objects.create_x_groups(assignment, 1)
+        self.assertEquals(AssignmentGroup.objects.count(), 4)
+        self.assertEquals(created_groupsA.count(), 3)
+        self.assertEquals(created_groupsA[0].parentnode, assignment)
+        self.assertEquals(created_groupsA[1].parentnode, assignment)
+        self.assertEquals(created_groupsA[2].parentnode, assignment)
 
 
 

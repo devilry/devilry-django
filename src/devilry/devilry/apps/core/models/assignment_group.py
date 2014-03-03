@@ -11,6 +11,10 @@ from abstract_is_examiner import AbstractIsExaminer
 from assignment import Assignment
 from model_utils import Etag
 import deliverytypes
+from .bulkcreateidentifier import BulkCreateIdentifier
+from .bulkcreateidentifier import BulkCreateIdentifierField
+from .bulkcreateidentifier import BulkCreateManagerMixin
+
 
 
 class GroupPopValueError(ValueError):
@@ -92,7 +96,7 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
 
 
 
-class AssignmentGroupManager(models.Manager):
+class AssignmentGroupManager(models.Manager, BulkCreateManagerMixin):
     def get_queryset(self):
         return AssignmentGroupQuerySet(self.model, using=self._db)
 
@@ -172,6 +176,35 @@ class AssignmentGroupManager(models.Manager):
         Assumes that all the groups has ``last_deadline`` set.
         """
         return self.get_queryset().add_nonelectronic_delivery()
+
+    def make_unique_bulkid(self):
+        while True:
+            bulkid = datetime.now()
+
+
+    def create_x_groups(self, assignment, count):
+        """
+        Create ``count`` groups very efficiently.
+
+        Perfect when you just want to create a set of groups on an assignment
+        and fill them with data later. You will typically run this, followed
+        by ``Candiate.objects.create_many(...)`` with the groups returned by this
+        method as the first argument.
+
+        Uses :class:`devilry.apps.core.models.BulkCreateIdentifier` to make it
+        possible to efficiently create groups and get back the created groups.
+
+        :param count: Number of groups to create.
+        :return: The created groups.
+        """
+        bulkcreate_identifier = BulkCreateIdentifier.objects.create()
+        def setup_group(x):
+            return AssignmentGroup(
+                parentnode=assignment,
+                bulkcreate_identifier=bulkcreate_identifier)
+        groups_to_create = map(setup_group, xrange(count))
+        self.bulk_create(groups_to_create)
+        return self.filter_by_bulkcreateidentifier(bulkcreate_identifier)
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
@@ -262,6 +295,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             ("closed-without-feedback", _("Closed without feedback")),
             ("waiting-for-something", _("Waiting for something")),
         ))
+    bulkcreate_identifier = BulkCreateIdentifierField()
+
 
     class Meta:
         app_label = 'core'
