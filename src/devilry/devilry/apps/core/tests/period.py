@@ -6,11 +6,48 @@ from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from datetime import datetime, timedelta
 
-from ..models import Period, Subject
-from ..testhelper import TestHelper
-from ..models.model_utils import EtagMismatchException
+from devilry_developer.testhelpers.corebuilder import NodeBuilder
+# from devilry_developer.testhelpers.corebuilder import SubjectBuilder
+# from devilry_developer.testhelpers.corebuilder import UserBuilder
+# from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
+from devilry.apps.core.models import Subject
+from devilry.apps.core.models import Period
+from devilry.apps.core.testhelper import TestHelper
+from devilry.apps.core.models.model_utils import EtagMismatchException
 
-class TestPeriod(TestCase, TestHelper):
+
+
+class TestPeriod(TestCase):
+    def test_create_many_multiple_subjects(self):
+        nodebuilder = NodeBuilder('ducku')
+        subject1 = nodebuilder.add_subject('subject1').subject
+        subject2 = nodebuilder.add_subject('subject2').subject
+        unusedsubject = nodebuilder.add_subject('unusedsubject').subject
+        Period.objects.create_many([subject1, subject2],
+            start_time=datetime(2014, 1, 1,),
+            end_time=datetime(2014, 2, 1),
+            short_name='testperiod')
+        self.assertEquals(subject1.periods.count(), 1)
+        self.assertEquals(subject2.periods.count(), 1)
+        self.assertEquals(unusedsubject.periods.count(), 0)
+        self.assertEquals(subject1.periods.all()[0].short_name, 'testperiod')
+        self.assertEquals(subject2.periods.all()[0].short_name, 'testperiod')
+
+    def test_create_many_details(self):
+        nodebuilder = NodeBuilder('ducku')
+        subject1 = nodebuilder.add_subject('subject1').subject
+        Period.objects.create_many([subject1],
+            start_time=datetime(2014, 1, 1),
+            end_time=datetime(2014, 2, 1),
+            short_name='testperiod')
+        self.assertEquals(subject1.periods.count(), 1)
+        testperiod = subject1.periods.all()[0]
+        self.assertEquals(testperiod.short_name, 'testperiod')
+        self.assertEquals(testperiod.start_time, datetime(2014, 1, 1))
+        self.assertEquals(testperiod.end_time, datetime(2014, 2, 1))
+
+
+class TestPeriodOld(TestCase, TestHelper):
 
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi",

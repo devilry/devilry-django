@@ -17,6 +17,51 @@ from model_utils import Etag
 from abstract_is_admin import AbstractIsAdmin
 from abstract_applicationkeyvalue import AbstractApplicationKeyValue
 
+
+
+
+
+class PeriodQuerySet(models.query.QuerySet):
+    pass
+
+
+class PeriodManager(models.Manager):
+    def get_queryset(self):
+        return PeriodQuerySet(self.model, using=self._db)
+
+    def filter(self, *args, **kwargs):
+        return self.get_queryset().filter(*args, **kwargs)
+
+    def all(self, *args, **kwargs):
+        return self.get_queryset().all(*args, **kwargs)
+
+    def create_many(self, subjects, **kwargs):
+        """
+        Create periods for the given subjects. ``kwargs`` is the same as for meth:`Period.__init__`.
+
+        Should always run in a transaction to avoid creating periods for only
+        some of the subjects in the queryset in case of errors.
+
+        :param subjects: Iterable of :class:`devilry.apps.core.models.Subject`.
+
+        Example::
+
+            from datetime import datetime
+            Period.objects.create_many(
+                Subject.objects.filter(short_name__startswith="inf"),
+                short_name='spring2014',
+                start_time=datetime(2014, 1, 1),
+                start_time=datetime(2014, 7, 1))
+        """
+        def create_period(subject):
+            return Period(parentnode=subject, **kwargs)
+        periods = map(create_period, subjects)
+        self.bulk_create(periods)
+
+
+
+
+
 class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
     A Period represents a period of time, for example a half-year term
@@ -60,6 +105,8 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
        A DateTimeField containing the etag for this object.
 
     """
+    objects = PeriodManager()
+
     class Meta:
         app_label = 'core'
         unique_together = ('short_name', 'parentnode')
