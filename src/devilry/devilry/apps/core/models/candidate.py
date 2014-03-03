@@ -1,3 +1,4 @@
+import itertools
 from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.db import models
@@ -8,6 +9,42 @@ from abstract_is_admin import AbstractIsAdmin
 from node import Node
 from devilryuserprofile import DevilryUserProfile
 
+
+class CandidateManager(models.Manager):
+    def bulk_add_candidates_to_groups(self, groups, grouped_candidates):
+        """
+        Bulk add candidates to groups.
+        
+        :param groups:
+            Iterable of :class:`devilry.apps.core.models.AssignmentGroup` objects.
+        :param grouped_candidates:
+            Iterable of candidates. Each item in the iterable contains an iterable
+            of candidates that you want to add to the group at the same index in
+            the ``groups`` iterable.
+
+        Example::
+
+            Candidate.objects.easy_bulk_create(
+                groups=AssignmentGroup.create_x_groups(3),
+                grouped_candidates=[
+                    [Candidate(student=user1), Candidate(student=user2)],
+                    [Candidate(student=user3)],
+                    [Candidate(student=user4), Candidate(student=user5), Candidate(student=user6)]
+                ]
+            )
+
+        :return: ``None``. We do not perform a query to get the created candidates because
+            we assume the most common scenario is to not do anything more with the candidates
+            right after they have been created.
+        """
+        if len(groups) != len(grouped_candidates):
+            raise ValueError('groups and grouped_candidates must be the same length')
+        candidates_to_create = []
+        for group, candidates_in_group in itertools.izip(groups, grouped_candidates):
+            for candidate in candidates_in_group:
+                candidate.assignment_group = group
+                candidates_to_create.append(candidate)
+        self.bulk_create(candidates_to_create)
 
 
 class Candidate(models.Model, Etag, AbstractIsAdmin):
@@ -30,6 +67,7 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
     .. attribute:: identifier
         The candidate_id if this is a candidate on an anonymous assignment, and username if not.
     """
+    objects = CandidateManager()
 
     class Meta:
         app_label = 'core'
