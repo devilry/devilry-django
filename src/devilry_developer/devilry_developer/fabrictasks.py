@@ -91,6 +91,17 @@ def autodb(no_groups=False):
     local('bin/django_dev.py rebuild_index --noinput')
 
 
+@task
+def demodb():
+    """
+    Run ``remove_db``, ``syncdb`` and ``bin/django_dev.py devilry_developer_createdb -v2``
+    """
+    reset_db()
+    local('bin/django_test.py devilry_developer_createdb')
+    # local('bin/django_dev.py rebuild_index --noinput')
+
+
+
 def _gzip_file(infile):
     import gzip
     f_in = open(infile, 'rb')
