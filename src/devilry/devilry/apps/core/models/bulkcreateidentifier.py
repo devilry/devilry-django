@@ -24,7 +24,7 @@ class BulkCreateIdentifierField(models.ForeignKey):
     def __init__(self):
         super(BulkCreateIdentifierField, self).__init__(
             BulkCreateIdentifier,
-            null=True,
+            null=True, blank=True,
             related_name='+', on_delete=models.SET_NULL)
 
 
