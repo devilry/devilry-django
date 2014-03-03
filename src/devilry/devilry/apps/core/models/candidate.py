@@ -24,7 +24,7 @@ class CandidateManager(models.Manager):
 
         Example::
 
-            Candidate.objects.easy_bulk_create(
+            Candidate.objects.bulk_add_candidates_to_groups(
                 groups=AssignmentGroup.create_x_groups(3),
                 grouped_candidates=[
                     [Candidate(student=user1), Candidate(student=user2)],
