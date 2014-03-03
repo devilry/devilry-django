@@ -4,11 +4,28 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 
-from ..models import Node, Subject
-from ..testhelper import TestHelper
-from ..models.model_utils import EtagMismatchException
 
-class TestSubject(TestCase, TestHelper):
+# from devilry_developer.testhelpers.corebuilder import NodeBuilder
+# from devilry_developer.testhelpers.corebuilder import SubjectBuilder
+#from devilry_developer.testhelpers.corebuilder import UserBuilder
+# from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
+from devilry.apps.core.models import Node, Subject
+from devilry.apps.core.testhelper import TestHelper
+from devilry.apps.core.models.model_utils import EtagMismatchException
+
+
+
+
+# class TestSubject(TestCase):
+#     pass
+
+
+
+
+class TestSubjectOld(TestCase, TestHelper):
+    """
+    Do not add new tests here. Add to TestSubject instead.
+    """
 
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
