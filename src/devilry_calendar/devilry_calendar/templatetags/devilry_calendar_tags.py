@@ -20,6 +20,11 @@ class DevilryCalendar(calendar.HTMLCalendar):
     def __init__(self, firstweekday=0):
         super(DevilryCalendar, self).__init__(firstweekday)
 
+    def formatday(self, day, weekday):
+        if day == 0:
+            return '<td class="noday">&nbsp;</td>'
+        return '<td>{0}</td>'.format(day)
+
     def formatmonth(self, *args, **kwargs):
         #return super(DevilryCalendar, self).formatmonth(*args, **kwargs)
         v = []
