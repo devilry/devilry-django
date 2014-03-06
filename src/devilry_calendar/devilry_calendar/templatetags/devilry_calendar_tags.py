@@ -15,12 +15,34 @@ def do_calendar_events(parser, token):
     return CalendarEventsNode(format_string[1:-1])
 
 
+class DevilryCalendar(calendar.HTMLCalendar):
+    """docstring for DevilryCalendar"""
+    def __init__(self, firstweekday=0):
+        super(DevilryCalendar, self).__init__(firstweekday)
+
+    def formatmonth(self, *args, **kwargs):
+        #return super(DevilryCalendar, self).formatmonth(*args, **kwargs)
+        v = []
+        a = v.append
+        a('<table class="table table-bordered month">')
+        a('\n')
+        a(self.formatmonthname(*args, **kwargs))
+        a('\n')
+        a(self.formatweekheader())
+        a('\n')
+        for week in self.monthdays2calendar(*args):
+            a(self.formatweek(week))
+            a('\n')
+        a('</table>')
+        a('\n')
+        return ''.join(v)
+
 class CalendarEventsNode(template.Node):
     """docstring for CalendarEventsNode"""
     def __init__(self, format_string):
         super(CalendarEventsNode, self).__init__()
         self.format_string = format_string
-        self.devilry_calendar = calendar.HTMLCalendar()
+        self.devilry_calendar = DevilryCalendar()
         print format_string
     
     def render(self, context):
