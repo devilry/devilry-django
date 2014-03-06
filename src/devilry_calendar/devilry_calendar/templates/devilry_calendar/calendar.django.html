@@ -1,4 +1,16 @@
 {% extends "devilry_calendar/base.django.html" %}
+{% load i18n %}
+{% load devilry_calendar_tags %}
     {% block body %}
-        <h1>Hello World</h1>
+    <div class="container">
+        <div class="page-header page-header-with-subheader">
+            <h1> {% trans "Event Schedule" %}</h1>
+            <p class="subheader">
+            {% trans "In the calendar below we show the important events" %}
+            </p>            
+        </div>
+    </div>
+    <div class="container">
+        {% devilry_calendar "yo!" %}
+    </div>
     {% endblock body %}
