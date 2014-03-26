@@ -105,7 +105,10 @@ class PointToGradeMap(models.Model):
         :raises PointRangeToGrade.DoesNotExist:
             If no grade matching the given points exist.
         """
-        return self.pointrangetograde_set.filter_grades_matching_points(points).get()
+        return PointRangeToGrade.objects\
+            .filter_grades_matching_points(points)\
+            .filter(point_to_grade_map=self).get()
+
 
     def as_choices(self):
         """
