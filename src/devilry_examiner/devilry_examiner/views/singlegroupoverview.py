@@ -13,15 +13,20 @@ def get_previous_and_next_group_waiting_for_feedback(examineruser, current_group
     use_next = False
     next = None
     previous = None
-    for group in groups:
-        if use_next:
-            next = group
-            break
+    if groups.filter(pk=current_group.pk).exists():
+        for group in groups:
+            if use_next:
+                next = group
+                break
 
-        if group == current_group:
-            use_next = True
-        else:
-            previous = group
+            if group == current_group:
+                use_next = True
+            else:
+                previous = group
+    else:
+        groups = list(groups)
+        if len(groups) > 0:
+            next = groups[0]
     return previous, next
 
 
