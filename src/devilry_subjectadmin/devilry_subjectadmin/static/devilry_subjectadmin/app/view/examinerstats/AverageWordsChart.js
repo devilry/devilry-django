@@ -29,7 +29,10 @@ Ext.define('devilry_subjectadmin.view.examinerstats.AverageWordsChart' ,{
         title: gettext('Examiner'),
         label: {
             renderer:function (examiner) {
-                return examiner.user.displayname;
+                if(typeof examiner != 'undefined') {
+                    return examiner.user.displayname;
+                }
+                
             } 
         }
     }],
