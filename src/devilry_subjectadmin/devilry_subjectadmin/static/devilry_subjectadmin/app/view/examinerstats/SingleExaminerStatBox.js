@@ -1,7 +1,7 @@
 Ext.define('devilry_subjectadmin.view.examinerstats.SingleExaminerStatBox' ,{
     extend: 'Ext.container.Container',
-    alias: 'widget.singleexaminerstatobx',
-    cls: 'devilry_subjectadmin_singleexaminerstatobx',
+    alias: 'widget.singleexaminerstatbox',
+    cls: 'devilry_subjectadmin_singleexaminerstatbox',
 
     requires: [
         'Ext.chart.series.Pie'

@@ -100,7 +100,7 @@ Ext.define('devilry_subjectadmin.controller.ExaminerStatsController', {
                 margin = '0';
             }
             examinerStatBoxes.add({
-                xtype: 'singleexaminerstatobx',
+                xtype: 'singleexaminerstatbox',
                 examinerstat: record,
                 margin: margin
             });
