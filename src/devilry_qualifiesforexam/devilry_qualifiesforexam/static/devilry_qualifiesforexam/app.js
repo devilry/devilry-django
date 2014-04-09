@@ -16,6 +16,7 @@ Ext.application({
         'Ext.layout.container.Border',
         'Ext.layout.container.Column',
         'Ext.form.field.ComboBox',
+        'Ext.layout.container.Anchor',
         'devilry_extjsextras.Router',
         'devilry_extjsextras.RouteNotFound',
         'devilry_extjsextras.AlertMessage',
