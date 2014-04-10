@@ -2,13 +2,11 @@
 Release Notes 1.4.8
 ********************
 
-===========
-Bugfixes
-==========
+Bugfixes:
+
 - https://github.com/devilry/devilry-django/issues/569
 - https://github.com/devilry/devilry-django/issues/566
  
-=====================
 Improvements/Changes
 =====================
 
