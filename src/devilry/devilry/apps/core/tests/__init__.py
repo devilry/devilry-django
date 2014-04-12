@@ -15,3 +15,4 @@ from .testhelper import *
 from .devilryuserprofile import *
 from .groupinvite import *
 from .bulkcreateidentifier import *
+from .examiner import *
