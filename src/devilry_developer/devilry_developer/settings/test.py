@@ -9,3 +9,8 @@ SKIP_SOUTH_TESTS = True # To disable South's own unit tests
 
 if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:
     MIDDLEWARE_CLASSES.remove('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
+
+
+INSTALLED_APPS += [
+    'devilry.apps.core.tests.devilry_core_testapp',
+]
