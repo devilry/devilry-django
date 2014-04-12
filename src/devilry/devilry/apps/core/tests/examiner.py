@@ -7,21 +7,25 @@ from devilry.apps.core.models import Examiner
 
 
 class TestExaminer(TestCase):
-    def test_bulkmake_examiner_for_groups(self):
+    def test_bulkadd_examiners_to_groups(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')
         group1 = assignmentbuilder.add_group().group
         group2 = assignmentbuilder.add_group().group
-        examineruser = UserBuilder('examineruser').user
+        examineruser1 = UserBuilder('examineruser1').user
+        examineruser2 = UserBuilder('examineruser2').user
         self.assertEquals(Examiner.objects.count(), 0)
-        Examiner.objects.bulkmake_examiner_for_groups(examineruser, group1, group2)
-        self.assertEquals(Examiner.objects.count(), 2)
-        self.assertEquals(group1.examiners.count(), 1)
-        self.assertEquals(group2.examiners.count(), 1)
-        self.assertEquals(group1.examiners.all()[0].user, examineruser)
-        self.assertEquals(group2.examiners.all()[0].user, examineruser)
+        Examiner.objects.bulkadd_examiners_to_groups(
+            examinerusers=[examineruser1, examineruser2],
+            groups=[group1, group2])
+        self.assertEquals(Examiner.objects.count(), 4)
+        self.assertEquals(group1.examiners.count(), 2)
+        self.assertEquals(group2.examiners.count(), 2)
+        self.assertEquals(
+            set([e.user for e in group1.examiners.all()]),
+            set([examineruser1, examineruser2]))
 
-    def test_bulkmake_examiner_for_groups_already_examiner(self):
+    def test_bulkadd_examiners_to_groups_already_examiner(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')
         examineruser = UserBuilder('examineruser').user
@@ -30,5 +34,7 @@ class TestExaminer(TestCase):
 
         self.assertEquals(Examiner.objects.count(), 1)
         with self.assertRaises(IntegrityError):
-            Examiner.objects.bulkmake_examiner_for_groups(examineruser, group1)
+            Examiner.objects.bulkadd_examiners_to_groups(
+                examinerusers=[examineruser],
+                groups=[group1])
         self.assertEquals(Examiner.objects.count(), 1)
