@@ -1,6 +1,6 @@
 from datetime import datetime
 from random import randint
-
+from south.modelsinspector import add_introspection_rules
 from django.db import models
 
 
@@ -26,6 +26,11 @@ class BulkCreateIdentifierField(models.ForeignKey):
             BulkCreateIdentifier,
             null=True, blank=True,
             related_name='+', on_delete=models.SET_NULL)
+
+
+
+add_introspection_rules([], ["^devilry\.apps\.core\.models\.bulkcreateidentifier\.BulkCreateIdentifier"])
+
 
 
 class BulkCreateIdentifier(models.Model):
