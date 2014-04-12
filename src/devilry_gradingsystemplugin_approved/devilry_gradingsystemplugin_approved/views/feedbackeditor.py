@@ -16,6 +16,7 @@ class ApprovedFeedbackEditorForm(FeedbackEditorFormBase):
     points = forms.BooleanField(
         label=_('Passed?'),
         help_text=_('Check to provide a passing grade.'),
+        initial=True,
         required=False)
 
     def __init__(self, *args, **kwargs):

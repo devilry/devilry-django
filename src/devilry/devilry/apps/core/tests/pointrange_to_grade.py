@@ -53,7 +53,6 @@ class TestPointRangeToGradeManager(TestCase):
         self.assertEquals(PointRangeToGrade.objects.filter_grades_matching_points(21).get().grade, 'D')
 
 
-
 class TestPointRangeToGrade(TestCase):
     def setUp(self):
         self.periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
@@ -202,6 +201,34 @@ class TestPointToGradeMap(TestCase):
         self.assertEquals(point_to_grade_map.points_to_grade(21), e)
         with self.assertRaises(PointRangeToGrade.DoesNotExist):
             point_to_grade_map.points_to_grade(41)
+
+
+    def test_points_to_grade_multi_assignment(self):
+        assignment2 = self.periodbuilder\
+            .add_assignment('assignment2').assignment
+
+        point_to_grade_map1 = PointToGradeMap.objects.create(assignment=self.assignment)
+        pointrange_to_grade1 = point_to_grade_map1.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=9,
+            grade='F'
+        )
+        point_to_grade_map2 = PointToGradeMap.objects.create(assignment=assignment2)
+        pointrange_to_grade2 = point_to_grade_map2.pointrangetograde_set.create(
+            minimum_points=0,
+            maximum_points=3,
+            grade='F'
+        )
+        self.assertEquals(pointrange_to_grade2,
+            assignment2.pointtogrademap.points_to_grade(2))
+
+        # When we update to Django 1.5+, this should start only
+        # matching pointrange_to_grade2. See:
+        # https://github.com/devilry/devilry-django/issues/563
+        matches = assignment2.pointtogrademap.pointrangetograde_set.filter_grades_matching_points(2)
+        self.assertEquals(set([pointrange_to_grade1, pointrange_to_grade2]),
+            set(matches))
+
 
     def test_clean_no_entries(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)

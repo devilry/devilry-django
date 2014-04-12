@@ -98,7 +98,8 @@ class SetupCustomTableView(AssignmentSingleObjectRequiresValidPluginMixin, Detai
                     except ValidationError as e:
                         self.validationerrors = e.messages
                     else:
-                       return redirect(self.get_success_url())
+                        point_to_grade_map.save()
+                        return redirect(self.get_success_url())
         return super(SetupCustomTableView, self).get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):

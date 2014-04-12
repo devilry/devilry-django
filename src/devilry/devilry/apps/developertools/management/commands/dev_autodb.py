@@ -196,7 +196,9 @@ class Command(BaseCommand):
                         self.testhelper.add_feedback(path, verdict=okVerdict,
                                                      rendered_view=rendered_view_ok)
 
-    def _addGoodGroups(self, periodpath, assignments, goodVerdict):
+
+    def _addGoodGroups(self, periodpath, assignments, goodVerdict,
+            ensure_has_uncorrected_deliveries=True):
         if self.no_groups:
             return
         for groupnum, names in enumerate(good_students):
@@ -209,8 +211,11 @@ class Command(BaseCommand):
                 if since_pubishingtime.days >= 8:
                     self.testhelper.add_delivery(path, {'good.py': ['print ', 'almostperfect']},
                                                  time_of_delivery=-1)
-                    self.testhelper.add_feedback(path, verdict=goodVerdict,
-                                                 rendered_view=rendered_view_good)
+                    if since_pubishingtime.days < 15 and ensure_has_uncorrected_deliveries:
+                        pass
+                    else:
+                      self.testhelper.add_feedback(path,
+                        verdict=goodVerdict, rendered_view=rendered_view_good)
 
 
     def _addNonElectronicFeedbacks(self, periodpath, assignments, students, group_prefix, feedbacks):
@@ -293,7 +298,7 @@ class Command(BaseCommand):
             periodpath = 'duckburgh.ifi;duck1100.' + periodname
             logging.info('Creating %s', periodpath)
             period = self.testhelper.get_object_from_path(periodpath)
-            self._set_first_deadlines(period)
+            self._set_first_deadlines(period, days_after_pubtime=7)
             self._addRelatedStudents(period)
             self._addRelatedExaminers(period)
             self._addBadGroups(periodpath, assignmentnames, anotherTryVerdict, failedVerdict)
@@ -332,14 +337,14 @@ class Command(BaseCommand):
 
         assignmentnames = [name.split(':')[0] for name in assignments]
         periodnames = self._onlyNames(periods)
-        extra_numbered_students = self._create_numbered_students(2000)
-        for periodname in periodnames:
+        # extra_numbered_students = self._create_numbered_students(2000)
+        for periodname in periodnames[:1]:
             periodpath = 'duckburgh.ifi;duck1010.' + periodname
             logging.info('Creating %s', periodpath)
             period = self.testhelper.get_object_from_path(periodpath)
             self._set_first_deadlines(period)
             self._addRelatedStudents(period)
-            self._addRelatedStudentsFromList(period, extra_numbered_students)
+            # self._addRelatedStudentsFromList(period, extra_numbered_students)
             self._addRelatedExaminers(period)
             self._addBadGroups(periodpath, assignmentnames, anotherTryVerdict, failedVerdict)
             self._addMediumGroups(periodpath, assignmentnames, anotherTryVerdict, okVerdict)
