@@ -38,3 +38,21 @@ class TestExaminer(TestCase):
                 examinerusers=[examineruser],
                 groups=[group1])
         self.assertEquals(Examiner.objects.count(), 1)
+
+
+    def test_bulkclear_examiners_from_groups(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        examineruser1 = UserBuilder('examineruser1').user
+        examineruser2 = UserBuilder('examineruser2').user
+        group1 = assignmentbuilder.add_group(
+            examiners=[examineruser1]).group
+        group2 = assignmentbuilder.add_group(
+            examiners=[examineruser1, examineruser2]).group
+        group3 = assignmentbuilder.add_group().group
+        ignoredgroup = assignmentbuilder.add_group(
+            examiners=[examineruser1]).group
+        self.assertEquals(Examiner.objects.count(), 4)
+        Examiner.objects.bulkclear_examiners_from_groups([group1, group2, group3])
+        self.assertEquals(Examiner.objects.count(), 1)
+        self.assertEquals(Examiner.objects.all()[0].assignmentgroup, ignoredgroup)

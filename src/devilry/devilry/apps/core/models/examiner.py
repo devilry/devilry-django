@@ -51,7 +51,7 @@ class ExaminerManager(models.Manager):
 
         Example::
 
-            Examiner.bulkadd_examiners_to_groups(
+            Examiner.objects.bulkadd_examiners_to_groups(
                 examinerusers=[user1, user2],
                 groups=[group1, group2, group3])
 
@@ -75,7 +75,21 @@ class ExaminerManager(models.Manager):
                 examiners_to_create.append(examiner)
         self.bulk_create(examiners_to_create)
 
+    def bulkclear_examiners_from_groups(self, groups):
+        """
+        Clear examiners from the given groups.
 
+        Examples::
+
+            Examiner.objects.bulkclear_examiners_from_groups([group1, group2])
+            Examiner.objects.bulkclear_examiners_from_groups(
+                AssignmentGroup.objects.filter(parentnode=myassignment))
+
+        :param groups:
+            Iterable of :class:`devilry.apps.core.models.AssignmentGroup`
+            objects to remove all current examiners from.
+        """
+        Examiner.objects.filter(assignmentgroup__in=groups).delete()
 
 
 
