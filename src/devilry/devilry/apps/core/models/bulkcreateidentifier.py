@@ -21,11 +21,13 @@ class BulkCreateIdentifierField(models.ForeignKey):
     model to :class:`devilry.apps.core.models.BulkCreateIdentifier`
     and sane values for ``related_name`` and ``on_delete``.
     """
-    def __init__(self):
-        super(BulkCreateIdentifierField, self).__init__(
-            BulkCreateIdentifier,
-            null=True, blank=True,
-            related_name='+', on_delete=models.SET_NULL)
+    def __init__(self, **kwargs):
+        kwargs['null'] = True
+        kwargs['blank'] = True
+        kwargs['related_name'] = '+'
+        kwargs['on_delete'] = models.SET_NULL
+        kwargs['to'] = BulkCreateIdentifier
+        super(BulkCreateIdentifierField, self).__init__(**kwargs)
 
 
 
