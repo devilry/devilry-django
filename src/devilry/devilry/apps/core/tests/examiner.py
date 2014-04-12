@@ -56,3 +56,35 @@ class TestExaminer(TestCase):
         Examiner.objects.bulkclear_examiners_from_groups([group1, group2, group3])
         self.assertEquals(Examiner.objects.count(), 1)
         self.assertEquals(Examiner.objects.all()[0].assignmentgroup, ignoredgroup)
+
+
+    def test_randomdistribute_examiners_even(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        examineruser1 = UserBuilder('examineruser1').user
+        examineruser2 = UserBuilder('examineruser2').user
+        group1 = assignmentbuilder.add_group().group
+        group2 = assignmentbuilder.add_group().group
+        group3 = assignmentbuilder.add_group().group
+        group4 = assignmentbuilder.add_group().group
+        Examiner.objects.randomdistribute_examiners(
+            examinerusers=[examineruser1, examineruser2],
+            groups=[group1, group2, group3, group4])
+        self.assertEquals(Examiner.objects.count(), 4)
+        self.assertEquals(Examiner.objects.filter(user=examineruser1).count(), 2)
+        self.assertEquals(Examiner.objects.filter(user=examineruser2).count(), 2)
+
+    def test_randomdistribute_examiners_leftovers(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+        examineruser1 = UserBuilder('examineruser1').user
+        examineruser2 = UserBuilder('examineruser2').user
+        group1 = assignmentbuilder.add_group().group
+        group2 = assignmentbuilder.add_group().group
+        group3 = assignmentbuilder.add_group().group
+        Examiner.objects.randomdistribute_examiners(
+            examinerusers=[examineruser1, examineruser2],
+            groups=[group1, group2, group3])
+        self.assertEquals(Examiner.objects.count(), 3)
+        self.assertIn(Examiner.objects.filter(user=examineruser1).count(), [1, 2])
+        self.assertIn(Examiner.objects.filter(user=examineruser2).count(), [1, 2])

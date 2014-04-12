@@ -1,3 +1,6 @@
+import random
+import itertools
+
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
@@ -75,6 +78,7 @@ class ExaminerManager(models.Manager):
                 examiners_to_create.append(examiner)
         self.bulk_create(examiners_to_create)
 
+
     def bulkclear_examiners_from_groups(self, groups):
         """
         Clear examiners from the given groups.
@@ -90,6 +94,49 @@ class ExaminerManager(models.Manager):
             objects to remove all current examiners from.
         """
         Examiner.objects.filter(assignmentgroup__in=groups).delete()
+
+
+    def randomdistribute_examiners(self, examinerusers, groups):
+        """
+        Evenly randomdistribute the given examiners to the given groups.
+
+        This method evenly distributes the ``examinerusers`` on the given ``groups``.   
+        This means that at the number of groups assigned to each of the examiners  
+        will differ by at most one.
+
+        This is a fairly efficient method. It loops through all the groups 3 times,
+        but two of those iterations is in C. It creates the :class:`.Examiner` objects
+        using ``bulk_create()``.
+
+        Examples::
+
+            Examiner.objects.randomdistribute_examiners(
+                examinerusers=[user1, user2],
+                groups=[group1, group2, group3])
+            Examiner.objects.randomdistribute_examiners(
+                examinerusers=[user1, user2],
+                groups=AssignmentGroup.objects.filter(parentnode=myassignment))
+
+        :raises django.db.IntegrityError
+            If any of the ``examinerusers`` is already examiner on any of the groups,
+            the method will fail with IntegrityError, if we happen
+            to random assign that examiner to a group where they are already
+            examiner).
+        """
+        groups = [group for group in groups]
+        examinerusers = [examiner for examiner in examinerusers]
+        random.shuffle(groups)
+        random.shuffle(examinerusers)
+        examiners_to_create = []
+        for examineruser in itertools.cycle(examinerusers):
+            if groups:
+                group = groups.pop()
+                examiner = Examiner(user=examineruser, assignmentgroup=group)
+                examiners_to_create.append(examiner)
+            else:
+                break                
+        self.bulk_create(examiners_to_create)
+
 
 
 
