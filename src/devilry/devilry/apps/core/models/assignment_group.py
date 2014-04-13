@@ -98,12 +98,13 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
 
             AssignmentGroup.objects.filter(parentnode=1).group_by_tags()
 
-        How to get groups ordered by studentname::
+        You can order the AssignmentGroups before grouping them by tags, which
+        will make each tag contain a list ordered like the queryset was
+        ordered::
 
             AssignmentGroup.objects.filter(parentnode=1)\
-                .order_by('candidates__student__devilryuserprofile__name')\
+                .order_by_candidate_full_name()\
                 .group_by_tags()
-
 
         :return:
             A dict where each key is a tag (:obj:`.AssignmentGroupTag.tag`)
