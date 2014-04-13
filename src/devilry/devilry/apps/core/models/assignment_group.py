@@ -94,6 +94,17 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         """
         Group the AssignmentGroups in this queryset by their tags.
 
+        Simple example::
+
+            AssignmentGroup.objects.filter(parentnode=1).group_by_tags()
+
+        How to get groups ordered by studentname::
+
+            AssignmentGroup.objects.filter(parentnode=1)\
+                .order_by('candidates__student__devilryuserprofile__name')\
+                .group_by_tags()
+
+
         :return:
             A dict where each key is a tag (:obj:`.AssignmentGroupTag.tag`)
             and each value is a list of groups with that tag.
@@ -228,14 +239,6 @@ class AssignmentGroupManager(models.Manager, BulkCreateManagerMixin):
         groups_to_create = map(setup_group, xrange(count))
         self.bulk_create(groups_to_create)
         return self.filter_by_bulkcreateidentifier(bulkcreate_identifier)
-
-
-    def group_by_tags(self):
-        """
-        Shortcut for ``AssignmentGroup.objects.get_queryset().group_by_tags()``.
-        See :meth:`.AssignmentGroupQuerySet.group_by_tags` for more info.
-        """
-        return self.get_queryset().group_by_tags()
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
