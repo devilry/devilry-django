@@ -181,11 +181,12 @@ class DeadlineBuilder(CoreBuilderBase):
 class AssignmentGroupBuilder(CoreBuilderBase):
     object_attribute_name = 'group'
 
-    def __init__(self, students=[], candidates=[], examiners=[], **kwargs):
+    def __init__(self, students=[], candidates=[], examiners=[], tags=[], **kwargs):
         self.group = AssignmentGroup.objects.create(**kwargs)
         self.add_students(*students)
         self.add_candidates(*candidates)
         self.add_examiners(*examiners)
+        self.add_tags(*tags)
 
     def add_students(self, *users):
         for user in users:
@@ -200,6 +201,11 @@ class AssignmentGroupBuilder(CoreBuilderBase):
     def add_examiners(self, *users):
         for user in users:
             self.group.examiners.create(user=user)
+        return self
+
+    def add_tags(self, *tags):
+        for tag in tags:
+            self.group.tags.create(tag=tag)
         return self
 
     def add_deadline(self, **kwargs):
