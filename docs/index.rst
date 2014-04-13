@@ -15,12 +15,8 @@ Common topics (see Table of contents for all topics)
 
 
 Core
-----------------------------------------------------------------------
-
-
-.. module:: devilry.apps.core
-
-* **devilry.apps.core.models:** :ref:`API <devilry.apps.core.models>`
+----
+* **devilry.apps.core.models:** :doc:`Introduction <core_intro>` | :ref:`API <devilry.apps.core.models>`
 * :ref:`userobj`
 * :ref:`devilry.apps.core.deliverystore <devilry.apps.core.deliverystore>`
 
@@ -84,6 +80,7 @@ Table of contents
 .. toctree::
     :maxdepth: 2
 
+    core_intro
     core.models
     userobj
     core.deliverystore

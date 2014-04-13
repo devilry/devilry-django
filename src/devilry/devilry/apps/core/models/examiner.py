@@ -13,6 +13,9 @@ from .relateduser import RelatedStudent
 
 
 class ExaminerManager(models.Manager):
+    """
+    Manager for :class:`.Examiner`.
+    """
     # def bulkassign_groups_to_examiner(self, groups_grouped_by_examiner):
     #     """
     #     Bulkassign :class:`devirly.apps.core.models.AssignmentGroup` objects to examiner.

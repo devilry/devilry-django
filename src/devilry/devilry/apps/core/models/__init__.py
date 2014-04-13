@@ -21,6 +21,7 @@ from .static_feedback import StaticFeedback
 from .filemeta import FileMeta
 from .devilryuserprofile import DevilryUserProfile
 from .examiner import Examiner
+from .examiner import ExaminerManager
 from .groupinvite import GroupInvite
 from .bulkcreateidentifier import BulkCreateIdentifier
 

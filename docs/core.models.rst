@@ -127,7 +127,6 @@ Examiner
 #########################################################
 
 .. autoclass:: devilry.apps.core.models.Examiner
-    :no-members:
 
 .. autoclass:: devilry.apps.core.models.examiner.ExaminerManager
 
