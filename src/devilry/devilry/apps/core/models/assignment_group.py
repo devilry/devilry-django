@@ -120,6 +120,27 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         return bytag
 
 
+    def order_by_candidate_full_name(self):
+        """
+        Shortcut for ``order_by('only_candidate__student__devilryuserprofile__full_name')``.
+
+        .. note::
+            Groups with more than one candidate has no ``only_candidate``,
+            so their ordering key will be ``None``.
+        """
+        return self.order_by('only_candidate__student__devilryuserprofile__full_name')
+
+
+    def order_by_candidate_username(self):
+        """
+        Shortcut for ``order_by('only_candidate__student__username')``.
+
+        .. note::
+            Groups with more than one candidate has no ``only_candidate``,
+            so their ordering key will be ``None``.
+        """
+        return self.order_by('only_candidate__student__username')
+
 
 class AssignmentGroupManager(models.Manager, BulkCreateManagerMixin):
     """
@@ -240,6 +261,20 @@ class AssignmentGroupManager(models.Manager, BulkCreateManagerMixin):
         self.bulk_create(groups_to_create)
         return self.filter_by_bulkcreateidentifier(bulkcreate_identifier)
 
+    def order_by_candidate_full_name(self):
+        """
+        Shortcut for ``AssignmentGroup.objects.get_queryset().order_by_candidate_full_name()``.
+        See :meth:`.AssignmentGroupQuerySet.order_by_candidate_full_name`.
+        """
+        return self.get_queryset().order_by_candidate_full_name()
+
+    def order_by_candidate_username(self):
+        """
+        Shortcut for ``AssignmentGroup.objects.get_queryset().order_by_candidate_username()``.
+        See :meth:`.AssignmentGroupQuerySet.order_by_candidate_username`.
+        """
+        return self.get_queryset().order_by_candidate_username()
+
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
@@ -259,6 +294,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         A django ``RelatedManager`` that holds the :class:`candidates <devilry.apps.core.models.Candidate>`
         on this group.
+
+    .. attribute:: only_candidate
+
+        The reverse of :class:`.Candidate.only_candidate_in_group`.
 
     .. attribute:: examiners
 
