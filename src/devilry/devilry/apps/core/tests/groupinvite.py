@@ -166,6 +166,7 @@ class TestGroupInvite(TestCase):
             .add_assignment('assignment1', students_can_create_groups=True)
         group = assignmentbuilder.add_group(students=[self.testuser1]).group
         sent_to_group = assignmentbuilder.add_group(students=[self.testuser2]).group
+
         invite = GroupInvite(
             group=group,
             sent_by=self.testuser1,
@@ -174,7 +175,7 @@ class TestGroupInvite(TestCase):
         self.assertEquals(AssignmentGroup.objects.count(), 2)
         invite.respond(accepted=True)
         self.assertTrue(invite.accepted)
-        self.assertTrue(group.candidates.count(), 2)
+        self.assertEquals(group.candidates.count(), 2)
         self.assertEquals(set([c.student for c in group.candidates.all()]),
             set([self.testuser1, self.testuser2]))
         self.assertEquals(AssignmentGroup.objects.count(), 1)
@@ -193,7 +194,7 @@ class TestGroupInvite(TestCase):
         self.assertEquals(AssignmentGroup.objects.count(), 1)
         invite.respond(accepted=True)
         self.assertTrue(invite.accepted)
-        self.assertTrue(group.candidates.count(), 2)
+        self.assertEquals(group.candidates.count(), 2)
         self.assertEquals(set([c.student for c in group.candidates.all()]),
             set([self.testuser1, self.testuser2]))
         self.assertEquals(AssignmentGroup.objects.count(), 1)
