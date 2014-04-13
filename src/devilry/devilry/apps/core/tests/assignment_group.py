@@ -621,6 +621,20 @@ class TestAssignmentGroupSplit(TestCase):
         deliveries = deadlines[0].deliveries.all()
         self.assertEquals(len(deliveries), 3)
 
+    def test_merge_only_candidate(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')
+        group1 = assignmentbuilder.add_group(
+            students=[UserBuilder('student1').user]).group
+        group2builder = assignmentbuilder.add_group(
+            students=[UserBuilder('student2').user])
+        self.assertTrue(group2builder.group.only_candidate.student.username, 'student1')
+        group1.merge_into(group2builder.group)
+        group2builder.reload_from_db()
+        with self.assertRaises(Candidate.DoesNotExist):
+            only_candidate = group2builder.group.only_candidate
+
+
 
 
 class TestAssignmentGroupStatus(TestCase):
