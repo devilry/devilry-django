@@ -1064,3 +1064,17 @@ class TestAssignmentGroupManager(TestCase):
         # make sure we are not getting false positives
         self.assertEquals(AssignmentGroup.objects.filter_is_examiner(examiner1).count(), 3)
         self.assertEquals(AssignmentGroup.objects.filter_is_examiner(otherexaminer).count(), 1)
+
+
+    def test_group_by_tags(self):        
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')
+        group1 = assignmentbuilder.add_group(name='1', tags=['good', 'special']).group
+        group2 = assignmentbuilder.add_group(name='2', tags=['bad', 'special']).group
+        group3 = assignmentbuilder.add_group(name='3', tags=['good']).group
+        group4 = assignmentbuilder.add_group(name='4', tags=[]).group
+        bytag = AssignmentGroup.objects.order_by('name').group_by_tags()
+        self.assertEquals(set(bytag.keys()), set(['bad', 'good', 'special']))
+        self.assertEquals(bytag['good'], [group1, group3])
+        self.assertEquals(bytag['bad'], [group2])
+        self.assertEquals(bytag['special'], [group1, group2])

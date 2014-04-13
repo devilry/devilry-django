@@ -39,11 +39,7 @@ class GroupPopNotCandiateError(GroupPopValueError):
 
 class AssignmentGroupQuerySet(models.query.QuerySet):
     """
-    Returns a queryset with all AssignmentGroups where the given ``user`` is examiner.
-
-    WARNING: You should normally not use this directly because it gives the
-    examiner information from expired periods (which in most cases are not necessary
-    to get). Use :meth:`.active` instead.
+    The QuerySet used by :class:`.AssignmentGroupManager`.
     """
     def filter_is_examiner(self, user):
         return self.filter(examiners__user=user).distinct()
@@ -94,14 +90,41 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
                 delivery_type=deliverytypes.NON_ELECTRONIC,
                 successful=True)
 
+    def group_by_tags(self):
+        """
+        Group the AssignmentGroups in this queryset by their tags.
+
+        :return:
+            A dict where each key is a tag (:obj:`.AssignmentGroupTag.tag`)
+            and each value is a list of groups with that tag.
+        """
+        bytag = {}
+        def add_to_tag(tag, group):
+            if not tag in bytag:
+                bytag[tag] = []
+            bytag[tag].append(group)
+        for group in self.prefetch_related('tags'):
+            for tag in group.tags.all():
+                add_to_tag(tag.tag, group)
+        return bytag
+
 
 
 class AssignmentGroupManager(models.Manager, BulkCreateManagerMixin):
+    """
+    The Manager used by :class:`.AssignmentGroup`.
+    """
     def get_queryset(self):
         return AssignmentGroupQuerySet(self.model, using=self._db)
 
     def filter(self, *args, **kwargs):
         return self.get_queryset().filter(*args, **kwargs)
+
+    def all(self, *args, **kwargs):
+        return self.get_queryset().all(*args, **kwargs)
+
+    def order_by(self, *args, **kwargs):
+        return self.get_queryset().order_by(*args, **kwargs)
 
     def filter_is_examiner(self, user):
         """
@@ -205,6 +228,14 @@ class AssignmentGroupManager(models.Manager, BulkCreateManagerMixin):
         groups_to_create = map(setup_group, xrange(count))
         self.bulk_create(groups_to_create)
         return self.filter_by_bulkcreateidentifier(bulkcreate_identifier)
+
+
+    def group_by_tags(self):
+        """
+        Shortcut for ``AssignmentGroup.objects.get_queryset().group_by_tags()``.
+        See :meth:`.AssignmentGroupQuerySet.group_by_tags` for more info.
+        """
+        return self.get_queryset().group_by_tags()
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
@@ -851,16 +882,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 class AssignmentGroupTag(models.Model):
     """
     An AssignmentGroup can be tagged with zero or more tags using this class.
-
-    .. attribute:: assignment_group
-
-        The `AssignmentGroup`_ where this groups belongs.
-
-    .. attribute:: tag
-
-        The tag. Max 20 characters. Can only contain a-z, A-Z, 0-9 and "_".
     """
+    #: The `AssignmentGroup`_ where this groups belongs.
     assignment_group = models.ForeignKey(AssignmentGroup, related_name='tags')
+
+    #: The tag. Max 20 characters. Can only contain a-z, A-Z, 0-9 and "_".
     tag = models.SlugField(max_length=20, help_text='A tag can contain a-z, A-Z, 0-9 and "_".')
 
     class Meta:
