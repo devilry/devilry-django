@@ -529,9 +529,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             return out
 
     def __unicode__(self):
-        return u'id={id} path={path} candidates=({candidates})'.format(id=self.id,
-                                                                       path=self.parentnode.get_path(),
-                                                                       candidates=self.get_candidates())
+        return u'AssignmentGroup(id={id})'.format(id=self.id)
 
     def get_students(self):
         """ Get a string containing all students in the group separated by
