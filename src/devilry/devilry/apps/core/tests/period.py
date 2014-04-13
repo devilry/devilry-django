@@ -7,8 +7,8 @@ from django.core.exceptions import ValidationError
 from datetime import datetime, timedelta
 
 from devilry_developer.testhelpers.corebuilder import NodeBuilder
-# from devilry_developer.testhelpers.corebuilder import SubjectBuilder
-# from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry_developer.testhelpers.corebuilder import UserBuilder
 # from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
 from devilry.apps.core.models import Subject
 from devilry.apps.core.models import Period
@@ -45,6 +45,43 @@ class TestPeriod(TestCase):
         self.assertEquals(testperiod.short_name, 'testperiod')
         self.assertEquals(testperiod.start_time, datetime(2014, 1, 1))
         self.assertEquals(testperiod.end_time, datetime(2014, 2, 1))
+
+
+    def test_relatedstudents_by_tag(self):
+        period = PeriodBuilder.quickadd_ducku_duck1010_active().period
+        relatedstudent1 = period.relatedstudent_set.create(
+            user=UserBuilder('studentuser1').user,
+            tags='group1,special')
+        relatedstudent2 = period.relatedstudent_set.create(
+            user=UserBuilder('studentuser2').user,
+            tags='group1')
+        relatedstudent3 = period.relatedstudent_set.create(
+            user=UserBuilder('studentuser3').user,
+            tags='group2,special')
+        bytag = period.relatedstudents_by_tag()
+        self.assertEquals(bytag, {
+            'group1': [relatedstudent1, relatedstudent2],
+            'group2': [relatedstudent3],
+            'special': [relatedstudent1, relatedstudent3]
+        })
+
+    def test_relatedexaminers_by_tag(self):
+        period = PeriodBuilder.quickadd_ducku_duck1010_active().period
+        relatedstudent1 = period.relatedexaminer_set.create(
+            user=UserBuilder('studentuser1').user,
+            tags='group1,special')
+        relatedstudent2 = period.relatedexaminer_set.create(
+            user=UserBuilder('studentuser2').user,
+            tags='group1')
+        relatedstudent3 = period.relatedexaminer_set.create(
+            user=UserBuilder('studentuser3').user,
+            tags='group2,special')
+        bytag = period.relatedexaminers_by_tag()
+        self.assertEquals(bytag, {
+            'group1': [relatedstudent1, relatedstudent2],
+            'group2': [relatedstudent3],
+            'special': [relatedstudent1, relatedstudent3]
+        })
 
 
 class TestPeriodOld(TestCase, TestHelper):
