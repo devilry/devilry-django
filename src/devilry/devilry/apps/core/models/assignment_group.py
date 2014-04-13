@@ -108,13 +108,13 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             grouping like this is far to inefficient to ever use on all
             the AssignmentGroups.
         """
-        groupsbycandidate = {}
+        groupsbystudentuser = {}
         for group in self.prefetch_related('candidates', 'candidates__student'):
             for candidate in group.candidates.all():
-                if not candidate.student in groupsbycandidate:
-                    groupsbycandidate[candidate.student] = []
-                groupsbycandidate[candidate.student].append(group)
-        return groupsbycandidate
+                if not candidate.student in groupsbystudentuser:
+                    groupsbystudentuser[candidate.student] = []
+                groupsbystudentuser[candidate.student].append(group)
+        return groupsbystudentuser
 
 
     def group_by_examineruser(self):
