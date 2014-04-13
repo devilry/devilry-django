@@ -194,39 +194,51 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         """
         return self.assignments.count() == 0
 
-    def _relateduser_by_tag(self, relateduserset):
+    def _relateduser_by_tag(self, relateduserset, users):
         bytag = {}
         def add_to_tag(tag, relateduser):
             if not tag in bytag:
                 bytag[tag] = []
             bytag[tag].append(relateduser)
+
+        if users:
+            relateduserset = relateduserset.filter(user__in=users)
+
         for relateduser in relateduserset.all():
             tags = relateduser.tags.split(',')
             for tag in tags:
                 add_to_tag(tag, relateduser)
         return bytag
 
-    def relatedexaminers_by_tag(self):
+    def relatedexaminers_by_tag(self, users=None):
         """
         Get :class:`devilry.apps.core.models.RelatedExaminer` objects related to
         this Period grouped by tags.
+
+        :param users:
+            If this is provided, only return the RelatedExaminer objects
+            for these User objects.
 
         :return:
             A dict where each key is a tag, and the each value is a list of
             RelatedExaminer objects.
         """
-        return self._relateduser_by_tag(self.relatedexaminer_set)
+        return self._relateduser_by_tag(self.relatedexaminer_set, users)
 
-    def relatedstudents_by_tag(self):
+    def relatedstudents_by_tag(self, users=None):
         """
         Get :class:`devilry.apps.core.models.RelatedStudent` objects related to
         this Period grouped by tags.
+
+        :param users:
+            If this is provided, only return the RelatedStudent objects
+            for these User objects.
 
         :return:
             A dict where each key is a tag, and the each value is a list of
             RelatedStudent objects.
         """
-        return self._relateduser_by_tag(self.relatedstudent_set)
+        return self._relateduser_by_tag(self.relatedstudent_set, users)
 
 
 
