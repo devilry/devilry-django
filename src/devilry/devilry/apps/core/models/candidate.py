@@ -96,7 +96,7 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
             Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def __unicode__(self):
-        return 'id={id} identifier={identifier}'.format(id=self.id, identifier=self.identifier)
+        return 'id={id} student={student}'.format(id=self.id, student=self.student)
 
     def update_identifier(self, anonymous):
         if anonymous:
