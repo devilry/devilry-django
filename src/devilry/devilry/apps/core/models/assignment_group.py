@@ -90,6 +90,36 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
                 delivery_type=deliverytypes.NON_ELECTRONIC,
                 successful=True)
 
+    def group_by_studentuser(self):
+        """
+        Group the AssignmentGroups by student. Showing this kind of grouping in
+        the UI only makes sense when a student is candidate on multiple
+        AssignmentGroups on the same assignment, but it is a useful utility when
+        making other functions that require a map from the User object of a
+        student to a group.
+
+
+        :return:
+            A dict where each key is a User object and each value is a list of
+            groups where that user is :class:`.Candidate`.
+
+        .. note::
+
+            Not available on the :class:`.AssignmentGroupManager` because
+            grouping like this is far to inefficient to ever use on all
+            the AssignmentGroups.
+        """
+        from .candidate import Candidate
+        groupsbyuser = {}
+        candidates = Candidate.objects\
+            .filter(assignment_group__in=self.all())\
+            .select_related('assignment_group', 'student')
+        for candidate in candidates:
+            if not candidate.student in groupsbyuser:
+                groupsbyuser[candidate.student] = []
+            groupsbyuser[candidate.student].append(candidate.assignment_group)
+        return groupsbyuser
+
     def group_by_tags(self):
         """
         Group the AssignmentGroups in this queryset by their tags.
@@ -109,6 +139,12 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         :return:
             A dict where each key is a tag (:obj:`.AssignmentGroupTag.tag`)
             and each value is a list of groups with that tag.
+
+        .. note::
+
+            Not available on the :class:`.AssignmentGroupManager` because
+            grouping like this is far to inefficient to ever use on all
+            the AssignmentGroups.
         """
         bytag = {}
         def add_to_tag(tag, group):
