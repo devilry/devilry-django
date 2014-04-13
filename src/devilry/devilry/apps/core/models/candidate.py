@@ -14,7 +14,7 @@ class CandidateManager(models.Manager):
     """
     The Manager for :class:`.Candidate`.
     """
-    def bulk_add_candidates_to_groups(self, groups, grouped_candidates):
+    def bulkadd_candidates_to_groups(self, groups, grouped_candidates):
         """
         Bulk add candidates to groups.
         
@@ -27,7 +27,7 @@ class CandidateManager(models.Manager):
 
         Example::
 
-            Candidate.objects.bulk_add_candidates_to_groups(
+            Candidate.objects.bulkadd_candidates_to_groups(
                 groups=AssignmentGroup.create_x_groups(3),
                 grouped_candidates=[
                     [Candidate(student=user1), Candidate(student=user2)],

@@ -10,7 +10,7 @@ from devilry.apps.core.models.model_utils import EtagMismatchException
 
 
 class TestCandidate(TestCase):
-    def test_bulk_add_candidates_to_groups(self):
+    def test_bulkadd_candidates_to_groups(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')
         group1builder = assignmentbuilder.add_group()
@@ -19,7 +19,7 @@ class TestCandidate(TestCase):
         user2 = UserBuilder('user2').user
         user3 = UserBuilder('user3').user
         self.assertEquals(Candidate.objects.count(), 0)
-        Candidate.objects.bulk_add_candidates_to_groups(
+        Candidate.objects.bulkadd_candidates_to_groups(
             groups=[group1builder.group, group2builder.group],
             grouped_candidates=[
                 [Candidate(student=user1), Candidate(student=user2)],

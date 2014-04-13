@@ -195,7 +195,7 @@ class AssignmentGroupBuilder(CoreBuilderBase):
         return self
 
     def add_candidates(self, *candidates):
-        Candidate.objects.bulk_add_candidates_to_groups(
+        Candidate.objects.bulkadd_candidates_to_groups(
             groups=[self.group],
             grouped_candidates=[candidates]
         )

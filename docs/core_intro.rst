@@ -25,7 +25,7 @@ Candidate
 =========
 To add and remove :class:`candidates <.Candidate>`, use:
 
-- :meth:`~.CandidateManager.bulk_add_candidates_to_groups`.
+- :meth:`~.CandidateManager.bulkadd_candidates_to_groups`.
 ..   - :meth:`~.CandidateManager.bulkremove_candidates_from_groups`.
 
 
@@ -39,7 +39,7 @@ Creating AssignmentGroups
 An :class:`.AssignmentGroup` (groups) is just an empty shell until you add candidates. This means that it rarely makes sense to create groups without also adding candidates. Example::
 
     created_groups = AssignmentGroup.objects.create_x_groups(myassignment, 2)
-    Candidate.objects.bulk_add_candidates_to_groups(
+    Candidate.objects.bulkadd_candidates_to_groups(
         groups=created_groups,
         grouped_candidates=[
             [Candidate(student=user1), Candidate(student=user1)],
