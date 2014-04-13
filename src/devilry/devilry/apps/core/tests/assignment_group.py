@@ -1106,3 +1106,32 @@ class TestAssignmentGroupManager(TestCase):
         group3 = assignmentbuilder.add_group(students=[student3, student4]).group
         groups = AssignmentGroup.objects.order_by_candidate_username()
         self.assertEquals(list(groups), [group2, group3, group1])
+
+
+
+    def test_order_by_examiner_full_name(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')
+        examiner1 = UserBuilder('examiner1', full_name='X').user
+        examiner2 = UserBuilder('examiner2', full_name='A').user
+        examiner3 = UserBuilder('examiner3', full_name='Y').user
+        examiner4 = UserBuilder('examiner4', full_name='B').user
+        group1 = assignmentbuilder.add_group(examiners=[examiner1]).group
+        group2 = assignmentbuilder.add_group(examiners=[examiner2]).group
+        group3 = assignmentbuilder.add_group(examiners=[examiner3, examiner4]).group
+        groups = AssignmentGroup.objects.order_by_examiner_full_name()
+        self.assertEquals(list(groups), [group2, group3, group1])
+
+
+    def test_order_by_examiner_username(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')
+        examiner1 = UserBuilder(username='x').user
+        examiner2 = UserBuilder(username='a').user
+        examiner3 = UserBuilder(username='y').user
+        examiner4 = UserBuilder(username='b').user
+        group1 = assignmentbuilder.add_group(examiners=[examiner1]).group
+        group2 = assignmentbuilder.add_group(examiners=[examiner2]).group
+        group3 = assignmentbuilder.add_group(examiners=[examiner3, examiner4]).group
+        groups = AssignmentGroup.objects.order_by_examiner_username()
+        self.assertEquals(list(groups), [group2, group3, group1])

@@ -160,6 +160,47 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         ).order_by('first_candidate_username')
 
 
+    def order_by_examiner_full_name(self):
+        """
+        Order by the username of the alphabetically first examiner in the 
+        group.
+        """
+        return self.extra(
+            select={
+                'first_examiner_full_name': """
+                    SELECT
+                        core_devilryuserprofile.full_name as first_examiner_full_name
+                    FROM core_assignmentgroup_examiners
+                    INNER JOIN auth_user ON (auth_user.id = core_assignmentgroup_examiners.user_id)
+                    INNER JOIN core_devilryuserprofile ON (core_devilryuserprofile.user_id = auth_user.id)
+                    WHERE core_assignmentgroup_examiners.assignmentgroup_id = core_assignmentgroup.id
+                    ORDER BY core_devilryuserprofile.full_name
+                    LIMIT 0,1
+                    """
+            }
+        ).order_by('first_examiner_full_name')
+
+
+    def order_by_examiner_username(self):
+        """
+        Order by the username of the alphabetically first examiner in the 
+        group.
+        """
+        return self.extra(
+            select={
+                'first_examiner_username': """
+                    SELECT
+                        auth_user.username as first_examiner_username
+                    FROM core_assignmentgroup_examiners
+                    INNER JOIN auth_user ON (auth_user.id = core_assignmentgroup_examiners.user_id)
+                    WHERE core_assignmentgroup_examiners.assignmentgroup_id = core_assignmentgroup.id
+                    ORDER BY auth_user.username
+                    LIMIT 0,1
+                    """
+            }
+        ).order_by('first_examiner_username')
+
+
 class AssignmentGroupManager(models.Manager, BulkCreateManagerMixin):
     """
     The Manager used by :class:`.AssignmentGroup`.
@@ -292,6 +333,20 @@ class AssignmentGroupManager(models.Manager, BulkCreateManagerMixin):
         See :meth:`.AssignmentGroupQuerySet.order_by_candidate_username`.
         """
         return self.get_queryset().order_by_candidate_username()
+
+    def order_by_examiner_full_name(self):
+        """
+        Shortcut for ``AssignmentGroup.objects.get_queryset().order_by_examiner_full_name()``.
+        See :meth:`.AssignmentGroupQuerySet.order_by_examiner_full_name`.
+        """
+        return self.get_queryset().order_by_examiner_full_name()
+
+    def order_by_examiner_username(self):
+        """
+        Shortcut for ``AssignmentGroup.objects.get_queryset().order_by_examiner_username()``.
+        See :meth:`.AssignmentGroupQuerySet.order_by_examiner_username`.
+        """
+        return self.get_queryset().order_by_examiner_username()
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
