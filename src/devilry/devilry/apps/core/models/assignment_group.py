@@ -775,7 +775,15 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                 examiner.save()
 
     def _merge_candidates_into(self, target):
+        from devilry.apps.core.models import Candidate
         target_candidates = set([e.student.id for e in target.candidates.all()])
+        try:
+            only_candidate = self.only_candidate
+        except Candidate.DoesNotExist:
+            only_candidate = None
+        if only_candidate:
+            only_candidate.only_candidate_in_group = None
+            only_candidate.save()
         for candidate in self.candidates.all():
             if not candidate.student.id in target_candidates:
                 candidate.assignment_group = target
