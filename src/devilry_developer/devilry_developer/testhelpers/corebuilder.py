@@ -7,6 +7,7 @@ from devilry.apps.core.models import Subject
 from devilry.apps.core.models import Period
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
@@ -189,13 +190,15 @@ class AssignmentGroupBuilder(CoreBuilderBase):
         self.add_tags(*tags)
 
     def add_students(self, *users):
-        for user in users:
-            self.group.candidates.create(student=user)
+        candidates = [Candidate(student=user) for user in users]
+        self.add_candidates(*candidates)
         return self
 
     def add_candidates(self, *candidates):
-        for candidate in candidates:
-            self.group.candidates.add(candidate)
+        Candidate.objects.bulk_add_candidates_to_groups(
+            groups=[self.group],
+            grouped_candidates=[candidates]
+        )
         return self
 
     def add_examiners(self, *users):
