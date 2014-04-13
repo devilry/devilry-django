@@ -67,20 +67,20 @@ class TestPeriod(TestCase):
 
     def test_relatedexaminers_by_tag(self):
         period = PeriodBuilder.quickadd_ducku_duck1010_active().period
-        relatedstudent1 = period.relatedexaminer_set.create(
-            user=UserBuilder('studentuser1').user,
+        relatedexaminer1 = period.relatedexaminer_set.create(
+            user=UserBuilder('examineruser1').user,
             tags='group1,special')
-        relatedstudent2 = period.relatedexaminer_set.create(
-            user=UserBuilder('studentuser2').user,
+        relatedexaminer2 = period.relatedexaminer_set.create(
+            user=UserBuilder('examineruser2').user,
             tags='group1')
-        relatedstudent3 = period.relatedexaminer_set.create(
-            user=UserBuilder('studentuser3').user,
+        relatedexaminer3 = period.relatedexaminer_set.create(
+            user=UserBuilder('examineruser3').user,
             tags='group2,special')
         bytag = period.relatedexaminers_by_tag()
         self.assertEquals(bytag, {
-            'group1': [relatedstudent1, relatedstudent2],
-            'group2': [relatedstudent3],
-            'special': [relatedstudent1, relatedstudent3]
+            'group1': [relatedexaminer1, relatedexaminer2],
+            'group2': [relatedexaminer3],
+            'special': [relatedexaminer1, relatedexaminer3]
         })
 
 
