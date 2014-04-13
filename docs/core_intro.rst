@@ -62,10 +62,9 @@ ensure these fields are handled correctly.
 
 Candidate
 =========
-- :obj:`~devilry.apps.core.models.Candidate.only_candidate_in_group`
-
-Deprecated fields (will soon be removed, and should NOT be used for new code):
 
 - :obj:`~.Candidate.identifier`
 - :obj:`~.Candidate.full_name`
 - :obj:`~.Candidate.email`
+
+All of the cached fields on Candidate is deprecated (will soon be removed, and should NOT be used for new code).

@@ -313,10 +313,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         A django ``RelatedManager`` that holds the :class:`candidates <devilry.apps.core.models.Candidate>`
         on this group.
 
-    .. attribute:: only_candidate
-
-        The reverse of :class:`.Candidate.only_candidate_in_group`.
-
     .. attribute:: examiners
 
         A django.db.models.ManyToManyField_ that holds the examiner(s) that are
@@ -793,10 +789,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                 examiner.save()
 
     def _merge_candidates_into(self, target):
-        target.candidates.update(only_candidate_in_group=None)
         self.candidates\
             .exclude(student__in=target.candidates.values_list('student', flat=True))\
-            .update(assignment_group=target, only_candidate_in_group=None)
+            .update(assignment_group=target)
 
     def _set_latest_feedback_as_active(self):
         from .static_feedback import StaticFeedback

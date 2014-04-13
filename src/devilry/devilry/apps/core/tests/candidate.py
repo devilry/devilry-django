@@ -33,9 +33,6 @@ class TestCandidate(TestCase):
             set([user1, user2])) 
         self.assertEquals(group2builder.group.candidates.all().count(), 1)
         self.assertEquals(group2builder.group.candidates.all()[0].student, user3)
-        with self.assertRaises(Candidate.DoesNotExist):
-            candidate = group1builder.group.only_candidate
-        self.assertEquals(group2builder.group.only_candidate.student, user3)
 
 
 

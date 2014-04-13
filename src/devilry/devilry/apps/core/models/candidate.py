@@ -44,8 +44,6 @@ class CandidateManager(models.Manager):
             raise ValueError('groups and grouped_candidates must be the same length')
         candidates_to_create = []
         for group, candidates_in_group in itertools.izip(groups, grouped_candidates):
-            if len(candidates_in_group) == 1:
-                candidates_in_group[0].only_candidate_in_group = group
             for candidate in candidates_in_group:
                 candidate.assignment_group = group
                 candidates_to_create.append(candidate)
@@ -67,11 +65,6 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
     #: The `AssignmentGroup`_ where this groups belongs.
     assignment_group = models.ForeignKey('AssignmentGroup',
         related_name='candidates')
-
-    #: If this is the first candidate in the :obj:`~.Candidate.assignment_group`,
-    #: this field is set to the same value as :obj:`~.Candidate.assignment_group`.
-    only_candidate_in_group = models.OneToOneField('AssignmentGroup',
-        related_name='only_candidate', null=True, blank=True)
 
     #: A optional candidate id. This can be anything as long as it is not
     #: more than 30 characters. When the assignment is anonymous, this is
