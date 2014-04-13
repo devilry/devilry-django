@@ -155,6 +155,15 @@ class ExaminerManager(models.Manager):
             we assume the most common scenario is to not do anything more with the examiners
             right after they have been created.
 
+        .. note::
+
+            You will usually want to call::
+
+                Examiner.objects.bulkremove_examiners_from_groups(examinerusers, groups)
+
+            before calling this method unless you KNOW that the ``examinerusers`` is
+            not examiner on any of the ``groups``.
+
         :raises django.db.IntegrityError
             If any of the ``examinerusers`` is already examiner on any of the groups,
             the method will fail with IntegrityError, if we happen
@@ -176,11 +185,10 @@ class ExaminerManager(models.Manager):
         self.bulk_create(examiners_to_create)
 
 
-    def setup_examiners_by_relatedusertags(self, period, examinerusers, groups):
+    def setup_examiners_by_tags(self, period, examinerusers, groups):
         """
-        TODO:
-            Use RelatedExaminer tags, and match them with the current tags of the groups.
-            This way, admins can change the tags of the groups and then apply examiners by tag.
+        Setup examiners by matching the :class:`.RelatedExaminer` tags of the given
+        ``examinerusers`` with         the tags of the given groups.
 
         :param examinerusers: An iterable of user objects.
         :param groups:
@@ -203,31 +211,30 @@ class ExaminerManager(models.Manager):
             If any of the ``examinerusers`` is already examiner on any of the
             groups they are assigned by tag.
         """
+        from .assignment_group import AssignmentGroup
 
-        relatedexaminersbytag = period.relatedexaminers_by_tag()
-        relatatedstudentsbytag = period.relatedstudents_by_tag()
-        self.bulkclear_examiners_from_groups(groups)
-
-        # Group AssignmentGroups by user to make direct lookup by user possible
-        groupsbyuser = {}
-        candidates = Candidate.objects.filter(assignmentgroup__in=groups)\
-            .select_related('assignmentgroup', 'student')
-        for candidate in candidates:
-            if not candidate.student in groupsbyuser:
-                groupsbyuser[candidate.student] = []
-            groupsbyuser[candidate.student].append(candidate.group)
+        # Group the AssignmentGroups and RelatedExaminers by tags
+        groupids = [group.id for group in groups]
+        groupsbytag = AssignmentGroup.objects.filter(id__in=groupids).group_by_tags()
+        relatedexaminersbytag = period.relatedexaminers_by_tag(examinerusers)
 
         examiners_to_create = []
+        groups_by_examiner = {}
+        def add_examiner(examineruser, group):
+            if not examineruser in groups_by_examiner:
+                groups_by_examiner[examineruser] = set()
+            if not group in groups_by_examiner[examineruser]:
+                examiner = Examiner(user=relatedexaminer.user, assignmentgroup=group)
+                examiners_to_create.append(examiner)
+                groups_by_examiner[examineruser].add(group)
+
         # Loop through relatedexaminers grouped by tag
-        for tag, relatedexaminers in relatatedstudentsbytag.iteritems():
-            # Loop through all relatedstudents matching the same tag as the current relatedexaminer
-            for relatedstudent in relatatedstudentsbytag.get(tag, []):
-                # Loop through all groups where the relatedstudent in candidate (usually 0 or 1)
-                for group in groupsbyuser.get(relatedstudent.user, []):
-                    # Add all relatedexaminers with the current tag to the matched group
-                    for relatedexaminer in relatedexaminers:
-                        examiner = Examiner(user=relatedexaminer.user, assignmentgroup=group)  
-                        examiners_to_create.append(examiner)
+        for tag, relatedexaminers in relatedexaminersbytag.iteritems():
+            # Loop through all groups matching the same tag as the current relatedexaminer
+            for group in groupsbytag.get(tag, []):
+                # Add all relatedexaminers with the current tag to the matched group
+                for relatedexaminer in relatedexaminers:
+                    add_examiner(relatedexaminer.user, group)
         self.bulk_create(examiners_to_create)
 
 

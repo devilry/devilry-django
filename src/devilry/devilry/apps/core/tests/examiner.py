@@ -117,36 +117,53 @@ class TestExaminer(TestCase):
         self.assertIn(Examiner.objects.filter(user=examineruser2).count(), [1, 2])
 
 
+    def test_setup_examiners_by_tags(self):
+        periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
+        period = periodbuilder.period
+        examineruser1 = UserBuilder('examineruser1').user
+        examineruser2 = UserBuilder('examineruser2').user
+        examineruser3 = UserBuilder('examineruser3').user
+        examineruser4unused = UserBuilder('examineruser4unused').user
+        period.relatedexaminer_set.create(
+            user=examineruser1,
+            tags='a,special')
+        period.relatedexaminer_set.create(
+            user=examineruser2,
+            tags='b')
+        period.relatedexaminer_set.create(
+            user=examineruser3,
+            tags='b,special')
+        period.relatedexaminer_set.create( # Ignored (not sent into method)
+            user=examineruser4unused,
+            tags='b,special')
 
+        assignmentbuilder = periodbuilder.add_assignment('assignment1')
+        group1 = assignmentbuilder.add_group(tags=['a']).group
+        group2 = assignmentbuilder.add_group(tags=['b']).group
+        group3 = assignmentbuilder.add_group(tags=['b', 'special']).group
+        group4 = assignmentbuilder.add_group().group
+        group5 = assignmentbuilder.add_group(tags=['noexaminer']).group
+        group6 = assignmentbuilder.add_group(tags=['b', 'special']).group # Ignored (not sent into method)
 
-    # def test_setup_examiners_by_relatedusertags(self):
-    #     studentuser1 = UserBuilder('studentuser1').user
+        self.assertEquals(Examiner.objects.count(), 0)
+        Examiner.objects.setup_examiners_by_tags(
+            period=period,
+            examinerusers=[examineruser1, examineruser2, examineruser3],
+            groups=[group1, group2, group3, group4, group5])
+        self.assertEquals(Examiner.objects.count(), 6)
 
-    #     periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
-    #     period = periodbuilder.period
-    #     relatedexaminer1 = period.relatedexaminer_set.create(
-    #         user=,
-    #         tags='group1,special')
-    #     relatedexaminer2 = period.relatedexaminer_set.create(
-    #         user=UserBuilder('studentuser2').user,
-    #         tags='group1')
-    #     relatedexaminer3 = period.relatedexaminer_set.create(
-    #         user=UserBuilder('studentuser3').user,
-    #         tags='group2,special')
+        def examinerusers_set(group):
+            return set([e.user for e in group.examiners.all()])
+        self.assertEquals(
+            examinerusers_set(group1),
+            set([examineruser1]))
+        self.assertEquals(
+            examinerusers_set(group2),
+            set([examineruser2, examineruser3]))
+        self.assertEquals(
+            examinerusers_set(group3),
+            set([examineruser1, examineruser2, examineruser3]))
 
-    #     assignmentbuilder = periodbuilder.add_assignment('assignment1')
-    #     group1 = assignmentbuilder.add_group().group
-    #     group2 = assignmentbuilder.add_group().group
-    #     examineruser1 = UserBuilder('examineruser1').user
-    #     examineruser2 = UserBuilder('examineruser2').user
-
-    #     self.assertEquals(Examiner.objects.count(), 0)
-    #     Examiner.objects.bulkadd_examiners_to_groups(
-    #         examinerusers=[examineruser1, examineruser2],
-    #         groups=[group1, group2])
-    #     self.assertEquals(Examiner.objects.count(), 4)
-    #     self.assertEquals(group1.examiners.count(), 2)
-    #     self.assertEquals(group2.examiners.count(), 2)
-    #     self.assertEquals(
-    #         set([e.user for e in group1.examiners.all()]),
-    #         set([examineruser1, examineruser2]))
+        self.assertEquals(group4.examiners.count(), 0)
+        self.assertEquals(group5.examiners.count(), 0)
+        self.assertEquals(group6.examiners.count(), 0)
