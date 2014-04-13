@@ -1100,12 +1100,12 @@ class TestAssignmentGroupManager(TestCase):
         student1 = UserBuilder('student1', full_name='X').user
         student2 = UserBuilder('student2', full_name='A').user
         student3 = UserBuilder('student3', full_name='Y').user
-        student4 = UserBuilder('student4', full_name='YY').user
+        student4 = UserBuilder('student4', full_name='B').user
         group1 = assignmentbuilder.add_group(students=[student1]).group
         group2 = assignmentbuilder.add_group(students=[student2]).group
         group3 = assignmentbuilder.add_group(students=[student3, student4]).group
         groups = AssignmentGroup.objects.order_by_candidate_full_name()
-        self.assertEquals(list(groups), [group3, group2, group1])
+        self.assertEquals(list(groups), [group2, group3, group1])
 
 
     def test_order_by_candidate_username(self):
@@ -1114,9 +1114,9 @@ class TestAssignmentGroupManager(TestCase):
         student1 = UserBuilder(username='x').user
         student2 = UserBuilder(username='a').user
         student3 = UserBuilder(username='y').user
-        student4 = UserBuilder(username='yy').user
+        student4 = UserBuilder(username='b').user
         group1 = assignmentbuilder.add_group(students=[student1]).group
         group2 = assignmentbuilder.add_group(students=[student2]).group
         group3 = assignmentbuilder.add_group(students=[student3, student4]).group
         groups = AssignmentGroup.objects.order_by_candidate_username()
-        self.assertEquals(list(groups), [group3, group2, group1])
+        self.assertEquals(list(groups), [group2, group3, group1])

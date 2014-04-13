@@ -122,24 +122,42 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
 
     def order_by_candidate_full_name(self):
         """
-        Shortcut for ``order_by('only_candidate__student__devilryuserprofile__full_name')``.
-
-        .. note::
-            Groups with more than one candidate has no ``only_candidate``,
-            so their ordering key will be ``None``.
+        Order by the full name of the alphabetically first candidate in the 
+        group.
         """
-        return self.order_by('only_candidate__student__devilryuserprofile__full_name')
-
+        return self.extra(
+            select={
+                'first_candidate_full_name': """
+                    SELECT
+                        core_devilryuserprofile.full_name as first_candidate_full_name
+                    FROM core_candidate
+                    INNER JOIN auth_user ON (auth_user.id = core_candidate.student_id)
+                    INNER JOIN core_devilryuserprofile ON (core_devilryuserprofile.user_id = auth_user.id)
+                    WHERE core_candidate.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY core_devilryuserprofile.full_name
+                    LIMIT 0,1
+                    """
+            }
+        ).order_by('first_candidate_full_name')
 
     def order_by_candidate_username(self):
         """
-        Shortcut for ``order_by('only_candidate__student__username')``.
-
-        .. note::
-            Groups with more than one candidate has no ``only_candidate``,
-            so their ordering key will be ``None``.
+        Order by the username of the alphabetically first candidate in the 
+        group.
         """
-        return self.order_by('only_candidate__student__username')
+        return self.extra(
+            select={
+                'first_candidate_username': """
+                    SELECT
+                        auth_user.username as first_candidate_username
+                    FROM core_candidate
+                    INNER JOIN auth_user ON (auth_user.id = core_candidate.student_id)
+                    WHERE core_candidate.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY auth_user.username
+                    LIMIT 0,1
+                    """
+            }
+        ).order_by('first_candidate_username')
 
 
 class AssignmentGroupManager(models.Manager, BulkCreateManagerMixin):
