@@ -143,6 +143,11 @@ AssignmentGroup
 
 .. autoclass:: devilry.apps.core.models.AssignmentGroup
 
+.. autoclass:: devilry.apps.core.models.AssignmentGroupQuerySet
+
+.. autoclass:: devilry.apps.core.models.AssignmentGroupManager
+
+
 AssignmentGroupTag
 #########################################################
 

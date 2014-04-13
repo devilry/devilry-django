@@ -9,7 +9,10 @@ from .relateduser import RelatedExaminer, RelatedStudent, RelatedStudentKeyValue
 from .assignment import Assignment
 from .pointrange_to_grade import PointRangeToGrade
 from .pointrange_to_grade import PointToGradeMap
-from .assignment_group import AssignmentGroup, AssignmentGroupTag
+from .assignment_group import AssignmentGroup
+from .assignment_group import AssignmentGroupTag
+from .assignment_group import AssignmentGroupQuerySet
+from .assignment_group import AssignmentGroupManager
 from .delivery import Delivery
 from .deadline import Deadline
 from .candidate import Candidate
