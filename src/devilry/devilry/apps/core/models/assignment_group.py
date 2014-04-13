@@ -98,7 +98,6 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         making other functions that require a map from the User object of a
         student to a group.
 
-
         :return:
             A dict where each key is a User object and each value is a list of
             groups where that user is :class:`.Candidate`.
@@ -110,15 +109,46 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             the AssignmentGroups.
         """
         from .candidate import Candidate
-        groupsbyuser = {}
+        groupsbystudent = {}
         candidates = Candidate.objects\
             .filter(assignment_group__in=self.all())\
             .select_related('assignment_group', 'student')
         for candidate in candidates:
-            if not candidate.student in groupsbyuser:
-                groupsbyuser[candidate.student] = []
-            groupsbyuser[candidate.student].append(candidate.assignment_group)
-        return groupsbyuser
+            if not candidate.student in groupsbystudent:
+                groupsbystudent[candidate.student] = []
+            groupsbystudent[candidate.student].append(candidate.assignment_group)
+        return groupsbystudent
+
+
+    def group_by_examineruser(self):
+        """
+        Group the AssignmentGroups by examiner.
+
+        :return:
+            A dict where each key is a User object and each value is a list of
+            groups where that user is :class:`.Examiner`.
+
+        Example - group all groups on an assignment by examiner, and order groups by ::
+
+            Examiner.objects\
+                .filter(assignmentgroup__parentnode_id=1)\
+                .order_by('user__username')\
+                .groups_grouped_by_examiner()
+
+        .. note::
+
+            Not available on the :class:`.ExaminerManager` because
+            grouping like this is far to inefficient to ever use on all
+            the examiners in the database.
+        """
+        groupsbyexaminer = {}
+        for group in self.prefetch_related('examiners', 'examiners__user'):
+            for examiner in group.examiners.all():
+                if not examiner.user in groupsbyexaminer:
+                    groupsbyexaminer[examiner.user] = []
+                groupsbyexaminer[examiner.user].append(group)
+        return groupsbyexaminer
+
 
     def group_by_tags(self):
         """

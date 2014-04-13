@@ -1153,3 +1153,20 @@ class TestAssignmentGroupManager(TestCase):
         self.assertEquals(set(groupedbystudent[student1]), set([group1, group3]))
         self.assertEquals(set(groupedbystudent[student2]), set([group2]))
         self.assertEquals(set(groupedbystudent[student3]), set([group3]))
+
+    def test_group_by_examineruser(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')
+        examiner1 = UserBuilder('examiner1').user
+        examiner2 = UserBuilder('examiner2').user
+        examiner3 = UserBuilder('examiner3').user
+        group1 = assignmentbuilder.add_group(examiners=[examiner1]).group
+        group2 = assignmentbuilder.add_group(examiners=[examiner2]).group
+        group3 = assignmentbuilder.add_group(examiners=[examiner1, examiner3]).group
+        assignmentbuilder.add_group()
+        groupedbyexaminer = AssignmentGroup.objects.get_queryset().group_by_examineruser()
+        self.assertEquals(set(groupedbyexaminer.keys()),
+            set([examiner1, examiner2, examiner3]))
+        self.assertEquals(set(groupedbyexaminer[examiner1]), set([group1, group3]))
+        self.assertEquals(set(groupedbyexaminer[examiner2]), set([group2]))
+        self.assertEquals(set(groupedbyexaminer[examiner3]), set([group3]))
