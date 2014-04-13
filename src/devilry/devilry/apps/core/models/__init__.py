@@ -16,6 +16,7 @@ from .assignment_group import AssignmentGroupManager
 from .delivery import Delivery
 from .deadline import Deadline
 from .candidate import Candidate
+from .candidate import CandidateManager
 from .static_feedback import StaticFeedback
 from .filemeta import FileMeta
 from .devilryuserprofile import DevilryUserProfile

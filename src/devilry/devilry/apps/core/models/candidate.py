@@ -11,6 +11,9 @@ from devilryuserprofile import DevilryUserProfile
 
 
 class CandidateManager(models.Manager):
+    """
+    The Manager for :class:`.Candidate`.
+    """
     def bulk_add_candidates_to_groups(self, groups, grouped_candidates):
         """
         Bulk add candidates to groups.
@@ -51,40 +54,32 @@ class CandidateManager(models.Manager):
 
 class Candidate(models.Model, Etag, AbstractIsAdmin):
     """
-    .. attribute:: assignment_group
-
-        The `AssignmentGroup`_ where this groups belongs.
-
-    .. attribute:: student
-
-        A student (a foreign key to a User).
-
-    .. attribute:: candidate_id
-
-        A optional candidate id. This can be anything as long as it is not
-        more than 30 characters. When the assignment is anonymous, this is
-        the "name" shown to examiners instead of the username of the
-        student.
-
-    .. attribute:: identifier
-        The candidate_id if this is a candidate on an anonymous assignment, and username if not.
+    A Candidate (student with metadata) on an :class:`.AssignmentGroup`.
     """
     objects = CandidateManager()
 
     class Meta:
         app_label = 'core'
 
+    #: A student (a foreign key to a User).
     student = models.ForeignKey(User)
 
+    #: The `AssignmentGroup`_ where this groups belongs.
     assignment_group = models.ForeignKey('AssignmentGroup',
         related_name='candidates')
 
-    #: If this is the first candidate in the :obj:`.assignment_group`,
-    #: this field is set to the same value as :obj:`.assignment_group`.
+    #: If this is the first candidate in the :obj:`~.Candidate.assignment_group`,
+    #: this field is set to the same value as :obj:`~.Candidate.assignment_group`.
     only_candidate_in_group = models.OneToOneField('AssignmentGroup',
         related_name='only_candidate', null=True, blank=True)
 
+    #: A optional candidate id. This can be anything as long as it is not
+    #: more than 30 characters. When the assignment is anonymous, this is
+    #: the "name" shown to examiners instead of the username of the
+    #: student.
     candidate_id = models.CharField(max_length=30, blank=True, null=True, help_text='An optinal candidate id. This can be anything as long as it is less than 30 characters.')
+
+    #: The candidate_id if this is a candidate on an anonymous assignment, and username if not.
     identifier = models.CharField(max_length=30,
                                   help_text='The candidate_id if this is a candidate on an anonymous assignment, and username if not.')
     full_name = models.CharField(max_length=300, blank=True, null=True,

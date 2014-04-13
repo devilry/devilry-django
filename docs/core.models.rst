@@ -136,7 +136,8 @@ Candidate
 #########################################################
 
 .. autoclass:: devilry.apps.core.models.Candidate
-    :no-members:
+.. autoclass:: devilry.apps.core.models.CandidateManager
+
 
 AssignmentGroup
 #########################################################
