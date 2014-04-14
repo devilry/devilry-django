@@ -3,6 +3,7 @@ from django.db.models.signals import post_save
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
+from django.utils.translation import ugettext_lazy as _
 
 from model_utils import Etag
 from abstract_is_admin import AbstractIsAdmin
@@ -70,15 +71,11 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
     #: more than 30 characters. When the assignment is anonymous, this is
     #: the "name" shown to examiners instead of the username of the
     #: student.
-    candidate_id = models.CharField(max_length=30, blank=True, null=True, help_text='An optinal candidate id. This can be anything as long as it is less than 30 characters.')
+    candidate_id = models.CharField(
+        max_length=30,
+        blank=True, null=True,
+        help_text='An optional candidate id. This can be anything as long as it is less than 30 characters.')
 
-    #: The candidate_id if this is a candidate on an anonymous assignment, and username if not.
-    identifier = models.CharField(max_length=30,
-                                  help_text='The candidate_id if this is a candidate on an anonymous assignment, and username if not.')
-    full_name = models.CharField(max_length=300, blank=True, null=True,
-                                 help_text='None if this is a candidate on an anonymous assignment, and full name if not.')
-    email = models.CharField(max_length=300, blank=True, null=True,
-                                 help_text='None if this is a candidate on an anonymous assignment, and email address if not.')
     etag = models.DateTimeField(auto_now_add=True)
 
     @classmethod
@@ -91,55 +88,39 @@ class Candidate(models.Model, Etag, AbstractIsAdmin):
     def __unicode__(self):
         return 'id={id} student={student}'.format(id=self.id, student=self.student)
 
-    def update_identifier(self, anonymous):
-        if anonymous:
-            self.full_name = None
-            self.email = None
-            if not self.candidate_id:
-                self.identifier = "candidate-id missing"
-            else:
-                self.identifier = self.candidate_id
-        else:
-            self.email = self.student.email
-            self.full_name = self.student.devilryuserprofile.full_name
-            self.identifier = self.student.username
+    @property
+    def full_name(self):
+        """
+        Returns the full name of the student.
+        """
+        return self.student.devilryuserprofile.full_name
 
-    def save(self, *args, **kwargs):
-        anonymous = kwargs.pop('anonymous', self.assignment_group.parentnode.anonymous)
-        self.update_identifier(anonymous)
-        super(Candidate, self).save(*args, **kwargs)
+    def get_candidate_id_or_fallback(self):
+        """
+        Get the :obj:`.candidate_id`, or fall back to "Candidate ID not defined"
+        translated to the current language.
+        """
+        return self.candidate_id or _("Candidate ID not defined")
+
+    @property
+    def identifier(self):
+        """
+        If the assignment is anonymous, return :meth:`.get_candidate_id_or_fallback`,
+        if not, return the username of the student.
+        """
+        anonymous = self.assignment_group.parentnode.anonymous
+        if anonymous:
+            return self.get_candidate_id_or_fallback()
+        else:
+            return self.student.username
 
     @property
     def displayname(self):
         """
         Return a name for the candidate, preferrably the full name, but use the
-        ``identifier`` if that is not available.
+        username if that is not available.
         """
         if self.full_name:
             return self.full_name
         else:
-            return self.identifier
-
-
-def sync_candidate_with_user_on_change(sender, **kwargs):
-    """
-    Signal handler which is invoked when a User is saved.
-    """
-    user = kwargs['instance']
-    for candidate in Candidate.objects.filter(student=user):
-        candidate.save()
-
-post_save.connect(sync_candidate_with_user_on_change,
-                  sender=User)
-
-
-def sync_candidate_with_userprofile_on_change(sender, **kwargs):
-    """
-    Signal handler which is invoked when a DevilryUserProfile is saved.
-    """
-    userprofile = kwargs['instance']
-    for candidate in Candidate.objects.filter(student=userprofile.user):
-        candidate.save()
-
-post_save.connect(sync_candidate_with_userprofile_on_change,
-                  sender=DevilryUserProfile)
+            return self.student.username
