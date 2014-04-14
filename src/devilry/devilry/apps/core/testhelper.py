@@ -530,7 +530,6 @@ class TestHelper(object):
             cand = group.candidates.order_by('-id')[0]
             #cand.candidate_id = cid if cid != None else str(cand.student.id)
             cand.candidate_id = cid
-            cand.update_identifier(parentnode.anonymous)
             cand.full_clean()
             cand.save()
 
