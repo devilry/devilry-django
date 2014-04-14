@@ -482,25 +482,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         return Q(assignmentgroups__candidates__student=user_obj)
 
     def save(self, *args, **kwargs):
-        if self.pk:
-            # Only when assignment already exists in the database
-            self.update_candidates_identifer()
         super(Assignment, self).save(*args, **kwargs)
-
-    def update_candidates_identifer(self):
-        """ If the anonymous flag is changed, update the identifer on all
-        the candidates on this assignment.
-        """
-        # Get current value stored in the db
-        db_assignment = Assignment.objects.get(id=self.id)
-        # No change, so return
-        if self.anonymous == db_assignment.anonymous:
-            return
-        # Get all candidates on assignmentgroups for this assignment
-        candidates = Candidate.objects.filter(Q(assignment_group__parentnode__id=self.id))
-        for cand in candidates: 
-            #cand.update_identifier(self.anonymous)
-            cand.save(anonymous=self.anonymous)
 
     @classmethod
     def q_is_admin(cls, user_obj):
