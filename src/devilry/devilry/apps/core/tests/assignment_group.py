@@ -900,7 +900,7 @@ class TestAssignmentGroup(TestCase):
                 Candidate(student=UserBuilder('student1').user),
                 Candidate(student=UserBuilder('student2').user, candidate_id='secret'),
             )
-        self.assertEquals(groupbuilder.group.get_candidates(), 'unknown-candidateid, secret')
+        self.assertEquals(groupbuilder.group.get_candidates(), 'candidateid-undefined, secret')
 
 
 

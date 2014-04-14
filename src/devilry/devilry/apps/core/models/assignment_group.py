@@ -653,7 +653,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         return self.parentnode
 
-    def get_candidate_ids(self, nonevalue='unknown-candidateid'):
+    def get_candidate_ids(self, nonevalue='candidateid-undefined'):
         """
         Get the candidate ids of all Candidates on this group.
         Should only be used with anonymous groups.
