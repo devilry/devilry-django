@@ -95,24 +95,6 @@ class TestAssignmentGroupOld(TestCase, TestHelper):
     def test_get_students(self):
         self.assertEquals('student1', self.inf1100_looong_assignment1_g1.get_students())
         self.assertEquals('student3, student2', self.inf1100_looong_assignment1_g3.get_students())
-        
-    def test_get_candidates(self):
-        self.assertEquals('student3, student2', self.inf1100_looong_assignment1_g3.get_candidates())
-        self.inf1100_looong_assignment1.anonymous = True
-        self.inf1100_looong_assignment1.save()
-        #self.assertEquals('candidate-id missing, candidate-id missing',
-        #                   self.inf1100_looong_assignment1_g3.get_candidates())
-        cands = self.inf1100_looong_assignment1_g3.candidates.all()
-        cand0 = cands[0]
-        cand0.candidate_id = "2"
-        cand0.update_identifier(True)
-        cand0.save()
-        cand1 = cands[1]
-        cand1.candidate_id = "5"
-        cand1.update_identifier(True)
-        cand1.save()
-        ag = AssignmentGroup.objects.get(id=self.inf1100_looong_assignment1_g3.id)
-        self.assertEquals('2, 5', ag.get_candidates())
 
     def test_get_examiners(self):
         self.assertEquals('examiner1, examiner2, examiner3', self.inf1100_looong_assignment1_g3.get_examiners())
@@ -898,6 +880,27 @@ class TestAssignmentGroup(TestCase):
         self.assertEquals(created_groupsA[0].parentnode, assignment)
         self.assertEquals(created_groupsA[1].parentnode, assignment)
         self.assertEquals(created_groupsA[2].parentnode, assignment)
+
+    def test_get_candidates(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()\
+            .add_candidates(
+                Candidate(student=UserBuilder('student1').user),
+                Candidate(student=UserBuilder('student2').user),
+            )
+        self.assertEquals(groupbuilder.group.get_candidates(), 'student1, student2')
+        self.assertEquals(groupbuilder.group.get_candidates('-'), 'student1-student2')
+
+    def test_get_candidates_anonymous(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', anonymous=True)\
+            .add_group()\
+            .add_candidates(
+                Candidate(student=UserBuilder('student1').user),
+                Candidate(student=UserBuilder('student2').user, candidate_id='secret'),
+            )
+        self.assertEquals(groupbuilder.group.get_candidates(), 'unknown-candidateid, secret')
 
 
 

@@ -653,6 +653,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         return self.parentnode
 
+    def get_candidate_ids(self, nonevalue='unknown-candidateid'):
+        """
+        Get the candidate ids of all Candidates on this group.
+        Should only be used with anonymous groups.
+        """
+        return [candidate.candidate_id or nonevalue for candidate in self.candidates.all()]
+
+
     @property
     def short_displayname(self):
         """
@@ -664,7 +672,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         .. seealso:: https://github.com/devilry/devilry-django/issues/498
         """
         if self.assignment.anonymous:
-            out = self.get_candidates()
+            out = ', '.join(self.get_candidate_ids())
         elif self.name:
             out = self.name
         else:
@@ -688,7 +696,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         .. seealso:: https://github.com/devilry/devilry-django/issues/499
         """
         if self.assignment.anonymous:
-            out = self.get_candidates()
+            out = ', '.join(self.get_candidate_ids())
         else:
             candidates = self.candidates.select_related('student', 'student__devilryuserprofile')
             names = [candidate.student.devilryuserprofile.get_displayname() for candidate in candidates]
@@ -703,7 +711,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def __unicode__(self):
         return u'AssignmentGroup(id={id})'.format(id=self.id)
 
-    def get_students(self):
+    def get_students(self, separator=u', '):
         """ Get a string containing all students in the group separated by
         comma and a space, like: ``superman, spiderman, batman``.
 
@@ -711,7 +719,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         an administrator. Use :meth:`get_candidates`
         instead.
         """
-        return u', '.join([c.student.username for c in self.candidates.select_related('student')])
+        candidates = self.candidates.select_related('student').order_by('student__username')
+        return separator.join([c.student.username for c in candidates])
 
     def get_candidates(self, separator=u', '):
         """
@@ -722,7 +731,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         :param separator: The unicode string used to separate candidates. Defaults to ``u', '``.
         """
-        return separator.join([c.identifier for c in self.candidates.all()])
+        if self.parentnode.anonymous:
+            return separator.join(self.get_candidate_ids())
+        else:
+            return self.get_students(separator)
 
     def get_examiners(self, separator=u', '):
         """
