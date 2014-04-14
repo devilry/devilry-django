@@ -8,11 +8,8 @@ class SimplifiedCandidateMetaMixin(object):
     using the Simplified API """
     model = models.Candidate
     resultfields = FieldSpec('id',
-                             'identifier',
-                             'full_name',
-                             'email',
                              'assignment_group')
-    searchfields = FieldSpec('identifier')
+    searchfields = FieldSpec()
     filters = FilterSpecs(FilterSpec('id'),
                           FilterSpec('assignment_group'),
                           FilterSpec('assignment_group__parentnode'), # Assignment

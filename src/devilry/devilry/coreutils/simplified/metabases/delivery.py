@@ -15,12 +15,9 @@ class SimplifiedDeliveryMetaMixin(object):
                              'deadline',
                              'successful',
                              'delivery_type', 'alias_delivery',
-                             delivered_by=['delivered_by__identifier'],
-                             candidates=['deadline__assignment_group__candidates__identifier'],
                              deadline=['deadline__deadline'],
                              assignment_group=['deadline__assignment_group',
                                                'deadline__assignment_group__name'],
-                             assignment_group_users=['deadline__assignment_group__candidates__identifier'],
                              assignment=['deadline__assignment_group__parentnode',
                                          'deadline__assignment_group__parentnode__delivery_types',
                                          'deadline__assignment_group__parentnode__short_name',
@@ -36,7 +33,6 @@ class SimplifiedDeliveryMetaMixin(object):
     searchfields = FieldSpec('number',
                              # assignmentgroup
                              'deadline__assignment_group__name',
-                             'deadline__assignment_group__candidates__identifier',
                              # assignment
                              'deadline__assignment_group__parentnode__short_name',
                              'deadline__assignment_group__parentnode__long_name',
