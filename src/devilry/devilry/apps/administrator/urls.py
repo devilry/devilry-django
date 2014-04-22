@@ -1,3 +1,6 @@
-from restful import administrator_restful
+from django.conf.urls.defaults import patterns
 
-urlpatterns = administrator_restful
+from .restful import administrator_restful
+
+urlpatterns = patterns('devilry.apps.administrator')
+urlpatterns += administrator_restful
