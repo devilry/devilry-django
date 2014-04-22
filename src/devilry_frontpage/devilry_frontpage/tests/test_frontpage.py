@@ -17,11 +17,11 @@ class TestFrontpage(TestCase, LoginTestCaseMixin):
 
     def test_not_authenticated(self):
         response = self.client.get(self.url)
-        self.assertTrue(response.status_code, 302)
+        self.assertEquals(response.status_code, 302)
 
     def test_authenticated(self):
         response = self.get_as(self.testuser, self.url)
-        self.assertTrue(response.status_code, 200)
+        self.assertEquals(response.status_code, 200)
     
     def test_helplinks(self):
         html = self.get_as(self.testuser, self.url).content
@@ -29,3 +29,7 @@ class TestFrontpage(TestCase, LoginTestCaseMixin):
         self.assertEquals(
             cssGet(html, '#devilry_frontpage_helplinks ul li a').text.strip(),
             'Official Devilry documentation')
+
+    def test_changelanguage(self):
+        html = self.get_as(self.testuser, self.url).content
+        self.assertTrue(cssExists(html, '#devilry_frontpage_languageselect #devilry_change_language_form'))

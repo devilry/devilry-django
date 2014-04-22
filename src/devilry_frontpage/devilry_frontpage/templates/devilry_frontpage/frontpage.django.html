@@ -5,8 +5,12 @@
 
 {% block body %}
     <div class="container">
+        <h2>{% trans "Need help?" %}</h2>
         <div id="devilry_frontpage_helplinks">
             {% include "devilry_frontpage/includes/help.django.html" %}
+        </div>
+        <div id="devilry_frontpage_languageselect">
+            {% include "devilry_header/includes/change_language.django.html" %}
         </div>
     </div>
 {% endblock body %}
