@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 
 from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.extjsapp import AppView
+from .views.frontpage import FrontpageView
 from .views.groupinvite_overview import GroupInviteOverviewView
 from .views.groupinvite_respond import GroupInviteRespondView
 from .views.groupinvite_delete import GroupInviteDeleteView
@@ -21,8 +22,9 @@ def emptyview(request):
 
 
 urlpatterns = patterns('devilry_student',
-    url('^$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view()))),
-       name='devilry_student'),
+    url('^old$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view())))),
+    url('^$', login_required(FrontpageView.as_view()),
+        name='devilry_student'),
     url('^rest/', include('devilry_student.rest.urls')),
     url('^emptytestview', emptyview), # NOTE: Only used for testing
     url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
