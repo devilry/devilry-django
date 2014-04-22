@@ -13,7 +13,7 @@ from devilry_developer.testhelpers.soupselect import cssExists
 class TestAboutMeView(TestCase):
     def setUp(self):
         self.testuser = UserBuilder('testuser').user
-        self.url = reverse('devilry_search_aboutme')
+        self.url = reverse('devilry_header_aboutme')
 
     def _getas(self, user, *args, **kwargs):
         self.client.login(username=user.username, password='test')

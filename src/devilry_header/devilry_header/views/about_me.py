@@ -3,8 +3,9 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from devilry_settings.views import urlsetting_or_unsetview
 
+
 class AboutMeView(DetailView):
-    template_name = "devilry_search/about_me.django.html"
+    template_name = "devilry_header/about_me.django.html"
     model = User
 
     def get_object(self):
