@@ -1,1 +1,1 @@
-from test_aboutme import TestAboutMeView
+from .test_aboutme import TestAboutMeView
