@@ -1,13 +1,10 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from devilry.apps.core.models import Deadline
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
-from devilry_developer.testhelpers.soupselect import cssFind
-from devilry_developer.testhelpers.soupselect import cssGet
-from devilry_developer.testhelpers.soupselect import cssExists
+# from devilry_developer.testhelpers.soupselect import cssFind
+# from devilry_developer.testhelpers.soupselect import cssGet
+# from devilry_developer.testhelpers.soupselect import cssExists
 
 
 class TestAboutMeView(TestCase):
@@ -26,5 +23,4 @@ class TestAboutMeView(TestCase):
     def test_render_noinput(self):
         response = self._getas(self.testuser)
         self.assertEquals(response.status_code, 200)
-        html = response.content
-        #self.assertEquals(cssGet(html, '#id_search').value, None)
+        # html = response.content
