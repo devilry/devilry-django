@@ -1,8 +1,0 @@
-{
-  "name": "bootstrap",
-  "version": "3.0.3",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/twbs/bootstrap.git"
-  }
-}
