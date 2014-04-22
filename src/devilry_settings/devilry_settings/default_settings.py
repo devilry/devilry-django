@@ -49,7 +49,6 @@ INSTALLED_APPS = ['django.contrib.markup',
                   'django_decoupled_docs',
 
                   'devilry.apps.core',
-                  'devilry.apps.theme',
                   'devilry.apps.extjshelpers',
                   'devilry.apps.extjsux',
                   'devilry.apps.developertools',
