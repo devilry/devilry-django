@@ -274,8 +274,8 @@ class SubjectBuilder(BaseNodeBuilderBase):
     modelcls = Subject
 
     @classmethod
-    def quickadd_ducku_duck1010(cls):
-        return NodeBuilder('ducku').add_subject('duck1010')
+    def quickadd_ducku_duck1010(cls, **kwargs):
+        return NodeBuilder('ducku').add_subject('duck1010', **kwargs)
 
     def add_period(self, *args, **kwargs):
         kwargs['parentnode'] = self.subject
