@@ -7,7 +7,6 @@ def template_variables(request):
         'DEVILRY_URLPATH_PREFIX': settings.DEVILRY_URLPATH_PREFIX,
         'DEVILRY_LOGOUT_URL': settings.DEVILRY_LOGOUT_URL,
         'session': request.session,
-        'DEVILRY_THEME_URL': settings.DEVILRY_THEME_URL,
         'DEVILRY_EXTJS_URL': settings.DEVILRY_EXTJS_URL,
         'DEVILRY_MATHJAX_URL': settings.DEVILRY_MATHJAX_URL,
         'DEVILRY_HELP_URL': settings.DEVILRY_HELP_URL,

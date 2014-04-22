@@ -28,7 +28,6 @@ def settings_view(request):
          'DEVILRY_SUPERUSERPANEL_URL': settings.DEVILRY_URLPATH_PREFIX + '/superuser/',
          'DEVILRY_URLPATH_PREFIX': settings.DEVILRY_URLPATH_PREFIX,
          'DEVILRY_LOGOUT_URL': settings.DEVILRY_LOGOUT_URL,
-         'DEVILRY_THEME_URL': settings.DEVILRY_THEME_URL,
          'DEVILRY_EXTJS_URL': settings.DEVILRY_EXTJS_URL,
          'DEVILRY_MATHJAX_URL': settings.DEVILRY_MATHJAX_URL,
          'DEVILRY_LACKING_PERMISSIONS_URL': urlsetting_or_unsetview('DEVILRY_LACKING_PERMISSIONS_URL'),
