@@ -1,0 +1,27 @@
+{% load i18n %}
+{% load url from future %}
+
+{% get_current_language as LANGUAGE_CODE %}
+
+<form id="devilry_change_language_form" role="form" method="post" action="{% url 'devilry_change_language' %}">
+    {% csrf_token %}
+    <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
+    <select class="form-control" name="languagecode">
+        {% for languagecode, language in LANGUAGES %}
+            <option value="{{ languagecode }}"
+                    {% if languagecode == LANGUAGE_CODE %}
+                        selected="selected"
+                    {% endif %}>
+                {{ language }}
+            </option>
+        {% endfor %}
+    </select>
+</form>
+
+<script>
+    $(function() {
+        $('#devilry_change_language_form select').on('change', function() {
+            $('#devilry_change_language_form').submit();
+        });
+    });
+</script>
