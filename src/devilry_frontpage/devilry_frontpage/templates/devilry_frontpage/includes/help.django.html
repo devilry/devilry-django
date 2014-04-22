@@ -1,0 +1,16 @@
+{% comment %}
+    Help links for the Devilry frontpage. The idea is that
+    this can be overidden in a custom app if someone wants to
+    customize the links.
+{% endcomment %}
+
+{% load i18n %}
+<ul>
+    <li>
+        <a href="https://devilry-userdoc.readthedocs.org/">
+            {% trans "Official Devilry documentation" %}
+        </a>
+    </li>
+    {% block extra_helplinks %}
+    {% endblock extra_helplinks %}
+</ul>
