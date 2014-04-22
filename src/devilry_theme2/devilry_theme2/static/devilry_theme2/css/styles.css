@@ -7785,6 +7785,12 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   display: inline-block;
   margin: 5px 5px 0 0;
 }
+.devilry-focusbox {
+  background-color: #ffffff;
+  margin: 0 0 15px 0;
+  padding: 15px;
+  border: 1px solid #eeeeee;
+}
 .alert.feedback_gradebox {
   position: relative;
   padding-right: 200px;
