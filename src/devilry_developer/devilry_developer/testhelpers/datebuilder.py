@@ -2,6 +2,13 @@ from datetime import datetime
 from datetime import timedelta
 
 
+DJANGO_ISODATETIMEFORMAT = 'Y-m-d H:i'
+
+
+def isoformat_datetime(datetimeobj):
+    return datetimeobj.strftime('%Y-%m-%d %H:%M')
+
+
 class DateTimeBuilder(datetime):
     """
     Extends the builtin python :class:`datetime.datetime` with extra utility methods.

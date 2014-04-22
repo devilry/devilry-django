@@ -1,7 +1,2 @@
-
-#: The ISO datetime format without seconds on the format required by the ``date`` django template tag
-DJANGO_ISODATETIMEFORMAT = 'Y-m-d H:i'
-
-
-def isoformat_datetime(datetimeobj):
-    return datetimeobj.strftime('%Y-%m-%d %H:%M')
+from devilry_developer.testhelpers.datebuilder import DJANGO_ISODATETIMEFORMAT
+from devilry_developer.testhelpers.datebuilder import isoformat_datetime
