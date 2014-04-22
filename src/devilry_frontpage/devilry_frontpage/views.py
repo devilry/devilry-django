@@ -6,7 +6,10 @@ from extjs4.views import Extjs4AppView
 
 from devilry.apps.core.models.devilryuserprofile import user_is_student
 from devilry.apps.core.models.devilryuserprofile import user_is_examiner
-from devilry.apps.core.models.devilryuserprofile import user_is_admin_or_superadmin
+from devilry.apps.core.models.devilryuserprofile import user_is_assignmentadmin
+from devilry.apps.core.models.devilryuserprofile import user_is_periodadmin
+from devilry.apps.core.models.devilryuserprofile import user_is_subjectadmin
+from devilry.apps.core.models.devilryuserprofile import user_is_nodeadmin
 
 
 
@@ -28,7 +31,11 @@ class FrontpageView(TemplateView):
         context = super(FrontpageView, self).get_context_data(**kwargs)
         context['user_is_student'] = user_is_student(self.request.user)
         context['user_is_examiner'] = user_is_examiner(self.request.user)
-        context['user_is_admin_or_superadmin'] = user_is_admin_or_superadmin(self.request.user)
+        user_is_any_subjectadmin = user_is_assignmentadmin(self.request.user) \
+            or user_is_periodadmin(self.request.user) \
+            or user_is_subjectadmin(self.request.user)
+        context['user_is_any_subjectadmin'] = user_is_any_subjectadmin
+        context['user_is_nodeadmin'] = user_is_nodeadmin(self.request.user)
         return context
 
 
