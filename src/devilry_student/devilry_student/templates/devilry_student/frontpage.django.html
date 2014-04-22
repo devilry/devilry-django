@@ -1,11 +1,31 @@
 {% extends "devilry_frontpage/base.django.html" %}
 {% load i18n %}
+{% load humanize %}
 {% load url from future %}
 
 {% block title %}{% trans "Student" %} - Devilry{% endblock title %}
 
 {% block body %}
     <div class="container">
-        TODO
+        <h1>{% trans "Your assignments" %}</h1>
+        <ul id="devilry_student_active_assignmentlist">
+            {% for group in groups_waiting_for_deliveries %}        
+                <li>
+                    <a href="#">
+                        {{ group.subject.short_name }} - {{ group.parentnode.long_name }}
+                    </a>
+                    <p class="text-muted subject_and_period">
+                        {{ group.subject.long_name }} - {{ group.period.long_name }}
+                    </p>
+                    <p class="text-muted deadline">
+                        {% trans "Deadline:" %}
+                        {{ group.last_deadline.deadline|date:"DATETIME_FORMAT" }} - {{ group.period.long_name }}
+                        <span class="text-success">
+                            ({{ group.last_deadline.deadline|naturaltime }})
+                        </span>
+                    </p>
+                </li>
+            {% endfor %}
+        </ul>
     </div>
 {% endblock body %}
