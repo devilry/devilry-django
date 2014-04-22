@@ -1,1 +1,1 @@
-from .frontpageui import TestFrontpageUI
+from .test_frontpage import TestFrontpage
