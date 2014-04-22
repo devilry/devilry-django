@@ -1,0 +1,21 @@
+{% extends "devilry_student/base.django.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Student Browse" %}{% endblock title %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="page-header page-header-with-subheader">
+            <h1>{% trans "Browse" %}</h1>
+            <p class="subheader">
+                {% trans "Browse all your courses" %}
+            </p>
+        </div>
+        <ol class="breadcrumb">
+            <li><a href="#">{% trans "Home" %}</a></li>
+            <li class="active">{% trans "Examiner" %}</li>
+        </ol>
+    </div>
+
+{% endblock body %}

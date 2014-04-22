@@ -10,6 +10,7 @@ from .views.frontpage import FrontpageView
 from .views.groupinvite_overview import GroupInviteOverviewView
 from .views.groupinvite_respond import GroupInviteRespondView
 from .views.groupinvite_delete import GroupInviteDeleteView
+from .views.browseview import BrowseView
 
 
 i18n_packages = get_javascript_catalog_packages('devilry_student', 'devilry_header', 'devilry_extjsextras', 'devilry.apps.core')
@@ -40,5 +41,9 @@ urlpatterns = patterns('devilry_student',
     url(r'^groupinvite/remove/(?P<invite_id>\d+)$',
         login_required(GroupInviteDeleteView.as_view()),
         name='devilry_student_groupinvite_delete'),
+    url(r'^browse/(?P<pk>\d+)$',
+        login_required(BrowseView.as_view()),
+        name='devilry_student_browse'),
+
     #url(r'^groupinvite/leave/(?P<group_id>\d+)$')
 )
