@@ -1,27 +1,5 @@
-{% spaceless %}
-{% load i18n %}
-{% load static %}
-{% endspaceless %}<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-        {% include "devilry_theme/favicons.django.html" %}
-        <script type="text/javascript" src="{% static "devilry_extjsextras/consolefallback.js" %}"></script>
-        <title>{% block title %}{% endblock title %} - {% trans "Devilry subject admin" %}</title>
-
-        {% block css %}
-            <link href='{% static "devilry_subjectadmin/css/styles.css" %}' rel="stylesheet">
-        {% endblock %}
-
-        <script src="{% static 'devilry_subjectadmin/bower/components/jquery/jquery.min.js' %}"></script>
-    </head>
-
-    <body>
-        {% include "devilry_header/header2include.django.html" with devilry_header2_role="subjectadmin" %}
-
-        {% block body %}{% endblock %}
-    </body>
-</html>
+{% extends "devilry_theme2/base.django.html" %}
+{% block main %}
+    {% include "devilry_header/header2include.django.html" with devilry_header2_role="subjectadmin" %}
+    {% block body %}{% endblock %}
+{% endblock main %}
