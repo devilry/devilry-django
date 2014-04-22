@@ -1,5 +1,7 @@
 from django.conf import settings
 
+from .views import urlsetting_or_unsetview
+
 
 def template_variables(request):
     return {
@@ -14,5 +16,6 @@ def template_variables(request):
         'DEVILRY_SORT_FULL_NAME_BY_LASTNAME': settings.DEVILRY_SORT_FULL_NAME_BY_LASTNAME,
         'DEVILRY_DEFAULT_DEADLINE_HANDLING_METHOD': settings.DEFAULT_DEADLINE_HANDLING_METHOD,
         'DEVILRY_ENABLE_MATHJAX': settings.DEVILRY_ENABLE_MATHJAX,
-        'DEVILRY_SYNCSYSTEM': settings.DEVILRY_SYNCSYSTEM
+        'DEVILRY_SYNCSYSTEM': settings.DEVILRY_SYNCSYSTEM,
+        'DEVILRY_LACKING_PERMISSIONS_URL': urlsetting_or_unsetview('DEVILRY_LACKING_PERMISSIONS_URL'),
     }

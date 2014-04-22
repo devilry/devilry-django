@@ -67,6 +67,17 @@ class TestFrontpage(TestCase, LoginTestCaseMixin):
         self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_nodeadmin'))
         self.assertFalse(cssExists(html, '#devilry_frontpage_roleselect_superuser'))
 
+    def test_lacking_permissions_message(self):
+        with self.settings(DEVILRY_LACKING_PERMISSIONS_URL='http://example.com/a/test'):
+            html = self.get_as(self.testuser.user, self.url).content
+            self.assertEquals(
+                cssGet(html, '#devilry_frontpage_lacking_permissions_link')['href'],
+                'http://example.com/a/test')
+            self.assertEquals(
+                cssGet(html, '#devilry_frontpage_lacking_permissions_link').text.strip(),
+                'I should have had more roles')
+
+
 
     def test_helplinks(self):
         html = self.get_as(self.testuser.user, self.url).content
