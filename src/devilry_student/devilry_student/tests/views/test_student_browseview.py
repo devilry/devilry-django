@@ -30,7 +30,10 @@ class TestBrowseView(TestCase):
             status_code=302, target_status_code=200)
 
     def test_render_header(self):
-        pass
+        response = self._getas(self.testuser)
+        html = response.content
+        self.assertEquals(cssGet(html, '.page-header h1').text.strip(), "Browse")
+        self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(), "Browse all your courses")
 
     def test_period_list(self):
         node = SubjectBuilder.quickadd_ducku_duck1010()
