@@ -17,6 +17,50 @@ from model_utils import Etag
 from abstract_is_admin import AbstractIsAdmin
 from abstract_applicationkeyvalue import AbstractApplicationKeyValue
 
+
+
+
+class PeriodQuerySet(models.query.QuerySet):
+    """
+    QuerySet for :class:`.PeriodManager`.
+    """
+    def filter_is_candidate_or_relatedstudent(self, user):
+        """
+        Filter only periods where the given ``user`` is one of:
+
+        - :class:`devilry.apps.core.models.RelatedUser`
+        - :class:`devilry.apps.core.models.Candidate`
+        """
+        return self.filter(
+            Q(relatedstudent__user=user) |
+            Q(assignments__assignmentgroups__candidates__student=user)
+        ).distinct()
+
+    def filter_active(self):
+        """
+        Filter only active periods.
+        """
+        now = datetime.now()
+        return self.filter(start_time__lt=now, end_time__gt=now)
+
+
+
+class PeriodManager(models.Manager):
+    """
+    Manager for :class:`.Period`.
+    """
+
+    def get_queryset(self):
+        return PeriodQuerySet(self.model, using=self._db)
+
+    def filter_active(self):
+        return self.get_queryset().filter_active()
+
+    def filter_is_candidate_or_relatedstudent(self, user):
+        return self.get_queryset().filter_is_candidate_or_relatedstudent(user)
+
+
+
 class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
     A Period represents a period of time, for example a half-year term
@@ -60,6 +104,8 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
        A DateTimeField containing the etag for this object.
 
     """
+    objects = PeriodManager()
+
     class Meta:
         app_label = 'core'
         unique_together = ('short_name', 'parentnode')
