@@ -159,3 +159,16 @@ class TestFrontpage(TestCase, LoginTestCaseMixin):
         self.assertEquals(
             [a.text.strip() for a in cssFind(html, '#devilry_student_frontpage_browselist li a')],
             ['DUCK A - x', 'DUCK B - x', 'DUCK C - x', 'Browse all'])
+
+    # def test_browse_active_period_latest_feedback(self):
+    #     SubjectBuilder.quickadd_ducku_duck1010()\
+    #         .add_6month_active_period()\
+    #         .add_assignment('week1')\
+    #         .add_group(students=[self.testuser.user])\
+    #         .add_deadline_x_weeks_ago(weeks=1)\
+    #         .add_delivery()\
+    #         .add_passed_feedback(saved_by=UserBuilder('testexaminer').user)
+    #     html = self.get_as(self.testuser.user, self.url).content
+    #     self.assertEquals(
+    #         cssFind(html, '#devilry_student_frontpage_browselist li .last-feedback')[0].text.strip(),
+    #         'Latest feedback: week1 ')

@@ -41,9 +41,28 @@
                     <a href="#">
                         {{ period.parentnode.long_name }} - {{ period.long_name }}
                     </a>
-                    <p class="text-muted">
-                        
+                    {% comment %}
+                    <p class="text-muted last-feedback">
+                        {% if period.latest_feedback_dict %}
+                            {% trans "Latest feedback" %}:
+                            <span class="assignment">
+                                {{ period.latest_feedback_dict.assignment_short_name }}
+                            </span>
+                            <span class="grade">
+                                {% if period.latest_feedback_dict.grading_system_plugin_id != "devilry_gradingsystemplugin_approved" %}
+                                    {{ period.latest_feedback_dict.grade }} -
+                                {% endif %}
+                                {% if period.latest_feedback_dict.is_passing_grade %}
+                                    <span class="text-success">{% trans "Passed" %}</span>
+                                {% else %}
+                                    <span class="text-warning">{% trans "Failed" %}</span>
+                                {% endif %}
+                            </span>
+                        {% else %}
+                            {% trans "No feedback on any assignments yet" %}
+                        {% endif %}
                     </p>
+                    {% endcomment %}
                 </li>
             {% endfor %}
             <li>
