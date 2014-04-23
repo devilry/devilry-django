@@ -8,6 +8,7 @@ from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import cssExists
+from devilry_developer.testhelpers.soupselect import normalize_whitespace
 # from devilry_developer.testhelpers.soupselect import prettyhtml
 from devilry_developer.testhelpers.login import LoginTestCaseMixin
 from devilry_developer.testhelpers.datebuilder import DJANGO_ISODATETIMEFORMAT
@@ -57,36 +58,87 @@ class TestGroupDetailsView(TestCase, LoginTestCaseMixin):
             [a.text.strip() for a in cssFind(html, '.breadcrumb li a')],
             ['Student', 'Browse', 'duck1010 - active'])
 
+    def test_deadline_and_delivery_order(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        
+        deadline1builder = groupbuilder.add_deadline_x_weeks_ago(weeks=4)
+        delivery1 = deadline1builder.add_delivery_x_hours_before_deadline(hours=10).delivery
+        delivery2 = deadline1builder.add_delivery_x_hours_before_deadline(hours=8).delivery
+        
+        deadline2builder = groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        delivery3 = deadline2builder.add_delivery_x_hours_before_deadline(hours=5).delivery
+        delivery4 = deadline2builder.add_delivery_x_hours_before_deadline(hours=3).delivery
 
-    # def test_waiting_for_deliveries_rendering(self):
-    #     deadline = SubjectBuilder.quickadd_ducku_duck1010(
-    #             long_name='DUCK 1010')\
-    #         .add_6month_active_period(
-    #             long_name='Springtest')\
-    #         .add_assignment('week1')\
-    #         .add_group(students=[self.testuser.user])\
-    #         .add_deadline_in_x_weeks(weeks=1).deadline
-    #     with self.settings(DATETIME_FORMAT=DJANGO_ISODATETIMEFORMAT, USE_L10N=False):
-    #         html = self.get_as(self.testuser.user, self.url).content
-    #     self.assertEquals(len(cssFind(html, '#devilry_student_active_assignmentlist li')), 1)
-    #     self.assertEquals(
-    #         cssGet(html, '#devilry_student_active_assignmentlist li a').text.strip(),
-    #         'duck1010 - week1')
-    #     self.assertEquals(
-    #         cssGet(html, '#devilry_student_active_assignmentlist li .subject_and_period').text.strip(),
-    #         'DUCK 1010 - Springtest')
-    #     self.assertIn(
-    #         isoformat_datetime(deadline.deadline),
-    #         cssGet(html, '#devilry_student_active_assignmentlist li .deadline').text.strip())
+        with self.settings(DATETIME_FORMAT=DJANGO_ISODATETIMEFORMAT, USE_L10N=False):
+            html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
 
-    # def test_waiting_for_deliveries_only_where_student(self):
-    #     assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-    #         .add_assignment('week1')
-    #     assignmentbuilder.add_group(students=[self.testuser.user])\
-    #         .add_deadline_in_x_weeks(weeks=1)
-    #     assignmentbuilder.add_group(students=[UserBuilder('otheruser').user])\
-    #         .add_deadline_in_x_weeks(weeks=1)
-    #     html = self.get_as(self.testuser.user, self.url).content
-    #     self.assertEquals(len(cssFind(html, '#devilry_student_active_assignmentlist li')), 1)
+        self.assertEquals(
+            [normalize_whitespace(e.text) for e in cssFind(html, '#devilry_student_groupdetails_deadlines h2')],
+            [
+                'Deadline 2: {}'.format(isoformat_datetime(deadline2builder.deadline.deadline)),
+                'Deadline 1: {}'.format(isoformat_datetime(deadline1builder.deadline.deadline)),
+            ]
+        )
+        self.assertEquals(
+            [e['data-id'] for e in cssFind(html, '#devilry_student_groupdetails_deadlines a')],
+            [str(delivery4.id), str(delivery3.id), str(delivery2.id), str(delivery1.id)]
+        )
+        self.assertEquals(
+            [normalize_whitespace(e.text) for e in cssFind(html, '#devilry_student_groupdetails_deadlines a')],
+            ['Delivery #4', 'Delivery #3', 'Delivery #2', 'Delivery #1']
+        )
 
+    def test_delivery_rendering_no_feedback(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1).add_delivery()
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines a').text),
+            'Delivery #1')
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines .last-feedback').text),
+            'No feedback')
 
+    def test_delivery_rendering_passed_feedback(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery()\
+            .add_passed_feedback(saved_by=UserBuilder('testexaminer').user)
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines .last-feedback').text),
+            'Passed')
+
+    def test_delivery_rendering_failed_feedback(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery()\
+            .add_failed_feedback(saved_by=UserBuilder('testexaminer').user)
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines .last-feedback').text),
+            'Failed')
+
+    def test_delivery_rendering_points_feedback(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', grading_system_plugin_id='testing')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery()\
+            .add_feedback(
+                saved_by=UserBuilder('testexaminer').user,
+                points=10,
+                grade='A',
+                is_passing_grade=True)
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines .last-feedback').text),
+            'Passed(A)')

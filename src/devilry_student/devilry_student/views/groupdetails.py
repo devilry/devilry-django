@@ -28,10 +28,7 @@ class GroupDetailsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(GroupDetailsView, self).get_context_data(**kwargs)
-
         group = self._get_group()
         context['group'] = group
-
-
-
+        context['deadlines'] = group.deadlines.all()
         return context
