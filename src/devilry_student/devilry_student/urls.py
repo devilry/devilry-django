@@ -41,7 +41,7 @@ urlpatterns = patterns('devilry_student',
     url(r'^groupinvite/remove/(?P<invite_id>\d+)$',
         login_required(GroupInviteDeleteView.as_view()),
         name='devilry_student_groupinvite_delete'),
-    url(r'^browse/(?P<pk>\d+)$',
+    url(r'^browse/$',
         login_required(BrowseView.as_view()),
         name='devilry_student_browse'),
 

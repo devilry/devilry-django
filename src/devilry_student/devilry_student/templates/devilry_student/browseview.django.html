@@ -1,5 +1,6 @@
 {% extends "devilry_student/base.django.html" %}
 {% load i18n %}
+{% load url from future %}
 
 {% block title %}{% trans "Student Browse" %}{% endblock title %}
 
@@ -13,9 +14,18 @@
             </p>
         </div>
         <ol class="breadcrumb">
-            <li><a href="#">{% trans "Home" %}</a></li>
-            <li class="active">{% trans "Examiner" %}</li>
+            <li><a href="{% url 'devilry_student' %}">{% trans "Home" %}</a></li>
+            <li class="active">{% trans "Browse" %}</li>
         </ol>
+    </div>
+
+    <div class="container period-list">
+        {% for period in object_list %}
+        <div class="period-list-element">
+            <a href="#"><h2>{{ period.parentnode.long_name }} </h2></a>
+            <p>{{ period.long_name }}</p>
+        </div>
+        {% endfor %}
     </div>
 
 {% endblock body %}
