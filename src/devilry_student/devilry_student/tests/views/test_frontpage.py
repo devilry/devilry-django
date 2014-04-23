@@ -118,6 +118,21 @@ class TestFrontpage(TestCase, LoginTestCaseMixin):
             cssFind(html, '#devilry_student_frontpage_browselist li a')[0].text.strip(),
             'DUCK 1010 - Springtest')
 
+    def test_browse_only_active_periods(self):
+        subjectbuilder = SubjectBuilder.quickadd_ducku_duck1010()
+        subjectbuilder.add_6month_active_period()\
+            .add_relatedstudents(self.testuser.user)
+        subjectbuilder.add_6month_lastyear_period()\
+            .add_relatedstudents(self.testuser.user)
+        subjectbuilder.add_6month_nextyear_period()\
+            .add_relatedstudents(self.testuser.user)
+        html = self.get_as(self.testuser.user, self.url).content
+        self.assertEquals(
+            len(cssFind(html, '#devilry_student_frontpage_browselist li')), 2)
+        self.assertEquals(
+            cssFind(html, '#devilry_student_frontpage_browselist li a')[0].text.strip(),
+            'duck1010 - active')
+
     def test_browse_active_ordering(self):
         first_start = DateTimeBuilder.now().minus(days=30*3)
         second_start = DateTimeBuilder.now().minus(days=30*2)
