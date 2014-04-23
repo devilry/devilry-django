@@ -7,25 +7,50 @@
 
 {% block body %}
     <div class="container">
-        <h1>{% trans "Your assignments" %}</h1>
-        <ul id="devilry_student_active_assignmentlist">
-            {% for group in groups_waiting_for_deliveries %}        
+        <h1>{% trans "Assignments waiting for deliveries" %}</h1>
+        {% if groups_waiting_for_deliveries %}
+            <ul id="devilry_student_active_assignmentlist"  class="list-unstyled">
+                {% for group in groups_waiting_for_deliveries %}        
+                    <li>
+                        <a href="#">
+                            {{ group.subject.short_name }} - {{ group.parentnode.long_name }}
+                        </a>
+                        <p class="text-muted subject_and_period">
+                            {{ group.subject.long_name }} - {{ group.period.long_name }}
+                        </p>
+                        <p class="text-muted deadline">
+                            {% trans "Deadline:" %}
+                            {{ group.last_deadline.deadline|date:"DATETIME_FORMAT" }} - {{ group.period.long_name }}
+                            <span class="text-success">
+                                ({{ group.last_deadline.deadline|naturaltime }})
+                            </span>
+                        </p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p id="devilry_student_frontpage_none_waiting_for_deliveries_message" class="text-muted">
+                {% trans "No assignments waiting for deliveries." %}
+            </p>
+        {% endif %}
+
+        <h2>{% trans "Browse" %}</h2>
+        <ul id="devilry_student_frontpage_browselist" class="list-unstyled">
+            {% for period in active_periods %}
                 <li>
                     <a href="#">
-                        {{ group.subject.short_name }} - {{ group.parentnode.long_name }}
+                        {{ period.parentnode.long_name }} - {{ period.long_name }}
                     </a>
-                    <p class="text-muted subject_and_period">
-                        {{ group.subject.long_name }} - {{ group.period.long_name }}
-                    </p>
-                    <p class="text-muted deadline">
-                        {% trans "Deadline:" %}
-                        {{ group.last_deadline.deadline|date:"DATETIME_FORMAT" }} - {{ group.period.long_name }}
-                        <span class="text-success">
-                            ({{ group.last_deadline.deadline|naturaltime }})
-                        </span>
+                    <p class="text-muted">
+                        
                     </p>
                 </li>
             {% endfor %}
+            <li>
+                <a href="#">
+                    {% trans "Browse all" %}
+                </a>
+            </li>
         </ul>
     </div>
 {% endblock body %}
