@@ -7,18 +7,41 @@ from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import prettyhtml
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry_developer.testhelpers.corebuilder import NodeBuilder
+from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 
 
-class TestGroupInviteOverviewView(TestCase):
+class TestBrowseView(TestCase):
     def setUp(self):
         self.testuser = UserBuilder('testuser').user
+        self.url = reverse('devilry_student_browse')
 
-    def _getas(self, id, user, *args, **kwargs):
+    def _getas(self, user, *args, **kwargs):
         self.client.login(username=user.username, password='test')
-        url = reverse('devilry_student_groupinvite_overview', kwargs={'group_id': id})
-        return self.client.get(url, *args, **kwargs)
+        return self.client.get(self.url, *args, **kwargs)
 
-    def _postas(self, id, user, *args, **kwargs):
+    def _postas(self, user, *args, **kwargs):
         self.client.login(username=user.username, password='test')
-        url = reverse('devilry_student_groupinvite_overview', kwargs={'group_id': id})
-        return self.client.post(url, *args, **kwargs)
+        return self.client.post(self.url, *args, **kwargs)
+
+    def test_not_logged_in(self):
+        response = self.client.get(self.url)
+        self.assertRedirects(response, expected_url='http://testserver/authenticate/login?next=/devilry_student/browse/', 
+            status_code=302, target_status_code=200)
+
+    def test_render_header(self):
+        pass
+
+    def test_period_list(self):
+        node = SubjectBuilder.quickadd_ducku_duck1010()
+        period1 = node.add_6month_active_period()
+        period2 = node.add_6month_lastyear_period()
+
+        student1 = UserBuilder('student1').user
+
+        period1.add_relatedstudents(self.testuser, student1)
+        period2.add_relatedstudents(self.testuser, student1)
+
+        response = self._getas(self.testuser)
+        html = response.content
+        self.assertEquals(len(cssFind(html, '.period-list-element')), 2)
