@@ -53,6 +53,62 @@ class TestGroupDetailsView(TestCase, LoginTestCaseMixin):
         html = self.get_as(self.testuser, self._geturl(group.id)).content
         self.assertEquals(cssGet(html, 'h1').text.strip(), 'Week One')
 
+
+    #
+    #
+    # Examiners
+    #
+    #
+
+    def test_no_examiner(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group(students=[self.testuser]).group
+        html = self.get_as(self.testuser, self._geturl(group.id)).content
+        self.assertFalse(cssExists(html, '#devilry_student_groupinfo_examiners'))
+
+    def test_single_examiner(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group(
+                students=[self.testuser],
+                examiners=[UserBuilder('testexaminer').user]
+            ).group
+        html = self.get_as(self.testuser, self._geturl(group.id)).content
+        examiners = [a.text.strip() for a in cssFind(html, '#devilry_student_groupinfo_examiners a')]
+        self.assertEquals(examiners, ['testexaminer'])
+
+    def test_multiple_examiners(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')\
+            .add_group(
+                students=[self.testuser],
+                examiners=[
+                    UserBuilder('testexaminer').user,
+                    UserBuilder('testexaminer2', full_name="Test Examiner Two").user,
+                ]
+            ).group
+        html = self.get_as(self.testuser, self._geturl(group.id)).content
+        examiners = [a.text.strip() for a in cssFind(html, '#devilry_student_groupinfo_examiners a')]
+        self.assertEquals(examiners, ['testexaminer', 'Test Examiner Two'])
+
+    def test_no_examiners_on_anonymous(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1', anonymous=True)\
+            .add_group(
+                students=[self.testuser],
+                examiners=[UserBuilder('testexaminer').user]
+            ).group
+        html = self.get_as(self.testuser, self._geturl(group.id)).content
+        self.assertFalse(cssExists(html, '#devilry_student_groupinfo_examiners'))
+
+
+    #
+    #
+    # Breadcrumbs
+    #
+    #
+
     def test_breadcrumb(self):
         group = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('week1')\

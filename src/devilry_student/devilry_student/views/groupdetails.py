@@ -17,9 +17,6 @@ class GroupDetailsView(TemplateView):
                         'parentnode__parentnode', # Period
                         'parentnode__parentnode__parentnode', # Subject
                     )\
-                    .prefetch_related(
-                        'examiners'
-                    )\
                     .get(id=self.kwargs['id'])
         except AssignmentGroup.DoesNotExist:
             raise Http404()
@@ -35,4 +32,8 @@ class GroupDetailsView(TemplateView):
         context['othercandidatecount'] = len(othercandidates)
         context['othercandidates'] = othercandidates
         context['deadlines'] = group.deadlines.all()
+
+        if not group.assignment.anonymous:
+            examiners = list(group.examiners.order_by('user__username'))
+            context['examiners'] = examiners
         return context

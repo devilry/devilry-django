@@ -15,6 +15,22 @@
                 <li><a href="{% url 'devilry_student_browse' %}">{% trans "Browse" %}</a></li>
                 <li><a href="#">{{ group.subject.short_name }} - {{ group.period.short_name }}</a></li>
             </ol>
+            {% if examiners %}
+                {% if examiners|length == 1 %}
+                    {% trans "Examiner" %}:
+                {% else %}
+                    {% trans "Examiners" %}:
+                {% endif %}
+                <ul id="devilry_student_groupinfo_examiners">
+                    {% for examiner in group.examiners.all %}
+                        <li>
+                            <a href="mailto:{{ examiner.user.email }}">
+                                {{ examiner.user.devilryuserprofile.get_displayname }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
     </div>
 
