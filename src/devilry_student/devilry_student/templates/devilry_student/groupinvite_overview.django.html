@@ -37,11 +37,14 @@
         {% endif %}
 
 
-
-        <h2>{% trans "Invite someone to join your group?" %}</h2>
-        <div class="devilry-focusbox">
-            {% crispy form %}
-        </div>
+        {% if group.assignment.students_can_create_groups_now %}
+            <section id="devilry_student_projectgroupoverview_invitebox">
+                <h2>{% trans "Invite someone to join your group?" %}</h2>
+                <div class="devilry-focusbox">
+                    {% crispy form %}
+                </div>
+            </section>
+        {% endif %}
 
         {% if unanswered_sent_invites.exists %}        
             <h3>{% trans "Waiting for response from" %}</h3>

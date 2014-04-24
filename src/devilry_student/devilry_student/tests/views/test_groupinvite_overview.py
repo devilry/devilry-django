@@ -4,7 +4,8 @@ from django.core.urlresolvers import reverse
 from devilry.apps.core.models import GroupInvite
 from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
-from devilry_developer.testhelpers.soupselect import prettyhtml
+from devilry_developer.testhelpers.soupselect import cssExists
+# from devilry_developer.testhelpers.soupselect import prettyhtml
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 
@@ -38,6 +39,21 @@ class TestGroupInviteOverviewView(TestCase):
             .add_group().group
         response = self._getas(group.id, self.testuser)
         self.assertEquals(response.status_code, 404)
+
+    def test_groupinvite_not_allowed(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', students_can_create_groups=False)\
+            .add_group(students=[self.testuser]).group
+        html = self._getas(group.id, self.testuser).content
+        self.assertFalse(cssExists(html, '#devilry_student_projectgroupoverview_invitebox'))
+
+    def test_groupinvite_allowed(self):
+        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', students_can_create_groups=True)\
+            .add_group(students=[self.testuser]).group
+        html = self._getas(group.id, self.testuser).content
+        self.assertTrue(cssExists(html, '#devilry_student_projectgroupoverview_invitebox'))
+
 
     def test_render_send_invite_to_selectlist(self):
         UserBuilder('ignoreduser')
@@ -123,20 +139,4 @@ class TestGroupInviteOverviewView(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertIn(
             'Select a valid choice. {} is not one of the available choices.'.format(inviteuser.id),
-            response.content)
-
-    def test_send_to_post_groupinvite_not_allowed(self):
-        inviteuser = UserBuilder('inviteuser').user
-        group = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_relatedstudents(self.testuser, inviteuser)\
-            .add_assignment('assignment1', students_can_create_groups=False)\
-            .add_group(students=[self.testuser]).group
-
-        self.assertEquals(GroupInvite.objects.count(), 0)
-        response = self._postas(group.id, self.testuser, {
-            'sent_to': inviteuser.id
-        })
-        self.assertEquals(response.status_code, 200)
-        self.assertIn(
-            'This assignment does not allow students to form project groups on their own.',
             response.content)
