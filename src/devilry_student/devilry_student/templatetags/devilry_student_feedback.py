@@ -18,6 +18,5 @@ def devilry_student_shortgrade(feedback):
     ugly strings like: ``Passed (Passed)``.
     """
     return render_to_string('devilry_student/devilry_student_shortgrade_tag.django.html', {
-        'feedback': feedback,
-        'ispassedfailed': feedback.grade == 'Passed' or feedback.grade == 'Failed'
+        'feedback': feedback
     })
