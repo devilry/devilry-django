@@ -887,26 +887,6 @@ class TestAssignmentGroup2(TestCase):
         groupbuilder.add_deadline_x_weeks_ago(weeks=1).add_delivery()
         self.assertFalse(groupbuilder.group.missing_expected_delivery)
 
-    def test_get_deliveries_grouped_by_deadline(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        
-        deadline1builder = groupbuilder.add_deadline_x_weeks_ago(weeks=4)
-        delivery1 = deadline1builder.add_delivery_x_hours_before_deadline(hours=10).delivery
-        delivery2 = deadline1builder.add_delivery_x_hours_before_deadline(hours=8).delivery
-        
-        deadline2builder = groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        delivery3 = deadline2builder.add_delivery_x_hours_before_deadline(hours=5).delivery
-        delivery4 = deadline2builder.add_delivery_x_hours_before_deadline(hours=3).delivery
-
-        groupedbydeadline = [(deadline, list(deliveries)) \
-            for deadline, deliveries in groupbuilder.group.get_deliveries_grouped_by_deadline()]
-        self.assertEquals(groupedbydeadline, [
-            (deadline2builder.deadline, [delivery4, delivery3]),
-            (deadline1builder.deadline, [delivery2, delivery1])
-        ])
-
 
 
 class TestAssignmentGroupManager(TestCase):

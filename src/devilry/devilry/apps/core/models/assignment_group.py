@@ -1,5 +1,4 @@
 from datetime import datetime
-import itertools
 
 from django.db.models import Q
 from django.db import models
@@ -812,21 +811,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     def get_all_admin_ids(self):
         return self.parentnode.get_all_admin_ids()
-
-
-    def get_deliveries_grouped_by_deadline(self):
-        """
-        Get all the deliveries in this group grouped by deadline.
-        The deliveries and deadlines are ordered in descending
-        order (by deadline and number).
-        """
-        from .delivery import Delivery
-        # NOTE: We order by ``deadline__id`` in case we have two deadlines with the same timestamp
-        deliveries = Delivery.objects\
-            .filter(deadline__assignment_group=self)\
-            .select_related('last_feedback', 'deadline')\
-            .order_by('-deadline__deadline', 'deadline__id', '-number')
-        return itertools.groupby(deliveries, lambda delivery: delivery.deadline)
 
 
 class AssignmentGroupTag(models.Model):
