@@ -43,8 +43,12 @@ class TestBrowseView(TestCase):
         student1 = UserBuilder('student1').user
 
         period1.add_relatedstudents(self.testuser, student1)
-        period2.add_relatedstudents(self.testuser, student1)
+        period2.add_relatedstudents(self.testuser)
 
         response = self._getas(self.testuser)
         html = response.content
         self.assertEquals(len(cssFind(html, '.period-list-element')), 2)
+
+        response = self._getas(student1)
+        html = response.content
+        self.assertEquals(len(cssFind(html, '.period-list-element')), 1)

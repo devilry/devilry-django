@@ -12,7 +12,7 @@ from .views.groupinvite_respond import GroupInviteRespondView
 from .views.groupinvite_delete import GroupInviteDeleteView
 from .views.browseview import BrowseView
 from .views.groupdetails import GroupDetailsView
-
+from .views.semesteroverview import SemesterOverview
 
 i18n_packages = get_javascript_catalog_packages('devilry_student', 'devilry_header', 'devilry_extjsextras', 'devilry.apps.core')
 
@@ -45,6 +45,9 @@ urlpatterns = patterns('devilry_student',
     url(r'^browse/$',
         login_required(BrowseView.as_view()),
         name='devilry_student_browse'),
+    url(r'^browse/period/(?P<pk>\d+)$',
+        login_required(SemesterOverview.as_view()),
+        name='devilry_student_browseperiod'),
     url(r'^groupdetails/(?P<id>\d+)$',
         login_required(GroupDetailsView.as_view()),
         name='devilry_student_groupdetails'),
