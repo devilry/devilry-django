@@ -1,6 +1,10 @@
+from mock import patch
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
+
+from devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import NodeBuilder
@@ -128,17 +132,26 @@ class TestGroupDetailsView(TestCase, LoginTestCaseMixin):
             'Failed')
 
     def test_delivery_rendering_points_feedback(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1', grading_system_plugin_id='testing')\
-            .add_group(students=[self.testuser])
-        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
-            .add_delivery()\
-            .add_feedback(
-                saved_by=UserBuilder('testexaminer').user,
-                points=10,
-                grade='A',
-                is_passing_grade=True)
-        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
-        self.assertEquals(
-            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines .last-feedback').text),
-            'Passed(A)')
+        
+        # Mock the gradingsystempluginregistry
+        myregistry = GradingSystemPluginRegistry()
+        class MockTstPluginApi(GradingSystemPluginInterface):
+            id = 'devilry_gradingsystemplugin_tst'
+        myregistry.add(MockTstPluginApi)
+
+        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
+            groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+                .add_assignment('assignment1',
+                    grading_system_plugin_id='devilry_gradingsystemplugin_tst')\
+                .add_group(students=[self.testuser])
+            groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+                .add_delivery()\
+                .add_feedback(
+                    saved_by=UserBuilder('testexaminer').user,
+                    points=10,
+                    grade='A',
+                    is_passing_grade=True)
+            html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+            self.assertEquals(
+                normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines .last-feedback').text),
+                'Passed(A)')
