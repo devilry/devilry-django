@@ -48,7 +48,7 @@
 
         {% if unanswered_sent_invites.exists %}        
             <h3>{% trans "Waiting for response from" %}</h3>
-            <div id="devilry_student_groupinvite_overview_waiting_for_response_from" class="table-responsive">
+            <div id="devilry_student_projectgroup_overview_waiting_for_response_from" class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>
@@ -80,7 +80,7 @@
 
         {% if group.candidates.count > 1 %}
             <h3>{% trans "Project group members" %}</h3>
-            <div id="devilry_student_groupinvite_overview_already_in_group" class="table-responsive">
+            <div id="devilry_student_projectgroup_overview_already_in_group" class="table-responsive">
                 <table class="table table-striped table-bordered">
                     <thead>
                         <tr>

@@ -16,12 +16,12 @@ class TestGroupInviteOverviewView(TestCase):
 
     def _getas(self, id, user, *args, **kwargs):
         self.client.login(username=user.username, password='test')
-        url = reverse('devilry_student_groupinvite_overview', kwargs={'group_id': id})
+        url = reverse('devilry_student_projectgroup_overview', kwargs={'group_id': id})
         return self.client.get(url, *args, **kwargs)
 
     def _postas(self, id, user, *args, **kwargs):
         self.client.login(username=user.username, password='test')
-        url = reverse('devilry_student_groupinvite_overview', kwargs={'group_id': id})
+        url = reverse('devilry_student_projectgroup_overview', kwargs={'group_id': id})
         return self.client.post(url, *args, **kwargs)
 
     def test_render(self):
@@ -91,7 +91,7 @@ class TestGroupInviteOverviewView(TestCase):
 
         html = self._getas(group.id, self.testuser).content
         names = [element.text.strip() for element in \
-            cssFind(html, '#devilry_student_groupinvite_overview_waiting_for_response_from .invite_sent_to_displayname')]
+            cssFind(html, '#devilry_student_projectgroup_overview_waiting_for_response_from .invite_sent_to_displayname')]
         self.assertEquals(set(names), set(['inviteuser1', 'inviteuser2']))
 
 
@@ -103,7 +103,7 @@ class TestGroupInviteOverviewView(TestCase):
 
         html = self._getas(group.id, self.testuser).content
         names = [element.text.strip() for element in \
-            cssFind(html, '#devilry_student_groupinvite_overview_already_in_group .groupmember_username')]
+            cssFind(html, '#devilry_student_projectgroup_overview_already_in_group .groupmember_username')]
         self.assertEquals(set(names), set(['testuser', 'otheruser']))
 
 

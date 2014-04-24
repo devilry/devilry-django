@@ -56,59 +56,59 @@ msgstr "Avbryt"
 msgid "Delete invite"
 msgstr "Slett invitasjon"
 
-#: templates/devilry_student/groupinvite_overview.django.html:7
-#: templates/devilry_student/groupinvite_overview.django.html:13
-#: templates/devilry_student/groupinvite_overview.django.html:18
+#: templates/devilry_student/projectgroup_overview.django.html:7
+#: templates/devilry_student/projectgroup_overview.django.html:13
+#: templates/devilry_student/projectgroup_overview.django.html:18
 msgid "Project group"
 msgstr "Prosjektgruppe"
 
-#: templates/devilry_student/groupinvite_overview.django.html:26
+#: templates/devilry_student/projectgroup_overview.django.html:26
 msgid "You have been invited to join a group!"
 msgstr "Du har blitt invitert til en gruppe!"
 
-#: templates/devilry_student/groupinvite_overview.django.html:27
+#: templates/devilry_student/projectgroup_overview.django.html:27
 #, python-format
 msgid "%(sent_by)s invited you to join their group."
 msgstr "%(sent_by)s inviterte deg til å bli med i deres gruppe."
 
-#: templates/devilry_student/groupinvite_overview.django.html:32
+#: templates/devilry_student/projectgroup_overview.django.html:32
 msgid "More info"
 msgstr "Mer info"
 
-#: templates/devilry_student/groupinvite_overview.django.html:41
+#: templates/devilry_student/projectgroup_overview.django.html:41
 msgid "Invite someone to join your group?"
 msgstr "Inviter noen til å bli med i din gruppe?"
 
-#: templates/devilry_student/groupinvite_overview.django.html:47
+#: templates/devilry_student/projectgroup_overview.django.html:47
 msgid "Waiting for response from"
 msgstr "Venter på svar fra"
 
-#: templates/devilry_student/groupinvite_overview.django.html:52
-#: templates/devilry_student/groupinvite_overview.django.html:84
+#: templates/devilry_student/projectgroup_overview.django.html:52
+#: templates/devilry_student/projectgroup_overview.django.html:84
 msgid "Name"
 msgstr "Navn"
 
-#: templates/devilry_student/groupinvite_overview.django.html:53
+#: templates/devilry_student/projectgroup_overview.django.html:53
 msgid "Invited by"
 msgstr "Invitert av"
 
-#: templates/devilry_student/groupinvite_overview.django.html:54
+#: templates/devilry_student/projectgroup_overview.django.html:54
 msgid "Sent time"
 msgstr "Sendt tidspunkt"
 
-#: templates/devilry_student/groupinvite_overview.django.html:62
+#: templates/devilry_student/projectgroup_overview.django.html:62
 msgid "Delete"
 msgstr "Slett"
 
-#: templates/devilry_student/groupinvite_overview.django.html:79
+#: templates/devilry_student/projectgroup_overview.django.html:79
 msgid "Current group members"
 msgstr "Nåværende gruppemedlemmer"
 
-#: templates/devilry_student/groupinvite_overview.django.html:85
+#: templates/devilry_student/projectgroup_overview.django.html:85
 msgid "Username"
 msgstr "Brukernavn"
 
-#: templates/devilry_student/groupinvite_overview.django.html:86
+#: templates/devilry_student/projectgroup_overview.django.html:86
 msgid "Email"
 msgstr "Epost"
 
@@ -146,14 +146,14 @@ msgstr "Historikk"
 msgid "Devilry - Student"
 msgstr "Devilry - Student"
 
-#: views/groupinvite_overview.py:18
+#: views/projectgroup_overview.py:18
 msgid "Send invitation to"
 msgstr "Send invitasjon til"
 
-#: views/groupinvite_overview.py:22
+#: views/projectgroup_overview.py:22
 msgid "Select the student you want to invite to your group."
 msgstr "Velg studenten som du vil invitere til din gruppe."
 
-#: views/groupinvite_overview.py:43
+#: views/projectgroup_overview.py:43
 msgid "Send invitation"
 msgstr "Send invitasjon"

@@ -63,7 +63,7 @@
                 {% if group.assignment.students_can_create_groups_now %}
                     {% trans "You can invite other students to cooperate on this assignment." %}
                 {% endif %}
-                <a href="{% url 'devilry_student_groupinvite_overview' group.id %}">
+                <a href="{% url 'devilry_student_projectgroup_overview' group.id %}">
                     {% trans "More info" %}.
                 </a>
             </div>

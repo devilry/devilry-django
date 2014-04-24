@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.extjsapp import AppView
 from .views.frontpage import FrontpageView
-from .views.groupinvite_overview import GroupInviteOverviewView
+from .views.projectgroup_overview import GroupInviteOverviewView
 from .views.groupinvite_respond import GroupInviteRespondView
 from .views.groupinvite_delete import GroupInviteDeleteView
 from .views.browseview import BrowseView
@@ -35,7 +35,7 @@ urlpatterns = patterns('devilry_student',
        name='devilry_student_show_delivery'),
     url(r'^groupinvite/overview/(?P<group_id>\d+)$',
         login_required(GroupInviteOverviewView.as_view()),
-        name='devilry_student_groupinvite_overview'),
+        name='devilry_student_projectgroup_overview'),
     url(r'^groupinvite/respond/(?P<invite_id>\d+)$',
         login_required(GroupInviteRespondView.as_view()),
         name='devilry_student_groupinvite_respond'),

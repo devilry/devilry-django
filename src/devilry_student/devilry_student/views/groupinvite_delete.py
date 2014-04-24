@@ -17,7 +17,7 @@ class GroupInviteDeleteView(DeleteView):
         return GroupInvite.objects.filter_no_response().filter(sent_by=self.request.user)
 
     def get_success_url(self):
-        return reverse('devilry_student_groupinvite_overview', kwargs={'group_id': self.group.id})
+        return reverse('devilry_student_projectgroup_overview', kwargs={'group_id': self.group.id})
 
     def post(self, *args, **kwargs):
         invite = self.get_object()
