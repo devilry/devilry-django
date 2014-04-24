@@ -118,6 +118,14 @@ class TestGroupDetailsView(TestCase, LoginTestCaseMixin):
             [a.text.strip() for a in cssFind(html, '.breadcrumb li a')],
             ['Student', 'Browse', 'duck1010 - active'])
 
+
+
+    #
+    #
+    # Deadlines and deliveries
+    #
+    #
+
     def test_deadline_and_delivery_order(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')\
@@ -200,7 +208,34 @@ class TestGroupDetailsView(TestCase, LoginTestCaseMixin):
             normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines .last-feedback').text),
             'A (Passed)')
 
+    def test_delivery_rendering_after_deadline(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_after_deadline(hours=2)
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines .after-deadline-message').text),
+            'Delivered 2 hours after the deadline.')
 
+    def test_delivery_rendering_not_after_deadline(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=2)
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertFalse(cssExists(html, '#devilry_student_groupdetails_deadlines .after-deadline-message'))
+
+
+
+
+    #
+    #
+    # Active feedback
+    #
+    #
 
     def test_no_active_feedback(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\

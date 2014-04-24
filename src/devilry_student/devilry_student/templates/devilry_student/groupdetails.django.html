@@ -63,7 +63,7 @@
                 {% if group.assignment.students_can_create_groups_now %}
                     {% trans "You can invite other students to cooperate on this assignment." %}
                 {% endif %}
-                <a href="{% url 'devilry_student_groupinvite_overview' group.id %}">
+                <a href="{% url 'devilry_student_projectgroup_overview' group.id %}">
                     {% trans "More info" %}.
                 </a>
             </div>
@@ -85,6 +85,13 @@
                             <a href="#" data-id="{{ delivery.id }}">
                                 {% trans "Delivery" %} #{{ delivery.number }}
                             </a>
+                            {% if delivery.after_deadline %}
+                                <p class="text-danger after-deadline-message">
+                                    {% blocktrans with timeafter=delivery.deadline.deadline|timesince:delivery.time_of_delivery %}
+                                        Delivered {{ timeafter }} after the deadline.
+                                    {% endblocktrans %}
+                                </p>
+                            {% endif %}
                             <p class="last-feedback text-muted">
                                 {% if delivery.last_feedback %}
                                     {% devilry_student_shortgrade delivery.last_feedback %}

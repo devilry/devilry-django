@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load url from future %}
 
-<li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
-<li><a href="{% url 'devilry_student' %}#/browsegrouped/history">{% trans "History" %}</a></li>
-<li><a href="{% url 'devilry_student' %}#/group/{{ group.id }}/">{{ group.assignment.get_path }}</a></li>
+<li><a href="{% url 'devilry_student' %}">{% trans "Student" %}</a></li>
+<li><a href="{% url 'devilry_student_browse' %}">{% trans "Browse" %}</a></li>
+<li><a href="#">{{ group.subject.short_name }} - {{ group.period.short_name }}</a></li>
+<li><a href="{% url 'devilry_student_groupdetails' group.id %}">{{ group.assignment.short_name }}</a></li>

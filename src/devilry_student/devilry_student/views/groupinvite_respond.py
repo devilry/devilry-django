@@ -16,7 +16,7 @@ class GroupInviteRespondView(DetailView):
         return GroupInvite.objects.filter_unanswered_received_invites(self.request.user)
 
     def get_success_url(self):
-        return reverse('devilry_student_groupinvite_overview',
+        return reverse('devilry_student_projectgroup_overview',
             kwargs={'group_id': self.group.id})
 
     def post(self, *args, **kwargs):
