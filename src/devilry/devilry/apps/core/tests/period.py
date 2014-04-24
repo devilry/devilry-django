@@ -1,17 +1,52 @@
 from datetime import datetime
+from datetime import timedelta
 
 from django.test import TestCase
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
-from datetime import datetime, timedelta
 
+from devilry_developer.testhelpers.corebuilder import SubjectBuilder
+from devilry_developer.testhelpers.corebuilder import UserBuilder
 from ..models import Period, Subject
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
 
-class TestPeriod(TestCase, TestHelper):
 
+class TestPeriodManager(TestCase):
+    def test_filter_active(self):
+        subjectbuilder = SubjectBuilder.quickadd_ducku_duck1010()
+        active = subjectbuilder.add_6month_active_period().period
+        subjectbuilder.add_6month_lastyear_period()
+        subjectbuilder.add_6month_nextyear_period()
+        self.assertEquals(
+            list(Period.objects.filter_active()),
+            [active])
+
+    def test_filter_is_candidate_or_relatedstudent(self):
+        subjectbuilder = SubjectBuilder.quickadd_ducku_duck1010()
+        testuser = UserBuilder('testuser').user
+
+        periodAbuilder = subjectbuilder\
+            .add_6month_active_period(short_name='periodA')\
+            .add_relatedstudents(testuser)
+        periodBbuilder = subjectbuilder\
+            .add_6month_active_period(short_name='periodB')
+        periodBbuilder\
+            .add_assignment('week1')\
+            .add_group(students=[testuser])
+        subjectbuilder.add_6month_active_period(short_name='periodC')
+
+        self.assertEquals(
+            set(Period.objects.filter_is_candidate_or_relatedstudent(testuser)),
+            set([periodAbuilder.period, periodBbuilder.period]))
+
+
+
+class TestPeriodOld(TestCase, TestHelper):
+    """
+    Do not add new tests to this testcase, add to the newer testcases above, or add new testcases and use corebuilder instead.
+    """
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi",
                  subjects=["inf1100"],

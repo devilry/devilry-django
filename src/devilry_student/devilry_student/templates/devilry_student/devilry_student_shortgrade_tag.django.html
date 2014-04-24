@@ -1,0 +1,15 @@
+{% load i18n %}
+{% if feedback.grade == "Passed" or feedback.grade == "Failed" %}
+    {% if feedback.is_passing_grade %}
+        <span class="text-success">{% trans "Passed" %}</span>
+    {% else %}
+        <span class="text-warning">{% trans "Failed" %}</span>
+    {% endif %}
+{% else %}
+    {{ feedback.grade }}
+    {% if feedback.is_passing_grade %}
+        (<span class="text-success">{% trans "Passed" %}</span>)
+    {% else %}
+        (<span class="text-warning">{% trans "Failed" %}</span>)
+    {% endif %}
+{% endif %}
