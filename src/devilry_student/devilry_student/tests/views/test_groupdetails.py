@@ -200,3 +200,63 @@ class TestGroupDetailsView(TestCase, LoginTestCaseMixin):
         html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
         self.assertIn('alert-warning',
             cssGet(html, '#devilry_student_groupdetails_active_feedback')['class'])
+
+
+    def test_is_in_group(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[
+                self.testuser,
+                UserBuilder('john', full_name='John Doe').user
+            ])
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_groupingbox').text),
+            'You are in a project group with John Doe.More info.'
+        )
+
+    def test_is_not_in_group(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertFalse(cssExists(html, '#devilry_student_groupdetails_groupingbox'))
+
+    def test_is_in_group_with_more_than_one(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[
+                self.testuser,
+                UserBuilder('john', full_name='John Doe').user,
+                UserBuilder('jane', full_name='Jane Doe').user
+            ])
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_groupingbox').text),
+            'You are in a project group with Jane Doe and John Doe.More info.'
+        )
+
+    def test_is_in_group_can_invite(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', students_can_create_groups=True)\
+            .add_group(students=[
+                self.testuser
+            ])
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_groupingbox').text),
+            'You can invite other students to cooperate on this assignment.More info.'
+        )
+
+    def test_is_in_group_can_invite_with_multiple_candidates(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', students_can_create_groups=True)\
+            .add_group(students=[
+                self.testuser,
+                UserBuilder('john', full_name='John Doe').user
+            ])
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_groupingbox').text),
+            'You are in a project group with John Doe. You can invite other students to cooperate on this assignment.More info.'
+        )

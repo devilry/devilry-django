@@ -33,6 +33,28 @@
         </div>
     {% endif %}
 
+    {% if group.assignment.students_can_create_groups_now or othercandidatecount > 0 %}
+        <div id="devilry_student_groupdetails_groupingbox" class="alert alert-info">
+            <div class="container">
+                {% if othercandidatecount > 0 %}
+                    {% trans "You are in a project group with" %}
+                    {% for candidate in othercandidates %}
+                        {% if forloop.last and forloop.counter > 1 %}
+                            {% trans "and" %}
+                        {% endif %}
+                        {{ candidate.displayname }}{% endfor %}.
+                {% endif %}
+                {% if group.assignment.students_can_create_groups_now %}
+                    {% trans "You can invite other students to cooperate on this assignment." %}
+                {% endif %}
+                <a href="{% url 'devilry_student_groupinvite_overview' group.id %}">
+                    {% trans "More info" %}.
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+
     <div class="container">
         <section id="devilry_student_groupdetails_deadlines">
             {% for deadline in group.deadlines.all %}

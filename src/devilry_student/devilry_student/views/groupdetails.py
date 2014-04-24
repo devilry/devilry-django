@@ -18,7 +18,6 @@ class GroupDetailsView(TemplateView):
                         'parentnode__parentnode__parentnode', # Subject
                     )\
                     .prefetch_related(
-                        'candidates',
                         'examiners'
                     )\
                     .get(id=self.kwargs['id'])
@@ -30,5 +29,10 @@ class GroupDetailsView(TemplateView):
         context = super(GroupDetailsView, self).get_context_data(**kwargs)
         group = self._get_group()
         context['group'] = group
+        othercandidates = group.candidates.exclude(student=self.request.user)\
+            .select_related('student', 'student__devilryuserprofile')\
+            .order_by('student__username')
+        context['othercandidatecount'] = len(othercandidates)
+        context['othercandidates'] = othercandidates
         context['deadlines'] = group.deadlines.all()
         return context
