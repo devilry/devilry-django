@@ -131,27 +131,72 @@ class TestGroupDetailsView(TestCase, LoginTestCaseMixin):
             normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines .last-feedback').text),
             'Failed')
 
-    def test_delivery_rendering_points_feedback(self):
-        
-        # Mock the gradingsystempluginregistry
-        myregistry = GradingSystemPluginRegistry()
-        class MockTstPluginApi(GradingSystemPluginInterface):
-            id = 'devilry_gradingsystemplugin_tst'
-        myregistry.add(MockTstPluginApi)
+    def test_delivery_rendering_complex_feedback(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                grading_system_plugin_id='devilry_gradingsystemplugin_tst')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery()\
+            .add_passed_A_feedback(saved_by=UserBuilder('testexaminer').user)
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines .last-feedback').text),
+            'A (Passed)')
 
-        with patch('devilry.apps.core.models.assignment.gradingsystempluginregistry', myregistry):
-            groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-                .add_assignment('assignment1',
-                    grading_system_plugin_id='devilry_gradingsystemplugin_tst')\
-                .add_group(students=[self.testuser])
-            groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
-                .add_delivery()\
-                .add_feedback(
-                    saved_by=UserBuilder('testexaminer').user,
-                    points=10,
-                    grade='A',
-                    is_passing_grade=True)
-            html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
-            self.assertEquals(
-                normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_deadlines .last-feedback').text),
-                'Passed(A)')
+
+
+    def test_no_active_feedback(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery()
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertFalse(cssExists(html, '#devilry_student_groupdetails_active_feedback'))
+
+    def test_active_feedback(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery()\
+            .add_passed_feedback(saved_by=UserBuilder('testexaminer').user)
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_active_feedback').text),
+            'Passed')
+
+    def test_active_complex_feedback(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery()\
+            .add_failed_F_feedback(saved_by=UserBuilder('testexaminer').user)
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '#devilry_student_groupdetails_active_feedback').text),
+            'F (Failed)')
+
+    def test_active_feedback_passed_alertsuccess(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery()\
+            .add_passed_feedback(saved_by=UserBuilder('testexaminer').user)
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertIn('alert-success',
+            cssGet(html, '#devilry_student_groupdetails_active_feedback')['class'])
+
+    def test_active_feedback_failed_alertwarning(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testuser])
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery()\
+            .add_failed_feedback(saved_by=UserBuilder('testexaminer').user)
+        html = self.get_as(self.testuser, self._geturl(groupbuilder.group.id)).content
+        self.assertIn('alert-warning',
+            cssGet(html, '#devilry_student_groupdetails_active_feedback')['class'])
