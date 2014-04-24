@@ -55,7 +55,7 @@ class CreateForm(forms.ModelForm):
         return cleaned_data
 
 
-class GroupInviteOverviewView(DetailView):
+class ProjectGroupOverviewView(DetailView):
     template_name = 'devilry_student/projectgroup_overview.django.html'
     pk_url_kwarg = 'group_id'
     context_object_name = 'group'
@@ -87,7 +87,7 @@ class GroupInviteOverviewView(DetailView):
         return redirect(self.get_success_url())
 
     def get_context_data(self, **kwargs):
-        context = super(GroupInviteOverviewView, self).get_context_data(**kwargs)
+        context = super(ProjectGroupOverviewView, self).get_context_data(**kwargs)
         group = context['group']
         if self.request.method == 'GET':
             context['form'] = CreateForm(**self._form_kwargs())

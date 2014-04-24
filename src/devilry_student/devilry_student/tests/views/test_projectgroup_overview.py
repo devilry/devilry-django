@@ -10,7 +10,7 @@ from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 
 
-class TestGroupInviteOverviewView(TestCase):
+class TestProjectGroupOverviewView(TestCase):
     def setUp(self):
         self.testuser = UserBuilder('testuser').user
 

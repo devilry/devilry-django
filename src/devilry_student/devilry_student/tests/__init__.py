@@ -5,7 +5,7 @@ from .rest.recent_deliveries import TestRestRecentDeliveries
 from .rest.recent_feedbacks import TestRestRecentFeedbacks
 from .rest.find_groups import TestRestFindGroups
 from .rest.results import TestRestResults
-from .views.test_projectgroup_overview import TestGroupInviteOverviewView
+from .views.test_projectgroup_overview import TestProjectGroupOverviewView
 from .views.test_groupinvite_respond import TestGroupInviteRespondView
 from .views.test_groupinvite_delete import TestGroupInviteDeleteView
 from .views.test_frontpage import TestFrontpage
