@@ -19,10 +19,12 @@
         </ol>
     </div>
 
+
+
     <div class="container period-list">
         {% for period in object_list %}
         <div class="period-list-element">
-            <a href="#"><h2>{{ period.parentnode.long_name }} </h2></a>
+            <a href="{% url 'devilry_student_browseperiod' period.id %}"><h2>{{ period.parentnode.long_name }} </h2></a>
             <p>{{ period.long_name }}</p>
         </div>
         {% endfor %}
