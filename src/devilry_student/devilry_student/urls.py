@@ -2,7 +2,6 @@ from django.conf.urls.defaults import patterns, include, url
 from django.contrib.auth.decorators import login_required
 from django.views.i18n import javascript_catalog
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
-from django.core.exceptions import ValidationError
 
 from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.extjsapp import AppView
@@ -13,7 +12,7 @@ from .views.groupinvite_delete import GroupInviteDeleteView
 from .views.browseview import BrowseView
 from .views.groupdetails import GroupDetailsView
 from .views.upload_deliveryfile import UploadDeliveryFile
-
+from .views.semesteroverview import SemesterOverview
 
 i18n_packages = get_javascript_catalog_packages('devilry_student', 'devilry_header', 'devilry_extjsextras', 'devilry.apps.core')
 
@@ -46,6 +45,9 @@ urlpatterns = patterns('devilry_student',
     url(r'^browse/$',
         login_required(BrowseView.as_view()),
         name='devilry_student_browse'),
+    url(r'^browse/period/(?P<pk>\d+)$',
+        login_required(SemesterOverview.as_view()),
+        name='devilry_student_browseperiod'),
     url(r'^groupdetails/(?P<id>\d+)$',
         login_required(GroupDetailsView.as_view()),
         name='devilry_student_groupdetails'),

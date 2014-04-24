@@ -1,0 +1,39 @@
+{% extends "devilry_student/base.django.html" %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans "Browse assignments" %}{% endblock title %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="page-header page-header-with-subheader">
+            <h1> {{ period.parentnode.long_name }} </h1>
+            <p>{{ period.long_name }} </p>
+        </div>
+        <ol class="breadcrumb">
+            <li><a href="{% url 'devilry_student' %}">{% trans "Home" %}</a></li>
+            <li><a href="{% url 'devilry_student_browse' %}">{% trans "Browse" %}</a></li>
+            <li class="active">{% trans "Assignments" %}</li>
+        </ol>
+    </div>
+
+    {% if qualifiesforexams %}
+        <div class="container qualifies-for-exams">
+            <div class="alert alert-success">
+                {% trans "You are qualified for the final exam in: " %} {{ period.parentnode.long_name }} &mdash; {{ period.long_name }}
+            </div>
+        </div>
+    {% endif %}
+    
+    <div class="container assignment-list" id="assignment-list">
+        {% for assignment in object_list %}
+        <div class="assigment-list-element">
+            <h3>{{ assignment.long_name }}</h3>
+            <p>Status</p>
+        </div>
+        {% endfor %}
+
+    </div>
+
+{% endblock body %}
