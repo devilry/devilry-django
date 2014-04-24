@@ -1,0 +1,48 @@
+from mock import Mock
+from django.test import TestCase
+from BeautifulSoup import BeautifulSoup
+
+# from devilry_developer.testhelpers.soupselect import cssGet
+# from devilry_developer.testhelpers.soupselect import cssExists
+from devilry_developer.testhelpers.soupselect import normalize_whitespace
+from devilry_student.templatetags.devilry_student_feedback import devilry_student_shortgrade
+
+class TestDevilryStudentFeedbackTags(TestCase):
+    def setUp(self):
+        pass
+
+    def test_passed_with_grade(self):
+        feedback = Mock()
+        feedback.grade = 'A'
+        feedback.is_passing_grade = True
+        self.assertEquals(
+            normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
+            'A (Passed)'
+        )
+
+    def test_failed_with_grade(self):
+        feedback = Mock()
+        feedback.grade = 'F'
+        feedback.is_passing_grade = False
+        self.assertEquals(
+            normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
+            'F (Failed)'
+        )
+
+    def test_passed(self):
+        feedback = Mock()
+        feedback.grade = 'Passed'
+        feedback.is_passing_grade = True
+        self.assertEquals(
+            normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
+            'Passed'
+        )
+
+    def test_failed(self):
+        feedback = Mock()
+        feedback.grade = 'Failed'
+        feedback.is_passing_grade = False
+        self.assertEquals(
+            normalize_whitespace(BeautifulSoup(devilry_student_shortgrade(feedback)).text),
+            'Failed'
+        )

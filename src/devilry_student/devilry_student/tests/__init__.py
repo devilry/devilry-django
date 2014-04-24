@@ -14,3 +14,4 @@ from .views.test_groupinvite_delete import TestGroupInviteDeleteView
 from .views.test_frontpage import TestFrontpage
 from .views.test_student_browseview import TestBrowseView
 from .views.test_groupdetails import TestGroupDetailsView
+from .test_templatetags import TestDevilryStudentFeedbackTags
