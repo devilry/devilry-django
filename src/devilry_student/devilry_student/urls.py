@@ -12,6 +12,7 @@ from .views.groupinvite_respond import GroupInviteRespondView
 from .views.groupinvite_delete import GroupInviteDeleteView
 from .views.browseview import BrowseView
 from .views.groupdetails import GroupDetailsView
+from .views.upload_deliveryfile import UploadDeliveryFile
 
 
 i18n_packages = get_javascript_catalog_packages('devilry_student', 'devilry_header', 'devilry_extjsextras', 'devilry.apps.core')
@@ -48,6 +49,10 @@ urlpatterns = patterns('devilry_student',
     url(r'^groupdetails/(?P<id>\d+)$',
         login_required(GroupDetailsView.as_view()),
         name='devilry_student_groupdetails'),
+
+    url(r'^upload_deliveryfile/(?P<deadline_id>\d+)$',
+        UploadDeliveryFile.as_view(),
+        name='devilry_student_upload_deliveryfile')
 
     #url(r'^groupinvite/leave/(?P<group_id>\d+)$')
 )
