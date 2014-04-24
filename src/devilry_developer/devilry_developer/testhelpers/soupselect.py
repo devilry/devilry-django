@@ -160,4 +160,4 @@ def prettyhtml(html):
     return BeautifulSoup(html).prettify()
 
 def normalize_whitespace(html):
-    return re.sub('\s+', ' ', html, re.MULTILINE).strip()
+    return re.sub('\s+', ' ', html).strip()
