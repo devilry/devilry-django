@@ -77,3 +77,12 @@ class TestUploadedDeliveryFile(TestCase):
         UploadedDeliveryFile.objects.get_queryset().all().delete_objects_and_files()
         self.assertEquals(UploadedDeliveryFile.objects.count(), 0)
         self.assertFalse(exists(path))
+
+
+    def test_prepare_filename(self):
+        self.assertEquals(UploadedDeliveryFile.prepare_filename('test.txt'), 'test.txt')
+        self.assertEquals(255,
+            len(UploadedDeliveryFile.prepare_filename('x'*300)))
+        self.assertEquals(
+            UploadedDeliveryFile.prepare_filename('{}yy.txt'.format('x'*251)),
+            '{}.txt'.format('x'*251))

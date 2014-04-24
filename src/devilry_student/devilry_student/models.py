@@ -1,3 +1,5 @@
+from os.path import splitext
+from os.path import basename
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -136,3 +138,13 @@ class UploadedDeliveryFile(models.Model):
 
     class Meta:
         unique_together = ('deadline', 'user', 'filename')
+
+
+    @staticmethod
+    def prepare_filename(filename):
+        filename = basename(filename)
+        if len(filename) > 255:
+            name, ext = splitext(filename)
+            return '{}{}'.format(name[:255-len(ext)], ext)
+        else:
+            return filename
