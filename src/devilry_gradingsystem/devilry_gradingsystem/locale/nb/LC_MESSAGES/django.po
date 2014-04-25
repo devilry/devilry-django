@@ -287,7 +287,7 @@ msgstr "Maksimalt antall poeng"
 
 #: templates/devilry_gradingsystem/admin/summary.django.html:46
 msgid "Minumum number of points required to pass"
-msgstr "Mininalt antall poeng nødvendig for å bestå"
+msgstr "Minimum antall poeng nødvendig for å bestå"
 
 #: templates/devilry_gradingsystem/admin/summary.django.html:56
 msgid ""
