@@ -114,7 +114,7 @@ msgstr "Ta en titt på nybegynnerguiden"
 
 #: templates/devilry_examiner/allgroupsoverview_base.django.html:73
 msgid "Previous"
-msgstr "Forhåndsvisning"
+msgstr "Forrige"
 
 #: templates/devilry_examiner/allgroupsoverview_base.django.html:84
 msgid "Next"
@@ -533,6 +533,3 @@ msgstr ""
 
 #~ msgid "without preview"
 #~ msgstr "uten forhåndsvisning"
-
-#~ msgid "Preview"
-#~ msgstr "Forhåndsvisning"
