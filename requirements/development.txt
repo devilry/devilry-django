@@ -1,0 +1,11 @@
+# Dependencies required for development
+-r common.txt
+
+# Required by sphinx (to build the docs)
+Jinja2==2.6
+Sphinx==1.2.2
+sphinx_rtd_theme==0.1.6
+
+
+# Package providing tools for development of Devilry
+-e ./src/devilry_developer

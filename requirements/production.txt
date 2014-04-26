@@ -1,0 +1,9 @@
+# Production requirements
+-r common.txt
+
+# PostgreSQL bindings
+psycopg2==2.4.6
+
+# Solr search server - required to test search like it works in production
+# - Not needed for development (we use Whoosh by default)
+pysolr==2.1.0
