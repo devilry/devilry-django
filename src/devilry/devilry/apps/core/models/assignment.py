@@ -284,6 +284,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         help_text=_('Specify the maximum number of points possible for this assignment.'),
         default=1)
     passing_grade_min_points = models.PositiveIntegerField(null=True, blank=True,
+        verbose_name=_('Minumum number of points required to pass'),
         default=1)
     points_to_grade_mapper = models.CharField(
         max_length=25, blank=True, null=True,

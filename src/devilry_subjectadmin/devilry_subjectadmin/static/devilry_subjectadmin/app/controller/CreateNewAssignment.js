@@ -397,32 +397,33 @@ Ext.define('devilry_subjectadmin.controller.CreateNewAssignment', {
     },
 
     _autoapplyPublishingTime:function (initialValues, autoSummary) {
-        var result = this.getAssignmentsStore().smartAutodetectPublishingTime();
-        if(result === null) {
-            initialValues.publishing_time = this.getAssignmentsStore().getUniqueFuturePublishingTime();
-        } else {
-            initialValues.publishing_time = result.detectedDateTime;
-            var previous_publishing_time = result.lastAssignment.get('publishing_time');
-            autoSummary.push({
-                label: gettext('Publishing time'),
-                detailstpl: [
-                    '<p>',
-                    gettext('Calculated by adding the most common timespan between publishing times ({days} days) to the publishing time of the last published assignment, {previous_assignment} ({previous_publishing_time}).'),
-                    '</p>',
-                    '<tpl if="hasExtraDelay">',
-                    '<p>',
-                    gettext('You have a break in the regular timespan. Since you use a short interval between 1 day and 14 days, we assume this means you have skipped an interval or two, and suggested a publishing time based on those assumptions.'),
-                    '</p>',
-                    '</tpl>'
-                ],
-                detailsdata: {
-                    days: result.mostCommonDayDiff.days,
-                    previous_assignment: this._em(result.lastAssignment.get('short_name')),
-                    previous_publishing_time: devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(previous_publishing_time),
-                    hasExtraDelay: result.delayCount > 1
-                }
-            });
-        }
+        initialValues.publishing_time = new Date();
+        // var result = this.getAssignmentsStore().smartAutodetectPublishingTime();
+        // if(result === null) {
+        //     initialValues.publishing_time = this.getAssignmentsStore().getUniqueFuturePublishingTime();
+        // } else {
+        //     initialValues.publishing_time = result.detectedDateTime;
+        //     var previous_publishing_time = result.lastAssignment.get('publishing_time');
+        //     autoSummary.push({
+        //         label: gettext('Publishing time'),
+        //         detailstpl: [
+        //             '<p>',
+        //             gettext('Calculated by adding the most common timespan between publishing times ({days} days) to the publishing time of the last published assignment, {previous_assignment} ({previous_publishing_time}).'),
+        //             '</p>',
+        //             '<tpl if="hasExtraDelay">',
+        //             '<p>',
+        //             gettext('You have a break in the regular timespan. Since you use a short interval between 1 day and 14 days, we assume this means you have skipped an interval or two, and suggested a publishing time based on those assumptions.'),
+        //             '</p>',
+        //             '</tpl>'
+        //         ],
+        //         detailsdata: {
+        //             days: result.mostCommonDayDiff.days,
+        //             previous_assignment: this._em(result.lastAssignment.get('short_name')),
+        //             previous_publishing_time: devilry_extjsextras.DatetimeHelpers.formatDateTimeShort(previous_publishing_time),
+        //             hasExtraDelay: result.delayCount > 1
+        //         }
+        //     });
+        // }
     },
 
     _getNumberInName: function(name) {

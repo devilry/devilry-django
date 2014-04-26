@@ -11,6 +11,8 @@ from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
 from devilry.apps.core.models import FileMeta
+from devilry.apps.core.models import RelatedStudent
+from devilry.apps.core.models import RelatedExaminer
 from devilry.apps.core.deliverystore import MemoryDeliveryStore
 from .datebuilder import DateTimeBuilder
 
@@ -255,11 +257,11 @@ class PeriodBuilder(BaseNodeBuilderBase):
     def __init__(self, *args, **kwargs):
         relatedstudents = kwargs.pop('relatedstudents', None)
         relatedexaminers = kwargs.pop('relatedexaminers', None)
+        super(PeriodBuilder, self).__init__(*args, **kwargs)
         if relatedstudents:
             self.add_relatedstudents(*relatedstudents)
         if relatedexaminers:
             self.add_relatedexaminers(*relatedexaminers)
-        super(PeriodBuilder, self).__init__(*args, **kwargs)
 
     @classmethod
     def quickadd_ducku_duck1010_active(cls):
@@ -270,16 +272,38 @@ class PeriodBuilder(BaseNodeBuilderBase):
         kwargs['parentnode'] = self.period
         return AssignmentBuilder(*args, **kwargs)
 
+    def add_assignment_x_weeks_ago(self, weeks, **kwargs):
+        kwargs['publishing_time'] = DateTimeBuilder.now().minus(weeks=weeks)
+        return self.add_assignment(**kwargs)
+
+    def add_assignment_in_x_weeks(self, weeks, **kwargs):
+        kwargs['publishing_time'] = DateTimeBuilder.now().plus(weeks=weeks)
+        return self.add_assignment(**kwargs)
+
     def add_relatedstudents(self, *users):
+        relatedstudents = []
         for user in users:
-            self.period.relatedstudent_set.create(
+            if isinstance(user, RelatedStudent):
+                relatedstudent = user
+            else:
+                relatedstudent = RelatedStudent(
                 user=user)
+            relatedstudent.period = self.period
+            relatedstudents.append(relatedstudent)
+        RelatedStudent.objects.bulk_create(relatedstudents)
         return self
 
     def add_relatedexaminers(self, *users):
+        relatedexaminers = []
         for user in users:
-            self.period.relatedexaminer_set.create(
+            if isinstance(user, RelatedExaminer):
+                relatedexaminer = user
+            else:
+                relatedexaminer = RelatedExaminer(
                 user=user)
+            relatedexaminer.period = self.period
+            relatedexaminers.append(relatedexaminer)
+        RelatedExaminer.objects.bulk_create(relatedexaminers)
         return self
 
 

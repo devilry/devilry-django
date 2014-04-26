@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: devilry_gradingsystem\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-01-24 06:34+0100\n"
+"POT-Creation-Date: 2014-04-25 02:40+0200\n"
 "PO-Revision-Date: 2014-01-24 06:35+0100\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -287,7 +287,7 @@ msgstr "Maksimalt antall poeng"
 
 #: templates/devilry_gradingsystem/admin/summary.django.html:46
 msgid "Minumum number of points required to pass"
-msgstr "Mininalt antall poeng nødvendig for å bestå"
+msgstr "Minimum antall poeng nødvendig for å bestå"
 
 #: templates/devilry_gradingsystem/admin/summary.django.html:56
 msgid ""
@@ -474,7 +474,7 @@ msgstr "Programmeringsspråk"
 msgid "One or more of the selected groups has no deliveries."
 msgstr "En eller flere av de valgte gruppene har ingen innleveringer"
 
-#: views/feedbackbulkeditorbase.py:58 views/feedbackeditorbase.py:122
+#: views/feedbackbulkeditorbase.py:58 views/feedbackeditorbase.py:123
 msgid "Feedback text"
 msgstr "Tilbakemeldingstekst"
 
