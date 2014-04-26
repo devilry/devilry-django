@@ -1,4 +1,6 @@
 import os
+from os.path import join
+from os.path import exists
 
 from devilry_settings.default_settings import *
 from .log import create_logging_conf
@@ -15,19 +17,31 @@ from .log import create_logging_conf
 #LOGGING = create_logging_conf(basedir)
 
 
+cwd = os.getcwd()
+if not exists(join(cwd, 'manage.py')):
+    raise SystemExit('Must run manage.py from the root of the Devilry repo (the directory containing manage.py.')
+basedir = join(cwd, 'developfiles')
+if not exists(basedir):
+    os.mkdir(basedir)
+logdir = join(basedir, 'log')
+if not exists(logdir):
+    os.mkdir(logdir)
+MEDIA_ROOT = join(basedir, "filestore")
+DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(basedir, 'deliverystorehier')
+LOGGING = create_logging_conf(logdir)
 
 
 
-
-DATABASES = {"default": {
-                         'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-                         'NAME': None,    # Or path to database file if using sqlite3.
-                         'USER': '',             # Not used with sqlite3.
-                         'PASSWORD': '',         # Not used with sqlite3.
-                         'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
-                         'PORT': '',             # Set to empty string for default. Not used with sqlite3.
-                        }
-            }
+DATABASES = {
+    "default": {
+        'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'db.sqlite3',    # Or path to database file if using sqlite3.
+        'USER': '',             # Not used with sqlite3.
+        'PASSWORD': '',         # Not used with sqlite3.
+        'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',             # Set to empty string for default. Not used with sqlite3.
+    }
+}
 
 INSTALLED_APPS += [
     'devilry.apps.asminimalaspossible_gradeeditor',
@@ -104,7 +118,7 @@ PASSWORD_HASHERS = (
 ##################################################################################
 ## Whoosh
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_WHOOSH_PATH = 'devilry_whoosh_index'
+HAYSTACK_WHOOSH_PATH = join(basedir, 'devilry_whoosh_index')
 
 ## Solr
 #HAYSTACK_SEARCH_ENGINE = 'solr'
