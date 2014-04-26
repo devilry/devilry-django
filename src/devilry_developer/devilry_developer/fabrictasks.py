@@ -3,9 +3,16 @@ from os import remove, mkdir
 from shutil import rmtree, make_archive
 from zipfile import ZipFile
 from fabric.api import local, abort, task
+from fabric.context_managers import shell_env
 
 
 DB_FILE = 'db.sqlite3'
+
+
+def managepy(args, environment):
+    with shell_env(**environment):
+        local('bin/django_dev.py {args}'.format(args=args))
+
 
 
 @task
@@ -97,8 +104,11 @@ def demodb():
     Run ``remove_db``, ``syncdb`` and ``bin/django_dev.py devilry_developer_demodb``
     """
     reset_db()
-    local('bin/django_test.py devilry_developer_demodb')
-    local('bin/django_dev.py rebuild_index --noinput')
+    managepy('devilry_developer_demodb',
+        environment={
+            'DEVILRY_EMAIL_BACKEND': 'django.core.mail.backends.dummy.EmailBackend'
+        })
+    managepy('rebuild_index --noinput')
 
 
 def _gzip_file(infile):

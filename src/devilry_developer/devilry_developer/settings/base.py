@@ -1,3 +1,5 @@
+import os
+
 from devilry_settings.default_settings import *
 from .log import create_logging_conf
 
@@ -122,7 +124,7 @@ DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry_university_translations',)
 DEVILRY_SEND_EMAIL_TO_USERS = True
 #EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 #EMAIL_FILE_PATH = join(basedir, 'email_log')
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = os.environ.get('DEVILRY_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
 DEVILRY_DEFAULT_EMAIL_SUFFIX='@example.com'

@@ -160,18 +160,18 @@ class Command(BaseCommand):
             short_name='week5', long_name='Week 5',
             feedback_percent=50)
 
-        # week6 = testsemester.add_assignment_x_weeks_ago(
-        #     weeks=0, short_name='week6', long_name='Week 6',
-        #     passing_grade_min_points=1,
-        #     grading_system_plugin_id='devilry_gradingsystemplugin_points',
-        #     points_to_grade_mapper='raw-points',
-        #     max_points=6
-        # )
-        # for user in self.allstudentslist + [self.april]:
-        #     examiner = examiner=random.choice(self.examiners)
-        #     week6\
-        #         .add_group(students=[user], examiners=[examiner])\
-        #         .add_deadline(deadline=DateTimeBuilder.now().plus(days=7))
+        week6 = testsemester.add_assignment_x_weeks_ago(
+            weeks=0, short_name='week6', long_name='Week 6',
+            passing_grade_min_points=1,
+            grading_system_plugin_id='devilry_gradingsystemplugin_points',
+            points_to_grade_mapper='raw-points',
+            max_points=6
+        )
+        for user in self.allstudentslist + [self.april]:
+            examiner = examiner=random.choice(self.examiners)
+            week6\
+                .add_group(students=[user], examiners=[examiner])\
+                .add_deadline(deadline=DateTimeBuilder.now().plus(days=7))
 
     def _lorem_paras(self, count):
         return markdown_full(u'\n\n'.join(lorem_ipsum.paragraphs(count, common=False)))
