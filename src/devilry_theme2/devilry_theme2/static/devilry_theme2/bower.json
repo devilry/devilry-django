@@ -1,0 +1,17 @@
+{
+  "name": "devilry_examiner",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "font-awesome": "~4",
+    "bootstrap": "~3",
+    "jquery": "~2"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

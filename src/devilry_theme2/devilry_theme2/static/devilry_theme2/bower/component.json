@@ -1,9 +1,0 @@
-{
-  "name": "devilry_examiner",
-  "version": "0.0.0",
-  "dependencies": {
-    "font-awesome": "~4.0.3",
-    "bootstrap": "~3.0.2",
-    "jquery": "~2.0.3"
-  }
-}

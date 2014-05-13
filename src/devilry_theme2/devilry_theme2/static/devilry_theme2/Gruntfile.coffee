@@ -9,7 +9,7 @@ module.exports = (grunt) ->
     less:
       development:
         options:
-          paths: ["less", "bower/components"]
+          paths: ["less", "bower_components"]
         files:
           "css/styles.css": "less/styles.less"
   })

@@ -1,9 +1,6 @@
 import json
-from os.path import splitext
-from os.path import basename
-from simple_rest import Resource
-from simple_rest.auth.decorators import login_required
 from django.http import HttpResponse
+from django.views.generic import View
 
 from devilry.apps.core.models import Deadline
 from devilry_student.models import UploadedDeliveryFile
@@ -18,16 +15,9 @@ def serialize_uploadedfile(uploaded_deliveryfile):
     }
 
 
-class UploadDeliveryFile(Resource):
+class UploadDeliveryFile(View):
     """
     Implements multifile upload of UploadedDeliveryFile.
-
-    .. note::
-
-        We use django-simple-rest mainly because we want 401 instead of 302
-        on missing authentication. We could easily replace this with a standard
-        Django view, but we will most likely want to support API keys with this
-        view, so it makes sense to use django simple rest.
     """
     def _create_uploaded_deliveryfile(self, djangofileobj, deadline):
         return UploadedDeliveryFile.objects.create_with_file(
@@ -43,8 +33,9 @@ class UploadDeliveryFile(Resource):
             'error': error
         }))
 
-    @login_required
     def post(self, request, deadline_id):
+        if not request.user.is_authenticated():
+            return HttpResponse(status=401)
         try:
             deadline = Deadline.objects\
                 .filter(id=deadline_id)\
