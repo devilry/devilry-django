@@ -7,41 +7,55 @@ from .log import create_logging_conf
 
 
 #########################################################
-# These settings must be set in the devenv/
+#
+# Setup the developfiles/ directory as storage for
+# generated files during development
+#
 #########################################################
-#from os.path import abspath, dirname, join
-#basedir = abspath(dirname(__file__))
-#MEDIA_ROOT = join(basedir, "filestore")
-#DATABASES['default']['NAME'] = join(basedir, 'db.sqlite3')
-#DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(basedir, 'deliverystorehier')
-#LOGGING = create_logging_conf(basedir)
-
-
 cwd = os.getcwd()
 if not exists(join(cwd, 'manage.py')):
     raise SystemExit('Must run manage.py from the root of the Devilry repo (the directory containing manage.py.')
-basedir = join(cwd, 'developfiles')
-if not exists(basedir):
-    os.mkdir(basedir)
-logdir = join(basedir, 'log')
+developfilesdir = join(cwd, 'developfiles')
+if not exists(developfilesdir):
+    os.mkdir(developfilesdir)
+logdir = join(developfilesdir, 'log')
 if not exists(logdir):
     os.mkdir(logdir)
-MEDIA_ROOT = join(basedir, "filestore")
-DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(basedir, 'deliverystorehier')
+MEDIA_ROOT = join(developfilesdir, "filestore")
+DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(developfilesdir, 'deliverystorehier')
 LOGGING = create_logging_conf(logdir)
 
 
+#########################################################
+#
+# Make it possible to select database engine using
+# the DEVDB environent variable. Example usage:
+#
+#    $ DEVDB=postgres python manage.py runserver
+#
+# We default to ``DEVDB=sqlite``.
+#
+#########################################################
 
-DATABASES = {
-    "default": {
-        'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'db.sqlite3',    # Or path to database file if using sqlite3.
-        'USER': '',             # Not used with sqlite3.
-        'PASSWORD': '',         # Not used with sqlite3.
-        'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',             # Set to empty string for default. Not used with sqlite3.
+dbengine = os.environ.get('DEVDB', 'sqlite')
+if dbengine == 'sqlite':
+    DATABASES = {
+        "default": {
+            'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+            'NAME': join(developfilesdir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
+            'USER': '',             # Not used with sqlite3.
+            'PASSWORD': '',         # Not used with sqlite3.
+            'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
+            'PORT': '',             # Set to empty string for default. Not used with sqlite3.
+        }
     }
-}
+elif dbengine == 'postgres':
+    from django_dbdev.backends.postgres import DBSETTINGS
+    DATABASES = {
+        'default': DBSETTINGS
+    }
+else:
+    raise ValueError('Invalid DEVDB: "{}". Use one of: "sqlite", "postgres".'.format(dbengine))
 
 INSTALLED_APPS += [
     'devilry.apps.asminimalaspossible_gradeeditor',
@@ -118,7 +132,7 @@ PASSWORD_HASHERS = (
 ##################################################################################
 ## Whoosh
 HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_WHOOSH_PATH = join(basedir, 'devilry_whoosh_index')
+HAYSTACK_WHOOSH_PATH = join(developfilesdir, 'devilry_whoosh_index')
 
 ## Solr
 #HAYSTACK_SEARCH_ENGINE = 'solr'
@@ -137,7 +151,7 @@ DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry_university_translations',)
 ##################################################################################
 DEVILRY_SEND_EMAIL_TO_USERS = True
 #EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-#EMAIL_FILE_PATH = join(basedir, 'email_log')
+#EMAIL_FILE_PATH = join(developfilesdir, 'email_log')
 EMAIL_BACKEND = os.environ.get('DEVILRY_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
 DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
 DEVILRY_SYSTEM_ADMIN_EMAIL='devilry-support@example.com'
