@@ -62,7 +62,7 @@ def autodb(djangoenv='develop', no_groups=False):
         autodb_args = '--no-groups'
     reset_db(djangoenv=djangoenv)
     local('bin/django_test.py dev_autodb -v2 {}'.format(autodb_args))
-    _managepy('rebuild_index --noinput')
+    # _managepy('rebuild_index --noinput')
 
 
 @task
@@ -78,7 +78,7 @@ def demodb(djangoenv='develop'):
         environment={
             'DEVILRY_EMAIL_BACKEND': 'django.core.mail.backends.dummy.EmailBackend'
         })
-    _managepy('rebuild_index --noinput', djangoenv=djangoenv)
+    # _managepy('rebuild_index --noinput', djangoenv=djangoenv)
 
 
 # def _gzip_file(infile):
