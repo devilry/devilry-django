@@ -1,13 +1,14 @@
 from django.views.generic import ListView
 from django.views.generic import TemplateView
 from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Period
 from devilry_qualifiesforexam.models import Status
 
 class SemesterOverview(ListView):
     """
 
-    This view list every assignemnt of a period
+    This view list every assignment of a period
 
     """
     template_name = "devilry_student/semesteroverview.django.html"
@@ -33,6 +34,17 @@ class SemesterOverview(ListView):
                     context['qualifiesforexams'] = qualifies.qualifies
                 except QualifiesForFinalExam.DoesNotExist:
                     pass
+        context['groups'] = list(
+        AssignmentGroup.objects\
+        .filter_student_has_access(self.request.user)\
+        .filter_is_active()\
+        .select_related(
+            'last_deadline',
+                    'parentnode', # Assignment
+                    'parentnode__parentnode', # Period
+                    'parentnode__parentnode__parentnode', # Subject
+                    ).order_by('-parentnode__publishing_time')
+        )
         return context
 
     def get_queryset(self):
