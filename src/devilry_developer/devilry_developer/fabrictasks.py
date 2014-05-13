@@ -9,205 +9,176 @@ from fabric.context_managers import shell_env
 DB_FILE = 'db.sqlite3'
 
 
-def managepy(args, environment):
-    with shell_env(**environment):
-        local('bin/django_dev.py {args}'.format(args=args))
 
-
-
-@task
-def devclean():
-    """
-    Runs ``git clean -dfx .`` followed by ``fab bootrap``.
-
-    Removes all untracked and ignored files in this directory, and resets the
-    development environemnt to a completely clean state.
-    """
-    local('git clean -dfx')
-    local('fab bootstrap')
+def _managepy(args, djangoenv='develop', environment={}):
+    with shell_env(DJANGOENV=djangoenv, **environment):
+        local('python manage.py {args}'.format(args=args))
 
 
 @task
-def postbootstrap():
-    """
-    Executed by the ``bootstrap`` task after it has created the virtualenv and run ``bin/buildout``.
-    """
-    syncdb()
-
-
-@task
-def remove_db():
+def remove_db(djangoenv='develop'):
     """ Remove ``db.sqlite3`` if it exists. """
-    if exists('db.sqlite3'):
-        remove('db.sqlite3')
+    if djangoenv == 'develop':
+        if exists(DB_FILE):
+            remove(DB_FILE)
+    else:
+        _managepy('dbdev_destroy', djangoenv=djangoenv)
+
+
 
 @task
-def refreshstatic():
+def syncmigrate(djangoenv='develop'):
     """
-    Refresh static files
+    Run ``bin/django_dev.py syncmigrate -v0 --noinput``
     """
-    local('bin/django_dev.py devilry_extjs_jsmerge')
-    local('bin/django_dev.py collectstatic --noinput')
+    _managepy('syncdb -v0 --noinput')
+    _managepy('migrate -v0 --noinput')
 
 @task
-def buildout():
-    """
-    Run bin/buildout.
-    """
-    local('bin/buildout')
+def reset_db(djangoenv='develop'):
+    """ Run ``remove_db`` followed by ``syncmigrate``. """
+    remove_db(djangoenv=djangoenv)
+    if djangoenv != 'develop':
+        _managepy('dbdev_init', djangoenv=djangoenv)
+    syncmigrate(djangoenv=djangoenv)
+
+
+# @task
+# def sandbox():
+#     _managepy('devilry_sandboxcreate -s "duck2050" -l "DUCK2050 - Programmering uten grenser"')
+
 
 @task
-def syncdb():
+def autodb(djangoenv='develop', no_groups=False):
     """
-    Run ``bin/django_dev.py syncdb -v0 --noinput``
-    """
-    local('bin/django_dev.py syncdb -v0 --noinput')
-    local('bin/django_dev.py migrate -v0 --noinput')
+    Run ``remove_db``, ``syncmigrate`` and ``bin/django_dev.py dev_autodb -v2``
 
-@task
-def reset_db():
-    """ Run ``remove_db`` followed by ``syncdb``. """
-    remove_db()
-    syncdb()
-
-@task
-def sandbox():
-    local('bin/django_dev.py devilry_sandboxcreate -s "duck2050" -l "DUCK2050 - Programmering uten grenser"')
-
-@task
-def autogen_extjsmodels():
-    """
-    Run ``bin/django_dev.py dev_autogen_extjsmodels``. Note that
-    this is not needed for anyone but the developers anymore.
-    """
-    local('bin/django_dev.py dev_autogen_extjsmodels')
-
-@task
-def autodb(no_groups=False):
-    """
-    Run ``remove_db``, ``syncdb`` and ``bin/django_dev.py dev_autodb -v2``
-
+    :param djangoenv: The DJANGOENV to use.
     :param no_groups: Use ``autodb:no_groups=yes`` to run dev_autodb with --no-groups.
     """
     no_groups = no_groups == 'yes'
     autodb_args = ''
     if no_groups:
         autodb_args = '--no-groups'
-    reset_db()
+    reset_db(djangoenv=djangoenv)
     local('bin/django_test.py dev_autodb -v2 {}'.format(autodb_args))
-    local('bin/django_dev.py rebuild_index --noinput')
+    _managepy('rebuild_index --noinput')
 
 
 @task
-def demodb():
+def demodb(djangoenv='develop'):
     """
-    Run ``remove_db``, ``syncdb`` and ``bin/django_dev.py devilry_developer_demodb``
+    Run ``remove_db``, ``syncmigrate`` and ``bin/django_dev.py devilry_developer_demodb``
+
+    :param djangoenv: The DJANGOENV to use.
     """
-    reset_db()
-    managepy('devilry_developer_demodb',
+    reset_db(djangoenv=djangoenv)
+    _managepy('devilry_developer_demodb',
+        djangoenv=djangoenv,
         environment={
             'DEVILRY_EMAIL_BACKEND': 'django.core.mail.backends.dummy.EmailBackend'
         })
-    managepy('rebuild_index --noinput')
+    _managepy('rebuild_index --noinput', djangoenv=djangoenv)
 
 
-def _gzip_file(infile):
-    import gzip
-    f_in = open(infile, 'rb')
-    gzipped_outfile = '{0}.gz'.format(infile)
-    f_out = gzip.open(gzipped_outfile, 'wb')
-    f_out.writelines(f_in)
-    f_out.close()
-    f_in.close()
-    remove(infile)
+# def _gzip_file(infile):
+#     import gzip
+#     f_in = open(infile, 'rb')
+#     gzipped_outfile = '{0}.gz'.format(infile)
+#     f_out = gzip.open(gzipped_outfile, 'wb')
+#     f_out.writelines(f_in)
+#     f_out.close()
+#     f_in.close()
+#     remove(infile)
 
 
-def _get_stashdir(home):
-    from os.path import expanduser
-    from os import getcwd
-    if home == 'yes':
-        return join(expanduser('~'), '.devilry_db_and_deliveries_stash')
-    else:
-        return join(getcwd(), 'db_and_deliveries_stash')
+# def _get_stashdir(home):
+#     from os.path import expanduser
+#     from os import getcwd
+#     if home == 'yes':
+#         return join(expanduser('~'), '.devilry_db_and_deliveries_stash')
+#     else:
+#         return join(getcwd(), 'db_and_deliveries_stash')
 
-@task
-def stash_db_and_deliveries(home=False):
-    """
-    Dump the database and deliveries into the
-    ``db_and_deliveries_stash/``-directory.
+# @task
+# def stash_db_and_deliveries(home=False):
+#     """
+#     Dump the database and deliveries into the
+#     ``db_and_deliveries_stash/``-directory.
 
-    :param home:
-        Use ``home=yes`` to stash to ``~/.devilry_db_and_deliveries_stash``
-        instead of ``<this dir>/db_and_deliveries_stash/``
-    """
-    stashdir = _get_stashdir(home)
-    if exists(stashdir):
-        rmtree(stashdir)
-    mkdir(stashdir)
+#     :param home:
+#         Use ``home=yes`` to stash to ``~/.devilry_db_and_deliveries_stash``
+#         instead of ``<this dir>/db_and_deliveries_stash/``
+#     """
+#     stashdir = _get_stashdir(home)
+#     if exists(stashdir):
+#         rmtree(stashdir)
+#     mkdir(stashdir)
 
-    # DB
-    dbdumpfile = join(stashdir, 'dbdump.sql')
-    backup_db(dbdumpfile)
-    _gzip_file(dbdumpfile)
+#     # DB
+#     dbdumpfile = join(stashdir, 'dbdump.sql')
+#     backup_db(dbdumpfile)
+#     _gzip_file(dbdumpfile)
 
-    # Delivery files
-    import logging
-    logging.basicConfig(level=logging.INFO)
-    log = logging.getLogger('files.zip')
-    make_archive(join(stashdir, 'files'), 'zip', logger=log, base_dir="deliverystorehier")
-
-
-def _gunzip_file(gzipped_infile):
-    import gzip
-    unzipped = gzip.open(gzipped_infile, 'rb').read()
-    outfile = gzipped_infile.replace('.gz', '')
-    open(outfile, 'wb').write(unzipped)
-    return outfile
+#     # Delivery files
+#     import logging
+#     logging.basicConfig(level=logging.INFO)
+#     log = logging.getLogger('files.zip')
+#     make_archive(join(stashdir, 'files'), 'zip', logger=log, base_dir="deliverystorehier")
 
 
-
-@task
-def unstash_db_and_deliveries(home=False):
-    """
-    Undo ``stash_db_and_deliveries``.
-
-    :param home:
-        Use ``home=yes`` to unstash from ``~/.devilry_db_and_deliveries_stash``
-        instead of ``<this dir>/db_and_deliveries_stash/``
-    """
-    # DB
-    stashdir = _get_stashdir(home)
-    dbfile = _gunzip_file(join(stashdir, 'dbdump.sql.gz'))
-    restore_db(dbfile)
-    remove(dbfile) # We remove the unzipped dbdump, but keep the .gz
-
-    # Delivery files
-    if exists('deliverystorehier'):
-        rmtree('deliverystorehier')
-    zipfile = ZipFile(join(stashdir, 'files.zip'))
-    zipfile.extractall()
+# def _gunzip_file(gzipped_infile):
+#     import gzip
+#     unzipped = gzip.open(gzipped_infile, 'rb').read()
+#     outfile = gzipped_infile.replace('.gz', '')
+#     open(outfile, 'wb').write(unzipped)
+#     return outfile
 
 
-@task
-def backup_db(sqldumpfile):
-    """
-    Dumps a backup of ``db.sqlite3`` to the given ``sqldumpfile``.
 
-    :param sqldumpfile: The SQL file to write the dump to.
-    """
-    local('sqlite3 db.sqlite3 .dump > {sqldumpfile}'.format(**vars()))
+# @task
+# def unstash_db_and_deliveries(home=False):
+#     """
+#     Undo ``stash_db_and_deliveries``.
 
-@task
-def restore_db(sqldumpfile):
-    """
-    Restore ``db.sqlite3`` from the given ``sqldumpfile``.
+#     :param home:
+#         Use ``home=yes`` to unstash from ``~/.devilry_db_and_deliveries_stash``
+#         instead of ``<this dir>/db_and_deliveries_stash/``
+#     """
+#     # DB
+#     stashdir = _get_stashdir(home)
+#     dbfile = _gunzip_file(join(stashdir, 'dbdump.sql.gz'))
+#     restore_db(dbfile)
+#     remove(dbfile) # We remove the unzipped dbdump, but keep the .gz
 
-    :param sqldumpfile: The SQL file to restore the database from.
-    """
-    from os.path import exists
-    if exists(DB_FILE):
-        remove(DB_FILE)
-    local('sqlite3 db.sqlite3 < {sqldumpfile}'.format(**vars()))
+#     # Delivery files
+#     if exists('deliverystorehier'):
+#         rmtree('deliverystorehier')
+#     zipfile = ZipFile(join(stashdir, 'files.zip'))
+#     zipfile.extractall()
+
+
+# @task
+# def backup_db(sqldumpfile):
+#     """
+#     Dumps a backup of ``db.sqlite3`` to the given ``sqldumpfile``.
+
+#     :param sqldumpfile: The SQL file to write the dump to.
+#     """
+#     local('sqlite3 db.sqlite3 .dump > {sqldumpfile}'.format(**vars()))
+
+# @task
+# def restore_db(sqldumpfile):
+#     """
+#     Restore ``db.sqlite3`` from the given ``sqldumpfile``.
+
+#     :param sqldumpfile: The SQL file to restore the database from.
+#     """
+#     from os.path import exists
+#     if exists(DB_FILE):
+#         remove(DB_FILE)
+#     local('sqlite3 db.sqlite3 < {sqldumpfile}'.format(**vars()))
+
 
 @task
 def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False, no_buildserver=False):
