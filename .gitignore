@@ -137,3 +137,4 @@ buildoutcache/eggs/*
 !buildoutcache/eggs/.keep
 
 developfiles/
+dbdev_tempdata/
