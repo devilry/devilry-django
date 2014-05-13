@@ -1,6 +1,7 @@
 from django import template
 from django.template.loader import render_to_string
-
+from django.template.defaultfilters import stringfilter
+from django.utils.translation import ugettext_lazy as _
 
 register = template.Library()
 
@@ -20,3 +21,19 @@ def devilry_student_shortgrade(feedback):
     return render_to_string('devilry_student/devilry_student_shortgrade_tag.django.html', {
         'feedback': feedback
     })
+
+
+@register.filter(name='formatted_status')
+@stringfilter
+def formatted_status(value):
+    if value == 'waiting-for-feedback':
+        return _("Waiting for feedback")
+    elif value == 'waiting-for-deliveries':
+        return _("Waiting for deliveries")
+    elif value == 'no-deadlines':
+        return _("No deadlines")
+    elif value == 'corrected':
+        return _("Corrected")
+    elif value == 'closed-without-feedback':
+        return _("Closed without feedback")
+    return value

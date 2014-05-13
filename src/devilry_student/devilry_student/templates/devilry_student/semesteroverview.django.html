@@ -1,6 +1,7 @@
 {% extends "devilry_student/base.django.html" %}
 {% load i18n %}
 {% load url from future %}
+{% load devilry_student_tags %}
 
 {% block title %}{% trans "Browse assignments" %}{% endblock title %}
 
@@ -27,11 +28,17 @@
     {% endif %}
     
     <div class="container assignment-list" id="assignment-list">
-        {% for assignment in object_list %}
-        <div class="assigment-list-element">
-            <h3>{{ assignment.long_name }}</h3>
-            <p>Status</p>
-        </div>
+
+        {% for group in groups %}
+            <div class="assignment-list-element">
+                <h3>{{ group.parentnode.long_name }}</h3>
+                {% if group.delivery_status == 'corrected' %}
+                    <p class="last-feedback text-muted">{% devilry_student_shortgrade group.last_delivery.last_feedback %}</p>
+                {% else %}
+                    <p class="text-muted">{{ group.get_status|formatted_status }}</p>
+                    
+                {% endif %}
+            </div>
         {% endfor %}
 
     </div>
