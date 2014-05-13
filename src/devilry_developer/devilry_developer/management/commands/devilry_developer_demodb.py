@@ -121,7 +121,7 @@ class Command(BaseCommand):
 
     def add_duck1100(self):
         duck1100 = self.duckburgh.add_subject('duck1100',
-            long_name='DUCK1010 - Programming for the natural sciences')
+            long_name='DUCK1100 - Programming for the natural sciences')
         duck1100.add_admins(self.thor)
         oldtestsemester = duck1100.add_6month_lastyear_period(
             short_name='oldtestsemester', long_name='Old testsemester')
