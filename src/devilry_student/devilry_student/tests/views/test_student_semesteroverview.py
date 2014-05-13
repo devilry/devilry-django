@@ -15,6 +15,9 @@ class TestSemesterOverview(TestCase):
     def setUp(self):
         self.testuser = UserBuilder('testuser').user
 
+    def _get_url(self, id):
+        return reverse('devilry_student_browseperiod', args=[id])        
+
     def _getas(self, user, *args, **kwargs):
         self.client.login(username=user.username, password='test')
         url = reverse('devilry_student_browseperiod', args=[kwargs['id']])
@@ -24,10 +27,43 @@ class TestSemesterOverview(TestCase):
         self.client.login(username=user.username, password='test')
         return self.client.post(url, *args, **kwargs)
 
-    # def test_not_logged_in(self):
-    #     response = self.client.get(self.url)
-    #     self.assertRedirects(response, expected_url='http://testserver/authenticate/login?next=/devilry_student/browse/', 
-    #         status_code=302, target_status_code=200)
+    def test_not_logged_in(self):
+        period = PeriodBuilder.quickadd_ducku_duck1010_active()
+        url = self._get_url(period.period.id)
+        expected_url = "http://testserver/authenticate/login?next=/devilry_student/browse/period/{}".format(period.period.id)
+        response = self.client.get(url)
+        self.assertRedirects(response, 
+            expected_url=expected_url, 
+            status_code=302, target_status_code=200)
+
+    def test_assignment_list(self):
+        period = PeriodBuilder.quickadd_ducku_duck1010_active()
+        
+        groupbuilder1 = period.add_assignment('assignment1')\
+        .add_group(students=[self.testuser])
+        groupbuilder2 = period.add_assignment('assignment2')\
+        .add_group(students=[self.testuser])        
+        period.add_relatedstudents(self.testuser)
+
+        response = self._getas(self.testuser, id=period.period.id)
+        html = response.content
+        self.assertEquals(len(cssFind(html, '.assignment-list-element')), 2)
+
+    def test_no_assignments(self):
+        period = PeriodBuilder.quickadd_ducku_duck1010_active()
+        
+        groupbuilder1 = period.add_assignment('assignment1')\
+        .add_group(students=[self.testuser])
+        groupbuilder2 = period.add_assignment('assignment2')\
+        .add_group(students=[self.testuser])        
+        period.add_relatedstudents(self.testuser)
+
+        johndoe = UserBuilder('johndoe').user
+
+        response = self._getas(johndoe, id=period.period.id)
+        html = response.content
+        self.assertEquals(len(cssFind(html, '.assignment-list-element')), 0)
+
 
     # def test_render_header(self):
     #     response = self._getas(self.testuser)

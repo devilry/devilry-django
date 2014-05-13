@@ -50,5 +50,5 @@ class SemesterOverview(ListView):
     def get_queryset(self):
         user = self.request.user
         period_id = self.kwargs['pk']
-        queryset = Assignment.objects.filter_is_active().filter(parentnode__id=period_id).order_by('-publishing_time')
+        queryset = Assignment.objects.filter_is_active().filter(parentnode__id=period_id)
         return queryset

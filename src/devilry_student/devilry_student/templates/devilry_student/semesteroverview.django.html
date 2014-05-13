@@ -32,7 +32,12 @@
         {% for group in groups %}
             <div class="assignment-list-element">
                 <h3>{{ group.parentnode.long_name }}</h3>
-                <p class="last-feedback">{% devilry_student_shortgrade group.last_delivery.last_feedback %}</p>
+                {% if group.delivery_status == 'corrected' %}
+                    <p class="last-feedback text-muted">{% devilry_student_shortgrade group.last_delivery.last_feedback %}</p>
+                {% else %}
+                    <p class="text-muted">{{ group.get_status|formatted_status }}</p>
+                    
+                {% endif %}
             </div>
         {% endfor %}
 
