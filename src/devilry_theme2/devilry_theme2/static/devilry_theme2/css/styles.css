@@ -5996,8 +5996,8 @@ td.visible-print {
  * -------------------------- */
 @font-face {
   font-family: 'FontAwesome';
-  src: url('../bower/components/font-awesome/fonts/fontawesome-webfont.eot?v=4.0.3');
-  src: url('../bower/components/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.0.3') format('embedded-opentype'), url('../bower/components/font-awesome/fonts/fontawesome-webfont.woff?v=4.0.3') format('woff'), url('../bower/components/font-awesome/fonts/fontawesome-webfont.ttf?v=4.0.3') format('truetype'), url('../bower/components/font-awesome/fonts/fontawesome-webfont.svg?v=4.0.3#fontawesomeregular') format('svg');
+  src: url('../bower_components/font-awesome/fonts/fontawesome-webfont.eot?v=4.0.3');
+  src: url('../bower_components/font-awesome/fonts/fontawesome-webfont.eot?#iefix&v=4.0.3') format('embedded-opentype'), url('../bower_components/font-awesome/fonts/fontawesome-webfont.woff?v=4.0.3') format('woff'), url('../bower_components/font-awesome/fonts/fontawesome-webfont.ttf?v=4.0.3') format('truetype'), url('../bower_components/font-awesome/fonts/fontawesome-webfont.svg?v=4.0.3#fontawesomeregular') format('svg');
   font-weight: normal;
   font-style: normal;
 }
