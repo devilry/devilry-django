@@ -8,7 +8,7 @@ gunicorn==0.14.6
 django-seleniumhelpers==1.1.1
 django-crispy-forms==1.4.0
 openpyxl==1.6.1
-django==1.4
+django==1.6.5
 URLObject==2.0.1
 #djangorestframework==0.3.3
 django-simple-rest==1.4.1

@@ -117,24 +117,6 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
                       'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware']
 
 
-#######################################################################
-#
-# Testing
-#
-#######################################################################
-
-TEST_RUNNER = 'devilry_settings.testsuiterunner.FilterableTestSuiteRunner'
-TEST_FILTER = {
-    'exclude': [
-        'django.*', 'djangorestframework.*',
-        'devilry.apps.examiner.tests.simplified.*',
-        'devilry.apps.student.tests.simplified.*',
-        'devilry.apps.student.tests.simplified.*',
-        'devilry_search.tests.*', # Ignored when running all tests because they requir a fullfeatured search backend, like solr, to work
-        ],
-    'include': ['devilry*']
-}
-
 ##################################################################################
 #
 # Haystack (search)
