@@ -138,7 +138,7 @@ class RequestMixin(object):
             return None
         elif hasattr(request, 'read'):
             return request
-        return StringIO(request.raw_post_data)
+        return StringIO(request.body)
 
     def _perform_form_overloading(self):
         """

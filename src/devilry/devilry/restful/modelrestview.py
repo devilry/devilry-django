@@ -129,7 +129,7 @@ class ModelRestfulView(RestfulView):
             return True, self.request.GET
         else:
             try:
-                return False, serializers.deserialize(self.comformat, self.request.raw_post_data)
+                return False, serializers.deserialize(self.comformat, self.request.body)
             except ValueError, e:
                 raise ValueError(('Bad request data: {0}. Perhaps you ment to'
                                   'send GET data as a querystring? In that case, add '
@@ -201,7 +201,7 @@ class ModelRestfulView(RestfulView):
             return FormErrorSerializableResult(form, self.use_extjshacks)
 
     def _deserialize_create_or_replace_request(self):
-        data = serializers.deserialize(self.comformat, self.request.raw_post_data)
+        data = serializers.deserialize(self.comformat, self.request.body)
         if isinstance(data, list):
             return data, False
         else:
@@ -236,7 +236,7 @@ class ModelRestfulView(RestfulView):
                 return ErrorMsgSerializableResult('The querystring must contain a JSON encoded array of primary-keys in the "pks" attribute.',
                                                   httpresponsecls=HttpResponseBadRequest)
         else:
-            raw_data = self.request.raw_post_data
+            raw_data = self.request.body
         list_of_pks = serializers.deserialize(self.comformat, raw_data)
         if not isinstance(list_of_pks, list):
             return ErrorMsgSerializableResult('Requires "pks" as a JSON encoded array.',

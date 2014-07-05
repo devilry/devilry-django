@@ -87,7 +87,7 @@ def validate_signature(request, secret_key):
         return False
 
     # Make sure the signature is valid
-    request_body = request.raw_post_data
+    request_body = request.body
     return signature == calculate_signature(secret_key, getdata, request_body)
 
 
