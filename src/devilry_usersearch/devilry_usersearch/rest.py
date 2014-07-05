@@ -1,6 +1,5 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
-from django.db.models.query import EmptyQuerySet
 from djangorestframework.views import ListModelView
 from djangorestframework.resources import ModelResource
 from djangorestframework.permissions import IsAuthenticated
@@ -72,7 +71,7 @@ class SearchForUsers(ListModelView):
     def get_queryset(self):
         querystring = self.request.GET.get('query', '')
         if len(querystring) <= self.minimum_characters:
-            return EmptyQuerySet()
+            return User.objects.none()
         qry = User.objects.filter(Q(username__icontains=querystring) |
                                   Q(email__icontains=querystring) |
                                   Q(devilryuserprofile__full_name__icontains=querystring))
