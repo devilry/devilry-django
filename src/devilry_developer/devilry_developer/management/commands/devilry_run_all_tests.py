@@ -1,0 +1,60 @@
+from django.core import management
+from optparse import make_option
+
+
+tests = [
+    'devilry.apps.core',
+    'devilry_authenticateduserinfo',
+    'devilry_authenticateduserinfo',
+    'devilry_developer',
+    'devilry_examiner',
+    'devilry_extjsextras',
+    'devilry_frontpage',
+    'devilry_gradingsystem',
+    'devilry_gradingsystemplugin_approved',
+    # 'devilry_gradingsystemplugin_form',
+    'devilry_gradingsystemplugin_points',
+    'devilry_header',
+    'devilry_helplinks',
+    'devilry_i18n',
+    'devilry_mathjax',
+    'devilry_nodeadmin',
+    'devilry_qualifiesforexam',
+    'devilry_qualifiesforexam_approved',
+    'devilry_qualifiesforexam_points',
+    'devilry_qualifiesforexam_select',
+    'devilry_rest',
+    'devilry_sandbox',
+    #'devilry_search', NOT included because it requires a real search engine like solr
+    'devilry_settings',
+    'devilry_student',
+    'devilry_subjectadmin',
+    'devilry_theme',
+    'devilry_theme2',
+    'devilry_university_translations',
+    'devilry_useradmin',
+    'devilry_usersearch',
+    'django_decoupled_docs',
+    # 'django_extjs4',
+    # 'django_seleniumhelpers',
+]
+
+
+class Command(management.base.BaseCommand):
+    help = 'Run all our tests'
+    option_list = management.base.BaseCommand.option_list + (
+        make_option(
+            '--failfast',
+            action='store_true',
+            dest='failfast',
+            default=False,
+            help='Tells Django to stop running the test suite after first '
+                 'failed test.'),
+    )
+
+    def handle(self, *args, **options):
+        management.call_command(
+            'test', *tests,
+            verbosity=options['verbosity'],
+            failfast=options['failfast'],
+            traceback=options['traceback'])
