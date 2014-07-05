@@ -117,7 +117,7 @@ class QualifiesBasedOnPointsViewTest(TestCase, QualifiesForExamPluginTestMixin):
         )
         self.assertEqual(response.status_code, 302)
         previewdata = self.client.session[create_sessionkey('tst')]
-        self.assertEqual(set(previewdata.passing_relatedstudentids),
+        self.assertEqual(set(previewdata['passing_relatedstudentids']),
             set([relatedStudent2.id, relatedStudent3.id]))
 
     def test_save_settings(self):

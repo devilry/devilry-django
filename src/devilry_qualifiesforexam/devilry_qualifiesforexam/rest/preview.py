@@ -41,9 +41,6 @@ class Preview(View):
                 {'detail': '``pluginsessionid`` is a required parameter'})
         period = get_object_or_404(Period, pk=id)
         previewdata = self.request.session[create_sessionkey(pluginsessionid)]
-        if not isinstance(previewdata, PreviewData):
-            raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST,
-                {'detail': 'The session data must be a PreviewData object.'})
         grouper = GroupsGroupedByRelatedStudentAndAssignment(period)
         return {
             'perioddata': grouper.serialize(),

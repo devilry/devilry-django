@@ -22,7 +22,7 @@ class TestRestPreview(TestCase):
     def _getas(self, username, periodid, previewdata, pluginsessionid='tst'):
         self.client.login(username=username, password='test')
         session = self.client.session
-        session['qualifiesforexam-{0}'.format(pluginsessionid)] = previewdata
+        session['qualifiesforexam-{0}'.format(pluginsessionid)] = previewdata.serialize()
         session.save()
         return self.client.rest_get(self._get_url(periodid),
             pluginsessionid=pluginsessionid)

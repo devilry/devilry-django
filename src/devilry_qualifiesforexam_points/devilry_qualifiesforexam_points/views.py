@@ -74,7 +74,7 @@ class QualifiesBasedOnPointsView(FormView, QualifiesForExamPluginViewMixin):
         qualified_relstudentids = collector.get_relatedstudents_that_qualify_for_exam(self.period)
         self.save_plugin_output(qualified_relstudentids)
         self.save_settings_in_session({
-            'assignmentids': assignmentids,
+            'assignmentids': list(assignmentids),
             'minimum_points': minimum_points
         })
         return self.redirect_to_preview_url()

@@ -63,7 +63,7 @@ class QualifiesForExamPluginViewMixin(PeriodResultsCollector):
         self.pluginsessionid = self.request.GET['pluginsessionid']
 
     def save_plugin_output(self, *args, **kwargs):
-        self.request.session[create_sessionkey(self.pluginsessionid)] = PreviewData(*args, **kwargs)
+        self.request.session[create_sessionkey(self.pluginsessionid)] = PreviewData(*args, **kwargs).serialize()
 
     def save_settings_in_session(self, data):
         self.request.session[create_settings_sessionkey(self.pluginsessionid)] = data
