@@ -10,7 +10,7 @@ django-crispy-forms==1.4.0
 openpyxl==1.6.1
 django==1.4
 URLObject==2.0.1
-djangorestframework==0.3.3
+#djangorestframework==0.3.3
 django-simple-rest==1.4.1
 mimeparse==0.1.3
 django_errortemplates==1.0.1
@@ -36,6 +36,7 @@ mock==1.0.1
 
 
 # Local modules
+-e ./src/djangorestframework
 -e ./src/devilry_rest
 -e ./src/devilry
 -e ./src/devilry_usersearch
