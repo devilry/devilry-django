@@ -81,7 +81,7 @@ The following example exposes your `MyModel` model through an api. It will provi
 
 ``urls.py``::
 
-    from django.conf.urls.defaults import patterns, url
+    from django.conf.urls import patterns, url
     from djangorestframework.resources import ModelResource
     from djangorestframework.views import ListOrCreateModelView, InstanceModelView
     from myapp.models import MyModel

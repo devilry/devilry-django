@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 
 from .views import EmailSendingDebug
 

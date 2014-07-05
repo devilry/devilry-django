@@ -29,8 +29,7 @@ AUTH_PROFILE_MODULE = 'core.DevilryUserProfile'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
-INSTALLED_APPS = ['django.contrib.markup',
-                  'django.contrib.sessions',
+INSTALLED_APPS = ['django.contrib.sessions',
                   'django.contrib.auth',
                   'django.contrib.contenttypes',
                   'django.contrib.staticfiles',

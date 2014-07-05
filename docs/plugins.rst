@@ -41,7 +41,7 @@ First initialize the plugin system by adding::
 
 to your ``mysite/urls.py``, making it look something like this::
 
-    from django.conf.urls.defaults import *
+    from django.conf.urls import *
 
     # Uncomment the next two lines to enable the admin:
     #from django.contrib import admin

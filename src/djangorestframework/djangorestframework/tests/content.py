@@ -1,7 +1,7 @@
 """
 Tests for content parsing, and form-overloaded content parsing.
 """
-from django.conf.urls.defaults import patterns
+from django.conf.urls import patterns
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
 from djangorestframework import status

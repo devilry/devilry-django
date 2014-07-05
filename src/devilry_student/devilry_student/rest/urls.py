@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 
 from .aggregated_groupinfo import AggregatedGroupInfo
 from .add_delivery import AddDeliveryView

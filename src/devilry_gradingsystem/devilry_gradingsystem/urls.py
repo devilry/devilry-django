@@ -1,5 +1,5 @@
-from django.conf.urls.defaults import patterns
-from django.conf.urls.defaults import url
+from django.conf.urls import patterns
+from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
 from django_decoupled_docs.registry import documentationregistry

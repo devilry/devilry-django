@@ -56,7 +56,7 @@ Login / Logout
 Django REST framework includes login and logout views that are useful if
 you're using the self-documenting API::
 
-    from django.conf.urls.defaults import patterns
+    from django.conf.urls import patterns
 
     urlpatterns = patterns('djangorestframework.views',
         # Add your resources here

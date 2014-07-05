@@ -8,7 +8,7 @@ class RestfulManager(object):
     :class:`devilry.restful.RestfulView` classes with ``@myrestapi.register``.
 
     You can then add the urls by adding them to a
-    ``django.conf.urls.defaults.patterns``-object like so::
+    ``django.conf.urls.patterns``-object like so::
 
         urlpatterns = patterns('devilry.apps.myexample')
         urlpatterns += myrestapi

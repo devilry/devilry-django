@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from djangorestframework.views import ListOrCreateModelView, InstanceModelView
 from blogpost.resources import BlogPostResource, CommentResource
 

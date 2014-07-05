@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 
 from .group import ListOrCreateGroupRest
 #from .group import InstanceGroupRest

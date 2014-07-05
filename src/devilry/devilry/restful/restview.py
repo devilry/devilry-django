@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.views.generic import View
 from django.http import HttpResponseBadRequest
-from django.conf.urls.defaults import url
+from django.conf.urls import url
 
 from serializers import serialize, SerializableResult
 from extjshacks import extjshacks, extjswrap
@@ -22,7 +22,7 @@ class RestfulView(View):
     @classmethod
     def create_rest_url(cls):
         """
-        Create a ``django.conf.urls.defaults.url``-object for this view::
+        Create a ``django.conf.urls.url``-object for this view::
 
             r'^{urlprefix}/(?P<id>[a-zA-Z0-9]+)?$
 

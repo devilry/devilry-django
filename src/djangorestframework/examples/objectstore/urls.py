@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 from objectstore.views import ObjectStoreRoot, StoredObject
 
 urlpatterns = patterns('objectstore.views',
