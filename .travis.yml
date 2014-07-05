@@ -4,7 +4,7 @@ language: python
 python:
   - "2.7"
 
-env: SKIP_SELENIUMTESTS=1
+env: SKIP_SELENIUMTESTS=1 DJANGOENV=test
 
 before_install:
   - "export DISPLAY=:99.0"
@@ -15,8 +15,8 @@ before_install:
 # http://www.vlent.nl/weblog/2012/10/12/travis-ci-easy-and-fun-ci-for-your-plone-packages-nejc-zupan/
 # command to install dependencies, e.g. pip install -r requirements.txt --use-mirrors
 install:
-  - (cd devenv/; virtualenv venv; venv/bin/python ../bootstrap.py; bin/buildout)
+  - (virtualenv venv; venv/bin/pip install -r requirements/development_full.txt)
 
 # command to run tests, e.g. python setup.py test
 script:
-  - devenv/bin/django_test.py test -v2
+  - python manage.py test -v2
