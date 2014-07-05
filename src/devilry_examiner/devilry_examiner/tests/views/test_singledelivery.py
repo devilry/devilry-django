@@ -2,12 +2,12 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from devilry_developer.testhelpers.corebuilder import SubjectBuilder
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import DeliveryBuilder
 from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import cssExists
+from devilry_developer.testhelpers.soupselect import normalize_whitespace
 from devilry_examiner.tests.utils import isoformat_datetime
 from devilry_examiner.tests.utils import DJANGO_ISODATETIMEFORMAT
 
@@ -58,7 +58,6 @@ class TestSingleDeliveryView(TestCase):
         self.assertEquals(cssGet(html, '.page-header .subheader').text.strip(),
             'Delivery 1/1-{}'.format(isoformat_datetime(deliverybuilder.delivery.time_of_delivery)))
 
-
     def test_after_deadline(self):
         delivery = self.week1builder\
             .add_group(examiners=[self.examiner1])\
@@ -67,7 +66,8 @@ class TestSingleDeliveryView(TestCase):
         response = self._getas('examiner1', delivery.id)
         self.assertEquals(response.status_code, 200)
         html = response.content
-        self.assertEquals(cssGet(html, '.after_deadline_message').text.strip(),
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '.after_deadline_message').text),
             'This delivery was added 1 hour after the deadline.The group has no other deliveries for this deadline.')
 
     def test_after_deadline_other_deliveries(self):
@@ -80,7 +80,7 @@ class TestSingleDeliveryView(TestCase):
         self.assertEquals(response.status_code, 200)
         html = response.content
         self.assertEquals(
-            cssGet(html, '.after_deadline_message').text.strip(),
+            normalize_whitespace(cssGet(html, '.after_deadline_message').text),
             'This delivery was added 4 hours after the deadline.The group has made at least one more delivery for this deadline.Browse other deliveries.')
 
 
