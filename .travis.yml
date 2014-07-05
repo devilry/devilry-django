@@ -19,4 +19,4 @@ install:
 
 # command to run tests, e.g. python setup.py test
 script:
-  - python manage.py test -v2
+  - venv/bin/python manage.py test -v2
