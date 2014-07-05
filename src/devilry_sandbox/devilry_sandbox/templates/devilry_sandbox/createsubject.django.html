@@ -22,7 +22,7 @@
                 <pre>Username: testuser{{ unique_number }}
 Password: testuser{{ unique_number }}</pre>
 
-                <form action="{% url login %}" method="post" target="_blank">{% csrf_token %}
+                <form action="{% url 'login' %}" method="post" target="_blank">{% csrf_token %}
                     <input type="hidden" name="username" value="testuser{{ unique_number }}"/>
                     <input type="hidden" name="password" value="testuser{{ unique_number }}"/>
                     <p>
@@ -39,7 +39,7 @@ Password: testuser{{ unique_number }}</pre>
             {% else %}
                 <p>Click the button below to create a test course with an active semester.</p>
                 <p>
-                    <form action="{% url devilry-sandbox-createsubject-create %}" method="post">{% csrf_token %}
+                    <form action="{% url 'devilry-sandbox-createsubject-create' %}" method="post">{% csrf_token %}
                         <button class="btn btn-primary btn-large" type='submit'>
                             <i class="icon-plus icon-white"></i>
                             Create test course
