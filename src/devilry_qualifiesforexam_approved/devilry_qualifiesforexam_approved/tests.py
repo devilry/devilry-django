@@ -37,7 +37,7 @@ class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):
         })
         self.assertEqual(response.status_code, 302)
         previewdata = self.client.session[create_sessionkey('tst')]
-        self.assertEqual(previewdata.passing_relatedstudentids, [])
+        self.assertEqual(previewdata['passing_relatedstudentids'], [])
 
     def test_perms_as_periodadmin(self):
         self._test_permsas('periodadmin')
@@ -77,7 +77,7 @@ class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):
         })
         self.assertEqual(response.status_code, 302)
         previewdata = self.client.session[create_sessionkey('tst')]
-        self.assertEqual(previewdata.passing_relatedstudentids, [relatedStudent2.id])
+        self.assertEqual(previewdata['passing_relatedstudentids'], [relatedStudent2.id])
 
     def test_verify(self):
         status = Status(period=self.period, status='ready', message='',
@@ -199,7 +199,8 @@ class TestSubsetApprovedView(TestCase, QualifiesForExamPluginTestMixin):
         )
         self.assertEqual(response.status_code, 302)
         previewdata = self.client.session[create_sessionkey('tst')]
-        self.assertEqual(set(previewdata.passing_relatedstudentids),
+        self.assertEqual(
+            set(previewdata['passing_relatedstudentids']),
             set([relatedStudent2.id, relatedStudent3.id]))
 
     def test_save_settings(self):

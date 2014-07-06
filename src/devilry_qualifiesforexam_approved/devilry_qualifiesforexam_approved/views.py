@@ -79,7 +79,7 @@ class SubsetApprovedView(FormView, QualifiesForExamPluginViewMixin):
         qualified_relstudentids = PeriodResultsCollectorSubset(assignmentids_that_must_be_passed).get_relatedstudents_that_qualify_for_exam(self.period)
         self.save_plugin_output(qualified_relstudentids)
         self.save_settings_in_session({
-            'assignmentids_that_must_be_passed': assignmentids_that_must_be_passed
+            'assignmentids_that_must_be_passed': list(assignmentids_that_must_be_passed)
         })
         return self.redirect_to_preview_url()
 
