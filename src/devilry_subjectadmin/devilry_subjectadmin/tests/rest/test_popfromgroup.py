@@ -71,7 +71,7 @@ class TestRestPopFromGroup(TestCase):
         self.assertEquals(content['detail'], 'Can not pop candidates on a group with less than 2 candidates.')
 
     def test_post_not_candidate_on_group(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1, student2)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2)')
         self.testhelper.add_to_path('uni;sub.p1.a1.g2:candidate(notcandong1)')
         source = self.testhelper.sub_p1_a1_g1
         notcandong1Cand = self.testhelper.sub_p1_a1_g2.candidates.get(student=self.testhelper.notcandong1)
