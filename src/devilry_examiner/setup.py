@@ -11,7 +11,6 @@ setup(name = 'devilry_examiner',
       packages=find_packages(exclude=['ez_setup']),
       install_requires = ['setuptools', 'Django',
                           'devilry',
-                          'devilry_rest',
                           'mock',
                           'django-crispy-forms',
                           'django_decoupled_docs'

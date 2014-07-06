@@ -1,9 +1,8 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
 from django_decoupled_docs.registry import documentationregistry
 from devilry_settings.docproxies import DevilryUserDocsProxy
-from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.dashboard import DashboardView
 from .views.singlegroupoverview import SingleGroupOverview
 from .views.allgroupsoverview import AllGroupsOverview
@@ -20,7 +19,6 @@ from .views.lastdelivery_or_groupoverview_redirect import LastDeliveryOrGroupOve
 
 
 urlpatterns = patterns('devilry_examiner',
-    #url('^rest/', include('devilry_examiner.rest.urls')),
     url('^$', login_required(DashboardView.as_view()),
         name='devilry_examiner_dashboard'),
     url('^allgroupsoverview/(?P<assignmentid>\d+)$',
