@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from django.db import transaction
 
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
@@ -219,16 +220,14 @@ class TestPointToGradeMap(TestCase):
             maximum_points=3,
             grade='F'
         )
-        self.assertEquals(pointrange_to_grade2,
-            assignment2.pointtogrademap.points_to_grade(2))
+        self.assertEquals(pointrange_to_grade2, assignment2.pointtogrademap.points_to_grade(2))
 
         # When we update to Django 1.5+, this should start only
         # matching pointrange_to_grade2. See:
         # https://github.com/devilry/devilry-django/issues/563
         matches = assignment2.pointtogrademap.pointrangetograde_set.filter_grades_matching_points(2)
-        self.assertEquals(set([pointrange_to_grade1, pointrange_to_grade2]),
-            set(matches))
-
+        self.assertEquals(set([pointrange_to_grade2]), set(matches))
+        # self.assertEquals(set([pointrange_to_grade1, pointrange_to_grade2]), set(matches))
 
     def test_clean_no_entries(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
