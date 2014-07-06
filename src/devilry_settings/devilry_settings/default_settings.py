@@ -112,7 +112,6 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
                       'django.contrib.sessions.middleware.SessionMiddleware',
                       'django.contrib.auth.middleware.AuthenticationMiddleware',
                       'devilry_i18n.middleware.LocaleMiddleware',
-                      'django.middleware.transaction.TransactionMiddleware',
                       'django.contrib.messages.middleware.MessageMiddleware',
                       'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware']
 
