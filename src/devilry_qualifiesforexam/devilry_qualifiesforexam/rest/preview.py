@@ -44,5 +44,5 @@ class Preview(View):
         grouper = GroupsGroupedByRelatedStudentAndAssignment(period)
         return {
             'perioddata': grouper.serialize(),
-            'pluginoutput': previewdata.serialize()
+            'pluginoutput': previewdata
         }

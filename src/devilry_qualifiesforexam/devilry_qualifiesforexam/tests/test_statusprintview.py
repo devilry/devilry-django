@@ -10,7 +10,6 @@ from devilry_qualifiesforexam.views import extract_lastname
 from devilry_qualifiesforexam.views import cmp_lastname
 
 
-
 class TestStatusPrintView(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
