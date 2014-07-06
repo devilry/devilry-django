@@ -1,4 +1,3 @@
-from django.db.models.query import EmptyQuerySet
 from django.db.models import Q
 from djangorestframework.views import ListModelView
 from djangorestframework.resources import ModelResource
@@ -59,7 +58,7 @@ class FindGroupsView(ListModelView):
     def get_queryset(self):
         querystring = self.request.GET.get('query', '').strip()
         if not querystring:
-            return EmptyQuerySet()
+            return AssignmentGroup.objects.none()
 
         qry = None
         for word in querystring.split():

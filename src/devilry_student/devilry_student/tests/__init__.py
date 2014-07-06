@@ -1,10 +1,10 @@
-from .rest.add_delivery import TestRestAddDeliveryView
-from .rest.open_groups import TestRestOpenGroups
-from .rest.aggregated_groupinfo import TestRestAggregatedGroupInfo
-from .rest.recent_deliveries import TestRestRecentDeliveries
-from .rest.recent_feedbacks import TestRestRecentFeedbacks
-from .rest.find_groups import TestRestFindGroups
-from .rest.results import TestRestResults
+from .rest.test_add_delivery import TestRestAddDeliveryView
+from .rest.test_open_groups import TestRestOpenGroups
+from .rest.test_aggregated_groupinfo import TestRestAggregatedGroupInfo
+from .rest.test_recent_deliveries import TestRestRecentDeliveries
+from .rest.test_recent_feedbacks import TestRestRecentFeedbacks
+from .rest.test_find_groups import TestRestFindGroups
+from .rest.test_results import TestRestResults
 
 from .views.test_upload_deliveryfile import TestUploadDeliveryFile
 from .views.test_projectgroup_overview import TestProjectGroupOverviewView
