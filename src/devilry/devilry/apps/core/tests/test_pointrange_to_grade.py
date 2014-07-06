@@ -145,8 +145,10 @@ class TestPointRangeToGrade(TestCase):
             maximum_points=6,
             grade='C'
         )
-        with self.assertRaises(IntegrityError):
-            pointrange_to_grade.save()
+
+        with transaction.atomic():
+            with self.assertRaises(IntegrityError):
+                pointrange_to_grade.save()
 
         # Does not fail when in another assignment
         assignment2 = self.periodbuilder.add_assignment('assignment2').assignment
@@ -334,7 +336,6 @@ class TestPointToGradeMap(TestCase):
             (0, 'Bad'),
             (32, 'Better')
         ])
-
 
     def test_create_map(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
