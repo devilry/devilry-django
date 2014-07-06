@@ -5,9 +5,6 @@ from devilry_frontpage.views import frontpage
 
 admin.autodiscover()
 
-import haystack
-haystack.autodiscover()
-
 devilry_urls = ((r'^student/', include('devilry.apps.student.urls')),
                 (r'^examiner/', include('devilry.apps.examiner.urls')),
                 (r'^administrator/', include('devilry.apps.administrator.urls')),

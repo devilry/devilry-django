@@ -1,16 +1,8 @@
 from haystack import indexes
-from haystack import site
 from datetime import datetime
 
 from devilry_search.base import BaseIndex
-from .models import Node
-from .models import Subject
-from .models import Period
-from .models import Assignment
-from .models import AssignmentGroup
-from .models import Examiner
-
-
+from . import models
 
 
 class AdminsSearchIndex(BaseIndex):
@@ -29,29 +21,31 @@ class AdminsSearchIndex(BaseIndex):
         return obj.get_path()
 
 
-class NodeIndex(AdminsSearchIndex):
-    def index_queryset(self):
+class NodeIndex(AdminsSearchIndex, indexes.Indexable):
+    def index_queryset(self, using=None):
         qry = super(NodeIndex, self).index_queryset()
         qry = qry.prefetch_related('admins')
         return qry
 
-site.register(Node, NodeIndex)
+    def get_model(self):
+        return models.Node
 
 
-class SubjectIndex(AdminsSearchIndex):
-    def index_queryset(self):
+class SubjectIndex(AdminsSearchIndex, indexes.Indexable):
+    def index_queryset(self, using=None):
         qry = super(SubjectIndex, self).index_queryset()
         qry = qry.prefetch_related('admins')
         return qry
 
-site.register(Subject, SubjectIndex)
+    def get_model(self):
+        return models.Subject
 
 
-class PeriodIndex(AdminsSearchIndex):
+class PeriodIndex(AdminsSearchIndex, indexes.Indexable):
     start_time = indexes.DateTimeField(model_attr='start_time')
     end_time = indexes.DateTimeField(model_attr='end_time')
 
-    def index_queryset(self):
+    def index_queryset(self, using=None):
         qry = super(PeriodIndex, self).index_queryset()
         qry = qry.select_related('parentnode')
         qry = qry.prefetch_related(
@@ -59,19 +53,21 @@ class PeriodIndex(AdminsSearchIndex):
             'parentnode__admins')
         return qry
 
-site.register(Period, PeriodIndex)
+    def get_model(self):
+        return models.Period
 
 
-class AssignmentIndex(AdminsSearchIndex):
+class AssignmentIndex(AdminsSearchIndex, indexes.Indexable):
     publishing_time = indexes.DateTimeField(model_attr='publishing_time')
     is_active = indexes.BooleanField(model_attr='is_active')
     examiner_ids = indexes.MultiValueField()
 
     def prepare_examiner_ids(self, obj):
-        return [examiner.user.id
-                for examiner in Examiner.objects.filter(assignmentgroup__parentnode=obj.id)]
+        return [
+            examiner.user.id
+            for examiner in models.Examiner.objects.filter(assignmentgroup__parentnode=obj.id)]
 
-    def index_queryset(self):
+    def index_queryset(self, using=None):
         qry = super(AssignmentIndex, self).index_queryset()
         qry = qry.select_related(
             'parentnode'
@@ -82,10 +78,11 @@ class AssignmentIndex(AdminsSearchIndex):
             'parentnode__parentnode__admins')
         return qry
 
-site.register(Assignment, AssignmentIndex)
+    def get_model(self):
+        return models.Assignment
 
 
-class AssignmentGroupIndex(AdminsSearchIndex):
+class AssignmentGroupIndex(AdminsSearchIndex, indexes.Indexable):
     examiner_ids = indexes.MultiValueField()
     student_ids = indexes.MultiValueField()
     examiners = indexes.CharField(use_template=True)
@@ -100,7 +97,7 @@ class AssignmentGroupIndex(AdminsSearchIndex):
     def prepare_student_ids(self, obj):
         return [candidate.student.id for candidate in obj.candidates.all()]
 
-    def index_queryset(self):
+    def index_queryset(self, using=None):
         qry = super(AssignmentGroupIndex, self).index_queryset()
         qry = qry.select_related(
             'parentnode',  'parentnode__parentnode',
@@ -126,5 +123,5 @@ class AssignmentGroupIndex(AdminsSearchIndex):
     def prepare_path(self, obj):
         return u'{}.{}'.format(obj.assignment.get_path(), obj.short_displayname)
 
-
-site.register(AssignmentGroup, AssignmentGroupIndex)
+    def get_model(self):
+        return models.AssignmentGroup

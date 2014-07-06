@@ -1,8 +1,3 @@
-# Enable the Celery task queue
-import djcelery
-djcelery.setup_loader()
-
-
 ########################################################################
 #
 # Defaults for django settings
@@ -37,7 +32,7 @@ INSTALLED_APPS = ['django.contrib.sessions',
                   'django.contrib.messages',
                   'django.contrib.admin',
                   'django.contrib.humanize',
-                  'djcelery',
+                  # 'djcelery',
                   'errortemplates',
                   'crispy_forms',
                   'djangorestframework',
@@ -45,7 +40,7 @@ INSTALLED_APPS = ['django.contrib.sessions',
                   'extjs4',
                   'haystack',
                   'south',
-                  'celery_haystack',
+                  # 'celery_haystack',
                   'django_decoupled_docs',
 
                   'devilry.apps.core',
@@ -121,9 +116,13 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
 # Haystack (search)
 #
 ##################################################################################
-HAYSTACK_SITECONF = 'devilry_search.haystack_search_sites'
-HAYSTACK_SEARCH_ENGINE = 'solr'
-HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
+HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 
 ########################################################################

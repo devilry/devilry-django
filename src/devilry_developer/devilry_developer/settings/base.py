@@ -108,7 +108,7 @@ DEVILRY_SYNCSYSTEM = 'FS (Felles Studentsystem)'
 ## django_seleniumhelpers
 ## - http://django_seleniumhelpers.readthedocs.org/
 #SKIP_SELENIUMTESTS = True
-SELENIUM_BROWSER = 'Firefox' # Default selenium browser
+SELENIUM_BROWSER = 'Chrome'  # Default selenium browser
 SELENIUM_DEFAULT_TIMEOUT = 8
 
 
@@ -126,17 +126,16 @@ PASSWORD_HASHERS = (
 #DEVILRY_USERADMIN_PASSWORD_HELPMESSAGE = 'Passwords are handled by Our Awesome External User Management System. Follow <a href="https://awesome.example.com">this link</a> to reset passwords.'
 
 
-
 ##################################################################################
 # Haystack (search)
 ##################################################################################
-## Whoosh
-HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_WHOOSH_PATH = join(developfilesdir, 'devilry_whoosh_index')
-
-## Solr
-#HAYSTACK_SEARCH_ENGINE = 'solr'
-#HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
+HAYSTACK_CONNECTIONS = {  # Whoosh
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+        'PATH': join(developfilesdir, 'devilry_whoosh_index'),
+    },
+}
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 
 ##################################################################################
