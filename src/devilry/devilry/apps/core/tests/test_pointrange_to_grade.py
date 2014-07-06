@@ -179,11 +179,11 @@ class TestPointRangeToGrade(TestCase):
         self.assertEquals(list(PointRangeToGrade.objects.all()), [f, e, d])
 
 
-
 class TestPointToGradeMap(TestCase):
     def setUp(self):
         self.periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
-        self.assignment = self.periodbuilder.add_assignment('assignment',
+        self.assignment = self.periodbuilder.add_assignment(
+            'assignment',
             max_points=100).assignment
 
     def test_points_to_grade_matches(self):
@@ -204,7 +204,6 @@ class TestPointToGradeMap(TestCase):
         self.assertEquals(point_to_grade_map.points_to_grade(21), e)
         with self.assertRaises(PointRangeToGrade.DoesNotExist):
             point_to_grade_map.points_to_grade(41)
-
 
     def test_points_to_grade_multi_assignment(self):
         assignment2 = self.periodbuilder\
@@ -271,7 +270,6 @@ class TestPointToGradeMap(TestCase):
         point_to_grade_map.clean()
         self.assertFalse(point_to_grade_map.invalid)
 
-
     def test_clean_invalid_first_minimum_points(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
         point_to_grade_map.pointrangetograde_set.create(
@@ -304,7 +302,7 @@ class TestPointToGradeMap(TestCase):
         with self.assertRaises(InvalidLargestMaximumPointsValidationError):
             point_to_grade_map.clean()
 
-    def test_clean_invalid_first_maximum_points(self):
+    def test_clean_invalid_gaps_in_map(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
         point_to_grade_map.pointrangetograde_set.create(
             minimum_points=0,
