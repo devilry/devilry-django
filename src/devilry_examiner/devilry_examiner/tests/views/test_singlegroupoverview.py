@@ -2,12 +2,12 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from devilry_developer.testhelpers.corebuilder import SubjectBuilder
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import cssExists
-from devilry_developer.testhelpers.soupselect import prettyhtml
+from devilry_developer.testhelpers.soupselect import normalize_whitespace
+# from devilry_developer.testhelpers.soupselect import prettyhtml
 
 
 
@@ -164,7 +164,8 @@ class TestSingleGroupOverview(TestCase):
         response = self._getas('examiner1', groupbuilder.group.id)
         self.assertEquals(response.status_code, 200)
         html = response.content
-        self.assertEquals(cssGet(html, '.delivery .after_deadline_message').text.strip(),
+        self.assertEquals(
+            normalize_whitespace(cssGet(html, '.delivery .after_deadline_message').text),
             "2 hours after the deadline")
 
     def test_delivery_order(self):
