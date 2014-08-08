@@ -9,9 +9,7 @@ django-seleniumhelpers==1.1.1
 django-crispy-forms==1.4.0
 openpyxl==1.6.1
 django==1.6.5
-#django==1.4
 URLObject==2.0.1
-#djangorestframework==0.3.3
 django-simple-rest==1.4.1
 mimeparse==0.1.3
 django_errortemplates==1.0.1
@@ -37,37 +35,5 @@ mock==1.0.1
 
 
 # Local modules
--e ./src/djangorestframework
--e ./src/devilry_rest
--e ./src/devilry
--e ./src/devilry_usersearch
--e ./src/devilry_useradmin
--e ./src/django_decoupled_docs
--e ./src/devilry_gradingsystem
--e ./src/devilry_gradingsystemplugin_points
--e ./src/devilry_gradingsystemplugin_approved
--e ./src/devilry_theme2
--e ./src/devilry_examiner
--e ./src/devilry_university_translations
--e ./src/devilry_mathjax
--e ./src/devilry_search
--e ./src/devilry_helplinks
--e ./src/devilry_settings
-
--e ./src/devilry_theme
--e ./src/devilry_extjsextras
--e ./src/devilry_i18n
--e ./src/devilry_header
--e ./src/devilry_student
--e ./src/devilry_frontpage
--e ./src/devilry_subjectadmin
--e ./src/devilry_nodeadmin
-
--e ./src/devilry_qualifiesforexam
--e ./src/devilry_qualifiesforexam_approved
--e ./src/devilry_qualifiesforexam_points
--e ./src/devilry_qualifiesforexam_select
-
--e ./src/devilry_authenticateduserinfo
-
--e ./src/devilry_sandbox
+-e ./thirdpartylibs/djangorestframework
+-e .
