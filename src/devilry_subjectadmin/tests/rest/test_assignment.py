@@ -29,7 +29,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 3)
         self.assertEquals(set(content[0].keys()),
-                          set(['id', 'parentnode', 'etag', 'short_name', 'long_name',
+                          set(['id', 'parentnode', 'short_name', 'long_name',
                                'publishing_time', 'delivery_types',
                                'is_published', 'publishing_time_offset_from_now',
                                'scale_points_percent', 'first_deadline',
@@ -170,7 +170,7 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(content['has_valid_grading_setup'], True)
         self.assertEquals(content['gradingsystemplugin_title'], 'Passed/failed')
         self.assertEquals(set(content.keys()),
-                          set(['short_name', 'long_name', 'admins', 'etag',
+                          set(['short_name', 'long_name', 'admins',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
                                'is_published', 'publishing_time_offset_from_now',
@@ -306,7 +306,7 @@ class TestRestInstanceAssignmentRest(TestCase):
         self.assertEquals(content['deadline_handling'], 0)
         self.assertEquals(content['delivery_types'], 0)
         self.assertEquals(set(content.keys()),
-                          set(['short_name', 'long_name', 'admins', 'etag',
+                          set(['short_name', 'long_name', 'admins',
                                'can_delete', 'parentnode', 'id', 'inherited_admins',
                                'publishing_time', 'delivery_types',
                                'is_published', 'publishing_time_offset_from_now',
