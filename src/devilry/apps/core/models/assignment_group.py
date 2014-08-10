@@ -1,3 +1,4 @@
+import warnings
 from datetime import datetime
 
 from django.db.models import Q
@@ -495,6 +496,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         :param separator: The unicode string used to separate candidates. Defaults to ``u', '``.
         """
+        warnings.warn("deprecated", DeprecationWarning)
         return separator.join([examiner.user.username for examiner in self.examiners.select_related('user')])
 
     def is_admin(self, user_obj):
