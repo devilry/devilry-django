@@ -20,26 +20,24 @@ from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 from ..testhelper import TestHelper
 
 
-
 class TestAssignment(TestCase):
 
     def test_points_is_passing_grade(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                passing_grade_min_points=1).assignment
+            .add_assignment('assignment1', passing_grade_min_points=1).assignment
         self.assertTrue(assignment1.points_is_passing_grade(1))
         self.assertFalse(assignment1.points_is_passing_grade(0))
 
     def test_points_to_grade_passed_failed(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
-                points_to_grade_mapper='passed-failed').assignment
+            .add_assignment('assignment1', points_to_grade_mapper='passed-failed').assignment
         self.assertEquals(assignment1.points_to_grade(0), 'Failed')
         self.assertEquals(assignment1.points_to_grade(1), 'Passed')
 
     def test_points_to_grade_points(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
+            .add_assignment(
+                'assignment1',
                 points_to_grade_mapper='raw-points',
                 max_points=10).assignment
         self.assertEquals(assignment1.points_to_grade(0), '0/10')
@@ -48,7 +46,8 @@ class TestAssignment(TestCase):
 
     def test_points_to_grade_custom_table(self):
         assignment1 = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
+            .add_assignment(
+                'assignment1',
                 points_to_grade_mapper='custom-table',
                 max_points=10).assignment
         pointtogrademap = PointToGradeMap.objects.create(
@@ -68,6 +67,7 @@ class TestAssignment(TestCase):
 
         # Mock the gradingsystempluginregistry
         myregistry = GradingSystemPluginRegistry()
+
         class MockApprovedPluginApi(GradingSystemPluginInterface):
             id = 'devilry_gradingsystemplugin_approved'
         myregistry.add(MockApprovedPluginApi)
@@ -77,10 +77,11 @@ class TestAssignment(TestCase):
 
     def test_set_max_points(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1',
+            .add_assignment(
+                'assignment1',
                 points_to_grade_mapper='custom-table',
                 max_points=10)
-        pointtogrademap = PointToGradeMap.objects.create(
+        PointToGradeMap.objects.create(
             invalid=False,
             assignment=assignmentbuilder.assignment)
         assignmentbuilder.assignment.set_max_points(20)
@@ -149,22 +150,23 @@ class TestAssignmentOld(TestCase, TestHelper):
         assignment1.clean()
 
     def test_unique(self):
-        n = Assignment(parentnode=Period.objects.get(short_name='looong'),
-                short_name='assignment1', long_name='O1',
-                publishing_time=datetime.now())
+        n = Assignment(parentnode=Period.objects.get(
+            short_name='looong'),
+            short_name='assignment1', long_name='O1',
+            publishing_time=datetime.now())
         self.assertRaises(IntegrityError, n.save)
 
     def anon_change_anonymous(self):
         self.inf1100_looong_assignment1.anonymous = True
         self.inf1100_looong_assignment1.save()
-        candidates = Candidate.objects.filter(Q(assignment_group__parentnode__id=\
-                                                self.inf1100_looong_assignment1.id))
+        candidates = Candidate.objects.filter(
+            Q(assignment_group__parentnode__id=self.inf1100_looong_assignment1.id))
         for can in candidates:
             self.assertEquals(can.candidate_id, can.identifier)
         self.inf1100_looong_assignment1.anonymous = False
         self.inf1100_looong_assignment1.save()
-        candidates = Candidate.objects.filter(Q(assignment_group__parentnode__id=\
-                                                self.inf1100_looong_assignment1.id))
+        candidates = Candidate.objects.filter(
+            Q(assignment_group__parentnode__id=self.inf1100_looong_assignment1.id))
         for can in candidates:
             self.assertEquals(can.student.username, can.identifier)
 
@@ -184,7 +186,7 @@ class TestAssignmentOld(TestCase, TestHelper):
         User.objects.get(username='examiner3')
         q = Assignment.published_where_is_examiner(self.examiner3, old=False, active=False)
         self.assertEquals(q.count(), 0)
-        
+
         q = Assignment.published_where_is_examiner(self.examiner3)
         self.assertEquals(q.count(), 1)
         self.assertEquals(q[0].short_name, 'oldassignment')
@@ -207,8 +209,8 @@ class TestAssignmentOld(TestCase, TestHelper):
         self.assertEquals(q[0].short_name, 'assignment1')
         self.assertEquals(q[1].short_name, 'assignment2')
         self.assertEquals(q[2].short_name, 'assignment3')
-        
-        #Create group2 with examiner1 as examiner
+
+        # Create group2 with examiner1 as examiner
         self.add_to_path('uio.ifi;inf1010.spring10:begins(-1):ends(2).assignment0.group2:examiner(examiner1)')
         q = Assignment.active_where_is_examiner(examiner1)
         self.assertEquals(q.count(), 4)
@@ -328,8 +330,7 @@ class TestAssignmentManager(TestCase):
         admin1 = UserBuilder('admin1').user
         nodebuilder = NodeBuilder('docku')
         assignment1 = nodebuilder\
-            .add_childnode('science')\
-                .add_admins(admin1)\
+            .add_childnode('science').add_admins(admin1)\
             .add_childnode('inf')\
             .add_subject('subject1')\
             .add_6month_active_period()\
@@ -345,7 +346,7 @@ class TestAssignmentManager(TestCase):
     def test_filter_is_examiner(self):
         examiner1 = UserBuilder('examiner1').user
         week1builder = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1')
-        group1builder = week1builder.add_group().add_examiners(examiner1)
+        week1builder.add_group().add_examiners(examiner1)
 
         # Add another group to make sure we do not get false positives
         week1builder.add_group().add_examiners(UserBuilder('examiner2').user)
@@ -371,7 +372,7 @@ class TestAssignmentManager(TestCase):
         otherexaminer = UserBuilder('otherexaminer').user
         duck1010builder = SubjectBuilder.quickadd_ducku_duck1010()
         activeassignmentbuilder = duck1010builder.add_6month_active_period().add_assignment('week1')
-        currentgroupbuilder = activeassignmentbuilder.add_group().add_examiners(examiner1)
+        activeassignmentbuilder.add_group().add_examiners(examiner1)
 
         # Add inactive groups and a group with another examiner to make sure we get no false positives
         duck1010builder.add_6month_lastyear_period().add_assignment('week1')\
