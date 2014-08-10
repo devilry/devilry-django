@@ -89,8 +89,6 @@ class AssignmentManager(models.Manager):
         return self.get_queryset().filter_admin_has_access(user)
 
 
-
-
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     """
 
@@ -126,7 +124,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     .. attribute:: scale_points_percent
 
-        Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.
+        Percent to scale points on this assignment by for period overviews. The default is 100,
+        which means no change to the points.
 
     .. attribute:: delivery_types
 
@@ -162,7 +161,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         this assignment. This field may be ``None``, and it is normally set by the
         grading system plugin.
 
-        DO NOT UPDATE MANUALLY. You can safely set an initial value for this 
+        DO NOT UPDATE MANUALLY. You can safely set an initial value for this
         manually when you create a new assignment, but when you update this
         field, do so using :meth:`.set_max_points`.
 
@@ -232,7 +231,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     publishing_time = models.DateTimeField(
         verbose_name=_("Publishing time"),
         help_text=_('The time when the assignment is to be published (visible to students and examiners).'))
-    anonymous = models.BooleanField(default=False,
+    anonymous = models.BooleanField(
+        default=False,
         verbose_name=_("Anonymous?"),
         help_text=_(
             'On anonymous assignments, examiners and students can NOT see each other and '
@@ -241,19 +241,23 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             'personal information about the students. '
             'This means that anonymous assignments is perfect for exams, and for assignments '
             'where you do not want prior experiences with a student to affect results.'))
-    students_can_see_points = models.BooleanField(default=True,
-            verbose_name="Students can see points")
-    admins = models.ManyToManyField(User, blank=True,
-            verbose_name="Administrators")
-    examiners_publish_feedbacks_directly = models.BooleanField(default=True,
-                                                     verbose_name="Examiners publish directly?",
-                                                     help_text=('Should feedbacks published by examiners be made '
-                                                                'avalable to the students immediately? If not, an '
-                                                                'administrator have to publish feedbacks '
-                                                                'manually.'))
-    delivery_types = models.PositiveIntegerField(default=deliverytypes.ELECTRONIC,
-                                                 choices=deliverytypes.as_choices_tuple(),
-                                                 help_text='This option controls what types of deliveries this assignment accepts. See the Delivery documentation for more info.')
+    students_can_see_points = models.BooleanField(
+        default=True,
+        verbose_name="Students can see points")
+    admins = models.ManyToManyField(User, blank=True, verbose_name="Administrators")
+    examiners_publish_feedbacks_directly = models.BooleanField(
+        default=True,
+        verbose_name="Examiners publish directly?",
+        help_text=('Should feedbacks published by examiners be made '
+                   'avalable to the students immediately? If not, an '
+                   'administrator have to publish feedbacks '
+                   'manually.'))
+    delivery_types = models.PositiveIntegerField(
+        default=deliverytypes.ELECTRONIC,
+        choices=deliverytypes.as_choices_tuple(),
+        help_text=('This option controls what types of deliveries this '
+                   'assignment accepts. See the Delivery documentation '
+                   'for more info.'))
     deadline_handling = models.PositiveIntegerField(
         default=settings.DEFAULT_DEADLINE_HANDLING_METHOD,
         verbose_name=_('Deadline handling'),
@@ -269,15 +273,20 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             'deadlines. Students have to perform an extra confirm-step when adding '
             'deliveries after their active deadline, and assignments where the deadline has '
             'expired is clearly marked for both students and examiners.'))
-    scale_points_percent = models.PositiveIntegerField(default=100,
-                                                       help_text='Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.')
+    scale_points_percent = models.PositiveIntegerField(
+        default=100,
+        help_text=('Percent to scale points on this assignment by for '
+                   'period overviews. The default is 100, which means '
+                   'no change to the points.'))
     first_deadline = models.DateTimeField(blank=True, null=True)
 
-    max_points = models.PositiveIntegerField(null=True, blank=True,
+    max_points = models.PositiveIntegerField(
+        null=True, blank=True,
         verbose_name=_('Maximum points'),
         help_text=_('Specify the maximum number of points possible for this assignment.'),
         default=1)
-    passing_grade_min_points = models.PositiveIntegerField(null=True, blank=True,
+    passing_grade_min_points = models.PositiveIntegerField(
+        null=True, blank=True,
         verbose_name=_('Minumum number of points required to pass'),
         default=1)
     points_to_grade_mapper = models.CharField(
@@ -295,12 +304,14 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     students_can_create_groups = models.BooleanField(
         default=False,
         verbose_name=_(u'Students can create project groups?'),
-        help_text=_(u'Select this if students should be allowed to join/leave groups. Even if this is not selected, you can still organize your students in groups manually.'))
+        help_text=_(u'Select this if students should be allowed to join/leave groups. '
+                    u'Even if this is not selected, you can still organize your students '
+                    u'in groups manually.'))
     students_can_not_create_groups_after = models.DateTimeField(
         default=None, null=True, blank=True,
         verbose_name=_(u'Students can not create project groups after'),
-        help_text=_(u'Students can not create project groups after this time. Ignored if "Students can create project groups" is not selected.'))
-
+        help_text=_(u'Students can not create project groups after this time. '
+                    u'Ignored if "Students can create project groups" is not selected.'))
 
     @property
     def subject(self):
@@ -317,7 +328,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         :attr:`students_can_not_create_groups_after` is in the future or ``None``.
         """
         return self.students_can_create_groups \
-            and (self.students_can_not_create_groups_after == None or self.students_can_not_create_groups_after > datetime.now())
+            and (self.students_can_not_create_groups_after is None
+                 or self.students_can_not_create_groups_after > datetime.now())
 
     def is_electronic(self):
         """
@@ -363,7 +375,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     def get_gradingsystem_plugin_api(self):
         """
-        Shortcut for ``devilry_gradingsystem.pluginregistry.gradingsystempluginregistry.get(self.grading_system_plugin_id)(self)``.
+        Shortcut for::
+
+            devilry_gradingsystem.pluginregistry.gradingsystempluginregistry.get(
+                self.grading_system_plugin_id)(self)
 
         See: :meth:`devilry_gradingsystem.pluginregistry.GradingSystemPluginRegistry.get`.
         """
@@ -378,7 +393,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 or self.passing_grade_min_points is None \
                 or self.points_to_grade_mapper is None \
                 or self.grading_system_plugin_id is None \
-                or not self.grading_system_plugin_id in gradingsystempluginregistry:
+                or self.grading_system_plugin_id not in gradingsystempluginregistry:
             return False
         else:
             pluginapi = self.get_gradingsystem_plugin_api()
@@ -394,12 +409,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             else:
                 return True
 
-    def setup_grading(self,
-            grading_system_plugin_id, points_to_grade_mapper,
+    def setup_grading(
+            self, grading_system_plugin_id, points_to_grade_mapper,
             passing_grade_min_points=None, max_points=None):
         """
         Setup all of the simple parts of the grading system:
-        
+
         - :attr:`.grading_system_plugin_id`
         - :attr:`.points_to_grade_mapper`
         - :attr:`.passing_grade_min_points`
@@ -420,7 +435,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         self.passing_grade_min_points = passing_grade_min_points
         self.max_points = max_points
 
-
     def get_point_to_grade_map(self):
         """
         Get the :class:`~devilry.apps.core.models.PointToGradeMap` for this assinment,
@@ -428,13 +442,11 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         from .pointrange_to_grade import PointToGradeMap
         try:
-            pointtogrademap = self.pointtogrademap
+            return self.pointtogrademap
         except ObjectDoesNotExist:
-            pointtogrademap = PointToGradeMap.objects.create(
+            self.pointtogrademap = PointToGradeMap.objects.create(
                 assignment=self)
-        return self.pointtogrademap
-
-
+            return self.pointtogrademap
 
     def points_is_passing_grade(self, points):
         """
@@ -460,7 +472,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             return u'{}/{}'.format(points, self.max_points)
         else:
             return self.pointtogrademap.points_to_grade(points).grade
-
 
     @classmethod
     def q_published(cls, old=True, active=True):
@@ -493,32 +504,36 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             return
         # Get all candidates on assignmentgroups for this assignment
         candidates = Candidate.objects.filter(Q(assignment_group__parentnode__id=self.id))
-        for cand in candidates: 
-            #cand.update_identifier(self.anonymous)
+        for cand in candidates:
             cand.save(anonymous=self.anonymous)
 
     @classmethod
     def q_is_admin(cls, user_obj):
         return Q(admins=user_obj) | \
-                Q(parentnode__admins=user_obj) | \
-                Q(parentnode__parentnode__admins=user_obj) | \
-                Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+            Q(parentnode__admins=user_obj) | \
+            Q(parentnode__parentnode__admins=user_obj) | \
+            Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(assignmentgroups__examiners__user=user_obj)
 
     def _clean_first_deadline(self):
-        self.first_deadline = self.first_deadline.replace(microsecond=0, tzinfo=None) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
+        # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
+        self.first_deadline = self.first_deadline.replace(microsecond=0, tzinfo=None)
+
         datetimeformat = '%Y-%m-%d %H:%M'
         if self.first_deadline < self.publishing_time:
-            msg = _('Submission date can not be before the publishing time ({publishing_time}) of the assignment.')
-            raise ValidationError(msg.format(publishing_time = self.publishing_time.strftime(datetimeformat)))
+            msg = _('Submission date can not be before the publishing time '
+                    '({publishing_time}) of the assignment.')
+            raise ValidationError(
+                msg.format(publishing_time=self.publishing_time.strftime(datetimeformat)))
         if self.first_deadline > self.parentnode.end_time:
             msg = _("Submission date must be within it's {period_term} ({start_time} - {end_time}).")
-            raise ValidationError(msg.format(period_term=_('period'),
-                                             start_time=self.parentnode.start_time.strftime(datetimeformat),
-                                             end_time=self.parentnode.end_time.strftime(datetimeformat)))
+            raise ValidationError(msg.format(
+                period_term=_('period'),
+                start_time=self.parentnode.start_time.strftime(datetimeformat),
+                end_time=self.parentnode.end_time.strftime(datetimeformat)))
 
     def clean(self, *args, **kwargs):
         """Validate the assignment.
@@ -530,23 +545,25 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         :attr:`Period.start_time` and ``Period.end_time``.
         """
         super(Assignment, self).clean(*args, **kwargs)
-        if self.publishing_time != None and self.parentnode_id != None:
-            if self.publishing_time < self.parentnode.start_time  or \
+        if self.publishing_time is not None and self.parentnode_id is not None:
+            if self.publishing_time < self.parentnode.start_time or \
                     self.publishing_time > self.parentnode.end_time:
                 raise ValidationError(
-                      _("The publishing time, {publishing_time}, is invalid. "
-                        "It must be within it's period, {period}, "
-                        "which lasts from {start_time} to {end_time}").format(publishing_time = self.publishing_time,
-                                                                              period=unicode(self.parentnode),
-                                                                              end_time=self.parentnode.end_time,
-                                                                              start_time=self.parentnode.start_time))
+                    _("The publishing time, {publishing_time}, is invalid. "
+                      "It must be within it's period, {period}, "
+                      "which lasts from {start_time} to {end_time}").format(
+                        publishing_time=self.publishing_time,
+                        period=unicode(self.parentnode),
+                        end_time=self.parentnode.end_time,
+                        start_time=self.parentnode.start_time))
         if self.first_deadline:
             self._clean_first_deadline()
         if self.passing_grade_min_points > self.max_points:
             raise ValidationError(
-                _('The minumum number of points required to pass must be less than the maximum number of points possible on the assignment. The current maximum is {max_points}').format(
+                _('The minumum number of points required to pass must be less than '
+                  'the maximum number of points possible on the assignment. The '
+                  'current maximum is {max_points}').format(
                     max_points=self.max_points))
-
 
     def is_empty(self):
         """
@@ -554,7 +571,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         from .delivery import Delivery
         return Delivery.objects.filter(deadline__assignment_group__parentnode=self).count() == 0
-
 
     def is_active(self):
         """
