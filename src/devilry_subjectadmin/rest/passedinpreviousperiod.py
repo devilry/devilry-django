@@ -10,13 +10,16 @@ from django.db import transaction
 from devilry.utils.passed_in_previous_period import MarkAsPassedInPreviousPeriod
 from devilry.utils.passed_in_previous_period import MarkAsPassedInPreviousPeriodError
 from devilry.apps.core.models import Assignment
-from devilry.apps.gradeeditors import gradeeditor_registry
-from devilry.apps.gradeeditors import ShortFormatValidationError
+# from devilry.apps.gradeeditors import gradeeditor_registry
+# from devilry.apps.gradeeditors import ShortFormatValidationError
 from .errors import NotFoundError
 from .errors import BadRequestFieldError
 from .errors import ValidationErrorResponse
 from .auth import IsAssignmentAdmin
 from .group import GroupSerializer
+
+
+# TODO: Update to work with gradingsystem plugins
 
 
 
