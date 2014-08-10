@@ -17,7 +17,6 @@ from abstract_is_candidate import AbstractIsCandidate
 from candidate import Candidate
 from model_utils import *
 from custom_db_fields import ShortNameField, LongNameField
-from model_utils import Etag
 
 import deliverytypes
 
@@ -92,7 +91,7 @@ class AssignmentManager(models.Manager):
 
 
 
-class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
+class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     """
 
     .. attribute:: parentnode
@@ -150,10 +149,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             1
                 Hard deadlines. Deliveries can not be added after the deadline
                 has expired.
-
-    .. attribute:: etag
-
-        A DateTimeField containing the etag for this object.
 
     .. attribute:: first_deadline
 
@@ -234,7 +229,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     long_name = LongNameField()
     parentnode = models.ForeignKey(Period, related_name='assignments',
                                    verbose_name='Period')
-    etag = models.DateTimeField(auto_now_add=True)
     publishing_time = models.DateTimeField(
         verbose_name=_("Publishing time"),
         help_text=_('The time when the assignment is to be published (visible to students and examiners).'))
