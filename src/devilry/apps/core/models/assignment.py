@@ -1,3 +1,4 @@
+import warnings
 from datetime import datetime
 
 from django.utils.translation import ugettext_lazy as _
@@ -14,11 +15,9 @@ from node import Node
 from period import Period
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
-from candidate import Candidate
 from model_utils import *
 from custom_db_fields import ShortNameField, LongNameField
-
-import deliverytypes
+from . import deliverytypes
 
 
 class AssignmentQuerySet(models.query.QuerySet):
@@ -475,6 +474,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     @classmethod
     def q_published(cls, old=True, active=True):
+        warnings.warn("deprecated", DeprecationWarning)
         now = datetime.now()
         q = Q(publishing_time__lt=now)
         if not active:
@@ -485,10 +485,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     @classmethod
     def q_is_candidate(cls, user_obj):
+        warnings.warn("deprecated", DeprecationWarning)
         return Q(assignmentgroups__candidates__student=user_obj)
 
     @classmethod
     def q_is_admin(cls, user_obj):
+        warnings.warn("deprecated", DeprecationWarning)
         return Q(admins=user_obj) | \
             Q(parentnode__admins=user_obj) | \
             Q(parentnode__parentnode__admins=user_obj) | \
@@ -496,6 +498,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     @classmethod
     def q_is_examiner(cls, user_obj):
+        warnings.warn("deprecated", DeprecationWarning)
         return Q(assignmentgroups__examiners__user=user_obj)
 
     def _clean_first_deadline(self):
@@ -556,5 +559,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         Returns ``True`` if this assignment is published, and the period has not ended yet.
         """
+        warnings.warn("deprecated", DeprecationWarning)
         now = datetime.now()
         return self.publishing_time < now and self.parentnode.end_time > now
