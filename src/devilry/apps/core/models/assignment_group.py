@@ -500,13 +500,16 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         return separator.join([examiner.user.username for examiner in self.examiners.select_related('user')])
 
     def is_admin(self, user_obj):
+        warnings.warn("deprecated", DeprecationWarning)
         return self.parentnode.is_admin(user_obj)
 
     def is_candidate(self, user_obj):
+        warnings.warn("deprecated", DeprecationWarning)
         return self.candidates.filter(student=user_obj).count() > 0
 
     def is_examiner(self, user_obj):
         """ Return True if user is examiner on this assignment group """
+        warnings.warn("deprecated", DeprecationWarning)
         return self.examiners.filter(user__id=user_obj.pk).count() > 0
 
     def can_delete(self, user_obj):
@@ -563,6 +566,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Both the assignmentgroups is_open attribute, and the periods start
         and end time is checked.
         """
+        warnings.warn("deprecated", DeprecationWarning)
         return self.is_open and self.parentnode.parentnode.is_active()
 
     def copy_all_except_candidates(self):
@@ -627,6 +631,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     @property
     def successful_delivery_count(self):
+        warnings.warn("deprecated", DeprecationWarning)
         from .delivery import Delivery
         return Delivery.objects.filter(
             successful=True,
@@ -815,6 +820,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             return self.delivery_status
 
     def get_all_admin_ids(self):
+        warnings.warn("deprecated", DeprecationWarning)
         return self.parentnode.get_all_admin_ids()
 
 
