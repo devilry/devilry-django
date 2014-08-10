@@ -49,17 +49,10 @@ INSTALLED_APPS = ['django.contrib.sessions',
                   'devilry.apps.developertools',
                   'devilry.apps.jsfiledownload',
 
-                  'devilry.apps.approved_gradeeditor',
-                  'devilry.apps.manual_gradeeditor',
-                  'devilry.apps.autograde_gradeeditor',
-                  'devilry.apps.basicform_gradeeditor',
-                  'devilry.apps.commentform_gradeeditor',
-
                   'devilry.apps.statistics',
                   'devilry.apps.markup',
                   'devilry.apps.superadmin',
                   'devilry.apps.authenticate',
-                  'devilry.apps.gradeeditors',
                   'devilry.apps.send_email_to_students',
 
                   'devilry_extjsextras',

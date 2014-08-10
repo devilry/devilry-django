@@ -58,7 +58,6 @@ else:
     raise ValueError('Invalid DEVDB: "{}". Use one of: "sqlite", "postgres".'.format(dbengine))
 
 INSTALLED_APPS += [
-    'devilry.apps.asminimalaspossible_gradeeditor',
     'seleniumhelpers',
     'djangosenchatools',
     # 'raven.contrib.django.raven_compat', # Sentry client (Raven)
