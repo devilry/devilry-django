@@ -57,7 +57,6 @@ INSTALLED_APPS = ['django.contrib.sessions',
 
                   'devilry.apps.statistics',
                   'devilry.apps.markup',
-                  'devilry.apps.student',
                   'devilry.apps.examiner',
                   'devilry.apps.administrator',
                   'devilry.apps.superadmin',
