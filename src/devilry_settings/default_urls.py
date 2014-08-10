@@ -5,10 +5,7 @@ from devilry_frontpage.views import frontpage
 
 admin.autodiscover()
 
-devilry_urls = ((r'^student/', include('devilry.apps.student.urls')),
-                (r'^examiner/', include('devilry.apps.examiner.urls')),
-                (r'^administrator/', include('devilry.apps.administrator.urls')),
-                (r'^gradeeditors/', include('devilry.apps.gradeeditors.urls')),
+devilry_urls = ((r'^gradeeditors/', include('devilry.apps.gradeeditors.urls')),
                 (r'^markup/', include('devilry.apps.markup.urls')),
                 (r'^jsfiledownload/', include('devilry.apps.jsfiledownload.urls')),
                 (r'^authenticate/', include('devilry.apps.authenticate.urls')),
@@ -34,5 +31,4 @@ devilry_urls = ((r'^student/', include('devilry.apps.student.urls')),
                 url(r'^devilry_gradingsystemplugin_points/', include('devilry_gradingsystemplugin_points.urls')),
                 url(r'^devilry_gradingsystemplugin_approved/', include('devilry_gradingsystemplugin_approved.urls')),
                 (r'^devilry_frontpage/', include('devilry_frontpage.urls')),
-                url(r'^$', frontpage, name='devilry_frontpage'),
-)
+                url(r'^$', frontpage, name='devilry_frontpage'))
