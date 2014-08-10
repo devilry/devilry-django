@@ -68,8 +68,11 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
     def filter_waiting_for_feedback(self):
         now = datetime.now()
         return self.filter(
-            Q(parentnode__delivery_types=deliverytypes.NON_ELECTRONIC, delivery_status="waiting-for-something") |
-            Q(parentnode__delivery_types=deliverytypes.ELECTRONIC, delivery_status="waiting-for-something", last_deadline__deadline__lte=now))
+            Q(parentnode__delivery_types=deliverytypes.NON_ELECTRONIC,
+              delivery_status="waiting-for-something") |
+            Q(parentnode__delivery_types=deliverytypes.ELECTRONIC,
+              delivery_status="waiting-for-something",
+              last_deadline__deadline__lte=now))
 
     def filter_waiting_for_deliveries(self):
         now = datetime.now()
@@ -89,7 +92,6 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             group.last_deadline.deliveries.create(
                 delivery_type=deliverytypes.NON_ELECTRONIC,
                 successful=True)
-
 
 
 class AssignmentGroupManager(models.Manager):
@@ -177,7 +179,7 @@ class AssignmentGroupManager(models.Manager):
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     """
-    Represents a student or a group of students. 
+    Represents a student or a group of students.
 
     .. attribute:: parentnode
 
@@ -243,18 +245,23 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     objects = AssignmentGroupManager()
 
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
-    name = models.CharField(max_length=30, blank=True, null=True,
-                           help_text='An optional name for the group. Typically used a project '\
-                                       'name on project assignments.')
-    is_open = models.BooleanField(blank=True, default=True,
-            help_text = 'If this is checked, the group can add deliveries.')
+    name = models.CharField(
+        max_length=30, blank=True, null=True,
+        help_text='An optional name for the group. Typically used a project '
+                  'name on project assignments.')
+    is_open = models.BooleanField(
+        blank=True, default=True,
+        help_text='If this is checked, the group can add deliveries.')
     feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
-    last_delivery = models.OneToOneField("Delivery", blank=True, null=True,
+    last_delivery = models.OneToOneField(
+        "Delivery", blank=True, null=True,
         related_name='last_delivery_by_group', on_delete=models.SET_NULL)
-    last_deadline = models.OneToOneField("Deadline", blank=True, null=True,
+    last_deadline = models.OneToOneField(
+        "Deadline", blank=True, null=True,
         related_name='last_deadline_for_group', on_delete=models.SET_NULL)
     etag = models.DateTimeField(auto_now_add=True)
-    delivery_status = models.CharField(max_length=30, blank=True, null=True,
+    delivery_status = models.CharField(
+        max_length=30, blank=True, null=True,
         help_text='The delivery_status of a group',
         choices=(
             ("no-deadlines", _("No deadlines")),
@@ -292,9 +299,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     @classmethod
     def q_is_admin(cls, user_obj):
         return Q(parentnode__admins=user_obj) | \
-                Q(parentnode__parentnode__admins=user_obj) | \
-                Q(parentnode__parentnode__parentnode__admins=user_obj) | \
-                Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+            Q(parentnode__parentnode__admins=user_obj) | \
+            Q(parentnode__parentnode__parentnode__admins=user_obj) | \
+            Q(parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def q_is_candidate(cls, user_obj):
@@ -324,8 +331,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         :rtype: QuerySet
         """
         return AssignmentGroup.objects.filter(
-                cls.q_is_candidate(user_obj) &
-                cls.q_published(old=old, active=active))
+            cls.q_is_candidate(user_obj) &
+            cls.q_published(old=old, active=active))
 
     @classmethod
     def active_where_is_candidate(cls, user_obj):
@@ -352,24 +359,23 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
-        q = Q(parentnode__publishing_time__lt = now)
+        q = Q(parentnode__publishing_time__lt=now)
         if not active:
-            q &= ~Q(parentnode__parentnode__end_time__gte = now)
+            q &= ~Q(parentnode__parentnode__end_time__gte=now)
         if not old:
-            q &= ~Q(parentnode__parentnode__end_time__lt = now)
+            q &= ~Q(parentnode__parentnode__end_time__lt=now)
         return q
 
     @classmethod
     def q_is_examiner(cls, user_obj):
         return Q(examiners__user=user_obj)
 
-
     @property
     def should_ask_if_examiner_want_to_give_another_chance(self):
         """
         ``True`` if the current state of the group is such that the examiner should
         be asked if they want to give them another chance.
-        
+
         ``True`` if corrected with failing grade or closed without feedback.
         """
         if self.assignment.is_electronic:
@@ -517,11 +523,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         :return: ``True`` if the user is permitted to delete this object.
         """
-        if self.id == None:
+        if self.id is None:
             return False
         if user_obj.is_superuser:
             return True
-        if self.parentnode != None and self.is_empty():
+        if self.parentnode is not None and self.is_empty():
             return self.parentnode.is_admin(user_obj)
         else:
             return False
@@ -587,19 +593,19 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         add given candidate to the copied group and remove the candidate from
         this group.
 
-        :param candidate: A :class:`devilry.apps.core.models.Candidate` object. The candidate must be among the candidates on this group.
+        :param candidate: A :class:`devilry.apps.core.models.Candidate` object.
+            The candidate must be among the candidates on this group.
 
         .. note:: Always run this is a transaction.
         """
         candidates = self.candidates.all()
         if len(candidates) < 2:
             raise GroupPopToFewCandiatesError('Can not pop candidates on a group with less than 2 candidates.')
-        if not candidate in candidates:
+        if candidate not in candidates:
             raise GroupPopNotCandiateError('The candidate to pop must be in the original group.')
 
-        assignment = self.parentnode
         groupcopy = self.copy_all_except_candidates()
-        candidate.assignment_group = groupcopy # Move the candidate to the new group
+        candidate.assignment_group = groupcopy  # Move the candidate to the new group
         candidate.full_clean()
         candidate.save()
         return groupcopy
@@ -620,14 +626,12 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                           autoset_last_delivery_on_group=False,
                           autoset_time_of_delivery=False)
 
-
     @property
     def successful_delivery_count(self):
         from .delivery import Delivery
         return Delivery.objects.filter(
             successful=True,
             deadline__assignment_group=self).count()
-    
 
     def _set_delivery_status(self):
         """
@@ -664,20 +668,22 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     def _merge_examiners_into(self, target):
         target_examiners = set([e.user.id for e in target.examiners.all()])
         for examiner in self.examiners.all():
-            if not examiner.user.id in target_examiners:
+            if examiner.user.id not in target_examiners:
                 examiner.assignmentgroup = target
                 examiner.save()
 
     def _merge_candidates_into(self, target):
         target_candidates = set([e.student.id for e in target.candidates.all()])
         for candidate in self.candidates.all():
-            if not candidate.student.id in target_candidates:
+            if candidate.student.id not in target_candidates:
                 candidate.assignment_group = target
                 candidate.save()
 
     def _set_latest_feedback_as_active(self):
         from .static_feedback import StaticFeedback
-        feedbacks = StaticFeedback.objects.order_by('-save_timestamp').filter(delivery__deadline__assignment_group=self)[:1]
+        feedbacks = StaticFeedback.objects\
+            .order_by('-save_timestamp')\
+            .filter(delivery__deadline__assignment_group=self)[:1]
         self.feedback = None  # NOTE: Required to avoid IntegrityError caused by non-unique feedback_id
         if len(feedbacks) == 1:
             latest_feedback = feedbacks[0]
@@ -780,7 +786,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         iterator, run ``source.merge_into(target)``.
         """
         for source in sources:
-            source.merge_into(target) # Source is deleted after this
+            source.merge_into(target)  # Source is deleted after this
 
     def get_status(self):
         """
