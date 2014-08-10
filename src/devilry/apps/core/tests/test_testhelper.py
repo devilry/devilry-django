@@ -478,18 +478,6 @@ class TestTestHelper(TestCase):
     def test_load_generic_data(self):
         self.ti.load_generic_scenario()
 
-    def test_candidate_ids(self):
-        self.ti.add(nodes='uio.ifi',
-                    subjects=['inf1000'],
-                    periods=['first:begins(0)', 'second:begins(6):ends(1)'],
-                    assignments=['oblig1:anon(true)', 'oblig2:pub(10)'],
-                    assignmentgroups=['g1:candidate(zakia;aikaz):examiner(cotryti)',
-                                      'g2:candidate(nataliib):examiner(jose)'],
-                    deadlines=['d1:ends(10):text(First deadline)'])
-
-        # assert that g1:candidate(zakia;aikaz) sets candidates_id to aikaz
-        self.assertEquals(self.ti.inf1000_first_oblig1_g1.candidates.all()[0].identifier, 'aikaz')
-
     def test_create_user(self):
         self.ti.add(nodes='uio.ifi',
                     subjects=['inf1000'],
