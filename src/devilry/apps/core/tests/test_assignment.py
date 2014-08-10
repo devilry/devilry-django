@@ -18,8 +18,6 @@ from devilry.apps.core.models import PointToGradeMap
 from devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
 from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 from ..testhelper import TestHelper
-from ..models.model_utils import EtagMismatchException
-
 
 
 
@@ -169,19 +167,6 @@ class TestAssignmentOld(TestCase, TestHelper):
                                                 self.inf1100_looong_assignment1.id))
         for can in candidates:
             self.assertEquals(can.student.username, can.identifier)
-
-    def test_etag_update(self):
-        etag = datetime.now()
-        obj = self.inf1100_looong_assignment1
-        obj.anonymous = True
-        self.assertRaises(EtagMismatchException, obj.etag_update, etag)
-        try:
-            obj.etag_update(etag)
-        except EtagMismatchException as e:
-            # Should not raise exception
-            obj.etag_update(e.etag)
-        obj2 = Assignment.objects.get(id=obj.id)
-        self.assertTrue(obj2.anonymous)
 
     def test_where_is_admin(self):
         ifiadmin = User.objects.get(username='ifiadmin')
