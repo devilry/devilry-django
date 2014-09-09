@@ -138,3 +138,4 @@ buildoutcache/eggs/*
 
 developfiles/
 dbdev_tempdata/
+devilry_whoosh_index/
