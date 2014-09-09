@@ -48,6 +48,7 @@ INSTALLED_APPS = ['django.contrib.sessions',
                   'devilry.apps.extjsux',
                   'devilry.apps.developertools',
                   'devilry.apps.jsfiledownload',
+                  'devilry.apps.gradeeditors',
 
                   'devilry.apps.statistics',
                   'devilry.apps.markup',
