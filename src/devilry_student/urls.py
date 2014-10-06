@@ -4,6 +4,8 @@ from django.views.i18n import javascript_catalog
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
 from devilry_settings.i18n import get_javascript_catalog_packages
+from devilry_student.cradmin_period import cradmin_period
+from devilry_student.cradmin_group import cradmin_group
 from .views.extjsapp import AppView
 from .views.frontpage import FrontpageView
 from .views.projectgroup_overview import ProjectGroupOverviewView
@@ -54,7 +56,10 @@ urlpatterns = patterns('devilry_student',
 
     url(r'^upload_deliveryfile/(?P<deadline_id>\d+)$',
         UploadDeliveryFile.as_view(),
-        name='devilry_student_upload_deliveryfile')
+        name='devilry_student_upload_deliveryfile'),
 
     #url(r'^groupinvite/leave/(?P<group_id>\d+)$')
+
+    url(r'^period/', include(cradmin_period.CrAdminInstance.urls())),
+    url(r'^group/', include(cradmin_group.CrAdminInstance.urls())),
 )

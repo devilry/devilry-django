@@ -31,13 +31,29 @@ class AssignmentQuerySet(models.query.QuerySet):
         """
         return self.filter(assignmentgroups__examiners__user=user).distinct()
 
+    def filter_is_candidate(self, user):
+        """
+        Returns a queryset with all Assignments  where the given ``user`` is candidate.
+
+        WARNING: You should normally not use this directly because it gives the
+        candidate information from expired periods (which in most cases are not necessary
+        to get). Use :meth:`.filter_student_has_access` instead.
+        """
+        return self.filter(assignmentgroups__candidates__student=user).distinct()
+
+    def filter_is_published(self):
+        """
+        Returns all active assignments (published assignments within a period that is currently started and not ended).
+        """
+        now = datetime.now()
+        return self.filter(publishing_time__lt=now)
+
     def filter_is_active(self):
         """
         Returns all active assignments (published assignments within a period that is currently started and not ended).
         """
         now = datetime.now()
-        return self.filter(
-            publishing_time__lt=now,
+        return self.filter_is_published().filter(
             parentnode__start_time__lt=now,
             parentnode__end_time__gt=now)
 
@@ -46,6 +62,12 @@ class AssignmentQuerySet(models.query.QuerySet):
         Returns all assignments that the given ``user`` has access to as examiner.
         """
         return self.filter_is_active().filter_is_examiner(user)
+
+    def filter_student_has_access(self, user):
+        """
+        Returns all assignments that the given ``user`` has access to as student.
+        """
+        return self.filter_is_published().filter_is_candidate(user)
 
     def filter_admin_has_access(self, user):
         if user.is_superuser:
@@ -66,6 +88,9 @@ class AssignmentManager(models.Manager):
     def filter_is_examiner(self, user):
         return self.get_queryset().filter_is_examiner(user)
 
+    def filter_is_published(self):
+        return self.get_queryset().filter_is_published()
+
     def filter_is_active(self):
         return self.get_queryset().filter_is_active()
 
@@ -76,6 +101,14 @@ class AssignmentManager(models.Manager):
         NOTE: This returns all assignments that the given ``user`` has examiner-rights for.
         """
         return self.get_queryset().filter_examiner_has_access(user)
+
+    def filter_student_has_access(self, user):
+        """
+        Returns a queryset with all active assignments where the given ``user`` is student.
+
+        NOTE: This returns all assignments that the given ``user`` has student-rights for.
+        """
+        return self.get_queryset().filter_student_has_access(user)
 
     def filter_admin_has_access(self, user):
         """
