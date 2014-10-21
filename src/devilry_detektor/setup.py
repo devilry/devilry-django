@@ -17,7 +17,7 @@ setup(
         'detektor'
     ],
     include_package_data=True,
-    long_description = open('README.rst').read(),
+    long_description='TODO',
     zip_safe=False,
     classifiers=[
         'Development Status :: 4 - Beta',
