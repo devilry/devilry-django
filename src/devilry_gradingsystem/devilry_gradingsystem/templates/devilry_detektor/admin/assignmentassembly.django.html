@@ -1,0 +1,27 @@
+{% extends "devilry_detektor/admin/base.django.html" %}
+{% load i18n %}
+
+{% block breadcrumbtail %}
+    <li class="active">
+        {% trans "Similarity checks" %}
+    </li>
+{% endblock breadcrumbtail %}
+
+{% block content %}
+    {% if detektorassignment and detektorassignment.processing_started_datetime %}
+        <div class="alert alert-info">
+            {% blocktrans with user=detektorassignment.processing_started_by started_time=detektorassignment.processing_started_datetime %}Similarity check processing was started by {{ user }} {{ started_time }}{% endblocktrans %}
+        </div>
+    {% else %}
+        <form method="post">{% csrf_token %}
+           <button type="submit" class="btn btn-primary btn-lg">
+               {% trans "Trigger new similarity check" %}
+               {# TODO: Text explaining what this means below the button #}
+           </button>
+        </form>
+    {% endif %}
+
+    {% if detektorassignment and detektorassignment.processing_started_datetime == None %}
+        TODO: Table of results
+    {% endif %}
+{% endblock content %}
