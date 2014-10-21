@@ -8,20 +8,19 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'DetectorAssignment'
-        db.create_table('devilry_detektor_detectorassignment', (
+        # Adding model 'DetektorAssignment'
+        db.create_table('devilry_detektor_detektorassignment', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('assignment', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['core.Assignment'], unique=True)),
-            ('processing_started_datetime', self.gf('django.db.models.fields.DateTimeField')()),
-            ('processing_ended_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
-            ('processing_started_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('processing_started_datetime', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('processing_started_by', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
         ))
-        db.send_create_signal('devilry_detektor', ['DetectorAssignment'])
+        db.send_create_signal('devilry_detektor', ['DetektorAssignment'])
 
 
     def backwards(self, orm):
-        # Deleting model 'DetectorAssignment'
-        db.delete_table('devilry_detektor_detectorassignment')
+        # Deleting model 'DetektorAssignment'
+        db.delete_table('devilry_detektor_detektorassignment')
 
 
     models = {
@@ -113,13 +112,12 @@ class Migration(SchemaMigration):
             'parentnode': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'subjects'", 'to': "orm['core.Node']"}),
             'short_name': ('devilry.apps.core.models.custom_db_fields.ShortNameField', [], {'unique': 'True', 'max_length': '20'})
         },
-        'devilry_detektor.detectorassignment': {
-            'Meta': {'object_name': 'DetectorAssignment'},
+        'devilry_detektor.detektorassignment': {
+            'Meta': {'object_name': 'DetektorAssignment'},
             'assignment': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['core.Assignment']", 'unique': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'processing_ended_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
-            'processing_started_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"}),
-            'processing_started_datetime': ('django.db.models.fields.DateTimeField', [], {})
+            'processing_started_by': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'}),
+            'processing_started_datetime': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'})
         }
     }
 
