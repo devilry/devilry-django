@@ -8,12 +8,13 @@ setup(
     license='BSD',
     author='Espen Angell Kristiansen',
     packages=find_packages(exclude=['ez_setup']),
-    install_requires = [
+    install_requires=[
         'setuptools',
         'Django',
         'devilry',
         'devilry_theme',
         'devilry_header',
+        'detektor'
     ],
     include_package_data=True,
     long_description = open('README.rst').read(),
