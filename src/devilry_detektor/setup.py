@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name = 'devilry_detector',
-    description = 'Devilry detector app.',
+    name = 'devilry_detektor',
+    description = 'Devilry detektor app.',
     version = '1.0',
     license='BSD',
     author='Espen Angell Kristiansen',
