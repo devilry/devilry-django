@@ -28,7 +28,6 @@ class TestRunDetektorOnAssignment(TestCase):
             assignment_id=self.assignmentbuilder.assignment.id,
             processing_started_by=self.testuser)
 
-        otheruser = UserBuilder('otheruser').user
         self.assertEquals(DetektorAssignment.objects.count(), 1)
         run_detektor_on_assignment.delay(
             assignment_id=self.assignmentbuilder.assignment.id).wait()
