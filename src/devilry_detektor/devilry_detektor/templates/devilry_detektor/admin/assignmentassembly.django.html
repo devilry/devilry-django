@@ -7,6 +7,14 @@
     </li>
 {% endblock breadcrumbtail %}
 
+{% block belowheading %}
+    <p class="lead">
+        {% trans "In this view, you can run similarity checks for all deliveries on this assignment." %}
+        <strong class="text-warning">{% trans "This is a beta feature, please contact support if you encounter any problems." %}</strong>
+    </p>
+{% endblock belowheading %}
+
+
 {% block content %}
     <div class="container">
         {% if detektorassignment.processing_started_datetime %}

@@ -3,15 +3,16 @@
 {% load url from future %}
 
 {% block title %}
-{% trans "Similarity checks" %}
+{% trans "Programming code similarity checks" %}
 {% endblock title %}
 
 {% block body %}
     <div class="container">
         <div class="page-header">
             <h1>
-                {% block heading %}{% trans "Similarity checks" %}{% endblock heading %}
+                {% block heading %}{% trans "Programming code similarity checks" %}{% endblock heading %}
             </h1>
+            {% block belowheading %}{% endblock belowheading %}
         </div>
         <ol class="breadcrumb">
             {% include "devilry_subjectadmin/include/assignment_breadcrumb.django.html" %}
