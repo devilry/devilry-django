@@ -211,6 +211,34 @@ Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
                         buttonText: gettext('Delete') + ' ...',
                         buttonUi: 'danger'
                     }]
+                }, {
+                    xtype: 'dangerousactions',
+                    title: gettext('Beta features'),
+                    margin: '30 0 0 0',
+                    items: [{
+                        xtype: 'box',
+                        cls: 'bootstrap devilry_subjectadmin_navigation',
+                        itemId: 'betaFeaturesBox',
+                        tpl: [
+                            '<tpl if="loading">',
+                                '<p class="muted">', gettext('Loading'), '...</p>',
+                            '<tpl else>',
+                                '<ul class="unstyled">',
+                                    '<li><p>',
+                                        '<strong><a href="{detektor_assemblyview_url}">',
+                                            gettext('Programming code similarity checks'),
+                                        '</strong></a>',
+                                        '<small class="muted"> - ',
+                                            gettext('Run similarity checks for all deliveries on this assignment.'),
+                                        '</small>',
+                                    '</p></li>',
+                                '</ul>',
+                            '</tpl>'
+                        ],
+                        data: {
+                            loading: true
+                        }
+                    }]
                 }]
             }]
         });
