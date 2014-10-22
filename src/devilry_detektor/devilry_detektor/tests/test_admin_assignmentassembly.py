@@ -37,20 +37,17 @@ class TestAssignmentAssemblyView(TestCase):
         response.render()
         self.assertNotIn('Similarity check processing was started by testuser', response.content)
         self.assertIn('Trigger new similarity check', response.content)
-        self.assertNotIn('TODO: Table of results', response.content)
 
     def test_processing_subsequent(self):
         DetektorAssignment.objects.create(
             assignment_id=self.assignmentbuilder.assignment.id,
             processing_started_by=self.testuser)
-
         request = self._create_mock_getrequest()
         response = AssignmentAssemblyView.as_view()(
             request, assignmentid=self.assignmentbuilder.assignment.id)
         response.render()
         self.assertNotIn('Similarity check processing was started by testuser', response.content)
         self.assertIn('Trigger new similarity check', response.content)
-        self.assertIn('TODO: Table of results', response.content)
 
     def test_already_running(self):
         processing_started_datetime = datetime.now()
@@ -64,7 +61,6 @@ class TestAssignmentAssemblyView(TestCase):
         response.render()
         self.assertIn('Similarity check processing was started by testuser', response.content)
         self.assertNotIn('Trigger new similarity check', response.content)
-        self.assertNotIn('TODO: Table of results', response.content)
 
     def _create_mock_postrequest(self):
         request = self.factory.post('/test')
@@ -72,12 +68,12 @@ class TestAssignmentAssemblyView(TestCase):
         request.session = {}
         return request
 
-    # def test_post(self):
-    #     self.assertEqual(DetektorAssignment.objects.count(), 0)
-    #     request = self._create_mock_postrequest()
-    #     response = AssignmentAssemblyView.as_view()(
-    #         request, assignmentid=self.assignmentbuilder.assignment.id)
-    #     self.assertEqual(DetektorAssignment.objects.count(), 1)
-    #     self.assertEquals(response.status_code, 302)
-    #     detektorassignment = DetektorAssignment.objects.all()[0]
-    #     self.assertEqual(detektorassignment.processing_started_by, self.testuser)
+    def test_post(self):
+        self.assertEqual(DetektorAssignment.objects.count(), 0)
+        request = self._create_mock_postrequest()
+        response = AssignmentAssemblyView.as_view()(
+            request, assignmentid=self.assignmentbuilder.assignment.id)
+        self.assertEqual(DetektorAssignment.objects.count(), 1)
+        self.assertEquals(response.status_code, 302)
+        detektorassignment = DetektorAssignment.objects.all()[0]
+        self.assertEqual(detektorassignment.processing_started_by, self.testuser)
