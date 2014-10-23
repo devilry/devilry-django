@@ -88,7 +88,7 @@ class RunDetektorOnAssignment(object):
     def _process_deliveries(self):
         unprocessed_deliveries = Delivery.objects\
             .filter(deadline__assignment_group__parentnode=self.detektorassignment.assignment)\
-            .exclude(delivery_id__in=self.detektorassignment.detektordelivery_set.values_list('delivery_id'))\
+            .exclude(delivery__in=self.detektorassignment.detektordelivery_set.values_list('delivery'))\
             .prefetch_related('filemetas')
         for delivery in unprocessed_deliveries:
             self._process_delivery(delivery)

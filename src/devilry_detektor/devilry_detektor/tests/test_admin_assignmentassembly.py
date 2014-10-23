@@ -36,7 +36,7 @@ class TestAssignmentAssemblyView(TestCase):
             request, assignmentid=self.assignmentbuilder.assignment.id)
         response.render()
         self.assertNotIn('Similarity check processing was started by testuser', response.content)
-        self.assertIn('Trigger new similarity check', response.content)
+        self.assertIn('Run/re-run similarity check', response.content)
 
     def test_processing_subsequent(self):
         DetektorAssignment.objects.create(
@@ -47,7 +47,7 @@ class TestAssignmentAssemblyView(TestCase):
             request, assignmentid=self.assignmentbuilder.assignment.id)
         response.render()
         self.assertNotIn('Similarity check processing was started by testuser', response.content)
-        self.assertIn('Trigger new similarity check', response.content)
+        self.assertIn('Run/re-run similarity check', response.content)
 
     def test_already_running(self):
         processing_started_datetime = datetime.now()
@@ -60,7 +60,7 @@ class TestAssignmentAssemblyView(TestCase):
             request, assignmentid=self.assignmentbuilder.assignment.id)
         response.render()
         self.assertIn('Similarity check processing was started by testuser', response.content)
-        self.assertNotIn('Trigger new similarity check', response.content)
+        self.assertNotIn('Run/re-run similarity check', response.content)
 
     def _create_mock_postrequest(self):
         request = self.factory.post('/test')
