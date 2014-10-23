@@ -24,8 +24,7 @@
         {% else %}
             <form method="post">{% csrf_token %}
                <button type="submit" class="btn btn-primary btn-lg">
-                   {% trans "Trigger new similarity check" %}
-                   {# TODO: Text explaining what this means below the button #}
+                   {% trans "Run/re-run similarity check" %}
                </button>
             </form>
             <p>TODO: Table of results</p>
