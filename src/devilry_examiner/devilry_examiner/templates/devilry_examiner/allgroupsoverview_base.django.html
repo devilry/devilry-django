@@ -70,7 +70,7 @@
             {% if groups %}
                 <div class="pull-right btn-group">
                     {% if groups.has_previous %}
-                        <a href="?page={{ groups.previous_page_number }}" class="btn btn-default">
+                        <a href="?page={{ groups.previous_page_number }}&order_by={{ order_by }}" class="btn btn-default">
                             <i class="fa fa-chevron-left"></i>
                             <span class="sr-only">{% trans "Previous" %}</span>
                         </a>
@@ -81,7 +81,7 @@
                     {% endif %}
 
                     {% if groups.has_next %} 
-                        <a href="?page={{ groups.next_page_number }}" class="btn btn-default">
+                        <a href="?page={{ groups.next_page_number }}&order_by={{ order_by }}" class="btn btn-default">
                             <i class="fa fa-chevron-right"></i>
                             <span class="sr-only">{% trans "Next" %}</span>
                         </a>

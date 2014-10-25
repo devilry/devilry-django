@@ -109,6 +109,7 @@ class AllGroupsOverview(DetailView):
         context['currentpage'] = self.currentpage
 
         context['orderingform'] = self.orderingform
+        context['order_by'] = self.order_by
 
         return context
 
