@@ -82,6 +82,117 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
         self.assertFalse(cssExists(html,
             '.infolistingtable .group .groupinfo h3 .group_short_displayname'))
 
+    def test_default_ordering(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student A").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student C").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentb', full_name="Student B").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studenta)', '(studentb)', '(studentc)'])
+
+    def test_default_ordering_multiple_candidates(self):
+        self.week1builder.add_group(
+            students=[
+                UserBuilder('studentb', full_name="Student B").user,
+                UserBuilder('studentz', full_name="Student Z").user  # NOTE: Should push this to the bottom
+            ],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[
+                UserBuilder('studentd', full_name="Student D").user,
+                UserBuilder('studenta', full_name="Student A").user  # NOTE: Should push this to the top
+            ],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student C").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studentd, studenta)', '(studentb, studentz)', '(studentc)'])
+
+    def test_orderby_username(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student 4").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student 0").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentb', full_name="Student 2").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'order_by': 'username'}).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studenta)', '(studentb)', '(studentc)'])
+
+    def test_orderby_username_descending(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student 4").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student 0").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentb', full_name="Student 2").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'order_by': 'username_descending'}).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studentc)', '(studentb)', '(studenta)'])
+
+    def test_orderby_fullname(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student 4").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student 0").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentb', full_name="Student 2").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'order_by': ''}).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studentc)', '(studentb)', '(studenta)'])
+
+    def test_orderby_fullname_descending(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student 4").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student 0").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentb', full_name="Student 2").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'order_by': 'name_descending'}).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studenta)', '(studentb)', '(studentc)'])
+
+    def test_orderby_invalid(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student").user],
+            examiners=[self.examiner1])
+        response = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'order_by': 'invalid'})
+        self.assertEquals(response.status_code, 400)
+        self.assertIn(
+            'Select a valid choice. invalid is not one of the available choices',
+            response.content)
+
 
 class TestWaitingForFeedbackOverview(TestCase, HeaderTest):
     def setUp(self):

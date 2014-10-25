@@ -1,3 +1,4 @@
+from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.views.generic import DetailView
 from django.views.generic.detail import SingleObjectMixin
@@ -5,11 +6,10 @@ from django.views.generic import View
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
-from django.db.models import Count
+from django import forms
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
-from ..forms import BulkForm
 
 
 def get_paginated_page(paginator, page):
@@ -25,12 +25,52 @@ def get_paginated_page(paginator, page):
     return paginated_page
 
 
+class OrderingForm(forms.Form):
+    order_by = forms.ChoiceField(
+        required=False,
+        choices=[
+            ('', 'Order by: Name'),
+            ('name_descending', 'Order by: Name reversed'),
+            ('username', 'Order by: Username'),
+            ('username_descending', 'Order by: Username reversed')
+        ]
+    )
+
+
 class AllGroupsOverview(DetailView):
     template_name = "devilry_examiner/allgroupsoverview_base.django.html"
     model = Assignment
     context_object_name = 'assignment'
     pk_url_kwarg = 'assignmentid'
     currentpage = 'all'
+
+    order_by_map = {
+        '': 'candidates__student__devilryuserprofile__full_name',
+        'name_descending': '-candidates__student__devilryuserprofile__full_name',
+        'username': 'candidates__student__username',
+        'username_descending': '-candidates__student__username',
+    }
+
+    def get(self, *args, **kwargs):
+        orderingform = OrderingForm(self.request.GET)
+        if orderingform.is_valid():
+            self.order_by = orderingform.cleaned_data['order_by']
+        else:
+            return HttpResponseBadRequest(orderingform.errors.as_text())
+        return super(AllGroupsOverview, self).get(*args, **kwargs)
+
+    def _order_groupqueryset(self, groupqueryset):
+        groupqueryset = groupqueryset.order_by(self.order_by_map[self.order_by])
+        return groupqueryset
+
+    def _get_groupqueryset(self):
+        # Need to get queryset from custom manager.
+        # Get only AssignmentGroup within same assignment
+        groupqueryset = AssignmentGroup.objects.get_queryset()\
+            .filter(parentnode__id=self.object.id)\
+            .filter_examiner_has_access(self.request.user)
+        groupqueryset = self._order_groupqueryset(groupqueryset)
+        return groupqueryset
 
     def get_context_data(self, **kwargs):
         if 'selected_group_ids' in self.request.session:
@@ -39,12 +79,7 @@ class AllGroupsOverview(DetailView):
         context = super(AllGroupsOverview, self).get_context_data(**kwargs)
         assignment = self.object
 
-        # Need to get queryset from custom manager.
-        # Get only AssignmentGroup within same assignment
-        groups = AssignmentGroup.objects.get_queryset()\
-            .filter(parentnode__id=self.object.id)\
-            .filter_examiner_has_access(self.request.user)
-
+        groups = self._get_groupqueryset()
         context['count_all'] = groups.count()
         context['count_waiting_for_feedback'] = groups.filter_waiting_for_feedback().count()
         if assignment.is_electronic:
