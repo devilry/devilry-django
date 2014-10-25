@@ -1,3 +1,5 @@
+from crispy_forms import layout
+from crispy_forms.helper import FormHelper
 from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect
 from django.views.generic import DetailView
@@ -7,6 +9,7 @@ from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
@@ -29,12 +32,24 @@ class OrderingForm(forms.Form):
     order_by = forms.ChoiceField(
         required=False,
         choices=[
-            ('', 'Order by: Name'),
-            ('name_descending', 'Order by: Name reversed'),
-            ('username', 'Order by: Username'),
-            ('username_descending', 'Order by: Username reversed')
+            ('', _('Order by: Name')),
+            ('name_descending', _('Order by: Name reversed')),
+            ('username', _('Order by: Username')),
+            ('username_descending', _('Order by: Username reversed'))
         ]
     )
+
+    def __init__(self, *args, **kwargs):
+        super(OrderingForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.form_method = 'GET'
+        self.helper.form_class = 'form-inline'
+        self.helper.form_show_labels = False
+        self.helper.disable_csrf = True
+        self.helper.layout = layout.Layout(
+            layout.Field('order_by', onchange="this.form.submit();"),
+        )
 
 
 class AllGroupsOverview(DetailView):
@@ -52,11 +67,11 @@ class AllGroupsOverview(DetailView):
     }
 
     def get(self, *args, **kwargs):
-        orderingform = OrderingForm(self.request.GET)
-        if orderingform.is_valid():
-            self.order_by = orderingform.cleaned_data['order_by']
+        self.orderingform = OrderingForm(self.request.GET)
+        if self.orderingform.is_valid():
+            self.order_by = self.orderingform.cleaned_data['order_by']
         else:
-            return HttpResponseBadRequest(orderingform.errors.as_text())
+            return HttpResponseBadRequest(self.orderingform.errors.as_text())
         return super(AllGroupsOverview, self).get(*args, **kwargs)
 
     def _order_groupqueryset(self, groupqueryset):
@@ -92,6 +107,9 @@ class AllGroupsOverview(DetailView):
         context['groups'] = get_paginated_page(paginator, page)
         context['allgroups'] = groups
         context['currentpage'] = self.currentpage
+
+        context['orderingform'] = self.orderingform
+
         return context
 
     def get_queryset(self):

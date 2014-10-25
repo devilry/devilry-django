@@ -2,6 +2,8 @@
 {% load i18n devilry_examiner_tags%}
 {% load url from future %}
 {% load django_decoupled_docs_tags %}
+{% load crispy_forms_tags %}
+
 
 {% block title %}{{ assignment.short_name }} - {{ assignment.period.get_path }}{% endblock title %}
 
@@ -99,11 +101,15 @@
                         </button>
                     </div>
 
+                    <div class="btn-group">
+                        {% crispy orderingform %}
+                    </div>
+
                     {% if assignment.is_electronic %}
                         <a href="{% url 'devilry_examiner_downloadalldeliveries_on_assignment' assignment.id %}" class="btn btn-default">
                             <i class="fa fa-download"></i>
                             {% trans "Download all deliveries" %}
-                        </a>                        
+                        </a>
                     {% endif %}
                 </div>
             {% endif %}
