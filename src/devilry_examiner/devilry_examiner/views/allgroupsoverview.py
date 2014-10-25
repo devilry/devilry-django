@@ -45,6 +45,7 @@ class OrderingForm(forms.Form):
         self.helper.form_tag = True
         self.helper.form_method = 'GET'
         self.helper.form_class = 'form-inline'
+        self.helper.form_show_labels = False
         self.helper.disable_csrf = True
         self.helper.layout = layout.Layout(
             layout.Field('order_by', onchange="this.form.submit();"),
