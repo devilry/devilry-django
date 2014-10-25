@@ -9,6 +9,13 @@
 
 {% block body %}
 
+<div class="container">
+    {% for groupid, form in quickfeedback_formcollection.forms.iteritems %}
+        <h2>{{ groupid }}</h2>
+        {% crispy form %}
+    {% endfor %}
+
+</div>
 
 <div class="container">
 
@@ -120,6 +127,8 @@
 
             <div class="grouplistingbox">
 
+
+                {# TODO: if examinermodus == 'quick'... #}
                 <form action="{{ assignment|get_feedback_url }}" method="post">{% csrf_token %}
 
                     <table class="table table-striped infolistingtable" id="grouplist_table">

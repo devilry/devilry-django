@@ -45,11 +45,88 @@ class OrderingForm(forms.Form):
         self.helper.form_tag = True
         self.helper.form_method = 'GET'
         self.helper.form_class = 'form-inline'
-        self.helper.form_show_labels = False
         self.helper.disable_csrf = True
         self.helper.layout = layout.Layout(
             layout.Field('order_by', onchange="this.form.submit();"),
         )
+
+
+class QuickApprovedNotApprovedFeedbackForm(forms.Form):
+    approved = forms.NullBooleanField()
+
+    def __init__(self, *args, **kwargs):
+        self.group = kwargs.pop('group')
+        super(QuickApprovedNotApprovedFeedbackForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+        self.helper.disable_csrf = True
+        self.helper.form_show_labels = False
+        self.helper.layout = layout.Layout(
+            layout.Field('approved'),
+        )
+
+    def save(self):
+        approved = self.cleaned_data['approved']
+        print
+        print "*" * 70
+        print
+        print 'SAVING feedback {} for group {}'.format(approved, group)
+        print
+        print "*" * 70
+        print
+
+
+class QuickFeedbackFormCollection(object):
+    def __init__(self, request, assignment, groupqueryset):
+        self.request = request
+        self.assignment = assignment
+        self.groupqueryset = groupqueryset
+        self.forms = self._create_forms()
+
+    def _get_form_class(self):
+        # TODO: Use assignment to find grading system
+        return QuickApprovedNotApprovedFeedbackForm
+
+    def _get_initial(self, feedback):
+        # TODO: Use assignment to find grading system
+        if feedback is None:
+            approved = None
+        else:
+            approved = feedback.is_passing_grade
+        return {
+            'approved': approved
+        }
+
+    def _create_forms(self):
+        form_class = self._get_form_class()
+        forms = {}
+        for group in self.groupqueryset.all():
+            feedback = group.feedback
+            kwargs = {
+                'group': group,
+                'prefix': 'quickfeedbackform{}'.format(group.id),
+                'initial': self._get_initial(feedback)
+            }
+            if self.request.method == 'POST':
+                form = form_class(self.request.POST, **kwargs)
+            else:
+                form = form_class(**kwargs)
+            forms[group.id] = form
+        return forms
+
+    def get_form_by_groupid(self, groupid):
+        return self.forms[groupid]
+
+    def is_valid(self):
+        is_valid = True
+        for form in self.forms.itervalues():
+            if not form.is_valid():
+                is_valid = False
+        return is_valid
+
+    def save(self):
+        for form in self.forms.itervalues():
+            form.save()
 
 
 class AllGroupsOverview(DetailView):
@@ -66,13 +143,13 @@ class AllGroupsOverview(DetailView):
         'username_descending': '-candidates__student__username',
     }
 
-    def get(self, *args, **kwargs):
-        self.orderingform = OrderingForm(self.request.GET)
+    def dispatch(self, request, *args, **kwargs):
+        self.orderingform = OrderingForm(request.GET)
         if self.orderingform.is_valid():
             self.order_by = self.orderingform.cleaned_data['order_by']
         else:
             return HttpResponseBadRequest(self.orderingform.errors.as_text())
-        return super(AllGroupsOverview, self).get(*args, **kwargs)
+        return super(AllGroupsOverview, self).dispatch(request, *args, **kwargs)
 
     def _order_groupqueryset(self, groupqueryset):
         groupqueryset = groupqueryset.order_by(self.order_by_map[self.order_by])
@@ -93,6 +170,9 @@ class AllGroupsOverview(DetailView):
 
         context = super(AllGroupsOverview, self).get_context_data(**kwargs)
         assignment = self.object
+
+        if 'quickfeedback_formcollection' not in context:
+            context['quickfeedback_formcollection'] = self._get_quickfeedback_formcollection()
 
         groups = self._get_groupqueryset()
         context['count_all'] = groups.count()
@@ -115,6 +195,20 @@ class AllGroupsOverview(DetailView):
 
     def get_queryset(self):
         return Assignment.objects.filter_examiner_has_access(self.request.user)
+
+    def _get_quickfeedback_formcollection(self):
+        return QuickFeedbackFormCollection(
+            request=self.request,
+            assignment=self.object,
+            groupqueryset=self._get_groupqueryset())
+
+    def post(self):
+        quickfeedback_formcollection = self._get_quickfeedback_formcollection()
+        if quickfeedback_formcollection.is_valid():
+            quickfeedback_formcollection.save()
+        else:
+            context = self.get_context_data(quickfeedback_formcollection=quickfeedback_formcollection)
+            return self.render_to_response(context=context)
 
 
 class WaitingForFeedbackOverview(AllGroupsOverview):
