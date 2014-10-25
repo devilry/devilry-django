@@ -54,12 +54,12 @@ class TestRunDetektorOnDelivery(TestCase):
         self.assertEquals(process_delivery_runner._get_filetype_from_filename('test.py'), 'python')
 
     def test_group_by_extension_no_filemetas(self):
-        filemetas_by_filetype = RunDetektorOnDelivery(self.deliverybuilder.delivery)._group_filemetas_by_extension()
+        filemetas_by_filetype = RunDetektorOnDelivery(self.deliverybuilder.delivery)._group_filemetas_by_filetype()
         self.assertEquals(filemetas_by_filetype, {})
 
     def test_group_by_extension_no_supported_files(self):
         self.deliverybuilder.add_filemeta(filename='helloworld.txt', data='Hello world')
-        filemetas_by_filetype = RunDetektorOnDelivery(self.deliverybuilder.delivery)._group_filemetas_by_extension()
+        filemetas_by_filetype = RunDetektorOnDelivery(self.deliverybuilder.delivery)._group_filemetas_by_filetype()
         self.assertEquals(filemetas_by_filetype, {})
 
     def test_group_by_extension_has_supported_files(self):
@@ -71,7 +71,7 @@ class TestRunDetektorOnDelivery(TestCase):
         helloworldjava2_filemeta = self.deliverybuilder\
             .add_filemeta(filename='HelloWorld2.java', data='// test2').filemeta
 
-        filemetas_by_filetype = RunDetektorOnDelivery(self.deliverybuilder.delivery)._group_filemetas_by_extension()
+        filemetas_by_filetype = RunDetektorOnDelivery(self.deliverybuilder.delivery)._group_filemetas_by_filetype()
         self.assertEquals(
             set(filemetas_by_filetype.keys()),
             {'java', 'python'})
@@ -89,7 +89,7 @@ class TestRunDetektorOnDelivery(TestCase):
             [helloworldpy_filemeta])
 
     def test_find_most_prominent_filetype_filemetas(self):
-        filemetas = RunDetektorOnDelivery(self.deliverybuilder.delivery)._find_most_prominent_filetype_filemetas({
+        filetype, filemetas = RunDetektorOnDelivery(self.deliverybuilder.delivery)._find_most_prominent_filetype_filemetas({
             'java': {
                 'size': 20,
                 'filemetas': 'Mocked java filemetas'
@@ -99,6 +99,7 @@ class TestRunDetektorOnDelivery(TestCase):
                 'filemetas': 'Mocked python filemetas'
             }
         })
+        self.assertEqual(filetype, 'python')
         self.assertEqual(filemetas, 'Mocked python filemetas')
 
     def test_merge_filemetas_into_single_fileobject(self):
@@ -111,3 +112,12 @@ class TestRunDetektorOnDelivery(TestCase):
         merged_file = RunDetektorOnDelivery(self.deliverybuilder.delivery)\
             ._merge_filemetas_into_single_fileobject([filemeta1, filemeta2])
         self.assertEquals(merged_file.read(), 'test\ntest2')
+
+    def test_get_detektor_code_signature(self):
+        self.deliverybuilder.add_filemeta(
+            filename='test.py',
+            data='print "hello world"\nif a == 20: pass')
+        code_signature = RunDetektorOnDelivery(self.deliverybuilder.delivery)\
+            ._get_detektor_code_signature()
+        pprint(code_signature)
+        self.assertEqual(code_signature[''])

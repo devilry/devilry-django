@@ -3,6 +3,7 @@ from celery import task
 from celery.utils.log import get_task_logger
 import os
 
+import detektor
 from devilry.apps.core.models import Delivery
 from devilry_detektor.models import DetektorAssignment
 
@@ -36,7 +37,7 @@ class RunDetektorOnDelivery(object):
                 return filetype
         return None
 
-    def _group_filemetas_by_extension(self):
+    def _group_filemetas_by_filetype(self):
         filemetasinfo_by_filetype = {}
         for filemeta in self.delivery.filemetas.order_by('filename'):
             if filemeta.size > self.MAX_FILESIZE:
@@ -54,9 +55,12 @@ class RunDetektorOnDelivery(object):
         """
         Order by total size of files descending order, and return the first.
         """
-        filemetasinfolist = filemetasinfo_by_filetype.values()
-        filemetasinfolist.sort(lambda a, b: cmp(b['size'], a['size']))
-        return filemetasinfolist[0]['filemetas']
+        filemetasinfolist = filemetasinfo_by_filetype.items()
+        filemetasinfolist.sort(lambda a, b: cmp(b[1]['size'], a[1]['size']))
+        most_prominent_filetypeinfo = filemetasinfolist[0]
+        filetype = most_prominent_filetypeinfo[0]
+        filemetas = most_prominent_filetypeinfo[1]['filemetas']
+        return filetype, filemetas
 
     def _merge_filemetas_into_single_fileobject(self, filemetas):
         merged_file = StringIO()
@@ -65,12 +69,17 @@ class RunDetektorOnDelivery(object):
         merged_file.seek(0)
         return merged_file
 
-    def run_detektor(self):
+    def _get_detektor_code_signature(self):
         filemetasinfo_by_filetype = self._group_filemetas_by_filetype()
         if not filemetasinfo_by_filetype:
             return
-        filemetas = self._find_most_prominent_filetype_filemetas(filemetasinfo_by_filetype)
+        filetype, filemetas = self._find_most_prominent_filetype_filemetas(filemetasinfo_by_filetype)
         fileobject = self._merge_filemetas_into_single_fileobject(filemetas)
+        parser = detektor.libs.codeparser.Parser(filetype, fileobject)
+        return parser.get_code_signature()
+
+    def run_detektor(self):
+        pass
         # Run detektor
 
 
