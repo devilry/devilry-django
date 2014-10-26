@@ -163,6 +163,7 @@ class AllGroupsOverview(DetailView):
     context_object_name = 'assignment'
     pk_url_kwarg = 'assignmentid'
     currentpage = 'all'
+    paginate_by = 100
 
     order_by_map = {
         '': 'candidates__student__devilryuserprofile__full_name',
@@ -204,6 +205,9 @@ class AllGroupsOverview(DetailView):
         groupqueryset = self._order_groupqueryset(groupqueryset)
         return groupqueryset
 
+    def _get_paginator(self, groups):
+        return Paginator(groups, self.paginate_by, orphans=3)
+
     def get_context_data(self, **kwargs):
         if 'selected_group_ids' in self.request.session:
             del self.request.session['selected_group_ids']
@@ -221,7 +225,7 @@ class AllGroupsOverview(DetailView):
             context['count_waiting_for_deliveries'] = groups.filter_waiting_for_deliveries().count()
         context['count_corrected'] = groups.filter_by_status('corrected').count()
 
-        paginator = Paginator(groups, 3, orphans=3)
+        paginator = self._get_paginator(groups)
         page = self.request.GET.get('page')
 
         context['groups'] = get_paginated_page(paginator, page)
@@ -264,11 +268,10 @@ class WaitingForFeedbackOverview(AllGroupsOverview):
 
         groups = context['allgroups']
         groups = groups.filter_waiting_for_feedback()
-        paginator = Paginator(groups, 100, orphans=2)
 
         page = self.request.GET.get('page')
 
-        context['groups'] = get_paginated_page(paginator, page)
+        context['groups'] = get_paginated_page(self._get_paginator(groups), page)
 
         return context
 
@@ -286,7 +289,7 @@ class WaitingForDeliveriesOverview(AllGroupsOverview):
 
         page = self.request.GET.get('page')
 
-        context['groups'] = get_paginated_page(paginator, page)
+        context['groups'] = get_paginated_page(self._get_paginator(groups), page)
 
         return context
 
@@ -304,7 +307,7 @@ class CorrectedOverview(AllGroupsOverview):
 
         page = self.request.GET.get('page')
 
-        context['groups'] = get_paginated_page(paginator, page)
+        context['groups'] = get_paginated_page(self._get_paginator(groups), page)
 
         return context
 
