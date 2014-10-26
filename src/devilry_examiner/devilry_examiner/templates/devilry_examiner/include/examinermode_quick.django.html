@@ -12,11 +12,7 @@
     <table class="table table-striped infolistingtable" id="grouplist_table">
         {% for group in groups %}
         <tr class="group">
-            <td class="checkbox_cell">
-                <div class="checkbox_cell_inner">
-                    <input type="checkbox" name="group_ids" value="{{ group.id }}" />
-                </div>
-            </td>
+
             <td class="titled-cell groupinfo">
                 <h3>
                     <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}" class="group_long_displayname">{{ group.long_displayname }}</a>
@@ -47,7 +43,11 @@
 
             <td class="hidden-xs">
 
-                {% get_quickmodeform_by_groupid quickfeedback_formcollection group.id %}
+                {% with group_form=quickfeedback_formcollection|group_form:group.id %}
+                    {{ group_form.as_p }}
+                {% endwith %}
+                
+
 
 
 
@@ -66,8 +66,7 @@
 
     {% if groups %}
     <p><button type="submit" class="btn btn-default">
-            {% trans "Write feedback" %}
-            <small class="text-muted">({% trans "to selected" %})</small>
+            {% trans "Publish results" %}
     </button></p>
     {% endif %}
 </form>
