@@ -93,14 +93,17 @@
                     {% endif %}
                 </div>
                 <div class="btn-toolbar" role="toolbar">
-                    <div class="btn-group">
-                        <button class="btn btn-default" id="select_all_button">
-                            {% trans "Select All" %}
-                        </button>
-                        <button class="btn btn-default" id="deselect_all_button">
-                            {% trans "Deselect All" %}
-                        </button>
-                    </div>
+
+                    {% if examinermode == 'normal' %}
+                        <div class="btn-group">
+                            <button class="btn btn-default" id="select_all_button">
+                                {% trans "Select All" %}
+                            </button>
+                            <button class="btn btn-default" id="deselect_all_button">
+                                {% trans "Deselect All" %}
+                            </button>
+                        </div>
+                    {% endif %}
 
                     <div class="btn-group">
                         {% crispy orderingform %}
