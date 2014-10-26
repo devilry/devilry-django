@@ -1,7 +1,9 @@
 from crispy_forms import layout
 from crispy_forms.helper import FormHelper
 from django.http import HttpResponseBadRequest
+from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
+from django.core.urlresolvers import reverse
 from django.views.generic import DetailView
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic import View
@@ -71,7 +73,7 @@ class QuickApprovedNotApprovedFeedbackForm(forms.Form):
         print
         print "*" * 70
         print
-        print 'SAVING feedback {} for group {}'.format(approved, group)
+        print 'SAVING feedback {} for group {}'.format(approved, self.group)
         print
         print "*" * 70
         print
@@ -144,6 +146,9 @@ class AllGroupsOverview(DetailView):
         'username_descending': '-candidates__student__username',
     }
 
+    def get_success_url(self):
+        return reverse('devilry_examiner_allgroupsoverview', args=[self.object.id]) + "?examinermode=quick"
+
     def dispatch(self, request, *args, **kwargs):
         self.orderingform = OrderingForm(request.GET)
         self.examinermode = request.GET.get('examinermode', 'normal')
@@ -202,13 +207,15 @@ class AllGroupsOverview(DetailView):
     def _get_quickfeedback_formcollection(self):
         return QuickFeedbackFormCollection(
             request=self.request,
-            assignment=self.object,
+            assignment=self.get_object(),
             groupqueryset=self._get_groupqueryset())
 
-    def post(self):
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
         quickfeedback_formcollection = self._get_quickfeedback_formcollection()
         if quickfeedback_formcollection.is_valid():
             quickfeedback_formcollection.save()
+            return HttpResponseRedirect(self.get_success_url())
         else:
             context = self.get_context_data(quickfeedback_formcollection=quickfeedback_formcollection)
             return self.render_to_response(context=context)

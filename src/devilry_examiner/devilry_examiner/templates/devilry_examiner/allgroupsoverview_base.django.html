@@ -9,13 +9,7 @@
 
 {% block body %}
 
-<div class="container">
-    {% for groupid, form in quickfeedback_formcollection.forms.iteritems %}
-        <h2>{{ groupid }}</h2>
-        {% crispy form %}
-    {% endfor %}
 
-</div>
 
 <div class="container">
 
@@ -131,8 +125,9 @@
                 {# TODO: if examinermodus == 'quick'... #}
                 {% if examinermode == 'normal' %}
                     {% include "devilry_examiner/include/examinermode_normal.django.html" %}
+                {% elif examinermode == 'quick' %}
+                    {% include "devilry_examiner/include/examinermode_quick.django.html" %}
                 {% endif %}
-
 
 
 

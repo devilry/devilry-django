@@ -1,8 +1,14 @@
 {% load i18n %}
 {% load devilry_examiner_tags %}
 {% load url from future %}
+{% comment %}<div class="container">
+    {% for groupid, form in quickfeedback_formcollection.forms.iteritems %}
+        <h2>{{ groupid }}</h2>
+        {% crispy form %}
+    {% endfor %}
 
-
+</div>{% endcomment %}
+<form method="post">{% csrf_token %}
     <table class="table table-striped infolistingtable" id="grouplist_table">
         {% for group in groups %}
         <tr class="group">
@@ -40,13 +46,18 @@
             </td>
 
             <td class="hidden-xs">
-                {% if group.get_status == "waiting-for-feedback" %}
+
+                {% get_quickmodeform_by_groupid quickfeedback_formcollection group.id %}
+
+
+
+ {% comment %}               {% if group.get_status == "waiting-for-feedback" %}
                     <a class="btn btn-default pull-right"
                             href="{% url 'devilry_examiner_last_delivery_or_groupoverview' group.id %}?edit_feedback=true"
                             role="button">
                         {% trans "Write feedback" %}
                     </a>
-                {% endif %}
+                {% endif %}{% endcomment %}
             </td>
         </tr>
 
@@ -59,3 +70,4 @@
             <small class="text-muted">({% trans "to selected" %})</small>
     </button></p>
     {% endif %}
+</form>
