@@ -15,7 +15,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
-
+from devilry_gradingsystem.models import FeedbackDraft
 
 def get_paginated_page(paginator, page):
     try:
@@ -93,8 +93,23 @@ class QuickApprovedNotApprovedFeedbackForm(forms.Form):
             layout.Field('approved'),
         )
 
-    def save(self):
+    def save(self, request):
         approved = self.cleaned_data['approved']
+        # points = 1 if approved else 0
+        #
+        # draft = FeedbackDraft(
+        #     delivery=self.group.last_delivery,
+        #     points=points,
+        #     feedbacktext_raw='',
+        #     feedbacktext_html='',
+        #     saved_by=request.user
+        # )
+        #
+        # draft.published = True
+        # draft.staticfeedback = draft.to_staticfeedback()
+        # draft.staticfeedback.full_clean()
+        # draft.staticfeedback.save()
+        # draft.save()
         print
         print "*" * 70
         print
@@ -154,7 +169,7 @@ class QuickFeedbackFormCollection(object):
 
     def save(self):
         for form in self.forms.itervalues():
-            form.save()
+            form.save(self.request)
 
 
 class AllGroupsOverview(DetailView):
