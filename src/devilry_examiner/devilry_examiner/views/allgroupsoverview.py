@@ -43,6 +43,7 @@ class OrderingForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(OrderingForm, self).__init__(*args, **kwargs)
+        self.fields['examinermode'] = forms.CharField(required=False, max_length=50, widget=forms.HiddenInput())
         self.helper = FormHelper()
         self.helper.form_tag = True
         self.helper.form_method = 'GET'
@@ -51,6 +52,30 @@ class OrderingForm(forms.Form):
         self.helper.disable_csrf = True
         self.helper.layout = layout.Layout(
             layout.Field('order_by', onchange="this.form.submit();"),
+            layout.Field('examinermode')
+        )
+
+class ExaminerModeForm(forms.Form):
+    examinermode = forms.ChoiceField(
+        required=False,
+        choices=[
+            ('normal', _('Edit mode: Normal')),
+            ('quick', _('Edit mode: Quick'))
+        ]
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(ExaminerModeForm, self).__init__(*args, **kwargs)
+        self.fields['order_by'] = forms.CharField(required=False, max_length=50, widget=forms.HiddenInput())
+        self.helper = FormHelper()
+        self.helper.form_tag = True
+        self.helper.form_method = 'GET'
+        self.helper.form_class = 'form-inline'
+        self.helper.form_show_labels = False
+        self.helper.disable_csrf = True
+        self.helper.layout = layout.Layout(
+            layout.Field('order_by'),
+            layout.Field('examinermode', onchange="this.form.submit();")
         )
 
 
@@ -147,11 +172,19 @@ class AllGroupsOverview(DetailView):
     }
 
     def get_success_url(self):
-        return reverse('devilry_examiner_allgroupsoverview', args=[self.object.id]) + "?examinermode=quick"
+        query_string = self.request.META.get('QUERY_STRING', '')
+        url = "{}?{}".format(reverse('devilry_examiner_allgroupsoverview', args=[self.object.id]), query_string)
+        return url
 
     def dispatch(self, request, *args, **kwargs):
         self.orderingform = OrderingForm(request.GET)
-        self.examinermode = request.GET.get('examinermode', 'normal')
+        self.examinermode_form = ExaminerModeForm(request.GET)
+        if self.examinermode_form.is_valid():
+            self.examinermode = self.examinermode_form.cleaned_data['examinermode']
+            if not self.examinermode:
+                self.examinermode = 'normal'
+        else:
+            return HttpResponseBadRequest(self.examinermode_form.errors.as_text())
         if self.orderingform.is_valid():
             self.order_by = self.orderingform.cleaned_data['order_by']
         else:
@@ -188,7 +221,7 @@ class AllGroupsOverview(DetailView):
             context['count_waiting_for_deliveries'] = groups.filter_waiting_for_deliveries().count()
         context['count_corrected'] = groups.filter_by_status('corrected').count()
 
-        paginator = Paginator(groups, 100, orphans=3)
+        paginator = Paginator(groups, 3, orphans=3)
         page = self.request.GET.get('page')
 
         context['groups'] = get_paginated_page(paginator, page)
@@ -197,6 +230,7 @@ class AllGroupsOverview(DetailView):
 
         context['orderingform'] = self.orderingform
         context['order_by'] = self.order_by
+        context['examinermode_form'] = self.examinermode_form
         context['examinermode'] = self.examinermode
 
         return context
