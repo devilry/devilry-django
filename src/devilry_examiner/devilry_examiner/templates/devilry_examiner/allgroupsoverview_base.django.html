@@ -35,24 +35,24 @@
 
             <ul class="list-group">
                 <a class="list-group-item {% if currentpage == 'all' %}active{% endif %}"
-                        href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">
+                        href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}?order_by={{ order_by }}&examinermode={{ examinermode }}">
                     <span class="badge">{{ count_all }}</span>
                     {% trans "All" %}
                 </a>
                 <a class="list-group-item {% if currentpage == 'waiting_for_feedback' %}active{% endif %}"
-                        href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">
+                        href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}?order_by={{ order_by }}&examinermode={{ examinermode }}">
                     <span class="badge">{{ count_waiting_for_feedback }}</span>
                     {% trans "Waiting for feedback" %}
                 </a>
                 {% if assignment.is_electronic %}                    
                     <a class="list-group-item {% if currentpage == 'waiting_for_deliveries' %}active{% endif %}"
-                            href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">
+                            href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}?order_by={{ order_by }}&examinermode={{ examinermode }}">
                         <span class="badge">{{ count_waiting_for_deliveries }}</span>
                         {% trans "Waiting for deliveries" %}
                     </a>
                 {% endif %}
                 <a class="list-group-item {% if currentpage == 'corrected' %}active{% endif %}"
-                        href="{% url 'devilry_examiner_corrected' assignment.id %}">
+                        href="{% url 'devilry_examiner_corrected' assignment.id %}?order_by={{ order_by }}&examinermode={{ examinermode }}">
                     <span class="badge">{{ count_corrected }}</span>
                     {% trans "Corrected" %}
                 </a>
