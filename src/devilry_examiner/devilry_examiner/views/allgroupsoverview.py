@@ -146,6 +146,7 @@ class AllGroupsOverview(DetailView):
 
     def dispatch(self, request, *args, **kwargs):
         self.orderingform = OrderingForm(request.GET)
+        self.examinermode = request.GET.get('examinermode', 'normal')
         if self.orderingform.is_valid():
             self.order_by = self.orderingform.cleaned_data['order_by']
         else:
@@ -191,6 +192,7 @@ class AllGroupsOverview(DetailView):
 
         context['orderingform'] = self.orderingform
         context['order_by'] = self.order_by
+        context['examinermode'] = self.examinermode
 
         return context
 
