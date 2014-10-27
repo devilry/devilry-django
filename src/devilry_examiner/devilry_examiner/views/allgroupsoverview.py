@@ -2,6 +2,7 @@ from crispy_forms import layout
 from crispy_forms.helper import FormHelper
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseRedirect
+from django.http import Http404
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.views.generic import DetailView
@@ -40,7 +41,7 @@ class OrderingForm(forms.Form):
         ],
         'anonymous':[
             ('candidate_id', _("Order by: Candidate id")),
-            ('candidate_id_reversed', _("Order by: Candidate id reversed"))
+            ('candidate_id_descending', _("Order by: Candidate id reversed"))
         ],
         }
     order_by = forms.ChoiceField(
@@ -126,14 +127,6 @@ class QuickApprovedNotApprovedFeedbackForm(forms.Form):
         )
         return draft
 
-        # print
-        # print "*" * 70
-        # print
-        # print 'SAVING feedback {} for group {}'.format(points, self.group)
-        # print
-        # print "*" * 70
-        # print
-
 
 class QuickFeedbackFormCollection(object):
     def __init__(self, request, assignment, groupqueryset):
@@ -208,6 +201,8 @@ class AllGroupsOverview(DetailView):
         'name_descending': '-candidates__student__devilryuserprofile__full_name',
         'username': 'candidates__student__username',
         'username_descending': '-candidates__student__username',
+        'candidate_id': 'candidates__candidate_id',
+        'candidate_id_descending': '-candidates__candidate_id'
     }
 
     def get_success_url(self):
