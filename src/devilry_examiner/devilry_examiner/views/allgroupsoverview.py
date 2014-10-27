@@ -80,7 +80,14 @@ class ExaminerModeForm(forms.Form):
 
 
 class QuickApprovedNotApprovedFeedbackForm(forms.Form):
-    approved = forms.NullBooleanField()
+    points = forms.ChoiceField(
+        required=False,
+        choices=[
+            ('', ''),
+            ('1', _('Passed')),
+            ('0', _('Failed')),
+        ]
+    )
 
     def __init__(self, *args, **kwargs):
         self.group = kwargs.pop('group')
@@ -90,33 +97,34 @@ class QuickApprovedNotApprovedFeedbackForm(forms.Form):
         self.helper.disable_csrf = True
         self.helper.form_show_labels = False
         self.helper.layout = layout.Layout(
-            layout.Field('approved'),
+            layout.Field('points'),
         )
 
-    def save(self, request):
-        approved = self.cleaned_data['approved']
-        # points = 1 if approved else 0
-        #
-        # draft = FeedbackDraft(
-        #     delivery=self.group.last_delivery,
-        #     points=points,
-        #     feedbacktext_raw='',
-        #     feedbacktext_html='',
-        #     saved_by=request.user
-        # )
-        #
-        # draft.published = True
-        # draft.staticfeedback = draft.to_staticfeedback()
-        # draft.staticfeedback.full_clean()
-        # draft.staticfeedback.save()
-        # draft.save()
-        print
-        print "*" * 70
-        print
-        print 'SAVING feedback {} for group {}'.format(approved, self.group)
-        print
-        print "*" * 70
-        print
+    def get_draft(self, request):
+        points = self.cleaned_data['points']
+
+        if points == '':
+            return None
+        points = int(points)
+        if self.group.feedback and self.group.feedback.points == points:
+            return None
+
+        draft = FeedbackDraft(
+            delivery=self.group.last_delivery,
+            points=points,
+            feedbacktext_raw='',
+            feedbacktext_html='',
+            saved_by=request.user
+        )
+        return draft
+
+        # print
+        # print "*" * 70
+        # print
+        # print 'SAVING feedback {} for group {}'.format(points, self.group)
+        # print
+        # print "*" * 70
+        # print
 
 
 class QuickFeedbackFormCollection(object):
@@ -133,11 +141,11 @@ class QuickFeedbackFormCollection(object):
     def _get_initial(self, feedback):
         # TODO: Use assignment to find grading system
         if feedback is None:
-            approved = None
+            points = ''
         else:
-            approved = feedback.is_passing_grade
+            points = feedback.points
         return {
-            'approved': approved
+            'points': points
         }
 
     def _create_forms(self):
@@ -169,7 +177,14 @@ class QuickFeedbackFormCollection(object):
 
     def save(self):
         for form in self.forms.itervalues():
-            form.save(self.request)
+            draft = form.get_draft(self.request)
+            if draft is None:
+                continue
+            draft.published = True
+            draft.staticfeedback = draft.to_staticfeedback()
+            draft.staticfeedback.full_clean()
+            draft.staticfeedback.save()
+            draft.save()
 
 
 class AllGroupsOverview(DetailView):

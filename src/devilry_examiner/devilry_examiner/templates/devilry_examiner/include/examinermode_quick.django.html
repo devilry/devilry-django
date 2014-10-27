@@ -1,6 +1,7 @@
 {% load i18n %}
 {% load devilry_examiner_tags %}
 {% load url from future %}
+{% load crispy_forms_tags %}
 {% comment %}<div class="container">
     {% for groupid, form in quickfeedback_formcollection.forms.iteritems %}
         <h2>{{ groupid }}</h2>
@@ -44,7 +45,8 @@
             <td class="hidden-xs">
 
                 {% with group_form=quickfeedback_formcollection|group_form:group.id %}
-                    {{ group_form.as_p }}
+                    {% crispy group_form %}
+{#                    {{ group_form.as_p }}#}
                 {% endwith %}
                 
 
