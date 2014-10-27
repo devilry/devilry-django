@@ -39,6 +39,12 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
                                        kwargs={'assignmentid': assignmentid}),
                                *args, **kwargs)
 
+    def _postas(self, username, assignmentid, *args, **kwargs):
+        self.client.login(username=username, password='test')
+        return self.client.get(reverse('devilry_examiner_allgroupsoverview',
+                                       kwargs={'assignmentid': assignmentid}),
+                               *args, **kwargs)
+
     def test_404_when_not_examiner(self):
         response = self._getas('examiner1', self.week1builder.assignment.id)
         self.assertEquals(response.status_code, 404)
@@ -192,6 +198,27 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
         self.assertIn(
             'Select a valid choice. invalid is not one of the available choices',
             response.content)
+
+    def test_examinermode_quick(self):
+        studenta = UserBuilder('studenta', full_name="Student A").user
+        studentb = UserBuilder('studentb', full_name="Student B").user
+        studentc = UserBuilder('studentc', full_name="Student C").user
+        self.week1builder.add_group(
+            students=[studenta],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[studentb],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[studentc],
+            examiners=[self.examiner1])
+        response = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'examinermode': 'quick'})
+        html = response.content
+
+        self.assertTrue(cssExists(html, "#div_id_quickfeedbackform1-points"))
+        self.assertTrue(cssExists(html, "#div_id_quickfeedbackform2-points"))
+        self.assertTrue(cssExists(html, "#div_id_quickfeedbackform3-points"))
 
 
 class TestWaitingForFeedbackOverview(TestCase, HeaderTest):
