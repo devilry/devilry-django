@@ -31,18 +31,26 @@ def get_paginated_page(paginator, page):
 
 
 class OrderingForm(forms.Form):
-    order_by = forms.ChoiceField(
-        required=False,
-        choices=[
+    assignment_type_choices_map = {
+        'normal': [
             ('', _('Order by: Name')),
             ('name_descending', _('Order by: Name reversed')),
             ('username', _('Order by: Username')),
             ('username_descending', _('Order by: Username reversed'))
-        ]
+        ],
+        'anonymous':[
+            ('candidate_id', _("Order by: Candidate id")),
+            ('candidate_id_reversed', _("Order by: Candidate id reversed"))
+        ],
+        }
+    order_by = forms.ChoiceField(
+        required=False
     )
 
     def __init__(self, *args, **kwargs):
+        assignment_type = kwargs.pop('assignment_type', 'normal')
         super(OrderingForm, self).__init__(*args, **kwargs)
+        self.fields['order_by'].choices = self.assignment_type_choices_map[assignment_type]
         self.fields['examinermode'] = forms.CharField(required=False, max_length=50, widget=forms.HiddenInput())
         self.helper = FormHelper()
         self.helper.form_tag = True
@@ -156,7 +164,7 @@ class QuickFeedbackFormCollection(object):
             kwargs = {
                 'group': group,
                 'prefix': 'quickfeedbackform{}'.format(group.id),
-                'initial': self._get_initial(feedback)
+                'initial': self._get_initial(feedback),
             }
             if self.request.method == 'POST':
                 form = form_class(self.request.POST, **kwargs)
@@ -207,8 +215,17 @@ class AllGroupsOverview(DetailView):
         url = "{}?{}".format(reverse('devilry_examiner_allgroupsoverview', args=[self.object.id]), query_string)
         return url
 
+    def _get_assignment_type(self, *args, **kwargs):
+        assignmentid = kwargs.get('assignmentid')
+        assignment = Assignment.objects.get(id=assignmentid)
+        assignment_type = "normal"
+        if assignment.anonymous:
+            assignment_type = "anonymous"
+        return assignment_type
+
+
     def dispatch(self, request, *args, **kwargs):
-        self.orderingform = OrderingForm(request.GET)
+        self.orderingform = OrderingForm(request.GET, assignment_type=self._get_assignment_type(*args, **kwargs))
         self.examinermode_form = ExaminerModeForm(request.GET)
         if self.examinermode_form.is_valid():
             self.examinermode = self.examinermode_form.cleaned_data['examinermode']
