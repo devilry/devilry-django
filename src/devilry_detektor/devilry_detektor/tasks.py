@@ -126,6 +126,11 @@ class DeliveryParser(object):
 
 
 class AssignmentParser(object):
+    """
+    Parses all unparsed deliveries within an Assignment.
+    The result is that all Deliveries within the Assignment
+    has a corresponding DetektorDeliveryParseResult.
+    """
     def __init__(self, assignment_id):
         self._parsers = {}
         self.detektorassignment = DetektorAssignment.objects\
