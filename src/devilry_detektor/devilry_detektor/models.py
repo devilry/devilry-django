@@ -30,6 +30,9 @@ class DetektorAssignment(models.Model):
         User,
         null=True, blank=True)
 
+    def __unicode__(self):
+        return u'DetektorAssignment#{} on {}'.format(self.id, self.assignment.get_path())
+
 
 class DetektorDeliveryParseResult(models.Model, detektor.parseresult.ParseResult):
     """
