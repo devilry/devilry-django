@@ -45,7 +45,11 @@
             <td class="hidden-xs">
 
                 {% with group_form=quickfeedback_formcollection|group_form:group.id %}
-                    {% crispy group_form %}
+                    {% if group.last_delivery %}
+                        {% crispy group_form %}
+                    {% else %}
+                        <p>No deliveries</p>
+                    {% endif %}
                 {% endwith %}
                 
 
