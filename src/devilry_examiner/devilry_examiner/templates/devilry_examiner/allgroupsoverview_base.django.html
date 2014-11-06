@@ -109,9 +109,11 @@
                         {% crispy orderingform %}
                     </div>
 
-                    <div class="btn-group">
-                        {% crispy examinermode_form %}
-                    </div>
+                    {% if assignment.grading_system_plugin_id == "devilry_gradingsystemplugin_approved" %}
+                        <div class="btn-group">
+                            {% crispy examinermode_form %}
+                        </div>
+                    {% endif %}
 
 
                     {% if assignment.is_electronic %}
