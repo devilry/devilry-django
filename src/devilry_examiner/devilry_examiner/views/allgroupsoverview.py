@@ -36,6 +36,8 @@ class OrderingForm(forms.Form):
         'normal': [
             ('', _('Order by: Name')),
             ('name_descending', _('Order by: Name reversed')),
+            # ('lastname', _('Order by: Last name')),
+            # ('lastname_descending', _('Order by: Last name reversed')),
             ('username', _('Order by: Username')),
             ('username_descending', _('Order by: Username reversed'))
         ],
@@ -115,6 +117,8 @@ class QuickApprovedNotApprovedFeedbackForm(forms.Form):
         if points == '':
             return None
         points = int(points)
+        if self.group.last_delivery is None:
+            return None
         if self.group.feedback and self.group.feedback.points == points:
             return None
 
@@ -201,6 +205,8 @@ class AllGroupsOverview(DetailView):
         'name_descending': '-candidates__student__devilryuserprofile__full_name',
         'username': 'candidates__student__username',
         'username_descending': '-candidates__student__username',
+        # 'lastname': 'candidates__student__last_name',
+        # 'lastname_descending': '-candidates__student__last_name',
         'candidate_id': 'candidates__candidate_id',
         'candidate_id_descending': '-candidates__candidate_id'
     }
@@ -276,8 +282,11 @@ class AllGroupsOverview(DetailView):
 
         context['orderingform'] = self.orderingform
         context['order_by'] = self.order_by
-        context['examinermode_form'] = self.examinermode_form
-        context['examinermode'] = self.examinermode
+
+        context['examinermode'] = 'normal' # The mode is normal for all non supported grade plugins
+        if assignment.grading_system_plugin_id == 'devilry_gradingsystemplugin_approved':
+            context['examinermode_form'] = self.examinermode_form
+            context['examinermode'] = self.examinermode
 
         return context
 
