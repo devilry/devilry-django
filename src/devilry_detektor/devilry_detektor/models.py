@@ -39,7 +39,7 @@ class DetektorDeliveryParseResult(models.Model, detektor.parseresult.ParseResult
     We store results from detektor parsing in this model, and read it from
     the database each time we need to compare.
     """
-    detektorassignment = models.ForeignKey(DetektorAssignment)
+    detektorassignment = models.ForeignKey(DetektorAssignment, related_name='parseresults')
     delivery = models.ForeignKey(coremodels.Delivery)
     language = models.CharField(max_length=255, db_index=True)
 

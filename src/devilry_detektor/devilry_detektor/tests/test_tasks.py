@@ -13,36 +13,6 @@ from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 
 
-class TestRunDetektorOnAssignment(TestCase):
-    def setUp(self):
-        self.testuser = UserBuilder('testuser').user
-        self.assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('testassignment')
-
-    def test_invalid_assignment(self):
-        with self.assertRaises(DetektorAssignment.DoesNotExist):
-            run_detektor_on_assignment.delay(
-                assignment_id=200001).wait()
-
-    def test_processing_detektorassignment_doesnotexist(self):
-        with self.assertRaises(DetektorAssignment.DoesNotExist):
-            run_detektor_on_assignment.delay(
-                assignment_id=self.assignmentbuilder.assignment.id).wait()
-
-    def test_processing_ok(self):
-        DetektorAssignment.objects.create(
-            assignment_id=self.assignmentbuilder.assignment.id,
-            processing_started_by=self.testuser)
-
-        self.assertEquals(DetektorAssignment.objects.count(), 1)
-        run_detektor_on_assignment.delay(
-            assignment_id=self.assignmentbuilder.assignment.id).wait()
-        self.assertEquals(DetektorAssignment.objects.count(), 1)
-
-        detektorassignment = DetektorAssignment.objects.all()[0]
-        self.assertEqual(detektorassignment.processing_started_datetime, None)
-
-
 class TestFileMetaCollection(TestCase):
     def setUp(self):
         self.deliverybuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -182,3 +152,64 @@ class TestDeliveryParser(TestCase):
         self.assertEquals(parseresult_python.get_operators_and_keywords_string(), 'classpass')
         self.assertEquals(parseresult_python.get_number_of_keywords(), 2)
         self.assertEquals(parseresult_python.get_number_of_operators(), 0)
+
+
+class TestAssignmentParser(TestCase):
+    # def setUp(self):
+    #     assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+    #         .add_assignment('testassignment')
+    #     self.deliverybuilder = assignmentbuilder\
+    #         .add_group()\
+    #         .add_deadline_in_x_weeks(weeks=1)\
+    #         .add_delivery()
+    #     DetektorAssignment.objects.create(
+    #         assignment=assignmentbuilder.assignment)
+    #     self.assignmentparser = AssignmentParser(assignmentbuilder.assignment.id)
+
+
+    def setUp(self):
+        self.testuser = UserBuilder('testuser').user
+        self.assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('testassignment')
+
+    def test_invalid_assignment(self):
+        with self.assertRaises(DetektorAssignment.DoesNotExist):
+            AssignmentParser(assignment_id=200001)
+
+    def test_processing_detektorassignment_doesnotexist(self):
+        with self.assertRaises(DetektorAssignment.DoesNotExist):
+            AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+
+    def test_processing_ok_no_deliveries(self):
+        DetektorAssignment.objects.create(
+            assignment_id=self.assignmentbuilder.assignment.id,
+            processing_started_by=self.testuser)
+        AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+
+        detektorassignment = DetektorAssignment.objects.all()[0]
+        self.assertEqual(detektorassignment.processing_started_datetime, None)
+        self.assertEquals(detektorassignment.parseresults.count(), 0)
+
+    def test_processing_ok_has_deliveries(self):
+        self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_filemeta(filename='Test.java', data='class Test {}')
+        self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_filemeta(filename='Test2.java', data='if(i==10) {}')
+
+        DetektorAssignment.objects.create(
+            assignment_id=self.assignmentbuilder.assignment.id,
+            processing_started_by=self.testuser)
+        AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+
+        detektorassignment = DetektorAssignment.objects.all()[0]
+        self.assertEqual(detektorassignment.processing_started_datetime, None)
+        self.assertEquals(detektorassignment.parseresults.count(), 2)
+        parseresults = detektorassignment.parseresults.order_by('number_of_operators')
+        self.assertEquals(parseresults[0].get_operators_and_keywords_string(), 'class')
+        self.assertEquals(parseresults[1].get_operators_and_keywords_string(), 'if==')
