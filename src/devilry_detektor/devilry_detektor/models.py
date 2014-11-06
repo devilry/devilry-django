@@ -40,15 +40,19 @@ class DetektorDeliveryParseResult(models.Model, detektor.parseresult.ParseResult
     the database each time we need to compare.
     """
     detektorassignment = models.ForeignKey(DetektorAssignment)
-    delivery = models.OneToOneField(coremodels.Delivery)
+    delivery = models.ForeignKey(coremodels.Delivery)
+    language = models.CharField(max_length=255, db_index=True)
 
     operators_string = models.TextField()
     keywords_string = models.TextField()
     number_of_operators = models.IntegerField()
     number_of_keywords = models.IntegerField()
     operators_and_keywords_string = models.TextField()
-    normalized_sourcecode = models.TextField()
-    parsed_functions_json = models.TextField()
+    normalized_sourcecode = models.TextField(null=True, blank=True)
+    parsed_functions_json = models.TextField(null=True, blank=True)
+
+    class Meta:
+        unique_together = [('delivery', 'language')]
 
     def get_codeblocktype(self):
         return 'program'
@@ -84,3 +88,16 @@ class DetektorDeliveryParseResult(models.Model, detektor.parseresult.ParseResult
 
     def get_parsed_functions(self):
         return self._get_parsed_functions()
+
+    def from_parseresult(self, parseresult):
+        data = parseresult.serialize_as_dict()
+        self.operators_string = data['operators_string']
+        self.keywords_string = data['keywords_string']
+        self.number_of_operators = data['number_of_operators']
+        self.number_of_keywords = data['number_of_keywords']
+        self.operators_and_keywords_string = data['operators_and_keywords_string']
+        self.normalized_sourcecode = data['normalized_sourcecode']
+        if data['parsed_functions']:
+            self.parsed_functions = json.dumps(data['parsed_functions'])
+        else:
+            self.parsed_functions = None
