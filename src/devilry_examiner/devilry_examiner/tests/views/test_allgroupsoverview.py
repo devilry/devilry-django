@@ -274,23 +274,22 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
     def test_examinermode_quick(self):
         studenta = UserBuilder('studenta', full_name="Student A").user
         studentb = UserBuilder('studentb', full_name="Student B").user
-        studentc = UserBuilder('studentc', full_name="Student C").user
-        self.week1builder.add_group(
+        group1 = self.week1builder.add_group(
             students=[studenta],
             examiners=[self.examiner1])
-        self.week1builder.add_group(
+        delivery = group1.add_deadline_in_x_weeks(weeks=1).add_delivery_x_hours_before_deadline(hours=2)
+        delivery.delivery.save()
+        group2 = self.week1builder.add_group(
             students=[studentb],
             examiners=[self.examiner1])
-        self.week1builder.add_group(
-            students=[studentc],
-            examiners=[self.examiner1])
+        delivery = group2.add_deadline_in_x_weeks(weeks=1).add_delivery_x_hours_before_deadline(hours=2)
+        delivery.delivery.save()
         response = self._getas('examiner1', self.week1builder.assignment.id,
                            data={'examinermode': 'quick'})
         html = response.content
 
         self.assertTrue(cssExists(html, "#div_id_quickfeedbackform1-points"))
         self.assertTrue(cssExists(html, "#div_id_quickfeedbackform2-points"))
-        self.assertTrue(cssExists(html, "#div_id_quickfeedbackform3-points"))
 
     def test_examinermode_quick_no_deliveries(self):
         studenta = UserBuilder('studenta', full_name="Student A").user

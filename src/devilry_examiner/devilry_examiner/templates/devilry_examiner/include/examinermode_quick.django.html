@@ -47,8 +47,6 @@
                 {% with group_form=quickfeedback_formcollection|group_form:group.id %}
                     {% if group.last_delivery %}
                         {% crispy group_form %}
-                    {% else %}
-                        <p>No deliveries</p>
                     {% endif %}
                 {% endwith %}
                 
