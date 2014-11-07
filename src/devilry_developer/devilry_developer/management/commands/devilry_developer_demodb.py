@@ -39,6 +39,68 @@ good_students = [
     ('odin', 'The "All Father"')
 ]
 
+programs = [
+    {
+        'filename': 'test.py',
+        'data': 'print "Test"'
+    },
+    {
+        'filename': 'hello.py',
+        'data': 'if i == 10:\n    print "Hello"\nelse: pass'
+    },
+    {
+        'filename': 'demo.py',
+        'data': 'while True: pass'
+    },
+    {
+        'filename': 'sum.py',
+        'data': 'def sum(a, b):\n    return a+b\n'
+    },
+    {
+        'filename': 'addtimes.py',
+        'data': 'def addtimes(x, y, times=1):\n    return (x + y) * times\n'
+    },
+    {
+        'filename': 'generate.py',
+        'data': 'def generate(count):\n    return [randint(x, 100000) for x in xrange(count)]\n'
+    },
+    {
+        'filename': 'count.py',
+        'data': (
+            'def count_true(iterable, attribute):\n'
+            '    count = 0\n'
+            '    for item in iterable:\n'
+            '        if getattr(item, attribute):\n'
+            '            count += 1\n'
+            '    return count\n'
+            )
+    },
+    {
+        'filename': 'Hello.java',
+        'data': (
+            'class Hello {\n'
+            '    public static void main(String [] args) {\n'
+            '        System.out.println("Hello world");\n'
+            '    }\n'
+            '}')
+    },
+    {
+        'filename': 'Demo.java',
+        'data': (
+            'class Demo {\n'
+            '    public static void main(String [] args) {\n'
+            '        System.out.println("Hello demo");\n'
+            '        if(args[1].equals("add")) {\n'
+            '            return;\n'
+            '        }\n'
+            '        else {\n'
+            '            System.out.println("Else");\n'
+            '        }\n'
+            '    }\n'
+            '}')
+    },
+]
+
 
 
 class Command(BaseCommand):
@@ -94,10 +156,17 @@ class Command(BaseCommand):
 
             deliverybuilder = deadlinebuilder.add_delivery_x_hours_before_deadline(
                 hours=random.randint(1, 30))
+            used_filenames = set()
             for number in xrange(filecount):
+                while True:
+                    deliveryfile = random.choice(programs)
+                    filename = deliveryfile['filename']
+                    if filename not in used_filenames:
+                        used_filenames.add(filename)
+                        break
                 deliverybuilder.add_filemeta(
-                    filename='{}_{}.py'.format(assignmentbuilder.assignment.short_name, number),
-                    data='print "Hello world"')
+                    filename=deliveryfile['filename'],
+                    data=deliveryfile['data'])
             if random.randint(0, 100) <= feedback_percent:
                 feedback = StaticFeedback.from_points(
                     assignment=assignmentbuilder.assignment,
