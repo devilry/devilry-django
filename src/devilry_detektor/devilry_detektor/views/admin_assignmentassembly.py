@@ -1,3 +1,5 @@
+from collections import OrderedDict
+import itertools
 from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
@@ -6,6 +8,7 @@ from django.views.generic.detail import DetailView
 from devilry.apps.core.models import Assignment
 from devilry_detektor.models import DetektorAssignment
 from devilry_detektor.tasks import run_detektor_on_assignment
+from devilry_detektor.comparer import DevilryDetektorCompareMany
 
 
 class AssignmentAssemblyView(DetailView):
@@ -30,11 +33,6 @@ class AssignmentAssemblyView(DetailView):
             assignment_id=self.get_object().id)
         return detektorassignment
 
-    def get_context_data(self, **kwargs):
-        context = super(AssignmentAssemblyView, self).get_context_data(**kwargs)
-        context['detektorassignment'] = self._get_detektorassignment()
-        return context
-
     def get_success_url(self):
         return reverse('devilry_detektor_admin_assignmentassembly',
                        kwargs={'assignmentid': self.kwargs['assignmentid']})
@@ -51,3 +49,19 @@ class AssignmentAssemblyView(DetailView):
         # shown is good enough for such an unlikely case.
 
         return HttpResponseRedirect(self.get_success_url())
+
+    def _build_comparemany_results(self, detektorassignment):
+        parseresults = detektorassignment.parseresults.order_by('language')
+        bylanguage = OrderedDict()
+        for language, parseresults in itertools.groupby(parseresults, lambda p: p.language):
+            comparemany = DevilryDetektorCompareMany(list(parseresults))
+            comparemany.sort_by_points_descending()
+            bylanguage[language] = comparemany
+        return bylanguage
+
+    def get_context_data(self, **kwargs):
+        context = super(AssignmentAssemblyView, self).get_context_data(**kwargs)
+        detektorassignment = self._get_detektorassignment()
+        context['comparemany_results_by_language'] = self._build_comparemany_results(detektorassignment)
+        context['detektorassignment'] = detektorassignment
+        return context

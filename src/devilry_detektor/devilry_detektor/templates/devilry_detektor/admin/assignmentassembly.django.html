@@ -23,11 +23,54 @@
             </div>
         {% else %}
             <form method="post">{% csrf_token %}
-               <button type="submit" class="btn btn-primary btn-lg">
-                   {% trans "Run/re-run similarity check" %}
-               </button>
+                <p>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        {% trans "Run/re-run similarity check" %}
+                    </button>
+                </p>
             </form>
-            <p>TODO: Table of results</p>
+
+            {% for language, comparemany in comparemany_results_by_language.iteritems %}
+                <h2>{% trans "Programming language" %}: {{ language }}</h2>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                {% trans "Points" %}
+                            </th>
+                            <th>
+                                {% trans "Delivery 1" %}
+                            </th>
+                            <th>
+                                {% trans "Delivery 2" %}
+                            </th>
+                            <th>
+                                {% trans "Similarities" %}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comparetwo in comparemany %}
+                            <tr>
+                                <td>
+                                    {{ comparetwo.get_scaled_points }}
+                                </td>
+                                <td>
+                                    {% trans "Delivery" %}#{{ comparetwo.parseresult1.delivery.id }}
+                                    {{ comparetwo.parseresult1.delivery.assignment_group.long_displayname }}
+                                </td>
+                                <td>
+                                    {% trans "Delivery" %}#{{ comparetwo.parseresult2.delivery.id }}
+                                    {{ comparetwo.parseresult2.delivery.assignment_group.long_displayname }}
+                                </td>
+                                <td>
+                                    {{ comparetwo.get_summary_descriptions_as_string }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endfor %}
         {% endif %}
     </div>
 {% endblock content %}

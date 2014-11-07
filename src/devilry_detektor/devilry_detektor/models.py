@@ -60,6 +60,13 @@ class DetektorDeliveryParseResult(models.Model, detektor.parseresult.ParseResult
     def get_codeblocktype(self):
         return 'program'
 
+    @property
+    def codeblocktype(self):
+        return 'program'
+    @property
+    def label(self):
+        return self.get_label()
+
     def get_label(self):
         return unicode(self.delivery)
 
@@ -82,11 +89,14 @@ class DetektorDeliveryParseResult(models.Model, detektor.parseresult.ParseResult
         return self.normalized_sourcecode
 
     def _get_parsed_functions(self):
-        if hasattr(self, '_parsed_functions'):
-            parsed_functions = json.loads(self.parsed_functions_json)
-            self._parsed_functions = [
-                detektor.parseresult.UneditableParseResult(parsed_function_dict)\
-                for parsed_function_dict in parsed_functions]
+        if not hasattr(self, '_parsed_functions'):
+            if self.parsed_functions_json is None:
+                self._parsed_functions = []
+            else:
+                parsed_functions = json.loads(self.parsed_functions_json)
+                self._parsed_functions = [
+                    detektor.parseresult.UneditableParseResult(parsed_function_dict)\
+                    for parsed_function_dict in parsed_functions]
         return self._parsed_functions
 
     def get_parsed_functions(self):
@@ -101,6 +111,6 @@ class DetektorDeliveryParseResult(models.Model, detektor.parseresult.ParseResult
         self.operators_and_keywords_string = data['operators_and_keywords_string']
         self.normalized_sourcecode = data['normalized_sourcecode']
         if data['parsed_functions']:
-            self.parsed_functions = json.dumps(data['parsed_functions'])
+            self.parsed_functions_json = json.dumps(data['parsed_functions'])
         else:
-            self.parsed_functions = None
+            self.parsed_functions_json = None
