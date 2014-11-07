@@ -1,5 +1,3 @@
-from datetime import datetime
-from pprint import pprint
 from django.test import TestCase
 
 from devilry_detektor.models import DetektorAssignment
@@ -232,7 +230,7 @@ class TestAssignmentParser(TestCase):
         assignmentparser = AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
         DeliveryParser(assignmentparser, delivery1builder.delivery).run_detektor()
         DeliveryParser(assignmentparser, delivery2builder.delivery).run_detektor()
-        self.assertEqual(assignmentparser._get_unprocessed_delivery_queryset().count(), 0)
+        self.assertEqual(assignmentparser.get_unprocessed_delivery_queryset().count(), 0)
 
     def test_get_unprocessed_delivery_queryset_some(self):
         delivery1builder = self.assignmentbuilder\
@@ -252,9 +250,9 @@ class TestAssignmentParser(TestCase):
 
         assignmentparser = AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
         DeliveryParser(assignmentparser, delivery1builder.delivery).run_detektor()
-        self.assertEqual(assignmentparser._get_unprocessed_delivery_queryset().count(), 1)
+        self.assertEqual(assignmentparser.get_unprocessed_delivery_queryset().count(), 1)
         self.assertEqual(
-            assignmentparser._get_unprocessed_delivery_queryset().all()[0],
+            assignmentparser.get_unprocessed_delivery_queryset().all()[0],
             delivery2builder.delivery)
 
     def test_processing_ok_has_all_previous_results(self):

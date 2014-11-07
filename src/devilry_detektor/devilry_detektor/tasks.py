@@ -150,14 +150,14 @@ class AssignmentParser(object):
             self._parsers[language] = detektor.parser.make_parser(language)
         return self._parsers[language]
 
-    def _get_unprocessed_delivery_queryset(self):
+    def get_unprocessed_delivery_queryset(self):
         return Delivery.objects\
             .filter(deadline__assignment_group__parentnode=self.detektorassignment.assignment)\
             .exclude(id__in=self.detektorassignment.parseresults.values_list('delivery', flat=True))\
             .prefetch_related('filemetas')
 
     def _process_deliveries(self):
-        for delivery in self._get_unprocessed_delivery_queryset():
+        for delivery in self.get_unprocessed_delivery_queryset():
             self._process_delivery(delivery)
 
     def _process_delivery(self, delivery):

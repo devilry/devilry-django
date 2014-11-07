@@ -8,3 +8,8 @@ class DevilryDetektorCompareMany(detektor.comparer.CompareMany):
             return
         else:
             super(DevilryDetektorCompareMany, self).compare(parseresult1, parseresult2)
+
+    def add_to_results(self, comparetwo):
+        # Only add results with any points.
+        if comparetwo.get_scaled_points() > 0:
+            super(DevilryDetektorCompareMany, self).add_to_results(comparetwo)
