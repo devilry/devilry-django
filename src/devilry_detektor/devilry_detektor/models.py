@@ -60,13 +60,6 @@ class DetektorDeliveryParseResult(models.Model, detektor.parseresult.ParseResult
     def get_codeblocktype(self):
         return 'program'
 
-    @property
-    def codeblocktype(self):
-        return 'program'
-    @property
-    def label(self):
-        return self.get_label()
-
     def get_label(self):
         return unicode(self.delivery)
 
