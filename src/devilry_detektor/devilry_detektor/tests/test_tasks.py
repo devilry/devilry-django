@@ -4,7 +4,6 @@ from django.test import TestCase
 
 from devilry_detektor.models import DetektorAssignment
 from devilry_detektor.models import DetektorDeliveryParseResult
-from devilry_detektor.tasks import run_detektor_on_assignment
 from devilry_detektor.tasks import DeliveryParser
 from devilry_detektor.tasks import AssignmentParser
 from devilry_detektor.tasks import FileMetasByFiletype
@@ -184,7 +183,7 @@ class TestAssignmentParser(TestCase):
         DetektorAssignment.objects.create(
             assignment_id=self.assignmentbuilder.assignment.id,
             processing_started_by=self.testuser)
-        AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+        AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id).run_detektor()
 
         detektorassignment = DetektorAssignment.objects.all()[0]
         self.assertEqual(detektorassignment.processing_started_datetime, None)
@@ -205,7 +204,7 @@ class TestAssignmentParser(TestCase):
         DetektorAssignment.objects.create(
             assignment_id=self.assignmentbuilder.assignment.id,
             processing_started_by=self.testuser)
-        AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+        AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id).run_detektor()
 
         detektorassignment = DetektorAssignment.objects.all()[0]
         self.assertEqual(detektorassignment.processing_started_datetime, None)
@@ -213,3 +212,70 @@ class TestAssignmentParser(TestCase):
         parseresults = detektorassignment.parseresults.order_by('number_of_operators')
         self.assertEquals(parseresults[0].get_operators_and_keywords_string(), 'class')
         self.assertEquals(parseresults[1].get_operators_and_keywords_string(), 'if==')
+
+    def test_get_unprocessed_delivery_queryset_none(self):
+        delivery1builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery1builder.add_filemeta(filename='Test.java', data='class Test {}')
+        delivery2builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery2builder.add_filemeta(filename='Test2.java', data='if(i==10) {}')
+
+        DetektorAssignment.objects.create(
+            assignment_id=self.assignmentbuilder.assignment.id,
+            processing_started_by=self.testuser)
+
+        assignmentparser = AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+        DeliveryParser(assignmentparser, delivery1builder.delivery).run_detektor()
+        DeliveryParser(assignmentparser, delivery2builder.delivery).run_detektor()
+        self.assertEqual(assignmentparser._get_unprocessed_delivery_queryset().count(), 0)
+
+    def test_get_unprocessed_delivery_queryset_some(self):
+        delivery1builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery1builder.add_filemeta(filename='Test.java', data='class Test {}')
+        delivery2builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery2builder.add_filemeta(filename='Test2.java', data='if(i==10) {}')
+
+        DetektorAssignment.objects.create(
+            assignment_id=self.assignmentbuilder.assignment.id,
+            processing_started_by=self.testuser)
+
+        assignmentparser = AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+        DeliveryParser(assignmentparser, delivery1builder.delivery).run_detektor()
+        self.assertEqual(assignmentparser._get_unprocessed_delivery_queryset().count(), 1)
+        self.assertEqual(
+            assignmentparser._get_unprocessed_delivery_queryset().all()[0],
+            delivery2builder.delivery)
+
+    def test_processing_ok_has_all_previous_results(self):
+        delivery1builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery1builder.add_filemeta(filename='Test.java', data='class Test {}')
+        delivery2builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery2builder.add_filemeta(filename='Test2.java', data='if(i==10) {}')
+
+        detektorassignment = DetektorAssignment.objects.create(
+            assignment_id=self.assignmentbuilder.assignment.id,
+            processing_started_by=self.testuser)
+
+        assignmentparser = AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+        self.assertEquals(detektorassignment.parseresults.count(), 0)
+        DeliveryParser(assignmentparser, delivery1builder.delivery).run_detektor()
+        self.assertEquals(detektorassignment.parseresults.count(), 1)
+        assignmentparser.run_detektor()
+        self.assertEquals(detektorassignment.parseresults.count(), 2)

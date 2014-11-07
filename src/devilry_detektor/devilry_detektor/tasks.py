@@ -133,11 +133,14 @@ class AssignmentParser(object):
     """
     def __init__(self, assignment_id):
         self._parsers = {}
+        self.assignment_id = assignment_id
         self.detektorassignment = DetektorAssignment.objects\
             .select_related('assignment')\
             .get(assignment_id=assignment_id)
+
+    def run_detektor(self):
         logger.info('run_detektor_on_assignment on assignment: id=%s (%s)',
-                    assignment_id, self.detektorassignment.assignment)
+                    self.assignment_id, self.detektorassignment.assignment)
         self._process_deliveries()
         self.detektorassignment.processing_started_datetime = None
         self.detektorassignment.save()
@@ -147,12 +150,14 @@ class AssignmentParser(object):
             self._parsers[language] = detektor.parser.make_parser(language)
         return self._parsers[language]
 
-    def _process_deliveries(self):
-        unprocessed_deliveries = Delivery.objects\
+    def _get_unprocessed_delivery_queryset(self):
+        return Delivery.objects\
             .filter(deadline__assignment_group__parentnode=self.detektorassignment.assignment)\
-            .exclude(delivery__in=self.detektorassignment.parseresults.values_list('delivery'))\
+            .exclude(id__in=self.detektorassignment.parseresults.values_list('delivery', flat=True))\
             .prefetch_related('filemetas')
-        for delivery in unprocessed_deliveries:
+
+    def _process_deliveries(self):
+        for delivery in self._get_unprocessed_delivery_queryset():
             self._process_delivery(delivery)
 
     def _process_delivery(self, delivery):
@@ -162,4 +167,4 @@ class AssignmentParser(object):
 
 @task()
 def run_detektor_on_assignment(assignment_id):
-    AssignmentParser(assignment_id)
+    AssignmentParser(assignment_id).run_detektor()
