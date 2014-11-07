@@ -1,5 +1,6 @@
 {% extends "devilry_detektor/admin/base.django.html" %}
 {% load i18n %}
+{% load url from future %}
 
 {% block breadcrumbtail %}
     <li class="active">
@@ -32,44 +33,75 @@
 
             {% for language, comparemany in comparemany_results_by_language.iteritems %}
                 <h2>{% trans "Programming language" %}: {{ language }}</h2>
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>
-                                {% trans "Points" %}
-                            </th>
-                            <th>
-                                {% trans "Delivery 1" %}
-                            </th>
-                            <th>
-                                {% trans "Delivery 2" %}
-                            </th>
-                            <th>
-                                {% trans "Similarities" %}
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for comparetwo in comparemany %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
                             <tr>
-                                <td>
-                                    {{ comparetwo.get_scaled_points }}
-                                </td>
-                                <td>
-                                    {% trans "Delivery" %}#{{ comparetwo.parseresult1.delivery.id }}
-                                    {{ comparetwo.parseresult1.delivery.assignment_group.long_displayname }}
-                                </td>
-                                <td>
-                                    {% trans "Delivery" %}#{{ comparetwo.parseresult2.delivery.id }}
-                                    {{ comparetwo.parseresult2.delivery.assignment_group.long_displayname }}
-                                </td>
-                                <td>
-                                    {{ comparetwo.get_summary_descriptions_as_string }}
-                                </td>
+                                <th style="min-width: 80px;">
+                                    {% trans "Points" %}
+                                </th>
+                                <th style="min-width: 230px;">
+                                    {% trans "Delivery 1" %}
+                                </th>
+                                <th style="min-width: 230px;">
+                                    {% trans "Delivery 2" %}
+                                </th>
+                                <th>
+                                    {% trans "Similarities" %}
+                                </th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {% for comparetwo in comparemany %}
+                                <tr>
+                                    <td>
+                                        {{ comparetwo.get_scaled_points }}
+                                    </td>
+
+                                    <td>
+                                        <p>
+                                            {{ comparetwo.parseresult1.delivery.assignment_group.long_displayname }}
+                                            {% trans "delivery" %}#{{ comparetwo.parseresult1.delivery.number }}
+                                        </p>
+
+                                        <p>
+                                            <a class="btn btn-default btn-sm" target="_blank"
+                                                    href="{% url 'devilry_subjectadmin_delivery' comparetwo.parseresult1.delivery.id %}">
+                                                <span class="fa fa-external-link"></span>
+                                                {% trans "Show" %}
+                                            </a>
+                                            <a class="btn btn-default btn-sm" href="{% url 'devilry-delivery-download-all-zip' comparetwo.parseresult1.delivery.id %}">
+                                                <span class="fa fa-download"></span>
+                                                {% trans "Download" %}
+                                            </a>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        <p>
+                                            {{ comparetwo.parseresult2.delivery.assignment_group.long_displayname }}
+                                            {% trans "delivery" %}#{{ comparetwo.parseresult2.delivery.number }}
+                                        </p>
+
+                                        <p>
+                                            <a class="btn btn-default btn-sm" target="_blank"
+                                                    href="{% url 'devilry_subjectadmin_delivery' comparetwo.parseresult2.delivery.id %}">
+                                                <span class="fa fa-external-link"></span>
+                                                {% trans "Show" %}
+                                            </a>
+                                            <a class="btn btn-default btn-sm" href="{% url 'devilry-delivery-download-all-zip' comparetwo.parseresult2.delivery.id %}">
+                                                <span class="fa fa-download"></span>
+                                                {% trans "Download" %}
+                                            </a>
+                                        </p>
+                                    </td>
+                                    <td>
+                                        {{ comparetwo.get_summary_descriptions_as_string }}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
             {% endfor %}
         {% endif %}
     </div>
