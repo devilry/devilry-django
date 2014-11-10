@@ -7,6 +7,7 @@ from devilry_detektor.tasks import AssignmentParser
 from devilry_detektor.views.admin_assignmentassembly import AssignmentAssemblyView
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry_developer.testhelpers.soupselect import cssFind
 
 
 class TestAssignmentAssemblyView(TestCase):
@@ -63,26 +64,21 @@ class TestAssignmentAssemblyView(TestCase):
         self.assertNotIn('Run/re-run similarity check', response.content)
 
     def test_results_ordering(self):
-        # self.assignmentbuilder\
-        #     .add_group(name='Group A')\
-        #     .add_deadline_in_x_weeks(weeks=1)\
-        #     .add_delivery()\
-        #     .add_filemeta(filename='Test.java', data='class Test {}')
+        self.assignmentbuilder\
+            .add_group(name='Group A')\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_filemeta(filename='Test1.java', data='if(i==10) {}')
         self.assignmentbuilder\
             .add_group(name='Group B')\
             .add_deadline_in_x_weeks(weeks=1)\
             .add_delivery()\
-            .add_filemeta(filename='Test2.java', data='if(i==10) {}')
+            .add_filemeta(filename='Test2.java', data='class Test {if(i==10) {}}')
         self.assignmentbuilder\
             .add_group(name='Group C')\
             .add_deadline_in_x_weeks(weeks=1)\
             .add_delivery()\
-            .add_filemeta(filename='Test3.java', data='class Test {if(i==10) {}}')
-        self.assignmentbuilder\
-            .add_group(name='Group D')\
-            .add_deadline_in_x_weeks(weeks=1)\
-            .add_delivery()\
-            .add_filemeta(filename='Test3.java', data='if(what == 32) {}')
+            .add_filemeta(filename='Test3.java', data='class Test {}')
         DetektorAssignment.objects.create(
             assignment_id=self.assignmentbuilder.assignment.id,
             processing_started_by=self.testuser)
@@ -92,7 +88,20 @@ class TestAssignmentAssemblyView(TestCase):
         response = AssignmentAssemblyView.as_view()(
             request, assignmentid=self.assignmentbuilder.assignment.id)
         response.render()
-        print response.content
+
+        displaynames = []
+        for displayname1, displayname2 in zip(
+                [span.text.strip() for span in
+                 cssFind(response.content, '#detektorassembly-results .detektorassembly-delivery1-displayname')],
+                [span.text.strip() for span in
+                 cssFind(response.content, '#detektorassembly-results .detektorassembly-delivery2-displayname')]):
+            displaynames.append({displayname1, displayname2})
+        self.assertEqual(
+            displaynames,
+            [
+                {'Group A', 'Group B'},
+                {'Group A', 'Group C'},
+            ])
 
     def _create_mock_postrequest(self):
         request = self.factory.post('/test')

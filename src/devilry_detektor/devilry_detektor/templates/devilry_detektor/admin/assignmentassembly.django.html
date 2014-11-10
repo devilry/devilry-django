@@ -34,7 +34,7 @@
             {% for language, comparemany in comparemany_results_by_language.iteritems %}
                 <h2>{% trans "Programming language" %}: {{ language }}</h2>
                 <div class="table-responsive">
-                    <table class="table table-striped">
+                    <table id="detektorassembly-results" class="table table-striped">
                         <thead>
                             <tr>
                                 <th style="min-width: 80px;">
@@ -60,7 +60,9 @@
 
                                     <td>
                                         <p>
-                                            {{ comparetwo.parseresult1.delivery.assignment_group.long_displayname }}
+                                            <span class="detektorassembly-delivery1-displayname">
+                                                {{ comparetwo.parseresult1.delivery.assignment_group.long_displayname }}
+                                            </span>
                                             {% trans "delivery" %}#{{ comparetwo.parseresult1.delivery.number }}
                                         </p>
 
@@ -78,7 +80,9 @@
                                     </td>
                                     <td>
                                         <p>
-                                            {{ comparetwo.parseresult2.delivery.assignment_group.long_displayname }}
+                                            <span class="detektorassembly-delivery2-displayname">
+                                                {{ comparetwo.parseresult2.delivery.assignment_group.long_displayname }}
+                                            </span>
                                             {% trans "delivery" %}#{{ comparetwo.parseresult2.delivery.number }}
                                         </p>
 
