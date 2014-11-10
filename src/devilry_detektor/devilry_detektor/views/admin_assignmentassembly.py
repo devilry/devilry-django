@@ -51,25 +51,35 @@ class AssignmentAssemblyView(DetailView):
         return HttpResponseRedirect(self.get_success_url())
 
     def _build_comparemany_results(self, detektorassignment):
-        parseresults = detektorassignment.parseresults\
-            .order_by('language')\
+        cacheitems = detektorassignment.comparetwo_cacheitems\
+            .order_by('parseresult1__language', '-scaled_points')\
             .select_related(
-                'delivery',
-                'delivery__deadline',
-                'delivery__deadline__assignment_group',
-                'delivery__deadline__assignment_group__parentnode',  # Assignment
-                'delivery__deadline__assignment_group__parentnode__parentnode',  # Period
-                'delivery__deadline__assignment_group__parentnode__parentnode__parentnode'  # Subject
+                'parseresult1',
+                'parseresult1__delivery',
+                'parseresult1__delivery__deadline',
+                'parseresult1__delivery__deadline__assignment_group',
+                'parseresult1__delivery__deadline__assignment_group__parentnode',  # Assignment
+                'parseresult1__delivery__deadline__assignment_group__parentnode__parentnode',  # Period
+                'parseresult1__delivery__deadline__assignment_group__parentnode__parentnode__parentnode',  # Subject
+                'parseresult2',
+                'parseresult2__delivery',
+                'parseresult2__delivery__deadline',
+                'parseresult2__delivery__deadline__assignment_group',
+                'parseresult2__delivery__deadline__assignment_group__parentnode',  # Assignment
+                'parseresult2__delivery__deadline__assignment_group__parentnode__parentnode',  # Period
+                'parseresult2__delivery__deadline__assignment_group__parentnode__parentnode__parentnode'  # Subject
             )\
             .prefetch_related(
-                'delivery__deadline__assignment_group__candidates',
-                'delivery__deadline__assignment_group__candidates__student',
-                'delivery__deadline__assignment_group__candidates__student__devilryuserprofile')
+                'parseresult1__delivery__deadline__assignment_group__candidates',
+                'parseresult1__delivery__deadline__assignment_group__candidates__student',
+                'parseresult1__delivery__deadline__assignment_group__candidates__student__devilryuserprofile',
+                'parseresult2__delivery__deadline__assignment_group__candidates',
+                'parseresult2__delivery__deadline__assignment_group__candidates__student',
+                'parseresult2__delivery__deadline__assignment_group__candidates__student__devilryuserprofile')
+
         bylanguage = OrderedDict()
-        for language, parseresults in itertools.groupby(parseresults, lambda p: p.language):
-            comparemany = DevilryDetektorCompareMany(list(parseresults))
-            comparemany.sort_by_points_descending()
-            bylanguage[language] = comparemany
+        for language, cacheitems in itertools.groupby(cacheitems, lambda cacheitem: cacheitem.parseresult1.language):
+            bylanguage[language] = list(cacheitems)
         return bylanguage
 
     def get_context_data(self, **kwargs):

@@ -5,6 +5,7 @@ from django.test import TestCase, RequestFactory
 from devilry_detektor.models import DetektorAssignment
 from devilry_detektor.tasks import AssignmentParser
 from devilry_detektor.views.admin_assignmentassembly import AssignmentAssemblyView
+from devilry_detektor.comparer import CompareManyCollection
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.soupselect import cssFind
@@ -79,10 +80,11 @@ class TestAssignmentAssemblyView(TestCase):
             .add_deadline_in_x_weeks(weeks=1)\
             .add_delivery()\
             .add_filemeta(filename='Test3.java', data='class Test {}')
-        DetektorAssignment.objects.create(
+        detektorassignment = DetektorAssignment.objects.create(
             assignment_id=self.assignmentbuilder.assignment.id,
             processing_started_by=self.testuser)
         AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id).run_detektor()
+        CompareManyCollection(detektorassignment).save()
 
         request = self._create_mock_getrequest()
         response = AssignmentAssemblyView.as_view()(

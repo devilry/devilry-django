@@ -7,6 +7,7 @@ import detektor
 from devilry.apps.core.models import Delivery
 from devilry_detektor.models import DetektorAssignment
 from devilry_detektor.models import DetektorDeliveryParseResult
+from devilry_detektor.comparer import CompareManyCollection
 
 
 logger = get_task_logger(__name__)
@@ -167,4 +168,6 @@ class AssignmentParser(object):
 
 @task()
 def run_detektor_on_assignment(assignment_id):
-    AssignmentParser(assignment_id).run_detektor()
+    assignmentparser = AssignmentParser(assignment_id)
+    assignmentparser.run_detektor()
+    CompareManyCollection(assignmentparser.detektorassignment).save()

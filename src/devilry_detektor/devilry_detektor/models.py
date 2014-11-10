@@ -1,8 +1,6 @@
 import json
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 import detektor
 import detektor.parseresult
 
@@ -108,41 +106,58 @@ class DetektorDeliveryParseResult(models.Model, detektor.parseresult.ParseResult
             self.parsed_functions_json = None
 
 
-def expire_view_cache(view_name, args=[], kwargs={}, namespace=None, key_prefix=None, method="GET"):
+class CompareTwoCacheItem(models.Model):
     """
-    This function allows you to invalidate any view-level cache.
-        view_name: view function you wish to invalidate or it's named url pattern
-        args: any arguments passed to the view function
-        kwargs: any keyword arguments passed to the view function
-        namepace: optioal, if an application namespace is needed
-        key prefix: for the @cache_page decorator for the function (if any)
+    ``detektor.comparer.CompareTwo`` cache used to make the table of results
+    on an assignment efficiently available. It does not contain everything
+    that the CompareTwo class contains, most notably it does not contain:
 
-    See: https://gist.github.com/dpnova/1223933
+        - Detailed info about functions.
+        - Unscaled points.
+
+    For a detail-view that shows these things, we will have to run CompareTwo
+    with the two :class:`.DetektorDeliveryParseResult` objects as input
+    (which is _very_ fast when comparing just two).
     """
-    from django.core.urlresolvers import reverse
-    from django.http import HttpRequest
-    from django.utils.cache import get_cache_key
-    from django.core.cache import cache
-    from django.conf import settings
-    # create a fake request object
-    request = HttpRequest()
-    request.method = method
-    if settings.USE_I18N:
-        request.LANGUAGE_CODE = settings.LANGUAGE_CODE
-    # Loookup the request path:
-    if namespace:
-        view_name = namespace + ":" + view_name
-    request.path = reverse(view_name, args=args, kwargs=kwargs)
-    # get cache key, expire if the cached item exists:
-    key = get_cache_key(request, key_prefix=key_prefix)
-    if key:
-        if cache.get(key):
-            cache.set(key, None, 0)
-        return True
-    return False
+    detektorassignment = models.ForeignKey(DetektorAssignment, related_name='comparetwo_cacheitems')
+    parseresult1 = models.ForeignKey(DetektorDeliveryParseResult, related_name='+')
+    parseresult2 = models.ForeignKey(DetektorDeliveryParseResult, related_name='+')
+    scaled_points = models.IntegerField()
+    summary_json = models.TextField()
 
+    @classmethod
+    def from_comparetwo(cls, comparetwo, detektorassignment):
+        """
+        Create from ``detektor.comparer.CompareTwo``.
+        """
+        cacheitem = cls(
+            detektorassignment=detektorassignment,
+            parseresult1=comparetwo.parseresult1,
+            parseresult2=comparetwo.parseresult2,
+            scaled_points=comparetwo.get_scaled_points()
+        )
+        cacheitem.set_summary_from_list(comparetwo.summary)
+        return cacheitem
 
-@receiver(post_save, sender=DetektorAssignment)
-def on_detektorassignment_post_save(sender, instance, **kwargs):
-    expire_view_cache('devilry_detektor_admin_assignmentassembly',
-                      kwargs={'assignmentid': instance.assignment_id})
+    def get_summary_as_list(self):
+        if not hasattr(self, '_summary_as_list'):
+            self._summary_as_list = json.loads(self.summary_json)
+        return self._summary_as_list
+
+    def set_summary_from_list(self, summarylist):
+        self.summary_json = json.dumps(summarylist)
+
+    def get_description_for_matchid(self, matchid):
+        try:
+            return detektor.comparer.CompareTwo.matchmap[matchid]['label']
+        except KeyError:
+            return matchid
+
+    def get_summary_descriptions_as_list(self):
+        return [self.get_description_for_matchid(matchid) for matchid in self.get_summary_as_list()]
+
+    def get_summary_descriptions_as_string(self):
+        return u' '.join(self.get_summary_descriptions_as_list())
+
+    def get_parseresults_as_tuple(self):
+        return self.parseresult1, self.parseresult2
