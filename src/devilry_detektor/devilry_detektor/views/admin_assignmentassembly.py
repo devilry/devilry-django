@@ -51,7 +51,20 @@ class AssignmentAssemblyView(DetailView):
         return HttpResponseRedirect(self.get_success_url())
 
     def _build_comparemany_results(self, detektorassignment):
-        parseresults = detektorassignment.parseresults.order_by('language')
+        parseresults = detektorassignment.parseresults\
+            .order_by('language')\
+            .select_related(
+                'delivery',
+                'delivery__deadline',
+                'delivery__deadline__assignment_group',
+                'delivery__deadline__assignment_group__parentnode',  # Assignment
+                'delivery__deadline__assignment_group__parentnode__parentnode',  # Period
+                'delivery__deadline__assignment_group__parentnode__parentnode__parentnode'  # Subject
+            )\
+            .prefetch_related(
+                'delivery__deadline__assignment_group__candidates',
+                'delivery__deadline__assignment_group__candidates__student',
+                'delivery__deadline__assignment_group__candidates__student__devilryuserprofile')
         bylanguage = OrderedDict()
         for language, parseresults in itertools.groupby(parseresults, lambda p: p.language):
             comparemany = DevilryDetektorCompareMany(list(parseresults))
