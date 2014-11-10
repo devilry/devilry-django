@@ -761,6 +761,12 @@ class TestAssignmentGroup2(TestCase):
                 UserBuilder('student2').user)
         self.assertEquals(group1builder.group.long_displayname, u'My group (Student One \u00E5, student2)')
 
+    def test_long_displayname_named_nostudents(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(name='My group').add_students()
+        self.assertEquals(group1builder.group.long_displayname, u'My group')
+
     def test_close_groups(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')
