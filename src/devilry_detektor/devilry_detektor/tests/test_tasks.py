@@ -182,9 +182,7 @@ class TestAssignmentParser(TestCase):
             assignment_id=self.assignmentbuilder.assignment.id,
             processing_started_by=self.testuser)
         AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id).run_detektor()
-
         detektorassignment = DetektorAssignment.objects.all()[0]
-        self.assertEqual(detektorassignment.processing_started_datetime, None)
         self.assertEquals(detektorassignment.parseresults.count(), 0)
 
     def test_processing_ok_has_deliveries(self):
@@ -205,7 +203,6 @@ class TestAssignmentParser(TestCase):
         AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id).run_detektor()
 
         detektorassignment = DetektorAssignment.objects.all()[0]
-        self.assertEqual(detektorassignment.processing_started_datetime, None)
         self.assertEquals(detektorassignment.parseresults.count(), 2)
         parseresults = detektorassignment.parseresults.order_by('number_of_operators')
         self.assertEquals(parseresults[0].get_operators_and_keywords_string(), 'class')

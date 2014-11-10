@@ -62,9 +62,10 @@ class AssignmentAssemblyView(ListView):
 
     def post(self, *args, **kwargs):
         detektorassignment = self._get_detektorassignment()
-        if detektorassignment.processing_started_datetime is None:
+        if detektorassignment.status != 'running':
             detektorassignment.processing_started_datetime = datetime.now()
             detektorassignment.processing_started_by_id = self.request.user
+            detektorassignment.status = 'running'
             detektorassignment.save()
             run_detektor_on_assignment.delay(assignment_id=self._get_assignment().id)
         # NOTE: We ignore when the task is already running - this only occurs

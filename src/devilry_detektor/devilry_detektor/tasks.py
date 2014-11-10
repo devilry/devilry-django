@@ -1,4 +1,5 @@
 from cStringIO import StringIO
+from datetime import datetime
 from celery import task
 from celery.utils.log import get_task_logger
 from django.core.urlresolvers import reverse
@@ -148,8 +149,6 @@ class AssignmentParser(object):
         logger.info('run_detektor_on_assignment on assignment: id=%s (%s)',
                     self.assignment_id, self.detektorassignment.assignment)
         self._process_deliveries()
-        self.detektorassignment.processing_started_datetime = None
-        self.detektorassignment.save()
 
     def get_detektor_parser(self, language):
         if language not in self._parsers:
@@ -194,3 +193,7 @@ def run_detektor_on_assignment(assignment_id):
                 assignment_id, assignmentparser.detektorassignment.assignment)
     CompareManyCollection(assignmentparser.detektorassignment).save()
     _send_success_email(assignmentparser.detektorassignment)
+
+    assignmentparser.detektorassignment.processing_finished_datetime = datetime.now()
+    assignmentparser.detektorassignment.status = 'finished'
+    assignmentparser.detektorassignment.save()

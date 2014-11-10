@@ -20,6 +20,14 @@ class DetektorAssignment(models.Model):
         on the same assignment.
     """
     assignment = models.OneToOneField(coremodels.Assignment)
+    status = models.CharField(
+        max_length=12,
+        default='unprocessed',
+        choices=[
+            ('unprocessed', 'unprocessed'),
+            ('running', 'running'),
+            ('finished', 'finished'),
+        ])
     processing_started_datetime = models.DateTimeField(
         null=True, blank=True
     )
