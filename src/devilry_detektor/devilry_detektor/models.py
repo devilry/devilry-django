@@ -106,6 +106,15 @@ class DetektorDeliveryParseResult(models.Model, detektor.parseresult.ParseResult
             self.parsed_functions_json = None
 
 
+class DetektorAssignmentCacheLanguage(models.Model):
+    detektorassignment = models.ForeignKey(DetektorAssignment, related_name='cachelanguages')
+    language = models.CharField(max_length=255, db_index=True)
+
+    class Meta:
+        unique_together = [('detektorassignment', 'language')]
+        ordering = ['language']
+
+
 class CompareTwoCacheItem(models.Model):
     """
     ``detektor.comparer.CompareTwo`` cache used to make the table of results
@@ -119,19 +128,19 @@ class CompareTwoCacheItem(models.Model):
     with the two :class:`.DetektorDeliveryParseResult` objects as input
     (which is _very_ fast when comparing just two).
     """
-    detektorassignment = models.ForeignKey(DetektorAssignment, related_name='comparetwo_cacheitems')
+    language = models.ForeignKey(DetektorAssignmentCacheLanguage, related_name='comparetwo_cacheitems')
     parseresult1 = models.ForeignKey(DetektorDeliveryParseResult, related_name='+')
     parseresult2 = models.ForeignKey(DetektorDeliveryParseResult, related_name='+')
     scaled_points = models.IntegerField()
     summary_json = models.TextField()
 
     @classmethod
-    def from_comparetwo(cls, comparetwo, detektorassignment):
+    def from_comparetwo(cls, comparetwo, language):
         """
         Create from ``detektor.comparer.CompareTwo``.
         """
         cacheitem = cls(
-            detektorassignment=detektorassignment,
+            language=language,
             parseresult1=comparetwo.parseresult1,
             parseresult2=comparetwo.parseresult2,
             scaled_points=comparetwo.get_scaled_points()

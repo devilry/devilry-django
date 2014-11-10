@@ -4,6 +4,7 @@ from celery.utils.log import get_task_logger
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
+from django.conf import settings
 import os
 
 import detektor
@@ -174,8 +175,10 @@ def _send_success_email(detektorassignment):
     assignmentpath = detektorassignment.assignment.get_path()
     message = render_to_string('devilry_detektor/admin/run_detektor_on_assignment_finished_email.django.txt', {
         'assignment': assignmentpath,
-        'resulturl': reverse('devilry_detektor_admin_assignmentassembly',
-                             kwargs={'assignmentid': detektorassignment.assignment.id})
+        'resulturl': u'{}{}'.format(
+            settings.DEVILRY_SCHEME_AND_DOMAIN,
+            reverse('devilry_detektor_admin_assignmentassembly',
+                    kwargs={'assignmentid': detektorassignment.assignment.id}))
     })
     subject = _(u'Programming code similarity check processing for %(assignment)s is finished') % {
         'assignment': assignmentpath}

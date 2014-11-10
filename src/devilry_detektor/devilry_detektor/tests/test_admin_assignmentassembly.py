@@ -26,8 +26,8 @@ class TestAssignmentAssemblyView(TestCase):
         with self.assertRaises(Http404):
             AssignmentAssemblyView.as_view()(request, assignmentid=200001)
 
-    def _create_mock_getrequest(self):
-        request = self.factory.get('/test')
+    def _create_mock_getrequest(self, data={}):
+        request = self.factory.get('/test', data=data)
         request.user = self.testuser
         request.session = {}
         return request
@@ -86,7 +86,9 @@ class TestAssignmentAssemblyView(TestCase):
         AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id).run_detektor()
         CompareManyCollection(detektorassignment).save()
 
-        request = self._create_mock_getrequest()
+        request = self._create_mock_getrequest(data={
+            'language': 'java'
+        })
         response = AssignmentAssemblyView.as_view()(
             request, assignmentid=self.assignmentbuilder.assignment.id)
         response.render()

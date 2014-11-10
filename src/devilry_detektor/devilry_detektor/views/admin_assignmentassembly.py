@@ -26,9 +26,14 @@ class AssignmentAssemblyView(ListView):
     paginate_by = 100
 
     def dispatch(self, request, *args, **kwargs):
+        self.request = request
+        self.assignmentid = kwargs['assignmentid']
+        self.cachelanguages = list(self._get_detektorassignment().cachelanguages.all())
         form = AssignmentAssemblyViewGetForm(request.GET)
         if form.is_valid():
             self.language = form.cleaned_data['language']
+            if not self.language and self.cachelanguages:
+                self.language = self.cachelanguages[0].language
         else:
             return HttpResponseBadRequest(form.errors.as_text())
         return super(AssignmentAssemblyView, self).dispatch(request, *args, **kwargs)
@@ -42,7 +47,7 @@ class AssignmentAssemblyView(ListView):
     def _get_assignment(self, *args, **kwargs):
         if not hasattr(self, '_assignment'):
             self._assignment = get_object_or_404(self._get_assignment_queryset(),
-                                                 id=self.kwargs['assignmentid'])
+                                                 id=self.assignmentid)
         return self._assignment
 
     def _get_detektorassignment(self):
@@ -53,7 +58,7 @@ class AssignmentAssemblyView(ListView):
 
     def get_success_url(self):
         return reverse('devilry_detektor_admin_assignmentassembly',
-                       kwargs={'assignmentid': self.kwargs['assignmentid']})
+                       kwargs={'assignmentid': self.assignmentid})
 
     def post(self, *args, **kwargs):
         detektorassignment = self._get_detektorassignment()
@@ -70,9 +75,11 @@ class AssignmentAssemblyView(ListView):
 
     def get_queryset(self):
         if self.language:
-            return self._get_detektorassignment().comparetwo_cacheitems\
+            return super(AssignmentAssemblyView, self).get_queryset()\
                 .order_by('-scaled_points')\
-                .filter(language__language=self.language)\
+                .filter(
+                    language__detektorassignment=self._get_detektorassignment(),
+                    language__language=self.language)\
                 .select_related(
                     'parseresult1',
                     'parseresult1__delivery',
@@ -102,4 +109,7 @@ class AssignmentAssemblyView(ListView):
     def get_context_data(self, **kwargs):
         context = super(AssignmentAssemblyView, self).get_context_data(**kwargs)
         context['detektorassignment'] = self._get_detektorassignment()
+        context['cachelanguages'] = self.cachelanguages
+        context['active_language'] = self.language
+        context['assignment'] = self._get_assignment()
         return context
