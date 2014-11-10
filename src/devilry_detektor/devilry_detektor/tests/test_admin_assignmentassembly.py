@@ -56,7 +56,8 @@ class TestAssignmentAssemblyView(TestCase):
         DetektorAssignment.objects.create(
             assignment_id=self.assignmentbuilder.assignment.id,
             processing_started_by=self.testuser,
-            processing_started_datetime=processing_started_datetime)
+            processing_started_datetime=processing_started_datetime,
+            status='running')
         request = self._create_mock_getrequest()
         response = AssignmentAssemblyView.as_view()(
             request, assignmentid=self.assignmentbuilder.assignment.id)
