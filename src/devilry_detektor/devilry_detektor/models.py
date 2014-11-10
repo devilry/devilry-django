@@ -144,13 +144,5 @@ def expire_view_cache(view_name, args=[], kwargs={}, namespace=None, key_prefix=
 
 @receiver(post_save, sender=DetektorAssignment)
 def on_detektorassignment_post_save(sender, instance, **kwargs):
-    print
-    print "*" * 70
-    print
-    print 'Clear cache'
-    print
-    print "*" * 70
-    print
-
     expire_view_cache('devilry_detektor_admin_assignmentassembly',
                       kwargs={'assignmentid': instance.assignment_id})

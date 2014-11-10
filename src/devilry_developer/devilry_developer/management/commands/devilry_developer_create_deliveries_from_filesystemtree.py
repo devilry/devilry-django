@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand, CommandError
 
 
 class Command(BaseCommand):
-    help = 'Create a deliveries from files found in the given directory.'
+    help = 'Create deliveries from files found in the given directory.'
     args = '<assignment-path> <directory>'
     option_list = BaseCommand.option_list + (
         make_option(
