@@ -26,7 +26,7 @@
     <div class="container">
         {% if detektorassignment.status == "running" %}
             <div class="alert alert-info">
-                {% blocktrans with user=detektorassignment.processing_started_by started_time=detektorassignment.processing_started_datetime %}Similarity check processing was started by {{ user }} {{ started_time }}. An email will be sent to {{ user.email }} when the task is completed.{% endblocktrans %}
+                {% blocktrans with user=detektorassignment.processing_started_by.username email=detektorassignment.processing_started_by.email started_time=detektorassignment.processing_started_datetime %}Similarity check processing was started by {{ user }} {{ started_time }}. An email will be sent to {{ email }} when the task is completed.{% endblocktrans %}
             </div>
         {% else %}
             <form method="post">{% csrf_token %}
@@ -40,6 +40,7 @@
             {% if detektorassignment.status == "finished" %}
                 <div class="alert alert-success">
                     {% blocktrans with user=detektorassignment.processing_started_by started_time=detektorassignment.processing_started_datetime %}Similarity check processing was last run by {{ user }} {{ started_time }}. You can browse the results in the table below.{% endblocktrans %}
+                    {% trans "The points in the first column indicates how similar the programs are. The more points, the more similarities where found between the programs. The last column provides a summary of all the reasons why the programs are considered similar." %}
                 </div>
             {% endif %}
 
