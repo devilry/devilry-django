@@ -3,6 +3,7 @@ import detektor
 import itertools
 
 from devilry_detektor.models import CompareTwoCacheItem
+from devilry_detektor.models import DetektorAssignmentCacheLanguage
 
 
 class DevilryDetektorCompareMany(detektor.comparer.CompareMany):
@@ -62,10 +63,13 @@ class CompareManyCollection(object):
     #     return self._bylanguage.iteritems()
 
     def save(self):
-        self.detektorassignment.comparetwo_cacheitems.all().delete()
+        self.detektorassignment.cachelanguages.all().delete()
         cacheitems = []
         for language, comparemany in self._bylanguage.iteritems():
+            languageobject = DetektorAssignmentCacheLanguage.objects.create(
+                detektorassignment=self.detektorassignment,
+                language=language)
             for comparetwo in comparemany:
                 cacheitems.append(CompareTwoCacheItem.from_comparetwo(
-                    comparetwo=comparetwo, detektorassignment=self.detektorassignment))
+                    comparetwo=comparetwo, language=languageobject))
         CompareTwoCacheItem.objects.bulk_create(cacheitems)

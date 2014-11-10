@@ -1,6 +1,9 @@
 from cStringIO import StringIO
 from celery import task
 from celery.utils.log import get_task_logger
+from django.core.urlresolvers import reverse
+from django.template.loader import render_to_string
+from django.utils.translation import ugettext as _
 import os
 
 import detektor
@@ -8,6 +11,7 @@ from devilry.apps.core.models import Delivery
 from devilry_detektor.models import DetektorAssignment
 from devilry_detektor.models import DetektorDeliveryParseResult
 from devilry_detektor.comparer import CompareManyCollection
+from devilry.utils.devilry_email import send_message
 
 
 logger = get_task_logger(__name__)
@@ -166,8 +170,24 @@ class AssignmentParser(object):
         process_delivery_runner.run_detektor()
 
 
+def _send_success_email(detektorassignment):
+    assignmentpath = detektorassignment.assignment.get_path()
+    message = render_to_string('devilry_detektor/admin/run_detektor_on_assignment_finished_email.django.txt', {
+        'assignment': assignmentpath,
+        'resulturl': reverse('devilry_detektor_admin_assignmentassembly',
+                             kwargs={'assignmentid': detektorassignment.assignment.id})
+    })
+    subject = _(u'Programming code similarity check processing for %(assignment)s is finished') % {
+        'assignment': assignmentpath}
+    send_message(
+        subject, message, detektorassignment.processing_started_by)
+
+
 @task()
 def run_detektor_on_assignment(assignment_id):
     assignmentparser = AssignmentParser(assignment_id)
     assignmentparser.run_detektor()
+    logger.info('Comparing all detektor Parse results on assignment: id=%s (%s)',
+                assignment_id, assignmentparser.detektorassignment.assignment)
     CompareManyCollection(assignmentparser.detektorassignment).save()
+    _send_success_email(assignmentparser.detektorassignment)

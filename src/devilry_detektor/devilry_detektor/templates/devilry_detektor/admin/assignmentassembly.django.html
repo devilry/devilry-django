@@ -31,72 +31,69 @@
                 </p>
             </form>
 
-            {% for language, comparemany in comparemany_results_by_language.iteritems %}
-                <h2>{% trans "Programming language" %}: {{ language }}</h2>
-                <div class="table-responsive">
-                    <table id="detektorassembly-results" class="table table-striped">
-                        <thead>
+            <div class="table-responsive">
+                <table id="detektorassembly-results" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style="min-width: 80px;">
+                                {% trans "Points" %}
+                            </th>
+                            <th style="min-width: 230px;">
+                                {% trans "Delivery 1" %}
+                            </th>
+                            <th style="min-width: 230px;">
+                                {% trans "Delivery 2" %}
+                            </th>
+                            <th>
+                                {% trans "Similarities" %}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comparetwo in comparetwo_cacheitems %}
                             <tr>
-                                <th style="min-width: 80px;">
-                                    {% trans "Points" %}
-                                </th>
-                                <th style="min-width: 230px;">
-                                    {% trans "Delivery 1" %}
-                                </th>
-                                <th style="min-width: 230px;">
-                                    {% trans "Delivery 2" %}
-                                </th>
-                                <th>
-                                    {% trans "Similarities" %}
-                                </th>
+                                <td>
+                                    {{ comparetwo.scaled_points }}
+                                </td>
+
+                                {% for parseresult in comparetwo.get_parseresults_as_tuple %}
+                                    <td>
+                                        <p>
+                                            <span class="detektorassembly-delivery{{ forloop.counter }}-displayname">
+                                                {% if parseresult.delivery.assignment_group.name %}
+                                                    <strong>
+                                                        {{ parseresult.delivery.assignment_group.name }}
+                                                    </strong><br>
+                                                {% endif %}
+                                                {% for candidate in parseresult.delivery.assignment_group.candidates.all %}
+                                                    {{ candidate.student.devilryuserprofile.get_displayname }}{% if not forloop.last %}, {% endif %}
+                                                {% endfor %}
+                                            </span>
+                                            {% trans "delivery" %}#{{ parseresult.delivery.number }}
+                                        </p>
+
+                                        <p>
+                                            <a class="btn btn-default btn-sm" target="_blank"
+                                                    href="{% url 'devilry_subjectadmin_delivery' parseresult.delivery.id %}">
+                                                <span class="fa fa-external-link"></span>
+                                                {% trans "Show" %}
+                                            </a>
+                                            <a class="btn btn-default btn-sm" href="{% url 'devilry-delivery-download-all-zip' parseresult.delivery.id %}">
+                                                <span class="fa fa-download"></span>
+                                                {% trans "Download" %}
+                                            </a>
+                                        </p>
+                                    </td>
+                                {% endfor %}
+
+                                <td>
+                                    {{ comparetwo.get_summary_descriptions_as_string }}
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {% for comparetwo in comparemany %}
-                                <tr>
-                                    <td>
-                                        {{ comparetwo.scaled_points }}
-                                    </td>
-
-                                    {% for parseresult in comparetwo.get_parseresults_as_tuple %}
-                                        <td>
-                                            <p>
-                                                <span class="detektorassembly-delivery{{ forloop.counter }}-displayname">
-                                                    {% if parseresult.delivery.assignment_group.name %}
-                                                        <strong>
-                                                            {{ parseresult.delivery.assignment_group.name }}
-                                                        </strong><br>
-                                                    {% endif %} 
-                                                    {% for candidate in parseresult.delivery.assignment_group.candidates.all %}
-                                                        {{ candidate.student.devilryuserprofile.get_displayname }}{% if not forloop.last %}, {% endif %}
-                                                    {% endfor %}
-                                                </span>
-                                                {% trans "delivery" %}#{{ parseresult.delivery.number }}
-                                            </p>
-
-                                            <p>
-                                                <a class="btn btn-default btn-sm" target="_blank"
-                                                        href="{% url 'devilry_subjectadmin_delivery' parseresult.delivery.id %}">
-                                                    <span class="fa fa-external-link"></span>
-                                                    {% trans "Show" %}
-                                                </a>
-                                                <a class="btn btn-default btn-sm" href="{% url 'devilry-delivery-download-all-zip' parseresult.delivery.id %}">
-                                                    <span class="fa fa-download"></span>
-                                                    {% trans "Download" %}
-                                                </a>
-                                            </p>
-                                        </td>
-                                    {% endfor %}
-
-                                    <td>
-                                        {{ comparetwo.get_summary_descriptions_as_string }}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            {% endfor %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% endif %}
     </div>
 {% endblock content %}
