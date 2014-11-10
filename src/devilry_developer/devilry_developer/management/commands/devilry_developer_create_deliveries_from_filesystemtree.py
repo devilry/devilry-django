@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 import fnmatch
 from optparse import make_option
 import os
-from pprint import pprint
 import random
 from django.core.management.base import BaseCommand, CommandError
 

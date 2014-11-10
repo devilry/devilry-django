@@ -3,7 +3,7 @@ from django.http import Http404
 from django.test import TestCase, RequestFactory
 
 from devilry_detektor.models import DetektorAssignment
-from devilry_detektor.tasks import run_detektor_on_assignment
+from devilry_detektor.tasks import AssignmentParser
 from devilry_detektor.views.admin_assignmentassembly import AssignmentAssemblyView
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
@@ -61,6 +61,38 @@ class TestAssignmentAssemblyView(TestCase):
         response.render()
         self.assertIn('Similarity check processing was started by testuser', response.content)
         self.assertNotIn('Run/re-run similarity check', response.content)
+
+    def test_results_ordering(self):
+        # self.assignmentbuilder\
+        #     .add_group(name='Group A')\
+        #     .add_deadline_in_x_weeks(weeks=1)\
+        #     .add_delivery()\
+        #     .add_filemeta(filename='Test.java', data='class Test {}')
+        self.assignmentbuilder\
+            .add_group(name='Group B')\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_filemeta(filename='Test2.java', data='if(i==10) {}')
+        self.assignmentbuilder\
+            .add_group(name='Group C')\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_filemeta(filename='Test3.java', data='class Test {if(i==10) {}}')
+        self.assignmentbuilder\
+            .add_group(name='Group D')\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_filemeta(filename='Test3.java', data='if(what == 32) {}')
+        DetektorAssignment.objects.create(
+            assignment_id=self.assignmentbuilder.assignment.id,
+            processing_started_by=self.testuser)
+        AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id).run_detektor()
+
+        request = self._create_mock_getrequest()
+        response = AssignmentAssemblyView.as_view()(
+            request, assignmentid=self.assignmentbuilder.assignment.id)
+        response.render()
+        print response.content
 
     def _create_mock_postrequest(self):
         request = self.factory.post('/test')
