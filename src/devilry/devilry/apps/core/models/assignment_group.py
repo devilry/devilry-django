@@ -453,7 +453,10 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             names = [candidate.student.devilryuserprofile.get_displayname() for candidate in candidates]
             out = u', '.join(names)
             if self.name:
-                out = u'{} ({})'.format(self.name, out)
+                if out:
+                    out = u'{} ({})'.format(self.name, out)
+                else:
+                    out = self.name
         if out == '':
             return unicode(self.id)
         else:

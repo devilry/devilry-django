@@ -1,66 +1,57 @@
-from datetime import datetime
-from pprint import pprint
 from django.test import TestCase
 
 from devilry_detektor.models import DetektorAssignment
-from devilry_detektor.tasks import run_detektor_on_assignment
-from devilry_detektor.tasks import RunDetektorOnDelivery
+from devilry_detektor.models import DetektorDeliveryParseResult
+from devilry_detektor.tasks import DeliveryParser
+from devilry_detektor.tasks import AssignmentParser
+from devilry_detektor.tasks import FileMetasByFiletype
+from devilry_detektor.tasks import FileMetaCollection
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 
 
-class TestRunDetektorOnAssignment(TestCase):
+class TestFileMetaCollection(TestCase):
     def setUp(self):
-        self.testuser = UserBuilder('testuser').user
-        self.assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('testassignment')
-
-    def test_invalid_assignment(self):
-        with self.assertRaises(DetektorAssignment.DoesNotExist):
-            run_detektor_on_assignment.delay(
-                assignment_id=200001).wait()
-
-    def test_processing_detektorassignment_doesnotexist(self):
-        with self.assertRaises(DetektorAssignment.DoesNotExist):
-            run_detektor_on_assignment.delay(
-                assignment_id=self.assignmentbuilder.assignment.id).wait()
-
-    def test_processing_ok(self):
-        DetektorAssignment.objects.create(
-            assignment_id=self.assignmentbuilder.assignment.id,
-            processing_started_by=self.testuser)
-
-        self.assertEquals(DetektorAssignment.objects.count(), 1)
-        run_detektor_on_assignment.delay(
-            assignment_id=self.assignmentbuilder.assignment.id).wait()
-        self.assertEquals(DetektorAssignment.objects.count(), 1)
-
-        detektorassignment = DetektorAssignment.objects.all()[0]
-        self.assertEqual(detektorassignment.processing_started_datetime, None)
-
-
-class TestRunDetektorOnDelivery(TestCase):
-    def setUp(self):
-        self.testuser = UserBuilder('testuser').user
         self.deliverybuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('testassignment')\
-            .add_group(students=[self.testuser])\
+            .add_group()\
             .add_deadline_in_x_weeks(weeks=1)\
             .add_delivery()
 
-    def test_get_filetype_from_filename(self):
-        process_delivery_runner = RunDetektorOnDelivery(self.deliverybuilder.delivery)
-        self.assertEquals(process_delivery_runner._get_filetype_from_filename('test.java'), 'java')
-        self.assertEquals(process_delivery_runner._get_filetype_from_filename('test.py'), 'python')
+    def test_merge_into_single_fileobject(self):
+        filemeta1 = self.deliverybuilder\
+            .add_filemeta(filename='HelloWorld.java', data='test\n').filemeta
+        filemeta2 = self.deliverybuilder\
+            .add_filemeta(filename='HelloWorld2.java', data='test2').filemeta
+        filemetacollection = FileMetaCollection('java')
+        for filemeta in filemeta1, filemeta2:
+            filemetacollection.add_filemeta(filemeta)
+
+        merged_file = filemetacollection._merge_into_single_fileobject()
+        self.assertEquals(merged_file.read(), 'test\ntest2')
+
+
+class TestFileMetasByFiletype(TestCase):
+    def setUp(self):
+        self.deliverybuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('testassignment')\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+
+    def test_get_language_from_filename(self):
+        filemetas_by_language = FileMetasByFiletype([])
+        self.assertEquals(filemetas_by_language._get_language_from_filename('test.java'), 'java')
+        self.assertEquals(filemetas_by_language._get_language_from_filename('test.py'), 'python')
 
     def test_group_by_extension_no_filemetas(self):
-        filemetas_by_filetype = RunDetektorOnDelivery(self.deliverybuilder.delivery)._group_filemetas_by_filetype()
-        self.assertEquals(filemetas_by_filetype, {})
+        filemetas_by_language = FileMetasByFiletype([])
+        self.assertEquals(len(filemetas_by_language), 0)
 
     def test_group_by_extension_no_supported_files(self):
         self.deliverybuilder.add_filemeta(filename='helloworld.txt', data='Hello world')
-        filemetas_by_filetype = RunDetektorOnDelivery(self.deliverybuilder.delivery)._group_filemetas_by_filetype()
-        self.assertEquals(filemetas_by_filetype, {})
+        filemetas_by_language = FileMetasByFiletype([])
+        self.assertEquals(len(filemetas_by_language), 0)
 
     def test_group_by_extension_has_supported_files(self):
         self.deliverybuilder.add_filemeta(filename='helloworld.txt', data='Hello world')
@@ -71,53 +62,215 @@ class TestRunDetektorOnDelivery(TestCase):
         helloworldjava2_filemeta = self.deliverybuilder\
             .add_filemeta(filename='HelloWorld2.java', data='// test2').filemeta
 
-        filemetas_by_filetype = RunDetektorOnDelivery(self.deliverybuilder.delivery)._group_filemetas_by_filetype()
+        # filemetas_by_language = DeliveryParser(self.deliverybuilder.delivery)._group_filemetas_by_language()
+        filemetas_by_language = FileMetasByFiletype(
+            [helloworldpy_filemeta, helloworldjava_filemeta, helloworldjava2_filemeta])
         self.assertEquals(
-            set(filemetas_by_filetype.keys()),
+            set(filemetas_by_language.filemetacollection_by_language.keys()),
             {'java', 'python'})
         self.assertEquals(
-            filemetas_by_filetype['java']['size'],
+            filemetas_by_language['java'].size,
             len('// test') + len('// test2'))
         self.assertEquals(
-            filemetas_by_filetype['python']['size'],
+            filemetas_by_language['python'].size,
             len('def abs()'))
         self.assertEquals(
-            filemetas_by_filetype['java']['filemetas'],
+            filemetas_by_language['java'].filemetas,
             [helloworldjava_filemeta, helloworldjava2_filemeta])
         self.assertEquals(
-            filemetas_by_filetype['python']['filemetas'],
+            filemetas_by_language['python'].filemetas,
             [helloworldpy_filemeta])
 
-    def test_find_most_prominent_filetype_filemetas(self):
-        filetype, filemetas = RunDetektorOnDelivery(self.deliverybuilder.delivery)._find_most_prominent_filetype_filemetas({
-            'java': {
-                'size': 20,
-                'filemetas': 'Mocked java filemetas'
-            },
-            'python': {
-                'size': 200,
-                'filemetas': 'Mocked python filemetas'
-            }
-        })
-        self.assertEqual(filetype, 'python')
-        self.assertEqual(filemetas, 'Mocked python filemetas')
+    def test_find_language_with_most_bytes(self):
+        helloworldpy_filemeta = self.deliverybuilder\
+            .add_filemeta(filename='helloworld.py', data='a').filemeta
+        helloworldjava_filemeta = self.deliverybuilder\
+            .add_filemeta(filename='HelloWorld.java', data='abc').filemeta
+        filemetas_by_language = FileMetasByFiletype([helloworldpy_filemeta, helloworldjava_filemeta])
+        filemetacollection = filemetas_by_language.find_language_with_most_bytes()
+        self.assertEqual(filemetacollection.language, 'java')
+        self.assertEqual(filemetacollection.filemetas, [helloworldjava_filemeta])
 
-    def test_merge_filemetas_into_single_fileobject(self):
-        self.deliverybuilder.add_filemeta(filename='helloworld.txt', data='Hello world')
-        filemeta1 = self.deliverybuilder\
-            .add_filemeta(filename='HelloWorld.java', data='test\n').filemeta
-        filemeta2 = self.deliverybuilder\
-            .add_filemeta(filename='HelloWorld2.java', data='test2').filemeta
 
-        merged_file = RunDetektorOnDelivery(self.deliverybuilder.delivery)\
-            ._merge_filemetas_into_single_fileobject([filemeta1, filemeta2])
-        self.assertEquals(merged_file.read(), 'test\ntest2')
+class TestDeliveryParser(TestCase):
+    def setUp(self):
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('testassignment')
+        self.deliverybuilder = assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        DetektorAssignment.objects.create(
+            assignment=assignmentbuilder.assignment)
+        self.assignmentparser = AssignmentParser(assignmentbuilder.assignment.id)
 
-    def test_get_detektor_code_signature(self):
-        self.deliverybuilder.add_filemeta(
-            filename='test.py',
-            data='print "hello world"\nif a == 20: pass')
-        code_signature = RunDetektorOnDelivery(self.deliverybuilder.delivery)\
-            ._get_detektor_code_signature()
-        pprint(code_signature)
-        self.assertEqual(code_signature[''])
+    def test_no_filemetas(self):
+        self.assertEquals(DetektorDeliveryParseResult.objects.count(), 0)
+        deliveryparser = DeliveryParser(self.assignmentparser, self.deliverybuilder.delivery)
+        deliveryparser.run_detektor()
+        self.assertEquals(DetektorDeliveryParseResult.objects.count(), 0)
+
+    def test_single_language_single_file(self):
+        self.deliverybuilder.add_filemeta(filename='Test.java', data='class Test {}')
+        self.assertEquals(DetektorDeliveryParseResult.objects.count(), 0)
+        deliveryparser = DeliveryParser(self.assignmentparser, self.deliverybuilder.delivery)
+        deliveryparser.run_detektor()
+        self.assertEquals(DetektorDeliveryParseResult.objects.count(), 1)
+        parseresult = DetektorDeliveryParseResult.objects.all()[0]
+        self.assertEquals(parseresult.get_operators_and_keywords_string(), 'class')
+        self.assertEquals(parseresult.get_number_of_keywords(), 1)
+        self.assertEquals(parseresult.get_number_of_operators(), 0)
+
+    def test_single_language_multiple_files(self):
+        self.deliverybuilder.add_filemeta(filename='Test.java', data='class Test {}')
+        self.deliverybuilder.add_filemeta(filename='AnotherTest.java', data='if(i==10){}')
+        self.assertEquals(DetektorDeliveryParseResult.objects.count(), 0)
+        deliveryparser = DeliveryParser(self.assignmentparser, self.deliverybuilder.delivery)
+        deliveryparser.run_detektor()
+        self.assertEquals(DetektorDeliveryParseResult.objects.count(), 1)
+        parseresult = DetektorDeliveryParseResult.objects.all()[0]
+        self.assertEquals(parseresult.get_operators_and_keywords_string(), 'if==class')
+        self.assertEquals(parseresult.get_number_of_keywords(), 2)
+        self.assertEquals(parseresult.get_number_of_operators(), 1)
+
+    def test_multiple_languages(self):
+        self.deliverybuilder.add_filemeta(filename='Test.java', data='class Test {}')
+        self.deliverybuilder.add_filemeta(filename='test.py', data='class Test: pass')
+        self.assertEquals(DetektorDeliveryParseResult.objects.count(), 0)
+        deliveryparser = DeliveryParser(self.assignmentparser, self.deliverybuilder.delivery)
+        deliveryparser.run_detektor()
+        self.assertEquals(DetektorDeliveryParseResult.objects.count(), 2)
+        parseresults = DetektorDeliveryParseResult.objects.order_by('language')
+        parseresult_java = parseresults[0]
+        parseresult_python = parseresults[1]
+        self.assertEquals(parseresult_java.get_operators_and_keywords_string(), 'class')
+        self.assertEquals(parseresult_java.get_number_of_keywords(), 1)
+        self.assertEquals(parseresult_java.get_number_of_operators(), 0)
+        self.assertEquals(parseresult_python.get_operators_and_keywords_string(), 'classpass')
+        self.assertEquals(parseresult_python.get_number_of_keywords(), 2)
+        self.assertEquals(parseresult_python.get_number_of_operators(), 0)
+
+
+class TestAssignmentParser(TestCase):
+    # def setUp(self):
+    #     assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+    #         .add_assignment('testassignment')
+    #     self.deliverybuilder = assignmentbuilder\
+    #         .add_group()\
+    #         .add_deadline_in_x_weeks(weeks=1)\
+    #         .add_delivery()
+    #     DetektorAssignment.objects.create(
+    #         assignment=assignmentbuilder.assignment)
+    #     self.assignmentparser = AssignmentParser(assignmentbuilder.assignment.id)
+
+
+    def setUp(self):
+        self.testuser = UserBuilder('testuser').user
+        self.assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('testassignment')
+
+    def test_invalid_assignment(self):
+        with self.assertRaises(DetektorAssignment.DoesNotExist):
+            AssignmentParser(assignment_id=200001)
+
+    def test_processing_detektorassignment_doesnotexist(self):
+        with self.assertRaises(DetektorAssignment.DoesNotExist):
+            AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+
+    def test_processing_ok_no_deliveries(self):
+        DetektorAssignment.objects.create(
+            assignment_id=self.assignmentbuilder.assignment.id,
+            processing_started_by=self.testuser)
+        AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id).run_detektor()
+        detektorassignment = DetektorAssignment.objects.all()[0]
+        self.assertEquals(detektorassignment.parseresults.count(), 0)
+
+    def test_processing_ok_has_deliveries(self):
+        self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_filemeta(filename='Test.java', data='class Test {}')
+        self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()\
+            .add_filemeta(filename='Test2.java', data='if(i==10) {}')
+
+        DetektorAssignment.objects.create(
+            assignment_id=self.assignmentbuilder.assignment.id,
+            processing_started_by=self.testuser)
+        AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id).run_detektor()
+
+        detektorassignment = DetektorAssignment.objects.all()[0]
+        self.assertEquals(detektorassignment.parseresults.count(), 2)
+        parseresults = detektorassignment.parseresults.order_by('number_of_operators')
+        self.assertEquals(parseresults[0].get_operators_and_keywords_string(), 'class')
+        self.assertEquals(parseresults[1].get_operators_and_keywords_string(), 'if==')
+
+    def test_get_unprocessed_delivery_queryset_none(self):
+        delivery1builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery1builder.add_filemeta(filename='Test.java', data='class Test {}')
+        delivery2builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery2builder.add_filemeta(filename='Test2.java', data='if(i==10) {}')
+
+        DetektorAssignment.objects.create(
+            assignment_id=self.assignmentbuilder.assignment.id,
+            processing_started_by=self.testuser)
+
+        assignmentparser = AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+        DeliveryParser(assignmentparser, delivery1builder.delivery).run_detektor()
+        DeliveryParser(assignmentparser, delivery2builder.delivery).run_detektor()
+        self.assertEqual(assignmentparser.get_unprocessed_delivery_queryset().count(), 0)
+
+    def test_get_unprocessed_delivery_queryset_some(self):
+        delivery1builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery1builder.add_filemeta(filename='Test.java', data='class Test {}')
+        delivery2builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery2builder.add_filemeta(filename='Test2.java', data='if(i==10) {}')
+
+        DetektorAssignment.objects.create(
+            assignment_id=self.assignmentbuilder.assignment.id,
+            processing_started_by=self.testuser)
+
+        assignmentparser = AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+        DeliveryParser(assignmentparser, delivery1builder.delivery).run_detektor()
+        self.assertEqual(assignmentparser.get_unprocessed_delivery_queryset().count(), 1)
+        self.assertEqual(
+            assignmentparser.get_unprocessed_delivery_queryset().all()[0],
+            delivery2builder.delivery)
+
+    def test_processing_ok_has_all_previous_results(self):
+        delivery1builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery1builder.add_filemeta(filename='Test.java', data='class Test {}')
+        delivery2builder = self.assignmentbuilder\
+            .add_group()\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery()
+        delivery2builder.add_filemeta(filename='Test2.java', data='if(i==10) {}')
+
+        detektorassignment = DetektorAssignment.objects.create(
+            assignment_id=self.assignmentbuilder.assignment.id,
+            processing_started_by=self.testuser)
+
+        assignmentparser = AssignmentParser(assignment_id=self.assignmentbuilder.assignment.id)
+        self.assertEquals(detektorassignment.parseresults.count(), 0)
+        DeliveryParser(assignmentparser, delivery1builder.delivery).run_detektor()
+        self.assertEquals(detektorassignment.parseresults.count(), 1)
+        assignmentparser.run_detektor()
+        self.assertEquals(detektorassignment.parseresults.count(), 2)
