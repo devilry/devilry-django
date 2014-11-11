@@ -7,6 +7,7 @@ from devilry_settings.i18n import get_javascript_catalog_packages
 from .views.extjsapp import AppView
 from .views.redirectviews import RedirectToSubjectAdminAppView
 from .views.redirectviews import RedirectToGroupAdminAppView
+from .views.redirectviews import RedirectToDeliveryAdminAppView
 from .views.assignment_update import AssignmentUpdateView
 from .exportdetailedperiodoverview import ExportDetailedPeriodOverview
 
@@ -57,4 +58,7 @@ urlpatterns = patterns(
     url('^group/(?P<id>\d+)',
         login_required(RedirectToGroupAdminAppView.as_view()),
         name='devilry_subjectadmin_group'),
+    url('^delivery/(?P<id>\d+)',
+        login_required(RedirectToDeliveryAdminAppView.as_view()),
+        name='devilry_subjectadmin_delivery'),
 )

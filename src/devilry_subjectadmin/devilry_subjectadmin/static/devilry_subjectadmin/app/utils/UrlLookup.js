@@ -38,6 +38,12 @@ Ext.define('devilry_subjectadmin.utils.UrlLookup', {
             assignment_id);
     },
 
+    detektorAdminAssemblyView: function(assignment_id) {
+        return Ext.String.format('{0}/devilry_detektor/admin/assignmentassembly/{1}',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
+            assignment_id);
+    },
+
     passedPreviousPeriod: function(assignment_id) {
         return Ext.String.format('#/assignment/{0}/@@passed-previous-period', assignment_id);
     },

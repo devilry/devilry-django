@@ -49,6 +49,9 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
     }, {
         ref: 'examinerRoleBox',
         selector: 'assignmentoverview #examinerRoleBox'
+    }, {
+        ref: 'betaFeaturesBox',
+        selector: 'assignmentoverview #betaFeaturesBox'
     }],
 
     init: function() {
@@ -88,6 +91,7 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
         } else {
             this._updateLinkList(true);
             this._updateExaminerBox();
+            this._updateBetaFeaturesBox();
         }
         this.getAdminsbox().setBasenodeRecord(this.assignmentRecord);
     },
@@ -120,6 +124,13 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
             mygroupscount: this.assignmentRecord.get('number_of_groups_where_is_examiner'),
             totalgroups: this.assignmentRecord.get('number_of_groups'),
             examinerui_url: devilry_subjectadmin.utils.UrlLookup.examinerGroupsOverviewTodo(this.assignmentRecord.get('id'))
+        });
+    },
+
+    _updateBetaFeaturesBox: function() {
+        this.getBetaFeaturesBox().update({
+            loading: false,
+            detektor_assemblyview_url: devilry_subjectadmin.utils.UrlLookup.detektorAdminAssemblyView(this.assignmentRecord.get('id'))
         });
     },
 

@@ -1,3 +1,5 @@
+from devilry_gradingsystemplugin_approved.devilry_plugin import ApprovedPluginApi
+from devilry_gradingsystemplugin_points.devilry_plugin import PointsPluginApi
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
@@ -36,6 +38,12 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
     def _getas(self, username, assignmentid, *args, **kwargs):
         self.client.login(username=username, password='test')
         return self.client.get(reverse('devilry_examiner_allgroupsoverview',
+                                       kwargs={'assignmentid': assignmentid}),
+                               *args, **kwargs)
+
+    def _postas(self, username, assignmentid, *args, **kwargs):
+        self.client.login(username=username, password='test')
+        return self.client.post(reverse('devilry_examiner_allgroupsoverview',
                                        kwargs={'assignmentid': assignmentid}),
                                *args, **kwargs)
 
@@ -81,6 +89,252 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
             'candidate-id missing')
         self.assertFalse(cssExists(html,
             '.infolistingtable .group .groupinfo h3 .group_short_displayname'))
+
+    def test_default_ordering(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student A").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student C").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentb', full_name="Student B").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studenta)', '(studentb)', '(studentc)'])
+
+    def test_default_ordering_multiple_candidates(self):
+        self.week1builder.add_group(
+            students=[
+                UserBuilder('studentb', full_name="Student B").user,
+                UserBuilder('studentz', full_name="Student Z").user  # NOTE: Should push this to the bottom
+            ],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[
+                UserBuilder('studentd', full_name="Student D").user,
+                UserBuilder('studenta', full_name="Student A").user  # NOTE: Should push this to the top
+            ],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student C").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studentd, studenta)', '(studentb, studentz)', '(studentc)'])
+
+    def test_orderby_username(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student 4").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student 0").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentb', full_name="Student 2").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'order_by': 'username'}).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studenta)', '(studentb)', '(studentc)'])
+
+    def test_orderby_username_descending(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student 4").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student 0").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentb', full_name="Student 2").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'order_by': 'username_descending'}).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studentc)', '(studentb)', '(studenta)'])
+
+    def test_orderby_fullname(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student 4").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student 0").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentb', full_name="Student 2").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'order_by': ''}).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studentc)', '(studentb)', '(studenta)'])
+
+    def test_orderby_fullname_descending(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student 4").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentc', full_name="Student 0").user],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[UserBuilder('studentb', full_name="Student 2").user],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'order_by': 'name_descending'}).content
+        usernames = [username.text.strip() \
+                     for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
+        self.assertEquals(usernames, ['(studenta)', '(studentb)', '(studentc)'])
+
+    def test_orderby_invalid(self):
+        self.week1builder.add_group(
+            students=[UserBuilder('studenta', full_name="Student").user],
+            examiners=[self.examiner1])
+        response = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'order_by': 'invalid'})
+        self.assertEquals(response.status_code, 400)
+        self.assertIn(
+            'Select a valid choice. invalid is not one of the available choices',
+            response.content)
+
+    def test_examinermode_gradeplugin_notsupported(self):
+        studenta = UserBuilder('studenta', full_name="Student A").user
+        studentb = UserBuilder('studentb', full_name="Student B").user
+        studentc = UserBuilder('studentc', full_name="Student C").user
+        self.week1builder.add_group(
+            students=[studenta],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[studentb],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[studentc],
+            examiners=[self.examiner1])
+        self.week1builder.assignment.setup_grading(
+            grading_system_plugin_id=PointsPluginApi.id,
+            points_to_grade_mapper='raw-points',
+            passing_grade_min_points=20,
+            max_points=100)
+        self.week1builder.assignment.save()
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        html = response.content
+
+        self.assertFalse(cssExists(html, "#div_id_examinermode"))
+
+    def test_examinermode_gradeplugin_supported(self):
+        studenta = UserBuilder('studenta', full_name="Student A").user
+        studentb = UserBuilder('studentb', full_name="Student B").user
+        studentc = UserBuilder('studentc', full_name="Student C").user
+        self.week1builder.add_group(
+            students=[studenta],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[studentb],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[studentc],
+            examiners=[self.examiner1])
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        html = response.content
+
+        self.assertTrue(cssExists(html, "#div_id_examinermode"))
+
+    def test_examinermode_quick_notsupported(self):
+        studenta = UserBuilder('studenta', full_name="Student A").user
+        studentb = UserBuilder('studentb', full_name="Student B").user
+        studentc = UserBuilder('studentc', full_name="Student C").user
+        self.week1builder.add_group(
+            students=[studenta],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[studentb],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[studentc],
+            examiners=[self.examiner1])
+        self.week1builder.assignment.setup_grading(
+            grading_system_plugin_id=PointsPluginApi.id,
+            points_to_grade_mapper='raw-points',
+            passing_grade_min_points=20,
+            max_points=100)
+        self.week1builder.assignment.save()
+        response = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'examinermode': 'quick'})
+        html = response.content
+
+        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform1-points"))
+        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform2-points"))
+        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform3-points"))
+
+
+    def test_examinermode_quick(self):
+        studenta = UserBuilder('studenta', full_name="Student A").user
+        studentb = UserBuilder('studentb', full_name="Student B").user
+        group1 = self.week1builder.add_group(
+            students=[studenta],
+            examiners=[self.examiner1])
+        delivery = group1.add_deadline_in_x_weeks(weeks=1).add_delivery_x_hours_before_deadline(hours=2)
+        delivery.delivery.save()
+        group2 = self.week1builder.add_group(
+            students=[studentb],
+            examiners=[self.examiner1])
+        delivery = group2.add_deadline_in_x_weeks(weeks=1).add_delivery_x_hours_before_deadline(hours=2)
+        delivery.delivery.save()
+        response = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'examinermode': 'quick'})
+        html = response.content
+
+        self.assertTrue(cssExists(html, "#div_id_quickfeedbackform1-points"))
+        self.assertTrue(cssExists(html, "#div_id_quickfeedbackform2-points"))
+
+    def test_examinermode_quick_no_deliveries(self):
+        studenta = UserBuilder('studenta', full_name="Student A").user
+        studentb = UserBuilder('studentb', full_name="Student B").user
+        studentc = UserBuilder('studentc', full_name="Student C").user
+        self.week1builder.add_group(
+            students=[studenta],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[studentb],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            students=[studentc],
+            examiners=[self.examiner1])
+        response = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'examinermode': 'quick'})
+        html = response.content
+
+        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform1-points"))
+        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform2-points"))
+        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform3-points"))
+
+    def test_examinermode_quick_corrected(self):
+        studenta = UserBuilder('studenta', full_name="Student A").user
+        studentb = UserBuilder('studentb', full_name="Student B").user
+        group1 = self.week1builder.add_group(
+            students=[studenta],
+            examiners=[self.examiner1])
+        delivery = group1.add_deadline_in_x_weeks(weeks=1).add_delivery_x_hours_before_deadline(hours=2)
+        delivery.delivery.save()
+        group2 = self.week1builder.add_group(
+            students=[studentb],
+            examiners=[self.examiner1])
+        delivery = group2.add_deadline_in_x_weeks(weeks=1).add_delivery_x_hours_before_deadline(hours=2)
+        delivery.delivery.save()
+        response = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'examinermode': 'quick'})
+        html = response.content
+        response = self._postas('examiner1', self.week1builder.assignment.id,
+                                data={'quickfeedbackform1-points': 1,
+                                      'quickfeedbackform2-points': 0})
+        group1.reload_from_db()
+        group2.reload_from_db()
+        self.assertEqual(group1.group.feedback.points, 1)
+        self.assertEqual(group2.group.feedback.points, 0)
 
 
 class TestWaitingForFeedbackOverview(TestCase, HeaderTest):
