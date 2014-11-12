@@ -254,7 +254,7 @@ class DeadlinesBulkListOrCreate(View):
         elif createmode == 'failed':
             qry &= Q(feedback__is_passing_grade=False)
         elif createmode == 'no-deadlines':
-            qry &= Q(num_deadlines=0)
+            qry &= Q(Q(num_deadlines=0) | Q(last_deadline=None))
         elif createmode == 'specific-groups':
             group_ids = self.CONTENT['group_ids']
             if not group_ids:
