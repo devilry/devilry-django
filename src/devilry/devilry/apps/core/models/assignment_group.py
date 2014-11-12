@@ -801,18 +801,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             else
                 delivery_status
         """
+        if self.last_deadline_id is None:
+            return 'no-deadlines'
         if self.delivery_status == 'waiting-for-something':
             if self.assignment.delivery_types == deliverytypes.NON_ELECTRONIC:
                 return 'waiting-for-feedback'
             else:
-                if self.last_deadline is None:
-                    return 'no-deadlines'
+                now = datetime.now()
+                if self.last_deadline.deadline > now:
+                    return 'waiting-for-deliveries'
                 else:
-                    now = datetime.now()
-                    if self.last_deadline.deadline > now:
-                        return 'waiting-for-deliveries'
-                    else:
-                        return 'waiting-for-feedback'
+                    return 'waiting-for-feedback'
         else:
             return self.delivery_status
 
