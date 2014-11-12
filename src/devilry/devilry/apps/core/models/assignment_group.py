@@ -248,7 +248,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                                        'name on project assignments.')
     is_open = models.BooleanField(blank=True, default=True,
             help_text = 'If this is checked, the group can add deliveries.')
-    feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
+    feedback = models.OneToOneField("StaticFeedback", blank=True, null=True,
+                                    on_delete=models.SET_NULL)
     last_delivery = models.OneToOneField("Delivery", blank=True, null=True,
         related_name='last_delivery_by_group', on_delete=models.SET_NULL)
     last_deadline = models.OneToOneField("Deadline", blank=True, null=True,
