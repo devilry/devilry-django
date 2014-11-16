@@ -116,15 +116,13 @@ class Command(BaseCommand):
             examiner=self.donald)
         return assignmentbuilder
 
-    def _as_relatedstudents(self, users, tags):
+    def _as_relatedstudents(self, users, tags=''):
         return [RelatedStudent(user=user, tags=tags) for user in users]
 
     def add_duck1100(self):
         duck1100 = self.duckburgh.add_subject('duck1100',
             long_name='DUCK1100 - Programming for the natural sciences')
         duck1100.add_admins(self.thor)
-        oldtestsemester = duck1100.add_6month_lastyear_period(
-            short_name='oldtestsemester', long_name='Old testsemester')
 
         relatedstudents = [RelatedStudent(user=self.april, tags='group1')]
         relatedstudents.extend(self._as_relatedstudents(self.good_students.values(), 'group1'))
@@ -138,40 +136,69 @@ class Command(BaseCommand):
                 RelatedExaminer(user=self.scrooge, tags='group2')
             ])
 
-        week1 = self.build_random_pointassignmentdata(
-            periodbuilder=testsemester,
-            weeks_ago=6, filecount=4,
-            short_name='week1', long_name='Week 1')
-        week2 = self.build_random_pointassignmentdata(
-            periodbuilder=testsemester,
-            weeks_ago=5, filecount=2,
-            short_name='week2', long_name='Week 2')
-        week3 = self.build_random_pointassignmentdata(
-            periodbuilder=testsemester,
-            weeks_ago=4, filecount=4,
-            short_name='week3', long_name='Week 3')
-        week4 = self.build_random_pointassignmentdata(
-            periodbuilder=testsemester,
-            weeks_ago=3, filecount=8,
-            short_name='week4', long_name='Week 4')
-        week5 = self.build_random_pointassignmentdata(
-            periodbuilder=testsemester,
-            weeks_ago=1, filecount=6,
-            short_name='week5', long_name='Week 5',
-            feedback_percent=50)
+        old_relatedstudentusers = [
+            self.april, self.bad_students['dewey'],
+            self.bad_students['louie'], self.bad_students['june'],
+            self.good_students['loki'], self.good_students['kvasir']]
+        old_relatedstudents = self._as_relatedstudents(old_relatedstudentusers)
+        oldtestsemester = duck1100.add_6month_lastyear_period(
+            short_name='oldtestsemester', long_name='Old testsemester',
+            relatedstudents=old_relatedstudents,
+            relatedexaminers=[
+                RelatedExaminer(user=self.thor, tags=''),
+                RelatedExaminer(user=self.donald, tags='group1'),
+                RelatedExaminer(user=self.scrooge, tags='group2')
+            ])
 
-        week6 = testsemester.add_assignment_x_weeks_ago(
-            weeks=0, short_name='week6', long_name='Week 6',
-            passing_grade_min_points=1,
-            grading_system_plugin_id='devilry_gradingsystemplugin_points',
-            points_to_grade_mapper='raw-points',
-            max_points=6
-        )
-        for user in self.allstudentslist + [self.april]:
-            examiner = examiner=random.choice(self.examiners)
-            week6\
-                .add_group(students=[user], examiners=[examiner])\
-                .add_deadline(deadline=DateTimeBuilder.now().plus(days=7))
+        for periodbuilder, weekoffset in [
+                (oldtestsemester, 52),
+                (testsemester, 0)]:
+            week1 = self.build_random_pointassignmentdata(
+                periodbuilder=periodbuilder,
+                weeks_ago=weekoffset+6, filecount=4,
+                short_name='week1', long_name='Week 1')
+            week2 = self.build_random_pointassignmentdata(
+                periodbuilder=periodbuilder,
+                weeks_ago=weekoffset+5, filecount=2,
+                short_name='week2', long_name='Week 2')
+            week3 = self.build_random_pointassignmentdata(
+                periodbuilder=periodbuilder,
+                weeks_ago=weekoffset+4, filecount=4,
+                short_name='week3', long_name='Week 3')
+            week4 = self.build_random_pointassignmentdata(
+                periodbuilder=periodbuilder,
+                weeks_ago=weekoffset+3, filecount=8,
+                short_name='week4', long_name='Week 4')
+
+            if weekoffset == 0:
+                week5 = self.build_random_pointassignmentdata(
+                    periodbuilder=periodbuilder,
+                    weeks_ago=weekoffset+1, filecount=6,
+                    short_name='week5', long_name='Week 5',
+                    feedback_percent=50)
+
+                week6 = periodbuilder.add_assignment_x_weeks_ago(
+                    weeks=weekoffset, short_name='week6', long_name='Week 6',
+                    passing_grade_min_points=1,
+                    grading_system_plugin_id='devilry_gradingsystemplugin_points',
+                    points_to_grade_mapper='raw-points',
+                    max_points=6
+                )
+                for user in self.allstudentslist + [self.april]:
+                    examiner = random.choice(self.examiners)
+                    week6\
+                        .add_group(students=[user], examiners=[examiner])\
+                        .add_deadline(deadline=DateTimeBuilder.now().plus(days=7))
+            else:
+                week5 = self.build_random_pointassignmentdata(
+                    periodbuilder=periodbuilder,
+                    weeks_ago=weekoffset+1, filecount=1,
+                    short_name='week5', long_name='Week 5')
+                week6 = self.build_random_pointassignmentdata(
+                    periodbuilder=periodbuilder,
+                    weeks_ago=weekoffset, filecount=2,
+                    short_name='week6', long_name='Week 6')
+
 
     def _lorem_paras(self, count):
         return markdown_full(u'\n\n'.join(lorem_ipsum.paragraphs(count, common=False)))

@@ -333,8 +333,8 @@ class SubjectBuilder(BaseNodeBuilderBase):
         kwargs['parentnode'] = self.subject
         if 'start_time' in kwargs or 'end_time' in kwargs:
             raise ValueError('add_6month_lastyear_period does not accept ``start_time`` or ``end_time`` as kwargs, it sets them automatically.')
-        kwargs['start_time'] = DateTimeBuilder.now().minus(days=365 - 30*3)
-        kwargs['end_time'] = DateTimeBuilder.now().minus(days=365 + 30*3)
+        kwargs['start_time'] = DateTimeBuilder.now().minus(days=365 + 30*3)
+        kwargs['end_time'] = DateTimeBuilder.now().minus(days=365 - 30*3)
         if not 'short_name' in kwargs:
             kwargs['short_name'] = 'lastyear'
         return self.add_period(**kwargs)
