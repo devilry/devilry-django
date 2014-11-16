@@ -13,6 +13,8 @@ from .views.browseview import BrowseView
 from .views.groupdetails import GroupDetailsView
 from .views.upload_deliveryfile import UploadDeliveryFile
 from .views.semesteroverview import SemesterOverview
+from .views.download_deliveryfiles import CompressedFileDownloadView
+from .views.download_deliveryfiles import FileDownloadView
 
 i18n_packages = get_javascript_catalog_packages('devilry_student', 'devilry_header', 'devilry_extjsextras', 'devilry.apps.core')
 
@@ -54,7 +56,14 @@ urlpatterns = patterns('devilry_student',
 
     url(r'^upload_deliveryfile/(?P<deadline_id>\d+)$',
         UploadDeliveryFile.as_view(),
-        name='devilry_student_upload_deliveryfile')
+        name='devilry_student_upload_deliveryfile'),
 
-    #url(r'^groupinvite/leave/(?P<group_id>\d+)$')
+    # TODO: Rename the views
+    url(r'^show-delivery/filedownload/(?P<filemetaid>\d+)$',
+        login_required(FileDownloadView.as_view()),
+        name='devilry-delivery-file-download'),
+    url(r'^show-delivery/compressedfiledownload/(?P<deliveryid>\d+)$',
+        login_required(CompressedFileDownloadView.as_view()),
+        name='devilry-delivery-download-all-zip')
+
 )
