@@ -1,1 +1,0 @@
-from simplified import *
