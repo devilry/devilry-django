@@ -1,6 +1,8 @@
 import os
 from os.path import join
 from os.path import exists
+from os.path import dirname
+from os.path import abspath
 
 from devilry_settings.default_settings import *
 from .log import create_logging_conf
@@ -12,10 +14,10 @@ from .log import create_logging_conf
 # generated files during development
 #
 #########################################################
-cwd = os.getcwd()
-if not exists(join(cwd, 'manage.py')):
-    raise SystemExit('Must run manage.py from the root of the Devilry repo (the directory containing manage.py.')
-developfilesdir = join(cwd, 'developfiles')
+SRCROOT = dirname(dirname(dirname(abspath(__file__))))
+if not exists(join(SRCROOT, 'manage.py')):
+    raise SystemExit('Could not find manage.py in SRCROOT.')
+developfilesdir = join(SRCROOT, 'developfiles')
 if not exists(developfilesdir):
     os.mkdir(developfilesdir)
 logdir = join(developfilesdir, 'log')

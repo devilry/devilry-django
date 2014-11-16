@@ -35,5 +35,5 @@ mock==1.0.1
 
 
 # Local modules
--e ./thirdpartylibs/djangorestframework
+-e ../thirdpartylibs/djangorestframework
 -e .

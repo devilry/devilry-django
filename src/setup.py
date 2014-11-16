@@ -7,7 +7,6 @@ setup(
     license='BSD',
     description="A system for handling electronic deliveries.",
     author='The Devilry developers',
-    packages=find_packages('src'),
-    package_dir={'': 'src'},
+    packages=find_packages(),
     install_requires=['setuptools']
 )
