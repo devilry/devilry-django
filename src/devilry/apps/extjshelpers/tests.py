@@ -4,7 +4,6 @@ from django.db import models
 from devilry.simplified import simplified_modelapi, FieldSpec
 from devilry.restful import restful_modelapi, ModelRestfulView
 from devilry.apps.core.models import Period
-from devilry.apps.administrator.restful import RestfulSimplifiedPeriod
 from modelintegration import restfulcls_to_extjsmodel, export_restfulcls_to_extjsmodel
 from storeintegration import restfulcls_to_extjsstore
 from fieldintegration import djangofield_to_extjsformfield
@@ -165,16 +164,3 @@ class TestStoreIntegration(TestCase):
             autoSync: true
         })"""
         self.assertEquals(js, expected)
-
-
-
-
-class TestFieldIntegration(TestCase):
-    #def test_djangofield_to_extjsformfield(self):
-        #field = find_foreign_field(Period, ["parentnode", "id"])
-        ##print dir(field.model)
-        ##print dir(field.model._meta)
-        #self.assertEquals(field.name, 'id')
-
-    def test_djangofield_to_extjs_xtype(self):
-        extfield = djangofield_to_extjsformfield(Period, 'parentnode', RestfulSimplifiedPeriod)
