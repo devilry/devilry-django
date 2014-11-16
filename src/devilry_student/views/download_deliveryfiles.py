@@ -44,11 +44,11 @@ class CompressedFileDownloadView(View):
                     or request.user.is_superuser \
                     or assignment_group.parentnode.is_admin(request.user)):
             return HttpResponseForbidden("Forbidden")
-        dirname = '{}-{}-delivery{}'.format(
+        dirname = u'{}-{}-delivery{}'.format(
                 assignment_group.parentnode.get_path(),
-                assignment_group.get_candidates(separator='_'),
+                assignment_group.short_displayname,
                 delivery.number)
-        zip_file_name = u'{}.zip'.format(dirname)
+        zip_file_name = u'{}.zip'.format(dirname.encode('ascii', 'ignore'))
 
         tempfile = NamedTemporaryFile()
         zip_file = zipfile.ZipFile(tempfile, 'w');
