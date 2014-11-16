@@ -15,11 +15,6 @@ from devilry.apps.core.models import AssignmentGroup
 class DownloadAllDeliveriesOnAssignmentView(View):
     DEADLINE_FORMAT = "%Y-%m-%dT%H_%M_%S"
 
-    def _get_candidates_as_string(self, assignmentgroup):
-        candidates = [candidate.identifier for candidate in assignmentgroup.candidates.all()]
-        candidates.sort()
-        return '-'.join(candidates)
-
     def get(self, request, assignmentid):
         assignment = get_object_or_404(
             Assignment.objects.filter_examiner_has_access(self.request.user),
@@ -40,21 +35,14 @@ class DownloadAllDeliveriesOnAssignmentView(View):
         zip_file = zipfile.ZipFile(tempfile, 'w');
 
         for group in self._get_queryset(assignment):
-            candidates = self._get_candidates_as_string(group)
-
+            groupname = '{} (groupid={})'.format(group.short_displayname, group.id)
             for deadline in group.deadlines.all():
                 for delivery in deadline.deliveries.all():
                     for filemeta in delivery.filemetas.all():
                         file_content = filemeta.deliverystore.read_open(filemeta)
                         filenametpl = '{zip_rootdir_name}/{groupname}/deadline-{deadline}/delivery-{delivery_number}/{filename}'
-                        if candidates:
-                            groupname = '{candidates}_group-{groupid}'.format(
-                                candidates=candidates,
-                                groupid=group.id
-                            )
-                        else:
-                            groupname = 'group-{groupid}'.format(groupid=group.id)
-                        filename = filenametpl.format(zip_rootdir_name=zip_rootdir_name,
+                        filename = filenametpl.format(
+                            zip_rootdir_name=zip_rootdir_name,
                             groupname=groupname,
                             deadline=deadline.deadline.strftime(self.DEADLINE_FORMAT),
                             delivery_number="%.3d" % delivery.number,

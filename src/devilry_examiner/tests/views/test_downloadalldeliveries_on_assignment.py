@@ -57,10 +57,8 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
         group1 = group1builder.group
         group2 = group2builder.group
         groupnames = [path.split('/')[1] for path in outfile.namelist()]
-        self.assertEquals(set(groupnames), set([
-            'group-{}'.format(group1.id),
-            'group-{}'.format(group2.id),
-        ]))
+        self.assertEquals(set(groupnames),
+                          {'1 (groupid={})'.format(group1.id), '2 (groupid={})'.format(group2.id)})
 
     def test_format_without_candidates(self):
         group1builder = self.assignmentbuilder.add_group(examiners=[self.examiner1])
@@ -71,7 +69,7 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
         outfile = zipfile.ZipFile(StringIO(response.content), 'r')
         group1 = group1builder.group
         self.assertEquals(outfile.namelist()[0],
-            'duck1010.active.assignment1/group-{groupid}/deadline-{deadline}/delivery-001/helloworld.txt'.format(
+            'duck1010.active.assignment1/1 (groupid={groupid})/deadline-{deadline}/delivery-001/helloworld.txt'.format(
                 groupid=group1.id,
                 deadline=group1.last_deadline.deadline.strftime(DownloadAllDeliveriesOnAssignmentView.DEADLINE_FORMAT)
             )
@@ -89,7 +87,7 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
         group1 = group1builder.group
         groupname = outfile.namelist()[0].split('/')[1]
         self.assertEquals(groupname,
-            'student1-student2_group-{}'.format(group1.id))
+            'student1, student2 (groupid={})'.format(group1.id))
 
     def test_format_with_candidates_anonymous(self):
         self.assignmentbuilder.update(anonymous=True)
@@ -107,4 +105,4 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
         group1 = group1builder.group
         groupname = outfile.namelist()[0].split('/')[1]
         self.assertEquals(groupname,
-            'candidate-id missing-supersecret_group-{}'.format(group1.id))
+            'supersecret, candidate-id missing (groupid={})'.format(group1.id))

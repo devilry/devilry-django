@@ -425,6 +425,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         for candidate in candidates:
             if candidate.candidate_id:
                 candidateids.append(candidate.candidate_id)
+            else:
+                candidateids.append('candidate-id missing')
         if candidateids and len(candidateids) == len(candidates):
             return u', '.join(candidateids)
         else:
