@@ -3,7 +3,7 @@ from optparse import make_option
 
 
 tests = [
-    'devilry.apps.core',
+    'devilry',
     'devilry_authenticateduserinfo',
     'devilry_examiner',
     'devilry_frontpage',
