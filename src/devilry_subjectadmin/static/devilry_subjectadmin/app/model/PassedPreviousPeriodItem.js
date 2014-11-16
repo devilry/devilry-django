@@ -6,7 +6,7 @@ Ext.define('devilry_subjectadmin.model.PassedPreviousPeriodItem', {
         {name: 'group', type: 'auto', persist: false},
         {name: 'oldgroup', type: 'auto', persist: false},
         {name: 'whyignored', type: 'string', persist: false},
-        {name: 'newfeedback_shortformat', type: 'string'}
+        {name: 'newfeedback_points', type: 'int'}
     ],
 
     proxy: {

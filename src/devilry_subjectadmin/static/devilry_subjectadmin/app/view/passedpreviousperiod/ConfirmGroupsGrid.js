@@ -25,7 +25,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid', {
             this.cellEditor
         ];
         this.columns.push({
-            dataIndex: 'newfeedback_shortformat',
+            dataIndex: 'newfeedback_points',
             text: gettext('Grade'),
             flex: 4,
             menuDisabled: true,
@@ -43,11 +43,16 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid', {
     },
 
     _renderGradeColumn: function(value, unused2, record) {
-        var displayValue = Ext.String.format(
-                '<span class="text-success">{0}</span>',
-                gettext('Passed'));
-
         var oldgroup = record.get('oldgroup');
+
+        var grade = gettext('Passed');
+        if(oldgroup !== null) {
+            grade = oldgroup.grade;
+        }
+        var displayValue = Ext.String.format(
+            '<span class="text-success">{0}</span>',
+            grade);
+
         if(oldgroup === null) {
             return displayValue;
         } else {

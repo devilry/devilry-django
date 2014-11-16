@@ -1,7 +1,7 @@
 from django.test import TransactionTestCase
 
 from devilry.apps.core.testhelper import TestHelper
-from devilry.utils.rest_testclient import RestClient
+from devilry_rest.testclient import RestClient
 from devilry.apps.core.models import deliverytypes
 
 
@@ -42,7 +42,6 @@ class TestRestPassedInPreviousPeriod(TransactionTestCase):
         content, response = self._getas('nobody')
         self.assertEquals(response.status_code, 403)
 
-
     def test_with_oldfeedback(self):
         # Add a group for the student on the old period
         self.testhelper.add_to_path('uni;sub.old.a1.g1:candidate(student1):examiner(examiner1).d1:ends(1)')
@@ -64,9 +63,7 @@ class TestRestPassedInPreviousPeriod(TransactionTestCase):
         self.assertEqual(oldgroup['id'], self.testhelper.sub_old_a1_g1.id)
         self.assertEqual(oldgroup['assignment']['id'], self.testhelper.sub_old_a1.id)
         self.assertEqual(oldgroup['period']['id'], self.testhelper.sub_old.id)
-        self.assertEqual(oldgroup['feedback_shortformat'], 'true')
-
-
+        self.assertEqual(oldgroup['grade'], 'approved')
 
     def _putas(self, username, data):
         self.client.login(username=username, password='test')
@@ -88,20 +85,20 @@ class TestRestPassedInPreviousPeriod(TransactionTestCase):
         g3 = self.testhelper.sub_cur_a1_g3
         content, response = self._putas(username,
                                         [{'id': g1.id,
-                                          'newfeedback_shortformat': 'true'},
+                                          'newfeedback_points': 10},
                                          {'id': g3.id,
-                                          'newfeedback_shortformat': 'true'}])
+                                          'newfeedback_points': 20}])
         self.assertEquals(response.status_code, 200)
 
         g1 = self.testhelper.reload_from_db(g1)
-        self.assertEquals(g1.feedback.grade, 'approved')
+        self.assertEquals(g1.feedback.grade, 'Passed')
         self.assertEquals(g1.feedback.delivery.delivery_type, deliverytypes.ALIAS)
 
         g2 = self.testhelper.reload_from_db(g2)
         self.assertEquals(g2.feedback, None)
 
         g3 = self.testhelper.reload_from_db(g3)
-        self.assertEquals(g3.feedback.grade, 'approved')
+        self.assertEquals(g3.feedback.grade, 'Passed')
         self.assertEquals(g3.feedback.delivery.delivery_type, deliverytypes.ALIAS)
         self.assertEquals(g3.feedback.delivery.alias_delivery, oldg3_delivery)
 
@@ -117,12 +114,10 @@ class TestRestPassedInPreviousPeriod(TransactionTestCase):
         content, response = self._putas('nobody', [])
         self.assertEquals(response.status_code, 403)
 
-
     def test_put_shortformat_validationerror(self):
         self.testhelper.add_to_path('uni;sub.cur.a1.g1:candidate(student1).d1')
         g1 = self.testhelper.sub_cur_a1_g1
         content, response = self._putas('adm',
             [{'id': g1.id,
-              'newfeedback_shortformat': 'invalidstuff'}])
+              'newfeedback_points': 'invalidstuff'}])
         self.assertEquals(response.status_code, 400)
-        self.assertEquals(content['errors'][0], u'Must be one of: true, false.')

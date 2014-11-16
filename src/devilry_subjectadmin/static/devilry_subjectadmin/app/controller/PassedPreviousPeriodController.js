@@ -118,6 +118,7 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
         } else {
             this._loadStore();
         }
+        this._loadStore();
     },
     onLoadAssignmentFailure: function(operation) {
         this.getOverview().setLoading(false);
@@ -214,12 +215,8 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
 
         // Set default values in the store
         store.each(function(record) {
-            var oldgroup = record.get('oldgroup');
-            var value = 'true';
-            if(value !== null) {
-                record.set('newfeedback_shortformat', value);
-                record.commit();
-            }
+            record.set('newfeedback_points', 1);
+            record.commit();
         });
 
         // Create the edit grid
