@@ -224,7 +224,6 @@ class AllGroupsOverview(DetailView):
             assignment_type = "anonymous"
         return assignment_type
 
-
     def dispatch(self, request, *args, **kwargs):
         self.orderingform = OrderingForm(request.GET, assignment_type=self._get_assignment_type(*args, **kwargs))
         self.examinermode_form = ExaminerModeForm(request.GET)
@@ -241,7 +240,55 @@ class AllGroupsOverview(DetailView):
         return super(AllGroupsOverview, self).dispatch(request, *args, **kwargs)
 
     def _order_groupqueryset(self, groupqueryset):
-        groupqueryset = groupqueryset.order_by(self.order_by_map[self.order_by])
+        # groupqueryset = groupqueryset.order_by(self.order_by_map[self.order_by])
+        if self.order_by in ('', 'name_descending'):
+            if self.order_by == '':
+                order_by_field = 'full_name'
+            else:
+                order_by_field = '-full_name'
+            groupqueryset = groupqueryset.extra(
+                select={
+                    'full_name': """
+                        SELECT selected_candidate_full_name
+                        FROM (
+                            SELECT
+                              core_devilryuserprofile.full_name as selected_candidate_full_name
+                            FROM core_candidate
+                            INNER JOIN auth_user
+                              ON auth_user.id=core_candidate.student_id
+                            INNER JOIN core_devilryuserprofile
+                              ON core_devilryuserprofile.user_id=auth_user.id
+                            WHERE core_assignmentgroup.id=core_candidate.assignment_group_id
+                            ORDER BY core_devilryuserprofile.full_name
+                            LIMIT 1
+                        )
+                    """
+                },
+                order_by=[order_by_field]
+            )
+        elif self.order_by in ('username', 'username_descending'):
+            if self.order_by == 'username':
+                order_by_field = 'username'
+            else:
+                order_by_field = '-username'
+            groupqueryset = groupqueryset.extra(
+                select={
+                    'username': """
+                        SELECT selected_candidate_username
+                        FROM (
+                            SELECT
+                              auth_user.username as selected_candidate_username
+                            FROM core_candidate
+                            INNER JOIN auth_user
+                              ON auth_user.id=core_candidate.student_id
+                            WHERE core_assignmentgroup.id=core_candidate.assignment_group_id
+                            ORDER BY auth_user.username
+                            LIMIT 1
+                        )
+                    """
+                },
+                order_by=[order_by_field]
+            )
         return groupqueryset
 
     def _get_groupqueryset(self):

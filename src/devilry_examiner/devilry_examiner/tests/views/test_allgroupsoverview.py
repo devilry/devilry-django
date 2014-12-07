@@ -108,23 +108,25 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
     def test_default_ordering_multiple_candidates(self):
         self.week1builder.add_group(
             students=[
-                UserBuilder('studentb', full_name="Student B").user,
-                UserBuilder('studentz', full_name="Student Z").user  # NOTE: Should push this to the bottom
+                UserBuilder('studentb', full_name="Student B").user,  # NOTE: The group will be ordered by this name
+                UserBuilder('studentx', full_name="Student X").user,
+                UserBuilder('studentz', full_name="Student Z").user
             ],
             examiners=[self.examiner1])
         self.week1builder.add_group(
             students=[
                 UserBuilder('studentd', full_name="Student D").user,
-                UserBuilder('studenta', full_name="Student A").user  # NOTE: Should push this to the top
+                UserBuilder('studente', full_name="Student E").user,
+                UserBuilder('studenta', full_name="Student A").user  # NOTE: The group will be ordered by this name
             ],
             examiners=[self.examiner1])
         self.week1builder.add_group(
             students=[UserBuilder('studentc', full_name="Student C").user],
             examiners=[self.examiner1])
         html = self._getas('examiner1', self.week1builder.assignment.id).content
-        usernames = [username.text.strip() \
+        usernames = [username.text.strip()
                      for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
-        self.assertEquals(usernames, ['(studentd, studenta)', '(studentb, studentz)', '(studentc)'])
+        self.assertEquals(usernames, ['(studentd, studente, studenta)', '(studentb, studentx, studentz)', '(studentc)'])
 
     def test_orderby_username(self):
         self.week1builder.add_group(
