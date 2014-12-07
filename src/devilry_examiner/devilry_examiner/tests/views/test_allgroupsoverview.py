@@ -9,6 +9,7 @@ from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import cssExists
+from devilry.apps.core.models import Candidate
 
 
 class HeaderTest(object):
@@ -188,9 +189,30 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
             examiners=[self.examiner1])
         html = self._getas('examiner1', self.week1builder.assignment.id,
                            data={'order_by': 'name_descending'}).content
-        usernames = [username.text.strip() \
+        usernames = [username.text.strip()
                      for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
         self.assertEquals(usernames, ['(studenta)', '(studentb)', '(studentc)'])
+
+    def test_orderby_candidate_id(self):
+        self.week1builder.update(anonymous=True)
+        self.week1builder.add_group(
+            candidates=[
+                Candidate(student=UserBuilder('studentz').user, candidate_id='z'),
+                Candidate(student=UserBuilder('studentb').user, candidate_id='b')],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            candidates=[
+                Candidate(student=UserBuilder('studenta').user, candidate_id='a')],
+            examiners=[self.examiner1])
+        self.week1builder.add_group(
+            candidates=[
+                Candidate(student=UserBuilder('studentc').user, candidate_id='c')],
+            examiners=[self.examiner1])
+        html = self._getas('examiner1', self.week1builder.assignment.id,
+                           data={'order_by': 'candidate_id'}).content
+        candidate_ids = [candidate_ids.text.strip()
+                         for candidate_ids in cssFind(html, '.infolistingtable .group .group_long_displayname')]
+        self.assertEquals(candidate_ids, ['a', 'z, b', 'c'])
 
     def test_orderby_invalid(self):
         self.week1builder.add_group(

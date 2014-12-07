@@ -240,7 +240,6 @@ class AllGroupsOverview(DetailView):
         return super(AllGroupsOverview, self).dispatch(request, *args, **kwargs)
 
     def _order_groupqueryset(self, groupqueryset):
-        # groupqueryset = groupqueryset.order_by(self.order_by_map[self.order_by])
         if self.order_by in ('', 'name_descending'):
             if self.order_by == '':
                 order_by_field = 'full_name'
@@ -283,6 +282,27 @@ class AllGroupsOverview(DetailView):
                               ON auth_user.id=core_candidate.student_id
                             WHERE core_assignmentgroup.id=core_candidate.assignment_group_id
                             ORDER BY auth_user.username
+                            LIMIT 1
+                        )
+                    """
+                },
+                order_by=[order_by_field]
+            )
+        elif self.order_by in ('candidate_id', 'candidate_id_descending'):
+            if self.order_by == 'candidate_id':
+                order_by_field = 'candidate_id'
+            else:
+                order_by_field = '-candidate_id'
+            groupqueryset = groupqueryset.extra(
+                select={
+                    'candidate_id': """
+                        SELECT selected_candidate_id
+                        FROM (
+                            SELECT
+                              core_candidate.candidate_id as selected_candidate_id
+                            FROM core_candidate
+                            WHERE core_assignmentgroup.id=core_candidate.assignment_group_id
+                            ORDER BY core_candidate.candidate_id
                             LIMIT 1
                         )
                     """
