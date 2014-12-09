@@ -248,7 +248,7 @@ class AllGroupsOverview(DetailView):
             groupqueryset = groupqueryset.extra(
                 select={
                     'full_name': """
-                        SELECT selected_candidate_full_name
+                        SELECT selected_candidate.selected_candidate_full_name
                         FROM (
                             SELECT
                               core_devilryuserprofile.full_name as selected_candidate_full_name
@@ -260,7 +260,7 @@ class AllGroupsOverview(DetailView):
                             WHERE core_assignmentgroup.id=core_candidate.assignment_group_id
                             ORDER BY core_devilryuserprofile.full_name
                             LIMIT 1
-                        )
+                        ) AS selected_candidate
                     """
                 },
                 order_by=[order_by_field]
@@ -273,7 +273,7 @@ class AllGroupsOverview(DetailView):
             groupqueryset = groupqueryset.extra(
                 select={
                     'username': """
-                        SELECT selected_candidate_username
+                        SELECT selected_candidate.selected_candidate_username
                         FROM (
                             SELECT
                               auth_user.username as selected_candidate_username
@@ -283,7 +283,7 @@ class AllGroupsOverview(DetailView):
                             WHERE core_assignmentgroup.id=core_candidate.assignment_group_id
                             ORDER BY auth_user.username
                             LIMIT 1
-                        )
+                        ) AS selected_candidate
                     """
                 },
                 order_by=[order_by_field]
@@ -296,7 +296,7 @@ class AllGroupsOverview(DetailView):
             groupqueryset = groupqueryset.extra(
                 select={
                     'candidate_id': """
-                        SELECT selected_candidate_id
+                        SELECT selected_candidate.selected_candidate_id
                         FROM (
                             SELECT
                               core_candidate.candidate_id as selected_candidate_id
@@ -304,7 +304,7 @@ class AllGroupsOverview(DetailView):
                             WHERE core_assignmentgroup.id=core_candidate.assignment_group_id
                             ORDER BY core_candidate.candidate_id
                             LIMIT 1
-                        )
+                        ) AS selected_candidate
                     """
                 },
                 order_by=[order_by_field]
