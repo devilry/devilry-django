@@ -1,5 +1,4 @@
-.build/
-*.class
+not_for_deploy/docs/_build/
 *.o
 *.pyc
 *.pyo
@@ -8,130 +7,24 @@
 .*.swo
 *~
 .DS_Store
-*.vpp~*
-*.ipr
-*.iws
-*.log
-.classpath
-.project
-.pydevproject
-.settings/
+*.sqlite
 *.sqlite3
-filestore/
-tags
-.ropeproject/
-doc/build/
-doc/devilry.github.com/
-.coverage
-coverage_html_report/
-cookies.txt
-.devilry/
 *.bak
 *.egg-info/
-dist/
 cscope.out
 Session.vim
-deliverystore/
-exampledata-backup.tar.bz2
 \#*#
 .#*
-.sass-cache/
-.mr.developer.cfg
-.local.vimrc
+dbdev_tempdata/
 
-*/.installed.cfg
-*/bin/buildout
-*/bin/django_*.py
-*/bin/django_*.py.wsgi
-*/bin/nosetests*
-*/bin/seleniumrc
-*/bin/python
-*/bin/*-script.py
-*/develop-eggs/
-*/dist/
-*/downloads/
-#*/eggs/
-*/parts/
-*/devilry-static-files/
-*/example-productionenv/bin/
-productionenv/
-*.exe
-devilryrestfullib/build/
-db_and_deliveries_stash/
+/developfiles/
 
-# devenv
-*devenv/*
-!*devenv/fabfile.py
-!*devenv/README.md
-!*devenv/buildout.cfg
+.ipynb_checkpoints/
+*.ipynb
 
-# docs/
-docs/.Python
-docs/bin/
-docs/include/
-docs/lib/
-docs/venv*/
-
+vitalstyles_styleguide/
+node_modules/
 
 # Ignore user-specific pycharm settings
 .idea/workspace.xml
 .idea/tasks.xml
-
-# Translations
-devilry/apps/i18n/static/i18n/translations/
-messages_local-*
-
-
-# Generated ExtJS classes
-#src/devilry/devilry/apps/administrator/static/extjs_classes/apps/
-#src/devilry/devilry/apps/examiner/static/extjs_classes/apps/
-#src/devilry/devilry/apps/extjshelpers/templates/extjshelpers/restful-generated-models.django.js
-#src/devilry/devilry/apps/gradeeditors/static/extjs_classes/apps/
-#src/devilry/devilry/apps/student/static/extjs_classes/apps/
-
-
-# Checked out from mr.developer
-src/django_extjs4/
-
-
-# Generated ExtJS apps
-all-classes.js
-app.jsb3
-
-# example-productionenv/
-example-productionenv/bin/
-example-productionenv/virtualenv/
-example-productionenv/static/
-
-# awsdemo
-awsdemo/bin
-awsdemo/awsfab_settings_local.py
-awsdemo/virtualenv/
-
-
-# Git repos - we sometimes check these out for development, and we do not want them as subrepos!
-src/django_seleniumhelpers/
-src/djangosenchatools/
-src/django_devserver/
-src/trix/
-src/trix_extjshelpers/
-src/trix_restful/
-src/trix_simplified/
-
-# npm installs
-node_modules/
-
-
-# vagrant/
-vagrant/.vagrant
-devenv_vagrant/
-
-# buildoutcache/
-buildoutcache/dlcache/*
-!buildoutcache/dlcache/.keep
-buildoutcache/eggs/*
-!buildoutcache/eggs/.keep
-
-developfiles/
-dbdev_tempdata/
-devilry_whoosh_index/

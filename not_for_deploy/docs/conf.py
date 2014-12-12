@@ -18,16 +18,6 @@ import sys, os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 #sys.path.append(os.path.abspath('..'))
-THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-REPOROOT_DIR = os.path.dirname(THIS_DIR)
-SRC_DIR = os.path.join(REPOROOT_DIR, 'src')
-DEVENV_DIR = os.path.join(REPOROOT_DIR, 'devenv')
-moduledirs = list(os.listdir(SRC_DIR)) + [DEVENV_DIR]
-for name in moduledirs:
-    path = os.path.join(SRC_DIR, name)
-    if os.path.isdir(path):
-        sys.path.insert(0, path)
-
 
 # Setup django settings module for autodoc
 os.environ['DJANGO_SETTINGS_MODULE'] = 'devilry_developer.settings.docs'
