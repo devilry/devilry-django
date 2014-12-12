@@ -1,8 +1,14 @@
+import json
 from setuptools import setup, find_packages
+
+
+with open('devilry/version.json') as versionfile:
+    version = json.load(versionfile)
+
 
 setup(
     name="devilry",
-    version="1.4.8",
+    version=version,
     url='http://devilry.org',
     license='BSD',
     description="A system for handling electronic deliveries.",
