@@ -48,21 +48,21 @@ def reset_db(djangoenv='develop'):
 #     _managepy('devilry_sandboxcreate -s "duck2050" -l "DUCK2050 - Programmering uten grenser"')
 
 
-# @task
-# def autodb(djangoenv='develop', no_groups=False):
-#     """
-#     Run ``remove_db``, ``syncmigrate`` and ``bin/django_dev.py dev_autodb -v2``
+@task
+def autodb(djangoenv='develop', no_groups=False):
+    """
+    Run ``remove_db``, ``syncmigrate`` and ``bin/django_dev.py dev_autodb -v2``
 
-#     :param djangoenv: The DJANGOENV to use.
-#     :param no_groups: Use ``autodb:no_groups=yes`` to run dev_autodb with --no-groups.
-#     """
-#     no_groups = no_groups == 'yes'
-#     autodb_args = ''
-#     if no_groups:
-#         autodb_args = '--no-groups'
-#     reset_db(djangoenv=djangoenv)
-#     _managepy('dev_autodb -v2 {}'.format(autodb_args))
-#     # _managepy('rebuild_index --noinput')
+    :param djangoenv: The DJANGOENV to use.
+    :param no_groups: Use ``autodb:no_groups=yes`` to run dev_autodb with --no-groups.
+    """
+    no_groups = no_groups == 'yes'
+    autodb_args = ''
+    if no_groups:
+        autodb_args = '--no-groups'
+    reset_db(djangoenv=djangoenv)
+    _managepy('dev_autodb -v2 {}'.format(autodb_args))
+    # _managepy('rebuild_index --noinput')
 
 
 @task

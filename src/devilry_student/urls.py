@@ -4,6 +4,8 @@ from django.views.i18n import javascript_catalog
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
 from devilry_settings.i18n import get_javascript_catalog_packages
+from devilry_student.cradmin_period import cradmin_period
+from devilry_student.cradmin_group import cradmin_group
 from .views.extjsapp import AppView
 from .views.frontpage import FrontpageView
 from .views.projectgroup_overview import ProjectGroupOverviewView
@@ -64,6 +66,10 @@ urlpatterns = patterns('devilry_student',
         name='devilry-delivery-file-download'),
     url(r'^show-delivery/compressedfiledownload/(?P<deliveryid>\d+)$',
         login_required(CompressedFileDownloadView.as_view()),
-        name='devilry-delivery-download-all-zip')
+        name='devilry-delivery-download-all-zip'),
 
+    #url(r'^groupinvite/leave/(?P<group_id>\d+)$')
+
+    url(r'^period/', include(cradmin_period.CrAdminInstance.urls())),
+    url(r'^group/', include(cradmin_group.CrAdminInstance.urls()))
 )
