@@ -58,7 +58,6 @@ productionenv/
 *.exe
 devilryrestfullib/build/
 db_and_deliveries_stash/
-.idea/
 
 # devenv
 *devenv/*
@@ -74,12 +73,9 @@ docs/lib/
 docs/venv*/
 
 
-# Intellij files
-# see: http://devnet.jetbrains.net/docs/DOC-1186
-workspace.xml
-tasks.xml
-.idea/libraries/
-
+# Ignore user-specific pycharm settings
+.idea/workspace.xml
+.idea/tasks.xml
 
 # Translations
 devilry/apps/i18n/static/i18n/translations/
