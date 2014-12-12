@@ -1,5 +1,0 @@
-# This file makes sure that Opera Browser is kept up-to-date
-# as part of regular system upgrades
-
-deb http://deb.opera.com/opera/ stable non-free
-
