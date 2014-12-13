@@ -8,7 +8,7 @@ tests = [
     'devilry.devilry_examiner',
     'devilry.devilry_frontpage',
     'devilry.devilry_gradingsystem',
-    'devilry_gradingsystemplugin_approved',
+    'devilry.devilry_gradingsystemplugin_approved',
     # # 'devilry_gradingsystemplugin_form',
     'devilry_gradingsystemplugin_points',
     'devilry_header',
