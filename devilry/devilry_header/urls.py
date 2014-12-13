@@ -7,7 +7,7 @@ from .views.about_me import AboutMeView
 from .views.change_language import ChangeLanguageView
 
 
-urlpatterns = patterns('devilry_header',
+urlpatterns = patterns('devilry.devilry_header',
     url('^about_me$',
         login_required(AboutMeView.as_view()),
         name='devilry_header_aboutme'),
