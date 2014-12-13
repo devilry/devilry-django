@@ -4,7 +4,7 @@ from optparse import make_option
 
 tests = [
     'devilry',
-    'devilry_authenticateduserinfo',
+    'devilry.devilry_authenticateduserinfo',
     'devilry.devilry_examiner',
     'devilry_frontpage',
     'devilry_gradingsystem',
