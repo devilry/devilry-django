@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from devilry.version import devilry_version
+import devilry
 
 
 @login_required
@@ -38,7 +38,7 @@ def settings_view(request):
          'DEVILRY_SORT_FULL_NAME_BY_LASTNAME': settings.DEVILRY_SORT_FULL_NAME_BY_LASTNAME,
          'DEVILRY_DEFAULT_DEADLINE_HANDLING_METHOD': settings.DEFAULT_DEADLINE_HANDLING_METHOD,
          'DEVILRY_ENABLE_MATHJAX': settings.DEVILRY_ENABLE_MATHJAX,
-         'DEVILRY_VERSION': devilry_version,
+         'DEVILRY_VERSION': devilry.__version__,
          'DEVILRY_SYNCSYSTEM': settings.DEVILRY_SYNCSYSTEM}
     settings_json = dumps(s, indent=4)
     # NOTE: Defining this as ``window.DevilrySettings``, and not as ``var
