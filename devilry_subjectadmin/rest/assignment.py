@@ -6,7 +6,7 @@ from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Examiner
 from devilry.utils.restformat import format_datetime
 from devilry.utils.restformat import format_timedelta
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginNotInRegistryError
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginNotInRegistryError
 from .auth import IsAssignmentAdmin
 from .auth import periodadmin_required
 from .viewbase import BaseNodeInstanceModelView

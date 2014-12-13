@@ -13,7 +13,7 @@ from crispy_forms.layout import HTML
 from crispy_forms.layout import ButtonHolder
 
 from devilry.apps.core.models import Assignment
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginNotInRegistryError
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginNotInRegistryError
 from .base import AssignmentSingleObjectRequiresValidPluginMixin
 
 

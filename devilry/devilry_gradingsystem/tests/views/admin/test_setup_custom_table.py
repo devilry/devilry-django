@@ -6,7 +6,7 @@ from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.soupselect import cssGet
 from devilry.project.develop.testhelpers.soupselect import cssFind
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
 
 from .base import AdminViewTestMixin
 from .base import MockPointsPluginApi
@@ -34,7 +34,7 @@ class TestSetupCustomTableView(TestCase, AdminViewTestMixin):
     #     myregistry = GradingSystemPluginRegistry()
     #     myregistry.add(MockPointsPluginApi)
     #     myregistry.add(MockApprovedPluginApi)
-    #     with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
+    #     with patch('devilry.devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
     #         response = self.get_as(self.admin1)
     #         self.assertEquals(response.status_code, 200)
     #         html = response.content

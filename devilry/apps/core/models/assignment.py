@@ -9,7 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.conf import settings
 
-from devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
+from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from basenode import BaseNode
 from node import Node
 from period import Period
@@ -409,10 +409,10 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         Shortcut for::
 
-            devilry_gradingsystem.pluginregistry.gradingsystempluginregistry.get(
+            devilry.devilry_gradingsystem.pluginregistry.gradingsystempluginregistry.get(
                 self.grading_system_plugin_id)(self)
 
-        See: :meth:`devilry_gradingsystem.pluginregistry.GradingSystemPluginRegistry.get`.
+        See: :meth:`devilry.devilry_gradingsystem.pluginregistry.GradingSystemPluginRegistry.get`.
         """
         ApiClass = gradingsystempluginregistry.get(self.grading_system_plugin_id)
         return ApiClass(self)

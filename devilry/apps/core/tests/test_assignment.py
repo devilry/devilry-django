@@ -15,8 +15,8 @@ from devilry.apps.core.models import Period
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import PointToGradeMap
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 from ..testhelper import TestHelper
 
 

@@ -4,10 +4,10 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.layout import Field
 
-from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormBase
-from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormView
-from devilry_gradingsystem.views.feedbackbulkeditorbase import FeedbackBulkEditorFormBase
-from devilry_gradingsystem.views.feedbackbulkeditorbase import FeedbackBulkEditorFormView
+from devilry.devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormBase
+from devilry.devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormView
+from devilry.devilry_gradingsystem.views.feedbackbulkeditorbase import FeedbackBulkEditorFormBase
+from devilry.devilry_gradingsystem.views.feedbackbulkeditorbase import FeedbackBulkEditorFormView
 
 
 class PointsFeedbackEditorFormMixin(object):

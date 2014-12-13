@@ -14,7 +14,7 @@ from .views.admin.setup_custom_table import SetupCustomTableView
 from .views.admin.setpassing_grade_min_points import SetPassingGradeMinPointsView
 
 
-urlpatterns = patterns('devilry_gradingsystem',
+urlpatterns = patterns('devilry.devilry_gradingsystem',
     url('^feedbackdraft_preview/(?P<deliveryid>\d+)/(?P<draftid>\d+)$',
         login_required(FeedbackDraftPreviewView.as_view()),
         name='devilry_gradingsystem_feedbackdraft_preview'),

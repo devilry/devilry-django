@@ -7,9 +7,9 @@ from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.soupselect import cssGet
 from devilry.project.develop.testhelpers.soupselect import cssFind
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
 
-from devilry_gradingsystem.models import FeedbackDraft
+from devilry.devilry_gradingsystem.models import FeedbackDraft
 from .base import AdminViewTestMixin
 # from .base import MockApprovedPluginApi
 from .base import MockPointsPluginApi

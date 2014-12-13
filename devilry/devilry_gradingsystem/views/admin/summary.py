@@ -5,8 +5,8 @@ from django import forms
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import StaticFeedback
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginNotInRegistryError
-from devilry_gradingsystem.models import FeedbackDraft
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginNotInRegistryError
+from devilry.devilry_gradingsystem.models import FeedbackDraft
 from .base import AssignmentSingleObjectMixin
 
 

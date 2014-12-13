@@ -1,8 +1,8 @@
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
-from devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
+from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 
 
 class ApprovedPluginApi(GradingSystemPluginInterface):

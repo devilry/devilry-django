@@ -1,4 +1,4 @@
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
 

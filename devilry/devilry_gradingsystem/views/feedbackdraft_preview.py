@@ -4,7 +4,7 @@ from django.http import Http404
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
-from devilry_gradingsystem.models import FeedbackDraft
+from devilry.devilry_gradingsystem.models import FeedbackDraft
 
 
 class FeedbackDraftPreviewView(DetailView):

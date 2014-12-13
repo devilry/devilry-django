@@ -6,7 +6,7 @@ from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.soupselect import cssGet
 from devilry.project.develop.testhelpers.soupselect import cssFind
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
 
 from .base import AdminViewTestMixin
 from .base import MockApprovedPluginApi
@@ -30,7 +30,7 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
         nobody = UserBuilder('nobody').user
         myregistry = GradingSystemPluginRegistry()
         myregistry.add(MockPointsPluginApi)
-        with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
+        with patch('devilry.devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
             self.assertIn(MockPointsPluginApi.id, myregistry)
             response = self.get_as(nobody, {
                 'grading_system_plugin_id': MockPointsPluginApi.id
@@ -41,7 +41,7 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
         myregistry = GradingSystemPluginRegistry()
         myregistry.add(MockPointsPluginApi)
         myregistry.add(MockApprovedPluginApi)
-        with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
+        with patch('devilry.devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1)
             self.assertEquals(response.status_code, 200)
             html = response.content
@@ -52,7 +52,7 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
     def test_next_page_requires_configuration(self):
         myregistry = GradingSystemPluginRegistry()
         myregistry.add(MockRequiresConfigurationPluginApi)
-        with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
+        with patch('devilry.devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1, {
                 'grading_system_plugin_id': MockRequiresConfigurationPluginApi.id
             })
@@ -67,7 +67,7 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
     def test_next_page_no_configuration_required(self):
         myregistry = GradingSystemPluginRegistry()
         myregistry.add(MockPointsPluginApi)
-        with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
+        with patch('devilry.devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1, {
                 'grading_system_plugin_id': MockPointsPluginApi.id
             })
@@ -82,7 +82,7 @@ class TestSelectPluginView(TestCase, AdminViewTestMixin):
     def test_next_page_invalid_pluginid(self):
         myregistry = GradingSystemPluginRegistry()
         myregistry.add(MockPointsPluginApi)
-        with patch('devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
+        with patch('devilry.devilry_gradingsystem.views.admin.selectplugin.gradingsystempluginregistry', myregistry):
             response = self.get_as(self.admin1, {
                 'grading_system_plugin_id': 'doesnotexist'
             })

@@ -9,18 +9,18 @@ How we configure the grading system on an assignment
 
 1 - Select a grading system plugin.
 -----------------------------------
-User selects one of the plugins in the :obj:`devilry_gradingsystem.pluginregistry.gradingsystempluginregistry`.
+User selects one of the plugins in the :obj:`devilry.devilry_gradingsystem.pluginregistry.gradingsystempluginregistry`.
 
 
 2 - Configure the grading system plugin
 ---------------------------------------
 User configures the grading system using the view pointed to by
-:meth:`devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.get_configuration_url`.
+:meth:`devilry.devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.get_configuration_url`.
 
 .. note::
 
 	This step is skipped unless the plugin has set
-	:obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.requires_configuration`
+	:obj:`~devilry.devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.requires_configuration`
 	to ``True``
 
 
@@ -31,7 +31,7 @@ User sets the maximum number of points possible.
 .. note::
 
 	Plugins can opt out of this step by setting
-	:obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.sets_max_points_automatically`
+	:obj:`~devilry.devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.sets_max_points_automatically`
 	to ``True``
 
 
@@ -58,15 +58,15 @@ How they do this depends on the ``points_to_grade_mapper``:
 
 .. note::
 
-	Plugins can opt out of this step by setting :obj:`~devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.sets_passing_grade_min_points_automatically`)  
+	Plugins can opt out of this step by setting :obj:`~devilry.devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface.sets_passing_grade_min_points_automatically`)  
 
 
 Creating a Plugin
 =================
 A grading system plugin must implement the
-:class:`devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface`, and
+:class:`devilry.devilry_gradingsystem.pluginregistry.GradingSystemPluginInterface`, and
 it must register the implemented class with 
-:obj:`devilry_gradingsystem.pluginregistry.gradingsystempluginregistry`.
+:obj:`devilry.devilry_gradingsystem.pluginregistry.gradingsystempluginregistry`.
 
 Please refer to one of the simple grading system plugins, such as
 ``devilry_gradingsystemplugin_points``, for a starting point for implementing
@@ -75,4 +75,4 @@ your own plugin.
 
 API
 ===
-.. automodule:: devilry_gradingsystem.pluginregistry
+.. automodule:: devilry.devilry_gradingsystem.pluginregistry

@@ -3,8 +3,8 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import NodeBuilder

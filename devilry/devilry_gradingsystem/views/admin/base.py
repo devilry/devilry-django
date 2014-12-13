@@ -4,7 +4,7 @@ from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 
 from devilry.apps.core.models import Assignment
-from devilry_gradingsystem.pluginregistry import GradingSystemPluginNotInRegistryError
+from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginNotInRegistryError
 
 
 class AssignmentSingleObjectMixin(SingleObjectMixin):

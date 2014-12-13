@@ -6,7 +6,7 @@ from crispy_forms.helper import FormHelper
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import StaticFeedback
-from devilry_gradingsystem.models import FeedbackDraft
+from devilry.devilry_gradingsystem.models import FeedbackDraft
 from .feedbackbulkeditorbase import FeedbackBulkEditorOptionsForm
 
 

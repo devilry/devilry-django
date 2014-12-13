@@ -4,7 +4,7 @@ from django.shortcuts import redirect
 from django import forms
 
 from devilry.apps.core.models import Assignment
-from devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
+from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from .base import AssignmentSingleObjectMixin
 
 
