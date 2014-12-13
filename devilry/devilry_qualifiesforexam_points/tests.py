@@ -6,8 +6,8 @@ from devilry.apps.core.testhelper import TestHelper
 from devilry.devilry_qualifiesforexam.pluginhelpers import create_sessionkey
 from devilry.devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginTestMixin
 from devilry.devilry_qualifiesforexam.models import Status
-from devilry_qualifiesforexam_points.post_statussave import post_statussave
-from devilry_qualifiesforexam_points.models import PointsPluginSetting
+from devilry.devilry_qualifiesforexam_points.post_statussave import post_statussave
+from devilry.devilry_qualifiesforexam_points.models import PointsPluginSetting
 from devilry.devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification
 
 

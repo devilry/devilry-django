@@ -14,9 +14,9 @@ tests = [
     'devilry.devilry_i18n',
     'devilry.devilry_nodeadmin',
     'devilry.devilry_qualifiesforexam',
-    'devilry_qualifiesforexam_approved',
-    'devilry_qualifiesforexam_points',
-    'devilry_qualifiesforexam_select',
+    'devilry.devilry_qualifiesforexam_approved',
+    'devilry.devilry_qualifiesforexam_points',
+    'devilry.devilry_qualifiesforexam_select',
     # #'devilry_search', NOT included because it requires a real search engine like solr
     # 'devilry_student',
     'devilry_subjectadmin',

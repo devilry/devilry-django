@@ -10,7 +10,7 @@ i18n_packages = get_javascript_catalog_packages('devilry_header', 'devilry.apps.
 
 
 
-urlpatterns = patterns('devilry_qualifiesforexam_approved',
+urlpatterns = patterns('devilry.devilry_qualifiesforexam_approved',
     url('^all/$', login_required(AllApprovedView.as_view()),
         name='devilry_qualifiesforexam_approved_all'),
     url('^subset/$', login_required(SubsetApprovedView.as_view()),

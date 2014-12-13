@@ -12,7 +12,7 @@ i18n_packages = get_javascript_catalog_packages('devilry_extjsextras', 'devilry_
 
 
 
-urlpatterns = patterns('devilry_qualifiesforexam_select',
+urlpatterns = patterns('devilry.devilry_qualifiesforexam_select',
     url('^$', login_required(csrf_protect(ensure_csrf_cookie(BuildExtjsAppView.as_view())))),
     url('^select$', login_required(csrf_protect(ensure_csrf_cookie(QualifiesBasedOnManualSelectView.as_view()))),
         name='devilry_qualifiesforexam_select'),

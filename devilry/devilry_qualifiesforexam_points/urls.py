@@ -9,7 +9,7 @@ i18n_packages = get_javascript_catalog_packages('devilry_header', 'devilry.apps.
 
 
 
-urlpatterns = patterns('devilry_qualifiesforexam_points',
+urlpatterns = patterns('devilry.devilry_qualifiesforexam_points',
     url('^all/$', login_required(QualifiesBasedOnPointsView.as_view()),
         name='devilry_qualifiesforexam_points'),
     url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
