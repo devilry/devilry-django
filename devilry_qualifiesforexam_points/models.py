@@ -1,5 +1,5 @@
 from django.db import models
-from devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam.models import Status
 from devilry.apps.core.models import Assignment
 
 

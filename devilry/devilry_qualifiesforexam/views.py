@@ -7,7 +7,7 @@ from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field
 from devilry.apps.core.models import Period
-from devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam.models import Status
 
 
 class AppView(Extjs4AppView):

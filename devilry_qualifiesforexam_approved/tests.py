@@ -3,12 +3,12 @@ from django.test import Client
 from django.core.urlresolvers import reverse
 
 from devilry.apps.core.testhelper import TestHelper
-from devilry_qualifiesforexam.pluginhelpers import create_sessionkey
-from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginTestMixin
-from devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam.pluginhelpers import create_sessionkey
+from devilry.devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginTestMixin
+from devilry.devilry_qualifiesforexam.models import Status
 from devilry_qualifiesforexam_approved.post_statussave import post_statussave_subset
 from devilry_qualifiesforexam_approved.models import SubsetPluginSetting
-from devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification
+from devilry.devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification
 
 
 class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):

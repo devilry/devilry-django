@@ -1,4 +1,4 @@
-from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
+from devilry.devilry_qualifiesforexam.registry import qualifiesforexam_plugins
 from django.core.urlresolvers import reverse_lazy
 from django.utils.translation import ugettext_lazy as _
 

@@ -1,8 +1,7 @@
 from djangorestframework.views import View
 from djangorestframework.permissions import IsAuthenticated
 
-from devilry_qualifiesforexam.registry import qualifiesforexam_plugins
-
+from devilry.devilry_qualifiesforexam.registry import qualifiesforexam_plugins
 
 
 class Plugins(View):

@@ -7,9 +7,9 @@ from django.core.exceptions import PermissionDenied
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, ButtonHolder
 
-from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
-from devilry_qualifiesforexam.pluginhelpers import BackButton, NextButton
-from devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
+from devilry.devilry_qualifiesforexam.pluginhelpers import BackButton, NextButton
+from devilry.devilry_qualifiesforexam.models import Status
 from .post_statussave import PeriodResultsCollectorSubset
 from .post_statussave import PeriodResultsCollectorAll
 from .models import SubsetPluginSetting

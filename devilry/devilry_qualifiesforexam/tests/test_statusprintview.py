@@ -4,10 +4,10 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from devilry.apps.core.testhelper import TestHelper
-from devilry_qualifiesforexam.models import Status
-from devilry_qualifiesforexam.views import StatusPrintView
-from devilry_qualifiesforexam.views import extract_lastname
-from devilry_qualifiesforexam.views import cmp_lastname
+from devilry.devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam.views import StatusPrintView
+from devilry.devilry_qualifiesforexam.views import extract_lastname
+from devilry.devilry_qualifiesforexam.views import cmp_lastname
 
 
 class TestStatusPrintView(TestCase):

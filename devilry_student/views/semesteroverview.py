@@ -1,9 +1,8 @@
 from django.views.generic import ListView
-from django.views.generic import TemplateView
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Period
-from devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam.models import Status
 
 class SemesterOverview(ListView):
     """

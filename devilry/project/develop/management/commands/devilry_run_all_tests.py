@@ -13,7 +13,7 @@ tests = [
     'devilry.devilry_header',
     'devilry.devilry_i18n',
     'devilry.devilry_nodeadmin',
-    'devilry_qualifiesforexam',
+    'devilry.devilry_qualifiesforexam',
     'devilry_qualifiesforexam_approved',
     'devilry_qualifiesforexam_points',
     'devilry_qualifiesforexam_select',

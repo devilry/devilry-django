@@ -7,12 +7,10 @@ from django.contrib.auth.models import User
 from devilry_rest.auth import authentication_required
 from devilry_rest.serializehelpers import format_datetime
 from devilry_rest.serializehelpers import serialize_user
-#from devilry_rest.serializehelpers import format_timedelta
 from devilry.apps.core.models import Node
 from devilry.apps.core.models import Candidate
-#from devilry.apps.core.models import RelatedStudent
-from devilry_qualifiesforexam.models import QualifiesForFinalExam
-from devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam
+from devilry.devilry_qualifiesforexam.models import Status
 
 
 

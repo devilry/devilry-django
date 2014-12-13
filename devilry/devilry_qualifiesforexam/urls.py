@@ -13,8 +13,8 @@ i18n_packages = get_javascript_catalog_packages('devilry_extjsextras', 'devilry_
 
 
 
-urlpatterns = patterns('devilry_qualifiesforexam',
-    url('^rest/', include('devilry_qualifiesforexam.rest.urls')),
+urlpatterns = patterns('devilry.devilry_qualifiesforexam',
+    url('^rest/', include('devilry.devilry_qualifiesforexam.rest.urls')),
     url('^$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view()))),
         name='devilry_qualifiesforexam_ui'),
     url('^statusprint/(?P<status_id>\d+)$', login_required(StatusPrintView.as_view()),

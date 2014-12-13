@@ -4,15 +4,13 @@ from django.core.exceptions import PermissionDenied
 from django.utils.translation import ugettext_lazy as _
 from extjs4.views import Extjs4AppView
 
-from devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
-
+from devilry.devilry_qualifiesforexam.pluginhelpers import QualifiesForExamPluginViewMixin
 
 
 class BaseAppView(Extjs4AppView):
     template_name = "devilry_qualifiesforexam_select/app.django.html"
     appname = 'devilry_qualifiesforexam_select'
     title = _('Select students that qualifies for final exams - Devilry')
-
 
 
 class QualifiesBasedOnManualSelectView(BaseAppView, QualifiesForExamPluginViewMixin):

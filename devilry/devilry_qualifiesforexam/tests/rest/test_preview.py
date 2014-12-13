@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import Period
 from devilry.utils.rest_testclient import RestClient
-from devilry_qualifiesforexam.pluginhelpers import PreviewData
+from devilry.devilry_qualifiesforexam.pluginhelpers import PreviewData
 
 
 class TestRestPreview(TestCase):

@@ -1,5 +1,5 @@
-from devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification
-from devilry_qualifiesforexam.pluginhelpers import PeriodResultsCollector
+from devilry.devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification
+from devilry.devilry_qualifiesforexam.pluginhelpers import PeriodResultsCollector
 
 from .models import SubsetPluginSetting
 

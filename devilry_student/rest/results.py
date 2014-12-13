@@ -4,8 +4,8 @@ from django.conf import settings
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.utils import OrderedDict
-from devilry_qualifiesforexam.models import QualifiesForFinalExam
-from devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam
+from devilry.devilry_qualifiesforexam.models import Status
 
 
 
