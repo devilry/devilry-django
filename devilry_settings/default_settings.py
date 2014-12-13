@@ -79,7 +79,7 @@ INSTALLED_APPS = ['django.contrib.sessions',
                   'devilry_mathjax',
                   'devilry.devilry_examiner',
                   'devilry.devilry_gradingsystem',
-                  'devilry_gradingsystemplugin_points',
+                  'devilry.devilry_gradingsystemplugin_points',
                   'devilry.devilry_gradingsystemplugin_approved',
                   'devilry_rest',
                  ]

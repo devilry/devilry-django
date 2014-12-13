@@ -3,9 +3,8 @@ from django.test import TestCase
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.project.develop.testhelpers.soupselect import cssGet
 from devilry.project.develop.testhelpers.soupselect import cssExists
-from devilry_gradingsystemplugin_points.devilry_plugin import PointsPluginApi
+from devilry.devilry_gradingsystemplugin_points.devilry_plugin import PointsPluginApi
 
 
 class TestFeedbackEditorView(TestCase):

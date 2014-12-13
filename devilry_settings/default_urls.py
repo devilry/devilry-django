@@ -42,7 +42,7 @@ devilry_urls = (
     (r'^devilry_qualifiesforexam_select/', include('devilry_qualifiesforexam_select.urls')),
     url(r'^devilry_examiner/', include('devilry.devilry_examiner.urls')),
     url(r'^devilry_gradingsystem/', include('devilry.devilry_gradingsystem.urls')),
-    url(r'^devilry_gradingsystemplugin_points/', include('devilry_gradingsystemplugin_points.urls')),
+    url(r'^devilry_gradingsystemplugin_points/', include('devilry.devilry_gradingsystemplugin_points.urls')),
     url(r'^devilry_gradingsystemplugin_approved/', include('devilry.devilry_gradingsystemplugin_approved.urls')),
     (r'^devilry_frontpage/', include('devilry.devilry_frontpage.urls')),
     url(r'^$', frontpage, name='devilry_frontpage'),
