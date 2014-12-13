@@ -7,9 +7,9 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 from devilry.apps.core.models import GroupInvite
 from devilry.apps.core.models import AssignmentGroup
 

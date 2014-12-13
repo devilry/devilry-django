@@ -2,9 +2,9 @@ from mock import Mock
 from django.test import TestCase
 from BeautifulSoup import BeautifulSoup
 
-# from devilry_developer.testhelpers.soupselect import cssGet
-# from devilry_developer.testhelpers.soupselect import cssExists
-from devilry_developer.testhelpers.soupselect import normalize_whitespace
+# from develop.testhelpers.soupselect import cssGet
+# from develop.testhelpers.soupselect import cssExists
+from devilry.project.develop.testhelpers.soupselect import normalize_whitespace
 from devilry_student.templatetags.devilry_student_tags import devilry_student_shortgrade
 
 class TestDevilryStudentFeedbackTags(TestCase):

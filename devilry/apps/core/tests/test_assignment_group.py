@@ -3,10 +3,10 @@ from datetime import datetime, timedelta
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from devilry_developer.testhelpers.corebuilder import SubjectBuilder
-from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 from ..models import AssignmentGroup
 from ..models import Candidate
 from ..models.assignment_group import GroupPopNotCandiateError

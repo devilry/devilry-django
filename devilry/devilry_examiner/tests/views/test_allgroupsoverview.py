@@ -1,12 +1,12 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from devilry_developer.testhelpers.corebuilder import SubjectBuilder
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_developer.testhelpers.soupselect import cssFind
-from devilry_developer.testhelpers.soupselect import cssGet
-from devilry_developer.testhelpers.soupselect import cssExists
+from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.soupselect import cssFind
+from devilry.project.develop.testhelpers.soupselect import cssGet
+from devilry.project.develop.testhelpers.soupselect import cssExists
 
 
 class HeaderTest(object):

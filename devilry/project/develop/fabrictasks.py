@@ -68,12 +68,12 @@ def autodb(djangoenv='develop', no_groups=False):
 @task
 def demodb(djangoenv='develop'):
     """
-    Run ``remove_db``, ``syncmigrate`` and ``bin/django_dev.py devilry_developer_demodb``
+    Run ``remove_db``, ``syncmigrate`` and ``bin/django_dev.py devilry.project.develop_demodb``
 
     :param djangoenv: The DJANGOENV to use.
     """
     reset_db(djangoenv=djangoenv)
-    _managepy('devilry_developer_demodb',
+    _managepy('devilry.project.develop_demodb',
         djangoenv=djangoenv,
         environment={
             'DEVILRY_EMAIL_BACKEND': 'django.core.mail.backends.dummy.EmailBackend'

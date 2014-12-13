@@ -3,8 +3,8 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.db import transaction
 
-from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.apps.core.models import PointRangeToGrade
 from devilry.apps.core.models import PointToGradeMap
 from devilry.apps.core.models.pointrange_to_grade import NonzeroSmallesMinimalPointsValidationError

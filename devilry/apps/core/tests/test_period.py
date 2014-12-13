@@ -6,8 +6,8 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
-from devilry_developer.testhelpers.corebuilder import SubjectBuilder
-from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from ..models import Period, Subject
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException

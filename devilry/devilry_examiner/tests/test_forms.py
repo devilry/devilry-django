@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.devilry_examiner.forms import GroupIdsForm
 
 

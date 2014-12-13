@@ -4,10 +4,10 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from devilry_developer.testhelpers.corebuilder import SubjectBuilder
-from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_developer.testhelpers.corebuilder import DeliveryBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.corebuilder import DeliveryBuilder
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import deliverytypes

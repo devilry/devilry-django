@@ -2,11 +2,11 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from devilry.apps.core.models import GroupInvite
-from devilry_developer.testhelpers.soupselect import cssFind
-from devilry_developer.testhelpers.soupselect import cssGet
-from devilry_developer.testhelpers.soupselect import prettyhtml
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.soupselect import cssFind
+from devilry.project.develop.testhelpers.soupselect import cssGet
+from devilry.project.develop.testhelpers.soupselect import prettyhtml
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
 
 class TestGroupInviteDeleteView(TestCase):

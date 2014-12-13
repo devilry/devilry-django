@@ -2,9 +2,9 @@
 corebuilder --- Setup devilry core data structures for tests
 ************************************************************
 
-.. module:: devilry_developer.testhelpers.corebuilder
+.. module:: devilry.project.develop.testhelpers.corebuilder
 
-:mod:`devilry_developer.testhelpers.corebuilder` is a module that makes it easy to create :mod:`devilry.apps.core.models` data for
+:mod:`devilry.project.develop.testhelpers.corebuilder` is a module that makes it easy to create :mod:`devilry.apps.core.models` data for
 tests.
 
 
@@ -17,14 +17,14 @@ something that needs real data. See :doc:`mock`.
 Howto
 =====
 Each class in the core has a wrapper class in
-:mod:`devilry_developer.testhelpers.corebuilder` that makes it easy to perform
+:mod:`devilry.project.develop.testhelpers.corebuilder` that makes it easy to perform
 operations that we need to setup tests. We call these wrappers *builders*, and
 they are all prefixed with the name of their corresponding core model and
 suffixed with ``Builder``.
 
 Using the builders is very easy::
 
-    from devilry_developer.testhelpers.corebuilder import NodeBuilder
+    from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
     duck1010builder = NodeBuilder('duckuniversity').add_subject('duck1010')
     assert(duck1010builder.subject == Subject.objects.get(short_name='duck1010'))
 
@@ -39,8 +39,8 @@ period that started 3 months ago and ends in 3 months, with a single assignment
 (week1), with a single group, with deadline one week from now with a single
 ``helloworld.txt`` delivery::
 
-    from devilry_developer.testhelpers.corebuilder import NodeBuilder
-    from devilry_developer.testhelpers.corebuilder import UserBuilder
+    from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
+    from devilry.project.develop.testhelpers.corebuilder import UserBuilder
     peterpan = UserBuilder(username='peterpan')
     helloworld_filemetabuilder = NodeBuilder('ducku')\
         .add_subject('duck1010')\
@@ -55,8 +55,8 @@ period that started 3 months ago and ends in 3 months, with a single assignment
 Since we often need to add a single subject or a single active period, we have
 shortcuts for that::
 
-    from devilry_developer.testhelpers.corebuilder import SubjectBuilder
-    from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+    from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
+    from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
     duck1010_builder = SubjectBuilder.quickadd_ducku_duck1010()
     currentperiod_builder = PeriodBuilder.quickadd_ducku_duck1010_active()
 

@@ -5,8 +5,8 @@ class LoginTestCaseMixin(object):
     Example::
 
         from django.test import TestCase
-        from devilry_developer.testhelpers.login import LoginTestCaseMixin
-        from devilry_developer.testhelpers.corebuilder import UserBuilder
+        from develop.testhelpers.login import LoginTestCaseMixin
+        from develop.testhelpers.corebuilder import UserBuilder
 
         class TestSomeView(TestCase, LoginTestCaseMixin):
 

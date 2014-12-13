@@ -1,5 +1,5 @@
 ###################
-devilry_developer
+devilry.project.develop
 ###################
 
 Only used for development of Devilry.

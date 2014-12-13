@@ -8,9 +8,9 @@ from django.test.utils import override_settings
 from django.core.management import call_command
 import haystack
 
-from devilry_developer.testhelpers.corebuilder import NodeBuilder
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry_search.search_helper import SearchHelper
 
 

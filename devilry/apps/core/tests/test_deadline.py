@@ -2,9 +2,9 @@ from django.core.exceptions import ValidationError
 from datetime import timedelta
 from django.test import TestCase
 
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models.deadline import NewerDeadlineExistsError

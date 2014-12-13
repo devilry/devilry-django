@@ -14,10 +14,10 @@ from .log import create_logging_conf
 # generated files during development
 #
 #########################################################
-SRCROOT = dirname(dirname(dirname(abspath(__file__))))
-if not exists(join(SRCROOT, 'manage.py')):
-    raise SystemExit('Could not find manage.py in SRCROOT.')
-developfilesdir = join(SRCROOT, 'developfiles')
+REPOROOT = dirname(dirname(dirname(dirname(dirname(abspath(__file__))))))
+if not exists(join(REPOROOT, 'manage.py')):
+    raise SystemExit('Could not find manage.py in REPOROOT.')
+developfilesdir = join(REPOROOT, 'developfiles')
 if not exists(developfilesdir):
     os.mkdir(developfilesdir)
 logdir = join(developfilesdir, 'log')
@@ -65,7 +65,7 @@ INSTALLED_APPS += [
     # 'raven.contrib.django.raven_compat', # Sentry client (Raven)
     'devilry_sandbox',
 
-    'devilry_developer',
+    'devilry.project.develop',
     'simple_rest',
 
     # Not apps, but here for the Django test system to discover them:
@@ -98,7 +98,7 @@ ADMINS = (
      ('Devilry admin', 'admin@example.com'),
 )
 MANAGERS = ADMINS
-ROOT_URLCONF = 'devilry_developer.dev_urls'
+ROOT_URLCONF = 'devilry.project.develop.dev_urls'
 
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 

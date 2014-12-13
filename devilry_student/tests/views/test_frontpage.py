@@ -1,18 +1,18 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from devilry_developer.testhelpers.corebuilder import SubjectBuilder
-from devilry_developer.testhelpers.corebuilder import NodeBuilder
-from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_developer.testhelpers.soupselect import cssFind
-from devilry_developer.testhelpers.soupselect import cssGet
-from devilry_developer.testhelpers.soupselect import cssExists
-# from devilry_developer.testhelpers.soupselect import prettyhtml
-from devilry_developer.testhelpers.login import LoginTestCaseMixin
-from devilry_developer.testhelpers.datebuilder import DJANGO_ISODATETIMEFORMAT
-from devilry_developer.testhelpers.datebuilder import isoformat_datetime
-from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
+from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.soupselect import cssFind
+from devilry.project.develop.testhelpers.soupselect import cssGet
+from devilry.project.develop.testhelpers.soupselect import cssExists
+# from develop.testhelpers.soupselect import prettyhtml
+from devilry.project.develop.testhelpers.login import LoginTestCaseMixin
+from devilry.project.develop.testhelpers.datebuilder import DJANGO_ISODATETIMEFORMAT
+from devilry.project.develop.testhelpers.datebuilder import isoformat_datetime
+from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 
 
 

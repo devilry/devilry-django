@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_developer.testhelpers.login import LoginTestCaseMixin
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.login import LoginTestCaseMixin
 
 
 

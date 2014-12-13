@@ -4,9 +4,9 @@ from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_developer.testhelpers.corebuilder import DeliveryBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.corebuilder import DeliveryBuilder
 from devilry.apps.core.models import StaticFeedback
 from devilry.apps.core.testhelper import TestHelper
 

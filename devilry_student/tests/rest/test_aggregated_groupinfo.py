@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.rest_testclient import RestClient
-from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
+from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 
 
 

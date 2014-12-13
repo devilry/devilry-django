@@ -2,9 +2,9 @@ from os.path import exists
 from django.test import TestCase
 from django.core.files.base import ContentFile
 
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
-from devilry_developer.testhelpers.corebuilder import DeliveryBuilder
-from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import DeliveryBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry_student.models import UploadedDeliveryFile
 
 

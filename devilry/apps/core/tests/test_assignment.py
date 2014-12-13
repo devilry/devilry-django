@@ -7,10 +7,10 @@ from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from django.db.models import Q
 
-from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_developer.testhelpers.corebuilder import NodeBuilder
-from devilry_developer.testhelpers.corebuilder import SubjectBuilder
-from devilry_developer.testhelpers.corebuilder import PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
+from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.apps.core.models import Period
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Candidate

@@ -1,2 +1,2 @@
-from devilry_developer.testhelpers.datebuilder import DJANGO_ISODATETIMEFORMAT
-from devilry_developer.testhelpers.datebuilder import isoformat_datetime
+from devilry.project.develop.testhelpers.datebuilder import DJANGO_ISODATETIMEFORMAT
+from devilry.project.develop.testhelpers.datebuilder import isoformat_datetime

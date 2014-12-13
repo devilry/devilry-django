@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from devilry_developer.testhelpers.corebuilder import UserBuilder
-# from devilry_developer.testhelpers.soupselect import cssFind
-# from devilry_developer.testhelpers.soupselect import cssGet
-# from devilry_developer.testhelpers.soupselect import cssExists
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
+# from develop.testhelpers.soupselect import cssFind
+# from develop.testhelpers.soupselect import cssGet
+# from develop.testhelpers.soupselect import cssExists
 
 
 class TestAboutMeView(TestCase):

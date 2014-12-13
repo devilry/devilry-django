@@ -1,5 +1,5 @@
 from devilry_gradingsystem.pluginregistry import GradingSystemPluginInterface
-from devilry_developer.testhelpers.corebuilder import UserBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
 
 class AdminViewTestMixin(object):
