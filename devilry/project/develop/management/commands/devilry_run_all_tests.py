@@ -11,7 +11,7 @@ tests = [
     'devilry.devilry_gradingsystemplugin_approved',
     'devilry.devilry_gradingsystemplugin_points',
     'devilry.devilry_header',
-    'devilry_i18n',
+    'devilry.devilry_i18n',
     'devilry_nodeadmin',
     'devilry_qualifiesforexam',
     'devilry_qualifiesforexam_approved',
