@@ -7,7 +7,7 @@ from .toplevel_node_listing import ToplevelNodeListing
 from .aggregatedstudentinfo import AggregatedStudentInfo
 
 
-urlpatterns = patterns('devilry_nodeadmin.rest',
+urlpatterns = patterns('devilry.devilry_nodeadmin.rest',
     url(r'^toplevel_nodes/$', ToplevelNodeListing.as_view(),
         name='devilry_nodeadmin-rest_toplevel_nodes'),
     url(r'^node/details/(?P<id>\d+)$', NodeDetails.as_view(),
