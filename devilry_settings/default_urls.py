@@ -3,7 +3,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest, HttpResponsePermanentRedirect
-from devilry_frontpage.views import frontpage
+from devilry.devilry_frontpage.views import frontpage
 
 admin.autodiscover()
 
@@ -44,6 +44,6 @@ devilry_urls = (
     url(r'^devilry_gradingsystem/', include('devilry_gradingsystem.urls')),
     url(r'^devilry_gradingsystemplugin_points/', include('devilry_gradingsystemplugin_points.urls')),
     url(r'^devilry_gradingsystemplugin_approved/', include('devilry_gradingsystemplugin_approved.urls')),
-    (r'^devilry_frontpage/', include('devilry_frontpage.urls')),
+    (r'^devilry_frontpage/', include('devilry.devilry_frontpage.urls')),
     url(r'^$', frontpage, name='devilry_frontpage'),
 )
