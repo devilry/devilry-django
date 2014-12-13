@@ -8,8 +8,6 @@ from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormBas
 from devilry_gradingsystem.views.feedbackeditorbase import FeedbackEditorFormView
 from devilry_gradingsystem.views.feedbackbulkeditorbase import FeedbackBulkEditorFormBase
 from devilry_gradingsystem.views.feedbackbulkeditorbase import FeedbackBulkEditorFormView
-from devilry_gradingsystem.models import FeedbackDraft
-from devilry_examiner.views.bulkviewbase import BulkViewBase
 
 
 class PointsFeedbackEditorFormMixin(object):

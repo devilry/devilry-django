@@ -3,10 +3,10 @@ from django.views.generic.edit import UpdateView
 from django.core.urlresolvers import reverse
 from django import forms
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, ButtonHolder, Submit, Field, HTML, Fieldset
+from crispy_forms.layout import Layout, ButtonHolder, Submit, Field, Fieldset
 
 from devilry.apps.core.models import Assignment
-from devilry_examiner.views.add_deadline import DevilryDatetimeFormField
+from devilry.devilry_examiner.views.add_deadline import DevilryDatetimeFormField
 
 
 class AssignmentUpdateForm(forms.ModelForm):

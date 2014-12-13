@@ -1,12 +1,12 @@
 from cStringIO import StringIO
 import zipfile
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from devilry_developer.testhelpers.corebuilder import SubjectBuilder
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
-from devilry_examiner.views.downloadalldeliveries_on_assignment import DownloadAllDeliveriesOnAssignmentView
+from devilry.devilry_examiner.views.downloadalldeliveries_on_assignment import DownloadAllDeliveriesOnAssignmentView
 from devilry.apps.core.models import Candidate
 
 

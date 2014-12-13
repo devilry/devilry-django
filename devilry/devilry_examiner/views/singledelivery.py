@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 #from django.http import Http404
 
 from devilry.apps.core.models import Delivery
-from .singlegroupoverview import get_previous_and_next_group_waiting_for_feedback
+from devilry.devilry_examiner.views.singlegroupoverview import get_previous_and_next_group_waiting_for_feedback
 
 
 class SingleDeliveryView(DetailView):

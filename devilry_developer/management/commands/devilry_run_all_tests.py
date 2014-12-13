@@ -19,7 +19,7 @@ tests = [
     'devilry_qualifiesforexam_points',
     'devilry_qualifiesforexam_select',
     # #'devilry_search', NOT included because it requires a real search engine like solr
-    'devilry_student',
+    # 'devilry_student',
     'devilry_subjectadmin',
     'devilry_usersearch',
 ]

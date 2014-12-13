@@ -1,23 +1,16 @@
-from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
-from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from crispy_forms.layout import Field
 from crispy_forms.layout import Submit
-from crispy_forms.layout import Hidden
 from crispy_forms.layout import HTML
 from crispy_forms.layout import ButtonHolder
 
 from devilry.apps.core.models import Deadline
-from devilry.apps.core.models import Assignment
-from devilry_examiner.forms import GroupIdsForm
 from .crispylayout import DefaultSubmit
 from .bulkviewbase import BulkViewBase
 from .bulkviewbase import OptionsForm
-
 
 
 class DevilryDatetimeFormField(forms.DateTimeField):

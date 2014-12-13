@@ -1,4 +1,3 @@
-from urllib import urlencode
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
@@ -6,11 +5,9 @@ from devilry.apps.core.models import Deadline
 from devilry_developer.testhelpers.corebuilder import PeriodBuilder
 from devilry_developer.testhelpers.corebuilder import UserBuilder
 from devilry_developer.testhelpers.datebuilder import DateTimeBuilder
-from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import cssExists
-from devilry_examiner.tests.utils import isoformat_datetime
-
+from devilry.devilry_examiner.tests.utils import isoformat_datetime
 
 
 class TestAddDeadlineView(TestCase):

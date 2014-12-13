@@ -8,9 +8,8 @@ from devilry_developer.testhelpers.soupselect import cssFind
 from devilry_developer.testhelpers.soupselect import cssGet
 from devilry_developer.testhelpers.soupselect import cssExists
 from devilry_developer.testhelpers.soupselect import normalize_whitespace
-from devilry_examiner.tests.utils import isoformat_datetime
-from devilry_examiner.tests.utils import DJANGO_ISODATETIMEFORMAT
-
+from devilry.devilry_examiner.tests.utils import isoformat_datetime
+from devilry.devilry_examiner.tests.utils import DJANGO_ISODATETIMEFORMAT
 
 
 class TestSingleDeliveryView(TestCase):

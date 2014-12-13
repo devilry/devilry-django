@@ -12,13 +12,13 @@ from .views.allgroupsoverview import WaitingForDeliveriesOverview
 from .views.allgroupsoverview import CorrectedOverview
 from .views.downloadalldeliveries_on_assignment import DownloadAllDeliveriesOnAssignmentView
 from .views.singledelivery import SingleDeliveryView
-from .views.add_deadline import AddDeadlineView
+from devilry.devilry_examiner.views.add_deadline import AddDeadlineView
 from .views.close_groups import CloseGroupsView
 from .views.add_nonelectronic_delivery import AddNonElectronicDeliveryView
 from .views.lastdelivery_or_groupoverview_redirect import LastDeliveryOrGroupOverviewRedirectView
 
 
-urlpatterns = patterns('devilry_examiner',
+urlpatterns = patterns('devilry.devilry_examiner',
     url('^$', login_required(DashboardView.as_view()),
         name='devilry_examiner_dashboard'),
     url('^allgroupsoverview/(?P<assignmentid>\d+)$',

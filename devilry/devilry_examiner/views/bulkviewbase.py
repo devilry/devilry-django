@@ -3,9 +3,9 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.http import Http404
 from django import forms
-from devilry.apps.core.models import Assignment
-from devilry_examiner.forms import GroupIdsForm
 
+from devilry.apps.core.models import Assignment
+from devilry.devilry_examiner.forms import GroupIdsForm
 
 
 class OptionsForm(GroupIdsForm):

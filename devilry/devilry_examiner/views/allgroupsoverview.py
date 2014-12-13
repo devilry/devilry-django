@@ -5,11 +5,9 @@ from django.views.generic import View
 from django.core.paginator import Paginator
 from django.core.paginator import EmptyPage
 from django.core.paginator import PageNotAnInteger
-from django.db.models import Count
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
-from ..forms import BulkForm
 
 
 def get_paginated_page(paginator, page):

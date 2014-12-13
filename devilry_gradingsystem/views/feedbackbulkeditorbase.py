@@ -1,27 +1,22 @@
 from datetime import datetime
 from random import randint
+
 from django.core.urlresolvers import reverse
-from django.utils.http import urlencode
-from django.views.generic.detail import SingleObjectMixin
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext_lazy as _
 from django.http import Http404
 from django import forms
+
+
 # from django.views.generic import FormView
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
 
 from devilry.apps.markup.parse_markdown import markdown_full
-from devilry.apps.core.models import Delivery
-from devilry.apps.core.models import Assignment
-from devilry.apps.core.models import AssignmentGroup
-from devilry.apps.core.models import StaticFeedback
 from devilry_gradingsystem.models import FeedbackDraft
 from devilry_gradingsystem.widgets.editmarkdown import EditMarkdownLayoutObject
 from devilry_gradingsystem.widgets.editfeedbackbuttonbar import BulkEditFeedbackButtonBar
-from devilry_examiner.views.bulkviewbase import BulkViewBase
-from devilry_examiner.views.bulkviewbase import OptionsForm
+from devilry.devilry_examiner.views.bulkviewbase import BulkViewBase
+from devilry.devilry_examiner.views.bulkviewbase import OptionsForm
 
 
 
