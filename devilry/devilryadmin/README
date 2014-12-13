@@ -1,2 +1,0 @@
-This module is no longer in use, and will be removed when we are sure we don't
-want to port any more of the commands to django management commands.
