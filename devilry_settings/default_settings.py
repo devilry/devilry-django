@@ -59,7 +59,7 @@ INSTALLED_APPS = ['django.contrib.sessions',
 
                   'devilry.devilry_extjsextras',
                   'devilry.devilry_theme',
-                  'devilry.devilry_theme2',
+                  'devilry_theme2',
                   'devilry.devilry_usersearch',
                   'devilry.devilry_authenticateduserinfo',
                   'devilry.devilry_header',
