@@ -19,7 +19,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 DATABASES = {}
 EMAIL_SUBJECT_PREFIX = '[Devilry] '
-ROOT_URLCONF = 'devilry.devilry_settings.default_root_urlconf'
+ROOT_URLCONF = 'devilry.project.production.urls'
 AUTH_PROFILE_MODULE = 'core.DevilryUserProfile'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
