@@ -1,4 +1,4 @@
-from django_decoupled_docs.registry import VersionedReadTheDocsDocProxyBase
+from devilry.django_decoupled_docs.registry import VersionedReadTheDocsDocProxyBase
 import devilry
 
 

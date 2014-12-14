@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
-from django_decoupled_docs.registry import documentationregistry
+from devilry.django_decoupled_docs.registry import documentationregistry
 from devilry_settings.docproxies import DevilryUserDocsProxy
 from .views.dashboard import DashboardView
 from .views.singlegroupoverview import SingleGroupOverview

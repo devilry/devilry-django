@@ -1,8 +1,8 @@
 from django import template
 from django.utils.translation import get_language
-from django.template.defaultfilters import stringfilter
 
-from django_decoupled_docs.registry import documentationregistry
+from devilry.django_decoupled_docs.registry import documentationregistry
+
 
 register = template.Library()
 

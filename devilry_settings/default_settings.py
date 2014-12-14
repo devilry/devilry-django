@@ -42,7 +42,7 @@ INSTALLED_APPS = ['django.contrib.sessions',
                   'south',
                   # 'celery_haystack',
                   'django_cradmin',
-                  'django_decoupled_docs',
+                  'devilry.django_decoupled_docs',
 
                   'devilry.apps.core',
                   'devilry.apps.extjshelpers',
