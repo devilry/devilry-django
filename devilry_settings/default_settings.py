@@ -58,7 +58,7 @@ INSTALLED_APPS = ['django.contrib.sessions',
                   'devilry.apps.send_email_to_students',
 
                   'devilry.devilry_extjsextras',
-                  'devilry_theme',
+                  'devilry.devilry_theme',
                   'devilry_theme2',
                   'devilry.devilry_usersearch',
                   'devilry.devilry_authenticateduserinfo',
