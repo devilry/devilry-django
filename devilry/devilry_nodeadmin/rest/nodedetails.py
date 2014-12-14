@@ -1,10 +1,10 @@
 from django.db.models import Count
+
 from djangorestframework.views import InstanceModelView
 from djangorestframework.resources import ModelResource
 from djangorestframework.permissions import IsAuthenticated
-
 from devilry.apps.core.models import Node, Assignment
-from devilry_subjectadmin.rest.auth import BaseIsAdmin, nodeadmin_required
+from devilry.devilry_subjectadmin.rest.auth import BaseIsAdmin, nodeadmin_required
 
 
 class IsNodeAdmin(BaseIsAdmin):

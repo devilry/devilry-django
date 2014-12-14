@@ -1,13 +1,13 @@
+from django.shortcuts import get_object_or_404
+
 from djangorestframework.views import View
 from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.response import ErrorResponse
 from djangorestframework import status as statuscodes
-from django.shortcuts import get_object_or_404
-
 from devilry.devilry_qualifiesforexam.pluginhelpers import create_sessionkey
 from devilry.apps.core.models import Period
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
-from devilry_subjectadmin.rest.auth import IsPeriodAdmin
+from devilry.devilry_subjectadmin.rest.auth import IsPeriodAdmin
 
 
 class Preview(View):

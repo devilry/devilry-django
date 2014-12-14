@@ -31,7 +31,7 @@ devilry_urls = (
     (r'^devilry_student/', include('devilry.devilry_student.urls')),
     (r'^devilry_i18n/', include('devilry.devilry_i18n.urls')),
     (r'^superuser/', include(admin.site.urls)),
-    (r'^devilry_subjectadmin/', include('devilry_subjectadmin.urls')),
+    (r'^devilry_subjectadmin/', include('devilry.devilry_subjectadmin.urls')),
     (r'^devilry_send_email_to_students/', include('devilry.apps.send_email_to_students.urls')),
     (r'^devilry_search/', include('devilry.devilry_search.urls')),
     (r'^devilry_header/', include('devilry.devilry_header.urls')),
