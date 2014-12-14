@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from .views import urlsetting_or_unsetview
+from devilry.devilry_settings.views import urlsetting_or_unsetview
 
 
 def template_variables(request):
