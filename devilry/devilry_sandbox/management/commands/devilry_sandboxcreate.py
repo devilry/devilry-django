@@ -1,9 +1,9 @@
+from optparse import make_option
+
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from optparse import make_option
-
-from devilry_sandbox.sandbox import Sandbox
+from devilry.devilry_sandbox.sandbox import Sandbox
 
 
 class Command(BaseCommand):

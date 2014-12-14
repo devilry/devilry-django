@@ -2,7 +2,7 @@ from django.views.generic import TemplateView, View
 from django.shortcuts import redirect
 from django.db import transaction
 
-from .sandbox import Sandbox
+from devilry.devilry_sandbox.sandbox import Sandbox
 
 
 class CreateSubjectIntroView(TemplateView):
