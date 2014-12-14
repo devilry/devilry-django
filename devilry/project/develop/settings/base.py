@@ -142,8 +142,8 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 ##################################################################################
 # Make Devilry speak in typical university terms (semester instead of period, ...)
 ##################################################################################
-INSTALLED_APPS += ['devilry_university_translations']
-DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry_university_translations',)
+INSTALLED_APPS += ['devilry.devilry_university_translations']
+DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry.devilry_university_translations',)
 
 
 ##################################################################################
