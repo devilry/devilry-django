@@ -1,7 +1,7 @@
 from haystack import indexes
 from datetime import datetime
 
-from devilry_search.base import BaseIndex
+from devilry.devilry_search.base import BaseIndex
 from . import models
 
 

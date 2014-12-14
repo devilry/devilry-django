@@ -7,7 +7,7 @@ from crispy_forms.layout import Field
 from crispy_forms.layout import Submit
 from crispy_forms.bootstrap import FieldWithButtons
 
-from devilry_search.search_helper import SearchHelper
+from devilry.devilry_search.search_helper import SearchHelper
 
 
 class SearchForm(forms.Form):

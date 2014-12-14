@@ -4,21 +4,6 @@ from optparse import make_option
 
 tests = [
     'devilry',
-    'devilry.devilry_authenticateduserinfo',
-    'devilry.devilry_examiner',
-    'devilry.devilry_frontpage',
-    'devilry.devilry_gradingsystem',
-    'devilry.devilry_gradingsystemplugin_approved',
-    'devilry.devilry_gradingsystemplugin_points',
-    'devilry.devilry_header',
-    'devilry.devilry_i18n',
-    'devilry.devilry_nodeadmin',
-    'devilry.devilry_qualifiesforexam',
-    'devilry.devilry_qualifiesforexam_approved',
-    'devilry.devilry_qualifiesforexam_points',
-    'devilry.devilry_qualifiesforexam_select',
-    # #'devilry_search', NOT included because it requires a real search engine like solr
-    # 'devilry_student',
     'devilry_subjectadmin',
     'devilry_usersearch',
 ]

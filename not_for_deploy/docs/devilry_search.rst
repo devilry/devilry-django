@@ -1,8 +1,8 @@
-==========================================================
-:mod:`devilry_search` --- Search for Devilry
-==========================================================
-This app provides a search API for Devilry.
+====================================================
+:mod:`devilry.devilry_search` --- Search for Devilry
+====================================================
 
+This app provides a search API for Devilry.
 
 
 

@@ -5,7 +5,7 @@ from .studentcontent import SearchStudentContent
 from .examinercontent import SearchExaminerContent
 
 
-urlpatterns = patterns('devilry_search.rest',
+urlpatterns = patterns('devilry.devilry_search.rest',
     url(r'^admincontent$', SearchAdminContent.as_view(),
         name='devilry_search_admincontent'),
     url(r'^studentcontent$', SearchStudentContent.as_view(),

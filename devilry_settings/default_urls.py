@@ -33,7 +33,7 @@ devilry_urls = (
     (r'^superuser/', include(admin.site.urls)),
     (r'^devilry_subjectadmin/', include('devilry_subjectadmin.urls')),
     (r'^devilry_send_email_to_students/', include('devilry.apps.send_email_to_students.urls')),
-    (r'^devilry_search/', include('devilry_search.urls')),
+    (r'^devilry_search/', include('devilry.devilry_search.urls')),
     (r'^devilry_header/', include('devilry.devilry_header.urls')),
     ('^devilry_nodeadmin/', include('devilry.devilry_nodeadmin.urls')),
     (r'^devilry_qualifiesforexam/', include('devilry.devilry_qualifiesforexam.urls')),
