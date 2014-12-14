@@ -218,5 +218,5 @@ DEVILRY_ENABLE_MATHJAX = True
 ###################################################
 # Setup logging using the defaults - logs to stderr
 ###################################################
-from devilry.devilry_settings.log import create_logging_config
+from devilry.project.log import create_logging_config
 LOGGING = create_logging_config()
