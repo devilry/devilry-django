@@ -2,10 +2,10 @@ from datetime import datetime, timedelta
 from django.test import TestCase
 
 from devilry.apps.core.testhelper import TestHelper
-from devilry.utils.rest_testclient import RestClient
+from devilry.devilry_rest.testclient import RestClient
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import AssignmentGroup
-from devilry.utils.restformat import format_datetime
+from devilry.devilry_rest.serializehelpers import format_datetime
 
 from devilry_subjectadmin.rest.deadlinesbulk import encode_bulkdeadline_id
 from devilry_subjectadmin.rest.deadlinesbulk import decode_bulkdeadline_id

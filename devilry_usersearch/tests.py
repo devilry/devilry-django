@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.contrib.auth.models import User
 
-from devilry.utils.rest_testclient import RestClient
+from devilry.devilry_rest.testclient import RestClient
 from devilry.apps.core.testhelper import TestHelper
 
 

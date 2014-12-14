@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import Period
-from devilry.utils.rest_testclient import RestClient
+from devilry.devilry_rest.testclient import RestClient
 from devilry.devilry_qualifiesforexam.models import Status
 from devilry.devilry_qualifiesforexam.pluginhelpers import create_settings_sessionkey
 from devilry.devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification

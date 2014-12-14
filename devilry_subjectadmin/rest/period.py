@@ -7,7 +7,7 @@ from .auth import subjectadmin_required
 from .viewbase import BaseNodeInstanceModelView
 from .viewbase import BaseNodeListOrCreateView
 from .resources import BaseNodeInstanceResource
-from devilry.utils.restformat import format_datetime
+from devilry.devilry_rest.serializehelpers import format_datetime
 from devilry.apps.core.models import Period
 
 

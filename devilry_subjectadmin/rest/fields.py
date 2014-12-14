@@ -3,11 +3,9 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 
 # Import these to avoid breaking existing code after they where moved
-from devilry.utils.restformfields import ListOfDictField
-from devilry.utils.restformfields import ListOfTypedField
-from devilry.utils.restformfields import DictField
-
-
+from devilry.devilry_rest.formfields import ListOfDictField
+from devilry.devilry_rest.formfields import ListOfTypedField
+from devilry.devilry_rest.formfields import DictField
 
 
 class DevilryUserMultipleChoiceField(forms.ModelMultipleChoiceField):

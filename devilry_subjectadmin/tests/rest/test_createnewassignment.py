@@ -4,7 +4,7 @@ from django.test import TestCase
 from devilry.apps.core.testhelper import TestHelper
 from devilry_subjectadmin.rest.createnewassignment import CreateNewAssignmentDao
 from devilry_subjectadmin.rest.errors import BadRequestFieldError
-from devilry.utils.rest_testclient import RestClient
+from devilry.devilry_rest.testclient import RestClient
 from devilry.apps.core.models.deliverytypes import NON_ELECTRONIC
 from devilry.apps.core.models.deliverytypes import ELECTRONIC
 

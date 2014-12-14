@@ -4,7 +4,7 @@ import numpy
 
 from devilry_subjectadmin.rest.auth import IsAssignmentAdmin
 from devilry.apps.core.models import Assignment
-from devilry.utils.restformat import serialize_user
+from devilry.devilry_rest.serializehelpers import serialize_user
 from .group import GroupSerializer
 
 

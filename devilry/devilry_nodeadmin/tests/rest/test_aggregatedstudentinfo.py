@@ -4,7 +4,7 @@ import time
 from urllib import urlencode
 
 from devilry.apps.core.testhelper import TestHelper
-from devilry.utils.rest_testclient import RestClient
+from devilry.devilry_rest.testclient import RestClient
 
 
 class TestRestAggregatedStudentInfo(TestCase):

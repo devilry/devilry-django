@@ -5,7 +5,7 @@ from datetime import datetime
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.apps.core.models import AssignmentGroup
-from devilry.utils.rest_testclient import RestClient
+from devilry.devilry_rest.testclient import RestClient
 
 from devilry_subjectadmin.rest.group import GroupManager
 from devilry_subjectadmin.rest.errors import PermissionDeniedError

@@ -13,8 +13,8 @@ from djangorestframework.response import Response
 
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import AssignmentGroup
-from devilry.utils.restformat import format_datetime
-from devilry.utils.restformat import format_timedelta
+from devilry.devilry_rest.serializehelpers import format_datetime
+from devilry.devilry_rest.serializehelpers import format_timedelta
 from .group import GroupSerializer
 from .errors import NotFoundError
 from .errors import ValidationErrorResponse

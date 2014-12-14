@@ -4,9 +4,9 @@ from djangorestframework.resources import ModelResource
 from djangorestframework.permissions import IsAuthenticated
 
 from devilry.apps.core.models import Delivery
+from devilry.devilry_rest.serializehelpers import format_datetime
+from devilry.devilry_rest.serializehelpers import format_timedelta
 from .helpers import GroupResourceHelpersMixin
-from .helpers import format_datetime
-from .helpers import format_timedelta
 
 
 class RecentDeliveriesResource(ModelResource, GroupResourceHelpersMixin):

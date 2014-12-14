@@ -8,8 +8,8 @@ from djangorestframework.permissions import IsAuthenticated
 from django.core.urlresolvers import reverse
 
 from devilry.apps.core.models import AssignmentGroup
-from .helpers import format_datetime
-from .helpers import format_timedelta
+from devilry.devilry_rest.serializehelpers import format_datetime
+from devilry.devilry_rest.serializehelpers import format_timedelta
 from .helpers import GroupResourceHelpersMixin
 from .helpers import IsPublishedAndCandidate
 

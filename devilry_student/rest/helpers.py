@@ -3,7 +3,6 @@ from djangorestframework.response import ErrorResponse
 from djangorestframework import status
 
 from devilry.apps.core.models import AssignmentGroup
-from devilry.utils.restformat import format_datetime, format_timedelta
 
 
 class GroupResourceHelpersMixin(object):

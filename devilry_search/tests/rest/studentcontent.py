@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from devilry.apps.core.testhelper import TestHelper
-from devilry.utils.rest_testclient import RestClient
+from devilry.devilry_rest.testclient import RestClient
 from .base import HaystackTestSettings
 from .base import AssertSearchResultMixin
 

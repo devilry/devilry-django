@@ -2,7 +2,7 @@ from django.test import TestCase
 
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.testhelper import TestHelper
-from devilry.utils.rest_testclient import RestClient
+from devilry.devilry_rest.testclient import RestClient
 
 from .common import isoformat_relativetime
 

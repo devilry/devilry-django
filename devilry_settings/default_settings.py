@@ -81,7 +81,7 @@ INSTALLED_APPS = ['django.contrib.sessions',
                   'devilry.devilry_gradingsystem',
                   'devilry.devilry_gradingsystemplugin_points',
                   'devilry.devilry_gradingsystemplugin_approved',
-                  'devilry_rest',
+                  'devilry.devilry_rest',
                  ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",

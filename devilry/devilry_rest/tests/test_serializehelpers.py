@@ -1,8 +1,7 @@
 from datetime import datetime
 from unittest import TestCase
 
-from ..restformat import format_datetime
-from ..restformat import format_timedelta
+from devilry.devilry_rest.serializehelpers import format_timedelta, format_datetime
 
 
 class TestRestFormat(TestCase):

@@ -4,7 +4,7 @@ from StringIO import StringIO
 from datetime import datetime, timedelta
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.testhelper import TestHelper
-#from devilry.utils.rest_testclient import RestClient
+#from devilry.devilry_rest.testclient import RestClient
 from django.test.client import Client
 
 

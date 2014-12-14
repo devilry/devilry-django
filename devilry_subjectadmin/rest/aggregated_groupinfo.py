@@ -4,7 +4,7 @@ from djangorestframework.mixins import ReadModelMixin
 from djangorestframework.permissions import IsAuthenticated
 
 from devilry_student.rest.aggregated_groupinfo import GroupResource
-from devilry.utils.restformat import format_datetime
+from devilry.devilry_rest.serializehelpers import format_datetime
 from .auth import IsGroupAdmin
 
 

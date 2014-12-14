@@ -12,8 +12,8 @@ from django.core.exceptions import ValidationError
 from devilry.apps.core.models import Period
 from devilry.devilry_qualifiesforexam.models import Status
 from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam
-from devilry.utils.restformfields import ListOfTypedField
-from devilry.utils.restformat import serialize_user
+from devilry.devilry_rest.formfields import ListOfTypedField
+from devilry.devilry_rest.serializehelpers import serialize_user
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
 from devilry.devilry_qualifiesforexam.registry import qualifiesforexam_plugins
 from devilry.devilry_qualifiesforexam.pluginhelpers import create_settings_sessionkey

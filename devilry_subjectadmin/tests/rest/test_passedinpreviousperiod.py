@@ -1,7 +1,7 @@
 from django.test import TransactionTestCase
 
 from devilry.apps.core.testhelper import TestHelper
-from devilry_rest.testclient import RestClient
+from devilry.devilry_rest.testclient import RestClient
 from devilry.apps.core.models import deliverytypes
 
 
