@@ -19,7 +19,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 DATABASES = {}
 EMAIL_SUBJECT_PREFIX = '[Devilry] '
-ROOT_URLCONF = 'devilry_settings.default_root_urlconf'
+ROOT_URLCONF = 'devilry.devilry_settings.default_root_urlconf'
 AUTH_PROFILE_MODULE = 'core.DevilryUserProfile'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -68,7 +68,7 @@ INSTALLED_APPS = ['django.contrib.sessions',
                   'devilry.devilry_frontpage',
                   'devilry.devilry_student',
                   'devilry.devilry_i18n',
-                  'devilry_settings',
+                  'devilry.devilry_settings',
                   'devilry.devilry_subjectadmin',
                   'devilry.devilry_nodeadmin',
                   'devilry.devilry_search',
@@ -92,7 +92,7 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.request",
                                'django.contrib.messages.context_processors.messages',
                                'extjs4.context_processors.extjs4',
-                               'devilry_settings.templatecontext.template_variables')
+                               'devilry.devilry_settings.templatecontext.template_variables')
 
 
 MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
@@ -218,5 +218,5 @@ DEVILRY_ENABLE_MATHJAX = True
 ###################################################
 # Setup logging using the defaults - logs to stderr
 ###################################################
-from devilry_settings.log import create_logging_config
+from devilry.devilry_settings.log import create_logging_config
 LOGGING = create_logging_config()

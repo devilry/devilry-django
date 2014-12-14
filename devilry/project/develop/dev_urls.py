@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from devilry.apps.core import pluginloader
-from devilry_settings.default_urls import devilry_urls
+from devilry.devilry_settings.default_urls import devilry_urls
 
 
 urlpatterns = patterns('',

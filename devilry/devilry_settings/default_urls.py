@@ -25,7 +25,7 @@ devilry_urls = (
 
     (r'^devilry_usersearch/', include('devilry.devilry_usersearch.urls')),
     (r'^devilry_authenticateduserinfo/', include('devilry.devilry_authenticateduserinfo.urls')),
-    (r'^devilry_settings/', include('devilry_settings.urls')),
+    (r'^devilry_settings/', include('devilry.devilry_settings.urls')),
     (r'^devilry_helplinks/', include('devilry.devilry_helplinks.urls')),
     ('r^student/assignmentgroup/(?P<assignmentgroupid>\d+)$', redirecto_to_show_delivery),
     (r'^devilry_student/', include('devilry.devilry_student.urls')),

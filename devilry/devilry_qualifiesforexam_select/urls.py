@@ -3,9 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.views.i18n import javascript_catalog
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
-from devilry_settings.i18n import get_javascript_catalog_packages
+from devilry.devilry_settings.i18n import get_javascript_catalog_packages
 from .views import QualifiesBasedOnManualSelectView
 from .views import BuildExtjsAppView
+
 
 i18n_packages = get_javascript_catalog_packages('devilry_extjsextras', 'devilry_header', 'devilry.apps.core', 'devilry_subjectadmin', 'devilry_qualifiesforexam', 'devilry_qualifiesforexam_select')
 
