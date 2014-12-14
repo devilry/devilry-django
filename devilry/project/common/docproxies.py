@@ -2,7 +2,6 @@ from devilry.django_decoupled_docs.registry import VersionedReadTheDocsDocProxyB
 import devilry
 
 
-
 class DevilryUserDocsProxy(VersionedReadTheDocsDocProxyBase):
     projectname = 'devilry-userdoc'
 
