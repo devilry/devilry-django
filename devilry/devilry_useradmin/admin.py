@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin
@@ -16,11 +15,9 @@ from django.contrib.admin import SimpleListFilter
 from django.db.models import Q
 
 from devilry.apps.core.models import DevilryUserProfile
-
-from .forms import CustomUserCreationForm
-from .forms import CustomUserChangeForm
-from .forms import get_setting
-
+from devilry.devilry_useradmin.forms import CustomUserCreationForm
+from devilry.devilry_useradmin.forms import CustomUserChangeForm
+from devilry.devilry_useradmin.forms import get_setting
 
 
 csrf_protect_m = method_decorator(csrf_protect)
