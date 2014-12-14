@@ -4,8 +4,9 @@ from os.path import exists
 from os.path import dirname
 from os.path import abspath
 
-from devilry.devilry_settings.default_settings import *
+from devilry.project.common.default_settings import *
 from .log import create_logging_conf
+
 
 
 
