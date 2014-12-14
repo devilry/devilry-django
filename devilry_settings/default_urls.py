@@ -23,7 +23,7 @@ devilry_urls = (
     (r'^jsfiledownload/', include('devilry.apps.jsfiledownload.urls')),
     (r'^authenticate/', include('devilry.apps.authenticate.urls')),
 
-    (r'^devilry_usersearch/', include('devilry_usersearch.urls')),
+    (r'^devilry_usersearch/', include('devilry.devilry_usersearch.urls')),
     (r'^devilry_authenticateduserinfo/', include('devilry.devilry_authenticateduserinfo.urls')),
     (r'^devilry_settings/', include('devilry_settings.urls')),
     (r'^devilry_helplinks/', include('devilry.devilry_helplinks.urls')),

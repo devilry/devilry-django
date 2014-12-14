@@ -5,7 +5,6 @@ from optparse import make_option
 tests = [
     'devilry',
     'devilry_subjectadmin',
-    'devilry_usersearch',
 ]
 
 
