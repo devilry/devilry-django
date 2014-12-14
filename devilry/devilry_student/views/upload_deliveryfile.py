@@ -1,11 +1,10 @@
 import json
+
 from django.http import HttpResponse
 from django.views.generic import View
 
 from devilry.apps.core.models import Deadline
-from devilry_student.models import UploadedDeliveryFile
-
-
+from devilry.devilry_student.models import UploadedDeliveryFile
 
 
 def serialize_uploadedfile(uploaded_deliveryfile):

@@ -6,10 +6,10 @@ from .open_groups import OpenGroupsView
 from .recent_deliveries import RecentDeliveriesView
 from .recent_feedbacks import RecentFeedbacksView
 from .find_groups import FindGroupsView
-from .results import ResultsView
+from devilry.devilry_student.rest.results import ResultsView
 
 
-urlpatterns = patterns('devilry_student.rest',
+urlpatterns = patterns('devilry.devilry_student.rest',
                        url(r'^aggregated-groupinfo/(?P<id>\d+)$', AggregatedGroupInfo.as_view()),
                        url(r'^add-delivery/(?P<id>\d+)$', AddDeliveryView.as_view()),
                        url(r'^open-groups/$', OpenGroupsView.as_view()),

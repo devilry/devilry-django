@@ -5,7 +5,7 @@ from BeautifulSoup import BeautifulSoup
 # from develop.testhelpers.soupselect import cssGet
 # from develop.testhelpers.soupselect import cssExists
 from devilry.project.develop.testhelpers.soupselect import normalize_whitespace
-from devilry_student.templatetags.devilry_student_tags import devilry_student_shortgrade
+from devilry.devilry_student.templatetags.devilry_student_tags import devilry_student_shortgrade
 
 class TestDevilryStudentFeedbackTags(TestCase):
     def setUp(self):

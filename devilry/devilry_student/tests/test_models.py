@@ -1,11 +1,12 @@
 from os.path import exists
+
 from django.test import TestCase
 from django.core.files.base import ContentFile
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import DeliveryBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry_student.models import UploadedDeliveryFile
+from devilry.devilry_student.models import UploadedDeliveryFile
 
 
 class TestUploadedDeliveryFile(TestCase):

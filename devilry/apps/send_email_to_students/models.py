@@ -6,7 +6,7 @@ from django.template.defaultfilters import filesizeformat
 
 from devilry.apps.core.models import StaticFeedback
 from devilry.utils.devilry_email import send_message
-from devilry_student.rest.add_delivery import successful_delivery_signal
+from devilry.devilry_student.rest.add_delivery import successful_delivery_signal
 from devilry.defaults.encoding import CHARSET
 from devilry.utils.create_absolute_url import create_absolute_url
 

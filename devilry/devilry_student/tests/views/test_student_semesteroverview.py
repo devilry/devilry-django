@@ -1,15 +1,10 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
-from devilry.apps.core.models import GroupInvite
 from devilry.project.develop.testhelpers.soupselect import cssFind
-from devilry.project.develop.testhelpers.soupselect import cssGet
-from devilry.project.develop.testhelpers.soupselect import prettyhtml
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
-from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
-from devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam.models import Status
 
 class TestSemesterOverview(TestCase):
     def setUp(self):
@@ -25,6 +20,7 @@ class TestSemesterOverview(TestCase):
 
     def _postas(self, user, *args, **kwargs):
         self.client.login(username=user.username, password='test')
+        url = reverse('devilry_student_browseperiod', args=[kwargs['id']])
         return self.client.post(url, *args, **kwargs)
 
     def test_not_logged_in(self):

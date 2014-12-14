@@ -1,19 +1,21 @@
 from datetime import datetime
+
 import django.dispatch
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.db import IntegrityError
 from django.conf import settings
+
 from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource
 from djangorestframework.response import ErrorResponse
-
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
-from .helpers import IsPublishedAndCandidate
+from devilry.devilry_student.rest.helpers import IsPublishedAndCandidate
+
 
 
 #: Signal used to signal that a delivery has been successfully completed

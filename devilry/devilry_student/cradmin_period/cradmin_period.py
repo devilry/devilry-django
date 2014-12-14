@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crinstance, crmenu
 
 from devilry.apps.core.models import Period
-from . import assignments
+from devilry.devilry_student.cradmin_period import assignments
 
 
 class Menu(crmenu.Menu):

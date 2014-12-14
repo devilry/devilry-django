@@ -1,15 +1,15 @@
 import json
 from tempfile import mkdtemp
 from shutil import rmtree
+
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry_student.models import UploadedDeliveryFile
+from devilry.devilry_student.models import UploadedDeliveryFile
 from devilry.project.develop.testhelpers.login import LoginTestCaseMixin
-
 
 
 class TestUploadDeliveryFile(TestCase, LoginTestCaseMixin):

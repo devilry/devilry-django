@@ -4,9 +4,9 @@ from django.views.i18n import javascript_catalog
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 
 from devilry_settings.i18n import get_javascript_catalog_packages
-from devilry_student.cradmin_period import cradmin_period
-from devilry_student.cradmin_group import cradmin_group
-from .views.extjsapp import AppView
+from devilry.devilry_student.cradmin_period import cradmin_period
+from devilry.devilry_student.cradmin_group import cradmin_group
+from devilry.devilry_student.views.extjsapp import AppView
 from .views.frontpage import FrontpageView
 from .views.projectgroup_overview import ProjectGroupOverviewView
 from .views.groupinvite_respond import GroupInviteRespondView
@@ -18,6 +18,7 @@ from .views.semesteroverview import SemesterOverview
 from .views.download_deliveryfiles import CompressedFileDownloadView
 from .views.download_deliveryfiles import FileDownloadView
 
+
 i18n_packages = get_javascript_catalog_packages('devilry_student', 'devilry_header', 'devilry_extjsextras', 'devilry.apps.core')
 
 
@@ -27,11 +28,11 @@ def emptyview(request):
     return HttpResponse('Logged in')
 
 
-urlpatterns = patterns('devilry_student',
+urlpatterns = patterns('devilry.devilry_student',
     url('^old$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view())))),
     url('^$', login_required(FrontpageView.as_view()),
         name='devilry_student'),
-    url('^rest/', include('devilry_student.rest.urls')),
+    url('^rest/', include('devilry.devilry_student.rest.urls')),
     url('^emptytestview', emptyview), # NOTE: Only used for testing
     url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
        name='devilry_student_i18n'),
