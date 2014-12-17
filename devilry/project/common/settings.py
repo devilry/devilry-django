@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'devilry.apps.jsfiledownload',
     'devilry.apps.gradeeditors',
 
-    'devilry.apps.statistics',
     'devilry.apps.markup',
     'devilry.superadmin',
     'devilry.apps.authenticate',
