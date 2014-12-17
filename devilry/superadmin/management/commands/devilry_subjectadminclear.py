@@ -1,6 +1,6 @@
 from django.core.management.base import CommandError
 
-from devilry_subjectadminadd import AdminAddBase
+from devilry.superadmin.management.commands.devilry_subjectadminadd import AdminAddBase
 
 
 class Command(AdminAddBase):

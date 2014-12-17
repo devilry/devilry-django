@@ -1,6 +1,8 @@
 from django.db.models import Q
+
 from devilry.apps.core.models import Period
-from devilry_subjectsearch import NodeSearchBase
+from devilry.superadmin.management.commands.devilry_subjectsearch import NodeSearchBase
+
 
 class Command(NodeSearchBase):
     help = 'Search for a period by short_name. Matches any part of the short_name.'

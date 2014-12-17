@@ -1,9 +1,11 @@
-from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
 from optparse import make_option
-
-from devilry_usermod import UserModCommand
 import sys
+
+from django.core.management.base import BaseCommand
+from django.contrib.auth.models import User
+
+from devilry.superadmin.management.commands.devilry_usermod import UserModCommand
+
 
 class Command(UserModCommand):
     help = 'Add users from standard in.'

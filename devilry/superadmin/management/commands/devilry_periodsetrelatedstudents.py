@@ -1,4 +1,4 @@
-from devilry_periodsetrelatedexaminers import RelatedBaseCommand
+from devilry.superadmin.management.commands.devilry_periodsetrelatedexaminers import RelatedBaseCommand
 
 
 class Command(RelatedBaseCommand):
