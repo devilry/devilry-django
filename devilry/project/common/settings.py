@@ -24,65 +24,66 @@ AUTH_PROFILE_MODULE = 'core.DevilryUserProfile'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 
-INSTALLED_APPS = ['django.contrib.sessions',
-                  'django.contrib.auth',
-                  'django.contrib.contenttypes',
-                  'django.contrib.staticfiles',
-                  'django.contrib.sessions',
-                  'django.contrib.messages',
-                  'django.contrib.admin',
-                  'django.contrib.humanize',
-                  # 'djcelery',
-                  'errortemplates',
-                  'crispy_forms',
-                  'djangorestframework',
-                  'gunicorn',
-                  'extjs4',
-                  'haystack',
-                  'south',
-                  # 'celery_haystack',
-                  'django_cradmin',
-                  'devilry.django_decoupled_docs',
+INSTALLED_APPS = [
+    'django.contrib.sessions',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.staticfiles',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.admin',
+    'django.contrib.humanize',
+    # 'djcelery',
+    'errortemplates',
+    'crispy_forms',
+    'djangorestframework',
+    'gunicorn',
+    'extjs4',
+    'haystack',
+    'south',
+    # 'celery_haystack',
+    'django_cradmin',
+    'devilry.django_decoupled_docs',
 
-                  'devilry.apps.core',
-                  'devilry.apps.extjshelpers',
-                  'devilry.apps.extjsux',
-                  'devilry.apps.developertools',
-                  'devilry.apps.jsfiledownload',
-                  'devilry.apps.gradeeditors',
+    'devilry.apps.core',
+    'devilry.apps.extjshelpers',
+    'devilry.apps.extjsux',
+    'devilry.apps.developertools',
+    'devilry.apps.jsfiledownload',
+    'devilry.apps.gradeeditors',
 
-                  'devilry.apps.statistics',
-                  'devilry.apps.markup',
-                  'devilry.apps.superadmin',
-                  'devilry.apps.authenticate',
-                  'devilry.apps.send_email_to_students',
+    'devilry.apps.statistics',
+    'devilry.apps.markup',
+    'devilry.apps.superadmin',
+    'devilry.apps.authenticate',
+    'devilry.apps.send_email_to_students',
 
-                  'devilry.devilry_extjsextras',
-                  'devilry.devilry_theme',
-                  'devilry.devilry_theme2',
-                  'devilry.devilry_usersearch',
-                  'devilry.devilry_authenticateduserinfo',
-                  'devilry.devilry_header',
-                  'devilry.devilry_useradmin',
-                  'devilry.devilry_helplinks',
-                  'devilry.devilry_frontpage',
-                  'devilry.devilry_student',
-                  'devilry.devilry_i18n',
-                  'devilry.devilry_settings',
-                  'devilry.devilry_subjectadmin',
-                  'devilry.devilry_nodeadmin',
-                  'devilry.devilry_search',
-                  'devilry.devilry_qualifiesforexam',
-                  'devilry.devilry_qualifiesforexam_approved',
-                  'devilry.devilry_qualifiesforexam_points',
-                  'devilry.devilry_qualifiesforexam_select',
-                  'devilry.devilry_mathjax',
-                  'devilry.devilry_examiner',
-                  'devilry.devilry_gradingsystem',
-                  'devilry.devilry_gradingsystemplugin_points',
-                  'devilry.devilry_gradingsystemplugin_approved',
-                  'devilry.devilry_rest',
-                 ]
+    'devilry.devilry_extjsextras',
+    'devilry.devilry_theme',
+    'devilry.devilry_theme2',
+    'devilry.devilry_usersearch',
+    'devilry.devilry_authenticateduserinfo',
+    'devilry.devilry_header',
+    'devilry.devilry_useradmin',
+    'devilry.devilry_helplinks',
+    'devilry.devilry_frontpage',
+    'devilry.devilry_student',
+    'devilry.devilry_i18n',
+    'devilry.devilry_settings',
+    'devilry.devilry_subjectadmin',
+    'devilry.devilry_nodeadmin',
+    'devilry.devilry_search',
+    'devilry.devilry_qualifiesforexam',
+    'devilry.devilry_qualifiesforexam_approved',
+    'devilry.devilry_qualifiesforexam_points',
+    'devilry.devilry_qualifiesforexam_select',
+    'devilry.devilry_mathjax',
+    'devilry.devilry_examiner',
+    'devilry.devilry_gradingsystem',
+    'devilry.devilry_gradingsystemplugin_points',
+    'devilry.devilry_gradingsystemplugin_approved',
+    'devilry.devilry_rest',
+]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.debug",
@@ -138,21 +139,22 @@ CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 DEVILRY_URLPATH_PREFIX = ''
 
 # The default grade-plugin:
-DEVILRY_DEFAULT_GRADEEDITOR='approved'
+DEVILRY_DEFAULT_GRADEEDITOR = 'approved'
 
-DEVILRY_STATIC_URL = '/static' # Must not end in / (this means that '' is the server root)
+DEVILRY_STATIC_URL = '/static'  # Must not end in / (this means that '' is the server root)
 DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjs4'
 DEVILRY_MATHJAX_URL = '{}/devilry_mathjax/MathJax.js'.format(DEVILRY_STATIC_URL)
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
 DEVILRY_HELP_URL = 'https://devilry-userdoc.readthedocs.org'
 
-#Set max file size to 5MB. Files greater than this size are split into chunks of this size.
+# Set max file size to 5MB. Files greater than this size are split into chunks of this size.
 DEVILRY_MAX_ARCHIVE_CHUNK_SIZE = 5000000
 
 DEVILRY_SEND_EMAIL_TO_USERS = True
 DEVILRY_EMAIL_SUBJECT_PREFIX_ADMIN = '[devilry-admin] '
-DEVILRY_EMAIL_SIGNATURE = "This is a message from the Devilry assignment delivery system. " \
-                  "Please do not respond to this email."
+DEVILRY_EMAIL_SIGNATURE = \
+    "This is a message from the Devilry assignment delivery system. "\
+    "Please do not respond to this email."
 
 DEVILRY_DELIVERY_STORE_BACKEND = 'devilry.apps.core.deliverystore.FsHierDeliveryStore'
 DEVILRY_FSHIERDELIVERYSTORE_INTERVAL = 1000
@@ -162,10 +164,9 @@ DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-admin@example.com'
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
 
-
 #: Email pattern. Set this, and add 'devilry.apps.autoset_empty_email_by_username' to INSTALLED_APPS
 #: to automatically set email to "<username>@DEVILRY_DEFAULT_EMAIL_SUFFIX" if it is not set when a user is saved.
-#DEVILRY_DEFAULT_EMAIL_SUFFIX = 'example.com'
+# DEVILRY_DEFAULT_EMAIL_SUFFIX = 'example.com'
 
 #: When sorting by fullname, would you like to sort by last name? Currently
 #: only affects the overview over an entire period.
@@ -212,7 +213,6 @@ LANGUAGES = [('en', gettext_noop('English')),
 
 #: Enable MathJax?
 DEVILRY_ENABLE_MATHJAX = True
-
 
 
 ###################################################
