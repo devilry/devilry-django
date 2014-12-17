@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from devilry.apps.core.models import Period
-from devilry.superadmin.management.commands.devilry_subjectsearch import NodeSearchBase
+from devilry.devilry_superadmin.management.commands.devilry_subjectsearch import NodeSearchBase
 
 
 class Command(NodeSearchBase):

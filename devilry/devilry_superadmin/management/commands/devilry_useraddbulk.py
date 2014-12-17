@@ -4,7 +4,7 @@ import sys
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 
-from devilry.superadmin.management.commands.devilry_usermod import UserModCommand
+from devilry.devilry_superadmin.management.commands.devilry_usermod import UserModCommand
 
 
 class Command(UserModCommand):

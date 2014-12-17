@@ -53,7 +53,7 @@ INSTALLED_APPS = [
     'devilry.apps.gradeeditors',
 
     'devilry.apps.markup',
-    'devilry.superadmin',
+    'devilry.devilry_superadmin',
     'devilry.apps.authenticate',
     'devilry.apps.send_email_to_students',
 
