@@ -3,8 +3,8 @@
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
-      <env name="SKIP_SELENIUMTESTS" value="1" />
       <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="SKIP_SELENIUMTESTS" value="1" />
       <env name="DJANGOENV" value="test" />
     </envs>
     <option name="SDK_HOME" value="" />
@@ -19,7 +19,9 @@
     <option name="CUSTOM_SETTINGS" value="false" />
     <option name="USE_OPTIONS" value="false" />
     <option name="OPTIONS" value="" />
+    <RunnerSettings RunnerId="PyDebugRunner" />
     <RunnerSettings RunnerId="PythonRunner" />
+    <ConfigurationWrapper RunnerId="PyDebugRunner" />
     <ConfigurationWrapper RunnerId="PythonRunner" />
     <method />
   </configuration>
