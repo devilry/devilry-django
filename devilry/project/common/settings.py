@@ -54,7 +54,7 @@ INSTALLED_APPS = [
 
     'devilry.apps.markup',
     'devilry.devilry_superadmin',
-    'devilry.authenticate',
+    'devilry.devilry_authenticate',
     'devilry.apps.send_email_to_students',
 
     'devilry.devilry_extjsextras',
