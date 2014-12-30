@@ -160,7 +160,7 @@ DEVILRY_SYSTEM_ADMIN_EMAIL = 'devilry-admin@example.com'
 DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
 
-#: Email pattern. Set this, and add 'devilry.apps.autoset_empty_email_by_username' to INSTALLED_APPS
+#: Email pattern. Set this, and add 'devilry.devilry_autoset_empty_email_by_username' to INSTALLED_APPS
 #: to automatically set email to "<username>@DEVILRY_DEFAULT_EMAIL_SUFFIX" if it is not set when a user is saved.
 # DEVILRY_DEFAULT_EMAIL_SUFFIX = 'example.com'
 
