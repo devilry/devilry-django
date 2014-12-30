@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'devilry.apps.extjshelpers',
     'devilry.apps.extjsux',
     'devilry.apps.developertools',
-    'devilry.apps.jsfiledownload',
     'devilry.apps.gradeeditors',
 
     'devilry.apps.markup',

@@ -20,7 +20,6 @@ def redirecto_to_show_delivery(request, assignmentgroupid):
 
 devilry_urls = (
     (r'^markup/', include('devilry.apps.markup.urls')),
-    (r'^jsfiledownload/', include('devilry.apps.jsfiledownload.urls')),
     (r'^authenticate/', include('devilry.devilry_authenticate.urls')),
 
     (r'^devilry_usersearch/', include('devilry.devilry_usersearch.urls')),
