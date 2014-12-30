@@ -73,7 +73,7 @@ def demodb(djangoenv='develop'):
     :param djangoenv: The DJANGOENV to use.
     """
     reset_db(djangoenv=djangoenv)
-    _managepy('devilry.project.develop_demodb',
+    _managepy('devilry_developer_demodb',
         djangoenv=djangoenv,
         environment={
             'DEVILRY_EMAIL_BACKEND': 'django.core.mail.backends.dummy.EmailBackend'
