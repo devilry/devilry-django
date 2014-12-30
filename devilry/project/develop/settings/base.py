@@ -170,12 +170,6 @@ DEVILRY_DEFAULT_EMAIL_SUFFIX='@example.com'
 
 
 
-
-
-#######################################################################
-# Various developertools/settings
-#######################################################################
-
 # The if's below is just to make it easy to toggle these settings on and off during development
 profiler_middleware = False
 if profiler_middleware:

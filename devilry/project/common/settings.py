@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'devilry.django_decoupled_docs',
 
     'devilry.apps.core',
-    'devilry.apps.developertools',
     'devilry.apps.gradeeditors',
 
     'devilry.devilry_markup',
