@@ -190,7 +190,7 @@ if profiler_middleware:
         #'devilry.utils.delay_middleware.DelayMiddleware'
     #]
 
-MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.apps.developertools.middleware.FakeLoginMiddleware']
+MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.project.develop.middleware.FakeLoginMiddleware']
 
 
 
