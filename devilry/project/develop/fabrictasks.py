@@ -51,17 +51,17 @@ def reset_db(djangoenv='develop'):
 @task
 def autodb(djangoenv='develop', no_groups=False):
     """
-    Run ``remove_db``, ``syncmigrate`` and ``bin/django_dev.py dev_autodb -v2``
+    Run ``remove_db``, ``syncmigrate`` and ``bin/django_dev.py devilry_developer_old_autodb -v2``
 
     :param djangoenv: The DJANGOENV to use.
-    :param no_groups: Use ``autodb:no_groups=yes`` to run dev_autodb with --no-groups.
+    :param no_groups: Use ``autodb:no_groups=yes`` to run devilry_developer_old_autodb with --no-groups.
     """
     no_groups = no_groups == 'yes'
     autodb_args = ''
     if no_groups:
         autodb_args = '--no-groups'
     reset_db(djangoenv=djangoenv)
-    _managepy('dev_autodb -v2 {}'.format(autodb_args))
+    _managepy('devilry_developer_old_autodb -v2 {}'.format(autodb_args))
     # _managepy('rebuild_index --noinput')
 
 
