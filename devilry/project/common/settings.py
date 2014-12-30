@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'devilry.django_decoupled_docs',
 
     'devilry.apps.core',
-    'devilry.apps.extjshelpers',
     'devilry.apps.extjsux',
     'devilry.apps.developertools',
     'devilry.apps.gradeeditors',
