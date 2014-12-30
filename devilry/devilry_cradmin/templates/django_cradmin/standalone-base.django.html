@@ -1,0 +1,5 @@
+{% extends "django_cradmin/standalone-base-internal.django.html" %}
+
+{% block global-pre-body %}
+    {% include "devilry_header/header2include.django.html" with devilry_header2_role=request.cradmin_instance.devilry_rolename %}
+{% endblock global-pre-body %}

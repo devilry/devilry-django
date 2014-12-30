@@ -1,8 +1,9 @@
 from django.utils.translation import ugettext_lazy as _
-from django_cradmin import crinstance, crmenu
+from django_cradmin import crmenu
 
 from devilry.apps.core.models import Period
 from devilry.devilry_student.cradmin_period import assignments
+from devilry.devilry_student.cradminextensions import studentcrinstance
 
 
 class Menu(crmenu.Menu):
@@ -12,7 +13,7 @@ class Menu(crmenu.Menu):
             active=self.request.cradmin_app.appname == 'assignments')
 
 
-class CrAdminInstance(crinstance.BaseCrAdminInstance):
+class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     id = 'devilry_student_period'
     menuclass = Menu
     roleclass = Period

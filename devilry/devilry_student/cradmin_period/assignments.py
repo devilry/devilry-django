@@ -1,9 +1,9 @@
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _
 from django_cradmin.viewhelpers import objecttable
 from django_cradmin import crapp
 
 from devilry.apps.core.models import AssignmentGroup
+from devilry.devilry_student.cradminextensions import studentobjecttable
 
 
 class LongNameColumn(objecttable.SingleActionColumn):
@@ -18,7 +18,7 @@ class LongNameColumn(objecttable.SingleActionColumn):
         })
 
 
-class AssignmentGroupListView(objecttable.ObjectTableView):
+class AssignmentGroupListView(studentobjecttable.StudentObjectTableView):
     model = AssignmentGroup
     columns = [
         LongNameColumn,

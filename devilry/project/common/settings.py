@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'haystack',
     'south',
     # 'celery_haystack',
+
+    'devilry.devilry_cradmin',
     'django_cradmin',
     'devilry.django_decoupled_docs',
 
