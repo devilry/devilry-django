@@ -2,8 +2,7 @@ from django.http import HttpResponse
 from django.http import HttpResponseBadRequest
 from django.views.generic import View
 
-from parse_markdown import markdown_full
-
+from devilry.devilry_markup.parse_markdown import markdown_full
 
 
 class DevilryFlavouredMarkdownFull(View):

@@ -1,12 +1,13 @@
-from datetime import timedelta
 import random
+
 from django.core.management.base import BaseCommand
 from django.contrib.webdesign import lorem_ipsum
 
-from devilry.apps.markup.parse_markdown import markdown_full
+from devilry.devilry_markup.parse_markdown import markdown_full
 from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
+
 # from devilry.apps.core.models import Node
 # from devilry.apps.core.models import Subject
 # from devilry.apps.core.models import Period

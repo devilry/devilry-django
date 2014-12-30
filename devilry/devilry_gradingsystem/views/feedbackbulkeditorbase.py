@@ -7,11 +7,13 @@ from django.http import Http404
 from django import forms
 
 
+
+
 # from django.views.generic import FormView
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
 
-from devilry.apps.markup.parse_markdown import markdown_full
+from devilry.devilry_markup.parse_markdown import markdown_full
 from devilry.devilry_gradingsystem.models import FeedbackDraft
 from devilry.devilry_gradingsystem.widgets.editmarkdown import EditMarkdownLayoutObject
 from devilry.devilry_gradingsystem.widgets.editfeedbackbuttonbar import BulkEditFeedbackButtonBar

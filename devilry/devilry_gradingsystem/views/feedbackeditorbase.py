@@ -8,14 +8,11 @@ from django.views.generic import FormView
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
 
-from devilry.apps.markup.parse_markdown import markdown_full
+from devilry.devilry_markup.parse_markdown import markdown_full
 from devilry.apps.core.models import Delivery
-from devilry.apps.core.models import StaticFeedback
 from devilry.devilry_gradingsystem.models import FeedbackDraft
 from devilry.devilry_gradingsystem.widgets.editmarkdown import EditMarkdownLayoutObject
 from devilry.devilry_gradingsystem.widgets.editfeedbackbuttonbar import EditFeedbackButtonBar
-
-
 
 
 class FeedbackEditorSingleDeliveryObjectMixin(SingleObjectMixin):
