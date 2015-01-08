@@ -1,0 +1,56 @@
+.cradmin-acemarkdown {
+    textarea.cradmin-acemarkdowntextarea {
+        display: none;
+    }
+
+    &.cradmin-acemarkdown-textareavisible {
+        textarea.cradmin-acemarkdowntextarea {
+            display: block;
+        }
+    }
+
+    .btn-toolbar {
+        margin-bottom: 10px;
+    }
+
+    .ace_editor {
+        font-size: @font-size-base;
+        height: 400px;
+    }
+}
+
+.django_cradmin_form {
+    .cradmin-focusfield .form-group .controls {
+        .cradmin-acemarkdown.cradmin-div-styled-as-textarea {
+            .btn-toolbar {
+                margin-top: -30px;
+                opacity: 0;
+                transition-duration: 0.3s;
+                transition-property: opacity;
+            }
+
+            &.cradmin-focus {
+                .btn-toolbar {
+                    opacity: 1.0;
+                }
+            }
+
+            .ace_editor {
+                height: 100px;
+
+                @media (min-height: 400px) {
+                    height: 200px;
+                }
+                @media (min-height: 500px) {
+                    height: 300px;
+                }
+                @media (min-height: 600px) {
+                    height: 400px;
+                }
+                @media (min-height: 800px) {
+                    height: 600px;
+                }
+            }
+        }
+    }
+}

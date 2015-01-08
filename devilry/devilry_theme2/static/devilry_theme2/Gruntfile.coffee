@@ -5,7 +5,7 @@ module.exports = (grunt) ->
     watch:
       less:
         tasks: 'less'
-        files: ['less/*.less', 'less/views/*.less']
+        files: ['less/*.less', 'less/views/*.less', 'less/cradmin/*.less']
     less:
       development:
         options:

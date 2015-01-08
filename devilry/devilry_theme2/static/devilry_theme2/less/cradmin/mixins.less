@@ -1,0 +1,18 @@
+
+.body-side-padding() {
+  padding-left: @cradmin-bodypadding-xs;
+  padding-right: @cradmin-bodypadding-xs;
+
+  @media (min-width: @screen-sm-min) {
+    padding-left: @cradmin-bodypadding;
+    padding-right: @cradmin-bodypadding;
+  }
+}
+
+// Used by buttons, but we also need to apply this via a css class
+// on file fields - so a mixin!
+.btn-default-hoverstyle-mixin() {
+  background-color: @btn-default-color;
+  border-color: @btn-default-color;
+  color: #fff;
+}

@@ -1,0 +1,49 @@
+.page-header {
+  margin: 0 0 20px 0;
+  padding: 20px 0 22px 0;
+  border: 0;
+  background-color: @cradmin-page-header-bg;
+  color: @panel-primary-text;
+
+  .fa.cradmin-page-header-icon, h1 {
+    line-height: 44px;
+    vertical-align: middle
+  }
+
+  .fa.cradmin-page-header-icon {
+    font-size: 42px;
+    margin-right: 8px;
+    margin-left: -1px;
+  }
+
+  h1 {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+    font-size: ceil(@font-size-base + 5px);
+    font-weight: bold;
+  }
+
+  &.page-header-nomargin {
+    margin: 0;
+  }
+
+  .btn {
+    &.btn-sm {
+      @media (min-width: @screen-sm-min) {
+        padding: 3px 10px;
+      }
+    }
+    &.btn-default {
+      background-color: @cradmin-page-header-btn-default-bg;
+      border-color: @cradmin-page-header-btn-default-border;
+      color: @cradmin-page-header-btn-default-color;
+      transition: background-color 0.3s ease;
+      &:hover {
+        background-color: @cradmin-page-header-bg-dark;
+        color: @cradmin-page-header-btn-default-color;
+        border-color: @cradmin-page-header-btn-default-border;
+      }
+    }
+  }
+}

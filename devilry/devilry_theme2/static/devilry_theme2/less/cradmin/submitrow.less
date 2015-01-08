@@ -1,0 +1,57 @@
+.django_cradmin_submitrow {
+  position: fixed;
+  z-index: 10000;
+  bottom: 0px;
+  left: @cradmin-bodypadding-xs;
+  right: @cradmin-bodypadding-xs;
+  background-color: #333;
+  padding: 8px;
+  border-radius: 3px 3px 0 0;
+
+  &.django_cradmin_submitrow_hidden {
+    display: none;
+  }
+
+  @media (min-width: @screen-md-min) {
+    left: (@cradmin-menu-width + @cradmin-bodypadding);
+    width: (600px - @cradmin-bodypadding*2);
+    right: auto;
+  }
+  @media (min-width: @screen-lg-min) {
+    width: (800px - @cradmin-bodypadding*2);
+  }
+
+  .btn {
+    text-transform: uppercase;
+    font-size: ceil(@font-size-base - 2px);
+    line-height: (@line-height-computed - 4px);
+    padding: 10px 12px;
+    &.btn-default {
+      background-color: #808080;
+      border-color: #808080;
+      color: #fff;
+      &:hover {
+        background-color: #666;
+        border-color: #666;
+        color: #fff;
+      }
+    }
+    &.btn-cancel {
+      color: @link-color;
+      font-size: @font-size-base;
+      text-transform: none;
+      &:hover {
+        color: lighten(@link-color, 15%);
+      }
+    }
+  }
+}
+
+
+body.django-cradmin-hide-menu {
+  .django_cradmin_submitrow {
+    @media (min-width: @screen-md-min) {
+      left: @cradmin-bodypadding;
+    }
+  }
+}

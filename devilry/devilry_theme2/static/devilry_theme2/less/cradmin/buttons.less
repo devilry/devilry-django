@@ -1,0 +1,34 @@
+.btn {
+  transition-duration: 0.3s;
+  transition-property: background-color color border-color;
+  &.btn-default {
+    &:hover {
+      .btn-default-hoverstyle-mixin();
+    }
+  }
+
+  &.btn-primary {
+    &:hover {
+      background-color: @cradmin-page-header-bg-dark;
+      border-color: @cradmin-page-header-bg-dark;
+      color: #fff;
+    }
+  }
+
+  // &.btn-danger {
+  //     &:hover {
+  //         background-color: @btn-danger-border;
+  //         border-color: @btn-danger-border;
+  //         color: #fff;
+  //     }
+  // }
+
+  // A django_cradmin extension to the set of bootstrap buttons.
+  &.btn-cancel {
+    color: @link-color;
+    text-decoration: underline;
+    &:hover {
+      color: darken(@link-color, 15%);
+    }
+  }
+}

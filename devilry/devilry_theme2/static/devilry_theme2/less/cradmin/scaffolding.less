@@ -1,0 +1,26 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: #E6E6E6;
+  color: #666666;
+
+  &.django-cradmin-noscroll {
+    overflow: hidden;
+  }
+}
+
+#django_cradmin_contentwrapper {
+  @media (min-width: @screen-md-min) {
+    padding-left: @cradmin-menu-width;
+  }
+}
+
+body.django-cradmin-hide-menu {
+  #django_cradmin_contentwrapper {
+    @media (min-width: @screen-md-min) {
+      padding-left: 0;
+    }
+  }
+}
