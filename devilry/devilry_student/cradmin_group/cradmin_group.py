@@ -18,11 +18,11 @@ class Menu(crmenu.Menu):
             icon="arrow-up")
         self.add(
             label=_('Add delivery'), url=self.appindex_url('add_delivery'),
-            icon="home",
+            icon="plus",
             active=self.request.cradmin_app.appname == 'add_delivery')
         self.add(
             label=_('Deliveries'), url=self.appindex_url('deliveries'),
-            icon="home",
+            icon="list",
             active=self.request.cradmin_app.appname == 'deliveries')
 
 

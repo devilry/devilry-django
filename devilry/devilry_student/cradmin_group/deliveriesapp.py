@@ -46,9 +46,6 @@ class DeliveryListView(objecttable.ObjectTableView):
         TimeOfDeliveryColumn,
         DeadlineColumn,
     ]
-    searchfields = [
-        'assignment_group__parentnode__long_name',
-        'assignment_group__parentnode__short_name']
 
     def get_queryset_for_role(self, group):
         return Delivery.objects\
