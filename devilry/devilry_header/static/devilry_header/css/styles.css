@@ -1329,4 +1329,5 @@
   box-shadow: 0 0px 7px #1e1e1e;
   box-sizing: border-box;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  z-index: 2000;
 }
