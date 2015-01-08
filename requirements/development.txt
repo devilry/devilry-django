@@ -6,6 +6,9 @@ django_dbdev==0.9.2
 # Required by the soupselect tests
 BeautifulSoup==3.2.1
 
+# For testing HTML output in tests
+htmls==0.9.4
+
 # Required by sphinx (to build the docs)
 Jinja2==2.6
 Sphinx==1.2.2

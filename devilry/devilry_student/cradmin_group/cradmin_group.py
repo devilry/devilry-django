@@ -3,8 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crinstance, crmenu
 
 from devilry.apps.core.models import AssignmentGroup
-from devilry.devilry_student.cradmin_group import deliveries
-from . import add_delivery
+from devilry.devilry_student.cradmin_group import deliveriesapp
+from . import add_deliveryapp
 
 
 class Menu(crmenu.Menu):
@@ -33,8 +33,8 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     rolefrontpage_appname = 'add_delivery'
 
     apps = [
-        ('add_delivery', add_delivery.App),
-        ('deliveries', deliveries.App),
+        ('add_delivery', add_deliveryapp.App),
+        ('deliveries', deliveriesapp.App),
     ]
 
     def get_rolequeryset(self):
