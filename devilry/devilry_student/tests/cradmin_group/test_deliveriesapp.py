@@ -38,7 +38,7 @@ class TestDeliveryListView(TestCase):
         response.render()
         selector = htmls.S(response.content)
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 2)
-        self.assertEquals(selector.count('.devilry-student-deliverysummarycolumn'), 2)
+        self.assertEquals(selector.count('.devilry-student-deliveriesapp-summarycolumn'), 2)
 
     def test_render_no_feedback(self):
         deadlinebuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
@@ -46,10 +46,10 @@ class TestDeliveryListView(TestCase):
         response = self._mock_get_request()
         response.render()
         selector = htmls.S(response.content)
-        self.assertFalse(selector.exists('.devilry-student-deliverysummarycolumn-feedback'))
-        self.assertTrue(selector.exists('.devilry-student-deliverysummarycolumn-no-feedback'))
+        self.assertFalse(selector.exists('.devilry-student-deliveriesapp-summarycolumn-feedback'))
+        self.assertTrue(selector.exists('.devilry-student-deliveriesapp-summarycolumn-no-feedback'))
         self.assertEquals(
-            selector.one('.devilry-student-deliverysummarycolumn-no-feedback').alltext_normalized,
+            selector.one('.devilry-student-deliveriesapp-summarycolumn-no-feedback').alltext_normalized,
             'No feedback')
 
     def test_render_has_feedback(self):
@@ -63,14 +63,14 @@ class TestDeliveryListView(TestCase):
         response = self._mock_get_request()
         response.render()
         selector = htmls.S(response.content)
-        self.assertFalse(selector.exists('.devilry-student-deliverysummarycolumn-no-feedback'))
+        self.assertFalse(selector.exists('.devilry-student-deliveriesapp-summarycolumn-no-feedback'))
 
-        self.assertTrue(selector.exists('.devilry-student-deliverysummarycolumn-feedback'))
-        self.assertTrue(selector.exists('.devilry-student-deliverysummarycolumn-feedback-grade'))
-        self.assertTrue(selector.exists('.devilry-student-deliverysummarycolumn-feedback-is_passing_grade'))
+        self.assertTrue(selector.exists('.devilry-student-deliveriesapp-summarycolumn-feedback'))
+        self.assertTrue(selector.exists('.devilry-student-deliveriesapp-summarycolumn-feedback-grade'))
+        self.assertTrue(selector.exists('.devilry-student-deliveriesapp-summarycolumn-feedback-is_passing_grade'))
         self.assertEquals(
-            selector.one('.devilry-student-deliverysummarycolumn-feedback-grade').alltext_normalized,
+            selector.one('.devilry-student-deliveriesapp-summarycolumn-feedback-grade').alltext_normalized,
             'Good')
         self.assertEquals(
-            selector.one('.devilry-student-deliverysummarycolumn-feedback-is_passing_grade').alltext_normalized,
+            selector.one('.devilry-student-deliveriesapp-summarycolumn-feedback-is_passing_grade').alltext_normalized,
             'passed')

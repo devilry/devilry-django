@@ -9939,6 +9939,20 @@ table.table.cradmin-table-fluid tbody tr td {
     margin: 0 0 20px 20px;
   }
 }
+.devilry-student-deliveriesapp-summarycolumn p {
+  margin: 0;
+}
+.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-linkwrapper {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-feedback,
+.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-no-feedback {
+  font-size: 14px;
+}
+.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-no-feedback {
+  color: #777777;
+}
 body {
   background-image: url('../images/groovepaper.png');
 }
