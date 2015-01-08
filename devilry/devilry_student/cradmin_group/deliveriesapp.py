@@ -7,18 +7,19 @@ from django.utils.translation import ugettext_lazy as _
 from devilry.apps.core.models import Delivery
 
 
-class DeliveryNumberColumn(objecttable.SingleActionColumn):
+class DeliverySummaryColumn(objecttable.SingleActionColumn):
     modelfield = 'number'
+    template_name = 'devilry_student/cradmin_group/deliveriesapp/deliverysummarycolumn.django.html'
+    context_object_name = 'delivery'
+
+    def get_header(self):
+        return _('Summary')
 
     def get_actionurl(self, obj):
         return '#'
 
-    def get_default_order_is_ascending(self):
-        return None
-
-    def render_value(self, delivery):
-        value = super(DeliveryNumberColumn, self).render_value(delivery)
-        return _('Delivery #%(number)s') % {'number': value}
+    def is_sortable(self):
+        return False
 
 
 class TimeOfDeliveryColumn(objecttable.DatetimeColumn):
@@ -42,7 +43,7 @@ class DeadlineColumn(objecttable.DatetimeColumn):
 class DeliveryListView(objecttable.ObjectTableView):
     model = Delivery
     columns = [
-        DeliveryNumberColumn,
+        DeliverySummaryColumn,
         TimeOfDeliveryColumn,
         DeadlineColumn,
     ]

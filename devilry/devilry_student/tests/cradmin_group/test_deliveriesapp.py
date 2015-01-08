@@ -30,11 +30,47 @@ class TestDeliveryListView(TestCase):
         self.assertTrue(selector.exists('#objecttableview-table'))
         self.assertFalse(selector.exists('#objecttableview-table tbody tr'))
 
-    def test_list_render_single_delivery_nofeedback(self):
-        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
-            .add_delivery_x_hours_before_deadline(hours=1)
+    def test_list_has_deliveries(self):
+        deadlinebuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=26)
+        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
         response = self._mock_get_request()
         response.render()
         selector = htmls.S(response.content)
-        self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
-        self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
+        self.assertEquals(selector.count('#objecttableview-table tbody tr'), 2)
+        self.assertEquals(selector.count('.devilry-student-deliverysummarycolumn'), 2)
+
+    def test_render_no_feedback(self):
+        deadlinebuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=26)
+        response = self._mock_get_request()
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('.devilry-student-deliverysummarycolumn-feedback'))
+        self.assertTrue(selector.exists('.devilry-student-deliverysummarycolumn-no-feedback'))
+        self.assertEquals(
+            selector.one('.devilry-student-deliverysummarycolumn-no-feedback').alltext_normalized,
+            'No feedback')
+
+    def test_render_has_feedback(self):
+        deadlinebuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        delivery = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=26)
+        delivery.add_feedback(
+            points=10,
+            grade='Good',
+            is_passing_grade=True,
+            saved_by=self.testuser)
+        response = self._mock_get_request()
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('.devilry-student-deliverysummarycolumn-no-feedback'))
+
+        self.assertTrue(selector.exists('.devilry-student-deliverysummarycolumn-feedback'))
+        self.assertTrue(selector.exists('.devilry-student-deliverysummarycolumn-feedback-grade'))
+        self.assertTrue(selector.exists('.devilry-student-deliverysummarycolumn-feedback-is_passing_grade'))
+        self.assertEquals(
+            selector.one('.devilry-student-deliverysummarycolumn-feedback-grade').alltext_normalized,
+            'Good')
+        self.assertEquals(
+            selector.one('.devilry-student-deliverysummarycolumn-feedback-is_passing_grade').alltext_normalized,
+            'passed')

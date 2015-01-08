@@ -1,0 +1,20 @@
+{% load i18n %}
+{% load devilry_examiner_tags %}
+
+<div class="devilry-student-deliverysummarycolumn">
+    <p><a href="{{ action_url }}">
+        {% blocktrans with number=delivery.number%}Delivery#{{ number }}{% endblocktrans %}
+    </a></p>
+    {% if delivery.last_feedback %}
+        <p class="text-{{ delivery.last_feedback|feedback_to_bootstrapclass }} devilry-student-deliverysummarycolumn-feedback">
+            <span class="devilry-student-deliverysummarycolumn-feedback-grade">
+                {{ delivery.last_feedback.grade }}
+            </span>
+            (<span class="devilry-student-deliverysummarycolumn-feedback-is_passing_grade">{{ delivery.last_feedback.is_passing_grade|format_is_passing_grade }}</span>)
+        </p>
+    {% else %}
+        <p class="text-muted devilry-student-deliverysummarycolumn-no-feedback">
+            {% trans "No feedback" %}
+        </p>
+    {% endif %}
+</div>
