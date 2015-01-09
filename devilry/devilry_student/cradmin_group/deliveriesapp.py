@@ -1,5 +1,6 @@
 # from django.utils.translation import ugettext_lazy as _
 from django.template import defaultfilters
+from django.views.generic import DetailView
 from django_cradmin.viewhelpers import objecttable
 from django_cradmin import crapp
 from django.utils.translation import ugettext_lazy as _
@@ -15,8 +16,8 @@ class DeliverySummaryColumn(objecttable.SingleActionColumn):
     def get_header(self):
         return _('Summary')
 
-    def get_actionurl(self, obj):
-        return '#'
+    def get_actionurl(self, delivery):
+        return self.view.request.cradmin_app.reverse_appurl('deliverydetails', kwargs={'pk': delivery.pk})
 
     def is_sortable(self):
         return False
@@ -40,7 +41,14 @@ class DeadlineColumn(objecttable.DatetimeColumn):
         return None
 
 
-class DeliveryListView(objecttable.ObjectTableView):
+class QuerySetForRoleMixin(object):
+    def get_queryset_for_role(self, group):
+        return Delivery.objects\
+            .filter(deadline__assignment_group=group)\
+            .select_related('deadline')
+
+
+class DeliveryListView(QuerySetForRoleMixin, objecttable.ObjectTableView):
     model = Delivery
     columns = [
         DeliverySummaryColumn,
@@ -48,10 +56,13 @@ class DeliveryListView(objecttable.ObjectTableView):
         DeadlineColumn,
     ]
 
-    def get_queryset_for_role(self, group):
-        return Delivery.objects\
-            .filter(deadline__assignment_group=group)\
-            .select_related('deadline')
+
+class DeliveryDetailsView(QuerySetForRoleMixin, DetailView):
+    template_name = 'devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html'
+    context_object_name = 'delivery'
+
+    def get_queryset(self):
+        return self.get_queryset_for_role(self.request.cradmin_role)
 
 
 class App(crapp.App):
@@ -60,4 +71,8 @@ class App(crapp.App):
             r'^$',
             DeliveryListView.as_view(),
             name=crapp.INDEXVIEW_NAME),
+        crapp.Url(
+            r'^delivery/(?P<pk>\d+)$',
+            DeliveryDetailsView.as_view(),
+            name='deliverydetails'),
     ]
