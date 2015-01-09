@@ -4,8 +4,8 @@ from django_cradmin import crmenu
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_student.cradmin_group import deliveriesapp
-from . import add_deliveryapp
 from devilry.devilry_student.cradminextensions import studentcrinstance
+from . import add_deliveryapp
 
 
 class Menu(crmenu.Menu):
