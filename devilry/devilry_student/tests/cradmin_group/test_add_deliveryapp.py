@@ -102,3 +102,6 @@ class TestAddDeliveryView(TestCase):
 
     def test_post_duplicate_filename(self):
         pass
+
+    def test_no_files(self):
+        pass
