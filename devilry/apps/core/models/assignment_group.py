@@ -549,9 +549,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         This is always the last deadline on this group.
 
         :return:
-            The latest deadline.
+            The latest deadline or ``None``.
         """
-        return self.deadlines.all().order_by('-deadline')[0]
+        return self.deadlines.all().order_by('-deadline').first()
 
     def can_save(self, user_obj):
         """ Check if the user has permission to save this AssignmentGroup. """
