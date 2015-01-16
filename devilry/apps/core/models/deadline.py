@@ -405,3 +405,15 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         for delivery in self.query_successful_deliveries():
             delivery.copy(deadlinecopy)
         return deadlinecopy
+
+    def is_in_the_future(self):
+        """
+        Return ``True`` if this deadline is in the future.
+        """
+        return self.deadline > datetime.now()
+
+    def is_in_the_past(self):
+        """
+        Return ``True`` if this deadline is in the past.
+        """
+        return self.deadline < datetime.now()

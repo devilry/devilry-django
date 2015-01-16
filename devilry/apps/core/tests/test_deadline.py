@@ -226,6 +226,17 @@ class TestDeadline(TestCase):
         self.assertTrue(group2.last_delivery.successful)
         self.assertEquals(group2.last_delivery.number, 1)
 
+    def test_is_in_the_future_and_is_in_the_past(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        past_deadline = groupbuilder.add_deadline_x_weeks_ago(weeks=2).deadline
+        future_deadline = groupbuilder.add_deadline_in_x_weeks(weeks=2).deadline
+        self.assertTrue(future_deadline.is_in_the_future())
+        self.assertFalse(future_deadline.is_in_the_past())
+        self.assertFalse(past_deadline.is_in_the_future())
+        self.assertTrue(past_deadline.is_in_the_past())
+
 
 class TestDeadlineOld(TestCase, TestHelper):
     """
