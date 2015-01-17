@@ -5,11 +5,6 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.http import Http404
 from django import forms
-
-
-
-
-# from django.views.generic import FormView
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
 
@@ -21,14 +16,14 @@ from devilry.devilry_examiner.views.bulkviewbase import BulkViewBase
 from devilry.devilry_examiner.views.bulkviewbase import OptionsForm
 
 
-
 class FeedbackBulkEditorOptionsForm(OptionsForm):
-    draft_id = forms.IntegerField(required=False,
+    draft_id = forms.IntegerField(
+        required=False,
         widget=forms.HiddenInput)
 
     def clean_draft_id(self):
         draft_id = self.cleaned_data['draft_id']
-        if draft_id != None and not FeedbackDraft.objects.filter(id=draft_id).exists():
+        if draft_id is not None and not FeedbackDraft.objects.filter(id=draft_id).exists():
             raise forms.ValidationError("Invalid draft ID: {}.".format(draft_id))
         return draft_id
 
@@ -36,7 +31,7 @@ class FeedbackBulkEditorOptionsForm(OptionsForm):
         cleaned_data = super(FeedbackBulkEditorOptionsForm, self).clean()
         if hasattr(self, 'cleaned_groups'):
             cleaned_groups = self.cleaned_groups
-            groups_with_no_deliveries = cleaned_groups.filter(last_delivery=None)
+            groups_with_no_deliveries = cleaned_groups.exclude_groups_with_deliveries()
             if groups_with_no_deliveries.exists():
                 raise forms.ValidationError(_('One or more of the selected groups has no deliveries.'))
             else:
@@ -50,7 +45,6 @@ class FeedbackBulkEditorFormBase(FeedbackBulkEditorOptionsForm):
         self._add_feedbacktext_field()
 
     def _add_feedbacktext_field(self):
-        feedbacktext_editor = FeedbackDraft.DEFAULT_FEEDBACKTEXT_EDITOR
         self.fields['feedbacktext'] = forms.CharField(
             label=_('Feedback text'),
             required=False)
@@ -68,7 +62,6 @@ class FeedbackBulkEditorFormBase(FeedbackBulkEditorOptionsForm):
             self.helper.layout.append(element)
         self.helper.layout.append('group_ids')
         self.helper.layout.append('draft_id')
-
 
 
 class FeedbackBulkEditorFormView(BulkViewBase):
@@ -93,16 +86,16 @@ class FeedbackBulkEditorFormView(BulkViewBase):
 
     def get_create_feedbackdraft_kwargs(self, form, publish):
         return {
-           'groups': form.cleaned_groups,
-           'feedbacktext_raw': form.cleaned_data['feedbacktext'],
-           'feedbacktext_html': markdown_full(form.cleaned_data['feedbacktext']),
-           'publish': publish,
-           'points': self.get_points_from_form(form)
+            'groups': form.cleaned_groups,
+            'feedbacktext_raw': form.cleaned_data['feedbacktext'],
+            'feedbacktext_html': markdown_full(form.cleaned_data['feedbacktext']),
+            'publish': publish,
+            'points': self.get_points_from_form(form)
         }
 
     def _get_preview_redirect_url(self, randomkey):
-       return "{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
-            kwargs={'assignmentid': self.object.id, 'randomkey': randomkey}))
+        return "{}".format(reverse('devilry_gradingsystem_feedbackdraft_bulkpreview',
+                                   kwargs={'assignmentid': self.object.id, 'randomkey': randomkey}))
 
     def save_pluginspecific_state(self, form):
         """
@@ -125,7 +118,6 @@ class FeedbackBulkEditorFormView(BulkViewBase):
             return redirect(self._get_preview_redirect_url(randomkey))
         else:
             return super(FeedbackBulkEditorFormView, self).submitted_primaryform_valid(form, context_data)
-
 
     def get_initial_from_draft(self, draft):
         return {
@@ -170,9 +162,9 @@ class FeedbackBulkEditorFormView(BulkViewBase):
     def create_feedbackdrafts(self, groups, points, feedbacktext_raw, feedbacktext_html, publish=False):
         draft_ids = []
         for group in groups:
-            delivery = group.last_delivery
+            delivery_id = group.last_delivery_id
             draft = FeedbackDraft(
-                delivery=delivery,
+                delivery_id=delivery_id,
                 points=points,
                 feedbacktext_raw=feedbacktext_raw,
                 feedbacktext_html=feedbacktext_html,

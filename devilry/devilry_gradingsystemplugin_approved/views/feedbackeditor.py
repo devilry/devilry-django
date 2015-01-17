@@ -42,6 +42,7 @@ class ApprovedFeedbackEditorView(FeedbackEditorFormView):
             return 1
         return 0
 
+
 class ApprovedFeedbackBulkEditorForm(FeedbackBulkEditorFormBase):
     points = forms.BooleanField(
         label=_('Passed?'),
@@ -55,6 +56,7 @@ class ApprovedFeedbackBulkEditorForm(FeedbackBulkEditorFormBase):
             Field('points')
         )
         self.add_common_layout_elements()
+
 
 class ApprovedFeedbackBulkEditorView(FeedbackBulkEditorFormView):
     template_name = 'devilry_gradingsystemplugin_approved/feedbackbulkeditor.django.html'

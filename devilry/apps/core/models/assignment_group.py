@@ -176,7 +176,6 @@ class AssignmentGroupManager(models.Manager):
         """
         return self.get_queryset().annotate_with_number_of_deliveries()
 
-
     def exclude_groups_with_deliveries(self):
         """
         Filter out all groups with deliveries.
