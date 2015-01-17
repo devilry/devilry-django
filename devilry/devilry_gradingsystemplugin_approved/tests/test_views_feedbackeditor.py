@@ -162,7 +162,6 @@ class TestFeedbackBulkEditorView(TestCase):
         self.assertEquals(deliverybuilder.delivery.last_feedback.is_passing_grade, True)
         self.assertEquals(deliverybuilder.delivery.last_feedback.points, 1)
 
-
     def test_post_preview_creates_draft_and_NOT_staticfeedback(self):
         groupbuilder = self.assignment1builder.add_group(examiners=[self.examiner1])
         deliverybuilder = groupbuilder\
@@ -177,7 +176,6 @@ class TestFeedbackBulkEditorView(TestCase):
             'points': 'on',
             'submit_preview': 'i18nlabel'
         })
-        html = response.content
         self.assertEquals(response.status_code, 302)
         deliverybuilder.reload_from_db()
         self.assertEquals(deliverybuilder.delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)

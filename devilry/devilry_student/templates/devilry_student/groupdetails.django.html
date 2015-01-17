@@ -65,7 +65,7 @@
                         {% if forloop.last and forloop.counter > 1 %}
                             {% trans "and" %}
                         {% endif %}
-                        {{ candidate.displayname }}{% endfor %}.
+                        {{ candidate.get_student_displayname }}{% endfor %}.
                 {% endif %}
                 {% if group.assignment.students_can_create_groups_now %}
                     {% trans "You can invite other students to cooperate on this assignment." %}

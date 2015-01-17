@@ -1,9 +1,10 @@
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
-from django_cradmin import crinstance, crmenu
+from django_cradmin import crmenu
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_student.cradmin_group import deliveriesapp
+from devilry.devilry_student.cradminextensions import studentcrinstance
 from . import add_deliveryapp
 
 
@@ -26,7 +27,7 @@ class Menu(crmenu.Menu):
             active=self.request.cradmin_app.appname == 'deliveries')
 
 
-class CrAdminInstance(crinstance.BaseCrAdminInstance):
+class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     id = 'devilry_student_group'
     menuclass = Menu
     roleclass = AssignmentGroup

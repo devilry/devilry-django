@@ -200,9 +200,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         if autoupdate_related_models:
             delivery = self.delivery
             self.delivery.last_feedback = self
-            self.delivery.save(
-                autoset_time_of_delivery=False,
-                autoset_number=False)
+            self.delivery.save()
 
             group = delivery.deadline.assignment_group
             group.feedback = self

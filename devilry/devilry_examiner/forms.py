@@ -53,8 +53,10 @@ class GroupIdsForm(forms.Form):
         cleaned_data = super(GroupIdsForm, self).clean()
         group_ids = cleaned_data.get('group_ids')
         if group_ids:
-            cleaned_groups = AssignmentGroup.objects.filter_examiner_has_access(self.user)\
-                .filter(id__in=group_ids, parentnode=self.assignment)
+            cleaned_groups = AssignmentGroup.objects\
+                .filter_examiner_has_access(self.user)\
+                .filter(id__in=group_ids, parentnode=self.assignment)\
+                .annotate_with_last_delivery_id()
             if set(cleaned_groups.values_list('id', flat=True)) != set(group_ids):
                 # NOTE: Not translating - this should not be possible through the UI
                 raise forms.ValidationError('One or more of the selected groups are not in {}, or groups where you lack examiner permissions.'.format(

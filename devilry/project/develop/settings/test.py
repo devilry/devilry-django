@@ -12,3 +12,6 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
     },
 }
+
+# Default to skipping selenium tests
+SKIP_SELENIUMTESTS = True

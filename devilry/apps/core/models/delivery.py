@@ -66,6 +66,17 @@ class DeliveryManager(models.Manager):
 class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
+    How to create a delivery::
+
+        deadline = Deadline.objects.get(....)
+        candidate = Candidate.objects.get(....)
+        delivery = Delivery(
+            deadline=deadline,
+            delivered_by=candidate)
+        delivery.set_number()
+        delivery.full_clean()
+        delivery.save()
+
     .. attribute:: time_of_delivery
 
         A django.db.models.DateTimeField_ that holds the date and time the
@@ -134,7 +145,9 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                                 verbose_name = "Type of delivery",
                                                 help_text='0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.')
     # Fields automatically 
-    time_of_delivery = models.DateTimeField(help_text='Holds the date and time the Delivery was uploaded.')
+    time_of_delivery = models.DateTimeField(
+        help_text='Holds the date and time the Delivery was uploaded.',
+        default=datetime.now)
     deadline = models.ForeignKey(Deadline, related_name='deliveries')
     number = models.PositiveIntegerField(
         help_text='The delivery-number within this assignment-group. This number is automatically '
@@ -142,8 +155,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                     'unique within the assignment-group.')
 
     # Fields set by user
-    successful = models.BooleanField(blank=True, default=False,
-                                    help_text='Has the delivery and all its files been uploaded successfully?')
+    successful = models.BooleanField(blank=True, default=True,
+                                     help_text='Has the delivery and all its files been uploaded successfully?')
     delivered_by = models.ForeignKey("Candidate", blank=True, null=True,
                                      on_delete=models.SET_NULL,
                                      help_text='The candidate that delivered this delivery. If this is None, the delivery was made by an administrator for a student.')
@@ -211,8 +224,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """
         from .assignment_group import AssignmentGroup
         try:
-            return self.assignment_group.last_delivery == self
-        except AssignmentGroup.DoesNotExist:
+            last_delivery = Delivery.objects\
+                .filter(deadline__assignment_group_id=self.deadline.assignment_group_id)\
+                .order_by('-time_of_delivery').first()
+            return last_delivery == self
+        except Delivery.DoesNotExist:
             return False
 
     @property
@@ -252,9 +268,12 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         filemeta.save()
         return filemeta
 
-    def _set_number(self):
+    def set_number(self):
         m = Delivery.objects.filter(deadline__assignment_group=self.deadline.assignment_group).aggregate(Max('number'))
         self.number = (m['number__max'] or 0) + 1
+
+    def set_time_of_delivery_to_now(self):
+        self.time_of_delivery = datetime.now().replace(microsecond=0, tzinfo=None)
 
     def clean(self, *args, **kwargs):
         """ Validate the delivery. """
@@ -262,43 +281,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
             if not self.alias_delivery and not self.feedbacks.exists():
                 raise ValidationError('A Delivery with delivery_type=ALIAS must have an alias_delivery or feedback.')
         super(Delivery, self).clean(*args, **kwargs)
-
-    def save(self, *args, **kwargs):
-        """
-        Set :attr:`number` automatically to one greater than what is was last and
-        add the delivery to the latest deadline (see :meth:`AssignmentGroup.get_active_deadline`).
-
-        :param autoset_time_of_delivery:
-            Automatically set ``time_of_delivery`` to *now*? Defaults to ``True``.
-        :param autoset_number:
-            Automatically number the delivery if it is successful? Defaults to ``True``.
-        :param autoset_last_delivery_on_group:
-            Automatically set the last_delivery attribute of the group
-            if the ``id`` is ``None`` and ``successful`` is ``True``?
-            Defaults to ``True``.
-        """
-        autoset_last_delivery_on_group = kwargs.pop('autoset_last_delivery_on_group', True)
-        autoset_time_of_delivery = kwargs.pop('autoset_time_of_delivery', True)
-        autoset_number = kwargs.pop('autoset_number', True)
-
-        if autoset_time_of_delivery:
-            # NOTE: We remove timezoneinfo and microseconds to make the timestamp more portable, and easier to compare.
-            now = datetime.now().replace(microsecond=0, tzinfo=None)
-            self.time_of_delivery = now
-        if autoset_number:
-            if self.successful:
-                self._set_number()
-            else:
-                self.number = 0 # NOTE: Number is 0 until the delivery is successful
-
-        is_new = self.id is None
-        super(Delivery, self).save(*args, **kwargs)
-
-        if autoset_last_delivery_on_group and self.successful:
-            group = self.assignment_group
-            group.last_delivery = self
-            group.save(update_delivery_status=False)
-
 
     def __unicode__(self):
         return (u'Delivery(id={id}, number={number}, group={group}, '
@@ -331,10 +313,10 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                 alias_delivery=self.alias_delivery,
                                 last_feedback = None,
                                 copy_of=self)
+
         def save_deliverycopy():
-            deliverycopy.save(autoset_time_of_delivery=False,
-                              autoset_number=False,
-                              autoset_last_delivery_on_group=False)
+            deliverycopy.save()
+
         deliverycopy.full_clean()
         save_deliverycopy()
         for filemeta in self.filemetas.all():

@@ -11,6 +11,17 @@
         </div>
     </div>
     <div class="container-fluid">
-        TODO
+        <form action="{{ request.path }}" method="post" enctype="multipart/form-data">{% csrf_token %}
+            {{ filemetaformset.management_form }}
+            {% for filemetaform in filemetaformset %}
+                {{ filemetaform.as_p }}
+            {% endfor %}
+
+            <p>
+                <button type="submit" class="btn btn-primary">
+                    {% trans "Add delivery" %}
+                </button>
+            </p>
+        </form>
     </div>
 {% endblock content %}

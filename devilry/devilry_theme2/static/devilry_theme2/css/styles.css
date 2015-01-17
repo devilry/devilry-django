@@ -8823,21 +8823,6 @@ body.django-cradmin-noscroll {
 nav#cradmin_menu {
   background-color: #333333;
 }
-nav#cradmin_menu .cradmin_menuicon {
-  display: none;
-  text-align: center;
-  padding-top: 25px;
-  padding-bottom: 30px;
-}
-nav#cradmin_menu .cradmin_menuicon .fa {
-  font-size: 70px;
-  color: #111;
-}
-@media (min-width: 992px) {
-  nav#cradmin_menu .cradmin_menuicon {
-    display: block;
-  }
-}
 nav#cradmin_menu ul.cradmin_menucontent {
   display: none;
   list-style: none;
@@ -8931,7 +8916,7 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   background-color: #eeeeee;
 }
 @media (min-width: 992px) {
-  nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle {
+  nav#cradmin_menu .cradmin_menumobileheader {
     display: none;
   }
 }
@@ -9938,6 +9923,20 @@ table.table.cradmin-table-fluid tbody tr td {
     float: right;
     margin: 0 0 20px 20px;
   }
+}
+.devilry-student-deliveriesapp-summarycolumn p {
+  margin: 0;
+}
+.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-linkwrapper {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-feedback,
+.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-no-feedback {
+  font-size: 14px;
+}
+.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-no-feedback {
+  color: #777777;
 }
 body {
   background-image: url('../images/groovepaper.png');

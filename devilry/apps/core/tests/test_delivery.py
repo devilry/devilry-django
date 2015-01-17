@@ -14,7 +14,6 @@ from devilry.apps.core.models import deliverytypes
 from devilry.apps.core.testhelper import TestHelper
 
 
-
 class TestDelivery(TestCase):
     def setUp(self):
         DeliveryBuilder.set_memory_deliverystore()
@@ -26,11 +25,8 @@ class TestDelivery(TestCase):
             .add_deadline_in_x_weeks(weeks=1)
         delivery1 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=1).delivery
         delivery2 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=2).delivery
-        delivery3 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=3, successful=False).delivery
-        self.assertFalse(delivery3.successful)
         self.assertTrue(delivery2.is_last_delivery)
         self.assertFalse(delivery1.is_last_delivery)
-        self.assertFalse(delivery3.is_last_delivery)
 
     def test_assignment_property(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -46,53 +42,30 @@ class TestDelivery(TestCase):
             .add_deadline_in_x_weeks(weeks=1).add_delivery().delivery
         self.assertEquals(delivery.assignment_group, groupbuilder.group)
 
-    def test_autoset_last_delivery_on_group_new_successful(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('week1')\
-            .add_group()
-        deadline = groupbuilder\
-            .add_deadline_in_x_weeks(weeks=1).deadline
-        delivery = Delivery.objects.create(
-            deadline=deadline,
-            successful=True)
-        groupbuilder.reload_from_db()
-        self.assertEquals(groupbuilder.group.last_delivery, delivery)
-        self.assertEquals(delivery.last_delivery_by_group, groupbuilder.group)
+    def test_set_number_first(self):
+        deadline = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1').add_group()\
+            .add_deadline_x_weeks_ago(weeks=1).deadline
+        delivery = Delivery(deadline=deadline)
+        delivery.set_number()
+        self.assertEqual(delivery.number, 1)
 
-    def test_do_not_autoset_last_delivery_on_group_when_not_successful(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('week1')\
-            .add_group()
-        deadline = groupbuilder\
-            .add_deadline_in_x_weeks(weeks=1).deadline
-        delivery = Delivery.objects.create(
-            deadline=deadline,
-            successful=False)
-        groupbuilder.reload_from_db()
-        self.assertEquals(groupbuilder.group.last_delivery_id, None)
-        with self.assertRaises(AssignmentGroup.DoesNotExist):
-            x = delivery.last_delivery_by_group
-
-    def test_do_not_autoset_last_delivery_on_group_when_false(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('week1')\
-            .add_group()
-        deadline = groupbuilder\
-            .add_deadline_in_x_weeks(weeks=1).deadline
-        delivery = Delivery(
-            deadline=deadline,
-            successful=False)
-        delivery.save(autoset_last_delivery_on_group=False)
-        groupbuilder.reload_from_db()
-        self.assertEquals(groupbuilder.group.last_delivery_id, None)
-
+    def test_set_number_not_first(self):
+        deadline = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1').add_group()\
+            .add_deadline_x_weeks_ago(weeks=1).deadline
+        Delivery.objects.create(deadline=deadline, number=1)
+        Delivery.objects.create(deadline=deadline, number=2)
+        delivery = Delivery(deadline=deadline)
+        delivery.set_number()
+        self.assertEqual(delivery.number, 3)
 
 
 class TestDeliveryOld(TestCase, TestHelper):
     """
     WARNING: Old tests for Delivery using TestHelper. We should
     NOT add new tests here, and the tests should be updated and
-    moved to TestStaticFeedback if we update any of the tested 
+    moved to TestDelivery if we update any of the tested
     methods, or need to add more tests.
     """
     def setUp(self):
@@ -149,7 +122,9 @@ class TestDeliveryOld(TestCase, TestHelper):
     def test_noalias_missing_feedback(self):
         self._create_testdata()
         deadline = self.inf1100_period1_assignment1_g3_d1
-        delivery = deadline.deliveries.create(successful=True,
+        delivery = deadline.deliveries.create(
+            successful=True,
+            number=1,
             delivery_type=deliverytypes.ALIAS,
             alias_delivery=None)
         with self.assertRaises(ValidationError):
@@ -158,8 +133,10 @@ class TestDeliveryOld(TestCase, TestHelper):
     def test_noalias_with_feedback(self):
         self._create_testdata()
         deadline = self.inf1100_period1_assignment1_g3_d1
-        delivery = deadline.deliveries.create(successful=True,
+        delivery = deadline.deliveries.create(
+            successful=True,
             delivery_type=deliverytypes.ALIAS,
+            number=1,
             alias_delivery=None)
         delivery.feedbacks.create(
             grade = 'A',
@@ -173,9 +150,11 @@ class TestDeliveryOld(TestCase, TestHelper):
     def test_with_alias(self):
         self._create_testdata()
         deadline = self.inf1100_period1_assignment1_g3_d1
-        otherdelivery = deadline.deliveries.create(successful=True)
-        delivery = deadline.deliveries.create(successful=True,
+        otherdelivery = deadline.deliveries.create(successful=True, number=1)
+        delivery = deadline.deliveries.create(
+            successful=True,
             delivery_type=deliverytypes.ALIAS,
+            number=2,
             alias_delivery=otherdelivery)
         delivery.clean()
 
@@ -188,26 +167,6 @@ class TestDeliveryOld(TestCase, TestHelper):
         group.candidates.all()[0].delete()
         delivery = Delivery.objects.get(id=delivery.id) # Re-get from DB
         self.assertEquals(delivery.delivered_by, None)
-
-    def test_delivery_numbering(self):
-        self._create_testdata()
-        deadline = self.inf1100_period1_assignment1_g1_d1
-        self.assertEquals(deadline.deliveries.count(), 1)
-        self.assertEquals(deadline.deliveries.all()[0].number, 1)
-        d2 = Delivery(deadline=deadline,
-                     delivered_by=deadline.assignment_group.candidates.all()[0])
-        d2.save()
-        d3 = Delivery(deadline=deadline,
-                     delivered_by=deadline.assignment_group.candidates.all()[0])
-        d3.save()
-        self.assertEquals(d2.number, 0)
-        self.assertEquals(d3.number, 0)
-        d3.successful = True
-        d3.save()
-        self.assertEquals(d3.number, 2)
-        d2.successful = True
-        d2.save()
-        self.assertEquals(d2.number, 3)
 
     def test_published_where_is_candidate(self):
         self._create_testdata()
@@ -231,7 +190,6 @@ class TestDeliveryOld(TestCase, TestHelper):
         delivery.successful = False
         delivery.save()
         self.assertEquals(Delivery.published_where_is_candidate(self.student3).count(), 2)
-
 
     def test_hard_deadline(self):
         self._create_testdata()
@@ -265,8 +223,7 @@ class TestDeliveryOld(TestCase, TestHelper):
                             successful=False,
                             time_of_delivery=time_of_delivery)
         delivery.full_clean()
-        delivery.save(autoset_number=False,
-                      autoset_time_of_delivery=False)
+        delivery.save()
         self.assertEquals(delivery.number, 10)
         self.assertEquals(delivery.successful, False)
         self.assertEquals(delivery.time_of_delivery, time_of_delivery)
@@ -296,8 +253,7 @@ class TestDeliveryOld(TestCase, TestHelper):
                             alias_delivery=old_delivery,
                             time_of_delivery=time_of_delivery)
         delivery.full_clean()
-        delivery.save(autoset_number=False,
-                      autoset_time_of_delivery=False)
+        delivery.save()
         delivery.add_file('test.txt', ['Hello', ' world'])
         return delivery, old_delivery
 
@@ -333,15 +289,14 @@ class TestDeliveryOld(TestCase, TestHelper):
         self.assertEquals(copied_filemeta.get_all_data_as_string(),
                           'Hello world')
 
-
     def test_copy_feedbacks(self):
         delivery, old_delivery = self._create_copydata()
         self.add_feedback(delivery=delivery,
-                          verdict={'grade': 'F', 'points':10, 'is_passing_grade':False},
+                          verdict={'grade': 'F', 'points': 10, 'is_passing_grade': False},
                           rendered_view='This was bad',
                           timestamp=datetime(2005, 1, 1, 0, 0, 0))
         self.add_feedback(delivery=delivery,
-                          verdict={'grade': 'C', 'points':40, 'is_passing_grade':True},
+                          verdict={'grade': 'C', 'points': 40, 'is_passing_grade': True},
                           rendered_view='Better',
                           timestamp=datetime(2010, 1, 1, 0, 0, 0))
 

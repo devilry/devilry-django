@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from devilry.apps.core.models import Delivery
 
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
@@ -96,16 +97,14 @@ class TestSingleDeliveryView(TestCase):
         groupbuilder = self.week1builder.add_group(examiners=[self.examiner1])
         deadlinebuilder = groupbuilder.add_deadline_x_weeks_ago(weeks=1)
         delivery1 = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
-        delivery2 = deadlinebuilder.add_delivery_x_hours_after_deadline(hours=1).delivery
+        deadlinebuilder.add_delivery_x_hours_after_deadline(hours=1)
         response = self._getas('examiner1', delivery1.id)
 
         groupbuilder.reload_from_db()
-        self.assertEquals(groupbuilder.group.last_delivery, delivery2)
         html = response.content
         self.assertEquals(
             cssGet(html, '.not_last_delivery_message').text.strip(),
             'This delivery is not the last delivery made by this group on this assignment.Browse other deliveries.')
-
 
     def test_show_render_no_feedback(self):
         delivery = self.week1builder\

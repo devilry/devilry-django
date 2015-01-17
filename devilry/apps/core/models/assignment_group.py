@@ -42,6 +42,53 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
     examiner information from expired periods (which in most cases are not necessary
     to get). Use :meth:`.active` instead.
     """
+    def annotate_with_last_deadline_datetime(self):
+        """
+        See :meth:`.AssignmentGroupManager.annotate_with_last_deadline_datetime`.
+        """
+        return self.extra(
+            select={
+                'last_deadline_datetime': """
+                    SELECT core_deadline.deadline
+                    FROM core_deadline
+                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY core_deadline.deadline DESC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def annotate_with_last_delivery_id(self):
+        """
+        See :meth:`.AssignmentGroupManager.annotate_with_last_delivery_id`.
+        """
+        return self.extra(
+            select={
+                'last_delivery_id': """
+                    SELECT core_delivery.id
+                    FROM core_delivery
+                    INNER JOIN core_deadline ON core_deadline.id = core_delivery.deadline_id
+                    INNER JOIN core_assignmentgroup ON core_assignmentgroup.id = core_deadline.assignment_group_id
+                    ORDER BY core_delivery.time_of_delivery DESC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def annotate_with_number_of_deliveries(self):
+        """
+        See :meth:`.AssignmentGroupManager.annotate_with_number_of_deliveries`.
+        """
+        return self.annotate(number_of_deliveries=models.Count('deadlines__deliveries'))
+
+    def exclude_groups_with_deliveries(self):
+        """
+        See :meth:`.AssignmentGroupManager.exclude_groups_with_deliveries`.
+        """
+        return self\
+            .annotate(deliverycount_for_no_deliveries_exclude=models.Count('deadlines__deliveries'))\
+            .filter(deliverycount_for_no_deliveries_exclude=0)
+
     def filter_is_examiner(self, user):
         return self.filter(examiners__user=user).distinct()
 
@@ -89,10 +136,16 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         )
 
     def add_nonelectronic_delivery(self):
+        from devilry.apps.core.models import Delivery
         for group in self.all():
-            group.last_deadline.deliveries.create(
+            deadline = group.last_deadline
+            delivery = Delivery(
+                deadline=deadline,
                 delivery_type=deliverytypes.NON_ELECTRONIC,
-                successful=True)
+                time_of_delivery=datetime.now())
+            delivery.set_number()
+            delivery.full_clean()
+            delivery.save()
 
 
 class AssignmentGroupManager(models.Manager):
@@ -101,6 +154,37 @@ class AssignmentGroupManager(models.Manager):
 
     def filter(self, *args, **kwargs):
         return self.get_queryset().filter(*args, **kwargs)
+
+    def annotate_with_last_deadline_datetime(self):
+        """
+        Annotate the queryset with the datetime of the last deadline stored
+        as the ``last_delivery_datetime`` attribute.
+        """
+        return self.get_queryset().annotate_with_last_deadline_datetime()
+
+    def annotate_with_last_delivery_id(self):
+        """
+        Annotate the queryset with the ID of the last delivery stored
+        as the ``last_delivery_id`` attribute.
+        """
+        return self.get_queryset().annotate_with_last_delivery_id()
+
+    def annotate_with_number_of_deliveries(self):
+        """
+        Annotate the queryset with the number of deliveries
+        as the ``number_of_deliveries`` attribute.
+        """
+        return self.get_queryset().annotate_with_number_of_deliveries()
+
+    def exclude_groups_with_deliveries(self):
+        """
+        Filter out all groups with deliveries.
+
+        Example::
+
+            groups_with_no_deliveries = AssignmentGroup.objects.exclude_groups_with_deliveries()
+        """
+        return self.get_queryset().exclude_groups_with_deliveries()
 
     def filter_is_examiner(self, user):
         """
@@ -391,11 +475,13 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Return ``True`` if the group has no deliveries, and we are expecting
         them to have made at least one delivery on the last deadline.
         """
+        from devilry.apps.core.models import Delivery
+        from devilry.apps.core.models import Deadline
         if self.assignment.is_electronic and self.get_status() == "waiting-for-feedback":
-            if not self.last_delivery:
-                return True
-            elif self.last_deadline and self.last_delivery.deadline != self.last_deadline:
-                return True
+            return not Delivery.objects.filter(
+                deadline__assignment_group=self,
+                deadline=Deadline.objects.filter(assignment_group=self).order_by('-deadline')[0]
+            ).exists()
         return False
 
     @property
@@ -549,9 +635,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         This is always the last deadline on this group.
 
         :return:
-            The latest deadline.
+            The latest deadline or ``None``.
         """
-        return self.deadlines.all().order_by('-deadline')[0]
+        return self.deadlines.all().order_by('-deadline').first()
 
     def can_save(self, user_obj):
         """ Check if the user has permission to save this AssignmentGroup. """
@@ -627,9 +713,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         qry = qry.order_by('time_of_delivery')
         for number, delivery in enumerate(qry, 1):
             delivery.number = number
-            delivery.save(autoset_number=False,
-                          autoset_last_delivery_on_group=False,
-                          autoset_time_of_delivery=False)
+            delivery.save()
 
     @property
     def successful_delivery_count(self):
@@ -773,9 +857,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
                                                        copy_of=delivery.copy_of).exists():
                                 continue
                         delivery.deadline = matching_deadline
-                        delivery.save(autoset_time_of_delivery=False,
-                                      autoset_last_delivery_on_group=False,
-                                      autoset_number=False)
+                        delivery.save()
                 except Deadline.DoesNotExist:
                     deadline.assignment_group = target
                     deadline.save()

@@ -21,7 +21,7 @@
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
     <option name="TEMPLATE_FOLDERS">
       <list>
-        <option value="$MODULE_DIR$/devilry_theme/templates" />
+        <option value="$MODULE_DIR$/devilry/devilry_student/templates" />
       </list>
     </option>
   </component>
