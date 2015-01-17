@@ -205,6 +205,35 @@ class TestAssignmentGroup(TestCase):
             .annotate_with_last_deadline_datetime().first()
         self.assertEqual(group.last_deadline_datetime, last_deadline.deadline)
 
+    def test_annotate_with_last_deadline_datetime_no_deadlines(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
+            .annotate_with_last_deadline_datetime().first()
+        self.assertEqual(group.last_deadline_datetime, None)
+
+    def test_annotate_with_last_delivery_id(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
+        last_delivery = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
+        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=3)
+        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
+            .annotate_with_last_delivery_id().first()
+        self.assertEqual(group.last_delivery_id, last_delivery.id)
+
+    def test_annotate_with_last_delivery_id_no_deliveries(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
+            .annotate_with_last_delivery_id().first()
+        self.assertEqual(group.last_delivery_id, None)
+
 
 class TestAssignmentGroupCanDelete(TestCase):
     def setUp(self):

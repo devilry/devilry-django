@@ -55,6 +55,20 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             },
         )
 
+    def annotate_with_last_delivery_id(self):
+        return self.extra(
+            select={
+                'last_delivery_id': """
+                    SELECT core_delivery.id
+                    FROM core_delivery
+                    INNER JOIN core_deadline ON core_deadline.id = core_delivery.deadline_id
+                    INNER JOIN core_assignmentgroup ON core_assignmentgroup.id = core_deadline.assignment_group_id
+                    ORDER BY core_delivery.time_of_delivery DESC
+                    LIMIT 1
+                """
+            },
+        )
+
     def filter_is_examiner(self, user):
         return self.filter(examiners__user=user).distinct()
 
@@ -122,7 +136,18 @@ class AssignmentGroupManager(models.Manager):
         return self.get_queryset().filter(*args, **kwargs)
 
     def annotate_with_last_deadline_datetime(self):
+        """
+        Annotate the queryset with the datetime of the last deadline stored
+        as the ``last_delivery_datetime`` attribute.
+        """
         return self.get_queryset().annotate_with_last_deadline_datetime()
+
+    def annotate_with_last_delivery_id(self):
+        """
+        Annotate the queryset with the ID of the last delivery stored
+        as the ``last_delivery_id`` attribute.
+        """
+        return self.get_queryset().annotate_with_last_delivery_id()
 
     def filter_is_examiner(self, user):
         """

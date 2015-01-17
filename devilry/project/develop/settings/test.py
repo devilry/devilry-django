@@ -12,3 +12,5 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
     },
 }
+
+#SKIP_SELENIUMTESTS = True
