@@ -14,7 +14,7 @@
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/developfiles" />
     </content>
-    <orderEntry type="jdk" jdkName="Python 2.7.5 virtualenv at ~/.virtualenvs/devilry" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="Python 2.7.6 virtualenv at ~/.virtualenvs/devilry" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
   <component name="TemplatesService">
