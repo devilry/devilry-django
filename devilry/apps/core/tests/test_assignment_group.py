@@ -229,10 +229,50 @@ class TestAssignmentGroup(TestCase):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')\
             .add_group()
-        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
         group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
             .annotate_with_last_delivery_id().first()
         self.assertEqual(group.last_delivery_id, None)
+
+    def test_exclude_groups_with_deliveries_all_groups_has_deliveries(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
+        groups = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
+            .exclude_groups_with_deliveries()
+        self.assertEqual(groups.count(), 0)
+
+    def test_exclude_groups_with_deliveries(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        groups = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
+            .exclude_groups_with_deliveries()
+        self.assertEqual(groups.count(), 1)
+
+    def test_annotate_with_number_of_deliveries(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        deadline1builder = groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        deadline2builder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
+
+        deadline1builder.add_delivery_x_hours_before_deadline(hours=10)
+        deadline1builder.add_delivery_x_hours_before_deadline(hours=3)
+        deadline2builder.add_delivery_x_hours_before_deadline(hours=2)
+        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
+            .annotate_with_number_of_deliveries().first()
+        self.assertEqual(group.number_of_deliveries, 3)
+
+    def test_annotate_with_number_of_deliveries_no_deliveries(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
+            .annotate_with_number_of_deliveries().first()
+        self.assertEqual(group.number_of_deliveries, 0)
 
 
 class TestAssignmentGroupCanDelete(TestCase):

@@ -43,6 +43,9 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
     to get). Use :meth:`.active` instead.
     """
     def annotate_with_last_deadline_datetime(self):
+        """
+        See :meth:`.AssignmentGroupManager.annotate_with_last_deadline_datetime`.
+        """
         return self.extra(
             select={
                 'last_deadline_datetime': """
@@ -56,6 +59,9 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         )
 
     def annotate_with_last_delivery_id(self):
+        """
+        See :meth:`.AssignmentGroupManager.annotate_with_last_delivery_id`.
+        """
         return self.extra(
             select={
                 'last_delivery_id': """
@@ -68,6 +74,20 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
                 """
             },
         )
+
+    def annotate_with_number_of_deliveries(self):
+        """
+        See :meth:`.AssignmentGroupManager.annotate_with_number_of_deliveries`.
+        """
+        return self.annotate(number_of_deliveries=models.Count('deadlines__deliveries'))
+
+    def exclude_groups_with_deliveries(self):
+        """
+        See :meth:`.AssignmentGroupManager.exclude_groups_with_deliveries`.
+        """
+        return self\
+            .annotate(deliverycount_for_no_deliveries_exclude=models.Count('deadlines__deliveries'))\
+            .filter(deliverycount_for_no_deliveries_exclude=0)
 
     def filter_is_examiner(self, user):
         return self.filter(examiners__user=user).distinct()
@@ -148,6 +168,24 @@ class AssignmentGroupManager(models.Manager):
         as the ``last_delivery_id`` attribute.
         """
         return self.get_queryset().annotate_with_last_delivery_id()
+
+    def annotate_with_number_of_deliveries(self):
+        """
+        Annotate the queryset with the number of deliveries
+        as the ``number_of_deliveries`` attribute.
+        """
+        return self.get_queryset().annotate_with_number_of_deliveries()
+
+
+    def exclude_groups_with_deliveries(self):
+        """
+        Filter out all groups with deliveries.
+
+        Example::
+
+            groups_with_no_deliveries = AssignmentGroup.objects.exclude_groups_with_deliveries()
+        """
+        return self.get_queryset().exclude_groups_with_deliveries()
 
     def filter_is_examiner(self, user):
         """
