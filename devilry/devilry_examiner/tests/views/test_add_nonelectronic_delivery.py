@@ -1,14 +1,11 @@
-from urllib import urlencode
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.project.develop.testhelpers.soupselect import cssFind
 from devilry.project.develop.testhelpers.soupselect import cssGet
 from devilry.project.develop.testhelpers.soupselect import cssExists
-from devilry.apps.core.models import deliverytypes
-
+from devilry.apps.core.models import deliverytypes, Delivery
 
 
 class TestAddNonElectronicDeliveryView(TestCase):
@@ -91,8 +88,9 @@ class TestAddNonElectronicDeliveryView(TestCase):
         })
         self.assertEquals(response.status_code, 302)
         group1builder.reload_from_db()
-        self.assertEquals(group1builder.group.last_delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
-        self.assertTrue(group1builder.group.last_delivery.successful)
+        group1delivery = Delivery.objects.get(deadline__assignment_group=group1builder.group)
+        self.assertEquals(group1delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
+        self.assertTrue(group1delivery.successful)
 
     def test_post_multiple(self):
         group1builder = self.assignment1builder\
@@ -110,10 +108,12 @@ class TestAddNonElectronicDeliveryView(TestCase):
 
         group1builder.reload_from_db()
         group2builder.reload_from_db()
-        self.assertEquals(group1builder.group.last_delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
-        self.assertTrue(group1builder.group.last_delivery.successful)
-        self.assertEquals(group2builder.group.last_delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
-        self.assertTrue(group2builder.group.last_delivery.successful)
+        group1delivery = Delivery.objects.get(deadline__assignment_group=group1builder.group)
+        group2delivery = Delivery.objects.get(deadline__assignment_group=group2builder.group)
+        self.assertEquals(group1delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
+        self.assertTrue(group1delivery.successful)
+        self.assertEquals(group2delivery.delivery_type, deliverytypes.NON_ELECTRONIC)
+        self.assertTrue(group2delivery.successful)
 
 
 
