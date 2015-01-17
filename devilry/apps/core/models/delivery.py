@@ -66,6 +66,18 @@ class DeliveryManager(models.Manager):
 class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExaminer):
     """ A class representing a given delivery from an `AssignmentGroup`_.
 
+    How to create a delivery::
+
+        deadline = Deadline.objects.get(....)
+        candidate = Candidate.objects.get(....)
+        delivery = Delivery(
+            deadline=deadline,
+            delivered_by=candidate,
+            time_of_delivery=datetime.now())
+        delivery.set_number()
+        delivery.full_clean()
+        delivery.save()
+
     .. attribute:: time_of_delivery
 
         A django.db.models.DateTimeField_ that holds the date and time the
@@ -142,8 +154,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                     'unique within the assignment-group.')
 
     # Fields set by user
-    successful = models.BooleanField(blank=True, default=False,
-                                    help_text='Has the delivery and all its files been uploaded successfully?')
+    successful = models.BooleanField(blank=True, default=True,
+                                     help_text='Has the delivery and all its files been uploaded successfully?')
     delivered_by = models.ForeignKey("Candidate", blank=True, null=True,
                                      on_delete=models.SET_NULL,
                                      help_text='The candidate that delivered this delivery. If this is None, the delivery was made by an administrator for a student.')
