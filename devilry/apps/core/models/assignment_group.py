@@ -42,17 +42,17 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
     examiner information from expired periods (which in most cases are not necessary
     to get). Use :meth:`.active` instead.
     """
-    def annotate_with_last_deadline(self):
+    def annotate_with_last_deadline_datetime(self):
         return self.extra(
             select={
-                'last_deadline': """
-                    SELECT *
+                'last_deadline_datetime': """
+                    SELECT core_deadline.deadline
                     FROM core_deadline
-                    WHERE core_deadline.assignment_group.assignment_group_id = %s
+                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
                     ORDER BY core_deadline.deadline DESC
                     LIMIT 1
                 """
-            }
+            },
         )
 
     def filter_is_examiner(self, user):
@@ -120,6 +120,9 @@ class AssignmentGroupManager(models.Manager):
 
     def filter(self, *args, **kwargs):
         return self.get_queryset().filter(*args, **kwargs)
+
+    def annotate_with_last_deadline_datetime(self):
+        return self.get_queryset().annotate_with_last_deadline_datetime()
 
     def filter_is_examiner(self, user):
         """

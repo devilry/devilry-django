@@ -193,6 +193,18 @@ class TestAssignmentGroup(TestCase):
         groupbuilder.add_deadline_x_weeks_ago(weeks=1).add_delivery()
         self.assertFalse(groupbuilder.group.missing_expected_delivery)
 
+    def test_annotate_with_last_deadline_datetime(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        groupbuilder.add_deadline_in_x_weeks(weeks=10)
+        groupbuilder.add_deadline_in_x_weeks(weeks=2)
+        last_deadline = groupbuilder.add_deadline_in_x_weeks(weeks=20).deadline
+        groupbuilder.add_deadline_x_weeks_ago(weeks=2)
+        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
+            .annotate_with_last_deadline_datetime().first()
+        self.assertEqual(group.last_deadline_datetime, last_deadline.deadline)
+
 
 class TestAssignmentGroupCanDelete(TestCase):
     def setUp(self):
