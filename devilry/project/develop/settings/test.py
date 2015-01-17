@@ -13,4 +13,5 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
-#SKIP_SELENIUMTESTS = True
+# Default to skipping selenium tests
+SKIP_SELENIUMTESTS = True
