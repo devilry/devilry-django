@@ -119,13 +119,15 @@ class DeliveryBuilder(CoreBuilderBase):
         FileMeta.deliverystore = MemoryDeliveryStore()
 
     def __init__(self, **kwargs):
-        if not 'time_of_delivery' in kwargs:
+        if 'time_of_delivery' not in kwargs:
             kwargs['time_of_delivery'] = datetime.now()
         self.delivery = Delivery(**kwargs)
-        self.delivery.save(autoset_time_of_delivery=False)
+        if 'number' not in kwargs:
+            self.delivery.set_number()
+        self.delivery.save()
 
     def _save(self):
-        self.delivery.save(autoset_time_of_delivery=False)
+        self.delivery.save()
 
     def add_filemeta(self, **kwargs):
         kwargs['delivery'] = self.delivery

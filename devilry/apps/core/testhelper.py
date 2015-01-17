@@ -117,7 +117,14 @@ class TestHelper(object):
 
         # Create the delivery
         #delivery = group.deliveries.create(delivered_by=delivered_by_to_use, successful=False)
-        delivery = group.get_active_deadline().deliveries.create(delivered_by=delivered_by_to_use, successful=False)
+        delivery = Delivery(
+            deadline=group.get_active_deadline(),
+            delivered_by=delivered_by_to_use,
+            successful=successful)
+        delivery.set_number()
+        delivery.full_clean()
+        delivery.save()
+
         # add files if there are any
         for filename in files.keys():
             delivery.add_file(filename, files[filename])
@@ -132,10 +139,8 @@ class TestHelper(object):
             delivery.time_of_delivery = group.get_active_deadline().deadline + timedelta(days=1)
         else:
             delivery.time_of_delivery = datetime.now()
+        delivery.save()
 
-        delivery.successful = successful
-        delivery.full_clean()
-        delivery.save(autoset_time_of_delivery=False)
         # add it to the groups delivery list
         prefix = (group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
                   group.parentnode.parentnode.short_name + '_' +             # period_

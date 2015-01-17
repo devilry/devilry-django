@@ -132,12 +132,10 @@ class DeadlineManager(models.Manager):
 
         First described in https://github.com/devilry/devilry-django/issues/514.
         """
-        return self.get_queryset().smart_create(groupqueryset, deadline_datetime, text,
+        return self.get_queryset().smart_create(
+            groupqueryset, deadline_datetime, text,
             why_created=why_created, added_by=added_by,
             query_created_deadlines=query_created_deadlines)
-
-
-
 
 
 class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate):
@@ -299,8 +297,9 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
                 delivery = Delivery(
                     deadline=self,
                     successful=True,
+                    time_of_delivery=datetime.now(),
                     number=1)
-                delivery.save(autoset_number=False, autoset_last_delivery_on_group=False)
+                delivery.save()
                 group.last_delivery = delivery
                 groupsave_needed = True
         if group.last_deadline == None or group.last_deadline.deadline < self.deadline:

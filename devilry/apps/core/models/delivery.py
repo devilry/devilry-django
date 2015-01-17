@@ -72,8 +72,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         candidate = Candidate.objects.get(....)
         delivery = Delivery(
             deadline=deadline,
-            delivered_by=candidate,
-            time_of_delivery=datetime.now())
+            delivered_by=candidate)
         delivery.set_number()
         delivery.full_clean()
         delivery.save()
@@ -146,7 +145,9 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                                 verbose_name = "Type of delivery",
                                                 help_text='0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.')
     # Fields automatically 
-    time_of_delivery = models.DateTimeField(help_text='Holds the date and time the Delivery was uploaded.')
+    time_of_delivery = models.DateTimeField(
+        help_text='Holds the date and time the Delivery was uploaded.',
+        default=datetime.now)
     deadline = models.ForeignKey(Deadline, related_name='deliveries')
     number = models.PositiveIntegerField(
         help_text='The delivery-number within this assignment-group. This number is automatically '
@@ -223,8 +224,11 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """
         from .assignment_group import AssignmentGroup
         try:
-            return self.assignment_group.last_delivery == self
-        except AssignmentGroup.DoesNotExist:
+            last_delivery = Delivery.objects\
+                .filter(deadline__assignment_group_id=self.deadline.assignment_group_id)\
+                .order_by('-time_of_delivery').first()
+            return last_delivery == self
+        except Delivery.DoesNotExist:
             return False
 
     @property
@@ -309,10 +313,10 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                 alias_delivery=self.alias_delivery,
                                 last_feedback = None,
                                 copy_of=self)
+
         def save_deliverycopy():
-            deliverycopy.save(autoset_time_of_delivery=False,
-                              autoset_number=False,
-                              autoset_last_delivery_on_group=False)
+            deliverycopy.save()
+
         deliverycopy.full_clean()
         save_deliverycopy()
         for filemeta in self.filemetas.all():
