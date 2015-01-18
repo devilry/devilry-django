@@ -137,7 +137,6 @@ class TestPeriodEditAdministrators(SubjectAdminSeleniumTestCase, PeriodTestCommo
         self.browseToPeriod(self.getBasenode().id)
 
 
-
 class TestPeriodEditDuration(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin):
     def setUp(self):
         self.testhelper = TestHelper()
@@ -161,7 +160,7 @@ class TestPeriodEditDuration(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin
         self.start_time_timefield = panel.find_element_by_css_selector('.start_time_field .devilry_extjsextras_timefield input')
         self.end_time_datefield = panel.find_element_by_css_selector('.end_time_field .devilry_extjsextras_datefield input')
         self.end_time_timefield = panel.find_element_by_css_selector('.end_time_field .devilry_extjsextras_timefield input')
-        self.savebutton = panel.find_element_by_css_selector('.okbutton button')
+        self.savebutton = self.waitForAndFindElementByCssSelector('.okbutton button', within=panel)
         self.cancelbutton = panel.find_element_by_css_selector('.cancelbutton button')
         self.editpanel = panel
 
@@ -174,14 +173,18 @@ class TestPeriodEditDuration(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin
         self.start_time_timefield.send_keys(start_time)
         self.end_time_datefield.send_keys(end_date)
         self.end_time_timefield.send_keys(end_time)
+        self.selenium.find_element_by_css_selector('body').click()
 
     def _get_durationdisplay(self):
         return self.readOnlyPanel.find_element_by_css_selector('.durationdisplay').text.strip()
 
     def test_render(self):
         self.waitForDisplayed(self.readOnlyPanel)
-        self.assertEquals(self._get_durationdisplay(),
-                          '2005-01-01 00:00 - 2006-01-01 00:00')
+        duration = self._get_durationdisplay().split()
+        self.assertEquals(duration[0], u'2005-01-01')
+        self.assertEquals(duration[1], u'00:00')
+        self.assertEquals(duration[3], u'2006-01-01')
+        self.assertEquals(duration[4], u'00:00')
 
     def test_edit(self):
         self._click_edit()
@@ -189,8 +192,11 @@ class TestPeriodEditDuration(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin
                          end_date='2001-11-22', end_time='16:00')
         self.savebutton.click()
         self.waitForDisplayed(self.readOnlyPanel)
-        self.assertEquals(self._get_durationdisplay(),
-                          '2000-12-24 12:00 - 2001-11-22 16:00')
+        duration = self._get_durationdisplay().split()
+        self.assertEquals(duration[0], u'2000-12-24')
+        self.assertEquals(duration[1], u'12:00')
+        self.assertEquals(duration[3], u'2001-11-22')
+        self.assertEquals(duration[4], u'16:00')
         p1 = self.testhelper.reload_from_db(self.p1)
         self.assertEquals(p1.start_time, datetime(2000, 12, 24, 12, 0))
         self.assertEquals(p1.end_time, datetime(2001, 11, 22, 16, 0))
