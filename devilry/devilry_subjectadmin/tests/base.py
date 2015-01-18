@@ -1,5 +1,7 @@
 from datetime import datetime
 import re
+
+from selenium import webdriver
 from seleniumhelpers import SeleniumTestCase
 from django.test.utils import override_settings
 from django.conf import settings
@@ -84,6 +86,19 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
     def browseTo(self, path):
         self.getPath('/devilry_subjectadmin/#' + path)
 
+    @classmethod
+    def getDriver(cls, browser, use_rc):
+        """
+        Override this to create customize the ``selenium``-attribute.
+
+        :param browser: The value of the ``SELENIUM_BROWSER`` setting.
+        :param use_rc: The value of ``bool(SELENIUM_USE_RC)``.
+        """
+        if browser == 'phantomjs':
+            return webdriver.PhantomJS()
+        else:
+            return super(SubjectAdminSeleniumTestCase, cls).getDriver(browser, use_rc)
+
     def login(self, username, password='test', loadurl='/devilry_subjectadmin/emptytestview'):
         self.selenium.get('{0}{1}?next={2}'.format(self.live_server_url,
                                                    settings.LOGIN_URL,
@@ -157,6 +172,7 @@ class RenameBasenodeTestMixin(object):
         savebutton.click()
         self.waitForCssSelector('.devilry_extjsextras_alertmessagelist .alert-error', within=window)
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_extjsextras_alertmessagelist .alert-error')), 1)
+
 
 class DeleteBasenodeTestMixin(object):
     deletebutton_id = None
@@ -371,6 +387,9 @@ class EditAdministratorsTestMixin(object):
 
         searchfield = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_manageadminspanel .searchfield input[type=text]')
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell')), 2)
+
+        searchfield.send_keys('')
         searchfield.send_keys('one')
+        # raw_input('X:')
         self.waitFor(self.selenium,
                      lambda s: len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell')) == 1)

@@ -22,7 +22,7 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
         self.login('uniadmin')
         self.browseTo(self.url)
         self.waitForCssSelector('.devilry_allSubjectsList')
-        self.assertTrue('All my courses' in self.selenium.page_source)
+        self.assertTrue('All my subjects' in self.selenium.page_source)
         subjectlist = self.selenium.find_element_by_css_selector('.devilry_allSubjectsList')
         self.assertEquals(len(subjectlist.find_elements_by_css_selector('li.devilry_subject')), 3)
         self.assertEquals(len(subjectlist.find_elements_by_css_selector('.devilry_subject_duck1100')), 1)
@@ -44,7 +44,6 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
 class SubjectTestCommonMixin(object):
     def browseToSubject(self, id):
         self.browseTo('/subject/{id}/'.format(id=id))
-
 
 
 class TestSubjectOverview(SubjectAdminSeleniumTestCase, SubjectTestCommonMixin,
@@ -134,16 +133,15 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, SubjectTestCommonMixin,
                             subjects=['willbedeleted:admin(willbedeletedadm)'])
         self.login('willbedeletedadm')
         self.browseToSubject(self.testhelper.willbedeleted.id)
-        self.waitForCssSelector('.devilry_subjectoverview')
-        self.click_delete_button()
-        self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
+        delete_button = self.waitForAndFindElementByCssSelector('#subjectDeleteButton')
+        self.assertFalse(delete_button.is_displayed())
 
     def test_delete_not_empty(self):
         self.login('uniadmin')
         self.browseToSubject(self.testhelper.duck1010.id)
         self.waitForCssSelector('.devilry_subjectoverview')
-        self.click_delete_button()
-        self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
+        delete_button = self.waitForAndFindElementByCssSelector('#subjectDeleteButton')
+        self.assertFalse(delete_button.is_displayed())
 
     def test_title(self):
         self.login('duck1010adm1')
@@ -181,8 +179,7 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, SubjectTestCommonMixin,
         self.login('duck1010adm1')
         self.browseToSubject(self.testhelper.duck1010.id)
         breadcrumbtext = self.get_breadcrumbstring('duck1010')
-        self.assertEquals(breadcrumbtext, ['All subjects', 'duck1010'])
-
+        self.assertEquals(breadcrumbtext, ['All my subjects', 'duck1010'])
 
 
 class TestSubjectEditAdministrators(SubjectAdminSeleniumTestCase,
