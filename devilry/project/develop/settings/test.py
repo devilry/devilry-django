@@ -13,5 +13,10 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+# Ensures we are testing against the default translation strings.
+DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = []
+
 # Default to skipping selenium tests
 SKIP_SELENIUMTESTS = True
+# SELENIUM_BROWSER = 'phantomjs'
+# SELENIUM_DEFAULT_TIMEOUT = 20
