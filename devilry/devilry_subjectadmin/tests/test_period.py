@@ -44,7 +44,7 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
         self.login('period1admin')
         self.browseToPeriod(self.testhelper.duck9000_period1.id)
         breadcrumbtext = self.get_breadcrumbstring('duck9000')
-        self.assertEquals(breadcrumbtext, ['All subjects', 'duck9000.period1'])
+        self.assertEquals(breadcrumbtext, ['All my subjects', 'duck9000.period1'])
 
     def _get_assignment_url(self, assignment):
         return '#/assignment/{0}/'.format(assignment.id)
@@ -75,7 +75,7 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
         self.waitForText('Delete duck9000.period1')
         self.waitForText('Rename duck9000.period1')
         self.assertIn('Once you delete a ', self.selenium.page_source)
-        self.assertIn('should not done without a certain amount of consideration', self.selenium.page_source)
+        self.assertIn('should not be done without a certain amount of consideration', self.selenium.page_source)
 
     def test_rename(self):
         self.login('period1admin')
@@ -95,7 +95,8 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
                             periods=['willbedeleted'])
         self.login('uniadmin')
         self.browseToPeriod(self.testhelper.sub_willbedeleted.id)
-        self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
+        delete_button = self.waitForAndFindElementByCssSelector('#periodDeleteButton')
+        self.assertTrue(delete_button.is_displayed())
         periodurl = self.selenium.current_url
         self.perform_delete()
         self.waitFor(self.selenium, lambda s: s.current_url != periodurl) # Will time out and fail unless the page is changed after delete
@@ -107,17 +108,15 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
                             periods=['willbedeleted:admin(willbedeletedadm)'])
         self.login('willbedeletedadm')
         self.browseToPeriod(self.testhelper.sub_willbedeleted.id)
-        self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
-        self.click_delete_button()
-        self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
+        delete_button = self.waitForAndFindElementByCssSelector('#periodDeleteButton')
+        self.assertFalse(delete_button.is_displayed())
 
     def test_delete_not_empty(self):
         self.testhelper.add_to_path('uni;duck9000.period1.a1:ln(Assignment One)')
         self.login('uniadmin')
         self.browseToPeriod(self.testhelper.duck9000_period1.id)
-        self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
-        self.click_delete_button()
-        self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
+        delete_button = self.waitForAndFindElementByCssSelector('#periodDeleteButton')
+        self.assertFalse(delete_button.is_displayed())
 
 
 class TestPeriodEditAdministrators(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
