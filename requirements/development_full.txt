@@ -15,7 +15,7 @@ pysolr==2.1.0
 #z3c.checkversions==0.4.1
 
 # Required to run selenium tests (mostly for testing deprecated UIs)
-selenium==2.42.1
+selenium==2.44.0
 
 # Required to build the ExtJS apps
 djangosenchatools==1.0.5
