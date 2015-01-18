@@ -95,7 +95,9 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
         :param use_rc: The value of ``bool(SELENIUM_USE_RC)``.
         """
         if browser == 'phantomjs':
-            return webdriver.PhantomJS()
+            driver = webdriver.PhantomJS()
+            driver.set_window_size(1280, 800)
+            return driver
         else:
             return super(SubjectAdminSeleniumTestCase, cls).getDriver(browser, use_rc)
 
