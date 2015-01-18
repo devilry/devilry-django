@@ -19,6 +19,7 @@ class TestDeliveryListView(TestCase):
         request = self.factory.get('/test')
         request.user = self.testuser
         request.cradmin_role = self.groupbuilder.group
+        request.cradmin_app = mock.MagicMock()
         request.session = mock.MagicMock()
         response = deliveriesapp.DeliveryListView.as_view()(request)
         return response
@@ -74,3 +75,11 @@ class TestDeliveryListView(TestCase):
         self.assertEquals(
             selector.one('.devilry-student-deliveriesapp-summarycolumn-feedback-is_passing_grade').alltext_normalized,
             'passed')
+
+    def test_render_deadline_expired_hard_deadlines(self):
+        self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+        response = self._mock_get_request()
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('#devilry_student_delivery_list_hard_deadline_expired_message'))

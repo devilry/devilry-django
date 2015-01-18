@@ -25,13 +25,26 @@ class TestAddDeliveryView(TestCase):
         response = add_deliveryapp.AddDeliveryView.as_view()(request)
         return response
 
-    def test_get(self):
-        response = self._mock_get_request()
-        response.render()
-        selector = htmls.S(response.content)
+    # def test_get(self):
+    #     response = self._mock_get_request()
+    #     response.render()
+    #     selector = htmls.S(response.content)
         # selector.prettyprint()
 
-    def test_get_deadline_expired(self):
+    def test_get_not_student_on_group(self):
+        pass
+
+    def test_get_deadline_expired_hard_deadlines(self):
+        # self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        # self.groupbuilder.add_students(self.testuser)
+        # response = self._mock_get_request()
+        # response.render()
+        # selector = htmls.S(response.content)
+        # self.assertFalse(selector.exists('#devilry_student_add_delivery_form'))
+        # self.assertTrue(selector.exists('#devilry_student_add_delivery_hard_deadline_expired_message'))
+        pass  # TODO: Test that it redirects
+
+    def test_get_deadline_expired_soft_deadlines(self):
         pass
 
     def test_get_group_closed_expired(self):

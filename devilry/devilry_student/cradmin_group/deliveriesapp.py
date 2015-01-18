@@ -50,6 +50,7 @@ class QuerySetForRoleMixin(object):
 
 class DeliveryListView(QuerySetForRoleMixin, objecttable.ObjectTableView):
     model = Delivery
+    template_name = 'devilry_student/cradmin_group/deliveriesapp/delivery_list.django.html'
     columns = [
         DeliverySummaryColumn,
         TimeOfDeliveryColumn,
