@@ -71,6 +71,7 @@ class UploadedDeliveryFileManager(models.Manager):
             delivered_by=candidate,
             successful=False
         )
+        delivery.set_number()
         delivery.save()
 
         for uploaded_deliveryfile in queryset:
