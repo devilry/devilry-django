@@ -1,3 +1,4 @@
+import unittest
 from devilry.apps.core.testhelper import TestHelper
 
 from devilry.devilry_subjectadmin.tests.base import SubjectAdminSeleniumTestCase
@@ -194,6 +195,7 @@ class TestRelatedStudentsUI(SubjectAdminSeleniumTestCase, RelatedUsersUITestMixi
         self.waitForGridRowCount(0)
         self.assertFalse(self.period.relatedstudent_set.filter(user__username='student1').exists())
 
+    @unittest.skip('See https://github.com/devilry/devilry-django/issues/651')
     def test_remove_many(self):
         self._add_relatedstudent('student1')
         self._add_relatedstudent('student2', full_name='Student Two')
