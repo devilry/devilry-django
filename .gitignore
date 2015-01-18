@@ -31,3 +31,6 @@ node_modules/
 
 # Ignore django collectstatic files
 /static/
+
+# Ignore phantomjs ghostdriver log
+/ghostdriver.log
