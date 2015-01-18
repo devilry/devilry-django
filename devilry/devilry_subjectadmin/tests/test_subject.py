@@ -122,7 +122,8 @@ class TestSubjectOverview(SubjectAdminSeleniumTestCase, SubjectTestCommonMixin,
                             subjects=['willbedeleted'])
         self.login('uniadmin')
         self.browseToSubject(self.testhelper.willbedeleted.id)
-        self.waitForCssSelector('.devilry_subjectoverview')
+        delete_button = self.waitForAndFindElementByCssSelector('#subjectDeleteButton')
+        self.assertTrue(delete_button.is_displayed())
         subjecturl = self.selenium.current_url
         self.perform_delete()
         self.waitFor(self.selenium, lambda s: s.current_url != subjecturl) # Will time out and fail unless the page is changed after delete
