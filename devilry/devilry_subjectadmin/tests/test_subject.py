@@ -22,7 +22,7 @@ class TestSubjectListAll(SubjectAdminSeleniumTestCase):
         self.login('uniadmin')
         self.browseTo(self.url)
         self.waitForCssSelector('.devilry_allSubjectsList')
-        self.assertTrue('All subjects' in self.selenium.page_source)
+        self.assertTrue('All my courses' in self.selenium.page_source)
         subjectlist = self.selenium.find_element_by_css_selector('.devilry_allSubjectsList')
         self.assertEquals(len(subjectlist.find_elements_by_css_selector('li.devilry_subject')), 3)
         self.assertEquals(len(subjectlist.find_elements_by_css_selector('.devilry_subject_duck1100')), 1)
