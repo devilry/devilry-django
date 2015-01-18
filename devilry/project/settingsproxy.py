@@ -18,5 +18,9 @@ if DJANGOENV == 'develop':  # Used for local development
     from devilry.project.develop.settings.develop import *
 elif DJANGOENV == 'test':  # Used when running the Django tests
     from devilry.project.develop.settings.test import *
+elif DJANGOENV == 'extjsbuild':  # Used when building extjs apps
+    from devilry.project.develop.settings.extjsbuild import *
+elif DJANGOENV == 'noextjsdebug':  # Used to develop/try the UI with built ExtJS apps
+    from devilry.project.develop.settings.noextjsdebug import *
 else:
     raise ValueError('Invalid value for the DJANGOENV environment variable: {}'.format(DJANGOENV))
