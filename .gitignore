@@ -28,3 +28,6 @@ node_modules/
 # Ignore user-specific pycharm settings
 .idea/workspace.xml
 .idea/tasks.xml
+
+# Ignore django collectstatic files
+/static/
