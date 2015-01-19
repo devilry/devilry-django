@@ -1,5 +1,7 @@
 from datetime import datetime
+import os
 import re
+import uuid
 
 from selenium import webdriver
 from seleniumhelpers import SeleniumTestCase
@@ -47,7 +49,6 @@ class ExtJsTestMixin(object):
         self.extjs_set_single_datetime_value(cssselector, 'date', date, within=None)
         self.extjs_set_single_datetime_value(cssselector, 'time', time, within=None)
 
-
     def extjs_get_single_datetime_value(self, cssselector, fieldtype, within=None):
         field = self.extjs_get_single_datetime_field(cssselector, fieldtype, within=within)
         return field.get_attribute('value')
@@ -58,7 +59,6 @@ class ExtJsTestMixin(object):
         if not date or not time:
             return None
         return datetime.strptime('{0} {1}'.format(date, time), '%Y-%m-%d %H:%M')
-
 
     def extjs_boundlist_select(self, cssselector, label):
         boundlist = self.waitForAndFindElementByCssSelector(cssselector)
@@ -100,6 +100,12 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
             return driver
         else:
             return super(SubjectAdminSeleniumTestCase, cls).getDriver(browser, use_rc)
+
+    def save_screenshot_to_desktop(self):
+        path = os.path.expanduser("~/Desktop/selenium-{time}-{uuid}.png".format(
+            time=datetime.now().strftime('%Y-%m-%d_%H-%M'),
+            uuid=uuid.uuid4()))
+        self.selenium.get_screenshot_as_file(path)
 
     def login(self, username, password='test', loadurl='/devilry_subjectadmin/emptytestview'):
         self.selenium.get('{0}{1}?next={2}'.format(self.live_server_url,
@@ -230,10 +236,11 @@ class EditAdministratorsTestMixin(object):
 
     def _add_user_via_ui(self, username, query=None):
         query = query or username
-        textfield = self.selenium.find_element_by_css_selector('.devilry_usersearch_autocompleteuserwidget input[type=text]')
+        textfield = self.waitForAndFindElementByCssSelector(
+            '.devilry_usersearch_autocompleteuserwidget input[type=text]')
         textfield.send_keys(query)
         self.waitForCssSelector('.autocompleteuserwidget_matchlist .matchlistitem_{username}'.format(username=username))
-        textfield.send_keys(Keys.RETURN)
+        textfield.send_keys(Keys.ENTER)
 
     def assertUserInEditTable(self, username):
         cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell_{username}'.format(username=username)
