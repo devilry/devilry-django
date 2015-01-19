@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from time import sleep
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.devilry_subjectadmin.tests.base import SubjectAdminSeleniumTestCase
@@ -36,7 +37,8 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
 
     def _open_addform(self):
         self._get_addbutton().click()
-        return self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_bulkmanagedeadlines_deadlineform.createdeadlineform')
+        return self.waitForAndFindElementByCssSelector(
+            '.devilry_subjectadmin_bulkmanagedeadlines_deadlineform.createdeadlineform')
 
     def _create_datestring_from_offset(self, dayoffset=1):
         now = datetime.now()
@@ -71,19 +73,19 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
     def _get_formsavebutton(self, form):
         return form.find_element_by_css_selector('.savedeadlinebutton button')
 
-
     #
     #
     # Add deadline tests
     #
     #
     def _fill_addform(self, form, date, time, text='', createmodecls=None):
-        datefield = self.waitForAndFindElementByCssSelector('.deadlinefield .devilry_extjsextras_datefield input[type=text]',
-                                                            within=form)
-        timefield = self.waitForAndFindElementByCssSelector('.deadlinefield .devilry_extjsextras_timefield input[type=text]',
-                                                            within=form)
-        textfield = self.waitForAndFindElementByCssSelector('textarea[name="text"]',
-                                                            within=form)
+        datefield = self.waitForAndFindElementByCssSelector(
+            '.deadlinefield .devilry_extjsextras_datefield input[type=text]',
+            within=form)
+        timefield = self.waitForAndFindElementByCssSelector(
+            '.deadlinefield .devilry_extjsextras_timefield input[type=text]',
+            within=form)
+        textfield = self.waitForAndFindElementByCssSelector('textarea[name="text"]', within=form)
 
         for field in (datefield, timefield, textfield):
             field.clear()
@@ -166,7 +168,7 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self._loginTo('a1admin', self.assignment.id)
         addform = self._open_addform()
         self._fill_addform(addform, date=self._create_datestring_from_offset(2),
-                        time='12:00', text='Hello', createmodecls='createmode_no_deadlines')
+                           time='12:00', text='Hello', createmodecls='createmode_no_deadlines')
 
         url = self.selenium.current_url
         self._get_formsavebutton(addform).click()
@@ -251,9 +253,6 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self._fill_addform(addform, date=self._create_datestring_from_offset(2),
                            time='12:00', text='Hello', createmodecls='createmode_failed')
         self.waitForEnabled(savebutton)
-
-
-
 
     #
     #
@@ -362,6 +361,7 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self._fill_editform(editform, date=self._create_datestring_from_offset(2),
                             time='12:00', text='Hello')
         self._click_onlysomegroups_checkbox(editform)
+        sleep(1)
         self._editform_clickgroups(editform, [badgroup])
 
         url = self.selenium.current_url
