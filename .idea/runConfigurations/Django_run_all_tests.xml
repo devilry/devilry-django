@@ -3,8 +3,8 @@
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <envs>
-      <env name="SKIP_SELENIUMTESTS" value="1" />
       <env name="PYTHONUNBUFFERED" value="1" />
+      <env name="SKIP_SELENIUMTESTS" value="1" />
       <env name="DJANGOENV" value="test" />
     </envs>
     <option name="SDK_HOME" value="" />

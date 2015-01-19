@@ -379,14 +379,14 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
 
     def test_edit_deadline_enable_disable(self):
         badgroup = self._create_badgroup()
-        goodgroup = self._create_goodgroup()
+        self._create_goodgroup()
         self._loginTo('a1admin', self.assignment.id)
 
         deadlinepanelbody = self._expand_deadline_by_index(index=0, expectedcount=1)
         editform = self._open_editform(deadlinepanelbody)
         savebutton = self._get_formsavebutton(editform)
 
-        self.waitForEnabled(savebutton) # Should start as enabled since we load a valid deadline
+        self.waitForEnabled(savebutton)  # Should start as enabled since we load a valid deadline
 
         self._fill_editform(editform, date='',
                             time='12:00', text='Hello')
@@ -396,14 +396,14 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
                             time='12:00', text='Hello')
         self.waitForEnabled(savebutton)
 
-        self._click_onlysomegroups_checkbox(editform) # Expand only some groups panel
+        self._click_onlysomegroups_checkbox(editform)  # Expand only some groups panel
         self.waitForDisabled(savebutton)
 
-        self._editform_clickgroups(editform, [badgroup]) # Select badgroup
+        self._editform_clickgroups(editform, [badgroup])  # Select badgroup
         self.waitForEnabled(savebutton)
 
-        self._editform_clickgroups(editform, [badgroup]) # Deselect badgroup
-        self.waitForDisabled(savebutton)
+        self._editform_clickgroups(editform, [badgroup])  # Deselect badgroup
+        self.waitForDisabled(savebutton, timeout=10)
 
-        self._click_onlysomegroups_checkbox(editform) # Collapse only some groups panel
+        self._click_onlysomegroups_checkbox(editform)  # Collapse only some groups panel
         self.waitForEnabled(savebutton)
