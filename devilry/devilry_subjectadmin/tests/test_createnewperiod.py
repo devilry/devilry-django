@@ -33,10 +33,19 @@ class TestCreateNewPeriod(SubjectAdminSeleniumTestCase):
         self.end_time_datefield.clear()
         self.end_time_timefield.clear()
 
+        self.long_name_field.send_keys('')
         self.long_name_field.send_keys(long_name)
+
+        self.start_time_datefield.send_keys('')
         self.start_time_datefield.send_keys(start_date)
+
+        self.start_time_timefield.send_keys('')
         self.start_time_timefield.send_keys(start_time)
+
+        self.end_time_datefield.send_keys('')
         self.end_time_datefield.send_keys(end_date)
+
+        self.end_time_timefield.send_keys('')
         self.end_time_timefield.send_keys(end_time)
 
         self.short_name_field.clear()
@@ -54,6 +63,7 @@ class TestCreateNewPeriod(SubjectAdminSeleniumTestCase):
                          long_name='Period One',
                          start_date='2000-12-24', start_time='12:00',
                          end_date='2001-11-22', end_time='16:00')
+        self.save_screenshot_to_desktop()
         self.waitForEnabled(self.savebutton)
         self.savebutton.click()
         self._waitForSaved()
