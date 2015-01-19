@@ -185,8 +185,11 @@ class RenameBasenodeTestMixin(object):
 class DeleteBasenodeTestMixin(object):
     deletebutton_id = None
 
+    def get_delete_button_css_selector(self):
+        return '#{0} button'.format(self.deletebutton_id)
+
     def click_delete_button(self):
-        self.selenium.find_element_by_css_selector('#{0} button'.format(self.deletebutton_id)).click()
+        self.selenium.find_element_by_css_selector(self.get_delete_button_css_selector()).click()
 
     def perform_delete(self):
         self.click_delete_button()
