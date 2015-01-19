@@ -72,17 +72,18 @@ class TestManageStudents(SubjectAdminSeleniumTestCase):
         self.waitForCssSelector('.devilry_subjectadmin_listofgroups')
         self.waitForCssSelector('.groupInfoWrapper')
 
-        ident=self.selenium.find_elements_by_css_selector('.groupInfoWrapper')
+        ident = self.selenium.find_elements_by_css_selector('.groupInfoWrapper')
         self.assertIn('student1', ident[0].text)
         self.assertIn('student7', ident[6].text)
         self.assertIn('Passed (A)', ident[0].text)
         self.assertIn('Failed (F)', ident[4].text)
 
-        stat=self.selenium.find_elements_by_css_selector('.metadataWrapper')
-        self.assertIn('Closed', stat[0].text)
-        self.assertIn('3 del', stat[0].text)
+        metadatawrappers = self.selenium.find_elements_by_css_selector('.metadataWrapper')
+        self.assertIn('3 del', metadatawrappers[0].text)
 
-        self.assertIn('Open', stat[6].text)
+        statuses = self.selenium.find_elements_by_css_selector('.groupInfoWrapper .status')
+        self.assertIn('Passed (A)', statuses[0].text)
+        self.assertIn('Waiting for deliveries', statuses[1].text)
 
     def _clickButton(self, parent, buttoncls):
         button = parent.find_element_by_css_selector('.{0} button'.format(buttoncls))
