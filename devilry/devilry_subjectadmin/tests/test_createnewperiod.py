@@ -63,7 +63,6 @@ class TestCreateNewPeriod(SubjectAdminSeleniumTestCase):
                          long_name='Period One',
                          start_date='2000-12-24', start_time='12:00',
                          end_date='2001-11-22', end_time='16:00')
-        self.save_screenshot_to_desktop()
         self.waitForEnabled(self.savebutton)
         self.savebutton.click()
         self._waitForSaved()
