@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from time import sleep
 
 from selenium.common.exceptions import StaleElementReferenceException
 
@@ -10,6 +11,7 @@ from devilry.devilry_subjectadmin.tests.base import WaitForAlertMessageMixin
 
 class TestManageSingleGroupMixin(object):
     DELIVERY_TYPES = 'electronic'
+
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.add(nodes='uni',
@@ -17,7 +19,6 @@ class TestManageSingleGroupMixin(object):
                             periods=['p1:begins(-2):ends(6)'],
                             assignments=['a1:admin(a1admin):delivery_types({0})'.format(self.DELIVERY_TYPES)])
         self.assignment = self.testhelper.sub_p1_a1
-
 
     def browseToAndSelectAs(self, username, select_group):
         path = '/assignment/{0}/@@manage-students/@@select/{1}'.format(self.assignment.id,
@@ -42,22 +43,23 @@ class TestManageSingleGroupMixin(object):
         return self.selenium.find_elements_by_css_selector(cssselector)
 
 
-
 class TestManageSingleGroupOverview(TestManageSingleGroupMixin, SubjectAdminSeleniumTestCase):
     def test_render(self):
         g1 = self.create_group('g1:candidate(student1)')
-        g2 = self.create_group('g2:candidate(student2)')
+        self.create_group('g2:candidate(student2)')
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d1:ends(80)')
         self.browseToAndSelectAs('a1admin', g1)
         meta = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo')
+        sleep(1)
         self.assertEquals(meta.text.strip(), 'Waiting for deliveries')
         self.assertEquals(len(meta.find_elements_by_css_selector('.status-waiting-for-deliveries')), 1)
 
     def test_no_deadlines(self):
         g1 = self.create_group('g1:candidate(student1)')
-        g2 = self.create_group('g2:candidate(student2)')
+        self.create_group('g2:candidate(student2)')
         self.browseToAndSelectAs('a1admin', g1)
         meta = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo')
+        sleep(1)
         self.assertEquals(meta.text.strip(), 'no-deadlines')
         self.assertEquals(len(meta.find_elements_by_css_selector('.status-no-deadlines')), 1)
 
@@ -70,6 +72,7 @@ class TestManageSingleGroupOverview(TestManageSingleGroupMixin, SubjectAdminSele
 
         self.browseToAndSelectAs('a1admin', g1)
         meta = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo')
+        sleep(1)
         self.assertEquals(len(meta.find_elements_by_css_selector('.status-corrected')), 1)
         self.assertEquals(len(meta.find_elements_by_css_selector('.passing_grade')), 1)
         self.assertEquals(len(meta.find_elements_by_css_selector('.failing_grade')), 0)
@@ -86,6 +89,7 @@ class TestManageSingleGroupOverview(TestManageSingleGroupMixin, SubjectAdminSele
 
         self.browseToAndSelectAs('a1admin', g1)
         meta = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_singlegroupmetainfo')
+        sleep(1)
         self.assertEquals(len(meta.find_elements_by_css_selector('.status-corrected')), 1)
         self.assertEquals(len(meta.find_elements_by_css_selector('.passing_grade')), 0)
         self.assertEquals(len(meta.find_elements_by_css_selector('.failing_grade')), 1)
@@ -106,7 +110,9 @@ class TestManageSingleGroupOverview(TestManageSingleGroupMixin, SubjectAdminSele
         self.assertEquals(button.text.strip(), 'Make me examiner')
         button.click()
         self.waitForText('Added you as examiner for: student1')
-        self.assertEquals(g1.examiners.all()[0].user, self.testhelper.a1admin)
+        self.waitFor(self.selenium, lambda s: g1.examiners.count() == 1, timeout=2)
+        added_examiner = g1.examiners.all().first()
+        self.assertEquals(added_examiner.user, self.testhelper.a1admin)
 
     def test_examinerbox_isexaminer(self):
         g1 = self.create_group('g1:candidate(student1):examiner(a1admin)')
@@ -249,6 +255,7 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
 
     def _click_edit_examiners_button(self):
         setbutton = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_manageexaminersonsingle .containerwithedittitle a.edit_link')
+        sleep(1)
         setbutton.click()
 
     def _set_examiners(self, group, click_examiners):
@@ -268,9 +275,9 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
         self.waitFor(self.selenium, lambda s: 'Changed examiners of' in self.selenium.page_source)
 
     def test_set(self):
-        newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
-        newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
-        ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
+        self._create_related_examiner('newexaminer', fullname='New Examiner')
+        self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
+        self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
         self._set_examiners(g1, ['newexaminer', 'newexaminer2'])
 
@@ -283,7 +290,7 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
         self._create_related_examiner('examiner1')
         self._create_related_examiner('examiner2')
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1,examiner2)')
-        self._set_examiners(g1, click_examiners=['examiner1', 'examiner2']) # Should deselect them both
+        self._set_examiners(g1, click_examiners=['examiner1', 'examiner2'])  # Should deselect them both
         g1 = self.testhelper.reload_from_db(g1)
         self.assertEquals(g1.examiners.count(), 0)
 
@@ -298,7 +305,6 @@ class TestManageSingleGroupExaminers(TestManageSingleGroupMixin, SubjectAdminSel
         cancelbutton.click()
         meta = self.find_element('.examinersingroupgrid_meta_examiner1')
         self.waitFor(meta, lambda m: meta.is_displayed())
-
 
 
 class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSeleniumTestCase):
@@ -316,6 +322,7 @@ class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSelenium
 
     def _click_edit_tags_button(self):
         setbutton = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_managetagsonsingle .containerwithedittitle a.edit_link')
+        sleep(1)
         setbutton.click()
 
     def _set_tags(self, group, tags):
@@ -378,7 +385,6 @@ class TestManageSingleGroupTags(TestManageSingleGroupMixin, SubjectAdminSelenium
         self.waitFor(meta, lambda m: meta.is_displayed())
 
 
-
 class DeadlineTestMixin(object):
     def getDeliveryCount(self, deadline):
         deliverycount_el = deadline.find_element_by_css_selector('.deadlineheader .deliverycount')
@@ -396,15 +402,21 @@ class DeadlineTestMixin(object):
         return deadline.find_elements_by_css_selector('.devilry_subjectadmin_admingroupinfo_delivery')
 
     def waitForDeadlineCount(self, count):
-        deadlinescontainer = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_admingroupinfo_deadlinescontainer')
+        deadlinescontainer = self.waitForAndFindElementByCssSelector(
+            '.devilry_subjectadmin_admingroupinfo_deadlinescontainer')
+
         def get_deadlines():
             return deadlinescontainer.find_elements_by_css_selector('.devilry_subjectadmin_admingroupinfo_deadline')
+
+        # print
+        # print count
+        # raw_input('x:')
         self.waitFor(deadlinescontainer, lambda d: len(get_deadlines()) == count)
         return get_deadlines()
 
 
-
-class TestManageSingleGroupDeadlinesAndDeliveries(DeadlineTestMixin, TestManageSingleGroupMixin, SubjectAdminSeleniumTestCase):
+class TestManageSingleGroupDeadlinesAndDeliveries(DeadlineTestMixin, TestManageSingleGroupMixin,
+                                                  SubjectAdminSeleniumTestCase):
 
     def _isInTheFuture(self, deadline):
         return len(deadline.find_elements_by_css_selector('.deadlineheader .in_the_future .text-success')) == 1
@@ -424,7 +436,6 @@ class TestManageSingleGroupDeadlinesAndDeliveries(DeadlineTestMixin, TestManageS
         self.assertTrue(self._isInTheFuture(deadlines[0]))
         self.assertEquals(self.getDeliveryCount(deadlines[1]), 1)
         self.assertFalse(self._isInTheFuture(deadlines[1]))
-
 
     def test_deadlinerender(self):
         g1 = self.create_group('g1:candidate(student1)')
@@ -490,35 +501,33 @@ class TestManageSingleGroupDeadlinesAndDeliveries(DeadlineTestMixin, TestManageS
                           'Failed')
 
 
-
-class TestManageSingleGroupNonElectronicDeadlinesAndDeliveries(DeadlineTestMixin, TestManageSingleGroupMixin, SubjectAdminSeleniumTestCase):
+class TestManageSingleGroupNonElectronicDeadlinesAndDeliveries(DeadlineTestMixin, TestManageSingleGroupMixin,
+                                                               SubjectAdminSeleniumTestCase):
     DELIVERY_TYPES = 'nonelectronic'
 
     def test_render_nonelectronic(self):
         g1 = self.create_group('g1:candidate(student1)')
         self.testhelper.add_delivery(g1, {'a.py': ['print ', 'meh']})
-        self.testhelper.add_delivery(g1, {'b.py': ['print ', 'meh2']})
         self.browseToAndSelectAs('a1admin', g1)
         deadline = self.waitForDeadlineCount(1)[0]
         self.assertIn('Corrected deliveries', deadline.text)
         self.assertEquals(self.getDeliveryCount(deadline), 2)
 
-
     def test_nonelectronic_deliverymeta(self):
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
-        self.testhelper.add_delivery(g1, {'a.py': ['print ', 'meh']})
-        self.testhelper.add_feedback(g1,
+        self.testhelper.add_feedback(
+            g1,
             verdict={'grade': 'C', 'points': 85, 'is_passing_grade': True},
             rendered_view="This is the feedback")
         self.browseToAndSelectAs('a1admin', g1)
         deadline = self.waitForDeadlineCount(1)[0]
         self.show_deadline(deadline)
         delivery = self.get_deliveries(deadline)[0]
-
         self.assertEquals(len(delivery.find_elements_by_css_selector('.no_feedback')), 0)
         feedback = delivery.find_element_by_css_selector('.feedback_rendered_view').text.strip()
         self.assertEquals(feedback, 'This is the feedback')
-        self.assertEquals('Passed',
+        self.assertEquals(
+            'Passed',
             delivery.find_element_by_css_selector('.gradeblock p .text-success').text.strip())
 
         # Make sure we show what we should show, and hide what we should hide
@@ -528,7 +537,6 @@ class TestManageSingleGroupNonElectronicDeadlinesAndDeliveries(DeadlineTestMixin
             self.assertEquals(len(delivery.find_elements_by_css_selector(cls)), 0)
 
 
-
 class TestManageSingleGroupDelete(TestManageSingleGroupMixin,
                                   SubjectAdminSeleniumTestCase,
                                   WaitForAlertMessageMixin):
@@ -536,6 +544,7 @@ class TestManageSingleGroupDelete(TestManageSingleGroupMixin,
         g1 = self.create_group('g1:candidate(student1)')
         self.browseToAndSelectAs('a1admin', g1)
         deletebutton = self.waitForAndFindElementByCssSelector('#single_group_delete_button button')
+        sleep(1)
         deletebutton.click()
 
         window = self.waitForAndFindElementByCssSelector('.devilry_confirmdeletedialog')
