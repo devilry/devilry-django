@@ -96,10 +96,10 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
         """
         if browser == 'phantomjs':
             driver = webdriver.PhantomJS()
-            driver.set_window_size(1280, 800)
-            return driver
         else:
-            return super(SubjectAdminSeleniumTestCase, cls).getDriver(browser, use_rc)
+            driver = super(SubjectAdminSeleniumTestCase, cls).getDriver(browser, use_rc)
+        driver.set_window_size(1400, 900)
+        return driver
 
     def save_screenshot_to_desktop(self):
         path = os.path.expanduser("~/Desktop/selenium-{time}-{uuid}.png".format(
