@@ -1,3 +1,4 @@
+from time import sleep
 from selenium.common.exceptions import StaleElementReferenceException
 
 from devilry.apps.core.testhelper import TestHelper
@@ -15,7 +16,6 @@ class TestManageMultipleStudentsMixin(object):
                             assignments=['a1:admin(a1admin)'])
         self.assignment = self.testhelper.sub_p1_a1
 
-
     def browseToAndSelectAs(self, username, select_groups=[]):
         select_ids = ','.join([str(group.id) for group in select_groups])
         path = '/assignment/{0}/@@manage-students/@@select/{1}'.format(self.assignment.id,
@@ -30,18 +30,9 @@ class TestManageMultipleStudentsMixin(object):
 
     def find_element(self, cssselector):
         return self.selenium.find_element_by_css_selector('.devilry_subjectadmin_multiplegroupsview {0}'.format(cssselector))
+
     def find_elements(self, cssselector):
         return self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_multiplegroupsview {0}'.format(cssselector))
-
-
-class TestManageMultipleStudentsOverview(TestManageMultipleStudentsMixin, SubjectAdminSeleniumTestCase):
-    def test_render(self):
-        g1 = self.create_group('g1:candidate(student1)')
-        g2 = self.create_group('g2:candidate(student2)')
-        self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
-        headertext = self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_selectedgroupssummarygrid > .x-panel-header .x-panel-header-text')
-        self.assertEquals(headertext.text.strip(),
-                          '2/2 groups selected (click group to deselect it)')
 
 
 class TestManageMultipleStudentsCreateProjectGroups(TestManageMultipleStudentsMixin, SubjectAdminSeleniumTestCase):
@@ -51,10 +42,11 @@ class TestManageMultipleStudentsCreateProjectGroups(TestManageMultipleStudentsMi
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('.merge_groups_button')
         self.waitForCssSelector('.merge_groups_helpbox')
-        button = self.find_element('.merge_groups_button')
-        help = self.find_element('.merge_groups_helpbox')
-        self.assertEquals(button.text.strip(), 'Create project group')
-        self.assertTrue(help.text.strip().startswith('Multiple students on a single group is used'))
+        button = self.find_element('.merge_groups_button .x-btn-inner')
+        helpbox = self.find_element('.merge_groups_helpbox')
+        # self.assertEquals(button.text.strip(), 'Create project group')
+        self.waitFor(button, lambda b: b.text.strip() == 'Create project group')
+        self.waitFor(helpbox, lambda h: h.text.strip().startswith('Multiple students on a single group is used'))
 
     def test_show_and_hide(self):
         g1 = self.create_group('g1:candidate(student1)')
@@ -67,7 +59,7 @@ class TestManageMultipleStudentsCreateProjectGroups(TestManageMultipleStudentsMi
         confirmContainer = self.find_element('.merge_groups_confirmcontainer')
 
         self.assertFalse(confirmContainer.is_displayed())
-        self.assertTrue(help.is_displayed())
+        self.waitForDisplayed(help)
         buttonEl.click()
         self.waitFor(help, lambda h: not h.is_displayed()) # Wait for help to be hidden
         self.waitFor(buttonEl, lambda b: not b.is_displayed()) # Wait for button to be hidden
@@ -86,16 +78,18 @@ class TestManageMultipleStudentsCreateProjectGroups(TestManageMultipleStudentsMi
         self.waitForCssSelector('.merge_groups_button')
         buttonEl = self.find_element('.merge_groups_button button')
         confirmContainer = self.find_element('.merge_groups_confirmcontainer')
+        sleep(1)
         buttonEl.click()
         self.waitFor(confirmContainer, lambda c: c.is_displayed()) # Wait for confirm to be displayed
 
         createButtonEl = self.find_element('.merge_groups_confirm_button')
         createButtonEl.click()
         self.waitFor(self.selenium, lambda s: len(s.find_elements_by_css_selector('.devilry_subjectadmin_singlegroupview')) == 1)
-        self.assertFalse(AssignmentGroup.objects.filter(id=g2.id).exists())
+        sleep(1)
+        self.waitFor(self.selenium, lambda s: AssignmentGroup.objects.filter(id=g2.id).count() == 0)
         g1 = self.testhelper.reload_from_db(g1)
         candidates = set([c.student.username for c in g1.candidates.all()])
-        self.assertEquals(candidates, set(['student1', 'student2']))
+        self.assertEquals(candidates, {'student1', 'student2'})
 
 
 class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdminSeleniumTestCase):
@@ -128,7 +122,8 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
         g2 = self.create_group('g2:candidate(student2)')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('#multi_tags_help_and_buttons_container')
-        self.waitForCssSelector('#multi_set_tags_button')
+        set_tags_button = self.waitForAndFindElementByCssSelector('#multi_set_tags_button')
+        self.waitForDisplayed(set_tags_button)
         self.find_element('#multi_set_tags_button button').click()
 
         panel = self.find_element('#multi_set_tags_panel')
@@ -142,14 +137,15 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
         for group in (g1, g2):
             group = self.testhelper.reload_from_db(group)
             tags = set([t.tag for t in group.tags.all()])
-            self.assertEquals(tags, set(['a', 'b']))
+            self.assertEquals(tags, {'a', 'b'})
 
     def test_set_tags_cancel(self):
         g1 = self.create_group('g1:candidate(student1)')
         g2 = self.create_group('g2:candidate(student2)')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('#multi_tags_help_and_buttons_container')
-        self.waitForCssSelector('#multi_set_tags_button')
+        set_tags_button = self.waitForAndFindElementByCssSelector('#multi_set_tags_button')
+        self.waitForDisplayed(set_tags_button)
         self.find_element('#multi_set_tags_button button').click()
 
         panel = self.find_element('#multi_set_tags_panel')
@@ -165,7 +161,8 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
         g2 = self.create_group('g2:candidate(student2)')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('#multi_tags_help_and_buttons_container')
-        self.waitForCssSelector('#multi_add_tags_button')
+        add_tags_button = self.waitForAndFindElementByCssSelector('#multi_add_tags_button')
+        self.waitForDisplayed(add_tags_button)
         self.find_element('#multi_add_tags_button button').click()
 
         panel = self.find_element('#multi_add_tags_panel')
@@ -179,14 +176,15 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
         for group in (g1, g2):
             group = self.testhelper.reload_from_db(group)
             tags = set([t.tag for t in group.tags.all()])
-            self.assertEquals(tags, set(['a', 'b']))
+            self.assertEquals(tags, {'a', 'b'})
 
     def test_add_tags_cancel(self):
         g1 = self.create_group('g1:candidate(student1)')
         g2 = self.create_group('g2:candidate(student2)')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('#multi_tags_help_and_buttons_container')
-        self.waitForCssSelector('#multi_add_tags_button')
+        add_tags_button = self.waitForAndFindElementByCssSelector('#multi_add_tags_button')
+        self.waitForDisplayed(add_tags_button)
         self.find_element('#multi_add_tags_button button').click()
 
         panel = self.find_element('#multi_add_tags_panel')
@@ -204,7 +202,8 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
         g2.tags.create(tag='b')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('#multi_tags_help_and_buttons_container')
-        self.waitForCssSelector('#multi_clear_tags_button')
+        clear_tags_button = self.waitForAndFindElementByCssSelector('#multi_clear_tags_button')
+        self.waitForDisplayed(clear_tags_button)
         self.find_element('#multi_clear_tags_button button').click()
 
         panel = self.find_element('#multi_clear_tags_panel')
@@ -224,7 +223,8 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
         g2.tags.create(tag='b')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('#multi_tags_help_and_buttons_container')
-        self.waitForCssSelector('#multi_clear_tags_button')
+        clear_tags_button = self.waitForAndFindElementByCssSelector('#multi_clear_tags_button')
+        self.waitForDisplayed(clear_tags_button)
         self.find_element('#multi_clear_tags_button button').click()
 
         panel = self.find_element('#multi_clear_tags_panel')
@@ -234,7 +234,6 @@ class TestManageMultipleStudentsTags(TestManageMultipleStudentsMixin, SubjectAdm
 
         help_and_buttons = self.find_element('#multi_tags_help_and_buttons_container')
         self.waitFor(help_and_buttons, lambda h: h.is_displayed())
-
 
 
 class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
@@ -248,7 +247,9 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
         self.waitForCssSelector('#multi_set_examiners_button')
         self.waitForCssSelector('#multi_add_examiners_button')
         self.waitForCssSelector('#multi_clear_examiners_button')
-        self.assertTrue(self.find_element('#multi_examiners_help_and_buttons_container').is_displayed())
+        help_and_buttons_container = self.waitForAndFindElementByCssSelector(
+            '#multi_examiners_help_and_buttons_container')
+        self.waitForDisplayed(help_and_buttons_container)
         self.assertFalse(self.find_element('#multi_set_examiners_panel').is_displayed())
         self.assertFalse(self.find_element('#multi_add_examiners_panel').is_displayed())
 
@@ -279,20 +280,19 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
     def _click_rowchecker_by_username(self, username):
         self._get_row_by_username(username).find_element_by_css_selector('.x-grid-row-checker').click()
 
-
     #
     # SET
     #
 
     def test_set_examiners(self):
-        newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
-        newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
-        ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
+        self._create_related_examiner('newexaminer', fullname='New Examiner')
+        self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
+        self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
         g2 = self.create_group('g2:candidate(student2):examiner(examiner2)')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
-        self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
-        self.waitForCssSelector('#multi_set_examiners_button')
+        self.waitForDisplayed(self.waitForAndFindElementByCssSelector('#multi_examiners_help_and_buttons_container'))
+        self.waitForDisplayed(self.waitForAndFindElementByCssSelector('#multi_set_examiners_button'))
         self.find_element('#multi_set_examiners_button button').click()
 
         panel = self.find_element('#multi_set_examiners_panel')
@@ -316,7 +316,7 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
         g2 = self.create_group('g2:candidate(student2)')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
-        self.waitForCssSelector('#multi_set_examiners_button')
+        self.waitForDisplayed(self.waitForAndFindElementByCssSelector('#multi_set_examiners_button'))
         self.find_element('#multi_set_examiners_button button').click()
 
         panel = self.find_element('#multi_set_examiners_panel')
@@ -332,9 +332,10 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
     #
 
     def _click_advanced_button(self, cssselector):
-        self.find_element('#multi_advanced_examiners_button').click()
+        multi_advanced_examiners_button = self.waitForAndFindElementByCssSelector('#multi_advanced_examiners_button')
+        self.waitForDisplayed(multi_advanced_examiners_button)
+        multi_advanced_examiners_button.click()
         self.waitForAndFindElementByCssSelector(cssselector).click()
-
 
     def _randomdist_examiners(self, *usernames):
         self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
@@ -352,9 +353,9 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
         self.waitForAlertMessage('success', 'Examiners random distributed successfully')
 
     def test_random_distribute_examiners(self):
-        newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
-        newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
-        ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
+        self._create_related_examiner('newexaminer', fullname='New Examiner')
+        self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
+        self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
         g2 = self.create_group('g2:candidate(student2):examiner(examiner2)')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
@@ -371,9 +372,9 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
                                               examiners__user__username=username)
 
     def test_random_distribute_examiners_more(self):
-        newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
-        newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
-        ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
+        self._create_related_examiner('newexaminer', fullname='New Examiner')
+        self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
+        self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
         g1 = self.create_group('g1:candidate(student1)')
         g2 = self.create_group('g2:candidate(student2)')
         g3 = self.create_group('g3:candidate(student2)')
@@ -402,22 +403,21 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
         help_and_buttons = self.find_element('#multi_examiners_help_and_buttons_container')
         self.waitFor(help_and_buttons, lambda h: h.is_displayed())
 
-
     #
     # ADD
     #
 
     def test_add_examiners(self):
-        newexaminer = self._create_related_examiner('newexaminer', fullname='New Examiner')
-        newexaminer2 = self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
-        ignoredexaminer = self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
+        self._create_related_examiner('newexaminer', fullname='New Examiner')
+        self._create_related_examiner('newexaminer2', fullname='New Examiner 2')
+        self._create_related_examiner('ignoredexaminer', fullname='Ignored examiner') # NOTE: Not selected, but we need to make sure that this does not just seem to work, when, in reality "all" examiners are selected
         g1 = self.create_group('g1:candidate(student1):examiner(examiner1)')
         g2 = self.create_group('g2:candidate(student2):examiner(examiner2)')
 
         # Load the page and click the "Add examiners" button
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
-        self.waitForCssSelector('#multi_add_examiners_button')
+        self.waitForDisplayed(self.waitForAndFindElementByCssSelector('#multi_add_examiners_button'))
         self.find_element('#multi_add_examiners_button button').click()
 
         # Select newexaminer and newexaminer2, and save
@@ -445,7 +445,7 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
         g2 = self.create_group('g2:candidate(student2)')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
-        self.waitForCssSelector('#multi_add_examiners_button')
+        self.waitForDisplayed(self.waitForAndFindElementByCssSelector('#multi_add_examiners_button'))
         self.find_element('#multi_add_examiners_button button').click()
 
         panel = self.find_element('#multi_add_examiners_panel')
@@ -455,7 +455,6 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
 
         help_and_buttons = self.find_element('#multi_examiners_help_and_buttons_container')
         self.waitFor(help_and_buttons, lambda h: h.is_displayed())
-
 
     #
     # CLEAR
@@ -468,7 +467,7 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
         # Load page and click "Clear examiners"
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
-        self.waitForCssSelector('#multi_clear_examiners_button')
+        self.waitForDisplayed(self.waitForAndFindElementByCssSelector('#multi_clear_examiners_button'))
         self.find_element('#multi_clear_examiners_button button').click()
 
         # Confirm clear
@@ -488,7 +487,7 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
         g2 = self.create_group('g2:candidate(student2):examiner(examiner2)')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         self.waitForCssSelector('#multi_examiners_help_and_buttons_container')
-        self.waitForCssSelector('#multi_clear_examiners_button')
+        self.waitForDisplayed(self.waitForAndFindElementByCssSelector('#multi_clear_examiners_button'))
         self.find_element('#multi_clear_examiners_button button').click()
 
         panel = self.find_element('#multi_clear_examiners_panel')
@@ -504,8 +503,6 @@ class TestManageMultipleStudentsExaminers(TestManageMultipleStudentsMixin,
             self.assertEquals(group.examiners.all().count(), 1)
 
 
-
-
 class TestManageMultiGroupDelete(TestManageMultipleStudentsMixin,
                                  SubjectAdminSeleniumTestCase,
                                  WaitForAlertMessageMixin):
@@ -515,6 +512,7 @@ class TestManageMultiGroupDelete(TestManageMultipleStudentsMixin,
         ignored = self.create_group('ignored:candidate(student3)')
         self.browseToAndSelectAs('a1admin', select_groups=[g1, g2])
         deletebutton = self.waitForAndFindElementByCssSelector('#multi_group_delete_button button')
+        self.waitForDisplayed(deletebutton)
         deletebutton.click()
 
         window = self.waitForAndFindElementByCssSelector('.devilry_confirmdeletedialog')
