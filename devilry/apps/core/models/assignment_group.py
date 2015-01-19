@@ -75,6 +75,23 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             },
         )
 
+    def annotate_with_last_delivery_time_of_delivery(self):
+        """
+        See :meth:`.AssignmentGroupManager.annotate_with_last_delivery_id`.
+        """
+        return self.extra(
+            select={
+                'last_delivery_time_of_delivery': """
+                    SELECT core_delivery.time_of_delivery
+                    FROM core_delivery
+                    INNER JOIN core_deadline ON core_deadline.id = core_delivery.deadline_id
+                    INNER JOIN core_assignmentgroup ON core_assignmentgroup.id = core_deadline.assignment_group_id
+                    ORDER BY core_delivery.time_of_delivery DESC
+                    LIMIT 1
+                """
+            },
+        )
+
     def annotate_with_number_of_deliveries(self):
         """
         See :meth:`.AssignmentGroupManager.annotate_with_number_of_deliveries`.
@@ -161,6 +178,13 @@ class AssignmentGroupManager(models.Manager):
         as the ``last_delivery_datetime`` attribute.
         """
         return self.get_queryset().annotate_with_last_deadline_datetime()
+
+    def annotate_with_last_delivery_time_of_delivery(self):
+        """
+        Annotate the queryset with the time of delivery of the last delivery stored
+        as the ``last_delivery_time_of_delivery`` attribute.
+        """
+        return self.get_queryset().annotate_with_last_delivery_time_of_delivery()
 
     def annotate_with_last_delivery_id(self):
         """

@@ -213,6 +213,27 @@ class TestAssignmentGroup(TestCase):
             .annotate_with_last_deadline_datetime().first()
         self.assertEqual(group.last_deadline_datetime, None)
 
+    def test_annotate_with_last_delivery_time_of_delivery(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
+        last_delivery = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
+        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=3)
+        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
+            .annotate_with_last_delivery_time_of_delivery().first()
+        self.assertEqual(group.last_delivery_time_of_delivery, last_delivery.time_of_delivery)
+
+    def test_annotate_with_last_delivery_time_of_delivery_no_deliveries(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
+            .annotate_with_last_delivery_time_of_delivery().first()
+        self.assertEqual(group.last_delivery_time_of_delivery, None)
+
     def test_annotate_with_last_delivery_id(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')\
@@ -403,8 +424,9 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(g1copy.feedback.rendered_view, 'Better')
         self.assertEquals(g1copy.feedback.points, 40)
 
-        # last_delivery
-        self.assertEquals(g1copy.last_delivery.filemetas.all()[0].filename, 'thirdtry.py')
+        self.assertEquals(
+            Delivery.objects.filter(deadline__assignment_group=g1copy).first().filemetas.first().filename,
+            'thirdtry.py')
 
     def test_pop_candidate(self):
         self._create_testdata()
@@ -490,7 +512,10 @@ class TestAssignmentGroupSplit(TestCase):
         source, target = self._create_mergetestdata()
         source.merge_into(target)
         target = self.testhelper.reload_from_db(target)
-        self.assertEquals(target.last_delivery.filemetas.all()[0].filename, 'b.py')
+        self.assertEquals(
+            Delivery.objects.filter(deadline__assignment_group=target).first().filemetas.first().filename,
+            'b.py')
+
 
     def test_merge_into_candidates(self):
         source, target = self._create_mergetestdata()
