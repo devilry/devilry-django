@@ -89,9 +89,18 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
 
         for field in (datefield, timefield, textfield):
             field.clear()
+        datefield.clear()
+        datefield.send_keys('')
         datefield.send_keys(date)
+
+        timefield.clear()
+        timefield.send_keys('')
         timefield.send_keys(time)
+
+        textfield.clear()
+        textfield.send_keys('')
         textfield.send_keys(text)
+
         if createmodecls:
             checkbox = form.find_element_by_css_selector('.{0} input[type=button]'.format(createmodecls))
             checkbox.click()
@@ -109,7 +118,7 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self._loginTo('a1admin', self.assignment.id)
         addform = self._open_addform()
         self._fill_addform(addform, date=self._create_datestring_from_offset(2),
-                        time='12:00', text='Hello', createmodecls='createmode_failed')
+                           time='12:00', text='Hello', createmodecls='createmode_failed')
 
         url = self.selenium.current_url
         self._get_formsavebutton(addform).click()
@@ -230,7 +239,7 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         addform = self._open_addform()
         savebutton = self._get_formsavebutton(addform)
 
-        self.waitForDisabled(savebutton) # Should start as disabled
+        self.waitForDisabled(savebutton)  # Should start as disabled
 
         self._fill_addform(addform, date=self._create_datestring_from_offset(2),
                            time='12:00', text='Hello')
