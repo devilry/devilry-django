@@ -68,7 +68,7 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
                     SELECT core_delivery.id
                     FROM core_delivery
                     INNER JOIN core_deadline ON core_deadline.id = core_delivery.deadline_id
-                    INNER JOIN core_assignmentgroup ON core_assignmentgroup.id = core_deadline.assignment_group_id
+                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
                     ORDER BY core_delivery.time_of_delivery DESC
                     LIMIT 1
                 """
@@ -85,7 +85,7 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
                     SELECT core_delivery.time_of_delivery
                     FROM core_delivery
                     INNER JOIN core_deadline ON core_deadline.id = core_delivery.deadline_id
-                    INNER JOIN core_assignmentgroup ON core_assignmentgroup.id = core_deadline.assignment_group_id
+                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
                     ORDER BY core_delivery.time_of_delivery DESC
                     LIMIT 1
                 """

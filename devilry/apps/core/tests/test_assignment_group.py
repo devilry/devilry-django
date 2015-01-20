@@ -194,16 +194,21 @@ class TestAssignmentGroup(TestCase):
         self.assertFalse(groupbuilder.group.missing_expected_delivery)
 
     def test_annotate_with_last_deadline_datetime(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        groupbuilder.add_deadline_in_x_weeks(weeks=10)
-        groupbuilder.add_deadline_in_x_weeks(weeks=2)
-        last_deadline = groupbuilder.add_deadline_in_x_weeks(weeks=20).deadline
-        groupbuilder.add_deadline_x_weeks_ago(weeks=2)
-        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+
+        group1builder = assignmentbuilder.add_group()
+        group1builder.add_deadline_in_x_weeks(weeks=10)
+        group1builder.add_deadline_in_x_weeks(weeks=2)
+        group1_last_deadline = group1builder.add_deadline_in_x_weeks(weeks=20).deadline
+        group1builder.add_deadline_x_weeks_ago(weeks=2)
+
+        group2builder = assignmentbuilder.add_group()
+        group2builder.add_deadline_in_x_weeks(weeks=30).deadline
+
+        annotated_group1 = AssignmentGroup.objects.filter()\
             .annotate_with_last_deadline_datetime().first()
-        self.assertEqual(group.last_deadline_datetime, last_deadline.deadline)
+        self.assertEqual(annotated_group1.last_deadline_datetime, group1_last_deadline.deadline)
 
     def test_annotate_with_last_deadline_datetime_no_deadlines(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -214,16 +219,24 @@ class TestAssignmentGroup(TestCase):
         self.assertEqual(group.last_deadline_datetime, None)
 
     def test_annotate_with_last_delivery_time_of_delivery(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
-        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
-        last_delivery = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
-        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=3)
-        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
-            .annotate_with_last_delivery_time_of_delivery().first()
-        self.assertEqual(group.last_delivery_time_of_delivery, last_delivery.time_of_delivery)
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+
+        groupbuilder1 = assignmentbuilder.add_group(name='A')
+        group1deadlinebuilder = groupbuilder1.add_deadline_in_x_weeks(weeks=1)
+        group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
+        group1last_delivery = group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=2).delivery
+        group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=3)
+
+        groupbuilder2 = assignmentbuilder.add_group(name='B')
+        group2deadlinebuilder = groupbuilder2.add_deadline_in_x_weeks(weeks=1)
+        group2deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
+        group2last_delivery = group2deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
+
+        group1, group2 = AssignmentGroup.objects.order_by('name')\
+            .annotate_with_last_delivery_time_of_delivery()
+        self.assertEqual(group1.last_delivery_time_of_delivery, group1last_delivery.time_of_delivery)
+        self.assertEqual(group2.last_delivery_time_of_delivery, group2last_delivery.time_of_delivery)
 
     def test_annotate_with_last_delivery_time_of_delivery_no_deliveries(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -235,16 +248,24 @@ class TestAssignmentGroup(TestCase):
         self.assertEqual(group.last_delivery_time_of_delivery, None)
 
     def test_annotate_with_last_delivery_id(self):
-        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        deadlinebuilder = groupbuilder.add_deadline_in_x_weeks(weeks=1)
-        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
-        last_delivery = deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
-        deadlinebuilder.add_delivery_x_hours_before_deadline(hours=3)
-        group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
-            .annotate_with_last_delivery_id().first()
-        self.assertEqual(group.last_delivery_id, last_delivery.id)
+        assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+
+        groupbuilder1 = assignmentbuilder.add_group(name='A')
+        group1deadlinebuilder = groupbuilder1.add_deadline_in_x_weeks(weeks=1)
+        group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
+        group1last_delivery = group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=2).delivery
+        group1deadlinebuilder.add_delivery_x_hours_before_deadline(hours=3)
+
+        groupbuilder2 = assignmentbuilder.add_group(name='B')
+        group2deadlinebuilder = groupbuilder2.add_deadline_in_x_weeks(weeks=1)
+        group2deadlinebuilder.add_delivery_x_hours_before_deadline(hours=10)
+        group2last_delivery = group2deadlinebuilder.add_delivery_x_hours_before_deadline(hours=1).delivery
+
+        group1, group2 = AssignmentGroup.objects.order_by('name')\
+            .annotate_with_last_delivery_id()
+        self.assertEqual(group1.last_delivery_id, group1last_delivery.id)
+        self.assertEqual(group2.last_delivery_id, group2last_delivery.id)
 
     def test_annotate_with_last_delivery_id_no_deliveries(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
