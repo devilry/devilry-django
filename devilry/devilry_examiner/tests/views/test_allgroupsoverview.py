@@ -68,14 +68,62 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
                                 '.infolistingtable .group .groupinfo .deliverystatus').text.strip()
         self.assertEquals(deliverystatus, 'No deadlines')
 
+    def test_no_deliveries_after_deadline(self):
+        self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner2])\
+            .add_deadline_x_weeks_ago(weeks=1)
+        assignment = self.week1builder.assignment
+        response = self._getas('examiner2', assignment.id)
+        html = response.content
+        deliverystatus = cssGet(html,
+                                '.infolistingtable .group .groupinfo .deliverystatus').text.strip()
+        self.assertEquals(deliverystatus, 'Waiting for feedback(No deliveries)')
+
+    def test_has_deliveries_after_deadline(self):
+        self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner2])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        assignment = self.week1builder.assignment
+        response = self._getas('examiner2', assignment.id)
+        html = response.content
+        deliverystatus = cssGet(html,
+                                '.infolistingtable .group .groupinfo .deliverystatus').text.strip()
+        self.assertEquals(deliverystatus, 'Waiting for feedback(1 delivery received)')
+
+    def test_no_deliveries_before_deadline(self):
+        self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner2])\
+            .add_deadline_in_x_weeks(weeks=1)
+        assignment = self.week1builder.assignment
+        response = self._getas('examiner2', assignment.id)
+        html = response.content
+        deliverystatus = cssGet(html,
+                                '.infolistingtable .group .groupinfo .deliverystatus').text.strip()
+        self.assertIn('Waiting for deliveries(No deliveries', deliverystatus)
+
+    def test_has_deliveries_before_deadline(self):
+        self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner2])\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        assignment = self.week1builder.assignment
+        response = self._getas('examiner2', assignment.id)
+        html = response.content
+        deliverystatus = cssGet(html,
+                                '.infolistingtable .group .groupinfo .deliverystatus').text.strip()
+        self.assertIn('Waiting for deliveries(1 delivery', deliverystatus)
+
     def test_group_naming(self):
         self.week1builder.add_group(
             students=[self.student1],
             examiners=[self.examiner1])
         html = self._getas('examiner1', self.week1builder.assignment.id).content
-        self.assertEquals(cssGet(html, '.infolistingtable .group .groupinfo h3 .group_long_displayname').text.strip(),
+        self.assertEquals(
+            cssGet(html, '.infolistingtable .group .groupinfo h3 .group_long_displayname').text.strip(),
             'Student One')
-        self.assertEquals(cssGet(html, '.infolistingtable .group .groupinfo h3 .group_short_displayname').text.strip(),
+        self.assertEquals(
+            cssGet(html, '.infolistingtable .group .groupinfo h3 .group_short_displayname').text.strip(),
             '(student1)')
 
     def test_group_naming_anonymous(self):
@@ -327,7 +375,7 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
             students=[studentc],
             examiners=[self.examiner1])
         response = self._getas('examiner1', self.week1builder.assignment.id,
-                           data={'examinermode': 'quick'})
+                               data={'examinermode': 'quick'})
         html = response.content
 
         self.assertFalse(cssExists(html, "#div_id_quickfeedbackform1-points"))
