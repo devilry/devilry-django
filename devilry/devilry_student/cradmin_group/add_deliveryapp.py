@@ -104,8 +104,6 @@ class AddDeliveryView(TemplateView):
                 delivery=delivery,
                 uploadedfile=uploadedfile,
                 filename=uploadedfile.name)
-        self.group.last_delivery = delivery
-        self.group.save(update_delivery_status=False)
         return HttpResponseRedirect(self.get_success_url(delivery))
 
     def get_context_data(self, **kwargs):
