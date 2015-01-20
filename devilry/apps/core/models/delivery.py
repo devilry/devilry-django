@@ -222,7 +222,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """
         Returns ``True`` if this is the last delivery for this AssignmentGroup.
         """
-        from .assignment_group import AssignmentGroup
         try:
             last_delivery = Delivery.objects\
                 .filter(deadline__assignment_group_id=self.deadline.assignment_group_id)\
