@@ -4,6 +4,10 @@
 # - See: https://docs.djangoproject.com/en/dev/ref/settings/
 #
 ########################################################################
+import djcelery
+
+djcelery.setup_loader()
+
 
 DEBUG = False
 EXTJS4_DEBUG = DEBUG
@@ -33,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.humanize',
-    # 'djcelery',
+    'djcelery',
     'errortemplates',
     'crispy_forms',
     'djangorestframework',
@@ -80,6 +84,7 @@ INSTALLED_APPS = [
     'devilry.devilry_gradingsystemplugin_points',
     'devilry.devilry_gradingsystemplugin_approved',
     'devilry.devilry_rest',
+    'devilry.devilry_detektor',
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
