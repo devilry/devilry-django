@@ -2,8 +2,7 @@
   "name": "bower",
   "version": "0.0.0",
   "private": true,
-  "directory": "components",
   "devDependencies": {
-    "ace-builds": "~1.1.01"
+    "ace-builds": "~1.1.7"
   }
 }
