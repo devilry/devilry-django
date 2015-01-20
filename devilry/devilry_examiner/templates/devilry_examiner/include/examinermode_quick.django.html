@@ -31,7 +31,7 @@
                             {% trans "Grade" %}: {{ group.feedback.grade }}
                             ({{ group.feedback.is_passing_grade|format_is_passing_grade }})
                         </small>
-                    {% elif group.get_status == 'waiting-for-feedback' and group.assignment.is_electronic and not group.last_delivery %}
+                    {% elif group.get_status == 'waiting-for-feedback' and group.assignment.is_electronic and group.last_delivery_id == None %}
                         <small class="text-warning">({% trans "No deliveries" %})</small>
                     {% elif group.get_status == 'waiting-for-deliveries' %}
                         <small class="text-muted">({{ group.successful_delivery_count|formatted_delivery_count }}</small>
