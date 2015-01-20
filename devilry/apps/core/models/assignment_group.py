@@ -328,9 +328,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
        The last `StaticFeedback`_ (by save timestamp) on this assignmentgroup.
 
-    .. attribute:: last_delivery
-
-       The last :class:`devilry.apps.core.models.Delivery` on this assignmentgroup.
 
     .. attribute:: last_deadline
 
