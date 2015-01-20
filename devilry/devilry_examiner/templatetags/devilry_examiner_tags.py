@@ -70,3 +70,12 @@ def group_delivery_status_to_bootstrapclass(group):
         return feedback_to_bootstrapclass(group.feedback)
     else:
         return "danger"
+
+
+@register.filter
+def group_form(value, groupid):
+    return value.get_form_by_groupid(groupid)
+
+# @register.simple_tag
+# def get_quickmodeform_by_groupid(formcollection, groupid):
+#     return formcollection.get_form_by_groupid(groupid)
