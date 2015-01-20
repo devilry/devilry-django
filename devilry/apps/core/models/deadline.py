@@ -298,7 +298,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
                     time_of_delivery=datetime.now(),
                     number=1)
                 delivery.save()
-                group.last_delivery = delivery
                 groupsave_needed = True
         if group.last_deadline == None or group.last_deadline.deadline < self.deadline:
             group.last_deadline = self
