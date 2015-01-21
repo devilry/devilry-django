@@ -65,7 +65,12 @@ class AddDeliveryView(TemplateView):
         FileMetaFormSet = formset_factory(FileMetaForm)
         filemetaformset = FileMetaFormSet(self.request.POST, self.request.FILES)
         if filemetaformset.is_valid():
-            return self.form_valid(filemetaformset)
+            uploadedfiles = [data['file'] for data in filemetaformset.cleaned_data if 'file' in data]
+            if len(uploadedfiles) == 0:
+                return self.render_to_response(self.get_context_data(
+                    no_files_selected=True))
+            else:
+                return self.form_valid(uploadedfiles)
         else:
             raise Exception('Getting here should not be possible.')
 
@@ -97,10 +102,9 @@ class AddDeliveryView(TemplateView):
             filename = u'{}-{}'.format(str(uuid.uuid4()), filename)
             self.__create_filemeta(delivery, uploadedfile, filename)
 
-    def form_valid(self, filemetaformset):
+    def form_valid(self, uploadedfiles):
         delivery = self.__create_delivery()
-        for data in filemetaformset.cleaned_data:
-            uploadedfile = data['file']
+        for uploadedfile in uploadedfiles:
             self.__create_filemeta(
                 delivery=delivery,
                 uploadedfile=uploadedfile,

@@ -21,6 +21,7 @@
         </div>
     </div>
     <div class="container-fluid">
+
         <div class="alert alert-info">
             {% trans "Upload one or more files to make a delivery. Add as many deliveries as you like. Your last delivery is corrected." %}
         </div>
@@ -43,6 +44,11 @@
                 {{ filemetaform.as_p }}
             {% endfor %}
 
+            {% if no_files_selected %}
+                <div id="devilry_student_add_delivery_no_files_selected_alert" class="alert alert-danger">
+                    {% trans "You have to add at least one file to make a delivery." %}
+                </div>
+            {% endif %}
             <p>
                 <button type="submit" class="btn btn-primary btn-lg">
                     {% trans "Add delivery" %}

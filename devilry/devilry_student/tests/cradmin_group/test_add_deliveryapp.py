@@ -136,6 +136,23 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(created_delivery.delivered_by.student, self.testuser)
         self.assertEqual(created_delivery.filemetas.count(), 1)
 
+    def test_post_no_files(self):
+        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+
+        self.assertEqual(Delivery.objects.count(), 0)
+        response = self._mock_post_request(data={
+            'form-TOTAL_FORMS': 1,
+            'form-INITIAL_FORMS': 0,
+            'form-MAX_NUM_FORMS': 1,
+        })
+        self.assertEquals(response.status_code, 200)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEqual(
+            selector.one('#devilry_student_add_delivery_no_files_selected_alert').alltext_normalized,
+            'You have to add at least one file to make a delivery.')
+
     def test_post_multiple_files(self):
         self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
         self.groupbuilder.add_students(self.testuser)
