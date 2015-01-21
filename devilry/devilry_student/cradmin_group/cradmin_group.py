@@ -23,7 +23,7 @@ class Menu(crmenu.Menu):
             active=self.request.cradmin_app.appname == 'add_delivery')
         self.add(
             label=_('Deliveries'), url=self.appindex_url('deliveries'),
-            icon="list",
+            icon="circle",
             active=self.request.cradmin_app.appname == 'deliveries')
 
 
@@ -41,6 +41,8 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     def get_rolequeryset(self):
         return AssignmentGroup.objects\
             .filter_student_has_access(user=self.request.user)\
+            .annotate_with_last_deadline_pk()\
+            .annotate_with_last_deadline_datetime()\
             .select_related('parentnode')
 
     def get_titletext_for_role(self, group):

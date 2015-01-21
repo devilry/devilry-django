@@ -57,6 +57,9 @@ class DeliveryListView(QuerySetForRoleMixin, objecttable.ObjectTableView):
         DeadlineColumn,
     ]
 
+    def get_pagetitle(self):
+        return _('Deliveries')
+
 
 class DeliveryDetailsView(QuerySetForRoleMixin, DetailView):
     template_name = 'devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html'

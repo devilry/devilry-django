@@ -83,3 +83,6 @@ class TestDeliveryListView(TestCase):
         response.render()
         selector = htmls.S(response.content)
         self.assertTrue(selector.exists('#devilry_student_delivery_list_hard_deadline_expired_message'))
+
+    def test_render_no_deadlines(self):
+        pass

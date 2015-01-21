@@ -1,8 +1,11 @@
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.urlresolvers import reverse
+from django.template import defaultfilters
 from django.test import TestCase, RequestFactory
 import htmls
 import mock
-from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import Delivery, Assignment, AssignmentGroup
 
 from devilry.devilry_student.cradmin_group import add_deliveryapp
 
@@ -20,38 +23,85 @@ class TestAddDeliveryView(TestCase):
     def _mock_get_request(self):
         request = self.factory.get('/test')
         request.user = self.testuser
-        request.cradmin_role = self.groupbuilder.group
+        request.cradmin_role = AssignmentGroup.objects.filter(id=self.groupbuilder.group.id)\
+            .annotate_with_last_deadline_pk()\
+            .annotate_with_last_deadline_datetime().get()
+        request.cradmin_instance = mock.MagicMock()
         request.session = mock.MagicMock()
+        return request
+
+    def _mock_and_perform_get_request(self):
+        request = self._mock_get_request()
         response = add_deliveryapp.AddDeliveryView.as_view()(request)
         return response
 
-    # def test_get(self):
-    #     response = self._mock_get_request()
-    #     response.render()
-    #     selector = htmls.S(response.content)
-        # selector.prettyprint()
-
     def test_get_not_student_on_group(self):
-        pass
+        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.client.login(username='testuser', password='test')
+        response = self.client.get(reverse('devilry_student_group-add_delivery-INDEX', kwargs={
+            'roleid': self.groupbuilder.group.id,
+        }))
+        self.assertIn('Permission denied', response.content)
 
     def test_get_deadline_expired_hard_deadlines(self):
-        # self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        # self.groupbuilder.add_students(self.testuser)
-        # response = self._mock_get_request()
-        # response.render()
-        # selector = htmls.S(response.content)
-        # self.assertFalse(selector.exists('#devilry_student_add_delivery_form'))
-        # self.assertTrue(selector.exists('#devilry_student_add_delivery_hard_deadline_expired_message'))
-        pass  # TODO: Test that it redirects
+        self.assignmentbuilder.update(deadline_handling=Assignment.DEADLINEHANDLING_HARD)
+        self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+        request = self._mock_get_request()
+        request.cradmin_instance.appindex_url.return_value = '/appindex_url_called'
+        response = add_deliveryapp.AddDeliveryView.as_view()(request)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response['Location'], '/appindex_url_called')
+        request.cradmin_instance.appindex_url.assert_called_with('deliveries')
 
-    def test_get_deadline_expired_soft_deadlines(self):
-        pass
-
-    def test_get_group_closed_expired(self):
-        pass
+    def test_get_deadline_expired_soft_deadlines(self):  # Soft is the default deadline_handling
+        self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+        response = self._mock_and_perform_get_request()
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('#devilry_student_add_delivery_after_soft_deadline_warning'))
+        self.assertEquals(
+            selector.one('#devilry_student_add_delivery_after_soft_deadline_warning p').alltext_normalized,
+            'Do you really want to add a delivery after the deadline? '
+            'You normally need to have a valid reason when adding deadline after the deadline.')
+        self.assertEquals(
+            selector.one('#devilry_student_add_delivery_after_soft_deadline_warning label').alltext_normalized,
+            'I want to add a delivery after the deadline has expired.')
 
     def test_get_no_deadlines(self):
-        pass
+        self.groupbuilder.add_students(self.testuser)
+        request = self._mock_get_request()
+        request.cradmin_instance.appindex_url.return_value = '/appindex_url_called'
+        response = add_deliveryapp.AddDeliveryView.as_view()(request)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response['Location'], '/appindex_url_called')
+        request.cradmin_instance.appindex_url.assert_called_with('deliveries')
+
+    def test_get_group_is_closed(self):
+        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+        self.groupbuilder.update(is_open=False)
+        request = self._mock_get_request()
+        request.cradmin_instance.appindex_url.return_value = '/appindex_url_called'
+        response = add_deliveryapp.AddDeliveryView.as_view()(request)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response['Location'], '/appindex_url_called')
+        request.cradmin_instance.appindex_url.assert_called_with('deliveries')
+
+    def test_get_render_first_delivery(self):
+        self.groupbuilder.add_students(self.testuser)
+        deadline = self.groupbuilder.add_deadline_in_x_weeks(weeks=1).deadline
+        response = self._mock_and_perform_get_request()
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.one('.page-header h1').alltext_normalized, 'Add delivery')
+        self.assertEquals(
+            selector.one('#devilry_student_add_delivery_deadline_exact').alltext_normalized,
+            u'({})'.format(defaultfilters.date(deadline.deadline, 'SHORT_DATETIME_FORMAT')))
+        self.assertEquals(
+            selector.one('#devilry_student_add_delivery_deadline_natural').alltext_normalized,
+            htmls.normalize_whitespace(naturaltime(deadline.deadline)))
 
     def _mock_post_request(self, data):
         class CustomAddDeliveryView(add_deliveryapp.AddDeliveryView):
@@ -60,7 +110,9 @@ class TestAddDeliveryView(TestCase):
 
         request = self.factory.post('/test', data)
         request.user = self.testuser
-        request.cradmin_role = self.groupbuilder.group
+        request.cradmin_role = AssignmentGroup.objects.filter(id=self.groupbuilder.group.id)\
+            .annotate_with_last_deadline_pk()\
+            .annotate_with_last_deadline_datetime().get()
         request.session = mock.MagicMock()
         response = CustomAddDeliveryView.as_view()(request)
         return response
@@ -101,7 +153,13 @@ class TestAddDeliveryView(TestCase):
         created_delivery = Delivery.objects.first()
         self.assertEqual(created_delivery.filemetas.count(), 2)
 
-    def test_post_deadline_expired(self):
+    def test_post_hard_deadline_expired(self):
+        pass
+
+    def test_post_soft_deadline_expired_noconfirm(self):
+        pass
+
+    def test_post_soft_deadline_expired_confirm(self):
         pass
 
     def test_post_group_closed_expired(self):

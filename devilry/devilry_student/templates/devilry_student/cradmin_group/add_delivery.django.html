@@ -11,44 +11,43 @@
             </h1>
             <p id="devilry_student_add_delivery_deadline">
                 {% trans "Deadline" %}:
-                <span id="devilry_student_add_delivery_deadline_exact">
-                    {{ active_deadline.deadline|date:"DATETIME_FORMAT" }}
+                <span id="devilry_student_add_delivery_deadline_natural"">
+                    {{ group.last_deadline_datetime|naturaltime }}
                 </span>
-                <span id="devilry_student_add_delivery_deadline_natural"
-                        class="
-                            {% if active_deadline.is_in_the_future %}
-                                label-success
-                            {% else %}
-                                label-warning
-                            {% endif %}
-                        ">
-                    {{ active_deadline.deadline|naturaltime }}
-                </span>
+                <small id="devilry_student_add_delivery_deadline_exact">
+                    ({{ group.last_deadline_datetime|date:"SHORT_DATETIME_FORMAT" }})
+                </small>
             </p>
         </div>
     </div>
     <div class="container-fluid">
-        {% if deadline_has_expired == "hard" %}
-            <div class="alert alert-danger">
-                {% blocktrans with deadline=active_deadline.deadline|naturaltime %}{% endblocktrans %}
-            </div>
-        {% else %}
-            {% if deadline_has_expired == "soft" %}
-                <form id="devilry_student_add_delivery_form" action="{{ request.path }}"
-                        method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{ filemetaformset.management_form }}
-                    {% for filemetaform in filemetaformset %}
-                        {{ filemetaform.as_p }}
-                    {% endfor %}
+        <div class="alert alert-info">
+            {% trans "Upload one or more files to make a delivery. Add as many deliveries as you like. Your last delivery is corrected." %}
+        </div>
+        <form id="devilry_student_add_delivery_form" action="{{ request.path }}"
+                method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-                    <p>
-                        <button type="submit" class="btn btn-primary">
-                            {% trans "Add delivery" %}
-                        </button>
-                    </p>
-                </form>
+            {% if deadline_has_expired == "soft" %}
+                <div id="devilry_student_add_delivery_after_soft_deadline_warning" class="alert alert-danger">
+                    <p>{% trans "Do you really want to add a delivery after the deadline? You normally need to have a valid reason when adding deadline after the deadline." %}</p>
+                    <label>
+                        <input type="checkbox" name="confirm_delivery_after_soft_deadline">
+                        {% trans "I want to add a delivery after the deadline has expired." %}
+                    </label>
+                </div>
             {% endif %}
-        {% endif %}
+
+            {{ filemetaformset.management_form }}
+            {% for filemetaform in filemetaformset %}
+                {{ filemetaform.as_p }}
+            {% endfor %}
+
+            <p>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    {% trans "Add delivery" %}
+                </button>
+            </p>
+        </form>
     </div>
 {% endblock content %}

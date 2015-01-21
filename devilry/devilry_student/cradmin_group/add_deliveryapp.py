@@ -32,27 +32,28 @@ class AddDeliveryView(TemplateView):
     def __init__(self, *args, **kwargs):
         self.group = None
         self.deadline_has_expired = None
-        self.active_deadline = None
         super(AddDeliveryView, self).__init__(*args, **kwargs)
-    
+
+    def __redirect_to_overview(self):
+        return HttpResponseRedirect(self.request.cradmin_instance.appindex_url('deliveries'))
+
     def dispatch(self, request, *args, **kwargs):
         self.group = self.request.cradmin_role
         if not self.group.is_open:
-            return self.render_to_response(self.get_context_data())
+            return self.__redirect_to_overview()
 
-        self.active_deadline = self.group.get_active_deadline()
-        if self.active_deadline is None:
-            return self.render_to_response(self.get_context_data())
+        if self.group.last_deadline_id is None:
+            return self.__redirect_to_overview()
 
-        self.deadline_has_expired = self._deadline_has_expired(self.active_deadline)
+        self.deadline_has_expired = self.__deadline_has_expired()
         if self.deadline_has_expired == 'hard':
-            return self.render_to_response(self.get_context_data(deadline_has_expired=True))
+            return self.__redirect_to_overview()
 
         return super(AddDeliveryView, self).dispatch(request, *args, **kwargs)
 
-    def _deadline_has_expired(self, deadline):
+    def __deadline_has_expired(self):
         assignment = self.group.parentnode
-        if deadline.deadline < datetime.now():
+        if self.group.last_deadline_datetime < datetime.now():
             if assignment.deadline_handling == Assignment.DEADLINEHANDLING_HARD:
                 return 'hard'
             else:
@@ -80,7 +81,7 @@ class AddDeliveryView(TemplateView):
 
     def __create_delivery(self):
         delivery = Delivery(
-            deadline=self.active_deadline,
+            deadline_id=self.group.last_deadline_id,
             successful=True,
             delivered_by=self.__get_canidate(),
             time_of_delivery=datetime.now())
@@ -108,11 +109,11 @@ class AddDeliveryView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(AddDeliveryView, self).get_context_data(**kwargs)
-        FileMetaFormSet = formset_factory(FileMetaForm, extra=1)
+        FileMetaFormSet = formset_factory(FileMetaForm, extra=3)
         filemetaformset = FileMetaFormSet()
         context['filemetaformset'] = filemetaformset
         context['deadline_has_expired'] = self.deadline_has_expired
-        context['active_deadline'] = self.active_deadline
+        context['group'] = self.group
         return context
 
 
