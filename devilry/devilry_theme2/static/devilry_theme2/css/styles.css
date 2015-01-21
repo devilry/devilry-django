@@ -8823,16 +8823,18 @@ body.django-cradmin-noscroll {
 nav#cradmin_menu {
   background-color: #333333;
 }
-nav#cradmin_menu ul.cradmin_menucontent {
+nav#cradmin_menu .cradmin_menucontent {
   display: none;
+}
+nav#cradmin_menu .cradmin_menucontent.cradmin_menucontent_display {
+  display: block;
+}
+nav#cradmin_menu .cradmin_menucontent ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-nav#cradmin_menu ul.cradmin_menucontent.cradmin_menucontent_display {
-  display: block;
-}
-nav#cradmin_menu ul.cradmin_menucontent li a {
+nav#cradmin_menu .cradmin_menucontent ul li a {
   position: relative;
   display: block;
   color: #aaaaaa;
@@ -8847,19 +8849,25 @@ nav#cradmin_menu ul.cradmin_menucontent li a {
   overflow: hidden;
   white-space: nowrap;
 }
-nav#cradmin_menu ul.cradmin_menucontent li a:hover {
+nav#cradmin_menu .cradmin_menucontent ul li a:hover {
   text-decoration: none;
   color: #eeeeee;
 }
-nav#cradmin_menu ul.cradmin_menucontent li a .fa {
+nav#cradmin_menu .cradmin_menucontent ul li a .fa {
   font-size: 20px;
   position: absolute;
   top: 11px;
   left: 12px;
 }
-nav#cradmin_menu ul.cradmin_menucontent li.cradmin_menu_activeitem a {
+nav#cradmin_menu .cradmin_menucontent ul li.cradmin_menu_activeitem a {
   color: #eeeeee;
   font-weight: bold;
+}
+nav#cradmin_menu .cradmin_menucontent ul.cradmin_menucontent_header {
+  background-color: #262626;
+}
+nav#cradmin_menu .cradmin_menucontent ul.cradmin_menucontent_footer {
+  margin-top: 30px;
 }
 nav#cradmin_menu .cradmin_menumobileheader {
   border-bottom: 1px solid #444444;
@@ -8930,7 +8938,7 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
     overflow-y: auto;
     overflow-x: hidden;
   }
-  nav#cradmin_menu ul.cradmin_menucontent {
+  nav#cradmin_menu .cradmin_menucontent {
     display: block;
   }
 }
@@ -9732,6 +9740,9 @@ table.table.cradmin-table-fluid tbody tr td {
 }
 #django_cradmin_roleselect ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li a:hover .django-cradmin-roleselect-role-description {
   color: #5e5e5e;
+}
+#django_cradmin_roleselect ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li:last-child {
+  border-bottom: none;
 }
 @media (min-width: 992px) {
   nav#cradmin_menu {

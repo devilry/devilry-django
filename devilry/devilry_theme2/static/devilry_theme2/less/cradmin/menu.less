@@ -1,46 +1,58 @@
 nav#cradmin_menu {
   background-color: @cradmin-menu-bg;
 
-  ul.cradmin_menucontent {
+  .cradmin_menucontent {
     display: none;
-    list-style: none;
-    margin: 0;
-    padding: 0;
     &.cradmin_menucontent_display {
       display: block;
     }
 
-    li {
-      a {
-        position: relative;
-        display: block;
-        color: @cradmin-menu-color;
-        padding: 12px 16px 12px 39px;
-        text-transform: uppercase;
-        font-size: @font-size-small;
-        border-color: @cradmin-menu-border;
-        border-style: solid;
-        border-width: 0 0 1px 0;
-        transition: color 0.3s ease;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-        &:hover {
-          text-decoration: none;
-          color: @cradmin-menu-hovercolor;
-        }
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      li {
+        a {
+          position: relative;
+          display: block;
+          color: @cradmin-menu-color;
+          padding: 12px 16px 12px 39px;
+          text-transform: uppercase;
+          font-size: @font-size-small;
+          border-color: @cradmin-menu-border;
+          border-style: solid;
+          border-width: 0 0 1px 0;
+          transition: color 0.3s ease;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          &:hover {
+            text-decoration: none;
+            color: @cradmin-menu-hovercolor;
+          }
 
-        .fa {
-          font-size: ceil(@font-size-base + 4px);
-          // margin-right: 5px;
-          position: absolute;
-          top: 11px;
-          left: 12px;
+          .fa {
+            font-size: ceil(@font-size-base + 4px);
+            // margin-right: 5px;
+            position: absolute;
+            top: 11px;
+            left: 12px;
+          }
+        }
+        &.cradmin_menu_activeitem a {
+          color: @cradmin-menu-hovercolor;
+          font-weight: bold;
         }
       }
-      &.cradmin_menu_activeitem a {
-        color: @cradmin-menu-hovercolor;
-        font-weight: bold;
+
+      &.cradmin_menucontent_header {
+        background-color: @cradmin-menu-header-bg;
+      }
+      &.cradmin_menucontent_main {
+      }
+      &.cradmin_menucontent_footer {
+        margin-top: 30px;
+
       }
     }
   }
@@ -70,7 +82,7 @@ nav#cradmin_menu {
     overflow-y: auto;
     overflow-x: hidden;
 
-    ul.cradmin_menucontent {
+    .cradmin_menucontent {
       display: block;
     }
   }
