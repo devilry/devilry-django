@@ -21,39 +21,44 @@
         </div>
     </div>
     <div class="container-fluid">
+        {% if deadline_has_expired == "hard" %}
+            <div id="devilry_student_add_delivery_hard_deadline_expired_alert" class="alert alert-danger">
+                {% trans "The deadline has expired. Since this course is configured with hard deadlines, adding deliveries after the deadline is prohibited." %}
+            </div>
+        {% else %}
+            <div class="alert alert-info">
+                {% trans "Upload one or more files to make a delivery. Add as many deliveries as you like. Your last delivery is corrected." %}
+            </div>
+            <form id="devilry_student_add_delivery_form" action="{{ request.path }}"
+                    method="post" enctype="multipart/form-data">
+                {% csrf_token %}
 
-        <div class="alert alert-info">
-            {% trans "Upload one or more files to make a delivery. Add as many deliveries as you like. Your last delivery is corrected." %}
-        </div>
-        <form id="devilry_student_add_delivery_form" action="{{ request.path }}"
-                method="post" enctype="multipart/form-data">
-            {% csrf_token %}
+                {% if deadline_has_expired == "soft" %}
+                    <div id="devilry_student_add_delivery_after_soft_deadline_warning" class="alert alert-danger">
+                        <p>{% trans "Do you really want to add a delivery after the deadline? You normally need to have a valid reason when adding deadline after the deadline." %}</p>
+                        <label>
+                            <input type="checkbox" name="confirm_delivery_after_soft_deadline">
+                            {% trans "I want to add a delivery after the deadline has expired." %}
+                        </label>
+                    </div>
+                {% endif %}
 
-            {% if deadline_has_expired == "soft" %}
-                <div id="devilry_student_add_delivery_after_soft_deadline_warning" class="alert alert-danger">
-                    <p>{% trans "Do you really want to add a delivery after the deadline? You normally need to have a valid reason when adding deadline after the deadline." %}</p>
-                    <label>
-                        <input type="checkbox" name="confirm_delivery_after_soft_deadline">
-                        {% trans "I want to add a delivery after the deadline has expired." %}
-                    </label>
-                </div>
-            {% endif %}
+                {{ filemetaformset.management_form }}
+                {% for filemetaform in filemetaformset %}
+                    {{ filemetaform.as_p }}
+                {% endfor %}
 
-            {{ filemetaformset.management_form }}
-            {% for filemetaform in filemetaformset %}
-                {{ filemetaform.as_p }}
-            {% endfor %}
-
-            {% if no_files_selected %}
-                <div id="devilry_student_add_delivery_no_files_selected_alert" class="alert alert-danger">
-                    {% trans "You have to add at least one file to make a delivery." %}
-                </div>
-            {% endif %}
-            <p>
-                <button type="submit" class="btn btn-primary btn-lg">
-                    {% trans "Add delivery" %}
-                </button>
-            </p>
-        </form>
+                {% if no_files_selected %}
+                    <div id="devilry_student_add_delivery_no_files_selected_alert" class="alert alert-danger">
+                        {% trans "You have to add at least one file to make a delivery." %}
+                    </div>
+                {% endif %}
+                <p>
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        {% trans "Add delivery" %}
+                    </button>
+                </p>
+            </form>
+        {% endif %}
     </div>
 {% endblock content %}

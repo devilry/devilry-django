@@ -47,8 +47,10 @@ class AddDeliveryView(TemplateView):
 
         self.deadline_has_expired = self.__deadline_has_expired()
         if self.deadline_has_expired == 'hard':
-            return self.__redirect_to_overview()
-
+            if self.request.method == 'GET':
+                return self.__redirect_to_overview()
+            else:
+                return self.render_to_response(self.get_context_data())
         return super(AddDeliveryView, self).dispatch(request, *args, **kwargs)
 
     def __deadline_has_expired(self):
