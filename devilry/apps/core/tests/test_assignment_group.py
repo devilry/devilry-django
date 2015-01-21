@@ -210,7 +210,7 @@ class TestAssignmentGroup(TestCase):
             .annotate_with_last_deadline_datetime().first()
         self.assertEqual(annotated_group1.last_deadline_datetime, group1_last_deadline.deadline)
 
-    def test_annotate_with_last_deadline_id(self):
+    def test_annotate_with_last_deadline_pk(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')
 
@@ -224,8 +224,8 @@ class TestAssignmentGroup(TestCase):
         group2builder.add_deadline_in_x_weeks(weeks=30)
 
         annotated_group1 = AssignmentGroup.objects.filter()\
-            .annotate_with_last_deadline_id().first()
-        self.assertEqual(annotated_group1.last_deadline_id, group1_last_deadline.id)
+            .annotate_with_last_deadline_pk().first()
+        self.assertEqual(annotated_group1.last_deadline_pk, group1_last_deadline.id)
 
     def test_annotate_with_last_deadline_datetime_no_deadlines(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\

@@ -43,13 +43,13 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
     to get). Use :meth:`.active` instead.
     """
 
-    def annotate_with_last_deadline_id(self):
+    def annotate_with_last_deadline_pk(self):
         """
-        See :meth:`.AssignmentGroupManager.annotate_with_last_deadline_id`.
+        See :meth:`.AssignmentGroupManager.annotate_with_last_deadline_pk`.
         """
         return self.extra(
             select={
-                'last_deadline_id': """
+                'last_deadline_pk': """
                     SELECT core_deadline.id
                     FROM core_deadline
                     WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
@@ -189,12 +189,12 @@ class AssignmentGroupManager(models.Manager):
     def filter(self, *args, **kwargs):
         return self.get_queryset().filter(*args, **kwargs)
 
-    def annotate_with_last_deadline_id(self):
+    def annotate_with_last_deadline_pk(self):
         """
         Annotate the queryset with the datetime of the last deadline stored
         as the ``last_deadline_id`` attribute.
         """
-        return self.get_queryset().annotate_with_last_deadline_id()
+        return self.get_queryset().annotate_with_last_deadline_pk()
 
     def annotate_with_last_deadline_datetime(self):
         """
