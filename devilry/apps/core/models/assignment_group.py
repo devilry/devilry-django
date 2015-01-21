@@ -42,6 +42,23 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
     examiner information from expired periods (which in most cases are not necessary
     to get). Use :meth:`.active` instead.
     """
+
+    def annotate_with_last_deadline_id(self):
+        """
+        See :meth:`.AssignmentGroupManager.annotate_with_last_deadline_id`.
+        """
+        return self.extra(
+            select={
+                'last_deadline_id': """
+                    SELECT core_deadline.id
+                    FROM core_deadline
+                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY core_deadline.deadline DESC
+                    LIMIT 1
+                """
+            },
+        )
+
     def annotate_with_last_deadline_datetime(self):
         """
         See :meth:`.AssignmentGroupManager.annotate_with_last_deadline_datetime`.
@@ -172,10 +189,17 @@ class AssignmentGroupManager(models.Manager):
     def filter(self, *args, **kwargs):
         return self.get_queryset().filter(*args, **kwargs)
 
+    def annotate_with_last_deadline_id(self):
+        """
+        Annotate the queryset with the datetime of the last deadline stored
+        as the ``last_deadline_id`` attribute.
+        """
+        return self.get_queryset().annotate_with_last_deadline_id()
+
     def annotate_with_last_deadline_datetime(self):
         """
         Annotate the queryset with the datetime of the last deadline stored
-        as the ``last_delivery_datetime`` attribute.
+        as the ``last_deadline_datetime`` attribute.
         """
         return self.get_queryset().annotate_with_last_deadline_datetime()
 
