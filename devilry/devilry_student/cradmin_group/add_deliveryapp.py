@@ -22,6 +22,10 @@ class FileMetaForm(forms.Form):
         label=_('Upload a file'))
 
 
+class AddDeliveryForm(forms.Form):
+    confirm_delivery_after_soft_deadline = forms.BooleanField(required=False)
+
+
 class AddDeliveryView(TemplateView):
     template_name = 'devilry_student/cradmin_group/add_delivery.django.html'
 
@@ -72,6 +76,16 @@ class AddDeliveryView(TemplateView):
                 return self.render_to_response(self.get_context_data(
                     no_files_selected=True))
             else:
+                if self.deadline_has_expired == 'soft':
+                    add_delivery_form = AddDeliveryForm(self.request.POST)
+                    confirm_delivery_after_soft_deadline = False
+                    if add_delivery_form.is_valid():
+                        confirm_delivery_after_soft_deadline = add_delivery_form\
+                            .cleaned_data['confirm_delivery_after_soft_deadline']
+                    if not confirm_delivery_after_soft_deadline:
+                        return self.render_to_response(self.get_context_data(
+                            delivery_after_soft_deadline_not_confirmed=True))
+
                 return self.form_valid(uploadedfiles)
         else:
             raise Exception('Getting here should not be possible.')

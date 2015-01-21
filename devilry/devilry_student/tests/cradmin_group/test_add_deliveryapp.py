@@ -5,10 +5,9 @@ from django.template import defaultfilters
 from django.test import TestCase, RequestFactory
 import htmls
 import mock
+
 from devilry.apps.core.models import Delivery, Assignment, AssignmentGroup
-
 from devilry.devilry_student.cradmin_group import add_deliveryapp
-
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, PeriodBuilder
 
 
@@ -89,7 +88,7 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(response['Location'], '/appindex_url_called')
         request.cradmin_instance.appindex_url.assert_called_with('deliveries')
 
-    def test_get_render_first_delivery(self):
+    def test_get_render(self):
         self.groupbuilder.add_students(self.testuser)
         deadline = self.groupbuilder.add_deadline_in_x_weeks(weeks=1).deadline
         response = self._mock_and_perform_get_request()
@@ -102,18 +101,24 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(
             selector.one('#devilry_student_add_delivery_deadline_natural').alltext_normalized,
             htmls.normalize_whitespace(naturaltime(deadline.deadline)))
+        self.assertFalse(selector.exists('#devilry_student_add_delivery_after_soft_deadline_warning'))
 
     def _mock_post_request(self, data):
-        class CustomAddDeliveryView(add_deliveryapp.AddDeliveryView):
-            def get_success_url(self, delivery):
-                return '/success'
-
         request = self.factory.post('/test', data)
         request.user = self.testuser
         request.cradmin_role = AssignmentGroup.objects.filter(id=self.groupbuilder.group.id)\
             .annotate_with_last_deadline_pk()\
             .annotate_with_last_deadline_datetime().get()
+        request.cradmin_instance = mock.MagicMock()
         request.session = mock.MagicMock()
+        return request
+
+    def _mock_and_perform_post_request(self, data):
+        class CustomAddDeliveryView(add_deliveryapp.AddDeliveryView):
+            def get_success_url(self, delivery):
+                return '/success'
+
+        request = self._mock_post_request(data)
         response = CustomAddDeliveryView.as_view()(request)
         return response
 
@@ -122,7 +127,7 @@ class TestAddDeliveryView(TestCase):
         self.groupbuilder.add_students(self.testuser)
 
         self.assertEqual(Delivery.objects.count(), 0)
-        response = self._mock_post_request(data={
+        response = self._mock_and_perform_post_request(data={
             'form-TOTAL_FORMS': 1,
             'form-INITIAL_FORMS': 0,
             'form-MAX_NUM_FORMS': 1,
@@ -141,7 +146,7 @@ class TestAddDeliveryView(TestCase):
         self.groupbuilder.add_students(self.testuser)
 
         self.assertEqual(Delivery.objects.count(), 0)
-        response = self._mock_post_request(data={
+        response = self._mock_and_perform_post_request(data={
             'form-TOTAL_FORMS': 2,
             'form-INITIAL_FORMS': 0,
             'form-MAX_NUM_FORMS': 2,
@@ -158,7 +163,7 @@ class TestAddDeliveryView(TestCase):
         self.groupbuilder.add_students(self.testuser)
 
         self.assertEqual(Delivery.objects.count(), 0)
-        response = self._mock_post_request(data={
+        response = self._mock_and_perform_post_request(data={
             'form-TOTAL_FORMS': 1,
             'form-INITIAL_FORMS': 0,
             'form-MAX_NUM_FORMS': 1,
@@ -177,7 +182,7 @@ class TestAddDeliveryView(TestCase):
         self.groupbuilder.add_students(self.testuser)
 
         self.assertEqual(Delivery.objects.count(), 0)
-        response = self._mock_post_request(data={
+        response = self._mock_and_perform_post_request(data={
             'form-TOTAL_FORMS': 1,
             'form-INITIAL_FORMS': 0,
             'form-MAX_NUM_FORMS': 1,
@@ -193,22 +198,61 @@ class TestAddDeliveryView(TestCase):
             'deadlines, adding deliveries after the deadline is prohibited.')
 
     def test_post_soft_deadline_expired_noconfirm(self):
-        pass
+        self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+
+        self.assertEqual(Delivery.objects.count(), 0)
+        response = self._mock_and_perform_post_request(data={
+            'form-TOTAL_FORMS': 1,
+            'form-INITIAL_FORMS': 0,
+            'form-MAX_NUM_FORMS': 1,
+            'form-0-file': SimpleUploadedFile('myfile.txt', 'Hello world')
+        })
+        self.assertEquals(response.status_code, 200)
+        self.assertEqual(Delivery.objects.count(), 0)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEqual(
+            selector.one('#devilry_student_add_delivery_soft_deadline_expired_noconfirm_alert').alltext_normalized,
+            'You must confirm that you want to add a delivery after the deadline has expired.')
 
     def test_post_soft_deadline_expired_confirm(self):
-        pass
+        self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
 
-    def test_post_group_closed_expired(self):
-        pass
+        self.assertEqual(Delivery.objects.count(), 0)
+        response = self._mock_and_perform_post_request(data={
+            'form-TOTAL_FORMS': 1,
+            'form-INITIAL_FORMS': 0,
+            'form-MAX_NUM_FORMS': 1,
+            'form-0-file': SimpleUploadedFile('myfile.txt', 'Hello world'),
+            'confirm_delivery_after_soft_deadline': '1'
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertEqual(Delivery.objects.count(), 1)
+
+    def test_post_group_closed(self):
+        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+        self.groupbuilder.update(is_open=False)
+        request = self._mock_post_request(data={})
+        request.cradmin_instance.appindex_url.return_value = '/appindex_url_called'
+        response = add_deliveryapp.AddDeliveryView.as_view()(request)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response['Location'], '/appindex_url_called')
+        request.cradmin_instance.appindex_url.assert_called_with('deliveries')
 
     def test_post_no_deadlines(self):
-        pass
+        self.groupbuilder.add_students(self.testuser)
+        request = self._mock_post_request(data={})
+        request.cradmin_instance.appindex_url.return_value = '/appindex_url_called'
+        response = add_deliveryapp.AddDeliveryView.as_view()(request)
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response['Location'], '/appindex_url_called')
+        request.cradmin_instance.appindex_url.assert_called_with('deliveries')
 
     def test_post_long_filename(self):
         pass
 
     def test_post_duplicate_filename(self):
-        pass
-
-    def test_no_files(self):
         pass

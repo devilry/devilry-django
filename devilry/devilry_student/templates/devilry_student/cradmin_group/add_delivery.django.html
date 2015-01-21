@@ -34,13 +34,19 @@
                 {% csrf_token %}
 
                 {% if deadline_has_expired == "soft" %}
-                    <div id="devilry_student_add_delivery_after_soft_deadline_warning" class="alert alert-danger">
+                    <div id="devilry_student_add_delivery_after_soft_deadline_warning" class="alert alert-warning">
                         <p>{% trans "Do you really want to add a delivery after the deadline? You normally need to have a valid reason when adding deadline after the deadline." %}</p>
                         <label>
                             <input type="checkbox" name="confirm_delivery_after_soft_deadline">
                             {% trans "I want to add a delivery after the deadline has expired." %}
                         </label>
                     </div>
+                    {% if delivery_after_soft_deadline_not_confirmed %}
+                        <div id="devilry_student_add_delivery_soft_deadline_expired_noconfirm_alert"
+                                class="alert alert-danger">
+                            {% trans "You must confirm that you want to add a delivery after the deadline has expired." %}
+                        </div>
+                    {% endif %}
                 {% endif %}
 
                 {{ filemetaformset.management_form }}
