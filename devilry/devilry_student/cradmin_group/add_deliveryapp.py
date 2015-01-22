@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 
 from django_cradmin import crapp
-from devilry.apps.core.models import Assignment, Candidate, Delivery
+from devilry.apps.core.models import Assignment, Candidate, Delivery, FileMeta
 
 
 DEFAULT_DEADLINE_EXPIRED_MESSAGE = _('Your active deadline, {deadline} has expired, and the administrators of {assignment} have configured HARD deadlines. This means that you can not add more deliveries to this assignment before an administrator have extended your deadline.')
@@ -112,19 +112,28 @@ class AddDeliveryView(TemplateView):
         return delivery
 
     def __create_filemeta(self, delivery, uploadedfile, filename):
-        try:
-            delivery.add_file(filename, uploadedfile.chunks())
-        except IntegrityError:
-            filename = u'{}-{}'.format(str(uuid.uuid4()), filename)
-            self.__create_filemeta(delivery, uploadedfile, filename)
+        delivery.add_file(filename, uploadedfile.chunks())
+
+    def __create_unique_filename(self, filenames, filename):
+        if filename in filenames:
+            new_filename = u'{}-{}'.format(str(uuid.uuid4()), filename)
+            if new_filename in filenames:
+                return self.__create_unique_filename(filenames, filename)
+            else:
+                return new_filename
+        else:
+            return filename
 
     def form_valid(self, uploadedfiles):
         delivery = self.__create_delivery()
+        filenames = set()
         for uploadedfile in uploadedfiles:
+            filename = self.__create_unique_filename(filenames, uploadedfile.name)
+            filenames.add(filename)
             self.__create_filemeta(
                 delivery=delivery,
                 uploadedfile=uploadedfile,
-                filename=uploadedfile.name)
+                filename=filename)
         return HttpResponseRedirect(self.get_success_url(delivery))
 
     def get_context_data(self, **kwargs):

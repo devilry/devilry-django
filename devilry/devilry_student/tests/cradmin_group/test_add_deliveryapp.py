@@ -6,7 +6,7 @@ from django.test import TestCase, RequestFactory
 import htmls
 import mock
 
-from devilry.apps.core.models import Delivery, Assignment, AssignmentGroup
+from devilry.apps.core.models import Delivery, Assignment, AssignmentGroup, FileMeta
 from devilry.devilry_student.cradmin_group import add_deliveryapp
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, PeriodBuilder
 
@@ -251,8 +251,21 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(response['Location'], '/appindex_url_called')
         request.cradmin_instance.appindex_url.assert_called_with('deliveries')
 
-    def test_post_long_filename(self):
-        pass
-
     def test_post_duplicate_filename(self):
-        pass
+        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+
+        self.assertEqual(Delivery.objects.count(), 0)
+        response = self._mock_and_perform_post_request(data={
+            'form-TOTAL_FORMS': 2,
+            'form-INITIAL_FORMS': 0,
+            'form-MAX_NUM_FORMS': 2,
+            'form-0-file': SimpleUploadedFile('file.txt', 'A'),
+            'form-1-file': SimpleUploadedFile('file.txt', 'B')
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response['Location'], '/success')
+        self.assertEqual(Delivery.objects.count(), 1)
+        delivery = Delivery.objects.first()
+        self.assertEquals(delivery.filemetas.filter(filename='file.txt').count(), 1)
+        self.assertEquals(delivery.filemetas.filter(filename__endswith='-file.txt').count(), 1)
