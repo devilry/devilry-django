@@ -8804,11 +8804,14 @@ body {
   height: 100%;
 }
 body {
-  background-color: #E6E6E6;
+  background-color: #e6e6e6;
   color: #666666;
 }
 body.django-cradmin-noscroll {
   overflow: hidden;
+}
+a {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
 }
 @media (min-width: 992px) {
   #django_cradmin_contentwrapper {
@@ -8998,41 +9001,55 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   padding-bottom: 40px;
   background-color: #fff;
 }
-.django_cradmin_form {
-  background-color: #eee;
-  padding-bottom: 0;
-  margin-bottom: 80px;
+.django-cradmin-form-wrapper {
+  padding-bottom: 150px;
 }
-.django_cradmin_form label {
+@media (min-width: 768px) {
+  .django-cradmin-form-wrapper {
+    padding-bottom: 80px;
+  }
+}
+.django-cradmin-form-wrapper .django-cradmin-form {
+  background-color: #eeeeee;
+  padding-bottom: 0;
+}
+.django-cradmin-form-wrapper .django-cradmin-form label {
+  font-weight: normal;
+}
+.django-cradmin-form-wrapper .django-cradmin-form label.requiredField {
   font-weight: bold;
 }
-.django_cradmin_form label .asteriskField {
+.django-cradmin-form-wrapper .django-cradmin-form label .asteriskField {
   color: #dc0000;
   display: inline-block;
   padding-left: 5px;
   font-size: 18px;
   line-height: 22px;
 }
-.django_cradmin_form .cradmin-focusfield {
-  /**
-    # .cradmin-focusfield-screenheight
-    Scale the field focusfield to the screen height.
-    Uses css media queries just like the bootstrap responsive grid does
-    for the screen width.
-    */
+.django-cradmin-form-wrapper .django-cradmin-form.django-cradmin-form-noasterisk label .asteriskField {
+  display: none;
 }
-.django_cradmin_form .cradmin-focusfield .form-group {
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield {
+  /**
+      # .cradmin-focusfield-screenheight
+      Scale the field focusfield to the screen height.
+      Uses css media queries just like the bootstrap responsive grid does
+      for the screen width.
+      */
+}
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group {
   margin: 0;
   box-sizing: border-box;
 }
-.django_cradmin_form .cradmin-focusfield .form-group .controls {
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls {
   position: relative;
 }
-.django_cradmin_form .cradmin-focusfield .form-group .controls input[type=text],
-.django_cradmin_form .cradmin-focusfield .form-group .controls input[type=email],
-.django_cradmin_form .cradmin-focusfield .form-group .controls input[type=number],
-.django_cradmin_form .cradmin-focusfield .form-group .controls textarea,
-.django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea {
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=text],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=email],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=number],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls textarea,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .django-cradmin-bulkfileupload,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea {
   border: none;
   outline: none;
   border-radius: 0;
@@ -9047,81 +9064,79 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   text-align: left;
 }
 @media (min-width: 768px) {
-  .django_cradmin_form .cradmin-focusfield .form-group .controls input[type=text],
-  .django_cradmin_form .cradmin-focusfield .form-group .controls input[type=email],
-  .django_cradmin_form .cradmin-focusfield .form-group .controls input[type=number],
-  .django_cradmin_form .cradmin-focusfield .form-group .controls textarea,
-  .django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=text],
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=email],
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=number],
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls textarea,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .django-cradmin-bulkfileupload,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea {
     padding-left: 50px;
     padding-right: 50px;
   }
 }
-.django_cradmin_form .cradmin-focusfield .form-group .controls input[type=text]:focus,
-.django_cradmin_form .cradmin-focusfield .form-group .controls input[type=email]:focus,
-.django_cradmin_form .cradmin-focusfield .form-group .controls input[type=number]:focus,
-.django_cradmin_form .cradmin-focusfield .form-group .controls textarea:focus,
-.django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea:focus {
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=text]:focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=email]:focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=number]:focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls textarea:focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .django-cradmin-bulkfileupload:focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea:focus {
   background-color: #e1edf4;
 }
-.django_cradmin_form .cradmin-focusfield .form-group .controls input[type=text].cradmin-focus,
-.django_cradmin_form .cradmin-focusfield .form-group .controls input[type=email].cradmin-focus,
-.django_cradmin_form .cradmin-focusfield .form-group .controls input[type=number].cradmin-focus,
-.django_cradmin_form .cradmin-focusfield .form-group .controls textarea.cradmin-focus,
-.django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea.cradmin-focus {
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=text].cradmin-focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=email].cradmin-focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=number].cradmin-focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls textarea.cradmin-focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .django-cradmin-bulkfileupload.cradmin-focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea.cradmin-focus {
   background-color: #e1edf4;
 }
 @media (min-width: 992px) {
-  .django_cradmin_form .cradmin-focusfield .form-group .controls input[type=text],
-  .django_cradmin_form .cradmin-focusfield .form-group .controls input[type=email],
-  .django_cradmin_form .cradmin-focusfield .form-group .controls input[type=number],
-  .django_cradmin_form .cradmin-focusfield .form-group .controls textarea,
-  .django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=text],
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=email],
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=number],
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls textarea,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .django-cradmin-bulkfileupload,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea {
     max-width: 600px;
     border-right: 1px dashed #ccc;
   }
 }
 @media (min-width: 1200px) {
-  .django_cradmin_form .cradmin-focusfield .form-group .controls input[type=text],
-  .django_cradmin_form .cradmin-focusfield .form-group .controls input[type=email],
-  .django_cradmin_form .cradmin-focusfield .form-group .controls input[type=number],
-  .django_cradmin_form .cradmin-focusfield .form-group .controls textarea,
-  .django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=text],
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=email],
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls input[type=number],
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls textarea,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .django-cradmin-bulkfileupload,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-div-styled-as-textarea {
     max-width: 800px;
   }
 }
-.django_cradmin_form .cradmin-focusfield .form-group .controls span.help-block {
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls span.help-block {
   padding-left: 15px;
   padding-right: 15px;
 }
 @media (min-width: 768px) {
-  .django_cradmin_form .cradmin-focusfield .form-group .controls span.help-block {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls span.help-block {
     padding-left: 50px;
     padding-right: 50px;
   }
 }
-.django_cradmin_form .cradmin-focusfield .form-group .controls p.help-block {
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls p.help-block {
   position: relative;
-  padding-left: 37px;
+  margin: 0;
+  padding-top: 5px;
+  padding-bottom: 15px;
+  padding-left: 15px;
   padding-right: 15px;
 }
-.django_cradmin_form .cradmin-focusfield .form-group .controls p.help-block .fa {
-  padding-left: 15px;
-  position: absolute;
-  left: 0;
-  top: 3px;
-  font-size: 20px;
-}
 @media (min-width: 768px) {
-  .django_cradmin_form .cradmin-focusfield .form-group .controls p.help-block {
-    padding-left: 72px;
-    padding-right: 50px;
-  }
-  .django_cradmin_form .cradmin-focusfield .form-group .controls p.help-block .fa {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls p.help-block {
     padding-left: 50px;
+    padding-right: 50px;
   }
 }
 @media (min-width: 992px) {
-  .django_cradmin_form .cradmin-focusfield .form-group .controls p.help-block {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls p.help-block {
     display: block;
     position: absolute;
     left: 625px;
@@ -9130,80 +9145,78 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
     overflow: hidden;
     padding-left: 22px;
     padding-right: 20px;
-  }
-  .django_cradmin_form .cradmin-focusfield .form-group .controls p.help-block .fa {
-    padding-left: 0;
+    padding-top: 0;
+    padding-bottom: 0;
   }
 }
 @media (min-width: 1200px) {
-  .django_cradmin_form .cradmin-focusfield .form-group .controls p.help-block {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .form-group .controls p.help-block {
     left: 825px;
   }
 }
-.django_cradmin_form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=text],
-.django_cradmin_form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=email],
-.django_cradmin_form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=number] {
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=text],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=email],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=number] {
   font-size: 24px;
 }
-.django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group {
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group {
   margin: 0;
   box-sizing: border-box;
 }
-.django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
-.django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
   height: 200px;
 }
 @media (min-height: 500px) {
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
     height: 300px;
   }
 }
 @media (min-height: 550px) {
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
     height: 350px;
   }
 }
 @media (min-height: 650px) {
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
     height: 450px;
   }
 }
 @media (min-height: 750px) {
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
     height: 550px;
   }
 }
 @media (min-height: 850px) {
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
     height: 650px;
   }
 }
 @media (min-height: 950px) {
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
     height: 750px;
   }
 }
 @media (min-height: 1050px) {
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
-  .django_cradmin_form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls textarea,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-screenheight .form-group .controls .cradmin-div-styled-as-textarea {
     height: 850px;
   }
 }
-.django_cradmin_form fieldset legend,
-.django_cradmin_form .cradmin-focusfield label {
+.django-cradmin-form-wrapper .django-cradmin-form fieldset legend,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield label {
   display: block;
   margin: 0;
   background-color: #dcdcdc;
   border: none;
   padding-top: 10px;
   padding-bottom: 10px;
-  font-weight: normal;
   text-transform: uppercase;
   font-size: 14px;
   line-height: 22px;
@@ -9211,14 +9224,14 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   padding-right: 15px;
 }
 @media (min-width: 768px) {
-  .django_cradmin_form fieldset legend,
-  .django_cradmin_form .cradmin-focusfield label {
+  .django-cradmin-form-wrapper .django-cradmin-form fieldset legend,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield label {
     padding-left: 50px;
     padding-right: 50px;
   }
 }
-.django_cradmin_form fieldset .form-group,
-.django_cradmin_form .cradmin-globalfields .form-group {
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group {
   padding-top: 20px;
   padding-bottom: 4px;
   margin: 0;
@@ -9227,26 +9240,26 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   background-color: #fff;
 }
 @media (min-width: 768px) {
-  .django_cradmin_form fieldset .form-group,
-  .django_cradmin_form .cradmin-globalfields .form-group {
+  .django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group {
     padding-left: 50px;
     padding-right: 50px;
   }
 }
-.django_cradmin_form fieldset .form-group:last-child,
-.django_cradmin_form .cradmin-globalfields .form-group:last-child {
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group:last-child,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group:last-child {
   padding-bottom: 30px;
 }
-.django_cradmin_form fieldset .form-group input[type=text],
-.django_cradmin_form .cradmin-globalfields .form-group input[type=text],
-.django_cradmin_form fieldset .form-group input[type=email],
-.django_cradmin_form .cradmin-globalfields .form-group input[type=email],
-.django_cradmin_form fieldset .form-group input[type=number],
-.django_cradmin_form .cradmin-globalfields .form-group input[type=number],
-.django_cradmin_form fieldset .form-group textarea,
-.django_cradmin_form .cradmin-globalfields .form-group textarea,
-.django_cradmin_form fieldset .form-group select,
-.django_cradmin_form .cradmin-globalfields .form-group select {
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group input[type=text],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group input[type=text],
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group input[type=email],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group input[type=email],
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group input[type=number],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group input[type=number],
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group textarea,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group textarea,
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group select,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group select {
   border: 1px solid #ddd;
   border-radius: 4px;
   outline: none;
@@ -9254,40 +9267,40 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   padding: 10px 12px;
   background-color: #FAFAFA;
 }
-.django_cradmin_form fieldset .form-group input[type=text]:focus,
-.django_cradmin_form .cradmin-globalfields .form-group input[type=text]:focus,
-.django_cradmin_form fieldset .form-group input[type=email]:focus,
-.django_cradmin_form .cradmin-globalfields .form-group input[type=email]:focus,
-.django_cradmin_form fieldset .form-group input[type=number]:focus,
-.django_cradmin_form .cradmin-globalfields .form-group input[type=number]:focus,
-.django_cradmin_form fieldset .form-group textarea:focus,
-.django_cradmin_form .cradmin-globalfields .form-group textarea:focus,
-.django_cradmin_form fieldset .form-group select:focus,
-.django_cradmin_form .cradmin-globalfields .form-group select:focus {
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group input[type=text]:focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group input[type=text]:focus,
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group input[type=email]:focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group input[type=email]:focus,
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group input[type=number]:focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group input[type=number]:focus,
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group textarea:focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group textarea:focus,
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group select:focus,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group select:focus {
   background-color: #e1edf4;
 }
-.django_cradmin_form fieldset .form-group input[type=text],
-.django_cradmin_form .cradmin-globalfields .form-group input[type=text],
-.django_cradmin_form fieldset .form-group input[type=email],
-.django_cradmin_form .cradmin-globalfields .form-group input[type=email],
-.django_cradmin_form fieldset .form-group input[type=number],
-.django_cradmin_form .cradmin-globalfields .form-group input[type=number],
-.django_cradmin_form fieldset .form-group textarea,
-.django_cradmin_form .cradmin-globalfields .form-group textarea {
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group input[type=text],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group input[type=text],
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group input[type=email],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group input[type=email],
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group input[type=number],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group input[type=number],
+.django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group textarea,
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group textarea {
   height: auto;
   margin: 0;
   text-align: left;
 }
 @media (min-width: 992px) {
-  .django_cradmin_form fieldset .form-group,
-  .django_cradmin_form .cradmin-globalfields .form-group {
+  .django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group {
     max-width: 600px;
     border-right: 1px dashed #ccc;
   }
 }
 @media (min-width: 1200px) {
-  .django_cradmin_form fieldset .form-group,
-  .django_cradmin_form .cradmin-globalfields .form-group {
+  .django-cradmin-form-wrapper .django-cradmin-form fieldset .form-group,
+  .django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group {
     max-width: 800px;
   }
 }
@@ -9337,13 +9350,25 @@ table.table.cradmin-table-fluid tbody tr td {
   padding-bottom: 15px;
 }
 .btn {
-  transition-duration: 0.3s;
-  transition-property: background-color color border-color;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
+}
+@media (min-width: 768px) {
+  .btn {
+    transition-duration: 0.3s;
+    transition-property: background-color color border-color;
+  }
 }
 .btn.btn-default:hover {
-  background-color: #377ca8;
-  border-color: #377ca8;
-  color: #fff;
+  background-color: #ffffff;
+  border-color: #d9d9d9;
+  color: #377ca8;
+}
+@media (min-width: 768px) {
+  .btn.btn-default:hover {
+    background-color: #377ca8;
+    border-color: #377ca8;
+    color: #ffffff;
+  }
 }
 .btn.btn-primary:hover {
   background-color: #224d68;
@@ -9446,35 +9471,42 @@ table.table.cradmin-table-fluid tbody tr td {
   width: 100%;
   border: none;
 }
-.django_cradmin_form .django_cradmin_filewidget {
+.django-cradmin-form .django_cradmin_filewidget {
   padding: 10px 15px;
 }
-.django_cradmin_form .django_cradmin_filewidget img {
+.django-cradmin-form .django_cradmin_filewidget img {
   max-width: 300px;
   height: auto;
   display: block;
   margin-bottom: 10px;
 }
-.django_cradmin_form .django_cradmin_filewidget a.django_cradmin_filewidget_fullviewlink {
+.django-cradmin-form .django_cradmin_filewidget a.django_cradmin_filewidget_fullviewlink {
   display: block;
   border: none;
   margin-bottom: 10px;
 }
-.django_cradmin_form .django_cradmin_filewidget .django_cradmin_filewidget_field_and_overlay_wrapper {
+.django-cradmin-form .django_cradmin_filewidget .django_cradmin_filewidget_field_and_overlay_wrapper {
   position: relative;
 }
-.django_cradmin_form .django_cradmin_filewidget .django_cradmin_filewidget_field_and_overlay_wrapper input[type=file],
-.django_cradmin_form .django_cradmin_filewidget .django_cradmin_filewidget_field_and_overlay_wrapper a.django_cradmin_filewidget_fieldoverlay {
+.django-cradmin-form .django_cradmin_filewidget .django_cradmin_filewidget_field_and_overlay_wrapper input[type=file],
+.django-cradmin-form .django_cradmin_filewidget .django_cradmin_filewidget_field_and_overlay_wrapper a.django_cradmin_filewidget_fieldoverlay {
   width: 300px;
   height: 40px;
   border-radius: 3px;
 }
-.django_cradmin_form .django_cradmin_filewidget .django_cradmin_filewidget_field_and_overlay_wrapper.django_cradmin_filewidget_field_and_overlay_wrapper_hover a.btn.btn-default {
-  background-color: #377ca8;
-  border-color: #377ca8;
-  color: #fff;
+.django-cradmin-form .django_cradmin_filewidget .django_cradmin_filewidget_field_and_overlay_wrapper.django_cradmin_filewidget_field_and_overlay_wrapper_hover a.btn.btn-default {
+  background-color: #ffffff;
+  border-color: #d9d9d9;
+  color: #377ca8;
 }
-.django_cradmin_form .django_cradmin_filewidget .django_cradmin_filewidget_field_and_overlay_wrapper input[type=file] {
+@media (min-width: 768px) {
+  .django-cradmin-form .django_cradmin_filewidget .django_cradmin_filewidget_field_and_overlay_wrapper.django_cradmin_filewidget_field_and_overlay_wrapper_hover a.btn.btn-default {
+    background-color: #377ca8;
+    border-color: #377ca8;
+    color: #ffffff;
+  }
+}
+.django-cradmin-form .django_cradmin_filewidget .django_cradmin_filewidget_field_and_overlay_wrapper input[type=file] {
   opacity: 0 !important;
   position: absolute;
   top: 0;
@@ -9482,13 +9514,13 @@ table.table.cradmin-table-fluid tbody tr td {
   overflow: hidden !important;
   cursor: pointer;
 }
-.django_cradmin_form .django_cradmin_filewidget.django_cradmin_filewidget_clearable label.django_cradmin_filewidget_clear {
+.django-cradmin-form .django_cradmin_filewidget.django_cradmin_filewidget_clearable label.django_cradmin_filewidget_clear {
   font-weight: normal;
   padding: 0;
   margin: 10px 0 0 0;
   background-color: #eee;
 }
-.django_cradmin_form .cradmin-focusfield .django_cradmin_filewidget {
+.django-cradmin-form .cradmin-focusfield .django_cradmin_filewidget {
   padding-left: 15px;
   padding-right: 15px;
   background-color: #fff;
@@ -9496,19 +9528,19 @@ table.table.cradmin-table-fluid tbody tr td {
   padding-bottom: 20px;
 }
 @media (min-width: 768px) {
-  .django_cradmin_form .cradmin-focusfield .django_cradmin_filewidget {
+  .django-cradmin-form .cradmin-focusfield .django_cradmin_filewidget {
     padding-left: 50px;
     padding-right: 50px;
   }
 }
 @media (min-width: 992px) {
-  .django_cradmin_form .cradmin-focusfield .django_cradmin_filewidget {
+  .django-cradmin-form .cradmin-focusfield .django_cradmin_filewidget {
     max-width: 600px;
     border-right: 1px dashed #ccc;
   }
 }
 @media (min-width: 1200px) {
-  .django_cradmin_form .cradmin-focusfield .django_cradmin_filewidget {
+  .django-cradmin-form .cradmin-focusfield .django_cradmin_filewidget {
     max-width: 800px;
   }
 }
@@ -9588,10 +9620,16 @@ table.table.cradmin-table-fluid tbody tr td {
   padding: 0;
   margin: 0;
 }
+#objecttableview-table tbody tr td .objecttable-cellbuttons .btn {
+  margin: 0 5px 10px 0;
+}
 #objecttableview-table tbody tr td .objecttable-cellbuttons .btn-sm {
   text-transform: uppercase;
 }
-@media (min-width: 768px) {
+@media (min-width: 992px) {
+  #objecttableview-table tbody tr td .objecttable-cellbuttons .btn {
+    margin: 0 0 8px 0;
+  }
   #objecttableview-table tbody tr td .objecttable-cellbuttons .btn-sm {
     padding: 3px 10px;
   }
@@ -9604,11 +9642,11 @@ table.table.cradmin-table-fluid tbody tr td {
 .django_cradmin_submitrow {
   position: fixed;
   z-index: 10000;
-  bottom: 0px;
+  bottom: 0;
   left: 15px;
   right: 15px;
-  background-color: #333;
-  padding: 8px;
+  background-color: #333333;
+  padding: 8px 8px 0 8px;
   border-radius: 3px 3px 0 0;
 }
 .django_cradmin_submitrow.django_cradmin_submitrow_hidden {
@@ -9631,6 +9669,7 @@ table.table.cradmin-table-fluid tbody tr td {
   font-size: 14px;
   line-height: 18px;
   padding: 10px 12px;
+  margin-bottom: 8px;
 }
 .django_cradmin_submitrow .btn.btn-default {
   background-color: #808080;
@@ -9668,35 +9707,35 @@ table.table.cradmin-table-fluid tbody tr td {
   font-size: 16px;
   height: 400px;
 }
-.django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .btn-toolbar {
+.django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .btn-toolbar {
   margin-top: -30px;
   opacity: 0;
   transition-duration: 0.3s;
   transition-property: opacity;
 }
-.django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea.cradmin-focus .btn-toolbar {
+.django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea.cradmin-focus .btn-toolbar {
   opacity: 1.0;
 }
-.django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
+.django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
   height: 100px;
 }
 @media (min-height: 400px) {
-  .django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
+  .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
     height: 200px;
   }
 }
 @media (min-height: 500px) {
-  .django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
+  .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
     height: 300px;
   }
 }
 @media (min-height: 600px) {
-  .django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
+  .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
     height: 400px;
   }
 }
 @media (min-height: 800px) {
-  .django_cradmin_form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
+  .django-cradmin-form .cradmin-focusfield .form-group .controls .cradmin-acemarkdown.cradmin-div-styled-as-textarea .ace_editor {
     height: 600px;
   }
 }
@@ -9741,6 +9780,131 @@ table.table.cradmin-table-fluid tbody tr td {
 }
 #django_cradmin_roleselect ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li:last-child {
   border-bottom: none;
+}
+.django-cradmin-bulkfileupload {
+  padding: 0;
+  background: #eeeeee;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-dropbox {
+  background-color: #d7d7d7;
+  color: #666666;
+  font-weight: bold;
+  font-size: inherit;
+  padding: 45px 30px;
+  text-align: center;
+  border-style: dashed;
+  border-color: #c7c7c7;
+  border-width: 6px;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-invalid-filetype-errormessage {
+  display: none;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover {
+  background-color: #dff0d8;
+  color: #3c763d;
+  border-style: solid;
+  border-color: #d6e9c6;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error {
+  background-color: #f2dede;
+  color: #a94442;
+  border-style: solid;
+  border-color: #ebccd1;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error .django-cradmin-bulkfileupload-dropbox-invalid-filetype-errormessage {
+  display: block;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-dropbox.django-cradmin-bulkfileupload-dropbox-dragover-error .django-cradmin-bulkfileupload-dropbox-text {
+  display: none;
+}
+.django-cradmin-bulkfileupload p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper {
+  text-align: center;
+}
+.django-cradmin-bulkfileupload p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper .django-cradmin-bulkfileupload-advanced-fileselectbutton {
+  display: inline-block;
+  color: #377ca8;
+}
+.django-cradmin-bulkfileupload p.django-cradmin-bulkfileupload-advanced-fileselectbutton-wrapper .django-cradmin-bulkfileupload-advanced-fileselectbutton:hover {
+  color: #24516e;
+}
+.django-cradmin-bulkfileupload p.django-cradmin-bulkfileupload-simple-button-wrapper {
+  padding: 10px 15px;
+  margin: 0;
+}
+.django-cradmin-bulkfileupload p.django-cradmin-bulkfileupload-simple-button-wrapper .btn.django-cradmin-bulkfileupload-simple-button {
+  padding: 10px 16px;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile {
+  font-weight: normal;
+  font-size: 16px;
+  margin: 0;
+  padding: 20px 15px;
+}
+@media (min-width: 992px) {
+  .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item,
+  .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item,
+  .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile,
+  .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile {
+    padding: 10px 15px;
+  }
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph {
+  background-color: #f2dede;
+  color: #a94442;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton {
+  float: right;
+  margin-top: -7px;
+  margin-right: -7px;
+  color: #a94442;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-progress-item.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover,
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-rejectedfiles p.django-cradmin-bulkfileupload-rejectedfile.django-cradmin-bulkfileupload-errorparagraph .django-cradmin-bulkfileupload-error-closebutton:hover {
+  color: #7d3231;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress {
+  background: #eeeeee;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item {
+  color: #666666;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar {
+  display: inline-block;
+  background-color: #333333;
+  width: 100px;
+  position: relative;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progressbar-progress {
+  display: inline-block;
+  height: 100%;
+  background-color: #377ca8;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progresspercent {
+  position: absolute;
+  top: 1px;
+  left: 5px;
+  font-size: 14px;
+  color: #ffffff;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-bulkfileupload-remove-file-button {
+  float: right;
+  margin-top: -7px;
+  margin-right: -7px;
+  color: #a94442;
+}
+.django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-bulkfileupload-remove-file-button:hover {
+  color: #7d3231;
 }
 @media (min-width: 992px) {
   nav#cradmin_menu {

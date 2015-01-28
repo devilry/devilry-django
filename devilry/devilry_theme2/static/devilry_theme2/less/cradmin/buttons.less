@@ -1,6 +1,10 @@
 .btn {
-  transition-duration: 0.3s;
-  transition-property: background-color color border-color;
+  @media (min-width: @screen-sm-min) {
+    transition-duration: 0.3s;
+    transition-property: background-color color border-color;
+  }
+  -webkit-tap-highlight-color: @cradmin-btn-tap-highlight-color;
+
   &.btn-default {
     &:hover {
       .btn-default-hoverstyle-mixin();
