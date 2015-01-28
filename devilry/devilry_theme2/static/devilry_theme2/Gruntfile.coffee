@@ -2,7 +2,7 @@ module.exports = (grunt) ->
   # Project configuration.
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json')
-    watch:
+    delta:
       less:
         tasks: 'less'
         files: ['less/*.less', 'less/**/*.less']
@@ -16,6 +16,17 @@ module.exports = (grunt) ->
 
   grunt.loadNpmTasks('grunt-contrib-watch')
   grunt.loadNpmTasks('grunt-contrib-less')
-  grunt.registerTask('default', [
+
+  grunt.registerTask('build', [
     'less'
+  ])
+
+  grunt.renameTask('watch', 'delta')
+  grunt.registerTask('watch', [
+    'build'
+    'delta'
+  ])
+
+  grunt.registerTask('default', [
+    'build'
   ])
