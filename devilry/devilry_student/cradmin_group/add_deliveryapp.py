@@ -69,7 +69,7 @@ class AddDeliveryView(TemplateView):
 
     def post(self, *args, **kwargs):
         FileMetaFormSet = formset_factory(FileMetaForm)
-        filemetaformset = FileMetaFormSet(self.request.POST, self.request.FILES)
+        filemetaformset = FileMetaFormSet(self.request.POST, self.request.FILES, prefix='filemeta_formset')
         if filemetaformset.is_valid():
             uploadedfiles = [data['file'] for data in filemetaformset.cleaned_data if 'file' in data]
             if len(uploadedfiles) == 0:
@@ -139,7 +139,7 @@ class AddDeliveryView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(AddDeliveryView, self).get_context_data(**kwargs)
         FileMetaFormSet = formset_factory(FileMetaForm, extra=3)
-        filemetaformset = FileMetaFormSet()
+        filemetaformset = FileMetaFormSet(prefix='filemeta_formset')
         context['filemetaformset'] = filemetaformset
         context['deadline_has_expired'] = self.deadline_has_expired
         context['group'] = self.group

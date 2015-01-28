@@ -30,7 +30,8 @@
                 {% trans "Upload one or more files to make a delivery. Add as many deliveries as you like. Your last delivery is corrected." %}
             </div>
             <form id="devilry_student_add_delivery_form" action="{{ request.path }}"
-                    method="post" enctype="multipart/form-data">
+                    method="post" enctype="multipart/form-data"
+                    cradmin-formset-upload-form="filemeta_formset">
                 {% csrf_token %}
 
                 {% if deadline_has_expired == "soft" %}
