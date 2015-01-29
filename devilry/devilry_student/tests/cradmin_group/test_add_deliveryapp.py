@@ -122,8 +122,9 @@ class TestAddDeliveryView(TestCase):
         response = CustomAddDeliveryView.as_view()(request)
         return response
 
-    def _create_collection(self, user, files):
-        collection = TemporaryFileCollection.objects.create(user=user)
+    def _create_collection(self, user, files, **kwargs):
+        collection = TemporaryFileCollection.objects.create(
+            user=user, **kwargs)
         for filename, filecontent in files:
             temporaryfile = TemporaryFile(
                 collection=collection,
@@ -269,25 +270,6 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response['Location'], '/appindex_url_called')
         request.cradmin_instance.appindex_url.assert_called_with('deliveries')
-
-    def test_post_duplicate_filename(self):
-        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
-        self.groupbuilder.add_students(self.testuser)
-        collection = self._create_collection(user=self.testuser, files=[
-            ('testfile.txt', 'Testcontent1'),
-            ('testfile.txt', 'Testcontent2')])
-
-        self.assertEqual(Delivery.objects.count(), 0)
-        response = self._mock_and_perform_post_request(data={
-            'filecollectionid': collection.id
-        })
-        self.assertEquals(response.status_code, 302)
-        self.assertEquals(response['Location'], '/success')
-        self.assertEqual(Delivery.objects.count(), 1)
-        delivery = Delivery.objects.first()
-        self.assertEquals(delivery.filemetas.count(), 2)
-        self.assertEquals(delivery.filemetas.filter(filename='testfile.txt').count(), 1)
-        self.assertEquals(delivery.filemetas.filter(filename__endswith='-testfile.txt').count(), 1)
 
     def test_post_successfully_deletes_collection(self):
         self.groupbuilder.add_deadline_in_x_weeks(weeks=1)

@@ -20,11 +20,6 @@ DEADLINE_EXPIRED_MESSAGE = getattr(settings, 'DEVILRY_DEADLINE_EXPIRED_MESSAGE',
 DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES = getattr(settings, 'DELIVERY_DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES', 120)
 
 
-# class FileMetaForm(forms.Form):
-#     file = forms.FileField(
-#         label=_('Upload a file'))
-
-
 class AddDeliveryView(formbase.FormView):
     template_name = 'devilry_student/cradmin_group/add_delivery.django.html'
     form_attributes = {
@@ -32,10 +27,6 @@ class AddDeliveryView(formbase.FormView):
     }
     form_id = 'devilry_student_add_delivery_form'
     extra_form_css_classes = ['django-cradmin-form-noasterisk']
-
-    def _fatal_error_response(self, message):
-        messages.error(self.request, message)
-        return HttpResponseRedirect(self.request.cradmin_instance.rolefrontpage_url(self.group.id))
 
     def __init__(self, *args, **kwargs):
         self.group = None
@@ -77,14 +68,10 @@ class AddDeliveryView(formbase.FormView):
                         'unique_filenames': True,
                         'max_filename_length': FileMeta.MAX_FILENAME_LENGTH
                     }
-                    # dropbox_text=_('Upload images by dragging and dropping them here'),
-                    # invalid_filetype_message=_('Invalid filetype. You can only upload images.'),
-                    # advanced_fileselectbutton_text=_('... or select images'),
-                    # simple_fileselectbutton_text=_('Select images ...')
                 ),
                 label=_('Upload at least one file and click "Add delivery"'),
                 help_text=_(
-                    'Upload as many files as you like.'),
+                    _('Upload as many files as you like.')),
                 error_messages={
                     'required': _('You have to add at least one file to make a delivery.')
                 })
@@ -134,21 +121,8 @@ class AddDeliveryView(formbase.FormView):
         delivery.save()
         return delivery
 
-    def __create_unique_filename(self, filenames, filename):
-        if filename in filenames:
-            new_filename = u'{}-{}'.format(str(uuid.uuid4()), filename)
-            if new_filename in filenames:
-                return self.__create_unique_filename(filenames, filename)
-            else:
-                return new_filename
-        else:
-            return filename
-
     def get_context_data(self, **kwargs):
         context = super(AddDeliveryView, self).get_context_data(**kwargs)
-        # FileMetaFormSet = formset_factory(FileMetaForm, extra=3)
-        # filemetaformset = FileMetaFormSet(prefix='filemeta_formset')
-        # context['filemetaformset'] = filemetaformset
         context['deadline_has_expired'] = self.deadline_has_expired
         context['group'] = self.group
         return context
@@ -179,24 +153,15 @@ class AddDeliveryView(formbase.FormView):
             ))
         return fieldlayout
 
-    # def get_formhelper(self):
-    #     formhelper = super(AddDeliveryView, self).get_formhelper()
-    #     formhelper.form_show_labels = False
-    #     return formhelper
-
-    def __turn_temporaryfile_into_filemeta(self, temporaryfile, delivery, filename):
-        delivery.add_file(filename, temporaryfile.file.chunks())
+    def __turn_temporaryfile_into_filemeta(self, temporaryfile, delivery):
+        delivery.add_file(temporaryfile.filename, temporaryfile.file.chunks())
 
     def __turn_temporaryfiles_into_delivery(self, temporaryfilecollection):
         delivery = self.__create_delivery()
-        filenames = set()
         for temporaryfile in temporaryfilecollection.files.all():
-            filename = self.__create_unique_filename(filenames, temporaryfile.filename)
-            filenames.add(filename)
             self.__turn_temporaryfile_into_filemeta(
                 temporaryfile=temporaryfile,
-                delivery=delivery,
-                filename=filename)
+                delivery=delivery)
 
         return delivery
 
@@ -215,41 +180,6 @@ class AddDeliveryView(formbase.FormView):
             delivery = self.__turn_temporaryfiles_into_delivery(temporaryfilecollection)
             temporaryfilecollection.clear_files_and_delete()
             return HttpResponseRedirect(self.get_success_url(delivery))
-
-    # def form_valid(self, uploadedfiles):
-    #     delivery = self.__create_delivery()
-    #     filenames = set()
-    #     for uploadedfile in uploadedfiles:
-    #         filename = self.__create_unique_filename(filenames, uploadedfile.name)
-    #         filenames.add(filename)
-    #         self.__create_filemeta(
-    #             delivery=delivery,
-    #             uploadedfile=uploadedfile,
-    #             filename=filename)
-    #     return HttpResponseRedirect(self.get_success_url(delivery))
-
-    # def post(self, *args, **kwargs):
-    #     FileMetaFormSet = formset_factory(FileMetaForm)
-    #     filemetaformset = FileMetaFormSet(self.request.POST, self.request.FILES, prefix='filemeta_formset')
-    #     if filemetaformset.is_valid():
-    #         uploadedfiles = [data['file'] for data in filemetaformset.cleaned_data if 'file' in data]
-    #         if len(uploadedfiles) == 0:
-    #             return self.render_to_response(self.get_context_data(
-    #                 no_files_selected=True))
-    #         else:
-    #             if self.deadline_has_expired == 'soft':
-    #                 add_delivery_form = AddDeliveryForm(self.request.POST)
-    #                 confirm_delivery_after_soft_deadline = False
-    #                 if add_delivery_form.is_valid():
-    #                     confirm_delivery_after_soft_deadline = add_delivery_form\
-    #                         .cleaned_data['confirm_delivery_after_soft_deadline']
-    #                 if not confirm_delivery_after_soft_deadline:
-    #                     return self.render_to_response(self.get_context_data(
-    #                         delivery_after_soft_deadline_not_confirmed=True))
-    #
-    #             return self.form_valid(uploadedfiles)
-    #     else:
-    #         raise Exception('Getting here should not be possible.')
 
 
 class App(crapp.App):
