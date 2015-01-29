@@ -3,9 +3,8 @@ from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crmenu
 
 from devilry.apps.core.models import AssignmentGroup
-from devilry.devilry_student.cradmin_group import deliveriesapp
 from devilry.devilry_student.cradminextensions import studentcrinstance
-from . import add_deliveryapp
+from devilry.devilry_student.cradmin_group import deliveriesapp
 
 
 class Menu(crmenu.Menu):
@@ -17,10 +16,6 @@ class Menu(crmenu.Menu):
                 'roleid': group.parentnode.parentnode.id
             }),
             icon="arrow-up")
-        self.add(
-            label=_('Add delivery'), url=self.appindex_url('add_delivery'),
-            icon="plus",
-            active=self.request.cradmin_app.appname == 'add_delivery')
         self.add(
             label=_('Deliveries'), url=self.appindex_url('deliveries'),
             icon="circle",
@@ -34,7 +29,6 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     rolefrontpage_appname = 'add_delivery'
 
     apps = [
-        ('add_delivery', add_deliveryapp.App),
         ('deliveries', deliveriesapp.App),
     ]
 
