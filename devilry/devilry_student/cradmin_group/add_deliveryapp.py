@@ -213,6 +213,7 @@ class AddDeliveryView(formbase.FormView):
             return HttpResponseNotFound()
         else:
             delivery = self.__turn_temporaryfiles_into_delivery(temporaryfilecollection)
+            temporaryfilecollection.clear_files_and_delete()
             return HttpResponseRedirect(self.get_success_url(delivery))
 
     # def form_valid(self, uploadedfiles):

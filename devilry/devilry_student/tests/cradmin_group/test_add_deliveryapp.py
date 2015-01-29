@@ -288,3 +288,15 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(delivery.filemetas.count(), 2)
         self.assertEquals(delivery.filemetas.filter(filename='testfile.txt').count(), 1)
         self.assertEquals(delivery.filemetas.filter(filename__endswith='-testfile.txt').count(), 1)
+
+    def test_post_successfully_deletes_collection(self):
+        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+        collection = self._create_collection(user=self.testuser, files=[
+            ('testfile.txt', 'Testcontent')])
+
+        response = self._mock_and_perform_post_request(data={
+            'filecollectionid': collection.id
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertFalse(TemporaryFileCollection.objects.filter(id=collection.id).exists())
