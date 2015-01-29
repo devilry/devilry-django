@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crmenu
 
@@ -38,6 +39,12 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
             .annotate_with_last_deadline_pk()\
             .annotate_with_last_deadline_datetime()\
             .select_related('parentnode')
+
+    def get_role_from_rolequeryset(self, role):
+        role = super(CrAdminInstance, self).get_role_from_rolequeryset(role)
+        if role.last_deadline_pk is None:
+            raise Http404()
+        return role
 
     def get_titletext_for_role(self, group):
         return group.parentnode.long_name

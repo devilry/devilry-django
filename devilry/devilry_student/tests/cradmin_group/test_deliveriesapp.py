@@ -82,7 +82,15 @@ class TestDeliveryListView(TestCase):
             selector.one('.devilry-student-deliveriesapp-summarycolumn-feedback-is_passing_grade').alltext_normalized,
             'passed')
 
-    def test_render_deadline_expired_hard_deadlines(self):
+    def test_render_hard_deadline_not_expired(self):
+        self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+        response = self._mock_get_request()
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('#devilry_student_delivery_list_hard_deadline_expired_message'))
+
+    def test_render_hard_deadline_expired(self):
         self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
         self.groupbuilder.add_students(self.testuser)
         response = self._mock_get_request()
@@ -91,7 +99,12 @@ class TestDeliveryListView(TestCase):
         self.assertTrue(selector.exists('#devilry_student_delivery_list_hard_deadline_expired_message'))
 
     def test_render_no_deadlines(self):
-        pass
+        self.groupbuilder.add_students(self.testuser)
+        self.client.login(username='testuser', password='test')
+        response = self.client.get(reverse('devilry_student_group-deliveries-INDEX', kwargs={
+            'roleid': self.groupbuilder.group.id,
+        }))
+        self.assertEquals(response.status_code, 404)
 
 
 class TestAddDeliveryView(TestCase):
