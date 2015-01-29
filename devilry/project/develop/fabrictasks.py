@@ -65,7 +65,7 @@ def autodb(djangoenv='develop', no_groups=False):
 
 
 @task
-def old_demodb(djangoenv='develop'):
+def demodb(djangoenv='develop'):
     """
     Run ``remove_db``, ``syncmigrate`` and ``bin/django_dev.py devilry.project.develop_demodb``
 
@@ -88,7 +88,7 @@ def _demodb_managepy(command, djangoenv):
 
 
 @task
-def demodb(djangoenv='develop'):
+def new_demodb(djangoenv='develop'):
     """
     Run ``remove_db``, ``syncmigrate`` and ... TODO
 
@@ -96,6 +96,21 @@ def demodb(djangoenv='develop'):
     """
     reset_db(djangoenv=djangoenv)
     _demodb_managepy('devilry_developer_demodb_createusers', djangoenv=djangoenv)
+    # _demodb_managepy('devilry_developer_demodb_createnode duckburgh', djangoenv=djangoenv)
+    # _demodb_managepy('devilry_developer_demodb_createsubject --node=duckburgh duck1010', djangoenv=djangoenv)
+    # _demodb_managepy(
+    #     'devilry_developer_demodb_createperiod --subject=duck1010 '
+    #     '--starts-in-months -4 --duration-months 6 spring2015',
+    #     djangoenv=djangoenv)
+    # _demodb_managepy(
+    #     'devilry_developer_demodb_create_pointassignment --period=duck1010.spring2015 '
+    #     '--publishing-time-in-days -14 week1',
+    #     djangoenv=djangoenv)
+    # _demodb_managepy(
+    #     'devilry_developer_demodb_create_pointassignment --period=duck1010.spring2015 '
+    #     '--publishing-time-in-days 10 week2',
+    #     djangoenv=djangoenv)
+
 
 
 # def _gzip_file(infile):
