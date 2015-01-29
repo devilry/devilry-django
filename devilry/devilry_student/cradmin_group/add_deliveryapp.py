@@ -55,6 +55,8 @@ class AddDeliveryView(formbase.FormView):
             confirm_delivery_after_soft_deadline = forms.BooleanField(
                 required=bool(self.deadline_has_expired),
                 label=_('I want to add a delivery after the deadline has expired.'),
+                help_text=_('Do you really want to add a delivery after the deadline? You normally '
+                            'need to have a valid reason when adding deadline after the deadline.'),
                 error_messages={
                     'required': _('You must confirm that you want to add a delivery after the deadline has expired.')
                 })
@@ -142,11 +144,6 @@ class AddDeliveryView(formbase.FormView):
         if self.deadline_has_expired:
             fieldlayout.append(layout.Fieldset(
                 _('Deadline has expired'),
-                layout.HTML('<p>'),
-                layout.HTML(
-                    _('Do you really want to add a delivery after the deadline? You normally '
-                      'need to have a valid reason when adding deadline after the deadline.')),
-                layout.HTML('</p>'),
                 'confirm_delivery_after_soft_deadline'
             ))
         return fieldlayout
