@@ -1,7 +1,5 @@
 from datetime import datetime
-import uuid
 from crispy_forms import layout
-from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponseNotFound
 from django import forms
 from django.utils.translation import ugettext_lazy as _
