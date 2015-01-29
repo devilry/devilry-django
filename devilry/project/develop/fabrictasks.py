@@ -65,7 +65,7 @@ def autodb(djangoenv='develop', no_groups=False):
 
 
 @task
-def demodb(djangoenv='develop'):
+def old_demodb(djangoenv='develop'):
     """
     Run ``remove_db``, ``syncmigrate`` and ``bin/django_dev.py devilry.project.develop_demodb``
 
@@ -77,7 +77,25 @@ def demodb(djangoenv='develop'):
         environment={
             'DEVILRY_EMAIL_BACKEND': 'django.core.mail.backends.dummy.EmailBackend'
         })
-    # _managepy('rebuild_index --noinput', djangoenv=djangoenv)
+
+
+def _demodb_managepy(command, djangoenv):
+    _managepy(command,
+        djangoenv=djangoenv,
+        environment={
+            'DEVILRY_EMAIL_BACKEND': 'django.core.mail.backends.dummy.EmailBackend'
+        })
+
+
+@task
+def demodb(djangoenv='develop'):
+    """
+    Run ``remove_db``, ``syncmigrate`` and ... TODO
+
+    :param djangoenv: The DJANGOENV to use.
+    """
+    reset_db(djangoenv=djangoenv)
+    _demodb_managepy('devilry_developer_demodb_createusers', djangoenv=djangoenv)
 
 
 # def _gzip_file(infile):
