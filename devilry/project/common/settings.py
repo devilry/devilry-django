@@ -49,6 +49,7 @@ INSTALLED_APPS = [
 
     'devilry.devilry_cradmin',
     'django_cradmin',
+    'django_cradmin.apps.cradmin_temporaryfileuploadstore',
     'devilry.django_decoupled_docs',
 
     'devilry.apps.core',

@@ -1,71 +1,38 @@
-{% extends "django_cradmin/base.django.html" %}
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
 {% load i18n %}
 {% load static %}
 {% load humanize %}
 
-{% block content %}
-    <div class="page-header">
+
+{% block title %}
+    {% trans "Add delivery" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Add delivery" %}
+    </h1>
+    <p id="devilry_student_add_delivery_deadline">
+        {% trans "Deadline" %}:
+        <span id="devilry_student_add_delivery_deadline_natural">
+            {{ group.last_deadline_datetime|naturaltime }}
+        </span>
+        <small id="devilry_student_add_delivery_deadline_exact">
+            ({{ group.last_deadline_datetime|date:"SHORT_DATETIME_FORMAT" }})
+        </small>
+    </p>
+{% endblock pageheader-inner %}
+
+
+
+{% block form %}
+    {% if deadline_has_expired == "hard" %}
         <div class="container-fluid">
-            <h1>
-                {% trans "Add delivery" %}
-            </h1>
-            <p id="devilry_student_add_delivery_deadline">
-                {% trans "Deadline" %}:
-                <span id="devilry_student_add_delivery_deadline_natural"">
-                    {{ group.last_deadline_datetime|naturaltime }}
-                </span>
-                <small id="devilry_student_add_delivery_deadline_exact">
-                    ({{ group.last_deadline_datetime|date:"SHORT_DATETIME_FORMAT" }})
-                </small>
-            </p>
-        </div>
-    </div>
-    <div class="container-fluid">
-        {% if deadline_has_expired == "hard" %}
             <div id="devilry_student_add_delivery_hard_deadline_expired_alert" class="alert alert-danger">
                 {% trans "The deadline has expired. Since this course is configured with hard deadlines, adding deliveries after the deadline is prohibited." %}
             </div>
-        {% else %}
-            <div class="alert alert-info">
-                {% trans "Upload one or more files to make a delivery. Add as many deliveries as you like. Your last delivery is corrected." %}
-            </div>
-            <form id="devilry_student_add_delivery_form" action="{{ request.path }}"
-                    method="post" enctype="multipart/form-data"
-                    cradmin-formset-upload-form="filemeta_formset">
-                {% csrf_token %}
-
-                {% if deadline_has_expired == "soft" %}
-                    <div id="devilry_student_add_delivery_after_soft_deadline_warning" class="alert alert-warning">
-                        <p>{% trans "Do you really want to add a delivery after the deadline? You normally need to have a valid reason when adding deadline after the deadline." %}</p>
-                        <label>
-                            <input type="checkbox" name="confirm_delivery_after_soft_deadline">
-                            {% trans "I want to add a delivery after the deadline has expired." %}
-                        </label>
-                    </div>
-                    {% if delivery_after_soft_deadline_not_confirmed %}
-                        <div id="devilry_student_add_delivery_soft_deadline_expired_noconfirm_alert"
-                                class="alert alert-danger">
-                            {% trans "You must confirm that you want to add a delivery after the deadline has expired." %}
-                        </div>
-                    {% endif %}
-                {% endif %}
-
-                {{ filemetaformset.management_form }}
-                {% for filemetaform in filemetaformset %}
-                    {{ filemetaform.as_p }}
-                {% endfor %}
-
-                {% if no_files_selected %}
-                    <div id="devilry_student_add_delivery_no_files_selected_alert" class="alert alert-danger">
-                        {% trans "You have to add at least one file to make a delivery." %}
-                    </div>
-                {% endif %}
-                <p>
-                    <button type="submit" class="btn btn-primary btn-lg">
-                        {% trans "Add delivery" %}
-                    </button>
-                </p>
-            </form>
-        {% endif %}
-    </div>
-{% endblock content %}
+        </div>
+    {% else %}
+        {{ block.super }}
+    {% endif %}
+{% endblock form %}

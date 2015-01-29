@@ -1,12 +1,15 @@
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.template import defaultfilters
 from django.test import TestCase, RequestFactory
+from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
+from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFile
 import htmls
 import mock
 
-from devilry.apps.core.models import Delivery, Assignment, AssignmentGroup, FileMeta
+from devilry.apps.core.models import Delivery, Assignment, AssignmentGroup
 from devilry.devilry_student.cradmin_group import add_deliveryapp
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, PeriodBuilder
 
@@ -59,14 +62,11 @@ class TestAddDeliveryView(TestCase):
         response = self._mock_and_perform_get_request()
         response.render()
         selector = htmls.S(response.content)
-        self.assertTrue(selector.exists('#devilry_student_add_delivery_after_soft_deadline_warning'))
-        self.assertEquals(
-            selector.one('#devilry_student_add_delivery_after_soft_deadline_warning p').alltext_normalized,
+        self.assertTrue(selector.exists('#div_id_confirm_delivery_after_soft_deadline'))
+        self.assertIn(
             'Do you really want to add a delivery after the deadline? '
-            'You normally need to have a valid reason when adding deadline after the deadline.')
-        self.assertEquals(
-            selector.one('#devilry_student_add_delivery_after_soft_deadline_warning label').alltext_normalized,
-            'I want to add a delivery after the deadline has expired.')
+            'You normally need to have a valid reason when adding deadline after the deadline.',
+            selector.one('#devilry_student_add_delivery_form').alltext_normalized,)
 
     def test_get_no_deadlines(self):
         self.groupbuilder.add_students(self.testuser)
@@ -122,16 +122,24 @@ class TestAddDeliveryView(TestCase):
         response = CustomAddDeliveryView.as_view()(request)
         return response
 
+    def _create_collection(self, user, files):
+        collection = TemporaryFileCollection.objects.create(user=user)
+        for filename, filecontent in files:
+            temporaryfile = TemporaryFile(
+                collection=collection,
+                filename=filename)
+            temporaryfile.file.save(filename, ContentFile(filecontent))
+        return collection
+
     def test_post_single_file(self):
         self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
         self.groupbuilder.add_students(self.testuser)
+        collection = self._create_collection(user=self.testuser, files=[
+            ('testfile.txt', 'Testcontent')])
 
         self.assertEqual(Delivery.objects.count(), 0)
         response = self._mock_and_perform_post_request(data={
-            'form-TOTAL_FORMS': 1,
-            'form-INITIAL_FORMS': 0,
-            'form-MAX_NUM_FORMS': 1,
-            'form-0-file': SimpleUploadedFile('myfile.txt', 'Hello world')
+            'filecollectionid': collection.id
         })
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response['Location'], '/success')
@@ -140,41 +148,62 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(created_delivery.number, 1)
         self.assertEquals(created_delivery.delivered_by.student, self.testuser)
         self.assertEqual(created_delivery.filemetas.count(), 1)
+        self.assertEqual(created_delivery.filemetas.first().get_all_data_as_string(), 'Testcontent')
 
     def test_post_multiple_files(self):
         self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
         self.groupbuilder.add_students(self.testuser)
+        collection = self._create_collection(user=self.testuser, files=[
+            ('testfile1.txt', 'Testcontent1'),
+            ('testfile2.txt', 'Testcontent2')])
 
         self.assertEqual(Delivery.objects.count(), 0)
         response = self._mock_and_perform_post_request(data={
-            'form-TOTAL_FORMS': 2,
-            'form-INITIAL_FORMS': 0,
-            'form-MAX_NUM_FORMS': 2,
-            'form-0-file': SimpleUploadedFile('file1.txt', 'A'),
-            'form-1-file': SimpleUploadedFile('file2.txt', 'B')
+            'filecollectionid': collection.id
         })
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response['Location'], '/success')
         created_delivery = Delivery.objects.first()
         self.assertEqual(created_delivery.filemetas.count(), 2)
+        self.assertEquals(
+            created_delivery.filemetas.get(filename='testfile1.txt').get_all_data_as_string(),
+            'Testcontent1')
+        self.assertEquals(
+            created_delivery.filemetas.get(filename='testfile2.txt').get_all_data_as_string(),
+            'Testcontent2')
 
     def test_post_no_files(self):
         self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
         self.groupbuilder.add_students(self.testuser)
+        collection = self._create_collection(user=self.testuser, files=[])
 
         self.assertEqual(Delivery.objects.count(), 0)
         response = self._mock_and_perform_post_request(data={
-            'form-TOTAL_FORMS': 1,
-            'form-INITIAL_FORMS': 0,
-            'form-MAX_NUM_FORMS': 1,
+            'filecollectionid': collection.id
         })
         self.assertEquals(response.status_code, 200)
         self.assertEqual(Delivery.objects.count(), 0)
         response.render()
         selector = htmls.S(response.content)
-        self.assertEqual(
-            selector.one('#devilry_student_add_delivery_no_files_selected_alert').alltext_normalized,
-            'You have to add at least one file to make a delivery.')
+        self.assertTrue(selector.exists('#div_id_filecollectionid.has-error'))
+        self.assertIn(
+            'You have to add at least one file to make a delivery.',
+            selector.one('#div_id_filecollectionid').alltext_normalized)
+
+    def test_post_no_collectionid(self):
+        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+
+        self.assertEqual(Delivery.objects.count(), 0)
+        response = self._mock_and_perform_post_request(data={})
+        self.assertEquals(response.status_code, 200)
+        self.assertEqual(Delivery.objects.count(), 0)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('#div_id_filecollectionid.has-error'))
+        self.assertIn(
+            'You have to add at least one file to make a delivery.',
+            selector.one('#div_id_filecollectionid').alltext_normalized)
 
     def test_post_hard_deadline_expired(self):
         self.assignmentbuilder.update(deadline_handling=Assignment.DEADLINEHANDLING_HARD)
@@ -182,12 +211,7 @@ class TestAddDeliveryView(TestCase):
         self.groupbuilder.add_students(self.testuser)
 
         self.assertEqual(Delivery.objects.count(), 0)
-        response = self._mock_and_perform_post_request(data={
-            'form-TOTAL_FORMS': 1,
-            'form-INITIAL_FORMS': 0,
-            'form-MAX_NUM_FORMS': 1,
-            'form-0-file': SimpleUploadedFile('myfile.txt', 'Hello world')
-        })
+        response = self._mock_and_perform_post_request(data={})
         self.assertEquals(response.status_code, 200)
         self.assertEqual(Delivery.objects.count(), 0)
         response.render()
@@ -202,30 +226,25 @@ class TestAddDeliveryView(TestCase):
         self.groupbuilder.add_students(self.testuser)
 
         self.assertEqual(Delivery.objects.count(), 0)
-        response = self._mock_and_perform_post_request(data={
-            'form-TOTAL_FORMS': 1,
-            'form-INITIAL_FORMS': 0,
-            'form-MAX_NUM_FORMS': 1,
-            'form-0-file': SimpleUploadedFile('myfile.txt', 'Hello world')
-        })
+        response = self._mock_and_perform_post_request(data={})
         self.assertEquals(response.status_code, 200)
         self.assertEqual(Delivery.objects.count(), 0)
         response.render()
         selector = htmls.S(response.content)
-        self.assertEqual(
-            selector.one('#devilry_student_add_delivery_soft_deadline_expired_noconfirm_alert').alltext_normalized,
-            'You must confirm that you want to add a delivery after the deadline has expired.')
+        self.assertTrue(selector.exists('#div_id_confirm_delivery_after_soft_deadline.has-error'))
+        self.assertIn(
+            'You must confirm that you want to add a delivery after the deadline has expired.',
+            selector.one('#div_id_confirm_delivery_after_soft_deadline').alltext_normalized)
 
     def test_post_soft_deadline_expired_confirm(self):
         self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
         self.groupbuilder.add_students(self.testuser)
+        collection = self._create_collection(user=self.testuser, files=[
+            ('testfile.txt', 'Testcontent')])
 
         self.assertEqual(Delivery.objects.count(), 0)
         response = self._mock_and_perform_post_request(data={
-            'form-TOTAL_FORMS': 1,
-            'form-INITIAL_FORMS': 0,
-            'form-MAX_NUM_FORMS': 1,
-            'form-0-file': SimpleUploadedFile('myfile.txt', 'Hello world'),
+            'filecollectionid': collection.id,
             'confirm_delivery_after_soft_deadline': '1'
         })
         self.assertEquals(response.status_code, 302)
@@ -254,18 +273,18 @@ class TestAddDeliveryView(TestCase):
     def test_post_duplicate_filename(self):
         self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
         self.groupbuilder.add_students(self.testuser)
+        collection = self._create_collection(user=self.testuser, files=[
+            ('testfile.txt', 'Testcontent1'),
+            ('testfile.txt', 'Testcontent2')])
 
         self.assertEqual(Delivery.objects.count(), 0)
         response = self._mock_and_perform_post_request(data={
-            'form-TOTAL_FORMS': 2,
-            'form-INITIAL_FORMS': 0,
-            'form-MAX_NUM_FORMS': 2,
-            'form-0-file': SimpleUploadedFile('file.txt', 'A'),
-            'form-1-file': SimpleUploadedFile('file.txt', 'B')
+            'filecollectionid': collection.id
         })
         self.assertEquals(response.status_code, 302)
         self.assertEquals(response['Location'], '/success')
         self.assertEqual(Delivery.objects.count(), 1)
         delivery = Delivery.objects.first()
-        self.assertEquals(delivery.filemetas.filter(filename='file.txt').count(), 1)
-        self.assertEquals(delivery.filemetas.filter(filename__endswith='-file.txt').count(), 1)
+        self.assertEquals(delivery.filemetas.count(), 2)
+        self.assertEquals(delivery.filemetas.filter(filename='testfile.txt').count(), 1)
+        self.assertEquals(delivery.filemetas.filter(filename__endswith='-testfile.txt').count(), 1)
