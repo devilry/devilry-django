@@ -1,6 +1,7 @@
 from django.test import TestCase, RequestFactory
 from django_cradmin.crinstance import reverse_cradmin_url
 import htmls
+from devilry.apps.core.models import Assignment
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, PeriodBuilder
 
 
@@ -36,7 +37,8 @@ class TestOverview(TestCase):
                 roleid=self.groupbuilder.group.id,
                 viewname='add-delivery'))
 
-    def test_status_waiting_for_feedback(self):
+    def test_status_waiting_for_feedback_hard_deadlines(self):
+        self.assignmentbuilder.update(deadline_handling=Assignment.DEADLINEHANDLING_HARD)
         self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
         self.groupbuilder.add_students(self.testuser)
         self.assertEquals(self.groupbuilder.group.get_status(), 'waiting-for-feedback')
@@ -47,6 +49,27 @@ class TestOverview(TestCase):
         self.assertEquals(
             selector.one('.devilry-student-groupoverview-waiting-for-feedback').alltext_normalized,
             'Your assignment is waiting for feedback.')
+
+    def test_status_waiting_for_feedback_soft_deadlines(self):
+        self.assignmentbuilder.update(deadline_handling=Assignment.DEADLINEHANDLING_SOFT)
+        self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+        self.assertEquals(self.groupbuilder.group.get_status(), 'waiting-for-feedback')
+        response = self._get_as('testuser')
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('.devilry-student-groupoverview-waiting-for-feedback'))
+        self.assertEquals(
+            selector.one('.devilry-student-groupoverview-waiting-for-feedback').alltext_normalized,
+            'Your assignment is waiting for feedback. The active deadline has expired, '
+            'but this assignment is configured with soft deadines so you can still add deliveries.')
+        self.assertEquals(
+            selector.one('.devilry-student-groupoverview-waiting-for-feedback a')['href'],
+            reverse_cradmin_url(
+                instanceid='devilry_student_group',
+                appname='deliveries',
+                roleid=self.groupbuilder.group.id,
+                viewname='add-delivery'))
 
     def test_status_corrected_passed(self):
         deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
@@ -64,7 +87,7 @@ class TestOverview(TestCase):
         self.assertTrue(selector.exists('.devilry-student-groupoverview-corrected-passed'))
         self.assertEquals(
             selector.one('.devilry-student-groupoverview-corrected').alltext_normalized,
-            'This assignment is corrected, and the final grade is: 10/20 (Passed).')
+            'This assignment is corrected, and the final grade is: 10/20 (Passed)')
         self.assertEquals(
             selector.one('.devilry-student-groupoverview-corrected a')['href'],
             reverse_cradmin_url(
@@ -90,7 +113,7 @@ class TestOverview(TestCase):
         self.assertTrue(selector.exists('.devilry-student-groupoverview-corrected-failed'))
         self.assertEquals(
             selector.one('.devilry-student-groupoverview-corrected').alltext_normalized,
-            'This assignment is corrected, and the final grade is: 2/20 (Failed).')
+            'This assignment is corrected, and the final grade is: 2/20 (Failed)')
 
     def test_status_closed_without_feedback(self):
         self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
