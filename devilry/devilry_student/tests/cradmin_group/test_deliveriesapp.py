@@ -24,13 +24,16 @@ class TestDeliveryListView(TestCase):
     def _mock_get_request(self):
         request = self.factory.get('/test')
         request.user = self.testuser
-        request.cradmin_role = self.groupbuilder.group
+        request.cradmin_role = AssignmentGroup.objects.filter(id=self.groupbuilder.group.id)\
+            .annotate_with_last_deadline_pk()\
+            .annotate_with_last_deadline_datetime().get()
         request.cradmin_app = mock.MagicMock()
         request.session = mock.MagicMock()
         response = deliveriesapp.DeliveryListView.as_view()(request)
         return response
 
     def test_list_no_deliveries(self):
+        deadlinebuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
         response = self._mock_get_request()
         response.render()
         selector = htmls.S(response.content)
@@ -81,30 +84,6 @@ class TestDeliveryListView(TestCase):
         self.assertEquals(
             selector.one('.devilry-student-deliveriesapp-summarycolumn-feedback-is_passing_grade').alltext_normalized,
             'passed')
-
-    def test_render_hard_deadline_not_expired(self):
-        self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.groupbuilder.add_students(self.testuser)
-        response = self._mock_get_request()
-        response.render()
-        selector = htmls.S(response.content)
-        self.assertFalse(selector.exists('#devilry_student_delivery_list_hard_deadline_expired_message'))
-
-    def test_render_hard_deadline_expired(self):
-        self.groupbuilder.add_deadline_x_weeks_ago(weeks=1)
-        self.groupbuilder.add_students(self.testuser)
-        response = self._mock_get_request()
-        response.render()
-        selector = htmls.S(response.content)
-        self.assertTrue(selector.exists('#devilry_student_delivery_list_hard_deadline_expired_message'))
-
-    def test_render_no_deadlines(self):
-        self.groupbuilder.add_students(self.testuser)
-        self.client.login(username='testuser', password='test')
-        response = self.client.get(reverse('devilry_student_group-deliveries-INDEX', kwargs={
-            'roleid': self.groupbuilder.group.id,
-        }))
-        self.assertEquals(response.status_code, 404)
 
 
 class TestAddDeliveryView(TestCase):
