@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from devilry.apps.core.models import Assignment
 
 
