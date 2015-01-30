@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
@@ -5,11 +7,12 @@ from django.template import defaultfilters
 from django.test import TestCase, RequestFactory
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFile
+from django_cradmin.crinstance import reverse_cradmin_url
 import htmls
 import mock
 
 from devilry.devilry_student.cradmin_group import deliveriesapp
-from devilry.apps.core.models import Delivery, Assignment, AssignmentGroup
+from devilry.apps.core.models import Delivery, Assignment, AssignmentGroup, Candidate
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, PeriodBuilder
 
 
@@ -354,3 +357,168 @@ class TestAddDeliveryView(TestCase):
         })
         self.assertEquals(response.status_code, 302)
         self.assertFalse(TemporaryFileCollection.objects.filter(id=collection.id).exists())
+
+
+class TestDeliveryDetailsView(TestCase):
+    def setUp(self):
+        self.testuser = UserBuilder('testuser').user
+        self.factory = RequestFactory()
+        self.periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()
+        self.assignmentbuilder = self.periodbuilder.add_assignment('testassignment')
+        self.groupbuilder = self.assignmentbuilder.add_group()
+
+    def _get_as(self, username, deliveryid):
+        self.client.login(username=username, password='test')
+        return self.client.get(reverse_cradmin_url(
+            instanceid='devilry_student_group',
+            appname='deliveries',
+            roleid=self.groupbuilder.group.id,
+            viewname='deliverydetails',
+            kwargs={'pk': deliveryid}))
+
+    def test_delivery_metadata_files(self):
+        self.groupbuilder.add_students(self.testuser)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=10)
+        deliverybuilder.add_filemeta(filename='test1.txt', data='testdata')
+        deliverybuilder.add_filemeta(filename='test2.txt', data='testdata')
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.count('#devilry_student_group_deliverydetails_files a'), 2)
+        self.assertEquals(
+            [element.alltext_normalized
+             for element in selector.list('#devilry_student_group_deliverydetails_files a')],
+            ['test1.txt', 'test2.txt'])
+
+    def test_delivery_metadata_delivered_by(self):
+        self.groupbuilder.add_students(self.testuser)
+        candidate = Candidate.objects.create(
+            student=UserBuilder('someuser', full_name='Some User').user,
+            assignment_group=self.groupbuilder.group)
+        self.groupbuilder.add_candidates(candidate)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(
+                hours=10, delivered_by=candidate)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEquals(
+            selector.one('#devilry_student_group_deliverydetails_delivered_by').alltext_normalized,
+            'Some User')
+
+    def test_delivery_metadata_delivered_by_none(self):
+        self.groupbuilder.add_students(self.testuser)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(
+                hours=10, delivered_by=None)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_delivered_by'))
+
+    def test_delivery_metadata_time_of_delivery(self):
+        self.groupbuilder.add_students(self.testuser)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery(time_of_delivery=datetime(2000, 1, 1, 12, 30))
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEquals(
+            selector.one('#devilry_student_group_deliverydetails_time_of_delivery').alltext_normalized,
+            'January 1, 2000, 12:30')
+
+    def test_delivery_metadata_time_of_delivery_after_deadline(self):
+        self.groupbuilder.add_students(self.testuser)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_after_deadline(hours=2)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertIn(
+            'After the deadline',
+            selector.one('#devilry_student_group_deliverydetails_time_of_delivery').alltext_normalized)
+
+    def test_delivery_metadata_delivery(self):
+        self.groupbuilder.add_students(self.testuser)
+        deliverybuilder = self.groupbuilder\
+            .add_deadline(deadline=datetime(2004, 1, 1, 12, 30))\
+            .add_delivery_x_hours_before_deadline(hours=1)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEquals(
+            selector.one('#devilry_student_group_deliverydetails_deadline').alltext_normalized,
+            'January 1, 2004, 12:30')
+
+    def test_delivery_metadata_feedback_written_by(self):
+        self.groupbuilder.add_students(self.testuser)
+        testexaminer = UserBuilder('testexaminer', full_name='Test Examiner').user
+        self.groupbuilder.add_examiners(testexaminer)
+        deliverybuilder = self.groupbuilder\
+            .add_deadline(deadline=datetime(2004, 1, 1, 12, 30))\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        deliverybuilder.add_passed_A_feedback(saved_by=testexaminer)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEquals(
+            selector.one('#devilry_student_group_deliverydetails_feedback_written_by').alltext_normalized,
+            'Test Examiner')
+
+    def test_delivery_metadata_feedback_written_by_anonymous(self):
+        self.assignmentbuilder.update(anonymous=True)
+        self.groupbuilder.add_students(self.testuser)
+        testexaminer = UserBuilder('testexaminer', full_name='Test Examiner').user
+        self.groupbuilder.add_examiners(testexaminer)
+        deliverybuilder = self.groupbuilder\
+            .add_deadline(deadline=datetime(2004, 1, 1, 12, 30))\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        deliverybuilder.add_passed_A_feedback(saved_by=testexaminer)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_feedback_written_by'))
+
+    def test_delivery_metadata_feedback_save_timestamp(self):
+        self.groupbuilder.add_students(self.testuser)
+        testexaminer = UserBuilder('testexaminer', full_name='Test Examiner').user
+        self.groupbuilder.add_examiners(testexaminer)
+        deliverybuilder = self.groupbuilder\
+            .add_deadline(deadline=datetime(2004, 1, 1, 12, 30))\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        feedback = deliverybuilder.add_passed_A_feedback(saved_by=testexaminer).feedback
+        feedback.save_timestamp = datetime(2004, 2, 1, 12, 30)
+        feedback.save(autoset_timestamp_to_now=False)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEquals(
+            selector.one('#devilry_student_group_deliverydetails_feedback_save_timestamp').alltext_normalized,
+            'February 1, 2004, 12:30')
+
+    def test_anonymous_sanity(self):
+        self.assignmentbuilder.update(anonymous=True)
+        self.groupbuilder.add_students(self.testuser)
+        testexaminer1 = UserBuilder('testexaminer1').user
+        self.groupbuilder.add_examiners(
+            testexaminer1,
+            UserBuilder('testexaminer2', 'Test Examiner').user)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=10, delivered_by=None)
+        deliverybuilder.add_passed_A_feedback(saved_by=testexaminer1)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        self.assertNotIn('testexaminer1', response.content)
+        self.assertNotIn('testexaminer2', response.content)
+        self.assertNotIn('Test Examiner', response.content)

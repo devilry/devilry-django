@@ -80,7 +80,14 @@ class DeliveryDetailsView(QuerySetForRoleMixin, DetailView):
     context_object_name = 'delivery'
 
     def get_queryset(self):
-        return self.get_queryset_for_role(self.request.cradmin_role)
+        return self.get_queryset_for_role(self.request.cradmin_role)\
+            .select_related('deadline')\
+            .prefetch_related('filemetas')
+
+    def get_context_data(self, **kwargs):
+        context = super(DeliveryDetailsView, self).get_context_data(**kwargs)
+        context['group'] = self.request.cradmin_role
+        return context
 
 
 class AddDeliveryView(formbase.FormView):

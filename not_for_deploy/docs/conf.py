@@ -20,7 +20,7 @@ import sys, os
 #sys.path.append(os.path.abspath('..'))
 
 # Setup django settings module for autodoc
-os.environ['DJANGO_SETTINGS_MODULE'] = 'develop.settings.docs'
+os.environ['DJANGO_SETTINGS_MODULE'] = 'devilry.project.develop.settings.docs'
 
 
 
