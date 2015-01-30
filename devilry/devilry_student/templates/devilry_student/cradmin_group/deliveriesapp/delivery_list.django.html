@@ -1,10 +1,3 @@
 {% extends "django_cradmin/viewhelpers/objecttable/objecttable.django.html" %}
-
-{% block pageheader %}
-    {{ block.super }}
-    <div class="container-fluid">
-        <div id="devilry_student_delivery_list_hard_deadline_expired_message">
-            TODO: Active deadline expired message
-        </div>
-    </div>
-{% endblock pageheader %}
+{% load devilry_examiner_tags %}
+{% load i18n %}

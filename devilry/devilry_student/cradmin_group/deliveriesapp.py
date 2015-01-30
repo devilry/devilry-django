@@ -1,4 +1,3 @@
-# from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 
 from django.template import defaultfilters
@@ -15,14 +14,10 @@ from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import Temporar
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.widgets import BulkFileUploadWidget
 from django_cradmin.viewhelpers import formbase
 
-from devilry.apps.core.models import Assignment, Candidate, Delivery, FileMeta
+from devilry.apps.core.models import Candidate, Delivery, FileMeta
+from devilry.devilry_student.cradmin_group.utils import check_if_last_deadline_has_expired
 
 
-DEFAULT_DEADLINE_EXPIRED_MESSAGE = _(
-    'Your active deadline, {deadline} has expired, and the administrators of {assignment} '
-    'have configured HARD deadlines. This means that you can not add more deliveries to this '
-    'assignment before an administrator have extended your deadline.')
-DEADLINE_EXPIRED_MESSAGE = getattr(settings, 'DEVILRY_DEADLINE_EXPIRED_MESSAGE', DEFAULT_DEADLINE_EXPIRED_MESSAGE)
 DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES = getattr(settings, 'DELIVERY_DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES', 120)
 
 
@@ -63,12 +58,13 @@ class QuerySetForRoleMixin(object):
     def get_queryset_for_role(self, group):
         return Delivery.objects\
             .filter(deadline__assignment_group=group)\
-            .select_related('deadline')
+            .select_related('deadline', 'feedback')
 
 
 class DeliveryListView(QuerySetForRoleMixin, objecttable.ObjectTableView):
     model = Delivery
     template_name = 'devilry_student/cradmin_group/deliveriesapp/delivery_list.django.html'
+    context_object_name = 'deliveries'
     columns = [
         DeliverySummaryColumn,
         TimeOfDeliveryColumn,
@@ -111,7 +107,7 @@ class AddDeliveryView(formbase.FormView):
         if self.group.last_deadline_id is None:
             return self.__redirect_to_overview()
 
-        self.deadline_has_expired = self.__deadline_has_expired()
+        self.deadline_has_expired = check_if_last_deadline_has_expired(self.group)
         if self.deadline_has_expired == 'hard':
             if self.request.method == 'GET':
                 return self.__redirect_to_overview()
@@ -158,16 +154,6 @@ class AddDeliveryView(formbase.FormView):
                 return filecollectionid
 
         return AddDeliveryForm
-
-    def __deadline_has_expired(self):
-        assignment = self.group.parentnode
-        if self.group.last_deadline_datetime < datetime.now():
-            if assignment.deadline_handling == Assignment.DEADLINEHANDLING_HARD:
-                return 'hard'
-            else:
-                return 'soft'
-        else:
-            return False
 
     def __get_canidate(self):
         try:
