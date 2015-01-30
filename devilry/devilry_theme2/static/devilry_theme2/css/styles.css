@@ -10117,6 +10117,21 @@ table.table.cradmin-table-fluid tbody tr td {
 .devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-no-feedback {
   color: #777777;
 }
+.django-cradmin-container-fluid-focus.devilry-student-groupoverview-corrected.devilry-student-groupoverview-corrected-failed {
+  background-color: #fcf8e3;
+  border-color: #faebcc;
+  color: #8a6d3b;
+}
+.django-cradmin-container-fluid-focus.devilry-student-groupoverview-corrected.devilry-student-groupoverview-corrected-passed {
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+  color: #3c763d;
+}
+.django-cradmin-container-fluid-focus.devilry-student-groupoverview-corrected a {
+  color: inherit;
+  text-decoration: underline;
+  font-weight: bold;
+}
 body {
   background-image: url('../images/groovepaper.png');
 }

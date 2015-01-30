@@ -36,7 +36,7 @@
             {% trans "This assignment is corrected, and the final grade is:" %}
             <a href="{% cradmin_instance_url 'deliveries' 'deliverydetails' pk=group.feedback.delivery_id %}">
                 {{ group.feedback.grade }}
-                ({% if group.feedback.is_passing_grade %}{% trans "Passed" %}{% else %}{% trans "Failed" %}{% endif %}).
+                ({% if group.feedback.is_passing_grade %}{% trans "Passed" %}{% else %}{% trans "Failed" %}{% endif %})
             </a>
         {% elif status == 'closed-without-feedback' %}
             {% trans "Your assignment has been closed without feedback." %}
