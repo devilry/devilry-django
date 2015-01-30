@@ -11,12 +11,8 @@
     <div class="page-header page-header-nomargin">
         <div class="container-fluid">
             <h1>
-                {{ group.assignment.long_name }}
+                {% include "devilry_student/cradmin_group/include/page-header-h1.django.html" %}
             </h1>
-            <p>
-                {{ group.subject.long_name }} -
-                {{ group.period.long_name }}
-            </p>
         </div>
     </div>
     <div class="container-fluid django-cradmin-container-fluid-focus

@@ -1,0 +1,7 @@
+{% with group=request.cradmin_role %}
+    {{ group.assignment.long_name }}
+    <small>
+        {{ group.subject.long_name }} -
+        {{ group.period.long_name }}
+    </small>
+{% endwith %}

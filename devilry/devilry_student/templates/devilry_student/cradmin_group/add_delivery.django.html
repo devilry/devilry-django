@@ -10,7 +10,7 @@
 
 {% block pageheader-inner %}
     <h1>
-        {% trans "Add delivery" %}
+        {% include "devilry_student/cradmin_group/include/page-header-h1.django.html" %}
     </h1>
     <p id="devilry_student_add_delivery_deadline">
         {% trans "Deadline" %}:
@@ -22,7 +22,6 @@
         </small>
     </p>
 {% endblock pageheader-inner %}
-
 
 
 {% block form %}
