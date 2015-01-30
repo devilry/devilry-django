@@ -62,7 +62,7 @@ class TestOverview(TestCase):
         self.assertEquals(
             selector.one('.devilry-student-groupoverview-waiting-for-feedback').alltext_normalized,
             'Your assignment is waiting for feedback. The active deadline has expired, '
-            'but this assignment is configured with soft deadines so you can still add deliveries.')
+            'but this assignment is configured with soft deadines so you can still add deliveries. Add delivery.')
         self.assertEquals(
             selector.one('.devilry-student-groupoverview-waiting-for-feedback a')['href'],
             reverse_cradmin_url(
@@ -87,7 +87,7 @@ class TestOverview(TestCase):
         self.assertTrue(selector.exists('.devilry-student-groupoverview-corrected-passed'))
         self.assertEquals(
             selector.one('.devilry-student-groupoverview-corrected').alltext_normalized,
-            'This assignment is corrected, and the final grade is: 10/20 (Passed)')
+            'This assignment is corrected, and the final grade is: 10/20 (passed)')
         self.assertEquals(
             selector.one('.devilry-student-groupoverview-corrected a')['href'],
             reverse_cradmin_url(
@@ -113,7 +113,7 @@ class TestOverview(TestCase):
         self.assertTrue(selector.exists('.devilry-student-groupoverview-corrected-failed'))
         self.assertEquals(
             selector.one('.devilry-student-groupoverview-corrected').alltext_normalized,
-            'This assignment is corrected, and the final grade is: 2/20 (Failed)')
+            'This assignment is corrected, and the final grade is: 2/20 (failed)')
 
     def test_status_closed_without_feedback(self):
         self.groupbuilder.add_deadline_in_x_weeks(weeks=1)

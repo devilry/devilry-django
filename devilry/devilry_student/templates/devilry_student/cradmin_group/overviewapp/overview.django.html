@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load static %}
 {% load cradmin_tags %}
+{% load devilry_core_tags %}
 
 {% block title %}
     {{ group.assignment }}
@@ -35,8 +36,7 @@
         {% elif status == 'corrected' %}
             {% trans "This assignment is corrected, and the final grade is:" %}
             <a href="{% cradmin_instance_url 'deliveries' 'deliverydetails' pk=group.feedback.delivery_id %}">
-                {{ group.feedback.grade }}
-                ({% if group.feedback.is_passing_grade %}{% trans "Passed" %}{% else %}{% trans "Failed" %}{% endif %})
+                {{ group.feedback|devilry_feedback_shortformat }}
             </a>
         {% elif status == 'closed-without-feedback' %}
             {% trans "Your assignment has been closed without feedback." %}
