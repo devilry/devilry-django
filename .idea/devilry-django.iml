@@ -24,6 +24,7 @@
     <option name="TEMPLATE_FOLDERS">
       <list>
         <option value="$MODULE_DIR$/devilry/devilry_student/templates" />
+        <option value="$MODULE_DIR$/devilry/devilry_markup/templates" />
       </list>
     </option>
   </component>

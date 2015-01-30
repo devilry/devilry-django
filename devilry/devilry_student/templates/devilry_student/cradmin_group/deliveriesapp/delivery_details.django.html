@@ -8,6 +8,11 @@
     {% trans "Delivery" %}#{{ delivery.number }} - {{ request.cradmin_role.assignment }}
 {% endblock title %}
 
+{% block jsimports %}
+    {% include "markup/mathjaxheader.django.html" %}
+    {{ block.super }}
+{% endblock jsimports %}
+
 {% block content %}
     <div class="page-header page-header-nomargin">
         <div class="container-fluid">
@@ -37,7 +42,9 @@
         {% if delivery.last_feedback.rendered_view %}
             <div id="devilry_student_group_deliverydetails_feedback_text"
                  class="container-fluid django-cradmin-container-fluid-focus">
-                {{ delivery.last_feedback.rendered_view|safe }}
+                <div id="devilry_student_group_deliverydetails_feedback_rendered_view">
+                    {{ delivery.last_feedback.rendered_view|safe }}
+                </div>
             </div>
         {% endif %}
     {% endif %}
