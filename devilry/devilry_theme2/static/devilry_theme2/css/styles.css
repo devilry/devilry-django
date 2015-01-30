@@ -8823,6 +8823,12 @@ a {
     padding-left: 0;
   }
 }
+.django-cradmin-container-fluid-focus {
+  background-color: #ffffff;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #cccccc;
+}
 nav#cradmin_menu {
   background-color: #333333;
 }
