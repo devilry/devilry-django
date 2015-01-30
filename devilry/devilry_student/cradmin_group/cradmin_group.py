@@ -6,6 +6,7 @@ from django_cradmin import crmenu
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_student.cradminextensions import studentcrinstance
 from devilry.devilry_student.cradmin_group import deliveriesapp
+from devilry.devilry_student.cradmin_group import overviewapp
 
 
 class Menu(crmenu.Menu):
@@ -18,6 +19,10 @@ class Menu(crmenu.Menu):
             }),
             icon="arrow-up")
         self.add(
+            label=_('Overview'), url=self.appindex_url('overview'),
+            icon="circle",
+            active=self.request.cradmin_app.appname == 'overview')
+        self.add(
             label=_('Deliveries'), url=self.appindex_url('deliveries'),
             icon="circle",
             active=self.request.cradmin_app.appname == 'deliveries')
@@ -27,9 +32,10 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     id = 'devilry_student_group'
     menuclass = Menu
     roleclass = AssignmentGroup
-    rolefrontpage_appname = 'add_delivery'
+    rolefrontpage_appname = 'overview'
 
     apps = [
+        ('overview', overviewapp.App),
         ('deliveries', deliveriesapp.App),
     ]
 

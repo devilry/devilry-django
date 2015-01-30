@@ -1,0 +1,45 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+{% load static %}
+{% load cradmin_tags %}
+
+{% block title %}
+    {{ group.assignment }}
+{% endblock title %}
+
+{% block content %}
+    <div class="page-header page-header-nomargin">
+        <div class="container-fluid">
+            <h1>
+                {{ group.assignment.long_name }}
+            </h1>
+            <p>
+                {{ group.subject.long_name }} -
+                {{ group.period.long_name }}
+            </p>
+        </div>
+    </div>
+    <div class="container-fluid django-cradmin-container-fluid-focus
+                devilry-student-groupoverview-{{ status }}
+                {% if group.feedback.is_passing_grade %}
+                    devilry-student-groupoverview-{{ status }}-passed
+                {% else %}
+                    devilry-student-groupoverview-{{ status }}-failed
+                {% endif %}
+            ">
+        {% if status == 'waiting-for-deliveries' %}
+            {% trans "This assignment is open for deliveries." %}
+            <a href="{% cradmin_instance_url 'deliveries' 'add-delivery' %}">{% trans "Add delivery" %}</a>.
+        {% elif status == 'waiting-for-feedback' %}
+            {% trans "Your assignment is waiting for feedback." %}
+        {% elif status == 'corrected' %}
+            {% trans "This assignment is corrected, and the final grade is:" %}
+            <a href="{% cradmin_instance_url 'deliveries' 'deliverydetails' pk=group.feedback.delivery_id %}">
+                {{ group.feedback.grade }}
+                ({% if group.feedback.is_passing_grade %}{% trans "Passed" %}{% else %}{% trans "Failed" %}{% endif %}).
+            </a>
+        {% elif status == 'closed-without-feedback' %}
+            {% trans "Your assignment has been closed without feedback." %}
+        {% endif %}
+    </div>
+{% endblock content %}

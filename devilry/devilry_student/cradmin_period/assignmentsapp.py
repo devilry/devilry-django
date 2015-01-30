@@ -15,7 +15,7 @@ class LongNameColumn(objecttable.SingleActionColumn):
     def get_actionurl(self, group):
         return crinstance.reverse_cradmin_url(
             instanceid='devilry_student_group',
-            appname='deliveries',
+            appname='overview',
             roleid=group.id)
 
 
