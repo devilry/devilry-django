@@ -12,15 +12,15 @@
     <h1>
         {% include "devilry_student/cradmin_group/include/page-header-h1.django.html" %}
     </h1>
-    <p id="devilry_student_add_delivery_deadline">
-        {% trans "Deadline" %}:
-        <span id="devilry_student_add_delivery_deadline_natural">
-            {{ group.last_deadline_datetime|naturaltime }}
-        </span>
-        <small id="devilry_student_add_delivery_deadline_exact">
-            ({{ group.last_deadline_datetime|date:"SHORT_DATETIME_FORMAT" }})
-        </small>
-    </p>
+{#    <p id="devilry_student_add_delivery_deadline">#}
+{#        {% trans "Deadline" %}:#}
+{#        <span id="devilry_student_add_delivery_deadline_natural">#}
+{#            {{ group.last_deadline_datetime|naturaltime }}#}
+{#        </span>#}
+{#        <small id="devilry_student_add_delivery_deadline_exact">#}
+{#            ({{ group.last_deadline_datetime|date:"SHORT_DATETIME_FORMAT" }})#}
+{#        </small>#}
+{#    </p>#}
 {% endblock pageheader-inner %}
 
 
