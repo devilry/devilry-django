@@ -85,6 +85,8 @@ class TestOverview(TestCase):
         selector = htmls.S(response.content)
         self.assertTrue(selector.exists('.devilry-student-groupoverview-corrected'))
         self.assertTrue(selector.exists('.devilry-student-groupoverview-corrected-passed'))
+        self.assertTrue(selector.exists
+                        ('.django-cradmin-container-fluid-focus.django-cradmin-container-fluid-focus-success'))
         self.assertEquals(
             selector.one('.devilry-student-groupoverview-corrected').alltext_normalized,
             'This assignment is corrected, and the final grade is: 10/20 (passed)')
@@ -111,6 +113,8 @@ class TestOverview(TestCase):
         selector = htmls.S(response.content)
         self.assertTrue(selector.exists('.devilry-student-groupoverview-corrected'))
         self.assertTrue(selector.exists('.devilry-student-groupoverview-corrected-failed'))
+        self.assertTrue(selector.exists
+                        ('.django-cradmin-container-fluid-focus.django-cradmin-container-fluid-focus-warning'))
         self.assertEquals(
             selector.one('.devilry-student-groupoverview-corrected').alltext_normalized,
             'This assignment is corrected, and the final grade is: 2/20 (failed)')

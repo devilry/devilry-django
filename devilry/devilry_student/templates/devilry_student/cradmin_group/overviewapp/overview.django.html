@@ -19,8 +19,10 @@
     <div class="container-fluid django-cradmin-container-fluid-focus
                 devilry-student-groupoverview-{{ status }}
                 {% if group.feedback.is_passing_grade %}
+                    django-cradmin-container-fluid-focus-success
                     devilry-student-groupoverview-{{ status }}-passed
                 {% else %}
+                    django-cradmin-container-fluid-focus-warning
                     devilry-student-groupoverview-{{ status }}-failed
                 {% endif %}
             ">
@@ -35,9 +37,11 @@
             {% endif %}
         {% elif status == 'corrected' %}
             {% trans "This assignment is corrected, and the final grade is:" %}
-            <a href="{% cradmin_instance_url 'deliveries' 'deliverydetails' pk=group.feedback.delivery_id %}">
-                {{ group.feedback|devilry_feedback_shortformat }}
-            </a>
+            <strong>
+                <a href="{% cradmin_instance_url 'deliveries' 'deliverydetails' pk=group.feedback.delivery_id %}">
+                    {{ group.feedback|devilry_feedback_shortformat }}
+                </a>
+            </strong>
         {% elif status == 'closed-without-feedback' %}
             {% trans "Your assignment has been closed without feedback." %}
         {% endif %}

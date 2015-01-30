@@ -522,3 +522,57 @@ class TestDeliveryDetailsView(TestCase):
         self.assertNotIn('testexaminer1', response.content)
         self.assertNotIn('testexaminer2', response.content)
         self.assertNotIn('Test Examiner', response.content)
+
+    def test_no_feedback(self):
+        self.groupbuilder.add_students(self.testuser)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=10)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_feedback_summary'))
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_feedback'))
+
+    def test_feedback_summary_passed(self):
+        self.groupbuilder.add_students(self.testuser)
+        testexaminer = UserBuilder('testexaminer').user
+        self.groupbuilder.add_examiners(testexaminer)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=10, delivered_by=None)
+        deliverybuilder.add_feedback(saved_by=testexaminer,
+                                     grade='10/20',
+                                     is_passing_grade=True,
+                                     points=20)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('.devilry-student-deliverydetails-feedbacksummary-passed'))
+        self.assertTrue(selector.exists(
+            '.django-cradmin-container-fluid-focus.django-cradmin-container-fluid-focus-success'))
+        self.assertEquals(
+            selector.one('#devilry_student_group_deliverydetails_feedback_summary').alltext_normalized,
+            'This delivery has been corrected, and the grade is: 10/20 (passed)')
+
+    def test_feedback_summary_failed(self):
+        self.groupbuilder.add_students(self.testuser)
+        testexaminer = UserBuilder('testexaminer1').user
+        self.groupbuilder.add_examiners(testexaminer)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=10, delivered_by=None)
+        deliverybuilder.add_feedback(saved_by=testexaminer,
+                                     grade='2/20',
+                                     is_passing_grade=False,
+                                     points=2)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+
+        self.assertTrue(selector.exists('.devilry-student-deliverydetails-feedbacksummary-failed'))
+        self.assertTrue(selector.exists
+                        ('.django-cradmin-container-fluid-focus.django-cradmin-container-fluid-focus-warning'))
+        self.assertEquals(
+            selector.one('#devilry_student_group_deliverydetails_feedback_summary').alltext_normalized,
+            'This delivery has been corrected, and the grade is: 2/20 (failed)')

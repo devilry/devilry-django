@@ -9,7 +9,7 @@
 {% endblock title %}
 
 {% block content %}
-    <div class="page-header">
+    <div class="page-header page-header-nomargin">
         <div class="container-fluid">
             <h1>
                 {% trans "Delivery" %}#{{ delivery.number }}
@@ -19,7 +19,31 @@
             </p>
         </div>
     </div>
-    <div class="container-fluid">
+
+    {% if delivery.last_feedback %}
+        <div id="devilry_student_group_deliverydetails_feedback_summary"
+             class="container-fluid django-cradmin-container-fluid-focus
+                {% if delivery.last_feedback.is_passing_grade %}
+                    django-cradmin-container-fluid-focus-success
+                    devilry-student-deliverydetails-feedbacksummary-passed
+                {% else %}
+                    django-cradmin-container-fluid-focus-warning
+                    devilry-student-deliverydetails-feedbacksummary-failed
+                {% endif %}
+             ">
+            {% trans "This delivery has been corrected, and the grade is" %}:
+            <strong>{{ delivery.last_feedback|devilry_feedback_shortformat }}</strong>
+        </div>
+        {% if delivery.last_feedback.rendered_view %}
+            <div id="devilry_student_group_deliverydetails_feedback_text"
+                 class="container-fluid django-cradmin-container-fluid-focus">
+                {{ delivery.last_feedback.rendered_view|safe }}
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <div id="devilry_student_group_deliverydetails_metadata"
+            class="container-fluid {% if not delivery.last_feedback %}django-cradmin-container-fluid-focus{% endif %}">
         <dl>
             <dt>{% trans "Files" %}:</dt>
             <dd id="devilry_student_group_deliverydetails_files">
