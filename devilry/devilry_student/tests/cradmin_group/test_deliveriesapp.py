@@ -163,21 +163,6 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(response['Location'], '/appindex_url_called')
         request.cradmin_instance.appindex_url.assert_called_with('deliveries')
 
-    def test_get_render(self):
-        self.groupbuilder.add_students(self.testuser)
-        deadline = self.groupbuilder.add_deadline_in_x_weeks(weeks=1).deadline
-        response = self._mock_and_perform_get_request()
-        response.render()
-        selector = htmls.S(response.content)
-        self.assertEquals(selector.one('.page-header h1').alltext_normalized, 'Add delivery')
-        self.assertEquals(
-            selector.one('#devilry_student_add_delivery_deadline_exact').alltext_normalized,
-            u'({})'.format(defaultfilters.date(deadline.deadline, 'SHORT_DATETIME_FORMAT')))
-        self.assertEquals(
-            selector.one('#devilry_student_add_delivery_deadline_natural').alltext_normalized,
-            htmls.normalize_whitespace(naturaltime(deadline.deadline)))
-        self.assertFalse(selector.exists('#devilry_student_add_delivery_after_soft_deadline_warning'))
-
     def _mock_post_request(self, data):
         request = self.factory.post('/test', data)
         request.user = self.testuser
