@@ -34,7 +34,7 @@ django-celery-email==1.0.4
 mock==1.0.1
 detektor==1.1.0-beta.011
 
-django_cradmin==1.0.0-beta.014
+django_cradmin==1.0.0-beta.017
 #-e git://github.com/appressoas/django_cradmin.git#egg=django_cradmin
 
 
