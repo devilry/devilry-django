@@ -13,17 +13,18 @@
     {{ block.super }}
 {% endblock jsimports %}
 
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Delivery" %}#{{ delivery.number }}
+    </h1>
+    <p>
+        {{ group.assignment.long_name }} -
+        {{ group.subject.long_name }} -
+        {{ group.period.long_name }}
+    </p>
+{% endblock pageheader-inner %}
+
 {% block content %}
-    <div class="page-header page-header-nomargin">
-        <div class="container-fluid">
-            <h1>
-                {% trans "Delivery" %}#{{ delivery.number }}
-            </h1>
-            <p>
-                {% include "devilry_student/cradmin_group/include/page-header-h1.django.html" %}
-            </p>
-        </div>
-    </div>
 
     {% if delivery.last_feedback %}
         <div id="devilry_student_group_deliverydetails_feedback_summary"
