@@ -29,7 +29,7 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     def get_titletext_for_role(self, role):
         """
         Get a short title briefly describing the given ``role``.
-        Remember that the role is a Site.
+        Remember that the role is a Period.
         """
         return role.get_path()
 

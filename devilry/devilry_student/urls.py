@@ -2,6 +2,7 @@ from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required
 from django.views.i18n import javascript_catalog
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from devilry.devilry_student.cradmin_student import cradmin_student
 
 from devilry.project.common.i18n import get_javascript_catalog_packages
 from devilry.devilry_student.cradmin_period import cradmin_period
@@ -28,10 +29,11 @@ def emptyview(request):
     return HttpResponse('Logged in')
 
 
-urlpatterns = patterns('devilry.devilry_student',
-    url('^old$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view())))),
-    url('^$', login_required(FrontpageView.as_view()),
+urlpatterns = patterns(
+    'devilry.devilry_student',
+    url('^old2$', login_required(FrontpageView.as_view()),
         name='devilry_student'),
+    url('^old$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view())))),
     url('^rest/', include('devilry.devilry_student.rest.urls')),
     url('^emptytestview', emptyview), # NOTE: Only used for testing
     url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
@@ -72,5 +74,6 @@ urlpatterns = patterns('devilry.devilry_student',
     #url(r'^groupinvite/leave/(?P<group_id>\d+)$')
 
     url(r'^period/', include(cradmin_period.CrAdminInstance.urls())),
-    url(r'^group/', include(cradmin_group.CrAdminInstance.urls()))
+    url(r'^group/', include(cradmin_group.CrAdminInstance.urls())),
+    url(r'^', include(cradmin_student.CrAdminInstance.urls()))
 )
