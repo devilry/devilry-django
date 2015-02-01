@@ -6,6 +6,7 @@ from django_cradmin import crmenu
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_student.cradminextensions import studentcrinstance
 from devilry.devilry_student.cradmin_group import deliveriesapp
+# from devilry.devilry_student.cradmin_group import feedbacksapp
 from devilry.devilry_student.cradmin_group import overviewapp
 
 
@@ -37,6 +38,7 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     apps = [
         ('overview', overviewapp.App),
         ('deliveries', deliveriesapp.App),
+        # ('feedbacks', feedbacksapp.App),
     ]
 
     def get_rolequeryset(self):

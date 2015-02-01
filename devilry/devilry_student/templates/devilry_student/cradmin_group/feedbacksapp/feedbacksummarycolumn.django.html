@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load devilry_examiner_tags %}
+
+<div class="devilry-student-feedbacksapp-summarycolumn">
+    <p class="devilry-student-feedbacksapp-summarycolumn-linkwrapper">
+        <a href="{{ action_url }}">
+            {% blocktrans with number=feedback.delivery.number%}Delivery#{{ number }}{% endblocktrans %}
+        </a>
+    </p>
+    <p class="text-{{ delivery.last_feedback|feedback_to_bootstrapclass }} devilry-student-feedbacksapp-summarycolumn-feedback">
+        <span class="devilry-student-feedbacksapp-summarycolumn-feedback-grade">
+            {{ delivery.last_feedback.grade }}
+        </span>
+        (<span class="devilry-student-feedbacksapp-summarycolumn-feedback-is_passing_grade">{{ delivery.last_feedback.is_passing_grade|format_is_passing_grade }}</span>)
+    </p>
+</div>
