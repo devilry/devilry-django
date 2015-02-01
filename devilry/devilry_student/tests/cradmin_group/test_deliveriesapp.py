@@ -1,9 +1,7 @@
 from datetime import datetime
 
-from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
-from django.template import defaultfilters
 from django.test import TestCase, RequestFactory
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFile
@@ -36,7 +34,7 @@ class TestDeliveryListView(TestCase):
         return response
 
     def test_list_no_deliveries(self):
-        deadlinebuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
         response = self._mock_get_request()
         response.render()
         selector = htmls.S(response.content)
