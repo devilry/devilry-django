@@ -71,12 +71,6 @@ class DeliveryListView(QuerySetForRoleMixin, objecttable.ObjectTableView):
         DeadlineColumn,
     ]
 
-    def get_buttons(self):
-        app = self.request.cradmin_app
-        return [
-            objecttable.Button(_('Add delivery'), url=app.reverse_appurl('add-delivery')),
-        ]
-
     def get_pagetitle(self):
         return _('Deliveries')
 
