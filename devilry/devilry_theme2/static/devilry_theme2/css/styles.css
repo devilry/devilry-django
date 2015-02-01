@@ -8865,6 +8865,44 @@ a {
   color: inherit;
   text-decoration: underline;
 }
+.alert {
+  position: relative;
+}
+.alert.django-cradmin-alert-nomargin {
+  margin: 0;
+}
+.alert.django-cradmin-alert-edge-to-edge {
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+@media (min-width: 768px) {
+  .alert.django-cradmin-alert-edge-to-edge {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+}
+.alert.django-cradmin-alert-edge-to-edge.alert-dismissable {
+  padding-right: 35px;
+}
+@media (min-width: 768px) {
+  .alert.django-cradmin-alert-edge-to-edge.alert-dismissable {
+    padding-right: 70px;
+  }
+}
+.alert.alert-dismissable button.close,
+.alert .django-cradmin-alert-loadspinner {
+  position: relative;
+  top: -2px;
+  right: -21px;
+  color: inherit;
+  font-size: 24px;
+}
+ul#django_cradmin_messages {
+  margin: 0;
+}
 nav#cradmin_menu {
   background-color: #333333;
 }
@@ -8986,7 +9024,7 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   }
 }
 .page-header {
-  margin: 0 0 20px 0;
+  margin: 0;
   padding: 20px 0 22px 0;
   border: 0;
   background-color: #377ca8;
@@ -9008,12 +9046,6 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   margin: 0;
   font-size: 21px;
   font-weight: bold;
-}
-.page-header h1 small {
-  color: inherit;
-}
-.page-header.page-header-nomargin {
-  margin: 0;
 }
 @media (min-width: 768px) {
   .page-header .btn.btn-sm {
