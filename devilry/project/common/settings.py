@@ -4,9 +4,6 @@
 # - See: https://docs.djangoproject.com/en/dev/ref/settings/
 #
 ########################################################################
-import djcelery
-
-djcelery.setup_loader()
 
 
 DEBUG = False
@@ -37,7 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.humanize',
-    'djcelery',
+    'errortemplates',
     'errortemplates',
     'crispy_forms',
     'djangorestframework',
@@ -118,7 +115,7 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
     },
 }
-HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
+# HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 
 ########################################################################
@@ -126,7 +123,7 @@ HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 # Celery
 #
 ########################################################################
-BROKER_URL = 'amqp://devilry:secret@localhost:5672/devilryhost'
+# BROKER_URL = 'amqp://devilry:secret@localhost:5672/devilryhost'
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
 

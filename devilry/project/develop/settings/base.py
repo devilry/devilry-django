@@ -234,13 +234,14 @@ CACHES = {
 ##################################################################################
 # Celery
 ##################################################################################
-CELERY_ALWAYS_EAGER = True
+# CELERY_ALWAYS_EAGER = True
+# CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 
 ## For testing celery
-#CELERY_ALWAYS_EAGER = False
-#CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
-#BROKER_URL = 'django://'
-#INSTALLED_APPS += ['kombu.transport.django']
+CELERY_ALWAYS_EAGER = False
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
+BROKER_URL = 'django://'
+INSTALLED_APPS += ['kombu.transport.django']
 
 ## For testing django-celery-email
 #INSTALLED_APPS += ['djcelery_email']

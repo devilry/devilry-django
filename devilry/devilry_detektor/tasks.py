@@ -1,6 +1,6 @@
 from cStringIO import StringIO
 from datetime import datetime
-from celery import task
+from celery import shared_task
 from celery.utils.log import get_task_logger
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
@@ -185,7 +185,7 @@ def _send_success_email(detektorassignment):
         subject, message, detektorassignment.processing_started_by)
 
 
-@task()
+@shared_task()
 def run_detektor_on_assignment(assignment_id):
     assignmentparser = AssignmentParser(assignment_id)
     assignmentparser.run_detektor()
