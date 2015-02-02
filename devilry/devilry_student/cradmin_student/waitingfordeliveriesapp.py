@@ -10,6 +10,11 @@ from devilry.devilry_student.cradminextensions.columntypes import LastDeadlineCo
 
 class AssignmentInfoColumn(objecttable.SingleActionColumn):
     orderingfield = 'parentnode__long_name'
+    template_name = 'django_cradmin/viewhelpers/objecttable/singleactioncolumn-cell.django.html'
+    normalcells_css_classes = [
+        'objecttable-cell-lg',
+        'objecttable-cell-strong'
+    ]
 
     def render_value(self, group):
         return group.parentnode.long_name
@@ -26,7 +31,11 @@ class AssignmentInfoColumn(objecttable.SingleActionColumn):
 
 
 class PeriodInfoColumn(objecttable.PlainTextColumn):
+    """
+    Period info column used for tablets and desktop devices.
+    """
     orderingfield = 'parentnode__parentnode__parentnode__long_name'
+    allcells_css_classes = ['hidden-xs']
 
     def get_header(self):
         return _('Course')
@@ -37,11 +46,28 @@ class PeriodInfoColumn(objecttable.PlainTextColumn):
             group.period.long_name)
 
 
+class PeriodInfoXs(objecttable.PlainTextColumn):
+    """
+    Period info column used for mobile devices.
+    """
+    orderingfield = 'parentnode__parentnode__parentnode__long_name'
+    allcells_css_classes = ['visible-xs']
+
+    def get_header(self):
+        return _('Course')
+
+    def render_value(self, group):
+        return u'{} - {}'.format(
+            group.subject.short_name,
+            group.period.short_name)
+
+
 class WaitingForDeliveriesListView(studentobjecttable.StudentObjectTableView):
     model = AssignmentGroup
     columns = [
         AssignmentInfoColumn,
         PeriodInfoColumn,
+        PeriodInfoXs,
         LastDeadlineColumn
     ]
 

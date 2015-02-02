@@ -9716,6 +9716,12 @@ table.table.cradmin-table-fluid tbody tr td {
   display: inline-block;
   height: 40px;
 }
+.objecttable-cell-strong {
+  font-weight: bold;
+}
+.objecttable-cell-lg {
+  font-size: 20px;
+}
 .django_cradmin_submitrow {
   position: fixed;
   z-index: 10000;

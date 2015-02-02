@@ -356,6 +356,10 @@ class NodeBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'node'
     modelcls = Node
 
+    @classmethod
+    def quickadd_ducku(cls, **kwargs):
+        return NodeBuilder('ducku')
+
     def add_subject(self, *args, **kwargs):
         kwargs['parentnode'] = self.node
         return SubjectBuilder(*args, **kwargs)

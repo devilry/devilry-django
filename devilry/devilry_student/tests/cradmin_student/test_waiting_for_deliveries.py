@@ -1,10 +1,9 @@
-from django.template import defaultfilters
 from django.test import TestCase
 from django_cradmin.crinstance import reverse_cradmin_url
 import htmls
 
 from devilry.apps.core.models import Assignment
-from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder, UserBuilder, SubjectBuilder
+from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder, UserBuilder, NodeBuilder
 
 
 class TestWaitingForDeliveries(TestCase):
@@ -28,9 +27,9 @@ class TestWaitingForDeliveries(TestCase):
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 0)
 
     def test_waiting_for_deliveries_render(self):
-        deadlinebuilder = SubjectBuilder\
-            .quickadd_ducku_duck1010(long_name='A Test Course')\
-            .add_6month_active_period(long_name='Test Period')\
+        deadlinebuilder = NodeBuilder.quickadd_ducku()\
+            .add_subject(short_name='atestcourse', long_name='A Test Course')\
+            .add_6month_active_period(short_name='testperiod', long_name='Test Period')\
             .add_assignment('testassignment', long_name='Test Assignment One')\
             .add_group(students=[self.testuser])\
             .add_deadline_in_x_weeks(weeks=1)
@@ -49,8 +48,11 @@ class TestWaitingForDeliveries(TestCase):
             'A Test Course - Test Period')
         self.assertEquals(
             selector.one('#objecttableview-table tbody tr td:nth-child(3)').alltext_normalized,
+            'atestcourse - testperiod')
+        self.assertEquals(
+            selector.one('#objecttableview-table tbody tr td:nth-child(4)').alltext_normalized,
             u'6 days, 23 hours from now')
-        self.assertTrue(selector.exists('#objecttableview-table tbody tr td:nth-child(3) .text-muted'))
+        self.assertTrue(selector.exists('#objecttableview-table tbody tr td:nth-child(4) .text-success'))
 
     def test_corrected_not_included(self):
         deliverybuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -111,7 +113,7 @@ class TestWaitingForDeliveries(TestCase):
         response = self._get_as('testuser')
         selector = htmls.S(response.content)
         self.assertTrue(
-            selector.exists('#objecttableview-table tbody tr td:nth-child(3) .text-warning'))
+            selector.exists('#objecttableview-table tbody tr td:nth-child(4) .text-warning'))
         self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(3)').alltext_normalized,
+            selector.one('#objecttableview-table tbody tr td:nth-child(4)').alltext_normalized,
             u'1 week ago')
