@@ -29,6 +29,9 @@ class AssignmentInfoColumn(objecttable.SingleActionColumn):
             roleid=group.id,
             viewname='add-delivery')
 
+    def is_sortable(self):
+        return False
+
 
 class PeriodInfoColumn(objecttable.PlainTextColumn):
     """
@@ -45,6 +48,9 @@ class PeriodInfoColumn(objecttable.PlainTextColumn):
             group.subject.long_name,
             group.period.long_name)
 
+    def is_sortable(self):
+        return False
+
 
 class PeriodInfoXs(objecttable.PlainTextColumn):
     """
@@ -60,6 +66,9 @@ class PeriodInfoXs(objecttable.PlainTextColumn):
         return u'{} - {}'.format(
             group.subject.short_name,
             group.period.short_name)
+
+    def is_sortable(self):
+        return False
 
 
 class WaitingForDeliveriesListView(studentobjecttable.StudentObjectTableView):
