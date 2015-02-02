@@ -16,24 +16,10 @@ from django_cradmin.viewhelpers import formbase
 
 from devilry.apps.core.models import Candidate, Delivery, FileMeta
 from devilry.devilry_student.cradmin_group.utils import check_if_last_deadline_has_expired
+from devilry.devilry_student.cradminextensions.columntypes import DeliverySummaryColumn
 
 
 DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES = getattr(settings, 'DELIVERY_DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES', 120)
-
-
-class DeliverySummaryColumn(objecttable.SingleActionColumn):
-    modelfield = 'number'
-    template_name = 'devilry_student/cradmin_group/deliveriesapp/deliverysummarycolumn.django.html'
-    context_object_name = 'delivery'
-
-    def get_header(self):
-        return _('Summary')
-
-    def get_actionurl(self, delivery):
-        return self.view.request.cradmin_app.reverse_appurl('deliverydetails', kwargs={'pk': delivery.pk})
-
-    def is_sortable(self):
-        return False
 
 
 class TimeOfDeliveryColumn(objecttable.DatetimeColumn):

@@ -20,3 +20,18 @@ class LastDeadlineColumn(objecttable.PlainTextColumn):
             })
         else:
             return deadline_datetime
+
+
+class DeliverySummaryColumn(objecttable.SingleActionColumn):
+    modelfield = 'number'
+    template_name = 'devilry_student/cradminextensions/columntypes/delivery-summary-column.django.html'
+    context_object_name = 'delivery'
+
+    def get_header(self):
+        return _('Summary')
+
+    def get_actionurl(self, delivery):
+        return self.view.request.cradmin_app.reverse_appurl('deliverydetails', kwargs={'pk': delivery.pk})
+
+    def is_sortable(self):
+        return False
