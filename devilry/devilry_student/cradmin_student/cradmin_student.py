@@ -4,6 +4,7 @@ from django_cradmin import crmenu
 
 from devilry.devilry_student.cradminextensions import studentcrinstance
 from devilry.devilry_student.cradmin_student import waitingfordeliveriesapp
+from devilry.devilry_student.cradmin_student import recentdeliveriesapp
 
 
 class Menu(crmenu.Menu):
@@ -13,6 +14,11 @@ class Menu(crmenu.Menu):
             url=self.appindex_url('waitingfordeliveries'),
             icon="plus",
             active=self.request.cradmin_app.appname == 'waitingfordeliveries')
+        self.add(
+            label=_('Recent deliveries'),
+            url=self.appindex_url('recentdeliveries'),
+            icon="plus",
+            active=self.request.cradmin_app.appname == 'recentdeliveries')
 
 
 class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
@@ -23,6 +29,7 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
 
     apps = [
         ('waitingfordeliveries', waitingfordeliveriesapp.App),
+        ('recentdeliveries', recentdeliveriesapp.App),
     ]
 
     def get_rolequeryset(self):

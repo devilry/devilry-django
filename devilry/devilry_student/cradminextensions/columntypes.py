@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.template.loader import render_to_string
+from django_cradmin import crinstance
 from django_cradmin.viewhelpers import objecttable
 from django.utils.translation import ugettext_lazy as _
 
@@ -28,10 +29,16 @@ class DeliverySummaryColumn(objecttable.SingleActionColumn):
     context_object_name = 'delivery'
 
     def get_header(self):
-        return _('Summary')
+        return _('Delivery')
 
     def get_actionurl(self, delivery):
-        return self.view.request.cradmin_app.reverse_appurl('deliverydetails', kwargs={'pk': delivery.pk})
+        return crinstance.reverse_cradmin_url(
+            instanceid='devilry_student_group',
+            appname='deliveries',
+            roleid=delivery.deadline.assignment_group_id,
+            viewname='deliverydetails',
+            kwargs={'pk': delivery.pk}
+        )
 
     def is_sortable(self):
         return False
