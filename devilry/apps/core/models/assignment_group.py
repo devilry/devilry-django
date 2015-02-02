@@ -163,6 +163,29 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             delivery_status="waiting-for-something",
             last_deadline__deadline__gt=now)
 
+    def filter_can_add_deliveries(self):
+        now = datetime.now()
+        return self\
+            .filter(parentnode__delivery_types=deliverytypes.ELECTRONIC,
+                    delivery_status="waiting-for-something")\
+            .extra(
+                where=[
+                    """
+                    core_assignment.deadline_handling = %s
+                    OR
+                    (SELECT core_deadline.deadline
+                     FROM core_deadline
+                     WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
+                     ORDER BY core_deadline.deadline DESC
+                     LIMIT 1) > %s
+                    """
+                ],
+                params=[
+                    Assignment.DEADLINEHANDLING_SOFT,
+                    now
+                ]
+            )
+
     def close_groups(self):
         return self.update(
             is_open=False,
@@ -292,6 +315,9 @@ class AssignmentGroupManager(models.Manager):
 
     def filter_waiting_for_deliveries(self):
         return self.get_queryset().filter_waiting_for_deliveries()
+
+    def filter_can_add_deliveries(self):
+        return self.get_queryset().filter_can_add_deliveries()
 
     def close_groups(self):
         """

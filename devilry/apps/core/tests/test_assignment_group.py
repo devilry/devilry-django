@@ -14,7 +14,7 @@ from ..models.assignment_group import GroupPopToFewCandiatesError
 from ..models import Delivery
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
-from devilry.apps.core.models import deliverytypes
+from devilry.apps.core.models import deliverytypes, Assignment
 
 
 class TestAssignmentGroup(TestCase):
@@ -332,6 +332,66 @@ class TestAssignmentGroup(TestCase):
         group = AssignmentGroup.objects.filter(id=groupbuilder.group.id)\
             .annotate_with_number_of_deliveries().first()
         self.assertEqual(group.number_of_deliveries, 0)
+
+    def test_filter_can_add_deliveries_before_hard_deadline(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                            deadline_handling=Assignment.DEADLINEHANDLING_HARD)\
+            .add_group()
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
+
+    def test_filter_can_add_deliveries_after_hard_deadline(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                            deadline_handling=Assignment.DEADLINEHANDLING_HARD)\
+            .add_group()
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
+
+    def test_filter_can_add_deliveries_not_on_nonelectronic(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                            delivery_types=deliverytypes.NON_ELECTRONIC)\
+            .add_group()
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
+
+    def test_filter_can_add_deliveries_before_soft_deadline(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                            deadline_handling=Assignment.DEADLINEHANDLING_SOFT)\
+            .add_group()
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
+        self.assertEquals(
+            AssignmentGroup.objects.filter_can_add_deliveries().first(),
+            groupbuilder.group)
+
+    def test_filter_can_add_deliveries_after_soft_deadline(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                            deadline_handling=Assignment.DEADLINEHANDLING_SOFT)\
+            .add_group()
+        groupbuilder.add_deadline_x_weeks_ago(weeks=1)
+        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
+
+    def test_filter_can_add_deliveries_has_delivery(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 1)
+
+    def test_filter_can_add_deliveries_not_on_corrected(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)\
+            .add_passed_A_feedback(saved_by=UserBuilder('testexaminer').user)
+        self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
 
 
 class TestAssignmentGroupCanDelete(TestCase):
