@@ -10,6 +10,11 @@ from devilry.devilry_student.cradminextensions.columntypes import DeliverySummar
 DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES = getattr(settings, 'DELIVERY_DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES', 120)
 
 
+class DeliverySummaryWithAssignmentColumn(DeliverySummaryColumn):
+    template_name = 'devilry_student/cradmin_student/recentdeliveriesapp/'\
+        'delivery-summary-with-assignment-column.django.html'
+
+
 class TimeOfDeliveryColumn(objecttable.DatetimeColumn):
     modelfield = 'time_of_delivery'
 
@@ -56,16 +61,20 @@ class RecentDeliveriesListView(objecttable.ObjectTableView):
     # template_name = 'devilry_student/cradmin_student/recentdeliveriesapp/recent-deliveries-list.django.html'
     context_object_name = 'deliveries'
     columns = [
-        DeliverySummaryColumn,
-        TimeOfDeliveryColumn,
+        DeliverySummaryWithAssignmentColumn,
         PeriodInfoColumn,
         PeriodInfoXs,
+        TimeOfDeliveryColumn,
     ]
 
     def get_queryset_for_role(self, user):
         return Delivery.objects\
             .filter_is_candidate(user)\
-            .select_related('deadline', 'feedback')
+            .select_related(
+                'deadline',
+                'deadline__assignment_group',
+                'deadline__assignment_group__parentnode',
+                'feedback')
 
     def get_pagetitle(self):
         return _('Recent deliveries')

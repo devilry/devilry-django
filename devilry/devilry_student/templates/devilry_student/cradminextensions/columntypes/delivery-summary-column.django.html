@@ -4,7 +4,9 @@
 <div class="devilry-student-deliveriesapp-summarycolumn">
     <p class="devilry-student-deliveriesapp-summarycolumn-linkwrapper">
         <a href="{{ action_url }}">
-            {% blocktrans with number=delivery.number%}Delivery#{{ number }}{% endblocktrans %}
+            {% block deliverydescription %}
+                {% blocktrans with number=delivery.number%}Delivery#{{ number }}{% endblocktrans %}
+            {% endblock deliverydescription %}
         </a>
     </p>
     {% if delivery.last_feedback %}
