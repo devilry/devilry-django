@@ -1,4 +1,3 @@
-from django.template import defaultfilters
 from django_cradmin.viewhelpers import objecttable
 from django_cradmin import crapp
 from django_cradmin import crinstance
@@ -6,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_student.cradminextensions import studentobjecttable
+from devilry.devilry_student.cradminextensions.columntypes import LastDeadlineColumn
 
 
 class AssignmentInfoColumn(objecttable.SingleActionColumn):
@@ -37,20 +37,12 @@ class PeriodInfoColumn(objecttable.PlainTextColumn):
             group.period.long_name)
 
 
-class DeadlineColumn(objecttable.DatetimeColumn):
-    orderingfield = 'parentnode__parentnode__parentnode__long_name'
-    modelfield = 'last_deadline_datetime'
-
-    def get_header(self):
-        return _('Deadline')
-
-
 class WaitingForDeliveriesListView(studentobjecttable.StudentObjectTableView):
     model = AssignmentGroup
     columns = [
         AssignmentInfoColumn,
         PeriodInfoColumn,
-        DeadlineColumn
+        LastDeadlineColumn
     ]
 
     def get_pagetitle(self):
@@ -63,9 +55,9 @@ class WaitingForDeliveriesListView(studentobjecttable.StudentObjectTableView):
                 .filter_waiting_for_deliveries()\
                 .annotate_with_last_deadline_datetime()\
                 .select_related(
-                    'parentnode', # Assignment
-                    'parentnode__parentnode', # Period
-                    'parentnode__parentnode__parentnode', # Subject
+                    'parentnode',  # Assignment
+                    'parentnode__parentnode',  # Period
+                    'parentnode__parentnode__parentnode',  # Subject
                 )
 
 

@@ -1,0 +1,7 @@
+{% load humanize %}
+{{ deadline_datetime|date:"SHORT_DATETIME_FORMAT" }}
+{% if in_the_future %}
+    <span class="text-muted">({{ deadline_datetime|naturaltime }})</span>
+{% else %}
+    <span class="text-warning">({{ deadline_datetime|naturaltime }})</span>
+{% endif %}
