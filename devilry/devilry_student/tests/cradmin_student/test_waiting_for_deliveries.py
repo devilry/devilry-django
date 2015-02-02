@@ -49,8 +49,7 @@ class TestWaitingForDeliveries(TestCase):
             'A Test Course - Test Period')
         self.assertEquals(
             selector.one('#objecttableview-table tbody tr td:nth-child(3)').alltext_normalized,
-            u'{} (6 days, 23 hours from now)'.format(
-                defaultfilters.date(deadlinebuilder.deadline.deadline, 'SHORT_DATETIME_FORMAT')))
+            u'6 days, 23 hours from now')
         self.assertTrue(selector.exists('#objecttableview-table tbody tr td:nth-child(3) .text-muted'))
 
     def test_corrected_not_included(self):
@@ -114,5 +113,5 @@ class TestWaitingForDeliveries(TestCase):
         self.assertTrue(
             selector.exists('#objecttableview-table tbody tr td:nth-child(3) .text-warning'))
         self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(3) .text-warning').alltext_normalized,
-            u'(1 week ago)')
+            selector.one('#objecttableview-table tbody tr td:nth-child(3)').alltext_normalized,
+            u'1 week ago')

@@ -50,15 +50,18 @@ class WaitingForDeliveriesListView(studentobjecttable.StudentObjectTableView):
 
     def get_queryset_for_role(self, period):
         return AssignmentGroup.objects\
-                .filter_student_has_access(self.request.user)\
-                .filter_is_active()\
-                .filter_waiting_for_deliveries()\
-                .annotate_with_last_deadline_datetime()\
-                .select_related(
-                    'parentnode',  # Assignment
-                    'parentnode__parentnode',  # Period
-                    'parentnode__parentnode__parentnode',  # Subject
-                )
+            .filter_student_has_access(self.request.user) \
+            .filter_is_active() \
+            .filter_can_add_deliveries() \
+            .select_related(
+                'parentnode',  # Assignment
+                'parentnode__parentnode',  # Period
+                'parentnode__parentnode__parentnode',  # Subject
+            ) \
+            .annotate_with_last_deadline_datetime()\
+            .extra(
+                order_by=['last_deadline_datetime']
+            )
 
 
 class App(crapp.App):
