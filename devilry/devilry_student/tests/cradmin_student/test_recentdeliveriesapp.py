@@ -115,7 +115,7 @@ class TestRecentDeliveries(TestCase):
         selector = htmls.S(response.content)
 
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
-        selector.one('#objecttableview-table tbody tr td:nth-child(1)').prettyprint()
+        # selector.one('#objecttableview-table tbody tr td:nth-child(1)').prettyprint()
         self.assertEquals(
             selector.one('#objecttableview-table tbody tr td:nth-child(1) '
                          '.devilry-student-delivery-summarycolumn-feedback').alltext_normalized,

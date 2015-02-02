@@ -38,6 +38,9 @@ class PeriodInfoColumn(objecttable.PlainTextColumn):
             group.subject.long_name,
             group.period.long_name)
 
+    def is_sortable(self):
+        return False
+
 
 class PeriodInfoXs(objecttable.PlainTextColumn):
     """
@@ -54,6 +57,9 @@ class PeriodInfoXs(objecttable.PlainTextColumn):
         return u'{} - {}'.format(
             group.subject.short_name,
             group.period.short_name)
+
+    def is_sortable(self):
+        return False
 
 
 class RecentDeliveriesListView(objecttable.ObjectTableView):
