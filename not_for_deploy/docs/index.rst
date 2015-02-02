@@ -34,6 +34,7 @@ Essential information for new developers
 * :doc:`devilry.project.develop.teshelpers.corebuilder`
 * :doc:`mock`
 * :ref:`javascript`
+* :doc:`celery`
 * More info available on the `Developer wiki page <https://github.com/devilry/devilry-django/wiki/Developer>`_.
 
 

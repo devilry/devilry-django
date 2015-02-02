@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'extjs4',
     'haystack',
     'south',
+    'djcelery',
     # 'celery_haystack',
 
     'devilry.devilry_cradmin',
