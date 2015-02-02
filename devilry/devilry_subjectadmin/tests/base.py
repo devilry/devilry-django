@@ -1,5 +1,9 @@
 from datetime import datetime
+import os
 import re
+import uuid
+
+from selenium import webdriver
 from seleniumhelpers import SeleniumTestCase
 from django.test.utils import override_settings
 from django.conf import settings
@@ -45,7 +49,6 @@ class ExtJsTestMixin(object):
         self.extjs_set_single_datetime_value(cssselector, 'date', date, within=None)
         self.extjs_set_single_datetime_value(cssselector, 'time', time, within=None)
 
-
     def extjs_get_single_datetime_value(self, cssselector, fieldtype, within=None):
         field = self.extjs_get_single_datetime_field(cssselector, fieldtype, within=within)
         return field.get_attribute('value')
@@ -56,7 +59,6 @@ class ExtJsTestMixin(object):
         if not date or not time:
             return None
         return datetime.strptime('{0} {1}'.format(date, time), '%Y-%m-%d %H:%M')
-
 
     def extjs_boundlist_select(self, cssselector, label):
         boundlist = self.waitForAndFindElementByCssSelector(cssselector)
@@ -83,6 +85,27 @@ class SubjectAdminSeleniumTestCase(SeleniumTestCase):
 
     def browseTo(self, path):
         self.getPath('/devilry_subjectadmin/#' + path)
+
+    @classmethod
+    def getDriver(cls, browser, use_rc):
+        """
+        Override this to create customize the ``selenium``-attribute.
+
+        :param browser: The value of the ``SELENIUM_BROWSER`` setting.
+        :param use_rc: The value of ``bool(SELENIUM_USE_RC)``.
+        """
+        if browser == 'phantomjs':
+            driver = webdriver.PhantomJS()
+        else:
+            driver = super(SubjectAdminSeleniumTestCase, cls).getDriver(browser, use_rc)
+        driver.set_window_size(1400, 900)
+        return driver
+
+    def save_screenshot_to_desktop(self):
+        path = os.path.expanduser("~/Desktop/selenium-{time}-{uuid}.png".format(
+            time=datetime.now().strftime('%Y-%m-%d_%H-%M'),
+            uuid=uuid.uuid4()))
+        self.selenium.get_screenshot_as_file(path)
 
     def login(self, username, password='test', loadurl='/devilry_subjectadmin/emptytestview'):
         self.selenium.get('{0}{1}?next={2}'.format(self.live_server_url,
@@ -158,11 +181,15 @@ class RenameBasenodeTestMixin(object):
         self.waitForCssSelector('.devilry_extjsextras_alertmessagelist .alert-error', within=window)
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_extjsextras_alertmessagelist .alert-error')), 1)
 
+
 class DeleteBasenodeTestMixin(object):
     deletebutton_id = None
 
+    def get_delete_button_css_selector(self):
+        return '#{0} button'.format(self.deletebutton_id)
+
     def click_delete_button(self):
-        self.selenium.find_element_by_css_selector('#{0} button'.format(self.deletebutton_id)).click()
+        self.selenium.find_element_by_css_selector(self.get_delete_button_css_selector()).click()
 
     def perform_delete(self):
         self.click_delete_button()
@@ -212,10 +239,11 @@ class EditAdministratorsTestMixin(object):
 
     def _add_user_via_ui(self, username, query=None):
         query = query or username
-        textfield = self.selenium.find_element_by_css_selector('.devilry_usersearch_autocompleteuserwidget input[type=text]')
+        textfield = self.waitForAndFindElementByCssSelector(
+            '.devilry_usersearch_autocompleteuserwidget input[type=text]')
         textfield.send_keys(query)
         self.waitForCssSelector('.autocompleteuserwidget_matchlist .matchlistitem_{username}'.format(username=username))
-        textfield.send_keys(Keys.RETURN)
+        textfield.send_keys(Keys.ENTER)
 
     def assertUserInEditTable(self, username):
         cssquery = '.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell_{username}'.format(username=username)
@@ -371,6 +399,9 @@ class EditAdministratorsTestMixin(object):
 
         searchfield = self.selenium.find_element_by_css_selector('.devilry_subjectadmin_manageadminspanel .searchfield input[type=text]')
         self.assertEquals(len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell')), 2)
+
+        searchfield.send_keys('')
         searchfield.send_keys('one')
+        # raw_input('X:')
         self.waitFor(self.selenium,
                      lambda s: len(self.selenium.find_elements_by_css_selector('.devilry_subjectadmin_manageadminspanel .x-grid .prettyformattedusercell')) == 1)

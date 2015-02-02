@@ -21,6 +21,7 @@ def redirecto_to_show_delivery(request, assignmentgroupid):
 devilry_urls = (
     (r'^markup/', include('devilry.devilry_markup.urls')),
     (r'^authenticate/', include('devilry.devilry_authenticate.urls')),
+    url(r'^cradmin_temporaryfileuploadstore/', include('django_cradmin.apps.cradmin_temporaryfileuploadstore.urls')),
 
     (r'^devilry_usersearch/', include('devilry.devilry_usersearch.urls')),
     (r'^devilry_authenticateduserinfo/', include('devilry.devilry_authenticateduserinfo.urls')),
@@ -43,6 +44,7 @@ devilry_urls = (
     url(r'^devilry_gradingsystem/', include('devilry.devilry_gradingsystem.urls')),
     url(r'^devilry_gradingsystemplugin_points/', include('devilry.devilry_gradingsystemplugin_points.urls')),
     url(r'^devilry_gradingsystemplugin_approved/', include('devilry.devilry_gradingsystemplugin_approved.urls')),
+    url(r'^devilry_detektor/', include('devilry.devilry_detektor.urls')),
     (r'^devilry_frontpage/', include('devilry.devilry_frontpage.urls')),
     url(r'^$', frontpage, name='devilry_frontpage'),
 )

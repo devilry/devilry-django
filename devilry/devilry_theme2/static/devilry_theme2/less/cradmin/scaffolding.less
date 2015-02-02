@@ -3,12 +3,16 @@ html, body {
 }
 
 body {
-  background-color: #E6E6E6;
-  color: #666666;
+  background-color: @cradmin-bodybg;
+  color: @cradmin-bodycolor;
 
   &.django-cradmin-noscroll {
     overflow: hidden;
   }
+}
+
+a {
+  -webkit-tap-highlight-color: @cradmin-link-tap-highlight-color;
 }
 
 #django_cradmin_contentwrapper {
@@ -22,5 +26,36 @@ body.django-cradmin-hide-menu {
     @media (min-width: @screen-md-min) {
       padding-left: 0;
     }
+  }
+}
+
+
+.django_cradmin_container_fluid_focus_variant(@bg, @bordercolor, @color) {
+  background-color: @bg;
+  border-color: @bordercolor;
+  color: @color;
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+}
+
+.django-cradmin-container-fluid-focus {
+  background-color: @cradmin-container-fluid-focus-bg;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid @cradmin-container-fluid-focus-border-bottom-color;
+
+  &.django-cradmin-container-fluid-focus-danger {
+    .django_cradmin_container_fluid_focus_variant(@alert-danger-bg, @alert-danger-border, @alert-danger-text);
+  }
+  &.django-cradmin-container-fluid-focus-warning {
+    .django_cradmin_container_fluid_focus_variant(@alert-warning-bg, @alert-warning-border, @alert-warning-text);
+  }
+  &.django-cradmin-container-fluid-focus-info {
+    .django_cradmin_container_fluid_focus_variant(@alert-info-bg, @alert-info-border, @alert-info-text);
+  }
+  &.django-cradmin-container-fluid-focus-success {
+    .django_cradmin_container_fluid_focus_variant(@alert-success-bg, @alert-success-border, @alert-success-text);
   }
 }

@@ -44,7 +44,7 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
         self.login('period1admin')
         self.browseToPeriod(self.testhelper.duck9000_period1.id)
         breadcrumbtext = self.get_breadcrumbstring('duck9000')
-        self.assertEquals(breadcrumbtext, ['All subjects', 'duck9000.period1'])
+        self.assertEquals(breadcrumbtext, ['All my subjects', 'duck9000.period1'])
 
     def _get_assignment_url(self, assignment):
         return '#/assignment/{0}/'.format(assignment.id)
@@ -75,7 +75,7 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
         self.waitForText('Delete duck9000.period1')
         self.waitForText('Rename duck9000.period1')
         self.assertIn('Once you delete a ', self.selenium.page_source)
-        self.assertIn('should not done without a certain amount of consideration', self.selenium.page_source)
+        self.assertIn('should not be done without a certain amount of consideration', self.selenium.page_source)
 
     def test_rename(self):
         self.login('period1admin')
@@ -95,7 +95,8 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
                             periods=['willbedeleted'])
         self.login('uniadmin')
         self.browseToPeriod(self.testhelper.sub_willbedeleted.id)
-        self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
+        delete_button = self.waitForAndFindElementByCssSelector('#periodDeleteButton')
+        self.assertTrue(delete_button.is_displayed())
         periodurl = self.selenium.current_url
         self.perform_delete()
         self.waitFor(self.selenium, lambda s: s.current_url != periodurl) # Will time out and fail unless the page is changed after delete
@@ -107,17 +108,15 @@ class TestPeriodOverview(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
                             periods=['willbedeleted:admin(willbedeletedadm)'])
         self.login('willbedeletedadm')
         self.browseToPeriod(self.testhelper.sub_willbedeleted.id)
-        self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
-        self.click_delete_button()
-        self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
+        delete_button = self.waitForAndFindElementByCssSelector('#periodDeleteButton')
+        self.assertFalse(delete_button.is_displayed())
 
     def test_delete_not_empty(self):
         self.testhelper.add_to_path('uni;duck9000.period1.a1:ln(Assignment One)')
         self.login('uniadmin')
         self.browseToPeriod(self.testhelper.duck9000_period1.id)
-        self.waitForCssSelector('.devilry_subjectadmin_periodoverview')
-        self.click_delete_button()
-        self.waitForText('Only superusers can delete non-empty items') # Will time out and fail unless the dialog is shown
+        delete_button = self.waitForAndFindElementByCssSelector('#periodDeleteButton')
+        self.assertFalse(delete_button.is_displayed())
 
 
 class TestPeriodEditAdministrators(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin,
@@ -135,7 +134,6 @@ class TestPeriodEditAdministrators(SubjectAdminSeleniumTestCase, PeriodTestCommo
 
     def browseToTestBasenode(self):
         self.browseToPeriod(self.getBasenode().id)
-
 
 
 class TestPeriodEditDuration(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin):
@@ -161,7 +159,7 @@ class TestPeriodEditDuration(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin
         self.start_time_timefield = panel.find_element_by_css_selector('.start_time_field .devilry_extjsextras_timefield input')
         self.end_time_datefield = panel.find_element_by_css_selector('.end_time_field .devilry_extjsextras_datefield input')
         self.end_time_timefield = panel.find_element_by_css_selector('.end_time_field .devilry_extjsextras_timefield input')
-        self.savebutton = panel.find_element_by_css_selector('.okbutton button')
+        self.savebutton = self.waitForAndFindElementByCssSelector('.okbutton button', within=panel)
         self.cancelbutton = panel.find_element_by_css_selector('.cancelbutton button')
         self.editpanel = panel
 
@@ -174,14 +172,18 @@ class TestPeriodEditDuration(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin
         self.start_time_timefield.send_keys(start_time)
         self.end_time_datefield.send_keys(end_date)
         self.end_time_timefield.send_keys(end_time)
+        self.selenium.find_element_by_css_selector('body').click()
 
     def _get_durationdisplay(self):
         return self.readOnlyPanel.find_element_by_css_selector('.durationdisplay').text.strip()
 
     def test_render(self):
         self.waitForDisplayed(self.readOnlyPanel)
-        self.assertEquals(self._get_durationdisplay(),
-                          '2005-01-01 00:00 - 2006-01-01 00:00')
+        duration = self._get_durationdisplay().split()
+        self.assertEquals(duration[0], u'2005-01-01')
+        self.assertEquals(duration[1], u'00:00')
+        self.assertEquals(duration[3], u'2006-01-01')
+        self.assertEquals(duration[4], u'00:00')
 
     def test_edit(self):
         self._click_edit()
@@ -189,8 +191,11 @@ class TestPeriodEditDuration(SubjectAdminSeleniumTestCase, PeriodTestCommonMixin
                          end_date='2001-11-22', end_time='16:00')
         self.savebutton.click()
         self.waitForDisplayed(self.readOnlyPanel)
-        self.assertEquals(self._get_durationdisplay(),
-                          '2000-12-24 12:00 - 2001-11-22 16:00')
+        duration = self._get_durationdisplay().split()
+        self.assertEquals(duration[0], u'2000-12-24')
+        self.assertEquals(duration[1], u'12:00')
+        self.assertEquals(duration[3], u'2001-11-22')
+        self.assertEquals(duration[4], u'16:00')
         p1 = self.testhelper.reload_from_db(self.p1)
         self.assertEquals(p1.start_time, datetime(2000, 12, 24, 12, 0))
         self.assertEquals(p1.end_time, datetime(2001, 11, 22, 16, 0))

@@ -4,10 +4,26 @@
 // Body
 @cradmin-bodypadding: 50px;
 @cradmin-bodypadding-xs: 15px;
+@cradmin-bodybg: #E6E6E6;
+@cradmin-bodycolor: #666666;
+
+// Links
+@cradmin-link-tap-highlight-color: rgba(0, 0, 0, 0.5);
+
+// Buttons
+@cradmin-btn-tap-highlight-color: rgba(0, 0, 0, 0.5);
+@cradmin-btn-default-hover-color: #fff;
+@cradmin-btn-default-hover-border: @btn-default-color;
+@cradmin-btn-default-hover-bg: @btn-default-color;
 
 
 // Overall styles
 @cradmin-focus-bg: #fff;
+
+
+// Containers
+@cradmin-container-fluid-focus-bg: @cradmin-focus-bg;
+@cradmin-container-fluid-focus-border-bottom-color: #ccc;
 
 
 // Page header
@@ -22,6 +38,7 @@
 @cradmin-menu-width: 200px;
 @cradmin-menu-border: #444;
 @cradmin-menu-bg: #333;
+@cradmin-menu-header-bg: darken(@cradmin-menu-bg, 5%);
 @cradmin-menu-color: #aaa;
 @cradmin-menu-hovercolor: #eee;
 
@@ -29,8 +46,15 @@
 
 // Form
 // @cradmin-form-selected-bg: #F4FCFC;
+@cradmin-form-bg: #eee;
 @cradmin-form-selected-bg: #E1EDF4;
 @cradmin-form-selected-border: darken(@cradmin-form-selected-bg, 10%);
+
+
+// Submitrow
+@cradmin-submitrow-padding: 8px;
+@cradmin-submitrow-bg: #333;
+
 
 // Objecttable
 @cradmin-objecttable-header-line-height: 40px;
@@ -44,7 +68,7 @@
 @cradmin-table-fluid-body-border-color: #E6E6E6;
 @cradmin-table-fluid-body-bg: @cradmin-focus-bg;
 @cradmin-table-fluid-body-border-color: #ccc;
-@cradmin-table-fluid-body-border-bottom-color: #ccc;
+@cradmin-table-fluid-body-border-bottom-color: @cradmin-container-fluid-focus-border-bottom-color;
 @cradmin-table-fluid-body-rowseparator-color: #D9D9D9;
 @cradmin-table-fluid-body-rowseparator-style: dashed;
 
@@ -52,6 +76,57 @@
 @cradmin-roleselect-list-flat-bg: @cradmin-focus-bg;
 @cradmin-roleselect-list-flat-itemseparator-color: #D9D9D9;
 @cradmin-roleselect-list-flat-itemseparator-style: dashed;
+
+// bulkfileupload
+@cradmin-bulkfileupload-padding: 0;
+@cradmin-bulkfileupload-bg: @cradmin-form-bg;
+
+@cradmin-bulkfileupload-dropbox-bg: darken(@cradmin-bodybg, 6%);
+@cradmin-bulkfileupload-dropbox-border-style: dashed;
+@cradmin-bulkfileupload-dropbox-border-color: darken(@cradmin-bulkfileupload-dropbox-bg, 6%);
+@cradmin-bulkfileupload-dropbox-border-width: 6px;
+@cradmin-bulkfileupload-dropbox-color: @cradmin-bodycolor;
+@cradmin-bulkfileupload-dropbox-font-weight: bold;
+@cradmin-bulkfileupload-dropbox-font-size: inherit;
+@cradmin-bulkfileupload-dropbox-padding: 45px 30px;
+@cradmin-bulkfileupload-dropbox-text-align: center;
+
+@cradmin-bulkfileupload-dropbox-dragover-bg: @alert-success-bg;
+@cradmin-bulkfileupload-dropbox-dragover-border-style: solid;
+@cradmin-bulkfileupload-dropbox-dragover-border-color: @alert-success-border;
+@cradmin-bulkfileupload-dropbox-dragover-color: @alert-success-text;
+
+@cradmin-bulkfileupload-dropbox-dragover-error-bg: @alert-danger-bg;
+@cradmin-bulkfileupload-dropbox-dragover-error-border-style: solid;
+@cradmin-bulkfileupload-dropbox-dragover-error-border-color: @alert-danger-border;
+@cradmin-bulkfileupload-dropbox-dragover-error-color: @alert-danger-text;
+
+@cradmin-bulkfileupload-advanced-fileselectbutton-color: @link-color;
+@cradmin-bulkfileupload-advanced-fileselectbutton-hover-color: @link-hover-color;
+@cradmin-bulkfileupload-advanced-fileselectbutton-align: center;
+
+@cradmin-bulkfileupload-simple-button-wrapper-padding: 10px 15px;
+@cradmin-bulkfileupload-simple-button-padding: 10px 16px;
+
+@cradmin-bulkfileupload-progress-item-color: @cradmin-bodycolor;
+@cradmin-bulkfileupload-progress-item-font-weight: normal;
+@cradmin-bulkfileupload-progress-item-font-size: @font-size-base;
+@cradmin-bulkfileupload-progress-item-padding: 10px 15px;
+@cradmin-bulkfileupload-progress-item-padding-mobile: 20px 15px;
+@cradmin-bulkfileupload-progress-item-margin: 0;
+
+@cradmin-bulkfileupload-progress-item-remove-file-button-color: @alert-danger-text;
+@cradmin-bulkfileupload-progress-item-remove-file-button-hover-color: darken(@cradmin-bulkfileupload-progress-item-remove-file-button-color, 12%);
+
+@cradmin-bulkfileupload-progress-item-error-bg: @alert-danger-bg;
+@cradmin-bulkfileupload-progress-item-error-color: @alert-danger-text;
+@cradmin-bulkfileupload-progress-item-error-closebutton-color: @cradmin-bulkfileupload-progress-item-error-color;
+@cradmin-bulkfileupload-progress-item-error-closebutton-hover-color: darken(@cradmin-bulkfileupload-progress-item-error-closebutton-color, 12%);
+
+@cradmin-bulkfileupload-progressbar-bg: #333;
+@cradmin-bulkfileupload-progressbar-progress-bg: @btn-primary-bg;
+@cradmin-bulkfileupload-progresspercent-color: #fff;
+@cradmin-bulkfileupload-progresspercent-font-size: @font-size-small;
 
 
 // Bootstrap overrides

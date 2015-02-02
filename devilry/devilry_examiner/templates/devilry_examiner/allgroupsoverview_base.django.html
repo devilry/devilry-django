@@ -2,10 +2,13 @@
 {% load i18n devilry_examiner_tags%}
 {% load url from future %}
 {% load django_decoupled_docs_tags %}
+{% load crispy_forms_tags %}
+
 
 {% block title %}{{ assignment.short_name }} - {{ assignment.period.get_path }}{% endblock title %}
 
 {% block body %}
+
 
 
 <div class="container">
@@ -32,24 +35,24 @@
 
             <ul class="list-group">
                 <a class="list-group-item {% if currentpage == 'all' %}active{% endif %}"
-                        href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}">
+                        href="{% url 'devilry_examiner_allgroupsoverview' assignment.id %}?order_by={{ order_by }}&examinermode={{ examinermode }}">
                     <span class="badge">{{ count_all }}</span>
                     {% trans "All" %}
                 </a>
                 <a class="list-group-item {% if currentpage == 'waiting_for_feedback' %}active{% endif %}"
-                        href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}">
+                        href="{% url 'devilry_examiner_waiting_for_feedback' assignment.id %}?order_by={{ order_by }}&examinermode={{ examinermode }}">
                     <span class="badge">{{ count_waiting_for_feedback }}</span>
                     {% trans "Waiting for feedback" %}
                 </a>
                 {% if assignment.is_electronic %}                    
                     <a class="list-group-item {% if currentpage == 'waiting_for_deliveries' %}active{% endif %}"
-                            href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}">
+                            href="{% url 'devilry_examiner_waiting_for_deliveries' assignment.id %}?order_by={{ order_by }}&examinermode={{ examinermode }}">
                         <span class="badge">{{ count_waiting_for_deliveries }}</span>
                         {% trans "Waiting for deliveries" %}
                     </a>
                 {% endif %}
                 <a class="list-group-item {% if currentpage == 'corrected' %}active{% endif %}"
-                        href="{% url 'devilry_examiner_corrected' assignment.id %}">
+                        href="{% url 'devilry_examiner_corrected' assignment.id %}?order_by={{ order_by }}&examinermode={{ examinermode }}">
                     <span class="badge">{{ count_corrected }}</span>
                     {% trans "Corrected" %}
                 </a>
@@ -68,7 +71,7 @@
             {% if groups %}
                 <div class="pull-right btn-group">
                     {% if groups.has_previous %}
-                        <a href="?page={{ groups.previous_page_number }}" class="btn btn-default">
+                        <a href="?page={{ groups.previous_page_number }}&order_by={{ order_by }}&examinermode={{ examinermode }}" class="btn btn-default">
                             <i class="fa fa-chevron-left"></i>
                             <span class="sr-only">{% trans "Previous" %}</span>
                         </a>
@@ -79,7 +82,7 @@
                     {% endif %}
 
                     {% if groups.has_next %} 
-                        <a href="?page={{ groups.next_page_number }}" class="btn btn-default">
+                        <a href="?page={{ groups.next_page_number }}&order_by={{ order_by }}&examinermode={{ examinermode }}" class="btn btn-default">
                             <i class="fa fa-chevron-right"></i>
                             <span class="sr-only">{% trans "Next" %}</span>
                         </a>
@@ -90,20 +93,34 @@
                     {% endif %}
                 </div>
                 <div class="btn-toolbar" role="toolbar">
+
+                    {% if examinermode == 'normal' %}
+                        <div class="btn-group">
+                            <button class="btn btn-default" id="select_all_button">
+                                {% trans "Select All" %}
+                            </button>
+                            <button class="btn btn-default" id="deselect_all_button">
+                                {% trans "Deselect All" %}
+                            </button>
+                        </div>
+                    {% endif %}
+
                     <div class="btn-group">
-                        <button class="btn btn-default" id="select_all_button">
-                            {% trans "Select All" %}
-                        </button>
-                        <button class="btn btn-default" id="deselect_all_button">
-                            {% trans "Deselect All" %}
-                        </button>
+                        {% crispy orderingform %}
                     </div>
+
+                    {% if assignment.grading_system_plugin_id == "devilry_gradingsystemplugin_approved" %}
+                        <div class="btn-group">
+                            {% crispy examinermode_form %}
+                        </div>
+                    {% endif %}
+
 
                     {% if assignment.is_electronic %}
                         <a href="{% url 'devilry_examiner_downloadalldeliveries_on_assignment' assignment.id %}" class="btn btn-default">
                             <i class="fa fa-download"></i>
                             {% trans "Download all deliveries" %}
-                        </a>                        
+                        </a>
                     {% endif %}
                 </div>
             {% endif %}
@@ -114,65 +131,13 @@
 
             <div class="grouplistingbox">
 
-                <form action="{{ assignment|get_feedback_url }}" method="post">{% csrf_token %}
 
-                    <table class="table table-striped infolistingtable" id="grouplist_table">
-                        {% for group in groups %}
-                        <tr class="group">
-                            <td class="checkbox_cell">
-                                <div class="checkbox_cell_inner">
-                                    <input type="checkbox" name="group_ids" value="{{ group.id }}" />
-                                </div>
-                            </td>
-                            <td class="titled-cell groupinfo">
-                                <h3>
-                                    <a href="{% url 'devilry_examiner_singlegroupoverview' group.id %}" class="group_long_displayname">{{ group.long_displayname }}</a>
-                                    {% if not group.assignment.anonymous %}
-                                        <small class="group_short_displayname">({{ group.short_displayname }})</small>
-                                    {% endif %}
-                                </h3>
-                                
-                                <p class="text-{{ group|group_delivery_status_to_bootstrapclass }} deliverystatus">
-                                    {{ group.get_status|formatted_status }}
-
-                                    {% if group.delivery_status == 'corrected' %}
-                                        &mdash;
-                                        <small>
-                                            {% trans "Grade" %}: {{ group.feedback.grade }}
-                                            ({{ group.feedback.is_passing_grade|format_is_passing_grade }})
-                                        </small>
-                                    {% elif group.get_status == 'waiting-for-feedback' and group.assignment.is_electronic and not group.last_delivery %}
-                                        <small class="text-warning">({% trans "No deliveries" %})</small>
-                                    {% elif group.get_status == 'waiting-for-deliveries' %}
-                                        <small class="text-muted">({{ group.successful_delivery_count|formatted_delivery_count }}</small>
-                                        &ndash;
-                                        <small class="text-muted">{% blocktrans with timeuntildeadline=group.last_deadline.deadline|timeuntil %}Next deadline in {{ timeuntildeadline }}{% endblocktrans %})</small>
-                                    {% endif %}
-                                </p>
- 
-                            </td>
-
-                            <td class="hidden-xs">
-                                {% if group.get_status == "waiting-for-feedback" %}
-                                    <a class="btn btn-default pull-right"
-                                            href="{% url 'devilry_examiner_last_delivery_or_groupoverview' group.id %}?edit_feedback=true"
-                                            role="button">
-                                        {% trans "Write feedback" %}
-                                    </a>
-                                {% endif %}
-                            </td>
-                        </tr>
-
-                        {% endfor %}
-                    </table>
-                    
-                    {% if groups %}
-                    <p><button type="submit" class="btn btn-default">
-                            {% trans "Write feedback" %}
-                            <small class="text-muted">({% trans "to selected" %})</small>
-                    </button></p>
-                    {% endif %}
-                </form>
+                {# TODO: if examinermodus == 'quick'... #}
+                {% if examinermode == 'normal' %}
+                    {% include "devilry_examiner/include/examinermode_normal.django.html" %}
+                {% elif examinermode == 'quick' %}
+                    {% include "devilry_examiner/include/examinermode_quick.django.html" %}
+                {% endif %}
 
 
 

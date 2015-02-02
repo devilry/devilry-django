@@ -1,27 +1,26 @@
+from django.utils.translation import ugettext as _
 from datetime import datetime
 import hashlib
-
-from django.utils.translation import ugettext as _
 from django import forms
 from django.db import transaction
 from django.db.models import Q, Count
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
-
+from devilry.devilry_rest.serializehelpers import format_datetime
+from devilry.devilry_rest.serializehelpers import format_timedelta
 from djangorestframework.views import View
 from djangorestframework.resources import FormResource, ModelResource
 from djangorestframework.permissions import IsAuthenticated
 from djangorestframework.response import Response
+
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import AssignmentGroup
-from devilry.devilry_rest.serializehelpers import format_datetime
-from devilry.devilry_rest.serializehelpers import format_timedelta
 from .group import GroupSerializer
 from .errors import NotFoundError
 from .errors import ValidationErrorResponse
 from .errors import BadRequestFieldError
 from .errors import PermissionDeniedError
-from devilry.devilry_subjectadmin.rest.auth import IsAssignmentAdmin
+from .auth import IsAssignmentAdmin
 from .log import logger
 from .fields import ListOfTypedField
 
@@ -255,7 +254,7 @@ class DeadlinesBulkListOrCreate(View):
         elif createmode == 'failed':
             qry &= Q(feedback__is_passing_grade=False)
         elif createmode == 'no-deadlines':
-            qry &= Q(num_deadlines=0)
+            qry &= Q(Q(num_deadlines=0) | Q(last_deadline=None))
         elif createmode == 'specific-groups':
             group_ids = self.CONTENT['group_ids']
             if not group_ids:

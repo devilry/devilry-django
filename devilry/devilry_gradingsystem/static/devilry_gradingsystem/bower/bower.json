@@ -1,0 +1,8 @@
+{
+  "name": "bower",
+  "version": "0.0.0",
+  "private": true,
+  "devDependencies": {
+    "ace-builds": "~1.1.7"
+  }
+}

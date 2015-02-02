@@ -13,6 +13,8 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/developfiles" />
+      <excludeFolder url="file://$MODULE_DIR$/not_for_deploy/docs/_build" />
+      <excludeFolder url="file://$MODULE_DIR$/static" />
     </content>
     <orderEntry type="jdk" jdkName="Python 2.7.6 virtualenv at ~/.virtualenvs/devilry" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -22,6 +24,7 @@
     <option name="TEMPLATE_FOLDERS">
       <list>
         <option value="$MODULE_DIR$/devilry/devilry_student/templates" />
+        <option value="$MODULE_DIR$/devilry/devilry_markup/templates" />
       </list>
     </option>
   </component>

@@ -379,7 +379,18 @@ Ext.define('devilry_subjectadmin.controller.BulkManageDeadlines', {
     
     _onDeleteDeadline: function(deadlinePanel, deadlineRecord) {
         Ext.create('devilry_extjsextras.ConfirmDeleteDialog', {
+            width: 400,
+            height: 320,
             short_description: Ext.String.format('<strong>{0}</strong>', deadlineRecord.formatDeadline()),
+            helptpl: [
+                '<p>',
+                    gettext('Type {required_confirm_text} in the field below to confirm that you really intend to delete {short_description}.'),
+                '</p>',
+                '<p>',
+                    gettext('Note that deleting a deadlines deletes all deliveries made on that deadline. For this reason, only superusers are permitted to delete deadlines with any deliveries.'),
+                '</p>'
+            ],
+
             listeners: {
                 scope: this,
                 deleteConfirmed: function(deleteDialog) {

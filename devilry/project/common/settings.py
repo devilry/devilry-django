@@ -5,6 +5,7 @@
 #
 ########################################################################
 
+
 DEBUG = False
 EXTJS4_DEBUG = DEBUG
 TEMPLATE_DEBUG = DEBUG
@@ -33,7 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.humanize',
-    # 'djcelery',
+    'errortemplates',
     'errortemplates',
     'crispy_forms',
     'djangorestframework',
@@ -45,6 +46,7 @@ INSTALLED_APPS = [
 
     'devilry.devilry_cradmin',
     'django_cradmin',
+    'django_cradmin.apps.cradmin_temporaryfileuploadstore',
     'devilry.django_decoupled_docs',
 
     'devilry.apps.core',
@@ -80,6 +82,7 @@ INSTALLED_APPS = [
     'devilry.devilry_gradingsystemplugin_points',
     'devilry.devilry_gradingsystemplugin_approved',
     'devilry.devilry_rest',
+    'devilry.devilry_detektor',
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
@@ -112,7 +115,7 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
     },
 }
-HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
+# HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 
 
 ########################################################################
@@ -120,7 +123,7 @@ HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
 # Celery
 #
 ########################################################################
-BROKER_URL = 'amqp://devilry:secret@localhost:5672/devilryhost'
+# BROKER_URL = 'amqp://devilry:secret@localhost:5672/devilryhost'
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
 

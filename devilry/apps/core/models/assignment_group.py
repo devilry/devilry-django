@@ -42,6 +42,23 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
     examiner information from expired periods (which in most cases are not necessary
     to get). Use :meth:`.active` instead.
     """
+
+    def annotate_with_last_deadline_pk(self):
+        """
+        See :meth:`.AssignmentGroupManager.annotate_with_last_deadline_pk`.
+        """
+        return self.extra(
+            select={
+                'last_deadline_pk': """
+                    SELECT core_deadline.id
+                    FROM core_deadline
+                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY core_deadline.deadline DESC
+                    LIMIT 1
+                """
+            },
+        )
+
     def annotate_with_last_deadline_datetime(self):
         """
         See :meth:`.AssignmentGroupManager.annotate_with_last_deadline_datetime`.
@@ -68,7 +85,24 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
                     SELECT core_delivery.id
                     FROM core_delivery
                     INNER JOIN core_deadline ON core_deadline.id = core_delivery.deadline_id
-                    INNER JOIN core_assignmentgroup ON core_assignmentgroup.id = core_deadline.assignment_group_id
+                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY core_delivery.time_of_delivery DESC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def annotate_with_last_delivery_time_of_delivery(self):
+        """
+        See :meth:`.AssignmentGroupManager.annotate_with_last_delivery_id`.
+        """
+        return self.extra(
+            select={
+                'last_delivery_time_of_delivery': """
+                    SELECT core_delivery.time_of_delivery
+                    FROM core_delivery
+                    INNER JOIN core_deadline ON core_deadline.id = core_delivery.deadline_id
+                    WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
                     ORDER BY core_delivery.time_of_delivery DESC
                     LIMIT 1
                 """
@@ -129,6 +163,29 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             delivery_status="waiting-for-something",
             last_deadline__deadline__gt=now)
 
+    def filter_can_add_deliveries(self):
+        now = datetime.now()
+        return self\
+            .filter(parentnode__delivery_types=deliverytypes.ELECTRONIC,
+                    delivery_status="waiting-for-something")\
+            .extra(
+                where=[
+                    """
+                    core_assignment.deadline_handling = %s
+                    OR
+                    (SELECT core_deadline.deadline
+                     FROM core_deadline
+                     WHERE core_deadline.assignment_group_id = core_assignmentgroup.id
+                     ORDER BY core_deadline.deadline DESC
+                     LIMIT 1) > %s
+                    """
+                ],
+                params=[
+                    Assignment.DEADLINEHANDLING_SOFT,
+                    now
+                ]
+            )
+
     def close_groups(self):
         return self.update(
             is_open=False,
@@ -155,12 +212,26 @@ class AssignmentGroupManager(models.Manager):
     def filter(self, *args, **kwargs):
         return self.get_queryset().filter(*args, **kwargs)
 
+    def annotate_with_last_deadline_pk(self):
+        """
+        Annotate the queryset with the datetime of the last deadline stored
+        as the ``last_deadline_id`` attribute.
+        """
+        return self.get_queryset().annotate_with_last_deadline_pk()
+
     def annotate_with_last_deadline_datetime(self):
         """
         Annotate the queryset with the datetime of the last deadline stored
-        as the ``last_delivery_datetime`` attribute.
+        as the ``last_deadline_datetime`` attribute.
         """
         return self.get_queryset().annotate_with_last_deadline_datetime()
+
+    def annotate_with_last_delivery_time_of_delivery(self):
+        """
+        Annotate the queryset with the time of delivery of the last delivery stored
+        as the ``last_delivery_time_of_delivery`` attribute.
+        """
+        return self.get_queryset().annotate_with_last_delivery_time_of_delivery()
 
     def annotate_with_last_delivery_id(self):
         """
@@ -245,6 +316,9 @@ class AssignmentGroupManager(models.Manager):
     def filter_waiting_for_deliveries(self):
         return self.get_queryset().filter_waiting_for_deliveries()
 
+    def filter_can_add_deliveries(self):
+        return self.get_queryset().filter_can_add_deliveries()
+
     def close_groups(self):
         """
         Performs an efficient update of all the groups in the queryset
@@ -304,9 +378,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
        The last `StaticFeedback`_ (by save timestamp) on this assignmentgroup.
 
-    .. attribute:: last_delivery
-
-       The last :class:`devilry.apps.core.models.Delivery` on this assignmentgroup.
 
     .. attribute:: last_deadline
 
@@ -337,10 +408,8 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     is_open = models.BooleanField(
         blank=True, default=True,
         help_text='If this is checked, the group can add deliveries.')
-    feedback = models.OneToOneField("StaticFeedback", blank=True, null=True)
-    last_delivery = models.OneToOneField(
-        "Delivery", blank=True, null=True,
-        related_name='last_delivery_by_group', on_delete=models.SET_NULL)
+    feedback = models.OneToOneField("StaticFeedback", blank=True, null=True,
+                                    on_delete=models.SET_NULL)
     last_deadline = models.OneToOneField(
         "Deadline", blank=True, null=True,
         related_name='last_deadline_for_group', on_delete=models.SET_NULL)
@@ -559,7 +628,11 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             names = [candidate.student.devilryuserprofile.get_displayname() for candidate in candidates]
             out = u', '.join(names)
             if self.name:
-                out = u'{} ({})'.format(self.name, out)
+                if out:
+                    out = u'{} ({})'.format(self.name, out)
+                else:
+                    out = self.name
+
         if out == '':
             return unicode(self.id)
         else:
@@ -674,7 +747,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         for deadline in self.deadlines.all():
             deadline.copy(groupcopy)
         groupcopy._set_latest_feedback_as_active()
-        groupcopy._set_last_delivery()
         groupcopy.save(update_delivery_status=False)
         return groupcopy
 
@@ -779,17 +851,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             latest_feedback = feedbacks[0]
             self.feedback = latest_feedback
 
-    def _set_last_delivery(self):
-        from .delivery import Delivery
-        try:
-            last_delivery = Delivery.objects.filter(
-                successful=True,
-                deadline__assignment_group=self).order_by('-time_of_delivery')[0]
-        except IndexError:
-            self.last_delivery = None
-        else:
-            self.last_delivery = last_delivery
-
     def merge_into(self, target):
         """
         Merge this AssignmentGroup into the ``target`` AssignmentGroup.
@@ -864,7 +925,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             target.recalculate_delivery_numbers()
             self.delete()
         target._set_latest_feedback_as_active()
-        target._set_last_delivery()
         target.save()
 
     @classmethod

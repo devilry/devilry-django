@@ -1,0 +1,13 @@
+{% extends "django_cradmin/viewhelpers/objecttable/objecttable.django.html" %}
+{% load devilry_examiner_tags %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Deliveries" %}
+    -
+    {{ request.cradmin_role.assignment }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    {% include "devilry_student/cradmin_group/include/page-header.django.html" %}
+{% endblock pageheader-inner %}

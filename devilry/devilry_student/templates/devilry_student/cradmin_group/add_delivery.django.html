@@ -1,27 +1,35 @@
-{% extends "django_cradmin/base.django.html" %}
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
 {% load i18n %}
 {% load static %}
+{% load humanize %}
 
-{% block content %}
-    <div class="page-header">
+
+{% block title %}
+    {% trans "Add delivery" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    {% include "devilry_student/cradmin_group/include/page-header.django.html" %}
+{#    <p id="devilry_student_add_delivery_deadline">#}
+{#        {% trans "Deadline" %}:#}
+{#        <span id="devilry_student_add_delivery_deadline_natural">#}
+{#            {{ group.last_deadline_datetime|naturaltime }}#}
+{#        </span>#}
+{#        <small id="devilry_student_add_delivery_deadline_exact">#}
+{#            ({{ group.last_deadline_datetime|date:"SHORT_DATETIME_FORMAT" }})#}
+{#        </small>#}
+{#    </p>#}
+{% endblock pageheader-inner %}
+
+
+{% block form %}
+    {% if deadline_has_expired == "hard" %}
         <div class="container-fluid">
-            <h1>
-                {% trans "Add delivery" %}
-            </h1>
+            <div id="devilry_student_add_delivery_hard_deadline_expired_alert" class="alert alert-danger">
+                {% trans "The deadline has expired. Since this course is configured with hard deadlines, adding deliveries after the deadline is prohibited." %}
+            </div>
         </div>
-    </div>
-    <div class="container-fluid">
-        <form action="{{ request.path }}" method="post" enctype="multipart/form-data">{% csrf_token %}
-            {{ filemetaformset.management_form }}
-            {% for filemetaform in filemetaformset %}
-                {{ filemetaform.as_p }}
-            {% endfor %}
-
-            <p>
-                <button type="submit" class="btn btn-primary">
-                    {% trans "Add delivery" %}
-                </button>
-            </p>
-        </form>
-    </div>
-{% endblock content %}
+    {% else %}
+        {{ block.super }}
+    {% endif %}
+{% endblock form %}

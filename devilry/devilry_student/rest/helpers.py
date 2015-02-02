@@ -16,8 +16,7 @@ class GroupResourceHelpersMixin(object):
     def format_candidate(self, candidate):
         cand = {'id': candidate.id,
                 'user': self.format_user(candidate.student),
-                'candidate_id': candidate.candidate_id,
-                'identifier': candidate.identifier}
+                'candidate_id': candidate.candidate_id}
         return cand
 
     def format_examiner(self, examiner):

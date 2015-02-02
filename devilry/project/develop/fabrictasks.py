@@ -9,7 +9,6 @@ from fabric.context_managers import shell_env
 DB_FILE = join('developfiles', 'db.sqlite3')
 
 
-
 def _managepy(args, djangoenv='develop', environment={}):
     with shell_env(DJANGOENV=djangoenv, **environment):
         local('python manage.py {args}'.format(args=args))
@@ -78,7 +77,40 @@ def demodb(djangoenv='develop'):
         environment={
             'DEVILRY_EMAIL_BACKEND': 'django.core.mail.backends.dummy.EmailBackend'
         })
-    # _managepy('rebuild_index --noinput', djangoenv=djangoenv)
+
+
+def _demodb_managepy(command, djangoenv):
+    _managepy(command,
+        djangoenv=djangoenv,
+        environment={
+            'DEVILRY_EMAIL_BACKEND': 'django.core.mail.backends.dummy.EmailBackend'
+        })
+
+
+@task
+def new_demodb(djangoenv='develop'):
+    """
+    Run ``remove_db``, ``syncmigrate`` and ... TODO
+
+    :param djangoenv: The DJANGOENV to use.
+    """
+    reset_db(djangoenv=djangoenv)
+    _demodb_managepy('devilry_developer_demodb_createusers', djangoenv=djangoenv)
+    # _demodb_managepy('devilry_developer_demodb_createnode duckburgh', djangoenv=djangoenv)
+    # _demodb_managepy('devilry_developer_demodb_createsubject --node=duckburgh duck1010', djangoenv=djangoenv)
+    # _demodb_managepy(
+    #     'devilry_developer_demodb_createperiod --subject=duck1010 '
+    #     '--starts-in-months -4 --duration-months 6 spring2015',
+    #     djangoenv=djangoenv)
+    # _demodb_managepy(
+    #     'devilry_developer_demodb_create_pointassignment --period=duck1010.spring2015 '
+    #     '--publishing-time-in-days -14 week1',
+    #     djangoenv=djangoenv)
+    # _demodb_managepy(
+    #     'devilry_developer_demodb_create_pointassignment --period=duck1010.spring2015 '
+    #     '--publishing-time-in-days 10 week2',
+    #     djangoenv=djangoenv)
+
 
 
 # def _gzip_file(infile):
@@ -186,7 +218,7 @@ def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False, no_build
     Use ``bin/django_dev.py senchatoolsbuild`` to build the app with the given
     ``appname``.
 
-    :param appname: Name of an app, like ``devilry_frontpage``.
+    :param appname: Name of an app (E.g.: devilry.devilry_frontpage).
     :param nocompress: Run with ``--nocompress``. Good for debugging.
     :param watch: Run with ``--watch ../src/``. Good for development.
     :param no_jsbcreate:
@@ -200,9 +232,9 @@ def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False, no_build
 
     Workaround if the buildserver hangs (gets lots of 500 responses):
 
-        $ bin/django_extjsbuild.py runserver 127.0.0.1:15041
+        $ DJANGOENV=extjsbuild python manage.py runserver 127.0.0.1:15041
         ... and in another shell:
-        $ bin/fab jsbuild:devilry_subjectadmin,no_buildserver=true
+        $ fab jsbuild:devilry.devilry_subjectadmin,no_buildserver=true
     """
     extra_args = []
     if no_buildserver:
@@ -218,8 +250,9 @@ def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False, no_build
             jsbuild(appname, nocompress, watch=False) # build one with no_jsbcreate=False
         extra_args.append('--no-jsbcreate')
     extra_args = ' '.join(extra_args)
-    local(('bin/django_extjsbuild.py senchatoolsbuild {extra_args} '
-           '--app {appname}').format(appname=appname, extra_args=extra_args))
+    _managepy(
+        'senchatoolsbuild {extra_args} --app {appname}'.format(appname=appname, extra_args=extra_args),
+        djangoenv='extjsbuild')
 
 
 @task
@@ -228,11 +261,11 @@ def jsbuildall():
     Build all the Devilry apps using the ``jsbuild`` task with compression enabled.
     """
     for appname in (
-            "devilry_frontpage",
-            "devilry_header",
-            "devilry_nodeadmin",
-            "devilry_qualifiesforexam",
-            "devilry_qualifiesforexam_select",
-            "devilry_student",
-            "devilry_subjectadmin"):
+            "devilry.devilry_frontpage",
+            "devilry.devilry_header",
+            "devilry.devilry_nodeadmin",
+            "devilry.devilry_qualifiesforexam",
+            "devilry.devilry_qualifiesforexam_select",
+            "devilry.devilry_student",
+            "devilry.devilry_subjectadmin"):
         jsbuild(appname)

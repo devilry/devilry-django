@@ -1,26 +1,14 @@
+from datetime import timedelta
 import random
-
 from django.core.management.base import BaseCommand
 from django.contrib.webdesign import lorem_ipsum
 
-from devilry.devilry_markup.parse_markdown import markdown_full
-from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
-
-# from devilry.apps.core.models import Node
-# from devilry.apps.core.models import Subject
-# from devilry.apps.core.models import Period
-# from devilry.apps.core.models import Assignment
-# from devilry.apps.core.models import AssignmentGroup
-# from devilry.apps.core.models import Deadline
-# from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
-# from devilry.apps.core.models import FileMeta
 from devilry.apps.core.models import RelatedStudent
 from devilry.apps.core.models import RelatedExaminer
-
-
+from devilry.devilry_markup.parse_markdown import markdown_full
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder
+from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 
 
 bad_students = [
@@ -38,6 +26,68 @@ good_students = [
     ('kvasir', 'God of Inspiration'),
     ('loki', 'Trickster and god of Mischief'),
     ('odin', 'The "All Father"')
+]
+
+programs = [
+    {
+        'filename': 'test.py',
+        'data': 'print "Test"'
+    },
+    {
+        'filename': 'hello.py',
+        'data': 'if i == 10:\n    print "Hello"\nelse: pass'
+    },
+    {
+        'filename': 'demo.py',
+        'data': 'while True: pass'
+    },
+    {
+        'filename': 'sum.py',
+        'data': 'def sum(a, b):\n    return a+b\n'
+    },
+    {
+        'filename': 'addtimes.py',
+        'data': 'def addtimes(x, y, times=1):\n    return (x + y) * times\n'
+    },
+    {
+        'filename': 'generate.py',
+        'data': 'def generate(count):\n    return [randint(x, 100000) for x in xrange(count)]\n'
+    },
+    {
+        'filename': 'count.py',
+        'data': (
+            'def count_true(iterable, attribute):\n'
+            '    count = 0\n'
+            '    for item in iterable:\n'
+            '        if getattr(item, attribute):\n'
+            '            count += 1\n'
+            '    return count\n'
+            )
+    },
+    {
+        'filename': 'Hello.java',
+        'data': (
+            'class Hello {\n'
+            '    public static void main(String [] args) {\n'
+            '        System.out.println("Hello world");\n'
+            '    }\n'
+            '}')
+    },
+    {
+        'filename': 'Demo.java',
+        'data': (
+            'class Demo {\n'
+            '    public static void main(String [] args) {\n'
+            '        System.out.println("Hello demo");\n'
+            '        if(args[1].equals("add")) {\n'
+            '            return;\n'
+            '        }\n'
+            '        else {\n'
+            '            System.out.println("Else");\n'
+            '        }\n'
+            '    }\n'
+            '}')
+    },
 ]
 
 
@@ -95,10 +145,17 @@ class Command(BaseCommand):
 
             deliverybuilder = deadlinebuilder.add_delivery_x_hours_before_deadline(
                 hours=random.randint(1, 30))
+            used_filenames = set()
             for number in xrange(filecount):
+                while True:
+                    deliveryfile = random.choice(programs)
+                    filename = deliveryfile['filename']
+                    if filename not in used_filenames:
+                        used_filenames.add(filename)
+                        break
                 deliverybuilder.add_filemeta(
-                    filename='{}_{}.py'.format(assignmentbuilder.assignment.short_name, number),
-                    data='print "Hello world"')
+                    filename=deliveryfile['filename'],
+                    data=deliveryfile['data'])
             if random.randint(0, 100) <= feedback_percent:
                 feedback = StaticFeedback.from_points(
                     assignment=assignmentbuilder.assignment,
@@ -117,12 +174,13 @@ class Command(BaseCommand):
             examiner=self.donald)
         return assignmentbuilder
 
-    def _as_relatedstudents(self, users, tags=''):
+    def _as_relatedstudents(self, users, tags):
         return [RelatedStudent(user=user, tags=tags) for user in users]
 
     def add_duck1100(self):
-        duck1100 = self.duckburgh.add_subject('duck1100',
-            long_name='DUCK1100 - Programming for the natural sciences')
+        duck1100 = self.duckburgh.add_subject(
+            short_name='duck1100',
+            long_name='DUCK1010 - Programming for the natural sciences')
         duck1100.add_admins(self.thor)
 
         relatedstudents = [RelatedStudent(user=self.april, tags='group1')]
@@ -141,7 +199,7 @@ class Command(BaseCommand):
             self.april, self.bad_students['dewey'],
             self.bad_students['louie'], self.bad_students['june'],
             self.good_students['loki'], self.good_students['kvasir']]
-        old_relatedstudents = self._as_relatedstudents(old_relatedstudentusers)
+        old_relatedstudents = self._as_relatedstudents(old_relatedstudentusers, tags='')
         oldtestsemester = duck1100.add_6month_lastyear_period(
             short_name='oldtestsemester', long_name='Old testsemester',
             relatedstudents=old_relatedstudents,

@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from time import sleep
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.devilry_subjectadmin.tests.base import SubjectAdminSeleniumTestCase
@@ -36,7 +37,8 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
 
     def _open_addform(self):
         self._get_addbutton().click()
-        return self.waitForAndFindElementByCssSelector('.devilry_subjectadmin_bulkmanagedeadlines_deadlineform.createdeadlineform')
+        return self.waitForAndFindElementByCssSelector(
+            '.devilry_subjectadmin_bulkmanagedeadlines_deadlineform.createdeadlineform')
 
     def _create_datestring_from_offset(self, dayoffset=1):
         now = datetime.now()
@@ -71,25 +73,34 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
     def _get_formsavebutton(self, form):
         return form.find_element_by_css_selector('.savedeadlinebutton button')
 
-
     #
     #
     # Add deadline tests
     #
     #
     def _fill_addform(self, form, date, time, text='', createmodecls=None):
-        datefield = self.waitForAndFindElementByCssSelector('.deadlinefield .devilry_extjsextras_datefield input[type=text]',
-                                                            within=form)
-        timefield = self.waitForAndFindElementByCssSelector('.deadlinefield .devilry_extjsextras_timefield input[type=text]',
-                                                            within=form)
-        textfield = self.waitForAndFindElementByCssSelector('textarea[name="text"]',
-                                                            within=form)
+        datefield = self.waitForAndFindElementByCssSelector(
+            '.deadlinefield .devilry_extjsextras_datefield input[type=text]',
+            within=form)
+        timefield = self.waitForAndFindElementByCssSelector(
+            '.deadlinefield .devilry_extjsextras_timefield input[type=text]',
+            within=form)
+        textfield = self.waitForAndFindElementByCssSelector('textarea[name="text"]', within=form)
 
         for field in (datefield, timefield, textfield):
             field.clear()
+        datefield.clear()
+        datefield.send_keys('')
         datefield.send_keys(date)
+
+        timefield.clear()
+        timefield.send_keys('')
         timefield.send_keys(time)
+
+        textfield.clear()
+        textfield.send_keys('')
         textfield.send_keys(text)
+
         if createmodecls:
             checkbox = form.find_element_by_css_selector('.{0} input[type=button]'.format(createmodecls))
             checkbox.click()
@@ -107,7 +118,7 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self._loginTo('a1admin', self.assignment.id)
         addform = self._open_addform()
         self._fill_addform(addform, date=self._create_datestring_from_offset(2),
-                        time='12:00', text='Hello', createmodecls='createmode_failed')
+                           time='12:00', text='Hello', createmodecls='createmode_failed')
 
         url = self.selenium.current_url
         self._get_formsavebutton(addform).click()
@@ -166,7 +177,7 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self._loginTo('a1admin', self.assignment.id)
         addform = self._open_addform()
         self._fill_addform(addform, date=self._create_datestring_from_offset(2),
-                        time='12:00', text='Hello', createmodecls='createmode_no_deadlines')
+                           time='12:00', text='Hello', createmodecls='createmode_no_deadlines')
 
         url = self.selenium.current_url
         self._get_formsavebutton(addform).click()
@@ -228,7 +239,7 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         addform = self._open_addform()
         savebutton = self._get_formsavebutton(addform)
 
-        self.waitForDisabled(savebutton) # Should start as disabled
+        self.waitForDisabled(savebutton)  # Should start as disabled
 
         self._fill_addform(addform, date=self._create_datestring_from_offset(2),
                            time='12:00', text='Hello')
@@ -251,9 +262,6 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self._fill_addform(addform, date=self._create_datestring_from_offset(2),
                            time='12:00', text='Hello', createmodecls='createmode_failed')
         self.waitForEnabled(savebutton)
-
-
-
 
     #
     #
@@ -362,6 +370,7 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
         self._fill_editform(editform, date=self._create_datestring_from_offset(2),
                             time='12:00', text='Hello')
         self._click_onlysomegroups_checkbox(editform)
+        sleep(1)
         self._editform_clickgroups(editform, [badgroup])
 
         url = self.selenium.current_url
@@ -379,14 +388,14 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
 
     def test_edit_deadline_enable_disable(self):
         badgroup = self._create_badgroup()
-        goodgroup = self._create_goodgroup()
+        self._create_goodgroup()
         self._loginTo('a1admin', self.assignment.id)
 
         deadlinepanelbody = self._expand_deadline_by_index(index=0, expectedcount=1)
         editform = self._open_editform(deadlinepanelbody)
         savebutton = self._get_formsavebutton(editform)
 
-        self.waitForEnabled(savebutton) # Should start as enabled since we load a valid deadline
+        self.waitForEnabled(savebutton)  # Should start as enabled since we load a valid deadline
 
         self._fill_editform(editform, date='',
                             time='12:00', text='Hello')
@@ -396,14 +405,14 @@ class TestDeadlines(SubjectAdminSeleniumTestCase):
                             time='12:00', text='Hello')
         self.waitForEnabled(savebutton)
 
-        self._click_onlysomegroups_checkbox(editform) # Expand only some groups panel
+        self._click_onlysomegroups_checkbox(editform)  # Expand only some groups panel
         self.waitForDisabled(savebutton)
 
-        self._editform_clickgroups(editform, [badgroup]) # Select badgroup
+        self._editform_clickgroups(editform, [badgroup])  # Select badgroup
         self.waitForEnabled(savebutton)
 
-        self._editform_clickgroups(editform, [badgroup]) # Deselect badgroup
-        self.waitForDisabled(savebutton)
+        self._editform_clickgroups(editform, [badgroup])  # Deselect badgroup
+        self.waitForDisabled(savebutton, timeout=10)
 
-        self._click_onlysomegroups_checkbox(editform) # Collapse only some groups panel
+        self._click_onlysomegroups_checkbox(editform)  # Collapse only some groups panel
         self.waitForEnabled(savebutton)

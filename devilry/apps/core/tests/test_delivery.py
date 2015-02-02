@@ -340,11 +340,25 @@ class TestDeliveryOld(TestCase, TestHelper):
         self.assertEquals(delivery.last_feedback, feedback2)
 
 
-
 class TestDeliveryManager(TestCase):
     def setUp(self):
         DeliveryBuilder.set_memory_deliverystore()
         self.examiner1 = UserBuilder('examiner1').user
+
+    def test_filter_is_candidate(self):
+        week1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('week1')
+        testuser = UserBuilder('testuser').user
+        delivery = week1builder.add_group(students=[testuser])\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1).delivery
+
+        # Add another group to make sure we do not get false positives
+        week1builder.add_group().add_students(UserBuilder('otheruser').user)
+
+        qry = Delivery.objects.filter_is_candidate(testuser)
+        self.assertEquals(qry.count(), 1)
+        self.assertEquals(qry[0], delivery)
 
     def test_filter_is_examiner(self):
         week1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\

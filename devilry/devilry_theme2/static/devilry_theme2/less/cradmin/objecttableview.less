@@ -71,24 +71,22 @@
         .objecttable-cellbuttons {
           padding: 0;
           margin: 0;
+          .btn {
+            margin: 0 5px 10px 0;
+          }
           .btn-sm {
             text-transform: uppercase;
           }
         }
-        @media (min-width: @screen-sm-min) {
+        @media (min-width: @screen-md-min) {
           .objecttable-cellbuttons {
-            // opacity: 0;
-            // transition: opacity 0.2s ease;
-
+            .btn {
+              margin: 0 0 8px 0;
+            }
             .btn-sm {
               padding: 3px 10px;
             }
           }
-          // &:hover {
-          //     .objecttable-cellbuttons {
-          //         opacity: 1;
-          //     }
-          // }
         }
       }
     }
@@ -101,4 +99,11 @@
     display: inline-block;
     height: 40px;
   }
+}
+
+.objecttable-cell-strong {
+  font-weight: bold;
+}
+.objecttable-cell-lg {
+  font-size: @font-size-large;
 }

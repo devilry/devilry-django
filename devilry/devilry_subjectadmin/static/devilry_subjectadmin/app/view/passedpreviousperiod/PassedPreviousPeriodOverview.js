@@ -44,20 +44,40 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                     layout: 'border',
                     style: 'background: transparent !important;',
                     items: [{
-                        xtype: 'selectpassedpreviousgroupsgrid',
+                        xtype: 'container',
                         region: 'center',
-                        fbar: [{
+                        layout: {
+                            type: 'vbox',
+                            align : 'stretch',
+                            pack  : 'start'
+                        },
+                        items: [{
+                            xtype: 'selectpassedpreviousgroupsgrid',
+                            flex: 1
+                        }, {
                             xtype: 'checkbox',
                             boxLabel: gettext('Show groups that Devilry believes should not be marked as previously passed?'),
                             itemId: 'showUnRecommendedCheckbox',
-                            cls: 'showUnRecommendedCheckbox'
-                        }, '->', {
-                            xtype: 'button',
-                            scale: 'large',
-                            text: gettext('Next'),
-                            cls: 'nextButton',
-                            disabled: true,
-                            itemId: 'nextButton'
+                            cls: 'showUnRecommendedCheckbox',
+                            height: 60
+                        }, {
+                            xtype: 'container',
+                            layout: 'column',
+                            height: 46,
+                            items: [{
+                                xtype: 'box',
+                                html: '&nbsp;',
+                                columnWidth: 1
+                            }, {
+                                xtype: 'button',
+                                scale: 'large',
+                                text: gettext('Next'),
+                                cls: 'nextButton',
+                                disabled: true,
+                                itemId: 'nextButton',
+                                width: 170,
+                                height: 46
+                            }]
                         }]
                     }, {
                         xtype: 'markupmoreinfobox',

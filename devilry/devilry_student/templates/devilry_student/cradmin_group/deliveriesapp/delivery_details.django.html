@@ -1,16 +1,99 @@
 {% extends "django_cradmin/base.django.html" %}
 {% load i18n %}
 {% load static %}
+{% load humanize %}
+{% load devilry_core_tags %}
+
+{% block title %}
+    {% trans "Delivery" %}#{{ delivery.number }} - {{ request.cradmin_role.assignment }}
+{% endblock title %}
+
+{% block jsimports %}
+    {% include "markup/mathjaxheader.django.html" %}
+    {{ block.super }}
+{% endblock jsimports %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Delivery" %}#{{ delivery.number }}
+    </h1>
+    <p>
+        {{ group.assignment.long_name }} -
+        {{ group.subject.long_name }} -
+        {{ group.period.long_name }}
+    </p>
+{% endblock pageheader-inner %}
 
 {% block content %}
-    <div class="page-header">
-        <div class="container-fluid">
-            <h1>
-                {% blocktrans with number=delivery.number%}Delivery#{{ number }}{% endblocktrans %}
-            </h1>
+
+    {% if delivery.last_feedback %}
+        <div id="devilry_student_group_deliverydetails_feedback_summary"
+             class="container-fluid django-cradmin-container-fluid-focus
+                {% if delivery.last_feedback.is_passing_grade %}
+                    django-cradmin-container-fluid-focus-success
+                    devilry-student-deliverydetails-feedbacksummary-passed
+                {% else %}
+                    django-cradmin-container-fluid-focus-warning
+                    devilry-student-deliverydetails-feedbacksummary-failed
+                {% endif %}
+             ">
+            {% trans "This delivery has been corrected, and the grade is" %}:
+            <strong>{{ delivery.last_feedback|devilry_feedback_shortformat }}</strong>
         </div>
-    </div>
-    <div class="container-fluid">
-        TODO
+        {% if delivery.last_feedback.rendered_view %}
+            <div id="devilry_student_group_deliverydetails_feedback_text"
+                 class="container-fluid django-cradmin-container-fluid-focus">
+                <div id="devilry_student_group_deliverydetails_feedback_rendered_view">
+                    {{ delivery.last_feedback.rendered_view|safe }}
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <div id="devilry_student_group_deliverydetails_metadata"
+            class="container-fluid {% if not delivery.last_feedback %}django-cradmin-container-fluid-focus{% endif %}">
+        <dl>
+            <dt>{% trans "Files" %}:</dt>
+            <dd id="devilry_student_group_deliverydetails_files">
+                {% for filemeta in delivery.filemetas.all %}
+                    <a href="#">{{ filemeta.filename }}</a>{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            </dd>
+
+            {% if delivery.delivered_by %}
+                <dt>{% trans "Delivered by" %}:</dt>
+                <dd id="devilry_student_group_deliverydetails_delivered_by">
+                    {{ delivery.delivered_by.student|devilry_user_displayname }}
+                </dd>
+            {% endif %}
+
+            <dt>{% trans "Time of delivery" %}:</dt>
+            <dd id="devilry_student_group_deliverydetails_time_of_delivery">
+                {{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}
+                {% if delivery.after_deadline %}
+                    <span class='label label-danger'>
+                        {% trans "After the deadline" %}
+                    </span>
+                {% endif %}
+            </dd>
+
+            <dt>{% trans "Deadline" %}:</dt>
+            <dd id="devilry_student_group_deliverydetails_deadline">
+                {{ delivery.deadline.deadline|date:"DATETIME_FORMAT" }}
+            </dd>
+
+            {% if delivery.last_feedback %}
+                {% if not group.assignment.anonymous %}
+                    <dt>{% trans "Feedback written by" %}:</dt>
+                    <dd id="devilry_student_group_deliverydetails_feedback_written_by">
+                        {{ delivery.last_feedback.saved_by|devilry_user_displayname }}
+                    </dd>
+                {% endif %}
+                <dt>{% trans "Feedback time" %}:</dt>
+                <dd id="devilry_student_group_deliverydetails_feedback_save_timestamp">
+                    {{ delivery.last_feedback.save_timestamp|date:"DATETIME_FORMAT" }}
+                </dd>
+            {% endif %}
+        </dl>
     </div>
 {% endblock content %}

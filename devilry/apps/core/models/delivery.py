@@ -10,17 +10,15 @@ from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, Node
 import deliverytypes
 
 
-
 class DeliveryQuerySet(models.query.QuerySet):
     """
     Returns a queryset with all Deliveries where the given ``user`` is examiner.
-
-    WARNING: You should normally not use this directly because it gives the
-    examiner information from expired periods (which in most cases are not necessary
-    to get). Use :meth:`.active` instead.
     """
     def filter_is_examiner(self, user):
         return self.filter(deadline__assignment_group__examiners__user=user).distinct()
+
+    def filter_is_candidate(self, user):
+        return self.filter(deadline__assignment_group__candidates__student=user).distinct()
 
     def filter_is_active(self):
         now = datetime.now()
@@ -37,13 +35,16 @@ class DeliveryManager(models.Manager):
     def get_queryset(self):
         return DeliveryQuerySet(self.model, using=self._db)
 
+    def filter_is_candidate(self, user):
+        return self.get_queryset().filter_is_candidate(user)
+
     def filter_is_examiner(self, user):
         """
         Returns a queryset with all Deliveries where the given ``user`` is examiner.
 
-        WARNING: You should normally not use this directly because it gives the
+        WARNING: You should normally not use this alone because it gives the
         examiner information from expired periods (which they are not supposed
-        to get). Use :meth:`.active` instead.
+        to get). Use :meth:`.filter_examiner_has_access` instead.
         """
         return self.get_queryset().filter_is_examiner(user)
 
@@ -222,7 +223,6 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         """
         Returns ``True`` if this is the last delivery for this AssignmentGroup.
         """
-        from .assignment_group import AssignmentGroup
         try:
             last_delivery = Delivery.objects\
                 .filter(deadline__assignment_group_id=self.deadline.assignment_group_id)\

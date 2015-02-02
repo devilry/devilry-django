@@ -1,11 +1,9 @@
 from django.core.exceptions import ValidationError
-from datetime import timedelta
 from django.test import TestCase
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
-from devilry.apps.core.models import Deadline
+from devilry.apps.core.models import Deadline, Delivery
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models.deadline import NewerDeadlineExistsError
 from devilry.apps.core.models import deliverytypes
@@ -131,7 +129,8 @@ class TestDeadline(TestCase):
         self.assertEquals(deadline.deliveries.count(), 1)
         self.assertTrue(deadline.deliveries.all()[0].successful)
         groupbuilder.reload_from_db()
-        self.assertEquals(groupbuilder.group.last_delivery, deadline.deliveries.all()[0])
+        last_delivery = Delivery.objects.filter(deadline__assignment_group=groupbuilder.group).first()
+        self.assertEquals(last_delivery, deadline.deliveries.all()[0])
 
     def test_autocreate_delivery_if_nonelectronic_false(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -214,17 +213,19 @@ class TestDeadline(TestCase):
         self.assertEquals(created_deadline.text, 'Hello world')
         self.assertEquals(group1.last_deadline, created_deadline)
         self.assertEquals(group1.last_deadline.deliveries.count(), 1)
-        self.assertEquals(group1.last_deadline.deliveries.all()[0], group1.last_delivery)
-        self.assertTrue(group1.last_delivery.successful)
-        self.assertEquals(group1.last_delivery.number, 1)
+        group1_last_delivery = Delivery.objects.filter(deadline__assignment_group=group1).first()
+        self.assertEquals(group1.last_deadline.deliveries.all()[0], group1_last_delivery)
+        self.assertTrue(group1_last_delivery.successful)
+        self.assertEquals(group1_last_delivery.number, 1)
 
         group2 = AssignmentGroup.objects.get(id=group2.id) # Reload from db
         self.assertEquals(group2.deadlines.all()[0].deadline, deadline_datetime)
         self.assertEquals(group2.last_deadline, group2.deadlines.all()[0])
         self.assertEquals(group2.last_deadline.deliveries.count(), 1)
-        self.assertEquals(group2.last_deadline.deliveries.all()[0], group2.last_delivery)
-        self.assertTrue(group2.last_delivery.successful)
-        self.assertEquals(group2.last_delivery.number, 1)
+        group2_last_delivery = Delivery.objects.filter(deadline__assignment_group=group2).first()
+        self.assertEquals(group2.last_deadline.deliveries.all()[0], group2_last_delivery)
+        self.assertTrue(group2_last_delivery.successful)
+        self.assertEquals(group2_last_delivery.number, 1)
 
     def test_is_in_the_future_and_is_in_the_past(self):
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\

@@ -595,3 +595,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         warnings.warn("deprecated", DeprecationWarning)
         now = datetime.now()
         return self.publishing_time < now and self.parentnode.end_time > now
+
+    def deadline_handling_is_hard(self):
+        return self.deadline_handling == self.DEADLINEHANDLING_HARD

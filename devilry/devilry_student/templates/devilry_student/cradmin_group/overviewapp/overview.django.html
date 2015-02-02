@@ -1,0 +1,48 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+{% load static %}
+{% load cradmin_tags %}
+{% load devilry_core_tags %}
+
+{% block title %}
+    {{ group.assignment }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    {% include "devilry_student/cradmin_group/include/page-header.django.html" %}
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container-fluid django-cradmin-container-fluid-focus
+                devilry-student-groupoverview-{{ status }}
+                {% if status == 'corrected' %}
+                    {% if group.feedback.is_passing_grade %}
+                        django-cradmin-container-fluid-focus-success
+                        devilry-student-groupoverview-{{ status }}-passed
+                    {% else %}
+                        django-cradmin-container-fluid-focus-warning
+                        devilry-student-groupoverview-{{ status }}-failed
+                    {% endif %}
+                {% endif %}
+            ">
+        {% if status == 'waiting-for-deliveries' %}
+            {% trans "This assignment is open for deliveries." %}
+            <a href="{% cradmin_instance_url 'deliveries' 'add-delivery' %}">{% trans "Add delivery" %}</a>.
+        {% elif status == 'waiting-for-feedback' %}
+            {% trans "Your assignment is waiting for feedback." %}
+            {% if not group.assignment.deadline_handling_is_hard %}
+                {% trans "The active deadline has expired, but this assignment is configured with soft deadines so you can still add deliveries." %}
+                <a href="{% cradmin_instance_url 'deliveries' 'add-delivery' %}">{% trans "Add delivery" %}</a>.
+            {% endif %}
+        {% elif status == 'corrected' %}
+            {% trans "This assignment is corrected, and the final grade is:" %}
+            <strong>
+                <a href="{% cradmin_instance_url 'deliveries' 'deliverydetails' pk=group.feedback.delivery_id %}">
+                    {{ group.feedback|devilry_feedback_shortformat }}
+                </a>
+            </strong>
+        {% elif status == 'closed-without-feedback' %}
+            {% trans "Your assignment has been closed without feedback." %}
+        {% endif %}
+    </div>
+{% endblock content %}

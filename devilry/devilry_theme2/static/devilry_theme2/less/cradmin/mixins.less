@@ -12,7 +12,12 @@
 // Used by buttons, but we also need to apply this via a css class
 // on file fields - so a mixin!
 .btn-default-hoverstyle-mixin() {
-  background-color: @btn-default-color;
-  border-color: @btn-default-color;
-  color: #fff;
+  background-color: @btn-default-bg;
+  border-color: @btn-default-border;
+  color: @btn-default-color;
+  @media (min-width: @screen-sm-min) {
+    background-color: @cradmin-btn-default-hover-bg;
+    border-color: @cradmin-btn-default-hover-border;
+    color: @cradmin-btn-default-hover-color;
+  }
 }

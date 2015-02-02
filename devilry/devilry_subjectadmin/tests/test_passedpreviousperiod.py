@@ -9,7 +9,8 @@ class TestPassedPreviousPeriod(SubjectAdminSeleniumTestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.create_user('student1', 'Student One')
-        self.testhelper.add(nodes='uni',
+        self.testhelper.add(
+            nodes='uni',
             subjects=['sub:admin(subadmin)'],
             periods=['p1:begins(-14):ends(6)',
                      'p2:begins(-2):ends(6)'],
@@ -86,9 +87,9 @@ class TestPassedPreviousPeriod(SubjectAdminSeleniumTestCase):
         row = self._get_row_by_group(grid, group)
         self.assertEqual(row.find_element_by_css_selector('.groupinfo .names').text.strip(), 'Student One')
         cssselector = '.oldgroup_or_ignoredinfo .whyignored_{0}'.format(whyignored_class)
-        self.assertEqual(1,
-            len(row.find_elements_by_css_selector(cssselector)))
-        self.assertEqual(row.find_element_by_css_selector('.oldgroup_or_ignoredinfo .whyignored').text.strip(),
+        self.assertEqual(1, len(row.find_elements_by_css_selector(cssselector)))
+        self.assertEqual(
+            row.find_element_by_css_selector('.oldgroup_or_ignoredinfo .whyignored').text.strip(),
             whyignored_text)
 
     def test_ignored_only_failing_grade_in_previous(self):
@@ -96,7 +97,8 @@ class TestPassedPreviousPeriod(SubjectAdminSeleniumTestCase):
             (self.testhelper.sub_p1_a1_g1, {'grade': 'F', 'points': 0, 'is_passing_grade': False})
         )
         self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
-        self._test_whyignored(self.testhelper.sub_p2_a1_g1,
+        self._test_whyignored(
+            self.testhelper.sub_p2_a1_g1,
             'only_failing_grade_in_previous',
             'The student has delivered this assignment previously, but never achieved a passing grade.')
 
@@ -108,7 +110,8 @@ class TestPassedPreviousPeriod(SubjectAdminSeleniumTestCase):
         self.testhelper.add_feedback(delivery, verdict={'grade': 'B', 'points': 86, 'is_passing_grade': True})
 
         self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
-        self._test_whyignored(self.testhelper.sub_p2_a1_g1,
+        self._test_whyignored(
+            self.testhelper.sub_p2_a1_g1,
             'has_alias_feedback',
             'Is already marked as previously passed.')
 
@@ -117,18 +120,19 @@ class TestPassedPreviousPeriod(SubjectAdminSeleniumTestCase):
             (self.testhelper.sub_p2_a1_g1, {'grade': 'A', 'points': 70, 'is_passing_grade': True})
         )
         self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
-        self._test_whyignored(self.testhelper.sub_p2_a1_g1,
+        self._test_whyignored(
+            self.testhelper.sub_p2_a1_g1,
             'has_feedback',
             'Group has feedback for this assignment.')
 
     def test_allignoredmessage(self):
         self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
-        warning = self.waitForAndFindElementByCssSelector('.devilry_extjsextras_floatingalertmessagelist .no-nonignoredgroups-warning')
+        warning = self.waitForAndFindElementByCssSelector(
+            '.devilry_extjsextras_floatingalertmessagelist .no-nonignoredgroups-warning')
         self.assertIn(
-            'We did not detect any groups that Devilry does not believe should '\
-            'be ignored. Use the checkbox below the grid to see and select ignored groups.',
+            'We did not detect any groups that Devilry does not believe should '
+            'be ignored. Use the checkbox below the table to see and select ignored groups.',
             warning.text)
-
 
     def _click_nextbutton(self):
         button = self.waitForAndFindElementByCssSelector(
@@ -142,35 +146,10 @@ class TestPassedPreviousPeriod(SubjectAdminSeleniumTestCase):
         self.waitForEnabled(button)
         button.click()
 
-    def test_page2_boolwidget(self):
-        self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
-        self.testhelper.create_feedbacks(
-            (self.testhelper.sub_p1_a1_g1, {'grade': 'B', 'points': 86, 'is_passing_grade': True})
-        )
-        self._click_nextbutton()
-        self.waitForText('Make sure you really want to mark these groups')
-        pagetwosidebar = self.waitForAndFindElementByCssSelector(
-            '.devilry_subjectadmin_passedpreviousperiodoverview .pageTwoSidebar')
-        self.assertNotIn('Grade format', pagetwosidebar.text)
-
     def _set_grade_editor(self, assignment, gradeeditorid, config):
         assignment.gradeeditor_config.gradeeditorid = gradeeditorid
         assignment.gradeeditor_config.config = config
         assignment.gradeeditor_config.save()
-
-    def test_page2_nonboolwidget_sidebar(self):
-        self._set_grade_editor(self.testhelper.sub_p2_a1, 'basicform',
-            json.dumps({'approvedLimit': 12}))
-        self.testhelper.create_feedbacks(
-            (self.testhelper.sub_p1_a1_g1, {'grade': 'B', 'points': 86, 'is_passing_grade': True})
-        )
-        self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
-        self._click_nextbutton()
-        pagetwosidebar = self.waitForAndFindElementByCssSelector(
-            '.devilry_subjectadmin_passedpreviousperiodoverview .pageTwoSidebar')
-        gradeformathelp = self.waitForAndFindElementByCssSelector('.gradeformat-help', within=pagetwosidebar)
-        self.assertIn('Must be a number. 12 points is required to pass.', gradeformathelp.text)
-
 
     def _test_save_autodetected(self, gradeeditor, config=None):
         self._set_grade_editor(self.testhelper.sub_p2_a1, gradeeditor, config)
@@ -188,10 +167,6 @@ class TestPassedPreviousPeriod(SubjectAdminSeleniumTestCase):
 
     def test_save_approved_autodetected(self):
         self._test_save_autodetected('approved')
-
-    def test_save_basicform_autodetected(self):
-        self._test_save_autodetected('basicform', config=json.dumps({'approvedLimit': 12}))
-
 
     def _test_save_manual(self, gradeeditor, config=None, value=None):
         self._set_grade_editor(self.testhelper.sub_p2_a1, gradeeditor, config)
@@ -211,30 +186,5 @@ class TestPassedPreviousPeriod(SubjectAdminSeleniumTestCase):
         self.assertIn('Marked 1 groups as previously passed.', successmessage.text)
         self.assertEquals(self.testhelper.sub_p2_a1_g1_d1.deliveries.count(), 1)
 
-
     def test_save_approved_manual(self):
         self._test_save_manual('approved')
-
-    def test_save_basicform_manual(self):
-        self._test_save_manual('basicform', config=json.dumps({'approvedLimit': 12}), value='20')
-
-
-    def _test_save_manual_error(self, gradeeditor, config=None, invalidvalue=None):
-        self._set_grade_editor(self.testhelper.sub_p2_a1, gradeeditor, config)
-        self.assertEquals(self.testhelper.sub_p2_a1_g1_d1.deliveries.count(), 0)
-
-        self._loginTo('subadmin', self.testhelper.sub_p2_a1.id)
-        self._click_show_hidden_groups_checkbox()
-        group = self.testhelper.sub_p2_a1_g1
-        self._click_group_selector(self._get_selectgroupsgrid(), group)
-        self._click_nextbutton()
-
-        self._set_grade_for_group(group, invalidvalue)
-        self._click_savebutton()
-        errormessage = self.waitForAndFindElementByCssSelector(
-            '.devilry_extjsextras_floatingalertmessagelist .passed-previously-invalid-grade-value')
-        self.assertIn('At least one group has an invalid grade.', errormessage.text)
-        self.assertEquals(self.testhelper.sub_p2_a1_g1_d1.deliveries.count(), 0)
-
-    def test_save_basicform_error(self):
-        self._test_save_manual_error('basicform', config=json.dumps({'approvedLimit': 12}), invalidvalue='3')

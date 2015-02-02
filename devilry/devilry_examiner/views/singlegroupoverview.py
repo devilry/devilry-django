@@ -9,7 +9,9 @@ def get_previous_and_next_group_waiting_for_feedback(examineruser, current_group
         .filter_waiting_for_feedback()\
         .filter_examiner_has_access(examineruser)\
         .filter(parentnode=current_group.parentnode)\
-        .order_by('last_deadline__deadline', 'last_delivery__time_of_delivery')
+        .annotate_with_last_deadline_datetime()\
+        .annotate_with_last_delivery_time_of_delivery()\
+        .extra(order_by=['last_deadline_datetime', 'last_delivery_time_of_delivery'])
     use_next = False
     next = None
     previous = None

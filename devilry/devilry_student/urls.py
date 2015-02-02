@@ -1,7 +1,10 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 from django.views.i18n import javascript_catalog
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django_cradmin import crinstance
+from devilry.devilry_student.cradmin_student import cradmin_student
 
 from devilry.project.common.i18n import get_javascript_catalog_packages
 from devilry.devilry_student.cradmin_period import cradmin_period
@@ -13,7 +16,6 @@ from .views.groupinvite_respond import GroupInviteRespondView
 from .views.groupinvite_delete import GroupInviteDeleteView
 from .views.browseview import BrowseView
 from .views.groupdetails import GroupDetailsView
-from .views.upload_deliveryfile import UploadDeliveryFile
 from .views.semesteroverview import SemesterOverview
 from .views.download_deliveryfiles import CompressedFileDownloadView
 from .views.download_deliveryfiles import FileDownloadView
@@ -28,10 +30,20 @@ def emptyview(request):
     return HttpResponse('Logged in')
 
 
-urlpatterns = patterns('devilry.devilry_student',
+@login_required
+def redirect_to_student_frontpage_view(request):
+    return redirect(crinstance.reverse_cradmin_url(
+        instanceid='devilry_student',
+        appname='waitingfordeliveries',
+        roleid=request.user.id))
+
+
+urlpatterns = patterns(
+    'devilry.devilry_student',
+    url('^$', redirect_to_student_frontpage_view, name='devilry_student'),
+
+    url('^old2$', login_required(FrontpageView.as_view())),
     url('^old$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view())))),
-    url('^$', login_required(FrontpageView.as_view()),
-        name='devilry_student'),
     url('^rest/', include('devilry.devilry_student.rest.urls')),
     url('^emptytestview', emptyview), # NOTE: Only used for testing
     url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
@@ -57,10 +69,6 @@ urlpatterns = patterns('devilry.devilry_student',
         login_required(GroupDetailsView.as_view()),
         name='devilry_student_groupdetails'),
 
-    url(r'^upload_deliveryfile/(?P<deadline_id>\d+)$',
-        UploadDeliveryFile.as_view(),
-        name='devilry_student_upload_deliveryfile'),
-
     # TODO: Rename the views
     url(r'^show-delivery/filedownload/(?P<filemetaid>\d+)$',
         login_required(FileDownloadView.as_view()),
@@ -72,5 +80,6 @@ urlpatterns = patterns('devilry.devilry_student',
     #url(r'^groupinvite/leave/(?P<group_id>\d+)$')
 
     url(r'^period/', include(cradmin_period.CrAdminInstance.urls())),
-    url(r'^group/', include(cradmin_group.CrAdminInstance.urls()))
+    url(r'^group/', include(cradmin_group.CrAdminInstance.urls())),
+    url(r'^', include(cradmin_student.CrAdminInstance.urls()))
 )

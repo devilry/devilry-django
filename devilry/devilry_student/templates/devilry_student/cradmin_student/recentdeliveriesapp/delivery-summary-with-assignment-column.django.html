@@ -1,0 +1,7 @@
+{% extends "devilry_student/cradminextensions/columntypes/delivery-summary-column.django.html" %}
+
+{% block deliverydescription %}
+    {{ delivery.assignment_group.assignment.long_name }}
+    -
+    {{ block.super }}
+{% endblock deliverydescription %}

@@ -1,6 +1,6 @@
-from django.core.urlresolvers import reverse
 from django_cradmin.viewhelpers import objecttable
 from django_cradmin import crapp
+from django_cradmin import crinstance
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_student.cradminextensions import studentobjecttable
@@ -13,9 +13,10 @@ class LongNameColumn(objecttable.SingleActionColumn):
         return group.parentnode.long_name
 
     def get_actionurl(self, group):
-        return reverse('devilry_student_group-add_delivery-INDEX', kwargs={
-            'roleid': group.id
-        })
+        return crinstance.reverse_cradmin_url(
+            instanceid='devilry_student_group',
+            appname='overview',
+            roleid=group.id)
 
 
 class AssignmentGroupListView(studentobjecttable.StudentObjectTableView):
