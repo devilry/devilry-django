@@ -199,6 +199,11 @@ class DeadlineBuilder(CoreBuilderBase):
 class AssignmentGroupBuilder(CoreBuilderBase):
     object_attribute_name = 'group'
 
+    @classmethod
+    def quickadd_ducku_duck1010_active_assignment1_group(cls, studentuser):
+        return AssignmentBuilder.quickadd_ducku_duck1010_active_assignment1()\
+            .add_group(students=[studentuser])
+
     def __init__(self, students=[], candidates=[], examiners=[], **kwargs):
         self.group = AssignmentGroup.objects.create(**kwargs)
         self.add_students(*students)
@@ -241,6 +246,11 @@ class AssignmentBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'assignment'
     modelcls = Assignment
 
+    @classmethod
+    def quickadd_ducku_duck1010_active_assignment1(cls):
+        return PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')
+
     def __init__(self, *args, **kwargs):
         if not 'publishing_time' in kwargs:
             kwargs['publishing_time'] = datetime.now()
@@ -249,7 +259,6 @@ class AssignmentBuilder(BaseNodeBuilderBase):
     def add_group(self, *args, **kwargs):
         kwargs['parentnode'] = self.assignment
         return AssignmentGroupBuilder(*args, **kwargs)
-
 
 
 class PeriodBuilder(BaseNodeBuilderBase):

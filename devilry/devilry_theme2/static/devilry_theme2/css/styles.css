@@ -10180,20 +10180,6 @@ table.table.cradmin-table-fluid tbody tr td {
     margin: 0 0 20px 20px;
   }
 }
-.devilry-student-deliveriesapp-summarycolumn p {
-  margin: 0;
-}
-.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-linkwrapper {
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-feedback,
-.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-no-feedback {
-  font-size: 14px;
-}
-.devilry-student-deliveriesapp-summarycolumn p.devilry-student-deliveriesapp-summarycolumn-no-feedback {
-  color: #777777;
-}
 #devilry_student_group_deliverydetails_feedback_text,
 #devilry_student_group_deliverydetails_metadata {
   padding-top: 30px;
@@ -10213,6 +10199,20 @@ table.table.cradmin-table-fluid tbody tr td {
 }
 #devilry_student_group_deliverydetails_metadata dl dd {
   font-weight: bold;
+}
+.devilry-student-delivery-summarycolumn p {
+  margin: 0;
+}
+.devilry-student-delivery-summarycolumn p.devilry-student-delivery-summarycolumn-linkwrapper {
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+.devilry-student-delivery-summarycolumn p.devilry-student-delivery-summarycolumn-feedback,
+.devilry-student-delivery-summarycolumn p.devilry-student-delivery-summarycolumn-no-feedback {
+  font-size: 14px;
+}
+.devilry-student-delivery-summarycolumn p.devilry-student-delivery-summarycolumn-no-feedback {
+  color: #777777;
 }
 body {
   background-color: #e6e6e6;
