@@ -84,9 +84,9 @@ class LastDeadlineColumn(objecttable.PlainTextColumn):
         if deadline_datetime:
             return render_to_string(
                 'devilry_student/cradmin_student/waitingfordeliveriesapp/last-deadline.django.html', {
-                'deadline_datetime': deadline_datetime,
-                'in_the_future': deadline_datetime > datetime.now()
-            })
+                    'deadline_datetime': deadline_datetime,
+                    'in_the_future': deadline_datetime > datetime.now()
+                })
         else:
             return deadline_datetime
 
