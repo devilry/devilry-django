@@ -16,7 +16,6 @@ from .views.groupinvite_respond import GroupInviteRespondView
 from .views.groupinvite_delete import GroupInviteDeleteView
 from .views.browseview import BrowseView
 from .views.groupdetails import GroupDetailsView
-from .views.upload_deliveryfile import UploadDeliveryFile
 from .views.semesteroverview import SemesterOverview
 from .views.download_deliveryfiles import CompressedFileDownloadView
 from .views.download_deliveryfiles import FileDownloadView
@@ -69,10 +68,6 @@ urlpatterns = patterns(
     url(r'^groupdetails/(?P<id>\d+)$',
         login_required(GroupDetailsView.as_view()),
         name='devilry_student_groupdetails'),
-
-    url(r'^upload_deliveryfile/(?P<deadline_id>\d+)$',
-        UploadDeliveryFile.as_view(),
-        name='devilry_student_upload_deliveryfile'),
 
     # TODO: Rename the views
     url(r'^show-delivery/filedownload/(?P<filemetaid>\d+)$',
