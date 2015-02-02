@@ -1,7 +1,9 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect
 from django.views.i18n import javascript_catalog
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
+from django_cradmin import crinstance
 from devilry.devilry_student.cradmin_student import cradmin_student
 
 from devilry.project.common.i18n import get_javascript_catalog_packages
@@ -29,10 +31,19 @@ def emptyview(request):
     return HttpResponse('Logged in')
 
 
+@login_required
+def redirect_to_student_frontpage_view(request):
+    return redirect(crinstance.reverse_cradmin_url(
+        instanceid='devilry_student',
+        appname='waitingfordeliveries',
+        roleid=request.user.id))
+
+
 urlpatterns = patterns(
     'devilry.devilry_student',
-    url('^old2$', login_required(FrontpageView.as_view()),
-        name='devilry_student'),
+    url('^$', redirect_to_student_frontpage_view, name='devilry_student'),
+
+    url('^old2$', login_required(FrontpageView.as_view())),
     url('^old$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view())))),
     url('^rest/', include('devilry.devilry_student.rest.urls')),
     url('^emptytestview', emptyview), # NOTE: Only used for testing
