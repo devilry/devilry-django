@@ -1,6 +1,7 @@
 from django_cradmin.viewhelpers import objecttable
 from django_cradmin import crapp
 from django_cradmin import crinstance
+from django.utils.translation import ugettext_lazy as _
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_student.cradminextensions import studentobjecttable
@@ -8,6 +9,10 @@ from devilry.devilry_student.cradminextensions import studentobjecttable
 
 class LongNameColumn(objecttable.SingleActionColumn):
     modelfield = 'id'
+    normalcells_css_classes = ['objecttable-cell-strong']
+
+    def get_header(self):
+        return _('Name')
 
     def render_value(self, group):
         return group.parentnode.long_name
@@ -23,8 +28,11 @@ class AssignmentGroupListView(studentobjecttable.StudentObjectTableView):
     model = AssignmentGroup
     columns = [
         LongNameColumn,
+        # StatusColumn,
     ]
-    searchfields = ['parentnode__long_name', 'parentnode__short_name']
+
+    def get_pagetitle(self):
+        return _('Assignments')
 
     def get_queryset_for_role(self, period):
         return AssignmentGroup.objects\
