@@ -10,7 +10,9 @@ from devilry.devilry_student.cradminextensions import studentcrinstance
 class Menu(crmenu.Menu):
     def build_menu(self):
         self.add(
-            label=_('Assignments'), url=self.appindex_url('assignments'), icon="home",
+            label=_('Assignments'),
+            url=self.appindex_url('assignments'),
+            icon="list",
             active=self.request.cradmin_app.appname == 'assignments')
 
 
