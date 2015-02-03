@@ -178,7 +178,6 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     def q_is_examiner(cls, user_obj):
         return Q(assignments__assignmentgroups__examiners__user=user_obj)
 
-
     @classmethod
     def where_is_relatedstudent(cls, user_obj):
         return cls.objects.filter(cls.q_is_relatedstudent(user_obj)).distinct()
@@ -193,6 +192,12 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         """
         return self.assignments.count() == 0
 
+    @property
+    def subject(self):
+        """
+        More readable alternative to ``self.parentnode``.
+        """
+        return self.parentnode
 
 
 class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):

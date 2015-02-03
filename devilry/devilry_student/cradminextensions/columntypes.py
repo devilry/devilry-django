@@ -51,3 +51,29 @@ class NaturaltimeColumn(objecttable.PlainTextColumn):
                 })
         else:
             return datetimeobject
+
+
+class BooleanColumn(objecttable.PlainTextColumn):
+    true_label = _('True')
+    false_label = _('False')
+
+    def get_true_value(self):
+        return self.true_label
+
+    def get_false_value(self):
+        return self.false_label
+
+    def boolean_to_value(self, value):
+        if value:
+            return self.get_true_value()
+        else:
+            return self.get_false_value()
+
+    def render_value(self, obj):
+        value = super(BooleanColumn, self).render_value(obj)
+        return self.boolean_to_value(value)
+
+
+class BooleanYesNoColumn(BooleanColumn):
+    true_label = _('Yes')
+    false_label = _('No')

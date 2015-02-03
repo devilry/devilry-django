@@ -46,7 +46,7 @@ class RecentDeliveriesListView(objecttable.ObjectTableView):
                 'last_feedback')
 
     def get_pagetitle(self):
-        return _('Recent deliveries')
+        return _('Recent feedbacks')
 
 
 class App(crapp.App):
