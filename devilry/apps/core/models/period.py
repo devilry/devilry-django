@@ -12,7 +12,6 @@ from custom_db_fields import ShortNameField, LongNameField
 from basenode import BaseNode
 from node import Node
 from subject import Subject
-from model_utils import *
 from model_utils import Etag
 from abstract_is_admin import AbstractIsAdmin
 from abstract_applicationkeyvalue import AbstractApplicationKeyValue
@@ -24,10 +23,7 @@ class PeriodQuerySet(models.query.QuerySet):
     """
     def filter_is_candidate_or_relatedstudent(self, user):
         """
-        Filter only periods where the given ``user`` is one of:
-
-        - :class:`devilry.apps.core.models.RelatedUser`
-        - :class:`devilry.apps.core.models.Candidate`
+        See :meth:`.PeriodManager.filter_is_candidate_or_relatedstudent`.
         """
         return self.filter(
             Q(relatedstudent__user=user) |
@@ -36,10 +32,36 @@ class PeriodQuerySet(models.query.QuerySet):
 
     def filter_active(self):
         """
-        Filter only active periods.
+        See :meth:`.PeriodManager.filter_active`.
         """
         now = datetime.now()
         return self.filter(start_time__lt=now, end_time__gt=now)
+
+    def annotate_with_user_qualifies_for_final_exam(self, user):
+        """
+        See :meth:`.PeriodManager.annotate_with_user_qualifies_for_final_exam`.
+        """
+        from devilry.devilry_qualifiesforexam.models import Status
+        return self.extra(
+            select={
+                'user_qualifies_for_final_exam': """
+                    SELECT devilry_qualifiesforexam_qualifiesforfinalexam.qualifies
+                    FROM devilry_qualifiesforexam_qualifiesforfinalexam
+                    INNER JOIN core_relatedstudent ON
+                      core_relatedstudent.id = devilry_qualifiesforexam_qualifiesforfinalexam.relatedstudent_id
+                    INNER JOIN devilry_qualifiesforexam_status ON
+                      devilry_qualifiesforexam_status.id = devilry_qualifiesforexam_qualifiesforfinalexam.status_id
+                    WHERE
+                      core_relatedstudent.user_id = %s
+                      AND
+                      core_relatedstudent.period_id = core_period.id
+                      AND
+                      devilry_qualifiesforexam_status.status = %s
+                    LIMIT 1
+                """
+            },
+            select_params=[user.id, Status.READY]
+        )
 
 
 class PeriodManager(models.Manager):
@@ -51,10 +73,29 @@ class PeriodManager(models.Manager):
         return PeriodQuerySet(self.model, using=self._db)
 
     def filter_active(self):
+        """
+        Filter only active periods.
+        """
         return self.get_queryset().filter_active()
 
     def filter_is_candidate_or_relatedstudent(self, user):
+        """
+        Filter only periods where the given ``user`` is one of:
+
+        - :class:`devilry.apps.core.models.RelatedUser`
+        - :class:`devilry.apps.core.models.Candidate`
+        """
         return self.get_queryset().filter_is_candidate_or_relatedstudent(user)
+
+    def annotate_with_user_qualifies_for_final_exam(self, user):
+        """
+        Annotate the queryset with the
+        :obj:`devilry.devilry_qualifiesforexam.models.QualifiesForFinalExam.qualifies`
+        value for the given ``user``.
+
+        Should be used with :meth:`.filter_is_candidate_or_relatedstudent`.
+        """
+        return self.get_queryset().annotate_with_user_qualifies_for_final_exam(user)
 
 
 class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):

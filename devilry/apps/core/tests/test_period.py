@@ -6,11 +6,12 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
-from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
+from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder, PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from ..models import Period, Subject
-from ..testhelper import TestHelper
-from ..models.model_utils import EtagMismatchException
+from devilry.apps.core.models import Period, Subject
+from devilry.apps.core.testhelper import TestHelper
+from devilry.apps.core.models.model_utils import EtagMismatchException
+from devilry.devilry_qualifiesforexam.models import Status
 
 
 class TestPeriodManager(TestCase):
@@ -27,20 +28,68 @@ class TestPeriodManager(TestCase):
         subjectbuilder = SubjectBuilder.quickadd_ducku_duck1010()
         testuser = UserBuilder('testuser').user
 
-        periodAbuilder = subjectbuilder\
+        period_a_builder = subjectbuilder\
             .add_6month_active_period(short_name='periodA')\
             .add_relatedstudents(testuser)
-        periodBbuilder = subjectbuilder\
+        period_b_builder = subjectbuilder\
             .add_6month_active_period(short_name='periodB')
-        periodBbuilder\
+        period_b_builder\
             .add_assignment('week1')\
             .add_group(students=[testuser])
         subjectbuilder.add_6month_active_period(short_name='periodC')
 
         self.assertEquals(
             set(Period.objects.filter_is_candidate_or_relatedstudent(testuser)),
-            set([periodAbuilder.period, periodBbuilder.period]))
+            {period_a_builder.period, period_b_builder.period})
 
+
+class TestPeriodManagerQualifiesForExam(TestCase):
+    def setUp(self):
+        self.testuser = UserBuilder('testuser').user
+        self.periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser)
+        self.relatedstudent = self.periodbuilder.period.relatedstudent_set.get(user=self.testuser)
+
+    def __create_status(self, status):
+        return Status.objects.create(period=self.periodbuilder.period,
+                                     user=UserBuilder('testadmin').user,
+                                     status=status)
+
+    def test_qualfied(self):
+        status = self.__create_status(Status.READY)
+        status.students.create(relatedstudent=self.relatedstudent, qualifies=True)
+        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
+        self.assertTrue(
+            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).first().user_qualifies_for_final_exam)
+
+    def test_not_qualfied(self):
+        status = self.__create_status(Status.READY)
+        status.students.create(relatedstudent=self.relatedstudent, qualifies=False)
+        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
+        self.assertFalse(
+            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
+            .first().user_qualifies_for_final_exam)
+
+    def test_not_set(self):
+        self.__create_status(Status.READY)
+        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
+        self.assertIsNone(
+            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
+            .first().user_qualifies_for_final_exam)
+
+    def test_no_status(self):
+        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
+        self.assertIsNone(
+            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
+            .first().user_qualifies_for_final_exam)
+
+    def test_not_ready(self):
+        status = self.__create_status(Status.ALMOSTREADY)
+        status.students.create(relatedstudent=self.relatedstudent, qualifies=True)
+        self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
+        self.assertIsNone(
+            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
+            .first().user_qualifies_for_final_exam)
 
 
 class TestPeriodOld(TestCase, TestHelper):
