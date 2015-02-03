@@ -13,7 +13,7 @@ class Menu(crmenu.Menu):
     def build_menu(self):
         group = self.request.cradmin_role
         self.add_headeritem(
-            label=group.parentnode.parentnode.get_path(),
+            label=group.subject.long_name,
             url=reverse('devilry_student_period-assignments-INDEX', kwargs={
                 'roleid': group.parentnode.parentnode.id
             }),
