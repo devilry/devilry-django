@@ -18,8 +18,6 @@ from abstract_is_admin import AbstractIsAdmin
 from abstract_applicationkeyvalue import AbstractApplicationKeyValue
 
 
-
-
 class PeriodQuerySet(models.query.QuerySet):
     """
     QuerySet for :class:`.PeriodManager`.
@@ -44,7 +42,6 @@ class PeriodQuerySet(models.query.QuerySet):
         return self.filter(start_time__lt=now, end_time__gt=now)
 
 
-
 class PeriodManager(models.Manager):
     """
     Manager for :class:`.Period`.
@@ -58,7 +55,6 @@ class PeriodManager(models.Manager):
 
     def filter_is_candidate_or_relatedstudent(self, user):
         return self.get_queryset().filter_is_candidate_or_relatedstudent(user)
-
 
 
 class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
@@ -116,9 +112,9 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     parentnode = models.ForeignKey(Subject, related_name='periods',
                                    verbose_name='Subject')
     start_time = models.DateTimeField(
-            help_text='Start time and end time defines when the period is active.')
+        help_text='Start time and end time defines when the period is active.')
     end_time = models.DateTimeField(
-            help_text='Start time and end time defines when the period is active.')
+        help_text='Start time and end time defines when the period is active.')
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 
@@ -138,9 +134,10 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(admins=user_obj) | \
-                Q(parentnode__admins=user_obj) | \
-                Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return \
+            Q(admins=user_obj) | \
+            Q(parentnode__admins=user_obj) | \
+            Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def clean(self, *args, **kwargs):
         """Validate the period.
@@ -159,7 +156,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         """ Returns true if the period is active
         """
         now = datetime.now()
-        return self.start_time < now and self.end_time > now
+        return self.start_time < now < self.end_time
 
     @classmethod
     def q_is_active(self):
@@ -210,9 +207,10 @@ class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(period__admins=user_obj) | \
-                Q(period__parentnode__admins=user_obj) | \
-                Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return \
+            Q(period__admins=user_obj) | \
+            Q(period__parentnode__admins=user_obj) | \
+            Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def __unicode__(self):
         return '{0}: {1}'.format(self.period, super(AbstractApplicationKeyValue, self).__unicode__())
