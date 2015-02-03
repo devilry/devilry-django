@@ -1,24 +1,23 @@
-{% extends "devilry_student/base.django.html" %}
+{% extends "django_cradmin/base.django.html" %}
 
 {% load crispy_forms_tags %}
 {% load i18n %}
-{% load url from future %}
 
 {% block title %}{% trans "Project group" %}{% endblock title %}
 
-{% block body %}
-    <div class="container">
-        <div class="page-header">
-            <h1>
-                {% trans "Project group" %}
-            </h1>
-        </div>
-        <ol class="breadcrumb">
-            {% include "devilry_student/include/group_breadcrumb.django.html" %}
-            <li class="active">{% trans "Project group" %}</li>
-        </ol>
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Project group" %}
+    </h1>
+    <p>
+        {{ group.assignment.long_name }} -
+        {{ group.subject.long_name }} -
+        {{ group.period.long_name }}
+    </p>
+{% endblock pageheader-inner %}
 
-
+{% block content %}
+    <div class="container-fluid">
         {% if unanswered_received_invites.exists %}
             {% with invite=unanswered_received_invites.get %}
                 <div class="alert alert-success">
@@ -38,12 +37,12 @@
 
 
         {% if group.assignment.students_can_create_groups_now %}
-            <section id="devilry_student_projectgroupoverview_invitebox">
+            <div id="devilry_student_projectgroupoverview_invitebox">
                 <h2>{% trans "Invite someone to join your group?" %}</h2>
                 <div class="devilry-focusbox">
                     {% crispy form %}
                 </div>
-            </section>
+            </div>
         {% endif %}
 
         {% if unanswered_sent_invites.exists %}        
@@ -102,13 +101,4 @@
             </div>
         {% endif %}
     </div>
-
-
-    {% comment %}
-        <script>
-        $(function () {
-            // $('select#id_sent_to').select2();
-        });
-        </script>
-    {% endcomment %}
-{% endblock body %}
+{% endblock content %}

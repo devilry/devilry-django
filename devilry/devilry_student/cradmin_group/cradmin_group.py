@@ -5,8 +5,9 @@ from django_cradmin import crmenu
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_student.cradminextensions import studentcrinstance
-from devilry.devilry_student.cradmin_group import deliveriesapp
 from devilry.devilry_student.cradmin_group import overviewapp
+from devilry.devilry_student.cradmin_group import deliveriesapp
+from devilry.devilry_student.cradmin_group import projectgroupapp
 
 
 class Menu(crmenu.Menu):
@@ -26,6 +27,11 @@ class Menu(crmenu.Menu):
             label=_('Deliveries'), url=self.appindex_url('deliveries'),
             icon="th-list",
             active=self.request.cradmin_app.appname == 'deliveries')
+        if group.assignment.students_can_create_groups:
+            self.add(
+                label=_('Project group'), url=self.appindex_url('projectgroup'),
+                icon="users",
+                active=self.request.cradmin_app.appname == 'projectgroup')
 
 
 class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
@@ -37,6 +43,7 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     apps = [
         ('overview', overviewapp.App),
         ('deliveries', deliveriesapp.App),
+        ('projectgroup', projectgroupapp.App),
     ]
 
     def get_rolequeryset(self):
