@@ -4,13 +4,13 @@ from django.shortcuts import redirect
 from django.views.i18n import javascript_catalog
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django_cradmin import crinstance
-from devilry.devilry_student.cradmin_student import cradmin_student
 
+from devilry.devilry_student.cradmin_group.projectgroupapp import GroupInviteRespondView
+from devilry.devilry_student.cradmin_student import cradmin_student
 from devilry.project.common.i18n import get_javascript_catalog_packages
 from devilry.devilry_student.cradmin_period import cradmin_period
 from devilry.devilry_student.cradmin_group import cradmin_group
 from devilry.devilry_student.views.extjsapp import AppView
-from .views.groupinvite_respond import GroupInviteRespondView
 from .views.groupinvite_delete import GroupInviteDeleteView
 from .views.download_deliveryfiles import CompressedFileDownloadView
 from .views.download_deliveryfiles import FileDownloadView
@@ -43,9 +43,6 @@ urlpatterns = patterns(
     url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
         name='devilry_student_i18n'),
 
-    # url(r'^groupinvite/overview/(?P<group_id>\d+)$',
-    #     login_required(ProjectGroupOverviewView.as_view()),
-    #     name='devilry_student_projectgroup_overview'),
     url(r'^groupinvite/respond/(?P<invite_id>\d+)$',
         login_required(GroupInviteRespondView.as_view()),
         name='devilry_student_groupinvite_respond'),
