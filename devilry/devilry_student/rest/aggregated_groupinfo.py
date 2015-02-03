@@ -57,7 +57,8 @@ class GroupResource(ModelResource, GroupResourceHelpersMixin):
                 'filename': filemeta.filename,
                 'size': filemeta.size,
                 'download_url': reverse('devilry-delivery-file-download',
-                                        kwargs={'filemetaid': filemeta.id}),
+                                        kwargs={'filemetaid': filemeta.id},
+                                        prefix='/'),
                 'pretty_size': pretty_filesize(filemeta.size)}
 
     def format_delivery(self, delivery):
@@ -74,7 +75,8 @@ class GroupResource(ModelResource, GroupResourceHelpersMixin):
                 'alias_delivery': delivery.alias_delivery_id,
                 'feedbacks': map(self.format_feedback, delivery.feedbacks.all()),
                 'download_all_url': {'zip': reverse('devilry-delivery-download-all-zip',
-                                                    kwargs={'deliveryid': delivery.id})},
+                                                    kwargs={'deliveryid': delivery.id},
+                                                    prefix='/')},
                 'filemetas': map(self.format_filemeta, delivery.filemetas.all())}
 
     def format_deliveries(self, deadline):
