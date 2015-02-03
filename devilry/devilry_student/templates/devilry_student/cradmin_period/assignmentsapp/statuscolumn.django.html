@@ -6,25 +6,6 @@
     <small class="text-muted">
         {{ status|devilry_humanize_groupstatus }}.
     </small>
-    {% if not group.number_of_deliveries %}
-        {% if status == 'waiting-for-deliveries' and not group.number_of_deliveries %}
-            <small class="text-muted">
-                {% trans "No deliveries." %}
-            </small>
-        {% else %}
-            <strong class="text-warning">
-                {% trans "No deliveries." %}
-            </strong>
-        {% endif %}
-    {% else %}
-        <small class="text-muted">
-            {% if group.number_of_deliveries == 1 %}
-                {% trans "One delivery." %}
-            {% else %}
-                {% blocktrans with number=group.number_of_deliveries|apnumber|capfirst %}{{ number }} deliveries.{% endblocktrans %}
-            {% endif %}
-        </small>
-    {% endif %}
 {% elif group.delivery_status == 'corrected' %}
     <strong>{% devilry_student_shortgrade group.feedback %}</strong>
 {% else %}

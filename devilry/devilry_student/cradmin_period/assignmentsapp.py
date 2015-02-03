@@ -23,6 +23,20 @@ class LongNameColumn(objecttable.SingleActionColumn):
             appname='overview',
             roleid=group.id)
 
+    def is_sortable(self):
+        return False
+
+
+class LastDeadlineColumn(objecttable.DatetimeColumn):
+    orderingfield = 'last_deadline_datetime'
+    modelfield = 'last_deadline_datetime'
+
+    def get_header(self):
+        return _('Deadline')
+
+    def is_sortable(self):
+        return False
+
 
 class StatusColumn(objecttable.Column):
     template_name = 'devilry_student/cradmin_period/assignmentsapp/statuscolumn.django.html'
@@ -39,23 +53,31 @@ class StatusColumn(objecttable.Column):
 
 class AssignmentGroupListView(studentobjecttable.StudentObjectTableView):
     model = AssignmentGroup
+    template_name = 'devilry_student/cradmin_period/assignmentsapp/assignmentgroup-list.django.html'
     columns = [
         LongNameColumn,
+        LastDeadlineColumn,
         StatusColumn,
     ]
 
-    def get_pagetitle(self):
-        return _('Assignments')
+    def get_context_data(self, **kwargs):
+        context = super(AssignmentGroupListView, self).get_context_data(**kwargs)
+        context['period'] = self.request.cradmin_role
+        return context
 
     def get_queryset_for_role(self, period):
         return AssignmentGroup.objects\
             .filter(parentnode__parentnode=period)\
             .filter_student_has_access(user=self.request.user)\
-            .annotate_with_number_of_deliveries()\
+            .annotate_with_last_deadline_datetime()\
+            .extra(
+                order_by=['-last_deadline_datetime']
+            )\
             .select_related(
                 'parentnode',  # Assignment
                 'parentnode__parentnode',  # Period
-                'parentnode__parentnode__parentnode')  # Subject
+                'parentnode__parentnode__parentnode'  # Subject
+            )
 
 
 class App(crapp.App):

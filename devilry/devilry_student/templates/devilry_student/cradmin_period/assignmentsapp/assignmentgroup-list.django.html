@@ -1,0 +1,16 @@
+{% extends "django_cradmin/viewhelpers/objecttable/objecttable.django.html" %}
+{% load i18n %}
+
+{% block title %}
+    {{ period }}
+    -
+    {% trans "Assignments" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {{ period.subject.long_name }}
+        -
+        {{ period.long_name }}
+    </h1>
+{% endblock pageheader-inner %}
