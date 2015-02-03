@@ -58,23 +58,23 @@ class TestAllPeriods(TestCase):
                 appname='assignments',
                 roleid=periodbuilder.period.id))
 
-    def test_is_active(self):
-        PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_relatedstudents(self.testuser)
-        response = self._get_as('testuser')
-        self.assertEquals(response.status_code, 200)
-        selector = htmls.S(response.content)
-        self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
-            'Yes')
-
-    def test_is_not_active(self):
-        SubjectBuilder.quickadd_ducku_duck1010()\
-            .add_6month_lastyear_period()\
-            .add_relatedstudents(self.testuser)
-        response = self._get_as('testuser')
-        self.assertEquals(response.status_code, 200)
-        selector = htmls.S(response.content)
-        self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
-            'No')
+    # def test_is_active(self):
+    #     PeriodBuilder.quickadd_ducku_duck1010_active()\
+    #         .add_relatedstudents(self.testuser)
+    #     response = self._get_as('testuser')
+    #     self.assertEquals(response.status_code, 200)
+    #     selector = htmls.S(response.content)
+    #     self.assertEquals(
+    #         selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
+    #         'Yes')
+    #
+    # def test_is_not_active(self):
+    #     SubjectBuilder.quickadd_ducku_duck1010()\
+    #         .add_6month_lastyear_period()\
+    #         .add_relatedstudents(self.testuser)
+    #     response = self._get_as('testuser')
+    #     self.assertEquals(response.status_code, 200)
+    #     selector = htmls.S(response.content)
+    #     self.assertEquals(
+    #         selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
+    #         'No')

@@ -5,7 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from devilry.apps.core.models import AssignmentGroup, Period
 from devilry.devilry_student.cradminextensions import studentobjecttable
-from devilry.devilry_student.cradminextensions.columntypes import BooleanYesNoColumn
 
 
 class PeriodInfoColumn(objecttable.SingleActionColumn):
@@ -41,19 +40,19 @@ class PeriodInfoColumn(objecttable.SingleActionColumn):
             roleid=period.id)
 
 
-class IsActiveColumn(BooleanYesNoColumn):
-    def get_header(self):
-        return _('Is active?')
-
-    def render_value(self, obj):
-        return self.boolean_to_value(obj.is_active())
+# class IsActiveColumn(BooleanYesNoColumn):
+#     def get_header(self):
+#         return _('Is active?')
+#
+#     def render_value(self, obj):
+#         return self.boolean_to_value(obj.is_active())
 
 
 class AllPeriodsListView(studentobjecttable.StudentObjectTableView):
     model = AssignmentGroup
     columns = [
         PeriodInfoColumn,
-        IsActiveColumn
+        # IsActiveColumn
     ]
 
     def get_pagetitle(self):
