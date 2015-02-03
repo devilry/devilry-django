@@ -7,10 +7,10 @@ from devilry.apps.core.models import RelatedStudent
 from devilry.apps.core.models import Period
 
 
-
 class DeadlineTag(models.Model):
     timestamp = models.DateTimeField()
     tag = models.CharField(max_length=30, null=True, blank=True)
+
 
 class PeriodTag(models.Model):
     period = models.OneToOneField(Period, primary_key=True)
@@ -66,21 +66,19 @@ class Status(models.Model):
 
     def __unicode__(self):
         return u'Status(period={period}, id={id}, status={status})'.format(
-                id=self.id, status=self.period, period=self.period)
-
+            id=self.id, status=self.period, period=self.period)
 
 
 class QualifiesForFinalExam(models.Model):
     relatedstudent = models.ForeignKey(RelatedStudent)
-    status = models.ForeignKey(Status,
-        related_name='students')
+    status = models.ForeignKey(Status, related_name='students')
     qualifies = models.NullBooleanField()
 
     class Meta:
         unique_together = ('relatedstudent', 'status')
 
     def clean(self):
-        if self.qualifies == None and self.status.status != 'almostready':
+        if self.qualifies is None and self.status.status != 'almostready':
             raise ValidationError('Only the ``almostready`` status allows marking students as not ready for export.')
         if self.status.status == 'notready':
             raise ValidationError('Status ``notready`` does not allow marking qualified students.')
