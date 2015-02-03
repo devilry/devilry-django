@@ -25,8 +25,7 @@ class Status(models.Model):
         (NOTREADY, _('Not ready for export (retracted)')),
     )
     STATUS_CHOICES_DICT = dict(STATUS_CHOICES)
-    period = models.ForeignKey(Period,
-        related_name='qualifiedforexams_status')
+    period = models.ForeignKey(Period, related_name='qualifiedforexams_status')
     status = models.SlugField(max_length=30, blank=False, choices=STATUS_CHOICES)
     createtime = models.DateTimeField(auto_now_add=True)
     message = models.TextField(blank=True)
