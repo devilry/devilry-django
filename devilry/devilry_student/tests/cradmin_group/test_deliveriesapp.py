@@ -375,6 +375,20 @@ class TestDeliveryDetailsView(TestCase):
              for element in selector.list('#devilry_student_group_deliverydetails_files a')],
             ['test1.txt', 'test2.txt'])
 
+    def test_delivery_metadata_file_urls(self):
+        self.groupbuilder.add_students(self.testuser)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=10)
+        filemeta = deliverybuilder.add_filemeta(filename='test1.txt', data='testdata').filemeta
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.count('#devilry_student_group_deliverydetails_files a'), 1)
+        self.assertEquals(
+            selector.one('#devilry_student_group_deliverydetails_files a')['href'],
+            reverse('devilry-delivery-file-download', kwargs={'filemetaid': filemeta.id}))
+
     def test_delivery_metadata_delivered_by(self):
         self.groupbuilder.add_students(self.testuser)
         candidate = Candidate.objects.create(

@@ -56,7 +56,7 @@
             <dt>{% trans "Files" %}:</dt>
             <dd id="devilry_student_group_deliverydetails_files">
                 {% for filemeta in delivery.filemetas.all %}
-                    <a href="#">{{ filemeta.filename }}</a>{% if not forloop.last %},{% endif %}
+                    <a href="{% url 'devilry-delivery-file-download' filemeta.id %}">{{ filemeta.filename }}</a>{% if not forloop.last %},{% endif %}
                 {% endfor %}
             </dd>
 
