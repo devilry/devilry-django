@@ -1,10 +1,10 @@
-from django.template import defaultfilters
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.test import TestCase
 from django_cradmin.crinstance import reverse_cradmin_url
 import htmls
 from django_cradmin import crinstance
 
-from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder, UserBuilder, NodeBuilder, \
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder, \
     AssignmentGroupBuilder
 
 
@@ -71,7 +71,7 @@ class TestRecentFeedbacks(TestCase):
             'atestcourse - testperiod')
         self.assertEquals(
             selector.one('#objecttableview-table tbody tr td:nth-child(4)').alltext_normalized,
-            defaultfilters.date(feedback.save_timestamp, 'SHORT_DATETIME_FORMAT'))
+            htmls.normalize_whitespace(naturaltime(feedback.save_timestamp)))
 
     def test_render_feedback_passed(self):
         AssignmentGroupBuilder.quickadd_ducku_duck1010_active_assignment1_group(self.testuser)\

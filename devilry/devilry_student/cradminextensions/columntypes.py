@@ -1,3 +1,4 @@
+from django.template.loader import render_to_string
 from django_cradmin import crinstance
 from django_cradmin.viewhelpers import objecttable
 from django.utils.translation import ugettext_lazy as _
@@ -22,3 +23,31 @@ class DeliverySummaryColumn(objecttable.SingleActionColumn):
 
     def is_sortable(self):
         return False
+
+
+class NaturaltimeAndDateTimeColumn(objecttable.PlainTextColumn):
+    datetime_format = 'SHORT_DATETIME_FORMAT'
+
+    def render_value(self, obj):
+        datetimeobject = super(NaturaltimeAndDateTimeColumn, self).render_value(obj)
+        if datetimeobject:
+            return render_to_string(
+                'devilry_student/cradminextensions/columntypes/naturaltime-and-datetime-column.django.html', {
+                    'datetimeobject': datetimeobject,
+                    'datetime_format': self.datetime_format
+                })
+        else:
+            return datetimeobject
+
+
+class NaturaltimeColumn(objecttable.PlainTextColumn):
+
+    def render_value(self, obj):
+        datetimeobject = super(NaturaltimeColumn, self).render_value(obj)
+        if datetimeobject:
+            return render_to_string(
+                'devilry_student/cradminextensions/columntypes/naturaltime-column.django.html', {
+                    'datetimeobject': datetimeobject
+                })
+        else:
+            return datetimeobject

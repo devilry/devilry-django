@@ -4,7 +4,7 @@ from django.conf import settings
 from django_cradmin import crapp
 
 from devilry.apps.core.models import Delivery
-from devilry.devilry_student.cradminextensions.columntypes import DeliverySummaryColumn
+from devilry.devilry_student.cradminextensions.columntypes import DeliverySummaryColumn, NaturaltimeColumn
 
 
 class DeliverySummaryWithAssignmentColumn(DeliverySummaryColumn):
@@ -12,7 +12,7 @@ class DeliverySummaryWithAssignmentColumn(DeliverySummaryColumn):
         'delivery-summary-with-assignment-column.django.html'
 
 
-class TimeOfDeliveryColumn(objecttable.DatetimeColumn):
+class TimeOfDeliveryColumn(NaturaltimeColumn):
     modelfield = 'time_of_delivery'
 
     def get_default_order_is_ascending(self):

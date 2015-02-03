@@ -1,10 +1,10 @@
-from django.template import defaultfilters
+from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.test import TestCase
 from django_cradmin.crinstance import reverse_cradmin_url
 import htmls
 from django_cradmin import crinstance
 
-from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder, UserBuilder, NodeBuilder, \
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder, \
     AssignmentGroupBuilder
 
 
@@ -59,17 +59,12 @@ class TestRecentDeliveries(TestCase):
             'atestcourse - testperiod')
         self.assertEquals(
             selector.one('#objecttableview-table tbody tr td:nth-child(4)').alltext_normalized,
-            defaultfilters.date(deliverybuilder.delivery.time_of_delivery, 'SHORT_DATETIME_FORMAT'))
+            htmls.normalize_whitespace(naturaltime(deliverybuilder.delivery.time_of_delivery)))
 
     def test_render_no_feedback(self):
         AssignmentGroupBuilder.quickadd_ducku_duck1010_active_assignment1_group(self.testuser)\
             .add_deadline_in_x_weeks(weeks=1)\
             .add_delivery_x_hours_before_deadline(hours=1)
-            # .add_feedback(
-            #     points=10,
-            #     grade='Good',
-            #     is_passing_grade=True,
-            #     saved_by=UserBuilder('testexaminer').user)
         response = self._get_as('testuser')
         self.assertEquals(response.status_code, 200)
         selector = htmls.S(response.content)
