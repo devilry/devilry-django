@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crmenu
 
@@ -11,6 +12,10 @@ class Menu(crmenu.Menu):
         self.add(
             label=_('Assignments'), url=self.appindex_url('assignments'), icon="home",
             active=self.request.cradmin_app.appname == 'assignments')
+
+
+def does_not_exist_view(request):
+    raise Http404()
 
 
 class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
@@ -36,3 +41,7 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     @classmethod
     def matches_urlpath(cls, urlpath):
         return '/devilry_student/period' in urlpath
+
+    @classmethod
+    def get_roleselect_view(cls):
+        return does_not_exist_view
