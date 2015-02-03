@@ -45,22 +45,34 @@ class PeriodQuerySet(models.query.QuerySet):
         return self.extra(
             select={
                 'user_qualifies_for_final_exam': """
-                    SELECT devilry_qualifiesforexam_qualifiesforfinalexam.qualifies
-                    FROM devilry_qualifiesforexam_qualifiesforfinalexam
+                    SELECT
+                        CASE
+                            WHEN
+                                devilry_qualifiesforexam_status.status = %s
+                            THEN
+                                NULL
+                            ELSE
+                                devilry_qualifiesforexam_qualifiesforfinalexam.qualifies
+                        END
+                    FROM devilry_qualifiesforexam_status
                     INNER JOIN core_relatedstudent ON
-                      core_relatedstudent.id = devilry_qualifiesforexam_qualifiesforfinalexam.relatedstudent_id
-                    INNER JOIN devilry_qualifiesforexam_status ON
-                      devilry_qualifiesforexam_status.id = devilry_qualifiesforexam_qualifiesforfinalexam.status_id
-                    WHERE
-                      core_relatedstudent.user_id = %s
-                      AND
                       core_relatedstudent.period_id = core_period.id
                       AND
-                      devilry_qualifiesforexam_status.status = %s
+                      core_relatedstudent.user_id = %s
+                    LEFT JOIN devilry_qualifiesforexam_qualifiesforfinalexam ON
+                      devilry_qualifiesforexam_qualifiesforfinalexam.status_id = devilry_qualifiesforexam_status.id
+                      AND
+                      devilry_qualifiesforexam_qualifiesforfinalexam.relatedstudent_id = core_relatedstudent.id
+                    WHERE
+                      core_period.id = devilry_qualifiesforexam_status.period_id
+                    ORDER BY devilry_qualifiesforexam_status.createtime DESC
                     LIMIT 1
                 """
             },
-            select_params=[user.id, Status.READY]
+            select_params=[
+                Status.NOTREADY,
+                user.id,
+            ]
         )
 
 
