@@ -24,11 +24,24 @@ class LongNameColumn(objecttable.SingleActionColumn):
             roleid=group.id)
 
 
+class StatusColumn(objecttable.Column):
+    template_name = 'devilry_student/cradmin_period/assignmentsapp/statuscolumn.django.html'
+    context_value_name = 'status'
+    context_object_name = 'group'
+    column_width = '200px'
+
+    def get_header(self):
+        return _('Status')
+
+    def render_value(self, group):
+        return group.get_status()
+
+
 class AssignmentGroupListView(studentobjecttable.StudentObjectTableView):
     model = AssignmentGroup
     columns = [
         LongNameColumn,
-        # StatusColumn,
+        StatusColumn,
     ]
 
     def get_pagetitle(self):
@@ -38,7 +51,11 @@ class AssignmentGroupListView(studentobjecttable.StudentObjectTableView):
         return AssignmentGroup.objects\
             .filter(parentnode__parentnode=period)\
             .filter_student_has_access(user=self.request.user)\
-            .select_related('parentnode', 'parentnode__parentnode', 'parentnode__parentnode__parentnode')
+            .annotate_with_number_of_deliveries()\
+            .select_related(
+                'parentnode',  # Assignment
+                'parentnode__parentnode',  # Period
+                'parentnode__parentnode__parentnode')  # Subject
 
 
 class App(crapp.App):
