@@ -12,6 +12,7 @@ class PeriodInfoColumn(objecttable.SingleActionColumn):
     Period info column used for tablets and desktop devices.
     """
     modelfield = 'id'
+    normalcells_css_classes = ['objecttable-cell-flat-paragraphs']
     template_name = 'devilry_student/cradmin_student/allperiodsapp/periodinfo-column.django.html'
     context_object_name = 'period'
 
