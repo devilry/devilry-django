@@ -96,15 +96,13 @@ class LastDeadlineColumn(objecttable.PlainTextColumn):
 
 class WaitingForDeliveriesListView(studentobjecttable.StudentObjectTableView):
     model = AssignmentGroup
+    template_name = 'devilry_student/cradmin_student/waitingfordeliveriesapp/waiting-for-deliveries-list.django.html'
     columns = [
         AssignmentInfoColumn,
         PeriodInfoColumn,
         PeriodInfoXs,
         LastDeadlineColumn
     ]
-
-    def get_pagetitle(self):
-        return _('Assignments open for delivery')
 
     def get_queryset_for_role(self, period):
         return AssignmentGroup.objects\
