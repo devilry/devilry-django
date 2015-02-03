@@ -17,14 +17,14 @@ class Menu(crmenu.Menu):
             url=reverse('devilry_student_period-assignments-INDEX', kwargs={
                 'roleid': group.parentnode.parentnode.id
             }),
-            icon="arrow-up")
+            icon="angle-up")
         self.add(
             label=_('Overview'), url=self.appindex_url('overview'),
-            icon="circle",
+            icon="info-circle",
             active=self.request.cradmin_app.appname == 'overview')
         self.add(
             label=_('Deliveries'), url=self.appindex_url('deliveries'),
-            icon="circle",
+            icon="th-list",
             active=self.request.cradmin_app.appname == 'deliveries')
 
 
