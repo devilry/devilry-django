@@ -2,6 +2,7 @@ from django.test import TestCase
 from django_cradmin.crinstance import reverse_cradmin_url
 import htmls
 from django_cradmin import crinstance
+from devilry.devilry_qualifiesforexam.models import Status
 
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder, \
     PeriodBuilder, SubjectBuilder, AssignmentGroupBuilder
@@ -58,23 +59,79 @@ class TestAllPeriods(TestCase):
                 appname='assignments',
                 roleid=periodbuilder.period.id))
 
-    # def test_is_active(self):
-    #     PeriodBuilder.quickadd_ducku_duck1010_active()\
-    #         .add_relatedstudents(self.testuser)
-    #     response = self._get_as('testuser')
-    #     self.assertEquals(response.status_code, 200)
-    #     selector = htmls.S(response.content)
-    #     self.assertEquals(
-    #         selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
-    #         'Yes')
-    #
-    # def test_is_not_active(self):
-    #     SubjectBuilder.quickadd_ducku_duck1010()\
-    #         .add_6month_lastyear_period()\
-    #         .add_relatedstudents(self.testuser)
-    #     response = self._get_as('testuser')
-    #     self.assertEquals(response.status_code, 200)
-    #     selector = htmls.S(response.content)
-    #     self.assertEquals(
-    #         selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
-    #         'No')
+    def test_qualifies_for_final_exam_qualified(self):
+        periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser)
+        status = Status.objects.create(period=periodbuilder.period,
+                                       user=UserBuilder('testadmin').user,
+                                       status=Status.READY)
+        status.students.create(
+            relatedstudent=periodbuilder.period.relatedstudent_set.get(user=self.testuser),
+            qualifies=True)
+
+        response = self._get_as('testuser')
+        self.assertEquals(response.status_code, 200)
+        selector = htmls.S(response.content)
+        self.assertTrue(
+            selector.exists('#objecttableview-table tbody tr td:nth-child(1) '
+                            '.devilry-student-allperiodsapp-qualified-for-final-exam-wrapper'))
+        self.assertEquals(
+            selector.one('#objecttableview-table tbody tr td:nth-child(1) '
+                         '.devilry-student-allperiodsapp-qualified-for-final-exam').alltext_normalized,
+            'Qualified for final exam')
+        self.assertTrue(
+            selector.exists('#objecttableview-table tbody tr td:nth-child(1) .label-success'))
+
+    def test_qualifies_for_final_exam_not_qualified(self):
+        periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser)
+        status = Status.objects.create(period=periodbuilder.period,
+                                       user=UserBuilder('testadmin').user,
+                                       status=Status.READY)
+        status.students.create(
+            relatedstudent=periodbuilder.period.relatedstudent_set.get(user=self.testuser),
+            qualifies=False)
+
+        response = self._get_as('testuser')
+        self.assertEquals(response.status_code, 200)
+        selector = htmls.S(response.content)
+        self.assertTrue(
+            selector.exists('#objecttableview-table tbody tr td:nth-child(1) '
+                            '.devilry-student-allperiodsapp-qualified-for-final-exam-wrapper'))
+        self.assertEquals(
+            selector.one('#objecttableview-table tbody tr td:nth-child(1) '
+                         '.devilry-student-allperiodsapp-not-qualified-for-final-exam').alltext_normalized,
+            'Not qualified for final exam')
+        self.assertTrue(
+            selector.exists('#objecttableview-table tbody tr td:nth-child(1) .label-warning'))
+
+    def test_qualifies_for_final_exam_not_set(self):
+        PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser)
+        response = self._get_as('testuser')
+        self.assertEquals(response.status_code, 200)
+        selector = htmls.S(response.content)
+        self.assertFalse(
+            selector.exists('#objecttableview-table tbody tr td:nth-child(1) '
+                            '.devilry-student-allperiodsapp-qualified-for-final-exam-wrapper'))
+
+    def test_is_active(self):
+        PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_relatedstudents(self.testuser)
+        response = self._get_as('testuser')
+        self.assertEquals(response.status_code, 200)
+        selector = htmls.S(response.content)
+        self.assertTrue(
+            selector.exists('#objecttableview-table tbody tr td:nth-child(1) '
+                            'strong.devilry-student-allperiodsapp-isactive'))
+
+    def test_is_not_active(self):
+        SubjectBuilder.quickadd_ducku_duck1010()\
+            .add_6month_lastyear_period()\
+            .add_relatedstudents(self.testuser)
+        response = self._get_as('testuser')
+        self.assertEquals(response.status_code, 200)
+        selector = htmls.S(response.content)
+        self.assertFalse(
+            selector.exists('#objecttableview-table tbody tr td:nth-child(1) '
+                            'strong.devilry-student-allperiodsapp-isactive'))

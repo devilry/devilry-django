@@ -11,7 +11,9 @@ class PeriodInfoColumn(objecttable.SingleActionColumn):
     """
     Period info column used for tablets and desktop devices.
     """
-    normalcells_css_classes = ['objecttable-cell-strong']
+    modelfield = 'id'
+    template_name = 'devilry_student/cradmin_student/allperiodsapp/periodinfo-column.django.html'
+    context_object_name = 'period'
 
     def get_orderby_args(self, order_ascending):
         if order_ascending:
@@ -21,6 +23,11 @@ class PeriodInfoColumn(objecttable.SingleActionColumn):
 
     def is_sortable(self):
         return True
+
+    def get_context_data(self, obj):
+        context = super(PeriodInfoColumn, self).get_context_data(obj=obj)
+        context['is_active'] = obj.is_active()
+        return context
 
     def get_default_order_is_ascending(self):
         return None
@@ -40,19 +47,10 @@ class PeriodInfoColumn(objecttable.SingleActionColumn):
             roleid=period.id)
 
 
-# class IsActiveColumn(BooleanYesNoColumn):
-#     def get_header(self):
-#         return _('Is active?')
-#
-#     def render_value(self, obj):
-#         return self.boolean_to_value(obj.is_active())
-
-
 class AllPeriodsListView(studentobjecttable.StudentObjectTableView):
     model = AssignmentGroup
     columns = [
         PeriodInfoColumn,
-        # IsActiveColumn
     ]
 
     def get_pagetitle(self):
@@ -61,6 +59,7 @@ class AllPeriodsListView(studentobjecttable.StudentObjectTableView):
     def get_queryset_for_role(self, period):
         return Period.objects\
             .filter_is_candidate_or_relatedstudent(user=self.request.user)\
+            .annotate_with_user_qualifies_for_final_exam(user=self.request.user)\
             .select_related('parentnode')\
             .order_by('-start_time', 'parentnode__long_name')
 
