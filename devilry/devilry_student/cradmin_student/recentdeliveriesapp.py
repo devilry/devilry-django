@@ -7,9 +7,6 @@ from devilry.apps.core.models import Delivery
 from devilry.devilry_student.cradminextensions.columntypes import DeliverySummaryColumn
 
 
-DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES = getattr(settings, 'DELIVERY_DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES', 120)
-
-
 class DeliverySummaryWithAssignmentColumn(DeliverySummaryColumn):
     template_name = 'devilry_student/cradmin_student/recentdeliveriesapp/'\
         'delivery-summary-with-assignment-column.django.html'
@@ -42,7 +39,7 @@ class PeriodInfoColumn(objecttable.PlainTextColumn):
         return False
 
 
-class PeriodInfoXs(objecttable.PlainTextColumn):
+class PeriodInfoXsColumn(objecttable.PlainTextColumn):
     """
     Period info column used for mobile devices.
     """
@@ -69,7 +66,7 @@ class RecentDeliveriesListView(objecttable.ObjectTableView):
     columns = [
         DeliverySummaryWithAssignmentColumn,
         PeriodInfoColumn,
-        PeriodInfoXs,
+        PeriodInfoXsColumn,
         TimeOfDeliveryColumn,
     ]
 
@@ -80,7 +77,7 @@ class RecentDeliveriesListView(objecttable.ObjectTableView):
                 'deadline',
                 'deadline__assignment_group',
                 'deadline__assignment_group__parentnode',
-                'feedback')
+                'last_feedback')
 
     def get_pagetitle(self):
         return _('Recent deliveries')
