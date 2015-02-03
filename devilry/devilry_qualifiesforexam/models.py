@@ -35,6 +35,8 @@ class Status(models.Model):
 
     class Meta:
         ordering = ['-createtime']
+        verbose_name = _('Qualified for final exam status')
+        verbose_name_plural = _('Qualified for final exam statuses')
 
     def getStatusText(self):
         return self.STATUS_CHOICES_DICT[self.status]
