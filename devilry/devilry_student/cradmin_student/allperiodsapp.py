@@ -50,12 +50,10 @@ class PeriodInfoColumn(objecttable.SingleActionColumn):
 
 class AllPeriodsListView(studentobjecttable.StudentObjectTableView):
     model = AssignmentGroup
+    template_name = 'devilry_student/cradmin_student/allperiodsapp/all-periods-list.django.html'
     columns = [
         PeriodInfoColumn,
     ]
-
-    def get_pagetitle(self):
-        return _('Please select a course')
 
     def get_queryset_for_role(self, period):
         return Period.objects\
