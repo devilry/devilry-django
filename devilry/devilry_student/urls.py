@@ -11,7 +11,6 @@ from devilry.project.common.i18n import get_javascript_catalog_packages
 from devilry.devilry_student.cradmin_period import cradmin_period
 from devilry.devilry_student.cradmin_group import cradmin_group
 from devilry.devilry_student.views.extjsapp import AppView
-from .views.groupinvite_delete import GroupInviteDeleteView
 from .views.download_deliveryfiles import CompressedFileDownloadView
 from .views.download_deliveryfiles import FileDownloadView
 
@@ -46,10 +45,6 @@ urlpatterns = patterns(
     url(r'^groupinvite/respond/(?P<invite_id>\d+)$',
         login_required(GroupInviteRespondView.as_view()),
         name='devilry_student_groupinvite_respond'),
-    url(r'^groupinvite/remove/(?P<invite_id>\d+)$',
-        login_required(GroupInviteDeleteView.as_view()),
-        name='devilry_student_groupinvite_delete'),
-    #url(r'^groupinvite/leave/(?P<group_id>\d+)$')
 
     url(r'^show-delivery/filedownload/(?P<filemetaid>\d+)$',
         login_required(FileDownloadView.as_view()),

@@ -1,5 +1,5 @@
 {% extends "django_cradmin/base.django.html" %}
-
+{% load cradmin_tags %}
 {% load crispy_forms_tags %}
 {% load i18n %}
 
@@ -60,7 +60,7 @@
                         {% for invite in unanswered_sent_invites %}                
                             <tr>
                                 <td>
-                                    <a href="{% url 'devilry_student_groupinvite_delete' invite.id %}" class="btn btn-danger btn-xs">
+                                    <a href="{% cradmin_appurl 'delete' invite_id=invite.id %}" class="btn btn-danger btn-xs">
                                         {% trans "Delete" %}
                                     </a>
                                     &nbsp;

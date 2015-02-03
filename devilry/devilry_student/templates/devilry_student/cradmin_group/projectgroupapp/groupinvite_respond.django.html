@@ -11,7 +11,11 @@
             <h1>
                 {% trans "Respond to group invite" %}
             </h1>
-            <p>{{ groupinvite.group.assignment.get_path }}</p>
+            <p>
+                {{ groupinvite.group.assignment.long_name }} -
+                {{ groupinvite.group.subject.long_name }} -
+                {{ groupinvite.group.period.long_name }}
+            </p>
         </div>
     </div>
     <div class="container-fluid django-cradmin-container-fluid-focus">

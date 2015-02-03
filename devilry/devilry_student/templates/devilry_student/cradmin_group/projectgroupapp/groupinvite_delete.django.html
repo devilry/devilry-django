@@ -1,0 +1,28 @@
+{% extends "django_cradmin/base.django.html" %}
+
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% load url from future %}
+
+{% block title %}{% trans "Delete group invite" %}{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Delete group invite" %}
+    </h1>
+    <p>
+        {{ groupinvite.group.assignment.long_name }} -
+        {{ groupinvite.group.subject.long_name }} -
+        {{ groupinvite.group.period.long_name }}
+    </p>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container-fluid django-cradmin-container-fluid-focus">
+        <form action="{{ request.path }}" method="post">{% csrf_token %}
+            <p>{% blocktrans with user=groupinvite.sent_to.devilryuserprofile.get_displayname %}Are you sure you want to delete the invite for {{ user }}?{% endblocktrans %}</p>
+            <a class="btn btn-default" href="{{ cancel_url }}">{% trans "Cancel" %}</a>
+            <button type="submit" class="btn btn-danger">{% trans 'Delete invite' %}</button>
+        </form>
+    </div>
+{% endblock content %}

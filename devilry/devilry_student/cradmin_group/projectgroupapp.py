@@ -6,12 +6,14 @@ from crispy_forms.layout import Layout, ButtonHolder, Submit
 from django_cradmin import crapp
 from django.views.generic.detail import DetailView
 from django.shortcuts import redirect
-from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django_cradmin.crinstance import reverse_cradmin_url
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import GroupInvite
+from django.views.generic.edit import DeleteView
+from django.core.urlresolvers import reverse
+
 
 
 class CreateForm(forms.ModelForm):
@@ -59,7 +61,7 @@ class CreateForm(forms.ModelForm):
 
 
 class ProjectGroupOverviewView(TemplateView):
-    template_name = 'devilry_student/projectgroup_overview.django.html'
+    template_name = 'devilry_student/cradmin_group/projectgroupapp/projectgroup_overview.django.html'
     pk_url_kwarg = 'group_id'
     context_object_name = 'group'
 
@@ -108,7 +110,7 @@ class ProjectGroupOverviewView(TemplateView):
 
 
 class GroupInviteRespondView(DetailView):
-    template_name = 'devilry_student/groupinvite_respond.django.html'
+    template_name = 'devilry_student/cradmin_group/projectgroupapp/groupinvite_respond.django.html'
     pk_url_kwarg = 'invite_id'
     context_object_name = 'groupinvite'
 
@@ -141,10 +143,36 @@ class GroupInviteRespondView(DetailView):
         return context
 
 
+class GroupInviteDeleteView(DeleteView):
+    template_name = 'devilry_student/cradmin_group/projectgroupapp/groupinvite_delete.django.html'
+    pk_url_kwarg = 'invite_id'
+    context_object_name = 'groupinvite'
+
+    def get_queryset(self):
+        return GroupInvite.objects.filter_no_response().filter(sent_by=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super(GroupInviteDeleteView, self).get_context_data(**kwargs)
+        context['cancel_url'] = self.request.cradmin_app.reverse_appindexurl()
+        return context
+
+    def get_success_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
+
+    def post(self, *args, **kwargs):
+        invite = self.get_object()
+        self.group = invite.group
+        return super(GroupInviteDeleteView, self).post(*args, **kwargs)
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(
             r'^$',
             ProjectGroupOverviewView.as_view(),
             name=crapp.INDEXVIEW_NAME),
+        crapp.Url(
+            r'^remove/(?P<invite_id>\d+)$',
+            GroupInviteDeleteView.as_view(),
+            name='delete'),
     ]

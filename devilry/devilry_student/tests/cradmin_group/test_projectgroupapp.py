@@ -1,13 +1,15 @@
 from django_cradmin.crinstance import reverse_cradmin_url
 
 from django.test import TestCase
+
 from django.core.urlresolvers import reverse
+import htmls
 
 from devilry.project.develop.testhelpers.soupselect import cssExists
+
 from devilry.apps.core.models import GroupInvite
 from devilry.project.develop.testhelpers.soupselect import cssFind
 from devilry.project.develop.testhelpers.soupselect import cssGet
-
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
@@ -172,9 +174,9 @@ class TestGroupInviteRespondView(TestCase):
             sent_to=self.testtouser)
         response = self._getas(invite.id, self.testtouser)
         self.assertEquals(response.status_code, 200)
-        html = response.content
-        self.assertEquals(cssGet(html, '.page-header h1').text.strip(), 'Respond to group invite')
-        self.assertEquals(cssGet(html, '.page-header p').text.strip(), 'duck1010.active.assignment1')
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.one('.page-header h1').alltext_normalized, 'Respond to group invite')
+        self.assertEquals(selector.one('.page-header p').alltext_normalized, 'assignment1 - duck1010 - active')
 
     def test_only_if_invited(self):
         notalloweduser = UserBuilder('notalloweduser').user
@@ -233,3 +235,83 @@ class TestGroupInviteRespondView(TestCase):
             response.content)
         invite = GroupInvite.objects.get(id=invite.id)
         self.assertEquals(invite.accepted, None)
+
+
+class TestGroupInviteDeleteView(TestCase):
+    def setUp(self):
+        self.testfromuser = UserBuilder('testfromuser').user
+        self.testtouser = UserBuilder('testtouser').user
+
+    def _getas(self, group_id, invite_id, user, *args, **kwargs):
+        self.client.login(username=user.username, password='test')
+        url = reverse_cradmin_url(
+            instanceid='devilry_student_group',
+            appname='projectgroup',
+            roleid=group_id,
+            viewname='delete',
+            kwargs={'invite_id': invite_id}
+        )
+        return self.client.get(url, *args, **kwargs)
+
+    def _postas(self, group_id, invite_id, user, *args, **kwargs):
+        self.client.login(username=user.username, password='test')
+        url = reverse_cradmin_url(
+            instanceid='devilry_student_group',
+            appname='projectgroup',
+            roleid=group_id,
+            viewname='delete',
+            kwargs={'invite_id': invite_id}
+        )
+        return self.client.post(url, *args, **kwargs)
+
+    def test_render(self):
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testfromuser])
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        invite = groupbuilder.group.groupinvite_set.create(
+            sent_by=self.testfromuser,
+            sent_to=self.testtouser)
+        response = self._getas(groupbuilder.group.id, invite.id, self.testfromuser)
+        self.assertEquals(response.status_code, 200)
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.one('.page-header h1').alltext_normalized, 'Delete group invite')
+        self.assertEquals(selector.one('.page-header p').alltext_normalized, 'assignment1 - duck1010 - active')
+
+    def test_get_only_if_sender(self):
+        notalloweduser = UserBuilder('notalloweduser').user
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testfromuser, notalloweduser])
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        invite = groupbuilder.group.groupinvite_set.create(
+            sent_by=self.testfromuser,
+            sent_to=self.testtouser)
+        response = self._getas(groupbuilder.group.id, invite.id, notalloweduser)
+        self.assertEquals(response.status_code, 404)
+
+    def test_post_only_if_sender(self):
+        notalloweduser = UserBuilder('notalloweduser').user
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testfromuser, notalloweduser])
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        invite = groupbuilder.group.groupinvite_set.create(
+            sent_by=self.testfromuser,
+            sent_to=self.testtouser)
+        response = self._postas(groupbuilder.group.id, invite.id, notalloweduser)
+        self.assertEquals(response.status_code, 404)
+        self.assertTrue(GroupInvite.objects.filter(id=invite.id).exists())
+
+    def test_post_ok(self):
+        notalloweduser = UserBuilder('notalloweduser').user
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(students=[self.testfromuser, notalloweduser])
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        invite = groupbuilder.group.groupinvite_set.create(
+            sent_by=self.testfromuser,
+            sent_to=self.testtouser)
+        response = self._postas(groupbuilder.group.id, invite.id, self.testfromuser)
+        self.assertEquals(response.status_code, 302)
+        self.assertFalse(GroupInvite.objects.filter(id=invite.id).exists())
