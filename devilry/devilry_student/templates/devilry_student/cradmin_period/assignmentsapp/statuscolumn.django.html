@@ -4,7 +4,7 @@
 
 {% if group.delivery_status == 'waiting-for-something' %}
     <small class="text-muted">
-        {{ status|formatted_status }}.
+        {{ status|devilry_humanize_groupstatus }}.
     </small>
     {% if not group.number_of_deliveries %}
         {% if status == 'waiting-for-deliveries' and not group.number_of_deliveries %}
@@ -29,6 +29,6 @@
     <strong>{% devilry_student_shortgrade group.feedback %}</strong>
 {% else %}
     <span class="text-danger">
-        {{ status|formatted_status }}
+        {{ status|devilry_humanize_groupstatus }}
     </span>
 {% endif %}

@@ -23,9 +23,9 @@ def devilry_student_shortgrade(feedback):
     })
 
 
-@register.filter(name='formatted_status')
+@register.filter(name='devilry_humanize_groupstatus')
 @stringfilter
-def formatted_status(status):
+def devilry_humanize_groupstatus(status):
     if status == 'waiting-for-feedback':
         return _("Waiting for feedback")
     elif status == 'waiting-for-deliveries':
