@@ -9716,6 +9716,9 @@ table.table.cradmin-table-fluid tbody tr td {
   display: inline-block;
   height: 40px;
 }
+.objecttable-cell-flat-paragraphs p {
+  margin: 0;
+}
 .objecttable-cell-strong {
   font-weight: bold;
 }
