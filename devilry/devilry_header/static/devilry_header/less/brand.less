@@ -1,10 +1,14 @@
 .devilry_header2_rolespan(@role, @bgcolor) {
   &.devilry_header2_role_@{role} .devilry_header2_brand  {
+    a.devilry_header2_brand_devilry {
+      display: none;
+    }
     .devilry_header2_brand_role.devilry_header2_brand_role_@{role} {
-      display: inline-block;
+      display: block;
       background-color: @bgcolor;
       &:hover {
-        background-color: lighten(@bgcolor, 6%);
+//        background-color: lighten(@bgcolor, 6%);
+        color: @brand-role-hover-color;
       }
     }
   }
@@ -14,8 +18,14 @@
   .devilry_header2_brand {
     box-sizing: border-box;
     // background-color: rgb(50, 50, 50);
-    display: inline-block;
+    display: block;
     height: @header-height;
+    overflow: hidden;
+    width: 100%;
+    @media (min-width: 992px) {
+      width: 200px;
+    }
+
     font-size: 14px;
 
     a {
@@ -26,31 +36,43 @@
       line-height: @header-height;
       height: @header-height;
     }
+
     a.devilry_header2_brand_devilry {
-      padding-right: 10px;
-      color: rgb(200, 200, 200);
+      padding-right: 15px;
+      color: @brand-devilry-color;
+      color: @brand-devilry-color-rgba;
+      font-weight: @brand-devilry-font-weight;
+      font-size: @brand-devilry-font-size;
 
       // Add the logo on the left hand side
-      padding-left: 40px;
+      padding-left: 37px;
       background-image: url('../images/devilrylogo_small.png');
       background-repeat: no-repeat;
-      background-position: 15px center;
-
-      &:hover {
-        color: rgb(255, 255, 255);
-      }
+      background-position: 10px center;
     }
 
     a.devilry_header2_brand_role {
       box-sizing: border-box;
       display: none;
       padding-right: 15px;
-      padding-left: 15px;
-      color: rgb(40, 40, 40);
-      // font-size: 12px;
-      &:hover {
-        color: rgb(0, 0, 0);
-      }
+//      color: rgb(40, 40, 40);
+      color: @brand-role-color;
+      color: @brand-role-color-rgba;
+      font-weight: @brand-role-font-weight;
+      font-size: @brand-role-font-size;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      // Add the logo on the left hand side
+      padding-left: 37px;
+      background-image: url('../images/devilrylogo_small.png');
+      background-repeat: no-repeat;
+      background-position: 10px center;
+      border-right: 1px solid #191919;
+
+//      &:hover {
+//        color: rgb(0, 0, 0);
+//      }
     }
 
   }

@@ -8904,7 +8904,7 @@ ul#django_cradmin_messages {
   margin: 0;
 }
 nav#cradmin_menu {
-  background-color: #333333;
+  background-color: #232828;
 }
 nav#cradmin_menu .cradmin_menucontent {
   display: none;
@@ -8922,7 +8922,7 @@ nav#cradmin_menu .cradmin_menucontent ul li a {
   display: block;
   color: #aaaaaa;
   padding: 12px 16px 12px 36px;
-  border-color: #444444;
+  border-color: transparent;
   border-style: solid;
   border-width: 0 0 1px 0;
   transition: color 0.3s ease;
@@ -8945,13 +8945,13 @@ nav#cradmin_menu .cradmin_menucontent ul li.cradmin_menu_activeitem a {
   font-weight: bold;
 }
 nav#cradmin_menu .cradmin_menucontent ul.cradmin_menucontent_header {
-  background-color: #262626;
+  background-color: #191d1d;
 }
 nav#cradmin_menu .cradmin_menucontent ul.cradmin_menucontent_footer {
   margin-top: 30px;
 }
 nav#cradmin_menu .cradmin_menumobileheader {
-  border-bottom: 1px solid #444444;
+  border-bottom: 1px solid transparent;
   text-align: right;
   padding-right: 15px;
 }
@@ -9027,8 +9027,7 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   margin: 0;
   padding: 20px 0 22px 0;
   border: 0;
-  background-color: #377ca8;
-  color: #ffffff;
+  background-color: #fff;
 }
 .page-header .fa.cradmin-page-header-icon,
 .page-header h1 {
@@ -9995,7 +9994,7 @@ table.table.cradmin-table-fluid tbody tr td {
 @media (min-width: 992px) {
   nav#cradmin_menu {
     z-index: 1000;
-    padding-top: 40px;
+    padding-top: 42px;
   }
 }
 .alert.feedback_gradebox {
