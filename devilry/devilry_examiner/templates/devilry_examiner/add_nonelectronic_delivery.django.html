@@ -8,14 +8,16 @@
 {% endblock title %}
 
 {% block body %}
-<div class="container">
-    <div class="page-header page-header-with-subheader">
+<div class="page-header page-header-with-subheader">
+    <div class="container-fluid">
         <h1>{% trans "Add non-electronic delivery" %}</h1>
         <p class="subheader">
             {{ assignment.long_name }} &mdash; {{ assignment.parentnode.parentnode.long_name}}, {{ assignment.parentnode.long_name }}
         </p>
     </div>
+</div>
 
+<div class="container-fluid django-cradmin-container-fluid-focus">
     <div class="alert alert-info">
     <strong>{% trans "Please confirm that you want to add a non-electronic delivery to the following groups" %}:</strong>
     <ul class="list-inline">
