@@ -11,18 +11,21 @@
 {% endblock breadcrumbtail %}
 
 {% block pagecontent %}
-<div class="container-fluid django-cradmin-container-fluid-focus read-feedback-box">
-    {% include "devilry_examiner/readonly-feedback.django.html" with feedback=unsaved_staticfeedback %}
-    <form method='post'>
-    <div class="devilry_gradingsystem_feedbackbuttonholder devilry_gradingsystem_feedbackbuttonholder-preview">
-        <button type="submit" class="btn btn-success btn-lg" name="submit_publish">
-            {% trans "Publish" %}
-        </button>
-        <button type="submit" class="btn btn-default" name="submit_edit_draft">
-            <i class="fa fa-edit"></i>
-            {% trans "Edit draft" %}
-        </button>
+    <div class="read-feedback-box">
+        {% include "devilry_examiner/readonly-feedback.django.html" with feedback=unsaved_staticfeedback %}
     </div>
-    </form>
-</div>
+
+    <div class="container-fluid django-cradmin-container-fluid-focus">
+        <form method='post'>
+            <div class="devilry_gradingsystem_feedbackbuttonholder devilry_gradingsystem_feedbackbuttonholder-preview">
+                <button type="submit" class="btn btn-success btn-lg" name="submit_publish">
+                    {% trans "Publish" %}
+                </button>
+                <button type="submit" class="btn btn-default" name="submit_edit_draft">
+                    <i class="fa fa-edit"></i>
+                    {% trans "Edit draft" %}
+                </button>
+            </div>
+        </form>
+    </div>
 {% endblock pagecontent %}

@@ -9724,12 +9724,8 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
     margin-top: 4px;
   }
 }
-.devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-preview {
-  margin-top: 20px;
-}
 @media (min-width: 600px) {
   .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-preview {
-    border-top: 1px solid #eeeeee;
     padding-top: 10px;
     position: relative;
   }
