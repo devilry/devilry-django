@@ -9833,6 +9833,80 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .devilry-student-delivery-summarycolumn p.devilry-student-delivery-summarycolumn-no-feedback {
   color: #777777;
 }
+#devilry_frontpage_roleselect {
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 15px;
+}
+@media (min-width: 768px) {
+  #devilry_frontpage_roleselect {
+    padding-top: 20px;
+  }
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li {
+  margin: 0;
+  padding: 0;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li a {
+  display: block;
+  margin: 0 0 5px 0;
+  background-color: #000;
+  padding: 12px 16px;
+  color: #fff;
+  text-decoration: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
+}
+@media (min-width: 768px) {
+  #devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li a {
+    transition-duration: 0.3s;
+    transition-property: background-color;
+  }
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li a strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 20px;
+  font-weight: normal;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li a:hover {
+  text-decoration: none;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_student a {
+  background-color: #5d8c08;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_student a:hover {
+  background-color: #436506;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_examiner a {
+  background-color: #055986;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_examiner a:hover {
+  background-color: #043f5f;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_subjectadmin a {
+  background-color: #ff9900;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_subjectadmin a:hover {
+  background-color: #d68100;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_nodeadmin a {
+  background-color: #ff9900;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_nodeadmin a:hover {
+  background-color: #d68100;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_superuser a {
+  background-color: #6b2b2b;
+}
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_superuser a:hover {
+  background-color: #4e1f1f;
+}
 body {
   background-image: url('../images/groovepaper.png');
 }
