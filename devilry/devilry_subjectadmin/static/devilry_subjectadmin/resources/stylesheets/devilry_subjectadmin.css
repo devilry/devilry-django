@@ -55,6 +55,11 @@
   line-height: 24px;
 }
 
+/* line 60, ../sass/devilry_subjectadmin.scss */
+.devilry_listofperiods li.devilry_period {
+  margin-bottom: 10px;
+}
+
 /* line 2, ../sass/_managestudents.scss */
 .listofgroups .col2Wrapper {
   text-align: right;
