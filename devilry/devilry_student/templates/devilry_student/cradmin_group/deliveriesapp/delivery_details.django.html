@@ -43,7 +43,8 @@
         {% if delivery.last_feedback.rendered_view %}
             <div id="devilry_student_group_deliverydetails_feedback_text"
                  class="container-fluid django-cradmin-container-fluid-focus">
-                <div id="devilry_student_group_deliverydetails_feedback_rendered_view">
+                <div id="devilry_student_group_deliverydetails_feedback_rendered_view"
+                        class="devilry-feedback-rendered-view">
                     {{ delivery.last_feedback.rendered_view|safe }}
                 </div>
             </div>

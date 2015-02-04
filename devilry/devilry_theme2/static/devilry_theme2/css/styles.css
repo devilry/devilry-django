@@ -10012,6 +10012,31 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
     background-position: -7px -400px;
   }
 }
+.devilry-feedback-rendered-view {
+  color: #323232;
+  max-width: 660px;
+}
+.devilry-feedback-rendered-view h1 {
+  font-size: 34px;
+}
+.devilry-feedback-rendered-view h2 {
+  font-size: 27px;
+}
+.devilry-feedback-rendered-view h3 {
+  font-size: 20px;
+}
+.devilry-feedback-rendered-view h4 {
+  font-size: 16px;
+}
+.devilry-feedback-rendered-view h5 {
+  font-size: 14px;
+}
+.devilry-feedback-rendered-view h6 {
+  font-size: 14px;
+}
+.devilry-feedback-rendered-view p:last-child {
+  margin-bottom: 0;
+}
 .alert.feedback_gradebox {
   position: relative;
   padding-right: 200px;
@@ -10050,31 +10075,9 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .delivery_files {
   margin-bottom: 22px;
 }
-.feedback_rendered_view {
-  background-color: #fff;
-  padding: 15px;
-  color: #323232;
-}
-.feedback_rendered_view h1 {
-  font-size: 34px;
-}
-.feedback_rendered_view h2 {
-  font-size: 27px;
-}
-.feedback_rendered_view h3 {
-  font-size: 20px;
-}
-.feedback_rendered_view h4 {
-  font-size: 16px;
-}
-.feedback_rendered_view h5 {
-  font-size: 14px;
-}
-.feedback_rendered_view h6 {
-  font-size: 14px;
-}
-.feedback_rendered_view p:last-child {
-  margin-bottom: 0;
+#devilry_examiner_feedback_rendered_view.devilry-feedback-rendered-view {
+  margin-left: auto;
+  margin-right: auto;
 }
 .devilry_gradingsystem_feedbackbuttonholder {
   box-sizing: border-box;
@@ -10204,9 +10207,6 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 #devilry_student_group_deliverydetails_metadata {
   padding-top: 30px;
   padding-bottom: 30px;
-}
-#devilry_student_group_deliverydetails_feedback_text #devilry_student_group_deliverydetails_feedback_rendered_view {
-  max-width: 660px;
 }
 #devilry_student_group_deliverydetails_metadata dl dt {
   font-size: 14px;
