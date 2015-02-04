@@ -9678,8 +9678,6 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 }
 #devilry_examiner_feedback_rendered_view.devilry-feedback-rendered-view {
   padding: 15px 0;
-  margin-left: auto;
-  margin-right: auto;
 }
 .devilry_gradingsystem_feedbackbuttonholder {
   box-sizing: border-box;
