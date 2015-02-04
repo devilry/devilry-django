@@ -1,6 +1,13 @@
+// Turn the striping the other way around - bg for odd and bg-accent for even.
 .table-striped {
   > tbody {
     > tr:nth-child(odd) {
+      > td,
+      > th {
+        background-color: @table-bg;
+      }
+    }
+    > tr:nth-child(even) {
       > td,
       > th {
         background-color: @table-bg-accent;

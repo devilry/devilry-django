@@ -1422,7 +1422,7 @@ pre code {
   }
 }
 table {
-  background-color: transparent;
+  background-color: #ffffff;
 }
 caption {
   padding-top: 8px;
@@ -1491,7 +1491,7 @@ th {
   border-bottom-width: 2px;
 }
 .table-striped > tbody > tr:nth-child(odd) {
-  background-color: #ffffff;
+  background-color: #fafafa;
 }
 .table-hover > tbody > tr:hover {
   background-color: #f5f5f5;
@@ -9587,6 +9587,10 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .table-striped > tbody > tr:nth-child(odd) > td,
 .table-striped > tbody > tr:nth-child(odd) > th {
   background-color: #ffffff;
+}
+.table-striped > tbody > tr:nth-child(even) > td,
+.table-striped > tbody > tr:nth-child(even) > th {
+  background-color: #fafafa;
 }
 .form-inline.form-inline-render-inline-block {
   display: inline-block;
