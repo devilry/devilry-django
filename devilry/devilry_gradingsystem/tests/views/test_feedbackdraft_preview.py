@@ -56,6 +56,7 @@ class TestFeedbackDraftPreviewView(TestCase):
             '40/100')
         self.assertEquals(cssGet(html, '.read-feedback-box .feedback_gradebox .feedback_is_passing_grade').text.strip(),
             'passed')
-        self.assertIn('alert-success', cssGet(html, '.read-feedback-box .feedback_gradebox')['class'])
-        self.assertEquals(cssGet(html, '.read-feedback-box .feedback_rendered_view').text.strip(),
+        self.assertIn('django-cradmin-container-fluid-focus-success',
+                      cssGet(html, '.read-feedback-box .feedback_gradebox')['class'])
+        self.assertEquals(cssGet(html, '.read-feedback-box .devilry-feedback-rendered-view').text.strip(),
             'This is a test.')

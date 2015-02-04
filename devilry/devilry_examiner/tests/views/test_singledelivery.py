@@ -139,7 +139,8 @@ class TestSingleDeliveryView(TestCase):
             '10/100')
         self.assertEquals(cssGet(html, '.read-feedback-box .feedback_gradebox .feedback_is_passing_grade').text.strip(),
             'failed')
-        self.assertIn('alert-warning', cssGet(html, '.read-feedback-box .feedback_gradebox')['class'])
+        self.assertIn('django-cradmin-container-fluid-focus-warning',
+                      cssGet(html, '.read-feedback-box .feedback_gradebox')['class'])
         self.assertEquals(cssGet(html, '.read-feedback-box #devilry_examiner_feedback_rendered_view').text.strip(),
             'This is a test.')
 
