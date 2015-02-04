@@ -14,8 +14,13 @@ class DeliverySummaryWithAssignmentColumn(DeliverySummaryColumn):
 
 class TimeOfDeliveryColumn(NaturaltimeColumn):
     modelfield = 'time_of_delivery'
+    allcells_css_classes = ['hidden-xs']
+    # column_width = '270px'
 
-    def get_default_order_is_ascending(self):
+    # def get_default_order_is_ascending(self):
+    #     return False
+
+    def is_sortable(self):
         return False
 
 

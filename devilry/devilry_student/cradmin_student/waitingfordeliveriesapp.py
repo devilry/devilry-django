@@ -73,7 +73,7 @@ class PeriodInfoXs(objecttable.PlainTextColumn):
 
 
 class LastDeadlineColumn(objecttable.PlainTextColumn):
-    orderingfield = 'last_deadline_datetime'
+    # orderingfield = 'last_deadline_datetime'
     modelfield = 'last_deadline_datetime'
 
     def get_header(self):
@@ -90,8 +90,11 @@ class LastDeadlineColumn(objecttable.PlainTextColumn):
         else:
             return deadline_datetime
 
-    def get_default_order_is_ascending(self):
-        return True
+    # def get_default_order_is_ascending(self):
+    #     return True
+
+    def is_sortable(self):
+        return False
 
 
 class WaitingForDeliveriesListView(studentobjecttable.StudentObjectTableView):

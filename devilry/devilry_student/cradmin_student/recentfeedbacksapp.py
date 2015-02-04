@@ -13,7 +13,9 @@ from .recentdeliveriesapp import PeriodInfoXsColumn
 
 class FeedbackSaveTimestampColumn(NaturaltimeColumn):
     modelfield = 'save_timestamp'
-    orderingfield = 'last_feedback__save_timestamp'
+    allcells_css_classes = ['hidden-xs']
+    # orderingfield = 'last_feedback__save_timestamp'
+    # column_width = '270px'
 
     def get_header(self):
         return _('Feedback time')
@@ -21,8 +23,11 @@ class FeedbackSaveTimestampColumn(NaturaltimeColumn):
     def render_value(self, delivery):
         return super(FeedbackSaveTimestampColumn, self).render_value(delivery.last_feedback)
 
-    def get_default_order_is_ascending(self):
+    def is_sortable(self):
         return False
+
+    # def get_default_order_is_ascending(self):
+    #     return False
 
 
 class RecentDeliveriesListView(objecttable.ObjectTableView):
