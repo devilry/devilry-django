@@ -3,13 +3,15 @@ Ext.define('devilry_subjectadmin.view.EditSidebarContainer', {
     alias: 'widget.editsidebarcontainer',
     cls: 'devilry_subjectadmin_editsidebarcontainer',
 
-    defaultOpacity: 0.8,
+    defaultOpacity: 1,
     hoverOpacity: 1,
 
     mouseEnterExtras: function() {
-        this.getEl().setStyle('background-color', '#fff');  
+        //this.getEl().setStyle('background-color', '#fff');
+        this.getEl().addCls('devilry_subjectadmin_editsidebarcontainer_hover');
     },
     mouseLeaveExtras: function() {
-        this.getEl().setStyle('background-color', 'transparent');  
+        this.getEl().removeCls('devilry_subjectadmin_editsidebarcontainer_hover');
+        //this.getEl().setStyle('background-color', 'transparent');
     }
 });

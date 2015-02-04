@@ -29,7 +29,7 @@ Ext.define('devilry_subjectadmin.view.subject.SubjectOverview' ,{
                 xtype: 'editsidebarcontainer',
                 layout: 'anchor',
                 width: 250,
-                margin: '6 0 0 0',
+                margin: '0 0 0 0',
                 padding: '0 10 0 10',
                 items: [{
                     xtype: 'adminsbox',
