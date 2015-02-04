@@ -9,10 +9,10 @@
 {% endblock breadcrumbtail %}
 
 {% block belowheading %}
-    <p class="lead">
+    <p>
         {% trans "In this view, you can run similarity checks for all deliveries on this assignment. It only works for Java and Python code for now." %}
     </p>
-    <p class="lead">
+    <p>
         <strong class="text-warning">
             This is a beta feature, please contact us via <a href="http://devilry.org">devilry.org</a>
             if you encounter any problems, if you want to help (provide feedback, request or submit
@@ -23,7 +23,7 @@
 
 
 {% block content %}
-    <div class="container">
+    <div class="container-fluid">
         {% if detektorassignment.status == "running" %}
             <div class="alert alert-info">
                 {% blocktrans with user=detektorassignment.processing_started_by.username email=detektorassignment.processing_started_by.email started_time=detektorassignment.processing_started_datetime %}Similarity check processing was started by {{ user }} {{ started_time }}. An email will be sent to {{ email }} when the task is completed.{% endblocktrans %}
