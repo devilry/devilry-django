@@ -1,34 +1,37 @@
 #devilry_header2 {
-	.devilry_header2_searchform {
-		box-sizing: border-box;
-		position: absolute;
-		right: (@header-button-width * 2);
-		top: 0;
-		margin: 0;
-		width: @header-button-width;
-		overflow: hidden;
+  .devilry_header2_searchform {
+    box-sizing: border-box;
+    position: absolute;
+    right: (@header-button-width * 2);
+    top: 0;
+    margin: 0;
+    width: @header-button-width;
+    overflow: hidden;
 
-		padding: 0;
-		// overflow: hidden;
-		background-color: #fff;
-		input[name="search"] {
-			box-sizing: border-box;
-			position: absolute;
-			height: @header-height;
-			padding: 0;
-			left: @header-button-width;
-			right: 0;
-			border: none;
-			padding-left: 8px;
-			width: 100%;
-			&:focus {
-				outline: none;
-			}
-		}
-		// Animate showing the search field on hover
-		.devilry_header2_transition(width 0.3s ease);
-		&:hover {
-			width: 250px;
-		}
-	}
+    padding: 0;
+    // overflow: hidden;
+    background-color: #fff;
+    input[name="search"] {
+      box-sizing: border-box;
+      position: absolute;
+      height: @header-height;
+      padding: 0;
+      left: @header-button-width;
+      right: 0;
+      border: none;
+      padding-left: 8px;
+      width: 100%;
+      &:focus {
+        outline: none;
+      }
+    }
+    // Animate showing the search field on hover
+
+    @media (min-width: @screen-md-min) {
+    .devilry_header2_transition(width 0.3s ease);
+      &:hover {
+        width: 250px;
+      }
+    }
+  }
 }

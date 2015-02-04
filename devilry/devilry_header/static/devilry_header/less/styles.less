@@ -5,7 +5,6 @@
 @import "brand";
 @import "searchform";
 @import "extjsbreadcrumb";
-@import "responsive";
 
 #devilry_header2 {
   height: @header-height;
@@ -16,4 +15,9 @@
   font-family: @header-font-family;
   z-index: 2000;
   font-size: @header-font-size;
+
+  a, button {
+    -webkit-tap-highlight-color: @header-tap-highlight-color;
+  }
+
 }
