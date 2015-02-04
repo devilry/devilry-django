@@ -1,10 +1,10 @@
 .page-header {
   margin: 0;
-  padding: 20px 0 22px 0;
-  border: 0;
-//  background-color: @cradmin-page-header-bg;
-//  color: @panel-primary-text;
-  background-color: #fff;
+  padding: @cradmin-page-header-padding-top 0 @cradmin-page-header-padding-bottom 0;
+  background-color: @cradmin-page-header-bg;
+  color: @cradmin-page-header-color;
+  border: none;
+  border-bottom: @cradmin-page-header-border-bottom;
 
   .fa.cradmin-page-header-icon, h1 {
     line-height: 44px;
@@ -23,6 +23,11 @@
     margin: 0;
     font-size: ceil(@font-size-base + 5px);
     font-weight: bold;
+    line-height: @cradmin-page-header-h1-line-height;
+  }
+
+  p {
+    margin: 0;
   }
   
   .btn {

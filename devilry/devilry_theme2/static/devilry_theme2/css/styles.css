@@ -2215,7 +2215,7 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
   color: #ffffff;
-  background-color: #377ca8;
+  background-color: #fafafa;
   border-color: #224d68;
 }
 .btn-primary:hover,
@@ -2225,7 +2225,7 @@ fieldset[disabled] .btn-default.active {
 .btn-primary.active,
 .open > .dropdown-toggle.btn-primary {
   color: #ffffff;
-  background-color: #2a6082;
+  background-color: #e1e1e1;
   border-color: #132b3a;
 }
 .btn-primary:active,
@@ -2251,11 +2251,11 @@ fieldset[disabled] .btn-primary:active,
 .btn-primary.disabled.active,
 .btn-primary[disabled].active,
 fieldset[disabled] .btn-primary.active {
-  background-color: #377ca8;
+  background-color: #fafafa;
   border-color: #224d68;
 }
 .btn-primary .badge {
-  color: #377ca8;
+  color: #fafafa;
   background-color: #ffffff;
 }
 .btn-success {
@@ -9025,9 +9025,11 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
 }
 .page-header {
   margin: 0;
-  padding: 20px 0 22px 0;
-  border: 0;
-  background-color: #fff;
+  padding: 10px 0 10px 0;
+  background-color: #fafafa;
+  color: #333333;
+  border: none;
+  border-bottom: 1px solid #eeeeee;
 }
 .page-header .fa.cradmin-page-header-icon,
 .page-header h1 {
@@ -9045,6 +9047,10 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   margin: 0;
   font-size: 21px;
   font-weight: bold;
+  line-height: 31px;
+}
+.page-header p {
+  margin: 0;
 }
 @media (min-width: 768px) {
   .page-header .btn.btn-sm {
@@ -9052,7 +9058,7 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   }
 }
 .page-header .btn.btn-default {
-  background-color: #377ca8;
+  background-color: #fafafa;
   border-color: #224d68;
   color: #ffffff;
   transition: background-color 0.3s ease;
@@ -9973,7 +9979,7 @@ table.table.cradmin-table-fluid tbody tr td {
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progressbar-progress {
   display: inline-block;
   height: 100%;
-  background-color: #377ca8;
+  background-color: #fafafa;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar .django-cradmin-progresspercent {
   position: absolute;
@@ -10217,5 +10223,5 @@ table.table.cradmin-table-fluid tbody tr td {
   color: #777777;
 }
 body {
-  background-color: #e6e6e6;
+  background-image: url('../images/groovepaper.png');
 }
