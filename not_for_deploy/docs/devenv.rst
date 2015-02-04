@@ -78,7 +78,11 @@ Setup the development virtualenv
 Create a database
 #################
 We have several alternatives for setting up a demo database. They all
-use Fabric tasks. See :ref:`aboutfabric`
+use Fabric tasks. See :ref:`aboutfabric`.
+
+First, make sure you are in the ``devilry`` virtualenv::
+
+    $ workon devilry
 
 You can create a fairly full featured demo database with::
 
@@ -103,6 +107,10 @@ things the script does).
 #################################
 Run the Django development server
 #################################
+First, make sure you are in the ``devilry`` virtualenv::
+
+    $ workon devilry
+
 Start the Django development server with::
 
     $ python manage.py runserver
