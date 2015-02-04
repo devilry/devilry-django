@@ -10,7 +10,7 @@ from devilry.devilry_student.cradminextensions import studentcrinstance
 
 class Menu(crmenu.Menu):
     def build_menu(self):
-        self.add(
+        self.add_headeritem(
             label=_('Browse all'),
             url=reverse_cradmin_url(
                 'devilry_student', 'allperiods', roleid=self.request.user.id),
