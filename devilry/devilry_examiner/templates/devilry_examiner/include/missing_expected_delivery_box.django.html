@@ -27,7 +27,7 @@ Required template context variables:
                 <input type="hidden" name="cancel_url" value="{{ request.get_full_path }}">
                 <button class="btn btn-default" type="submit">
                     {% trans "Close group without feedback" %}<br>
-                    <small class="text-muted">({% trans "They should have delivered, but did not do so" %})</small>
+                    <small>({% trans "They should have delivered, but did not do so" %})</small>
                 </button>
             </form>
         </p>
