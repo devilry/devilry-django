@@ -8,13 +8,13 @@
 {% endblock title %}
 
 {% block body %}
-<div class="container">
-  <div class="page-header page-header-with-subheader">
-    <h1>{{ assignment.long_name }}</h1>
-    <p class="subheader">
-      {{ assignment.parentnode.parentnode.long_name}} &mdash; {{ assignment.parentnode.long_name }}
-    </p>
-  </div>
+<div class="page-header page-header-with-subheader">
+    <div class="container-fluid">
+        <h1>{{ assignment.long_name }}</h1>
+        <p class="subheader">
+            {{ assignment.parentnode.parentnode.long_name}} &mdash; {{ assignment.parentnode.long_name }}
+        </p>
+    </div>
 </div>
 
 

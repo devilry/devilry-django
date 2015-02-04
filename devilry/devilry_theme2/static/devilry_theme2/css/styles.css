@@ -9715,7 +9715,6 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   }
   .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=submit_publish] {
     display: inline-block;
-    margin-left: 10px;
   }
   .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=submit_save_draft],
   .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=submit_publish] {
