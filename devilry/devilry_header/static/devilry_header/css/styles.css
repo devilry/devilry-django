@@ -1223,7 +1223,7 @@
   display: none;
   padding-right: 15px;
   color: #f0f0f0;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   font-weight: bold;
   font-size: 16px;
   overflow: hidden;
@@ -1260,7 +1260,7 @@
 }
 #devilry_header2.devilry_header2_role_subjectadmin .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_subjectadmin {
   display: block;
-  background-color: #d4bd1c;
+  background-color: #ff9900;
 }
 #devilry_header2.devilry_header2_role_subjectadmin .devilry_header2_brand .devilry_header2_brand_role.devilry_header2_brand_role_subjectadmin:hover {
   color: #ffffff;
