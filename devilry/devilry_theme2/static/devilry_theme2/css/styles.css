@@ -10014,25 +10014,28 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 }
 .devilry-feedback-rendered-view {
   color: #323232;
+  font-family: 'Georgia', serif;
+  font-size: 18px;
   max-width: 660px;
 }
+.devilry-feedback-rendered-view h1,
+.devilry-feedback-rendered-view h2,
+.devilry-feedback-rendered-view h3 {
+  font-weight: normal;
+}
+.devilry-feedback-rendered-view h4,
+.devilry-feedback-rendered-view h5 {
+  font-weight: bold;
+  font-size: 18px;
+}
 .devilry-feedback-rendered-view h1 {
-  font-size: 34px;
+  font-size: 36px;
 }
 .devilry-feedback-rendered-view h2 {
-  font-size: 27px;
+  font-size: 30px;
 }
 .devilry-feedback-rendered-view h3 {
-  font-size: 20px;
-}
-.devilry-feedback-rendered-view h4 {
-  font-size: 16px;
-}
-.devilry-feedback-rendered-view h5 {
-  font-size: 14px;
-}
-.devilry-feedback-rendered-view h6 {
-  font-size: 14px;
+  font-size: 24px;
 }
 .devilry-feedback-rendered-view p:last-child {
   margin-bottom: 0;
@@ -10076,6 +10079,7 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   margin-bottom: 22px;
 }
 #devilry_examiner_feedback_rendered_view.devilry-feedback-rendered-view {
+  padding: 15px 0;
   margin-left: auto;
   margin-right: auto;
 }

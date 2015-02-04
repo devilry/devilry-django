@@ -1,17 +1,24 @@
 .devilry-feedback-rendered-view {
-	color: rgb(50, 50, 50);
+  color: rgb(50, 50, 50);
+  font-family: 'Georgia', serif;
+  font-size: 18px;
 
-    // Limit the width to make text more readable.
-    max-width: 660px;
+  // Limit the width to make text more readable.
+  max-width: 660px;
 
-	h1 { font-size: floor(@font-size-base * 2.15); } // ~30px
-	h2 { font-size: floor(@font-size-base * 1.70); } // ~24px
-	h3 { font-size: ceil(@font-size-base * 1.25); } // ~18px
-	h4 { font-size: @font-size-base }
-	h5 { font-size: ceil(@font-size-base * 0.85); } // ~12px
-	h6 { font-size: ceil(@font-size-base * 0.85); } // ~12px
+  h1, h2, h3 {
+    font-weight: normal;
+  }
+  h4, h5 {
+    font-weight: bold;
+    font-size: ceil(@font-size-base * 1.1);
+  }
 
-	p:last-child {
-		margin-bottom: 0;
-	}
+  h1 { font-size: floor(@font-size-base * 2.25); }
+  h2 { font-size: floor(@font-size-base * 1.90); }
+  h3 { font-size: ceil(@font-size-base * 1.45); }
+
+  p:last-child {
+    margin-bottom: 0;
+  }
 }
