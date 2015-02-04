@@ -3,35 +3,40 @@
 {% load i18n %}
 
 {% block body %}
-<div class="container">
-        <div class="page-header page-header-with-subheader">
-            <h1>{% trans "About" %}</h1>
-            <p class="subheader">
-                {% trans "Below you can see information about your profile that is stored in Devilry. Report if the" %} 
-                <a href="{{ wrong_info_url }}">{% trans " information is wrong" %}</a>.
-            </p>
-        </div>
+<div class="page-header page-header-with-subheader">
+    <div class="container-fluid">
+        <h1>{% trans "About" %}</h1>
+        <p class="subheader">
+            {% trans "Below you can see information about your profile that is stored in Devilry. Report if the" %}
+            <a href="{{ wrong_info_url }}">{% trans " information is wrong" %}</a>.
+        </p>
+    </div>
+</div>
 
-        <table class="table">
-            <tr>
-                <td> {% trans "Name" %} </td>
-                <td> {{ user.devilryuserprofile.full_name }} </td>
-            </tr>
-            <tr>
-                <td> {% trans "Email Address" %} </td>
-                <td> {{ user.email }} </td>
-            </tr>
-            <tr>
-                <td> {% trans "Username" %} </td>
-                <td> {{ user.username }} </td>
-            </tr>
-            <tr>
-                <td> {% trans "Last login" %} </td>
-                <td> {{ user.last_login }} </td>
-            </tr>
-        </table>
+<div class="container-fluid django-cradmin-container-fluid-focus">
+    <table class="table">
+        <tr>
+            <td> {% trans "Name" %} </td>
+            <td> {{ user.devilryuserprofile.full_name }} </td>
+        </tr>
+        <tr>
+            <td> {% trans "Email Address" %} </td>
+            <td> {{ user.email }} </td>
+        </tr>
+        <tr>
+            <td> {% trans "Username" %} </td>
+            <td> {{ user.username }} </td>
+        </tr>
+        <tr>
+            <td> {% trans "Last login" %} </td>
+            <td> {{ user.last_login }} </td>
+        </tr>
+    </table>
 
-        <a href="{{ logout_url }}" class="btn btn-primary btn-lg" role="button">{% trans "Sign out" %}</a>
 
+    <h2>{% trans "Language?" %}</h2>
+    <div id="devilry_frontpage_languageselect">
+        {% include "devilry_header/includes/change_language.django.html" %}
+    </div>
 </div>
 {% endblock body %}
