@@ -16,6 +16,3 @@ pysolr==2.1.0
 
 # Required to run selenium tests (mostly for testing deprecated UIs)
 selenium==2.44.0
-
-# Required to build the ExtJS apps
-djangosenchatools==1.0.5
