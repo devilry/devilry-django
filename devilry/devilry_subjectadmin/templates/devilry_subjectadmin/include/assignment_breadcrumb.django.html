@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load url from future %}
 
-<li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
+{#<li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>#}
 <li><a href="{% url 'devilry_subjectadmin' %}">{% trans "Subject administrator" %}</a></li>
 {% if is_subjectadmin %}
     <li><a href="{% url 'devilry_subjectadmin' %}#/subject/{{ assignment.subject.id }}/">{{ assignment.subject.short_name }}</a></li>

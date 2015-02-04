@@ -4,14 +4,21 @@
 
 {% block title %}{% trans "Edit" %} - {{ assignment.get_path }}{% endblock title %}
 
+
 {% block body %}
-    <div class="container">
-        <div class="page-header">
+    <div class="page-header">
+        <div class="container-fluid">
             <h1>
                 {% trans "Edit" %}
-                <small>{{ assignment.get_path }}</small>
+                {{ assignment.long_name }}
             </h1>
+            <p>
+                {{ assignment.subject.long_name }} -
+                {{ assignment.period.long_name }}
+            </p>
         </div>
+    </div>
+    <div class="container-fluid">
         <ol class="breadcrumb">
             {% include "devilry_subjectadmin/include/assignment_breadcrumb.django.html" %}
             <li class="active">{% trans "Edit" %}</li>
