@@ -1,7 +1,8 @@
 .devilry-feedback-rendered-view {
   color: rgb(50, 50, 50);
   font-family: 'Georgia', serif;
-  font-size: 18px;
+  font-size: @feedback-rendered-view-font-size;
+  line-height: @feedback-rendered-view-font-size * 1.8;
 
   // Limit the width to make text more readable.
   max-width: 660px;
@@ -18,7 +19,10 @@
   h2 { font-size: floor(@font-size-base * 1.90); }
   h3 { font-size: ceil(@font-size-base * 1.45); }
 
-  p:last-child {
-    margin-bottom: 0;
+  p {
+    padding-bottom: @feedback-rendered-view-font-size * 1.8;
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }
