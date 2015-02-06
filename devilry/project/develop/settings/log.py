@@ -77,9 +77,7 @@ def create_logging_conf(logdir):
             },
             'devilry.utils.devilry_email': {
                 'handlers': ['allButExceptionTracebacks',
-                             'emailfile',
                              #'sentry',
-                             #'console', # Uncomment this if you want to see every email sent in the console, however it is probably more useful to use emailfile
                             ],
                 'level': 'DEBUG',
                 'propagate': False
