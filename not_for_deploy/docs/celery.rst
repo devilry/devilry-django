@@ -89,10 +89,28 @@ Go to http://localhost:15672 and login with the grandma user we created
 above if you want to monitor the messages sent via RabbitMQ.
 
 
-Things to remember when running Celery tasks through the Celery worker
-======================================================================
+Things to remember
+==================
+(when running Celery tasks through the Celery worker)
+
 - The output (stdout and stderr) goes to the Celery worker, not to runserver.
 - You can get more verbose output from the worker with ``worker -l debug``.
+
+
+Testing email sending with django-celery-email
+==============================================
+
+Uncomment the following lines in ``devilry.project.develop.settings.develop``::
+
+    # INSTALLED_APPS += ['djcelery_email']
+    # EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+    # CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+And run the following in the Django shell:
+
+    >>> from django.contrib.auth import get_user_model
+    >>> from devilry.utils.devilry_email import send_message
+    >>> send_message('Hello world', 'Yo', get_user_model().objects.get(username='april'))
 
 .. _Celery: http://celery.readthedocs.org/
 .. _`Celery first steps with Django`: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html

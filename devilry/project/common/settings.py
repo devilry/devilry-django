@@ -125,9 +125,6 @@ HAYSTACK_CONNECTIONS = {
 #
 ########################################################################
 # BROKER_URL = 'amqp://devilry:secret@localhost:5672/devilryhost'
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TIMEZONE = 'Europe/Oslo'
 CELERY_ENABLE_UTC = True
 
