@@ -1,4 +1,6 @@
 import random
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
 from django.contrib.webdesign import lorem_ipsum
 
@@ -108,11 +110,10 @@ class Command(BaseCommand):
 
         self.bad_students = {}
         for username, full_name in bad_students:
-            if username != 'thor':
-                self.bad_students[username] = UserBuilder(username, full_name=full_name).user
+            self.bad_students[username] = self.create_or_get_user(username, full_name=full_name)
         self.good_students = {}
         for username, full_name in good_students:
-            self.good_students[username] = UserBuilder(username, full_name=full_name).user
+            self.good_students[username] = self.create_or_get_user(username, full_name=full_name)
         self.allstudentslist = list(self.bad_students.values()) + list(list(self.good_students.values()))
         self.april = UserBuilder('april', full_name='April Duck').user
 
@@ -123,6 +124,12 @@ class Command(BaseCommand):
         self.duckburgh = NodeBuilder('duckburgh', long_name="University of Duckburgh")
         self.add_duck1100()
         # self.add_hugecourse()
+
+    def create_or_get_user(self, username, full_name):
+        try:
+            return UserBuilder(username, full_name=full_name).user
+        except ValidationError:
+            return get_user_model().objects.get(username=username)
 
     def build_random_pointassignmentdata(self,
                                          periodbuilder, weeks_ago, short_name, long_name,
