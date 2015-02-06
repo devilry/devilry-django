@@ -45,6 +45,8 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
     class Meta:
         app_label = 'core'
         ordering = ['short_name']
+        verbose_name = _('Course')
+        verbose_name_plural = _('Courses')
 
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()

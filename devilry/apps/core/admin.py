@@ -1,5 +1,5 @@
 from django.contrib import admin
-from devilry.apps.core.models import AssignmentGroup, Node
+from devilry.apps.core.models import AssignmentGroup, Node, Subject
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -41,13 +41,16 @@ class BaseNodeAdmin(admin.ModelAdmin):
 class NodeAdmin(BaseNodeAdmin):
     def get_queryset(self, request):
         return super(NodeAdmin, self).get_queryset(request)\
-            .select_related(
-                'parentnode',
-                'parentnode__parentnode',
-                'parentnode__parentnode__parentnode')\
+            .select_related('parentnode')\
 
 
 admin.site.register(Node, NodeAdmin)
+
+
+class SubjectAdmin(BaseNodeAdmin):
+    pass
+
+admin.site.register(Subject, SubjectAdmin)
 
 
 class AssignmentGroupAdmin(admin.ModelAdmin):
