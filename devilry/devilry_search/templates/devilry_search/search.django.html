@@ -1,6 +1,7 @@
 {% extends "devilry_search/base.django.html" %}
 {% load crispy_forms_tags %}
 {% load i18n %}
+{% load cradmin_tags %}
 
 {% block body %}
     <div id="devilry_search_view">
@@ -25,7 +26,8 @@
                         {% endif %}
                         <div class="list-group">
                             {% for result in student_results %}
-                                <a href="{% url 'devilry_student' %}#/group/{{ result.pk }}/" class="list-group-item">
+                                <a href="{% cradmin_url 'devilry_student_group' 'overview' result.pk 'INDEX' %}"
+                                        class="list-group-item">
                                     <h4 class="list-group-item-heading">{{ result.title }}</h4>
                                     <p class="list-group-item-text text-muted">{{ result.path }}</p>
                                 </a>
