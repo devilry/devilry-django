@@ -1,4 +1,3 @@
-from datetime import timedelta
 import random
 from django.core.management.base import BaseCommand
 from django.contrib.webdesign import lorem_ipsum
@@ -16,7 +15,8 @@ bad_students = [
     ('louie', 'Louie Duck'),
     ('huey', 'Huey Duck'),
     ('june', 'June Duck'),
-    ('july', 'July Duck')
+    ('july', 'July Duck'),
+    ('thor', 'God of Thunder'),
 ]
 
 good_students = [
@@ -91,7 +91,6 @@ programs = [
 ]
 
 
-
 class Command(BaseCommand):
     help = 'Create a database for demo/testing.'
 
@@ -105,11 +104,12 @@ class Command(BaseCommand):
             full_name='Donald Duck').user
         self.scrooge = UserBuilder('scrooge',
             full_name='Scrooge McDuck').user
-        self.examiners = [self.donald, self.scrooge]
+        self.examiners = [self.donald, self.scrooge, self.thor]
 
         self.bad_students = {}
         for username, full_name in bad_students:
-            self.bad_students[username] = UserBuilder(username, full_name=full_name).user
+            if username != 'thor':
+                self.bad_students[username] = UserBuilder(username, full_name=full_name).user
         self.good_students = {}
         for username, full_name in good_students:
             self.good_students[username] = UserBuilder(username, full_name=full_name).user
@@ -122,11 +122,16 @@ class Command(BaseCommand):
 
         self.duckburgh = NodeBuilder('duckburgh', long_name="University of Duckburgh")
         self.add_duck1100()
-
+        # self.add_hugecourse()
 
     def build_random_pointassignmentdata(self,
-            periodbuilder, weeks_ago, short_name, long_name, filecount,
-            feedback_percent=100):
+                                         periodbuilder, weeks_ago, short_name, long_name,
+                                         filecount,
+                                         feedback_percent=100,
+                                         bad_students=None, good_students=None):
+        bad_students_iterator = bad_students or self.bad_students.itervalues()
+        good_students_iterator = good_students or self.good_students.itervalues()
+
         assignmentbuilder = periodbuilder.add_assignment_x_weeks_ago(
             weeks=weeks_ago,
             short_name=short_name, long_name=long_name,
@@ -136,6 +141,7 @@ class Command(BaseCommand):
             max_points=filecount,
             first_deadline=DateTimeBuilder.now().minus(weeks=weeks_ago-1)
         )
+
         def create_group(user, minpoints, maxpoints, examiner):
             groupbuilder = assignmentbuilder.add_group(
                 students=[user], examiners=[examiner])
@@ -156,6 +162,7 @@ class Command(BaseCommand):
                 deliverybuilder.add_filemeta(
                     filename=deliveryfile['filename'],
                     data=deliveryfile['data'])
+
             if random.randint(0, 100) <= feedback_percent:
                 feedback = StaticFeedback.from_points(
                     assignment=assignmentbuilder.assignment,
@@ -164,18 +171,56 @@ class Command(BaseCommand):
                     rendered_view=self._lorem_paras(random.randint(1, 5)),
                     points=random.randint(minpoints, maxpoints))
                 feedback.save()
-        for user in self.bad_students.itervalues():
+
+        for user in bad_students_iterator:
             create_group(user, minpoints=0, maxpoints=filecount/2,
-                examiner=random.choice(self.examiners))
-        for user in self.good_students.itervalues():
+                         examiner=random.choice(self.examiners))
+        for user in good_students_iterator:
             create_group(user, minpoints=filecount/2, maxpoints=filecount,
-                examiner=random.choice(self.examiners))
+                         examiner=random.choice(self.examiners))
         create_group(self.april, minpoints=1, maxpoints=filecount,
-            examiner=self.donald)
+                     examiner=self.donald)
         return assignmentbuilder
 
     def _as_relatedstudents(self, users, tags):
         return [RelatedStudent(user=user, tags=tags) for user in users]
+
+    def add_hugecourse(self):
+        duck1100 = self.duckburgh.add_subject(
+            short_name='hugecourse',
+            long_name='HUGE1000 - A huge testcourse')
+        duck1100.add_admins(self.thor)
+
+        periodbuilder = duck1100.add_6month_active_period(
+            short_name='testsemester', long_name='Testsemester',
+            relatedexaminers=[
+                RelatedExaminer(user=self.thor, tags=''),
+                RelatedExaminer(user=self.donald, tags='group1'),
+                RelatedExaminer(user=self.scrooge, tags='group2')
+            ])
+
+        bad_studentusers = []
+        good_studentusers = []
+        relatedstudents = []
+        for x in xrange(2000):
+            studentuser = UserBuilder('student{}'.format(x)).user
+            if random.randint(0, 1):
+                good_studentusers.append(studentuser)
+            else:
+                bad_studentusers.append(studentuser)
+            relatedstudent = RelatedStudent(
+                period=periodbuilder.period,
+                user=studentuser,
+                tags='group{}'.format(random.randint(1, 2)))
+            relatedstudents.append(relatedstudent)
+        RelatedStudent.objects.bulk_create(relatedstudents)
+
+        self.build_random_pointassignmentdata(
+            periodbuilder=periodbuilder,
+            weeks_ago=2, filecount=2,
+            short_name='oblig1', long_name='Obligatory assignment one',
+            bad_students=bad_studentusers,
+            good_students=good_studentusers)
 
     def add_duck1100(self):
         duck1100 = self.duckburgh.add_subject(
