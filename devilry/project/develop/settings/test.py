@@ -5,6 +5,7 @@ SKIP_SOUTH_TESTS = True  # To disable South's own unit tests
 
 CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+CELERY_EAGER_TRANSACTION = True
 BROKER_BACKEND = 'memory'
 
 if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:

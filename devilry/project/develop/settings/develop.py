@@ -34,6 +34,7 @@ if profiler_middleware:
 ##################################################################################
 CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+CELERY_EAGER_TRANSACTION = True
 
 ## For testing celery
 ## - Se the "Developing and testing Celery background tasks" chapter of the developer docs.
@@ -56,7 +57,7 @@ CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 #EMAIL_PORT = 1025
 
 
-## For testing django-celery-email
-#INSTALLED_APPS += ['djcelery_email']
-#EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-#CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# For testing django-celery-email
+INSTALLED_APPS += ['djcelery_email']
+EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
