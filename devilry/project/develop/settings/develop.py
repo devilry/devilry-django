@@ -1,6 +1,7 @@
 from .base import *
 
 # MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.project.develop.middleware.FakeLoginMiddleware']
+# HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 
 # The if's below is just to make it easy to toggle these settings on and off during development
@@ -43,6 +44,7 @@ CELERY_EAGER_TRANSACTION = True
 # CELERY_RESULT_BACKEND = 'amqp://'
 
 
+
 ######################################################
 # Email
 ######################################################
@@ -58,6 +60,6 @@ CELERY_EAGER_TRANSACTION = True
 
 
 # For testing django-celery-email
-INSTALLED_APPS += ['djcelery_email']
-EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
-CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# INSTALLED_APPS += ['djcelery_email']
+# EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+# CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
