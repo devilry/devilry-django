@@ -11,7 +11,7 @@
         <h1 class="sr-only">{% trans "Devilry frontpage" %}</h1>
 
         <div id="devilry_frontpage_roleselect">
-            <h2>{% trans "Choose your role" %}</h2>
+            <h1>{% trans "Choose your role" %}</h1>
             <p>{% trans "Each distinct area of responsibilty, or role, in Devilry has its own user interface. Please choose your role." %}</p>
             <ul id="devilry_frontpage_roleselect_list">
                 {% if user_is_student %}
@@ -42,7 +42,7 @@
                     <li id="devilry_frontpage_roleselect_nodeadmin">
                         <a href="{% url 'devilry_nodeadmin' %}">
                             <strong>{% trans "Nodeadmin" %}</strong>
-                            {% trans "Node administrators manage large numbers of courses, typically a faculty or school." %}
+                            {% trans "Node administrators manage large numbers of courses, typically a faculty or a department." %}
                         </a>
                     </li>
                 {% endif %}
