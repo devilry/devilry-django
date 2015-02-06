@@ -1,0 +1,54 @@
+#devilry_search_view {
+  form {
+    .form-group {
+      margin-bottom: 0;
+    }
+  }
+
+  h2 {
+    margin: 0 0 15px 0;
+    font-size: @font-size-base;
+    font-weight: bold;
+  }
+
+  .list-group-item-text {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .devilry-search-results {
+    margin-top: 20px;
+    @media (min-width: @screen-sm-min) {
+      margin-top: 30px;
+    }
+
+    &.devilry-search-results-multiple-roles {
+      .devilry-search-results-student,
+      .devilry-search-results-examiner,
+      .devilry-search-results-admin {
+        padding-top: 15px;
+        padding-bottom: 15px;
+        h2 {
+          color: #fff;
+        }
+
+        .list-group {
+          margin-bottom: 0;
+        }
+      }
+
+      .devilry-search-results-student {
+        background-color: @devilry-student-bgcolor;
+      }
+      .devilry-search-results-examiner {
+        background-color: @devilry-examiner-bgcolor;
+      }
+      .devilry-search-results-admin {
+        background-color: @devilry-admin-bgcolor;
+      }
+    }
+  }
+
+}

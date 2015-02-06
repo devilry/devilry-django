@@ -9833,6 +9833,53 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .devilry-student-delivery-summarycolumn p.devilry-student-delivery-summarycolumn-no-feedback {
   color: #777777;
 }
+#devilry_search_view form .form-group {
+  margin-bottom: 0;
+}
+#devilry_search_view h2 {
+  margin: 0 0 15px 0;
+  font-size: 16px;
+  font-weight: bold;
+}
+#devilry_search_view .list-group-item-text {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#devilry_search_view .devilry-search-results {
+  margin-top: 20px;
+}
+@media (min-width: 768px) {
+  #devilry_search_view .devilry-search-results {
+    margin-top: 30px;
+  }
+}
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-student,
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-examiner,
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-admin {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-student h2,
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-examiner h2,
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-admin h2 {
+  color: #fff;
+}
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-student .list-group,
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-examiner .list-group,
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-admin .list-group {
+  margin-bottom: 0;
+}
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-student {
+  background-color: #5d8c08;
+}
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-examiner {
+  background-color: #055986;
+}
+#devilry_search_view .devilry-search-results.devilry-search-results-multiple-roles .devilry-search-results-admin {
+  background-color: #ff9900;
+}
 #devilry_frontpage_roleselect {
   max-width: 600px;
   margin-left: auto;
