@@ -11,7 +11,6 @@ from devilry.project.develop.testhelpers.soupselect import cssExists
 from devilry.project.develop.testhelpers.login import LoginTestCaseMixin
 
 
-
 class TestFrontpage(TestCase, LoginTestCaseMixin):
     def setUp(self):
         self.url = reverse('devilry_frontpage')
@@ -30,7 +29,7 @@ class TestFrontpage(TestCase, LoginTestCaseMixin):
             .add_assignment('week1')\
             .add_group(students=[self.testuser.user])
         html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect a')), 1)
+        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
         self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_student'))
 
     def test_roleselect_examiner(self):
@@ -38,32 +37,32 @@ class TestFrontpage(TestCase, LoginTestCaseMixin):
             .add_assignment('week1')\
             .add_group(examiners=[self.testuser.user])
         html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect a')), 1)
+        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
         self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_examiner'))
 
     def test_roleselect_subjectadmin(self):
         SubjectBuilder.quickadd_ducku_duck1010().add_admins(self.testuser.user)
         html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect a')), 1)
+        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
         self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_subjectadmin'))
 
     def test_roleselect_nodeadmin(self):
         NodeBuilder('univ').add_admins(self.testuser.user)
         html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect a')), 1)
+        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
         self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_nodeadmin'))
 
     def test_roleselect_superuser(self):
         self.testuser.update(is_superuser=True, is_staff=True)
         html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect a')), 2)
+        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 2)
         self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_nodeadmin'))
         self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_superuser'))
 
     def test_roleselect_superuser_not_staff(self):
         self.testuser.update(is_superuser=True, is_staff=False)
         html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect a')), 1)
+        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
         self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_nodeadmin'))
         self.assertFalse(cssExists(html, '#devilry_frontpage_roleselect_superuser'))
 
@@ -76,35 +75,3 @@ class TestFrontpage(TestCase, LoginTestCaseMixin):
             self.assertEquals(
                 cssGet(html, '#devilry_frontpage_lacking_permissions_link').text.strip(),
                 'I should have had more roles')
-
-
-
-    def test_helplinks(self):
-        html = self.get_as(self.testuser.user, self.url).content
-        self.assertTrue(cssExists(html, '#devilry_frontpage_helplinks'))
-        self.assertEquals(
-            cssGet(html, '#devilry_frontpage_helplinks ul li a').text.strip(),
-            'Official Devilry documentation')
-
-    def test_languageselect(self):
-        self.testuser.update_profile(
-            languagecode='en'
-        )
-        with self.settings(LANGUAGES=[('en', 'English'), ('nb', 'Norwegian')]):
-            html = self.get_as(self.testuser.user, self.url).content
-            self.assertTrue(cssExists(html,
-                '#devilry_frontpage_languageselect #devilry_change_language_form'))
-            self.assertEquals(
-                cssGet(html, '#devilry_change_language_form option[value="en"]')['selected'],
-                'selected')
-
-    def test_languageselect_no_current_language(self):
-        with self.settings(
-                LANGUAGES=[('en', 'English'), ('nb', 'Norwegian')],
-                LANGUAGE_CODE='nb'):
-            html = self.get_as(self.testuser.user, self.url).content
-            self.assertTrue(cssExists(html,
-                '#devilry_frontpage_languageselect #devilry_change_language_form'))
-            self.assertEquals(
-                cssGet(html, '#devilry_change_language_form option[value="nb"]')['selected'],
-                'selected')
