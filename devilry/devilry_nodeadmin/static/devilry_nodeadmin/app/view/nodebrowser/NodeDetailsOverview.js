@@ -38,10 +38,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
             '</ul>',
         '<tpl else>',
             '<p class="muted">',
-                interpolate(gettext('No %(subjects_term)s on this level. If there are any %(nodes_term)s below this level, they are listed in the menu on your left hand side.'), {
-                    subjects_term: gettext('subjects'),
-                    nodes_term: gettext('nodes')
-                }, true),
+                gettext('No courses on this level. If there are any nodes below this level, they are listed in the menu on your left hand side.'),
             '</p>',
         '</tpl>', {
             getQualifiedForExamsSummaryUrl: function(node_id) {

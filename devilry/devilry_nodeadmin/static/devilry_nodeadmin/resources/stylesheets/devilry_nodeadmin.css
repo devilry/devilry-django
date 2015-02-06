@@ -73,17 +73,15 @@ ul.devilry_nodeadmin_massive_navlist li a:hover {
 }
 /* line 83, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodechildrenlist li {
-  margin: 5px 0 5px 0;
+  margin: 0;
 }
 /* line 85, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodechildrenlist li a {
   font-size: 20px;
-  border-top: 1px dotted #cccccc;
-  border-bottom: 1px dotted #cccccc;
   display: block;
   text-decoration: none;
   font-weight: bold;
-  padding: 6px 10px;
+  padding: 12px 10px;
 }
 /* line 93, ../sass/devilry_nodeadmin.scss */
 .devilry_nodeadmin_nodechildrenlist li a:hover {

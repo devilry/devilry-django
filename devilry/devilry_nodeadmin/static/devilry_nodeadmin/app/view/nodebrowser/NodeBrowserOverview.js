@@ -3,9 +3,9 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
     alias: 'widget.nodebrowseroverview',
     cls: 'devilry_nodeadmin_nodebrowseroverview',
 
-    requires: [
-        'devilry_extjsextras.UnfocusedContainer'
-    ],
+    //requires: [
+    //    'devilry_extjsextras.UnfocusedContainer'
+    //],
 
     layout: 'column',
     autoScroll: true,
@@ -17,7 +17,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
     margin: '20',
 
     items: [{
-        xtype: 'unfocusedcontainer',
+        xtype: 'container',
         cls: 'devilry_nodeadmin_nodebrowsersidebar',
         width: 300,
         layout: 'anchor',
