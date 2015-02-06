@@ -9,11 +9,13 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
     ],
 
     tpl: [
-        '<h1>{long_name}</h1>',
-        '<span class="subject_count">{ subject_count } ', gettext( 'courses' ), '</span>, ',
-        '<span class="assignment_count">{ assignment_count } ', gettext( 'assignments' ), '</span>',
+        '<h1>{node.long_name}</h1>',
+        '<p class="muted">',
+            '<span class="subject_count">{node.subject_count} ', gettext( 'courses' ), '</span>, ',
+            '<span class="assignment_count">{node.assignment_count} ', gettext( 'assignments' ), '</span>',
+            '</p>',
         '<hr />',
-        '<tpl if="subjects.length">',
+        '<tpl if="node.subjects.length">',
             '<h2>', gettext('Tools'), '</h2>',
             '<ul class="unstyled devilry_nodeadmin_toolslist">',
                 '<li>',
@@ -32,15 +34,37 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
                 }, true),
             '</small></p>',
             '<ul>',
-                '<tpl for="subjects">',
-                '<li class="course"><a href="/devilry_subjectadmin/#/subject/{ id }/">{ long_name }</a></li>',
+                '<tpl for="node.subjects">',
+                    '<li class="course"><a href="/devilry_subjectadmin/#/subject/{ id }/">{ long_name }</a></li>',
                 '</tpl>',
             '</ul>',
-        '<tpl else>',
+        '</tpl>',
+
+        '<tpl if="childnodes.length">',
+            '<h2>',
+                gettext('Childnodes'),
+            '</h2>',
+            '<ul>',
+                '<tpl for="childnodes">',
+                    '<li>',
+                        '<a href="/devilry_nodeadmin/#/node/{ id }">{ long_name }</a>',
+                    '</li>',
+                '</tpl>',
+            '</ul>',
+        '</tpl>',
+
+        '<tpl if="noChildren">',
             '<p class="muted">',
-                gettext('No courses on this level. If there are any nodes below this level, they are listed in the menu on your left hand side.'),
+                gettext('There is nothing here.'),
             '</p>',
-        '</tpl>', {
+        '</tpl>',
+
+        '<h2>',
+            gettext('Add courses or nodes?'),
+        '</h2>',
+        '</p>',
+            gettext('Adding course or nodes requires superuser permissions. If you have superuser permissions, you will find the superuser role on the frontpage.'),
+        '</p>', {
             getQualifiedForExamsSummaryUrl: function(node_id) {
                 return devilry_nodeadmin.utils.UrlLookup.qualifiedForExamsSummary(node_id);
             }
