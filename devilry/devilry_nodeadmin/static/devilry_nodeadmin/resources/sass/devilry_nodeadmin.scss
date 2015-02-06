@@ -9,7 +9,7 @@ ul.devilry_nodeadmin_massive_navlist {
             border: 1px solid $borderColor;
             padding: 14px;
             margin: 5px 0 5px 0;
-            @include border-radius(5px);
+//            @include border-radius(5px);
             background-color: #fff;
             display: block;
             font-size: 24px;
@@ -24,10 +24,12 @@ ul.devilry_nodeadmin_massive_navlist {
 }
 
 .devilry_nodeadmin_nodebrowsersidebar {
-    border: 1px dotted $borderColor;
-    border-right: 1px solid $borderColor;
-    margin-top: 6px;
-    @include border-radius(6px 0 0 6px);
+    border: none;
+    margin-top: 0;
+    background-color: #fff;
+//    &.devilry_subjectadmin_editsidebarcontainer_hover {
+//        background-color: #fff;
+//    }
 }
 
 .devilry_nodeadmin_defaultnodelist {

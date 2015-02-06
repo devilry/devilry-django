@@ -33,11 +33,7 @@ Ext.define('devilry_nodeadmin.view.dashboard.DashboardOverview', {
                 fieldLabel: '',
                 emptyText: gettext('Search by name, username or email...'),
                 width: 300
-            }] 
+            }]
         }]
-    }, {
-        xtype: 'betawarning',
-        width: 250,
-        padding: '30 20 20 30'
     }]
 });
