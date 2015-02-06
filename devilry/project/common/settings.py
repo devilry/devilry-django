@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'extjs4',
     'haystack',
     'south',
-    'djcelery',
+    # 'djcelery',
     # 'celery_haystack',
 
     'devilry.devilry_cradmin',
@@ -116,7 +116,7 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
     },
 }
-# HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
+HAYSTACK_SIGNAL_PROCESSOR = 'devilry.devilry_search.haystack_signal_processor.DevilryCelerySignalProcessor'
 
 
 ########################################################################

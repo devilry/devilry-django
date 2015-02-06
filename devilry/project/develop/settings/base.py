@@ -138,7 +138,6 @@ HAYSTACK_CONNECTIONS = {  # Whoosh
         'PATH': join(developfilesdir, 'devilry_whoosh_index'),
     },
 }
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 
 ##################################################################################

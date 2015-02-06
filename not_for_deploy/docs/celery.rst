@@ -110,7 +110,9 @@ And run the following in the Django shell:
 
     >>> from django.contrib.auth import get_user_model
     >>> from devilry.utils.devilry_email import send_message
-    >>> send_message('Hello world', 'Yo', get_user_model().objects.get(username='april'))
+    >>> send_message('Testsubject', 'Testmessage', get_user_model().objects.get(username='april'))
+
+
 
 .. _Celery: http://celery.readthedocs.org/
 .. _`Celery first steps with Django`: http://docs.celeryproject.org/en/latest/django/first-steps-with-django.html
