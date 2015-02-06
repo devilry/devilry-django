@@ -33,16 +33,16 @@
                 {% if user_is_any_subjectadmin %}
                     <li id="devilry_frontpage_roleselect_subjectadmin">
                         <a href="{% url 'devilry_subjectadmin' %}">
-                            <strong>{% trans "Subject administrator" %}</strong>
-                            {% trans "Subject administrators manage courses, semesters and assignments where they have been explicitly registered as administrator." %}
+                            <strong>{% trans "Course administrator" %}</strong>
+                            {% trans "Course administrators manage courses, semesters and assignments where they have been explicitly registered as administrator." %}
                         </a>
                     </li>
                 {% endif %}
                 {% if user_is_nodeadmin or request.user.is_superuser %}
                     <li id="devilry_frontpage_roleselect_nodeadmin">
                         <a href="{% url 'devilry_nodeadmin' %}">
-                            <strong>{% trans "Node administrator" %}</strong>
-                            {% trans "Node administrators manage departments where they have administrator-rights." %}
+                            <strong>{% trans "Toplevel administrator" %}</strong>
+                            {% trans "Toplevel administrators manage large numbers of courses, typically a faculty or school." %}
                         </a>
                     </li>
                 {% endif %}
