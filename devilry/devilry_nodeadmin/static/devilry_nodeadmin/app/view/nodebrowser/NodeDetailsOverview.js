@@ -19,7 +19,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
             '<h2>', gettext('Tools'), '</h2>',
             '<ul class="unstyled devilry_nodeadmin_toolslist">',
                 '<li>',
-                    '<strong><a href="{[this.getQualifiedForExamsSummaryUrl(values.id)]}">',
+                    '<strong><a href="{[this.getQualifiedForExamsSummaryUrl(values.node.id)]}">',
                         gettext('Qualified for final exams'),
                     '</strong></a>',
                     '<small class="muted"> - ',
