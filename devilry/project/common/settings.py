@@ -4,6 +4,8 @@
 # - See: https://docs.djangoproject.com/en/dev/ref/settings/
 #
 ########################################################################
+import os
+import devilry
 
 
 DEBUG = False
@@ -221,6 +223,13 @@ LANGUAGE_CODE = 'en'
 gettext_noop = lambda s: s
 LANGUAGES = [('en', gettext_noop('English')),
              ('nb', gettext_noop('Norwegian Bokmal'))]
+
+
+LOCALE_PATHS = [
+    os.path.join(
+        os.path.abspath(os.path.dirname(devilry.__file__)),
+        'locale')
+]
 
 
 #: Enable MathJax?

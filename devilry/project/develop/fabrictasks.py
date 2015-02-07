@@ -292,3 +292,7 @@ def makemessages_javascript(lanaguagecode):
         '--ignore "node_modules" '
         '--ignore "bower_components" '
         '-l {}'.format(lanaguagecode), working_directory='devilry')
+
+@task
+def compilemessages():
+    _managepy('compilemessages', working_directory='devilry')
