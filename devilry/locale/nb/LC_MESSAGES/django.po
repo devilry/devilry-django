@@ -18,10 +18,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: models/assignment.py:239
-msgid "Publishing time"
-msgstr "Publiseringstidspunkt"
-
 #: models/assignment.py:240
 msgid ""
 "The time when the assignment is to be published (visible to students and "
@@ -87,18 +83,6 @@ msgstr "Maksimalt antall poeng"
 msgid "Specify the maximum number of points possible for this assignment."
 msgstr "Angi det maksimale antall poeng for denne oppgaven."
 
-#: models/assignment.py:292
-msgid "As passed or failed"
-msgstr "Ved Godkjent eller Ikke Godkjent"
-
-#: models/assignment.py:293
-msgid "As points"
-msgstr "Ved poeng"
-
-#: models/assignment.py:294
-msgid "As a text looked up in a custom table"
-msgstr "Som en karakter gitt av en oppslagstabell"
-
 #: models/assignment.py:302
 msgid "Students can create project groups?"
 msgstr "Studenter kan lage prosjektgrupper?"
@@ -112,9 +96,9 @@ msgstr ""
 "initiativ. Selv om dette ikke er valgt, kan du organisere studentene dine i "
 "grupper manuelt."
 
-#: models/assignment.py:306
+#: views/assignment_update.py:19
 msgid "Students can not create project groups after"
-msgstr ""
+msgstr "Studenter kan ikke lage prosjektgrupper etter"
 
 #: models/assignment.py:307
 msgid ""
@@ -158,18 +142,6 @@ msgid ""
 msgstr ""
 "Antall poeng for bestått karakter må være mindre enn maksimalt antall "
 "oppnåelige poeng. Nåværende makspoeng er: {max_points}"
-
-#: models/assignment_group.py:260
-msgid "No deadlines"
-msgstr "Ingen innleveringsfrister"
-
-#: models/assignment_group.py:261
-msgid "Corrected"
-msgstr "Rettet"
-
-#: models/assignment_group.py:262
-msgid "Closed without feedback"
-msgstr "Lukket uten tilbakemelding"
 
 #: models/assignment_group.py:263
 msgid "Waiting for something"
@@ -327,16 +299,6 @@ msgid ""
 "group for %(subject)s %(assignment)s"
 msgstr ""
 
-#~ msgid "Max 20 characters. Only numbers, lowercase characters, '_' and '-'. "
-#~ msgstr "Maksimalt 20 tegn. Kun nummer, små bokstaver, '_' og '-'."
-
-#~ msgid ""
-#~ "A longer name, more descriptive than \"Short name\". This is the name "
-#~ "visible to students."
-#~ msgstr "Fullstendig navn. Vises til studentene"
-
-#~ msgid "First deadline cannot be before publishing time."
-#~ msgstr "Først innleveringsfrist kan ikke være før publiseringstidspunktet."
 #: forms.py:65
 msgid "You have to select at least one group to perform a bulk action."
 msgstr "Du må velge minst en gruppe for å utføre bulkoperasjoner"
@@ -384,23 +346,6 @@ msgstr ""
 "karakter, eller gi de en ny innleveringsfrist med klar beskjed om at fristen "
 "ble lagt til fordi de må bruke Devilry til elektronisk innleveringer."
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:20
-#: templates/devilry_examiner/dashboard.django.html:17
-#: templates/devilry_examiner/singledelivery_base.django.html:48
-#: templates/devilry_examiner/singlegroupoverview.django.html:23
-msgid "Home"
-msgstr "Hjem"
-
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:21
-#: templates/devilry_examiner/bulktest.django.html:5
-#: templates/devilry_examiner/dashboard.django.html:6
-#: templates/devilry_examiner/dashboard.django.html:11
-#: templates/devilry_examiner/dashboard.django.html:18
-#: templates/devilry_examiner/singledelivery_base.django.html:49
-#: templates/devilry_examiner/singlegroupoverview.django.html:24
-msgid "Examiner"
-msgstr "Retter"
-
 #: templates/devilry_examiner/allgroupsoverview_base.django.html:37
 msgid "All"
 msgstr "Alle"
@@ -416,11 +361,6 @@ msgstr "Venter på tilbakemelding"
 msgid "Waiting for deliveries"
 msgstr "Venter på innleveringer"
 
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:54
-#: templatetags/devilry_examiner_tags.py:17
-msgid "Corrected"
-msgstr "Ferdig rettet"
-
 #: templates/devilry_examiner/allgroupsoverview_base.django.html:61
 #: templates/devilry_examiner/dashboard.django.html:46
 msgid "New to Devilry? Do you want to become more efficient?"
@@ -430,14 +370,6 @@ msgstr "Er Devilry nytt og ukjent? Vil du øke effektiviten?"
 #: templates/devilry_examiner/dashboard.django.html:47
 msgid "Check out the getting started guide"
 msgstr "Ta en titt på nybegynnerguiden"
-
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:73
-msgid "Previous"
-msgstr "Forrige"
-
-#: templates/devilry_examiner/allgroupsoverview_base.django.html:84
-msgid "Next"
-msgstr "Neste"
 
 #: templates/devilry_examiner/allgroupsoverview_base.django.html:95
 msgid "Select All"
@@ -541,10 +473,6 @@ msgstr "Ingen venter på tilbakemelding"
 msgid "Getting started guide"
 msgstr "Nybegynnerguide"
 
-#: templates/devilry_examiner/readonly-feedback-with-editbutton.django.html:7
-msgid "Edit feedback"
-msgstr "Rediger tilbakemelding"
-
 #: templates/devilry_examiner/singledelivery.django.html:31
 msgid "Provide feedback"
 msgstr "Gi tilbakemelding"
@@ -563,11 +491,6 @@ msgstr ""
 "\n"
 "                        Innlevering %(number)s/%(total)s\n"
 "                    "
-
-#: templates/devilry_examiner/singledelivery_base.django.html:61
-#: templates/devilry_examiner/include/django_formerrors_as_alertboxes.django.html:6
-msgid "Error"
-msgstr "Feil"
 
 #: templates/devilry_examiner/singledelivery_base.django.html:62
 msgid ""
@@ -736,16 +659,6 @@ msgstr "Liste over alle grupper som avventer tilbakemelding"
 msgid "Next group waiting for feedback"
 msgstr "Neste gruppe som avventer tilbakemelding"
 
-#: templatetags/devilry_examiner_tags.py:15
-#: templatetags/devilry_examiner_tags.py:50
-msgid "No deadlines"
-msgstr "Ingen innleveringfrister"
-
-#: templatetags/devilry_examiner_tags.py:19
-#: templatetags/devilry_examiner_tags.py:54
-msgid "Closed without feedback"
-msgstr "Lukket uten tilbakemelding"
-
 #: templatetags/devilry_examiner_tags.py:25
 msgid "passed"
 msgstr "bestått"
@@ -823,11 +736,6 @@ msgstr ""
 "Dersom du ikke ønsker å angi en \"Om denne fristen\" beskjed må du fjerne "
 "teksten i feltet"
 
-#: views/add_deadline.py:109 views/add_nonelectronic_delivery.py:31
-#: views/close_groups.py:31
-msgid "Cancel"
-msgstr "Avbryt"
-
 #: views/add_deadline.py:144
 msgid ""
 "I have given you a new chance to pass this assignment. Read your last "
@@ -838,20 +746,6 @@ msgstr ""
 "tilbakemeldingen for informasjon om hvorfor du ikke bestod og hva du må "
 "forbedre."
 
-#~ msgid "Fail the group"
-#~ msgstr "Gi stryk-karakter til gruppen"
-
-#~ msgid "Check out Examiner section of the official Devilry documentation."
-#~ msgstr "Sjekk ut avsnittet om Retterrollen i den offisielle dokumentasjonen"
-
-#~ msgid "Official documentation"
-#~ msgstr "Offisiell dokumentasjon"
-
-#~ msgid "Publish"
-#~ msgstr "Publiser"
-
-#~ msgid "without preview"
-#~ msgstr "uten forhåndsvisning"
 #: templates/devilry_gradingsystem/bulkeditfeedbackbuttonbar.django.html:7
 #: templates/devilry_gradingsystem/editfeedbackbuttonbar.django.html:7
 #: templates/devilry_gradingsystem/feedbackdraft_bulkpreview.django.html:6
@@ -859,31 +753,9 @@ msgstr ""
 msgid "Preview"
 msgstr "Forhåndsvisning"
 
-#: templates/devilry_gradingsystem/bulkeditfeedbackbuttonbar.django.html:10
-#: templates/devilry_gradingsystem/editfeedbackbuttonbar.django.html:13
-#: templates/devilry_gradingsystem/feedbackdraft_bulkpreview.django.html:21
-#: templates/devilry_gradingsystem/feedbackdraft_preview.django.html:19
-msgid "Publish"
-msgstr "Publiser"
-
-#: templates/devilry_gradingsystem/bulkeditfeedbackbuttonbar.django.html:11
-#: templates/devilry_gradingsystem/editfeedbackbuttonbar.django.html:14
-msgid "without preview"
-msgstr "uten forhåndsvisning"
-
 #: templates/devilry_gradingsystem/editfeedbackbuttonbar.django.html:10
 msgid "Save draft"
 msgstr "Lagre utkast"
-
-#: templates/devilry_gradingsystem/feedbackbulkeditorbase.django.html:7
-#: templates/devilry_gradingsystem/feedbackeditorbase.django.html:5
-msgid "Edit"
-msgstr "Endre"
-
-#: templates/devilry_gradingsystem/feedbackbulkeditorbase.django.html:12
-#: templates/devilry_gradingsystem/feedbackeditorbase.django.html:10
-msgid "Edit feedback"
-msgstr "Endre tilbakemelding"
 
 #: templates/devilry_gradingsystem/feedbackbulkeditorbase.django.html:21
 msgid "Edit feedback for"
@@ -898,11 +770,6 @@ msgstr "Forhåndsvis tilbakemelding"
 #: templates/devilry_gradingsystem/feedbackdraft_preview.django.html:23
 msgid "Edit draft"
 msgstr "Endre utkast"
-
-#: templates/devilry_gradingsystem/admin/backward-button.django.html:5
-#: templates/devilry_gradingsystem/admin/selectplugin.django.html:39
-msgid "Previous"
-msgstr "Forrige"
 
 #: templates/devilry_gradingsystem/admin/base.django.html:6
 #: templates/devilry_gradingsystem/admin/base.django.html:19
@@ -925,10 +792,6 @@ msgstr "%(percent)s%% Ferdig"
 msgid "Finish"
 msgstr "Ferdig"
 
-#: templates/devilry_gradingsystem/admin/forward-button.django.html:10
-msgid "Next"
-msgstr "Neste"
-
 #: templates/devilry_gradingsystem/admin/reconfigurebase.django.html:6
 #: templates/devilry_gradingsystem/admin/summary.django.html:52
 #: templates/devilry_gradingsystem/admin/summary.django.html:59
@@ -945,10 +808,6 @@ msgstr "Rekonfigurere"
 msgid "How are results presented to the student?"
 msgstr "Hvordan skal resultatet presenteres for studenten?"
 
-#: templates/devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html:19
-msgid "As passed or failed"
-msgstr "Som bestått eller ikke bestått"
-
 #: templates/devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html:21
 msgid "Students see their result as passed or failed."
 msgstr "Studentene ser resultatet som bestått ikke bestått."
@@ -960,10 +819,6 @@ msgid ""
 "wizard."
 msgstr "Du bestemmer antall poeng nødvendig for å bestå i neste steg."
 
-#: templates/devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html:30
-msgid "As points"
-msgstr "Som poeng"
-
 #: templates/devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html:32
 msgid ""
 "Students see their result as points/max-points, and they can see if the "
@@ -971,10 +826,6 @@ msgid ""
 msgstr ""
 "Studentene ser resultat som antall oppnådde poeng, og om oppnådd poengsum er "
 "nok til å bestå."
-
-#: templates/devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html:41
-msgid "As a text looked up in a custom table"
-msgstr "Som en tekst fra en forhåndsdefinert tabell"
 
 #: templates/devilry_gradingsystem/admin/select_points_to_grade_mapper.django.html:42
 msgid ""
@@ -1176,10 +1027,6 @@ msgstr ""
 "fleksibelt i Devilry. Felles for alle metoder er at sluttresultatet består "
 "av følgende:"
 
-#: templates/devilry_gradingsystem/admin/summary.django.html:81
-msgid "Points"
-msgstr "Poeng"
-
 #: templates/devilry_gradingsystem/admin/summary.django.html:82
 msgid ""
 "Any grade in Devilry is represented as a number. This number is used for "
@@ -1324,11 +1171,6 @@ msgstr "Velg hvordan resultatene skal presenteres"
 msgid "Select the grade required to pass the assignment"
 msgstr "Velg karakteren som er nødvendig for å bestå oppgaven"
 
-#~ msgid "Home"
-#~ msgstr "Hjem"
-
-#~ msgid "Subject administrator"
-#~ msgstr "Kursadministrator"
 #: devilry_plugin.py:12
 msgid "Passed/failed"
 msgstr "Bestått/ikke bestått"
@@ -1346,29 +1188,15 @@ msgstr "Bestått?"
 msgid "Check to provide a passing grade."
 msgstr "Velg denne for å gi bestått karakter."
 
-#: devilry_plugin.py:10 views/feedbackeditor.py:17 views/feedbackeditor.py:42
-msgid "Points"
-msgstr "Poeng"
-
 #: devilry_plugin.py:11
 msgid ""
 "Choose a number between zero and a maximum that you specify on the next page."
 msgstr ""
 "Velg et tall mellom null og en maksverdi som du spesifiserer på neste side."
 
-#~ msgid "Specify a number of points"
-#~ msgstr "Poeng"
 #: templates/devilry_header/header2include.django.html:60
 msgid "Student"
 msgstr "Student"
-
-#: templates/devilry_header/header2include.django.html:63
-msgid "Examiner"
-msgstr "Retter"
-
-#: templates/devilry_header/header2include.django.html:66
-msgid "Subject administrator"
-msgstr "Kursadministrator"
 
 #: templates/devilry_header/header2include.django.html:69
 msgid "Node administrator"
@@ -1378,17 +1206,10 @@ msgstr "Node administrator"
 msgid "User profile"
 msgstr "Brukerprofil"
 
-#: templates/devilry_header/header2include.django.html:84
-msgid "Sign out"
-msgstr "Logg ut"
-
-#: templates/devilry_header/header2include.django.html:92
-msgid "Search"
-msgstr "Søk"
-
 #: templates/devilry_header/header2include.django.html:95
 msgid "Search..."
 msgstr "Søk..."
+
 #: models.py:23
 msgid "Ready for export"
 msgstr "Klar for eksportering"
@@ -1401,10 +1222,6 @@ msgstr "De fleste studentene er klare for eksportering"
 msgid "Not ready for export (retracted)"
 msgstr "Ikke klar for eksportering (trukket tilbake)"
 
-#: pluginhelpers.py:92
-msgid "Next"
-msgstr "Neste"
-
 #: pluginhelpers.py:98
 msgid "Back"
 msgstr "Tilbake"
@@ -1416,14 +1233,6 @@ msgstr "Devilry - Kan gå opp til avsluttende eksamen"
 #: views.py:23
 msgid "Sort by"
 msgstr "Sorter etter"
-
-#: views.py:25
-msgid "Name"
-msgstr "Navn"
-
-#: views.py:26
-msgid "Username"
-msgstr "Brukernavn"
 
 #: views.py:27
 msgid "Last name"
@@ -1480,10 +1289,6 @@ msgstr ""
 "subsett av sine oppgaver for å kunne gå opp til avsluttende eksamen. Du "
 "velger oppgavene på neste side."
 
-#: summarygenerator.py:6
-msgid "Selected assignments"
-msgstr "Valgte oppgaver"
-
 #: views.py:60
 #: templates/devilry_qualifiesforexam_approved/subsetselect.django.html:5
 msgid "Select assignments that students must pass to qualify for final exams"
@@ -1508,10 +1313,6 @@ msgstr ""
 #: summarygenerator.py:9
 msgid "Minimum points"
 msgstr "Minimum antall poeng"
-
-#: summarygenerator.py:11
-msgid "Selected assignments"
-msgstr "Valgte oppgaver"
 
 #: views.py:48
 msgid "Assignments to include when counting points"
@@ -1554,39 +1355,24 @@ msgid "About"
 msgstr "Om meg"
 
 #: templates/devilry_search/about_me.django.html:10
-msgid "Below you can see information about your profile that is stored in Devilry. Report if the"
-msgstr "I tabellen under vises informasjon om din profil som er lagret i Devilry. Rapporter dersom"
+msgid ""
+"Below you can see information about your profile that is stored in Devilry. "
+"Report if the"
+msgstr ""
+"I tabellen under vises informasjon om din profil som er lagret i Devilry. "
+"Rapporter dersom"
 
 #: templates/devilry_search/about_me.django.html:12
 msgid " information is wrong"
 msgstr "informasjonen er feilaktig"
 
-#: templates/devilry_search/about_me.django.html:19
-msgid "Name"
-msgstr "Navn"
-
 #: templates/devilry_search/about_me.django.html:23
 msgid "Email Address"
 msgstr "E-postadresse"
 
-#: templates/devilry_search/about_me.django.html:27
-msgid "Username"
-msgstr "Brukernavn"
-
 #: templates/devilry_search/about_me.django.html:31
 msgid "Last login"
 msgstr "Sist innlogget"
-
-#: templates/devilry_search/about_me.django.html:36
-msgid "Sign out"
-msgstr "Logg ut"
-
-#: templates/devilry_search/base.django.html:11
-#: templates/devilry_search/search.django.html:9
-#: views/search.py:15
-#: views/search.py:26
-msgid "Search"
-msgstr "Søk"
 
 #: templates/devilry_search/search.django.html:11
 msgid "You can search for anything that you have access to in Devilry."
@@ -1656,10 +1442,6 @@ msgstr "Slett gruppeinvitasjon"
 msgid "Are you sure you want to delete the invite for %(user)s?"
 msgstr "Er du sikker på at du vil slette invitasjonen til %(user)s?"
 
-#: templates/devilry_student/groupinvite_delete.django.html:21
-msgid "Cancel"
-msgstr "Avbryt"
-
 #: templates/devilry_student/groupinvite_delete.django.html:22
 msgid "Delete invite"
 msgstr "Slett invitasjon"
@@ -1691,11 +1473,6 @@ msgstr "Inviter noen til å bli med i din gruppe?"
 msgid "Waiting for response from"
 msgstr "Venter på svar fra"
 
-#: templates/devilry_student/projectgroup_overview.django.html:52
-#: templates/devilry_student/projectgroup_overview.django.html:84
-msgid "Name"
-msgstr "Navn"
-
 #: templates/devilry_student/projectgroup_overview.django.html:53
 msgid "Invited by"
 msgstr "Invitert av"
@@ -1711,10 +1488,6 @@ msgstr "Slett"
 #: templates/devilry_student/projectgroup_overview.django.html:79
 msgid "Current group members"
 msgstr "Nåværende gruppemedlemmer"
-
-#: templates/devilry_student/projectgroup_overview.django.html:85
-msgid "Username"
-msgstr "Brukernavn"
 
 #: templates/devilry_student/projectgroup_overview.django.html:86
 msgid "Email"
@@ -1741,10 +1514,6 @@ msgstr "Avslå invitasjon"
 #: templates/devilry_student/groupinvite_respond.django.html:33
 msgid "Accept invitation"
 msgstr "Aksepter invitasjon"
-
-#: templates/devilry_student/include/group_breadcrumb.django.html:4
-msgid "Home"
-msgstr "Hjem"
 
 #: templates/devilry_student/include/group_breadcrumb.django.html:5
 msgid "History"
@@ -1783,31 +1552,9 @@ msgstr "Det gitte valget matchet ingen grupper."
 msgid "The same user can not be examiner multiple times on the same group."
 msgstr "Den samme brukeren kan ikke være retter flere ganger på samme gruppe."
 
-#: templates/devilry_subjectadmin/assignment_update_form.django.html:5
-#: templates/devilry_subjectadmin/assignment_update_form.django.html:11
-#: templates/devilry_subjectadmin/assignment_update_form.django.html:17
-msgid "Edit"
-msgstr "Rediger"
-
 #: templates/devilry_subjectadmin/base.django.html:13
 msgid "Devilry subject admin"
 msgstr "Devilry kursadministrator"
-
-#: templates/devilry_subjectadmin/include/assignment_breadcrumb.django.html:4
-msgid "Home"
-msgstr "Hjem"
-
-#: templates/devilry_subjectadmin/include/assignment_breadcrumb.django.html:5
-msgid "Subject administrator"
-msgstr "Kursadministrator"
-
-#: templates/devilry_subjectadmin/include/django_formerrors_as_alertboxes.django.html:6
-msgid "Error"
-msgstr "Feil"
-
-#: views/assignment_update.py:14
-msgid "Publishing time"
-msgstr "Publiseringstidspunkt"
 
 #: views/assignment_update.py:15
 msgid ""
@@ -1816,10 +1563,6 @@ msgid ""
 msgstr ""
 "Tidspunktet når oppgaven skal gjøres synlig for studenter og rettere. Format "
 "\"ÅÅÅÅ-MM-DD tt:mm\"."
-
-#: views/assignment_update.py:19
-msgid "Students can not create project groups after"
-msgstr "Studenter kan ikke lage prosjektgrupper etter"
 
 #: views/assignment_update.py:20
 msgid ""
@@ -1842,3 +1585,26 @@ msgstr "Lagre"
 #: views/extjsapp.py:11
 msgid "Devilry - Subject administrator"
 msgstr "Devilry - Kursadministrator"
+
+#~ msgid "Max 20 characters. Only numbers, lowercase characters, '_' and '-'. "
+#~ msgstr "Maksimalt 20 tegn. Kun nummer, små bokstaver, '_' og '-'."
+
+#~ msgid ""
+#~ "A longer name, more descriptive than \"Short name\". This is the name "
+#~ "visible to students."
+#~ msgstr "Fullstendig navn. Vises til studentene"
+
+#~ msgid "First deadline cannot be before publishing time."
+#~ msgstr "Først innleveringsfrist kan ikke være før publiseringstidspunktet."
+
+#~ msgid "Fail the group"
+#~ msgstr "Gi stryk-karakter til gruppen"
+
+#~ msgid "Check out Examiner section of the official Devilry documentation."
+#~ msgstr "Sjekk ut avsnittet om Retterrollen i den offisielle dokumentasjonen"
+
+#~ msgid "Official documentation"
+#~ msgstr "Offisiell dokumentasjon"
+
+#~ msgid "Specify a number of points"
+#~ msgstr "Poeng"
