@@ -30,25 +30,9 @@ msgstr "Noder"
 msgid "node"
 msgstr "node"
 
-#: static/devilry_core/terminology.js:8
-msgid "nodes"
-msgstr "noder"
-
 #: static/devilry_core/terminology.js:10
 msgid "Subject"
 msgstr "Emne"
-
-#: static/devilry_core/terminology.js:10
-msgid "Subjects"
-msgstr "Emner"
-
-#: static/devilry_core/terminology.js:11
-msgid "subject"
-msgstr "emne"
-
-#: static/devilry_core/terminology.js:11
-msgid "subjects"
-msgstr "emner"
 
 #: static/devilry_core/terminology.js:13
 msgid "Period"
@@ -62,33 +46,9 @@ msgstr "Perioder"
 msgid "period"
 msgstr "periode"
 
-#: static/devilry_core/terminology.js:14
-msgid "periods"
-msgstr "perioder"
-
-#: static/devilry_core/terminology.js:16
-msgid "Assignment"
-msgstr "Oppgave"
-
-#: static/devilry_core/terminology.js:16
-msgid "Assignments"
-msgstr "Oppgaver"
-
 #: static/devilry_core/terminology.js:17
 msgid "assignment"
 msgstr "oppgave"
-
-#: static/devilry_core/terminology.js:17
-msgid "assignments"
-msgstr "oppgaver"
-
-#: static/devilry_core/terminology.js:19
-msgid "Group"
-msgstr "Gruppe"
-
-#: static/devilry_core/terminology.js:19
-msgid "Groups"
-msgstr "Grupper"
 
 #: static/devilry_core/terminology.js:20
 msgid "group"
@@ -97,14 +57,6 @@ msgstr "gruppe"
 #: static/devilry_core/terminology.js:20
 msgid "groups"
 msgstr "grupper"
-
-#: static/devilry_core/terminology.js:22
-msgid "Deadline"
-msgstr "Innleveringsfrist"
-
-#: static/devilry_core/terminology.js:22
-msgid "Deadlines"
-msgstr "Innleveringsfrister"
 
 #: static/devilry_core/terminology.js:23
 msgid "deadline"
@@ -118,45 +70,9 @@ msgstr "innleveringsfrister"
 msgid "First deadline"
 msgstr "Første innleveringsfrist"
 
-#: static/devilry_core/terminology.js:26
-msgid "Delivery"
-msgstr "Innlevering"
-
-#: static/devilry_core/terminology.js:26
-msgid "Deliveries"
-msgstr "Innleveringer"
-
-#: static/devilry_core/terminology.js:27
-msgid "delivery"
-msgstr "innlevering"
-
-#: static/devilry_core/terminology.js:27
-msgid "deliveries"
-msgstr "innleveringer"
-
-#: static/devilry_core/terminology.js:29
-msgid "Examiner"
-msgstr "Retter"
-
-#: static/devilry_core/terminology.js:29
-msgid "Examiners"
-msgstr "Rettere"
-
-#: static/devilry_core/terminology.js:30
-msgid "examiner"
-msgstr "retter"
-
 #: static/devilry_core/terminology.js:30
 msgid "examiners"
 msgstr "rettere"
-
-#: static/devilry_core/terminology.js:32
-msgid "Student"
-msgstr "Student"
-
-#: static/devilry_core/terminology.js:32
-msgid "Students"
-msgstr "Studenter"
 
 #: static/devilry_core/terminology.js:33
 msgid "student"
@@ -169,10 +85,6 @@ msgstr "studenter"
 #: static/devilry_core/terminology.js:35
 msgid "Superusers"
 msgstr "Superbrukere"
-
-#: static/devilry_core/terminology.js:35
-msgid "Superuser"
-msgstr "Superbruker"
 
 #: static/devilry_core/terminology.js:36
 msgid "superusers"
@@ -191,28 +103,8 @@ msgid "Feedbacks"
 msgstr "Tilbakemeldinger"
 
 #: static/devilry_core/terminology.js:39
-msgid "feedback"
-msgstr "tilbakemelding"
-
-#: static/devilry_core/terminology.js:39
 msgid "feedbacks"
 msgstr "tilbakemeldinger"
-
-#: static/devilry_core/terminology.js:40
-msgid "No feedback"
-msgstr "Ingen tilbakemelding"
-
-#: static/devilry_core/terminology.js:41
-msgid "No deliveries"
-msgstr "Ingen innleveringer"
-
-#: static/devilry_core/terminology.js:42
-msgid "Passed"
-msgstr "Bestått"
-
-#: static/devilry_core/terminology.js:43
-msgid "Failed"
-msgstr "Ikke bestått"
 
 #: static/devilry_core/terminology.js:44
 msgid "Electronic"
@@ -221,10 +113,6 @@ msgstr "Elektronisk"
 #: static/devilry_core/terminology.js:45
 msgid "Non-electronic"
 msgstr "Ikke elektronisk"
-
-#: static/devilry_core/terminology.js:46
-msgid "Grade"
-msgstr "Karakter"
 
 #: static/devilry_core/terminology.js:47
 msgid "grade"
@@ -239,65 +127,24 @@ msgid "Closed"
 msgstr "Lukket"
 
 #: static/devilry_core/terminology.js:51
-msgid "Short name"
-msgstr "Kort navn"
-
-#: static/devilry_core/terminology.js:51
 msgid "short name"
 msgstr "kort navn"
-
-#: static/devilry_core/terminology.js:52
-msgid "Long name"
-msgstr "Langt navn"
 
 #: static/devilry_core/terminology.js:52
 msgid "long name"
 msgstr "langt navn"
 
-#: static/devilry_core/terminology.js:56
-msgid "Dashboard"
-msgstr "Forside"
-
-#: static/devilry_core/terminology.js:57
-msgid "Yes"
-msgstr "Ja"
-
-#: static/devilry_core/terminology.js:58
-msgid "No"
-msgstr "Nei"
-
 #: static/devilry_core/terminology.js:59
 msgid "Ok"
 msgstr "Ok"
-
-#: static/devilry_core/terminology.js:60
-msgid "Cancel"
-msgstr "Avbryt"
-
-#: static/devilry_core/terminology.js:61
-msgid "Error"
-msgstr "Feil"
 
 #: static/devilry_core/terminology.js:62
 msgid "Search"
 msgstr "Søk"
 
-#: static/devilry_core/terminology.js:63
-msgid "Searching"
-msgstr "Søker"
-
-#: static/devilry_core/terminology.js:64
-msgid "Loading"
-msgstr "Laster"
-
 #: static/devilry_core/terminology.js:65
 msgid "Browse"
 msgstr "Bla i alle"
-
-#: static/devilry_extjsextras/AlertMessage.js:87
-#: static/devilry_extjsextras/AlertMessage.js:88
-msgid "Details"
-msgstr "Detaljer"
 
 #: static/devilry_extjsextras/CancelButton.js:9
 msgctxt "uibutton"
@@ -377,14 +224,6 @@ msgctxt "uibutton"
 msgid "Delete"
 msgstr "Slett"
 
-#: static/devilry_extjsextras/HtmlErrorDialog.js:32
-msgid "Error"
-msgstr "Feil"
-
-#: static/devilry_extjsextras/ManageItemsPanel.js:94
-msgid "Select all"
-msgstr "Velg alle"
-
 #: static/devilry_extjsextras/ManageItemsPanel.js:102
 msgid "Remove"
 msgstr "Slett"
@@ -435,19 +274,9 @@ msgctxt "uibutton"
 msgid "Ok"
 msgstr "Ok"
 
-#: static/devilry_extjsextras/OkCancelPanel.js:16
-#: static/devilry_extjsextras/extjslocale.js:82
-#: static/devilry_extjsextras/extjslocale.js:117
-msgid "Cancel"
-msgstr "Avbryt"
-
 #: static/devilry_extjsextras/ProxyErrorHandler.js:40
 msgid "Could not connect to server at URL \"{url}\"."
 msgstr "Kunne ikke koble til servere på adressen \"{url}\"."
-
-#: static/devilry_extjsextras/RouteNotFound.js:17
-msgid "Route not found"
-msgstr "Side ikke funnet"
 
 #: static/devilry_extjsextras/RouteNotFound.js:18
 msgid "Return to dashboard"
@@ -457,12 +286,6 @@ msgstr "Returner til forsiden"
 msgctxt "uibutton"
 msgid "Save"
 msgstr "Lagre"
-
-#: static/devilry_extjsextras/extjslocale.js:11
-#: static/devilry_extjsextras/extjslocale.js:22
-#: static/devilry_extjsextras/extjslocale.js:177
-msgid "Loading"
-msgstr ""
 
 #: static/devilry_extjsextras/extjslocale.js:27
 msgid "January"
@@ -544,14 +367,6 @@ msgstr "Lørdag"
 #: static/devilry_extjsextras/extjslocale.js:116
 msgid "OK"
 msgstr "OK"
-
-#: static/devilry_extjsextras/extjslocale.js:83
-msgid "Yes"
-msgstr "Ja"
-
-#: static/devilry_extjsextras/extjslocale.js:84
-msgid "No"
-msgstr "Nei"
 
 #: static/devilry_extjsextras/extjslocale.js:90
 msgctxt "thousandSeparator"
@@ -745,10 +560,6 @@ msgstr "Grupper etter dette feltet"
 msgid "Show in Groups"
 msgstr "Vi i grupper"
 
-#: static/devilry_extjsextras/extjslocale.js:286
-msgid "Name"
-msgstr "Navn"
-
 #: static/devilry_extjsextras/extjslocale.js:287
 msgid "Value"
 msgstr "Verdi"
@@ -791,37 +602,10 @@ msgctxt "extjs time input format"
 msgid "H:i"
 msgstr "H:i"
 
-#: static/devilry_frontpage/all-classes.js:68515
-#: static/devilry_frontpage/all-classes.js:68894
-#: static/devilry_frontpage/all-classes.js:69011
-#: static/devilry_frontpage/all-classes.js:78734
-#: static/devilry_frontpage/all-classes.js:81916
-#: static/devilry_frontpage/app-all.js:4
-msgid "Loading"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:68901
-#: static/devilry_frontpage/all-classes.js:82134
-#: static/devilry_frontpage/app-all.js:4
-msgid "Student"
-msgstr ""
-
 #: static/devilry_frontpage/all-classes.js:68904
 #: static/devilry_frontpage/app-all.js:4
 msgid ""
 "Students can make %(deliveres_term)s and browse their own feedback history."
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:68905
-#: static/devilry_frontpage/all-classes.js:68918
-#: static/devilry_frontpage/app-all.js:4
-msgid "deliveries"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:68913
-#: static/devilry_frontpage/all-classes.js:82135
-#: static/devilry_frontpage/app-all.js:4
-msgid "Examiner"
 msgstr ""
 
 #: static/devilry_frontpage/all-classes.js:68916
@@ -829,23 +613,9 @@ msgstr ""
 msgid "Examiners give students %(feedback_term)s on their %(deliveries_term)s."
 msgstr ""
 
-#: static/devilry_frontpage/all-classes.js:68917
-#: static/devilry_frontpage/app-all.js:4
-msgid "feedback"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:68926
-#: static/devilry_frontpage/all-classes.js:82136
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_header/Header.js:23 static/devilry_header/Roles.js:35
 msgid "%(Subject_term)s administrator"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:68927
-#: static/devilry_frontpage/all-classes.js:68932
-#: static/devilry_frontpage/all-classes.js:82137
-#: static/devilry_frontpage/app-all.js:4
-msgid "Subject"
-msgstr ""
+msgstr "%(Subject_term)s administrator"
 
 #: static/devilry_frontpage/all-classes.js:68931
 #: static/devilry_frontpage/app-all.js:4
@@ -855,39 +625,9 @@ msgid ""
 "administrator."
 msgstr ""
 
-#: static/devilry_frontpage/all-classes.js:68933
-#: static/devilry_frontpage/app-all.js:4
-msgid "subjects"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:68934
-#: static/devilry_frontpage/all-classes.js:68951
-#: static/devilry_frontpage/app-all.js:4
-msgid "nodes"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:68935
-#: static/devilry_frontpage/app-all.js:4
-msgid "periods"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:68936
-#: static/devilry_frontpage/app-all.js:4
-msgid "assignments"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:68944
-#: static/devilry_frontpage/all-classes.js:82139
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_header/Header.js:26 static/devilry_header/Roles.js:52
 msgid "%(Node_term)s administrator"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:68945
-#: static/devilry_frontpage/all-classes.js:68950
-#: static/devilry_frontpage/all-classes.js:82140
-#: static/devilry_frontpage/app-all.js:4
-msgid "Node"
-msgstr ""
+msgstr "%(Node_term)s administrator"
 
 #: static/devilry_frontpage/all-classes.js:68949
 #: static/devilry_frontpage/app-all.js:4
@@ -896,83 +636,42 @@ msgid ""
 "explicitly registered as administrator."
 msgstr ""
 
-#: static/devilry_frontpage/all-classes.js:68959
-#: static/devilry_frontpage/all-classes.js:82142
-#: static/devilry_frontpage/app-all.js:4
-msgid "Superuser"
-msgstr ""
-
 #: static/devilry_frontpage/all-classes.js:68962
 #: static/devilry_frontpage/app-all.js:4
 msgid "%(Superusers_term)s have complete access to all data stored in Devilry."
 msgstr ""
 
-#: static/devilry_frontpage/all-classes.js:68963
-#: static/devilry_frontpage/app-all.js:4
-msgid "Superusers"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:68970
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_header/Roles.js:76
 msgid "I should have had more roles"
-msgstr ""
+msgstr "Jeg skulle ha hatt flere roller"
 
-#: static/devilry_frontpage/all-classes.js:68975
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_header/Roles.js:81
 msgid ""
 "You have no permissions on anything in Devilry. Click <a href="
 "\"{no_permissions_url}\">this link</a> to go to a page explaining how to get "
 "access to Devilry."
 msgstr ""
+"Du har ikke tilgang til noe i Devilry. Klikk <a <a href="
+"\"{no_permissions_url}\">denne linken</a> for å gå til en side som forklarer "
+"hvordan du går frem for å få tilgang til Devilry."
 
-#: static/devilry_frontpage/all-classes.js:69008
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_header/UserInfoBox.js:8
 msgid "About you"
-msgstr ""
+msgstr "Om deg"
 
-#: static/devilry_frontpage/all-classes.js:69014
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_header/UserInfoBox.js:14
 msgid ""
 "The table below shows the personal information registered about you in "
 "Devilry. <a href=\"{wrong_userinfo_url}\">Click here</a> if any information "
 "is incorrect."
 msgstr ""
+"Tabellen nedenfor viser all personlig informasjon registrert om deg i "
+"Devilry. <a href=\"{wrong_userinfo_url}\">Klikk her</a> hvis noe av "
+"informasjonen er feil."
 
-#: static/devilry_frontpage/all-classes.js:69019
-#: static/devilry_frontpage/app-all.js:4
-msgid "Name"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:69023
-#: static/devilry_frontpage/app-all.js:4
-msgid "Email"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:69027
-#: static/devilry_frontpage/app-all.js:4
-msgid "Username"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:69033
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_header/UserInfoBox.js:33
 msgid "Log out"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:69361
-#: static/devilry_frontpage/app-all.js:4
-msgid "Route not found"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:69362
-#: static/devilry_frontpage/app-all.js:4
-msgid "Return to dashboard"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:72759
-#: static/devilry_frontpage/all-classes.js:81944
-#: static/devilry_frontpage/app-all.js:4
-msgid "Error"
-msgstr ""
+msgstr "Logg ut"
 
 #: static/devilry_frontpage/all-classes.js:72760
 #: static/devilry_frontpage/app-all.js:4
@@ -981,67 +680,67 @@ msgid ""
 "page."
 msgstr ""
 
-#: static/devilry_frontpage/all-classes.js:78731
-#: static/devilry_frontpage/app-all.js:4
-msgid "Help"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:78737
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_header/HelpLinksBox.js:18
 msgid "Failed to load help links. Try reloading the page."
-msgstr ""
+msgstr "Lasting av hjelp-linker feilet. Prøv å laste siden på nytt."
 
-#: static/devilry_frontpage/all-classes.js:78741
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_header/HelpLinksBox.js:22
 msgid ""
 "Your local Devilry system administrator(s) have not added any external help "
 "for you. If you feel anything in Devilry is unclear, contact your local "
 "Devilry system administrator(s) and ask them to add help links."
 msgstr ""
+"Din lokale Devilry system administrator har ikke lagt til noen eksterne "
+"hjelp-linker for deg. Hvis du syns noe i Devilry er vanskelig å forstå, ta "
+"kontakt med din lokale Devilry system administrator og be de om å legge til "
+"lenker til hjelp."
 
-#: static/devilry_frontpage/all-classes.js:78753
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_header/HelpLinksBox.js:34
 msgid "Edit help links"
-msgstr ""
+msgstr "Rediger hjelp-linker"
 
 #: static/devilry_frontpage/all-classes.js:81951
 #: static/devilry_frontpage/app-all.js:4
 msgid "Failed to load languages. Try to reload the page."
 msgstr ""
 
-#: static/devilry_frontpage/all-classes.js:81977
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_subjectadmin/app/controller/AddGroups.js:381
+#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:254
+#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:393
+#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:440
+#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:632
+#: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:123
+#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:260
+#: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:198
+#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:192
+#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:223
+#: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:131
+#: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:135
+#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:133
+#: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:417
+#: static/devilry_subjectadmin/app/controller/period/EditDuration.js:128
+#: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:64
+#: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:93
+#: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:141
 msgid "Saving"
-msgstr ""
+msgstr "Lagrer"
 
 #: static/devilry_frontpage/all-classes.js:81987
 #: static/devilry_frontpage/app-all.js:4
 msgid "Failed to save language choice."
 msgstr ""
 
-#: static/devilry_frontpage/all-classes.js:82027
-#: static/devilry_frontpage/all-classes.js:82332
-#: static/devilry_frontpage/app-all.js:4
-#: static/devilry_frontpage/app/view/FrontpageOverview.js:47
+#: static/devilry_header/HoverMenu.js:32
 msgid "Choose your role"
-msgstr ""
+msgstr "Velg din rolle"
 
-#: static/devilry_frontpage/all-classes.js:82044
-#: static/devilry_frontpage/all-classes.js:82356
-#: static/devilry_frontpage/app-all.js:4
-#: static/devilry_frontpage/app/view/FrontpageOverview.js:71
+#: static/devilry_header/HoverMenu.js:49
 msgid "Language"
-msgstr ""
+msgstr "Språk"
 
-#: static/devilry_frontpage/all-classes.js:82133
-#: static/devilry_frontpage/app-all.js:4
+#: static/devilry_header/Header.js:20
 msgid "Select role"
-msgstr ""
-
-#: static/devilry_frontpage/all-classes.js:82178
-#: static/devilry_frontpage/app-all.js:4
-msgid "Dashboard"
-msgstr ""
+msgstr "Velg rolle"
 
 #: static/devilry_frontpage/all-classes.js:82335
 #: static/devilry_frontpage/app-all.js:4
@@ -1085,84 +784,6 @@ msgstr ""
 "lisens. Besøk <a href=\"{devilryurl}\">{devilryurl}</a> og hjelp oss med å "
 "gjøre Devilry bedre."
 
-#~ msgid "Frontpage"
-#~ msgstr "Forside"
-
-#: static/devilry_header/FlatButton.js:18
-#: static/devilry_header/HelpLinksBox.js:15 static/devilry_header/Roles.js:8
-#: static/devilry_header/UserInfoBox.js:11
-msgid "Loading"
-msgstr "Laster"
-
-#: static/devilry_header/Header.js:20
-msgid "Select role"
-msgstr "Velg rolle"
-
-#: static/devilry_header/Header.js:21 static/devilry_header/Roles.js:15
-msgid "Student"
-msgstr "Student"
-
-#: static/devilry_header/Header.js:22 static/devilry_header/Roles.js:25
-msgid "Examiner"
-msgstr "Retter"
-
-#: static/devilry_header/Header.js:23 static/devilry_header/Roles.js:35
-msgid "%(Subject_term)s administrator"
-msgstr "%(Subject_term)s administrator"
-
-#: static/devilry_header/Header.js:24 static/devilry_header/Roles.js:36
-#: static/devilry_header/Roles.js.c:41
-msgid "Subject"
-msgstr ""
-
-#: static/devilry_header/Header.js:26 static/devilry_header/Roles.js:52
-msgid "%(Node_term)s administrator"
-msgstr "%(Node_term)s administrator"
-
-#: static/devilry_header/Header.js:27 static/devilry_header/Roles.js:53
-#: static/devilry_header/Roles.js.c:58
-msgid "Node"
-msgstr ""
-
-#: static/devilry_header/Header.js:29 static/devilry_header/Roles.js:67
-msgid "Superuser"
-msgstr "Superbruker"
-
-#: static/devilry_header/Header.js:70 static/devilry_header/app.js:24
-msgid "Dashboard"
-msgstr "Forside"
-
-#: static/devilry_header/HelpLinksBox.js:12
-msgid "Help"
-msgstr "Hjelp"
-
-#: static/devilry_header/HelpLinksBox.js:18
-msgid "Failed to load help links. Try reloading the page."
-msgstr "Lasting av hjelp-linker feilet. Prøv å laste siden på nytt."
-
-#: static/devilry_header/HelpLinksBox.js:22
-msgid ""
-"Your local Devilry system administrator(s) have not added any external help "
-"for you. If you feel anything in Devilry is unclear, contact your local "
-"Devilry system administrator(s) and ask them to add help links."
-msgstr ""
-"Din lokale Devilry system administrator har ikke lagt til noen eksterne "
-"hjelp-linker for deg. Hvis du syns noe i Devilry er vanskelig å forstå, ta "
-"kontakt med din lokale Devilry system administrator og be de om å legge til "
-"lenker til hjelp."
-
-#: static/devilry_header/HelpLinksBox.js:34
-msgid "Edit help links"
-msgstr "Rediger hjelp-linker"
-
-#: static/devilry_header/HoverMenu.js:32
-msgid "Choose your role"
-msgstr "Velg din rolle"
-
-#: static/devilry_header/HoverMenu.js:49
-msgid "Language"
-msgstr "Språk"
-
 #: static/devilry_header/Roles.js:18
 msgid "Students can make deliveres and browse their own feedback history."
 msgstr ""
@@ -1181,18 +802,6 @@ msgstr ""
 "%(Subject_term)sadministratorer administrerer %(subjects_term)s, "
 "%(periods_term)s og oppgaver hvor de har administrator-rettigheter."
 
-#: static/devilry_header/Roles.js:42
-msgid "subjects"
-msgstr ""
-
-#: static/devilry_header/Roles.js:43 static/devilry_header/Roles.js.c:59
-msgid "nodes"
-msgstr ""
-
-#: static/devilry_header/Roles.js:44
-msgid "periods"
-msgstr ""
-
 #: static/devilry_header/Roles.js:57
 msgid ""
 "%(Node_term)s administrators manage %(nodes_term)s where they have "
@@ -1205,69 +814,9 @@ msgstr ""
 msgid "Superusers have complete access to all data stored in Devilry."
 msgstr "Superbrukere har full tilgang til all data i Devilry."
 
-#: static/devilry_header/Roles.js:76
-msgid "I should have had more roles"
-msgstr "Jeg skulle ha hatt flere roller"
-
-#: static/devilry_header/Roles.js:81
-msgid ""
-"You have no permissions on anything in Devilry. Click <a href="
-"\"{no_permissions_url}\">this link</a> to go to a page explaining how to get "
-"access to Devilry."
-msgstr ""
-"Du har ikke tilgang til noe i Devilry. Klikk <a <a href="
-"\"{no_permissions_url}\">denne linken</a> for å gå til en side som forklarer "
-"hvordan du går frem for å få tilgang til Devilry."
-
-#: static/devilry_header/UserInfoBox.js:8
-msgid "About you"
-msgstr "Om deg"
-
-#: static/devilry_header/UserInfoBox.js:14
-msgid ""
-"The table below shows the personal information registered about you in "
-"Devilry. <a href=\"{wrong_userinfo_url}\">Click here</a> if any information "
-"is incorrect."
-msgstr ""
-"Tabellen nedenfor viser all personlig informasjon registrert om deg i "
-"Devilry. <a href=\"{wrong_userinfo_url}\">Klikk her</a> hvis noe av "
-"informasjonen er feil."
-
-#: static/devilry_header/UserInfoBox.js:19
-msgid "Name"
-msgstr "Navn"
-
-#: static/devilry_header/UserInfoBox.js:23
-msgid "Email"
-msgstr "Epost"
-
-#: static/devilry_header/UserInfoBox.js:27
-msgid "Username"
-msgstr "Brukernavn"
-
-#: static/devilry_header/UserInfoBox.js:33
-msgid "Log out"
-msgstr "Logg ut"
-
 #: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:19
 msgid "Student Information"
 msgstr "Studentinformasjon"
-
-#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:21
-msgid "Name"
-msgstr "Navn"
-
-#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:26
-msgid "Name missing"
-msgstr "Mangler navn"
-
-#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:30
-msgid "Username"
-msgstr "brukernavn"
-
-#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:32
-msgid "Email"
-msgstr "E-post"
 
 #: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:45
 msgid "Find details about another student:"
@@ -1299,28 +848,8 @@ msgid "Not Qualified for final exam"
 msgstr "Kan ikke gå opp til eksamen"
 
 #: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:80
-msgid "Assignment"
-msgstr "Oppgaver"
-
-#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:80
 msgid "Feedback Status"
 msgstr "Status tilbakemelding"
-
-#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:91
-msgid "Passed"
-msgstr "Bestått"
-
-#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:93
-msgid "Failed"
-msgstr "Ikke bestått"
-
-#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:97
-msgid "Waiting for deliveries, or for deadline to expire"
-msgstr "Venter på innlevering eller at fristen utløper"
-
-#: static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:100
-msgid "Waiting for feedback"
-msgstr "Venter på tilbakemelding"
 
 #: static/devilry_nodeadmin/app/view/dashboard/BetaWarning.js:7
 msgid ""
@@ -1349,15 +878,6 @@ msgstr ""
 "Denne listen viser kun de nodene du administrerer. Klikk på et element for å "
 "se underliggende nivåer, %(subjects_term)s og %(periods_term)s."
 
-#: static/devilry_nodeadmin/app/view/dashboard/ToplevelNodeList.js:18
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:42
-msgid "subjects"
-msgstr "Kurs"
-
-#: static/devilry_nodeadmin/app/view/dashboard/ToplevelNodeList.js:19
-msgid "periods"
-msgstr "semester"
-
 #: static/devilry_nodeadmin/app/view/nodebrowser/Navigator.js:10
 msgid "to the top"
 msgstr "til øverste nivå"
@@ -1375,25 +895,13 @@ msgstr "Ingen under-noder hører til dette nivået"
 msgid "courses"
 msgstr "kurs"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:14
-msgid "assignments"
-msgstr "oppgaver"
-
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:17
 msgid "Tools"
 msgstr "Verktøy"
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:21
-msgid "Qualified for final exams"
-msgstr "Kan gå opp til eksamen"
-
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:24
 msgid "View, print and browse students \"qualified for final exams\"-status."
 msgstr "Vis, skriv ut og bla i studentenes \"kan gå opp til eksamen\"-status."
-
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:28
-msgid "Subjects"
-msgstr "Kurs"
 
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:28
 msgid "on this level"
@@ -1411,10 +919,6 @@ msgstr ""
 "innleveringsfrister, se detaljert informasjon om studenter og "
 "tilbakemeldinger, og mye mer."
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:31
-msgid "subject"
-msgstr "kurs"
-
 #: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:41
 msgid ""
 "No %(subjects_term)s on this level. If there are any %(nodes_term)s below "
@@ -1423,29 +927,10 @@ msgstr ""
 "Ingen %(subjects_term)s på dette nivået. Hvis det finnes noen %(nodes_term)s "
 "under dette nivået, er de i menyen på venstre side."
 
-#: static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:43
-msgid "nodes"
-msgstr "noder"
-
-#~ msgid "About"
-#~ msgstr "Om"
-
-#: static/devilry_qualifiesforexam/app.js:125
-msgid "Route not found"
-msgstr "Siden ikke funnet"
-
 #: static/devilry_qualifiesforexam/app/controller/QualifiesForExamPreviewController.js:58
 #: static/devilry_qualifiesforexam/app/view/preview/QualifiesForExamPreview.js:26
 msgid "Preview and confirm"
 msgstr "Se over og bekreft"
-
-#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamPreviewController.js:63
-#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamSelectPluginController.js:57
-#: static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:73
-#: static/devilry_qualifiesforexam/app/view/preview/PreviewGrid.js:93
-#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:19
-msgid "Qualified for final exams"
-msgstr "Kan gå opp til avsluttende eksamen"
 
 #: static/devilry_qualifiesforexam/app/controller/QualifiesForExamPreviewController.js:63
 msgid "preview"
@@ -1475,23 +960,10 @@ msgstr "Ugyldig verdi"
 msgid "A message is required"
 msgstr "En beskjed er påkrevd"
 
-#: static/devilry_qualifiesforexam/app/controller/SummaryViewController.js:30
-#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:22
-msgid "Loading"
-msgstr "Laster"
-
 #: static/devilry_qualifiesforexam/app/controller/SummaryViewController.js:32
 #: static/devilry_qualifiesforexam/app/controller/SummaryViewController.js:74
 msgid "Summary - Qualifies for final exams"
 msgstr "Oppsummering - Kan gå opp til eksamen"
-
-#: static/devilry_qualifiesforexam/app/view/preview/PreviewGrid.js:21
-msgid "Yes"
-msgstr "Ja"
-
-#: static/devilry_qualifiesforexam/app/view/preview/PreviewGrid.js:25
-msgid "No"
-msgstr "Nei"
 
 #: static/devilry_qualifiesforexam/app/view/preview/PreviewGrid.js:40
 msgid "Qualified for final exams?"
@@ -1509,14 +981,6 @@ msgstr "Kvalifiserte studenter sist"
 msgid "The table shows the result of your choices."
 msgstr "Tabellen viser resultatet av dine valg."
 
-#: static/devilry_qualifiesforexam/app/view/preview/QualifiesForExamPreview.js:59
-msgid "Back"
-msgstr "Tilbake"
-
-#: static/devilry_qualifiesforexam/app/view/preview/QualifiesForExamPreview.js:63
-msgid "Save"
-msgstr "Lagre"
-
 #: static/devilry_qualifiesforexam/app/view/selectplugin/ListPlugins.js:22
 msgid "No plugins available"
 msgstr "Ingen plugins tilgjengelig"
@@ -1532,11 +996,6 @@ msgid ""
 msgstr ""
 "Velg en av valgene i liste. Hvert valg starter en interraktiv guide som "
 "ender med forhåndsvisning før du får muligheten til å lagre."
-
-#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:25
-#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:88
-msgid "Status"
-msgstr "Status"
 
 #: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:30
 msgid "Saved {savetime} by {saveuser}"
@@ -1555,10 +1014,6 @@ msgstr "Plugin"
 #: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:46
 msgid "Settings"
 msgstr "Innstillinger"
-
-#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:50
-msgid "Details"
-msgstr "Detaljer"
 
 #: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:52
 msgid ""
@@ -1588,10 +1043,6 @@ msgstr ""
 "nåværende %(period_term)s kan sette en status via "
 "programmeringsgrensesnittet. Det betyr at det ikke bør være noe problem så "
 "lenge beskjeden nedenfor forklarer hvorfor et plugin ikke ble brukt."
-
-#: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:60
-msgid "period"
-msgstr ""
 
 #: static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:67
 msgid "Message"
@@ -1658,10 +1109,6 @@ msgstr ""
 "Kursadministratoren har trukket tilbake en tidligere \"Klar for eksport\"-"
 "status. Dette kan være farlig hvis du allerede har eksportert statusen."
 
-#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:48
-msgid "WARNING"
-msgstr "ADVARSEL"
-
 #: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:50
 msgid ""
 "Devilry does NOT notify you when a status is changed. This could lead to "
@@ -1674,17 +1121,9 @@ msgstr ""
 "Venneligst kontakt Devilry-prosjektet hvis du ønsker å hjelpe oss med å lage "
 "en god arbeidsflyt for å håndtere status-endringer."
 
-#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:54
-msgid "subject"
-msgstr ""
-
 #: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:50
 msgid "View"
 msgstr "Vis"
-
-#: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:81
-msgid "Subject"
-msgstr ""
 
 #: static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:96
 msgid "Actions"
@@ -1694,39 +1133,9 @@ msgstr "Handlinger"
 msgid "Select students that qualify for final exams"
 msgstr "Velg studenter som kan gå opp til eksamen"
 
-#: static/devilry_qualifiesforexam_select/app/view/SelectQualifiedStudentsView.js:27
-msgid "Back"
-msgstr "Tilbake"
-
-#: static/devilry_qualifiesforexam_select/app/view/SelectQualifiedStudentsView.js:32
-msgid "Next"
-msgstr "Neste"
-
-#: static/devilry_student/app.js:111
-msgid "Route not found"
-msgstr "Siden ikke funnet"
-
 #: static/devilry_student/app/controller/AddDelivery.js:94
 msgid "Uploading your file ..."
 msgstr "Last opp din fil ..."
-
-#: static/devilry_student/app/controller/AddDelivery.js:156
-#: static/devilry_student/app/controller/Dashboard.js:58
-#: static/devilry_student/app/controller/GroupInfo.js:108
-msgid "Error"
-msgstr "Feil"
-
-#: static/devilry_student/app/controller/AddDelivery.js:174
-#: static/devilry_student/app/controller/GroupInfo.js:289
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:37
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:74
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:109
-#: static/devilry_student/app/view/add_delivery/ConfirmAfterDeadline.js:20
-#: static/devilry_student/app/view/add_delivery/ConfirmAfterDeadline.js:33
-#: static/devilry_student/app/view/dashboard/Overview.js:25
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:127
-msgid "delivery"
-msgstr ""
 
 #: static/devilry_student/app/controller/BrowseGroupedController.js:27
 #: static/devilry_student/app/controller/GroupInfo.js:240
@@ -1740,12 +1149,6 @@ msgstr "Historie"
 #: static/devilry_student/app/view/dashboard/Overview.js:86
 msgid "Active {period_term}"
 msgstr "Aktivt {period_term}"
-
-#: static/devilry_student/app/controller/BrowseGroupedController.js:30
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:117
-#: static/devilry_student/app/view/dashboard/Overview.js:118
-msgid "period"
-msgstr ""
 
 #: static/devilry_student/app/controller/Dashboard.js:70
 #: static/devilry_student/app/controller/Dashboard.js:81
@@ -1772,37 +1175,12 @@ msgstr ""
 msgid "No %(deadlines_term)s"
 msgstr "Ingen %(deadlines_term)s"
 
-#: static/devilry_student/app/controller/GroupInfo.js:136
-#: static/devilry_student/app/controller/GroupInfo.js:139
-#: static/devilry_student/app/view/dashboard/Overview.js:63
-#: static/devilry_student/app/view/dashboard/Overview.js:67
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:136
-msgid "deadlines"
-msgstr ""
-
 #: static/devilry_student/app/controller/GroupInfo.js:138
 msgid ""
 "You have no %(deadlines_term)s, so you can not add any %(deliveries_term)s."
 msgstr ""
 "Du har ingen %(deadlines_term)s, så du kan ikke legge til "
 "%(deliveries_term)s."
-
-#: static/devilry_student/app/controller/GroupInfo.js:140
-#: static/devilry_student/app/controller/GroupInfo.js:264
-#: static/devilry_student/app/controller/GroupInfo.js:272
-#: static/devilry_student/app/view/add_delivery/ConfirmAfterDeadline.js:22
-#: static/devilry_student/app/view/dashboard/Overview.js:69
-#: static/devilry_student/app/view/dashboard/Overview.js:149
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:137
-msgid "deliveries"
-msgstr ""
-
-#: static/devilry_student/app/controller/GroupInfo.js:177
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:45
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:145
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:49
-msgid "examiner"
-msgstr ""
 
 #: static/devilry_student/app/controller/GroupInfo.js:228
 #, c-format
@@ -1818,14 +1196,6 @@ msgid "Can not add %(deliveries_term)s on a group without a %(deadline_term)s."
 msgstr ""
 "Kan ikke legge til %(deliveries_term)s på en gruppe som ikke har "
 "%(deadline_term)s."
-
-#: static/devilry_student/app/controller/GroupInfo.js:273
-#: static/devilry_student/app/view/add_delivery/ConfirmAfterDeadline.js:21
-#: static/devilry_student/app/view/add_delivery/ConfirmAfterDeadline.js:34
-#: static/devilry_student/app/view/dashboard/Overview.js:68
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:134
-msgid "deadline"
-msgstr ""
 
 #: static/devilry_student/app/controller/GroupInfo.js:288
 #: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:36
@@ -1853,10 +1223,6 @@ msgstr ""
 msgid "Upload files for your {delivery_term}. You can upload multiple files."
 msgstr "Last opp filer til din {delivery_term}. Du kan laste opp flere filer."
 
-#: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:101
-msgid "Cancel"
-msgstr ""
-
 #: static/devilry_student/app/view/add_delivery/AddDeliveryPanel.js:108
 msgid "Submit %(delivery_term)s"
 msgstr "Fullfør %(delivery_term)s"
@@ -1881,17 +1247,9 @@ msgstr ""
 "Jeg ønsker å legge til en %(delivery_term)s etter at innleveringsfristen har "
 "gått ut."
 
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:34
-msgid "Qualified for final exams"
-msgstr "Kvalifisert til avsluttende eksamen"
-
 #: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:38
 msgid "Not qualified for final exams"
 msgstr "Ikke kvalifisert til avsluttende eksamen"
-
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:43
-msgid "WARNING"
-msgstr "ADVARSEL"
 
 #: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:44
 #, fuzzy
@@ -1901,47 +1259,6 @@ msgid ""
 msgstr ""
 "Du er ikke registrert som student på {parent.data.short_name}.{short_name}."
 
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:61
-#: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:23
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:30
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:80
-msgid "Passed"
-msgstr "Bestått"
-
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:65
-#: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:25
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:32
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:82
-msgid "Failed"
-msgstr "Ikke bestått"
-
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:71
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:96
-msgid "Waiting for deliveries, or for deadline to expire"
-msgstr "Venter på innleveringer, eller på at innleveringsfristen går ut"
-
-#: static/devilry_student/app/view/browsegrouped/BrowseGrouped.js:74
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:99
-msgid "Waiting for feedback"
-msgstr "Venter på tilbakemelding"
-
-#: static/devilry_student/app/view/dashboard/OpenGroupsDeadlineNotExpiredGrid.js:50
-#: static/devilry_student/app/view/groupinfo/DeadlinePanel.js:79
-msgid "Deadline"
-msgstr "Innleveringsfrist"
-
-#: static/devilry_student/app/view/dashboard/OpenGroupsDeadlineNotExpiredGrid.js:51
-#: static/devilry_student/app/view/groupinfo/DeadlinePanel.js:82
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:108
-msgid "Deliveries"
-msgstr "Innleveringer"
-
-#: static/devilry_student/app/view/dashboard/Overview.js:23
-#: static/devilry_student/app/view/dashboard/Overview.js:43
-#: static/devilry_student/app/view/dashboard/Overview.js:62
-msgid "Assignments"
-msgstr "Oppgaver"
-
 #: static/devilry_student/app/view/dashboard/Overview.js:24
 msgid "click one to add a %(delivery_term)s"
 msgstr "klikk for å legge til en %(delivery_term)s"
@@ -1949,12 +1266,6 @@ msgstr "klikk for å legge til en %(delivery_term)s"
 #: static/devilry_student/app/view/dashboard/Overview.js:44
 msgid "You have no active electronic %(assignments_term)s."
 msgstr "Du har ingen aktive elektroniske %(assignments_term)s."
-
-#: static/devilry_student/app/view/dashboard/Overview.js:45
-#: static/devilry_student/app/view/dashboard/Overview.js:66
-#: static/devilry_student/app/view/dashboard/SearchField.js:16
-msgid "assignments"
-msgstr "oppgaver"
 
 #: static/devilry_student/app/view/dashboard/Overview.js:61
 msgid "%(assignments_term)s with expired %(deadlines_term)s"
@@ -1984,14 +1295,6 @@ msgstr "Hurtig oversikt over alle dine oppgaver"
 msgid "Browse all your assignments"
 msgstr "Bla i alle dine oppgaver"
 
-#: static/devilry_student/app/view/dashboard/Overview.js:116
-msgid "subjects"
-msgstr ""
-
-#: static/devilry_student/app/view/dashboard/Overview.js:117
-msgid "periods"
-msgstr ""
-
 #: static/devilry_student/app/view/dashboard/Overview.js:148
 msgid "Recent %(deliveries_term)s"
 msgstr "Siste %(deliveries_term)s"
@@ -1999,10 +1302,6 @@ msgstr "Siste %(deliveries_term)s"
 #: static/devilry_student/app/view/dashboard/Overview.js:167
 msgid "Recent %(feedbacks_term)s"
 msgstr "Siste %(feedbacks_term)s"
-
-#: static/devilry_student/app/view/dashboard/Overview.js:168
-msgid "feedbacks"
-msgstr ""
 
 #: static/devilry_student/app/view/dashboard/RecentDeliveriesGrid.js:20
 #: static/devilry_student/app/view/dashboard/RecentFeedbacksGrid.js:20
@@ -2013,27 +1312,9 @@ msgstr "For {offset_from_now} siden"
 msgid "Search your %(assignments_term)s ..."
 msgstr "Søk i dine %(assignments_term)s ..."
 
-#: static/devilry_student/app/view/dashboard/SearchField.js:20
-msgid "Searching"
-msgstr "Søker"
-
 #: static/devilry_student/app/view/dashboard/SearchField.js:21
 msgid "Nothing matches your search"
 msgstr "Søket ditt har ingen treff"
-
-#: static/devilry_student/app/view/groupinfo/DeadlinePanel.js:52
-#: static/devilry_student/app/view/groupinfo/DeadlinePanel.js:85
-msgid "About this deadline"
-msgstr "Om denne innleveringsfristen"
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:27
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:74
-msgid "Grade"
-msgstr "Karakter"
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:41
-msgid "Active feedback"
-msgstr "Aktiv tilbakemelding"
 
 #: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:43
 msgid ""
@@ -2044,54 +1325,6 @@ msgstr ""
 "Dette er din aktive %(feedback_term)s på denne oppgaven. Med mindre en "
 "%(examiner_term)s gir deg en ny %(feedback_term)s, vil dette stå som din "
 "avsluttende %(grade_term)s på oppgaven."
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:44
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:144
-msgid "feedback"
-msgstr ""
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:46
-msgid "grade"
-msgstr ""
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:47
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:135
-msgid "assignment"
-msgstr ""
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:55
-msgid "Time of delivery"
-msgstr "Innleveringstidspunkt"
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:59
-msgid "{offset} AFTER the deadline."
-msgstr "{offset} ETTER innleveringsfristen"
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:63
-msgid "{offset} before the deadline."
-msgstr "{offset} før innleveringsfristen"
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:72
-msgid "Delivery made by"
-msgstr "Innleveringen ble utført av"
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:78
-msgid "Files"
-msgstr "Filer"
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:88
-msgid "Download all files"
-msgstr "Last ned alle filene"
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:98
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:77
-msgid "No feedback"
-msgstr "Ingen tilbakemelding"
-
-#: static/devilry_student/app/view/groupinfo/DeliveryPanel.js:126
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:114
-msgid "Delivery"
-msgstr "Innlevering"
 
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:9
 msgid "Group name"
@@ -2105,25 +1338,9 @@ msgstr "Gruppemedlemmer"
 msgid "Invite students to the group"
 msgstr "Inviter studenter til gruppen"
 
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:40
-msgid "Examiners"
-msgstr "Rettere"
-
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:42
-msgid "Examiner"
-msgstr "Retter"
-
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:48
 msgid "No %(examiner)s"
 msgstr "Ingen %(examiner)s"
-
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:85
-msgid "Details"
-msgstr "Detaljer"
-
-#: static/devilry_student/app/view/groupinfo/GroupMetadata.js:92
-msgid "Status"
-msgstr "Status"
 
 #: static/devilry_student/app/view/groupinfo/GroupMetadata.js:132
 msgid "Deadline expired"
@@ -2145,26 +1362,6 @@ msgstr ""
 "Du er ikke registrert som student på {subject}. Klikk på boksen for mer "
 "informasjon"
 
-#: static/devilry_student/app/view/groupinfo/Overview.js:63
-msgid "Loading"
-msgstr "Laster"
-
-#~ msgid "Students"
-#~ msgstr "Studenter"
-
-#~ msgid "Group?"
-#~ msgstr "Prosjektgruppe?"
-
-#~ msgid "You can cooperate with other students on this assignment."
-#~ msgstr "Du kan samarbeide med andre studenter på denne oppgaven."
-
-#~ msgid "Create/edit group"
-#~ msgstr "Lag/rediger gruppe"
-
-#: static/devilry_subjectadmin/app.js:282
-msgid "Route not found"
-msgstr "Siden finnes ikke"
-
 #: static/devilry_subjectadmin/app.js:297
 #: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:36
 #: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:11
@@ -2173,61 +1370,10 @@ msgstr "Siden finnes ikke"
 msgid "All my %(subjects_term)s"
 msgstr "Alle mine %(subjects_term)s"
 
-#: static/devilry_subjectadmin/app.js:298
-#: static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:37
-#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:12
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:23
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:28
-#: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:13
-#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:28
-#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:28
-#: static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:28
-#: static/devilry_subjectadmin/app/view/subject/ListAll.js:30
-msgid "subjects"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/controller/AddGroups.js:270
-#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:132
-#: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:399
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:89
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:94
-#: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:36
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:114
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:65
-msgid "Students"
-msgstr "Students"
-
 #: static/devilry_subjectadmin/app/controller/AddGroups.js:272
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:114
 msgid "Add students"
 msgstr "Legg til studenter"
-
-#: static/devilry_subjectadmin/app/controller/AddGroups.js:381
-#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:254
-#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:393
-#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:440
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:632
-#: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:123
-#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:260
-#: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:198
-#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:192
-#: static/devilry_subjectadmin/app/controller/RelatedStudents.js:223
-#: static/devilry_subjectadmin/app/controller/assignment/EditAnonymous.js:131
-#: static/devilry_subjectadmin/app/controller/assignment/EditDeadlineHandling.js:135
-#: static/devilry_subjectadmin/app/controller/assignment/EditPublishingTime.js:133
-#: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:417
-#: static/devilry_subjectadmin/app/controller/period/EditDuration.js:128
-#: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:64
-#: static/devilry_subjectadmin/app/view/ManageAdminsPanel.js:93
-#: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:141
-msgid "Saving"
-msgstr "Lagrer"
-
-#: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:121
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:103
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:88
-msgid "Deadlines"
-msgstr "Innleveringsfrister"
 
 #: static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:566
 #: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:381
@@ -2253,11 +1399,6 @@ msgstr ""
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:326
 msgid "Devilry suggested values for: {labels}."
 msgstr "Devilry foreslo følgende verdier for: {labels}."
-
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:357
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:235
-msgid "Name"
-msgstr "Navn"
 
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:360
 msgid "Suggested {long_name} as the name, based on {last_long_name}."
@@ -2318,44 +1459,6 @@ msgstr ""
 "betyr at du har hoppet over et intervall eller to, og foreslo et "
 "publiseringstidspunkt basert på den antagelsen."
 
-#: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:445
-#: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:137
-#: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:373
-#: static/devilry_subjectadmin/app/controller/managestudents/SingleGroupSelectedViewPlugin.js:305
-#: static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:52
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:110
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:66
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:83
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:143
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:193
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:205
-#: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:54
-#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:58
-#: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimeWidget.js:46
-#: static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:36
-#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:35
-#: static/devilry_subjectadmin/app/view/dashboard/AllActiveWhereIsAdminList.js:34
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/DetailedPeriodOverview.js:30
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:191
-#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:15
-#: static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:15
-#: static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:11
-#: static/devilry_subjectadmin/app/view/managestudents/DynamicLoadMenu.js:17
-#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:107
-#: static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsButton.js:26
-#: static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:36
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:173
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:59
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:152
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:167
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:60
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:70
-#: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:55
-#: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:79
-#: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:89
-msgid "Loading"
-msgstr "Laster"
-
 #: static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:534
 msgid "Copy from %(assignment)s."
 msgstr "Kopier fra %(assignment)s."
@@ -2371,34 +1474,6 @@ msgstr "Legg til en oppgave til"
 #: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:93
 msgid "Create %(period_term)s"
 msgstr "Legg til %(period_term)s"
-
-#: static/devilry_subjectadmin/app/controller/CreateNewPeriod.js:94
-#: static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:234
-#: static/devilry_subjectadmin/app/controller/assignment/AssignmentController.js:111
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:31
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:256
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:273
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:125
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:118
-#: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:43
-#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:44
-#: static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:12
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:83
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:28
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:88
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:98
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:135
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:159
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:175
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:28
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:151
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:168
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:29
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:162
-#: static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:179
-#: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:66
-msgid "period"
-msgstr ""
 
 #: static/devilry_subjectadmin/app/controller/DetailedPeriodOverviewController.js:107
 msgid "Detailed overview"
@@ -2435,16 +1510,6 @@ msgid ""
 msgstr ""
 "Minst en gruppe har ugyldig karakter. Venligst les hjelpen for "
 "karakterformatet på venstre del av siden."
-
-#: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:125
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:155
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:29
-#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:36
-#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:52
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:119
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:55
-msgid "Examiners"
-msgstr "Rettere"
 
 #: static/devilry_subjectadmin/app/controller/RelatedExaminers.js:202
 #: static/devilry_subjectadmin/app/controller/RelatedStudents.js:227
@@ -2503,12 +1568,6 @@ msgstr "Endre navn på {something}"
 #: static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:5
 msgid "Grading system"
 msgstr "Karaktersystem"
-
-#: static/devilry_subjectadmin/app/controller/guides/QualifiedForFinalExams.js:9
-#: static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:59
-#: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:129
-msgid "Qualified for final exams"
-msgstr "Kan gå opp til eksamen"
 
 #: static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:369
 msgid "Failed to load assignment"
@@ -2642,12 +1701,6 @@ msgstr "Legg til administratorer"
 msgid "Other administrators"
 msgstr "Andre administratorer"
 
-#: static/devilry_subjectadmin/app/view/AdminsBox.js:137
-#: static/devilry_subjectadmin/app/view/examinerstats/ExaminerStatsOverview.js:64
-#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:31
-msgid "Details"
-msgstr "Detaljer"
-
 #: static/devilry_subjectadmin/app/view/AdminsBox.js:138
 msgid "Hide details"
 msgstr "Skjul detaljer"
@@ -2706,18 +1759,6 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/DeleteDjangoRestframeworkRecordDialog.js:18
 msgid "Permission denied"
 msgstr "Ingen tilgang"
-
-#: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:54
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:68
-#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:68
-msgid "Short name"
-msgstr "Kort navn"
-
-#: static/devilry_subjectadmin/app/view/RenameBasenodeWindow.js:72
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:58
-#: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:59
-msgid "Long name"
-msgstr "Langt navn"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:31
 msgid ""
@@ -2812,14 +1853,6 @@ msgstr "Ingen studenter funnet"
 msgid "Select"
 msgstr "Velg"
 
-#: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:133
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/AllGroupsInAssignmentGrid.js:37
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/GroupsInDeadlineSelectGrid.js:25
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:52
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:15
-msgid "Select all"
-msgstr "Velg alle"
-
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:136
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/AllGroupsInAssignmentGrid.js:43
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/GroupsInDeadlineSelectGrid.js:31
@@ -2834,9 +1867,9 @@ msgstr "Inkluder tags"
 
 #: static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:149
 msgid ""
-"Check this to tag the added students with the tags they have on %(periodpath)"
-"s. Keep this checked if you are unsure of what to do. When this is checked, "
-"tags are displayed in the second column of the table."
+"Check this to tag the added students with the tags they have on "
+"%(periodpath)s. Keep this checked if you are unsure of what to do. When this "
+"is checked, tags are displayed in the second column of the table."
 msgstr ""
 "Velg denne for å tagge alle studenten som legges til med taggene de har på "
 "%(periodpath)s. Behold denne som valgt hvis du er usikker på hva du bør "
@@ -2970,20 +2003,6 @@ msgstr ""
 "%(period_term)s eller %(subject_term)s. Navn på %(subject_term)s er en link "
 "på %(subject_term)s der du har administrator-rettigheter."
 
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:29
-msgid "periods"
-msgstr ""
-
-#: static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:30
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:121
-#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:27
-#: static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:76
-#: static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:27
-#: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:81
-#: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:91
-msgid "subject"
-msgstr ""
-
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:73
 #: static/devilry_subjectadmin/app/view/period/PeriodOverview.js:86
 msgid "No students"
@@ -3000,19 +2019,6 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:92
 msgid "View, edit and add students on this assignment"
 msgstr "Vis, rediger og legg til studenter på denne oppgaven"
-
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:95
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:69
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:114
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:9
-msgid "Groups"
-msgstr "Grupper"
-
-#: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:96
-#: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:39
-#: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:57
-msgid "Deliveries"
-msgstr "Innleveringer"
 
 #: static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:106
 msgid "View, edit and add deadlines, including the submission date."
@@ -3094,16 +2100,6 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:93
 msgid "Delete"
 msgstr "Slett"
-
-#: static/devilry_subjectadmin/app/view/assignment/EditAnonymousPanel.js:12
-#: static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:12
-#: static/devilry_subjectadmin/app/view/assignment/EditPublishingTimePanel.js:16
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:42
-#: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:94
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:161
-#: static/devilry_subjectadmin/app/view/period/EditDurationPanel.js:13
-msgid "Save"
-msgstr "Lagre"
 
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousPanel.js:33
 #: static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:34
@@ -3229,31 +2225,9 @@ msgstr ""
 "karaktersystemet før tilbakemeldinger kan gis på denne oppgaven. Klikk "
 "rediger-knappen ovenfor for mer informasjon."
 
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:34
-#: static/devilry_subjectadmin/app/view/managestudents/ChooseTagsPanel.js:75
-#: static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:89
-#: static/devilry_subjectadmin/app/view/relatedstudents/SelectUserPanel.js:31
-msgid "Cancel"
-msgstr "Avbryt"
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:66
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:74
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:112
-#: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:101
-msgid "Deadline"
-msgstr "Innleveringsfrist"
-
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:67
 msgid "The time when the deadline expires"
 msgstr "Tidspunktet da innleveringsfristen går ut"
-
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:87
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:55
-#: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:116
-#: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:74
-#: static/devilry_subjectadmin/app/view/managestudents/DeadlinePanel.js:106
-msgid "About this deadline"
-msgstr "Om innleveringsfristen"
 
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:88
 #: static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:56
@@ -3430,11 +2404,6 @@ msgstr ""
 "må være registrert på oppgaven før de kan levere. Du får muligheten til å "
 "legge til studenter på neste side."
 
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:217
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:57
-msgid "Next"
-msgstr "Neste"
-
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:241
 msgid "Students?"
 msgstr "Studenter?"
@@ -3520,11 +2489,6 @@ msgstr ""
 #: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:410
 msgid "Do not setup examiners at this time."
 msgstr "Ikke sett opp rettere nå."
-
-#: static/devilry_subjectadmin/app/view/createnewassignment/Form.js:421
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:156
-msgid "Back"
-msgstr "Tilbake"
 
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:22
 #: static/devilry_subjectadmin/app/view/createnewperiod/CreateNewPeriod.js:99
@@ -3625,11 +2589,6 @@ msgstr "Eksporer"
 msgid "Showing {count} students"
 msgstr "Viser {count} studenter"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:40
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:280
-msgid "Name missing"
-msgstr "Navn mangler"
-
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:46
 msgid "Ignored, has feedback so this may be a problem"
 msgstr "Ignorert, har tilbakemelding(er) så dette kan være et problem"
@@ -3658,33 +2617,6 @@ msgstr "Poeng"
 msgid "Waiting for deliveries"
 msgstr "Venter på innleveringer"
 
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:82
-#: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:53
-#: static/devilry_subjectadmin/app/view/examinerstats/SingleExaminerStatBox.js:130
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:42
-#: static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:23
-#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:44
-msgid "Waiting for feedback"
-msgstr "Venter på tilbakemelding"
-
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:98
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:32
-#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:19
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:48
-msgid "Passed"
-msgstr "Bestått"
-
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:98
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:34
-#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:23
-msgid "Failed"
-msgstr "Feilet"
-
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:108
-#: static/devilry_subjectadmin/app/view/relatedexaminers/Grid.js:48
-msgid "Student"
-msgstr "Student"
-
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:142
 #: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:12
 msgid "Sort"
@@ -3699,11 +2631,6 @@ msgstr "Fullt navn"
 #: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:25
 msgid "Last name"
 msgstr "Etternavn"
-
-#: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:160
-#: static/devilry_subjectadmin/app/view/managestudents/SortByButton.js:32
-msgid "Username"
-msgstr "Brukernavn"
 
 #: static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:182
 msgid "Search for name or username ..."
@@ -3762,12 +2689,6 @@ msgstr "Rediger/vis studenter på inneværende {period_term}."
 #: static/devilry_subjectadmin/app/view/examinerstats/AveragePointsChart.js:22
 msgid "Average points"
 msgstr "Poeng (gjennomsnitt)"
-
-#: static/devilry_subjectadmin/app/view/examinerstats/AveragePointsChart.js:29
-#: static/devilry_subjectadmin/app/view/examinerstats/AverageWordsChart.js:29
-#: static/devilry_subjectadmin/app/view/examinerstats/PassedGroupsChart.js:32
-msgid "Examiner"
-msgstr "Retter"
 
 #: static/devilry_subjectadmin/app/view/examinerstats/AveragePointsChart.js:49
 msgid "points"
@@ -4026,20 +2947,9 @@ msgstr ""
 "integrasjon med Devilry som ikke håndterer ikke-elektroniske oppgaver "
 "korrekt, eller en feil i Devilry."
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:29
-#: static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:15
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/ConfirmGroupsGrid.js:29
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:128
-msgid "Grade"
-msgstr "Karakter"
-
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:44
 msgid "Corrected by"
 msgstr "Rettet av"
-
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:54
-msgid "Active feedback"
-msgstr "Aktiv tilbakemelding"
 
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:56
 msgid ""
@@ -4050,45 +2960,9 @@ msgstr ""
 "lager en ny tilbakemelding, vil dette forbli den avsluttende karakteren på "
 "denne oppgaven."
 
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:63
-msgid "Time of delivery"
-msgstr "Innleveringstidspunkt"
-
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:67
-msgid "{offset} AFTER the deadline."
-msgstr "{offset} ETTER innleveringsfristen"
-
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:71
-msgid "{offset} before the deadline."
-msgstr "{offset} før innleveringsfristen"
-
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:80
-msgid "Delivery made by"
-msgstr "Levert av"
-
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:86
-msgid "Files"
-msgstr "Filer"
-
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:96
-msgid "Download all files"
-msgstr "Last ned alle filer"
-
 #: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:113
 msgid "No detailed feedback"
 msgstr "Ingen detaljert tilbakemelding"
-
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:145
-msgid "Delivery"
-msgstr "Innlevering"
-
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:163
-msgid "feedback"
-msgstr "tilbakemelding"
-
-#: static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:164
-msgid "examiner"
-msgstr "retter"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:5
 msgid ""
@@ -4132,14 +3006,6 @@ msgid ""
 msgstr ""
 "Kun <a {relatedexaminers_link}>rettere registrert på oppgavens {period_term}"
 "</a> er tilgjengelige."
-
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:67
-msgid "delivery"
-msgstr "innlevering"
-
-#: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:69
-msgid "deliveries"
-msgstr "innleveringer"
 
 #: static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:121
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:163
@@ -4226,11 +3092,6 @@ msgid ""
 msgstr ""
 "Du kan få andre statusbeskjeder. I så tilfelle er det sannsynligvis en feil "
 "med et system som integrerer seg med Devilry, eller en feil i Devilry."
-
-#: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:7
-#: static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOverview.js:72
-msgid "Help"
-msgstr "Hjelp"
 
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:11
 #: static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:31
@@ -4443,10 +3304,6 @@ msgstr "Etter antall innleveringer"
 msgid "Has deliveries"
 msgstr "Har innleveringer"
 
-#: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:210
-msgid "No deliveries"
-msgstr "Ingen innleveringer"
-
 #: static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:212
 msgctxt "numdeliveries"
 msgid "Exact number"
@@ -4490,8 +3347,8 @@ msgstr "Erstatt retter(e)"
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:64
 msgid ""
-"Replace the examiners on the selected groups with one or more new examiner"
-"(s)."
+"Replace the examiners on the selected groups with one or more new "
+"examiner(s)."
 msgstr "Erstatt retterne på valgte grupper med en eller flere nye retter(e)."
 
 #: static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:66
@@ -4918,10 +3775,6 @@ msgstr ""
 msgid "Group has feedback for this assignment."
 msgstr "Gruppen har tilbakemelding på denne oppgaven."
 
-#: static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:54
-msgid "Group"
-msgstr "Gruppe"
-
 #: static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:51
 msgid ""
 "Show groups that Devilry believes should not be marked as previously passed?"
@@ -5087,8 +3940,8 @@ msgid ""
 "These are the examiners that can be added to any assignments within the "
 "%(period_term)s."
 msgstr ""
-"Dette er retterne som kan legges til på oppgaver i inneværende %(period_term)"
-"s."
+"Dette er retterne som kan legges til på oppgaver i inneværende "
+"%(period_term)s."
 
 #: static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:31
 msgid "Removing examiners"
@@ -5260,3 +4113,18 @@ msgid ""
 msgstr ""
 "Når du har slettet et %(subject_term)s er det ingen mulighet for å angre. "
 "Kun superbrukere kan slette et %(subject_term)s med innhold."
+
+#~ msgid "Frontpage"
+#~ msgstr "Forside"
+
+#~ msgid "About"
+#~ msgstr "Om"
+
+#~ msgid "Group?"
+#~ msgstr "Prosjektgruppe?"
+
+#~ msgid "You can cooperate with other students on this assignment."
+#~ msgstr "Du kan samarbeide med andre studenter på denne oppgaven."
+
+#~ msgid "Create/edit group"
+#~ msgstr "Lag/rediger gruppe"
