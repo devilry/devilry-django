@@ -20,13 +20,13 @@
     {% block alertboxbutton %}{% endblock alertboxbutton %}
 </div>
 
-<div class="container-fluid django-cradmin-container-fluid-focus">
-    {% if feedback.rendered_view %}
-        <div class="devilry-feedback-rendered-view"
-                id="devilry_examiner_feedback_rendered_view">
-            {{ feedback.rendered_view|safe }}</div>
-    {% endif %}
-</div>
+{% if feedback.rendered_view %}
+    <div class="container-fluid django-cradmin-container-fluid-focus">
+            <div class="devilry-feedback-rendered-view"
+                    id="devilry_examiner_feedback_rendered_view">
+                {{ feedback.rendered_view|safe }}</div>
+    </div>
+{% endif %}
 
 {% if DEVILRY_ENABLE_MATHJAX %}
 <script>
