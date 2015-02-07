@@ -16,6 +16,7 @@ Session.vim
 \#*#
 .#*
 dbdev_tempdata/
+.sass-cache/
 
 /developfiles/
 
