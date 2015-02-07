@@ -12,12 +12,6 @@ from .views.download_deliveryfiles import FileDownloadView
 
 
 @login_required
-def emptyview(request):
-    from django.http import HttpResponse
-    return HttpResponse('Logged in')
-
-
-@login_required
 def redirect_to_student_frontpage_view(request):
     return redirect(crinstance.reverse_cradmin_url(
         instanceid='devilry_student',
@@ -30,7 +24,6 @@ urlpatterns = patterns(
     url('^$', redirect_to_student_frontpage_view, name='devilry_student'),
 
     url('^rest/', include('devilry.devilry_student.rest.urls')),
-    url('^emptytestview', emptyview),  # NOTE: Only used for testing
 
     url(r'^groupinvite/respond/(?P<invite_id>\d+)$',
         login_required(GroupInviteRespondView.as_view()),
