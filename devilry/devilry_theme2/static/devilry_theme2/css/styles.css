@@ -9813,6 +9813,26 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .delivery_files {
   margin-bottom: 22px;
 }
+.delivery_files ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: inline-block;
+}
+.delivery_files ul li {
+  display: inline-block;
+}
+.delivery_files ul li a {
+  display: inline-block;
+  margin-left: 10px;
+  font-weight: bold;
+}
+.delivery_files ul li:after {
+  content: ', ';
+}
+.delivery_files ul li:last-child:after {
+  content: '';
+}
 #devilry_examiner_feedback_rendered_view.devilry-feedback-rendered-view {
   padding: 15px 0;
 }

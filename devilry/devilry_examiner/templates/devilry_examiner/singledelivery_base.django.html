@@ -111,13 +111,13 @@ valid_grading_system_setup
                             {% trans "Download files" %}
                         </a>
                         {% spaceless %}
-                            (<ul class="list-inline list-truly-inline list-inline-commaseparated">
+                            <ul>
                                 {% for filemeta in delivery.filemetas.all %}
                                     <li>
                                         <a href="{% url 'devilry-delivery-file-download' filemeta.id %}">{{ filemeta.filename }}</a>
                                     </li>
                                 {% endfor %}
-                            </ul>)
+                            </ul>
                         {% endspaceless %}
                     {% endif %}
                 </div>

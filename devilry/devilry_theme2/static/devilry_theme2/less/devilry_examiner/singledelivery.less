@@ -6,7 +6,27 @@
 
 
 .delivery_files {
- 	margin-bottom: @line-height-computed;
+  margin-bottom: @line-height-computed;
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: inline-block;
+    li {
+      display: inline-block;
+      a {
+        display: inline-block;
+        margin-left: 10px;
+        font-weight: bold;
+      }
+      &:after {
+        content: ', ';
+      }
+      &:last-child:after {
+        content: '';
+      }
+    }
+  }
 }
 
 #devilry_examiner_feedback_rendered_view.devilry-feedback-rendered-view {
