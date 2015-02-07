@@ -1,0 +1,33 @@
+
+/* The ghost, nudged to maintain perfect centering */
+#devilry_authenticate_loginview {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  padding: 24px 30px;
+  text-align: center;
+  h1 {
+    margin: 0 0 5px 0;
+    font-size: (@font-size-base * 1.6);
+  }
+  p.devilry-login-message {
+    font-size: @font-size-small;
+    color: @text-muted;
+    margin: 0 0 5px 0;
+  }
+  .asteriskField {
+    display: none;
+  }
+  form {
+    margin-top: 25px;
+  }
+
+  @media (min-width: @screen-sm-min) {
+    margin-top: 110px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+    height: auto;
+    border: 1px solid #ccc;
+  }
+}
