@@ -35,12 +35,11 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersHelp', {
         if(Ext.isEmpty(this._relatedNoteTpl)) {
             this._relatedNoteTpl = Ext.create('Ext.XTemplate', 
                 '<p><small class="muted">',
-                    gettext('Only <a {relatedexaminers_link}>examiners registered on the {period_term}</a> are available.'),
+                    gettext('Only <a {relatedexaminers_link}>examiners registered on the timeperiod</a> are available.'),
                 '</small></p>'
             );
         }
         return this._relatedNoteTpl.apply({
-            period_term: gettext('period'),
             relatedexaminers_link: Ext.String.format('href="{0}" target="_blank" class="new-window-link"',
                 devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(period_id))
         });

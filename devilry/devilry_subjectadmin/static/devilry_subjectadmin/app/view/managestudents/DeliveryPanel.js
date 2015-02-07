@@ -160,8 +160,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeliveryPanel' ,{
                         latest_feedback: latest_feedback,
                         has_active_feedback: has_active_feedback,
                         offset: devilry_extjsextras.DatetimeHelpers.formatTimedeltaShort(this.delivery.offset_from_deadline),
-                        feedback_term: gettext('feedback'),
-                        examiner_term: gettext('examiner'),
                         downloadAllUrl: this._getDownloadAllUrl(),
                         electronic: !this.non_electronic
                     }

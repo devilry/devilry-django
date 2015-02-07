@@ -24,13 +24,11 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
      */
 
 
-    introhelp: interpolate(gettext('These are the examiners that can be added to any assignments within the %(period_term)s.'), {
-        period_term: gettext('period')
-    }, true),
+    introhelp: gettext('These are the examiners that can be added to any assignments within the timeperiod.'),
     morehelptpl: [
         '<h3>', gettext('Removing examiners'), '</h3>',
         '<p>',
-            gettext('Removing an examiner from a {period_term} does not affect any groups, deliveries or feedback already registered on an assignment.'),
+            gettext('Removing an examiner from a timeperiod does not affect any groups, deliveries or feedback already registered on an assignment.'),
         '</p>',
 
         '<h3>', gettext('Accociate examiners with students using tags'), '</h3>',
@@ -147,9 +145,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                             moreWidget: {
                                 xtype: 'box',
                                 tpl: this.morehelptpl,
-                                data: {
-                                    period_term: gettext('period')
-                                }
+                                data: {}
                             }
                         }, {
                             xtype: 'selectrelateduserpanel',
@@ -164,9 +160,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                             html: [
                                 '<p>',
                                     gettext('Do you really want to remove all the selected examiners?'),
-                                    interpolate(gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire %(period_term)s.'), {
-                                        period_term: gettext('period')
-                                    }, true),
+                                    gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire timeperiod.'),
                                 '</p>'
                             ].join('')
                         }, {

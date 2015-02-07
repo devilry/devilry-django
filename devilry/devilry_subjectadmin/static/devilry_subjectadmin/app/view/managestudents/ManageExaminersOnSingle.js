@@ -40,9 +40,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ManageExaminersOnSingle', {
 
 
     initComponent: function() {
-        this.relatednote = interpolate(gettext('<strong>Note</strong>: Only examiners registered on the %(period_term)s are available.'), {
-            period_term: gettext('period')
-        }, true);
+        this.relatednote = gettext('<strong>Note</strong>: Only examiners registered on the current timeperiod are available.'),
         Ext.apply(this, {
             cls: 'bootstrap',
             layout: 'anchor',

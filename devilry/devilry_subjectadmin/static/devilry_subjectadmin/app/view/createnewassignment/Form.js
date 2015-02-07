@@ -252,9 +252,7 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                             columns: 1,
                             margin: 0,
                             items: [{
-                                boxLabel: interpolate(gettext('Add all students registered on the %(period_term)s.'), {
-                                    period_term: gettext('period')
-                                }, true),
+                                boxLabel: gettext('Add all students.'),
                                 checked: true,
                                 margin: 0,
                                 name: 'setupstudents_mode',
@@ -270,7 +268,6 @@ Ext.define('devilry_subjectadmin.view.createnewassignment.Form', {
                                     '</small></p>'
                                 ],
                                 data: {
-                                    period_term: gettext('period'),
                                     relatedstudents_link: Ext.String.format('href="{0}" target="_blank" class="new-window-link"',
                                         devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id))
                                 }
