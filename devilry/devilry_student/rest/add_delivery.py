@@ -14,7 +14,6 @@ from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Candidate
-from devilry.devilry_student.rest.helpers import IsPublishedAndCandidate
 
 
 
@@ -82,7 +81,6 @@ class AddDeliveryView(View):
       used for this purpose.
     """
     resource = AddDeliveryResource
-    permissions = (IsAuthenticated, IsPublishedAndCandidate)
 
     def post(self, request, id):
         group_id = int(id)
