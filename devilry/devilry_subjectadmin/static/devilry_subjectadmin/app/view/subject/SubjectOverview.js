@@ -62,7 +62,7 @@ Ext.define('devilry_subjectadmin.view.subject.SubjectOverview' ,{
                     ],
                     data: {
                         url: devilry_subjectadmin.utils.UrlLookup.createNewPeriod(this.subject_id),
-                        text: interpolate(gettext('Create new timeperiod'),
+                        text: gettext('Create new timeperiod')
                     }
                 }, {
                     xtype: 'listofperiods'
