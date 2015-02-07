@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.core import mail
 
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
@@ -340,6 +341,18 @@ class TestAddDeliveryView(TestCase):
         })
         self.assertEquals(response.status_code, 302)
         self.assertFalse(TemporaryFileCollection.objects.filter(id=collection.id).exists())
+
+    def test_post_successfully_sends_email(self):
+        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+        collection = self._create_collection(user=self.testuser, files=[
+            ('testfile.txt', 'Testcontent')])
+
+        self.assertEqual(len(mail.outbox), 0)
+        self._mock_and_perform_post_request(data={
+            'filecollectionid': collection.id
+        })
+        self.assertEqual(len(mail.outbox), 1)
 
 
 class TestDeliveryDetailsView(TestCase):

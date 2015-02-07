@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.dispatch import Signal
 
 from django.template import defaultfilters
 from django.views.generic import DetailView
@@ -20,6 +21,9 @@ from devilry.devilry_student.cradminextensions.columntypes import DeliverySummar
 
 
 DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES = getattr(settings, 'DELIVERY_DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES', 120)
+
+#: This signal is sent on successful delivery.
+successful_delivery_signal = Signal(providing_args=["delivery"])
 
 
 class TimeOfDeliveryColumn(objecttable.DatetimeColumn):
@@ -213,6 +217,9 @@ class AddDeliveryView(formbase.FormView):
             .filter_for_user(self.request.user)\
             .prefetch_related('files')
 
+    def on_successful_delivery(self, delivery):
+        successful_delivery_signal.send_robust(sender=delivery, delivery=delivery)
+
     def form_valid(self, form):
         collectionid = form.cleaned_data['filecollectionid']
         try:
@@ -222,6 +229,7 @@ class AddDeliveryView(formbase.FormView):
         else:
             delivery = self.__turn_temporaryfiles_into_delivery(temporaryfilecollection)
             temporaryfilecollection.clear_files_and_delete()
+            self.on_successful_delivery(delivery)
             return HttpResponseRedirect(self.get_success_url(delivery))
 
 

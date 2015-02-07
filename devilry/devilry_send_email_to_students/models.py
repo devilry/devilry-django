@@ -1,19 +1,17 @@
 from django.db.models.signals import post_save
 from django.core.urlresolvers import reverse
 from django.template.defaultfilters import filesizeformat
-#from django.conf import settings
-#from urlparse import urlparse
 
 from devilry.apps.core.models import StaticFeedback
+from devilry.devilry_student.cradmin_group.deliveriesapp import successful_delivery_signal
 from devilry.utils.devilry_email import send_message
-from devilry.devilry_student.rest.add_delivery import successful_delivery_signal
 from devilry.defaults.encoding import CHARSET
 from devilry.utils.create_absolute_url import create_absolute_url
 
 
 def create_absolute_show_delivery_url(delivery):
     path = reverse('devilry_student_show_delivery',
-                  kwargs={'delivery_id': delivery.id})
+                   kwargs={'delivery_id': delivery.id})
     return create_absolute_url(path)
 
 
@@ -56,39 +54,38 @@ post_save.connect(on_new_staticfeedback,
                   sender=StaticFeedback, dispatch_uid='send_email_to_students_new_staticfeedback')
 
 
-
 def on_new_successful_delivery(sender, delivery, **kwargs):
     deadline = delivery.deadline
     assignment_group = deadline.assignment_group
     assignment = assignment_group.parentnode
     period = assignment.parentnode
     subject = period.parentnode
-    user_list = [candidate.student \
-            for candidate in assignment_group.candidates.all()]
+    user_list = [candidate.student
+                 for candidate in assignment_group.candidates.all()]
     url = create_absolute_show_delivery_url(delivery)
 
     files = ''
     for fm in delivery.filemetas.all():
-        files += ' - {0} ({1})\n'.format(fm.filename, filesizeformat(fm.size))
+        files += u' - {0} ({1})\n'.format(fm.filename, filesizeformat(fm.size))
 
-    email_subject = 'Receipt for delivery on {0}'.format(assignment.get_path())
-    email_message = ('This is a receipt for your delivery.\n\n'
-                     'Subject: {subject}\n'
-                     'Period: {period}\n'
-                     'Assignment: {assignment}\n'
-                     'Deadline: {deadline}\n'
-                     'Delivery number: {deliverynumer}\n'
-                     'Time of delivery: {time_of_delivery}\n'
-                     'Files:\n{files}\n\n'
-                     'The delivery can be viewed at:\n'
-                     '{url}'.format(subject = subject.long_name,
-                                    period = period.long_name,
-                                    assignment = assignment.long_name,
-                                    deadline = deadline.deadline.isoformat(),
-                                    deliverynumer = delivery.number,
-                                    time_of_delivery = delivery.time_of_delivery.isoformat(),
-                                    files = files,
-                                    url = url))
+    email_subject = u'Receipt for delivery on {0}'.format(assignment.get_path())
+    email_message = (u'This is a receipt for your delivery.\n\n'
+                     u'Subject: {subject}\n'
+                     u'Period: {period}\n'
+                     u'Assignment: {assignment}\n'
+                     u'Deadline: {deadline}\n'
+                     u'Delivery number: {deliverynumer}\n'
+                     u'Time of delivery: {time_of_delivery}\n'
+                     u'Files:\n{files}\n\n'
+                     u'The delivery can be viewed at:\n'
+                     u'{url}'.format(subject = subject.long_name,
+                                     period = period.long_name,
+                                     assignment = assignment.long_name,
+                                     deadline = deadline.deadline.isoformat(),
+                                     deliverynumer = delivery.number,
+                                     time_of_delivery = delivery.time_of_delivery.isoformat(),
+                                     files = files,
+                                     url = url))
     send_message(email_subject, email_message, *user_list)
 
 successful_delivery_signal.connect(on_new_successful_delivery, dispatch_uid='send_email_to_students_new_delivery')
