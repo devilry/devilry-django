@@ -62,9 +62,7 @@ Ext.define('devilry_subjectadmin.view.subject.SubjectOverview' ,{
                     ],
                     data: {
                         url: devilry_subjectadmin.utils.UrlLookup.createNewPeriod(this.subject_id),
-                        text: interpolate(gettext('Create new %(period_term)s'), {
-                            period_term: gettext('period')
-                        }, true)
+                        text: interpolate(gettext('Create new timeperiod'),
                     }
                 }, {
                     xtype: 'listofperiods'
@@ -77,9 +75,7 @@ Ext.define('devilry_subjectadmin.view.subject.SubjectOverview' ,{
                         itemId: 'renameButton',
                         id: 'subjectRenameButton',
                         titleText: gettext('Loading') + ' ...',
-                        bodyHtml: interpolate(gettext('Renaming a %(subject_term)s should not done without a certain amount of consideration. The name of a %(subject_term)s, especially the short name, is often used as an identifier when integrating other systems with Devilry.'), {
-                            subject_term: gettext('subject')
-                        }, true),
+                        bodyHtml: gettext('Renaming a course should not done without a certain amount of consideration. The name of a course, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
                         buttonText: gettext('Rename') + ' ...'
                     }, {
                         xtype: 'singleactionbox',
@@ -87,9 +83,7 @@ Ext.define('devilry_subjectadmin.view.subject.SubjectOverview' ,{
                         hidden: true,
                         id: 'subjectDeleteButton',
                         titleText: gettext('Loading') + ' ...',
-                        bodyHtml: interpolate(gettext('Once you delete a %(subject_term)s, there is no going back. Only superusers can delete a non-empty %(subject_term)s.'), {
-                                subject_term: gettext('subject')
-                            }, true),
+                        bodyHtml: gettext('Once you delete a course, there is no going back. Only superusers can delete a non-empty course.'),
                         buttonText: gettext('Delete') + ' ...',
                         buttonUi: 'danger'
                     }]

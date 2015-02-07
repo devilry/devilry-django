@@ -228,7 +228,6 @@ Ext.define('devilry_subjectadmin.controller.PassedPreviousPeriodController', {
 
         // Customize the sidebar help
         this.getPageTwoSidebar().update({
-            period_term: gettext('period'),
             gradingsystem: Ext.String.format('<em>{0}</em>', this.assignmentRecord.get('gradingsystemplugin_title')),
             needsGradeFormatExplained: false,
             loading: false

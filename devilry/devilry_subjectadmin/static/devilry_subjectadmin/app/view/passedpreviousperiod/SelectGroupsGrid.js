@@ -24,9 +24,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.SelectGroupsGrid', {
                         click: this._onDeSelectAll
                     }
                 }, '-', {
-                    text: interpolate(gettext('Autodetected as previously passed'), {
-                        period_term: gettext('period')
-                    }, true),
+                    text: gettext('Autodetected as previously passed'),
                     listeners: {
                         scope: this,
                         click: this._onSelectPassingGradeInPreviousPeriod

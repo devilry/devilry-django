@@ -17,16 +17,13 @@ Ext.define('devilry_subjectadmin.view.guides.QualifiedForFinalExams', {
         itemId: 'dashboard',
         tpl: [
             '<p>',
-                gettext('Select an active {subject_term} from the list at the top of the left side of this page.'),
+                gettext('Select an active course from the list at the top of the left side of this page.'),
             '</p>',
             '<p><small>',
-                gettext('For {subjects_term} where you only have admin rights for selected assignments, those assignments will be listed. If you only have assignments in your list, you do not have the required rights to select students that qualify for final exams.'),
+                gettext('For courses where you only have admin rights for selected assignments, those assignments will be listed. If you only have assignments in your list, you do not have the required rights to select students that qualify for final exams.'),
             '</small></p>'
         ],
-        data: {
-            subject_term: gettext('subject'),
-            subjects_term: gettext('subjects')
-        }
+        data: {}
     }, {
         itemId: 'period',
         tpl: [
@@ -37,7 +34,6 @@ Ext.define('devilry_subjectadmin.view.guides.QualifiedForFinalExams', {
                 gettext('On the next page this guide will disappear, and a wizard guiding you through the required steps will begin. If you, or another admin, have already selected students that qualify for final exams, you will see the results of that selection instead of beginning the wizard.'),
             '</p>'
         ],
-        data: {
-        }
+        data: {}
     }]
 });

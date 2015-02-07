@@ -25,17 +25,15 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
      */
 
 
-    introhelp: interpolate(gettext('These are the students that can be added to any assignments within this %(period_term)s.'), {
-        period_term: gettext('period')
-    }, true),
+    introhelp: gettext('These are the students that can be added to any assignments within this timeperiod.'),
     morehelptpl: [
         '<h3>', gettext('Removing students'), '</h3>',
         '<p>',
-            gettext('When you remove a student from this list, Devilry assumes that the student is not planning on completing the {period_term}. This means that they will disappear from any {period_term} summaries, including calculation of final grade on the {period_term}.'),
+            gettext('When you remove a student from this list, Devilry assumes that the student is not planning on completing the timeperiod. This means that they will disappear from any timeperiod summaries, including calculation of final grade on the timeperiod.'),
         '</p>',
         
         '<p>',
-            gettext('Removing a student from a {period_term} does not affect any groups, deliveries or feedback already registered on an assignment.'),
+            gettext('Removing a student from a timeperiod does not affect any groups, deliveries or feedback already registered on an assignment.'),
         '</p>',
 
         '<h3>', gettext('Tags'), '</h3>',
@@ -158,9 +156,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                             moreWidget: {
                                 xtype: 'box',
                                 tpl: this.morehelptpl,
-                                data: {
-                                    period_term: gettext('period')
-                                }
+                                data: {}
                             }
                         }, {
                             xtype: 'selectrelateduserpanel',
@@ -175,9 +171,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                             html: [
                                 '<p>',
                                     gettext('Do you really want to remove all the selected students?'),
-                                    interpolate(gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire %(period_term)s.'), {
-                                        period_term: gettext('period')
-                                    }, true),
+                                    gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire timeperiod.'),
                                 '</p>'
                             ].join('')
                         }, {

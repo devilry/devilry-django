@@ -90,7 +90,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                         lesstext: gettext('Less help'),
                         tpl: [
                             '<p>',
-                                gettext('Select one or more groups. Groups that we belive have passed this assignment before has been selected automatically, and they are marked with the name of the old {period_term}.'),
+                                gettext('Select one or more groups. Groups that we belive have passed this assignment before has been selected automatically, and they are marked with the name of the old timeperiod.'),
                             '</p>',
                             '<p>{MORE_BUTTON}</p>',
                             '<div {MORE_ATTRS}>',
@@ -99,9 +99,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                                 '</p>',
                             '</div>'
                         ],
-                        data: {
-                            period_term: gettext('period')
-                        }
+                        data: {}
                     }]
                 }, {
                     xtype: 'container',
@@ -135,7 +133,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                                     '<p>',
                                         '<span class="text-warning">', gettext('Warning'), ':</span>',
                                         '<small> ',
-                                            gettext('You must specify passing grades. Many users find it confusing when the autodetected grade is not a passing grade, but that is simply because the grading system has been configured differently this {period_term}.'),
+                                            gettext('You must specify passing grades. Many users find it confusing when the autodetected grade is not a passing grade, but that is simply because the grading system has been configured differently this timeperiod.'),
                                         '</small>',
                                     '</p>',
                                 '</div>',
@@ -149,7 +147,7 @@ Ext.define('devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodO
                                 '</h4>',
                                     '<tpl if="!loading">',
                                         '<p>',
-                                            gettext('You have to specify a grade for each group. You do so by clicking the cells in the Grade-column and specifying a grade. If Devilry autodetected that the group has passed this assignment previously, the grade will already be specified, but you can still override the detected value if you grade students differently this {period_term}.'),
+                                            gettext('You have to specify a grade for each group. You do so by clicking the cells in the Grade-column and specifying a grade. If Devilry autodetected that the group has passed this assignment previously, the grade will already be specified, but you can still override the detected value if you grade students differently this timeperiod.'),
                                         '</p>',
                                     '</tpl>',
                                 '</tpl>',

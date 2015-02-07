@@ -122,7 +122,6 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewGridB
     renderStudentColumn: function(value, meta, record) {
         return this.studentColTplCompiled.apply({
             user: record.get('user'),
-            period_term: gettext('period'),
             ignored_with_feedback: this._isIgnoredWithFeedback(record),
             ignored_without_feedback: this._isIgnoredWithoutFeedback(record)
         });

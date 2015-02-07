@@ -8,9 +8,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.TagsHelp', {
     },
 
     
-    _periodNote: interpolate(gettext('<strong>NOTE:</strong> Tags on groups must not be confused with tags on students and examiners on a %(period_term)s. Those tags are used to automate assigning examiners to students. Tags from the %(period_term)s may have been included when you added groups to this assignment, however you can safely edit tags on groups without affecting the tags on the %(period_term)s.'), {
-        period_term: gettext('period')
-    }, true),
+    _periodNote: gettext('<strong>NOTE:</strong> Tags on groups must not be confused with tags on students and examiners on a timeperiod. Those tags are used to automate assigning examiners to students. Tags from the timeperiod may have been included when you added groups to this assignment, however you can safely edit tags on groups without affecting the tags on the timeperiod.'),
 
     getPeriodNote: function() {
         return this._periodNote;

@@ -84,8 +84,7 @@ Ext.define('devilry_subjectadmin.view.period.PeriodOverview' ,{
                     hidden: true,
                     type: 'error',
                     title: gettext('No students'),
-                    message: interpolate(gettext('This %(period_term)s has no students. Go to the <a href="%(relatedstudents_url)s">students</a> page and add some students. You will not be able to add any assignments until you have at least one student.'), {
-                        period_term: gettext('period'),
+                    message: interpolate(gettext('This timeperiod has no students. Go to the <a href="%(relatedstudents_url)s">students</a> page and add some students. You will not be able to add any assignments until you have at least one student.'), {
                         relatedstudents_url: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id)
                     }, true)
                 }, {
@@ -94,8 +93,7 @@ Ext.define('devilry_subjectadmin.view.period.PeriodOverview' ,{
                     hidden: true,
                     type: 'warning',
                     title: gettext('No examiners'),
-                    message: interpolate(gettext('This %(period_term)s has no examiners. Go to the <a href="%(relatedexaminers_url)s">examiners</a> page and add some examiners.'), {
-                        period_term: gettext('period'),
+                    message: interpolate(gettext('This timeperiod has no examiners. Go to the <a href="%(relatedexaminers_url)s">examiners</a> page and add some examiners.'), {
                         relatedexaminers_url: devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id)
                     }, true)
                 }, {
@@ -132,7 +130,6 @@ Ext.define('devilry_subjectadmin.view.period.PeriodOverview' ,{
                         '</ul>'
                     ],
                     data: {
-                        period_term: gettext('period'),
                         manageRelatedExaminersUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedExaminers(this.period_id),
                         manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(this.period_id),
                         detailedOverviewUlr: devilry_subjectadmin.utils.UrlLookup.detailedPeriodOverview(this.period_id),
@@ -152,12 +149,10 @@ Ext.define('devilry_subjectadmin.view.period.PeriodOverview' ,{
                         titleText: gettext('Loading') + ' ...',
                         bodyTpl: [
                             '<p class="muted"><small>',
-                                gettext('Renaming a {period_term} should not be done without a certain amount of consideration. The name of a {period_term}, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
+                                gettext('Renaming a timeperiod should not be done without a certain amount of consideration. The name of a timeperiod, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
                             '</small></p>'
                         ],
-                        bodyData: {
-                            period_term: gettext('period')
-                        },
+                        bodyData: {},
                         buttonText: gettext('Rename') + ' ...'
                     }, {
                         xtype: 'singleactionbox',
@@ -168,12 +163,10 @@ Ext.define('devilry_subjectadmin.view.period.PeriodOverview' ,{
                         buttonUi: 'danger',
                         bodyTpl: [
                             '<p class="muted"><small>',
-                                gettext('Once you delete a {period_term}, there is no going back. Only superusers can delete a non-empty {period_term}.'),
+                                gettext('Once you delete a timeperiod, there is no going back. Only superusers can delete a non-empty timeperiod.'),
                             '</small></p>'
                         ],
-                        bodyData: {
-                            period_term: gettext('period')
-                        },
+                        bodyData: {},
                         buttonText: gettext('Delete') + ' ...'
                     }]
                 }]

@@ -8,19 +8,19 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewIgnor
     bodyTpl: [
         '<tpl if="!loading">',
             '<p>',
-                gettext('Some students are registered on groups within this {period_term}, but are not registered on the {period_term}. It is common to remove students from the {period_term} when they quit the {subject_term}, so this may not indicate a problem.'),
+                gettext('Some students are registered on groups within this timeperiod, but are not registered on the timeperiod. It is common to remove students from the timeperiod when they quit the course, so this may not indicate a problem.'),
             '</p>',
             '<ul class="unstyled">',
                 '<li>',
                     '<span class="badge badge-important">{ignored_with_feedback_count}</span> ',
                     '<small>',
-                        gettext('Students in groups with feedback and not registered on the {period_term}.'),
+                        gettext('Students in groups with feedback and not registered on the timeperiod.'),
                     '</small>',
                 '</li>',
                 '<li>',
                     '<span class="badge badge-info">{ignored_without_feedback_count}</span> ',
                     '<small>',
-                        gettext('Students in groups without feedback but not registered on the {period_term}.'),
+                        gettext('Students in groups without feedback but not registered on the timeperiod.'),
                     '</small>',
                 '</li>',
             '</ul>',
@@ -37,7 +37,7 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewIgnor
             '</tpl>',
 
             ' &nbsp;<a class="new-window-link" href="{manageRelatedStudentsUrl}" target="_blank">',
-                gettext('Edit/view students on the {period_term}'),
+                gettext('Edit/view students on the timeperiod'),
             '</a>',
         '</tpl>'
     ],
@@ -115,10 +115,8 @@ Ext.define('devilry_subjectadmin.view.detailedperiodoverview.PeriodOverviewIgnor
         this.templatedata = {
             loading: false,
             ignoredHidden: this.ignoredHidden,
-            period_term: gettext('period'),
             manageRelatedStudentsUrl: devilry_subjectadmin.utils.UrlLookup.manageRelatedStudents(
-                data.period_id),
-            subject_term: gettext('subject')
+                data.period_id)
         };
         Ext.apply(this.templatedata, data);
         this._updateBody();
