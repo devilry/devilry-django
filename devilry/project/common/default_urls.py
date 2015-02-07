@@ -46,6 +46,5 @@ devilry_urls = (
     url(r'^devilry_gradingsystemplugin_points/', include('devilry.devilry_gradingsystemplugin_points.urls')),
     url(r'^devilry_gradingsystemplugin_approved/', include('devilry.devilry_gradingsystemplugin_approved.urls')),
     url(r'^devilry_detektor/', include('devilry.devilry_detektor.urls')),
-    (r'^devilry_frontpage/', include('devilry.devilry_frontpage.urls')),
     url(r'^$', frontpage, name='devilry_frontpage'),
 )
