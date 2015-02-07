@@ -19,17 +19,10 @@ Ext.define('devilry_subjectadmin.view.allwhereisadmin.AllWhereIsAdminPanel' ,{
         anchor: '100%',
         html: [
             '<h1 style="margin-top: 0;">',
-                interpolate(gettext('All my %(subjects_term)s'), {
-                    subjects_term: gettext('subjects')
-                }, true),
+                gettext('All my courses'),
             '</h1>',
             '<p class="muted">',
-                interpolate(gettext('These are all %(subjects_term)s, %(periods_term)s and assignments where you have administrator rights. Assignments are included in the listing if you have administrator-rights on the assignment, and not on the %(period_term)s or %(subject_term)s containing the assignment. The %(subject_term)s name is a link if you have administrator rights on the %(subject_term)s.'), {
-                    subjects_term: gettext('subjects'),
-                    periods_term: gettext('periods'),
-                    subject_term: gettext('subject'),
-                    period_term: gettext('period')
-                }, true),
+                gettext('These are all courses, timeperiods and assignments where you have administrator rights. Assignments are included in the listing if you have administrator-rights on the assignment, and not on the timeperiods or courses containing the assignment. The courses name is a link if you have administrator rights on the courses.'),
             '</p>'
         ].join('')
     }, {
