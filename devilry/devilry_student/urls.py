@@ -10,7 +10,6 @@ from devilry.devilry_student.cradmin_student import cradmin_student
 from devilry.project.common.i18n import get_javascript_catalog_packages
 from devilry.devilry_student.cradmin_period import cradmin_period
 from devilry.devilry_student.cradmin_group import cradmin_group
-from devilry.devilry_student.views.extjsapp import AppView
 from .views.download_deliveryfiles import CompressedFileDownloadView
 from .views.download_deliveryfiles import FileDownloadView
 
@@ -36,7 +35,6 @@ urlpatterns = patterns(
     'devilry.devilry_student',
     url('^$', redirect_to_student_frontpage_view, name='devilry_student'),
 
-    url('^old$', login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view())))),
     url('^rest/', include('devilry.devilry_student.rest.urls')),
     url('^emptytestview', emptyview), # NOTE: Only used for testing
     url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
