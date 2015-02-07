@@ -1,23 +1,3 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-msgid ""
-msgstr ""
-"Project-Id-Version: devilry_gradingsystem\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-25 02:40+0200\n"
-"PO-Revision-Date: 2014-01-24 06:35+0100\n"
-"Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: nb\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.3\n"
-
 #: templates/devilry_gradingsystem/bulkeditfeedbackbuttonbar.django.html:7
 #: templates/devilry_gradingsystem/editfeedbackbuttonbar.django.html:7
 #: templates/devilry_gradingsystem/feedbackdraft_bulkpreview.django.html:6
