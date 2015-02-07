@@ -42,20 +42,25 @@
 /* line 42, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_editsidebarcontainer h4 {
   font-size: 16px;
+  line-height: 27px;
 }
-/* line 45, ../sass/devilry_subjectadmin.scss */
+/* line 46, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_editsidebarcontainer h5 {
   font-size: 14px;
   font-weight: bold;
 }
+/* line 50, ../sass/devilry_subjectadmin.scss */
+.devilry_subjectadmin_editsidebarcontainer p {
+  line-height: 25px;
+}
 
-/* line 53, ../sass/devilry_subjectadmin.scss */
+/* line 57, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_guidesystemview h3 {
   font-size: 18px;
   line-height: 24px;
 }
 
-/* line 60, ../sass/devilry_subjectadmin.scss */
+/* line 64, ../sass/devilry_subjectadmin.scss */
 .devilry_listofperiods li.devilry_period {
   margin-bottom: 10px;
 }
