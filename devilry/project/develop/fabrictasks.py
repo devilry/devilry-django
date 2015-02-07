@@ -1,17 +1,20 @@
-from os.path import exists, join
-from os import remove, mkdir
-from shutil import rmtree, make_archive
-from zipfile import ZipFile
+from os.path import exists, join, relpath
+from os import remove, getcwd
+# from shutil import rmtree, make_archive
+# from zipfile import ZipFile
 from fabric.api import local, abort, task
-from fabric.context_managers import shell_env
+from fabric.context_managers import shell_env, lcd
 
 
 DB_FILE = join('developfiles', 'db.sqlite3')
 
 
-def _managepy(args, djangoenv='develop', environment={}):
+def _managepy(args, djangoenv='develop', environment={}, working_directory=None):
+    working_directory = working_directory or getcwd()
+    managepy_path = relpath('manage.py', working_directory)
     with shell_env(DJANGOENV=djangoenv, **environment):
-        local('python manage.py {args}'.format(args=args))
+        with lcd(working_directory):
+            local('python {managepy_path} {args}'.format(managepy_path=managepy_path, args=args))
 
 
 @task
@@ -269,3 +272,11 @@ def jsbuildall():
             "devilry.devilry_student",
             "devilry.devilry_subjectadmin"):
         jsbuild(appname)
+
+
+@task
+def makemessages(lanaguagecode):
+    _managepy(
+        'makemessages '
+        '--ignore "static*" '
+        '-l {}'.format(lanaguagecode), working_directory='devilry')
