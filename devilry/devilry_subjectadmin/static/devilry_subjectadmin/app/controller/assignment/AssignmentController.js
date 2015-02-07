@@ -112,7 +112,6 @@ Ext.define('devilry_subjectadmin.controller.assignment.AssignmentController', {
             examinerstats_url: devilry_subjectadmin.utils.UrlLookup.assignmentExaminerStats(this.assignment_id),
             assignmentData: this.assignmentRecord.data,
             electronic: this._isElectronic(),
-            period_term: gettext('period'),
             has_students: has_students
         });
     },

@@ -30,7 +30,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
 
     headerTpl: [
         '<div class="bootstrap">',
-            '<small class="deadline_label"><em>{deadline_term}</em></small>: ',
+            '<small class="deadline_label"><em>', gettext('Deadline'),'</em></small>: ',
             '<strong class="deadline linklike">{deadline_formatted}</strong>',
             '<tpl if="in_the_future">',
                 '<span class="text-success"> ({offset_from_now})</span>',
@@ -39,7 +39,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
             '</tpl>',
         '</div>',
         '<div class="metadata">',
-            '<small><em>{groups_term}</em>: {groupcount}</small>',
+            '<small><em>', gettext('Groups'), '</em>: {groupcount}</small>',
             '<tpl if="text">',
                 '&nbsp;',
                 '&nbsp;',
@@ -109,9 +109,7 @@ Ext.define('devilry_subjectadmin.view.bulkmanagedeadlines.DeadlinePanel' ,{
         Ext.apply(this, {
             itemId: Ext.String.format('deadline-{0}', this.deadlineRecord.get('bulkdeadline_id')),
             title: Ext.create('Ext.XTemplate', this.headerTpl).apply({
-                deadline_term: gettext('Deadline'),
                 deadline_formatted: deadline_formatted,
-                groups_term: gettext('Groups'),
                 groupcount: this.deadlineRecord.get('groups').length,
                 text_title: gettext('About this deadline'),
                 text: this.deadlineRecord.formatTextOneline(),

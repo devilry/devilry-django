@@ -11,9 +11,7 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
                 text: gettext('Courseadmin'),
                 url: '#'
             },{
-                text: interpolate(gettext("All my %(subjects_term)s"), {
-                    subjects_term: gettext('subjects')
-                }, true),
+                text: gettext("All my courses"),
                 url: '#/'
             }];
         }

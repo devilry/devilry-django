@@ -42,7 +42,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinePanel' ,{
                 '</div>',
             '<tpl else>',
                 '<div class="lineone">',
-                    '<small class="linklike"><em class="deadline_label">{deadline_term}</em></small>: ',
+                    '<small class="linklike"><em class="deadline_label">', gettext('Deadline'), '</em></small>: ',
                     '<span class="deadline linklike">{deadline_formatted}</span>',
                     '<span class="in_the_future">',
                         '<tpl if="in_the_future">',
@@ -98,7 +98,6 @@ Ext.define('devilry_subjectadmin.view.managestudents.DeadlinePanel' ,{
             itemId: Ext.String.format('deadline-{0}', this.deadline.id),
             id: Ext.String.format('deadlinepanel-{0}', this.deadline.id),
             title: Ext.create('Ext.XTemplate', this.headerTpl).apply({
-                deadline_term: gettext('Deadline'),
                 deadline_formatted: deadline_formatted,
                 delivery_count: this.deadline.deliveries.length,
                 offset_from_now: offset_from_now,

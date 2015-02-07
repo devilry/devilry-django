@@ -17,16 +17,12 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
         itemId: 'dashboard',
         tpl: [
             '<p>',
-                gettext('Select an active {subject_term} from the list at the top of the left side of this page.'),
+                gettext('Select an active course from the list at the top of the left side of this page.'),
             '</p>',
             '<p><small>',
-                gettext('For {subjects_term} where you only have admin rights for selected assignments, those assignments will be listed. If you only have assignments in your list, you do not have the required rights to create new assignments.'),
+                gettext('For courses where you only have admin rights for selected assignments, those assignments will be listed. If you only have assignments in your list, you do not have the required rights to create new assignments.'),
             '</small></p>'
         ],
-        data: {
-            subject_term: gettext('subject'),
-            subjects_term: gettext('subjects')
-        }
     }, {
         itemId: 'period',
         tpl: [
@@ -71,9 +67,6 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
             '<p>',
                 gettext('This guide closes when you click Create new assignment. At the top of the next page, you will get a link to quickly create another assignment with the same settings that you used for this assignment.'),
             '</p>'
-        ],
-        data: {
-            subject_term: gettext('subject')
-        }
+        ]
     }]
 });

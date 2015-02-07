@@ -109,7 +109,7 @@ Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
                                     '</tpl>',
                                     '<li><p>',
                                         '<strong><a href="{passedpreviousperiod_url}">',
-                                            gettext('Passed previous {period_term}'),
+                                            gettext('Passed previously'),
                                         '</strong></a>',
                                         '<small class="muted"> - ',
                                             gettext('Wizard with automatic and manual selection.'),

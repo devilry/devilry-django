@@ -24,9 +24,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
             margin: '40 0 0 0',
             html: [
                 '<h2 style="font-size:20px; margin-bottom:4px; line-height:1;">',
-                    interpolate(gettext('Expired %(subjects_term)s'), {
-                        subjects_term: gettext('subjects')
-                    }, true),
+                    gettext('Expired courses'),
                 '</h2>',
                 '<p style="margin-top: 0px; padding-top: 0;">',
                     '<a href="#/">',
