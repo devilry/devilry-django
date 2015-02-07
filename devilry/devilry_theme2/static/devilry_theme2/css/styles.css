@@ -9886,9 +9886,18 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   margin-right: auto;
   padding-bottom: 15px;
 }
+#devilry_frontpage_roleselect h1 {
+  font-size: 26px;
+}
+#devilry_frontpage_roleselect .devilry-frontpage-roleselect-intro {
+  font-size: 14px;
+}
 @media (min-width: 768px) {
   #devilry_frontpage_roleselect {
     padding-top: 20px;
+  }
+  #devilry_frontpage_roleselect h1 {
+    font-size: 41px;
   }
 }
 #devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list {
@@ -9907,6 +9916,7 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   padding: 12px 16px;
   color: #fff;
   text-decoration: none;
+  font-size: 14px;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
 }
 @media (min-width: 768px) {
@@ -9964,7 +9974,7 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 }
 #devilry_authenticate_loginview h1 {
   margin: 0 0 5px 0;
-  font-size: 25.6px;
+  font-size: 26px;
 }
 #devilry_authenticate_loginview p.devilry-login-message {
   font-size: 14px;

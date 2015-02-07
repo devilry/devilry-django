@@ -15,8 +15,18 @@
   margin-right: auto;
   padding-bottom: 15px;
 
+  h1 {
+    font-size: ceil(@font-size-base * 1.6);
+  }
+  .devilry-frontpage-roleselect-intro {
+    font-size: @font-size-small;
+  }
+
   @media (min-width: @screen-sm-min) {
     padding-top: 20px;
+    h1 {
+      font-size: @font-size-h1;
+    }
   }
 
   ul#devilry_frontpage_roleselect_list {
@@ -33,6 +43,7 @@
         padding: 12px 16px;
         color: #fff;
         text-decoration: none;
+        font-size: @font-size-small;
         -webkit-tap-highlight-color: rgba(0, 0, 0, .5);
         @media (min-width: @screen-sm-min) {
           transition-duration: 0.3s;
