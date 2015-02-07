@@ -9770,10 +9770,10 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   font-size: 24px;
 }
 .devilry-feedback-rendered-view p {
-  margin-bottom: 32.4px;
+  margin-top: 32.4px;
 }
-.devilry-feedback-rendered-view p:last-child {
-  margin-bottom: 0;
+.devilry-feedback-rendered-view p:first-child {
+  margin-top: 0;
 }
 .alert.feedback_gradebox {
   position: relative;
