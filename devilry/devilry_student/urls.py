@@ -5,7 +5,6 @@ from django_cradmin import crinstance
 
 from devilry.devilry_student.cradmin_group.projectgroupapp import GroupInviteRespondView
 from devilry.devilry_student.cradmin_student import cradmin_student
-from devilry.project.common.i18n import get_javascript_catalog_packages
 from devilry.devilry_student.cradmin_period import cradmin_period
 from devilry.devilry_student.cradmin_group import cradmin_group
 from .views.download_deliveryfiles import CompressedFileDownloadView
