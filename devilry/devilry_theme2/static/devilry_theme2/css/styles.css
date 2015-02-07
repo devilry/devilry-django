@@ -9770,7 +9770,7 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   font-size: 24px;
 }
 .devilry-feedback-rendered-view p {
-  padding-bottom: 32.4px;
+  margin-bottom: 32.4px;
 }
 .devilry-feedback-rendered-view p:last-child {
   margin-bottom: 0;
