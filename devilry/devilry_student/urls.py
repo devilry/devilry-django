@@ -23,8 +23,6 @@ urlpatterns = patterns(
     'devilry.devilry_student',
     url('^$', redirect_to_student_frontpage_view, name='devilry_student'),
 
-    url('^rest/', include('devilry.devilry_student.rest.urls')),
-
     url(r'^groupinvite/respond/(?P<invite_id>\d+)$',
         login_required(GroupInviteRespondView.as_view()),
         name='devilry_student_groupinvite_respond'),
