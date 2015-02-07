@@ -1,8 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
-from django.views.i18n import javascript_catalog
-from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django_cradmin import crinstance
 
 from devilry.devilry_student.cradmin_group.projectgroupapp import GroupInviteRespondView
@@ -12,9 +10,6 @@ from devilry.devilry_student.cradmin_period import cradmin_period
 from devilry.devilry_student.cradmin_group import cradmin_group
 from .views.download_deliveryfiles import CompressedFileDownloadView
 from .views.download_deliveryfiles import FileDownloadView
-
-
-i18n_packages = get_javascript_catalog_packages('devilry_student', 'devilry_header', 'devilry_extjsextras', 'devilry.apps.core')
 
 
 @login_required
@@ -36,9 +31,7 @@ urlpatterns = patterns(
     url('^$', redirect_to_student_frontpage_view, name='devilry_student'),
 
     url('^rest/', include('devilry.devilry_student.rest.urls')),
-    url('^emptytestview', emptyview), # NOTE: Only used for testing
-    url('^i18n.js$', javascript_catalog, kwargs={'packages': i18n_packages},
-        name='devilry_student_i18n'),
+    url('^emptytestview', emptyview),  # NOTE: Only used for testing
 
     url(r'^groupinvite/respond/(?P<invite_id>\d+)$',
         login_required(GroupInviteRespondView.as_view()),
