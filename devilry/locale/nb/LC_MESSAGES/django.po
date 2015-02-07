@@ -1345,6 +1345,7 @@ msgstr "Bestått?"
 #: views/feedbackeditor.py:18 views/feedbackeditor.py:47
 msgid "Check to provide a passing grade."
 msgstr "Velg denne for å gi bestått karakter."
+
 #: devilry_plugin.py:10 views/feedbackeditor.py:17 views/feedbackeditor.py:42
 msgid "Points"
 msgstr "Poeng"
@@ -1452,6 +1453,7 @@ msgstr "Kan gå opp til avsluttende eksamen"
 #: templates/devilry_qualifiesforexam/statusprint.django.html:50
 msgid "NOT qualified for final exams"
 msgstr "Kan IKKE gå opp til avsluttende eksamen"
+
 #: devilry_plugin.py:13
 msgid "Students must pass ALL assignments"
 msgstr "Studentene må bestå ALLE oppgavene"
@@ -1488,6 +1490,7 @@ msgid "Select assignments that students must pass to qualify for final exams"
 msgstr ""
 "Velg oppgavene som studentene må bestå for å kunne gå opp til avsluttende "
 "eksamen"
+
 #: devilry_plugin.py:13
 msgid "Students must get a minimum number of points"
 msgstr "Studentene må oppnå et minimum antall poeng"
@@ -1521,6 +1524,7 @@ msgstr "Minimum antall poeng som kreves totalt på de valgte oppgavene"
 #: templates/devilry_qualifiesforexam_points/subsetselect.django.html:5
 msgid "Select assignments"
 msgstr "Velg oppgaver"
+
 #: devilry_plugin.py:12
 msgid "Select manually"
 msgstr "Velg manuelt"
@@ -1544,24 +1548,6 @@ msgstr ""
 #: views.py:14
 msgid "Select students that qualifies for final exams - Devilry"
 msgstr "Velg studentene som kan gå opp til avsluttende eksamen - Devilry"
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-msgid ""
-msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-04 12:39+0100\n"
-"PO-Revision-Date: 2014-02-04 13:03+0100\n"
-"Last-Translator: Tor Ivar Johansen <tor@torjohansen.no>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
 #: templates/devilry_search/about_me.django.html:8
 msgid "About"
@@ -1639,28 +1625,6 @@ msgstr "Emne"
 #: templates/devilry_search/search.django.html:92
 msgid "Node"
 msgstr "Node"
-
-#~ msgid "Log Out"
-#~ msgstr "Logg Ut"
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-msgid ""
-msgstr ""
-"Project-Id-Version: devilry_student\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-02-16 16:40+0100\n"
-"PO-Revision-Date: 2014-02-16 16:41+0100\n"
-"Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: nb\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.4\n"
 
 #: rest/add_delivery.py:23
 msgid ""
@@ -1801,26 +1765,6 @@ msgstr "Velg studenten som du vil invitere til din gruppe."
 #: views/projectgroup_overview.py:43
 msgid "Send invitation"
 msgstr "Send invitasjon"
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-msgid ""
-msgstr ""
-"Project-Id-Version: devilry_subjectadmin\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-03-17 12:22+0100\n"
-"PO-Revision-Date: 2014-02-14 10:18+0100\n"
-"Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: nb\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.3\n"
-"X-Poedit-SourceCharset: UTF-8\n"
 
 #: rest/auth.py:31 rest/auth.py:41 rest/auth.py:51 rest/auth.py:61
 #: rest/auth.py:123 rest/auth.py:126
