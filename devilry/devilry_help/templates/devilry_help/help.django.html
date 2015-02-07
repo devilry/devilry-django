@@ -1,0 +1,37 @@
+{% extends "django_cradmin/standalone-base.django.html" %}
+{% load i18n %}
+
+{% block title %}
+    Devilry - {% trans "Help" %}
+{% endblock title %}
+
+{% block body %}
+    <div class="page-header">
+        <div class="container-fluid">
+            <h1>{% trans "Help" %}</h1>
+        </div>
+    </div>
+    <div class="container-fluid django-cradmin-container-fluid-focus">
+        <ul id="devilry_help_list" class="list-unstyled">
+            <li id="devilry_help_official">
+                <a href="{{ official_help_url }}">
+                    {% trans "Get help from the Devilry community." %}
+                </a>
+                <small class="text-muted">
+                    {% trans "Guides, forum, issue tracker." %}
+                </small>
+            </li>
+            {% if organization_specific_documentation_url %}
+                <li id="devilry_help_organization_specific_documentation">
+                    <a href="{{ organization_specific_documentation_url }}">
+                        {% if organization_specific_documentation_text %}
+                            {{ organization_specific_documentation_text }}
+                        {% else %}
+                            {% trans "Documentation provided by your organization." %}
+                        {% endif %}
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock body %}

@@ -90,6 +90,10 @@ Simple: EVERYTHING is prefixed with ``devilry_header2``. This includes:
 
     <div class="devilry_header2_buttonbar">
         {% spaceless %}
+        <a class="devilry_header2_btn devilry_header2_help" title='{% trans "Help" %}'
+                href="{% url 'devilry-help' %}">
+            <i class="devilry_header2_fa devilry_header2_fa-question-circle"></i>
+        </a>
         <a class="devilry_header2_btn devilry_header2_userprofile" title='{% trans "User profile" %}'
                 href="{% url 'devilry_header_aboutme' %}">
             <i class="devilry_header2_fa devilry_header2_fa-user"></i>

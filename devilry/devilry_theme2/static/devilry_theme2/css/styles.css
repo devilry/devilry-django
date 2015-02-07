@@ -10130,6 +10130,12 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
     border: 1px solid #ccc;
   }
 }
+#devilry_help_list li {
+  margin-top: 10px;
+}
+#devilry_help_list li#devilry_help_official a {
+  font-weight: bold;
+}
 body {
   background-image: url('../images/groovepaper.png');
 }
