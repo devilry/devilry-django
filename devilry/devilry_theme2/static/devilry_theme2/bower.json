@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "dependencies": {
-    "font-awesome": "~4",
+    "font-awesome": "4.3.0",
     "bootstrap": "~3",
     "jquery": "~2",
     "dropzone": "~3.9.0"
