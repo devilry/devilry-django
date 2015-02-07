@@ -1330,9 +1330,29 @@
   display: block;
   overflow: hidden;
   white-space: nowrap;
+  padding: 7px 40px 8px 10px;
+  margin: 0;
 }
 #devilry_header2.devilry_header2_extjs.devilry_header2_extjs_with_breadcrumb #devilry_header2_extjsbreadcrumb .devilry_header2_breadcrumbwrapper .devilry_header_breadcrumbcomponent ul.devilry_header_breadcrumb li {
   display: inline;
+  font-size: 13px;
+}
+#devilry_header2.devilry_header2_extjs.devilry_header2_extjs_with_breadcrumb #devilry_header2_extjsbreadcrumb .devilry_header2_breadcrumbwrapper .devilry_header_breadcrumbcomponent ul.devilry_header_breadcrumb li a {
+  color: #eee;
+  text-decoration: underline;
+}
+#devilry_header2.devilry_header2_extjs.devilry_header2_extjs_with_breadcrumb #devilry_header2_extjsbreadcrumb .devilry_header2_breadcrumbwrapper .devilry_header_breadcrumbcomponent ul.devilry_header_breadcrumb .divider {
+  padding: 0 5px;
+  color: #ccc;
+}
+#devilry_header2.devilry_header2_extjs.devilry_header2_extjs_with_breadcrumb #devilry_header2_extjsbreadcrumb .devilry_header2_breadcrumbwrapper .devilry_header_breadcrumbcomponent ul.devilry_header_breadcrumb .active {
+  color: #fff;
+  font-weight: bold;
+}
+#devilry_header2.devilry_header2_extjs.devilry_header2_extjs_with_breadcrumb #devilry_header2_extjsbreadcrumb .devilry_header2_breadcrumbwrapper .devilry_header_breadcrumbcomponent ul.devilry_header_breadcrumb .prefixtext {
+  color: #555;
+  font-weight: normal;
+  margin-right: 4px;
 }
 #devilry_header2 {
   height: 42px;

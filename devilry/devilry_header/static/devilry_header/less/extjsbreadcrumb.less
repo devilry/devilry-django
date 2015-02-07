@@ -1,26 +1,48 @@
 #devilry_header2.devilry_header2_extjs {
-	#devilry_header2_extjsbreadcrumb {
-		display: none;
-	}
-	&.devilry_header2_extjs_with_breadcrumb {
-		height: 70px;
-		#devilry_header2_extjsbreadcrumb {
-			display: block;
-			background-color: rgb(40, 40, 40);
-			.devilry_header2_breadcrumbwrapper {
-				display: block;
-				.devilry_header_breadcrumbcomponent {
-					display: block;
-					ul.devilry_header_breadcrumb {
-						display: block;
-						overflow: hidden;
-						white-space: nowrap;
-						li {
-							display: inline;
-						}
-					}
-				}
-			}
-		}
-	}
+  #devilry_header2_extjsbreadcrumb {
+    display: none;
+  }
+  &.devilry_header2_extjs_with_breadcrumb {
+    height: 70px;
+    #devilry_header2_extjsbreadcrumb {
+      display: block;
+      background-color: rgb(40, 40, 40);
+      .devilry_header2_breadcrumbwrapper {
+        display: block;
+        .devilry_header_breadcrumbcomponent {
+          display: block;
+          ul.devilry_header_breadcrumb {
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 7px 40px 8px 10px;
+            margin: 0;
+
+            li {
+              display: inline;
+              font-size: 13px;
+              a {
+                color: #eee;
+                text-decoration: underline;
+              }
+            }
+            .divider {
+              padding: 0 5px;
+              color: #ccc;
+            }
+            .active {
+              color: #fff;
+              font-weight: bold;
+            }
+            .prefixtext {
+              color: #555;
+              font-weight: normal;
+              margin-right: 4px;
+            }
+
+          }
+        }
+      }
+    }
+  }
 }
