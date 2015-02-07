@@ -1,0 +1,3 @@
+{% load humanize %}
+{{ datetimeobject|naturaltime }}
+<small class="text-muted">({{ datetimeobject|date:datetime_format }})</small>

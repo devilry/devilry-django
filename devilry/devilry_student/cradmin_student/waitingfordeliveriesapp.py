@@ -1,3 +1,5 @@
+from datetime import datetime
+from django.template.loader import render_to_string
 from django_cradmin.viewhelpers import objecttable
 from django_cradmin import crapp
 from django_cradmin import crinstance
@@ -5,7 +7,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_student.cradminextensions import studentobjecttable
-from devilry.devilry_student.cradminextensions.columntypes import LastDeadlineColumn
 
 
 class AssignmentInfoColumn(objecttable.SingleActionColumn):
@@ -29,6 +30,9 @@ class AssignmentInfoColumn(objecttable.SingleActionColumn):
             roleid=group.id,
             viewname='add-delivery')
 
+    def is_sortable(self):
+        return False
+
 
 class PeriodInfoColumn(objecttable.PlainTextColumn):
     """
@@ -44,6 +48,9 @@ class PeriodInfoColumn(objecttable.PlainTextColumn):
         return u'{} - {}'.format(
             group.subject.long_name,
             group.period.long_name)
+
+    def is_sortable(self):
+        return False
 
 
 class PeriodInfoXs(objecttable.PlainTextColumn):
@@ -61,18 +68,44 @@ class PeriodInfoXs(objecttable.PlainTextColumn):
             group.subject.short_name,
             group.period.short_name)
 
+    def is_sortable(self):
+        return False
+
+
+class LastDeadlineColumn(objecttable.PlainTextColumn):
+    # orderingfield = 'last_deadline_datetime'
+    modelfield = 'last_deadline_datetime'
+
+    def get_header(self):
+        return _('Deadline')
+
+    def render_value(self, obj):
+        deadline_datetime = super(LastDeadlineColumn, self).render_value(obj)
+        if deadline_datetime:
+            return render_to_string(
+                'devilry_student/cradmin_student/waitingfordeliveriesapp/last-deadline.django.html', {
+                    'deadline_datetime': deadline_datetime,
+                    'in_the_future': deadline_datetime > datetime.now()
+                })
+        else:
+            return deadline_datetime
+
+    # def get_default_order_is_ascending(self):
+    #     return True
+
+    def is_sortable(self):
+        return False
+
 
 class WaitingForDeliveriesListView(studentobjecttable.StudentObjectTableView):
     model = AssignmentGroup
+    template_name = 'devilry_student/cradmin_student/waitingfordeliveriesapp/waiting-for-deliveries-list.django.html'
     columns = [
         AssignmentInfoColumn,
         PeriodInfoColumn,
         PeriodInfoXs,
         LastDeadlineColumn
     ]
-
-    def get_pagetitle(self):
-        return _('Assignments open for delivery')
 
     def get_queryset_for_role(self, period):
         return AssignmentGroup.objects\

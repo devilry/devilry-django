@@ -48,24 +48,38 @@ Simple: EVERYTHING is prefixed with ``devilry_header2``. This includes:
 <div id="devilry_header2" class="{% if devilry_header2_extjs %}devilry_header2_extjs{% else %}devilry_header2_responsive{% endif %} {% if devilry_header2_role %}devilry_header2_role_{{ devilry_header2_role }}{% endif %}">
     <div class="devilry_header2_brand">
         {% spaceless %}
-            <a class="devilry_header2_brand_devilry" href="{% url 'devilry_frontpage' %}">Devilry</a>
+            <a class="devilry_header2_brand_devilry" href="{% url 'devilry_frontpage' %}">
+                Devilry
+            </a>
 
             {% comment %}                
                 The CSS makes all of these be invisible by default, and only
                 shows one depending on the devilry_header2_role_* class set on
                 the top container.
             {% endcomment %}
-            <a class="devilry_header2_brand_role devilry_header2_brand_role_student" href="{% url 'devilry_student' %}">
+{#            <a class="devilry_header2_brand_role devilry_header2_brand_role_student" href="{% url 'devilry_student' %}">#}
+{#                {% trans "Student" %}#}
+{#            </a>#}
+{#            <a class="devilry_header2_brand_role devilry_header2_brand_role_examiner" href="{% url 'devilry_examiner_dashboard' %}">#}
+{#                {% trans "Examiner" %}#}
+{#            </a>#}
+{#            <a class="devilry_header2_brand_role devilry_header2_brand_role_subjectadmin" href="{% url 'devilry_subjectadmin' %}">#}
+{#                {% trans "Subject administrator" %}#}
+{#            </a>#}
+{#            <a class="devilry_header2_brand_role devilry_header2_brand_role_nodeadmin" href="{% url 'devilry_nodeadmin' %}">#}
+{#                {% trans "Node administrator" %}#}
+{#            </a>#}
+            <a class="devilry_header2_brand_role devilry_header2_brand_role_student" href="{% url 'devilry_frontpage' %}">
                 {% trans "Student" %}
             </a>
-            <a class="devilry_header2_brand_role devilry_header2_brand_role_examiner" href="{% url 'devilry_examiner_dashboard' %}">
+            <a class="devilry_header2_brand_role devilry_header2_brand_role_examiner" href="{% url 'devilry_frontpage' %}">
                 {% trans "Examiner" %}
             </a>
-            <a class="devilry_header2_brand_role devilry_header2_brand_role_subjectadmin" href="{% url 'devilry_subjectadmin' %}">
-                {% trans "Subject administrator" %}
+            <a class="devilry_header2_brand_role devilry_header2_brand_role_subjectadmin" href="{% url 'devilry_frontpage' %}">
+                {% trans "Courseadmin" %}
             </a>
-            <a class="devilry_header2_brand_role devilry_header2_brand_role_nodeadmin" href="{% url 'devilry_nodeadmin' %}">
-                {% trans "Node administrator" %}
+            <a class="devilry_header2_brand_role devilry_header2_brand_role_nodeadmin" href="{% url 'devilry_frontpage' %}">
+                {% trans "Nodeadmin" %}
             </a>
         {% endspaceless %}
     </div>
@@ -76,6 +90,10 @@ Simple: EVERYTHING is prefixed with ``devilry_header2``. This includes:
 
     <div class="devilry_header2_buttonbar">
         {% spaceless %}
+        <a class="devilry_header2_btn devilry_header2_help" title='{% trans "Help" %}'
+                href="{% url 'devilry-help' %}">
+            <i class="devilry_header2_fa devilry_header2_fa-question-circle"></i>
+        </a>
         <a class="devilry_header2_btn devilry_header2_userprofile" title='{% trans "User profile" %}'
                 href="{% url 'devilry_header_aboutme' %}">
             <i class="devilry_header2_fa devilry_header2_fa-user"></i>

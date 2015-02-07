@@ -1,0 +1,24 @@
+{% load i18n %}
+<p>
+    {% if is_active %}
+        <strong class="devilry-student-allperiodsapp-isactive">
+    {% endif %}
+    {% include "django_cradmin/viewhelpers/objecttable/singleactioncolumn-cell.django.html" %}
+    {% if is_active %}
+        </strong>
+    {% endif %}
+</p>
+{% if period.user_qualifies_for_final_exam != None %}
+    <p class="devilry-student-allperiodsapp-qualified-for-final-exam-wrapper">
+        {% if period.user_qualifies_for_final_exam %}
+            <small class="label label-success devilry-student-allperiodsapp-qualified-for-final-exam">
+
+                {% trans "Qualified for final exam" %}
+            </small>
+        {% else %}
+            <small class="label label-warning devilry-student-allperiodsapp-not-qualified-for-final-exam">
+                {% trans "Not qualified for final exam" %}
+            </small>
+        {% endif %}
+    </p>
+{% endif %}

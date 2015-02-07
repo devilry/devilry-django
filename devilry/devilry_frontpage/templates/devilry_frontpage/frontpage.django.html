@@ -2,69 +2,69 @@
 {% load i18n %}
 {% load url from future %}
 
-{% block title %}Devilry{% endblock title %}
+{% block title %}
+    {% trans "Devilry frontpage" %}
+{% endblock title %}
 
 {% block body %}
     <div class="container">
         <h1 class="sr-only">{% trans "Devilry frontpage" %}</h1>
 
-        <h2>{% trans "Choose your role" %}</h2>
-        <p>{% trans "Each distinct area of responsibilty, or role, in Devilry has its own user interface. Please choose your role." %}</p>
-        <ul id="devilry_frontpage_roleselect">
-            {% if user_is_student %}
-                <li id="devilry_frontpage_roleselect_student">
-                    <a href="{% url 'devilry_student' %}">
-                        <strong>{% trans "Student" %}</strong>
-                        {% trans "Students can upload deliveres and browse their own delivery and feedback history." %}
-                    </a>
-                </li>
-            {% endif %}
-            {% if user_is_examiner %}
-                <li id="devilry_frontpage_roleselect_examiner">
-                    <a href="{% url 'devilry_examiner_dashboard' %}">
-                        <strong>{% trans "Examiner" %}</strong>
-                        {% trans "Examiners give students feedback on their deliveries." %}
-                    </a>
-                </li>
-            {% endif %}
-            {% if user_is_any_subjectadmin %}
-                <li id="devilry_frontpage_roleselect_subjectadmin">
-                    <a href="{% url 'devilry_subjectadmin' %}">
-                        <strong>{% trans "Subject administrator" %}</strong>
-                        {% trans "Subject administrators manage courses, semesters and assignments where they have been explicitly registered as administrator." %}
-                    </a>
-                </li>
-            {% endif %}
-            {% if user_is_nodeadmin or request.user.is_superuser %}
-                <li id="devilry_frontpage_roleselect_nodeadmin">
-                    <a href="{% url 'devilry_nodeadmin' %}">
-                        <strong>{% trans "Node administrator" %}</strong>
-                        {% trans "Node administrators manage departments where they have administrator-rights." %}
-                    </a>
-                </li>
-            {% endif %}
-            {% if request.user.is_superuser and request.user.is_staff %}
-                <li id="devilry_frontpage_roleselect_superuser">
-                    <a href="{% url 'admin:index' %}">
-                        <strong>{% trans "Superuser" %}</strong>
-                        {% trans "Superusers have access to all data stored in Devilry." %}
-                    </a>
-                </li>
-            {% endif %}
-        </ul>
-        <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}" id="devilry_frontpage_lacking_permissions_link">
-            {% trans "I should have had more roles" %}
-        </a>
-        
-
-        <h2>{% trans "Need help?" %}</h2>
-        <div id="devilry_frontpage_helplinks">
-            {% include "devilry_frontpage/includes/help.django.html" %}
+        <div id="devilry_frontpage_roleselect">
+            <h1>{% trans "Choose your role" %}</h1>
+{#            <p class="devilry-frontpage-roleselect-intro">#}
+{#                {% trans "Each distinct area of responsibilty, or role, in Devilry has its own user interface. Please choose your role." %}#}
+{#            </p>#}
+            <ul id="devilry_frontpage_roleselect_list">
+                {% if user_is_student %}
+                    <li id="devilry_frontpage_roleselect_student">
+                        <a href="{% url 'devilry_student' %}">
+                            <strong>{% trans "Student" %}</strong>
+                            {% trans "Students can upload deliveres and browse their own delivery and feedback history." %}
+                        </a>
+                    </li>
+                {% endif %}
+                {% if user_is_examiner %}
+                    <li id="devilry_frontpage_roleselect_examiner">
+                        <a href="{% url 'devilry_examiner_dashboard' %}">
+                            <strong>{% trans "Examiner" %}</strong>
+                            {% trans "Examiners give students feedback on their deliveries." %}
+                        </a>
+                    </li>
+                {% endif %}
+                {% if user_is_any_subjectadmin %}
+                    <li id="devilry_frontpage_roleselect_subjectadmin">
+                        <a href="{% url 'devilry_subjectadmin' %}">
+                            <strong>{% trans "Courseadmin" %}</strong>
+                            {% trans "Course administrators manage courses, semesters and assignments where they have been explicitly registered as administrator." %}
+                        </a>
+                    </li>
+                {% endif %}
+                {% if user_is_nodeadmin or request.user.is_superuser %}
+                    <li id="devilry_frontpage_roleselect_nodeadmin">
+                        <a href="{% url 'devilry_nodeadmin' %}">
+                            <strong>{% trans "Nodeadmin" %}</strong>
+                            {% trans "Node administrators manage large numbers of courses, typically a faculty or a department." %}
+                        </a>
+                    </li>
+                {% endif %}
+                {% if request.user.is_superuser and request.user.is_staff %}
+                    <li id="devilry_frontpage_roleselect_superuser">
+                        <a href="{% url 'admin:index' %}">
+                            <strong>{% trans "Superuser" %}</strong>
+                            {% trans "Superusers have access to all data stored in Devilry." %}
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+            <a href="{{ DEVILRY_LACKING_PERMISSIONS_URL }}" id="devilry_frontpage_lacking_permissions_link">
+                {% trans "I should have had more roles" %}
+            </a>
         </div>
 
-        <h2>{% trans "Language?" %}</h2>
-        <div id="devilry_frontpage_languageselect">
-            {% include "devilry_header/includes/change_language.django.html" %}
-        </div>
+{#        <h2>{% trans "Need help?" %}</h2>#}
+{#        <div id="devilry_frontpage_helplinks">#}
+{#            {% include "devilry_frontpage/includes/help.django.html" %}#}
+{#        </div>#}
     </div>
 {% endblock body %}

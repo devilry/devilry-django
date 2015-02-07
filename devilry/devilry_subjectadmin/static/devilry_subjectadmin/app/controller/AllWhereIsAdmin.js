@@ -36,7 +36,10 @@ Ext.define('devilry_subjectadmin.controller.AllWhereIsAdmin', {
         var label = interpolate(gettext('All my %(subjects_term)s'), {
             subjects_term: gettext('subjects')
         }, true);
-        this.application.breadcrumbs.set([], label);
+        this.application.breadcrumbs.set([{
+            text: gettext('Courseadmin'),
+            url: '#'
+        }], label);
     },
 
     _onLoadSuccess: function(records) {

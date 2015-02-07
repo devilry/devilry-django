@@ -9,5 +9,14 @@
 {% endblock title %}
 
 {% block pageheader-inner %}
-    {% include "devilry_student/cradmin_group/include/page-header.django.html" %}
+    <h1>
+        {% trans "Deliveries" %}
+    </h1>
+    <p>
+        {% with group=request.cradmin_role  %}
+            {{ group.assignment.long_name }} -
+            {{ group.subject.long_name }} -
+            {{ group.period.long_name }}
+        {% endwith %}
+    </p>
 {% endblock pageheader-inner %}

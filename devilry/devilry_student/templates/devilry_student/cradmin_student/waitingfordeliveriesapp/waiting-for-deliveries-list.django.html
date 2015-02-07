@@ -1,0 +1,15 @@
+{% extends "django_cradmin/viewhelpers/objecttable/objecttable.django.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Add delivery" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Add delivery" %}
+    </h1>
+    <p>
+        {% trans "The table below shows all assignments where you can add deliveries. Click the name of an assignment to add a delivery." %}
+    </p>
+{% endblock pageheader-inner %}

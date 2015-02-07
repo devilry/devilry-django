@@ -1,9 +1,18 @@
+{% spaceless %}
 {% load static %}
 {% load i18n %}
-{% load url from future %}
+{% load crispy_forms_tags %}
+{% endspaceless %}<!DOCTYPE html>
 <html>
     <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='{% static "devilry_theme2/css/styles.css" %}' rel="stylesheet">
+        {% include "devilry_theme2/favicons.django.html" %}
+
         <title>Devilry - Log in</title>
+
         <script type="text/javascript">
             function onPageLoad() {
                 document.getElementById('id_username').focus();
@@ -16,21 +25,19 @@
     </head>
 
     <body onload="onPageLoad()">
-        <link rel="stylesheet" type="text/css" href="{% static "authenticate/style.css" %}"/>
-        
-        <div class="hero-unit">
+        <div id="devilry_authenticate_loginview">
             <h1>Devilry &mdash; login</h1>
-
+            {% if login_message %}
+                <p class="devilry-login-message">{{ login_message|safe }}</p>
+            {% endif %}
             {% if login_failed %}
                 <p class="error">{% trans "Invalid username or password." %}</p>
             {% endif %}
             <form method="post" action="{% url 'login' %}" id="loginform">
-                <ul class="formul">
-                    {{ form.as_ul }}
-                </ul>
-                <p>
-                <input type="submit" name="login" value="Log in"/>
-                </p>
+                {% crispy form formhelper %}
+                <button type="submit" name="login" class="btn btn-primary btn-lg btn-block">
+                    Log in
+                </button>
             </form>
         </div>
     </body>

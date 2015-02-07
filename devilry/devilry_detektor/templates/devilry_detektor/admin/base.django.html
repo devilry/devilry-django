@@ -7,13 +7,17 @@
 {% endblock title %}
 
 {% block body %}
-    <div class="container">
-        <div class="page-header">
+    <div class="page-header">
+        <div class="container-fluid">
             <h1>
                 {% block heading %}{% trans "Programming code similarity checks" %}{% endblock heading %}
             </h1>
             {% block belowheading %}{% endblock belowheading %}
         </div>
+        {% block subheading %}{% endblock subheading %}
+    </div>
+
+    <div class="container-fluid">
         <ol class="breadcrumb">
             {% include "devilry_subjectadmin/include/assignment_breadcrumb.django.html" %}
             {% block breadcrumbtail %}
@@ -22,7 +26,6 @@
                 </a></li>
             {% endblock breadcrumbtail %}
         </ol>
-        {% block subheading %}{% endblock subheading %}
     </div>
     {% block content %}{% endblock content %}
 {% endblock body %}

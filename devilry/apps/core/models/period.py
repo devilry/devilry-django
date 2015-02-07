@@ -12,12 +12,9 @@ from custom_db_fields import ShortNameField, LongNameField
 from basenode import BaseNode
 from node import Node
 from subject import Subject
-from model_utils import *
 from model_utils import Etag
 from abstract_is_admin import AbstractIsAdmin
 from abstract_applicationkeyvalue import AbstractApplicationKeyValue
-
-
 
 
 class PeriodQuerySet(models.query.QuerySet):
@@ -26,10 +23,7 @@ class PeriodQuerySet(models.query.QuerySet):
     """
     def filter_is_candidate_or_relatedstudent(self, user):
         """
-        Filter only periods where the given ``user`` is one of:
-
-        - :class:`devilry.apps.core.models.RelatedUser`
-        - :class:`devilry.apps.core.models.Candidate`
+        See :meth:`.PeriodManager.filter_is_candidate_or_relatedstudent`.
         """
         return self.filter(
             Q(relatedstudent__user=user) |
@@ -38,11 +32,48 @@ class PeriodQuerySet(models.query.QuerySet):
 
     def filter_active(self):
         """
-        Filter only active periods.
+        See :meth:`.PeriodManager.filter_active`.
         """
         now = datetime.now()
         return self.filter(start_time__lt=now, end_time__gt=now)
 
+    def annotate_with_user_qualifies_for_final_exam(self, user):
+        """
+        See :meth:`.PeriodManager.annotate_with_user_qualifies_for_final_exam`.
+        """
+        from devilry.devilry_qualifiesforexam.models import Status
+        return self.extra(
+            select={
+                'user_qualifies_for_final_exam': """
+                    SELECT
+                        CASE
+                            WHEN
+                                devilry_qualifiesforexam_status.status = %s
+                            THEN
+                                NULL
+                            ELSE
+                                devilry_qualifiesforexam_qualifiesforfinalexam.qualifies
+                        END
+                    FROM devilry_qualifiesforexam_status
+                    INNER JOIN core_relatedstudent ON
+                      core_relatedstudent.period_id = core_period.id
+                      AND
+                      core_relatedstudent.user_id = %s
+                    LEFT JOIN devilry_qualifiesforexam_qualifiesforfinalexam ON
+                      devilry_qualifiesforexam_qualifiesforfinalexam.status_id = devilry_qualifiesforexam_status.id
+                      AND
+                      devilry_qualifiesforexam_qualifiesforfinalexam.relatedstudent_id = core_relatedstudent.id
+                    WHERE
+                      core_period.id = devilry_qualifiesforexam_status.period_id
+                    ORDER BY devilry_qualifiesforexam_status.createtime DESC
+                    LIMIT 1
+                """
+            },
+            select_params=[
+                Status.NOTREADY,
+                user.id,
+            ]
+        )
 
 
 class PeriodManager(models.Manager):
@@ -54,11 +85,29 @@ class PeriodManager(models.Manager):
         return PeriodQuerySet(self.model, using=self._db)
 
     def filter_active(self):
+        """
+        Filter only active periods.
+        """
         return self.get_queryset().filter_active()
 
     def filter_is_candidate_or_relatedstudent(self, user):
+        """
+        Filter only periods where the given ``user`` is one of:
+
+        - :class:`devilry.apps.core.models.RelatedUser`
+        - :class:`devilry.apps.core.models.Candidate`
+        """
         return self.get_queryset().filter_is_candidate_or_relatedstudent(user)
 
+    def annotate_with_user_qualifies_for_final_exam(self, user):
+        """
+        Annotate the queryset with the
+        :obj:`devilry.devilry_qualifiesforexam.models.QualifiesForFinalExam.qualifies`
+        value for the given ``user``.
+
+        Should be used with :meth:`.filter_is_candidate_or_relatedstudent`.
+        """
+        return self.get_queryset().annotate_with_user_qualifies_for_final_exam(user)
 
 
 class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
@@ -116,9 +165,9 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     parentnode = models.ForeignKey(Subject, related_name='periods',
                                    verbose_name='Subject')
     start_time = models.DateTimeField(
-            help_text='Start time and end time defines when the period is active.')
+        help_text='Start time and end time defines when the period is active.')
     end_time = models.DateTimeField(
-            help_text='Start time and end time defines when the period is active.')
+        help_text='Start time and end time defines when the period is active.')
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 
@@ -138,9 +187,10 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(admins=user_obj) | \
-                Q(parentnode__admins=user_obj) | \
-                Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return \
+            Q(admins=user_obj) | \
+            Q(parentnode__admins=user_obj) | \
+            Q(parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def clean(self, *args, **kwargs):
         """Validate the period.
@@ -159,7 +209,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         """ Returns true if the period is active
         """
         now = datetime.now()
-        return self.start_time < now and self.end_time > now
+        return self.start_time < now < self.end_time
 
     @classmethod
     def q_is_active(self):
@@ -178,7 +228,6 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     def q_is_examiner(cls, user_obj):
         return Q(assignments__assignmentgroups__examiners__user=user_obj)
 
-
     @classmethod
     def where_is_relatedstudent(cls, user_obj):
         return cls.objects.filter(cls.q_is_relatedstudent(user_obj)).distinct()
@@ -193,6 +242,12 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         """
         return self.assignments.count() == 0
 
+    @property
+    def subject(self):
+        """
+        More readable alternative to ``self.parentnode``.
+        """
+        return self.parentnode
 
 
 class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
@@ -205,9 +260,10 @@ class PeriodApplicationKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(period__admins=user_obj) | \
-                Q(period__parentnode__admins=user_obj) | \
-                Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return \
+            Q(period__admins=user_obj) | \
+            Q(period__parentnode__admins=user_obj) | \
+            Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def __unicode__(self):
         return '{0}: {1}'.format(self.period, super(AbstractApplicationKeyValue, self).__unicode__())

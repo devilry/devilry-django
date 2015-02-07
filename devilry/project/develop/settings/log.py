@@ -52,12 +52,6 @@ def create_logging_conf(logdir):
                 'formatter': 'verbose',
                 'class': 'logging.FileHandler',
                 'filename': join(logdir, 'exception.devilry.log')
-            },
-            'emailfile': {
-                'level': 'DEBUG', # Use DEBUG to log all messages, and ERROR to log missing email and SMTP errors
-                'formatter': 'verbose',
-                'class': 'logging.FileHandler',
-                'filename': join(logdir, 'email.devilry.log')
             }
         },
         'loggers': {
@@ -83,9 +77,7 @@ def create_logging_conf(logdir):
             },
             'devilry.utils.devilry_email': {
                 'handlers': ['allButExceptionTracebacks',
-                             'emailfile',
                              #'sentry',
-                             #'console', # Uncomment this if you want to see every email sent in the console, however it is probably more useful to use emailfile
                             ],
                 'level': 'DEBUG',
                 'propagate': False
@@ -95,9 +87,8 @@ def create_logging_conf(logdir):
                 'level': 'INFO',
                 'propagate': False
             },
-            'celery_haystack.tasks.CeleryHaystackSignalHandler': {
-                'handlers': ['allButExceptionTracebacks',
-                             'console'],
+            'devilry.devilry_search.tasks': {
+                'handlers': ['allButExceptionTracebacks'],
                 'level': 'INFO',
                 'propagate': False
             },

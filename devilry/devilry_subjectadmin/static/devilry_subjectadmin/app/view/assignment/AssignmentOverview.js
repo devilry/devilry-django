@@ -34,7 +34,7 @@ Ext.define('devilry_subjectadmin.view.assignment.AssignmentOverview' ,{
             items: [{
                 xtype: 'editsidebarcontainer',
                 width: 250,
-                margin: '6 0 0 0',
+                margin: '0 0 0 0',
                 padding: '0 10 0 10',
                 defaults: {
                     margin: '10 0 0 0'

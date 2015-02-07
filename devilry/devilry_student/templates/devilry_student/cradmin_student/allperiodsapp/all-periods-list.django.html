@@ -1,0 +1,15 @@
+{% extends "django_cradmin/viewhelpers/objecttable/objecttable.django.html" %}
+{% load i18n %}
+
+{% block title %}
+    {% trans "Browse all" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Browse all" %}
+    </h1>
+    <p>
+        {% trans "Please select a course." %}
+    </p>
+{% endblock pageheader-inner %}

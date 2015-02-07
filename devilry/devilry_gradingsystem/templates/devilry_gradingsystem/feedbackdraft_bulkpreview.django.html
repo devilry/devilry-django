@@ -12,21 +12,22 @@
 {% endblock breadcrumbtail %}
 
 {% block pagecontent %}
-<div class="container read-feedback-box">
-    {% include "devilry_examiner/readonly-feedback.django.html" with feedback=unsaved_staticfeedback %}
+    <div class="read-feedback-box">
+        {% include "devilry_examiner/readonly-feedback.django.html" with feedback=unsaved_staticfeedback %}
+    </div>
 
-    <hr>
-    <form method='post' class="pull-right">
-        <button type="submit" class="btn btn-success btn-lg" name="submit_publish">
-            {% trans "Publish" %}
-        </button>
-    </form>
-    <form method='post' action="{{ edit_draft_form_url }}">
-        {% crispy edit_draft_form %}        
-        <button type="submit" class="btn btn-default" name="submit_edit_draft">
-            <i class="fa fa-edit"></i>
-            {% trans "Edit draft" %}
-        </button>
-    </form>
-</div>
+    <div class="container-fluid django-cradmin-container-fluid-focus">
+        <form method='post' class="pull-right">
+            <button type="submit" class="btn btn-success btn-lg" name="submit_publish">
+                {% trans "Publish" %}
+            </button>
+        </form>
+        <form method='post' action="{{ edit_draft_form_url }}">
+            {% crispy edit_draft_form %}
+            <button type="submit" class="btn btn-default" name="submit_edit_draft">
+                <i class="fa fa-edit"></i>
+                {% trans "Edit draft" %}
+            </button>
+        </form>
+    </div>
 {% endblock pagecontent %}

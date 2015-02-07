@@ -8,14 +8,15 @@
 {% endblock title %}
 
 {% block body %}
-<div class="container">
-    <div class="page-header page-header-with-subheader">
+<div class="page-header page-header-with-subheader">
+    <div class="container-fluid">
         <h1>{% trans "Add deadline" %}</h1>
         <p class="subheader">
             {{ assignment.long_name }} &mdash; {{ assignment.parentnode.parentnode.long_name}}, {{ assignment.parentnode.long_name }}
         </p>
     </div>
-
+</div>
+<div class="container-fluid django-cradmin-container-fluid-focus">
     <span class="text-muted">{% trans "Add deadline for" %}:</span>
     <ul class="list-inline text-muted">
         {% for group in selected_groups %}

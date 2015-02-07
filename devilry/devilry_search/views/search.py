@@ -27,7 +27,6 @@ class SearchForm(forms.Form):
         )
 
 
-
 class SearchView(TemplateView):
     template_name = 'devilry_search/search.django.html'
 

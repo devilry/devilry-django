@@ -6,19 +6,15 @@
 {% block title %}{% trans "Examiner" %}{% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="page-header page-header-with-subheader">
+    <div class="page-header page-header-with-subheader page-header-with-bottom-margin">
+        <div class="container-fluid">
             <h1>{% trans "Examiner" %}</h1>
             <p class="subheader">
                 {% trans "Dashboard for the examiner role. You use this role to provide feedback to students." %}
             </p>
         </div>
-        <ol class="breadcrumb">
-            <li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
-            <li class="active">{% trans "Examiner" %}</li>
-        </ol>
     </div>
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-sm-9">
                 <div class="list-group active-assignment-listing">

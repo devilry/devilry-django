@@ -1,7 +1,5 @@
 # $ext_path: This should be the path of the Ext JS SDK relative to this file
-#$ext_path = "../../../../extjshelpers/static/extjshelpers/extjs"
-#$ext_path = "../../../../../devilry/devilry/apps/extjshelpers/static/extjshelpers/extjs"
-$ext_path = "../../../../../../../devenv/parts/omelette/extjs4/static/extjs4/"
+$ext_path = File.expand_path("~/.virtualenvs/devilry/lib/python2.7/site-packages/extjs4/static/extjs4/")
 
 this_dir = File.dirname(__FILE__)
 
@@ -24,4 +22,5 @@ output_style = :expanded
 $django_extjs4_images_dir = "../images/";
 
 # We need to load in the Ext4 themes folder, which includes all it's default styling, images, variables and mixins
-load File.join(File.dirname(__FILE__), $ext_path, 'resources', 'themes')
+#load File.join(File.dirname(__FILE__), $ext_path, 'resources', 'themes')
+load File.join($ext_path, 'resources', 'themes')

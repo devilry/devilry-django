@@ -49,7 +49,7 @@ class TestDeliveryListView(TestCase):
         response.render()
         selector = htmls.S(response.content)
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 2)
-        self.assertEquals(selector.count('.devilry-student-deliveriesapp-summarycolumn'), 2)
+        self.assertEquals(selector.count('.devilry-student-delivery-summarycolumn'), 2)
 
     def test_render_no_feedback(self):
         deadlinebuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
@@ -57,10 +57,10 @@ class TestDeliveryListView(TestCase):
         response = self._mock_get_request()
         response.render()
         selector = htmls.S(response.content)
-        self.assertFalse(selector.exists('.devilry-student-deliveriesapp-summarycolumn-feedback'))
-        self.assertTrue(selector.exists('.devilry-student-deliveriesapp-summarycolumn-no-feedback'))
+        self.assertFalse(selector.exists('.devilry-student-delivery-summarycolumn-feedback'))
+        self.assertTrue(selector.exists('.devilry-student-delivery-summarycolumn-no-feedback'))
         self.assertEquals(
-            selector.one('.devilry-student-deliveriesapp-summarycolumn-no-feedback').alltext_normalized,
+            selector.one('.devilry-student-delivery-summarycolumn-no-feedback').alltext_normalized,
             'No feedback')
 
     def test_render_has_feedback(self):
@@ -74,16 +74,16 @@ class TestDeliveryListView(TestCase):
         response = self._mock_get_request()
         response.render()
         selector = htmls.S(response.content)
-        self.assertFalse(selector.exists('.devilry-student-deliveriesapp-summarycolumn-no-feedback'))
+        self.assertFalse(selector.exists('.devilry-student-delivery-summarycolumn-no-feedback'))
 
-        self.assertTrue(selector.exists('.devilry-student-deliveriesapp-summarycolumn-feedback'))
-        self.assertTrue(selector.exists('.devilry-student-deliveriesapp-summarycolumn-feedback-grade'))
-        self.assertTrue(selector.exists('.devilry-student-deliveriesapp-summarycolumn-feedback-is_passing_grade'))
+        self.assertTrue(selector.exists('.devilry-student-delivery-summarycolumn-feedback'))
+        self.assertTrue(selector.exists('.devilry-student-delivery-summarycolumn-feedback-grade'))
+        self.assertTrue(selector.exists('.devilry-student-delivery-summarycolumn-feedback-is_passing_grade'))
         self.assertEquals(
-            selector.one('.devilry-student-deliveriesapp-summarycolumn-feedback-grade').alltext_normalized,
+            selector.one('.devilry-student-delivery-summarycolumn-feedback-grade').alltext_normalized,
             'Good')
         self.assertEquals(
-            selector.one('.devilry-student-deliveriesapp-summarycolumn-feedback-is_passing_grade').alltext_normalized,
+            selector.one('.devilry-student-delivery-summarycolumn-feedback-is_passing_grade').alltext_normalized,
             'passed')
 
 
@@ -374,6 +374,20 @@ class TestDeliveryDetailsView(TestCase):
             [element.alltext_normalized
              for element in selector.list('#devilry_student_group_deliverydetails_files a')],
             ['test1.txt', 'test2.txt'])
+
+    def test_delivery_metadata_file_urls(self):
+        self.groupbuilder.add_students(self.testuser)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=10)
+        filemeta = deliverybuilder.add_filemeta(filename='test1.txt', data='testdata').filemeta
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.count('#devilry_student_group_deliverydetails_files a'), 1)
+        self.assertEquals(
+            selector.one('#devilry_student_group_deliverydetails_files a')['href'],
+            reverse('devilry-delivery-file-download', kwargs={'filemetaid': filemeta.id}))
 
     def test_delivery_metadata_delivered_by(self):
         self.groupbuilder.add_students(self.testuser)

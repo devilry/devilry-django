@@ -5,28 +5,33 @@ from django_cradmin import crmenu
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_student.cradminextensions import studentcrinstance
-from devilry.devilry_student.cradmin_group import deliveriesapp
-# from devilry.devilry_student.cradmin_group import feedbacksapp
 from devilry.devilry_student.cradmin_group import overviewapp
+from devilry.devilry_student.cradmin_group import deliveriesapp
+from devilry.devilry_student.cradmin_group import projectgroupapp
 
 
 class Menu(crmenu.Menu):
     def build_menu(self):
         group = self.request.cradmin_role
         self.add_headeritem(
-            label=group.parentnode.parentnode.get_path(),
+            label=group.subject.long_name,
             url=reverse('devilry_student_period-assignments-INDEX', kwargs={
                 'roleid': group.parentnode.parentnode.id
             }),
-            icon="arrow-up")
+            icon="angle-up")
         self.add(
             label=_('Overview'), url=self.appindex_url('overview'),
-            icon="circle",
+            icon="info-circle",
             active=self.request.cradmin_app.appname == 'overview')
         self.add(
             label=_('Deliveries'), url=self.appindex_url('deliveries'),
-            icon="circle",
+            icon="th-list",
             active=self.request.cradmin_app.appname == 'deliveries')
+        if group.assignment.students_can_create_groups:
+            self.add(
+                label=_('Project group'), url=self.appindex_url('projectgroup'),
+                icon="users",
+                active=self.request.cradmin_app.appname == 'projectgroup')
 
 
 class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
@@ -38,7 +43,7 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     apps = [
         ('overview', overviewapp.App),
         ('deliveries', deliveriesapp.App),
-        # ('feedbacks', feedbacksapp.App),
+        ('projectgroup', projectgroupapp.App),
     ]
 
     def get_rolequeryset(self):

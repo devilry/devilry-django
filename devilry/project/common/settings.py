@@ -4,6 +4,8 @@
 # - See: https://docs.djangoproject.com/en/dev/ref/settings/
 #
 ########################################################################
+import os
+import devilry
 
 
 DEBUG = False
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     'extjs4',
     'haystack',
     'south',
+    # 'djcelery',
     # 'celery_haystack',
 
     'devilry.devilry_cradmin',
@@ -57,6 +60,7 @@ INSTALLED_APPS = [
     'devilry.devilry_authenticate',
     'devilry.devilry_send_email_to_students',
 
+    'devilry.devilry_help',
     'devilry.devilry_extjsextras',
     'devilry.devilry_theme',
     'devilry.devilry_theme2',
@@ -115,7 +119,7 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
     },
 }
-# HAYSTACK_SIGNAL_PROCESSOR = 'celery_haystack.signals.CelerySignalProcessor'
+HAYSTACK_SIGNAL_PROCESSOR = 'devilry.devilry_search.haystack_signal_processor.DevilryCelerySignalProcessor'
 
 
 ########################################################################
@@ -124,7 +128,8 @@ HAYSTACK_CONNECTIONS = {
 #
 ########################################################################
 # BROKER_URL = 'amqp://devilry:secret@localhost:5672/devilryhost'
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERY_TIMEZONE = 'Europe/Oslo'
+CELERY_ENABLE_UTC = True
 
 
 ########################################################################
@@ -197,6 +202,15 @@ DEVILRY_LACKING_PERMISSIONS_URL = None
 #: Url where users are directed when they want to know what to do if their personal info in Devilry is wrong.
 DEVILRY_WRONG_USERINFO_URL = None
 
+#: The URL of the official help pages for Devilry.
+DEVILRY_OFFICIAL_HELP_URL = 'http://devilry.org#help'
+
+#: Url where users can go to get documentation for Devilry that your organization provides.
+DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_URL = None
+
+#: Text for the DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_URL link.
+DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_TEXT = None
+
 
 #: Django apps that override the Devilry javascript translations (which is most
 #: of the Devilry user interface).
@@ -209,6 +223,13 @@ LANGUAGE_CODE = 'en'
 gettext_noop = lambda s: s
 LANGUAGES = [('en', gettext_noop('English')),
              ('nb', gettext_noop('Norwegian Bokmal'))]
+
+
+LOCALE_PATHS = [
+    os.path.join(
+        os.path.abspath(os.path.dirname(devilry.__file__)),
+        'locale')
+]
 
 
 #: Enable MathJax?

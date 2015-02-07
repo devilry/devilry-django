@@ -10,75 +10,54 @@
 /* line 13, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_dangerousactions .bootstrap.header h2, .devilry_subjectadmin_dangerousactions .bootstrap.header h3 {
   color: #900;
-  margin: 0;
+  margin: 0 0 4px 0;
   padding: 0;
-  font-size: 14px;
+  font-size: 16px;
   line-height: normal;
 }
 /* line 21, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_dangerousactions .body {
   border: 1px solid #ccc !important;
-  -moz-border-radius-topleft: 0;
-  -webkit-border-top-left-radius: 0;
-  -o-border-top-left-radius: 0;
-  -ms-border-top-left-radius: 0;
-  -khtml-border-top-left-radius: 0;
-  border-top-left-radius: 0;
-  -moz-border-radius-topright: 6px;
-  -webkit-border-top-right-radius: 6px;
-  -o-border-top-right-radius: 6px;
-  -ms-border-top-right-radius: 6px;
-  -khtml-border-top-right-radius: 6px;
-  border-top-right-radius: 6px;
-  -moz-border-radius-bottomleft: 6px;
-  -webkit-border-bottom-left-radius: 6px;
-  -o-border-bottom-left-radius: 6px;
-  -ms-border-bottom-left-radius: 6px;
-  -khtml-border-bottom-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  -moz-border-radius-bottomright: 6px;
-  -webkit-border-bottom-right-radius: 6px;
-  -o-border-bottom-right-radius: 6px;
-  -ms-border-bottom-right-radius: 6px;
-  -khtml-border-bottom-right-radius: 6px;
-  border-bottom-right-radius: 6px;
 }
 
-/* line 31, ../sass/devilry_subjectadmin.scss */
+/* line 27, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_allwhereisadminlist h3 {
   font-size: 18px;
   margin: 20px 0 0 0;
 }
-/* line 34, ../sass/devilry_subjectadmin.scss */
+/* line 30, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_allwhereisadminlist h3:first-child {
   margin-top: 0;
 }
 
-/* line 40, ../sass/devilry_subjectadmin.scss */
+/* line 36, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_editsidebarcontainer {
-  border: 1px dotted #ccc;
-  border-right: none;
-  -moz-border-radius: 6px 0 0 6px;
-  -webkit-border-radius: 6px 0 0 6px;
-  -o-border-radius: 6px 0 0 6px;
-  -ms-border-radius: 6px 0 0 6px;
-  -khtml-border-radius: 6px 0 0 6px;
-  border-radius: 6px 0 0 6px;
+  border: none;
+  background-color: #fff;
+}
+/* line 39, ../sass/devilry_subjectadmin.scss */
+.devilry_subjectadmin_editsidebarcontainer.devilry_subjectadmin_editsidebarcontainer_hover {
+  background-color: #fff;
+}
+/* line 42, ../sass/devilry_subjectadmin.scss */
+.devilry_subjectadmin_editsidebarcontainer h4 {
+  font-size: 16px;
 }
 /* line 45, ../sass/devilry_subjectadmin.scss */
-.devilry_subjectadmin_editsidebarcontainer h4 {
-  font-size: 14px;
-}
-/* line 48, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_editsidebarcontainer h5 {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
 }
 
-/* line 56, ../sass/devilry_subjectadmin.scss */
+/* line 53, ../sass/devilry_subjectadmin.scss */
 .devilry_subjectadmin_guidesystemview h3 {
   font-size: 18px;
   line-height: 24px;
+}
+
+/* line 60, ../sass/devilry_subjectadmin.scss */
+.devilry_listofperiods li.devilry_period {
+  margin-bottom: 10px;
 }
 
 /* line 2, ../sass/_managestudents.scss */

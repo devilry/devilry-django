@@ -9,16 +9,16 @@
 {% endblock title %}
 
 {% block pageheader-inner %}
-    {% include "devilry_student/cradmin_group/include/page-header.django.html" %}
-{#    <p id="devilry_student_add_delivery_deadline">#}
-{#        {% trans "Deadline" %}:#}
-{#        <span id="devilry_student_add_delivery_deadline_natural">#}
-{#            {{ group.last_deadline_datetime|naturaltime }}#}
-{#        </span>#}
-{#        <small id="devilry_student_add_delivery_deadline_exact">#}
-{#            ({{ group.last_deadline_datetime|date:"SHORT_DATETIME_FORMAT" }})#}
-{#        </small>#}
-{#    </p>#}
+    <h1>
+        {% trans "Add delivery" %}
+    </h1>
+    <p>
+        {% with group=request.cradmin_role  %}
+            {{ group.assignment.long_name }} -
+            {{ group.subject.long_name }} -
+            {{ group.period.long_name }}
+        {% endwith %}
+    </p>
 {% endblock pageheader-inner %}
 
 

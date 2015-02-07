@@ -10,16 +10,23 @@
 
 {% include "markup/mathjaxheader.django.html" %}
 
-<div class="alert alert-{{ feedback|feedback_to_bootstrapclass }} feedback_gradebox">
+
+<div class="container-fluid
+        feedback_gradebox
+        django-cradmin-container-fluid-focus
+        django-cradmin-container-fluid-focus-{{ feedback|feedback_to_bootstrapclass }}">
     <strong>{% trans "Grade" %}:</strong> <span class="feedback_grade">{{ feedback.grade }}</span>
     (<span class="feedback_is_passing_grade">{{ feedback.is_passing_grade|format_is_passing_grade }}</span>)
     {% block alertboxbutton %}{% endblock alertboxbutton %}
 </div>
 
 {% if feedback.rendered_view %}
-    <div class="feedback_rendered_view" id="feedback_rendered_view">{{ feedback.rendered_view|safe }}</div>    
+    <div class="container-fluid django-cradmin-container-fluid-focus">
+            <div class="devilry-feedback-rendered-view"
+                    id="devilry_examiner_feedback_rendered_view">
+                {{ feedback.rendered_view|safe }}</div>
+    </div>
 {% endif %}
-
 
 {% if DEVILRY_ENABLE_MATHJAX %}
 <script>

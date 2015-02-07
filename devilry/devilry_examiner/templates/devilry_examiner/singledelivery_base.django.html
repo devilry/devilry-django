@@ -28,8 +28,8 @@ valid_grading_system_setup
 {% endblock %}
 
 {% block body %}
-    <div class="container">
-        <div class="page-header page-header-with-subheader">
+    <div class="page-header page-header-with-subheader">
+        <div class="container-fluid">
             {% block headertop %}{% endblock headertop %}
             <h1>
                 {{ delivery.deadline.assignment_group.assignment.long_name }} &mdash; {{ delivery.deadline.assignment_group.long_displayname }}
@@ -44,8 +44,9 @@ valid_grading_system_setup
                 <span class="time_of_delivery">{{ delivery.time_of_delivery }}</span>
             </p>
         </div>
+    </div>
+    <div class="container-fluid django-cradmin-container-fluid-focus">
         <ol class="breadcrumb">
-            <li><a href="{% url 'devilry_frontpage' %}">{% trans "Home" %}</a></li>
             <li><a href="{% url 'devilry_examiner_dashboard' %}">{% trans "Examiner" %}</a></li>
             <li><a href="{% url 'devilry_examiner_allgroupsoverview' delivery.deadline.assignment_group.assignment.id %}">{{ delivery.deadline.assignment_group.assignment.get_path }}</a></li>
             <li><a href="{% url 'devilry_examiner_singlegroupoverview' delivery.deadline.assignment_group.id %}">{{ delivery.deadline.assignment_group.short_displayname }}</a></li>
@@ -53,7 +54,6 @@ valid_grading_system_setup
                 <li><a href="{% url 'devilry_examiner_singledeliveryview' delivery.id %}">#{{ delivery.number }}</a></li>
             {% endblock breadcrumbtail %}
         </ol>
-
 
         {% block alerts %}
             {% if not valid_grading_system_setup %}
@@ -111,13 +111,13 @@ valid_grading_system_setup
                             {% trans "Download files" %}
                         </a>
                         {% spaceless %}
-                            (<ul class="list-inline list-truly-inline list-inline-commaseparated">
+                            <ul>
                                 {% for filemeta in delivery.filemetas.all %}
                                     <li>
                                         <a href="{% url 'devilry-delivery-file-download' filemeta.id %}">{{ filemeta.filename }}</a>
                                     </li>
                                 {% endfor %}
-                            </ul>)
+                            </ul>
                         {% endspaceless %}
                     {% endif %}
                 </div>
@@ -126,5 +126,4 @@ valid_grading_system_setup
     </div>
 
     {% block pagecontent %}{% endblock pagecontent %}
-
 {% endblock %}

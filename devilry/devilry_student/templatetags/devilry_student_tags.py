@@ -23,17 +23,17 @@ def devilry_student_shortgrade(feedback):
     })
 
 
-@register.filter(name='formatted_status')
+@register.filter(name='devilry_humanize_groupstatus')
 @stringfilter
-def formatted_status(value):
-    if value == 'waiting-for-feedback':
+def devilry_humanize_groupstatus(status):
+    if status == 'waiting-for-feedback':
         return _("Waiting for feedback")
-    elif value == 'waiting-for-deliveries':
-        return _("Waiting for deliveries")
-    elif value == 'no-deadlines':
+    elif status == 'waiting-for-deliveries':
+        return _("Waiting for deliveries or for deadline to expire")
+    elif status == 'no-deadlines':
         return _("No deadlines")
-    elif value == 'corrected':
+    elif status == 'corrected':
         return _("Corrected")
-    elif value == 'closed-without-feedback':
+    elif status == 'closed-without-feedback':
         return _("Closed without feedback")
-    return value
+    return status

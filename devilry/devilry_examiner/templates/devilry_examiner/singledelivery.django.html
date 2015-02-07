@@ -21,14 +21,13 @@
 
 {% block pagecontent %}
     {% if delivery.last_feedback %}
-        <div class="container read-feedback-box">
+        <div class="read-feedback-box">
             {% include "devilry_examiner/readonly-feedback-with-editbutton.django.html" with feedback=delivery.last_feedback %}
         </div>
     {% else %}
-        <div class="container no-feedback-box">
-            <a href="?edit_feedback=true" class="btn btn-default btn">
-                <i class="fa fa-edit"></i>
-                {% trans "Write feedback" %}
+        <div class="container-fluid django-cradmin-container-fluid-focus django-cradmin-container-fluid-focus-info no-feedback-box">
+            <a href="?edit_feedback=true" class="pull-right">
+                <strong>{% trans "Write feedback" %}</strong>
             </a>
             {% trans "No feedback on this delivery." %}
         </div>

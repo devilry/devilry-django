@@ -5,14 +5,19 @@
 @import "brand";
 @import "searchform";
 @import "extjsbreadcrumb";
-@import "responsive";
 
 #devilry_header2 {
-	height: @header-height;
-	background-color: @header-bgcolor;
-	position: relative;
-//    box-shadow: 0 0px 7px rgb(30, 30, 30);
-    box-sizing: border-box;
-    font-family: @header-font-family;
-    z-index: 2000;
+  height: @header-height;
+  background-color: @header-bgcolor;
+  position: relative;
+  //    box-shadow: 0 0px 7px rgb(30, 30, 30);
+  box-sizing: border-box;
+  font-family: @header-font-family;
+  z-index: 2000;
+  font-size: @header-font-size;
+
+  a, button {
+    -webkit-tap-highlight-color: @header-tap-highlight-color;
+  }
+
 }
