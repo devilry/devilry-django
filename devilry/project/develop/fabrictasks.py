@@ -280,3 +280,15 @@ def makemessages(lanaguagecode):
         'makemessages '
         '--ignore "static*" '
         '-l {}'.format(lanaguagecode), working_directory='devilry')
+
+
+@task
+def makemessages_javascript(lanaguagecode):
+    _managepy(
+        'makemessages '
+        '-d djangojs '
+        '--ignore "app-all.js" '
+        '--ignore "all-classes.js" '
+        '--ignore "node_modules" '
+        '--ignore "bower_components" '
+        '-l {}'.format(lanaguagecode), working_directory='devilry')
