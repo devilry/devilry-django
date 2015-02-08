@@ -53,7 +53,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
     _onLoadNodeDetailsSuccess:function ( record ) {
         var path = record.get('path');
         var breadcrumb = [{
-            text: gettext('Nodeadmin'),
+            text: gettext('Administrator'),
             url: ''
         }];
         for (var i = 0; i < path.length-1; i++) {

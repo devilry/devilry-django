@@ -43,8 +43,8 @@
                 {% if user_is_nodeadmin or request.user.is_superuser %}
                     <li id="devilry_frontpage_roleselect_nodeadmin">
                         <a href="{% url 'devilry_nodeadmin' %}">
-                            <strong>{% trans "Nodeadmin" %}</strong>
-                            {% trans "Node administrators manage large numbers of courses, typically a faculty or a department." %}
+                            <strong>{% trans "Administrator" %}</strong>
+                            {% trans "Administrators manage large numbers of courses, typically a faculty or a department." %}
                         </a>
                     </li>
                 {% endif %}
