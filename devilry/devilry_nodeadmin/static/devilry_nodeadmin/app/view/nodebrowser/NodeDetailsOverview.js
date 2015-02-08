@@ -29,9 +29,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
             '</ul>',
             '<h2>', gettext( "Subjects" ), ' <small>', gettext( 'on this level' ), '</small></h2>',
             '<p class="muted"><small>',
-                interpolate(gettext('Follow these links to get access to all the details available to %(subject_term)s administrators. This includes the ability to extend deadlines, view detailed information about students and their feedback, and much more.'), {
-                    subject_term: gettext('subject')
-                }, true),
+                gettext('Follow these links to get access to all the details available to course managers. This includes the ability to extend deadlines, view detailed information about students and their feedback, and much more.'),
             '</small></p>',
             '<ul>',
                 '<tpl for="node.subjects">',

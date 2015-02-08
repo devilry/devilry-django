@@ -14,10 +14,7 @@ Ext.define('devilry_nodeadmin.view.dashboard.ToplevelNodeList', {
             '</tpl>',
         '</ul>',
         '<p class="muted">',
-            interpolate(gettext( 'These are only the nodes you control. Select an element to see the child levels, its %(subjects_term)s and %(periods_term)s.' ), {
-                subjects_term: gettext('subjects'),
-                periods_term: gettext('periods')
-             }, true),
+            gettext( 'These are only the nodes you control. Select an element to see the child levels, its courses and periods.' ),
         '</p>'
     ],
 
