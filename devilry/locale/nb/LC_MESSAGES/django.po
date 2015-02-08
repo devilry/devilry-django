@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-07 15:42+0100\n"
+"POT-Creation-Date: 2015-02-08 20:19+0100\n"
 "PO-Revision-Date: 2015-02-07 15:39+0100\n"
 "Last-Translator: Espen Angell Kristiansen <post@espenak.net>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1029,11 +1029,6 @@ msgstr "Bestått?"
 msgid "Failed"
 msgstr "ikke bestått"
 
-#: devilry_frontpage/views.py:19
-#, fuzzy
-msgid "Devilry - Frontpage"
-msgstr "Devilry - Student"
-
 #: devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:6
 #: devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:11
 #, fuzzy
@@ -1063,25 +1058,26 @@ msgstr "Ny innleveringsfrist er gitt"
 
 #: devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:38
 #: devilry_header/templates/devilry_header/header2include.django.html:80
-msgid "Courseadmin"
+msgid "Course manager"
 msgstr ""
 
 #: devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:39
 msgid ""
-"Course administrators manage courses, semesters and assignments where they "
-"have been explicitly registered as administrator."
+"Course managers manage courses, semesters and assignments where they have "
+"been explicitly registered as administrator."
 msgstr ""
 
 #: devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:46
 #: devilry_header/templates/devilry_header/header2include.django.html:83
+#: devilry_nodeadmin/templates/devilry_nodeadmin/app.django.html:5
 #, fuzzy
-msgid "Nodeadmin"
-msgstr "Node administrator"
+msgid "Administrator"
+msgstr "Administrator"
 
 #: devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:47
 msgid ""
-"Node administrators manage large numbers of courses, typically a faculty or "
-"a department."
+"Administrators manage large numbers of courses, typically a faculty or a "
+"department."
 msgstr ""
 
 #: devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:54
@@ -1693,11 +1689,6 @@ msgstr ""
 msgid "Visible to students?"
 msgstr ""
 
-#: devilry_nodeadmin/views.py:11
-#, fuzzy
-msgid "Devilry - Node administrator"
-msgstr "Devilry - Kursadministrator"
-
 #: devilry_qualifiesforexam/models.py:23
 msgid "Ready for export"
 msgstr "Klar for eksportering"
@@ -1903,7 +1894,7 @@ msgid "Overview"
 msgstr "Forhåndsvisning"
 
 #: devilry_student/cradmin_group/cradmin_group.py:27
-#: devilry_student/cradmin_group/deliveriesapp.py:61
+#: devilry_student/cradmin_group/deliveriesapp.py:65
 #: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_list.django.html:6
 #: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_list.django.html:13
 #, fuzzy
@@ -1916,17 +1907,17 @@ msgstr "Ingen innleveringer"
 msgid "Project group"
 msgstr "Prosjektgruppe"
 
-#: devilry_student/cradmin_group/deliveriesapp.py:115
+#: devilry_student/cradmin_group/deliveriesapp.py:119
 msgid "I want to add a delivery after the deadline has expired."
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:116
+#: devilry_student/cradmin_group/deliveriesapp.py:120
 msgid ""
 "Do you really want to add a delivery after the deadline? You normally need "
 "to have a valid reason when adding deadline after the deadline."
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:119
+#: devilry_student/cradmin_group/deliveriesapp.py:123
 #, fuzzy
 msgid ""
 "You must confirm that you want to add a delivery after the deadline has "
@@ -1935,21 +1926,21 @@ msgstr ""
 "Bekreft at du ønsker å lukke legge til en ikke-elektroniske innlevering på "
 "følgende grupper"
 
-#: devilry_student/cradmin_group/deliveriesapp.py:130
+#: devilry_student/cradmin_group/deliveriesapp.py:134
 msgid "Upload at least one file and click \"Add delivery\""
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:132
+#: devilry_student/cradmin_group/deliveriesapp.py:136
 msgid "Upload as many files as you like."
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:134
-#: devilry_student/cradmin_group/deliveriesapp.py:146
+#: devilry_student/cradmin_group/deliveriesapp.py:138
+#: devilry_student/cradmin_group/deliveriesapp.py:150
 #, fuzzy
 msgid "You have to add at least one file to make a delivery."
 msgstr "Du må velge minst en gruppe for å utføre bulkoperasjoner"
 
-#: devilry_student/cradmin_group/deliveriesapp.py:181
+#: devilry_student/cradmin_group/deliveriesapp.py:185
 #: devilry_student/cradmin_student/cradmin_student.py:15
 #: devilry_student/templates/devilry_student/cradmin_group/add_delivery.django.html:8
 #: devilry_student/templates/devilry_student/cradmin_group/add_delivery.django.html:13
@@ -1961,12 +1952,12 @@ msgstr "Du må velge minst en gruppe for å utføre bulkoperasjoner"
 msgid "Add delivery"
 msgstr "Legg til innleveringsfrist"
 
-#: devilry_student/cradmin_group/deliveriesapp.py:182
+#: devilry_student/cradmin_group/deliveriesapp.py:186
 #, fuzzy
 msgid "Uploading files"
 msgstr "Last ned filer"
 
-#: devilry_student/cradmin_group/deliveriesapp.py:194
+#: devilry_student/cradmin_group/deliveriesapp.py:198
 #, fuzzy
 msgid "Deadline has expired"
 msgstr "Håndtering av innleveringsfrister"
@@ -2027,23 +2018,6 @@ msgstr ""
 #: devilry_student/cradminextensions/columntypes.py:58
 msgid "False"
 msgstr ""
-
-#: devilry_student/rest/add_delivery.py:25
-#, python-brace-format
-msgid ""
-"Your active deadline, {deadline} has expired, and the administrators of "
-"{assignment} have configured HARD deadlines. This means that you can not add "
-"more deliveries to this assignment before an administrator have extended "
-"your deadline."
-msgstr ""
-"Din aktive innleveringsfrist, {deadline}, har gått ut, og administratorene "
-"av {assignment} har konfigurert HARDE innleveringsfrister. Det betyr at du "
-"ikke kan legge til flere innlevering på denne oppgaven før en administrator "
-"eller retter har gitt deg en ny innleveringsfrist."
-
-#: devilry_student/rest/add_delivery.py:176
-msgid "Filename must be unique"
-msgstr "Filnavnet må være unikt"
 
 #: devilry_student/templates/devilry_student/cradmin_group/add_delivery.django.html:29
 msgid ""
@@ -2209,10 +2183,6 @@ msgstr "Innlevering #%(number)s"
 #, fuzzy
 msgid "Waiting for deliveries or for deadline to expire"
 msgstr "Venter på innleveringer"
-
-#: devilry_student/views/extjsapp.py:9
-msgid "Devilry - Student"
-msgstr "Devilry - Student"
 
 #: devilry_subjectadmin/rest/auth.py:32 devilry_subjectadmin/rest/auth.py:42
 #: devilry_subjectadmin/rest/auth.py:52 devilry_subjectadmin/rest/auth.py:62
@@ -2449,13 +2419,43 @@ msgstr ""
 msgid "Enter a username."
 msgstr ""
 
-#: project/common/settings.py:222
+#: project/common/settings.py:224
 msgid "English"
 msgstr ""
 
-#: project/common/settings.py:223
+#: project/common/settings.py:225
 msgid "Norwegian Bokmal"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Devilry - Frontpage"
+#~ msgstr "Devilry - Student"
+
+#, fuzzy
+#~ msgid "Nodeadmin"
+#~ msgstr "Node administrator"
+
+#, fuzzy
+#~ msgid "Devilry - Node administrator"
+#~ msgstr "Devilry - Kursadministrator"
+
+#~ msgid ""
+#~ "Your active deadline, {deadline} has expired, and the administrators of "
+#~ "{assignment} have configured HARD deadlines. This means that you can not "
+#~ "add more deliveries to this assignment before an administrator have "
+#~ "extended your deadline."
+#~ msgstr ""
+#~ "Din aktive innleveringsfrist, {deadline}, har gått ut, og "
+#~ "administratorene av {assignment} har konfigurert HARDE "
+#~ "innleveringsfrister. Det betyr at du ikke kan legge til flere innlevering "
+#~ "på denne oppgaven før en administrator eller retter har gitt deg en ny "
+#~ "innleveringsfrist."
+
+#~ msgid "Filename must be unique"
+#~ msgstr "Filnavnet må være unikt"
+
+#~ msgid "Devilry - Student"
+#~ msgstr "Devilry - Student"
 
 #~ msgid "Devilry examiner"
 #~ msgstr "Devilry Retter"

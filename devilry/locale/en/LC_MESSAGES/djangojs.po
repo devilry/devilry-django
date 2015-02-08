@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-08 20:09+0100\n"
+"POT-Creation-Date: 2015-02-08 20:19+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -934,7 +934,7 @@ msgid "Failed to save language choice."
 msgstr ""
 
 #: devilry_nodeadmin/static/devilry_nodeadmin/app/controller/NodeBrowserController.js:56
-msgid "Nodeadmin"
+msgid "Administrator"
 msgstr ""
 
 #: devilry_nodeadmin/static/devilry_nodeadmin/app/view/aggregatedstudentview/AggregatedStudentInfoOverview.js:19
@@ -1307,7 +1307,7 @@ msgstr ""
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/controller/AllWhereIsAdmin.js:38
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/utils/BasenodeBreadcrumbMixin.js:11
-msgid "Courseadmin"
+msgid "Course manager"
 msgstr ""
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:390
