@@ -8,7 +8,7 @@ Ext.define('devilry_subjectadmin.utils.BasenodeBreadcrumbMixin', {
         var userInfoRecord = this.application.userInfoRecord;
         if(userInfoRecord.isSubjectPeriodOrAssignmentAdmin()) {
             return [{
-                text: gettext('Courseadmin'),
+                text: gettext('Course manager'),
                 url: '#'
             },{
                 text: gettext("All my courses"),
