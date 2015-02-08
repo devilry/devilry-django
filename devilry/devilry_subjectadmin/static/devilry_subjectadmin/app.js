@@ -294,9 +294,7 @@ if(Ext.isEmpty(querystring.routeTo)) {
         },
 
         allSubjects: function(routeInfo) {
-            this.breadcrumbs.set([], interpolate(gettext("All my %(subjects_term)s"), {
-                subjects_term: gettext('subjects')
-            }, true));
+            this.breadcrumbs.set([], gettext("All my courses"));
             this.setPrimaryContent({
                 xtype: 'subjectlistall'
             });
