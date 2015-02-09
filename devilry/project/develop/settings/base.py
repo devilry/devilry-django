@@ -131,17 +131,6 @@ PASSWORD_HASHERS = (
 
 
 ##################################################################################
-# Haystack (search)
-##################################################################################
-HAYSTACK_CONNECTIONS = {  # Whoosh
-    'default': {
-        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': join(developfilesdir, 'devilry_whoosh_index'),
-    },
-}
-
-
-##################################################################################
 # Make Devilry speak in typical university terms (semester instead of period, ...)
 ##################################################################################
 INSTALLED_APPS += ['devilry.devilry_university_translations']

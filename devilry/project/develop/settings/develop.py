@@ -31,6 +31,26 @@ if profiler_middleware:
 
 
 ##################################################################################
+# Haystack (search)
+##################################################################################
+# HAYSTACK_CONNECTIONS = {  # Whoosh
+#     'default': {
+#         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
+#         'PATH': join(developfilesdir, 'devilry_whoosh_index'),
+#     },
+# }
+
+HAYSTACK_CONNECTIONS = {  # Elastisearch
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://127.0.0.1:9200/',
+        'INDEX_NAME': 'haystack',
+    },
+}
+
+
+
+##################################################################################
 # Celery
 ##################################################################################
 CELERY_ALWAYS_EAGER = True

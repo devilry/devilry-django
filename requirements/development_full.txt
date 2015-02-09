@@ -6,13 +6,8 @@
 # - Should match the version in production.txt
 psycopg2==2.4.6
 
-# Solr search server - required to test search like it works in production
-# - Not needed for development (we use Whoosh by default)
-# - Should match the version in production.txt
-pysolr==2.1.0
-
-## Find newer versions of python packages
-#z3c.checkversions==0.4.1
-
 # Required to run selenium tests (mostly for testing deprecated UIs)
 selenium==2.44.0
+
+# Elastic search bindings
+elasticsearch==1.3.0
