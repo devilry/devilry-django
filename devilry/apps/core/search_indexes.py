@@ -2,7 +2,8 @@ from haystack import indexes
 from datetime import datetime
 
 from devilry.devilry_search.base import BaseIndex
-from . import models
+
+from devilry.apps.core import models
 
 
 class AdminsSearchIndex(BaseIndex):

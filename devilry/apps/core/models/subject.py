@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.db import models
@@ -10,7 +10,8 @@ from abstract_is_candidate import AbstractIsCandidate
 from custom_db_fields import ShortNameField, LongNameField
 from basenode import BaseNode
 from node import Node
-from model_utils import Etag, EtagMismatchException
+from model_utils import Etag
+
 
 class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
