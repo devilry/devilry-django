@@ -23,6 +23,7 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
                 gettext('For courses where you only have admin rights for selected assignments, those assignments will be listed. If you only have assignments in your list, you do not have the required rights to create new assignments.'),
             '</small></p>'
         ],
+        data: {}
     }, {
         itemId: 'period',
         tpl: [
@@ -30,8 +31,7 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
                 gettext('Click <em>Create new assignment</em>.'),
             '</p>'
         ],
-        data: {
-        }
+        data: {}
     }, {
         itemId: 'createnewassignment1',
         tpl: [
@@ -49,8 +49,7 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
                 gettext('If your students hand in deliveries on paper, choose Not using Devilry.'),
             '</p>'
         ],
-        data: {
-        }
+        data: {}
     }, {
         itemId: 'createnewassignment2',
         tpl: [
@@ -67,6 +66,7 @@ Ext.define('devilry_subjectadmin.view.guides.CreateNewAssignment', {
             '<p>',
                 gettext('This guide closes when you click Create new assignment. At the top of the next page, you will get a link to quickly create another assignment with the same settings that you used for this assignment.'),
             '</p>'
-        ]
+        ],
+        data: {}
     }]
 });
