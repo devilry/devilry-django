@@ -63,7 +63,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
             tpl: [
                 '<h4>{heading}</h4>',
                 '<p class="muted"><small>',
-                    gettext('Click your username in the header of the page, and see under the Help-heading.'),
+                    gettext('Click the question-mark button in the header.'),
                 '</small></p>'
             ],
             data: {
