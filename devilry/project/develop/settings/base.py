@@ -64,6 +64,7 @@ else:
 INSTALLED_APPS += [
     'seleniumhelpers',
     'djangosenchatools',
+    'django_dbdev',
     # 'raven.contrib.django.raven_compat', # Sentry client (Raven)
     'devilry.devilry_sandbox',
 
