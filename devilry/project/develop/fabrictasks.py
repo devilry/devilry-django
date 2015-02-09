@@ -33,8 +33,8 @@ def syncmigrate(djangoenv='develop'):
     """
     Run ``bin/django_dev.py syncmigrate -v0 --noinput``
     """
-    _managepy('syncdb -v0 --noinput')
-    _managepy('migrate -v0 --noinput')
+    _managepy('syncdb -v0 --noinput', djangoenv=djangoenv)
+    _managepy('migrate -v0 --noinput', djangoenv=djangoenv)
 
 @task
 def reset_db(djangoenv='develop'):
