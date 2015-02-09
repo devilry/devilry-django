@@ -1,11 +1,9 @@
-fabric==1.8.3
 pyyaml==3.10
 Markdown==2.3.1
 Pygments==1.5
 flup==1.0.2
 django-extjs4==1.1.4-extjs4.1.1
 gunicorn==0.14.6
-django-seleniumhelpers==1.1.1
 django-crispy-forms==1.4.0
 openpyxl==1.6.1
 django==1.6.5
@@ -14,7 +12,6 @@ django-simple-rest==1.4.1
 mimeparse==0.1.3
 django_errortemplates==1.0.1
 numpy==1.6.2
-whoosh==2.5.7
 amqp==1.4.6
 anyjson==0.3.3
 billiard==3.3.0.19
@@ -22,15 +19,12 @@ celery==3.1.17
 kombu==3.0.24
 python-dateutil==1.5
 pytz==2012j
-django-appconf==0.6
 django-celery-transactions==0.2.0
 six==1.2.0
 django-haystack==2.3.1
 httplib2==0.7.7
 South==0.8.2
-mock==1.0.1
 detektor==1.1.0-beta.011
-transifex-client==0.10
 djangorestframework==0.3.3
 
 django_cradmin==1.0.0-beta.018
