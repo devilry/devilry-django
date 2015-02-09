@@ -36,7 +36,7 @@ Ext.define('devilry_subjectadmin.view.dashboard.Dashboard' ,{
     }, {
         xtype: 'container',
         width: 250,
-        margin: '10 0 0 50',
+        margin: '0 0 0 50',
         border: false,
         layout: 'anchor',
         items: [{
