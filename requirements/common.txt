@@ -31,10 +31,10 @@ South==0.8.2
 mock==1.0.1
 detektor==1.1.0-beta.011
 transifex-client==0.10
+djangorestframework==0.3.3
+
 django_cradmin==1.0.0-beta.018
 #-e git://github.com/appressoas/django_cradmin.git#egg=django_cradmin
 
-
 # Local modules
--e thirdpartylibs/djangorestframework
 -e .
