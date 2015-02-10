@@ -16,10 +16,7 @@ from .log import create_logging_conf
 # generated files during development
 #
 #########################################################
-REPOROOT = dirname(dirname(dirname(dirname(dirname(abspath(__file__))))))
-if not exists(join(REPOROOT, 'manage.py')):
-    raise SystemExit('Could not find manage.py in REPOROOT.')
-developfilesdir = join(REPOROOT, 'developfiles')
+developfilesdir = 'devilry_developfiles'
 if not exists(developfilesdir):
     os.mkdir(developfilesdir)
 logdir = join(developfilesdir, 'log')
@@ -30,36 +27,16 @@ DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(developfilesdir, 'deliverystorehier')
 LOGGING = create_logging_conf(logdir)
 
 
-#########################################################
-#
-# Make it possible to select database engine using
-# the DEVDB environent variable. Example usage:
-#
-#    $ DEVDB=postgres python manage.py runserver
-#
-# We default to ``DEVDB=sqlite``.
-#
-#########################################################
-
-dbengine = os.environ.get('DEVDB', 'sqlite')
-if dbengine == 'sqlite':
-    DATABASES = {
-        "default": {
-            'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-            'NAME': join(developfilesdir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
-            'USER': '',             # Not used with sqlite3.
-            'PASSWORD': '',         # Not used with sqlite3.
-            'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
-            'PORT': '',             # Set to empty string for default. Not used with sqlite3.
-        }
+DATABASES = {
+    "default": {
+        'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': join(developfilesdir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
+        'USER': '',             # Not used with sqlite3.
+        'PASSWORD': '',         # Not used with sqlite3.
+        'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',             # Set to empty string for default. Not used with sqlite3.
     }
-elif dbengine == 'postgres':
-    from django_dbdev.backends.postgres import DBSETTINGS
-    DATABASES = {
-        'default': DBSETTINGS
-    }
-else:
-    raise ValueError('Invalid DEVDB: "{}". Use one of: "sqlite", "postgres".'.format(dbengine))
+}
 
 INSTALLED_APPS += [
     'seleniumhelpers',

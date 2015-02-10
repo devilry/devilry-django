@@ -18,7 +18,8 @@ Session.vim
 dbdev_tempdata/
 .sass-cache/
 
-/developfiles/
+/devilry_developfiles/
+/dist/
 
 .ipynb_checkpoints/
 *.ipynb
