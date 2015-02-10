@@ -63,27 +63,33 @@
                 </dd>
             {% endif %}
 
-            {% if delivery.delivered_by %}
-                <dt>{% trans "Delivered by" %}:</dt>
-                <dd id="devilry_student_group_deliverydetails_delivered_by">
-                    {{ delivery.delivered_by.student|devilry_user_displayname }}
+            {% if group.assignment.is_electronic %}
+                {% if delivery.delivered_by %}
+                    <dt id="devilry_student_group_deliverydetails_delivered_by_title">
+                        {% trans "Delivered by" %}:
+                    </dt>
+                    <dd id="devilry_student_group_deliverydetails_delivered_by">
+                        {{ delivery.delivered_by.student|devilry_user_displayname }}
+                    </dd>
+                {% endif %}
+
+                <dt id="devilry_student_group_deliverydetails_time_of_delivery_title">
+                    {% trans "Time of delivery" %}:
+                </dt>
+                <dd id="devilry_student_group_deliverydetails_time_of_delivery">
+                    {{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}
+                    {% if delivery.after_deadline %}
+                        <span class='label label-danger'>
+                            {% trans "After the deadline" %}
+                        </span>
+                    {% endif %}
+                </dd>
+
+                <dt id="devilry_student_group_deliverydetails_deadline_title">{% trans "Deadline" %}:</dt>
+                <dd id="devilry_student_group_deliverydetails_deadline">
+                    {{ delivery.deadline.deadline|date:"DATETIME_FORMAT" }}
                 </dd>
             {% endif %}
-
-            <dt>{% trans "Time of delivery" %}:</dt>
-            <dd id="devilry_student_group_deliverydetails_time_of_delivery">
-                {{ delivery.time_of_delivery|date:"DATETIME_FORMAT" }}
-                {% if delivery.after_deadline %}
-                    <span class='label label-danger'>
-                        {% trans "After the deadline" %}
-                    </span>
-                {% endif %}
-            </dd>
-
-            <dt>{% trans "Deadline" %}:</dt>
-            <dd id="devilry_student_group_deliverydetails_deadline">
-                {{ delivery.deadline.deadline|date:"DATETIME_FORMAT" }}
-            </dd>
 
             {% if delivery.last_feedback %}
                 {% if not group.assignment.anonymous %}

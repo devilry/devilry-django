@@ -11,7 +11,7 @@ import htmls
 import mock
 
 from devilry.devilry_student.cradmin_group import deliveriesapp
-from devilry.apps.core.models import Delivery, Assignment, AssignmentGroup, Candidate
+from devilry.apps.core.models import Delivery, Assignment, AssignmentGroup, Candidate, deliverytypes
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, PeriodBuilder
 
 
@@ -528,6 +528,40 @@ class TestDeliveryDetailsView(TestCase):
         self.assertEquals(
             selector.one('#devilry_student_group_deliverydetails_feedback_save_timestamp').alltext_normalized,
             'February 1, 2004, 12:30')
+
+    def test_delivery_metadata_no_time_of_delivery_or_deadline_or_deliveredby_for_nonelectronic(self):
+        self.assignmentbuilder.update(delivery_types=deliverytypes.NON_ELECTRONIC)
+        self.groupbuilder.add_students(self.testuser)
+        candidate = Candidate.objects.create(student=self.testuser, assignment_group=self.groupbuilder.group)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1, delivered_by=candidate)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_delivered_by_title'))
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_delivered_by'))
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_time_of_delivery_title'))
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_time_of_delivery'))
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_deadline_title'))
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_deadline'))
+
+    def test_delivery_metadata_has_time_of_delivery_and_deadline_and_deliveredby_for_electronic(self):
+        self.assignmentbuilder.update(delivery_types=deliverytypes.ELECTRONIC)
+        self.groupbuilder.add_students(self.testuser)
+        candidate = Candidate.objects.create(student=self.testuser, assignment_group=self.groupbuilder.group)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1, delivered_by=candidate)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('#devilry_student_group_deliverydetails_delivered_by_title'))
+        self.assertTrue(selector.exists('#devilry_student_group_deliverydetails_delivered_by'))
+        self.assertTrue(selector.exists('#devilry_student_group_deliverydetails_time_of_delivery_title'))
+        self.assertTrue(selector.exists('#devilry_student_group_deliverydetails_time_of_delivery'))
+        self.assertTrue(selector.exists('#devilry_student_group_deliverydetails_deadline_title'))
+        self.assertTrue(selector.exists('#devilry_student_group_deliverydetails_deadline'))
 
     def test_anonymous_sanity(self):
         self.assignmentbuilder.update(anonymous=True)
