@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
 from django.contrib.webdesign import lorem_ipsum
 
-from devilry.apps.core.models import StaticFeedback
+from devilry.apps.core.models import StaticFeedback, Deadline
 from devilry.apps.core.models import RelatedStudent
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_markup.parse_markdown import markdown_full
@@ -154,7 +154,7 @@ class Command(BaseCommand):
                 students=[user], examiners=[examiner])
             deadlinebuilder = groupbuilder\
                 .add_deadline(
-                    deadline=assignmentbuilder.assignment.first_deadline)
+                    deadline=Deadline.reduce_datetime_precision(assignmentbuilder.assignment.first_deadline))
 
             deliverybuilder = deadlinebuilder.add_delivery_x_hours_before_deadline(
                 hours=random.randint(1, 30))
@@ -299,7 +299,7 @@ class Command(BaseCommand):
                     examiner = random.choice(self.examiners)
                     week6\
                         .add_group(students=[user], examiners=[examiner])\
-                        .add_deadline(deadline=DateTimeBuilder.now().plus(days=7))
+                        .add_deadline(deadline=Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=7)))
             else:
                 week5 = self.build_random_pointassignmentdata(
                     periodbuilder=periodbuilder,
