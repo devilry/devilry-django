@@ -413,3 +413,12 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         Return ``True`` if this deadline is in the past.
         """
         return self.deadline < datetime.now()
+
+    def has_text(self):
+        """
+        Checks that the text is not ``None`` or an empty string.
+        """
+        if self.text is None:
+            return False
+        else:
+            return self.text.strip() != ''
