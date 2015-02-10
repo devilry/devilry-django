@@ -1,0 +1,40 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+{% load static %}
+{% load cradmin_tags %}
+{% load devilry_core_tags %}
+
+{% block title %}
+    {% trans "Contact examiner" %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>{% trans "Contact examiner" %}</h1>
+    <p>
+        {{ group.assignment.long_name }} -
+        {{ group.subject.long_name }} -
+        {{ group.period.long_name }}
+    </p>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    {% if examiners %}
+        <div id="devilry_student_group_contact_hasexaminers"
+                class="container-fluid django-cradmin-container-fluid-focus">
+            {% trans "The following people are responsible for giving you feedback on this assignment" %}:
+            <ul class="list-unstyled">
+                {% for examiner in examiners %}
+                    <li>
+                        <strong>{{ examiner.user|devilry_user_displayname }}</strong>
+                        &lt;<a href="mailto:{{ examiner.user.email }}?subject={{ group.assignment }}%20-%20{{ group.long_displayname|iriencode }}">{{ examiner.user.email }}</a>&gt;
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <div id="devilry_student_group_contact_noexaminers"
+                class="container-fluid django-cradmin-container-fluid-focus django-cradmin-container-fluid-focus-warning">
+            {% trans "Nobody is registered as responsible for giving you feedback for this assignment at this time." %}
+        </div>
+    {% endif %}
+{% endblock content %}

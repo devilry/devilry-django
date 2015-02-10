@@ -8,6 +8,7 @@ from devilry.devilry_student.cradminextensions import studentcrinstance
 from devilry.devilry_student.cradmin_group import overviewapp
 from devilry.devilry_student.cradmin_group import deliveriesapp
 from devilry.devilry_student.cradmin_group import projectgroupapp
+from devilry.devilry_student.cradmin_group import contactapp
 
 
 class Menu(crmenu.Menu):
@@ -27,6 +28,13 @@ class Menu(crmenu.Menu):
             label=_('Deliveries'), url=self.appindex_url('deliveries'),
             icon="th-list",
             active=self.request.cradmin_app.appname == 'deliveries')
+
+        if not group.assignment.anonymous:
+            self.add(
+                label=_('Contact examiner'), url=self.appindex_url('contact'),
+                icon="envelope",
+                active=self.request.cradmin_app.appname == 'contact')
+
         if group.assignment.students_can_create_groups:
             self.add(
                 label=_('Project group'), url=self.appindex_url('projectgroup'),
@@ -44,6 +52,7 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
         ('overview', overviewapp.App),
         ('deliveries', deliveriesapp.App),
         ('projectgroup', projectgroupapp.App),
+        ('contact', contactapp.App),
     ]
 
     def get_rolequeryset(self):
