@@ -85,15 +85,19 @@ Table of contents
     sourceorganized
     buildout
     testsuite
+    mock
     devilry.project.develop.teshelpers.corebuilder
     testhelper
     extend_devilry
     create_app
     plugins
+    celery
 
     devilry_subjectadmin
     devilry_qualifiesforexam
+    devilry_gradingsystem
     devilry_search
+    devilry_theme
 
     devilry.utils
 

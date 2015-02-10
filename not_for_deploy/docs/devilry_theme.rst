@@ -1,6 +1,10 @@
-###############################################
-:mod:`devilry_theme` --- The Devilry theme
-###############################################
+##################################################
+:mod:`devilry.devilry_theme` --- The Devilry theme
+##################################################
+
+.. warning::
+
+    The ``devilry.devilry_theme`` app is deprecated. Use ``devilry.devilry_theme2``.
 
 
 **********
