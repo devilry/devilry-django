@@ -80,7 +80,6 @@ INSTALLED_APPS = [
     'devilry.devilry_qualifiesforexam_approved',
     'devilry.devilry_qualifiesforexam_points',
     'devilry.devilry_qualifiesforexam_select',
-    'devilry.devilry_mathjax',
     'devilry.devilry_examiner',
     'devilry.devilry_gradingsystem',
     'devilry.devilry_gradingsystemplugin_points',
