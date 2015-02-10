@@ -131,7 +131,7 @@ UserBuilder
 
         :param username: The username of the new user.
         :param full_name: Optional full_name. Defaults to ``None``.
-        :param email: Optional email. Defaults to ``<username>@example.com.
+        :param email: Optional email. Defaults to ``<username>@example.com``.
 
     .. py:method:: update(**attributes)
 
