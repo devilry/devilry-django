@@ -148,7 +148,7 @@ DEVILRY_DEFAULT_GRADEEDITOR = 'approved'
 
 DEVILRY_STATIC_URL = '/static'  # Must not end in / (this means that '' is the server root)
 DEVILRY_EXTJS_URL = DEVILRY_STATIC_URL + '/extjs4'
-DEVILRY_MATHJAX_URL = '{}/devilry_mathjax/MathJax.js'.format(DEVILRY_STATIC_URL)
+DEVILRY_MATHJAX_URL = 'https://cdn.mathjax.org/mathjax/latest/MathJax.js'
 DEVILRY_LOGOUT_URL = '/authenticate/logout'
 DEVILRY_HELP_URL = 'https://devilry-userdoc.readthedocs.org'
 
