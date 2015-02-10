@@ -54,12 +54,14 @@
     <div id="devilry_student_group_deliverydetails_metadata"
             class="container-fluid {% if not delivery.last_feedback %}django-cradmin-container-fluid-focus{% endif %}">
         <dl>
-            <dt>{% trans "Files" %}:</dt>
-            <dd id="devilry_student_group_deliverydetails_files">
-                {% for filemeta in delivery.filemetas.all %}
-                    <a href="{% url 'devilry-delivery-file-download' filemeta.id %}">{{ filemeta.filename }}</a>{% if not forloop.last %},{% endif %}
-                {% endfor %}
-            </dd>
+            {% if filemetas %}
+                <dt id="devilry_student_group_deliverydetails_files_title">{% trans "Files" %}:</dt>
+                <dd id="devilry_student_group_deliverydetails_files">
+                    {% for filemeta in filemetas %}
+                        <a href="{% url 'devilry-delivery-file-download' filemeta.id %}">{{ filemeta.filename }}</a>{% if not forloop.last %},{% endif %}
+                    {% endfor %}
+                </dd>
+            {% endif %}
 
             {% if delivery.delivered_by %}
                 <dt>{% trans "Delivered by" %}:</dt>

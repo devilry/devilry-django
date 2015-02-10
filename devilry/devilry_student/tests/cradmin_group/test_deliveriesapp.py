@@ -372,6 +372,17 @@ class TestDeliveryDetailsView(TestCase):
             viewname='deliverydetails',
             kwargs={'pk': deliveryid}))
 
+    def test_delivery_metadata_no_files(self):
+        self.groupbuilder.add_students(self.testuser)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=10)
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_files_title'))
+        self.assertFalse(selector.exists('#devilry_student_group_deliverydetails_files'))
+
     def test_delivery_metadata_files(self):
         self.groupbuilder.add_students(self.testuser)
         deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
@@ -382,6 +393,8 @@ class TestDeliveryDetailsView(TestCase):
         response = self._get_as('testuser', deliverybuilder.delivery.id)
         response.render()
         selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('#devilry_student_group_deliverydetails_files_title'))
+        self.assertTrue(selector.exists('#devilry_student_group_deliverydetails_files'))
         self.assertEquals(selector.count('#devilry_student_group_deliverydetails_files a'), 2)
         self.assertEquals(
             [element.alltext_normalized

@@ -77,6 +77,11 @@ class DeliveryDetailsView(QuerySetForRoleMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(DeliveryDetailsView, self).get_context_data(**kwargs)
         context['group'] = self.request.cradmin_role
+
+        # Fetch filemetas so we do not need to query an extra time to
+        # check if we have any filemetas
+        context['filemetas'] = list(context['delivery'].filemetas.all())
+
         return context
 
 
