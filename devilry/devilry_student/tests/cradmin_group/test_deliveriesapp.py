@@ -162,6 +162,40 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(response['Location'], '/appindex_url_called')
         request.cradmin_instance.appindex_url.assert_called_with('deliveries')
 
+    def test_get_no_deadlinemessage(self):
+        self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        self.groupbuilder.add_students(self.testuser)
+        request = self._mock_get_request()
+        response = deliveriesapp.AddDeliveryView.as_view()(request)
+        self.assertEquals(response.status_code, 200)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('#devilry_student_add_delivery_deadlinemessage'))
+
+    def test_get_empty_deadlinemessage(self):
+        self.groupbuilder.add_deadline_in_x_weeks(weeks=1, text='    ')
+        self.groupbuilder.add_students(self.testuser)
+        request = self._mock_get_request()
+        response = deliveriesapp.AddDeliveryView.as_view()(request)
+        self.assertEquals(response.status_code, 200)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('#devilry_student_add_delivery_deadlinemessage'))
+
+    def test_get_has_deadlinemessage(self):
+        self.groupbuilder.add_deadline_in_x_weeks(
+            weeks=1, text='A testmessage')
+        self.groupbuilder.add_students(self.testuser)
+        request = self._mock_get_request()
+        response = deliveriesapp.AddDeliveryView.as_view()(request)
+        self.assertEquals(response.status_code, 200)
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('#devilry_student_add_delivery_deadlinemessage'))
+        self.assertEquals(
+            selector.one('#devilry_student_add_delivery_deadlinemessage').text,
+            'A testmessage')
+
     def _mock_post_request(self, data):
         request = self.factory.post('/test', data)
         request.user = self.testuser

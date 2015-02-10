@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.dispatch import Signal
+from django.shortcuts import get_object_or_404
 
 from django.template import defaultfilters
 from django.views.generic import DetailView
@@ -15,7 +16,7 @@ from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import Temporar
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.widgets import BulkFileUploadWidget
 from django_cradmin.viewhelpers import formbase
 
-from devilry.apps.core.models import Candidate, Delivery, FileMeta
+from devilry.apps.core.models import Candidate, Delivery, FileMeta, Deadline
 from devilry.devilry_student.cradmin_group.utils import check_if_last_deadline_has_expired
 from devilry.devilry_student.cradminextensions.columntypes import DeliverySummaryColumn
 
@@ -181,6 +182,7 @@ class AddDeliveryView(formbase.FormView):
     def get_context_data(self, **kwargs):
         context = super(AddDeliveryView, self).get_context_data(**kwargs)
         context['deadline_has_expired'] = self.deadline_has_expired
+        context['last_deadline'] = get_object_or_404(Deadline, pk=self.group.last_deadline_pk)
         context['group'] = self.group
         return context
 
