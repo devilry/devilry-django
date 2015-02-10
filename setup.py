@@ -11,8 +11,11 @@ setup(
     version=version,
     url='http://devilry.org',
     license='BSD',
+    zip_safe=False,
+    author=(u'Tor Johansen, Espen Angell Kristiansen, Bendik Opstad, Vegard Angell, '
+            u'Magne Westlie, Ilya Kostolomov, Christian Tryti, Rebekka M\u00F8rken'),
+    include_package_data=True,
     description="A system for handling electronic deliveries.",
-    author='The Devilry developers',
     packages=find_packages(),
     install_requires=[
         'setuptools',
