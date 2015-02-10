@@ -5,6 +5,7 @@ recursive-include devilry *.js
 recursive-include devilry *.css
 recursive-include devilry *.html
 recursive-include devilry *.png
+recursive-include devilry *.json
 prune devilry/devilry_gradingsystem/static/devilry_gradingsystem/node_modules
 prune devilry/devilry_header/static/devilry_header/node_modules
 prune devilry/devilry_subjectadmin/static/devilry_subjectadmin/node_modules
