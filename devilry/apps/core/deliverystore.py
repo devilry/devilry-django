@@ -30,11 +30,11 @@ def load_deliverystore_backend():
     return cls()
 
 
-
-
 class FileNotFoundError(Exception):
-    """ Exception to be raised when the remove method of a DeliveryStore
-    does not find the given file. """
+    """
+    Exception to be raised when the remove method of a DeliveryStore
+    does not find the given file.
+    """
     def __init__(self, filemeta_obj):
         self.filemeta_obj = filemeta_obj
 
@@ -50,12 +50,15 @@ class MemFile(StringIO):
 
 
 class DeliveryStoreInterface(object):
-    """ The interface all deliverystores must implement. All methods raise
-    ``NotImplementedError``. """
+    """
+    The interface all deliverystores must implement. All methods raise
+    ``NotImplementedError``.
+    """
 
     # TODO: read_open when file does not exist?
     def read_open(self, filemeta_obj):
-        """ Return a file-like object opened for reading.
+        """
+        Return a file-like object opened for reading.
         
         The returned object must have ``close()`` and ``read()`` methods
         as defined by the documentation of the standard python file-class.
@@ -65,7 +68,8 @@ class DeliveryStoreInterface(object):
         raise NotImplementedError()
 
     def write_open(self, filemeta_obj):
-        """ Return a file-like object opened for writing.
+        """
+        Return a file-like object opened for writing.
         
         The returned object must have ``close()`` and ``write()`` methods as
         defined by the documentation of the standard python file-class.
@@ -75,7 +79,8 @@ class DeliveryStoreInterface(object):
         raise NotImplementedError()
 
     def remove(self, filemeta_obj):
-        """ Remove the file.
+        """
+        Remove the file.
 
         Note that this method is called *before* the filemeta_obj is
         removed. This means that the file might be removed, and the removal
@@ -91,7 +96,8 @@ class DeliveryStoreInterface(object):
         raise NotImplementedError()
 
     def exists(self, filemeta_obj):
-        """ Return ``True`` if the file exists, ``False`` if not.
+        """
+        Return ``True`` if the file exists, ``False`` if not.
         
         :param filemeta_obj: A :class:`devilry.core.models.FileMeta`-object.
         """
@@ -114,7 +120,8 @@ class DeliveryStoreInterface(object):
 
 
 class FsDeliveryStore(DeliveryStoreInterface):
-    """ Filesystem-based DeliveryStore suitable for production use.
+    """
+    Filesystem-based DeliveryStore suitable for production use.
 
     It stores files in a filesystem hierarcy with one directory for each
     Delivery, with the delivery-id as name. In each delivery-directory, the
@@ -122,8 +129,7 @@ class FsDeliveryStore(DeliveryStoreInterface):
     """
     def __init__(self, root=None):
         """
-        :param root: The root-directory where files are stored. Defaults to
-            the value of the ``DELIVERY_STORE_ROOT``-setting.
+        :param root: The root-directory where files are stored. Defaults to the value of the ``DELIVERY_STORE_ROOT``-setting.
         """
         self.root = root or settings.DELIVERY_STORE_ROOT
 
@@ -167,7 +173,8 @@ class FsDeliveryStore(DeliveryStoreInterface):
 
 
 class FsHierDeliveryStore(FsDeliveryStore):
-    """ Filesystem-based DeliveryStore suitable for production use with huge
+    """
+    Filesystem-based DeliveryStore suitable for production use with huge
     amounts of deliveries.
     """
     def __init__(self, root=None, interval=None):
@@ -208,7 +215,8 @@ class FsHierDeliveryStore(FsDeliveryStore):
 
 
 class MemoryDeliveryStore(DeliveryStoreInterface):
-    """ Memory-base DeliveryStore ONLY FOR TESTING.
+    """
+    Memory-base DeliveryStore ONLY FOR TESTING.
 
     This is only for testing, and it does not handle parallel access.
     Suitable for unittesting.

@@ -1,8 +1,8 @@
 .. _devilry.apps.core.deliverystore:
 
-================================================================
+========================================================
 :mod:`devilry.apps.core.deliverystore` --- DeliveryStore
-================================================================
+========================================================
 
 .. currentmodule:: devilry.apps.core.deliverystore
 
@@ -14,7 +14,7 @@ technical terms, it is a place where each file related to a
 
 
 Selecting a DeliveryStore
-###########################################################
+#########################
 
 Devilry on comes with one DeliveryStore ready for production use,
 :class:`FsDeliveryStore`. To enable a DeliveryStore, you have to set the
@@ -30,12 +30,12 @@ store your files in the ``DELIVERY_STORE_ROOT``-setting like this::
 
 
 Creating your own DeliveryStore
-###########################################################
+###############################
 
 To create your own DeliveryStore you have to implement
 :class:`DeliveryStoreInterface`. A good example is :class:`FsDeliveryStore`:
 
-    .. literalinclude:: /../src/devilry/devilry/apps/core/deliverystore.py
+    .. literalinclude:: /../../devilry/apps/core/deliverystore.py
         :pyobject: FsDeliveryStore
 
 
@@ -47,7 +47,7 @@ We provide a mixing-class,
 when writing unit-tests for your DeliveryStore. Here is how we test
 :class:`FsDeliveryStore`:
 
-    .. literalinclude:: /../src/devilry/devilry/apps/core/tests/fsdeliverystore.py
+    .. literalinclude:: /../../devilry/apps/core/tests/test_fsdeliverystore.py
         :pyobject: TestFsDeliveryStore
 
 .. currentmodule:: devilry.apps.core.testhelpers
@@ -58,7 +58,7 @@ when writing unit-tests for your DeliveryStore. Here is how we test
 
 
 Setting the DeliveryStore manually - for tests
-###########################################################
+##############################################
 
 You might need to set the DeliveryStore manually if you need to handle
 deliveries in your own tests. Just set ``devilry.apps.core.FileMeta.deliveryStore``
@@ -78,7 +78,7 @@ like this::
 
 
 The recommended production deliverystore
-#######################################################
+########################################
 
 The recommended DeliveryStore is :class:`devilry.apps.core.deliverystore.FsHierDeliveryStore`.
 
@@ -137,7 +137,7 @@ For ``interval_size`` of ``1000``, this will use the following hierarchy::
 
 
 API
-###########################################################
+###
 
 .. automodule:: devilry.apps.core.deliverystore
     :members: F
