@@ -103,7 +103,6 @@ Table of contents
     devilry_qualifiesforexam
     devilry_search
 
-    apps.gradeeditors
     devilry.utils
 
     readthedocs

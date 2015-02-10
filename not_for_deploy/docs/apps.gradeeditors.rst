@@ -74,7 +74,7 @@ First of all, we need to register the grade editor with :attr:`devilry.apps.grad
 To make the plugin register itself when the server starts, we put the registry code in
 ``devilry_plugin.py`` (see :ref:`plugins`):
 
-.. literalinclude:: /../src/devilry/devilry/apps/asminimalaspossible_gradeeditor/devilry_plugin.py
+.. literalinclude:: /../../devilry/apps/asminimalaspossible_gradeeditor/devilry_plugin.py
 
 
 devilry_plugin.AsMinimalAsPossible code explained
