@@ -1,6 +1,6 @@
-======================================================================
-Devilry developer documentation overview
-======================================================================
+===============================
+Devilry developer documentation
+===============================
 
 
 .. note::
@@ -9,14 +9,13 @@ Devilry developer documentation overview
     and https://github.com/devilry/devilry-django for the code.
 
 
-#######################################################################
+####################################################
 Common topics (see Table of contents for all topics)
-#######################################################################
+####################################################
 
 
 Core
-----------------------------------------------------------------------
-
+----
 
 .. module:: devilry.apps.core
 
@@ -39,13 +38,13 @@ Essential information for new developers
 
 
 How to document Devilry
----------------------------------------------------------------------
+-----------------------
 * `How to write API documentation - wiki page <https://github.com/devilry/devilry-django/wiki/How-to-write-API-documentation>`_
 * :ref:`readthedocs` --- If you need to debug build errors from readthedocs.org.
 
 
 Extending Devilry
-----------------------------------------------------------------------
+-----------------
 
 * :doc:`extend_devilry`
 * **Plugins:** :ref:`plugins`, :doc:`Grading system plugins <devilry_gradingsystem>`,
@@ -53,17 +52,9 @@ Extending Devilry
 * **Apps**: Read the `Django docs <https://www.djangoproject.com/>`_.
 
 
-RESTful API
-----------------------------------------------------------------------
-
-* **Old rest APIs**: See the old docs: http://devilry.org/devilry-django/dev/.
-  These are deprecated and will be remove soon.
-* **New rest APIs**: We are missing a listing of the URLs of all our new APIs,
-  so please contact us (see http://devilry.org) if you need help finding them.
-
 
 Apps
-----------------------------------------------------------------------
+----
 
 * :ref:`devilry_subjectadmin`
 * :doc:`devilry_qualifiesforexam`
@@ -72,16 +63,17 @@ Apps
 .. note:: The apps listing is incomplete.
 
 
-#######################################################################
+########
 Releases
-#######################################################################
+########
 
 * :ref:`releasenoteslisting`
 
 
-#######################################################################
+#################
 Table of contents
-#######################################################################
+#################
+
 .. toctree::
     :maxdepth: 2
 
@@ -115,9 +107,9 @@ Table of contents
 
 
 
-#######################################################################
+##################
 Indices and tables
-#######################################################################
+##################
 
 * :ref:`genindex`
 * :ref:`modindex`
