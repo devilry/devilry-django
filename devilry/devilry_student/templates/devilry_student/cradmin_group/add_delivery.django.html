@@ -31,9 +31,11 @@
         </div>
     {% else %}
         {% if last_deadline.has_text %}
-            {# WARNING: Do not add any whitespace within this tag - it is styled with white-space: pre-wrap #}
-            <div class="container-fluid django-cradmin-container-fluid-focus django-cradmin-container-fluid-focus-info"
-                    id="devilry_student_add_delivery_deadlinemessage">{{ last_deadline.text }}</div>
+            <div id="devilry_student_add_delivery_deadlinemessage_wrapper"
+                    class="container-fluid django-cradmin-container-fluid-focus django-cradmin-container-fluid-focus-info">
+                {# WARNING: Do not add any whitespace within this tag - it is styled with white-space: pre-wrap #}
+                <div id="devilry_student_add_delivery_deadlinemessage">{{ last_deadline.text }}</div>
+            </div>
         {% endif %}
         {{ block.super }}
     {% endif %}

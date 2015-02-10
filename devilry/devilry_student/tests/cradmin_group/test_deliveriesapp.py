@@ -170,7 +170,7 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(response.status_code, 200)
         response.render()
         selector = htmls.S(response.content)
-        self.assertFalse(selector.exists('#devilry_student_add_delivery_deadlinemessage'))
+        self.assertFalse(selector.exists('#devilry_student_add_delivery_deadlinemessage_wrapper'))
 
     def test_get_empty_deadlinemessage(self):
         self.groupbuilder.add_deadline_in_x_weeks(weeks=1, text='    ')
@@ -180,7 +180,7 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(response.status_code, 200)
         response.render()
         selector = htmls.S(response.content)
-        self.assertFalse(selector.exists('#devilry_student_add_delivery_deadlinemessage'))
+        self.assertFalse(selector.exists('#devilry_student_add_delivery_deadlinemessage_wrapper'))
 
     def test_get_has_deadlinemessage(self):
         self.groupbuilder.add_deadline_in_x_weeks(
@@ -191,7 +191,7 @@ class TestAddDeliveryView(TestCase):
         self.assertEquals(response.status_code, 200)
         response.render()
         selector = htmls.S(response.content)
-        self.assertTrue(selector.exists('#devilry_student_add_delivery_deadlinemessage'))
+        self.assertTrue(selector.exists('#devilry_student_add_delivery_deadlinemessage_wrapper'))
         self.assertEquals(
             selector.one('#devilry_student_add_delivery_deadlinemessage').text,
             'A testmessage')
