@@ -2,13 +2,10 @@
 Sane default logging setup.
 """
 
-from os.path import join
-
-
 def create_logging_config(mail_admins=True,
                           mail_admins_level='ERROR',
                           dangerous_actions_loglevel='INFO',
-                          django_loglevel='ERROR',
+                          django_loglevel='INFO',
                           request_loglevel='ERROR'):
     """
     Returns a logging config that can be used for ``settings.LOGGING``.
