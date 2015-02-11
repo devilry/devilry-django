@@ -47,5 +47,6 @@ setup(
         'detektor==1.1.0-beta.011',
         'djangorestframework==0.3.3',
         'django_cradmin==1.0.0-beta.018',
+        'dj-static'
     ]
 )
