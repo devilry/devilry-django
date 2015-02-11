@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-08 20:17+0100\n"
+"POT-Creation-Date: 2015-02-11 15:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,7 +21,7 @@ msgstr ""
 msgid "Admins"
 msgstr ""
 
-#: apps/core/admin.py:32 apps/core/models/basenode.py:52
+#: apps/core/admin.py:32 apps/core/models/basenode.py:53
 msgid "Path"
 msgstr ""
 
@@ -180,7 +180,7 @@ msgstr ""
 msgid "Waiting for something"
 msgstr ""
 
-#: apps/core/models/basenode.py:61
+#: apps/core/models/basenode.py:62
 msgid "Administrators"
 msgstr ""
 
@@ -299,7 +299,7 @@ msgid ""
 "map."
 msgstr ""
 
-#: apps/core/models/subject.py:48
+#: apps/core/models/subject.py:49
 #: devilry_student/cradmin_student/allperiodsapp.py:37
 #: devilry_student/cradmin_student/recentdeliveriesapp.py:35
 #: devilry_student/cradmin_student/recentdeliveriesapp.py:55
@@ -308,7 +308,7 @@ msgstr ""
 msgid "Course"
 msgstr ""
 
-#: apps/core/models/subject.py:49
+#: apps/core/models/subject.py:50
 msgid "Courses"
 msgstr ""
 
@@ -823,7 +823,7 @@ msgstr ""
 #: devilry_examiner/views/add_deadline.py:40
 #: devilry_student/cradmin_period/assignmentsapp.py:35
 #: devilry_student/cradmin_student/waitingfordeliveriesapp.py:80
-#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:81
+#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:88
 msgid "Deadline"
 msgstr ""
 
@@ -961,7 +961,7 @@ msgstr ""
 
 #: devilry_frontpage/templates/devilry_frontpage/frontpage.django.html:46
 #: devilry_header/templates/devilry_header/header2include.django.html:83
-#: devilry_nodeadmin/templates/devilry_nodeadmin/app.django.html:5
+#: devilry_nodeadmin/templates/devilry_nodeadmin/app.django.html:6
 msgid "Administrator"
 msgstr ""
 
@@ -1402,21 +1402,22 @@ msgstr ""
 msgid "Number between 0 and {max_points}."
 msgstr ""
 
-#: devilry_header/templates/devilry_header/about_me.django.html:8
+#: devilry_header/templates/devilry_header/about_me.django.html:6
+#: devilry_header/templates/devilry_header/about_me.django.html:12
 msgid "About"
 msgstr ""
 
-#: devilry_header/templates/devilry_header/about_me.django.html:10
+#: devilry_header/templates/devilry_header/about_me.django.html:14
 msgid ""
 "Below you can see information about your profile that is stored in Devilry. "
 "Report if the"
 msgstr ""
 
-#: devilry_header/templates/devilry_header/about_me.django.html:11
+#: devilry_header/templates/devilry_header/about_me.django.html:15
 msgid " information is wrong"
 msgstr ""
 
-#: devilry_header/templates/devilry_header/about_me.django.html:19
+#: devilry_header/templates/devilry_header/about_me.django.html:23
 #: devilry_qualifiesforexam/views.py:25
 #: devilry_student/cradmin_period/assignmentsapp.py:15
 #: devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/projectgroup_overview.django.html:54
@@ -1424,22 +1425,22 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: devilry_header/templates/devilry_header/about_me.django.html:23
+#: devilry_header/templates/devilry_header/about_me.django.html:27
 msgid "Email Address"
 msgstr ""
 
-#: devilry_header/templates/devilry_header/about_me.django.html:27
+#: devilry_header/templates/devilry_header/about_me.django.html:31
 #: devilry_qualifiesforexam/views.py:26
 #: devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/projectgroup_overview.django.html:87
 #: devilry_useradmin/forms.py:18
 msgid "Username"
 msgstr ""
 
-#: devilry_header/templates/devilry_header/about_me.django.html:31
+#: devilry_header/templates/devilry_header/about_me.django.html:35
 msgid "Last login"
 msgstr ""
 
-#: devilry_header/templates/devilry_header/about_me.django.html:37
+#: devilry_header/templates/devilry_header/about_me.django.html:41
 msgid "Language?"
 msgstr ""
 
@@ -1696,53 +1697,59 @@ msgstr ""
 msgid "Node"
 msgstr ""
 
-#: devilry_student/cradmin_group/cradmin_group.py:23
+#: devilry_student/cradmin_group/cradmin_group.py:24
 msgid "Overview"
 msgstr ""
 
-#: devilry_student/cradmin_group/cradmin_group.py:27
-#: devilry_student/cradmin_group/deliveriesapp.py:65
+#: devilry_student/cradmin_group/cradmin_group.py:28
+#: devilry_student/cradmin_group/deliveriesapp.py:66
 #: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_list.django.html:6
 #: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_list.django.html:13
 msgid "Deliveries"
 msgstr ""
 
-#: devilry_student/cradmin_group/cradmin_group.py:32
+#: devilry_student/cradmin_group/cradmin_group.py:34
+#: devilry_student/templates/devilry_student/cradmin_group/contactapp/contact.django.html:8
+#: devilry_student/templates/devilry_student/cradmin_group/contactapp/contact.django.html:12
+msgid "Contact examiner"
+msgstr ""
+
+#: devilry_student/cradmin_group/cradmin_group.py:40
 #: devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/projectgroup_overview.django.html:6
 #: devilry_student/templates/devilry_student/cradmin_group/projectgroupapp/projectgroup_overview.django.html:10
 msgid "Project group"
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:119
+#: devilry_student/cradmin_group/deliveriesapp.py:125
 msgid "I want to add a delivery after the deadline has expired."
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:120
+#: devilry_student/cradmin_group/deliveriesapp.py:126
 msgid ""
 "Do you really want to add a delivery after the deadline? You normally need "
 "to have a valid reason when adding deadline after the deadline."
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:123
+#: devilry_student/cradmin_group/deliveriesapp.py:129
 msgid ""
 "You must confirm that you want to add a delivery after the deadline has "
 "expired."
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:134
+#: devilry_student/cradmin_group/deliveriesapp.py:140
 msgid "Upload at least one file and click \"Add delivery\""
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:136
+#: devilry_student/cradmin_group/deliveriesapp.py:142
 msgid "Upload as many files as you like."
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:138
-#: devilry_student/cradmin_group/deliveriesapp.py:150
+#: devilry_student/cradmin_group/deliveriesapp.py:144
+#: devilry_student/cradmin_group/deliveriesapp.py:156
 msgid "You have to add at least one file to make a delivery."
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:185
+#: devilry_student/cradmin_group/deliveriesapp.py:192
 #: devilry_student/cradmin_student/cradmin_student.py:15
 #: devilry_student/templates/devilry_student/cradmin_group/add_delivery.django.html:8
 #: devilry_student/templates/devilry_student/cradmin_group/add_delivery.django.html:13
@@ -1753,11 +1760,11 @@ msgstr ""
 msgid "Add delivery"
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:186
+#: devilry_student/cradmin_group/deliveriesapp.py:193
 msgid "Uploading files"
 msgstr ""
 
-#: devilry_student/cradmin_group/deliveriesapp.py:198
+#: devilry_student/cradmin_group/deliveriesapp.py:205
 msgid "Deadline has expired"
 msgstr ""
 
@@ -1796,7 +1803,7 @@ msgid "Recent feedbacks"
 msgstr ""
 
 #: devilry_student/cradmin_student/recentfeedbacksapp.py:21
-#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:93
+#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:101
 msgid "Feedback time"
 msgstr ""
 
@@ -1820,27 +1827,39 @@ msgid ""
 "deadlines, adding deliveries after the deadline is prohibited."
 msgstr ""
 
+#: devilry_student/templates/devilry_student/cradmin_group/contactapp/contact.django.html:24
+msgid ""
+"The following people are responsible for giving you feedback on this "
+"assignment"
+msgstr ""
+
+#: devilry_student/templates/devilry_student/cradmin_group/contactapp/contact.django.html:37
+msgid ""
+"Nobody is registered as responsible for giving you feedback for this "
+"assignment at this time."
+msgstr ""
+
 #: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:40
 msgid "This delivery has been corrected, and the grade is"
 msgstr ""
 
-#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:57
+#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:58
 msgid "Files"
 msgstr ""
 
-#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:65
+#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:69
 msgid "Delivered by"
 msgstr ""
 
-#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:71
+#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:77
 msgid "Time of delivery"
 msgstr ""
 
-#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:76
+#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:83
 msgid "After the deadline"
 msgstr ""
 
-#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:88
+#: devilry_student/templates/devilry_student/cradmin_group/deliveriesapp/delivery_details.django.html:96
 msgid "Feedback written by"
 msgstr ""
 
@@ -2192,10 +2211,10 @@ msgstr ""
 msgid "Enter a username."
 msgstr ""
 
-#: project/common/settings.py:224
+#: project/common/settings.py:225
 msgid "English"
 msgstr ""
 
-#: project/common/settings.py:225
+#: project/common/settings.py:226
 msgid "Norwegian Bokmal"
 msgstr ""
