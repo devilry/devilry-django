@@ -108,14 +108,3 @@ Table of contents
 
     releasenoteslisting
     release
-
-
-
-##################
-Indices and tables
-##################
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
