@@ -55,6 +55,7 @@ messy to maintain. Instead, we use a PIP requirements-file. Create
 
 Install from the requirements file
 ==================================
+::
 
     $ cd ~/devilrydeploy
     $ virtualenv venv
