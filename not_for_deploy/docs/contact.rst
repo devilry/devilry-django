@@ -58,13 +58,16 @@ can post anything on this forum, including:
 Your local Devilry support
 ##########################
 The local Devilry support typically adds a link to a page with their contact
-information in the Devilry header. Click your name in the upper right corner
-when logged in to Devilry, and see the links in the *Help*-section.
+information in the help page. Click the question mark in the upper right corner
+when logged in to Devilry, and look for a link to internal/organization specific
+devilry documentation.
 
 
 Contact email --- only for special cases
 ########################################
+
 .. warning::
+
     This is only for contact requests that does not belong in the open contact
     channels, like the issue tracker, or in the Q&A forums. This mailinglist is
     typically for those that need private and direct contact with the Developers,
