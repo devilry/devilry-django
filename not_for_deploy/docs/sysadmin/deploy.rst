@@ -239,8 +239,8 @@ Whats next?
 ***********
 You now have a working Devilry server, but you still need to:
 
-- doc:`elasticsearch`.
-- Setup an authentication backend.
+- :doc:`elasticsearch`.
+- :doc:`authbackend`.
 - Setup the Celery background task server.
 - Setup Supervisord for process management, log handling and log rotation.
 

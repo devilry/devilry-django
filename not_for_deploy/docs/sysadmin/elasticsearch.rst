@@ -11,7 +11,7 @@ Configure ElasticSearch as the Devilry search backend
 =====================================================
 Add the following to ``~/devilrydeploy/devilry_settings.py``::
 
-    HAYSTACK_CONNECTIONS = {  # Elastisearch
+    HAYSTACK_CONNECTIONS = {
         'default': {
             'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
             'URL': 'http://127.0.0.1:9200/',
