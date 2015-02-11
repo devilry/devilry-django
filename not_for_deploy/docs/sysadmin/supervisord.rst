@@ -109,8 +109,7 @@ written, and for an init-script example.
 
 Init script
 ===========
-The following init script works well. You need to adjust the ``DAEMON``-variable
-(`download <_static/supervisord>`_):
+The following init script works well. You need to adjust the ``DAEMON``-variable:
 
-.. literalinclude:: /_static/supervisord
+.. literalinclude:: _static/supervisord
     :language: bash
