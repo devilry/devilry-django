@@ -1,0 +1,15 @@
+=============================
+Migrating from 1.4.6 to 1.4.7
+=============================
+
+Bugfixes, see: http://devilry.readthedocs.org/en/latest/releasenotes-1.4.7.html
+
+
+Backup database and files
+###############################
+BACKUP. YOUR. DATABASE. AND. FILES.
+
+
+Update devilry
+##############
+Follow the :ref:`update guide <update>`, and set ``REVISION`` to ``v1.4.7``.

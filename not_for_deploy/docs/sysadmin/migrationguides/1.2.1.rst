@@ -1,0 +1,91 @@
+.. _migrationguide_1.1_to_1.2.1:
+
+===========================
+Migrating from 1.1 to 1.2.1
+===========================
+
+.. seealso:: :devilrydoc:`Releasenotes <releasenotes-1.2.1.html>`
+
+
+Stop Devilry
+###############################
+Stop any running Devilry-server.
+
+
+Backup database and files
+###############################
+I repeat. BACKUP. YOUR. DATABASE. AND. FILES.
+
+
+Dump your current database schema
+#################################
+We will use this for database migration later, so take good care of it::
+
+    $ bin/django_production.py sqlall core > ~/devilry-database-1.1.sql
+
+
+Setup Devilry using the new deployment pattern
+##############################################
+We are in the process of making Devilry far more sysadmin-friendly. A separate
+documentation project is part of that. Another part is a deployment pattern
+inspired heavily by Plone.
+
+The only thing you should take with you from ``1.1`` to ``1.2.1`` is:
+
+- The database.
+- The deliverystore (files uploaded by students).
+- Some of the settings (database, email, ...)
+
+To achieve this, you should follow the :doc:`Build Devilry guide </deploy>`,
+but ignore the the following sections in favor of alternatives from this guide:
+
+- **Configure Devilry** - See `Migrate the settings`_ below.
+- **Create the database** - See `Migrate the database`_ below.
+
+
+Migrate the settings
+====================
+Use the suggested starting point for ``devilry_prod_settings.py``, and copy in
+the values you used previously for each setting.
+
+
+Migrate the database
+====================
+Dump the new database schema::
+
+    $ cd devilrybuild/
+    $ bin/django.py sqlall core > ~/devilry-database-1.2.1.sql
+
+Let Devilry create any new database tables (this creates any new tables, but
+does not change existing tables)::
+
+    $ bin/django.py syncdb
+
+Migrate the new and changed database fields manually by diffing
+``~/devilry-database-1.1.sql`` and ``~/devilry-database-1.2.1.sql``.
+
+
+Post update actions
+###################
+
+Provide help for your users
+==============================
+The new Devilry subjectadmin UI expects you to use the Help-links app
+introduced in 1.1 to provide guides for them to get started. It has two
+sections on the dashboard:
+
+- Interractive guides --- Built-in guides that you can not configure.
+- More guides and help --- Click your username in the header, and see under
+  the Help-heading.
+
+This means that you will get frustrated users unless you add Help-links.
+Login as a superuser and choose the superuser role on the frontpage to go to
+the admin-panel where you can edit help-links. We suggest that you add the
+following Help-links for all roles:
+
+  https://devilry-userdoc.readthedocs.org/ --- Official Devilry user documentation
+
+You should also add any other guides that can make Devilry more user-friendly for
+your users. The most important such local guide is most likely an overview of
+how Devilry intergrates itself with your environment (where do users come
+from, and how are the assigned roles).

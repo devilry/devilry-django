@@ -10,6 +10,7 @@ Table of contents
     :maxdepth: 1
 
     user/index
+    sysadmin/index
     developer/index
 
 
@@ -30,4 +31,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

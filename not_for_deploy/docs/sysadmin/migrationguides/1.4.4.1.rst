@@ -1,0 +1,21 @@
+========================================
+Migrating from 1.4.3 or 1.4.4 to 1.4.4.1
+========================================
+
+You can safely update directly from 1.4.3 directly to 1.4.4.1 without updating
+to 1.4.4 first.
+
+Changes
+#######
+
+See: http://devilry.readthedocs.org/en/latest/releasenotes-1.4.4.1.html
+
+
+Backup database and files
+###############################
+BACKUP. YOUR. DATABASE. AND. FILES.
+
+
+Update devilry
+##############
+Follow the :ref:`update guide <update>`, and set ``REVISION`` to ``v1.4.4.1``.

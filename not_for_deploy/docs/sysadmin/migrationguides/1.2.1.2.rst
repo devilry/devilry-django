@@ -1,0 +1,5 @@
+=================================
+Migrating from 1.2.1.1 to 1.2.1.2
+=================================
+
+This is a code-only update, use the :ref:`update guide <update>` (REVISION ``v1.2.1.2``).
