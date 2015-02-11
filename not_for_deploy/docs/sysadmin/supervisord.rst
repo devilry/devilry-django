@@ -67,6 +67,15 @@ and make sure ``~/devilrydeploy/supervisord.conf`` is only
 accessible to the ``devilryrunner``-user.
 
 
+Create the var/ and log/ directories
+====================================
+The supervisord.conf file refers to the ``~/devilrydeploy/var/`` and ``~/devilrydeploy/log/``
+directories. These must be created::
+
+    $ cd ~/devilrydeploy
+    $ mkdir var/ log/
+
+
 Make sure all services work as excpected
 ========================================
 To run supervisord in the foreground (for testing), run::
