@@ -1,5 +1,0 @@
-=================================
-1.2.1.7 --- Ignore this version
-=================================
-
-.. warning:: This version had an error, so you should use version :ref:`1.2.1.8 <version1.2.1.8>` instead.
