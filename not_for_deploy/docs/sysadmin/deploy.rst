@@ -78,8 +78,12 @@ Copy this script into ``~/devilrydeploy/manage.py``::
 *********
 Configure
 *********
-Devilry is configured through a python file. Start by copying the following into
-``~/devilrydeploy/devilry_settings.py``::
+Devilry is configured through a python file. We will start by configuring the
+essential parts to get a working Devilry server, and then move on to
+guides for the more complex parts like search and authentication in
+separate chapters.
+
+Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
 
     from devilry.project.production.settings import *
     import dj_database_url
@@ -230,13 +234,12 @@ but if you want to have SSL support, you will need to use a HTTP proxy
 server like Apache og Nginx.
 
 
-
 ***********
 Whats next?
 ***********
 You now have a working Devilry server, but you still need to:
 
-- Install the Elasticsearch search server.
+- doc:`elasticsearch`.
 - Setup an authentication backend.
 - Setup the Celery background task server.
 - Setup Supervisord for process management, log handling and log rotation.
