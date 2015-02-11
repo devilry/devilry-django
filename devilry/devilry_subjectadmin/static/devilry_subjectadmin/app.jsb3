@@ -15,13 +15,13 @@
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
-                    "clsName": "Ext.util.Observable", 
-                    "name": "Observable.js"
+                    "clsName": "Ext.util.Sorter", 
+                    "name": "Sorter.js"
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
-                    "clsName": "Ext.util.Sorter", 
-                    "name": "Sorter.js"
+                    "clsName": "Ext.util.Observable", 
+                    "name": "Observable.js"
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
@@ -30,18 +30,13 @@
                 }, 
                 {
                     "path": "static/extjs4/src/data/", 
-                    "clsName": "Ext.data.validations", 
-                    "name": "validations.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/data/", 
                     "clsName": "Ext.data.IdGenerator", 
                     "name": "IdGenerator.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/util/", 
-                    "clsName": "Ext.util.Floating", 
-                    "name": "Floating.js"
+                    "path": "static/extjs4/src/data/", 
+                    "clsName": "Ext.data.validations", 
+                    "name": "validations.js"
                 }, 
                 {
                     "path": "static/extjs4/src/data/", 
@@ -60,13 +55,18 @@
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
-                    "clsName": "Ext.util.Memento", 
-                    "name": "Memento.js"
+                    "clsName": "Ext.util.Floating", 
+                    "name": "Floating.js"
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
                     "clsName": "Ext.util.KeyMap", 
                     "name": "KeyMap.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/util/", 
+                    "clsName": "Ext.util.Memento", 
+                    "name": "Memento.js"
                 }, 
                 {
                     "path": "static/extjs4/src/panel/", 
@@ -82,16 +82,6 @@
                     "path": "static/extjs4/src/fx/", 
                     "clsName": "Ext.fx.CubicBezier", 
                     "name": "CubicBezier.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/", 
-                    "clsName": "Ext.XTemplateParser", 
-                    "name": "XTemplateParser.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/fx/target/", 
-                    "clsName": "Ext.fx.target.Target", 
-                    "name": "Target.js"
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
@@ -114,14 +104,24 @@
                     "name": "ComponentQuery.js"
                 }, 
                 {
+                    "path": "static/extjs4/src/", 
+                    "clsName": "Ext.XTemplateParser", 
+                    "name": "XTemplateParser.js"
+                }, 
+                {
                     "path": "static/extjs4/src/util/", 
                     "clsName": "Ext.util.Renderable", 
                     "name": "Renderable.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/util/", 
-                    "clsName": "Ext.util.Offset", 
-                    "name": "Offset.js"
+                    "path": "static/extjs4/src/fx/target/", 
+                    "clsName": "Ext.fx.target.Target", 
+                    "name": "Target.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/state/", 
+                    "clsName": "Ext.state.Provider", 
+                    "name": "Provider.js"
                 }, 
                 {
                     "path": "static/extjs4/src/", 
@@ -129,9 +129,9 @@
                     "name": "ZIndexManager.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/draw/", 
-                    "clsName": "Ext.draw.Color", 
-                    "name": "Color.js"
+                    "path": "static/extjs4/src/util/", 
+                    "clsName": "Ext.util.Offset", 
+                    "name": "Offset.js"
                 }, 
                 {
                     "path": "static/extjs4/src/layout/container/boxOverflow/", 
@@ -139,9 +139,9 @@
                     "name": "None.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/state/", 
-                    "clsName": "Ext.state.Provider", 
-                    "name": "Provider.js"
+                    "path": "static/extjs4/src/draw/", 
+                    "clsName": "Ext.draw.Color", 
+                    "name": "Color.js"
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
@@ -154,6 +154,11 @@
                     "name": "TextMetrics.js"
                 }, 
                 {
+                    "path": "static/extjs4/src/app/", 
+                    "clsName": "Ext.app.Controller", 
+                    "name": "Controller.js"
+                }, 
+                {
                     "path": "static/extjs4/src/data/", 
                     "clsName": "Ext.data.Connection", 
                     "name": "Connection.js"
@@ -162,11 +167,6 @@
                     "path": "static/extjs4/src/", 
                     "clsName": "Ext.Ajax", 
                     "name": "Ajax.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/app/", 
-                    "clsName": "Ext.app.Controller", 
-                    "name": "Controller.js"
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
@@ -180,13 +180,13 @@
                 }, 
                 {
                     "path": "static/extjs4/src/", 
-                    "clsName": "Ext.ComponentManager", 
-                    "name": "ComponentManager.js"
+                    "clsName": "Ext.ModelManager", 
+                    "name": "ModelManager.js"
                 }, 
                 {
                     "path": "static/extjs4/src/", 
-                    "clsName": "Ext.ModelManager", 
-                    "name": "ModelManager.js"
+                    "clsName": "Ext.ComponentManager", 
+                    "name": "ComponentManager.js"
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
@@ -255,23 +255,18 @@
                 }, 
                 {
                     "path": "static/extjs4/src/fx/target/", 
-                    "clsName": "Ext.fx.target.CompositeElement", 
-                    "name": "CompositeElement.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/fx/target/", 
                     "clsName": "Ext.fx.target.ElementCSS", 
                     "name": "ElementCSS.js"
                 }, 
                 {
                     "path": "static/extjs4/src/fx/target/", 
-                    "clsName": "Ext.fx.target.CompositeElementCSS", 
-                    "name": "CompositeElementCSS.js"
+                    "clsName": "Ext.fx.target.CompositeElement", 
+                    "name": "CompositeElement.js"
                 }, 
                 {
                     "path": "static/extjs4/src/fx/target/", 
-                    "clsName": "Ext.fx.target.Component", 
-                    "name": "Component.js"
+                    "clsName": "Ext.fx.target.CompositeElementCSS", 
+                    "name": "CompositeElementCSS.js"
                 }, 
                 {
                     "path": "static/extjs4/src/fx/target/", 
@@ -284,6 +279,11 @@
                     "name": "CompositeSprite.js"
                 }, 
                 {
+                    "path": "static/extjs4/src/fx/target/", 
+                    "clsName": "Ext.fx.target.Component", 
+                    "name": "Component.js"
+                }, 
+                {
                     "path": "static/extjs4/src/fx/", 
                     "clsName": "Ext.fx.Manager", 
                     "name": "Manager.js"
@@ -292,31 +292,6 @@
                     "path": "static/extjs4/src/fx/", 
                     "clsName": "Ext.fx.Animator", 
                     "name": "Animator.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/draw/", 
-                    "clsName": "Ext.draw.Draw", 
-                    "name": "Draw.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/fx/", 
-                    "clsName": "Ext.fx.PropertyHandler", 
-                    "name": "PropertyHandler.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/fx/", 
-                    "clsName": "Ext.fx.Anim", 
-                    "name": "Anim.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/util/", 
-                    "clsName": "Ext.util.Region", 
-                    "name": "Region.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/dd/", 
-                    "clsName": "Ext.dd.DragDropManager", 
-                    "name": "DragDropManager.js"
                 }, 
                 {
                     "path": "static/extjs4/src/state/", 
@@ -344,29 +319,39 @@
                     "name": "EventBus.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/dd/", 
-                    "clsName": "Ext.dd.StatusProxy", 
-                    "name": "StatusProxy.js"
-                }, 
-                {
                     "path": "static/extjs4/src/toolbar/", 
                     "clsName": "Ext.toolbar.Fill", 
                     "name": "Fill.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/layout/", 
-                    "clsName": "Ext.layout.Layout", 
-                    "name": "Layout.js"
+                    "path": "static/extjs4/src/dd/", 
+                    "clsName": "Ext.dd.StatusProxy", 
+                    "name": "StatusProxy.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/layout/component/", 
-                    "clsName": "Ext.layout.component.Component", 
-                    "name": "Component.js"
+                    "path": "static/extjs4/src/util/", 
+                    "clsName": "Ext.util.Region", 
+                    "name": "Region.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/layout/component/", 
-                    "clsName": "Ext.layout.component.Dock", 
-                    "name": "Dock.js"
+                    "path": "static/extjs4/src/dd/", 
+                    "clsName": "Ext.dd.DragDropManager", 
+                    "name": "DragDropManager.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/draw/", 
+                    "clsName": "Ext.draw.Draw", 
+                    "name": "Draw.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/fx/", 
+                    "clsName": "Ext.fx.PropertyHandler", 
+                    "name": "PropertyHandler.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/fx/", 
+                    "clsName": "Ext.fx.Anim", 
+                    "name": "Anim.js"
                 }, 
                 {
                     "path": "static/extjs4/src/dd/", 
@@ -394,19 +379,19 @@
                     "name": "DD.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/layout/container/boxOverflow/", 
-                    "clsName": "Ext.layout.container.boxOverflow.Scroller", 
-                    "name": "Scroller.js"
+                    "path": "static/extjs4/src/layout/", 
+                    "clsName": "Ext.layout.Layout", 
+                    "name": "Layout.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/toolbar/", 
-                    "clsName": "Ext.toolbar.Item", 
-                    "name": "Item.js"
+                    "path": "static/extjs4/src/layout/component/", 
+                    "clsName": "Ext.layout.component.Component", 
+                    "name": "Component.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/toolbar/", 
-                    "clsName": "Ext.toolbar.Separator", 
-                    "name": "Separator.js"
+                    "path": "static/extjs4/src/layout/component/", 
+                    "clsName": "Ext.layout.component.Dock", 
+                    "name": "Dock.js"
                 }, 
                 {
                     "path": "static/extjs4/src/layout/container/", 
@@ -432,6 +417,21 @@
                     "path": "static/extjs4/src/panel/", 
                     "clsName": "Ext.panel.Header", 
                     "name": "Header.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/toolbar/", 
+                    "clsName": "Ext.toolbar.Item", 
+                    "name": "Item.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/toolbar/", 
+                    "clsName": "Ext.toolbar.Separator", 
+                    "name": "Separator.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/layout/container/boxOverflow/", 
+                    "clsName": "Ext.layout.container.boxOverflow.Scroller", 
+                    "name": "Scroller.js"
                 }, 
                 {
                     "path": "static/extjs4/src/menu/", 
@@ -589,14 +589,14 @@
                     "name": "Item.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/data/proxy/", 
-                    "clsName": "Ext.data.proxy.Proxy", 
-                    "name": "Proxy.js"
-                }, 
-                {
                     "path": "static/extjs4/src/util/", 
                     "clsName": "Ext.util.KeyNav", 
                     "name": "KeyNav.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/data/proxy/", 
+                    "clsName": "Ext.data.proxy.Proxy", 
+                    "name": "Proxy.js"
                 }, 
                 {
                     "path": "static/extjs4/src/draw/", 
@@ -619,14 +619,14 @@
                     "name": "ClassList.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/data/writer/", 
-                    "clsName": "Ext.data.writer.Writer", 
-                    "name": "Writer.js"
-                }, 
-                {
                     "path": "static/extjs4/src/util/", 
                     "clsName": "Ext.util.LruCache", 
                     "name": "LruCache.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/data/writer/", 
+                    "clsName": "Ext.data.writer.Writer", 
+                    "name": "Writer.js"
                 }, 
                 {
                     "path": "static/extjs4/src/data/proxy/", 
@@ -895,13 +895,13 @@
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/guides/", 
-                    "clsName": "devilry_subjectadmin.view.guides.QualifiedForFinalExams", 
-                    "name": "QualifiedForFinalExams.js"
+                    "clsName": "devilry_subjectadmin.view.guides.CreateNewAssignment", 
+                    "name": "CreateNewAssignment.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/guides/", 
-                    "clsName": "devilry_subjectadmin.view.guides.CreateNewAssignment", 
-                    "name": "CreateNewAssignment.js"
+                    "clsName": "devilry_subjectadmin.view.guides.QualifiedForFinalExams", 
+                    "name": "QualifiedForFinalExams.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/guidesystem/", 
@@ -909,14 +909,19 @@
                     "name": "Pointer.js"
                 }, 
                 {
+                    "path": "static/devilry_extjsextras/", 
+                    "clsName": "devilry_extjsextras.ProxyErrorHandler", 
+                    "name": "ProxyErrorHandler.js"
+                }, 
+                {
                     "path": "static/extjs4/src/form/", 
                     "clsName": "Ext.form.CheckboxManager", 
                     "name": "CheckboxManager.js"
                 }, 
                 {
-                    "path": "static/devilry_extjsextras/", 
-                    "clsName": "devilry_extjsextras.ProxyErrorHandler", 
-                    "name": "ProxyErrorHandler.js"
+                    "path": "static/extjs4/src/layout/container/", 
+                    "clsName": "Ext.layout.container.CheckboxGroup", 
+                    "name": "CheckboxGroup.js"
                 }, 
                 {
                     "path": "static/extjs4/src/form/field/", 
@@ -924,14 +929,14 @@
                     "name": "Field.js"
                 }, 
                 {
+                    "path": "static/extjs4/src/resizer/", 
+                    "clsName": "Ext.resizer.Splitter", 
+                    "name": "Splitter.js"
+                }, 
+                {
                     "path": "static/devilry_extjsextras/", 
                     "clsName": "devilry_extjsextras.PrimaryButton", 
                     "name": "PrimaryButton.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/layout/container/", 
-                    "clsName": "Ext.layout.container.CheckboxGroup", 
-                    "name": "CheckboxGroup.js"
                 }, 
                 {
                     "path": "static/devilry_extjsextras/form/", 
@@ -954,24 +959,19 @@
                     "name": "AllWhereIsAdminList.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/resizer/", 
-                    "clsName": "Ext.resizer.Splitter", 
-                    "name": "Splitter.js"
-                }, 
-                {
                     "path": "static/devilry_extjsextras/", 
                     "clsName": "devilry_extjsextras.OkButton", 
                     "name": "OkButton.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/store/", 
-                    "clsName": "devilry_subjectadmin.store.GroupByExaminerGrouper", 
-                    "name": "GroupByExaminerGrouper.js"
-                }, 
-                {
                     "path": "static/devilry_subjectadmin/app/utils/", 
                     "clsName": "devilry_subjectadmin.utils.Array", 
                     "name": "Array.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/store/", 
+                    "clsName": "devilry_subjectadmin.store.GroupByExaminerGrouper", 
+                    "name": "GroupByExaminerGrouper.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
@@ -1004,9 +1004,9 @@
                     "name": "Anchor.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/view/managestudents/", 
-                    "clsName": "devilry_subjectadmin.view.managestudents.DeliveryPanel", 
-                    "name": "DeliveryPanel.js"
+                    "path": "static/extjs4/src/layout/component/field/", 
+                    "clsName": "Ext.layout.component.field.Field", 
+                    "name": "Field.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
@@ -1014,9 +1014,9 @@
                     "name": "SelectedGroupsMenu.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/layout/component/field/", 
-                    "clsName": "Ext.layout.component.field.Field", 
-                    "name": "Field.js"
+                    "path": "static/devilry_subjectadmin/app/view/managestudents/", 
+                    "clsName": "devilry_subjectadmin.view.managestudents.DeliveryPanel", 
+                    "name": "DeliveryPanel.js"
                 }, 
                 {
                     "path": "static/extjs4/src/layout/component/", 
@@ -1034,14 +1034,14 @@
                     "name": "Feature.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/layout/component/", 
-                    "clsName": "Ext.layout.component.ProgressBar", 
-                    "name": "ProgressBar.js"
-                }, 
-                {
                     "path": "static/extjs4/src/picker/", 
                     "clsName": "Ext.picker.Month", 
                     "name": "Month.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/layout/component/", 
+                    "clsName": "Ext.layout.component.ProgressBar", 
+                    "name": "ProgressBar.js"
                 }, 
                 {
                     "path": "static/extjs4/src/layout/component/field/", 
@@ -1054,14 +1054,14 @@
                     "name": "VTypes.js"
                 }, 
                 {
+                    "path": "static/extjs4/src/toolbar/", 
+                    "clsName": "Ext.toolbar.TextItem", 
+                    "name": "TextItem.js"
+                }, 
+                {
                     "path": "static/extjs4/src/layout/component/field/", 
                     "clsName": "Ext.layout.component.field.Trigger", 
                     "name": "Trigger.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/chart/", 
-                    "clsName": "Ext.chart.Highlight", 
-                    "name": "Highlight.js"
                 }, 
                 {
                     "path": "static/extjs4/src/chart/", 
@@ -1069,9 +1069,9 @@
                     "name": "Label.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/toolbar/", 
-                    "clsName": "Ext.toolbar.TextItem", 
-                    "name": "TextItem.js"
+                    "path": "static/extjs4/src/chart/", 
+                    "clsName": "Ext.chart.Highlight", 
+                    "name": "Highlight.js"
                 }, 
                 {
                     "path": "static/extjs4/src/chart/", 
@@ -1089,14 +1089,14 @@
                     "name": "Model.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/grid/", 
-                    "clsName": "Ext.grid.ColumnLayout", 
-                    "name": "ColumnLayout.js"
-                }, 
-                {
                     "path": "static/extjs4/src/chart/", 
                     "clsName": "Ext.chart.TipSurface", 
                     "name": "TipSurface.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/grid/", 
+                    "clsName": "Ext.grid.ColumnLayout", 
+                    "name": "ColumnLayout.js"
                 }, 
                 {
                     "path": "static/devilry_usersearch/", 
@@ -1144,14 +1144,14 @@
                     "name": "ScrollManager.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/utils/", 
-                    "clsName": "devilry_subjectadmin.utils.Breadcrumbs", 
-                    "name": "Breadcrumbs.js"
-                }, 
-                {
                     "path": "static/devilry_extjsextras/", 
                     "clsName": "devilry_extjsextras.Router", 
                     "name": "Router.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/utils/", 
+                    "clsName": "devilry_subjectadmin.utils.Breadcrumbs", 
+                    "name": "Breadcrumbs.js"
                 }, 
                 {
                     "path": "static/devilry_header/app/", 
@@ -1209,6 +1209,11 @@
                     "name": "NextButton.js"
                 }, 
                 {
+                    "path": "static/devilry_subjectadmin/app/view/allwhereisadmin/", 
+                    "clsName": "devilry_subjectadmin.view.allwhereisadmin.AllWhereIsAdminPanel", 
+                    "name": "AllWhereIsAdminPanel.js"
+                }, 
+                {
                     "path": "static/devilry_extjsextras/", 
                     "clsName": "devilry_extjsextras.DjangoRestframeworkProxyErrorHandler", 
                     "name": "DjangoRestframeworkProxyErrorHandler.js"
@@ -1222,11 +1227,6 @@
                     "path": "static/devilry_extjsextras/", 
                     "clsName": "devilry_extjsextras.ConfirmDeleteDialog", 
                     "name": "ConfirmDeleteDialog.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/view/allwhereisadmin/", 
-                    "clsName": "devilry_subjectadmin.view.allwhereisadmin.AllWhereIsAdminPanel", 
-                    "name": "AllWhereIsAdminPanel.js"
                 }, 
                 {
                     "path": "static/devilry_extjsextras/", 
@@ -1264,11 +1264,6 @@
                     "name": "AllWhereIsAdmin.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/store/", 
-                    "clsName": "devilry_subjectadmin.store.LoadStoreWithAutomaticErrorHandlingMixin", 
-                    "name": "LoadStoreWithAutomaticErrorHandlingMixin.js"
-                }, 
-                {
                     "path": "static/extjs4/src/form/field/", 
                     "clsName": "Ext.form.field.Base", 
                     "name": "Base.js"
@@ -1282,6 +1277,11 @@
                     "path": "static/extjs4/src/form/field/", 
                     "clsName": "Ext.form.field.Radio", 
                     "name": "Radio.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/store/", 
+                    "clsName": "devilry_subjectadmin.store.LoadStoreWithAutomaticErrorHandlingMixin", 
+                    "name": "LoadStoreWithAutomaticErrorHandlingMixin.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
@@ -1364,6 +1364,11 @@
                     "name": "DateField.js"
                 }, 
                 {
+                    "path": "static/extjs4/src/layout/component/field/", 
+                    "clsName": "Ext.layout.component.field.ComboBox", 
+                    "name": "ComboBox.js"
+                }, 
+                {
                     "path": "static/extjs4/src/selection/", 
                     "clsName": "Ext.selection.RowModel", 
                     "name": "RowModel.js"
@@ -1377,11 +1382,6 @@
                     "path": "static/devilry_extjsextras/", 
                     "clsName": "devilry_extjsextras.GridBigButtonCheckboxModel", 
                     "name": "GridBigButtonCheckboxModel.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/layout/component/field/", 
-                    "clsName": "Ext.layout.component.field.ComboBox", 
-                    "name": "ComboBox.js"
                 }, 
                 {
                     "path": "static/extjs4/src/layout/component/field/", 
@@ -1499,11 +1499,6 @@
                     "name": "SelectGroupsBySearchWidget.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/grid/header/", 
-                    "clsName": "Ext.grid.header.DragZone", 
-                    "name": "DragZone.js"
-                }, 
-                {
                     "path": "static/extjs4/src/view/", 
                     "clsName": "Ext.view.Table", 
                     "name": "Table.js"
@@ -1522,6 +1517,11 @@
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
                     "clsName": "devilry_subjectadmin.view.managestudents.GridOfGroupsBase", 
                     "name": "GridOfGroupsBase.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/grid/header/", 
+                    "clsName": "Ext.grid.header.DragZone", 
+                    "name": "DragZone.js"
                 }, 
                 {
                     "path": "static/extjs4/src/dd/", 
@@ -1570,23 +1570,23 @@
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/guidesystem/", 
-                    "clsName": "devilry_subjectadmin.view.guidesystem.GuideView", 
-                    "name": "GuideView.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/view/guidesystem/", 
                     "clsName": "devilry_subjectadmin.view.guidesystem.GuideList", 
                     "name": "GuideList.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/model/", 
-                    "clsName": "devilry_subjectadmin.model.Period", 
-                    "name": "Period.js"
+                    "path": "static/devilry_subjectadmin/app/view/guidesystem/", 
+                    "clsName": "devilry_subjectadmin.view.guidesystem.GuideView", 
+                    "name": "GuideView.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/subject/", 
                     "clsName": "devilry_subjectadmin.view.subject.ListAll", 
                     "name": "ListAll.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/model/", 
+                    "clsName": "devilry_subjectadmin.model.Period", 
+                    "name": "Period.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/period/", 
@@ -1604,14 +1604,14 @@
                     "name": "Assignment.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/store/", 
-                    "clsName": "devilry_subjectadmin.store.Assignments", 
-                    "name": "Assignments.js"
-                }, 
-                {
                     "path": "static/devilry_subjectadmin/app/view/subject/", 
                     "clsName": "devilry_subjectadmin.view.subject.ListOfPeriods", 
                     "name": "ListOfPeriods.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/store/", 
+                    "clsName": "devilry_subjectadmin.store.Assignments", 
+                    "name": "Assignments.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/store/", 
@@ -1630,6 +1630,11 @@
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/addgroups/", 
+                    "clsName": "devilry_subjectadmin.view.addgroups.AllowDuplicatesCheckbox", 
+                    "name": "AllowDuplicatesCheckbox.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/view/addgroups/", 
                     "clsName": "devilry_subjectadmin.view.addgroups.Overview", 
                     "name": "Overview.js"
                 }, 
@@ -1637,11 +1642,6 @@
                     "path": "static/devilry_subjectadmin/app/view/createnewassignment/", 
                     "clsName": "devilry_subjectadmin.view.createnewassignment.CreateNewAssignment", 
                     "name": "CreateNewAssignment.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/view/addgroups/", 
-                    "clsName": "devilry_subjectadmin.view.addgroups.AllowDuplicatesCheckbox", 
-                    "name": "AllowDuplicatesCheckbox.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/model/", 
@@ -1660,23 +1660,23 @@
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/model/", 
-                    "clsName": "devilry_subjectadmin.model.Candidate", 
-                    "name": "Candidate.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/model/", 
                     "clsName": "devilry_subjectadmin.model.Examiner", 
                     "name": "Examiner.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/model/", 
-                    "clsName": "devilry_subjectadmin.model.PopFromGroup", 
-                    "name": "PopFromGroup.js"
+                    "clsName": "devilry_subjectadmin.model.Candidate", 
+                    "name": "Candidate.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/model/", 
                     "clsName": "devilry_subjectadmin.model.Tag", 
                     "name": "Tag.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/model/", 
+                    "clsName": "devilry_subjectadmin.model.PopFromGroup", 
+                    "name": "PopFromGroup.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/model/", 
@@ -1695,13 +1695,13 @@
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/store/", 
-                    "clsName": "devilry_subjectadmin.store.SingleGroupTags", 
-                    "name": "SingleGroupTags.js"
+                    "clsName": "devilry_subjectadmin.store.SingleGroupExaminers", 
+                    "name": "SingleGroupExaminers.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/store/", 
-                    "clsName": "devilry_subjectadmin.store.SingleGroupExaminers", 
-                    "name": "SingleGroupExaminers.js"
+                    "clsName": "devilry_subjectadmin.store.SingleGroupTags", 
+                    "name": "SingleGroupTags.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/store/", 
@@ -1714,29 +1714,14 @@
                     "name": "AllActiveWhereIsAdmin.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/view/managestudents/", 
-                    "clsName": "devilry_subjectadmin.view.managestudents.HelpPanel", 
-                    "name": "HelpPanel.js"
-                }, 
-                {
-                    "path": "static/devilry_extjsextras/", 
-                    "clsName": "devilry_extjsextras.SingleActionBox", 
-                    "name": "SingleActionBox.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/view/managestudents/", 
-                    "clsName": "devilry_subjectadmin.view.managestudents.ExaminersHelp", 
-                    "name": "ExaminersHelp.js"
-                }, 
-                {
                     "path": "static/devilry_extjsextras/", 
                     "clsName": "devilry_extjsextras.SaveButton", 
                     "name": "SaveButton.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/view/dashboard/", 
-                    "clsName": "devilry_subjectadmin.view.dashboard.AllActiveWhereIsAdminList", 
-                    "name": "AllActiveWhereIsAdminList.js"
+                    "path": "static/devilry_subjectadmin/app/view/managestudents/", 
+                    "clsName": "devilry_subjectadmin.view.managestudents.ExaminersHelp", 
+                    "name": "ExaminersHelp.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/utils/", 
@@ -1745,13 +1730,33 @@
                 }, 
                 {
                     "path": "static/devilry_extjsextras/", 
-                    "clsName": "devilry_extjsextras.OkCancelPanel", 
-                    "name": "OkCancelPanel.js"
+                    "clsName": "devilry_extjsextras.SingleActionBox", 
+                    "name": "SingleActionBox.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/view/managestudents/", 
+                    "clsName": "devilry_subjectadmin.view.managestudents.HelpPanel", 
+                    "name": "HelpPanel.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/view/dashboard/", 
+                    "clsName": "devilry_subjectadmin.view.dashboard.AllActiveWhereIsAdminList", 
+                    "name": "AllActiveWhereIsAdminList.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/model/", 
                     "clsName": "devilry_subjectadmin.model.AggregatedRelatedStudentInfo", 
                     "name": "AggregatedRelatedStudentInfo.js"
+                }, 
+                {
+                    "path": "static/devilry_extjsextras/", 
+                    "clsName": "devilry_extjsextras.OkCancelPanel", 
+                    "name": "OkCancelPanel.js"
+                }, 
+                {
+                    "path": "static/devilry_extjsextras/", 
+                    "clsName": "devilry_extjsextras.ContainerWithEditTitle", 
+                    "name": "ContainerWithEditTitle.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/model/", 
@@ -1764,19 +1769,14 @@
                     "name": "DeadlineBulk.js"
                 }, 
                 {
-                    "path": "static/devilry_extjsextras/", 
-                    "clsName": "devilry_extjsextras.ContainerWithEditTitle", 
-                    "name": "ContainerWithEditTitle.js"
+                    "path": "static/devilry_extjsextras/form/", 
+                    "clsName": "devilry_extjsextras.form.DateTimeField", 
+                    "name": "DateTimeField.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/bulkmanagedeadlines/", 
                     "clsName": "devilry_subjectadmin.view.bulkmanagedeadlines.GroupsInDeadlineGrid", 
                     "name": "GroupsInDeadlineGrid.js"
-                }, 
-                {
-                    "path": "static/devilry_extjsextras/form/", 
-                    "clsName": "devilry_extjsextras.form.DateTimeField", 
-                    "name": "DateTimeField.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
@@ -1809,14 +1809,14 @@
                     "name": "SelectSingleAssignment.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/view/relatedstudents/", 
-                    "clsName": "devilry_subjectadmin.view.relatedstudents.SelectUserPanel", 
-                    "name": "SelectUserPanel.js"
-                }, 
-                {
                     "path": "static/extjs4/src/form/", 
                     "clsName": "Ext.form.FieldSet", 
                     "name": "FieldSet.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/view/relatedstudents/", 
+                    "clsName": "devilry_subjectadmin.view.relatedstudents.SelectUserPanel", 
+                    "name": "SelectUserPanel.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/relatedexaminers/", 
@@ -1829,6 +1829,11 @@
                     "name": "MoreInfoBox.js"
                 }, 
                 {
+                    "path": "static/devilry_usersearch/", 
+                    "clsName": "devilry_usersearch.ManageUsersGridModel", 
+                    "name": "ManageUsersGridModel.js"
+                }, 
+                {
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
                     "clsName": "devilry_subjectadmin.view.managestudents.ChooseTagsPanel", 
                     "name": "ChooseTagsPanel.js"
@@ -1837,11 +1842,6 @@
                     "path": "static/devilry_subjectadmin/app/model/", 
                     "clsName": "devilry_subjectadmin.model.ExaminerStat", 
                     "name": "ExaminerStat.js"
-                }, 
-                {
-                    "path": "static/devilry_usersearch/", 
-                    "clsName": "devilry_usersearch.ManageUsersGridModel", 
-                    "name": "ManageUsersGridModel.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
@@ -1864,14 +1864,14 @@
                     "name": "ExportPeriodOverviewMenu.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/view/bulkmanagedeadlines/", 
-                    "clsName": "devilry_subjectadmin.view.bulkmanagedeadlines.GroupsInDeadlineSelectGrid", 
-                    "name": "GroupsInDeadlineSelectGrid.js"
-                }, 
-                {
                     "path": "static/devilry_subjectadmin/app/view/passedpreviousperiod/", 
                     "clsName": "devilry_subjectadmin.view.passedpreviousperiod.GridBase", 
                     "name": "GridBase.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/view/bulkmanagedeadlines/", 
+                    "clsName": "devilry_subjectadmin.view.bulkmanagedeadlines.GroupsInDeadlineSelectGrid", 
+                    "name": "GroupsInDeadlineSelectGrid.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
@@ -1884,14 +1884,14 @@
                     "name": "ExaminersInGroupGrid.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/view/bulkmanagedeadlines/", 
-                    "clsName": "devilry_subjectadmin.view.bulkmanagedeadlines.AllGroupsInAssignmentGrid", 
-                    "name": "AllGroupsInAssignmentGrid.js"
-                }, 
-                {
                     "path": "static/devilry_theme/", 
                     "clsName": "devilry_theme.Icons", 
                     "name": "Icons.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/view/bulkmanagedeadlines/", 
+                    "clsName": "devilry_subjectadmin.view.bulkmanagedeadlines.AllGroupsInAssignmentGrid", 
+                    "name": "AllGroupsInAssignmentGrid.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/detailedperiodoverview/", 
@@ -1904,11 +1904,6 @@
                     "name": "AbstractManageUsersPanel.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/grid/plugin/", 
-                    "clsName": "Ext.grid.plugin.Editing", 
-                    "name": "Editing.js"
-                }, 
-                {
                     "path": "static/extjs4/src/chart/theme/", 
                     "clsName": "Ext.chart.theme.Theme", 
                     "name": "Theme.js"
@@ -1919,19 +1914,24 @@
                     "name": "Navigation.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/layout/container/", 
-                    "clsName": "Ext.layout.container.Editor", 
-                    "name": "Editor.js"
-                }, 
-                {
                     "path": "static/extjs4/src/chart/theme/", 
                     "clsName": "Ext.chart.theme.Base", 
                     "name": "Base.js"
                 }, 
                 {
+                    "path": "static/extjs4/src/grid/plugin/", 
+                    "clsName": "Ext.grid.plugin.Editing", 
+                    "name": "Editing.js"
+                }, 
+                {
                     "path": "static/extjs4/src/chart/", 
                     "clsName": "Ext.chart.MaskLayer", 
                     "name": "MaskLayer.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/layout/container/", 
+                    "clsName": "Ext.layout.container.Editor", 
+                    "name": "Editor.js"
                 }, 
                 {
                     "path": "static/extjs4/src/form/action/", 
@@ -1989,6 +1989,11 @@
                     "name": "AllActivesWhereIsAdmin.js"
                 }, 
                 {
+                    "path": "static/devilry_subjectadmin/app/view/", 
+                    "clsName": "devilry_subjectadmin.view.RenameBasenodeWindow", 
+                    "name": "RenameBasenodeWindow.js"
+                }, 
+                {
                     "path": "static/devilry_subjectadmin/app/view/dashboard/", 
                     "clsName": "devilry_subjectadmin.view.dashboard.Dashboard", 
                     "name": "Dashboard.js"
@@ -2004,11 +2009,6 @@
                     "name": "EditDurationPanel.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/view/", 
-                    "clsName": "devilry_subjectadmin.view.RenameBasenodeWindow", 
-                    "name": "RenameBasenodeWindow.js"
-                }, 
-                {
                     "path": "static/devilry_subjectadmin/app/view/period/", 
                     "clsName": "devilry_subjectadmin.view.period.EditDurationWidget", 
                     "name": "EditDurationWidget.js"
@@ -2022,6 +2022,16 @@
                     "path": "static/devilry_subjectadmin/app/view/assignment/", 
                     "clsName": "devilry_subjectadmin.view.assignment.EditPublishingTimePanel", 
                     "name": "EditPublishingTimePanel.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/view/assignment/", 
+                    "clsName": "devilry_subjectadmin.view.assignment.EditPublishingTimeWidget", 
+                    "name": "EditPublishingTimeWidget.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/controller/assignment/", 
+                    "clsName": "devilry_subjectadmin.controller.assignment.EditPublishingTime", 
+                    "name": "EditPublishingTime.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/createnewperiod/", 
@@ -2042,16 +2052,6 @@
                     "path": "static/devilry_subjectadmin/app/view/assignment/", 
                     "clsName": "devilry_subjectadmin.view.assignment.EditDeadlineHandlingPanel", 
                     "name": "EditDeadlineHandlingPanel.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/view/assignment/", 
-                    "clsName": "devilry_subjectadmin.view.assignment.EditPublishingTimeWidget", 
-                    "name": "EditPublishingTimeWidget.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/controller/assignment/", 
-                    "clsName": "devilry_subjectadmin.controller.assignment.EditPublishingTime", 
-                    "name": "EditPublishingTime.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/assignment/", 
@@ -2085,13 +2085,13 @@
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/store/", 
-                    "clsName": "devilry_subjectadmin.store.DeadlinesBulk", 
-                    "name": "DeadlinesBulk.js"
+                    "clsName": "devilry_subjectadmin.store.PassedPreviousPeriodItems", 
+                    "name": "PassedPreviousPeriodItems.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/store/", 
-                    "clsName": "devilry_subjectadmin.store.PassedPreviousPeriodItems", 
-                    "name": "PassedPreviousPeriodItems.js"
+                    "clsName": "devilry_subjectadmin.store.DeadlinesBulk", 
+                    "name": "DeadlinesBulk.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/store/", 
@@ -2109,14 +2109,14 @@
                     "name": "Overview.js"
                 }, 
                 {
-                    "path": "static/devilry_subjectadmin/app/store/", 
-                    "clsName": "devilry_subjectadmin.store.ExaminerStats", 
-                    "name": "ExaminerStats.js"
-                }, 
-                {
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
                     "clsName": "devilry_subjectadmin.view.managestudents.SelectExaminersGrid", 
                     "name": "SelectExaminersGrid.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/store/", 
+                    "clsName": "devilry_subjectadmin.store.ExaminerStats", 
+                    "name": "ExaminerStats.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/assignment/", 
@@ -2139,6 +2139,11 @@
                     "name": "DangerousActions.js"
                 }, 
                 {
+                    "path": "static/devilry_subjectadmin/app/view/passedpreviousperiod/", 
+                    "clsName": "devilry_subjectadmin.view.passedpreviousperiod.SelectGroupsGrid", 
+                    "name": "SelectGroupsGrid.js"
+                }, 
+                {
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
                     "clsName": "devilry_subjectadmin.view.managestudents.MultiDangerousActions", 
                     "name": "MultiDangerousActions.js"
@@ -2152,11 +2157,6 @@
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
                     "clsName": "devilry_subjectadmin.view.managestudents.MergeGroups", 
                     "name": "MergeGroups.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/view/passedpreviousperiod/", 
-                    "clsName": "devilry_subjectadmin.view.passedpreviousperiod.SelectGroupsGrid", 
-                    "name": "SelectGroupsGrid.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/view/managestudents/", 
@@ -2264,6 +2264,51 @@
                     "name": "DetailedPeriodOverviewController.js"
                 }, 
                 {
+                    "path": "static/extjs4/src/chart/", 
+                    "clsName": "Ext.chart.Mask", 
+                    "name": "Mask.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/", 
+                    "clsName": "Ext.Editor", 
+                    "name": "Editor.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/grid/", 
+                    "clsName": "Ext.grid.CellEditor", 
+                    "name": "CellEditor.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/grid/plugin/", 
+                    "clsName": "Ext.grid.plugin.CellEditing", 
+                    "name": "CellEditing.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/view/passedpreviousperiod/", 
+                    "clsName": "devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid", 
+                    "name": "ConfirmGroupsGrid.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/view/passedpreviousperiod/", 
+                    "clsName": "devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodOverview", 
+                    "name": "PassedPreviousPeriodOverview.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/controller/", 
+                    "clsName": "devilry_subjectadmin.controller.PassedPreviousPeriodController", 
+                    "name": "PassedPreviousPeriodController.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/view/relatedstudents/", 
+                    "clsName": "devilry_subjectadmin.view.relatedstudents.Grid", 
+                    "name": "Grid.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/view/relatedstudents/", 
+                    "clsName": "devilry_subjectadmin.view.relatedstudents.Overview", 
+                    "name": "Overview.js"
+                }, 
+                {
                     "path": "static/extjs4/src/form/action/", 
                     "clsName": "Ext.form.action.Load", 
                     "name": "Load.js"
@@ -2322,51 +2367,6 @@
                     "path": "static/devilry_subjectadmin/app/controller/", 
                     "clsName": "devilry_subjectadmin.controller.BulkManageDeadlines", 
                     "name": "BulkManageDeadlines.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/", 
-                    "clsName": "Ext.Editor", 
-                    "name": "Editor.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/grid/", 
-                    "clsName": "Ext.grid.CellEditor", 
-                    "name": "CellEditor.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/grid/plugin/", 
-                    "clsName": "Ext.grid.plugin.CellEditing", 
-                    "name": "CellEditing.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/view/passedpreviousperiod/", 
-                    "clsName": "devilry_subjectadmin.view.passedpreviousperiod.ConfirmGroupsGrid", 
-                    "name": "ConfirmGroupsGrid.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/view/passedpreviousperiod/", 
-                    "clsName": "devilry_subjectadmin.view.passedpreviousperiod.PassedPreviousPeriodOverview", 
-                    "name": "PassedPreviousPeriodOverview.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/controller/", 
-                    "clsName": "devilry_subjectadmin.controller.PassedPreviousPeriodController", 
-                    "name": "PassedPreviousPeriodController.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/view/relatedstudents/", 
-                    "clsName": "devilry_subjectadmin.view.relatedstudents.Grid", 
-                    "name": "Grid.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/view/relatedstudents/", 
-                    "clsName": "devilry_subjectadmin.view.relatedstudents.Overview", 
-                    "name": "Overview.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/chart/", 
-                    "clsName": "Ext.chart.Mask", 
-                    "name": "Mask.js"
                 }, 
                 {
                     "path": "static/extjs4/src/chart/", 
@@ -2445,31 +2445,6 @@
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/model/", 
-                    "clsName": "devilry_subjectadmin.model.RelatedExaminer", 
-                    "name": "RelatedExaminer.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/store/", 
-                    "clsName": "devilry_subjectadmin.store.RelatedExaminers", 
-                    "name": "RelatedExaminers.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/controller/", 
-                    "clsName": "devilry_subjectadmin.controller.RelatedExaminers", 
-                    "name": "RelatedExaminers.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/model/", 
-                    "clsName": "devilry_subjectadmin.model.RelatedExaminerRo", 
-                    "name": "RelatedExaminerRo.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/store/", 
-                    "clsName": "devilry_subjectadmin.store.RelatedExaminersRo", 
-                    "name": "RelatedExaminersRo.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/model/", 
                     "clsName": "devilry_subjectadmin.model.RelatedStudent", 
                     "name": "RelatedStudent.js"
                 }, 
@@ -2477,11 +2452,6 @@
                     "path": "static/devilry_subjectadmin/app/store/", 
                     "clsName": "devilry_subjectadmin.store.RelatedStudents", 
                     "name": "RelatedStudents.js"
-                }, 
-                {
-                    "path": "static/devilry_subjectadmin/app/controller/period/", 
-                    "clsName": "devilry_subjectadmin.controller.period.PeriodController", 
-                    "name": "PeriodController.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/controller/", 
@@ -2497,6 +2467,36 @@
                     "path": "static/devilry_subjectadmin/app/store/", 
                     "clsName": "devilry_subjectadmin.store.RelatedStudentsRo", 
                     "name": "RelatedStudentsRo.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/model/", 
+                    "clsName": "devilry_subjectadmin.model.RelatedExaminer", 
+                    "name": "RelatedExaminer.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/store/", 
+                    "clsName": "devilry_subjectadmin.store.RelatedExaminers", 
+                    "name": "RelatedExaminers.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/controller/period/", 
+                    "clsName": "devilry_subjectadmin.controller.period.PeriodController", 
+                    "name": "PeriodController.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/controller/", 
+                    "clsName": "devilry_subjectadmin.controller.RelatedExaminers", 
+                    "name": "RelatedExaminers.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/model/", 
+                    "clsName": "devilry_subjectadmin.model.RelatedExaminerRo", 
+                    "name": "RelatedExaminerRo.js"
+                }, 
+                {
+                    "path": "static/devilry_subjectadmin/app/store/", 
+                    "clsName": "devilry_subjectadmin.store.RelatedExaminersRo", 
+                    "name": "RelatedExaminersRo.js"
                 }, 
                 {
                     "path": "static/devilry_subjectadmin/app/controller/managestudents/", 
@@ -2519,14 +2519,19 @@
                     "name": "SplitterTracker.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/view/", 
-                    "clsName": "Ext.view.TableChunker", 
-                    "name": "TableChunker.js"
+                    "path": "static/extjs4/src/resizer/", 
+                    "clsName": "Ext.resizer.BorderSplitterTracker", 
+                    "name": "BorderSplitterTracker.js"
                 }, 
                 {
                     "path": "static/extjs4/src/layout/component/", 
                     "clsName": "Ext.layout.component.FieldSet", 
                     "name": "FieldSet.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/view/", 
+                    "clsName": "Ext.view.TableChunker", 
+                    "name": "TableChunker.js"
                 }, 
                 {
                     "path": "static/extjs4/src/selection/", 
@@ -2542,11 +2547,6 @@
                     "path": "static/extjs4/src/grid/", 
                     "clsName": "Ext.grid.LockingView", 
                     "name": "LockingView.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/resizer/", 
-                    "clsName": "Ext.resizer.BorderSplitterTracker", 
-                    "name": "BorderSplitterTracker.js"
                 }, 
                 {
                     "path": "static/extjs4/src/grid/", 

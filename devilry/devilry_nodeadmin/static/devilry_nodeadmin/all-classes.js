@@ -4937,256 +4937,6 @@ Ext.define('Ext.util.ProtoElement', (function () {
 }()));
 
 /**
- * This class parses the XTemplate syntax and calls abstract methods to process the parts.
- * @private
- */
-Ext.define('Ext.XTemplateParser', {
-    constructor: function (config) {
-        Ext.apply(this, config);
-    },
-
-    /**
-     * @property {Number} level The 'for' loop context level. This is adjusted up by one
-     * prior to calling {@link #doFor} and down by one after calling the corresponding
-     * {@link #doEnd} that closes the loop. This will be 1 on the first {@link #doFor}
-     * call.
-     */
-
-    /**
-     * This method is called to process a piece of raw text from the tpl.
-     * @param {String} text
-     * @method doText
-     */
-    // doText: function (text)
-
-    /**
-     * This method is called to process expressions (like `{[expr]}`).
-     * @param {String} expr The body of the expression (inside "{[" and "]}").
-     * @method doExpr
-     */
-    // doExpr: function (expr)
-
-    /**
-     * This method is called to process simple tags (like `{tag}`).
-     * @method doTag
-     */
-    // doTag: function (tag)
-
-    /**
-     * This method is called to process `<tpl else>`.
-     * @method doElse
-     */
-    // doElse: function ()
-
-    /**
-     * This method is called to process `{% text %}`.
-     * @param {String} text
-     * @method doEval
-     */
-    // doEval: function (text)
-
-    /**
-     * This method is called to process `<tpl if="action">`. If there are other attributes,
-     * these are passed in the actions object.
-     * @param {String} action
-     * @param {Object} actions Other actions keyed by the attribute name (such as 'exec').
-     * @method doIf
-     */
-    // doIf: function (action, actions)
-
-    /**
-     * This method is called to process `<tpl elseif="action">`. If there are other attributes,
-     * these are passed in the actions object.
-     * @param {String} action
-     * @param {Object} actions Other actions keyed by the attribute name (such as 'exec').
-     * @method doElseIf
-     */
-    // doElseIf: function (action, actions)
-
-    /**
-     * This method is called to process `<tpl switch="action">`. If there are other attributes,
-     * these are passed in the actions object.
-     * @param {String} action
-     * @param {Object} actions Other actions keyed by the attribute name (such as 'exec').
-     * @method doSwitch
-     */
-    // doSwitch: function (action, actions)
-
-    /**
-     * This method is called to process `<tpl case="action">`. If there are other attributes,
-     * these are passed in the actions object.
-     * @param {String} action
-     * @param {Object} actions Other actions keyed by the attribute name (such as 'exec').
-     * @method doCase
-     */
-    // doCase: function (action, actions)
-
-    /**
-     * This method is called to process `<tpl default>`.
-     * @method doDefault
-     */
-    // doDefault: function ()
-
-    /**
-     * This method is called to process `</tpl>`. It is given the action type that started
-     * the tpl and the set of additional actions.
-     * @param {String} type The type of action that is being ended.
-     * @param {Object} actions The other actions keyed by the attribute name (such as 'exec').
-     * @method doEnd
-     */
-    // doEnd: function (type, actions) 
-
-    /**
-     * This method is called to process `<tpl for="action">`. If there are other attributes,
-     * these are passed in the actions object.
-     * @param {String} action
-     * @param {Object} actions Other actions keyed by the attribute name (such as 'exec').
-     * @method doFor
-     */
-    // doFor: function (action, actions)
-
-    /**
-     * This method is called to process `<tpl exec="action">`. If there are other attributes,
-     * these are passed in the actions object.
-     * @param {String} action
-     * @param {Object} actions Other actions keyed by the attribute name.
-     * @method doExec
-     */
-    // doExec: function (action, actions)
-
-    /**
-     * This method is called to process an empty `<tpl>`. This is unlikely to need to be
-     * implemented, so a default (do nothing) version is provided.
-     * @method
-     */
-    doTpl: Ext.emptyFn,
-
-    parse: function (str) {
-        var me = this,
-            len = str.length,
-            aliases = { elseif: 'elif' },
-            topRe = me.topRe,
-            actionsRe = me.actionsRe,
-            index, stack, s, m, t, prev, frame, subMatch, begin, end, actions,
-            prop;
-
-        me.level = 0;
-        me.stack = stack = [];
-
-        for (index = 0; index < len; index = end) {
-            topRe.lastIndex = index;
-            m = topRe.exec(str);
-
-            if (!m) {
-                me.doText(str.substring(index, len));
-                break;
-            }
-
-            begin = m.index;
-            end = topRe.lastIndex;
-
-            if (index < begin) {
-                me.doText(str.substring(index, begin));
-            }
-
-            if (m[1]) {
-                end = str.indexOf('%}', begin+2);
-                me.doEval(str.substring(begin+2, end));
-                end += 2;
-            } else if (m[2]) {
-                end = str.indexOf(']}', begin+2);
-                me.doExpr(str.substring(begin+2, end));
-                end += 2;
-            } else if (m[3]) { // if ('{' token)
-                me.doTag(m[3]);
-            } else if (m[4]) { // content of a <tpl xxxxxx xxx> tag
-                actions = null;
-                while ((subMatch = actionsRe.exec(m[4])) !== null) {
-                    s = subMatch[2] || subMatch[3];
-                    if (s) {
-                        s = Ext.String.htmlDecode(s); // decode attr value
-                        t = subMatch[1];
-                        t = aliases[t] || t;
-                        actions = actions || {};
-                        prev = actions[t];
-
-                        if (typeof prev == 'string') {
-                            actions[t] = [prev, s];
-                        } else if (prev) {
-                            actions[t].push(s);
-                        } else {
-                            actions[t] = s;
-                        }
-                    }
-                }
-
-                if (!actions) {
-                    if (me.elseRe.test(m[4])) {
-                        me.doElse();
-                    } else if (me.defaultRe.test(m[4])) {
-                        me.doDefault();
-                    } else {
-                        me.doTpl();
-                        stack.push({ type: 'tpl' });
-                    }
-                }
-                else if (actions['if']) {
-                    me.doIf(actions['if'], actions);
-                    stack.push({ type: 'if' });
-                }
-                else if (actions['switch']) {
-                    me.doSwitch(actions['switch'], actions);
-                    stack.push({ type: 'switch' });
-                }
-                else if (actions['case']) {
-                    me.doCase(actions['case'], actions);
-                }
-                else if (actions['elif']) {
-                    me.doElseIf(actions['elif'], actions);
-                }
-                else if (actions['for']) {
-                    ++me.level;
-
-                    // Extract property name to use from indexed item
-                    if (prop = me.propRe.exec(m[4])) {
-                        actions.propName = prop[1] || prop[2];
-                    }
-                    me.doFor(actions['for'], actions);
-                    stack.push({ type: 'for', actions: actions });
-                }
-                else if (actions.exec) {
-                    me.doExec(actions.exec, actions);
-                    stack.push({ type: 'exec', actions: actions });
-                }
-                /*
-                else {
-                    // todo - error
-                }
-                */
-            } else if (m[0].length === 5) {
-                // if the length of m[0] is 5, assume that we're dealing with an opening tpl tag with no attributes (e.g. <tpl>...</tpl>)
-                // in this case no action is needed other than pushing it on to the stack
-                stack.push({ type: 'tpl' });
-            } else {
-                frame = stack.pop();
-                me.doEnd(frame.type, frame.actions);
-                if (frame.type == 'for') {
-                    --me.level;
-                }
-            }
-        }
-    },
-
-    // Internal regexes
-    
-    topRe:     /(?:(\{\%)|(\{\[)|\{([^{}]*)\})|(?:<tpl([^>]*)\>)|(?:<\/tpl>)/g,
-    actionsRe: /\s*(elif|elseif|if|for|exec|switch|case|eval)\s*\=\s*(?:(?:"([^"]*)")|(?:'([^']*)'))\s*/g,
-    propRe:    /prop=(?:(?:"([^"]*)")|(?:'([^']*)'))/,
-    defaultRe: /^\s*default\s*$/,
-    elseRe:    /^\s*else\s*$/
-});
-
-/**
  * Provides searching of Components within Ext.ComponentManager (globally) or a specific
  * Ext.container.Container on the document with a similar syntax to a CSS selector.
  *
@@ -5732,43 +5482,6 @@ Ext.define('Ext.ComponentQuery', {
         }
     });
 });
-/**
- * @class Ext.fx.target.Target
-
-This class specifies a generic target for an animation. It provides a wrapper around a
-series of different types of objects to allow for a generic animation API.
-A target can be a single object or a Composite object containing other objects that are 
-to be animated. This class and it's subclasses are generally not created directly, the 
-underlying animation will create the appropriate Ext.fx.target.Target object by passing 
-the instance to be animated.
-
-The following types of objects can be animated:
-
-- {@link Ext.fx.target.Component Components}
-- {@link Ext.fx.target.Element Elements}
-- {@link Ext.fx.target.Sprite Sprites}
-
- * @markdown
- * @abstract
- */
-Ext.define('Ext.fx.target.Target', {
-
-    isAnimTarget: true,
-
-    /**
-     * Creates new Target.
-     * @param {Ext.Component/Ext.Element/Ext.draw.Sprite} target The object to be animated
-     */
-    constructor: function(target) {
-        this.target = target;
-        this.id = this.getId();
-    },
-    
-    getId: function() {
-        return this.target.id;
-    }
-});
-
 /**
  * Given a component hierarchy of this:
  *
@@ -6896,6 +6609,475 @@ Ext.define('Ext.util.Renderable', {
 });
 
 /**
+ * This class parses the XTemplate syntax and calls abstract methods to process the parts.
+ * @private
+ */
+Ext.define('Ext.XTemplateParser', {
+    constructor: function (config) {
+        Ext.apply(this, config);
+    },
+
+    /**
+     * @property {Number} level The 'for' loop context level. This is adjusted up by one
+     * prior to calling {@link #doFor} and down by one after calling the corresponding
+     * {@link #doEnd} that closes the loop. This will be 1 on the first {@link #doFor}
+     * call.
+     */
+
+    /**
+     * This method is called to process a piece of raw text from the tpl.
+     * @param {String} text
+     * @method doText
+     */
+    // doText: function (text)
+
+    /**
+     * This method is called to process expressions (like `{[expr]}`).
+     * @param {String} expr The body of the expression (inside "{[" and "]}").
+     * @method doExpr
+     */
+    // doExpr: function (expr)
+
+    /**
+     * This method is called to process simple tags (like `{tag}`).
+     * @method doTag
+     */
+    // doTag: function (tag)
+
+    /**
+     * This method is called to process `<tpl else>`.
+     * @method doElse
+     */
+    // doElse: function ()
+
+    /**
+     * This method is called to process `{% text %}`.
+     * @param {String} text
+     * @method doEval
+     */
+    // doEval: function (text)
+
+    /**
+     * This method is called to process `<tpl if="action">`. If there are other attributes,
+     * these are passed in the actions object.
+     * @param {String} action
+     * @param {Object} actions Other actions keyed by the attribute name (such as 'exec').
+     * @method doIf
+     */
+    // doIf: function (action, actions)
+
+    /**
+     * This method is called to process `<tpl elseif="action">`. If there are other attributes,
+     * these are passed in the actions object.
+     * @param {String} action
+     * @param {Object} actions Other actions keyed by the attribute name (such as 'exec').
+     * @method doElseIf
+     */
+    // doElseIf: function (action, actions)
+
+    /**
+     * This method is called to process `<tpl switch="action">`. If there are other attributes,
+     * these are passed in the actions object.
+     * @param {String} action
+     * @param {Object} actions Other actions keyed by the attribute name (such as 'exec').
+     * @method doSwitch
+     */
+    // doSwitch: function (action, actions)
+
+    /**
+     * This method is called to process `<tpl case="action">`. If there are other attributes,
+     * these are passed in the actions object.
+     * @param {String} action
+     * @param {Object} actions Other actions keyed by the attribute name (such as 'exec').
+     * @method doCase
+     */
+    // doCase: function (action, actions)
+
+    /**
+     * This method is called to process `<tpl default>`.
+     * @method doDefault
+     */
+    // doDefault: function ()
+
+    /**
+     * This method is called to process `</tpl>`. It is given the action type that started
+     * the tpl and the set of additional actions.
+     * @param {String} type The type of action that is being ended.
+     * @param {Object} actions The other actions keyed by the attribute name (such as 'exec').
+     * @method doEnd
+     */
+    // doEnd: function (type, actions) 
+
+    /**
+     * This method is called to process `<tpl for="action">`. If there are other attributes,
+     * these are passed in the actions object.
+     * @param {String} action
+     * @param {Object} actions Other actions keyed by the attribute name (such as 'exec').
+     * @method doFor
+     */
+    // doFor: function (action, actions)
+
+    /**
+     * This method is called to process `<tpl exec="action">`. If there are other attributes,
+     * these are passed in the actions object.
+     * @param {String} action
+     * @param {Object} actions Other actions keyed by the attribute name.
+     * @method doExec
+     */
+    // doExec: function (action, actions)
+
+    /**
+     * This method is called to process an empty `<tpl>`. This is unlikely to need to be
+     * implemented, so a default (do nothing) version is provided.
+     * @method
+     */
+    doTpl: Ext.emptyFn,
+
+    parse: function (str) {
+        var me = this,
+            len = str.length,
+            aliases = { elseif: 'elif' },
+            topRe = me.topRe,
+            actionsRe = me.actionsRe,
+            index, stack, s, m, t, prev, frame, subMatch, begin, end, actions,
+            prop;
+
+        me.level = 0;
+        me.stack = stack = [];
+
+        for (index = 0; index < len; index = end) {
+            topRe.lastIndex = index;
+            m = topRe.exec(str);
+
+            if (!m) {
+                me.doText(str.substring(index, len));
+                break;
+            }
+
+            begin = m.index;
+            end = topRe.lastIndex;
+
+            if (index < begin) {
+                me.doText(str.substring(index, begin));
+            }
+
+            if (m[1]) {
+                end = str.indexOf('%}', begin+2);
+                me.doEval(str.substring(begin+2, end));
+                end += 2;
+            } else if (m[2]) {
+                end = str.indexOf(']}', begin+2);
+                me.doExpr(str.substring(begin+2, end));
+                end += 2;
+            } else if (m[3]) { // if ('{' token)
+                me.doTag(m[3]);
+            } else if (m[4]) { // content of a <tpl xxxxxx xxx> tag
+                actions = null;
+                while ((subMatch = actionsRe.exec(m[4])) !== null) {
+                    s = subMatch[2] || subMatch[3];
+                    if (s) {
+                        s = Ext.String.htmlDecode(s); // decode attr value
+                        t = subMatch[1];
+                        t = aliases[t] || t;
+                        actions = actions || {};
+                        prev = actions[t];
+
+                        if (typeof prev == 'string') {
+                            actions[t] = [prev, s];
+                        } else if (prev) {
+                            actions[t].push(s);
+                        } else {
+                            actions[t] = s;
+                        }
+                    }
+                }
+
+                if (!actions) {
+                    if (me.elseRe.test(m[4])) {
+                        me.doElse();
+                    } else if (me.defaultRe.test(m[4])) {
+                        me.doDefault();
+                    } else {
+                        me.doTpl();
+                        stack.push({ type: 'tpl' });
+                    }
+                }
+                else if (actions['if']) {
+                    me.doIf(actions['if'], actions);
+                    stack.push({ type: 'if' });
+                }
+                else if (actions['switch']) {
+                    me.doSwitch(actions['switch'], actions);
+                    stack.push({ type: 'switch' });
+                }
+                else if (actions['case']) {
+                    me.doCase(actions['case'], actions);
+                }
+                else if (actions['elif']) {
+                    me.doElseIf(actions['elif'], actions);
+                }
+                else if (actions['for']) {
+                    ++me.level;
+
+                    // Extract property name to use from indexed item
+                    if (prop = me.propRe.exec(m[4])) {
+                        actions.propName = prop[1] || prop[2];
+                    }
+                    me.doFor(actions['for'], actions);
+                    stack.push({ type: 'for', actions: actions });
+                }
+                else if (actions.exec) {
+                    me.doExec(actions.exec, actions);
+                    stack.push({ type: 'exec', actions: actions });
+                }
+                /*
+                else {
+                    // todo - error
+                }
+                */
+            } else if (m[0].length === 5) {
+                // if the length of m[0] is 5, assume that we're dealing with an opening tpl tag with no attributes (e.g. <tpl>...</tpl>)
+                // in this case no action is needed other than pushing it on to the stack
+                stack.push({ type: 'tpl' });
+            } else {
+                frame = stack.pop();
+                me.doEnd(frame.type, frame.actions);
+                if (frame.type == 'for') {
+                    --me.level;
+                }
+            }
+        }
+    },
+
+    // Internal regexes
+    
+    topRe:     /(?:(\{\%)|(\{\[)|\{([^{}]*)\})|(?:<tpl([^>]*)\>)|(?:<\/tpl>)/g,
+    actionsRe: /\s*(elif|elseif|if|for|exec|switch|case|eval)\s*\=\s*(?:(?:"([^"]*)")|(?:'([^']*)'))\s*/g,
+    propRe:    /prop=(?:(?:"([^"]*)")|(?:'([^']*)'))/,
+    defaultRe: /^\s*default\s*$/,
+    elseRe:    /^\s*else\s*$/
+});
+
+/**
+ * @class Ext.fx.target.Target
+
+This class specifies a generic target for an animation. It provides a wrapper around a
+series of different types of objects to allow for a generic animation API.
+A target can be a single object or a Composite object containing other objects that are 
+to be animated. This class and it's subclasses are generally not created directly, the 
+underlying animation will create the appropriate Ext.fx.target.Target object by passing 
+the instance to be animated.
+
+The following types of objects can be animated:
+
+- {@link Ext.fx.target.Component Components}
+- {@link Ext.fx.target.Element Elements}
+- {@link Ext.fx.target.Sprite Sprites}
+
+ * @markdown
+ * @abstract
+ */
+Ext.define('Ext.fx.target.Target', {
+
+    isAnimTarget: true,
+
+    /**
+     * Creates new Target.
+     * @param {Ext.Component/Ext.Element/Ext.draw.Sprite} target The object to be animated
+     */
+    constructor: function(target) {
+        this.target = target;
+        this.id = this.getId();
+    },
+    
+    getId: function() {
+        return this.target.id;
+    }
+});
+
+/**
+ * @class Ext.state.Provider
+ * <p>Abstract base class for state provider implementations. The provider is responsible
+ * for setting values  and extracting values to/from the underlying storage source. The 
+ * storage source can vary and the details should be implemented in a subclass. For example
+ * a provider could use a server side database or the browser localstorage where supported.</p>
+ *
+ * <p>This class provides methods for encoding and decoding <b>typed</b> variables including 
+ * dates and defines the Provider interface. By default these methods put the value and the
+ * type information into a delimited string that can be stored. These should be overridden in 
+ * a subclass if you want to change the format of the encoded value and subsequent decoding.</p>
+ */
+Ext.define('Ext.state.Provider', {
+    mixins: {
+        observable: 'Ext.util.Observable'
+    },
+    
+    /**
+     * @cfg {String} prefix A string to prefix to items stored in the underlying state store. 
+     * Defaults to <tt>'ext-'</tt>
+     */
+    prefix: 'ext-',
+    
+    constructor : function(config){
+        config = config || {};
+        var me = this;
+        Ext.apply(me, config);
+        /**
+         * @event statechange
+         * Fires when a state change occurs.
+         * @param {Ext.state.Provider} this This state provider
+         * @param {String} key The state key which was changed
+         * @param {String} value The encoded value for the state
+         */
+        me.addEvents("statechange");
+        me.state = {};
+        me.mixins.observable.constructor.call(me);
+    },
+    
+    /**
+     * Returns the current value for a key
+     * @param {String} name The key name
+     * @param {Object} defaultValue A default value to return if the key's value is not found
+     * @return {Object} The state data
+     */
+    get : function(name, defaultValue){
+        return typeof this.state[name] == "undefined" ?
+            defaultValue : this.state[name];
+    },
+
+    /**
+     * Clears a value from the state
+     * @param {String} name The key name
+     */
+    clear : function(name){
+        var me = this;
+        delete me.state[name];
+        me.fireEvent("statechange", me, name, null);
+    },
+
+    /**
+     * Sets the value for a key
+     * @param {String} name The key name
+     * @param {Object} value The value to set
+     */
+    set : function(name, value){
+        var me = this;
+        me.state[name] = value;
+        me.fireEvent("statechange", me, name, value);
+    },
+
+    /**
+     * Decodes a string previously encoded with {@link #encodeValue}.
+     * @param {String} value The value to decode
+     * @return {Object} The decoded value
+     */
+    decodeValue : function(value){
+
+        // a -> Array
+        // n -> Number
+        // d -> Date
+        // b -> Boolean
+        // s -> String
+        // o -> Object
+        // -> Empty (null)
+
+        var me = this,
+            re = /^(a|n|d|b|s|o|e)\:(.*)$/,
+            matches = re.exec(unescape(value)),
+            all,
+            type,
+            keyValue,
+            values,
+            vLen,
+            v;
+            
+        if(!matches || !matches[1]){
+            return; // non state
+        }
+        
+        type = matches[1];
+        value = matches[2];
+        switch (type) {
+            case 'e':
+                return null;
+            case 'n':
+                return parseFloat(value);
+            case 'd':
+                return new Date(Date.parse(value));
+            case 'b':
+                return (value == '1');
+            case 'a':
+                all = [];
+                if(value != ''){
+                    values = value.split('^');
+                    vLen   = values.length;
+
+                    for (v = 0; v < vLen; v++) {
+                        value = values[v];
+                        all.push(me.decodeValue(value));
+                    }
+                }
+                return all;
+           case 'o':
+                all = {};
+                if(value != ''){
+                    values = value.split('^');
+                    vLen   = values.length;
+
+                    for (v = 0; v < vLen; v++) {
+                        value = values[v];
+                        keyValue         = value.split('=');
+                        all[keyValue[0]] = me.decodeValue(keyValue[1]);
+                    }
+                }
+                return all;
+           default:
+                return value;
+        }
+    },
+
+    /**
+     * Encodes a value including type information.  Decode with {@link #decodeValue}.
+     * @param {Object} value The value to encode
+     * @return {String} The encoded value
+     */
+    encodeValue : function(value){
+        var flat = '',
+            i = 0,
+            enc,
+            len,
+            key;
+            
+        if (value == null) {
+            return 'e:1';    
+        } else if(typeof value == 'number') {
+            enc = 'n:' + value;
+        } else if(typeof value == 'boolean') {
+            enc = 'b:' + (value ? '1' : '0');
+        } else if(Ext.isDate(value)) {
+            enc = 'd:' + value.toGMTString();
+        } else if(Ext.isArray(value)) {
+            for (len = value.length; i < len; i++) {
+                flat += this.encodeValue(value[i]);
+                if (i != len - 1) {
+                    flat += '^';
+                }
+            }
+            enc = 'a:' + flat;
+        } else if (typeof value == 'object') {
+            for (key in value) {
+                if (typeof value[key] != 'function' && value[key] !== undefined) {
+                    flat += key + '=' + this.encodeValue(value[key]) + '^';
+                }
+            }
+            enc = 'o:' + flat.substring(0, flat.length-1);
+        } else {
+            enc = 's:' + value;
+        }
+        return escape(enc);
+    }
+});
+/**
  * A class that manages a group of {@link Ext.Component#floating} Components and provides z-order management,
  * and Component activation behavior, including masking below the active (topmost) Component.
  *
@@ -7493,185 +7675,87 @@ Ext.define('Ext.util.Offset', {
 });
 
 /**
- * @class Ext.state.Provider
- * <p>Abstract base class for state provider implementations. The provider is responsible
- * for setting values  and extracting values to/from the underlying storage source. The 
- * storage source can vary and the details should be implemented in a subclass. For example
- * a provider could use a server side database or the browser localstorage where supported.</p>
- *
- * <p>This class provides methods for encoding and decoding <b>typed</b> variables including 
- * dates and defines the Provider interface. By default these methods put the value and the
- * type information into a delimited string that can be stored. These should be overridden in 
- * a subclass if you want to change the format of the encoded value and subsequent decoding.</p>
+ * @private
+ * Base class for Box Layout overflow handlers. These specialized classes are invoked when a Box Layout
+ * (either an HBox or a VBox) has child items that are either too wide (for HBox) or too tall (for VBox)
+ * for its container.
  */
-Ext.define('Ext.state.Provider', {
-    mixins: {
-        observable: 'Ext.util.Observable'
-    },
+Ext.define('Ext.layout.container.boxOverflow.None', {
+    alternateClassName: 'Ext.layout.boxOverflow.None',
     
-    /**
-     * @cfg {String} prefix A string to prefix to items stored in the underlying state store. 
-     * Defaults to <tt>'ext-'</tt>
-     */
-    prefix: 'ext-',
-    
-    constructor : function(config){
-        config = config || {};
-        var me = this;
-        Ext.apply(me, config);
-        /**
-         * @event statechange
-         * Fires when a state change occurs.
-         * @param {Ext.state.Provider} this This state provider
-         * @param {String} key The state key which was changed
-         * @param {String} value The encoded value for the state
-         */
-        me.addEvents("statechange");
-        me.state = {};
-        me.mixins.observable.constructor.call(me);
-    },
-    
-    /**
-     * Returns the current value for a key
-     * @param {String} name The key name
-     * @param {Object} defaultValue A default value to return if the key's value is not found
-     * @return {Object} The state data
-     */
-    get : function(name, defaultValue){
-        return typeof this.state[name] == "undefined" ?
-            defaultValue : this.state[name];
+    constructor: function(layout, config) {
+        this.layout = layout;
+        Ext.apply(this, config);
     },
 
-    /**
-     * Clears a value from the state
-     * @param {String} name The key name
-     */
-    clear : function(name){
-        var me = this;
-        delete me.state[name];
-        me.fireEvent("statechange", me, name, null);
-    },
+    handleOverflow: Ext.emptyFn,
 
-    /**
-     * Sets the value for a key
-     * @param {String} name The key name
-     * @param {Object} value The value to set
-     */
-    set : function(name, value){
-        var me = this;
-        me.state[name] = value;
-        me.fireEvent("statechange", me, name, value);
-    },
+    clearOverflow: Ext.emptyFn,
 
-    /**
-     * Decodes a string previously encoded with {@link #encodeValue}.
-     * @param {String} value The value to decode
-     * @return {Object} The decoded value
-     */
-    decodeValue : function(value){
+    beginLayout: Ext.emptyFn,
+    beginLayoutCycle: Ext.emptyFn,
+    finishedLayout: Ext.emptyFn,
 
-        // a -> Array
-        // n -> Number
-        // d -> Date
-        // b -> Boolean
-        // s -> String
-        // o -> Object
-        // -> Empty (null)
-
+    completeLayout: function (ownerContext) {
         var me = this,
-            re = /^(a|n|d|b|s|o|e)\:(.*)$/,
-            matches = re.exec(unescape(value)),
-            all,
-            type,
-            keyValue,
-            values,
-            vLen,
-            v;
-            
-        if(!matches || !matches[1]){
-            return; // non state
+            plan = ownerContext.state.boxPlan,
+            overflow;
+
+        if (plan && plan.tooNarrow) {
+            overflow = me.handleOverflow(ownerContext);
+
+            if (overflow) {
+                if (overflow.reservedSpace) {
+                    me.layout.publishInnerCtSize(ownerContext, overflow.reservedSpace);
+                }
+
+                // TODO: If we need to use the code below then we will need to pass along
+                // the new targetSize as state and use it calculate somehow...
+                //
+                //if (overflow.recalculate) {
+                //    ownerContext.invalidate({
+                //        state: {
+                //            overflow: overflow
+                //        }
+                //    });
+                //}
+            }
+        } else {
+            me.clearOverflow();
+        }
+    },
+
+    onRemove: Ext.emptyFn,
+
+    /**
+     * @private
+     * Normalizes an item reference, string id or numerical index into a reference to the item
+     * @param {Ext.Component/String/Number} item The item reference, id or index
+     * @return {Ext.Component} The item
+     */
+    getItem: function(item) {
+        return this.layout.owner.getComponent(item);
+    },
+    
+    getOwnerType: function(owner){
+        var type;
+        if (owner.isToolbar) {
+            type = 'toolbar';
+        } else if (owner.isTabBar) {
+            type = 'tabbar';
+        } else if (owner.isMenu) {
+            type = 'menu';
+        } else {
+            type = owner.getXType();
         }
         
-        type = matches[1];
-        value = matches[2];
-        switch (type) {
-            case 'e':
-                return null;
-            case 'n':
-                return parseFloat(value);
-            case 'd':
-                return new Date(Date.parse(value));
-            case 'b':
-                return (value == '1');
-            case 'a':
-                all = [];
-                if(value != ''){
-                    values = value.split('^');
-                    vLen   = values.length;
-
-                    for (v = 0; v < vLen; v++) {
-                        value = values[v];
-                        all.push(me.decodeValue(value));
-                    }
-                }
-                return all;
-           case 'o':
-                all = {};
-                if(value != ''){
-                    values = value.split('^');
-                    vLen   = values.length;
-
-                    for (v = 0; v < vLen; v++) {
-                        value = values[v];
-                        keyValue         = value.split('=');
-                        all[keyValue[0]] = me.decodeValue(keyValue[1]);
-                    }
-                }
-                return all;
-           default:
-                return value;
-        }
+        return type;
     },
 
-    /**
-     * Encodes a value including type information.  Decode with {@link #decodeValue}.
-     * @param {Object} value The value to encode
-     * @return {String} The encoded value
-     */
-    encodeValue : function(value){
-        var flat = '',
-            i = 0,
-            enc,
-            len,
-            key;
-            
-        if (value == null) {
-            return 'e:1';    
-        } else if(typeof value == 'number') {
-            enc = 'n:' + value;
-        } else if(typeof value == 'boolean') {
-            enc = 'b:' + (value ? '1' : '0');
-        } else if(Ext.isDate(value)) {
-            enc = 'd:' + value.toGMTString();
-        } else if(Ext.isArray(value)) {
-            for (len = value.length; i < len; i++) {
-                flat += this.encodeValue(value[i]);
-                if (i != len - 1) {
-                    flat += '^';
-                }
-            }
-            enc = 'a:' + flat;
-        } else if (typeof value == 'object') {
-            for (key in value) {
-                if (typeof value[key] != 'function' && value[key] !== undefined) {
-                    flat += key + '=' + this.encodeValue(value[key]) + '^';
-                }
-            }
-            enc = 'o:' + flat.substring(0, flat.length-1);
-        } else {
-            enc = 's:' + value;
-        }
-        return escape(enc);
+    getPrefixConfig: Ext.emptyFn,
+    getSuffixConfig: Ext.emptyFn,
+    getOverflowCls: function() {
+        return '';
     }
 });
 /**
@@ -7978,90 +8062,6 @@ Ext.define('Ext.draw.Color', {
     });
 });
 
-/**
- * @private
- * Base class for Box Layout overflow handlers. These specialized classes are invoked when a Box Layout
- * (either an HBox or a VBox) has child items that are either too wide (for HBox) or too tall (for VBox)
- * for its container.
- */
-Ext.define('Ext.layout.container.boxOverflow.None', {
-    alternateClassName: 'Ext.layout.boxOverflow.None',
-    
-    constructor: function(layout, config) {
-        this.layout = layout;
-        Ext.apply(this, config);
-    },
-
-    handleOverflow: Ext.emptyFn,
-
-    clearOverflow: Ext.emptyFn,
-
-    beginLayout: Ext.emptyFn,
-    beginLayoutCycle: Ext.emptyFn,
-    finishedLayout: Ext.emptyFn,
-
-    completeLayout: function (ownerContext) {
-        var me = this,
-            plan = ownerContext.state.boxPlan,
-            overflow;
-
-        if (plan && plan.tooNarrow) {
-            overflow = me.handleOverflow(ownerContext);
-
-            if (overflow) {
-                if (overflow.reservedSpace) {
-                    me.layout.publishInnerCtSize(ownerContext, overflow.reservedSpace);
-                }
-
-                // TODO: If we need to use the code below then we will need to pass along
-                // the new targetSize as state and use it calculate somehow...
-                //
-                //if (overflow.recalculate) {
-                //    ownerContext.invalidate({
-                //        state: {
-                //            overflow: overflow
-                //        }
-                //    });
-                //}
-            }
-        } else {
-            me.clearOverflow();
-        }
-    },
-
-    onRemove: Ext.emptyFn,
-
-    /**
-     * @private
-     * Normalizes an item reference, string id or numerical index into a reference to the item
-     * @param {Ext.Component/String/Number} item The item reference, id or index
-     * @return {Ext.Component} The item
-     */
-    getItem: function(item) {
-        return this.layout.owner.getComponent(item);
-    },
-    
-    getOwnerType: function(owner){
-        var type;
-        if (owner.isToolbar) {
-            type = 'toolbar';
-        } else if (owner.isTabBar) {
-            type = 'tabbar';
-        } else if (owner.isMenu) {
-            type = 'menu';
-        } else {
-            type = owner.getXType();
-        }
-        
-        return type;
-    },
-
-    getPrefixConfig: Ext.emptyFn,
-    getSuffixConfig: Ext.emptyFn,
-    getOverflowCls: function() {
-        return '';
-    }
-});
 /**
  * A wrapper class which can be applied to any element. Fires a "click" event while the
  * mouse is pressed. The interval between firings may be specified in the config but
@@ -15576,129 +15576,6 @@ Ext.define('Ext.XTemplate', {
 });
 
 /**
- * @class Ext.fx.Queue
- * Animation Queue mixin to handle chaining and queueing by target.
- * @private
- */
-
-Ext.define('Ext.fx.Queue', {
-
-    requires: ['Ext.util.HashMap'],
-
-    constructor: function() {
-        this.targets = new Ext.util.HashMap();
-        this.fxQueue = {};
-    },
-
-    // @private
-    getFxDefaults: function(targetId) {
-        var target = this.targets.get(targetId);
-        if (target) {
-            return target.fxDefaults;
-        }
-        return {};
-    },
-
-    // @private
-    setFxDefaults: function(targetId, obj) {
-        var target = this.targets.get(targetId);
-        if (target) {
-            target.fxDefaults = Ext.apply(target.fxDefaults || {}, obj);
-        }
-    },
-
-    // @private
-    stopAnimation: function(targetId) {
-        var me = this,
-            queue = me.getFxQueue(targetId),
-            ln = queue.length;
-        while (ln) {
-            queue[ln - 1].end();
-            ln--;
-        }
-    },
-
-    /**
-     * @private
-     * Returns current animation object if the element has any effects actively running or queued, else returns false.
-     */
-    getActiveAnimation: function(targetId) {
-        var queue = this.getFxQueue(targetId);
-        return (queue && !!queue.length) ? queue[0] : false;
-    },
-
-    // @private
-    hasFxBlock: function(targetId) {
-        var queue = this.getFxQueue(targetId);
-        return queue && queue[0] && queue[0].block;
-    },
-
-    // @private get fx queue for passed target, create if needed.
-    getFxQueue: function(targetId) {
-        if (!targetId) {
-            return false;
-        }
-        var me = this,
-            queue = me.fxQueue[targetId],
-            target = me.targets.get(targetId);
-
-        if (!target) {
-            return false;
-        }
-
-        if (!queue) {
-            me.fxQueue[targetId] = [];
-            // GarbageCollector will need to clean up Elements since they aren't currently observable
-            if (target.type != 'element') {
-                target.target.on('destroy', function() {
-                    me.fxQueue[targetId] = [];
-                });
-            }
-        }
-        return me.fxQueue[targetId];
-    },
-
-    // @private
-    queueFx: function(anim) {
-        var me = this,
-            target = anim.target,
-            queue, ln;
-
-        if (!target) {
-            return;
-        }
-
-        queue = me.getFxQueue(target.getId());
-        ln = queue.length;
-
-        if (ln) {
-            if (anim.concurrent) {
-                anim.paused = false;
-            }
-            else {
-                queue[ln - 1].on('afteranimate', function() {
-                    anim.paused = false;
-                });
-            }
-        }
-        else {
-            anim.paused = false;
-        }
-        anim.on('afteranimate', function() {
-            Ext.Array.remove(queue, anim);
-            if (anim.remove) {
-                if (target.type == 'element') {
-                    var el = Ext.get(target.id);
-                    if (el) {
-                        el.remove();
-                    }
-                }
-            }
-        }, this);
-        queue.push(anim);
-    }
-});
-/**
  * @class Ext.fx.target.Element
  * 
  * This class represents a animation target for an {@link Ext.Element}. In general this class will not be
@@ -15857,6 +15734,129 @@ Ext.define('Ext.fx.target.ElementCSS', {
                 }
             }
         }
+    }
+});
+/**
+ * @class Ext.fx.Queue
+ * Animation Queue mixin to handle chaining and queueing by target.
+ * @private
+ */
+
+Ext.define('Ext.fx.Queue', {
+
+    requires: ['Ext.util.HashMap'],
+
+    constructor: function() {
+        this.targets = new Ext.util.HashMap();
+        this.fxQueue = {};
+    },
+
+    // @private
+    getFxDefaults: function(targetId) {
+        var target = this.targets.get(targetId);
+        if (target) {
+            return target.fxDefaults;
+        }
+        return {};
+    },
+
+    // @private
+    setFxDefaults: function(targetId, obj) {
+        var target = this.targets.get(targetId);
+        if (target) {
+            target.fxDefaults = Ext.apply(target.fxDefaults || {}, obj);
+        }
+    },
+
+    // @private
+    stopAnimation: function(targetId) {
+        var me = this,
+            queue = me.getFxQueue(targetId),
+            ln = queue.length;
+        while (ln) {
+            queue[ln - 1].end();
+            ln--;
+        }
+    },
+
+    /**
+     * @private
+     * Returns current animation object if the element has any effects actively running or queued, else returns false.
+     */
+    getActiveAnimation: function(targetId) {
+        var queue = this.getFxQueue(targetId);
+        return (queue && !!queue.length) ? queue[0] : false;
+    },
+
+    // @private
+    hasFxBlock: function(targetId) {
+        var queue = this.getFxQueue(targetId);
+        return queue && queue[0] && queue[0].block;
+    },
+
+    // @private get fx queue for passed target, create if needed.
+    getFxQueue: function(targetId) {
+        if (!targetId) {
+            return false;
+        }
+        var me = this,
+            queue = me.fxQueue[targetId],
+            target = me.targets.get(targetId);
+
+        if (!target) {
+            return false;
+        }
+
+        if (!queue) {
+            me.fxQueue[targetId] = [];
+            // GarbageCollector will need to clean up Elements since they aren't currently observable
+            if (target.type != 'element') {
+                target.target.on('destroy', function() {
+                    me.fxQueue[targetId] = [];
+                });
+            }
+        }
+        return me.fxQueue[targetId];
+    },
+
+    // @private
+    queueFx: function(anim) {
+        var me = this,
+            target = anim.target,
+            queue, ln;
+
+        if (!target) {
+            return;
+        }
+
+        queue = me.getFxQueue(target.getId());
+        ln = queue.length;
+
+        if (ln) {
+            if (anim.concurrent) {
+                anim.paused = false;
+            }
+            else {
+                queue[ln - 1].on('afteranimate', function() {
+                    anim.paused = false;
+                });
+            }
+        }
+        else {
+            anim.paused = false;
+        }
+        anim.on('afteranimate', function() {
+            Ext.Array.remove(queue, anim);
+            if (anim.remove) {
+                if (target.type == 'element') {
+                    var el = Ext.get(target.id);
+                    if (el) {
+                        el.remove();
+                    }
+                }
+            }
+        }, this);
+        queue.push(anim);
     }
 });
 /**
@@ -33587,6 +33587,47 @@ Ext.define('Ext.panel.Header', {
 });
 
 /**
+ * The base class that other non-interacting Toolbar Item classes should extend in order to
+ * get some basic common toolbar item functionality.
+ */
+Ext.define('Ext.toolbar.Item', {
+    extend: 'Ext.Component',
+    alias: 'widget.tbitem',
+    alternateClassName: 'Ext.Toolbar.Item',
+    enable:Ext.emptyFn,
+    disable:Ext.emptyFn,
+    focus:Ext.emptyFn
+    /**
+     * @cfg {String} overflowText
+     * Text to be used for the menu if the item is overflowed.
+     */
+});
+/**
+ * A simple class that adds a vertical separator bar between toolbar items (css class: 'x-toolbar-separator').
+ *
+ *     @example
+ *     Ext.create('Ext.panel.Panel', {
+ *         title: 'Toolbar Separator Example',
+ *         width: 300,
+ *         height: 200,
+ *         tbar : [
+ *             'Item 1',
+ *             { xtype: 'tbseparator' },
+ *             'Item 2'
+ *         ],
+ *         renderTo: Ext.getBody()
+ *     });
+ */
+Ext.define('Ext.toolbar.Separator', {
+    extend: 'Ext.toolbar.Item',
+    alias: 'widget.tbseparator',
+    alternateClassName: 'Ext.Toolbar.Separator',
+    baseCls: Ext.baseCSSPrefix + 'toolbar-separator',
+    focusable: false,
+    // Force border: true so container border is not set on this
+    border: true
+});
+/**
  * @private
  */
 Ext.define('Ext.layout.container.boxOverflow.Scroller', {
@@ -34062,47 +34103,6 @@ Ext.define('Ext.layout.container.boxOverflow.Scroller', {
     }
 });
 
-/**
- * The base class that other non-interacting Toolbar Item classes should extend in order to
- * get some basic common toolbar item functionality.
- */
-Ext.define('Ext.toolbar.Item', {
-    extend: 'Ext.Component',
-    alias: 'widget.tbitem',
-    alternateClassName: 'Ext.Toolbar.Item',
-    enable:Ext.emptyFn,
-    disable:Ext.emptyFn,
-    focus:Ext.emptyFn
-    /**
-     * @cfg {String} overflowText
-     * Text to be used for the menu if the item is overflowed.
-     */
-});
-/**
- * A simple class that adds a vertical separator bar between toolbar items (css class: 'x-toolbar-separator').
- *
- *     @example
- *     Ext.create('Ext.panel.Panel', {
- *         title: 'Toolbar Separator Example',
- *         width: 300,
- *         height: 200,
- *         tbar : [
- *             'Item 1',
- *             { xtype: 'tbseparator' },
- *             'Item 2'
- *         ],
- *         renderTo: Ext.getBody()
- *     });
- */
-Ext.define('Ext.toolbar.Separator', {
-    extend: 'Ext.toolbar.Item',
-    alias: 'widget.tbseparator',
-    alternateClassName: 'Ext.Toolbar.Separator',
-    baseCls: Ext.baseCSSPrefix + 'toolbar-separator',
-    focusable: false,
-    // Force border: true so container border is not set on this
-    border: true
-});
 /**
  * Provides a common registry of all menus on a page.
  * @singleton
@@ -43946,88 +43946,6 @@ Ext.define('Ext.resizer.Resizer', {
 });
 
 /**
- * Component layout for components which maintain an inner body element which must be resized to synchronize with the
- * Component size.
- * @private
- */
-Ext.define('Ext.layout.component.Body', {
-
-    /* Begin Definitions */
-
-    alias: ['layout.body'],
-
-    extend: 'Ext.layout.component.Auto',
-
-    /* End Definitions */
-
-    type: 'body',
-
-    beginLayout: function (ownerContext) {
-        this.callParent(arguments);
-
-        ownerContext.bodyContext = ownerContext.getEl('body');
-    },
-
-    // Padding is exciting here because we have 2 el's: owner.el and owner.body. Content
-    // size always includes the padding of the targetEl, which should be owner.body. But
-    // it is common to have padding on owner.el also (such as a panel header), so we need
-    // to do some more padding work if targetContext is not owner.el. The base class has
-    // already handled the ownerContext's frameInfo (border+framing) so all that is left
-    // is padding.
-
-    calculateOwnerHeightFromContentHeight: function (ownerContext, contentHeight) {
-        var height = this.callParent(arguments);
-
-        if (ownerContext.targetContext != ownerContext) {
-            height += ownerContext.getPaddingInfo().height;
-        }
-
-        return height;
-    },
-
-    calculateOwnerWidthFromContentWidth: function (ownerContext, contentWidth) {
-        var width = this.callParent(arguments);
-
-        if (ownerContext.targetContext != ownerContext) {
-            width += ownerContext.getPaddingInfo().width;
-        }
-
-        return width;
-    },
-
-    measureContentWidth: function (ownerContext) {
-        return ownerContext.bodyContext.setWidth(ownerContext.bodyContext.el.dom.offsetWidth, false);
-    },
-
-    measureContentHeight: function (ownerContext) {
-        return ownerContext.bodyContext.setHeight(ownerContext.bodyContext.el.dom.offsetHeight, false);
-    },
-
-    publishInnerHeight: function (ownerContext, height) {
-        var innerHeight = height - ownerContext.getFrameInfo().height,
-            targetContext = ownerContext.targetContext;
-
-        if (targetContext != ownerContext) {
-            innerHeight -= ownerContext.getPaddingInfo().height;
-        }
-
-        // return the value here, it may get used in a subclass
-        return ownerContext.bodyContext.setHeight(innerHeight, !ownerContext.heightModel.natural);
-    },
-
-    publishInnerWidth: function (ownerContext, width) {
-        var innerWidth = width - ownerContext.getFrameInfo().width,
-            targetContext = ownerContext.targetContext;
-
-        if (targetContext != ownerContext) {
-            innerWidth -= ownerContext.getPaddingInfo().width;
-        }
-
-        ownerContext.bodyContext.setWidth(innerWidth, !ownerContext.widthModel.natural);
-    }
-});
-
-/**
  * This class is used to display small visual icons in the header of a panel. There are a set of
  * 25 icons that can be specified by using the {@link #type} config. The {@link #handler} config
  * can be used to provide a function that will respond to any click events. In general, this class
@@ -44335,6 +44253,88 @@ Ext.define('Ext.panel.Tool', {
      */
     onMouseOut: function() {
         this.el.removeCls(this.toolOverCls);
+    }
+});
+
+/**
+ * Component layout for components which maintain an inner body element which must be resized to synchronize with the
+ * Component size.
+ * @private
+ */
+Ext.define('Ext.layout.component.Body', {
+
+    /* Begin Definitions */
+
+    alias: ['layout.body'],
+
+    extend: 'Ext.layout.component.Auto',
+
+    /* End Definitions */
+
+    type: 'body',
+
+    beginLayout: function (ownerContext) {
+        this.callParent(arguments);
+
+        ownerContext.bodyContext = ownerContext.getEl('body');
+    },
+
+    // Padding is exciting here because we have 2 el's: owner.el and owner.body. Content
+    // size always includes the padding of the targetEl, which should be owner.body. But
+    // it is common to have padding on owner.el also (such as a panel header), so we need
+    // to do some more padding work if targetContext is not owner.el. The base class has
+    // already handled the ownerContext's frameInfo (border+framing) so all that is left
+    // is padding.
+
+    calculateOwnerHeightFromContentHeight: function (ownerContext, contentHeight) {
+        var height = this.callParent(arguments);
+
+        if (ownerContext.targetContext != ownerContext) {
+            height += ownerContext.getPaddingInfo().height;
+        }
+
+        return height;
+    },
+
+    calculateOwnerWidthFromContentWidth: function (ownerContext, contentWidth) {
+        var width = this.callParent(arguments);
+
+        if (ownerContext.targetContext != ownerContext) {
+            width += ownerContext.getPaddingInfo().width;
+        }
+
+        return width;
+    },
+
+    measureContentWidth: function (ownerContext) {
+        return ownerContext.bodyContext.setWidth(ownerContext.bodyContext.el.dom.offsetWidth, false);
+    },
+
+    measureContentHeight: function (ownerContext) {
+        return ownerContext.bodyContext.setHeight(ownerContext.bodyContext.el.dom.offsetHeight, false);
+    },
+
+    publishInnerHeight: function (ownerContext, height) {
+        var innerHeight = height - ownerContext.getFrameInfo().height,
+            targetContext = ownerContext.targetContext;
+
+        if (targetContext != ownerContext) {
+            innerHeight -= ownerContext.getPaddingInfo().height;
+        }
+
+        // return the value here, it may get used in a subclass
+        return ownerContext.bodyContext.setHeight(innerHeight, !ownerContext.heightModel.natural);
+    },
+
+    publishInnerWidth: function (ownerContext, width) {
+        var innerWidth = width - ownerContext.getFrameInfo().width,
+            targetContext = ownerContext.targetContext;
+
+        if (targetContext != ownerContext) {
+            innerWidth -= ownerContext.getPaddingInfo().width;
+        }
+
+        ownerContext.bodyContext.setWidth(innerWidth, !ownerContext.widthModel.natural);
     }
 });
 
@@ -45235,6 +45235,82 @@ Ext.define('Ext.layout.component.Draw', {
     }
 });
 
+/**
+ * An internal Queue class.
+ * @private
+ */
+Ext.define('Ext.util.Queue', {
+
+    constructor: function() {
+        this.clear();
+    },
+
+    add : function(obj) {
+        var me = this,
+            key = me.getKey(obj);
+
+        if (!me.map[key]) {
+            ++me.length;
+            me.items.push(obj);
+            me.map[key] = obj;
+        }
+
+        return obj;
+    },
+
+    /**
+     * Removes all items from the collection.
+     */
+    clear : function(){
+        var me = this,
+            items = me.items;
+
+        me.items = [];
+        me.map = {};
+        me.length = 0;
+
+        return items;
+    },
+
+    contains: function (obj) {
+        var key = this.getKey(obj);
+
+        return this.map.hasOwnProperty(key);
+    },
+
+    /**
+     * Returns the number of items in the collection.
+     * @return {Number} the number of items in the collection.
+     */
+    getCount : function(){
+        return this.length;
+    },
+
+    getKey : function(obj){
+         return obj.id;
+    },
+
+    /**
+     * Remove an item from the collection.
+     * @param {Object} obj The item to remove.
+     * @return {Object} The item removed or false if no item was removed.
+     */
+    remove : function(obj){
+        var me = this,
+            key = me.getKey(obj),
+            items = me.items,
+            index;
+
+        if (me.map[key]) {
+            index = Ext.Array.indexOf(items, obj);
+            Ext.Array.erase(items, index, 1);
+            delete me.map[key];
+            --me.length;
+        }
+
+        return obj;
+    }
+});
 /**
  * A DragTracker listens for drag events on an Element and fires events at the start and end of the drag,
  * as well as during the drag. This is useful for components such as {@link Ext.slider.Multi}, where there is
@@ -46183,82 +46259,6 @@ Ext.define('Ext.layout.container.Fit', {
 });
 
 /**
- * An internal Queue class.
- * @private
- */
-Ext.define('Ext.util.Queue', {
-
-    constructor: function() {
-        this.clear();
-    },
-
-    add : function(obj) {
-        var me = this,
-            key = me.getKey(obj);
-
-        if (!me.map[key]) {
-            ++me.length;
-            me.items.push(obj);
-            me.map[key] = obj;
-        }
-
-        return obj;
-    },
-
-    /**
-     * Removes all items from the collection.
-     */
-    clear : function(){
-        var me = this,
-            items = me.items;
-
-        me.items = [];
-        me.map = {};
-        me.length = 0;
-
-        return items;
-    },
-
-    contains: function (obj) {
-        var key = this.getKey(obj);
-
-        return this.map.hasOwnProperty(key);
-    },
-
-    /**
-     * Returns the number of items in the collection.
-     * @return {Number} the number of items in the collection.
-     */
-    getCount : function(){
-        return this.length;
-    },
-
-    getKey : function(obj){
-         return obj.id;
-    },
-
-    /**
-     * Remove an item from the collection.
-     * @param {Object} obj The item to remove.
-     * @return {Object} The item removed or false if no item was removed.
-     */
-    remove : function(obj){
-        var me = this,
-            key = me.getKey(obj),
-            items = me.items,
-            index;
-
-        if (me.map[key]) {
-            index = Ext.Array.indexOf(items, obj);
-            Ext.Array.erase(items, index, 1);
-            delete me.map[key];
-            --me.length;
-        }
-
-        return obj;
-    }
-});
-/**
  * A base class for all menu items that require menu-related functionality such as click handling,
  * sub-menus, icons, etc.
  *
@@ -46816,252 +46816,6 @@ Ext.define('Ext.menu.Item', {
 });
 
 /**
- * Provides a convenient wrapper for normalized keyboard navigation. KeyNav allows you to bind navigation keys to
- * function calls that will get called when the keys are pressed, providing an easy way to implement custom navigation
- * schemes for any UI component.
- *
- * The following are all of the possible keys that can be implemented: enter, space, left, right, up, down, tab, esc,
- * pageUp, pageDown, del, backspace, home, end.
- *
- * Usage:
- *
- *     var nav = new Ext.util.KeyNav({
- *         target : "my-element",
- *         left   : function(e){
- *             this.moveLeft(e.ctrlKey);
- *         },
- *         right  : function(e){
- *             this.moveRight(e.ctrlKey);
- *         },
- *         enter  : function(e){
- *             this.save();
- *         },
- *         
- *         // Binding may be a function specifiying fn, scope and defaultAction
- *         esc: {
- *             fn: this.onEsc,
- *             defaultEventAction: false
- *         },
- *         scope : this
- *     });
- */
-Ext.define('Ext.util.KeyNav', {
-    alternateClassName: 'Ext.KeyNav',
-    
-    requires: ['Ext.util.KeyMap'],
-    
-    statics: {
-        keyOptions: {
-            left: 37,
-            right: 39,
-            up: 38,
-            down: 40,
-            space: 32,
-            pageUp: 33,
-            pageDown: 34,
-            del: 46,
-            backspace: 8,
-            home: 36,
-            end: 35,
-            enter: 13,
-            esc: 27,
-            tab: 9
-        }
-    },
-
-    constructor: function(config) {
-        var me = this;
-        if (arguments.length === 2) {
-            me.legacyConstructor.apply(me, arguments);
-            return;
-        }
-        me.setConfig(config);
-    },
-
-    /**
-     * @private
-     * Old constructor signature.
-     * @param {String/HTMLElement/Ext.Element} el The element or its ID to bind to
-     * @param {Object} config The config
-     */
-    legacyConstructor: function(el, config) {
-        this.setConfig(Ext.apply({
-            target: el
-        }, config));
-    },
-
-    /**
-     * Sets up a configuration for the KeyNav.
-     * @private
-     * @param {String/HTMLElement/Ext.Element} el The element or its ID to bind to
-     * @param {Object} config A configuration object as specified in the constructor.
-     */
-    setConfig: function(config) {
-        var me = this,
-            keymapCfg = {
-                target: config.target,
-                ignoreInputFields: config.ignoreInputFields,
-                eventName: me.getKeyEvent('forceKeyDown' in config ? config.forceKeyDown : me.forceKeyDown, config.eventName)
-            },
-            map, keyCodes, defaultScope, keyName, binding;
-
-        if (me.map) {
-            me.map.destroy();
-        }
-
-        if (config.processEvent) {
-            keymapCfg.processEvent = config.processEvent;
-            keymapCfg.processEventScope = config.processEventScope||me;
-        }
-        map = me.map = new Ext.util.KeyMap(keymapCfg);
-        keyCodes = Ext.util.KeyNav.keyOptions;
-        defaultScope = config.scope || me;
-        
-        for (keyName in keyCodes) {
-            if (keyCodes.hasOwnProperty(keyName)) {
-
-                // There is a property named after a key name.
-                // It may be a function or an binding spec containing handler, scope and defaultAction configs
-                if (binding = config[keyName]) {
-                    if (typeof binding === 'function') {
-                        binding = {
-                            handler: binding,
-                            defaultAction: (config.defaultEventAction !== undefined) ? config.defaultEventAction : me.defaultEventAction
-                        };
-                    }
-                    map.addBinding({
-                        key: keyCodes[keyName],
-                        handler: Ext.Function.bind(me.handleEvent, binding.scope||defaultScope, binding.handler||binding.fn, true),
-                        defaultEventAction: (binding.defaultEventAction !== undefined) ? binding.defaultAction : me.defaultEventAction
-                    });
-                }
-            }
-        }
-        
-        map.disable();
-        if (!config.disabled) {
-            map.enable();
-        }
-    },
-    
-    /**
-     * Method for filtering out the map argument
-     * @private
-     * @param {Number} keyCode
-     * @param {Ext.EventObject} event
-     * @param {Object} options Contains the handler to call
-     */
-    handleEvent: function(keyCode, event, handler){
-        return handler.call(this, event);
-    },
-    
-    /**
-     * @cfg {Boolean} disabled
-     * True to disable this KeyNav instance.
-     */
-    disabled: false,
-    
-    /**
-     * @cfg {String} defaultEventAction
-     * The method to call on the {@link Ext.EventObject} after this KeyNav intercepts a key. Valid values are {@link
-     * Ext.EventObject#stopEvent}, {@link Ext.EventObject#preventDefault} and {@link Ext.EventObject#stopPropagation}.
-     *
-     * If a falsy value is specified, no method is called on the key event.
-     */
-    defaultEventAction: "stopEvent",
-    
-    /**
-     * @cfg {Boolean} forceKeyDown
-     * Handle the keydown event instead of keypress. KeyNav automatically does this for IE since IE does not propagate
-     * special keys on keypress, but setting this to true will force other browsers to also handle keydown instead of
-     * keypress.
-     */
-    forceKeyDown: false,
-
-    /**
-     * @cfg {Ext.Component/Ext.Element/HTMLElement/String} target
-     * The object on which to listen for the event specified by the {@link #eventName} config option.
-     */
-
-    /**
-     * @cfg {String} eventName
-     * The event to listen for to pick up key events.
-     */
-    eventName: 'keypress',
-
-    /**
-     * @cfg {Function} processEvent
-     * An optional event processor function which accepts the argument list provided by the {@link #eventName configured
-     * event} of the {@link #target}, and returns a keyEvent for processing by the KeyMap.
-     *
-     * This may be useful when the {@link #target} is a Component with s complex event signature. Extra information from
-     * the event arguments may be injected into the event for use by the handler functions before returning it.
-     */
-
-    /**
-     * @cfg {Object} [processEventScope=this]
-     * The scope (`this` context) in which the {@link #processEvent} method is executed.
-     */
-
-    /**
-     * @cfg {Boolean} [ignoreInputFields=false]
-     * Configure this as `true` if there are any input fields within the {@link #target}, and this KeyNav
-     * should not process events from input fields, (`&lt;input>, &lt;textarea> and elements with `contentEditable="true"`)
-     */
-
-    /**
-     * Destroy this KeyNav (this is the same as calling disable).
-     * @param {Boolean} removeEl True to remove the element associated with this KeyNav.
-     */
-    destroy: function(removeEl) {
-        this.map.destroy(removeEl);
-        delete this.map;
-    },
-
-    /**
-     * Enables this KeyNav.
-     */
-    enable: function() {
-        this.map.enable();
-        this.disabled = false;
-    },
-
-    /**
-     * Disables this KeyNav.
-     */
-    disable: function() {
-        this.map.disable();
-        this.disabled = true;
-    },
-    
-    /**
-     * Convenience function for setting disabled/enabled by boolean.
-     * @param {Boolean} disabled
-     */
-    setDisabled : function(disabled) {
-        this.map.setDisabled(disabled);
-        this.disabled = disabled;
-    },
-    
-    /**
-     * @private
-     * Determines the event to bind to listen for keys. Defaults to the {@link #eventName} value, but
-     * may be overridden the {@link #forceKeyDown} setting.
-     *
-     * The useKeyDown option on the EventManager modifies the default {@link #eventName} to be `keydown`,
-     * but a configured {@link #eventName} takes priority over this.
-     *
-     * @return {String} The type of event to listen for.
-     */
-    getKeyEvent: function(forceKeyDown, configuredEventName) {
-        if (forceKeyDown || (Ext.EventManager.useKeyDown && !configuredEventName)) {
-            return 'keydown';
-        } else {
-            return configuredEventName||this.eventName;
-        }
-    }
-});
-/**
  * @author Ed Spencer
  *
  * Proxies are used by {@link Ext.data.Store Stores} to handle the loading and saving of {@link Ext.data.Model Model}
@@ -47506,6 +47260,252 @@ Ext.define('Ext.data.proxy.Proxy', {
     Ext.data.DataProxy = this;
 });
 
+/**
+ * Provides a convenient wrapper for normalized keyboard navigation. KeyNav allows you to bind navigation keys to
+ * function calls that will get called when the keys are pressed, providing an easy way to implement custom navigation
+ * schemes for any UI component.
+ *
+ * The following are all of the possible keys that can be implemented: enter, space, left, right, up, down, tab, esc,
+ * pageUp, pageDown, del, backspace, home, end.
+ *
+ * Usage:
+ *
+ *     var nav = new Ext.util.KeyNav({
+ *         target : "my-element",
+ *         left   : function(e){
+ *             this.moveLeft(e.ctrlKey);
+ *         },
+ *         right  : function(e){
+ *             this.moveRight(e.ctrlKey);
+ *         },
+ *         enter  : function(e){
+ *             this.save();
+ *         },
+ *         
+ *         // Binding may be a function specifiying fn, scope and defaultAction
+ *         esc: {
+ *             fn: this.onEsc,
+ *             defaultEventAction: false
+ *         },
+ *         scope : this
+ *     });
+ */
+Ext.define('Ext.util.KeyNav', {
+    alternateClassName: 'Ext.KeyNav',
+    
+    requires: ['Ext.util.KeyMap'],
+    
+    statics: {
+        keyOptions: {
+            left: 37,
+            right: 39,
+            up: 38,
+            down: 40,
+            space: 32,
+            pageUp: 33,
+            pageDown: 34,
+            del: 46,
+            backspace: 8,
+            home: 36,
+            end: 35,
+            enter: 13,
+            esc: 27,
+            tab: 9
+        }
+    },
+
+    constructor: function(config) {
+        var me = this;
+        if (arguments.length === 2) {
+            me.legacyConstructor.apply(me, arguments);
+            return;
+        }
+        me.setConfig(config);
+    },
+
+    /**
+     * @private
+     * Old constructor signature.
+     * @param {String/HTMLElement/Ext.Element} el The element or its ID to bind to
+     * @param {Object} config The config
+     */
+    legacyConstructor: function(el, config) {
+        this.setConfig(Ext.apply({
+            target: el
+        }, config));
+    },
+
+    /**
+     * Sets up a configuration for the KeyNav.
+     * @private
+     * @param {String/HTMLElement/Ext.Element} el The element or its ID to bind to
+     * @param {Object} config A configuration object as specified in the constructor.
+     */
+    setConfig: function(config) {
+        var me = this,
+            keymapCfg = {
+                target: config.target,
+                ignoreInputFields: config.ignoreInputFields,
+                eventName: me.getKeyEvent('forceKeyDown' in config ? config.forceKeyDown : me.forceKeyDown, config.eventName)
+            },
+            map, keyCodes, defaultScope, keyName, binding;
+
+        if (me.map) {
+            me.map.destroy();
+        }
+
+        if (config.processEvent) {
+            keymapCfg.processEvent = config.processEvent;
+            keymapCfg.processEventScope = config.processEventScope||me;
+        }
+        map = me.map = new Ext.util.KeyMap(keymapCfg);
+        keyCodes = Ext.util.KeyNav.keyOptions;
+        defaultScope = config.scope || me;
+        
+        for (keyName in keyCodes) {
+            if (keyCodes.hasOwnProperty(keyName)) {
+
+                // There is a property named after a key name.
+                // It may be a function or an binding spec containing handler, scope and defaultAction configs
+                if (binding = config[keyName]) {
+                    if (typeof binding === 'function') {
+                        binding = {
+                            handler: binding,
+                            defaultAction: (config.defaultEventAction !== undefined) ? config.defaultEventAction : me.defaultEventAction
+                        };
+                    }
+                    map.addBinding({
+                        key: keyCodes[keyName],
+                        handler: Ext.Function.bind(me.handleEvent, binding.scope||defaultScope, binding.handler||binding.fn, true),
+                        defaultEventAction: (binding.defaultEventAction !== undefined) ? binding.defaultAction : me.defaultEventAction
+                    });
+                }
+            }
+        }
+        
+        map.disable();
+        if (!config.disabled) {
+            map.enable();
+        }
+    },
+    
+    /**
+     * Method for filtering out the map argument
+     * @private
+     * @param {Number} keyCode
+     * @param {Ext.EventObject} event
+     * @param {Object} options Contains the handler to call
+     */
+    handleEvent: function(keyCode, event, handler){
+        return handler.call(this, event);
+    },
+    
+    /**
+     * @cfg {Boolean} disabled
+     * True to disable this KeyNav instance.
+     */
+    disabled: false,
+    
+    /**
+     * @cfg {String} defaultEventAction
+     * The method to call on the {@link Ext.EventObject} after this KeyNav intercepts a key. Valid values are {@link
+     * Ext.EventObject#stopEvent}, {@link Ext.EventObject#preventDefault} and {@link Ext.EventObject#stopPropagation}.
+     *
+     * If a falsy value is specified, no method is called on the key event.
+     */
+    defaultEventAction: "stopEvent",
+    
+    /**
+     * @cfg {Boolean} forceKeyDown
+     * Handle the keydown event instead of keypress. KeyNav automatically does this for IE since IE does not propagate
+     * special keys on keypress, but setting this to true will force other browsers to also handle keydown instead of
+     * keypress.
+     */
+    forceKeyDown: false,
+
+    /**
+     * @cfg {Ext.Component/Ext.Element/HTMLElement/String} target
+     * The object on which to listen for the event specified by the {@link #eventName} config option.
+     */
+
+    /**
+     * @cfg {String} eventName
+     * The event to listen for to pick up key events.
+     */
+    eventName: 'keypress',
+
+    /**
+     * @cfg {Function} processEvent
+     * An optional event processor function which accepts the argument list provided by the {@link #eventName configured
+     * event} of the {@link #target}, and returns a keyEvent for processing by the KeyMap.
+     *
+     * This may be useful when the {@link #target} is a Component with s complex event signature. Extra information from
+     * the event arguments may be injected into the event for use by the handler functions before returning it.
+     */
+
+    /**
+     * @cfg {Object} [processEventScope=this]
+     * The scope (`this` context) in which the {@link #processEvent} method is executed.
+     */
+
+    /**
+     * @cfg {Boolean} [ignoreInputFields=false]
+     * Configure this as `true` if there are any input fields within the {@link #target}, and this KeyNav
+     * should not process events from input fields, (`&lt;input>, &lt;textarea> and elements with `contentEditable="true"`)
+     */
+
+    /**
+     * Destroy this KeyNav (this is the same as calling disable).
+     * @param {Boolean} removeEl True to remove the element associated with this KeyNav.
+     */
+    destroy: function(removeEl) {
+        this.map.destroy(removeEl);
+        delete this.map;
+    },
+
+    /**
+     * Enables this KeyNav.
+     */
+    enable: function() {
+        this.map.enable();
+        this.disabled = false;
+    },
+
+    /**
+     * Disables this KeyNav.
+     */
+    disable: function() {
+        this.map.disable();
+        this.disabled = true;
+    },
+    
+    /**
+     * Convenience function for setting disabled/enabled by boolean.
+     * @param {Boolean} disabled
+     */
+    setDisabled : function(disabled) {
+        this.map.setDisabled(disabled);
+        this.disabled = disabled;
+    },
+    
+    /**
+     * @private
+     * Determines the event to bind to listen for keys. Defaults to the {@link #eventName} value, but
+     * may be overridden the {@link #forceKeyDown} setting.
+     *
+     * The useKeyDown option on the EventManager modifies the default {@link #eventName} to be `keydown`,
+     * but a configured {@link #eventName} takes priority over this.
+     *
+     * @return {String} The type of event to listen for.
+     */
+    getKeyEvent: function(forceKeyDown, configuredEventName) {
+        if (forceKeyDown || (Ext.EventManager.useKeyDown && !configuredEventName)) {
+            return 'keydown';
+        } else {
+            return configuredEventName||this.eventName;
+        }
+    }
+});
 /**
  * A composite Sprite handles a group of sprites with common methods to a sprite
  * such as `hide`, `show`, `setAttributes`. These methods are applied to the set of sprites
@@ -48697,6 +48697,170 @@ Ext.define('Ext.layout.ClassList', (function () {
 }()));
 
 /**
+ * @author Ed Spencer
+ *
+ * Base Writer class used by most subclasses of {@link Ext.data.proxy.Server}. This class is responsible for taking a
+ * set of {@link Ext.data.Operation} objects and a {@link Ext.data.Request} object and modifying that request based on
+ * the Operations.
+ *
+ * For example a Ext.data.writer.Json would format the Operations and their {@link Ext.data.Model} instances based on
+ * the config options passed to the JsonWriter's constructor.
+ *
+ * Writers are not needed for any kind of local storage - whether via a {@link Ext.data.proxy.WebStorage Web Storage
+ * proxy} (see {@link Ext.data.proxy.LocalStorage localStorage} and {@link Ext.data.proxy.SessionStorage
+ * sessionStorage}) or just in memory via a {@link Ext.data.proxy.Memory MemoryProxy}.
+ */
+Ext.define('Ext.data.writer.Writer', {
+    alias: 'writer.base',
+    alternateClassName: ['Ext.data.DataWriter', 'Ext.data.Writer'],
+    
+    /**
+     * @cfg {Boolean} writeAllFields
+     * True to write all fields from the record to the server. If set to false it will only send the fields that were
+     * modified. Note that any fields that have {@link Ext.data.Field#persist} set to false will still be ignored.
+     */
+    writeAllFields: true,
+    
+    /**
+     * @cfg {String} nameProperty
+     * This property is used to read the key for each value that will be sent to the server. For example:
+     *
+     *     Ext.define('Person', {
+     *         extend: 'Ext.data.Model',
+     *         fields: [{
+     *             name: 'first',
+     *             mapping: 'firstName'
+     *         }, {
+     *             name: 'last',
+     *             mapping: 'lastName'
+     *         }, {
+     *             name: 'age'
+     *         }]
+     *     });
+     *     new Ext.data.writer.Writer({
+     *         writeAllFields: true,
+     *         nameProperty: 'mapping'
+     *     });
+     *
+     *     // This will be sent to the server
+     *     {
+     *         firstName: 'first name value',
+     *         lastName: 'last name value',
+     *         age: 1
+     *     }
+     *
+     * If the value is not present, the field name will always be used.
+     */
+    nameProperty: 'name',
+
+    /*
+     * @property {Boolean} isWriter
+     * `true` in this class to identify an object as an instantiated Writer, or subclass thereof.
+     */
+    isWriter: true,
+
+    /**
+     * Creates new Writer.
+     * @param {Object} [config] Config object.
+     */
+    constructor: function(config) {
+        Ext.apply(this, config);
+    },
+
+    /**
+     * Prepares a Proxy's Ext.data.Request object
+     * @param {Ext.data.Request} request The request object
+     * @return {Ext.data.Request} The modified request object
+     */
+    write: function(request) {
+        var operation = request.operation,
+            records   = operation.records || [],
+            len       = records.length,
+            i         = 0,
+            data      = [];
+
+        for (; i < len; i++) {
+            data.push(this.getRecordData(records[i], operation));
+        }
+        return this.writeRecords(request, data);
+    },
+
+    /**
+     * Formats the data for each record before sending it to the server. This
+     * method should be overridden to format the data in a way that differs from the default.
+     * @param {Ext.data.Model} record The record that we are writing to the server.
+     * @param {Ext.data.Operation} [operation] An operation object.
+     * @return {Object} An object literal of name/value keys to be written to the server.
+     * By default this method returns the data property on the record.
+     */
+    getRecordData: function(record, operation) {
+        var isPhantom = record.phantom === true,
+            writeAll = this.writeAllFields || isPhantom,
+            nameProperty = this.nameProperty,
+            fields = record.fields,
+            fieldItems = fields.items,
+            data = {},
+            clientIdProperty = record.clientIdProperty,
+            changes,
+            name,
+            field,
+            key,
+            value,
+            f, fLen;
+
+        if (writeAll) {
+            fLen = fieldItems.length;
+
+            for (f = 0; f < fLen; f++) {
+                field = fieldItems[f];
+                if (field.persist) {
+                    name = field[nameProperty] || field.name;
+                    value = record.get(field.name);
+                    if (field.serialize) {
+                        data[name] = field.serialize(value, record);
+                    } else if (field.type === Ext.data.Types.DATE && field.dateFormat) {
+                        data[name] = Ext.Date.format(value, field.dateFormat);
+                    } else {
+                        data[name] = value;
+                    }
+                }
+            }
+        } else {
+            // Only write the changes
+            changes = record.getChanges();
+            for (key in changes) {
+                if (changes.hasOwnProperty(key)) {
+                    field = fields.get(key);
+                    if (field.persist) {
+                        name = field[nameProperty] || field.name;
+                        value = record.get(field.name);
+                        if (field.serialize) {
+                            data[name] = field.serialize(value, record);
+                        } else if (field.type === Ext.data.Types.DATE && field.dateFormat) {
+                            data[name] = Ext.Date.format(value, field.dateFormat);
+                        } else {
+                            data[name] = value;
+                        }
+                    }
+                }
+            }
+        }
+        if (isPhantom) {
+            if (clientIdProperty && operation && operation.records.length > 1) {
+                // include clientId for phantom records, if multiple records are being written to the server in one operation.
+                // The server can then return the clientId with each record so the operation can match the server records with the client records
+                data[clientIdProperty] = record.internalId;
+            }
+        } else {
+            // always include the id for non phantoms
+            data[record.idProperty] = record.getId();
+        }
+
+        return data;
+    }
+});
+
+/**
  * @private
  * @class Ext.util.LruCache
  * @extend Ext.util.HashMap
@@ -48953,170 +49117,6 @@ Ext.define('Ext.util.LruCache', {
    * @private
    */
 });
-/**
- * @author Ed Spencer
- *
- * Base Writer class used by most subclasses of {@link Ext.data.proxy.Server}. This class is responsible for taking a
- * set of {@link Ext.data.Operation} objects and a {@link Ext.data.Request} object and modifying that request based on
- * the Operations.
- *
- * For example a Ext.data.writer.Json would format the Operations and their {@link Ext.data.Model} instances based on
- * the config options passed to the JsonWriter's constructor.
- *
- * Writers are not needed for any kind of local storage - whether via a {@link Ext.data.proxy.WebStorage Web Storage
- * proxy} (see {@link Ext.data.proxy.LocalStorage localStorage} and {@link Ext.data.proxy.SessionStorage
- * sessionStorage}) or just in memory via a {@link Ext.data.proxy.Memory MemoryProxy}.
- */
-Ext.define('Ext.data.writer.Writer', {
-    alias: 'writer.base',
-    alternateClassName: ['Ext.data.DataWriter', 'Ext.data.Writer'],
-    
-    /**
-     * @cfg {Boolean} writeAllFields
-     * True to write all fields from the record to the server. If set to false it will only send the fields that were
-     * modified. Note that any fields that have {@link Ext.data.Field#persist} set to false will still be ignored.
-     */
-    writeAllFields: true,
-    
-    /**
-     * @cfg {String} nameProperty
-     * This property is used to read the key for each value that will be sent to the server. For example:
-     *
-     *     Ext.define('Person', {
-     *         extend: 'Ext.data.Model',
-     *         fields: [{
-     *             name: 'first',
-     *             mapping: 'firstName'
-     *         }, {
-     *             name: 'last',
-     *             mapping: 'lastName'
-     *         }, {
-     *             name: 'age'
-     *         }]
-     *     });
-     *     new Ext.data.writer.Writer({
-     *         writeAllFields: true,
-     *         nameProperty: 'mapping'
-     *     });
-     *
-     *     // This will be sent to the server
-     *     {
-     *         firstName: 'first name value',
-     *         lastName: 'last name value',
-     *         age: 1
-     *     }
-     *
-     * If the value is not present, the field name will always be used.
-     */
-    nameProperty: 'name',
-
-    /*
-     * @property {Boolean} isWriter
-     * `true` in this class to identify an object as an instantiated Writer, or subclass thereof.
-     */
-    isWriter: true,
-
-    /**
-     * Creates new Writer.
-     * @param {Object} [config] Config object.
-     */
-    constructor: function(config) {
-        Ext.apply(this, config);
-    },
-
-    /**
-     * Prepares a Proxy's Ext.data.Request object
-     * @param {Ext.data.Request} request The request object
-     * @return {Ext.data.Request} The modified request object
-     */
-    write: function(request) {
-        var operation = request.operation,
-            records   = operation.records || [],
-            len       = records.length,
-            i         = 0,
-            data      = [];
-
-        for (; i < len; i++) {
-            data.push(this.getRecordData(records[i], operation));
-        }
-        return this.writeRecords(request, data);
-    },
-
-    /**
-     * Formats the data for each record before sending it to the server. This
-     * method should be overridden to format the data in a way that differs from the default.
-     * @param {Ext.data.Model} record The record that we are writing to the server.
-     * @param {Ext.data.Operation} [operation] An operation object.
-     * @return {Object} An object literal of name/value keys to be written to the server.
-     * By default this method returns the data property on the record.
-     */
-    getRecordData: function(record, operation) {
-        var isPhantom = record.phantom === true,
-            writeAll = this.writeAllFields || isPhantom,
-            nameProperty = this.nameProperty,
-            fields = record.fields,
-            fieldItems = fields.items,
-            data = {},
-            clientIdProperty = record.clientIdProperty,
-            changes,
-            name,
-            field,
-            key,
-            value,
-            f, fLen;
-
-        if (writeAll) {
-            fLen = fieldItems.length;
-
-            for (f = 0; f < fLen; f++) {
-                field = fieldItems[f];
-                if (field.persist) {
-                    name = field[nameProperty] || field.name;
-                    value = record.get(field.name);
-                    if (field.serialize) {
-                        data[name] = field.serialize(value, record);
-                    } else if (field.type === Ext.data.Types.DATE && field.dateFormat) {
-                        data[name] = Ext.Date.format(value, field.dateFormat);
-                    } else {
-                        data[name] = value;
-                    }
-                }
-            }
-        } else {
-            // Only write the changes
-            changes = record.getChanges();
-            for (key in changes) {
-                if (changes.hasOwnProperty(key)) {
-                    field = fields.get(key);
-                    if (field.persist) {
-                        name = field[nameProperty] || field.name;
-                        value = record.get(field.name);
-                        if (field.serialize) {
-                            data[name] = field.serialize(value, record);
-                        } else if (field.type === Ext.data.Types.DATE && field.dateFormat) {
-                            data[name] = Ext.Date.format(value, field.dateFormat);
-                        } else {
-                            data[name] = value;
-                        }
-                    }
-                }
-            }
-        }
-        if (isPhantom) {
-            if (clientIdProperty && operation && operation.records.length > 1) {
-                // include clientId for phantom records, if multiple records are being written to the server in one operation.
-                // The server can then return the clientId with each record so the operation can match the server records with the client records
-                data[clientIdProperty] = record.internalId;
-            }
-        } else {
-            // always include the id for non phantoms
-            data[record.idProperty] = record.getId();
-        }
-
-        return data;
-    }
-});
-
 /**
  * @author Ed Spencer
  *
@@ -62325,6 +62325,340 @@ Ext.define('Ext.util.Grouper', {
     }
 });
 /**
+ * A utility class for exporting a {@link Ext.draw.Surface Surface} to a string
+ * that may be saved or used for processing on the server.
+ *
+ * @singleton
+ */
+Ext.define('Ext.draw.engine.SvgExporter', function(){
+   var commaRe = /,/g,
+       fontRegex = /(-?\d*\.?\d*){1}(em|ex|px|in|cm|mm|pt|pc|%)\s('*.*'*)/,
+       rgbColorRe = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/g,
+       rgbaColorRe = /rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,([\d\.]+)\)/g,
+       surface, len, width, height,
+
+   init = function(s){
+       surface = s;
+       len = surface.length;
+       width = surface.width;
+       height = surface.height;
+   },
+   spriteProcessor = {
+       path: function(sprite){
+
+           var attr = sprite.attr,
+               path = attr.path,
+               pathString = '',
+               props, p, pLen;
+
+           if (Ext.isArray(path[0])) {
+               pLen = path.length;
+               for (p = 0; p < pLen; p++) {
+                   pathString += path[p].join(' ');
+               }
+           } else if (Ext.isArray(path)) {
+               pathString = path.join(' ');
+           } else {
+               pathString = path.replace(commaRe,' ');
+           }
+
+           props = toPropertyString({
+               d: pathString,
+               fill: attr.fill || 'none',
+               stroke: attr.stroke,
+               'fill-opacity': attr.opacity,
+               'stroke-width': attr['stroke-width'],
+               'stroke-opacity': attr['stroke-opacity'],
+               "z-index": attr.zIndex,
+               transform: sprite.matrix.toSvg()
+           });
+
+           return '<path ' + props + '/>';
+       },
+       text: function(sprite){
+
+           // TODO
+           // implement multi line support (@see Svg.js tuneText)
+
+           var attr = sprite.attr,
+               match = fontRegex.exec(attr.font),
+               size = (match && match[1]) || "12",
+               // default font family is Arial
+               family = (match && match[3]) || 'Arial',
+               text = attr.text,
+               factor = (Ext.isFF3_0 || Ext.isFF3_5) ? 2 : 4,
+               tspanString = '',
+               props;
+
+           sprite.getBBox();
+           tspanString += '<tspan x="' + (attr.x || '') + '" dy="';
+           tspanString += (size/factor)+'">';
+           tspanString += Ext.htmlEncode(text) + '</tspan>';
+
+
+           props = toPropertyString({
+               x: attr.x,
+               y: attr.y,
+               'font-size': size,
+               'font-family': family,
+               'font-weight': attr['font-weight'],
+               'text-anchor': attr['text-anchor'],
+               // if no fill property is set it will be black
+               fill: attr.fill || '#000',
+               'fill-opacity': attr.opacity,
+               transform: sprite.matrix.toSvg()
+           });
+
+
+
+           return '<text '+ props + '>' +  tspanString + '</text>';
+       },
+       rect: function(sprite){
+
+           var attr = sprite.attr,
+               props =  toPropertyString({
+                   x: attr.x,
+                   y: attr.y,
+                   rx: attr.rx,
+                   ry: attr.ry,
+                   width: attr.width,
+                   height: attr.height,
+                   fill: attr.fill || 'none',
+                   'fill-opacity': attr.opacity,
+                   stroke: attr.stroke,
+                   'stroke-opacity': attr['stroke-opacity'],
+                   'stroke-width':attr['stroke-width'],
+                   transform: sprite.matrix && sprite.matrix.toSvg()
+               });
+
+           return '<rect ' + props + '/>';
+       },
+       circle: function(sprite){
+
+           var attr = sprite.attr,
+               props = toPropertyString({
+                   cx: attr.x,
+                   cy: attr.y,
+                   r: attr.radius,
+                   fill: attr.translation.fill || attr.fill || 'none',
+                   'fill-opacity': attr.opacity,
+                   stroke: attr.stroke,
+                   'stroke-opacity': attr['stroke-opacity'],
+                   'stroke-width':attr['stroke-width'],
+                   transform: sprite.matrix.toSvg()
+               });
+
+           return '<circle ' + props + ' />';
+       },
+       image: function(sprite){
+
+           var attr = sprite.attr,
+               props = toPropertyString({
+                   x: attr.x - (attr.width/2 >> 0),
+                   y: attr.y - (attr.height/2 >> 0),
+                   width: attr.width,
+                   height: attr.height,
+                   'xlink:href': attr.src,
+                   transform: sprite.matrix.toSvg()
+               });
+
+           return '<image ' + props + ' />';
+       }
+   },
+   svgHeader = function(){
+       var svg = '<?xml version="1.0" standalone="yes"?>';
+       svg += '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
+       return svg;
+   },
+   svgContent = function(){
+       var svg = '<svg width="'+width+'px" height="'+height+'px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">',
+           defs = '', item, itemsLen, items, gradient,
+           getSvgString, colorstops, stop,
+           coll, keys, colls, k, kLen, key, collI, i, j, stopsLen, sortedItems, za, zb;
+
+       items = surface.items.items;
+       itemsLen = items.length;
+
+
+       getSvgString = function(node){
+
+           var childs = node.childNodes,
+               childLength = childs.length,
+               i = 0,
+               attrLength,
+               j,
+               svgString = '', child, attr, tagName, attrItem;
+
+               for(; i < childLength; i++){
+                   child = childs[i];
+                   attr = child.attributes;
+                   tagName = child.tagName;
+
+                   svgString += '<' +tagName;
+
+                   for(j = 0, attrLength = attr.length; j < attrLength; j++){
+                       attrItem = attr.item(j);
+                       svgString += ' '+attrItem.name+'="'+attrItem.value+'"';
+                   }
+
+                   svgString += '>';
+
+                   if(child.childNodes.length > 0){
+                       svgString += getSvgString(child);
+                   }
+
+                   svgString += '</' + tagName + '>';
+
+               }
+           return svgString;
+       };
+
+
+       if(surface.getDefs){
+           defs = getSvgString(surface.getDefs());
+       }else{
+           // IE
+           coll = surface.gradientsColl;
+           if (coll) {
+               keys  = coll.keys;
+               colls = coll.items;
+               k     = 0;
+               kLen  = keys.length;
+           }
+
+           for (; k < kLen; k++) {
+               key   = keys[k];
+               collI = colls[k];
+
+               gradient = surface.gradientsColl.getByKey(key);
+               defs += '<linearGradient id="' + key + '" x1="0" y1="0" x2="1" y2="1">';
+
+               var color = gradient.colors.replace(rgbColorRe, 'rgb($1|$2|$3)');
+               color = color.replace(rgbaColorRe, 'rgba($1|$2|$3|$4)')
+               colorstops = color.split(',');
+               for(i=0, stopsLen = colorstops.length; i < stopsLen; i++){
+                   stop = colorstops[i].split(' ');
+                   color = Ext.draw.Color.fromString(stop[1].replace(/\|/g,','));
+                   defs += '<stop offset="'+stop[0]+'" stop-color="' + color.toString() + '" stop-opacity="1"></stop>';
+               }
+               defs += '</linearGradient>';
+           }
+       }
+
+       svg += '<defs>' + defs + '</defs>';
+
+       // thats the background rectangle
+       svg += spriteProcessor.rect({
+           attr: {
+                   width: '100%',
+                   height: '100%',
+                   fill: '#fff',
+                   stroke: 'none',
+                   opacity: '0'
+           }
+       });
+
+       // Sort the items (stable sort guaranteed)
+       sortedItems = new Array(itemsLen);
+       for(i = 0; i < itemsLen; i++){
+           sortedItems[i] = i;
+       }
+       sortedItems.sort(function (a, b) {
+           za = items[a].attr.zIndex || 0;
+           zb = items[b].attr.zIndex || 0;
+           if (za == zb) {
+               return a - b;
+           }
+           return za - zb;
+       });
+
+       for(i = 0; i < itemsLen; i++){
+           item = items[sortedItems[i]];
+           if(!item.attr.hidden){
+               svg += spriteProcessor[item.type](item);
+           }
+       }
+
+       svg += '</svg>';
+
+       return svg;
+   },
+   toPropertyString = function(obj){
+       var propString = '',
+           key;
+
+       for(key in obj){
+
+           if(obj.hasOwnProperty(key) && obj[key] != null){
+               propString += key +'="'+ obj[key]+'" ';
+           }
+
+       }
+
+       return propString;
+   };
+
+   return {
+       singleton: true,
+
+       /**
+        * Exports the passed surface to a SVG string representation
+        * @param {Ext.draw.Surface} surface The surface to export
+        * @param {Object} [config] Any configuration for the export. Currently this is
+        * unused but may provide more options in the future
+        * @return {String} The SVG as a string
+        */
+       generate: function(surface, config){
+           config = config || {};
+           init(surface);
+           return svgHeader() + svgContent();
+       }
+   };
+});
+/**
+ * Private utility class that manages the internal Shadow cache.
+ * @private
+ */
+Ext.define('Ext.ShadowPool', {
+    singleton: true,
+    requires: ['Ext.DomHelper'],
+
+    markup: (function() {
+        return Ext.String.format(
+            '<div class="{0}{1}-shadow" role="presentation"></div>',
+            Ext.baseCSSPrefix,
+            Ext.isIE && !Ext.supports.CSS3BoxShadow ? 'ie' : 'css'
+        );
+    }()),
+
+    shadows: [],
+
+    pull: function() {
+        var sh = this.shadows.shift();
+        if (!sh) {
+            sh = Ext.get(Ext.DomHelper.insertHtml("beforeBegin", document.body.firstChild, this.markup));
+            sh.autoBoxAdjust = false;
+        }
+        return sh;
+    },
+
+    push: function(sh) {
+        this.shadows.push(sh);
+    },
+    
+    reset: function() {
+        var shadows = [].concat(this.shadows),
+            s,
+            sLen    = shadows.length;
+
+        for (s = 0; s < sLen; s++) {
+            shadows[s].remove();
+        }
+
+        this.shadows = [];
+    }
+});
+/**
  * Private utility class for Ext.resizer.Resizer.
  * @private
  */
@@ -62671,340 +63005,6 @@ Ext.define('Ext.resizer.ResizeTracker', {
     }
 });
 
-/**
- * Private utility class that manages the internal Shadow cache.
- * @private
- */
-Ext.define('Ext.ShadowPool', {
-    singleton: true,
-    requires: ['Ext.DomHelper'],
-
-    markup: (function() {
-        return Ext.String.format(
-            '<div class="{0}{1}-shadow" role="presentation"></div>',
-            Ext.baseCSSPrefix,
-            Ext.isIE && !Ext.supports.CSS3BoxShadow ? 'ie' : 'css'
-        );
-    }()),
-
-    shadows: [],
-
-    pull: function() {
-        var sh = this.shadows.shift();
-        if (!sh) {
-            sh = Ext.get(Ext.DomHelper.insertHtml("beforeBegin", document.body.firstChild, this.markup));
-            sh.autoBoxAdjust = false;
-        }
-        return sh;
-    },
-
-    push: function(sh) {
-        this.shadows.push(sh);
-    },
-    
-    reset: function() {
-        var shadows = [].concat(this.shadows),
-            s,
-            sLen    = shadows.length;
-
-        for (s = 0; s < sLen; s++) {
-            shadows[s].remove();
-        }
-
-        this.shadows = [];
-    }
-});
-/**
- * A utility class for exporting a {@link Ext.draw.Surface Surface} to a string
- * that may be saved or used for processing on the server.
- *
- * @singleton
- */
-Ext.define('Ext.draw.engine.SvgExporter', function(){
-   var commaRe = /,/g,
-       fontRegex = /(-?\d*\.?\d*){1}(em|ex|px|in|cm|mm|pt|pc|%)\s('*.*'*)/,
-       rgbColorRe = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/g,
-       rgbaColorRe = /rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,([\d\.]+)\)/g,
-       surface, len, width, height,
-
-   init = function(s){
-       surface = s;
-       len = surface.length;
-       width = surface.width;
-       height = surface.height;
-   },
-   spriteProcessor = {
-       path: function(sprite){
-
-           var attr = sprite.attr,
-               path = attr.path,
-               pathString = '',
-               props, p, pLen;
-
-           if (Ext.isArray(path[0])) {
-               pLen = path.length;
-               for (p = 0; p < pLen; p++) {
-                   pathString += path[p].join(' ');
-               }
-           } else if (Ext.isArray(path)) {
-               pathString = path.join(' ');
-           } else {
-               pathString = path.replace(commaRe,' ');
-           }
-
-           props = toPropertyString({
-               d: pathString,
-               fill: attr.fill || 'none',
-               stroke: attr.stroke,
-               'fill-opacity': attr.opacity,
-               'stroke-width': attr['stroke-width'],
-               'stroke-opacity': attr['stroke-opacity'],
-               "z-index": attr.zIndex,
-               transform: sprite.matrix.toSvg()
-           });
-
-           return '<path ' + props + '/>';
-       },
-       text: function(sprite){
-
-           // TODO
-           // implement multi line support (@see Svg.js tuneText)
-
-           var attr = sprite.attr,
-               match = fontRegex.exec(attr.font),
-               size = (match && match[1]) || "12",
-               // default font family is Arial
-               family = (match && match[3]) || 'Arial',
-               text = attr.text,
-               factor = (Ext.isFF3_0 || Ext.isFF3_5) ? 2 : 4,
-               tspanString = '',
-               props;
-
-           sprite.getBBox();
-           tspanString += '<tspan x="' + (attr.x || '') + '" dy="';
-           tspanString += (size/factor)+'">';
-           tspanString += Ext.htmlEncode(text) + '</tspan>';
-
-
-           props = toPropertyString({
-               x: attr.x,
-               y: attr.y,
-               'font-size': size,
-               'font-family': family,
-               'font-weight': attr['font-weight'],
-               'text-anchor': attr['text-anchor'],
-               // if no fill property is set it will be black
-               fill: attr.fill || '#000',
-               'fill-opacity': attr.opacity,
-               transform: sprite.matrix.toSvg()
-           });
-
-
-
-           return '<text '+ props + '>' +  tspanString + '</text>';
-       },
-       rect: function(sprite){
-
-           var attr = sprite.attr,
-               props =  toPropertyString({
-                   x: attr.x,
-                   y: attr.y,
-                   rx: attr.rx,
-                   ry: attr.ry,
-                   width: attr.width,
-                   height: attr.height,
-                   fill: attr.fill || 'none',
-                   'fill-opacity': attr.opacity,
-                   stroke: attr.stroke,
-                   'stroke-opacity': attr['stroke-opacity'],
-                   'stroke-width':attr['stroke-width'],
-                   transform: sprite.matrix && sprite.matrix.toSvg()
-               });
-
-           return '<rect ' + props + '/>';
-       },
-       circle: function(sprite){
-
-           var attr = sprite.attr,
-               props = toPropertyString({
-                   cx: attr.x,
-                   cy: attr.y,
-                   r: attr.radius,
-                   fill: attr.translation.fill || attr.fill || 'none',
-                   'fill-opacity': attr.opacity,
-                   stroke: attr.stroke,
-                   'stroke-opacity': attr['stroke-opacity'],
-                   'stroke-width':attr['stroke-width'],
-                   transform: sprite.matrix.toSvg()
-               });
-
-           return '<circle ' + props + ' />';
-       },
-       image: function(sprite){
-
-           var attr = sprite.attr,
-               props = toPropertyString({
-                   x: attr.x - (attr.width/2 >> 0),
-                   y: attr.y - (attr.height/2 >> 0),
-                   width: attr.width,
-                   height: attr.height,
-                   'xlink:href': attr.src,
-                   transform: sprite.matrix.toSvg()
-               });
-
-           return '<image ' + props + ' />';
-       }
-   },
-   svgHeader = function(){
-       var svg = '<?xml version="1.0" standalone="yes"?>';
-       svg += '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
-       return svg;
-   },
-   svgContent = function(){
-       var svg = '<svg width="'+width+'px" height="'+height+'px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">',
-           defs = '', item, itemsLen, items, gradient,
-           getSvgString, colorstops, stop,
-           coll, keys, colls, k, kLen, key, collI, i, j, stopsLen, sortedItems, za, zb;
-
-       items = surface.items.items;
-       itemsLen = items.length;
-
-
-       getSvgString = function(node){
-
-           var childs = node.childNodes,
-               childLength = childs.length,
-               i = 0,
-               attrLength,
-               j,
-               svgString = '', child, attr, tagName, attrItem;
-
-               for(; i < childLength; i++){
-                   child = childs[i];
-                   attr = child.attributes;
-                   tagName = child.tagName;
-
-                   svgString += '<' +tagName;
-
-                   for(j = 0, attrLength = attr.length; j < attrLength; j++){
-                       attrItem = attr.item(j);
-                       svgString += ' '+attrItem.name+'="'+attrItem.value+'"';
-                   }
-
-                   svgString += '>';
-
-                   if(child.childNodes.length > 0){
-                       svgString += getSvgString(child);
-                   }
-
-                   svgString += '</' + tagName + '>';
-
-               }
-           return svgString;
-       };
-
-
-       if(surface.getDefs){
-           defs = getSvgString(surface.getDefs());
-       }else{
-           // IE
-           coll = surface.gradientsColl;
-           if (coll) {
-               keys  = coll.keys;
-               colls = coll.items;
-               k     = 0;
-               kLen  = keys.length;
-           }
-
-           for (; k < kLen; k++) {
-               key   = keys[k];
-               collI = colls[k];
-
-               gradient = surface.gradientsColl.getByKey(key);
-               defs += '<linearGradient id="' + key + '" x1="0" y1="0" x2="1" y2="1">';
-
-               var color = gradient.colors.replace(rgbColorRe, 'rgb($1|$2|$3)');
-               color = color.replace(rgbaColorRe, 'rgba($1|$2|$3|$4)')
-               colorstops = color.split(',');
-               for(i=0, stopsLen = colorstops.length; i < stopsLen; i++){
-                   stop = colorstops[i].split(' ');
-                   color = Ext.draw.Color.fromString(stop[1].replace(/\|/g,','));
-                   defs += '<stop offset="'+stop[0]+'" stop-color="' + color.toString() + '" stop-opacity="1"></stop>';
-               }
-               defs += '</linearGradient>';
-           }
-       }
-
-       svg += '<defs>' + defs + '</defs>';
-
-       // thats the background rectangle
-       svg += spriteProcessor.rect({
-           attr: {
-                   width: '100%',
-                   height: '100%',
-                   fill: '#fff',
-                   stroke: 'none',
-                   opacity: '0'
-           }
-       });
-
-       // Sort the items (stable sort guaranteed)
-       sortedItems = new Array(itemsLen);
-       for(i = 0; i < itemsLen; i++){
-           sortedItems[i] = i;
-       }
-       sortedItems.sort(function (a, b) {
-           za = items[a].attr.zIndex || 0;
-           zb = items[b].attr.zIndex || 0;
-           if (za == zb) {
-               return a - b;
-           }
-           return za - zb;
-       });
-
-       for(i = 0; i < itemsLen; i++){
-           item = items[sortedItems[i]];
-           if(!item.attr.hidden){
-               svg += spriteProcessor[item.type](item);
-           }
-       }
-
-       svg += '</svg>';
-
-       return svg;
-   },
-   toPropertyString = function(obj){
-       var propString = '',
-           key;
-
-       for(key in obj){
-
-           if(obj.hasOwnProperty(key) && obj[key] != null){
-               propString += key +'="'+ obj[key]+'" ';
-           }
-
-       }
-
-       return propString;
-   };
-
-   return {
-       singleton: true,
-
-       /**
-        * Exports the passed surface to a SVG string representation
-        * @param {Ext.draw.Surface} surface The surface to export
-        * @param {Object} [config] Any configuration for the export. Currently this is
-        * unused but may provide more options in the future
-        * @return {String} The SVG as a string
-        */
-       generate: function(surface, config){
-           config = config || {};
-           init(surface);
-           return svgHeader() + svgContent();
-       }
-   };
-});
 /**
  * Exports a {@link Ext.draw.Surface Surface} to an image. To do this,
  * the svg string must be sent to a remote server and processed.
@@ -67728,6 +67728,133 @@ Ext.define('devilry_extjsextras.DatetimeHelpers', {
     }
 });
 
+Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOverview' ,{
+  extend: 'Ext.container.Container',
+  alias: 'widget.aggregatedstudentinfo',
+  cls: 'bootstrap',
+  title: 'Aggregated Student Info',
+
+  //layout: 'fit',
+  padding: '40',
+  autoScroll: true,
+
+  items: [{
+      xtype: 'container',
+      layout: 'column',
+      items: [{
+          xtype: 'box',
+          itemId: 'headerBox',
+          columnWidth: 1.0,
+          tpl: [
+              '<h1 style="margin-top: 0;">', gettext('Student Information'), '</h1>',
+              '<dl>',
+                '<dt>', gettext('Name') ,'</dt>',
+                '<dd>',
+                    '<tpl if="data.user.full_name">',
+                        '{data.user.full_name}',
+                    '<tpl else>',
+                        '<em class="text-warning">', gettext('Name missing'), '</em>',
+                    '</tpl>',
+                    '{data.user.name}',
+                '<dd>',
+                '<dt>', gettext('Username') ,'</dt>',
+                '<dd>{data.user.username}<dd>',
+                '<dt>', gettext('Email') ,'</dt>',
+                '<dd>{data.user.email}<dd>',
+              '</dl>'
+          ]
+      }, {
+          xtype: 'container',
+          width: 320,
+          items: [{
+              xtype: 'box',
+              cls: 'bootstrap',
+              margin: '0 0 4px 0',
+              html: [
+                  '<strong>',
+                      gettext('Find details about another student:'),
+                  '</strong>'
+                  ].join('')
+          }, {
+              xtype: 'autocompleteuserwidget',
+              itemId: 'userSearchBox',
+              fieldLabel: '',
+              emptyText: gettext('Search by name, username or email...'),
+              width: 300
+          }]
+      }]
+  }, {
+    xtype: 'box',
+    itemId: 'aggregatedStudentInfoBox',
+    tpl: [
+              '<tpl for="data.grouped_by_hierarky">',
+                    '<div class="devilry_focuscontainer" style="padding: 20px; margin-bottom: 20px;">',
+                      '<h2> {long_name} </h2>',
+                      '<tpl for="periods">',
+                          '<h3> {long_name} </h3>',
+                          '<p>',
+                          '<tpl if="is_relatedstudent">',
+                              '<span class="label label-success" style="margin: 0 10px 0 0;">', gettext('Registred as student on period'), '</span>',
+                          '<tpl else>',
+                              '<span class="label label-important" style="margin: 0 10px 0 0;">', gettext('Not registred as student on period'), '</span>',
+                          '</tpl>',
+                          '<tpl if="qualified_forexams === null">',
+                              '<span class="label">', gettext('No information on exam qualification'), '</span>',
+                          '<tpl elseif="qualified_forexams">',
+                              '<span class="label label-success">', gettext('Qualified for final exam'), '</span>',
+                          '<tpl else>',
+                              '<span class="label label-important">', gettext('Not Qualified for final exam'), '</span>',
+                          '</tpl>',
+                          '</p>',
+                          '<table class="table table-striped table-bordered table-hover">',
+          '<tr class="info"> <td>', gettext('Assignment'), '</td> <td>', gettext('Feedback Status'), '</td>', '</tr>',
+                          '<tpl for="assignments">',
+                              '<tr>',
+                              '<tpl for="groups">',
+                                  '<td> <a href="{[this.getGroupUrl(parent, values)]}">{parent.long_name}</a></td>',
+                                  '<td style="width: 200px;">',
+                                  '<tpl if="status === \'corrected\'">',
+                                      '<strong class="grade">',
+                                          '{active_feedback.feedback.grade}',
+                                      '</strong> ',
+                                      '<tpl if="active_feedback.feedback.is_passing_grade">',
+                                          '<span class="label label-success">', gettext('Passed'), '</span>',
+                                      '<tpl else>',
+                                          '<span class="label label-error">', gettext('Failed'), '</span>',
+                                      '</tpl>',
+                                  '<tpl elseif="status === \'waiting-for-deliveries\'">',
+                                      '<em><small class="muted">',
+                                      gettext('Waiting for deliveries, or for deadline to expire'),
+                                      '</small></em>',
+                                  '<tpl elseif="status === \'waiting-for-feedback\'">',
+                                      '<em><small class="muted">', gettext('Waiting for feedback'), '</small></em>',
+                                  '</tpl>',
+                                  '</td>',
+
+                              '</tpl>',
+                              '</tr>',
+                          '</tpl>',
+                      '</table>',
+                      '</tpl>',
+                    '</div>', 
+                '</tpl>',
+
+              {
+
+                getGroupUrl: function(assignment, group) {
+                    return Ext.String.format('{0}/devilry_subjectadmin/#/assignment/{1}/@@manage-students/@@select/{2}',
+                                             window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                                             assignment.id, group.id);
+                }
+
+                
+                
+              }]
+    
+  }]
+
+});
+
 /**
  * History management component that allows you to register arbitrary tokens that signify application
  * history state on navigation actions.  You can then handle the history {@link #change} event in order
@@ -68014,133 +68141,6 @@ Ext.define('Ext.util.History', {
         return this.ready ? this.currentToken : this.getHash();
     }
 });
-Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOverview' ,{
-  extend: 'Ext.container.Container',
-  alias: 'widget.aggregatedstudentinfo',
-  cls: 'bootstrap',
-  title: 'Aggregated Student Info',
-
-  //layout: 'fit',
-  padding: '40',
-  autoScroll: true,
-
-  items: [{
-      xtype: 'container',
-      layout: 'column',
-      items: [{
-          xtype: 'box',
-          itemId: 'headerBox',
-          columnWidth: 1.0,
-          tpl: [
-              '<h1 style="margin-top: 0;">', gettext('Student Information'), '</h1>',
-              '<dl>',
-                '<dt>', gettext('Name') ,'</dt>',
-                '<dd>',
-                    '<tpl if="data.user.full_name">',
-                        '{data.user.full_name}',
-                    '<tpl else>',
-                        '<em class="text-warning">', gettext('Name missing'), '</em>',
-                    '</tpl>',
-                    '{data.user.name}',
-                '<dd>',
-                '<dt>', gettext('Username') ,'</dt>',
-                '<dd>{data.user.username}<dd>',
-                '<dt>', gettext('Email') ,'</dt>',
-                '<dd>{data.user.email}<dd>',
-              '</dl>'
-          ]
-      }, {
-          xtype: 'container',
-          width: 320,
-          items: [{
-              xtype: 'box',
-              cls: 'bootstrap',
-              margin: '0 0 4px 0',
-              html: [
-                  '<strong>',
-                      gettext('Find details about another student:'),
-                  '</strong>'
-                  ].join('')
-          }, {
-              xtype: 'autocompleteuserwidget',
-              itemId: 'userSearchBox',
-              fieldLabel: '',
-              emptyText: gettext('Search by name, username or email...'),
-              width: 300
-          }]
-      }]
-  }, {
-    xtype: 'box',
-    itemId: 'aggregatedStudentInfoBox',
-    tpl: [
-              '<tpl for="data.grouped_by_hierarky">',
-                    '<div class="devilry_focuscontainer" style="padding: 20px; margin-bottom: 20px;">',
-                      '<h2> {long_name} </h2>',
-                      '<tpl for="periods">',
-                          '<h3> {long_name} </h3>',
-                          '<p>',
-                          '<tpl if="is_relatedstudent">',
-                              '<span class="label label-success" style="margin: 0 10px 0 0;">', gettext('Registred as student on period'), '</span>',
-                          '<tpl else>',
-                              '<span class="label label-important" style="margin: 0 10px 0 0;">', gettext('Not registred as student on period'), '</span>',
-                          '</tpl>',
-                          '<tpl if="qualified_forexams === null">',
-                              '<span class="label">', gettext('No information on exam qualification'), '</span>',
-                          '<tpl elseif="qualified_forexams">',
-                              '<span class="label label-success">', gettext('Qualified for final exam'), '</span>',
-                          '<tpl else>',
-                              '<span class="label label-important">', gettext('Not Qualified for final exam'), '</span>',
-                          '</tpl>',
-                          '</p>',
-                          '<table class="table table-striped table-bordered table-hover">',
-          '<tr class="info"> <td>', gettext('Assignment'), '</td> <td>', gettext('Feedback Status'), '</td>', '</tr>',
-                          '<tpl for="assignments">',
-                              '<tr>',
-                              '<tpl for="groups">',
-                                  '<td> <a href="{[this.getGroupUrl(parent, values)]}">{parent.long_name}</a></td>',
-                                  '<td style="width: 200px;">',
-                                  '<tpl if="status === \'corrected\'">',
-                                      '<strong class="grade">',
-                                          '{active_feedback.feedback.grade}',
-                                      '</strong> ',
-                                      '<tpl if="active_feedback.feedback.is_passing_grade">',
-                                          '<span class="label label-success">', gettext('Passed'), '</span>',
-                                      '<tpl else>',
-                                          '<span class="label label-error">', gettext('Failed'), '</span>',
-                                      '</tpl>',
-                                  '<tpl elseif="status === \'waiting-for-deliveries\'">',
-                                      '<em><small class="muted">',
-                                      gettext('Waiting for deliveries, or for deadline to expire'),
-                                      '</small></em>',
-                                  '<tpl elseif="status === \'waiting-for-feedback\'">',
-                                      '<em><small class="muted">', gettext('Waiting for feedback'), '</small></em>',
-                                  '</tpl>',
-                                  '</td>',
-
-                              '</tpl>',
-                              '</tr>',
-                          '</tpl>',
-                      '</table>',
-                      '</tpl>',
-                    '</div>', 
-                '</tpl>',
-
-              {
-
-                getGroupUrl: function(assignment, group) {
-                    return Ext.String.format('{0}/devilry_subjectadmin/#/assignment/{1}/@@manage-students/@@select/{2}',
-                                             window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
-                                             assignment.id, group.id);
-                }
-
-                
-                
-              }]
-    
-  }]
-
-});
-
 /**
  * Base class for proxy error handling.
  */
@@ -68412,6 +68412,143 @@ Ext.define('Ext.data.proxy.Rest', {
 });
 
 /**
+ * A component for information display. Works just like a regular component,
+ * except that it adds an extra attribute, ``MORE_BUTTON``, to the template
+ * data. This extra attribute, inserts a button in the markup that toggles
+ * the visibility of any element in the component with the ``.more`` css class.
+ *
+ * ## Example:
+ *      {
+ *          xtype: 'markupmoreinfobox',
+ *          tpl: [
+ *              'Always visible {MORE_BUTTON}',
+ *              '<p {MORE_ATTRS}>Shown when more button is clicked.</p>'
+ *          ],
+ *          data: {}
+ *      }
+ *
+ * **Note**: we use {MORE_ATTRS}, which simply inserts ``class="more" style="display: none;"``.
+ *
+ * ## Special template attributes
+ *
+ * - ``MORE_BUTTON``: The more button (an A-tag).
+ * - ``MORE_ATTRS``: The html attributes required on a container for the
+ *   more/less buttons show/hide the container. The value is:
+ *   ``class="more" style="display: none;"``. If you set the
+ *   ``moreCls`` config, that/those classes are added to ``class``.
+ */
+Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
+    extend: 'Ext.Component',
+    alias: 'widget.markupmoreinfobox',
+    border: false,
+    frame: false,
+
+    /**
+     * @cfg {String} [cls="markupmoreinfobox"]
+     * Defaults to ``markupmoreinfobox bootstrap``.
+     */
+    cls: 'markupmoreinfobox bootstrap',
+
+    /**
+     * @cfg {String} [lesstext="Less info"]
+     * The text to show on the Less info button. The default text is translated.
+     */
+    lesstext: gettext('Less info'),
+
+    /**
+     * @cfg {String} [lesstext="More info ..."]
+     * The text to show on the More info button. The default text is translated.
+     */
+    moretext: gettext('More info'),
+
+    moresuffix: '<span class="expandable-indicator"></span>',
+    lesssuffix: '<span class="collapsible-indicator"></span>',
+
+    /**
+     * @cfg {String} [moreCls='']
+     * Added to the ``class`` attribute of the ``MORE_ATTRS`` template variable.
+     */
+    moreCls: '',
+
+    initComponent: function() {
+        this.morebutton = [
+            '<a href="#" class="morebutton">',
+                this.moretext, this.moresuffix,
+            '</a>'
+        ].join('');
+        if(!Ext.isEmpty(this.data)) {
+            this.setTplAttrs(this.data);
+        }
+
+        this.addListener({
+            scope: this,
+            element: 'el',
+            delegate: 'a.morebutton',
+            click: this._onMore
+        });
+        this.addListener({
+            scope: this,
+            element: 'el',
+            delegate: 'a.lessbutton',
+            click: this._onLess
+        });
+        this.callParent(arguments);
+    },
+
+    _getMoreEl: function() {
+        var element = Ext.get(this.getEl().query('.more')[0]);
+        element.enableDisplayMode(); // Use css display instead of visibility for hiding.
+        return element;
+    },
+    _getMoreButtonEl: function() {
+        var element = Ext.get(this.getEl().query('a.morebutton')[0]);
+        element.enableDisplayMode(); // Use css display instead of visibility for hiding.
+        return element;
+    },
+    _getLessButtonEl: function() {
+        var element = Ext.get(this.getEl().query('a.lessbutton')[0]);
+        element.enableDisplayMode(); // Use css display instead of visibility for hiding.
+        return element;
+    },
+
+    _onMore: function(e) {
+        e.preventDefault();
+        var button = this._getMoreButtonEl();
+        this.moretext = button.getHTML();
+        button.setHTML(this.lesstext + this.lesssuffix);
+        this._getMoreEl().show();
+        this.hide(); this.show(); // Force re-render
+        Ext.defer(function() {
+            // NOTE: We defer for two reasons: 1, prevent double click, 2: Prevent double event trigger (both more and less)
+            button.replaceCls('morebutton', 'lessbutton');
+        }, 200, this);
+    },
+
+    _onLess: function(e) {
+        e.preventDefault();
+        this._getMoreEl().hide();
+        var button = this._getLessButtonEl();
+        button.setHTML(this.moretext);
+        this.hide(); this.show(); // Force re-render
+        Ext.defer(function() {
+            // NOTE: We defer for two reasons: 1, prevent double click, 2: Prevent double event trigger (both more and less)
+            button.replaceCls('lessbutton', 'morebutton');
+        }, 200, this);
+    },
+
+    setTplAttrs: function(data) {
+        data.MORE_BUTTON = this.morebutton;
+        data.MORE_ATTRS = Ext.String.format('class="more {0}" style="display: none;"', this.moreCls);
+        data.MORE_STYLE = 'style="display: none;"';
+    },
+
+    update: function(data) {
+        this.setTplAttrs(data);
+        return this.callParent([data]);
+    }
+});
+
+/**
  * This class functions **between siblings of a {@link Ext.layout.container.VBox VBox} or {@link Ext.layout.container.HBox HBox}
  * layout** to resize both immediate siblings.
  *
@@ -68673,143 +68810,6 @@ Ext.define('Ext.resizer.Splitter', {
     beforeDestroy: function(){
         Ext.destroy(this.tracker);
         this.callParent();
-    }
-});
-
-/**
- * A component for information display. Works just like a regular component,
- * except that it adds an extra attribute, ``MORE_BUTTON``, to the template
- * data. This extra attribute, inserts a button in the markup that toggles
- * the visibility of any element in the component with the ``.more`` css class.
- *
- * ## Example:
- *      {
- *          xtype: 'markupmoreinfobox',
- *          tpl: [
- *              'Always visible {MORE_BUTTON}',
- *              '<p {MORE_ATTRS}>Shown when more button is clicked.</p>'
- *          ],
- *          data: {}
- *      }
- *
- * **Note**: we use {MORE_ATTRS}, which simply inserts ``class="more" style="display: none;"``.
- *
- * ## Special template attributes
- *
- * - ``MORE_BUTTON``: The more button (an A-tag).
- * - ``MORE_ATTRS``: The html attributes required on a container for the
- *   more/less buttons show/hide the container. The value is:
- *   ``class="more" style="display: none;"``. If you set the
- *   ``moreCls`` config, that/those classes are added to ``class``.
- */
-Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
-    extend: 'Ext.Component',
-    alias: 'widget.markupmoreinfobox',
-    border: false,
-    frame: false,
-
-    /**
-     * @cfg {String} [cls="markupmoreinfobox"]
-     * Defaults to ``markupmoreinfobox bootstrap``.
-     */
-    cls: 'markupmoreinfobox bootstrap',
-
-    /**
-     * @cfg {String} [lesstext="Less info"]
-     * The text to show on the Less info button. The default text is translated.
-     */
-    lesstext: gettext('Less info'),
-
-    /**
-     * @cfg {String} [lesstext="More info ..."]
-     * The text to show on the More info button. The default text is translated.
-     */
-    moretext: gettext('More info'),
-
-    moresuffix: '<span class="expandable-indicator"></span>',
-    lesssuffix: '<span class="collapsible-indicator"></span>',
-
-    /**
-     * @cfg {String} [moreCls='']
-     * Added to the ``class`` attribute of the ``MORE_ATTRS`` template variable.
-     */
-    moreCls: '',
-
-    initComponent: function() {
-        this.morebutton = [
-            '<a href="#" class="morebutton">',
-                this.moretext, this.moresuffix,
-            '</a>'
-        ].join('');
-        if(!Ext.isEmpty(this.data)) {
-            this.setTplAttrs(this.data);
-        }
-
-        this.addListener({
-            scope: this,
-            element: 'el',
-            delegate: 'a.morebutton',
-            click: this._onMore
-        });
-        this.addListener({
-            scope: this,
-            element: 'el',
-            delegate: 'a.lessbutton',
-            click: this._onLess
-        });
-        this.callParent(arguments);
-    },
-
-    _getMoreEl: function() {
-        var element = Ext.get(this.getEl().query('.more')[0]);
-        element.enableDisplayMode(); // Use css display instead of visibility for hiding.
-        return element;
-    },
-    _getMoreButtonEl: function() {
-        var element = Ext.get(this.getEl().query('a.morebutton')[0]);
-        element.enableDisplayMode(); // Use css display instead of visibility for hiding.
-        return element;
-    },
-    _getLessButtonEl: function() {
-        var element = Ext.get(this.getEl().query('a.lessbutton')[0]);
-        element.enableDisplayMode(); // Use css display instead of visibility for hiding.
-        return element;
-    },
-
-    _onMore: function(e) {
-        e.preventDefault();
-        var button = this._getMoreButtonEl();
-        this.moretext = button.getHTML();
-        button.setHTML(this.lesstext + this.lesssuffix);
-        this._getMoreEl().show();
-        this.hide(); this.show(); // Force re-render
-        Ext.defer(function() {
-            // NOTE: We defer for two reasons: 1, prevent double click, 2: Prevent double event trigger (both more and less)
-            button.replaceCls('morebutton', 'lessbutton');
-        }, 200, this);
-    },
-
-    _onLess: function(e) {
-        e.preventDefault();
-        this._getMoreEl().hide();
-        var button = this._getLessButtonEl();
-        button.setHTML(this.moretext);
-        this.hide(); this.show(); // Force re-render
-        Ext.defer(function() {
-            // NOTE: We defer for two reasons: 1, prevent double click, 2: Prevent double event trigger (both more and less)
-            button.replaceCls('lessbutton', 'morebutton');
-        }, 200, this);
-    },
-
-    setTplAttrs: function(data) {
-        data.MORE_BUTTON = this.morebutton;
-        data.MORE_ATTRS = Ext.String.format('class="more {0}" style="display: none;"', this.moreCls);
-        data.MORE_STYLE = 'style="display: none;"';
-    },
-
-    update: function(data) {
-        this.setTplAttrs(data);
-        return this.callParent([data]);
     }
 });
 
@@ -71365,9 +71365,7 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
             '</ul>',
             '<h2>', gettext( "Subjects" ), ' <small>', gettext( 'on this level' ), '</small></h2>',
             '<p class="muted"><small>',
-                interpolate(gettext('Follow these links to get access to all the details available to %(subject_term)s administrators. This includes the ability to extend deadlines, view detailed information about students and their feedback, and much more.'), {
-                    subject_term: gettext('subject')
-                }, true),
+                gettext('Follow these links to get access to all the details available to course managers. This includes the ability to extend deadlines, view detailed information about students and their feedback, and much more.'),
             '</small></p>',
             '<ul>',
                 '<tpl for="node.subjects">',
@@ -71406,91 +71404,6 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
             }
         }
     ]
-});
-
-Ext.define('devilry_nodeadmin.model.AggregatedStudentInfo', {
-    extend: 'Ext.data.Model',
-
-    fields: [
-        {name: 'user', type: 'auto'},
-        {name: 'grouped_by_hierarky', type: 'auto'}
-    ],
-
-    proxy: {
-        type: 'rest',
-        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_nodeadmin/rest/aggregatedstudentinfo/',
-
-        headers: {
-            'Accept': 'application/json'
-        },
-
-        reader: {
-            type: 'json'
-        }
-    }
-});
-
-Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
-    extend: 'Ext.app.Controller',
-
-    views: [
-        'aggregatedstudentview.AggregatedStudentInfoOverview'
-    ],
-
-    refs: [{
-        ref: 'aggregatedStudentInfo',
-        selector: 'aggregatedstudentinfo'
-    }, {
-        ref: 'aggregatedStudentInfoBox',
-        selector: 'aggregatedstudentinfo #aggregatedStudentInfoBox'
-    }, {
-        ref: 'headerBox',
-        selector: 'aggregatedstudentinfo #headerBox'
-    }, {
-        ref: 'userSearchBox',
-        selector: 'aggregatedstudentinfo autocompleteuserwidget#userSearchBox'
-    }],
-
-    models: ['AggregatedStudentInfo'],
-
-    init: function() {
-        this.control({
-            'viewport aggregatedstudentinfo': {
-                render: this._onRender
-            },
-            'viewport aggregatedstudentinfo autocompleteuserwidget#userSearchBox': {
-                userSelected: this._onUserSelected
-            }
-        });
-    },
-
-    _onRender: function() {
-        var user_id = this.getAggregatedStudentInfo().user_id;
-        this.getAggregatedStudentInfoModel().load(user_id, {
-            scope: this,
-            callback: function(records, operation) {
-                if (operation.success) {
-                    this._onLoadSuccess(records);
-                } else {
-                    this._onLoadFailure();
-                }
-            }
-        });
-    },
-
-    _onLoadSuccess: function(record) {
-        this.getHeaderBox().update({data: record.data});
-        this.getAggregatedStudentInfoBox().update({data: record.data});
-    },
-
-    _onLoadFailure: function(records){
-        //TODO
-    },
-
-    _onUserSelected: function(combo, userRecord) {
-        this.getUserSearchBox().clearValue();
-        this.application.route.navigate(devilry_nodeadmin.utils.UrlLookup.aggregatedstudentinfo(userRecord.get('id')));
-    }
 });
 
 /**
@@ -72357,6 +72270,91 @@ Ext.define('Ext.layout.container.Border', {
 
     Ext.apply(props.horz, methods);
     Ext.apply(props.vert, methods);
+});
+
+Ext.define('devilry_nodeadmin.model.AggregatedStudentInfo', {
+    extend: 'Ext.data.Model',
+
+    fields: [
+        {name: 'user', type: 'auto'},
+        {name: 'grouped_by_hierarky', type: 'auto'}
+    ],
+
+    proxy: {
+        type: 'rest',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_nodeadmin/rest/aggregatedstudentinfo/',
+
+        headers: {
+            'Accept': 'application/json'
+        },
+
+        reader: {
+            type: 'json'
+        }
+    }
+});
+
+Ext.define('devilry_nodeadmin.controller.AggregatedStudentInfoController', {
+    extend: 'Ext.app.Controller',
+
+    views: [
+        'aggregatedstudentview.AggregatedStudentInfoOverview'
+    ],
+
+    refs: [{
+        ref: 'aggregatedStudentInfo',
+        selector: 'aggregatedstudentinfo'
+    }, {
+        ref: 'aggregatedStudentInfoBox',
+        selector: 'aggregatedstudentinfo #aggregatedStudentInfoBox'
+    }, {
+        ref: 'headerBox',
+        selector: 'aggregatedstudentinfo #headerBox'
+    }, {
+        ref: 'userSearchBox',
+        selector: 'aggregatedstudentinfo autocompleteuserwidget#userSearchBox'
+    }],
+
+    models: ['AggregatedStudentInfo'],
+
+    init: function() {
+        this.control({
+            'viewport aggregatedstudentinfo': {
+                render: this._onRender
+            },
+            'viewport aggregatedstudentinfo autocompleteuserwidget#userSearchBox': {
+                userSelected: this._onUserSelected
+            }
+        });
+    },
+
+    _onRender: function() {
+        var user_id = this.getAggregatedStudentInfo().user_id;
+        this.getAggregatedStudentInfoModel().load(user_id, {
+            scope: this,
+            callback: function(records, operation) {
+                if (operation.success) {
+                    this._onLoadSuccess(records);
+                } else {
+                    this._onLoadFailure();
+                }
+            }
+        });
+    },
+
+    _onLoadSuccess: function(record) {
+        this.getHeaderBox().update({data: record.data});
+        this.getAggregatedStudentInfoBox().update({data: record.data});
+    },
+
+    _onLoadFailure: function(records){
+        //TODO
+    },
+
+    _onUserSelected: function(combo, userRecord) {
+        this.getUserSearchBox().clearValue();
+        this.application.route.navigate(devilry_nodeadmin.utils.UrlLookup.aggregatedstudentinfo(userRecord.get('id')));
+    }
 });
 
 /**
@@ -80249,51 +80247,6 @@ Ext.define('Ext.form.field.ComboBox', {
     }
 });
 
-Ext.define('devilry_nodeadmin.view.dashboard.BetaWarning', {
-    extend: 'Ext.view.View',
-    alias: 'widget.betawarning',
-    cls: 'devilry_nodeadmin_betawarning bootstrap',
-    tpl: [
-        '<p class="muted">',
-            gettext( 'This part of Devilry is in experemental stage. To make sure you get things done, we have kept a stable environment accessible, providing the same functionality. If you ever encounter issues with this page, please make sure to report them and head over  ' ),
-            '<a href="/administrator">', gettext( 'to the alternative interface' ), '</a>.',
-        '</p>'
-    ],
-
-    itemSelector: 'div',
-
-    initComponent: function() {
-        this.callParent(arguments);
-    }
-});
-
-Ext.define('devilry_nodeadmin.view.dashboard.ToplevelNodeList', {
-    extend: 'Ext.view.View',
-    alias: 'widget.toplevelnodelist',
-    cls: 'devilry_nodeadmin_toplevelnodelist bootstrap',
-
-    store: 'ToplevelNodes',
-
-    tpl: [
-        '<ul class="unstyled devilry_nodeadmin_massive_navlist">',
-            '<tpl for=".">',
-                '<li>',
-                    '<a href="/devilry_nodeadmin/#/node/{ id }">{ long_name }</a>',
-                '</li>',
-            '</tpl>',
-        '</ul>',
-        '<p class="muted">',
-            interpolate(gettext( 'These are only the nodes you control. Select an element to see the child levels, its %(subjects_term)s and %(periods_term)s.' ), {
-                subjects_term: gettext('subjects'),
-                periods_term: gettext('periods')
-             }, true),
-        '</p>'
-    ],
-
-    itemSelector: 'a.node'
-
-});
-
 Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
     extend: 'Ext.container.Container',
     alias: 'widget.nodebrowseroverview',
@@ -80311,6 +80264,24 @@ Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
         xtype: 'nodedetailsoverview',
         columnWidth: 1.0
     }]
+});
+
+Ext.define('devilry_nodeadmin.view.dashboard.BetaWarning', {
+    extend: 'Ext.view.View',
+    alias: 'widget.betawarning',
+    cls: 'devilry_nodeadmin_betawarning bootstrap',
+    tpl: [
+        '<p class="muted">',
+            gettext( 'This part of Devilry is in experemental stage. To make sure you get things done, we have kept a stable environment accessible, providing the same functionality. If you ever encounter issues with this page, please make sure to report them and head over  ' ),
+            '<a href="/administrator">', gettext( 'to the alternative interface' ), '</a>.',
+        '</p>'
+    ],
+
+    itemSelector: 'div',
+
+    initComponent: function() {
+        this.callParent(arguments);
+    }
 });
 
 Ext.define( 'devilry_nodeadmin.model.NodeDetail', {
@@ -80336,6 +80307,30 @@ Ext.define( 'devilry_nodeadmin.model.NodeDetail', {
             type: 'json'
         }
     }
+});
+
+Ext.define('devilry_nodeadmin.view.dashboard.ToplevelNodeList', {
+    extend: 'Ext.view.View',
+    alias: 'widget.toplevelnodelist',
+    cls: 'devilry_nodeadmin_toplevelnodelist bootstrap',
+
+    store: 'ToplevelNodes',
+
+    tpl: [
+        '<ul class="unstyled devilry_nodeadmin_massive_navlist">',
+            '<tpl for=".">',
+                '<li>',
+                    '<a href="/devilry_nodeadmin/#/node/{ id }">{ long_name }</a>',
+                '</li>',
+            '</tpl>',
+        '</ul>',
+        '<p class="muted">',
+            gettext( 'These are only the nodes you control. Select an element to see the child levels, its courses and periods.' ),
+        '</p>'
+    ],
+
+    itemSelector: 'a.node'
+
 });
 
 Ext.define( 'devilry_nodeadmin.model.ToplevelNode', {
@@ -80427,7 +80422,7 @@ Ext.define('devilry_nodeadmin.controller.NodeBrowserController', {
     _onLoadNodeDetailsSuccess:function ( record ) {
         var path = record.get('path');
         var breadcrumb = [{
-            text: gettext('Nodeadmin'),
+            text: gettext('Administrator'),
             url: ''
         }];
         for (var i = 0; i < path.length-1; i++) {
