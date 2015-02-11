@@ -1,5 +1,50 @@
 .. _supervisord-configure:
 
+
+Make sure all services work as excpected
+----------------------------------------
+All Devilry services is controlled to Supervisord. This does not include your
+database or webserver.
+
+To run supervisord in the foreground for testing/debugging, enable DEBUG-mode
+(see :ref:`debug-devilry-problems`), and  run::
+
+    $ bin/supervisord -n
+
+Make sure you disable DEBUG-mode afterwards.
+
+
+.. _run-supervisord-for-production:
+
+Run Supervisord for production
+------------------------------
+
+To run supervisord in the background with a PID, run::
+
+    $ bin/supervisord
+
+See :ref:`supervisord-configure` to see and configure where the PID-file is
+written, and for an init-script example.
+
+.. warning::
+    Do NOT run supervisord as root. Run it as an unpriviledged used, preferably
+    a user that is only used for Devilry. Use the ``supervisord-user``, as shown
+    in :ref:`supervisord-configure`, to define a user if running supervisord as
+    root.
+
+
+Configure your webserver
+------------------------
+You need to configure your webserver to act as a reverse proxy for all URLS
+except for the ``/static/``-url. The proxy should forward requests to the
+Devilry WSGI server (gunicorn). Gunicorn runs  on ``127.0.0.0:8002``.
+
+The webserver should use SSL.
+
+.. seealso:: :ref:`nginx`.
+
+
+
 =============================================
 Configure supervisord (logging, pidfile, ...)
 =============================================

@@ -7,7 +7,6 @@ Contents:
    :maxdepth: 2
 
    deploy
-   requiredsystempackages
    supervisord
    debug
    update

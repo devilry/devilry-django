@@ -1,6 +1,10 @@
 # Import the default settings from devilry
-from devilry_settings.default_settings import *
+from devilry.project.production.settings import *
 
+
+#: Turn this on if you need to debug Devilry
+DEBUG = False
+EXTJS4_DEBUG = DEBUG
 
 #################################################################################
 # Configure the database
@@ -13,13 +17,6 @@ DATABASES["default"] = {
     'PASSWORD': 'supersecret',
     'HOST': 'localhost',
 }
-
-
-##################################################################################
-# Make Devilry speak in typical university terms (semester instead of period, ...)
-##################################################################################
-INSTALLED_APPS += ['devilry_university_translations']
-DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry_university_translations',)
 
 
 #################################################################################
@@ -47,15 +44,8 @@ DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 #: Where should Devilry store your files
 DEVILRY_FSHIERDELIVERYSTORE_ROOT = '/devilry-filestorage'
 
-#: Randomize this, and keep it secret
-SECRET_KEY = '+g$%**q(w78xqa_2)(_+%v8d)he-b_^@d*pqhq!#2p*a7*9e9h'
-
-#: Turn this on if you need to debug Devilry
-DEBUG = False
-EXTJS4_DEBUG = DEBUG
-
-#: Change this to the name of the system which you fetch data into Devilry from.
-DEVILRY_SYNCSYSTEM = 'The Devilry demo syncsystem'
+# Make this 50 chars and RANDOM - do not share it with anyone
+SECRET_KEY = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
 
 #: Url where users are directed when they do not have the permissions they believe they should have.
 DEVILRY_LACKING_PERMISSIONS_URL = None

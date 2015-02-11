@@ -60,16 +60,18 @@ else:
 
 
 # Mapping to other docs
-django_version = '1.4'
+django_version = '1.6'
 intersphinx_mapping = {
+    'django': ('http://docs.djangoproject.com/en/{0}/'.format(django_version), 'http://docs.djangoproject.com/en/{0}/_objects/'.format(django_version))
 }
 
 extlinks = {
     'djangodoc': ('https://docs.djangoproject.com/en/{0}/%s'.format(django_version), None),
     'devilrydeploy': ('https://devilry-deploy.readthedocs.org/en/{0}/%s'.format(linked_devilryrelease_docs), None),
-    'devilryissue': ('https://github.com/devilry/devilry-django/issues/%s', 'issue ')
+    'devilryissue': ('https://github.com/devilry/devilry-django/issues/%s', 'issue '),
+    'devilryrepo_dir': ('https://github.com/devilry/devilry-django/tree/{0}/%s'.format(linked_devilryrelease_repo), None),
+    'devilryrepo_file': ('https://github.com/devilry/devilry-django/blob/{0}/%s'.format(linked_devilryrelease_repo), None),
 }
-
 
 
 # Add any paths that contain templates here, relative to this directory.

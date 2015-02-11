@@ -1,235 +1,247 @@
 .. _deploy:
 
-**************
-Build Devilry
-**************
-Devilry does not come pre-packaged. Instead, we deploy using `buildout <http://www.buildout.org/>`_.
-There is several reasons for that:
-
-- It is easier to maintain deployment through buildout.
-- It is easier to customize Devilry when we do not have to force defaults on
-  people. With the current method of deployment, admins can easily intergrate
-  local devilry addons.
-- The method we are using seems to work very well for the Plone CMS.
-
-What this means for you is that you have to setup a very minimal
-buildout-config instead of downloading an archive and unzipping it.
-
-
-Create a system user for Devilry
-===================================
-You should run Devilry as a non-privledged user. We suggest you name the user
-something like ``devilryrunner``. Run all commands in this documentation as
-this user unless stated otherwise. 
-
-
-.. _configure_buildout:
-
-Configure buildout
-==================
-Create a directory that will be used to configure your Devilry build::
-
-    $ mkdir devilrybuild
-
-Create a configuration file named ``buildout.cfg`` in the directory. Add the
-following to the configuration file::
-
-    [buildout]
-    extends = https://raw.github.com/devilry/devilry-deploy/REVISION/buildout/buildout-base.cfg
-
-Replace ``REVISION`` (in the extends url) with the Devilry version you want to
-use (E.g.: ``v1.2.1``). See `the tag listing on github
-<https://github.com/devilry/devilry-deploy/tags>`_ for a list of all releases,
-and refer to :devilrydoc:`The releasenotes listing <releasenoteslisting.html>`
-for the information about each release.
+****************************
+Deploy Devilry in production
+****************************
 
 
 Install required system packages
 ================================
-See :ref:`required-system-packages`.
+
+#. Python 2.7.X. Check your current version by running ``python --version``.
+#. PIP_
+#. VirtualEnv_
+#. PostgreSQL server. Alternatively, you can test out Devilry with SQLite,
+   but you will need PostgreSQL for production.
 
 
-Initialize the buildout
+Create a system user for Devilry
+================================
+You should run Devilry as a non-privledged user. We suggest you name the user
+something like ``devilryrunner``. **Run all commands in this documentation as
+this user unless stated otherwise**.
+
+
+Make a directory for your Devilry deploy
+========================================
+You need a directory for your Devilry settings and other Devilry-related files.
+We suggest you use the ``~/devilrydeploy/`` directory (in the HOME folder of
+the ``devilryrunner``-user)::
+
+    $ mkdir ~/devilrydeploy
+
+The rest of the guide will assume you use the ``~/devilrydeploy``-directory
+
+
+Make a requirements file for Python packages
+============================================
+To run Devilry in production, you need the Devilry library, and a couple
+of extra Python packages and perhaps you will want to install some third
+party devilry addons. We could just install these, but that would be
+messy to maintain. Instead, we use a PIP requirements-file. Create
+``~/devilrydeploy/requirements.txt`` with the following contents::
+
+    # PostgreSQL python bindings
+    psycopg2==2.4.6
+
+    # Elastic search python bindings
+    elasticsearch==1.3.0
+
+    # The devilry library/djangoproject
+    # - See http://devilry.org for the latest devilry version
+    devilry==X.Y.Z
+
+
+Install from the requirements file
+==================================
+
+    $ cd ~/devilrydeploy
+    $ virtualenv venv
+    $ venv/bin/pip install -r requirements.txt
+
+
+*********************************
+Create a Django management script
+*********************************
+Copy this script into ``~/devilrydeploy/manage.py``::
+
+    import os
+    import sys
+
+    if __name__ == "__main__":
+        os.environ["DJANGO_SETTINGS_MODULE"] = "devilry_settings"
+        from django.core.management import execute_from_command_line
+        execute_from_command_line(sys.argv)
+
+
+
+*********
+Configure
+*********
+Devilry is configured through a python file. Start by copying the following into
+``~/devilrydeploy/devilry_settings.py``::
+
+    from devilry.project.production.settings import *
+    import dj_database_url
+
+    # Make this 50 chars and RANDOM - do not share it with anyone
+    SECRET_KEY = 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+
+    # Database config
+    DATABASE_URL = 'sqlite:///devilrydb.sqlite'
+    DATABASES = {'default': dj_database_url.config(default=DATABASE_URL)}
+
+    # Set this to False to turn of debug mode in production
+    DEBUG = True
+    TEMPLATE_DEBUG = DEBUG
+
+    #: Default from email - students receive emails from this address when they make deliveries
+    DEVILRY_EMAIL_DEFAULT_FROM = 'devilry-support@example.com'
+
+    #: The URL that is used to link back to devilry from emails
+    DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
+
+    #: Where should Devilry store your files
+    DEVILRY_FSHIERDELIVERYSTORE_ROOT = '/devilry-filestorage'
+
+    #: Url where users are directed when they do not have the permissions they believe they should have.
+    DEVILRY_LACKING_PERMISSIONS_URL = None
+
+    #: Url where users are directed when they want to know what to do if their personal info in Devilry is wrong.
+    DEVILRY_WRONG_USERINFO_URL = None
+
+    #: Url where users can go to get documentation for Devilry that your organization provides.
+    #: If you leave this blank, the only help link will be the official Devilry documentation.
+    DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_URL = None
+
+    #: Text for the DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_URL link.
+    #: Leave this blank to use the default text
+    DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_TEXT = None
+
+    #: Deadline handling method:
+    #:
+    #:    0: Soft deadlines
+    #:    1: Hard deadlines
+    DEFAULT_DEADLINE_HANDLING_METHOD = 0
+
+    #: Configure an email backend
+    EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
+    CELERY_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST_USER = ''
+    EMAIL_HOST_PASSWORD = ''
+    EMAIL_PORT = 25
+    EMAIL_USE_TLS = False
+
+If you have a ``devilry_prod_settings.py`` file from an older version of Devilry, you should be
+able to copy over most of these settings.
+
+
+Make sure it works
+==================
+Just to make sure everything works, run::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/python manage.py syncdb --noinput
+    $ venv/bin/python manage.py migrate --noinput
+
+This should create a file named ``~/devilrydeploy/devilrydb.sqlite``.
+You can remove that file now - it was just for testing.
+
+
+Configure a SECRET_KEY
+======================
+Configure the SECRET_KEY (used for cryptographic signing) by editing the ``SECRET_KEY`` setting in your
+``devilry_settings.py`` script. Make it a 50 characters long random string.
+
+
+Configure the database
+======================
+Configure a Postgres database by editing the ``DATABASE_URL`` setting in your ``devilry_settings.py`` script.
+The format is::
+
+    DATABASE_URL = "postgres://USER:PASSWORD@HOST:PORT/NAME"
+
+
+Configure where to store files
+==============================
+Adjust the ``DEVILRY_FSHIERDELIVERYSTORE_ROOT`` setting to a directory where you want delivered files
+to be stored.
+
+
+Configure various external pages
+================================
+Make sure you create a website that you can link to for the ``DEVILRY_LACKING_PERMISSIONS_URL``
+and ``DEVILRY_WRONG_USERINFO_URL`` pages. You may also want to configure a
+``DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_URL``, but that is not required.
+
+
+Configure Email sending
 =======================
-
-CD to the directory and run the following commands to download Devilry and
-all dependencies into a Python virtualenv. The end result is a
-selfcontained devilry build that only depends on the availability of a 
-compatible Python interpreter to run. The virtualenv is not affected by
-other Python packages installed globally::
-
-    $ cd devilrybuild/
-    $ mkdir -p buildoutcache/dlcache
-    $ virtualenv --no-site-packages .
-    $ bin/easy_install zc.buildout
-    $ bin/buildout "buildout:parts=download-devilryrepo" && bin/buildout
+You will probably have to adjust the ``EMAIL_*`` settings. The use of ``djcelery_email.backends.CeleryEmailBackend``
+means that all email is sent via a background queue instead of letting email sending become a potential
+bottleneck. The other email settings are documented in the :djangodoc:`Django settings <topics/settings/>`.
 
 
-Configure Devilry
-=================
-To configure Devilry, you need to create a Python module containing a
-config-file named ``devilry_prod_settings.py``. First create a directory for
-your Devilry configurations::
-
-    $ mkdir /etc/devilry
-
-turn the directory into a Python module::
-
-    $ touch /etc/devilry/__init__.py
-
-and add your own ``devilry_prod_settings.py`` to the directory. This is a good starting point:
-
-.. literalinclude:: /examples/devilry_prod_settings.py
-    :language: python
-
-The config-file can contain any official Django settings, and Devilry provides
-some extra settings that should be useful:
-
-- :ref:`Django email backends <django:topic-email-backends>`
-- :djangodoc:`Django settings <topics/settings/>`
-- `Devilry settings <https://github.com/devilry/devilry-django/blob/1728d4e01abd7aed58da86be9fccd09cfcaadc08/src/devilry_settings/devilry_settings/default_settings.py>`_ (scroll down to the *Default for settings defined by Devilry* section).
-- `django-celery-email <https://pypi.python.org/pypi/django-celery-email>`_ is
-  an addon that sends email in a background queue. The addon is installed by
-  devilry-deploy by default, and is highly recommended (see
-  https://github.com/devilry/devilry-django/issues/477).
-
-
-.. note::
-
-    You can put ``devilry_prod_settings.py`` in another directory. You just have to add::
-
-        [devilry]
-        configdir = /etc/devilry
-
-    to your ``buildout.cfg`` and re-run ``bin/buildout``.
-        
-
-
-Create the database
-===================
-When you have configured a database in ``devilry_prod_settings.py``, you
-can use the following command to create your database::
-
-    $ cd /path/to/devilrybuild
-    $ bin/django.py syncdb
-
-The script will ask you to create a superuser. Choose a strong password - this
-user will have complete access to everything in Devilry.
-
-
-Install RabbitMQ
-=================
-If you want to scale Devilry to more than a couple of hundred users, you really
-have to configure the Celery background task server. Celery is installed by
-default, but you need to configure a task broker. We recommend RabbitMQ.
-
-.. note::
-
-    You can avoid configring background tasks for now if you are just testing
-    Devilry, or are using it on a very small amount of users. Simply skip this
-    section of the guide, and configure::
-
-        CELERY_ALWAYS_EAGER = True
-
-    in ``devilry_prod_settings.py``. Note that this will make all background
-    tasks, like search index updates and email sending run in realtime.
-
-
-Install RabbitMQ
-----------------
-Follow the guides at their website: http://www.rabbitmq.com/download.html.
-
-Refer to the RabbitMQ docs for regular configuration, like logging and
-database-file location. The defaults are usable.
-
-Configure RabbitMQ for Devilry
--------------------------------
-Start the RabbitMQ server.
-
-RabbitMQ creates a default admin user named ``guest`` with password ``guest``.
-Remove the guest user, and create a new admin user (use another password than
-``secret``)::
-
-    $ rabbitmqctl delete_user guest
-    $ rabbitmqctl add_user admin secret
-    $ rabbitmqctl set_user_tags admin administrator
-    $ rabbitmqctl set_permissions admin ".*" ".*" ".*"
-
-Setup a vhost for Devilry with a username and password (use another password
-than ``secret``)::
-
-    $ rabbitmqctl add_user devilry secret
-    $ rabbitmqctl add_vhost devilryhost
-    $ rabbitmqctl set_permissions -p devilryhost devilry ".*" ".*" ".*"
-
-
-
-Add RabbitMQ settings to Devilry
----------------------------------
-Add the following to ``devilry_prod_settings.py`` (change ``secret`` to
-match your password)::
-
-    $ BROKER_URL = 'amqp://devilry:secret@localhost:5672/devilryhost'
-
-
-Test the install
-================
-See :ref:`debug-devilry-problems`.
-
-
-
-Setup Devilry for production
-============================
-Collect all static files in the ``static/``-subdirectory::
-
-    $ bin/django.py collectstatic
-
-
-Make sure all services work as excpected
-----------------------------------------
-All Devilry services is controlled to Supervisord. This does not include your
-database or webserver.
-
-To run supervisord in the foreground for testing/debugging, enable DEBUG-mode
-(see :ref:`debug-devilry-problems`), and  run::
-
-    $ bin/supervisord -n
-
-Make sure you disable DEBUG-mode afterwards.
-
-
-.. _run-supervisord-for-production:
-
-Run Supervisord for production
--------------------------------
-
-To run supervisord in the background with a PID, run::
-
-    $ bin/supervisord
-
-See :ref:`supervisord-configure` to see and configure where the PID-file is
-written, and for an init-script example.
+Disable debug mode
+==================
+Before running Devilry in production, you **must** set ``DEBUG=False`` in ``devilry_settings.py``.
 
 .. warning::
-    Do NOT run supervisord as root. Run it as an unpriviledged used, preferably
-    a user that is only used for Devilry. Use the ``supervisord-user``, as shown
-    in :ref:`supervisord-configure`, to define a user if running supervisord as
-    root.
+
+    If you do not disable DEBUG mode in production, you database credentials and SECRET_KEY
+    will be shown to any visitor when they encounter an error.
 
 
-Configure your webserver
-------------------------
-You need to configure your webserver to act as a reverse proxy for all URLS
-except for the ``/static/``-url. The proxy should forward requests to the
-Devilry WSGI server (gunicorn). Gunicorn runs  on ``127.0.0.0:8002``.
+****************************
+Create or migrate a database
+****************************
+No matter if the current the database contains a database from a previous Devilry version,
+or if you are starting from an empty database, you need to run::
 
-The webserver should use SSL.
+    $ cd ~/devilrydeploy/
+    $ venv/bin/python manage.py syncdb --noinput
+    $ venv/bin/python manage.py migrate --noinput
 
-.. seealso:: :ref:`nginx`.
+This will create any missing database tables, and migrate any unmigrated database changes.
 
 
+********************
+Collect static files
+********************
+Run the following command to collect all static files (CSS, javascript, ...) for Devilry::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/python manage.py collectstatic
+
+The files are written to the ``staticfiles`` sub-directory (``~/devilrydeploy/staticfiles``).
+
+
+*************************
+Run the production server
+*************************
+Run::
+
+    $ cd ~/devilrydeploy/
+    $ DJANGO_SETTINGS_MODULE=devilry_settings venv/bin/gunicorn devilry.project.production.wsgi -b 0.0.0.0:8000 --workers=12 --preload
+
+You can adjust the number of worker threads in the ``--workers`` argument,
+and the port number in the ``-b`` argument. You can run this on port 80,
+but if you want to have SSL support, you will need to use a HTTP proxy
+server like Apache og Nginx.
+
+
+
+***********
 Whats next?
-===========
+***********
+You now have a working Devilry server, but you still need to:
 
-- :ref:`update`
-- :ref:`supervisord-initscript`
+- Install the Elasticsearch search server.
+- Setup an authentication backend.
+- Setup the Celery background task server.
+- Setup Supervisord for process management, log handling and log rotation.
+
+
+
+.. _PIP: https://pip.pypa.io
+.. _VirtualEnv: https://virtualenv.pypa.io
