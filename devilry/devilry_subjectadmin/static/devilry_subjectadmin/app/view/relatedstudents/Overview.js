@@ -25,15 +25,15 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
      */
 
 
-    introhelp: gettext('These are the students that can be added to any assignments within this timeperiod.'),
+    introhelp: gettext('These are the students that can be added to any assignments within this term.'),
     morehelptpl: [
         '<h3>', gettext('Removing students'), '</h3>',
         '<p>',
-            gettext('When you remove a student from this list, Devilry assumes that the student is not planning on completing the timeperiod. This means that they will disappear from any timeperiod summaries, including calculation of final grade on the timeperiod.'),
+            gettext('When you remove a student from this list, Devilry assumes that the student is not planning on completing the term. This means that they will disappear from any term summaries, including calculation of final grade on the term.'),
         '</p>',
         
         '<p>',
-            gettext('Removing a student from a timeperiod does not affect any groups, deliveries or feedback already registered on an assignment.'),
+            gettext('Removing a student from a term does not affect any groups, deliveries or feedback already registered on an assignment.'),
         '</p>',
 
         '<h3>', gettext('Tags'), '</h3>',
@@ -171,7 +171,7 @@ Ext.define('devilry_subjectadmin.view.relatedstudents.Overview', {
                             html: [
                                 '<p>',
                                     gettext('Do you really want to remove all the selected students?'),
-                                    gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire timeperiod.'),
+                                    gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire term.'),
                                 '</p>'
                             ].join('')
                         }, {

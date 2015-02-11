@@ -24,11 +24,11 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
      */
 
 
-    introhelp: gettext('These are the examiners that can be added to any assignments within the timeperiod.'),
+    introhelp: gettext('These are the examiners that can be added to any assignments within the term.'),
     morehelptpl: [
         '<h3>', gettext('Removing examiners'), '</h3>',
         '<p>',
-            gettext('Removing an examiner from a timeperiod does not affect any groups, deliveries or feedback already registered on an assignment.'),
+            gettext('Removing an examiner from a term does not affect any groups, deliveries or feedback already registered on an assignment.'),
         '</p>',
 
         '<h3>', gettext('Accociate examiners with students using tags'), '</h3>',
@@ -160,7 +160,7 @@ Ext.define('devilry_subjectadmin.view.relatedexaminers.Overview', {
                             html: [
                                 '<p>',
                                     gettext('Do you really want to remove all the selected examiners?'),
-                                    gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire timeperiod.'),
+                                    gettext('They will not be removed from any existing assignments. You will not be able to add them on any new assignments, and they will not be available in statistics for the entire term.'),
                                 '</p>'
                             ].join('')
                         }, {

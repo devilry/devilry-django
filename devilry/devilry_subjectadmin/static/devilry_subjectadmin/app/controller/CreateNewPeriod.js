@@ -90,7 +90,7 @@ Ext.define('devilry_subjectadmin.controller.CreateNewPeriod', {
     },
     _onLoadSubjectSuccess: function(record) {
         this.subjectRecord = record;
-        var title = gettext('Create timeperiod');
+        var title = gettext('Create new term');
         this.application.setTitle(Ext.String.format('{0} - {1}',
             title, this.subjectRecord.get('short_name')));
         this.getHeader().update({

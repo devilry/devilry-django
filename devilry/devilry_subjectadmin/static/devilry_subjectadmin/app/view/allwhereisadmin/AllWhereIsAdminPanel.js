@@ -22,7 +22,7 @@ Ext.define('devilry_subjectadmin.view.allwhereisadmin.AllWhereIsAdminPanel' ,{
                 gettext('All my courses'),
             '</h1>',
             '<p class="muted">',
-                gettext('These are all courses, timeperiods and assignments where you have administrator rights. Assignments are included in the listing if you have administrator-rights on the assignment, and not on the timeperiods or courses containing the assignment. The courses name is a link if you have administrator rights on the courses.'),
+                gettext('These are all courses, terms and assignments where you have administrator rights. Assignments are included in the listing if you have administrator-rights on the assignment, and not on the terms or courses containing the assignment. The courses name is a link if you have administrator rights on the courses.'),
             '</p>'
         ].join('')
     }, {

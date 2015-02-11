@@ -35,7 +35,7 @@ Ext.define('devilry_subjectadmin.view.managestudents.ExaminersHelp', {
         if(Ext.isEmpty(this._relatedNoteTpl)) {
             this._relatedNoteTpl = Ext.create('Ext.XTemplate', 
                 '<p><small class="muted">',
-                    gettext('Only <a {relatedexaminers_link}>examiners registered on the timeperiod</a> are available.'),
+                    gettext('Only <a {relatedexaminers_link}>examiners registered on the term</a> are available.'),
                 '</small></p>'
             );
         }
