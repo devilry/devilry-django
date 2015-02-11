@@ -1,6 +1,97 @@
 /*
 Copyright(c) 2012 Company Name
 */
+/**
+ * Utility class for setting/reading values from browser cookies.
+ * Values can be written using the {@link #set} method.
+ * Values can be read using the {@link #get} method.
+ * A cookie can be invalidated on the client machine using the {@link #clear} method.
+ */
+Ext.define('Ext.util.Cookies', {
+    singleton: true,
+    
+    /**
+     * Creates a cookie with the specified name and value. Additional settings for the cookie may be optionally specified
+     * (for example: expiration, access restriction, SSL).
+     * @param {String} name The name of the cookie to set.
+     * @param {Object} value The value to set for the cookie.
+     * @param {Object} [expires] Specify an expiration date the cookie is to persist until. Note that the specified Date
+     * object will be converted to Greenwich Mean Time (GMT).
+     * @param {String} [path] Setting a path on the cookie restricts access to pages that match that path. Defaults to all
+     * pages ('/').
+     * @param {String} [domain] Setting a domain restricts access to pages on a given domain (typically used to allow
+     * cookie access across subdomains). For example, "sencha.com" will create a cookie that can be accessed from any
+     * subdomain of sencha.com, including www.sencha.com, support.sencha.com, etc.
+     * @param {Boolean} [secure] Specify true to indicate that the cookie should only be accessible via SSL on a page
+     * using the HTTPS protocol. Defaults to false. Note that this will only work if the page calling this code uses the
+     * HTTPS protocol, otherwise the cookie will be created with default options.
+     */
+    set : function(name, value){
+        var argv = arguments,
+            argc = arguments.length,
+            expires = (argc > 2) ? argv[2] : null,
+            path = (argc > 3) ? argv[3] : '/',
+            domain = (argc > 4) ? argv[4] : null,
+            secure = (argc > 5) ? argv[5] : false;
+            
+        document.cookie = name + "=" + escape(value) + ((expires === null) ? "" : ("; expires=" + expires.toGMTString())) + ((path === null) ? "" : ("; path=" + path)) + ((domain === null) ? "" : ("; domain=" + domain)) + ((secure === true) ? "; secure" : "");
+    },
+
+    /**
+     * Retrieves cookies that are accessible by the current page. If a cookie does not exist, `get()` returns null. The
+     * following example retrieves the cookie called "valid" and stores the String value in the variable validStatus.
+     *
+     *     var validStatus = Ext.util.Cookies.get("valid");
+     *
+     * @param {String} name The name of the cookie to get
+     * @return {Object} Returns the cookie value for the specified name;
+     * null if the cookie name does not exist.
+     */
+    get : function(name){
+        var arg = name + "=",
+            alen = arg.length,
+            clen = document.cookie.length,
+            i = 0,
+            j = 0;
+            
+        while(i < clen){
+            j = i + alen;
+            if(document.cookie.substring(i, j) == arg){
+                return this.getCookieVal(j);
+            }
+            i = document.cookie.indexOf(" ", i) + 1;
+            if(i === 0){
+                break;
+            }
+        }
+        return null;
+    },
+
+    /**
+     * Removes a cookie with the provided name from the browser
+     * if found by setting its expiration date to sometime in the past.
+     * @param {String} name The name of the cookie to remove
+     * @param {String} [path] The path for the cookie.
+     * This must be included if you included a path while setting the cookie.
+     */
+    clear : function(name, path){
+        if(this.get(name)){
+            path = path || '/';
+            document.cookie = name + '=' + '; expires=Thu, 01-Jan-70 00:00:01 GMT; path=' + path;
+        }
+    },
+    
+    /**
+     * @private
+     */
+    getCookieVal : function(offset){
+        var endstr = document.cookie.indexOf(";", offset);
+        if(endstr == -1){
+            endstr = document.cookie.length;
+        }
+        return unescape(document.cookie.substring(offset, endstr));
+    }
+});
 
 /**
  * @author Ed Spencer
@@ -265,180 +356,827 @@ Ext.define('Ext.data.association.Association', {
 });
 
 /**
- * Represents a single sorter that can be applied to a Store. The sorter is used
- * to compare two values against each other for the purpose of ordering them. Ordering
- * is achieved by specifying either:
+ * @author Don Griffin
  *
- * - {@link #property A sorting property}
- * - {@link #sorterFn A sorting function}
+ * This class is a base for all id generators. It also provides lookup of id generators by
+ * their id.
+ * 
+ * Generally, id generators are used to generate a primary key for new model instances. There
+ * are different approaches to solving this problem, so this mechanism has both simple use
+ * cases and is open to custom implementations. A {@link Ext.data.Model} requests id generation
+ * using the {@link Ext.data.Model#idgen} property.
  *
- * As a contrived example, we can specify a custom sorter that sorts by rank:
+ * # Identity, Type and Shared IdGenerators
  *
- *     Ext.define('Person', {
+ * It is often desirable to share IdGenerators to ensure uniqueness or common configuration.
+ * This is done by giving IdGenerator instances an id property by which they can be looked
+ * up using the {@link #get} method. To configure two {@link Ext.data.Model Model} classes
+ * to share one {@link Ext.data.SequentialIdGenerator sequential} id generator, you simply
+ * assign them the same id:
+ *
+ *     Ext.define('MyApp.data.MyModelA', {
  *         extend: 'Ext.data.Model',
- *         fields: ['name', 'rank']
+ *         idgen: {
+ *             type: 'sequential',
+ *             id: 'foo'
+ *         }
  *     });
  *
- *     Ext.create('Ext.data.Store', {
- *         model: 'Person',
- *         proxy: 'memory',
- *         sorters: [{
- *             sorterFn: function(o1, o2){
- *                 var getRank = function(o){
- *                     var name = o.get('rank');
- *                     if (name === 'first') {
- *                         return 1;
- *                     } else if (name === 'second') {
- *                         return 2;
- *                     } else {
- *                         return 3;
- *                     }
- *                 },
- *                 rank1 = getRank(o1),
- *                 rank2 = getRank(o2);
- *
- *                 if (rank1 === rank2) {
- *                     return 0;
- *                 }
- *
- *                 return rank1 < rank2 ? -1 : 1;
- *             }
- *         }],
- *         data: [{
- *             name: 'Person1',
- *             rank: 'second'
- *         }, {
- *             name: 'Person2',
- *             rank: 'third'
- *         }, {
- *             name: 'Person3',
- *             rank: 'first'
- *         }]
+ *     Ext.define('MyApp.data.MyModelB', {
+ *         extend: 'Ext.data.Model',
+ *         idgen: {
+ *             type: 'sequential',
+ *             id: 'foo'
+ *         }
  *     });
+ *
+ * To make this as simple as possible for generator types that are shared by many (or all)
+ * Models, the IdGenerator types (such as 'sequential' or 'uuid') are also reserved as
+ * generator id's. This is used by the {@link Ext.data.UuidGenerator} which has an id equal
+ * to its type ('uuid'). In other words, the following Models share the same generator:
+ *
+ *     Ext.define('MyApp.data.MyModelX', {
+ *         extend: 'Ext.data.Model',
+ *         idgen: 'uuid'
+ *     });
+ *
+ *     Ext.define('MyApp.data.MyModelY', {
+ *         extend: 'Ext.data.Model',
+ *         idgen: 'uuid'
+ *     });
+ *
+ * This can be overridden (by specifying the id explicitly), but there is no particularly
+ * good reason to do so for this generator type.
+ *
+ * # Creating Custom Generators
+ * 
+ * An id generator should derive from this class and implement the {@link #generate} method.
+ * The constructor will apply config properties on new instances, so a constructor is often
+ * not necessary.
+ *
+ * To register an id generator type, a derived class should provide an `alias` like so:
+ *
+ *     Ext.define('MyApp.data.CustomIdGenerator', {
+ *         extend: 'Ext.data.IdGenerator',
+ *         alias: 'idgen.custom',
+ *
+ *         configProp: 42, // some config property w/default value
+ *
+ *         generate: function () {
+ *             return ... // a new id
+ *         }
+ *     });
+ *
+ * Using the custom id generator is then straightforward:
+ *
+ *     Ext.define('MyApp.data.MyModel', {
+ *         extend: 'Ext.data.Model',
+ *         idgen: 'custom'
+ *     });
+ *     // or...
+ *
+ *     Ext.define('MyApp.data.MyModel', {
+ *         extend: 'Ext.data.Model',
+ *         idgen: {
+ *             type: 'custom',
+ *             configProp: value
+ *         }
+ *     });
+ *
+ * It is not recommended to mix shared generators with generator configuration. This leads
+ * to unpredictable results unless all configurations match (which is also redundant). In
+ * such cases, a custom generator with a default id is the best approach.
+ *
+ *     Ext.define('MyApp.data.CustomIdGenerator', {
+ *         extend: 'Ext.data.SequentialIdGenerator',
+ *         alias: 'idgen.custom',
+ *
+ *         id: 'custom', // shared by default
+ *
+ *         prefix: 'ID_',
+ *         seed: 1000
+ *     });
+ *
+ *     Ext.define('MyApp.data.MyModelX', {
+ *         extend: 'Ext.data.Model',
+ *         idgen: 'custom'
+ *     });
+ *
+ *     Ext.define('MyApp.data.MyModelY', {
+ *         extend: 'Ext.data.Model',
+ *         idgen: 'custom'
+ *     });
+ *
+ *     // the above models share a generator that produces ID_1000, ID_1001, etc..
+ *
  */
-Ext.define('Ext.util.Sorter', {
+Ext.define('Ext.data.IdGenerator', {
 
     /**
-     * @cfg {String} property
-     * The property to sort by. Required unless {@link #sorterFn} is provided. The property is extracted from the object
-     * directly and compared for sorting using the built in comparison operators.
+     * @property {Boolean} isGenerator
+     * `true` in this class to identify an object as an instantiated IdGenerator, or subclass thereof.
      */
-    
+    isGenerator: true,
+
     /**
-     * @cfg {Function} sorterFn
-     * A specific sorter function to execute. Can be passed instead of {@link #property}. This sorter function allows
-     * for any kind of custom/complex comparisons. The sorterFn receives two arguments, the objects being compared. The
-     * function should return:
-     *
-     *   - -1 if o1 is "less than" o2
-     *   - 0 if o1 is "equal" to o2
-     *   - 1 if o1 is "greater than" o2
+     * Initializes a new instance.
+     * @param {Object} config (optional) Configuration object to be applied to the new instance.
      */
-    
-    /**
-     * @cfg {String} root
-     * Optional root property. This is mostly useful when sorting a Store, in which case we set the root to 'data' to
-     * make the filter pull the {@link #property} out of the data object of each item
-     */
-    
-    /**
-     * @cfg {Function} transform
-     * A function that will be run on each value before it is compared in the sorter. The function will receive a single
-     * argument, the value.
-     */
-    
-    /**
-     * @cfg {String} direction
-     * The direction to sort by.
-     */
-    direction: "ASC",
-    
     constructor: function(config) {
         var me = this;
-        
-        Ext.apply(me, config);
-        
-        if (me.property === undefined && me.sorterFn === undefined) {
-            Ext.Error.raise("A Sorter requires either a property or a sorter function");
-        }
-        
-        me.updateSortFunction();
-    },
-    
-    /**
-     * @private
-     * Creates and returns a function which sorts an array by the given property and direction
-     * @return {Function} A function which sorts by the property/direction combination provided
-     */
-    createSortFunction: function(sorterFn) {
-        var me        = this,
-            property  = me.property,
-            direction = me.direction || "ASC",
-            modifier  = direction.toUpperCase() == "DESC" ? -1 : 1;
-        
-        //create a comparison function. Takes 2 objects, returns 1 if object 1 is greater,
-        //-1 if object 2 is greater or 0 if they are equal
-        return function(o1, o2) {
-            return modifier * sorterFn.call(me, o1, o2);
-        };
-    },
-    
-    /**
-     * @private
-     * Basic default sorter function that just compares the defined property of each object
-     */
-    defaultSorterFn: function(o1, o2) {
-        var me = this,
-            transform = me.transform,
-            v1 = me.getRoot(o1)[me.property],
-            v2 = me.getRoot(o2)[me.property];
-            
-        if (transform) {
-            v1 = transform(v1);
-            v2 = transform(v2);
-        }
 
-        return v1 > v2 ? 1 : (v1 < v2 ? -1 : 0);
+        Ext.apply(me, config);
+
+        if (me.id) {
+            Ext.data.IdGenerator.all[me.id] = me;
+        }
+    },
+
+    /**
+     * @cfg {String} id
+     * The id by which to register a new instance. This instance can be found using the
+     * {@link Ext.data.IdGenerator#get} static method.
+     */
+
+    getRecId: function (rec) {
+        return rec.modelName + '-' + rec.internalId;
+    },
+
+    /**
+     * Generates and returns the next id. This method must be implemented by the derived
+     * class.
+     *
+     * @return {String} The next id.
+     * @method generate
+     * @abstract
+     */
+
+    statics: {
+        /**
+         * @property {Object} all
+         * This object is keyed by id to lookup instances.
+         * @private
+         * @static
+         */
+        all: {},
+
+        /**
+         * Returns the IdGenerator given its config description.
+         * @param {String/Object} config If this parameter is an IdGenerator instance, it is
+         * simply returned. If this is a string, it is first used as an id for lookup and
+         * then, if there is no match, as a type to create a new instance. This parameter
+         * can also be a config object that contains a `type` property (among others) that
+         * are used to create and configure the instance.
+         * @static
+         */
+        get: function (config) {
+            var generator,
+                id,
+                type;
+
+            if (typeof config == 'string') {
+                id = type = config;
+                config = null;
+            } else if (config.isGenerator) {
+                return config;
+            } else {
+                id = config.id || config.type;
+                type = config.type;
+            }
+
+            generator = this.all[id];
+            if (!generator) {
+                generator = Ext.create('idgen.' + type, config);
+            }
+
+            return generator;
+        }
+    }
+});
+
+/**
+ * @author Ed Spencer
+ *
+ * This singleton contains a set of validation functions that can be used to validate any type of data. They are most
+ * often used in {@link Ext.data.Model Models}, where they are automatically set up and executed.
+ */
+Ext.define('Ext.data.validations', {
+    singleton: true,
+    
+    /**
+     * @property {String} presenceMessage
+     * The default error message used when a presence validation fails.
+     */
+    presenceMessage: 'must be present',
+    
+    /**
+     * @property {String} lengthMessage
+     * The default error message used when a length validation fails.
+     */
+    lengthMessage: 'is the wrong length',
+    
+    /**
+     * @property {String} formatMessage
+     * The default error message used when a format validation fails.
+     */
+    formatMessage: 'is the wrong format',
+    
+    /**
+     * @property {String} inclusionMessage
+     * The default error message used when an inclusion validation fails.
+     */
+    inclusionMessage: 'is not included in the list of acceptable values',
+    
+    /**
+     * @property {String} exclusionMessage
+     * The default error message used when an exclusion validation fails.
+     */
+    exclusionMessage: 'is not an acceptable value',
+    
+    /**
+     * @property {String} emailMessage
+     * The default error message used when an email validation fails
+     */
+    emailMessage: 'is not a valid email address',
+    
+    /**
+     * @property {RegExp} emailRe
+     * The regular expression used to validate email addresses
+     */
+    emailRe: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
+    
+    /**
+     * Validates that the given value is present.
+     * For example:
+     *
+     *     validations: [{type: 'presence', field: 'age'}]
+     *
+     * @param {Object} config Config object
+     * @param {Object} value The value to validate
+     * @return {Boolean} True if validation passed
+     */
+    presence: function(config, value) {
+        // No configs read, so allow just value to be passed
+        if (arguments.length === 1) {
+            value = config;
+        }
+        
+        //we need an additional check for zero here because zero is an acceptable form of present data
+        return !!value || value === 0;
     },
     
+    /**
+     * Returns true if the given value is between the configured min and max values.
+     * For example:
+     *
+     *     validations: [{type: 'length', field: 'name', min: 2}]
+     *
+     * @param {Object} config Config object
+     * @param {String} value The value to validate
+     * @return {Boolean} True if the value passes validation
+     */
+    length: function(config, value) {
+        if (value === undefined || value === null) {
+            return false;
+        }
+        
+        var length = value.length,
+            min    = config.min,
+            max    = config.max;
+        
+        if ((min && length < min) || (max && length > max)) {
+            return false;
+        } else {
+            return true;
+        }
+    },
+    
+    /**
+     * Validates that an email string is in the correct format
+     * @param {Object} config Config object
+     * @param {String} email The email address
+     * @return {Boolean} True if the value passes validation
+     */
+    email: function(config, email) {
+        return Ext.data.validations.emailRe.test(email);
+    },
+    
+    /**
+     * Returns true if the given value passes validation against the configured `matcher` regex.
+     * For example:
+     *
+     *     validations: [{type: 'format', field: 'username', matcher: /([a-z]+)[0-9]{2,3}/}]
+     *
+     * @param {Object} config Config object
+     * @param {String} value The value to validate
+     * @return {Boolean} True if the value passes the format validation
+     */
+    format: function(config, value) {
+        return !!(config.matcher && config.matcher.test(value));
+    },
+    
+    /**
+     * Validates that the given value is present in the configured `list`.
+     * For example:
+     *
+     *     validations: [{type: 'inclusion', field: 'gender', list: ['Male', 'Female']}]
+     *
+     * @param {Object} config Config object
+     * @param {String} value The value to validate
+     * @return {Boolean} True if the value is present in the list
+     */
+    inclusion: function(config, value) {
+        return config.list && Ext.Array.indexOf(config.list,value) != -1;
+    },
+    
+    /**
+     * Validates that the given value is not present in the configured `list`.
+     * For example:
+     *
+     *     validations: [{type: 'exclusion', field: 'username', list: ['Admin', 'Operator']}]
+     *
+     * @param {Object} config Config object
+     * @param {String} value The value to validate
+     * @return {Boolean} True if the value is not present in the list
+     */
+    exclusion: function(config, value) {
+        return config.list && Ext.Array.indexOf(config.list,value) == -1;
+    }
+});
+/**
+ * @author Ed Spencer
+ *
+ * Represents a single read or write operation performed by a {@link Ext.data.proxy.Proxy Proxy}. Operation objects are
+ * used to enable communication between Stores and Proxies. Application developers should rarely need to interact with
+ * Operation objects directly.
+ *
+ * Several Operations can be batched together in a {@link Ext.data.Batch batch}.
+ */
+Ext.define('Ext.data.Operation', {
+    /**
+     * @cfg {Boolean} synchronous
+     * True if this Operation is to be executed synchronously. This property is inspected by a
+     * {@link Ext.data.Batch Batch} to see if a series of Operations can be executed in parallel or not.
+     */
+    synchronous: true,
+
+    /**
+     * @cfg {String} action
+     * The action being performed by this Operation. Should be one of 'create', 'read', 'update' or 'destroy'.
+     */
+    action: undefined,
+
+    /**
+     * @cfg {Ext.util.Filter[]} filters
+     * Optional array of filter objects. Only applies to 'read' actions.
+     */
+    filters: undefined,
+
+    /**
+     * @cfg {Ext.util.Sorter[]} sorters
+     * Optional array of sorter objects. Only applies to 'read' actions.
+     */
+    sorters: undefined,
+
+    /**
+     * @cfg {Ext.util.Grouper[]} groupers
+     * Optional grouping configuration. Only applies to 'read' actions where grouping is desired.
+     */
+    groupers: undefined,
+
+    /**
+     * @cfg {Number} start
+     * The start index (offset), used in paging when running a 'read' action.
+     */
+    start: undefined,
+
+    /**
+     * @cfg {Number} limit
+     * The number of records to load. Used on 'read' actions when paging is being used.
+     */
+    limit: undefined,
+
+    /**
+     * @cfg {Ext.data.Batch} batch
+     * The batch that this Operation is a part of.
+     */
+    batch: undefined,
+    
+    /**
+     * @cfg {Object} params
+     * Parameters to pass along with the request when performing the operation.
+     */
+
+    /**
+     * @cfg {Function} callback
+     * Function to execute when operation completed.
+     * @cfg {Ext.data.Model[]} callback.records Array of records.
+     * @cfg {Ext.data.Operation} callback.operation The Operation itself.
+     * @cfg {Boolean} callback.success True when operation completed successfully.
+     */
+    callback: undefined,
+
+    /**
+     * @cfg {Object} scope
+     * Scope for the {@link #callback} function.
+     */
+    scope: undefined,
+
+    /**
+     * @property {Boolean} started
+     * The start status of this Operation. Use {@link #isStarted}.
+     * @readonly
+     * @private
+     */
+    started: false,
+
+    /**
+     * @property {Boolean} running
+     * The run status of this Operation. Use {@link #isRunning}.
+     * @readonly
+     * @private
+     */
+    running: false,
+
+    /**
+     * @property {Boolean} complete
+     * The completion status of this Operation. Use {@link #isComplete}.
+     * @readonly
+     * @private
+     */
+    complete: false,
+
+    /**
+     * @property {Boolean} success
+     * Whether the Operation was successful or not. This starts as undefined and is set to true
+     * or false by the Proxy that is executing the Operation. It is also set to false by {@link #setException}. Use
+     * {@link #wasSuccessful} to query success status.
+     * @readonly
+     * @private
+     */
+    success: undefined,
+
+    /**
+     * @property {Boolean} exception
+     * The exception status of this Operation. Use {@link #hasException} and see {@link #getError}.
+     * @readonly
+     * @private
+     */
+    exception: false,
+
+    /**
+     * @property {String/Object} error
+     * The error object passed when {@link #setException} was called. This could be any object or primitive.
+     * @private
+     */
+    error: undefined,
+
+    /**
+     * @property {RegExp} actionCommitRecordsRe
+     * The RegExp used to categorize actions that require record commits.
+     */
+    actionCommitRecordsRe: /^(?:create|update)$/i,
+
+    /**
+     * @property {RegExp} actionSkipSyncRe
+     * The RegExp used to categorize actions that skip local record synchronization. This defaults
+     * to match 'destroy'.
+     */
+    actionSkipSyncRe: /^destroy$/i,
+
+    /**
+     * Creates new Operation object.
+     * @param {Object} config (optional) Config object.
+     */
+    constructor: function(config) {
+        Ext.apply(this, config || {});
+    },
+
+    /**
+     * This method is called to commit data to this instance's records given the records in
+     * the server response. This is followed by calling {@link Ext.data.Model#commit} on all
+     * those records (for 'create' and 'update' actions).
+     *
+     * If this {@link #action} is 'destroy', any server records are ignored and the
+     * {@link Ext.data.Model#commit} method is not called.
+     *
+     * @param {Ext.data.Model[]} serverRecords An array of {@link Ext.data.Model} objects returned by
+     * the server.
+     * @markdown
+     */
+    commitRecords: function (serverRecords) {
+        var me = this,
+            mc, index, clientRecords, serverRec, clientRec, i, len;
+
+        if (!me.actionSkipSyncRe.test(me.action)) {
+            clientRecords = me.records;
+
+            if (clientRecords && clientRecords.length) {
+                if (clientRecords.length > 1) {
+                    // If this operation has multiple records, client records need to be matched up with server records
+                    // so that any data returned from the server can be updated in the client records. If we don't have
+                    // a clientIdProperty specified on the model and we've done a create, just assume the data is returned in order.
+                    // If it's an update, the records should already have an id which should match what the server returns.
+                    if (me.action == 'update' || clientRecords[0].clientIdProperty) {
+                        mc = new Ext.util.MixedCollection();
+                        mc.addAll(serverRecords);
+
+                        for (index = clientRecords.length; index--; ) {
+                            clientRec = clientRecords[index];
+                            serverRec = mc.findBy(me.matchClientRec, clientRec);
+
+                            // Replace client record data with server record data
+                            clientRec.copyFrom(serverRec);
+                        }
+                    } else {
+                        for (i = 0, len = clientRecords.length; i < len; ++i) {
+                            clientRec = clientRecords[i];
+                            serverRec = serverRecords[i];
+                            if (clientRec && serverRec) {
+                                me.updateRecord(clientRec, serverRec);
+                            }
+                        }
+                    }
+                } else {
+                    // operation only has one record, so just match the first client record up with the first server record
+                    this.updateRecord(clientRecords[0], serverRecords[0]);   
+                }
+
+                if (me.actionCommitRecordsRe.test(me.action)) {
+                    for (index = clientRecords.length; index--; ) {
+                        clientRecords[index].commit();
+                    }
+                }
+            }
+        }
+    },
+    
+    updateRecord: function(clientRec, serverRec) {
+        // if the client record is not a phantom, make sure the ids match before replacing the client data with server data.
+        if(serverRec && (clientRec.phantom || clientRec.getId() === serverRec.getId())) {
+            clientRec.copyFrom(serverRec);
+        }
+    },
+
+    // Private.
+    // Record matching function used by commitRecords
+    // IMPORTANT: This is called in the scope of the clientRec being matched
+    matchClientRec: function(record) {
+        var clientRec = this,
+            clientRecordId = clientRec.getId();
+
+        if(clientRecordId && record.getId() === clientRecordId) {
+            return true;
+        }
+        // if the server record cannot be found by id, find by internalId.
+        // this allows client records that did not previously exist on the server
+        // to be updated with the correct server id and data.
+        return record.internalId === clientRec.internalId;
+    },
+
+    /**
+     * Marks the Operation as started.
+     */
+    setStarted: function() {
+        this.started = true;
+        this.running = true;
+    },
+
+    /**
+     * Marks the Operation as completed.
+     */
+    setCompleted: function() {
+        this.complete = true;
+        this.running  = false;
+    },
+
+    /**
+     * Marks the Operation as successful.
+     */
+    setSuccessful: function() {
+        this.success = true;
+    },
+
+    /**
+     * Marks the Operation as having experienced an exception. Can be supplied with an option error message/object.
+     * @param {String/Object} error (optional) error string/object
+     */
+    setException: function(error) {
+        this.exception = true;
+        this.success = false;
+        this.running = false;
+        this.error = error;
+    },
+
+    /**
+     * Returns true if this Operation encountered an exception (see also {@link #getError})
+     * @return {Boolean} True if there was an exception
+     */
+    hasException: function() {
+        return this.exception === true;
+    },
+
+    /**
+     * Returns the error string or object that was set using {@link #setException}
+     * @return {String/Object} The error object
+     */
+    getError: function() {
+        return this.error;
+    },
+
+    /**
+     * Returns the {@link Ext.data.Model record}s associated with this operation.  For read operations the records as set by the {@link Ext.data.proxy.Proxy Proxy} will be returned (returns `null` if the proxy has not yet set the records).
+     * For create, update, and destroy operations the operation's initially configured records will be returned, although the proxy may modify these records' data at some point after the operation is initialized.
+     * @return {Ext.data.Model[]}
+     */
+    getRecords: function() {
+        var resultSet = this.getResultSet();
+        return this.records || (resultSet ? resultSet.records : null);
+    },
+
+    /**
+     * Returns the ResultSet object (if set by the Proxy). This object will contain the {@link Ext.data.Model model}
+     * instances as well as meta data such as number of instances fetched, number available etc
+     * @return {Ext.data.ResultSet} The ResultSet object
+     */
+    getResultSet: function() {
+        return this.resultSet;
+    },
+
+    /**
+     * Returns true if the Operation has been started. Note that the Operation may have started AND completed, see
+     * {@link #isRunning} to test if the Operation is currently running.
+     * @return {Boolean} True if the Operation has started
+     */
+    isStarted: function() {
+        return this.started === true;
+    },
+
+    /**
+     * Returns true if the Operation has been started but has not yet completed.
+     * @return {Boolean} True if the Operation is currently running
+     */
+    isRunning: function() {
+        return this.running === true;
+    },
+
+    /**
+     * Returns true if the Operation has been completed
+     * @return {Boolean} True if the Operation is complete
+     */
+    isComplete: function() {
+        return this.complete === true;
+    },
+
+    /**
+     * Returns true if the Operation has completed and was successful
+     * @return {Boolean} True if successful
+     */
+    wasSuccessful: function() {
+        return this.isComplete() && this.success === true;
+    },
+
     /**
      * @private
-     * Returns the root property of the given item, based on the configured {@link #root} property
-     * @param {Object} item The item
-     * @return {Object} The root property of the object
+     * Associates this Operation with a Batch
+     * @param {Ext.data.Batch} batch The batch
      */
-    getRoot: function(item) {
-        return this.root === undefined ? item : item[this.root];
+    setBatch: function(batch) {
+        this.batch = batch;
     },
+
+    /**
+     * Checks whether this operation should cause writing to occur.
+     * @return {Boolean} Whether the operation should cause a write to occur.
+     */
+    allowWrite: function() {
+        return this.action != 'read';
+    }
+});
+
+/**
+ * @class Ext.data.SortTypes
+ * This class defines a series of static methods that are used on a
+ * {@link Ext.data.Field} for performing sorting. The methods cast the 
+ * underlying values into a data type that is appropriate for sorting on
+ * that particular field.  If a {@link Ext.data.Field#type} is specified, 
+ * the sortType will be set to a sane default if the sortType is not 
+ * explicitly defined on the field. The sortType will make any necessary
+ * modifications to the value and return it.
+ * <ul>
+ * <li><b>asText</b> - Removes any tags and converts the value to a string</li>
+ * <li><b>asUCText</b> - Removes any tags and converts the value to an uppercase string</li>
+ * <li><b>asUCText</b> - Converts the value to an uppercase string</li>
+ * <li><b>asDate</b> - Converts the value into Unix epoch time</li>
+ * <li><b>asFloat</b> - Converts the value to a floating point number</li>
+ * <li><b>asInt</b> - Converts the value to an integer number</li>
+ * </ul>
+ * <p>
+ * It is also possible to create a custom sortType that can be used throughout
+ * an application.
+ * <pre><code>
+Ext.apply(Ext.data.SortTypes, {
+    asPerson: function(person){
+        // expects an object with a first and last name property
+        return person.lastName.toUpperCase() + person.firstName.toLowerCase();
+    }    
+});
+
+Ext.define('Employee', {
+    extend: 'Ext.data.Model',
+    fields: [{
+        name: 'person',
+        sortType: 'asPerson'
+    }, {
+        name: 'salary',
+        type: 'float' // sortType set to asFloat
+    }]
+});
+ * </code></pre>
+ * </p>
+ * @singleton
+ * @docauthor Evan Trimboli <evan@sencha.com>
+ */
+Ext.define('Ext.data.SortTypes', {
+    
+    singleton: true,
     
     /**
-     * Set the sorting direction for this sorter.
-     * @param {String} direction The direction to sort in. Should be either 'ASC' or 'DESC'.
+     * Default sort that does nothing
+     * @param {Object} s The value being converted
+     * @return {Object} The comparison value
      */
-    setDirection: function(direction) {
-        var me = this;
-        me.direction = direction ? direction.toUpperCase() : direction;
-        me.updateSortFunction();
+    none : function(s) {
+        return s;
     },
-    
+
     /**
-     * Toggles the sorting direction for this sorter.
+     * The regular expression used to strip tags
+     * @type {RegExp}
+     * @property
      */
-    toggle: function() {
-        var me = this;
-        me.direction = Ext.String.toggle(me.direction, "ASC", "DESC");
-        me.updateSortFunction();
+    stripTagsRE : /<\/?[^>]+>/gi,
+
+    /**
+     * Strips all HTML tags to sort on text only
+     * @param {Object} s The value being converted
+     * @return {String} The comparison value
+     */
+    asText : function(s) {
+        return String(s).replace(this.stripTagsRE, "");
     },
-    
+
     /**
-     * Update the sort function for this sorter.
-     * @param {Function} [fn] A new sorter function for this sorter. If not specified it will use the default
-     * sorting function.
+     * Strips all HTML tags to sort on text only - Case insensitive
+     * @param {Object} s The value being converted
+     * @return {String} The comparison value
      */
-    updateSortFunction: function(fn) {
-        var me = this;
-        fn = fn || me.sorterFn || me.defaultSorterFn;
-        me.sort = me.createSortFunction(fn);
+    asUCText : function(s) {
+        return String(s).toUpperCase().replace(this.stripTagsRE, "");
+    },
+
+    /**
+     * Case insensitive string
+     * @param {Object} s The value being converted
+     * @return {String} The comparison value
+     */
+    asUCString : function(s) {
+        return String(s).toUpperCase();
+    },
+
+    /**
+     * Date sorting
+     * @param {Object} s The value being converted
+     * @return {Number} The comparison value
+     */
+    asDate : function(s) {
+        if(!s){
+            return 0;
+        }
+        if(Ext.isDate(s)){
+            return s.getTime();
+        }
+        return Date.parse(String(s));
+    },
+
+    /**
+     * Float sorting
+     * @param {Object} s The value being converted
+     * @return {Number} The comparison value
+     */
+    asFloat : function(s) {
+        var val = parseFloat(String(s).replace(/,/g, ""));
+        return isNaN(val) ? 0 : val;
+    },
+
+    /**
+     * Integer sorting
+     * @param {Object} s The value being converted
+     * @return {Number} The comparison value
+     */
+    asInt : function(s) {
+        var val = parseInt(String(s).replace(/,/g, ""), 10);
+        return isNaN(val) ? 0 : val;
     }
 });
 /**
@@ -1451,6 +2189,183 @@ Ext.define('Ext.util.Observable', {
 });
 
 /**
+ * Represents a single sorter that can be applied to a Store. The sorter is used
+ * to compare two values against each other for the purpose of ordering them. Ordering
+ * is achieved by specifying either:
+ *
+ * - {@link #property A sorting property}
+ * - {@link #sorterFn A sorting function}
+ *
+ * As a contrived example, we can specify a custom sorter that sorts by rank:
+ *
+ *     Ext.define('Person', {
+ *         extend: 'Ext.data.Model',
+ *         fields: ['name', 'rank']
+ *     });
+ *
+ *     Ext.create('Ext.data.Store', {
+ *         model: 'Person',
+ *         proxy: 'memory',
+ *         sorters: [{
+ *             sorterFn: function(o1, o2){
+ *                 var getRank = function(o){
+ *                     var name = o.get('rank');
+ *                     if (name === 'first') {
+ *                         return 1;
+ *                     } else if (name === 'second') {
+ *                         return 2;
+ *                     } else {
+ *                         return 3;
+ *                     }
+ *                 },
+ *                 rank1 = getRank(o1),
+ *                 rank2 = getRank(o2);
+ *
+ *                 if (rank1 === rank2) {
+ *                     return 0;
+ *                 }
+ *
+ *                 return rank1 < rank2 ? -1 : 1;
+ *             }
+ *         }],
+ *         data: [{
+ *             name: 'Person1',
+ *             rank: 'second'
+ *         }, {
+ *             name: 'Person2',
+ *             rank: 'third'
+ *         }, {
+ *             name: 'Person3',
+ *             rank: 'first'
+ *         }]
+ *     });
+ */
+Ext.define('Ext.util.Sorter', {
+
+    /**
+     * @cfg {String} property
+     * The property to sort by. Required unless {@link #sorterFn} is provided. The property is extracted from the object
+     * directly and compared for sorting using the built in comparison operators.
+     */
+    
+    /**
+     * @cfg {Function} sorterFn
+     * A specific sorter function to execute. Can be passed instead of {@link #property}. This sorter function allows
+     * for any kind of custom/complex comparisons. The sorterFn receives two arguments, the objects being compared. The
+     * function should return:
+     *
+     *   - -1 if o1 is "less than" o2
+     *   - 0 if o1 is "equal" to o2
+     *   - 1 if o1 is "greater than" o2
+     */
+    
+    /**
+     * @cfg {String} root
+     * Optional root property. This is mostly useful when sorting a Store, in which case we set the root to 'data' to
+     * make the filter pull the {@link #property} out of the data object of each item
+     */
+    
+    /**
+     * @cfg {Function} transform
+     * A function that will be run on each value before it is compared in the sorter. The function will receive a single
+     * argument, the value.
+     */
+    
+    /**
+     * @cfg {String} direction
+     * The direction to sort by.
+     */
+    direction: "ASC",
+    
+    constructor: function(config) {
+        var me = this;
+        
+        Ext.apply(me, config);
+        
+        if (me.property === undefined && me.sorterFn === undefined) {
+            Ext.Error.raise("A Sorter requires either a property or a sorter function");
+        }
+        
+        me.updateSortFunction();
+    },
+    
+    /**
+     * @private
+     * Creates and returns a function which sorts an array by the given property and direction
+     * @return {Function} A function which sorts by the property/direction combination provided
+     */
+    createSortFunction: function(sorterFn) {
+        var me        = this,
+            property  = me.property,
+            direction = me.direction || "ASC",
+            modifier  = direction.toUpperCase() == "DESC" ? -1 : 1;
+        
+        //create a comparison function. Takes 2 objects, returns 1 if object 1 is greater,
+        //-1 if object 2 is greater or 0 if they are equal
+        return function(o1, o2) {
+            return modifier * sorterFn.call(me, o1, o2);
+        };
+    },
+    
+    /**
+     * @private
+     * Basic default sorter function that just compares the defined property of each object
+     */
+    defaultSorterFn: function(o1, o2) {
+        var me = this,
+            transform = me.transform,
+            v1 = me.getRoot(o1)[me.property],
+            v2 = me.getRoot(o2)[me.property];
+            
+        if (transform) {
+            v1 = transform(v1);
+            v2 = transform(v2);
+        }
+
+        return v1 > v2 ? 1 : (v1 < v2 ? -1 : 0);
+    },
+    
+    /**
+     * @private
+     * Returns the root property of the given item, based on the configured {@link #root} property
+     * @param {Object} item The item
+     * @return {Object} The root property of the object
+     */
+    getRoot: function(item) {
+        return this.root === undefined ? item : item[this.root];
+    },
+    
+    /**
+     * Set the sorting direction for this sorter.
+     * @param {String} direction The direction to sort in. Should be either 'ASC' or 'DESC'.
+     */
+    setDirection: function(direction) {
+        var me = this;
+        me.direction = direction ? direction.toUpperCase() : direction;
+        me.updateSortFunction();
+    },
+    
+    /**
+     * Toggles the sorting direction for this sorter.
+     */
+    toggle: function() {
+        var me = this;
+        me.direction = Ext.String.toggle(me.direction, "ASC", "DESC");
+        me.updateSortFunction();
+    },
+    
+    /**
+     * Update the sort function for this sorter.
+     * @param {Function} [fn] A new sorter function for this sorter. If not specified it will use the default
+     * sorting function.
+     */
+    updateSortFunction: function(fn) {
+        var me = this;
+        fn = fn || me.sorterFn || me.defaultSorterFn;
+        me.sort = me.createSortFunction(fn);
+    }
+});
+/**
  * Represents a filter that can be applied to a {@link Ext.util.MixedCollection MixedCollection}. Can either simply
  * filter on a property/value pair or pass in a filter function with custom logic. Filters are always used in the
  * context of MixedCollections, though {@link Ext.data.Store Store}s frequently create them when filtering and searching
@@ -1609,705 +2524,6 @@ Ext.define('Ext.util.Filter', {
          return value;
     }
 });
-/**
- * @author Don Griffin
- *
- * This class is a base for all id generators. It also provides lookup of id generators by
- * their id.
- * 
- * Generally, id generators are used to generate a primary key for new model instances. There
- * are different approaches to solving this problem, so this mechanism has both simple use
- * cases and is open to custom implementations. A {@link Ext.data.Model} requests id generation
- * using the {@link Ext.data.Model#idgen} property.
- *
- * # Identity, Type and Shared IdGenerators
- *
- * It is often desirable to share IdGenerators to ensure uniqueness or common configuration.
- * This is done by giving IdGenerator instances an id property by which they can be looked
- * up using the {@link #get} method. To configure two {@link Ext.data.Model Model} classes
- * to share one {@link Ext.data.SequentialIdGenerator sequential} id generator, you simply
- * assign them the same id:
- *
- *     Ext.define('MyApp.data.MyModelA', {
- *         extend: 'Ext.data.Model',
- *         idgen: {
- *             type: 'sequential',
- *             id: 'foo'
- *         }
- *     });
- *
- *     Ext.define('MyApp.data.MyModelB', {
- *         extend: 'Ext.data.Model',
- *         idgen: {
- *             type: 'sequential',
- *             id: 'foo'
- *         }
- *     });
- *
- * To make this as simple as possible for generator types that are shared by many (or all)
- * Models, the IdGenerator types (such as 'sequential' or 'uuid') are also reserved as
- * generator id's. This is used by the {@link Ext.data.UuidGenerator} which has an id equal
- * to its type ('uuid'). In other words, the following Models share the same generator:
- *
- *     Ext.define('MyApp.data.MyModelX', {
- *         extend: 'Ext.data.Model',
- *         idgen: 'uuid'
- *     });
- *
- *     Ext.define('MyApp.data.MyModelY', {
- *         extend: 'Ext.data.Model',
- *         idgen: 'uuid'
- *     });
- *
- * This can be overridden (by specifying the id explicitly), but there is no particularly
- * good reason to do so for this generator type.
- *
- * # Creating Custom Generators
- * 
- * An id generator should derive from this class and implement the {@link #generate} method.
- * The constructor will apply config properties on new instances, so a constructor is often
- * not necessary.
- *
- * To register an id generator type, a derived class should provide an `alias` like so:
- *
- *     Ext.define('MyApp.data.CustomIdGenerator', {
- *         extend: 'Ext.data.IdGenerator',
- *         alias: 'idgen.custom',
- *
- *         configProp: 42, // some config property w/default value
- *
- *         generate: function () {
- *             return ... // a new id
- *         }
- *     });
- *
- * Using the custom id generator is then straightforward:
- *
- *     Ext.define('MyApp.data.MyModel', {
- *         extend: 'Ext.data.Model',
- *         idgen: 'custom'
- *     });
- *     // or...
- *
- *     Ext.define('MyApp.data.MyModel', {
- *         extend: 'Ext.data.Model',
- *         idgen: {
- *             type: 'custom',
- *             configProp: value
- *         }
- *     });
- *
- * It is not recommended to mix shared generators with generator configuration. This leads
- * to unpredictable results unless all configurations match (which is also redundant). In
- * such cases, a custom generator with a default id is the best approach.
- *
- *     Ext.define('MyApp.data.CustomIdGenerator', {
- *         extend: 'Ext.data.SequentialIdGenerator',
- *         alias: 'idgen.custom',
- *
- *         id: 'custom', // shared by default
- *
- *         prefix: 'ID_',
- *         seed: 1000
- *     });
- *
- *     Ext.define('MyApp.data.MyModelX', {
- *         extend: 'Ext.data.Model',
- *         idgen: 'custom'
- *     });
- *
- *     Ext.define('MyApp.data.MyModelY', {
- *         extend: 'Ext.data.Model',
- *         idgen: 'custom'
- *     });
- *
- *     // the above models share a generator that produces ID_1000, ID_1001, etc..
- *
- */
-Ext.define('Ext.data.IdGenerator', {
-
-    /**
-     * @property {Boolean} isGenerator
-     * `true` in this class to identify an object as an instantiated IdGenerator, or subclass thereof.
-     */
-    isGenerator: true,
-
-    /**
-     * Initializes a new instance.
-     * @param {Object} config (optional) Configuration object to be applied to the new instance.
-     */
-    constructor: function(config) {
-        var me = this;
-
-        Ext.apply(me, config);
-
-        if (me.id) {
-            Ext.data.IdGenerator.all[me.id] = me;
-        }
-    },
-
-    /**
-     * @cfg {String} id
-     * The id by which to register a new instance. This instance can be found using the
-     * {@link Ext.data.IdGenerator#get} static method.
-     */
-
-    getRecId: function (rec) {
-        return rec.modelName + '-' + rec.internalId;
-    },
-
-    /**
-     * Generates and returns the next id. This method must be implemented by the derived
-     * class.
-     *
-     * @return {String} The next id.
-     * @method generate
-     * @abstract
-     */
-
-    statics: {
-        /**
-         * @property {Object} all
-         * This object is keyed by id to lookup instances.
-         * @private
-         * @static
-         */
-        all: {},
-
-        /**
-         * Returns the IdGenerator given its config description.
-         * @param {String/Object} config If this parameter is an IdGenerator instance, it is
-         * simply returned. If this is a string, it is first used as an id for lookup and
-         * then, if there is no match, as a type to create a new instance. This parameter
-         * can also be a config object that contains a `type` property (among others) that
-         * are used to create and configure the instance.
-         * @static
-         */
-        get: function (config) {
-            var generator,
-                id,
-                type;
-
-            if (typeof config == 'string') {
-                id = type = config;
-                config = null;
-            } else if (config.isGenerator) {
-                return config;
-            } else {
-                id = config.id || config.type;
-                type = config.type;
-            }
-
-            generator = this.all[id];
-            if (!generator) {
-                generator = Ext.create('idgen.' + type, config);
-            }
-
-            return generator;
-        }
-    }
-});
-
-/**
- * @author Ed Spencer
- *
- * This singleton contains a set of validation functions that can be used to validate any type of data. They are most
- * often used in {@link Ext.data.Model Models}, where they are automatically set up and executed.
- */
-Ext.define('Ext.data.validations', {
-    singleton: true,
-    
-    /**
-     * @property {String} presenceMessage
-     * The default error message used when a presence validation fails.
-     */
-    presenceMessage: 'must be present',
-    
-    /**
-     * @property {String} lengthMessage
-     * The default error message used when a length validation fails.
-     */
-    lengthMessage: 'is the wrong length',
-    
-    /**
-     * @property {String} formatMessage
-     * The default error message used when a format validation fails.
-     */
-    formatMessage: 'is the wrong format',
-    
-    /**
-     * @property {String} inclusionMessage
-     * The default error message used when an inclusion validation fails.
-     */
-    inclusionMessage: 'is not included in the list of acceptable values',
-    
-    /**
-     * @property {String} exclusionMessage
-     * The default error message used when an exclusion validation fails.
-     */
-    exclusionMessage: 'is not an acceptable value',
-    
-    /**
-     * @property {String} emailMessage
-     * The default error message used when an email validation fails
-     */
-    emailMessage: 'is not a valid email address',
-    
-    /**
-     * @property {RegExp} emailRe
-     * The regular expression used to validate email addresses
-     */
-    emailRe: /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
-    
-    /**
-     * Validates that the given value is present.
-     * For example:
-     *
-     *     validations: [{type: 'presence', field: 'age'}]
-     *
-     * @param {Object} config Config object
-     * @param {Object} value The value to validate
-     * @return {Boolean} True if validation passed
-     */
-    presence: function(config, value) {
-        // No configs read, so allow just value to be passed
-        if (arguments.length === 1) {
-            value = config;
-        }
-        
-        //we need an additional check for zero here because zero is an acceptable form of present data
-        return !!value || value === 0;
-    },
-    
-    /**
-     * Returns true if the given value is between the configured min and max values.
-     * For example:
-     *
-     *     validations: [{type: 'length', field: 'name', min: 2}]
-     *
-     * @param {Object} config Config object
-     * @param {String} value The value to validate
-     * @return {Boolean} True if the value passes validation
-     */
-    length: function(config, value) {
-        if (value === undefined || value === null) {
-            return false;
-        }
-        
-        var length = value.length,
-            min    = config.min,
-            max    = config.max;
-        
-        if ((min && length < min) || (max && length > max)) {
-            return false;
-        } else {
-            return true;
-        }
-    },
-    
-    /**
-     * Validates that an email string is in the correct format
-     * @param {Object} config Config object
-     * @param {String} email The email address
-     * @return {Boolean} True if the value passes validation
-     */
-    email: function(config, email) {
-        return Ext.data.validations.emailRe.test(email);
-    },
-    
-    /**
-     * Returns true if the given value passes validation against the configured `matcher` regex.
-     * For example:
-     *
-     *     validations: [{type: 'format', field: 'username', matcher: /([a-z]+)[0-9]{2,3}/}]
-     *
-     * @param {Object} config Config object
-     * @param {String} value The value to validate
-     * @return {Boolean} True if the value passes the format validation
-     */
-    format: function(config, value) {
-        return !!(config.matcher && config.matcher.test(value));
-    },
-    
-    /**
-     * Validates that the given value is present in the configured `list`.
-     * For example:
-     *
-     *     validations: [{type: 'inclusion', field: 'gender', list: ['Male', 'Female']}]
-     *
-     * @param {Object} config Config object
-     * @param {String} value The value to validate
-     * @return {Boolean} True if the value is present in the list
-     */
-    inclusion: function(config, value) {
-        return config.list && Ext.Array.indexOf(config.list,value) != -1;
-    },
-    
-    /**
-     * Validates that the given value is not present in the configured `list`.
-     * For example:
-     *
-     *     validations: [{type: 'exclusion', field: 'username', list: ['Admin', 'Operator']}]
-     *
-     * @param {Object} config Config object
-     * @param {String} value The value to validate
-     * @return {Boolean} True if the value is not present in the list
-     */
-    exclusion: function(config, value) {
-        return config.list && Ext.Array.indexOf(config.list,value) == -1;
-    }
-});
-/**
- * @author Ed Spencer
- *
- * Represents a single read or write operation performed by a {@link Ext.data.proxy.Proxy Proxy}. Operation objects are
- * used to enable communication between Stores and Proxies. Application developers should rarely need to interact with
- * Operation objects directly.
- *
- * Several Operations can be batched together in a {@link Ext.data.Batch batch}.
- */
-Ext.define('Ext.data.Operation', {
-    /**
-     * @cfg {Boolean} synchronous
-     * True if this Operation is to be executed synchronously. This property is inspected by a
-     * {@link Ext.data.Batch Batch} to see if a series of Operations can be executed in parallel or not.
-     */
-    synchronous: true,
-
-    /**
-     * @cfg {String} action
-     * The action being performed by this Operation. Should be one of 'create', 'read', 'update' or 'destroy'.
-     */
-    action: undefined,
-
-    /**
-     * @cfg {Ext.util.Filter[]} filters
-     * Optional array of filter objects. Only applies to 'read' actions.
-     */
-    filters: undefined,
-
-    /**
-     * @cfg {Ext.util.Sorter[]} sorters
-     * Optional array of sorter objects. Only applies to 'read' actions.
-     */
-    sorters: undefined,
-
-    /**
-     * @cfg {Ext.util.Grouper[]} groupers
-     * Optional grouping configuration. Only applies to 'read' actions where grouping is desired.
-     */
-    groupers: undefined,
-
-    /**
-     * @cfg {Number} start
-     * The start index (offset), used in paging when running a 'read' action.
-     */
-    start: undefined,
-
-    /**
-     * @cfg {Number} limit
-     * The number of records to load. Used on 'read' actions when paging is being used.
-     */
-    limit: undefined,
-
-    /**
-     * @cfg {Ext.data.Batch} batch
-     * The batch that this Operation is a part of.
-     */
-    batch: undefined,
-    
-    /**
-     * @cfg {Object} params
-     * Parameters to pass along with the request when performing the operation.
-     */
-
-    /**
-     * @cfg {Function} callback
-     * Function to execute when operation completed.
-     * @cfg {Ext.data.Model[]} callback.records Array of records.
-     * @cfg {Ext.data.Operation} callback.operation The Operation itself.
-     * @cfg {Boolean} callback.success True when operation completed successfully.
-     */
-    callback: undefined,
-
-    /**
-     * @cfg {Object} scope
-     * Scope for the {@link #callback} function.
-     */
-    scope: undefined,
-
-    /**
-     * @property {Boolean} started
-     * The start status of this Operation. Use {@link #isStarted}.
-     * @readonly
-     * @private
-     */
-    started: false,
-
-    /**
-     * @property {Boolean} running
-     * The run status of this Operation. Use {@link #isRunning}.
-     * @readonly
-     * @private
-     */
-    running: false,
-
-    /**
-     * @property {Boolean} complete
-     * The completion status of this Operation. Use {@link #isComplete}.
-     * @readonly
-     * @private
-     */
-    complete: false,
-
-    /**
-     * @property {Boolean} success
-     * Whether the Operation was successful or not. This starts as undefined and is set to true
-     * or false by the Proxy that is executing the Operation. It is also set to false by {@link #setException}. Use
-     * {@link #wasSuccessful} to query success status.
-     * @readonly
-     * @private
-     */
-    success: undefined,
-
-    /**
-     * @property {Boolean} exception
-     * The exception status of this Operation. Use {@link #hasException} and see {@link #getError}.
-     * @readonly
-     * @private
-     */
-    exception: false,
-
-    /**
-     * @property {String/Object} error
-     * The error object passed when {@link #setException} was called. This could be any object or primitive.
-     * @private
-     */
-    error: undefined,
-
-    /**
-     * @property {RegExp} actionCommitRecordsRe
-     * The RegExp used to categorize actions that require record commits.
-     */
-    actionCommitRecordsRe: /^(?:create|update)$/i,
-
-    /**
-     * @property {RegExp} actionSkipSyncRe
-     * The RegExp used to categorize actions that skip local record synchronization. This defaults
-     * to match 'destroy'.
-     */
-    actionSkipSyncRe: /^destroy$/i,
-
-    /**
-     * Creates new Operation object.
-     * @param {Object} config (optional) Config object.
-     */
-    constructor: function(config) {
-        Ext.apply(this, config || {});
-    },
-
-    /**
-     * This method is called to commit data to this instance's records given the records in
-     * the server response. This is followed by calling {@link Ext.data.Model#commit} on all
-     * those records (for 'create' and 'update' actions).
-     *
-     * If this {@link #action} is 'destroy', any server records are ignored and the
-     * {@link Ext.data.Model#commit} method is not called.
-     *
-     * @param {Ext.data.Model[]} serverRecords An array of {@link Ext.data.Model} objects returned by
-     * the server.
-     * @markdown
-     */
-    commitRecords: function (serverRecords) {
-        var me = this,
-            mc, index, clientRecords, serverRec, clientRec, i, len;
-
-        if (!me.actionSkipSyncRe.test(me.action)) {
-            clientRecords = me.records;
-
-            if (clientRecords && clientRecords.length) {
-                if (clientRecords.length > 1) {
-                    // If this operation has multiple records, client records need to be matched up with server records
-                    // so that any data returned from the server can be updated in the client records. If we don't have
-                    // a clientIdProperty specified on the model and we've done a create, just assume the data is returned in order.
-                    // If it's an update, the records should already have an id which should match what the server returns.
-                    if (me.action == 'update' || clientRecords[0].clientIdProperty) {
-                        mc = new Ext.util.MixedCollection();
-                        mc.addAll(serverRecords);
-
-                        for (index = clientRecords.length; index--; ) {
-                            clientRec = clientRecords[index];
-                            serverRec = mc.findBy(me.matchClientRec, clientRec);
-
-                            // Replace client record data with server record data
-                            clientRec.copyFrom(serverRec);
-                        }
-                    } else {
-                        for (i = 0, len = clientRecords.length; i < len; ++i) {
-                            clientRec = clientRecords[i];
-                            serverRec = serverRecords[i];
-                            if (clientRec && serverRec) {
-                                me.updateRecord(clientRec, serverRec);
-                            }
-                        }
-                    }
-                } else {
-                    // operation only has one record, so just match the first client record up with the first server record
-                    this.updateRecord(clientRecords[0], serverRecords[0]);   
-                }
-
-                if (me.actionCommitRecordsRe.test(me.action)) {
-                    for (index = clientRecords.length; index--; ) {
-                        clientRecords[index].commit();
-                    }
-                }
-            }
-        }
-    },
-    
-    updateRecord: function(clientRec, serverRec) {
-        // if the client record is not a phantom, make sure the ids match before replacing the client data with server data.
-        if(serverRec && (clientRec.phantom || clientRec.getId() === serverRec.getId())) {
-            clientRec.copyFrom(serverRec);
-        }
-    },
-
-    // Private.
-    // Record matching function used by commitRecords
-    // IMPORTANT: This is called in the scope of the clientRec being matched
-    matchClientRec: function(record) {
-        var clientRec = this,
-            clientRecordId = clientRec.getId();
-
-        if(clientRecordId && record.getId() === clientRecordId) {
-            return true;
-        }
-        // if the server record cannot be found by id, find by internalId.
-        // this allows client records that did not previously exist on the server
-        // to be updated with the correct server id and data.
-        return record.internalId === clientRec.internalId;
-    },
-
-    /**
-     * Marks the Operation as started.
-     */
-    setStarted: function() {
-        this.started = true;
-        this.running = true;
-    },
-
-    /**
-     * Marks the Operation as completed.
-     */
-    setCompleted: function() {
-        this.complete = true;
-        this.running  = false;
-    },
-
-    /**
-     * Marks the Operation as successful.
-     */
-    setSuccessful: function() {
-        this.success = true;
-    },
-
-    /**
-     * Marks the Operation as having experienced an exception. Can be supplied with an option error message/object.
-     * @param {String/Object} error (optional) error string/object
-     */
-    setException: function(error) {
-        this.exception = true;
-        this.success = false;
-        this.running = false;
-        this.error = error;
-    },
-
-    /**
-     * Returns true if this Operation encountered an exception (see also {@link #getError})
-     * @return {Boolean} True if there was an exception
-     */
-    hasException: function() {
-        return this.exception === true;
-    },
-
-    /**
-     * Returns the error string or object that was set using {@link #setException}
-     * @return {String/Object} The error object
-     */
-    getError: function() {
-        return this.error;
-    },
-
-    /**
-     * Returns the {@link Ext.data.Model record}s associated with this operation.  For read operations the records as set by the {@link Ext.data.proxy.Proxy Proxy} will be returned (returns `null` if the proxy has not yet set the records).
-     * For create, update, and destroy operations the operation's initially configured records will be returned, although the proxy may modify these records' data at some point after the operation is initialized.
-     * @return {Ext.data.Model[]}
-     */
-    getRecords: function() {
-        var resultSet = this.getResultSet();
-        return this.records || (resultSet ? resultSet.records : null);
-    },
-
-    /**
-     * Returns the ResultSet object (if set by the Proxy). This object will contain the {@link Ext.data.Model model}
-     * instances as well as meta data such as number of instances fetched, number available etc
-     * @return {Ext.data.ResultSet} The ResultSet object
-     */
-    getResultSet: function() {
-        return this.resultSet;
-    },
-
-    /**
-     * Returns true if the Operation has been started. Note that the Operation may have started AND completed, see
-     * {@link #isRunning} to test if the Operation is currently running.
-     * @return {Boolean} True if the Operation has started
-     */
-    isStarted: function() {
-        return this.started === true;
-    },
-
-    /**
-     * Returns true if the Operation has been started but has not yet completed.
-     * @return {Boolean} True if the Operation is currently running
-     */
-    isRunning: function() {
-        return this.running === true;
-    },
-
-    /**
-     * Returns true if the Operation has been completed
-     * @return {Boolean} True if the Operation is complete
-     */
-    isComplete: function() {
-        return this.complete === true;
-    },
-
-    /**
-     * Returns true if the Operation has completed and was successful
-     * @return {Boolean} True if successful
-     */
-    wasSuccessful: function() {
-        return this.isComplete() && this.success === true;
-    },
-
-    /**
-     * @private
-     * Associates this Operation with a Batch
-     * @param {Ext.data.Batch} batch The batch
-     */
-    setBatch: function(batch) {
-        this.batch = batch;
-    },
-
-    /**
-     * Checks whether this operation should cause writing to occur.
-     * @return {Boolean} Whether the operation should cause a write to occur.
-     */
-    allowWrite: function() {
-        return this.action != 'read';
-    }
-});
-
 /**
  * A mixin to add floating capability to a Component.
  */
@@ -2629,322 +2845,6 @@ Ext.define('Ext.util.Floating', {
         me.setSize(container.getViewSize(false));
         me.setPosition.apply(me, parent ? [0, 0] : container.getXY());
     }
-});
-
-/**
- * @class Ext.data.SortTypes
- * This class defines a series of static methods that are used on a
- * {@link Ext.data.Field} for performing sorting. The methods cast the 
- * underlying values into a data type that is appropriate for sorting on
- * that particular field.  If a {@link Ext.data.Field#type} is specified, 
- * the sortType will be set to a sane default if the sortType is not 
- * explicitly defined on the field. The sortType will make any necessary
- * modifications to the value and return it.
- * <ul>
- * <li><b>asText</b> - Removes any tags and converts the value to a string</li>
- * <li><b>asUCText</b> - Removes any tags and converts the value to an uppercase string</li>
- * <li><b>asUCText</b> - Converts the value to an uppercase string</li>
- * <li><b>asDate</b> - Converts the value into Unix epoch time</li>
- * <li><b>asFloat</b> - Converts the value to a floating point number</li>
- * <li><b>asInt</b> - Converts the value to an integer number</li>
- * </ul>
- * <p>
- * It is also possible to create a custom sortType that can be used throughout
- * an application.
- * <pre><code>
-Ext.apply(Ext.data.SortTypes, {
-    asPerson: function(person){
-        // expects an object with a first and last name property
-        return person.lastName.toUpperCase() + person.firstName.toLowerCase();
-    }    
-});
-
-Ext.define('Employee', {
-    extend: 'Ext.data.Model',
-    fields: [{
-        name: 'person',
-        sortType: 'asPerson'
-    }, {
-        name: 'salary',
-        type: 'float' // sortType set to asFloat
-    }]
-});
- * </code></pre>
- * </p>
- * @singleton
- * @docauthor Evan Trimboli <evan@sencha.com>
- */
-Ext.define('Ext.data.SortTypes', {
-    
-    singleton: true,
-    
-    /**
-     * Default sort that does nothing
-     * @param {Object} s The value being converted
-     * @return {Object} The comparison value
-     */
-    none : function(s) {
-        return s;
-    },
-
-    /**
-     * The regular expression used to strip tags
-     * @type {RegExp}
-     * @property
-     */
-    stripTagsRE : /<\/?[^>]+>/gi,
-
-    /**
-     * Strips all HTML tags to sort on text only
-     * @param {Object} s The value being converted
-     * @return {String} The comparison value
-     */
-    asText : function(s) {
-        return String(s).replace(this.stripTagsRE, "");
-    },
-
-    /**
-     * Strips all HTML tags to sort on text only - Case insensitive
-     * @param {Object} s The value being converted
-     * @return {String} The comparison value
-     */
-    asUCText : function(s) {
-        return String(s).toUpperCase().replace(this.stripTagsRE, "");
-    },
-
-    /**
-     * Case insensitive string
-     * @param {Object} s The value being converted
-     * @return {String} The comparison value
-     */
-    asUCString : function(s) {
-        return String(s).toUpperCase();
-    },
-
-    /**
-     * Date sorting
-     * @param {Object} s The value being converted
-     * @return {Number} The comparison value
-     */
-    asDate : function(s) {
-        if(!s){
-            return 0;
-        }
-        if(Ext.isDate(s)){
-            return s.getTime();
-        }
-        return Date.parse(String(s));
-    },
-
-    /**
-     * Float sorting
-     * @param {Object} s The value being converted
-     * @return {Number} The comparison value
-     */
-    asFloat : function(s) {
-        var val = parseFloat(String(s).replace(/,/g, ""));
-        return isNaN(val) ? 0 : val;
-    },
-
-    /**
-     * Integer sorting
-     * @param {Object} s The value being converted
-     * @return {Number} The comparison value
-     */
-    asInt : function(s) {
-        var val = parseInt(String(s).replace(/,/g, ""), 10);
-        return isNaN(val) ? 0 : val;
-    }
-});
-/**
- * @class Ext.data.Types
- * <p>This is a static class containing the system-supplied data types which may be given to a {@link Ext.data.Field Field}.<p/>
- * <p>The properties in this class are used as type indicators in the {@link Ext.data.Field Field} class, so to
- * test whether a Field is of a certain type, compare the {@link Ext.data.Field#type type} property against properties
- * of this class.</p>
- * <p>Developers may add their own application-specific data types to this class. Definition names must be UPPERCASE.
- * each type definition must contain three properties:</p>
- * <div class="mdetail-params"><ul>
- * <li><code>convert</code> : <i>Function</i><div class="sub-desc">A function to convert raw data values from a data block into the data
- * to be stored in the Field. The function is passed the collowing parameters:
- * <div class="mdetail-params"><ul>
- * <li><b>v</b> : Mixed<div class="sub-desc">The data value as read by the Reader, if undefined will use
- * the configured <tt>{@link Ext.data.Field#defaultValue defaultValue}</tt>.</div></li>
- * <li><b>rec</b> : Mixed<div class="sub-desc">The data object containing the row as read by the Reader.
- * Depending on the Reader type, this could be an Array ({@link Ext.data.reader.Array ArrayReader}), an object
- * ({@link Ext.data.reader.Json JsonReader}), or an XML element.</div></li>
- * </ul></div></div></li>
- * <li><code>sortType</code> : <i>Function</i> <div class="sub-desc">A function to convert the stored data into comparable form, as defined by {@link Ext.data.SortTypes}.</div></li>
- * <li><code>type</code> : <i>String</i> <div class="sub-desc">A textual data type name.</div></li>
- * </ul></div>
- * <p>For example, to create a VELatLong field (See the Microsoft Bing Mapping API) containing the latitude/longitude value of a datapoint on a map from a JsonReader data block
- * which contained the properties <code>lat</code> and <code>long</code>, you would define a new data type like this:</p>
- *<pre><code>
-// Add a new Field data type which stores a VELatLong object in the Record.
-Ext.data.Types.VELATLONG = {
-    convert: function(v, data) {
-        return new VELatLong(data.lat, data.long);
-    },
-    sortType: function(v) {
-        return v.Latitude;  // When sorting, order by latitude
-    },
-    type: 'VELatLong'
-};
-</code></pre>
- * <p>Then, when declaring a Model, use: <pre><code>
-var types = Ext.data.Types; // allow shorthand type access
-Ext.define('Unit',
-    extend: 'Ext.data.Model',
-    fields: [
-        { name: 'unitName', mapping: 'UnitName' },
-        { name: 'curSpeed', mapping: 'CurSpeed', type: types.INT },
-        { name: 'latitude', mapping: 'lat', type: types.FLOAT },
-        { name: 'longitude', mapping: 'long', type: types.FLOAT },
-        { name: 'position', type: types.VELATLONG }
-    ]
-});
-</code></pre>
- * @singleton
- */
-Ext.define('Ext.data.Types', {
-    singleton: true,
-    requires: ['Ext.data.SortTypes']
-}, function() {
-    var st = Ext.data.SortTypes;
-
-    Ext.apply(Ext.data.Types, {
-        /**
-         * @property {RegExp} stripRe
-         * A regular expression for stripping non-numeric characters from a numeric value. Defaults to <tt>/[\$,%]/g</tt>.
-         * This should be overridden for localization.
-         */
-        stripRe: /[\$,%]/g,
-
-        /**
-         * @property {Object} AUTO
-         * This data type means that no conversion is applied to the raw data before it is placed into a Record.
-         */
-        AUTO: {
-            sortType: st.none,
-            type: 'auto'
-        },
-
-        /**
-         * @property {Object} STRING
-         * This data type means that the raw data is converted into a String before it is placed into a Record.
-         */
-        STRING: {
-            convert: function(v) {
-                var defaultValue = this.useNull ? null : '';
-                return (v === undefined || v === null) ? defaultValue : String(v);
-            },
-            sortType: st.asUCString,
-            type: 'string'
-        },
-
-        /**
-         * @property {Object} INT
-         * This data type means that the raw data is converted into an integer before it is placed into a Record.
-         * <p>The synonym <code>INTEGER</code> is equivalent.</p>
-         */
-        INT: {
-            convert: function(v) {
-                return v !== undefined && v !== null && v !== '' ?
-                    parseInt(String(v).replace(Ext.data.Types.stripRe, ''), 10) : (this.useNull ? null : 0);
-            },
-            sortType: st.none,
-            type: 'int'
-        },
-
-        /**
-         * @property {Object} FLOAT
-         * This data type means that the raw data is converted into a number before it is placed into a Record.
-         * <p>The synonym <code>NUMBER</code> is equivalent.</p>
-         */
-        FLOAT: {
-            convert: function(v) {
-                return v !== undefined && v !== null && v !== '' ?
-                    parseFloat(String(v).replace(Ext.data.Types.stripRe, ''), 10) : (this.useNull ? null : 0);
-            },
-            sortType: st.none,
-            type: 'float'
-        },
-
-        /**
-         * @property {Object} BOOL
-         * <p>This data type means that the raw data is converted into a boolean before it is placed into
-         * a Record. The string "true" and the number 1 are converted to boolean <code>true</code>.</p>
-         * <p>The synonym <code>BOOLEAN</code> is equivalent.</p>
-         */
-        BOOL: {
-            convert: function(v) {
-                if (this.useNull && (v === undefined || v === null || v === '')) {
-                    return null;
-                }
-                return v === true || v === 'true' || v == 1;
-            },
-            sortType: st.none,
-            type: 'bool'
-        },
-
-        /**
-         * @property {Object} DATE
-         * This data type means that the raw data is converted into a Date before it is placed into a Record.
-         * The date format is specified in the constructor of the {@link Ext.data.Field} to which this type is
-         * being applied.
-         */
-        DATE: {
-            convert: function(v) {
-                var df = this.dateFormat,
-                    parsed;
-
-                if (!v) {
-                    return null;
-                }
-                if (Ext.isDate(v)) {
-                    return v;
-                }
-                if (df) {
-                    if (df == 'timestamp') {
-                        return new Date(v*1000);
-                    }
-                    if (df == 'time') {
-                        return new Date(parseInt(v, 10));
-                    }
-                    return Ext.Date.parse(v, df);
-                }
-
-                parsed = Date.parse(v);
-                return parsed ? new Date(parsed) : null;
-            },
-            sortType: st.asDate,
-            type: 'date'
-        }
-    });
-
-    Ext.apply(Ext.data.Types, {
-        /**
-         * @property {Object} BOOLEAN
-         * <p>This data type means that the raw data is converted into a boolean before it is placed into
-         * a Record. The string "true" and the number 1 are converted to boolean <code>true</code>.</p>
-         * <p>The synonym <code>BOOL</code> is equivalent.</p>
-         */
-        BOOLEAN: this.BOOL,
-
-        /**
-         * @property {Object} INTEGER
-         * This data type means that the raw data is converted into an integer before it is placed into a Record.
-         * <p>The synonym <code>INT</code> is equivalent.</p>
-         */
-        INTEGER: this.INT,
-
-        /**
-         * @property {Object} NUMBER
-         * This data type means that the raw data is converted into a number before it is placed into a Record.
-         * <p>The synonym <code>FLOAT</code> is equivalent.</p>
-         */
-        NUMBER: this.FLOAT
-    });
 });
 
 /**
@@ -3406,138 +3306,6 @@ Ext.define('Ext.util.KeyMap', {
     }
 });
 /**
- * @class Ext.util.Memento
- * This class manages a set of captured properties from an object. These captured properties
- * can later be restored to an object.
- */
-Ext.define('Ext.util.Memento', (function () {
-
-    function captureOne (src, target, prop, prefix) {
-        src[prefix ? prefix + prop : prop] = target[prop];
-    }
-
-    function removeOne (src, target, prop) {
-        delete src[prop];
-    }
-
-    function restoreOne (src, target, prop, prefix) {
-        var name = prefix ? prefix + prop : prop,
-            value = src[name];
-
-        if (value || src.hasOwnProperty(name)) {
-            restoreValue(target, prop, value);
-        }
-    }
-
-    function restoreValue (target, prop, value) {
-        if (Ext.isDefined(value)) {
-            target[prop] = value;
-        } else {
-            delete target[prop];
-        }
-    }
-
-    function doMany (doOne, src, target, props, prefix) {
-        if (src) {
-            if (Ext.isArray(props)) {
-                var p, pLen = props.length;
-                for (p = 0; p < pLen; p++) {
-                    doOne(src, target, props[p], prefix);
-                }
-            } else {
-                doOne(src, target, props, prefix);
-            }
-        }
-    }
-
-    return {
-        /**
-         * @property data
-         * The collection of captured properties.
-         * @private
-         */
-        data: null,
-
-        /**
-         * @property target
-         * The default target object for capture/restore (passed to the constructor).
-         */
-        target: null,
-
-        /**
-         * Creates a new memento and optionally captures properties from the target object.
-         * @param {Object} target The target from which to capture properties. If specified in the
-         * constructor, this target becomes the default target for all other operations.
-         * @param {String/String[]} props The property or array of properties to capture.
-         */
-        constructor: function (target, props) {
-            if (target) {
-                this.target = target;
-                if (props) {
-                    this.capture(props);
-                }
-            }
-        },
-
-        /**
-         * Captures the specified properties from the target object in this memento.
-         * @param {String/String[]} props The property or array of properties to capture.
-         * @param {Object} target The object from which to capture properties.
-         */
-        capture: function (props, target, prefix) {
-            var me = this;
-            doMany(captureOne, me.data || (me.data = {}), target || me.target, props, prefix);
-        },
-
-        /**
-         * Removes the specified properties from this memento. These properties will not be
-         * restored later without re-capturing their values.
-         * @param {String/String[]} props The property or array of properties to remove.
-         */
-        remove: function (props) {
-            doMany(removeOne, this.data, null, props);
-        },
-
-        /**
-         * Restores the specified properties from this memento to the target object.
-         * @param {String/String[]} props The property or array of properties to restore.
-         * @param {Boolean} clear True to remove the restored properties from this memento or
-         * false to keep them (default is true).
-         * @param {Object} target The object to which to restore properties.
-         */
-        restore: function (props, clear, target, prefix) {
-            doMany(restoreOne, this.data, target || this.target, props, prefix);
-            if (clear !== false) {
-                this.remove(props);
-            }
-        },
-
-        /**
-         * Restores all captured properties in this memento to the target object.
-         * @param {Boolean} clear True to remove the restored properties from this memento or
-         * false to keep them (default is true).
-         * @param {Object} target The object to which to restore properties.
-         */
-        restoreAll: function (clear, target) {
-            var me   = this,
-                t    = target || this.target,
-                data = me.data,
-                prop;
-
-            for (prop in data) {
-                if (data.hasOwnProperty(prop)) {
-                    restoreValue(t, prop, data[prop]);
-                }
-            }
-
-            if (clear !== false) {
-                delete me.data;
-            }
-        }
-    };
-}()));
-
-/**
  * A custom drag proxy implementation specific to {@link Ext.panel.Panel}s. This class
  * is primarily used internally for the Panel's drag drop implementation, and
  * should never need to be created directly.
@@ -3668,6 +3436,138 @@ Ext.define('Ext.panel.Proxy', {
         }
     }
 });
+
+/**
+ * @class Ext.util.Memento
+ * This class manages a set of captured properties from an object. These captured properties
+ * can later be restored to an object.
+ */
+Ext.define('Ext.util.Memento', (function () {
+
+    function captureOne (src, target, prop, prefix) {
+        src[prefix ? prefix + prop : prop] = target[prop];
+    }
+
+    function removeOne (src, target, prop) {
+        delete src[prop];
+    }
+
+    function restoreOne (src, target, prop, prefix) {
+        var name = prefix ? prefix + prop : prop,
+            value = src[name];
+
+        if (value || src.hasOwnProperty(name)) {
+            restoreValue(target, prop, value);
+        }
+    }
+
+    function restoreValue (target, prop, value) {
+        if (Ext.isDefined(value)) {
+            target[prop] = value;
+        } else {
+            delete target[prop];
+        }
+    }
+
+    function doMany (doOne, src, target, props, prefix) {
+        if (src) {
+            if (Ext.isArray(props)) {
+                var p, pLen = props.length;
+                for (p = 0; p < pLen; p++) {
+                    doOne(src, target, props[p], prefix);
+                }
+            } else {
+                doOne(src, target, props, prefix);
+            }
+        }
+    }
+
+    return {
+        /**
+         * @property data
+         * The collection of captured properties.
+         * @private
+         */
+        data: null,
+
+        /**
+         * @property target
+         * The default target object for capture/restore (passed to the constructor).
+         */
+        target: null,
+
+        /**
+         * Creates a new memento and optionally captures properties from the target object.
+         * @param {Object} target The target from which to capture properties. If specified in the
+         * constructor, this target becomes the default target for all other operations.
+         * @param {String/String[]} props The property or array of properties to capture.
+         */
+        constructor: function (target, props) {
+            if (target) {
+                this.target = target;
+                if (props) {
+                    this.capture(props);
+                }
+            }
+        },
+
+        /**
+         * Captures the specified properties from the target object in this memento.
+         * @param {String/String[]} props The property or array of properties to capture.
+         * @param {Object} target The object from which to capture properties.
+         */
+        capture: function (props, target, prefix) {
+            var me = this;
+            doMany(captureOne, me.data || (me.data = {}), target || me.target, props, prefix);
+        },
+
+        /**
+         * Removes the specified properties from this memento. These properties will not be
+         * restored later without re-capturing their values.
+         * @param {String/String[]} props The property or array of properties to remove.
+         */
+        remove: function (props) {
+            doMany(removeOne, this.data, null, props);
+        },
+
+        /**
+         * Restores the specified properties from this memento to the target object.
+         * @param {String/String[]} props The property or array of properties to restore.
+         * @param {Boolean} clear True to remove the restored properties from this memento or
+         * false to keep them (default is true).
+         * @param {Object} target The object to which to restore properties.
+         */
+        restore: function (props, clear, target, prefix) {
+            doMany(restoreOne, this.data, target || this.target, props, prefix);
+            if (clear !== false) {
+                this.remove(props);
+            }
+        },
+
+        /**
+         * Restores all captured properties in this memento to the target object.
+         * @param {Boolean} clear True to remove the restored properties from this memento or
+         * false to keep them (default is true).
+         * @param {Object} target The object to which to restore properties.
+         */
+        restoreAll: function (clear, target) {
+            var me   = this,
+                t    = target || this.target,
+                data = me.data,
+                prop;
+
+            for (prop in data) {
+                if (data.hasOwnProperty(prop)) {
+                    restoreValue(t, prop, data[prop]);
+                }
+            }
+
+            if (clear !== false) {
+                delete me.data;
+            }
+        }
+    };
+}()));
 
 /**
  * @private
@@ -4079,300 +3979,6 @@ Ext.define('Ext.Template', {
 });
 
 /**
- * This mixin enables classes to declare relationships to child elements and provides the
- * mechanics for acquiring the {@link Ext.Element elements} and storing them on an object
- * instance as properties.
- *
- * This class is used by {@link Ext.Component components} and {@link Ext.layout.container.Container container layouts} to
- * manage their child elements.
- * 
- * A typical component that uses these features might look something like this:
- * 
- *      Ext.define('Ext.ux.SomeComponent', {
- *          extend: 'Ext.Component',
- *          
- *          childEls: [
- *              'bodyEl'
- *          ],
- *          
- *          renderTpl: [
- *              '<div id="{id}-bodyEl"></div>'
- *          ],
- *          
- *          // ...
- *      });
- * 
- * The `childEls` array lists one or more relationships to child elements managed by the
- * component. The items in this array can be either of the following types:
- * 
- * - String: the id suffix and property name in one. For example, "bodyEl" in the above
- * example means a "bodyEl" property will be added to the instance with the result of
- * {@link Ext#get} given "componentId-bodyEl" where "componentId" is the component instance's
- * id.
- * - Object: with a `name` property that names the instance property for the element, and
- * one of the following additional properties:
- *      - `id`: The full id of the child element.
- *      - `itemId`: The suffix part of the id to which "componentId-" is prepended.
- *      - `select`: A selector that will be passed to {@link Ext#select}.
- *      - `selectNode`: A selector that will be passed to {@link Ext.DomQuery#selectNode}.
- * 
- * The example above could have used this instead to achieve the same result:
- *
- *      childEls: [
- *          { name: 'bodyEl', itemId: 'bodyEl' }
- *      ]
- *
- * When using `select`, the property will be an instance of {@link Ext.CompositeElement}. In
- * all other cases, the property will be an {@link Ext.Element} or `null` if not found.
- *
- * Care should be taken when using `select` or `selectNode` to find child elements. The
- * following issues should be considered:
- * 
- * - Performance: using selectors can be slower than id lookup by a factor 10x or more.
- * - Over-selecting: selectors are applied after the DOM elements for all children have
- * been rendered, so selectors can match elements from child components (including nested
- * versions of the same component) accidentally.
- * 
- * This above issues are most important when using `select` since it returns multiple
- * elements.
- *
- * **IMPORTANT** 
- * Unlike a `renderTpl` where there is a single value for an instance, `childEls` are aggregated
- * up the class hierarchy so that they are effectively inherited. In other words, if a
- * class where to derive from `Ext.ux.SomeComponent` in the example above, it could also
- * have a `childEls` property in the same way as `Ext.ux.SomeComponent`.
- * 
- *      Ext.define('Ext.ux.AnotherComponent', {
- *          extend: 'Ext.ux.SomeComponent',
- *          
- *          childEls: [
- *              // 'bodyEl' is inherited
- *              'innerEl'
- *          ],
- *          
- *          renderTpl: [
- *              '<div id="{id}-bodyEl">'
- *                  '<div id="{id}-innerEl"></div>'
- *              '</div>'
- *          ],
- *          
- *          // ...
- *      });
- * 
- * The `renderTpl` contains both child elements and unites them in the desired markup, but
- * the `childEls` only contains the new child element. The {@link #applyChildEls} method
- * takes care of looking up all `childEls` for an instance and considers `childEls`
- * properties on all the super classes and mixins.
- * 
- * @private
- */
-Ext.define('Ext.util.ElementContainer', {
-
-    childEls: [
-        // empty - this solves a couple problems:
-        //  1. It ensures that all classes have a childEls (avoid null ptr)
-        //  2. It prevents mixins from smashing on their own childEls (these are gathered
-        //      specifically)
-    ],
-
-    constructor: function () {
-        var me = this,
-            childEls;
-
-        // if we have configured childEls, we need to merge them with those from this
-        // class, its bases and the set of mixins...
-        if (me.hasOwnProperty('childEls')) {
-            childEls = me.childEls;
-            delete me.childEls;
-
-            me.addChildEls.apply(me, childEls);
-        }
-    },
-
-    destroy: function () {
-        var me = this,
-            childEls = me.getChildEls(),
-            child, childName, i, k;
-
-        for (i = childEls.length; i--; ) {
-            childName = childEls[i];
-            if (typeof childName != 'string') {
-                childName = childName.name;
-            }
-
-            child = me[childName];
-            if (child) {
-                me[childName] = null; // better than delete since that changes the "shape"
-                child.remove();
-            }
-        }
-    },
-
-    /**
-     * Adds each argument passed to this method to the {@link Ext.AbstractComponent#cfg-childEls childEls} array.
-     */
-    addChildEls: function () {
-        var me = this,
-            args = arguments;
-
-        if (me.hasOwnProperty('childEls')) {
-            me.childEls.push.apply(me.childEls, args);
-        } else {
-            me.childEls = me.getChildEls().concat(Array.prototype.slice.call(args));
-        }
-        
-        me.prune(me.childEls, false);
-    },
-
-    /**
-     * Sets references to elements inside the component. 
-     * @private
-     */
-    applyChildEls: function(el, id) {
-        var me = this,
-            childEls = me.getChildEls(),
-            baseId, childName, i, selector, value;
-
-        baseId = (id || me.id) + '-';
-        for (i = childEls.length; i--; ) {
-            childName = childEls[i];
-
-            if (typeof childName == 'string') {
-                // We don't use Ext.get because that is 3x (or more) slower on IE6-8. Since
-                // we know the el's are children of our el we use getById instead:
-                value = el.getById(baseId + childName);
-            } else {
-                if ((selector = childName.select)) {
-                    value = Ext.select(selector, true, el.dom); // a CompositeElement
-                } else if ((selector = childName.selectNode)) {
-                    value = Ext.get(Ext.DomQuery.selectNode(selector, el.dom));
-                } else {
-                    // see above re:getById...
-                    value = el.getById(childName.id || (baseId + childName.itemId));
-                }
-
-                childName = childName.name;
-            }
-
-            me[childName] = value;
-        }
-    },
-
-    getChildEls: function () {
-        var me = this,
-            self;
-
-        // If an instance has its own childEls, that is the complete set:
-        if (me.hasOwnProperty('childEls')) {
-            return me.childEls;
-        }
-
-        // Typically, however, the childEls is a class-level concept, so check to see if
-        // we have cached the complete set on the class:
-        self = me.self;
-        return self.$childEls || me.getClassChildEls(self);
-    },
-
-    getClassChildEls: function (cls) {
-        var me = this,
-            result = cls.$childEls,
-            childEls, i, length, forked, mixin, mixins, name, parts, proto, supr, superMixins;
-
-        if (!result) {
-            // We put the various childEls arrays into parts in the order of superclass,
-            // new mixins and finally from cls. These parts can be null or undefined and
-            // we will skip them later.
-
-            supr = cls.superclass;
-            if (supr) {
-                supr = supr.self;
-                parts = [supr.$childEls || me.getClassChildEls(supr)]; // super+mixins
-                superMixins = supr.prototype.mixins || {};
-            } else {
-                parts = [];
-                superMixins = {};
-            }
-
-            proto = cls.prototype;
-            mixins = proto.mixins; // since we are a mixin, there will be at least us
-            for (name in mixins) {
-                if (mixins.hasOwnProperty(name) && !superMixins.hasOwnProperty(name)) {
-                    mixin = mixins[name].self;
-                    parts.push(mixin.$childEls || me.getClassChildEls(mixin));
-                }
-            }
-
-            parts.push(proto.hasOwnProperty('childEls') && proto.childEls);
-
-            for (i = 0, length = parts.length; i < length; ++i) {
-                childEls = parts[i];
-                if (childEls && childEls.length) {
-                    if (!result) {
-                        result = childEls;
-                    } else {
-                        if (!forked) {
-                            forked = true;
-                            result = result.slice(0);
-                        }
-                        result.push.apply(result, childEls);
-                    }
-                }
-            }
-
-            cls.$childEls = result = (result ? me.prune(result, !forked) : []);
-        }
-
-        return result;
-    },
-
-    prune: function (childEls, shared) {
-        var index = childEls.length,
-            map = {},
-            name;
-
-        while (index--) {
-            name = childEls[index];
-            if (typeof name != 'string') {
-                name = name.name;
-            }
-
-            if (!map[name]) {
-                map[name] = 1;
-            } else {
-                if (shared) {
-                    shared = false;
-                    childEls = childEls.slice(0);
-                }
-                Ext.Array.erase(childEls, index, 1);
-            }
-        }
-
-        return childEls;
-    },
-
-    /**
-     * Removes items in the childEls array based on the return value of a supplied test
-     * function. The function is called with a entry in childEls and if the test function
-     * return true, that entry is removed. If false, that entry is kept.
-     *
-     * @param {Function} testFn The test function.
-     */
-    removeChildEls: function (testFn) {
-        var me = this,
-            old = me.getChildEls(),
-            keepers = (me.childEls = []),
-            n, i, cel;
-
-        for (i = 0, n = old.length; i < n; ++i) {
-            cel = old[i];
-            if (!testFn(cel)) {
-                keepers.push(cel);
-            }
-        }
-    }
-});
-
-/**
  * This animation class is a mixin.
  *
  * Ext.util.Animate provides an API for the creation of animated transitions of properties and styles.
@@ -4730,6 +4336,300 @@ Ext.define('Ext.util.Animate', {
     // We need to call this again so the animation methods get copied over to CE
     Ext.CompositeElementLite.importElementMethods();
 });
+/**
+ * This mixin enables classes to declare relationships to child elements and provides the
+ * mechanics for acquiring the {@link Ext.Element elements} and storing them on an object
+ * instance as properties.
+ *
+ * This class is used by {@link Ext.Component components} and {@link Ext.layout.container.Container container layouts} to
+ * manage their child elements.
+ * 
+ * A typical component that uses these features might look something like this:
+ * 
+ *      Ext.define('Ext.ux.SomeComponent', {
+ *          extend: 'Ext.Component',
+ *          
+ *          childEls: [
+ *              'bodyEl'
+ *          ],
+ *          
+ *          renderTpl: [
+ *              '<div id="{id}-bodyEl"></div>'
+ *          ],
+ *          
+ *          // ...
+ *      });
+ * 
+ * The `childEls` array lists one or more relationships to child elements managed by the
+ * component. The items in this array can be either of the following types:
+ * 
+ * - String: the id suffix and property name in one. For example, "bodyEl" in the above
+ * example means a "bodyEl" property will be added to the instance with the result of
+ * {@link Ext#get} given "componentId-bodyEl" where "componentId" is the component instance's
+ * id.
+ * - Object: with a `name` property that names the instance property for the element, and
+ * one of the following additional properties:
+ *      - `id`: The full id of the child element.
+ *      - `itemId`: The suffix part of the id to which "componentId-" is prepended.
+ *      - `select`: A selector that will be passed to {@link Ext#select}.
+ *      - `selectNode`: A selector that will be passed to {@link Ext.DomQuery#selectNode}.
+ * 
+ * The example above could have used this instead to achieve the same result:
+ *
+ *      childEls: [
+ *          { name: 'bodyEl', itemId: 'bodyEl' }
+ *      ]
+ *
+ * When using `select`, the property will be an instance of {@link Ext.CompositeElement}. In
+ * all other cases, the property will be an {@link Ext.Element} or `null` if not found.
+ *
+ * Care should be taken when using `select` or `selectNode` to find child elements. The
+ * following issues should be considered:
+ * 
+ * - Performance: using selectors can be slower than id lookup by a factor 10x or more.
+ * - Over-selecting: selectors are applied after the DOM elements for all children have
+ * been rendered, so selectors can match elements from child components (including nested
+ * versions of the same component) accidentally.
+ * 
+ * This above issues are most important when using `select` since it returns multiple
+ * elements.
+ *
+ * **IMPORTANT** 
+ * Unlike a `renderTpl` where there is a single value for an instance, `childEls` are aggregated
+ * up the class hierarchy so that they are effectively inherited. In other words, if a
+ * class where to derive from `Ext.ux.SomeComponent` in the example above, it could also
+ * have a `childEls` property in the same way as `Ext.ux.SomeComponent`.
+ * 
+ *      Ext.define('Ext.ux.AnotherComponent', {
+ *          extend: 'Ext.ux.SomeComponent',
+ *          
+ *          childEls: [
+ *              // 'bodyEl' is inherited
+ *              'innerEl'
+ *          ],
+ *          
+ *          renderTpl: [
+ *              '<div id="{id}-bodyEl">'
+ *                  '<div id="{id}-innerEl"></div>'
+ *              '</div>'
+ *          ],
+ *          
+ *          // ...
+ *      });
+ * 
+ * The `renderTpl` contains both child elements and unites them in the desired markup, but
+ * the `childEls` only contains the new child element. The {@link #applyChildEls} method
+ * takes care of looking up all `childEls` for an instance and considers `childEls`
+ * properties on all the super classes and mixins.
+ * 
+ * @private
+ */
+Ext.define('Ext.util.ElementContainer', {
+
+    childEls: [
+        // empty - this solves a couple problems:
+        //  1. It ensures that all classes have a childEls (avoid null ptr)
+        //  2. It prevents mixins from smashing on their own childEls (these are gathered
+        //      specifically)
+    ],
+
+    constructor: function () {
+        var me = this,
+            childEls;
+
+        // if we have configured childEls, we need to merge them with those from this
+        // class, its bases and the set of mixins...
+        if (me.hasOwnProperty('childEls')) {
+            childEls = me.childEls;
+            delete me.childEls;
+
+            me.addChildEls.apply(me, childEls);
+        }
+    },
+
+    destroy: function () {
+        var me = this,
+            childEls = me.getChildEls(),
+            child, childName, i, k;
+
+        for (i = childEls.length; i--; ) {
+            childName = childEls[i];
+            if (typeof childName != 'string') {
+                childName = childName.name;
+            }
+
+            child = me[childName];
+            if (child) {
+                me[childName] = null; // better than delete since that changes the "shape"
+                child.remove();
+            }
+        }
+    },
+
+    /**
+     * Adds each argument passed to this method to the {@link Ext.AbstractComponent#cfg-childEls childEls} array.
+     */
+    addChildEls: function () {
+        var me = this,
+            args = arguments;
+
+        if (me.hasOwnProperty('childEls')) {
+            me.childEls.push.apply(me.childEls, args);
+        } else {
+            me.childEls = me.getChildEls().concat(Array.prototype.slice.call(args));
+        }
+        
+        me.prune(me.childEls, false);
+    },
+
+    /**
+     * Sets references to elements inside the component. 
+     * @private
+     */
+    applyChildEls: function(el, id) {
+        var me = this,
+            childEls = me.getChildEls(),
+            baseId, childName, i, selector, value;
+
+        baseId = (id || me.id) + '-';
+        for (i = childEls.length; i--; ) {
+            childName = childEls[i];
+
+            if (typeof childName == 'string') {
+                // We don't use Ext.get because that is 3x (or more) slower on IE6-8. Since
+                // we know the el's are children of our el we use getById instead:
+                value = el.getById(baseId + childName);
+            } else {
+                if ((selector = childName.select)) {
+                    value = Ext.select(selector, true, el.dom); // a CompositeElement
+                } else if ((selector = childName.selectNode)) {
+                    value = Ext.get(Ext.DomQuery.selectNode(selector, el.dom));
+                } else {
+                    // see above re:getById...
+                    value = el.getById(childName.id || (baseId + childName.itemId));
+                }
+
+                childName = childName.name;
+            }
+
+            me[childName] = value;
+        }
+    },
+
+    getChildEls: function () {
+        var me = this,
+            self;
+
+        // If an instance has its own childEls, that is the complete set:
+        if (me.hasOwnProperty('childEls')) {
+            return me.childEls;
+        }
+
+        // Typically, however, the childEls is a class-level concept, so check to see if
+        // we have cached the complete set on the class:
+        self = me.self;
+        return self.$childEls || me.getClassChildEls(self);
+    },
+
+    getClassChildEls: function (cls) {
+        var me = this,
+            result = cls.$childEls,
+            childEls, i, length, forked, mixin, mixins, name, parts, proto, supr, superMixins;
+
+        if (!result) {
+            // We put the various childEls arrays into parts in the order of superclass,
+            // new mixins and finally from cls. These parts can be null or undefined and
+            // we will skip them later.
+
+            supr = cls.superclass;
+            if (supr) {
+                supr = supr.self;
+                parts = [supr.$childEls || me.getClassChildEls(supr)]; // super+mixins
+                superMixins = supr.prototype.mixins || {};
+            } else {
+                parts = [];
+                superMixins = {};
+            }
+
+            proto = cls.prototype;
+            mixins = proto.mixins; // since we are a mixin, there will be at least us
+            for (name in mixins) {
+                if (mixins.hasOwnProperty(name) && !superMixins.hasOwnProperty(name)) {
+                    mixin = mixins[name].self;
+                    parts.push(mixin.$childEls || me.getClassChildEls(mixin));
+                }
+            }
+
+            parts.push(proto.hasOwnProperty('childEls') && proto.childEls);
+
+            for (i = 0, length = parts.length; i < length; ++i) {
+                childEls = parts[i];
+                if (childEls && childEls.length) {
+                    if (!result) {
+                        result = childEls;
+                    } else {
+                        if (!forked) {
+                            forked = true;
+                            result = result.slice(0);
+                        }
+                        result.push.apply(result, childEls);
+                    }
+                }
+            }
+
+            cls.$childEls = result = (result ? me.prune(result, !forked) : []);
+        }
+
+        return result;
+    },
+
+    prune: function (childEls, shared) {
+        var index = childEls.length,
+            map = {},
+            name;
+
+        while (index--) {
+            name = childEls[index];
+            if (typeof name != 'string') {
+                name = name.name;
+            }
+
+            if (!map[name]) {
+                map[name] = 1;
+            } else {
+                if (shared) {
+                    shared = false;
+                    childEls = childEls.slice(0);
+                }
+                Ext.Array.erase(childEls, index, 1);
+            }
+        }
+
+        return childEls;
+    },
+
+    /**
+     * Removes items in the childEls array based on the return value of a supplied test
+     * function. The function is called with a entry in childEls and if the test function
+     * return true, that entry is removed. If false, that entry is kept.
+     *
+     * @param {Function} testFn The test function.
+     */
+    removeChildEls: function (testFn) {
+        var me = this,
+            old = me.getChildEls(),
+            keepers = (me.childEls = []),
+            n, i, cel;
+
+        for (i = 0, n = old.length; i < n; ++i) {
+            cel = old[i];
+            if (!testFn(cel)) {
+                keepers.push(cel);
+            }
+        }
+    }
+});
+
 /*
  * The dirty implementation in this class is quite naive. The reasoning for this is that the dirty state
  * will only be used in very specific circumstances, specifically, after the render process has begun but
@@ -11031,6 +10931,572 @@ Ext.define("Ext.util.Sortable", {
     }
 });
 /**
+ * @class Ext.data.Types
+ * <p>This is a static class containing the system-supplied data types which may be given to a {@link Ext.data.Field Field}.<p/>
+ * <p>The properties in this class are used as type indicators in the {@link Ext.data.Field Field} class, so to
+ * test whether a Field is of a certain type, compare the {@link Ext.data.Field#type type} property against properties
+ * of this class.</p>
+ * <p>Developers may add their own application-specific data types to this class. Definition names must be UPPERCASE.
+ * each type definition must contain three properties:</p>
+ * <div class="mdetail-params"><ul>
+ * <li><code>convert</code> : <i>Function</i><div class="sub-desc">A function to convert raw data values from a data block into the data
+ * to be stored in the Field. The function is passed the collowing parameters:
+ * <div class="mdetail-params"><ul>
+ * <li><b>v</b> : Mixed<div class="sub-desc">The data value as read by the Reader, if undefined will use
+ * the configured <tt>{@link Ext.data.Field#defaultValue defaultValue}</tt>.</div></li>
+ * <li><b>rec</b> : Mixed<div class="sub-desc">The data object containing the row as read by the Reader.
+ * Depending on the Reader type, this could be an Array ({@link Ext.data.reader.Array ArrayReader}), an object
+ * ({@link Ext.data.reader.Json JsonReader}), or an XML element.</div></li>
+ * </ul></div></div></li>
+ * <li><code>sortType</code> : <i>Function</i> <div class="sub-desc">A function to convert the stored data into comparable form, as defined by {@link Ext.data.SortTypes}.</div></li>
+ * <li><code>type</code> : <i>String</i> <div class="sub-desc">A textual data type name.</div></li>
+ * </ul></div>
+ * <p>For example, to create a VELatLong field (See the Microsoft Bing Mapping API) containing the latitude/longitude value of a datapoint on a map from a JsonReader data block
+ * which contained the properties <code>lat</code> and <code>long</code>, you would define a new data type like this:</p>
+ *<pre><code>
+// Add a new Field data type which stores a VELatLong object in the Record.
+Ext.data.Types.VELATLONG = {
+    convert: function(v, data) {
+        return new VELatLong(data.lat, data.long);
+    },
+    sortType: function(v) {
+        return v.Latitude;  // When sorting, order by latitude
+    },
+    type: 'VELatLong'
+};
+</code></pre>
+ * <p>Then, when declaring a Model, use: <pre><code>
+var types = Ext.data.Types; // allow shorthand type access
+Ext.define('Unit',
+    extend: 'Ext.data.Model',
+    fields: [
+        { name: 'unitName', mapping: 'UnitName' },
+        { name: 'curSpeed', mapping: 'CurSpeed', type: types.INT },
+        { name: 'latitude', mapping: 'lat', type: types.FLOAT },
+        { name: 'longitude', mapping: 'long', type: types.FLOAT },
+        { name: 'position', type: types.VELATLONG }
+    ]
+});
+</code></pre>
+ * @singleton
+ */
+Ext.define('Ext.data.Types', {
+    singleton: true,
+    requires: ['Ext.data.SortTypes']
+}, function() {
+    var st = Ext.data.SortTypes;
+
+    Ext.apply(Ext.data.Types, {
+        /**
+         * @property {RegExp} stripRe
+         * A regular expression for stripping non-numeric characters from a numeric value. Defaults to <tt>/[\$,%]/g</tt>.
+         * This should be overridden for localization.
+         */
+        stripRe: /[\$,%]/g,
+
+        /**
+         * @property {Object} AUTO
+         * This data type means that no conversion is applied to the raw data before it is placed into a Record.
+         */
+        AUTO: {
+            sortType: st.none,
+            type: 'auto'
+        },
+
+        /**
+         * @property {Object} STRING
+         * This data type means that the raw data is converted into a String before it is placed into a Record.
+         */
+        STRING: {
+            convert: function(v) {
+                var defaultValue = this.useNull ? null : '';
+                return (v === undefined || v === null) ? defaultValue : String(v);
+            },
+            sortType: st.asUCString,
+            type: 'string'
+        },
+
+        /**
+         * @property {Object} INT
+         * This data type means that the raw data is converted into an integer before it is placed into a Record.
+         * <p>The synonym <code>INTEGER</code> is equivalent.</p>
+         */
+        INT: {
+            convert: function(v) {
+                return v !== undefined && v !== null && v !== '' ?
+                    parseInt(String(v).replace(Ext.data.Types.stripRe, ''), 10) : (this.useNull ? null : 0);
+            },
+            sortType: st.none,
+            type: 'int'
+        },
+
+        /**
+         * @property {Object} FLOAT
+         * This data type means that the raw data is converted into a number before it is placed into a Record.
+         * <p>The synonym <code>NUMBER</code> is equivalent.</p>
+         */
+        FLOAT: {
+            convert: function(v) {
+                return v !== undefined && v !== null && v !== '' ?
+                    parseFloat(String(v).replace(Ext.data.Types.stripRe, ''), 10) : (this.useNull ? null : 0);
+            },
+            sortType: st.none,
+            type: 'float'
+        },
+
+        /**
+         * @property {Object} BOOL
+         * <p>This data type means that the raw data is converted into a boolean before it is placed into
+         * a Record. The string "true" and the number 1 are converted to boolean <code>true</code>.</p>
+         * <p>The synonym <code>BOOLEAN</code> is equivalent.</p>
+         */
+        BOOL: {
+            convert: function(v) {
+                if (this.useNull && (v === undefined || v === null || v === '')) {
+                    return null;
+                }
+                return v === true || v === 'true' || v == 1;
+            },
+            sortType: st.none,
+            type: 'bool'
+        },
+
+        /**
+         * @property {Object} DATE
+         * This data type means that the raw data is converted into a Date before it is placed into a Record.
+         * The date format is specified in the constructor of the {@link Ext.data.Field} to which this type is
+         * being applied.
+         */
+        DATE: {
+            convert: function(v) {
+                var df = this.dateFormat,
+                    parsed;
+
+                if (!v) {
+                    return null;
+                }
+                if (Ext.isDate(v)) {
+                    return v;
+                }
+                if (df) {
+                    if (df == 'timestamp') {
+                        return new Date(v*1000);
+                    }
+                    if (df == 'time') {
+                        return new Date(parseInt(v, 10));
+                    }
+                    return Ext.Date.parse(v, df);
+                }
+
+                parsed = Date.parse(v);
+                return parsed ? new Date(parsed) : null;
+            },
+            sortType: st.asDate,
+            type: 'date'
+        }
+    });
+
+    Ext.apply(Ext.data.Types, {
+        /**
+         * @property {Object} BOOLEAN
+         * <p>This data type means that the raw data is converted into a boolean before it is placed into
+         * a Record. The string "true" and the number 1 are converted to boolean <code>true</code>.</p>
+         * <p>The synonym <code>BOOL</code> is equivalent.</p>
+         */
+        BOOLEAN: this.BOOL,
+
+        /**
+         * @property {Object} INTEGER
+         * This data type means that the raw data is converted into an integer before it is placed into a Record.
+         * <p>The synonym <code>INT</code> is equivalent.</p>
+         */
+        INTEGER: this.INT,
+
+        /**
+         * @property {Object} NUMBER
+         * This data type means that the raw data is converted into a number before it is placed into a Record.
+         * <p>The synonym <code>FLOAT</code> is equivalent.</p>
+         */
+        NUMBER: this.FLOAT
+    });
+});
+
+/**
+ * @author Ed Spencer
+ *
+ * Fields are used to define what a Model is. They aren't instantiated directly - instead, when we create a class that
+ * extends {@link Ext.data.Model}, it will automatically create a Field instance for each field configured in a {@link
+ * Ext.data.Model Model}. For example, we might set up a model like this:
+ *
+ *     Ext.define('User', {
+ *         extend: 'Ext.data.Model',
+ *         fields: [
+ *             'name', 'email',
+ *             {name: 'age', type: 'int'},
+ *             {name: 'gender', type: 'string', defaultValue: 'Unknown'}
+ *         ]
+ *     });
+ *
+ * Four fields will have been created for the User Model - name, email, age and gender. Note that we specified a couple
+ * of different formats here; if we only pass in the string name of the field (as with name and email), the field is set
+ * up with the 'auto' type. It's as if we'd done this instead:
+ *
+ *     Ext.define('User', {
+ *         extend: 'Ext.data.Model',
+ *         fields: [
+ *             {name: 'name', type: 'auto'},
+ *             {name: 'email', type: 'auto'},
+ *             {name: 'age', type: 'int'},
+ *             {name: 'gender', type: 'string', defaultValue: 'Unknown'}
+ *         ]
+ *     });
+ *
+ * # Types and conversion
+ *
+ * The {@link #type} is important - it's used to automatically convert data passed to the field into the correct format.
+ * In our example above, the name and email fields used the 'auto' type and will just accept anything that is passed
+ * into them. The 'age' field had an 'int' type however, so if we passed 25.4 this would be rounded to 25.
+ *
+ * Sometimes a simple type isn't enough, or we want to perform some processing when we load a Field's data. We can do
+ * this using a {@link #convert} function. Here, we're going to create a new field based on another:
+ *
+ *     Ext.define('User', {
+ *         extend: 'Ext.data.Model',
+ *         fields: [
+ *             {
+ *                 name: 'firstName',
+ *                 convert: function(value, record) {
+ *                     var fullName  = record.get('name'),
+ *                         splits    = fullName.split(" "),
+ *                         firstName = splits[0];
+ *
+ *                     return firstName;
+ *                 }
+ *             },
+ *             'name', 'email',
+ *             {name: 'age', type: 'int'},
+ *             {name: 'gender', type: 'string', defaultValue: 'Unknown'}
+ *         ]
+ *     });
+ *
+ * Now when we create a new User, the firstName is populated automatically based on the name:
+ *
+ *     var ed = Ext.create('User', {name: 'Ed Spencer'});
+ *
+ *     console.log(ed.get('firstName')); //logs 'Ed', based on our convert function
+ *     
+ * Fields which are configured with a custom ```convert``` function are read *after* all other fields
+ * when constructing and reading records, so that if convert functions rely on other, non-converted fields
+ * (as in this example), they can be sure of those fields being present.
+ *
+ * In fact, if we log out all of the data inside ed, we'll see this:
+ *
+ *     console.log(ed.data);
+ *
+ *     //outputs this:
+ *     {
+ *         age: 0,
+ *         email: "",
+ *         firstName: "Ed",
+ *         gender: "Unknown",
+ *         name: "Ed Spencer"
+ *     }
+ *
+ * The age field has been given a default of zero because we made it an int type. As an auto field, email has defaulted
+ * to an empty string. When we registered the User model we set gender's {@link #defaultValue} to 'Unknown' so we see
+ * that now. Let's correct that and satisfy ourselves that the types work as we expect:
+ *
+ *     ed.set('gender', 'Male');
+ *     ed.get('gender'); //returns 'Male'
+ *
+ *     ed.set('age', 25.4);
+ *     ed.get('age'); //returns 25 - we wanted an int, not a float, so no decimal places allowed
+ */
+Ext.define('Ext.data.Field', {
+    requires: ['Ext.data.Types', 'Ext.data.SortTypes'],
+    alias: 'data.field',
+
+    isField: true,
+    
+    constructor : function(config) {
+        var me = this,
+            types = Ext.data.Types,
+            st;
+        
+        if (Ext.isString(config)) {
+            config = {name: config};
+        }
+        Ext.apply(me, config);
+
+        st = me.sortType;
+
+        if (me.type) {
+            if (Ext.isString(me.type)) {
+                me.type = types[me.type.toUpperCase()] || types.AUTO;
+            }
+        } else {
+            me.type = types.AUTO;
+        }
+
+        // named sortTypes are supported, here we look them up
+        if (Ext.isString(st)) {
+            me.sortType = Ext.data.SortTypes[st];
+        } else if(Ext.isEmpty(st)) {
+            me.sortType = me.type.sortType;
+        }
+
+        // Reference this type's default converter if we did not recieve one in configuration.
+        if (!config.hasOwnProperty('convert')) {
+            me.convert = me.type.convert; // this may be undefined (e.g., AUTO)
+        } else if (!me.convert && me.type.convert && !config.hasOwnProperty('defaultValue')) {
+            // If the converter has been nulled out, and we have not been configured
+            // with a field-specific defaultValue, then coerce the inherited defaultValue into our data type.
+            me.defaultValue = me.type.convert(me.defaultValue);
+        }
+
+        if (config.convert) {
+            me.hasCustomConvert = true;
+        }
+    },
+    
+    /**
+     * @cfg {String} name
+     *
+     * The name by which the field is referenced within the Model. This is referenced by, for example, the `dataIndex`
+     * property in column definition objects passed to {@link Ext.grid.property.HeaderContainer}.
+     *
+     * Note: In the simplest case, if no properties other than `name` are required, a field definition may consist of
+     * just a String for the field name.
+     */
+    
+    /**
+     * @cfg {String/Object} type
+     *
+     * The data type for automatic conversion from received data to the *stored* value if
+     * `{@link Ext.data.Field#convert convert}` has not been specified. This may be specified as a string value.
+     * Possible values are
+     *
+     * - auto (Default, implies no conversion)
+     * - string
+     * - int
+     * - float
+     * - boolean
+     * - date
+     *
+     * This may also be specified by referencing a member of the {@link Ext.data.Types} class.
+     *
+     * Developers may create their own application-specific data types by defining new members of the {@link
+     * Ext.data.Types} class.
+     */
+
+    /**
+     * @cfg {Function} [convert]
+     *
+     * A function which converts the value provided by the Reader into an object that will be stored in the Model.
+     * 
+     * If configured as `null`, then no conversion will be applied to the raw data property when this Field
+     * is read. This will increase performance. but you must ensure that the data is of the correct type and does
+     * not *need* converting.
+     * 
+     * It is passed the following parameters:
+     *
+     * - **v** : Mixed
+     *
+     *   The data value as read by the Reader, if undefined will use the configured `{@link Ext.data.Field#defaultValue
+     *   defaultValue}`.
+     *
+     * - **rec** : Ext.data.Model
+     *
+     *   The data object containing the Model as read so far by the Reader. Note that the Model may not be fully populated
+     *   at this point as the fields are read in the order that they are defined in your
+     *   {@link Ext.data.Model#cfg-fields fields} array.
+     *
+     * Example of convert functions:
+     *
+     *     function fullName(v, record){
+     *         return record.data.last + ', ' + record.data.first;
+     *     }
+     *
+     *     function location(v, record){
+     *         return !record.data.city ? '' : (record.data.city + ', ' + record.data.state);
+     *     }
+     *
+     *     Ext.define('Dude', {
+     *         extend: 'Ext.data.Model',
+     *         fields: [
+     *             {name: 'fullname',  convert: fullName},
+     *             {name: 'firstname', mapping: 'name.first'},
+     *             {name: 'lastname',  mapping: 'name.last'},
+     *             {name: 'city', defaultValue: 'homeless'},
+     *             'state',
+     *             {name: 'location',  convert: location}
+     *         ]
+     *     });
+     *
+     *     // create the data store
+     *     var store = Ext.create('Ext.data.Store', {
+     *         reader: {
+     *             type: 'json',
+     *             model: 'Dude',
+     *             idProperty: 'key',
+     *             root: 'daRoot',
+     *             totalProperty: 'total'
+     *         }
+     *     });
+     *
+     *     var myData = [
+     *         { key: 1,
+     *           name: { first: 'Fat',    last:  'Albert' }
+     *           // notice no city, state provided in data object
+     *         },
+     *         { key: 2,
+     *           name: { first: 'Barney', last:  'Rubble' },
+     *           city: 'Bedrock', state: 'Stoneridge'
+     *         },
+     *         { key: 3,
+     *           name: { first: 'Cliff',  last:  'Claven' },
+     *           city: 'Boston',  state: 'MA'
+     *         }
+     *     ];
+     */
+
+    /**
+     * @cfg {Function} [serialize]
+     * A function which converts the Model's value for this Field into a form which can be used by whatever {@link Ext.data.writer.Writer Writer}
+     * is being used to sync data with the server.
+     * 
+     * The function should return a string which represents the Field's value.
+     *
+     * It is passed the following parameters:
+     *
+     * - **v** : Mixed
+     *
+     *   The Field's value - the value to be serialized.
+     *
+     * - **rec** : Ext.data.Model
+     *
+     *   The record being serialized.
+     *
+     */
+
+    /**
+     * @cfg {String} dateFormat
+     *
+     * Used when converting received data into a Date when the {@link #type} is specified as `"date"`.
+     * 
+     * The format dtring is also used when serializing Date fields for use by {@link Ext.data.writer.Writer Writers}.
+     *
+     * A format string for the {@link Ext.Date#parse Ext.Date.parse} function, or "timestamp" if the value provided by
+     * the Reader is a UNIX timestamp, or "time" if the value provided by the Reader is a javascript millisecond
+     * timestamp. See {@link Ext.Date}.
+     */
+    dateFormat: null,
+    
+    /**
+     * @cfg {Boolean} useNull
+     *
+     * Use when converting received data into a INT, FLOAT, BOOL or STRING type. If the value cannot be
+     * parsed, `null` will be used if useNull is true, otherwise a default value for that type will be used:
+     *
+     * - for INT and FLOAT - `0`.
+     * - for STRING - `""`.
+     * - for BOOL - `false`.
+     *
+     * Note that when parsing of DATE type fails, the value will be `null` regardless of this setting.
+     */
+    useNull: false,
+    
+    /**
+     * @cfg {Object} [defaultValue=""]
+     *
+     * The default value used when the creating an instance from a raw data object, and the property referenced by the
+     * `{@link Ext.data.Field#mapping mapping}` does not exist in that data object.
+     * 
+     * May be specified as `undefined` to prevent defaulting in a value.
+     */
+    defaultValue: "",
+
+    /**
+     * @cfg {String/Number} mapping
+     *
+     * (Optional) A path expression for use by the {@link Ext.data.reader.Reader} implementation that is creating the
+     * {@link Ext.data.Model Model} to extract the Field value from the data object. If the path expression is the same
+     * as the field name, the mapping may be omitted.
+     *
+     * The form of the mapping expression depends on the Reader being used.
+     *
+     * - {@link Ext.data.reader.Json}
+     *
+     *   The mapping is a string containing the javascript expression to reference the data from an element of the data
+     *   item's {@link Ext.data.reader.Json#cfg-root root} Array. Defaults to the field name.
+     *
+     * - {@link Ext.data.reader.Xml}
+     *
+     *   The mapping is an {@link Ext.DomQuery} path to the data item relative to the DOM element that represents the
+     *   {@link Ext.data.reader.Xml#record record}. Defaults to the field name.
+     *
+     * - {@link Ext.data.reader.Array}
+     *
+     *   The mapping is a number indicating the Array index of the field's value. Defaults to the field specification's
+     *   Array position.
+     *
+     * If a more complex value extraction strategy is required, then configure the Field with a {@link #convert}
+     * function. This is passed the whole row object, and may interrogate it in whatever way is necessary in order to
+     * return the desired data.
+     */
+    mapping: null,
+
+    /**
+     * @cfg {Function} sortType
+     *
+     * A function which converts a Field's value to a comparable value in order to ensure correct sort ordering.
+     * Predefined functions are provided in {@link Ext.data.SortTypes}. A custom sort example:
+     *
+     *     // current sort     after sort we want
+     *     // +-+------+          +-+------+
+     *     // |1|First |          |1|First |
+     *     // |2|Last  |          |3|Second|
+     *     // |3|Second|          |2|Last  |
+     *     // +-+------+          +-+------+
+     *
+     *     sortType: function(value) {
+     *        switch (value.toLowerCase()) // native toLowerCase():
+     *        {
+     *           case 'first': return 1;
+     *           case 'second': return 2;
+     *           default: return 3;
+     *        }
+     *     }
+     */
+    sortType : null,
+
+    /**
+     * @cfg {String} sortDir
+     *
+     * Initial direction to sort (`"ASC"` or `"DESC"`). Defaults to `"ASC"`.
+     */
+    sortDir : "ASC",
+
+    /**
+     * @cfg {Boolean} allowBlank
+     * @private
+     *
+     * Used for validating a {@link Ext.data.Model model}. Defaults to true. An empty value here will cause
+     * {@link Ext.data.Model}.{@link Ext.data.Model#isValid isValid} to evaluate to false.
+     */
+    allowBlank : true,
+
+    /**
+     * @cfg {Boolean} persist
+     *
+     * False to exclude this field from the {@link Ext.data.Model#modified} fields in a model. This will also exclude
+     * the field from being written using a {@link Ext.data.writer.Writer}. This option is useful when model fields are
+     * used to keep state on the client but do not need to be persisted to the server. Defaults to true.
+     */
+    persist: true
+});
+
+/**
  * @class Ext.util.AbstractMixedCollection
  * @private
  */
@@ -12268,381 +12734,6 @@ Ext.define('Ext.data.Errors', {
 
         return errors;
     }
-});
-
-/**
- * @author Ed Spencer
- *
- * Fields are used to define what a Model is. They aren't instantiated directly - instead, when we create a class that
- * extends {@link Ext.data.Model}, it will automatically create a Field instance for each field configured in a {@link
- * Ext.data.Model Model}. For example, we might set up a model like this:
- *
- *     Ext.define('User', {
- *         extend: 'Ext.data.Model',
- *         fields: [
- *             'name', 'email',
- *             {name: 'age', type: 'int'},
- *             {name: 'gender', type: 'string', defaultValue: 'Unknown'}
- *         ]
- *     });
- *
- * Four fields will have been created for the User Model - name, email, age and gender. Note that we specified a couple
- * of different formats here; if we only pass in the string name of the field (as with name and email), the field is set
- * up with the 'auto' type. It's as if we'd done this instead:
- *
- *     Ext.define('User', {
- *         extend: 'Ext.data.Model',
- *         fields: [
- *             {name: 'name', type: 'auto'},
- *             {name: 'email', type: 'auto'},
- *             {name: 'age', type: 'int'},
- *             {name: 'gender', type: 'string', defaultValue: 'Unknown'}
- *         ]
- *     });
- *
- * # Types and conversion
- *
- * The {@link #type} is important - it's used to automatically convert data passed to the field into the correct format.
- * In our example above, the name and email fields used the 'auto' type and will just accept anything that is passed
- * into them. The 'age' field had an 'int' type however, so if we passed 25.4 this would be rounded to 25.
- *
- * Sometimes a simple type isn't enough, or we want to perform some processing when we load a Field's data. We can do
- * this using a {@link #convert} function. Here, we're going to create a new field based on another:
- *
- *     Ext.define('User', {
- *         extend: 'Ext.data.Model',
- *         fields: [
- *             {
- *                 name: 'firstName',
- *                 convert: function(value, record) {
- *                     var fullName  = record.get('name'),
- *                         splits    = fullName.split(" "),
- *                         firstName = splits[0];
- *
- *                     return firstName;
- *                 }
- *             },
- *             'name', 'email',
- *             {name: 'age', type: 'int'},
- *             {name: 'gender', type: 'string', defaultValue: 'Unknown'}
- *         ]
- *     });
- *
- * Now when we create a new User, the firstName is populated automatically based on the name:
- *
- *     var ed = Ext.create('User', {name: 'Ed Spencer'});
- *
- *     console.log(ed.get('firstName')); //logs 'Ed', based on our convert function
- *     
- * Fields which are configured with a custom ```convert``` function are read *after* all other fields
- * when constructing and reading records, so that if convert functions rely on other, non-converted fields
- * (as in this example), they can be sure of those fields being present.
- *
- * In fact, if we log out all of the data inside ed, we'll see this:
- *
- *     console.log(ed.data);
- *
- *     //outputs this:
- *     {
- *         age: 0,
- *         email: "",
- *         firstName: "Ed",
- *         gender: "Unknown",
- *         name: "Ed Spencer"
- *     }
- *
- * The age field has been given a default of zero because we made it an int type. As an auto field, email has defaulted
- * to an empty string. When we registered the User model we set gender's {@link #defaultValue} to 'Unknown' so we see
- * that now. Let's correct that and satisfy ourselves that the types work as we expect:
- *
- *     ed.set('gender', 'Male');
- *     ed.get('gender'); //returns 'Male'
- *
- *     ed.set('age', 25.4);
- *     ed.get('age'); //returns 25 - we wanted an int, not a float, so no decimal places allowed
- */
-Ext.define('Ext.data.Field', {
-    requires: ['Ext.data.Types', 'Ext.data.SortTypes'],
-    alias: 'data.field',
-
-    isField: true,
-    
-    constructor : function(config) {
-        var me = this,
-            types = Ext.data.Types,
-            st;
-        
-        if (Ext.isString(config)) {
-            config = {name: config};
-        }
-        Ext.apply(me, config);
-
-        st = me.sortType;
-
-        if (me.type) {
-            if (Ext.isString(me.type)) {
-                me.type = types[me.type.toUpperCase()] || types.AUTO;
-            }
-        } else {
-            me.type = types.AUTO;
-        }
-
-        // named sortTypes are supported, here we look them up
-        if (Ext.isString(st)) {
-            me.sortType = Ext.data.SortTypes[st];
-        } else if(Ext.isEmpty(st)) {
-            me.sortType = me.type.sortType;
-        }
-
-        // Reference this type's default converter if we did not recieve one in configuration.
-        if (!config.hasOwnProperty('convert')) {
-            me.convert = me.type.convert; // this may be undefined (e.g., AUTO)
-        } else if (!me.convert && me.type.convert && !config.hasOwnProperty('defaultValue')) {
-            // If the converter has been nulled out, and we have not been configured
-            // with a field-specific defaultValue, then coerce the inherited defaultValue into our data type.
-            me.defaultValue = me.type.convert(me.defaultValue);
-        }
-
-        if (config.convert) {
-            me.hasCustomConvert = true;
-        }
-    },
-    
-    /**
-     * @cfg {String} name
-     *
-     * The name by which the field is referenced within the Model. This is referenced by, for example, the `dataIndex`
-     * property in column definition objects passed to {@link Ext.grid.property.HeaderContainer}.
-     *
-     * Note: In the simplest case, if no properties other than `name` are required, a field definition may consist of
-     * just a String for the field name.
-     */
-    
-    /**
-     * @cfg {String/Object} type
-     *
-     * The data type for automatic conversion from received data to the *stored* value if
-     * `{@link Ext.data.Field#convert convert}` has not been specified. This may be specified as a string value.
-     * Possible values are
-     *
-     * - auto (Default, implies no conversion)
-     * - string
-     * - int
-     * - float
-     * - boolean
-     * - date
-     *
-     * This may also be specified by referencing a member of the {@link Ext.data.Types} class.
-     *
-     * Developers may create their own application-specific data types by defining new members of the {@link
-     * Ext.data.Types} class.
-     */
-
-    /**
-     * @cfg {Function} [convert]
-     *
-     * A function which converts the value provided by the Reader into an object that will be stored in the Model.
-     * 
-     * If configured as `null`, then no conversion will be applied to the raw data property when this Field
-     * is read. This will increase performance. but you must ensure that the data is of the correct type and does
-     * not *need* converting.
-     * 
-     * It is passed the following parameters:
-     *
-     * - **v** : Mixed
-     *
-     *   The data value as read by the Reader, if undefined will use the configured `{@link Ext.data.Field#defaultValue
-     *   defaultValue}`.
-     *
-     * - **rec** : Ext.data.Model
-     *
-     *   The data object containing the Model as read so far by the Reader. Note that the Model may not be fully populated
-     *   at this point as the fields are read in the order that they are defined in your
-     *   {@link Ext.data.Model#cfg-fields fields} array.
-     *
-     * Example of convert functions:
-     *
-     *     function fullName(v, record){
-     *         return record.data.last + ', ' + record.data.first;
-     *     }
-     *
-     *     function location(v, record){
-     *         return !record.data.city ? '' : (record.data.city + ', ' + record.data.state);
-     *     }
-     *
-     *     Ext.define('Dude', {
-     *         extend: 'Ext.data.Model',
-     *         fields: [
-     *             {name: 'fullname',  convert: fullName},
-     *             {name: 'firstname', mapping: 'name.first'},
-     *             {name: 'lastname',  mapping: 'name.last'},
-     *             {name: 'city', defaultValue: 'homeless'},
-     *             'state',
-     *             {name: 'location',  convert: location}
-     *         ]
-     *     });
-     *
-     *     // create the data store
-     *     var store = Ext.create('Ext.data.Store', {
-     *         reader: {
-     *             type: 'json',
-     *             model: 'Dude',
-     *             idProperty: 'key',
-     *             root: 'daRoot',
-     *             totalProperty: 'total'
-     *         }
-     *     });
-     *
-     *     var myData = [
-     *         { key: 1,
-     *           name: { first: 'Fat',    last:  'Albert' }
-     *           // notice no city, state provided in data object
-     *         },
-     *         { key: 2,
-     *           name: { first: 'Barney', last:  'Rubble' },
-     *           city: 'Bedrock', state: 'Stoneridge'
-     *         },
-     *         { key: 3,
-     *           name: { first: 'Cliff',  last:  'Claven' },
-     *           city: 'Boston',  state: 'MA'
-     *         }
-     *     ];
-     */
-
-    /**
-     * @cfg {Function} [serialize]
-     * A function which converts the Model's value for this Field into a form which can be used by whatever {@link Ext.data.writer.Writer Writer}
-     * is being used to sync data with the server.
-     * 
-     * The function should return a string which represents the Field's value.
-     *
-     * It is passed the following parameters:
-     *
-     * - **v** : Mixed
-     *
-     *   The Field's value - the value to be serialized.
-     *
-     * - **rec** : Ext.data.Model
-     *
-     *   The record being serialized.
-     *
-     */
-
-    /**
-     * @cfg {String} dateFormat
-     *
-     * Used when converting received data into a Date when the {@link #type} is specified as `"date"`.
-     * 
-     * The format dtring is also used when serializing Date fields for use by {@link Ext.data.writer.Writer Writers}.
-     *
-     * A format string for the {@link Ext.Date#parse Ext.Date.parse} function, or "timestamp" if the value provided by
-     * the Reader is a UNIX timestamp, or "time" if the value provided by the Reader is a javascript millisecond
-     * timestamp. See {@link Ext.Date}.
-     */
-    dateFormat: null,
-    
-    /**
-     * @cfg {Boolean} useNull
-     *
-     * Use when converting received data into a INT, FLOAT, BOOL or STRING type. If the value cannot be
-     * parsed, `null` will be used if useNull is true, otherwise a default value for that type will be used:
-     *
-     * - for INT and FLOAT - `0`.
-     * - for STRING - `""`.
-     * - for BOOL - `false`.
-     *
-     * Note that when parsing of DATE type fails, the value will be `null` regardless of this setting.
-     */
-    useNull: false,
-    
-    /**
-     * @cfg {Object} [defaultValue=""]
-     *
-     * The default value used when the creating an instance from a raw data object, and the property referenced by the
-     * `{@link Ext.data.Field#mapping mapping}` does not exist in that data object.
-     * 
-     * May be specified as `undefined` to prevent defaulting in a value.
-     */
-    defaultValue: "",
-
-    /**
-     * @cfg {String/Number} mapping
-     *
-     * (Optional) A path expression for use by the {@link Ext.data.reader.Reader} implementation that is creating the
-     * {@link Ext.data.Model Model} to extract the Field value from the data object. If the path expression is the same
-     * as the field name, the mapping may be omitted.
-     *
-     * The form of the mapping expression depends on the Reader being used.
-     *
-     * - {@link Ext.data.reader.Json}
-     *
-     *   The mapping is a string containing the javascript expression to reference the data from an element of the data
-     *   item's {@link Ext.data.reader.Json#cfg-root root} Array. Defaults to the field name.
-     *
-     * - {@link Ext.data.reader.Xml}
-     *
-     *   The mapping is an {@link Ext.DomQuery} path to the data item relative to the DOM element that represents the
-     *   {@link Ext.data.reader.Xml#record record}. Defaults to the field name.
-     *
-     * - {@link Ext.data.reader.Array}
-     *
-     *   The mapping is a number indicating the Array index of the field's value. Defaults to the field specification's
-     *   Array position.
-     *
-     * If a more complex value extraction strategy is required, then configure the Field with a {@link #convert}
-     * function. This is passed the whole row object, and may interrogate it in whatever way is necessary in order to
-     * return the desired data.
-     */
-    mapping: null,
-
-    /**
-     * @cfg {Function} sortType
-     *
-     * A function which converts a Field's value to a comparable value in order to ensure correct sort ordering.
-     * Predefined functions are provided in {@link Ext.data.SortTypes}. A custom sort example:
-     *
-     *     // current sort     after sort we want
-     *     // +-+------+          +-+------+
-     *     // |1|First |          |1|First |
-     *     // |2|Last  |          |3|Second|
-     *     // |3|Second|          |2|Last  |
-     *     // +-+------+          +-+------+
-     *
-     *     sortType: function(value) {
-     *        switch (value.toLowerCase()) // native toLowerCase():
-     *        {
-     *           case 'first': return 1;
-     *           case 'second': return 2;
-     *           default: return 3;
-     *        }
-     *     }
-     */
-    sortType : null,
-
-    /**
-     * @cfg {String} sortDir
-     *
-     * Initial direction to sort (`"ASC"` or `"DESC"`). Defaults to `"ASC"`.
-     */
-    sortDir : "ASC",
-
-    /**
-     * @cfg {Boolean} allowBlank
-     * @private
-     *
-     * Used for validating a {@link Ext.data.Model model}. Defaults to true. An empty value here will cause
-     * {@link Ext.data.Model}.{@link Ext.data.Model#isValid isValid} to evaluate to false.
-     */
-    allowBlank : true,
-
-    /**
-     * @cfg {Boolean} persist
-     *
-     * False to exclude this field from the {@link Ext.data.Model#modified} fields in a model. This will also exclude
-     * the field from being written using a {@link Ext.data.writer.Writer}. This option is useful when model fields are
-     * used to keep state on the client but do not need to be persisted to the server. Defaults to true.
-     */
-    persist: true
 });
 
 /**
@@ -14356,6 +14447,142 @@ Ext.define('Ext.data.Model', {
     }
 });
 /**
+ * @class Ext.fx.Easing
+ *
+ * This class contains a series of function definitions used to modify values during an animation.
+ * They describe how the intermediate values used during a transition will be calculated. It allows for a transition to change
+ * speed over its duration. The following options are available: 
+ *
+ * - linear The default easing type
+ * - backIn
+ * - backOut
+ * - bounceIn
+ * - bounceOut
+ * - ease
+ * - easeIn
+ * - easeOut
+ * - easeInOut
+ * - elasticIn
+ * - elasticOut
+ * - cubic-bezier(x1, y1, x2, y2)
+ *
+ * Note that cubic-bezier will create a custom easing curve following the CSS3 [transition-timing-function][0]
+ * specification.  The four values specify points P1 and P2 of the curve as (x1, y1, x2, y2). All values must
+ * be in the range [0, 1] or the definition is invalid.
+ *
+ * [0]: http://www.w3.org/TR/css3-transitions/#transition-timing-function_tag
+ *
+ * @singleton
+ */
+Ext.ns('Ext.fx');
+
+Ext.require('Ext.fx.CubicBezier', function() {
+    var math = Math,
+        pi = math.PI,
+        pow = math.pow,
+        sin = math.sin,
+        sqrt = math.sqrt,
+        abs = math.abs,
+        backInSeed = 1.70158;
+    Ext.fx.Easing = {
+        // ease: Ext.fx.CubicBezier.cubicBezier(0.25, 0.1, 0.25, 1),
+        // linear: Ext.fx.CubicBezier.cubicBezier(0, 0, 1, 1),
+        // 'ease-in': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 1, 1),
+        // 'ease-out': Ext.fx.CubicBezier.cubicBezier(0, 0.58, 1, 1),
+        // 'ease-in-out': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 0.58, 1),
+        // 'easeIn': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 1, 1),
+        // 'easeOut': Ext.fx.CubicBezier.cubicBezier(0, 0.58, 1, 1),
+        // 'easeInOut': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 0.58, 1)
+    };
+
+    Ext.apply(Ext.fx.Easing, {
+        linear: function(n) {
+            return n;
+        },
+        ease: function(n) {
+            var q = 0.07813 - n / 2,
+                alpha = -0.25,
+                Q = sqrt(0.0066 + q * q),
+                x = Q - q,
+                X = pow(abs(x), 1/3) * (x < 0 ? -1 : 1),
+                y = -Q - q,
+                Y = pow(abs(y), 1/3) * (y < 0 ? -1 : 1),
+                t = X + Y + 0.25;
+            return pow(1 - t, 2) * 3 * t * 0.1 + (1 - t) * 3 * t * t + t * t * t;
+        },
+        easeIn: function (n) {
+            return pow(n, 1.7);
+        },
+        easeOut: function (n) {
+            return pow(n, 0.48);
+        },
+        easeInOut: function(n) {
+            var q = 0.48 - n / 1.04,
+                Q = sqrt(0.1734 + q * q),
+                x = Q - q,
+                X = pow(abs(x), 1/3) * (x < 0 ? -1 : 1),
+                y = -Q - q,
+                Y = pow(abs(y), 1/3) * (y < 0 ? -1 : 1),
+                t = X + Y + 0.5;
+            return (1 - t) * 3 * t * t + t * t * t;
+        },
+        backIn: function (n) {
+            return n * n * ((backInSeed + 1) * n - backInSeed);
+        },
+        backOut: function (n) {
+            n = n - 1;
+            return n * n * ((backInSeed + 1) * n + backInSeed) + 1;
+        },
+        elasticIn: function (n) {
+            if (n === 0 || n === 1) {
+                return n;
+            }
+            var p = 0.3,
+                s = p / 4;
+            return pow(2, -10 * n) * sin((n - s) * (2 * pi) / p) + 1;
+        },
+        elasticOut: function (n) {
+            return 1 - Ext.fx.Easing.elasticIn(1 - n);
+        },
+        bounceIn: function (n) {
+            return 1 - Ext.fx.Easing.bounceOut(1 - n);
+        },
+        bounceOut: function (n) {
+            var s = 7.5625,
+                p = 2.75,
+                l;
+            if (n < (1 / p)) {
+                l = s * n * n;
+            } else {
+                if (n < (2 / p)) {
+                    n -= (1.5 / p);
+                    l = s * n * n + 0.75;
+                } else {
+                    if (n < (2.5 / p)) {
+                        n -= (2.25 / p);
+                        l = s * n * n + 0.9375;
+                    } else {
+                        n -= (2.625 / p);
+                        l = s * n * n + 0.984375;
+                    }
+                }
+            }
+            return l;
+        }
+    });
+    Ext.apply(Ext.fx.Easing, {
+        'back-in': Ext.fx.Easing.backIn,
+        'back-out': Ext.fx.Easing.backOut,
+        'ease-in': Ext.fx.Easing.easeIn,
+        'ease-out': Ext.fx.Easing.easeOut,
+        'elastic-in': Ext.fx.Easing.elasticIn,
+        'elastic-out': Ext.fx.Easing.elasticIn,
+        'bounce-in': Ext.fx.Easing.bounceIn,
+        'bounce-out': Ext.fx.Easing.bounceOut,
+        'ease-in-out': Ext.fx.Easing.easeInOut
+    });
+});
+/**
  *
  */
 Ext.define('Ext.container.DockingContainer', {
@@ -14623,142 +14850,6 @@ Ext.define('Ext.container.DockingContainer', {
     }
 });
 
-/**
- * @class Ext.fx.Easing
- *
- * This class contains a series of function definitions used to modify values during an animation.
- * They describe how the intermediate values used during a transition will be calculated. It allows for a transition to change
- * speed over its duration. The following options are available: 
- *
- * - linear The default easing type
- * - backIn
- * - backOut
- * - bounceIn
- * - bounceOut
- * - ease
- * - easeIn
- * - easeOut
- * - easeInOut
- * - elasticIn
- * - elasticOut
- * - cubic-bezier(x1, y1, x2, y2)
- *
- * Note that cubic-bezier will create a custom easing curve following the CSS3 [transition-timing-function][0]
- * specification.  The four values specify points P1 and P2 of the curve as (x1, y1, x2, y2). All values must
- * be in the range [0, 1] or the definition is invalid.
- *
- * [0]: http://www.w3.org/TR/css3-transitions/#transition-timing-function_tag
- *
- * @singleton
- */
-Ext.ns('Ext.fx');
-
-Ext.require('Ext.fx.CubicBezier', function() {
-    var math = Math,
-        pi = math.PI,
-        pow = math.pow,
-        sin = math.sin,
-        sqrt = math.sqrt,
-        abs = math.abs,
-        backInSeed = 1.70158;
-    Ext.fx.Easing = {
-        // ease: Ext.fx.CubicBezier.cubicBezier(0.25, 0.1, 0.25, 1),
-        // linear: Ext.fx.CubicBezier.cubicBezier(0, 0, 1, 1),
-        // 'ease-in': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 1, 1),
-        // 'ease-out': Ext.fx.CubicBezier.cubicBezier(0, 0.58, 1, 1),
-        // 'ease-in-out': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 0.58, 1),
-        // 'easeIn': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 1, 1),
-        // 'easeOut': Ext.fx.CubicBezier.cubicBezier(0, 0.58, 1, 1),
-        // 'easeInOut': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 0.58, 1)
-    };
-
-    Ext.apply(Ext.fx.Easing, {
-        linear: function(n) {
-            return n;
-        },
-        ease: function(n) {
-            var q = 0.07813 - n / 2,
-                alpha = -0.25,
-                Q = sqrt(0.0066 + q * q),
-                x = Q - q,
-                X = pow(abs(x), 1/3) * (x < 0 ? -1 : 1),
-                y = -Q - q,
-                Y = pow(abs(y), 1/3) * (y < 0 ? -1 : 1),
-                t = X + Y + 0.25;
-            return pow(1 - t, 2) * 3 * t * 0.1 + (1 - t) * 3 * t * t + t * t * t;
-        },
-        easeIn: function (n) {
-            return pow(n, 1.7);
-        },
-        easeOut: function (n) {
-            return pow(n, 0.48);
-        },
-        easeInOut: function(n) {
-            var q = 0.48 - n / 1.04,
-                Q = sqrt(0.1734 + q * q),
-                x = Q - q,
-                X = pow(abs(x), 1/3) * (x < 0 ? -1 : 1),
-                y = -Q - q,
-                Y = pow(abs(y), 1/3) * (y < 0 ? -1 : 1),
-                t = X + Y + 0.5;
-            return (1 - t) * 3 * t * t + t * t * t;
-        },
-        backIn: function (n) {
-            return n * n * ((backInSeed + 1) * n - backInSeed);
-        },
-        backOut: function (n) {
-            n = n - 1;
-            return n * n * ((backInSeed + 1) * n + backInSeed) + 1;
-        },
-        elasticIn: function (n) {
-            if (n === 0 || n === 1) {
-                return n;
-            }
-            var p = 0.3,
-                s = p / 4;
-            return pow(2, -10 * n) * sin((n - s) * (2 * pi) / p) + 1;
-        },
-        elasticOut: function (n) {
-            return 1 - Ext.fx.Easing.elasticIn(1 - n);
-        },
-        bounceIn: function (n) {
-            return 1 - Ext.fx.Easing.bounceOut(1 - n);
-        },
-        bounceOut: function (n) {
-            var s = 7.5625,
-                p = 2.75,
-                l;
-            if (n < (1 / p)) {
-                l = s * n * n;
-            } else {
-                if (n < (2 / p)) {
-                    n -= (1.5 / p);
-                    l = s * n * n + 0.75;
-                } else {
-                    if (n < (2.5 / p)) {
-                        n -= (2.25 / p);
-                        l = s * n * n + 0.9375;
-                    } else {
-                        n -= (2.625 / p);
-                        l = s * n * n + 0.984375;
-                    }
-                }
-            }
-            return l;
-        }
-    });
-    Ext.apply(Ext.fx.Easing, {
-        'back-in': Ext.fx.Easing.backIn,
-        'back-out': Ext.fx.Easing.backOut,
-        'ease-in': Ext.fx.Easing.easeIn,
-        'ease-out': Ext.fx.Easing.easeOut,
-        'elastic-in': Ext.fx.Easing.elasticIn,
-        'elastic-out': Ext.fx.Easing.elasticIn,
-        'bounce-in': Ext.fx.Easing.bounceIn,
-        'bounce-out': Ext.fx.Easing.bounceOut,
-        'ease-in-out': Ext.fx.Easing.easeInOut
-    });
-});
 /**
  * This class compiles the XTemplate syntax into a function object. The function is used
  * like so:
@@ -15660,83 +15751,6 @@ Ext.define('Ext.fx.target.Element', {
 });
 
 /**
- * @class Ext.fx.target.ElementCSS
- * 
- * This class represents a animation target for an {@link Ext.Element} that supports CSS
- * based animation. In general this class will not be created directly, the {@link Ext.Element} 
- * will be passed to the animation and the appropriate target will be created.
- */
-Ext.define('Ext.fx.target.ElementCSS', {
-
-    /* Begin Definitions */
-
-    extend: 'Ext.fx.target.Element',
-
-    /* End Definitions */
-
-    setAttr: function(targetData, isFirstFrame) {
-        var cssArr = {
-                attrs: [],
-                duration: [],
-                easing: []
-            },
-            ln = targetData.length,
-            attributes,
-            attrs,
-            attr,
-            easing,
-            duration,
-            o,
-            i,
-            j,
-            ln2;
-        for (i = 0; i < ln; i++) {
-            attrs = targetData[i];
-            duration = attrs.duration;
-            easing = attrs.easing;
-            attrs = attrs.attrs;
-            for (attr in attrs) {
-                if (Ext.Array.indexOf(cssArr.attrs, attr) == -1) {
-                    cssArr.attrs.push(attr.replace(/[A-Z]/g, function(v) {
-                        return '-' + v.toLowerCase();
-                    }));
-                    cssArr.duration.push(duration + 'ms');
-                    cssArr.easing.push(easing);
-                }
-            }
-        }
-        attributes = cssArr.attrs.join(',');
-        duration = cssArr.duration.join(',');
-        easing = cssArr.easing.join(', ');
-        for (i = 0; i < ln; i++) {
-            attrs = targetData[i].attrs;
-            for (attr in attrs) {
-                ln2 = attrs[attr].length;
-                for (j = 0; j < ln2; j++) {
-                    o = attrs[attr][j];
-                    o[0].setStyle(Ext.supports.CSS3Prefix + 'TransitionProperty', isFirstFrame ? '' : attributes);
-                    o[0].setStyle(Ext.supports.CSS3Prefix + 'TransitionDuration', isFirstFrame ? '' : duration);
-                    o[0].setStyle(Ext.supports.CSS3Prefix + 'TransitionTimingFunction', isFirstFrame ? '' : easing);
-                    o[0].setStyle(attr, o[1]);
-
-                    // Must trigger reflow to make this get used as the start point for the transition that follows
-                    if (isFirstFrame) {
-                        o = o[0].dom.offsetWidth;
-                    }
-                    else {
-                        // Remove transition properties when completed.
-                        o[0].on(Ext.supports.CSS3TransitionEnd, function() {
-                            this.setStyle(Ext.supports.CSS3Prefix + 'TransitionProperty', null);
-                            this.setStyle(Ext.supports.CSS3Prefix + 'TransitionDuration', null);
-                            this.setStyle(Ext.supports.CSS3Prefix + 'TransitionTimingFunction', null);
-                        }, o[0], { single: true });
-                    }
-                }
-            }
-        }
-    }
-});
-/**
  * @class Ext.fx.Queue
  * Animation Queue mixin to handle chaining and queueing by target.
  * @private
@@ -15857,6 +15871,83 @@ Ext.define('Ext.fx.Queue', {
             }
         }, this);
         queue.push(anim);
+    }
+});
+/**
+ * @class Ext.fx.target.ElementCSS
+ * 
+ * This class represents a animation target for an {@link Ext.Element} that supports CSS
+ * based animation. In general this class will not be created directly, the {@link Ext.Element} 
+ * will be passed to the animation and the appropriate target will be created.
+ */
+Ext.define('Ext.fx.target.ElementCSS', {
+
+    /* Begin Definitions */
+
+    extend: 'Ext.fx.target.Element',
+
+    /* End Definitions */
+
+    setAttr: function(targetData, isFirstFrame) {
+        var cssArr = {
+                attrs: [],
+                duration: [],
+                easing: []
+            },
+            ln = targetData.length,
+            attributes,
+            attrs,
+            attr,
+            easing,
+            duration,
+            o,
+            i,
+            j,
+            ln2;
+        for (i = 0; i < ln; i++) {
+            attrs = targetData[i];
+            duration = attrs.duration;
+            easing = attrs.easing;
+            attrs = attrs.attrs;
+            for (attr in attrs) {
+                if (Ext.Array.indexOf(cssArr.attrs, attr) == -1) {
+                    cssArr.attrs.push(attr.replace(/[A-Z]/g, function(v) {
+                        return '-' + v.toLowerCase();
+                    }));
+                    cssArr.duration.push(duration + 'ms');
+                    cssArr.easing.push(easing);
+                }
+            }
+        }
+        attributes = cssArr.attrs.join(',');
+        duration = cssArr.duration.join(',');
+        easing = cssArr.easing.join(', ');
+        for (i = 0; i < ln; i++) {
+            attrs = targetData[i].attrs;
+            for (attr in attrs) {
+                ln2 = attrs[attr].length;
+                for (j = 0; j < ln2; j++) {
+                    o = attrs[attr][j];
+                    o[0].setStyle(Ext.supports.CSS3Prefix + 'TransitionProperty', isFirstFrame ? '' : attributes);
+                    o[0].setStyle(Ext.supports.CSS3Prefix + 'TransitionDuration', isFirstFrame ? '' : duration);
+                    o[0].setStyle(Ext.supports.CSS3Prefix + 'TransitionTimingFunction', isFirstFrame ? '' : easing);
+                    o[0].setStyle(attr, o[1]);
+
+                    // Must trigger reflow to make this get used as the start point for the transition that follows
+                    if (isFirstFrame) {
+                        o = o[0].dom.offsetWidth;
+                    }
+                    else {
+                        // Remove transition properties when completed.
+                        o[0].on(Ext.supports.CSS3TransitionEnd, function() {
+                            this.setStyle(Ext.supports.CSS3Prefix + 'TransitionProperty', null);
+                            this.setStyle(Ext.supports.CSS3Prefix + 'TransitionDuration', null);
+                            this.setStyle(Ext.supports.CSS3Prefix + 'TransitionTimingFunction', null);
+                        }, o[0], { single: true });
+                    }
+                }
+            }
+        }
     }
 });
 /**
@@ -26247,2121 +26338,6 @@ Ext.define('Ext.fx.Anim', {
 // Set flag to indicate that Fx is available. Class might not be available immediately.
 Ext.enableFx = true;
 
-/*
- * This is a derivative of the similarly named class in the YUI Library.
- * The original license:
- * Copyright (c) 2006, Yahoo! Inc. All rights reserved.
- * Code licensed under the BSD License:
- * http://developer.yahoo.net/yui/license.txt
- */
-
-
-/**
- * Defines the interface and base operation of items that that can be
- * dragged or can be drop targets.  It was designed to be extended, overriding
- * the event handlers for startDrag, onDrag, onDragOver and onDragOut.
- * Up to three html elements can be associated with a DragDrop instance:
- *
- * - linked element: the element that is passed into the constructor.
- *   This is the element which defines the boundaries for interaction with
- *   other DragDrop objects.
- *
- * - handle element(s): The drag operation only occurs if the element that
- *   was clicked matches a handle element.  By default this is the linked
- *   element, but there are times that you will want only a portion of the
- *   linked element to initiate the drag operation, and the setHandleElId()
- *   method provides a way to define this.
- *
- * - drag element: this represents the element that would be moved along
- *   with the cursor during a drag operation.  By default, this is the linked
- *   element itself as in {@link Ext.dd.DD}.  setDragElId() lets you define
- *   a separate element that would be moved, as in {@link Ext.dd.DDProxy}.
- *
- * This class should not be instantiated until the onload event to ensure that
- * the associated elements are available.
- * The following would define a DragDrop obj that would interact with any
- * other DragDrop obj in the "group1" group:
- *
- *     dd = new Ext.dd.DragDrop("div1", "group1");
- *
- * Since none of the event handlers have been implemented, nothing would
- * actually happen if you were to run the code above.  Normally you would
- * override this class or one of the default implementations, but you can
- * also override the methods you want on an instance of the class...
- *
- *     dd.onDragDrop = function(e, id) {
- *         alert("dd was dropped on " + id);
- *     }
- *
- */
-Ext.define('Ext.dd.DragDrop', {
-    requires: ['Ext.dd.DragDropManager'],
-
-    /**
-     * Creates new DragDrop.
-     * @param {String} id of the element that is linked to this instance
-     * @param {String} sGroup the group of related DragDrop objects
-     * @param {Object} config an object containing configurable attributes.
-     * Valid properties for DragDrop:
-     *
-     * - padding
-     * - isTarget
-     * - maintainOffset
-     * - primaryButtonOnly
-     */
-    constructor: function(id, sGroup, config) {
-        if(id) {
-            this.init(id, sGroup, config);
-        }
-    },
-
-    /**
-     * @property {Boolean} ignoreSelf
-     * Set to false to enable a DragDrop object to fire drag events while dragging
-     * over its own Element. Defaults to true - DragDrop objects do not by default
-     * fire drag events to themselves.
-     */
-
-    /**
-     * @property {String} id
-     * The id of the element associated with this object.  This is what we
-     * refer to as the "linked element" because the size and position of
-     * this element is used to determine when the drag and drop objects have
-     * interacted.
-     */
-    id: null,
-
-    /**
-     * @property {Object} config
-     * Configuration attributes passed into the constructor
-     */
-    config: null,
-
-    /**
-     * @property {String} dragElId
-     * The id of the element that will be dragged.  By default this is same
-     * as the linked element, but could be changed to another element. Ex:
-     * Ext.dd.DDProxy
-     * @private
-     */
-    dragElId: null,
-
-    /**
-     * @property {String} handleElId
-     * The ID of the element that initiates the drag operation.  By default
-     * this is the linked element, but could be changed to be a child of this
-     * element.  This lets us do things like only starting the drag when the
-     * header element within the linked html element is clicked.
-     * @private
-     */
-    handleElId: null,
-
-    /**
-     * @property {Object} invalidHandleTypes
-     * An object who's property names identify HTML tags to be considered invalid as drag handles.
-     * A non-null property value identifies the tag as invalid. Defaults to the
-     * following value which prevents drag operations from being initiated by `<a>` elements:
-     *
-     *     {
-     *         A: "A"
-     *     }
-     */
-    invalidHandleTypes: null,
-
-    /**
-     * @property {Object} invalidHandleIds
-     * An object who's property names identify the IDs of elements to be considered invalid as drag handles.
-     * A non-null property value identifies the ID as invalid. For example, to prevent
-     * dragging from being initiated on element ID "foo", use:
-     *
-     *     {
-     *         foo: true
-     *     }
-     */
-    invalidHandleIds: null,
-
-    /**
-     * @property {String[]} invalidHandleClasses
-     * An Array of CSS class names for elements to be considered in valid as drag handles.
-     */
-    invalidHandleClasses: null,
-
-    /**
-     * @property {Number} startPageX
-     * The linked element's absolute X position at the time the drag was
-     * started
-     * @private
-     */
-    startPageX: 0,
-
-    /**
-     * @property {Number} startPageY
-     * The linked element's absolute X position at the time the drag was
-     * started
-     * @private
-     */
-    startPageY: 0,
-
-    /**
-     * @property {Object} groups
-     * The group defines a logical collection of DragDrop objects that are
-     * related.  Instances only get events when interacting with other
-     * DragDrop object in the same group.  This lets us define multiple
-     * groups using a single DragDrop subclass if we want.
-     *
-     * An object in the format {'group1':true, 'group2':true}
-     */
-    groups: null,
-
-    /**
-     * @property {Boolean} locked
-     * Individual drag/drop instances can be locked.  This will prevent
-     * onmousedown start drag.
-     * @private
-     */
-    locked: false,
-
-    /**
-     * Locks this instance
-     */
-    lock: function() {
-        this.locked = true;
-    },
-
-    /**
-     * @property {Boolean} moveOnly
-     * When set to true, other DD objects in cooperating DDGroups do not receive
-     * notification events when this DD object is dragged over them.
-     */
-    moveOnly: false,
-
-    /**
-     * Unlocks this instace
-     */
-    unlock: function() {
-        this.locked = false;
-    },
-
-    /**
-     * @property {Boolean} isTarget
-     * By default, all instances can be a drop target.  This can be disabled by
-     * setting isTarget to false.
-     */
-    isTarget: true,
-
-    /**
-     * @property {Number[]} padding
-     * The padding configured for this drag and drop object for calculating
-     * the drop zone intersection with this object.
-     * An array containing the 4 padding values: [top, right, bottom, left]
-     */
-    padding: null,
-
-    /**
-     * @property _domRef
-     * Cached reference to the linked element
-     * @private
-     */
-    _domRef: null,
-
-    /**
-     * @property __ygDragDrop
-     * Internal typeof flag
-     * @private
-     */
-    __ygDragDrop: true,
-
-    /**
-     * @property {Boolean} constrainX
-     * Set to true when horizontal contraints are applied
-     * @private
-     */
-    constrainX: false,
-
-    /**
-     * @property {Boolean} constrainY
-     * Set to true when vertical contraints are applied
-     * @private
-     */
-    constrainY: false,
-
-    /**
-     * @property {Number} minX
-     * The left constraint
-     * @private
-     */
-    minX: 0,
-
-    /**
-     * @property {Number} maxX
-     * The right constraint
-     * @private
-     */
-    maxX: 0,
-
-    /**
-     * @property {Number} minY
-     * The up constraint
-     * @private
-     */
-    minY: 0,
-
-    /**
-     * @property {Number} maxY
-     * The down constraint
-     * @private
-     */
-    maxY: 0,
-
-    /**
-     * @property {Boolean} maintainOffset
-     * Maintain offsets when we resetconstraints.  Set to true when you want
-     * the position of the element relative to its parent to stay the same
-     * when the page changes
-     */
-    maintainOffset: false,
-
-    /**
-     * @property {Number[]} xTicks
-     * Array of pixel locations the element will snap to if we specified a
-     * horizontal graduation/interval.  This array is generated automatically
-     * when you define a tick interval.
-     */
-    xTicks: null,
-
-    /**
-     * @property {Number[]} yTicks
-     * Array of pixel locations the element will snap to if we specified a
-     * vertical graduation/interval.  This array is generated automatically
-     * when you define a tick interval.
-     */
-    yTicks: null,
-
-    /**
-     * @property {Boolean} primaryButtonOnly
-     * By default the drag and drop instance will only respond to the primary
-     * button click (left button for a right-handed mouse).  Set to true to
-     * allow drag and drop to start with any mouse click that is propogated
-     * by the browser
-     */
-    primaryButtonOnly: true,
-
-    /**
-     * @property {Boolean} available
-     * The available property is false until the linked dom element is accessible.
-     */
-    available: false,
-
-    /**
-     * @property {Boolean} hasOuterHandles
-     * By default, drags can only be initiated if the mousedown occurs in the
-     * region the linked element is.  This is done in part to work around a
-     * bug in some browsers that mis-report the mousedown if the previous
-     * mouseup happened outside of the window.  This property is set to true
-     * if outer handles are defined. Defaults to false.
-     */
-    hasOuterHandles: false,
-
-    /**
-     * Code that executes immediately before the startDrag event
-     * @private
-     */
-    b4StartDrag: function(x, y) { },
-
-    /**
-     * Abstract method called after a drag/drop object is clicked
-     * and the drag or mousedown time thresholds have beeen met.
-     * @param {Number} X click location
-     * @param {Number} Y click location
-     */
-    startDrag: function(x, y) { /* override this */ },
-
-    /**
-     * Code that executes immediately before the onDrag event
-     * @private
-     */
-    b4Drag: function(e) { },
-
-    /**
-     * Abstract method called during the onMouseMove event while dragging an
-     * object.
-     * @param {Event} e the mousemove event
-     */
-    onDrag: function(e) { /* override this */ },
-
-    /**
-     * Abstract method called when this element fist begins hovering over
-     * another DragDrop obj
-     * @param {Event} e the mousemove event
-     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
-     * id this is hovering over.  In INTERSECT mode, an array of one or more
-     * dragdrop items being hovered over.
-     */
-    onDragEnter: function(e, id) { /* override this */ },
-
-    /**
-     * Code that executes immediately before the onDragOver event
-     * @private
-     */
-    b4DragOver: function(e) { },
-
-    /**
-     * Abstract method called when this element is hovering over another
-     * DragDrop obj
-     * @param {Event} e the mousemove event
-     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
-     * id this is hovering over.  In INTERSECT mode, an array of dd items
-     * being hovered over.
-     */
-    onDragOver: function(e, id) { /* override this */ },
-
-    /**
-     * Code that executes immediately before the onDragOut event
-     * @private
-     */
-    b4DragOut: function(e) { },
-
-    /**
-     * Abstract method called when we are no longer hovering over an element
-     * @param {Event} e the mousemove event
-     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
-     * id this was hovering over.  In INTERSECT mode, an array of dd items
-     * that the mouse is no longer over.
-     */
-    onDragOut: function(e, id) { /* override this */ },
-
-    /**
-     * Code that executes immediately before the onDragDrop event
-     * @private
-     */
-    b4DragDrop: function(e) { },
-
-    /**
-     * Abstract method called when this item is dropped on another DragDrop
-     * obj
-     * @param {Event} e the mouseup event
-     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
-     * id this was dropped on.  In INTERSECT mode, an array of dd items this
-     * was dropped on.
-     */
-    onDragDrop: function(e, id) { /* override this */ },
-
-    /**
-     * Abstract method called when this item is dropped on an area with no
-     * drop target
-     * @param {Event} e the mouseup event
-     */
-    onInvalidDrop: function(e) { /* override this */ },
-
-    /**
-     * Code that executes immediately before the endDrag event
-     * @private
-     */
-    b4EndDrag: function(e) { },
-
-    /**
-     * Called when we are done dragging the object
-     * @param {Event} e the mouseup event
-     */
-    endDrag: function(e) { /* override this */ },
-
-    /**
-     * Code executed immediately before the onMouseDown event
-     * @param {Event} e the mousedown event
-     * @private
-     */
-    b4MouseDown: function(e) {  },
-
-    /**
-     * Called when a drag/drop obj gets a mousedown
-     * @param {Event} e the mousedown event
-     */
-    onMouseDown: function(e) { /* override this */ },
-
-    /**
-     * Called when a drag/drop obj gets a mouseup
-     * @param {Event} e the mouseup event
-     */
-    onMouseUp: function(e) { /* override this */ },
-
-    /**
-     * Override the onAvailable method to do what is needed after the initial
-     * position was determined.
-     */
-    onAvailable: function () {
-    },
-
-    /**
-     * @property {Object} defaultPadding
-     * Provides default constraint padding to "constrainTo" elements.
-     */
-    defaultPadding: {
-        left: 0,
-        right: 0,
-        top: 0,
-        bottom: 0
-    },
-
-    /**
-     * Initializes the drag drop object's constraints to restrict movement to a certain element.
-     *
-     * Usage:
-     *
-     *     var dd = new Ext.dd.DDProxy("dragDiv1", "proxytest",
-     *                    { dragElId: "existingProxyDiv" });
-     *     dd.startDrag = function(){
-     *         this.constrainTo("parent-id");
-     *     };
-     *
-     * Or you can initalize it using the {@link Ext.Element} object:
-     *
-     *     Ext.get("dragDiv1").initDDProxy("proxytest", {dragElId: "existingProxyDiv"}, {
-     *         startDrag : function(){
-     *             this.constrainTo("parent-id");
-     *         }
-     *     });
-     *
-     * @param {String/HTMLElement/Ext.Element} constrainTo The element or element ID to constrain to.
-     * @param {Object/Number} pad (optional) Pad provides a way to specify "padding" of the constraints,
-     * and can be either a number for symmetrical padding (4 would be equal to `{left:4, right:4, top:4, bottom:4}`) or
-     * an object containing the sides to pad. For example: `{right:10, bottom:10}`
-     * @param {Boolean} inContent (optional) Constrain the draggable in the content box of the element (inside padding and borders)
-     */
-    constrainTo : function(constrainTo, pad, inContent){
-        if(Ext.isNumber(pad)){
-            pad = {left: pad, right:pad, top:pad, bottom:pad};
-        }
-        pad = pad || this.defaultPadding;
-        var b = Ext.get(this.getEl()).getBox(),
-            ce = Ext.get(constrainTo),
-            s = ce.getScroll(),
-            c,
-            cd = ce.dom,
-            xy,
-            topSpace,
-            leftSpace;
-        if(cd == document.body){
-            c = { x: s.left, y: s.top, width: Ext.Element.getViewWidth(), height: Ext.Element.getViewHeight()};
-        }else{
-            xy = ce.getXY();
-            c = {x : xy[0], y: xy[1], width: cd.clientWidth, height: cd.clientHeight};
-        }
-
-        topSpace = b.y - c.y;
-        leftSpace = b.x - c.x;
-
-        this.resetConstraints();
-        this.setXConstraint(leftSpace - (pad.left||0), // left
-                c.width - leftSpace - b.width - (pad.right||0), //right
-        this.xTickSize
-        );
-        this.setYConstraint(topSpace - (pad.top||0), //top
-                c.height - topSpace - b.height - (pad.bottom||0), //bottom
-        this.yTickSize
-        );
-    },
-
-    /**
-     * Returns a reference to the linked element
-     * @return {HTMLElement} the html element
-     */
-    getEl: function() {
-        if (!this._domRef) {
-            this._domRef = Ext.getDom(this.id);
-        }
-
-        return this._domRef;
-    },
-
-    /**
-     * Returns a reference to the actual element to drag.  By default this is
-     * the same as the html element, but it can be assigned to another
-     * element. An example of this can be found in Ext.dd.DDProxy
-     * @return {HTMLElement} the html element
-     */
-    getDragEl: function() {
-        return Ext.getDom(this.dragElId);
-    },
-
-    /**
-     * Sets up the DragDrop object.  Must be called in the constructor of any
-     * Ext.dd.DragDrop subclass
-     * @param {String} id the id of the linked element
-     * @param {String} sGroup the group of related items
-     * @param {Object} config configuration attributes
-     */
-    init: function(id, sGroup, config) {
-        this.initTarget(id, sGroup, config);
-        Ext.EventManager.on(this.id, "mousedown", this.handleMouseDown, this);
-        // Ext.EventManager.on(this.id, "selectstart", Event.preventDefault);
-    },
-
-    /**
-     * Initializes Targeting functionality only... the object does not
-     * get a mousedown handler.
-     * @param {String} id the id of the linked element
-     * @param {String} sGroup the group of related items
-     * @param {Object} config configuration attributes
-     */
-    initTarget: function(id, sGroup, config) {
-        // configuration attributes
-        this.config = config || {};
-
-        // create a local reference to the drag and drop manager
-        this.DDMInstance = Ext.dd.DragDropManager;
-        // initialize the groups array
-        this.groups = {};
-
-        // assume that we have an element reference instead of an id if the
-        // parameter is not a string
-        if (typeof id !== "string") {
-            id = Ext.id(id);
-        }
-
-        // set the id
-        this.id = id;
-
-        // add to an interaction group
-        this.addToGroup((sGroup) ? sGroup : "default");
-
-        // We don't want to register this as the handle with the manager
-        // so we just set the id rather than calling the setter.
-        this.handleElId = id;
-
-        // the linked element is the element that gets dragged by default
-        this.setDragElId(id);
-
-        // by default, clicked anchors will not start drag operations.
-        this.invalidHandleTypes = { A: "A" };
-        this.invalidHandleIds = {};
-        this.invalidHandleClasses = [];
-
-        this.applyConfig();
-
-        this.handleOnAvailable();
-    },
-
-    /**
-     * Applies the configuration parameters that were passed into the constructor.
-     * This is supposed to happen at each level through the inheritance chain.  So
-     * a DDProxy implentation will execute apply config on DDProxy, DD, and
-     * DragDrop in order to get all of the parameters that are available in
-     * each object.
-     */
-    applyConfig: function() {
-
-        // configurable properties:
-        //    padding, isTarget, maintainOffset, primaryButtonOnly
-        this.padding           = this.config.padding || [0, 0, 0, 0];
-        this.isTarget          = (this.config.isTarget !== false);
-        this.maintainOffset    = (this.config.maintainOffset);
-        this.primaryButtonOnly = (this.config.primaryButtonOnly !== false);
-
-    },
-
-    /**
-     * Executed when the linked element is available
-     * @private
-     */
-    handleOnAvailable: function() {
-        this.available = true;
-        this.resetConstraints();
-        this.onAvailable();
-    },
-
-    /**
-     * Configures the padding for the target zone in px.  Effectively expands
-     * (or reduces) the virtual object size for targeting calculations.
-     * Supports css-style shorthand; if only one parameter is passed, all sides
-     * will have that padding, and if only two are passed, the top and bottom
-     * will have the first param, the left and right the second.
-     * @param {Number} iTop    Top pad
-     * @param {Number} iRight  Right pad
-     * @param {Number} iBot    Bot pad
-     * @param {Number} iLeft   Left pad
-     */
-    setPadding: function(iTop, iRight, iBot, iLeft) {
-        // this.padding = [iLeft, iRight, iTop, iBot];
-        if (!iRight && 0 !== iRight) {
-            this.padding = [iTop, iTop, iTop, iTop];
-        } else if (!iBot && 0 !== iBot) {
-            this.padding = [iTop, iRight, iTop, iRight];
-        } else {
-            this.padding = [iTop, iRight, iBot, iLeft];
-        }
-    },
-
-    /**
-     * Stores the initial placement of the linked element.
-     * @param {Number} diffX   the X offset, default 0
-     * @param {Number} diffY   the Y offset, default 0
-     */
-    setInitPosition: function(diffX, diffY) {
-        var el = this.getEl(),
-            dx, dy, p;
-
-        if (!this.DDMInstance.verifyEl(el)) {
-            return;
-        }
-
-        dx = diffX || 0;
-        dy = diffY || 0;
-
-        p = Ext.Element.getXY( el );
-
-        this.initPageX = p[0] - dx;
-        this.initPageY = p[1] - dy;
-
-        this.lastPageX = p[0];
-        this.lastPageY = p[1];
-
-        this.setStartPosition(p);
-    },
-
-    /**
-     * Sets the start position of the element.  This is set when the obj
-     * is initialized, the reset when a drag is started.
-     * @param pos current position (from previous lookup)
-     * @private
-     */
-    setStartPosition: function(pos) {
-        var p = pos || Ext.Element.getXY( this.getEl() );
-        this.deltaSetXY = null;
-
-        this.startPageX = p[0];
-        this.startPageY = p[1];
-    },
-
-    /**
-     * Adds this instance to a group of related drag/drop objects.  All
-     * instances belong to at least one group, and can belong to as many
-     * groups as needed.
-     * @param {String} sGroup the name of the group
-     */
-    addToGroup: function(sGroup) {
-        this.groups[sGroup] = true;
-        this.DDMInstance.regDragDrop(this, sGroup);
-    },
-
-    /**
-     * Removes this instance from the supplied interaction group
-     * @param {String} sGroup  The group to drop
-     */
-    removeFromGroup: function(sGroup) {
-        if (this.groups[sGroup]) {
-            delete this.groups[sGroup];
-        }
-
-        this.DDMInstance.removeDDFromGroup(this, sGroup);
-    },
-
-    /**
-     * Allows you to specify that an element other than the linked element
-     * will be moved with the cursor during a drag
-     * @param {String} id the id of the element that will be used to initiate the drag
-     */
-    setDragElId: function(id) {
-        this.dragElId = id;
-    },
-
-    /**
-     * Allows you to specify a child of the linked element that should be
-     * used to initiate the drag operation.  An example of this would be if
-     * you have a content div with text and links.  Clicking anywhere in the
-     * content area would normally start the drag operation.  Use this method
-     * to specify that an element inside of the content div is the element
-     * that starts the drag operation.
-     * @param {String} id the id of the element that will be used to
-     * initiate the drag.
-     */
-    setHandleElId: function(id) {
-        if (typeof id !== "string") {
-            id = Ext.id(id);
-        }
-        this.handleElId = id;
-        this.DDMInstance.regHandle(this.id, id);
-    },
-
-    /**
-     * Allows you to set an element outside of the linked element as a drag
-     * handle
-     * @param {String} id the id of the element that will be used to initiate the drag
-     */
-    setOuterHandleElId: function(id) {
-        if (typeof id !== "string") {
-            id = Ext.id(id);
-        }
-        Ext.EventManager.on(id, "mousedown", this.handleMouseDown, this);
-        this.setHandleElId(id);
-
-        this.hasOuterHandles = true;
-    },
-
-    /**
-     * Removes all drag and drop hooks for this element
-     */
-    unreg: function() {
-        Ext.EventManager.un(this.id, "mousedown", this.handleMouseDown, this);
-        this._domRef = null;
-        this.DDMInstance._remove(this);
-    },
-
-    destroy : function(){
-        this.unreg();
-    },
-
-    /**
-     * Returns true if this instance is locked, or the drag drop mgr is locked
-     * (meaning that all drag/drop is disabled on the page.)
-     * @return {Boolean} true if this obj or all drag/drop is locked, else
-     * false
-     */
-    isLocked: function() {
-        return (this.DDMInstance.isLocked() || this.locked);
-    },
-
-    /**
-     * Called when this object is clicked
-     * @param {Event} e
-     * @param {Ext.dd.DragDrop} oDD the clicked dd object (this dd obj)
-     * @private
-     */
-    handleMouseDown: function(e, oDD){
-        if (this.primaryButtonOnly && e.button != 0) {
-            return;
-        }
-
-        if (this.isLocked()) {
-            return;
-        }
-
-        this.DDMInstance.refreshCache(this.groups);
-
-        if (this.hasOuterHandles || this.DDMInstance.isOverTarget(e.getPoint(), this) )  {
-            if (this.clickValidator(e)) {
-                // set the initial element position
-                this.setStartPosition();
-                this.b4MouseDown(e);
-                this.onMouseDown(e);
-
-                this.DDMInstance.handleMouseDown(e, this);
-
-                this.DDMInstance.stopEvent(e);
-            }
-        }
-    },
-
-    clickValidator: function(e) {
-        var target = e.getTarget();
-        return ( this.isValidHandleChild(target) &&
-                    (this.id == this.handleElId ||
-                        this.DDMInstance.handleWasClicked(target, this.id)) );
-    },
-
-    /**
-     * Allows you to specify a tag name that should not start a drag operation
-     * when clicked.  This is designed to facilitate embedding links within a
-     * drag handle that do something other than start the drag.
-     * @method addInvalidHandleType
-     * @param {String} tagName the type of element to exclude
-     */
-    addInvalidHandleType: function(tagName) {
-        var type = tagName.toUpperCase();
-        this.invalidHandleTypes[type] = type;
-    },
-
-    /**
-     * Lets you to specify an element id for a child of a drag handle
-     * that should not initiate a drag
-     * @method addInvalidHandleId
-     * @param {String} id the element id of the element you wish to ignore
-     */
-    addInvalidHandleId: function(id) {
-        if (typeof id !== "string") {
-            id = Ext.id(id);
-        }
-        this.invalidHandleIds[id] = id;
-    },
-
-    /**
-     * Lets you specify a css class of elements that will not initiate a drag
-     * @param {String} cssClass the class of the elements you wish to ignore
-     */
-    addInvalidHandleClass: function(cssClass) {
-        this.invalidHandleClasses.push(cssClass);
-    },
-
-    /**
-     * Unsets an excluded tag name set by addInvalidHandleType
-     * @param {String} tagName the type of element to unexclude
-     */
-    removeInvalidHandleType: function(tagName) {
-        var type = tagName.toUpperCase();
-        // this.invalidHandleTypes[type] = null;
-        delete this.invalidHandleTypes[type];
-    },
-
-    /**
-     * Unsets an invalid handle id
-     * @param {String} id the id of the element to re-enable
-     */
-    removeInvalidHandleId: function(id) {
-        if (typeof id !== "string") {
-            id = Ext.id(id);
-        }
-        delete this.invalidHandleIds[id];
-    },
-
-    /**
-     * Unsets an invalid css class
-     * @param {String} cssClass the class of the element(s) you wish to
-     * re-enable
-     */
-    removeInvalidHandleClass: function(cssClass) {
-        for (var i=0, len=this.invalidHandleClasses.length; i<len; ++i) {
-            if (this.invalidHandleClasses[i] == cssClass) {
-                delete this.invalidHandleClasses[i];
-            }
-        }
-    },
-
-    /**
-     * Checks the tag exclusion list to see if this click should be ignored
-     * @param {HTMLElement} node the HTMLElement to evaluate
-     * @return {Boolean} true if this is a valid tag type, false if not
-     */
-    isValidHandleChild: function(node) {
-
-        var valid = true,
-            nodeName,
-            i, len;
-        // var n = (node.nodeName == "#text") ? node.parentNode : node;
-        try {
-            nodeName = node.nodeName.toUpperCase();
-        } catch(e) {
-            nodeName = node.nodeName;
-        }
-        valid = valid && !this.invalidHandleTypes[nodeName];
-        valid = valid && !this.invalidHandleIds[node.id];
-
-        for (i=0, len=this.invalidHandleClasses.length; valid && i<len; ++i) {
-            valid = !Ext.fly(node).hasCls(this.invalidHandleClasses[i]);
-        }
-
-
-        return valid;
-
-    },
-
-    /**
-     * Creates the array of horizontal tick marks if an interval was specified
-     * in setXConstraint().
-     * @private
-     */
-    setXTicks: function(iStartX, iTickSize) {
-        this.xTicks = [];
-        this.xTickSize = iTickSize;
-
-        var tickMap = {},
-            i;
-
-        for (i = this.initPageX; i >= this.minX; i = i - iTickSize) {
-            if (!tickMap[i]) {
-                this.xTicks[this.xTicks.length] = i;
-                tickMap[i] = true;
-            }
-        }
-
-        for (i = this.initPageX; i <= this.maxX; i = i + iTickSize) {
-            if (!tickMap[i]) {
-                this.xTicks[this.xTicks.length] = i;
-                tickMap[i] = true;
-            }
-        }
-
-        Ext.Array.sort(this.xTicks, this.DDMInstance.numericSort);
-    },
-
-    /**
-     * Creates the array of vertical tick marks if an interval was specified in
-     * setYConstraint().
-     * @private
-     */
-    setYTicks: function(iStartY, iTickSize) {
-        this.yTicks = [];
-        this.yTickSize = iTickSize;
-
-        var tickMap = {},
-            i;
-
-        for (i = this.initPageY; i >= this.minY; i = i - iTickSize) {
-            if (!tickMap[i]) {
-                this.yTicks[this.yTicks.length] = i;
-                tickMap[i] = true;
-            }
-        }
-
-        for (i = this.initPageY; i <= this.maxY; i = i + iTickSize) {
-            if (!tickMap[i]) {
-                this.yTicks[this.yTicks.length] = i;
-                tickMap[i] = true;
-            }
-        }
-
-        Ext.Array.sort(this.yTicks, this.DDMInstance.numericSort);
-    },
-
-    /**
-     * By default, the element can be dragged any place on the screen.  Use
-     * this method to limit the horizontal travel of the element.  Pass in
-     * 0,0 for the parameters if you want to lock the drag to the y axis.
-     * @param {Number} iLeft the number of pixels the element can move to the left
-     * @param {Number} iRight the number of pixels the element can move to the
-     * right
-     * @param {Number} iTickSize (optional) parameter for specifying that the
-     * element should move iTickSize pixels at a time.
-     */
-    setXConstraint: function(iLeft, iRight, iTickSize) {
-        this.leftConstraint = iLeft;
-        this.rightConstraint = iRight;
-
-        this.minX = this.initPageX - iLeft;
-        this.maxX = this.initPageX + iRight;
-        if (iTickSize) { this.setXTicks(this.initPageX, iTickSize); }
-
-        this.constrainX = true;
-    },
-
-    /**
-     * Clears any constraints applied to this instance.  Also clears ticks
-     * since they can't exist independent of a constraint at this time.
-     */
-    clearConstraints: function() {
-        this.constrainX = false;
-        this.constrainY = false;
-        this.clearTicks();
-    },
-
-    /**
-     * Clears any tick interval defined for this instance
-     */
-    clearTicks: function() {
-        this.xTicks = null;
-        this.yTicks = null;
-        this.xTickSize = 0;
-        this.yTickSize = 0;
-    },
-
-    /**
-     * By default, the element can be dragged any place on the screen.  Set
-     * this to limit the vertical travel of the element.  Pass in 0,0 for the
-     * parameters if you want to lock the drag to the x axis.
-     * @param {Number} iUp the number of pixels the element can move up
-     * @param {Number} iDown the number of pixels the element can move down
-     * @param {Number} iTickSize (optional) parameter for specifying that the
-     * element should move iTickSize pixels at a time.
-     */
-    setYConstraint: function(iUp, iDown, iTickSize) {
-        this.topConstraint = iUp;
-        this.bottomConstraint = iDown;
-
-        this.minY = this.initPageY - iUp;
-        this.maxY = this.initPageY + iDown;
-        if (iTickSize) { this.setYTicks(this.initPageY, iTickSize); }
-
-        this.constrainY = true;
-
-    },
-
-    /**
-     * Must be called if you manually reposition a dd element.
-     * @param {Boolean} maintainOffset
-     */
-    resetConstraints: function() {
-        // Maintain offsets if necessary
-        if (this.initPageX || this.initPageX === 0) {
-            // figure out how much this thing has moved
-            var dx = (this.maintainOffset) ? this.lastPageX - this.initPageX : 0,
-                dy = (this.maintainOffset) ? this.lastPageY - this.initPageY : 0;
-
-            this.setInitPosition(dx, dy);
-
-        // This is the first time we have detected the element's position
-        } else {
-            this.setInitPosition();
-        }
-
-        if (this.constrainX) {
-            this.setXConstraint( this.leftConstraint,
-                                 this.rightConstraint,
-                                 this.xTickSize        );
-        }
-
-        if (this.constrainY) {
-            this.setYConstraint( this.topConstraint,
-                                 this.bottomConstraint,
-                                 this.yTickSize         );
-        }
-    },
-
-    /**
-     * Normally the drag element is moved pixel by pixel, but we can specify
-     * that it move a number of pixels at a time.  This method resolves the
-     * location when we have it set up like this.
-     * @param {Number} val where we want to place the object
-     * @param {Number[]} tickArray sorted array of valid points
-     * @return {Number} the closest tick
-     * @private
-     */
-    getTick: function(val, tickArray) {
-        if (!tickArray) {
-            // If tick interval is not defined, it is effectively 1 pixel,
-            // so we return the value passed to us.
-            return val;
-        } else if (tickArray[0] >= val) {
-            // The value is lower than the first tick, so we return the first
-            // tick.
-            return tickArray[0];
-        } else {
-            var i, len, next, diff1, diff2;
-            for (i=0, len=tickArray.length; i<len; ++i) {
-                next = i + 1;
-                if (tickArray[next] && tickArray[next] >= val) {
-                    diff1 = val - tickArray[i];
-                    diff2 = tickArray[next] - val;
-                    return (diff2 > diff1) ? tickArray[i] : tickArray[next];
-                }
-            }
-
-            // The value is larger than the last tick, so we return the last
-            // tick.
-            return tickArray[tickArray.length - 1];
-        }
-    },
-
-    /**
-     * toString method
-     * @return {String} string representation of the dd obj
-     */
-    toString: function() {
-        return ("DragDrop " + this.id);
-    }
-
-});
-
-/*
- * This is a derivative of the similarly named class in the YUI Library.
- * The original license:
- * Copyright (c) 2006, Yahoo! Inc. All rights reserved.
- * Code licensed under the BSD License:
- * http://developer.yahoo.net/yui/license.txt
- */
-
-
-/**
- * A DragDrop implementation where the linked element follows the
- * mouse cursor during a drag.
- */
-Ext.define('Ext.dd.DD', {
-    extend: 'Ext.dd.DragDrop',
-    requires: ['Ext.dd.DragDropManager'],
-
-    /**
-     * Creates new DD instance.
-     * @param {String} id the id of the linked element
-     * @param {String} sGroup the group of related DragDrop items
-     * @param {Object} config an object containing configurable attributes.
-     * Valid properties for DD: scroll
-     */
-    constructor: function(id, sGroup, config) {
-        if (id) {
-            this.init(id, sGroup, config);
-        }
-    },
-
-    /**
-     * @property {Boolean} scroll
-     * When set to true, the utility automatically tries to scroll the browser
-     * window when a drag and drop element is dragged near the viewport boundary.
-     */
-    scroll: true,
-
-    /**
-     * Sets the pointer offset to the distance between the linked element's top
-     * left corner and the location the element was clicked.
-     * @param {Number} iPageX the X coordinate of the click
-     * @param {Number} iPageY the Y coordinate of the click
-     */
-    autoOffset: function(iPageX, iPageY) {
-        var x = iPageX - this.startPageX,
-            y = iPageY - this.startPageY;
-        this.setDelta(x, y);
-    },
-
-    /**
-     * Sets the pointer offset.  You can call this directly to force the
-     * offset to be in a particular location (e.g., pass in 0,0 to set it
-     * to the center of the object)
-     * @param {Number} iDeltaX the distance from the left
-     * @param {Number} iDeltaY the distance from the top
-     */
-    setDelta: function(iDeltaX, iDeltaY) {
-        this.deltaX = iDeltaX;
-        this.deltaY = iDeltaY;
-    },
-
-    /**
-     * Sets the drag element to the location of the mousedown or click event,
-     * maintaining the cursor location relative to the location on the element
-     * that was clicked.  Override this if you want to place the element in a
-     * location other than where the cursor is.
-     * @param {Number} iPageX the X coordinate of the mousedown or drag event
-     * @param {Number} iPageY the Y coordinate of the mousedown or drag event
-     */
-    setDragElPos: function(iPageX, iPageY) {
-        // the first time we do this, we are going to check to make sure
-        // the element has css positioning
-
-        var el = this.getDragEl();
-        this.alignElWithMouse(el, iPageX, iPageY);
-    },
-
-    /**
-     * Sets the element to the location of the mousedown or click event,
-     * maintaining the cursor location relative to the location on the element
-     * that was clicked.  Override this if you want to place the element in a
-     * location other than where the cursor is.
-     * @param {HTMLElement} el the element to move
-     * @param {Number} iPageX the X coordinate of the mousedown or drag event
-     * @param {Number} iPageY the Y coordinate of the mousedown or drag event
-     */
-    alignElWithMouse: function(el, iPageX, iPageY) {
-        var oCoord = this.getTargetCoord(iPageX, iPageY),
-            fly = el.dom ? el : Ext.fly(el, '_dd'),
-            elSize = fly.getSize(),
-            EL = Ext.Element,
-            vpSize,
-            aCoord,
-            newLeft,
-            newTop;
-
-        if (!this.deltaSetXY) {
-            vpSize = this.cachedViewportSize = { width: EL.getDocumentWidth(), height: EL.getDocumentHeight() };
-            aCoord = [
-                Math.max(0, Math.min(oCoord.x, vpSize.width - elSize.width)),
-                Math.max(0, Math.min(oCoord.y, vpSize.height - elSize.height))
-            ];
-            fly.setXY(aCoord);
-            newLeft = fly.getLocalX();
-            newTop  = fly.getLocalY();
-            this.deltaSetXY = [newLeft - oCoord.x, newTop - oCoord.y];
-        } else {
-            vpSize = this.cachedViewportSize;
-            fly.setLeftTop(
-                Math.max(0, Math.min(oCoord.x + this.deltaSetXY[0], vpSize.width - elSize.width)),
-                Math.max(0, Math.min(oCoord.y + this.deltaSetXY[1], vpSize.height - elSize.height))
-            );
-        }
-
-        this.cachePosition(oCoord.x, oCoord.y);
-        this.autoScroll(oCoord.x, oCoord.y, el.offsetHeight, el.offsetWidth);
-        return oCoord;
-    },
-
-    /**
-     * Saves the most recent position so that we can reset the constraints and
-     * tick marks on-demand.  We need to know this so that we can calculate the
-     * number of pixels the element is offset from its original position.
-     *
-     * @param {Number} [iPageX] the current x position (this just makes it so we
-     * don't have to look it up again)
-     * @param {Number} [iPageY] the current y position (this just makes it so we
-     * don't have to look it up again)
-     */
-    cachePosition: function(iPageX, iPageY) {
-        if (iPageX) {
-            this.lastPageX = iPageX;
-            this.lastPageY = iPageY;
-        } else {
-            var aCoord = Ext.Element.getXY(this.getEl());
-            this.lastPageX = aCoord[0];
-            this.lastPageY = aCoord[1];
-        }
-    },
-
-    /**
-     * Auto-scroll the window if the dragged object has been moved beyond the
-     * visible window boundary.
-     * @param {Number} x the drag element's x position
-     * @param {Number} y the drag element's y position
-     * @param {Number} h the height of the drag element
-     * @param {Number} w the width of the drag element
-     * @private
-     */
-    autoScroll: function(x, y, h, w) {
-
-        if (this.scroll) {
-            // The client height
-            var clientH = Ext.Element.getViewHeight(),
-                // The client width
-                clientW = Ext.Element.getViewWidth(),
-                // The amt scrolled down
-                st = this.DDMInstance.getScrollTop(),
-                // The amt scrolled right
-                sl = this.DDMInstance.getScrollLeft(),
-                // Location of the bottom of the element
-                bot = h + y,
-                // Location of the right of the element
-                right = w + x,
-                // The distance from the cursor to the bottom of the visible area,
-                // adjusted so that we don't scroll if the cursor is beyond the
-                // element drag constraints
-                toBot = (clientH + st - y - this.deltaY),
-                // The distance from the cursor to the right of the visible area
-                toRight = (clientW + sl - x - this.deltaX),
-                // How close to the edge the cursor must be before we scroll
-                // var thresh = (document.all) ? 100 : 40;
-                thresh = 40,
-                // How many pixels to scroll per autoscroll op.  This helps to reduce
-                // clunky scrolling. IE is more sensitive about this ... it needs this
-                // value to be higher.
-                scrAmt = (document.all) ? 80 : 30;
-
-            // Scroll down if we are near the bottom of the visible page and the
-            // obj extends below the crease
-            if ( bot > clientH && toBot < thresh ) {
-                window.scrollTo(sl, st + scrAmt);
-            }
-
-            // Scroll up if the window is scrolled down and the top of the object
-            // goes above the top border
-            if ( y < st && st > 0 && y - st < thresh ) {
-                window.scrollTo(sl, st - scrAmt);
-            }
-
-            // Scroll right if the obj is beyond the right border and the cursor is
-            // near the border.
-            if ( right > clientW && toRight < thresh ) {
-                window.scrollTo(sl + scrAmt, st);
-            }
-
-            // Scroll left if the window has been scrolled to the right and the obj
-            // extends past the left border
-            if ( x < sl && sl > 0 && x - sl < thresh ) {
-                window.scrollTo(sl - scrAmt, st);
-            }
-        }
-    },
-
-    /**
-     * Finds the location the element should be placed if we want to move
-     * it to where the mouse location less the click offset would place us.
-     * @param {Number} iPageX the X coordinate of the click
-     * @param {Number} iPageY the Y coordinate of the click
-     * @return an object that contains the coordinates (Object.x and Object.y)
-     * @private
-     */
-    getTargetCoord: function(iPageX, iPageY) {
-        var x = iPageX - this.deltaX,
-            y = iPageY - this.deltaY;
-
-        if (this.constrainX) {
-            if (x < this.minX) {
-                x = this.minX;
-            }
-            if (x > this.maxX) {
-                x = this.maxX;
-            }
-        }
-
-        if (this.constrainY) {
-            if (y < this.minY) {
-                y = this.minY;
-            }
-            if (y > this.maxY) {
-                y = this.maxY;
-            }
-        }
-
-        x = this.getTick(x, this.xTicks);
-        y = this.getTick(y, this.yTicks);
-
-
-        return {x: x, y: y};
-    },
-
-    /**
-     * Sets up config options specific to this class. Overrides
-     * Ext.dd.DragDrop, but all versions of this method through the
-     * inheritance chain are called
-     */
-    applyConfig: function() {
-        this.callParent();
-        this.scroll = (this.config.scroll !== false);
-    },
-
-    /**
-     * Event that fires prior to the onMouseDown event.  Overrides
-     * Ext.dd.DragDrop.
-     */
-    b4MouseDown: function(e) {
-        // this.resetConstraints();
-        this.autoOffset(e.getPageX(), e.getPageY());
-    },
-
-    /**
-     * Event that fires prior to the onDrag event.  Overrides
-     * Ext.dd.DragDrop.
-     */
-    b4Drag: function(e) {
-        this.setDragElPos(e.getPageX(), e.getPageY());
-    },
-
-    toString: function() {
-        return ("DD " + this.id);
-    }
-
-    //////////////////////////////////////////////////////////////////////////
-    // Debugging ygDragDrop events that can be overridden
-    //////////////////////////////////////////////////////////////////////////
-    /*
-    startDrag: function(x, y) {
-    },
-
-    onDrag: function(e) {
-    },
-
-    onDragEnter: function(e, id) {
-    },
-
-    onDragOver: function(e, id) {
-    },
-
-    onDragOut: function(e, id) {
-    },
-
-    onDragDrop: function(e, id) {
-    },
-
-    endDrag: function(e) {
-    }
-
-    */
-
-});
-
-/*
- * This is a derivative of the similarly named class in the YUI Library.
- * The original license:
- * Copyright (c) 2006, Yahoo! Inc. All rights reserved.
- * Code licensed under the BSD License:
- * http://developer.yahoo.net/yui/license.txt
- */
-
-/**
- * A DragDrop implementation that inserts an empty, bordered div into
- * the document that follows the cursor during drag operations.  At the time of
- * the click, the frame div is resized to the dimensions of the linked html
- * element, and moved to the exact location of the linked element.
- *
- * References to the "frame" element refer to the single proxy element that
- * was created to be dragged in place of all DDProxy elements on the
- * page.
- */
-Ext.define('Ext.dd.DDProxy', {
-    extend: 'Ext.dd.DD',
-
-    statics: {
-        /**
-         * The default drag frame div id
-         * @static
-         */
-        dragElId: "ygddfdiv"
-    },
-
-    /**
-     * Creates new DDProxy.
-     * @param {String} id the id of the linked html element
-     * @param {String} sGroup the group of related DragDrop objects
-     * @param {Object} config an object containing configurable attributes.
-     * Valid properties for DDProxy in addition to those in DragDrop:
-     * 
-     * - resizeFrame
-     * - centerFrame
-     * - dragElId
-     */
-    constructor: function(id, sGroup, config) {
-        if (id) {
-            this.init(id, sGroup, config);
-            this.initFrame();
-        }
-    },
-
-    /**
-     * @property {Boolean} resizeFrame
-     * By default we resize the drag frame to be the same size as the element
-     * we want to drag (this is to get the frame effect).  We can turn it off
-     * if we want a different behavior.
-     */
-    resizeFrame: true,
-
-    /**
-     * @property {Boolean} centerFrame
-     * By default the frame is positioned exactly where the drag element is, so
-     * we use the cursor offset provided by Ext.dd.DD.  Another option that works only if
-     * you do not have constraints on the obj is to have the drag frame centered
-     * around the cursor.  Set centerFrame to true for this effect.
-     */
-    centerFrame: false,
-
-    /**
-     * Creates the proxy element if it does not yet exist
-     */
-    createFrame: function() {
-        var self = this,
-            body = document.body,
-            div,
-            s;
-
-        if (!body || !body.firstChild) {
-            setTimeout( function() { self.createFrame(); }, 50 );
-            return;
-        }
-
-        div = this.getDragEl();
-
-        if (!div) {
-            div    = document.createElement("div");
-            div.id = this.dragElId;
-            s  = div.style;
-
-            s.position   = "absolute";
-            s.visibility = "hidden";
-            s.cursor     = "move";
-            s.border     = "2px solid #aaa";
-            s.zIndex     = 999;
-
-            // appendChild can blow up IE if invoked prior to the window load event
-            // while rendering a table.  It is possible there are other scenarios
-            // that would cause this to happen as well.
-            body.insertBefore(div, body.firstChild);
-        }
-    },
-
-    /**
-     * Initialization for the drag frame element.  Must be called in the
-     * constructor of all subclasses
-     */
-    initFrame: function() {
-        this.createFrame();
-    },
-
-    applyConfig: function() {
-        this.callParent();
-
-        this.resizeFrame = (this.config.resizeFrame !== false);
-        this.centerFrame = (this.config.centerFrame);
-        this.setDragElId(this.config.dragElId || Ext.dd.DDProxy.dragElId);
-    },
-
-    /**
-     * Resizes the drag frame to the dimensions of the clicked object, positions
-     * it over the object, and finally displays it
-     * @param {Number} iPageX X click position
-     * @param {Number} iPageY Y click position
-     * @private
-     */
-    showFrame: function(iPageX, iPageY) {
-        var el = this.getEl(),
-            dragEl = this.getDragEl(),
-            s = dragEl.style;
-
-        this._resizeProxy();
-
-        if (this.centerFrame) {
-            this.setDelta( Math.round(parseInt(s.width,  10)/2),
-                           Math.round(parseInt(s.height, 10)/2) );
-        }
-
-        this.setDragElPos(iPageX, iPageY);
-
-        Ext.fly(dragEl).show();
-    },
-
-    /**
-     * The proxy is automatically resized to the dimensions of the linked
-     * element when a drag is initiated, unless resizeFrame is set to false
-     * @private
-     */
-    _resizeProxy: function() {
-        if (this.resizeFrame) {
-            var el = this.getEl();
-            Ext.fly(this.getDragEl()).setSize(el.offsetWidth, el.offsetHeight);
-        }
-    },
-
-    // overrides Ext.dd.DragDrop
-    b4MouseDown: function(e) {
-        var x = e.getPageX(),
-            y = e.getPageY();
-        this.autoOffset(x, y);
-        this.setDragElPos(x, y);
-    },
-
-    // overrides Ext.dd.DragDrop
-    b4StartDrag: function(x, y) {
-        // show the drag frame
-        this.showFrame(x, y);
-    },
-
-    // overrides Ext.dd.DragDrop
-    b4EndDrag: function(e) {
-        Ext.fly(this.getDragEl()).hide();
-    },
-
-    // overrides Ext.dd.DragDrop
-    // By default we try to move the element to the last location of the frame.
-    // This is so that the default behavior mirrors that of Ext.dd.DD.
-    endDrag: function(e) {
-
-        var lel = this.getEl(),
-            del = this.getDragEl();
-
-        // Show the drag frame briefly so we can get its position
-        del.style.visibility = "";
-
-        this.beforeMove();
-        // Hide the linked element before the move to get around a Safari
-        // rendering bug.
-        lel.style.visibility = "hidden";
-        Ext.dd.DDM.moveToEl(lel, del);
-        del.style.visibility = "hidden";
-        lel.style.visibility = "";
-
-        this.afterDrag();
-    },
-
-    beforeMove : function(){
-
-    },
-
-    afterDrag : function(){
-
-    },
-
-    toString: function() {
-        return ("DDProxy " + this.id);
-    }
-
-});
-
-/**
- * A simple class that provides the basic implementation needed to make any element draggable.
- */
-Ext.define('Ext.dd.DragSource', {
-    extend: 'Ext.dd.DDProxy',
-    requires: [
-        'Ext.dd.StatusProxy',
-        'Ext.dd.DragDropManager'
-    ],
-
-    /**
-     * @cfg {String} ddGroup
-     * A named drag drop group to which this object belongs.  If a group is specified, then this object will only
-     * interact with other drag drop objects in the same group.
-     */
-
-    /**
-     * @cfg {String} dropAllowed
-     * The CSS class returned to the drag source when drop is allowed.
-     */
-    dropAllowed : Ext.baseCSSPrefix + 'dd-drop-ok',
-    /**
-     * @cfg {String} dropNotAllowed
-     * The CSS class returned to the drag source when drop is not allowed.
-     */
-    dropNotAllowed : Ext.baseCSSPrefix + 'dd-drop-nodrop',
-
-    /**
-     * @cfg {Boolean} animRepair
-     * If true, animates the proxy element back to the position of the handle element used to trigger the drag.
-     */
-    animRepair: true,
-
-    /**
-     * @cfg {String} repairHighlightColor
-     * The color to use when visually highlighting the drag source in the afterRepair
-     * method after a failed drop (defaults to light blue). The color must be a 6 digit hex value, without
-     * a preceding '#'.
-     */
-    repairHighlightColor: 'c3daf9',
-
-    /**
-     * Creates new drag-source.
-     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
-     * @param {Object} config (optional) Config object.
-     */
-    constructor: function(el, config) {
-        this.el = Ext.get(el);
-        if(!this.dragData){
-            this.dragData = {};
-        }
-
-        Ext.apply(this, config);
-
-        if(!this.proxy){
-            this.proxy = new Ext.dd.StatusProxy({
-                id: this.el.id + '-drag-status-proxy',
-                animRepair: this.animRepair
-            });
-        }
-        this.callParent([this.el.dom, this.ddGroup || this.group,
-              {dragElId : this.proxy.id, resizeFrame: false, isTarget: false, scroll: this.scroll === true}]);
-
-        this.dragging = false;
-    },
-
-    /**
-     * Returns the data object associated with this drag source
-     * @return {Object} data An object containing arbitrary data
-     */
-    getDragData : function(e){
-        return this.dragData;
-    },
-
-    // private
-    onDragEnter : function(e, id){
-        var target = Ext.dd.DragDropManager.getDDById(id),
-            status;
-        this.cachedTarget = target;
-        if (this.beforeDragEnter(target, e, id) !== false) {
-            if (target.isNotifyTarget) {
-                status = target.notifyEnter(this, e, this.dragData);
-                this.proxy.setStatus(status);
-            } else {
-                this.proxy.setStatus(this.dropAllowed);
-            }
-
-            if (this.afterDragEnter) {
-                /**
-                 * An empty function by default, but provided so that you can perform a custom action
-                 * when the dragged item enters the drop target by providing an implementation.
-                 * @param {Ext.dd.DragDrop} target The drop target
-                 * @param {Event} e The event object
-                 * @param {String} id The id of the dragged element
-                 * @method afterDragEnter
-                 */
-                this.afterDragEnter(target, e, id);
-            }
-        }
-    },
-
-    /**
-     * An empty function by default, but provided so that you can perform a custom action
-     * before the dragged item enters the drop target and optionally cancel the onDragEnter.
-     * @param {Ext.dd.DragDrop} target The drop target
-     * @param {Event} e The event object
-     * @param {String} id The id of the dragged element
-     * @return {Boolean} isValid True if the drag event is valid, else false to cancel
-     * @template
-     */
-    beforeDragEnter: function(target, e, id) {
-        return true;
-    },
-
-    // private
-    onDragOver: function(e, id) {
-        var target = this.cachedTarget || Ext.dd.DragDropManager.getDDById(id),
-            status;
-        if (this.beforeDragOver(target, e, id) !== false) {
-            if(target.isNotifyTarget){
-                status = target.notifyOver(this, e, this.dragData);
-                this.proxy.setStatus(status);
-            }
-
-            if (this.afterDragOver) {
-                /**
-                 * An empty function by default, but provided so that you can perform a custom action
-                 * while the dragged item is over the drop target by providing an implementation.
-                 * @param {Ext.dd.DragDrop} target The drop target
-                 * @param {Event} e The event object
-                 * @param {String} id The id of the dragged element
-                 * @method afterDragOver
-                 */
-                this.afterDragOver(target, e, id);
-            }
-        }
-    },
-
-    /**
-     * An empty function by default, but provided so that you can perform a custom action
-     * while the dragged item is over the drop target and optionally cancel the onDragOver.
-     * @param {Ext.dd.DragDrop} target The drop target
-     * @param {Event} e The event object
-     * @param {String} id The id of the dragged element
-     * @return {Boolean} isValid True if the drag event is valid, else false to cancel
-     * @template
-     */
-    beforeDragOver: function(target, e, id) {
-        return true;
-    },
-
-    // private
-    onDragOut: function(e, id) {
-        var target = this.cachedTarget || Ext.dd.DragDropManager.getDDById(id);
-        if (this.beforeDragOut(target, e, id) !== false) {
-            if (target.isNotifyTarget) {
-                target.notifyOut(this, e, this.dragData);
-            }
-            this.proxy.reset();
-            if (this.afterDragOut) {
-                /**
-                 * An empty function by default, but provided so that you can perform a custom action
-                 * after the dragged item is dragged out of the target without dropping.
-                 * @param {Ext.dd.DragDrop} target The drop target
-                 * @param {Event} e The event object
-                 * @param {String} id The id of the dragged element
-                 * @method afterDragOut
-                 */
-                this.afterDragOut(target, e, id);
-            }
-        }
-        this.cachedTarget = null;
-    },
-
-    /**
-     * An empty function by default, but provided so that you can perform a custom action before the dragged
-     * item is dragged out of the target without dropping, and optionally cancel the onDragOut.
-     * @param {Ext.dd.DragDrop} target The drop target
-     * @param {Event} e The event object
-     * @param {String} id The id of the dragged element
-     * @return {Boolean} isValid True if the drag event is valid, else false to cancel
-     * @template
-     */
-    beforeDragOut: function(target, e, id){
-        return true;
-    },
-
-    // private
-    onDragDrop: function(e, id){
-        var target = this.cachedTarget || Ext.dd.DragDropManager.getDDById(id);
-        if (this.beforeDragDrop(target, e, id) !== false) {
-            if (target.isNotifyTarget) {
-                if (target.notifyDrop(this, e, this.dragData) !== false) { // valid drop?
-                    this.onValidDrop(target, e, id);
-                } else {
-                    this.onInvalidDrop(target, e, id);
-                }
-            } else {
-                this.onValidDrop(target, e, id);
-            }
-
-            if (this.afterDragDrop) {
-                /**
-                 * An empty function by default, but provided so that you can perform a custom action
-                 * after a valid drag drop has occurred by providing an implementation.
-                 * @param {Ext.dd.DragDrop} target The drop target
-                 * @param {Event} e The event object
-                 * @param {String} id The id of the dropped element
-                 * @method afterDragDrop
-                 */
-                this.afterDragDrop(target, e, id);
-            }
-        }
-        delete this.cachedTarget;
-    },
-
-    /**
-     * An empty function by default, but provided so that you can perform a custom action before the dragged
-     * item is dropped onto the target and optionally cancel the onDragDrop.
-     * @param {Ext.dd.DragDrop} target The drop target
-     * @param {Event} e The event object
-     * @param {String} id The id of the dragged element
-     * @return {Boolean} isValid True if the drag drop event is valid, else false to cancel
-     * @template
-     */
-    beforeDragDrop: function(target, e, id){
-        return true;
-    },
-
-    // private
-    onValidDrop: function(target, e, id){
-        this.hideProxy();
-        if(this.afterValidDrop){
-            /**
-             * An empty function by default, but provided so that you can perform a custom action
-             * after a valid drop has occurred by providing an implementation.
-             * @param {Object} target The target DD
-             * @param {Event} e The event object
-             * @param {String} id The id of the dropped element
-             * @method afterValidDrop
-             */
-            this.afterValidDrop(target, e, id);
-        }
-    },
-
-    // private
-    getRepairXY: function(e, data){
-        return this.el.getXY();
-    },
-
-    // private
-    onInvalidDrop: function(target, e, id) {
-        // This method may be called by the DragDropManager.
-        // To preserve backwards compat, it only passes the event object
-        // Here we correct the arguments.
-        if (!e) {
-            e = target;
-            target = null;
-            id = e.getTarget().id;
-        }
-        this.beforeInvalidDrop(target, e, id);
-        if (this.cachedTarget) {
-            if(this.cachedTarget.isNotifyTarget){
-                this.cachedTarget.notifyOut(this, e, this.dragData);
-            }
-            this.cacheTarget = null;
-        }
-        this.proxy.repair(this.getRepairXY(e, this.dragData), this.afterRepair, this);
-
-        if (this.afterInvalidDrop) {
-            /**
-             * An empty function by default, but provided so that you can perform a custom action
-             * after an invalid drop has occurred by providing an implementation.
-             * @param {Event} e The event object
-             * @param {String} id The id of the dropped element
-             * @method afterInvalidDrop
-             */
-            this.afterInvalidDrop(e, id);
-        }
-    },
-
-    // private
-    afterRepair: function() {
-        var me = this;
-        if (Ext.enableFx) {
-            me.el.highlight(me.repairHighlightColor);
-        }
-        me.dragging = false;
-    },
-
-    /**
-     * An empty function by default, but provided so that you can perform a custom action after an invalid
-     * drop has occurred.
-     * @param {Ext.dd.DragDrop} target The drop target
-     * @param {Event} e The event object
-     * @param {String} id The id of the dragged element
-     * @return {Boolean} isValid True if the invalid drop should proceed, else false to cancel
-     * @template
-     */
-    beforeInvalidDrop: function(target, e, id) {
-        return true;
-    },
-
-    // private
-    handleMouseDown: function(e) {
-        if (this.dragging) {
-            return;
-        }
-        var data = this.getDragData(e);
-        if (data && this.onBeforeDrag(data, e) !== false) {
-            this.dragData = data;
-            this.proxy.stop();
-            this.callParent(arguments);
-        }
-    },
-
-    /**
-     * An empty function by default, but provided so that you can perform a custom action before the initial
-     * drag event begins and optionally cancel it.
-     * @param {Object} data An object containing arbitrary data to be shared with drop targets
-     * @param {Event} e The event object
-     * @return {Boolean} isValid True if the drag event is valid, else false to cancel
-     * @template
-     */
-    onBeforeDrag: function(data, e){
-        return true;
-    },
-
-    /**
-     * An empty function by default, but provided so that you can perform a custom action once the initial
-     * drag event has begun.  The drag cannot be canceled from this function.
-     * @param {Number} x The x position of the click on the dragged object
-     * @param {Number} y The y position of the click on the dragged object
-     * @method
-     * @template
-     */
-    onStartDrag: Ext.emptyFn,
-
-    alignElWithMouse: function() {
-        this.proxy.ensureAttachedToBody(true);
-        return this.callParent(arguments);
-    },
-
-    // private override
-    startDrag: function(x, y) {
-        this.proxy.reset();
-        this.proxy.hidden = false;
-        this.dragging = true;
-        this.proxy.update("");
-        this.onInitDrag(x, y);
-        this.proxy.show();
-    },
-
-    // private
-    onInitDrag: function(x, y) {
-        var clone = this.el.dom.cloneNode(true);
-        clone.id = Ext.id(); // prevent duplicate ids
-        this.proxy.update(clone);
-        this.onStartDrag(x, y);
-        return true;
-    },
-
-    /**
-     * Returns the drag source's underlying {@link Ext.dd.StatusProxy}
-     * @return {Ext.dd.StatusProxy} proxy The StatusProxy
-     */
-    getProxy: function() {
-        return this.proxy;
-    },
-
-    /**
-     * Hides the drag source's {@link Ext.dd.StatusProxy}
-     */
-    hideProxy: function() {
-        this.proxy.hide();
-        this.proxy.reset(true);
-        this.dragging = false;
-    },
-
-    // private
-    triggerCacheRefresh: function() {
-        Ext.dd.DDM.refreshCache(this.groups);
-    },
-
-    // private - override to prevent hiding
-    b4EndDrag: function(e) {
-    },
-
-    // private - override to prevent moving
-    endDrag : function(e){
-        this.onEndDrag(this.dragData, e);
-    },
-
-    // private
-    onEndDrag : function(data, e){
-    },
-
-    // private - pin to cursor
-    autoOffset : function(x, y) {
-        this.setDelta(-12, -20);
-    },
-
-    destroy: function(){
-        this.callParent();
-        Ext.destroy(this.proxy);
-    }
-});
-
-/**
- * DD implementation for Panels.
- * @private
- */
-Ext.define('Ext.panel.DD', {
-    extend: 'Ext.dd.DragSource',
-    requires: ['Ext.panel.Proxy'],
-
-    constructor : function(panel, cfg){
-        var me = this;
-        
-        me.panel = panel;
-        me.dragData = {panel: panel};
-        me.panelProxy = new Ext.panel.Proxy(panel, cfg);
-        me.proxy = me.panelProxy.proxy;
-
-        me.callParent([panel.el, cfg]);
-        me.setupEl(panel);
-    },
-    
-    setupEl: function(panel){
-        var me = this,
-            header = panel.header,
-            el = panel.body;
-            
-        if (header) {
-            me.setHandleElId(header.id);
-            el = header.el;
-        }
-        if (el) {
-            el.setStyle('cursor', 'move');
-            me.scroll = false;
-        } else {
-            // boxready fires after first layout, so we'll definitely be rendered
-            panel.on('boxready', me.setupEl, me, {single: true});
-        }
-    },
-
-    showFrame: Ext.emptyFn,
-    startDrag: Ext.emptyFn,
-    
-    b4StartDrag: function(x, y) {
-        this.panelProxy.show();
-    },
-    
-    b4MouseDown: function(e) {
-        var x = e.getPageX(),
-            y = e.getPageY();
-            
-        this.autoOffset(x, y);
-    },
-    
-    onInitDrag : function(x, y){
-        this.onStartDrag(x, y);
-        return true;
-    },
-    
-    createFrame : Ext.emptyFn,
-    
-    getDragEl : function(e){
-        return this.panelProxy.ghost.el.dom;
-    },
-    
-    endDrag : function(e){
-        this.panelProxy.hide();
-        this.panel.saveState();
-    },
-
-    autoOffset : function(x, y) {
-        x -= this.startPageX;
-        y -= this.startPageY;
-        this.setDelta(x, y);
-    },
-    
-    // Override this, we don't want to repair on an "invalid" drop, the panel
-    // should main it's position
-    onInvalidDrop: function(target, e, id) {
-        var me = this;
-        
-        me.beforeInvalidDrop(target, e, id);
-        if (me.cachedTarget) {
-            if(me.cachedTarget.isNotifyTarget){
-                me.cachedTarget.notifyOut(me, e, me.dragData);
-            }
-            me.cacheTarget = null;
-        }
-
-        if (me.afterInvalidDrop) {
-            /**
-             * An empty function by default, but provided so that you can perform a custom action
-             * after an invalid drop has occurred by providing an implementation.
-             * @param {Event} e The event object
-             * @param {String} id The id of the dropped element
-             * @method afterInvalidDrop
-             */
-            me.afterInvalidDrop(e, id);
-        }
-    }
-});
 /**
  * Base Layout class - extended by ComponentLayout and ContainerLayout
  */
@@ -30739,6 +28715,2121 @@ Ext.define('Ext.layout.component.Dock', {
     }
 });
 
+/*
+ * This is a derivative of the similarly named class in the YUI Library.
+ * The original license:
+ * Copyright (c) 2006, Yahoo! Inc. All rights reserved.
+ * Code licensed under the BSD License:
+ * http://developer.yahoo.net/yui/license.txt
+ */
+
+
+/**
+ * Defines the interface and base operation of items that that can be
+ * dragged or can be drop targets.  It was designed to be extended, overriding
+ * the event handlers for startDrag, onDrag, onDragOver and onDragOut.
+ * Up to three html elements can be associated with a DragDrop instance:
+ *
+ * - linked element: the element that is passed into the constructor.
+ *   This is the element which defines the boundaries for interaction with
+ *   other DragDrop objects.
+ *
+ * - handle element(s): The drag operation only occurs if the element that
+ *   was clicked matches a handle element.  By default this is the linked
+ *   element, but there are times that you will want only a portion of the
+ *   linked element to initiate the drag operation, and the setHandleElId()
+ *   method provides a way to define this.
+ *
+ * - drag element: this represents the element that would be moved along
+ *   with the cursor during a drag operation.  By default, this is the linked
+ *   element itself as in {@link Ext.dd.DD}.  setDragElId() lets you define
+ *   a separate element that would be moved, as in {@link Ext.dd.DDProxy}.
+ *
+ * This class should not be instantiated until the onload event to ensure that
+ * the associated elements are available.
+ * The following would define a DragDrop obj that would interact with any
+ * other DragDrop obj in the "group1" group:
+ *
+ *     dd = new Ext.dd.DragDrop("div1", "group1");
+ *
+ * Since none of the event handlers have been implemented, nothing would
+ * actually happen if you were to run the code above.  Normally you would
+ * override this class or one of the default implementations, but you can
+ * also override the methods you want on an instance of the class...
+ *
+ *     dd.onDragDrop = function(e, id) {
+ *         alert("dd was dropped on " + id);
+ *     }
+ *
+ */
+Ext.define('Ext.dd.DragDrop', {
+    requires: ['Ext.dd.DragDropManager'],
+
+    /**
+     * Creates new DragDrop.
+     * @param {String} id of the element that is linked to this instance
+     * @param {String} sGroup the group of related DragDrop objects
+     * @param {Object} config an object containing configurable attributes.
+     * Valid properties for DragDrop:
+     *
+     * - padding
+     * - isTarget
+     * - maintainOffset
+     * - primaryButtonOnly
+     */
+    constructor: function(id, sGroup, config) {
+        if(id) {
+            this.init(id, sGroup, config);
+        }
+    },
+
+    /**
+     * @property {Boolean} ignoreSelf
+     * Set to false to enable a DragDrop object to fire drag events while dragging
+     * over its own Element. Defaults to true - DragDrop objects do not by default
+     * fire drag events to themselves.
+     */
+
+    /**
+     * @property {String} id
+     * The id of the element associated with this object.  This is what we
+     * refer to as the "linked element" because the size and position of
+     * this element is used to determine when the drag and drop objects have
+     * interacted.
+     */
+    id: null,
+
+    /**
+     * @property {Object} config
+     * Configuration attributes passed into the constructor
+     */
+    config: null,
+
+    /**
+     * @property {String} dragElId
+     * The id of the element that will be dragged.  By default this is same
+     * as the linked element, but could be changed to another element. Ex:
+     * Ext.dd.DDProxy
+     * @private
+     */
+    dragElId: null,
+
+    /**
+     * @property {String} handleElId
+     * The ID of the element that initiates the drag operation.  By default
+     * this is the linked element, but could be changed to be a child of this
+     * element.  This lets us do things like only starting the drag when the
+     * header element within the linked html element is clicked.
+     * @private
+     */
+    handleElId: null,
+
+    /**
+     * @property {Object} invalidHandleTypes
+     * An object who's property names identify HTML tags to be considered invalid as drag handles.
+     * A non-null property value identifies the tag as invalid. Defaults to the
+     * following value which prevents drag operations from being initiated by `<a>` elements:
+     *
+     *     {
+     *         A: "A"
+     *     }
+     */
+    invalidHandleTypes: null,
+
+    /**
+     * @property {Object} invalidHandleIds
+     * An object who's property names identify the IDs of elements to be considered invalid as drag handles.
+     * A non-null property value identifies the ID as invalid. For example, to prevent
+     * dragging from being initiated on element ID "foo", use:
+     *
+     *     {
+     *         foo: true
+     *     }
+     */
+    invalidHandleIds: null,
+
+    /**
+     * @property {String[]} invalidHandleClasses
+     * An Array of CSS class names for elements to be considered in valid as drag handles.
+     */
+    invalidHandleClasses: null,
+
+    /**
+     * @property {Number} startPageX
+     * The linked element's absolute X position at the time the drag was
+     * started
+     * @private
+     */
+    startPageX: 0,
+
+    /**
+     * @property {Number} startPageY
+     * The linked element's absolute X position at the time the drag was
+     * started
+     * @private
+     */
+    startPageY: 0,
+
+    /**
+     * @property {Object} groups
+     * The group defines a logical collection of DragDrop objects that are
+     * related.  Instances only get events when interacting with other
+     * DragDrop object in the same group.  This lets us define multiple
+     * groups using a single DragDrop subclass if we want.
+     *
+     * An object in the format {'group1':true, 'group2':true}
+     */
+    groups: null,
+
+    /**
+     * @property {Boolean} locked
+     * Individual drag/drop instances can be locked.  This will prevent
+     * onmousedown start drag.
+     * @private
+     */
+    locked: false,
+
+    /**
+     * Locks this instance
+     */
+    lock: function() {
+        this.locked = true;
+    },
+
+    /**
+     * @property {Boolean} moveOnly
+     * When set to true, other DD objects in cooperating DDGroups do not receive
+     * notification events when this DD object is dragged over them.
+     */
+    moveOnly: false,
+
+    /**
+     * Unlocks this instace
+     */
+    unlock: function() {
+        this.locked = false;
+    },
+
+    /**
+     * @property {Boolean} isTarget
+     * By default, all instances can be a drop target.  This can be disabled by
+     * setting isTarget to false.
+     */
+    isTarget: true,
+
+    /**
+     * @property {Number[]} padding
+     * The padding configured for this drag and drop object for calculating
+     * the drop zone intersection with this object.
+     * An array containing the 4 padding values: [top, right, bottom, left]
+     */
+    padding: null,
+
+    /**
+     * @property _domRef
+     * Cached reference to the linked element
+     * @private
+     */
+    _domRef: null,
+
+    /**
+     * @property __ygDragDrop
+     * Internal typeof flag
+     * @private
+     */
+    __ygDragDrop: true,
+
+    /**
+     * @property {Boolean} constrainX
+     * Set to true when horizontal contraints are applied
+     * @private
+     */
+    constrainX: false,
+
+    /**
+     * @property {Boolean} constrainY
+     * Set to true when vertical contraints are applied
+     * @private
+     */
+    constrainY: false,
+
+    /**
+     * @property {Number} minX
+     * The left constraint
+     * @private
+     */
+    minX: 0,
+
+    /**
+     * @property {Number} maxX
+     * The right constraint
+     * @private
+     */
+    maxX: 0,
+
+    /**
+     * @property {Number} minY
+     * The up constraint
+     * @private
+     */
+    minY: 0,
+
+    /**
+     * @property {Number} maxY
+     * The down constraint
+     * @private
+     */
+    maxY: 0,
+
+    /**
+     * @property {Boolean} maintainOffset
+     * Maintain offsets when we resetconstraints.  Set to true when you want
+     * the position of the element relative to its parent to stay the same
+     * when the page changes
+     */
+    maintainOffset: false,
+
+    /**
+     * @property {Number[]} xTicks
+     * Array of pixel locations the element will snap to if we specified a
+     * horizontal graduation/interval.  This array is generated automatically
+     * when you define a tick interval.
+     */
+    xTicks: null,
+
+    /**
+     * @property {Number[]} yTicks
+     * Array of pixel locations the element will snap to if we specified a
+     * vertical graduation/interval.  This array is generated automatically
+     * when you define a tick interval.
+     */
+    yTicks: null,
+
+    /**
+     * @property {Boolean} primaryButtonOnly
+     * By default the drag and drop instance will only respond to the primary
+     * button click (left button for a right-handed mouse).  Set to true to
+     * allow drag and drop to start with any mouse click that is propogated
+     * by the browser
+     */
+    primaryButtonOnly: true,
+
+    /**
+     * @property {Boolean} available
+     * The available property is false until the linked dom element is accessible.
+     */
+    available: false,
+
+    /**
+     * @property {Boolean} hasOuterHandles
+     * By default, drags can only be initiated if the mousedown occurs in the
+     * region the linked element is.  This is done in part to work around a
+     * bug in some browsers that mis-report the mousedown if the previous
+     * mouseup happened outside of the window.  This property is set to true
+     * if outer handles are defined. Defaults to false.
+     */
+    hasOuterHandles: false,
+
+    /**
+     * Code that executes immediately before the startDrag event
+     * @private
+     */
+    b4StartDrag: function(x, y) { },
+
+    /**
+     * Abstract method called after a drag/drop object is clicked
+     * and the drag or mousedown time thresholds have beeen met.
+     * @param {Number} X click location
+     * @param {Number} Y click location
+     */
+    startDrag: function(x, y) { /* override this */ },
+
+    /**
+     * Code that executes immediately before the onDrag event
+     * @private
+     */
+    b4Drag: function(e) { },
+
+    /**
+     * Abstract method called during the onMouseMove event while dragging an
+     * object.
+     * @param {Event} e the mousemove event
+     */
+    onDrag: function(e) { /* override this */ },
+
+    /**
+     * Abstract method called when this element fist begins hovering over
+     * another DragDrop obj
+     * @param {Event} e the mousemove event
+     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
+     * id this is hovering over.  In INTERSECT mode, an array of one or more
+     * dragdrop items being hovered over.
+     */
+    onDragEnter: function(e, id) { /* override this */ },
+
+    /**
+     * Code that executes immediately before the onDragOver event
+     * @private
+     */
+    b4DragOver: function(e) { },
+
+    /**
+     * Abstract method called when this element is hovering over another
+     * DragDrop obj
+     * @param {Event} e the mousemove event
+     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
+     * id this is hovering over.  In INTERSECT mode, an array of dd items
+     * being hovered over.
+     */
+    onDragOver: function(e, id) { /* override this */ },
+
+    /**
+     * Code that executes immediately before the onDragOut event
+     * @private
+     */
+    b4DragOut: function(e) { },
+
+    /**
+     * Abstract method called when we are no longer hovering over an element
+     * @param {Event} e the mousemove event
+     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
+     * id this was hovering over.  In INTERSECT mode, an array of dd items
+     * that the mouse is no longer over.
+     */
+    onDragOut: function(e, id) { /* override this */ },
+
+    /**
+     * Code that executes immediately before the onDragDrop event
+     * @private
+     */
+    b4DragDrop: function(e) { },
+
+    /**
+     * Abstract method called when this item is dropped on another DragDrop
+     * obj
+     * @param {Event} e the mouseup event
+     * @param {String/Ext.dd.DragDrop[]} id In POINT mode, the element
+     * id this was dropped on.  In INTERSECT mode, an array of dd items this
+     * was dropped on.
+     */
+    onDragDrop: function(e, id) { /* override this */ },
+
+    /**
+     * Abstract method called when this item is dropped on an area with no
+     * drop target
+     * @param {Event} e the mouseup event
+     */
+    onInvalidDrop: function(e) { /* override this */ },
+
+    /**
+     * Code that executes immediately before the endDrag event
+     * @private
+     */
+    b4EndDrag: function(e) { },
+
+    /**
+     * Called when we are done dragging the object
+     * @param {Event} e the mouseup event
+     */
+    endDrag: function(e) { /* override this */ },
+
+    /**
+     * Code executed immediately before the onMouseDown event
+     * @param {Event} e the mousedown event
+     * @private
+     */
+    b4MouseDown: function(e) {  },
+
+    /**
+     * Called when a drag/drop obj gets a mousedown
+     * @param {Event} e the mousedown event
+     */
+    onMouseDown: function(e) { /* override this */ },
+
+    /**
+     * Called when a drag/drop obj gets a mouseup
+     * @param {Event} e the mouseup event
+     */
+    onMouseUp: function(e) { /* override this */ },
+
+    /**
+     * Override the onAvailable method to do what is needed after the initial
+     * position was determined.
+     */
+    onAvailable: function () {
+    },
+
+    /**
+     * @property {Object} defaultPadding
+     * Provides default constraint padding to "constrainTo" elements.
+     */
+    defaultPadding: {
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0
+    },
+
+    /**
+     * Initializes the drag drop object's constraints to restrict movement to a certain element.
+     *
+     * Usage:
+     *
+     *     var dd = new Ext.dd.DDProxy("dragDiv1", "proxytest",
+     *                    { dragElId: "existingProxyDiv" });
+     *     dd.startDrag = function(){
+     *         this.constrainTo("parent-id");
+     *     };
+     *
+     * Or you can initalize it using the {@link Ext.Element} object:
+     *
+     *     Ext.get("dragDiv1").initDDProxy("proxytest", {dragElId: "existingProxyDiv"}, {
+     *         startDrag : function(){
+     *             this.constrainTo("parent-id");
+     *         }
+     *     });
+     *
+     * @param {String/HTMLElement/Ext.Element} constrainTo The element or element ID to constrain to.
+     * @param {Object/Number} pad (optional) Pad provides a way to specify "padding" of the constraints,
+     * and can be either a number for symmetrical padding (4 would be equal to `{left:4, right:4, top:4, bottom:4}`) or
+     * an object containing the sides to pad. For example: `{right:10, bottom:10}`
+     * @param {Boolean} inContent (optional) Constrain the draggable in the content box of the element (inside padding and borders)
+     */
+    constrainTo : function(constrainTo, pad, inContent){
+        if(Ext.isNumber(pad)){
+            pad = {left: pad, right:pad, top:pad, bottom:pad};
+        }
+        pad = pad || this.defaultPadding;
+        var b = Ext.get(this.getEl()).getBox(),
+            ce = Ext.get(constrainTo),
+            s = ce.getScroll(),
+            c,
+            cd = ce.dom,
+            xy,
+            topSpace,
+            leftSpace;
+        if(cd == document.body){
+            c = { x: s.left, y: s.top, width: Ext.Element.getViewWidth(), height: Ext.Element.getViewHeight()};
+        }else{
+            xy = ce.getXY();
+            c = {x : xy[0], y: xy[1], width: cd.clientWidth, height: cd.clientHeight};
+        }
+
+        topSpace = b.y - c.y;
+        leftSpace = b.x - c.x;
+
+        this.resetConstraints();
+        this.setXConstraint(leftSpace - (pad.left||0), // left
+                c.width - leftSpace - b.width - (pad.right||0), //right
+        this.xTickSize
+        );
+        this.setYConstraint(topSpace - (pad.top||0), //top
+                c.height - topSpace - b.height - (pad.bottom||0), //bottom
+        this.yTickSize
+        );
+    },
+
+    /**
+     * Returns a reference to the linked element
+     * @return {HTMLElement} the html element
+     */
+    getEl: function() {
+        if (!this._domRef) {
+            this._domRef = Ext.getDom(this.id);
+        }
+
+        return this._domRef;
+    },
+
+    /**
+     * Returns a reference to the actual element to drag.  By default this is
+     * the same as the html element, but it can be assigned to another
+     * element. An example of this can be found in Ext.dd.DDProxy
+     * @return {HTMLElement} the html element
+     */
+    getDragEl: function() {
+        return Ext.getDom(this.dragElId);
+    },
+
+    /**
+     * Sets up the DragDrop object.  Must be called in the constructor of any
+     * Ext.dd.DragDrop subclass
+     * @param {String} id the id of the linked element
+     * @param {String} sGroup the group of related items
+     * @param {Object} config configuration attributes
+     */
+    init: function(id, sGroup, config) {
+        this.initTarget(id, sGroup, config);
+        Ext.EventManager.on(this.id, "mousedown", this.handleMouseDown, this);
+        // Ext.EventManager.on(this.id, "selectstart", Event.preventDefault);
+    },
+
+    /**
+     * Initializes Targeting functionality only... the object does not
+     * get a mousedown handler.
+     * @param {String} id the id of the linked element
+     * @param {String} sGroup the group of related items
+     * @param {Object} config configuration attributes
+     */
+    initTarget: function(id, sGroup, config) {
+        // configuration attributes
+        this.config = config || {};
+
+        // create a local reference to the drag and drop manager
+        this.DDMInstance = Ext.dd.DragDropManager;
+        // initialize the groups array
+        this.groups = {};
+
+        // assume that we have an element reference instead of an id if the
+        // parameter is not a string
+        if (typeof id !== "string") {
+            id = Ext.id(id);
+        }
+
+        // set the id
+        this.id = id;
+
+        // add to an interaction group
+        this.addToGroup((sGroup) ? sGroup : "default");
+
+        // We don't want to register this as the handle with the manager
+        // so we just set the id rather than calling the setter.
+        this.handleElId = id;
+
+        // the linked element is the element that gets dragged by default
+        this.setDragElId(id);
+
+        // by default, clicked anchors will not start drag operations.
+        this.invalidHandleTypes = { A: "A" };
+        this.invalidHandleIds = {};
+        this.invalidHandleClasses = [];
+
+        this.applyConfig();
+
+        this.handleOnAvailable();
+    },
+
+    /**
+     * Applies the configuration parameters that were passed into the constructor.
+     * This is supposed to happen at each level through the inheritance chain.  So
+     * a DDProxy implentation will execute apply config on DDProxy, DD, and
+     * DragDrop in order to get all of the parameters that are available in
+     * each object.
+     */
+    applyConfig: function() {
+
+        // configurable properties:
+        //    padding, isTarget, maintainOffset, primaryButtonOnly
+        this.padding           = this.config.padding || [0, 0, 0, 0];
+        this.isTarget          = (this.config.isTarget !== false);
+        this.maintainOffset    = (this.config.maintainOffset);
+        this.primaryButtonOnly = (this.config.primaryButtonOnly !== false);
+
+    },
+
+    /**
+     * Executed when the linked element is available
+     * @private
+     */
+    handleOnAvailable: function() {
+        this.available = true;
+        this.resetConstraints();
+        this.onAvailable();
+    },
+
+    /**
+     * Configures the padding for the target zone in px.  Effectively expands
+     * (or reduces) the virtual object size for targeting calculations.
+     * Supports css-style shorthand; if only one parameter is passed, all sides
+     * will have that padding, and if only two are passed, the top and bottom
+     * will have the first param, the left and right the second.
+     * @param {Number} iTop    Top pad
+     * @param {Number} iRight  Right pad
+     * @param {Number} iBot    Bot pad
+     * @param {Number} iLeft   Left pad
+     */
+    setPadding: function(iTop, iRight, iBot, iLeft) {
+        // this.padding = [iLeft, iRight, iTop, iBot];
+        if (!iRight && 0 !== iRight) {
+            this.padding = [iTop, iTop, iTop, iTop];
+        } else if (!iBot && 0 !== iBot) {
+            this.padding = [iTop, iRight, iTop, iRight];
+        } else {
+            this.padding = [iTop, iRight, iBot, iLeft];
+        }
+    },
+
+    /**
+     * Stores the initial placement of the linked element.
+     * @param {Number} diffX   the X offset, default 0
+     * @param {Number} diffY   the Y offset, default 0
+     */
+    setInitPosition: function(diffX, diffY) {
+        var el = this.getEl(),
+            dx, dy, p;
+
+        if (!this.DDMInstance.verifyEl(el)) {
+            return;
+        }
+
+        dx = diffX || 0;
+        dy = diffY || 0;
+
+        p = Ext.Element.getXY( el );
+
+        this.initPageX = p[0] - dx;
+        this.initPageY = p[1] - dy;
+
+        this.lastPageX = p[0];
+        this.lastPageY = p[1];
+
+        this.setStartPosition(p);
+    },
+
+    /**
+     * Sets the start position of the element.  This is set when the obj
+     * is initialized, the reset when a drag is started.
+     * @param pos current position (from previous lookup)
+     * @private
+     */
+    setStartPosition: function(pos) {
+        var p = pos || Ext.Element.getXY( this.getEl() );
+        this.deltaSetXY = null;
+
+        this.startPageX = p[0];
+        this.startPageY = p[1];
+    },
+
+    /**
+     * Adds this instance to a group of related drag/drop objects.  All
+     * instances belong to at least one group, and can belong to as many
+     * groups as needed.
+     * @param {String} sGroup the name of the group
+     */
+    addToGroup: function(sGroup) {
+        this.groups[sGroup] = true;
+        this.DDMInstance.regDragDrop(this, sGroup);
+    },
+
+    /**
+     * Removes this instance from the supplied interaction group
+     * @param {String} sGroup  The group to drop
+     */
+    removeFromGroup: function(sGroup) {
+        if (this.groups[sGroup]) {
+            delete this.groups[sGroup];
+        }
+
+        this.DDMInstance.removeDDFromGroup(this, sGroup);
+    },
+
+    /**
+     * Allows you to specify that an element other than the linked element
+     * will be moved with the cursor during a drag
+     * @param {String} id the id of the element that will be used to initiate the drag
+     */
+    setDragElId: function(id) {
+        this.dragElId = id;
+    },
+
+    /**
+     * Allows you to specify a child of the linked element that should be
+     * used to initiate the drag operation.  An example of this would be if
+     * you have a content div with text and links.  Clicking anywhere in the
+     * content area would normally start the drag operation.  Use this method
+     * to specify that an element inside of the content div is the element
+     * that starts the drag operation.
+     * @param {String} id the id of the element that will be used to
+     * initiate the drag.
+     */
+    setHandleElId: function(id) {
+        if (typeof id !== "string") {
+            id = Ext.id(id);
+        }
+        this.handleElId = id;
+        this.DDMInstance.regHandle(this.id, id);
+    },
+
+    /**
+     * Allows you to set an element outside of the linked element as a drag
+     * handle
+     * @param {String} id the id of the element that will be used to initiate the drag
+     */
+    setOuterHandleElId: function(id) {
+        if (typeof id !== "string") {
+            id = Ext.id(id);
+        }
+        Ext.EventManager.on(id, "mousedown", this.handleMouseDown, this);
+        this.setHandleElId(id);
+
+        this.hasOuterHandles = true;
+    },
+
+    /**
+     * Removes all drag and drop hooks for this element
+     */
+    unreg: function() {
+        Ext.EventManager.un(this.id, "mousedown", this.handleMouseDown, this);
+        this._domRef = null;
+        this.DDMInstance._remove(this);
+    },
+
+    destroy : function(){
+        this.unreg();
+    },
+
+    /**
+     * Returns true if this instance is locked, or the drag drop mgr is locked
+     * (meaning that all drag/drop is disabled on the page.)
+     * @return {Boolean} true if this obj or all drag/drop is locked, else
+     * false
+     */
+    isLocked: function() {
+        return (this.DDMInstance.isLocked() || this.locked);
+    },
+
+    /**
+     * Called when this object is clicked
+     * @param {Event} e
+     * @param {Ext.dd.DragDrop} oDD the clicked dd object (this dd obj)
+     * @private
+     */
+    handleMouseDown: function(e, oDD){
+        if (this.primaryButtonOnly && e.button != 0) {
+            return;
+        }
+
+        if (this.isLocked()) {
+            return;
+        }
+
+        this.DDMInstance.refreshCache(this.groups);
+
+        if (this.hasOuterHandles || this.DDMInstance.isOverTarget(e.getPoint(), this) )  {
+            if (this.clickValidator(e)) {
+                // set the initial element position
+                this.setStartPosition();
+                this.b4MouseDown(e);
+                this.onMouseDown(e);
+
+                this.DDMInstance.handleMouseDown(e, this);
+
+                this.DDMInstance.stopEvent(e);
+            }
+        }
+    },
+
+    clickValidator: function(e) {
+        var target = e.getTarget();
+        return ( this.isValidHandleChild(target) &&
+                    (this.id == this.handleElId ||
+                        this.DDMInstance.handleWasClicked(target, this.id)) );
+    },
+
+    /**
+     * Allows you to specify a tag name that should not start a drag operation
+     * when clicked.  This is designed to facilitate embedding links within a
+     * drag handle that do something other than start the drag.
+     * @method addInvalidHandleType
+     * @param {String} tagName the type of element to exclude
+     */
+    addInvalidHandleType: function(tagName) {
+        var type = tagName.toUpperCase();
+        this.invalidHandleTypes[type] = type;
+    },
+
+    /**
+     * Lets you to specify an element id for a child of a drag handle
+     * that should not initiate a drag
+     * @method addInvalidHandleId
+     * @param {String} id the element id of the element you wish to ignore
+     */
+    addInvalidHandleId: function(id) {
+        if (typeof id !== "string") {
+            id = Ext.id(id);
+        }
+        this.invalidHandleIds[id] = id;
+    },
+
+    /**
+     * Lets you specify a css class of elements that will not initiate a drag
+     * @param {String} cssClass the class of the elements you wish to ignore
+     */
+    addInvalidHandleClass: function(cssClass) {
+        this.invalidHandleClasses.push(cssClass);
+    },
+
+    /**
+     * Unsets an excluded tag name set by addInvalidHandleType
+     * @param {String} tagName the type of element to unexclude
+     */
+    removeInvalidHandleType: function(tagName) {
+        var type = tagName.toUpperCase();
+        // this.invalidHandleTypes[type] = null;
+        delete this.invalidHandleTypes[type];
+    },
+
+    /**
+     * Unsets an invalid handle id
+     * @param {String} id the id of the element to re-enable
+     */
+    removeInvalidHandleId: function(id) {
+        if (typeof id !== "string") {
+            id = Ext.id(id);
+        }
+        delete this.invalidHandleIds[id];
+    },
+
+    /**
+     * Unsets an invalid css class
+     * @param {String} cssClass the class of the element(s) you wish to
+     * re-enable
+     */
+    removeInvalidHandleClass: function(cssClass) {
+        for (var i=0, len=this.invalidHandleClasses.length; i<len; ++i) {
+            if (this.invalidHandleClasses[i] == cssClass) {
+                delete this.invalidHandleClasses[i];
+            }
+        }
+    },
+
+    /**
+     * Checks the tag exclusion list to see if this click should be ignored
+     * @param {HTMLElement} node the HTMLElement to evaluate
+     * @return {Boolean} true if this is a valid tag type, false if not
+     */
+    isValidHandleChild: function(node) {
+
+        var valid = true,
+            nodeName,
+            i, len;
+        // var n = (node.nodeName == "#text") ? node.parentNode : node;
+        try {
+            nodeName = node.nodeName.toUpperCase();
+        } catch(e) {
+            nodeName = node.nodeName;
+        }
+        valid = valid && !this.invalidHandleTypes[nodeName];
+        valid = valid && !this.invalidHandleIds[node.id];
+
+        for (i=0, len=this.invalidHandleClasses.length; valid && i<len; ++i) {
+            valid = !Ext.fly(node).hasCls(this.invalidHandleClasses[i]);
+        }
+
+
+        return valid;
+
+    },
+
+    /**
+     * Creates the array of horizontal tick marks if an interval was specified
+     * in setXConstraint().
+     * @private
+     */
+    setXTicks: function(iStartX, iTickSize) {
+        this.xTicks = [];
+        this.xTickSize = iTickSize;
+
+        var tickMap = {},
+            i;
+
+        for (i = this.initPageX; i >= this.minX; i = i - iTickSize) {
+            if (!tickMap[i]) {
+                this.xTicks[this.xTicks.length] = i;
+                tickMap[i] = true;
+            }
+        }
+
+        for (i = this.initPageX; i <= this.maxX; i = i + iTickSize) {
+            if (!tickMap[i]) {
+                this.xTicks[this.xTicks.length] = i;
+                tickMap[i] = true;
+            }
+        }
+
+        Ext.Array.sort(this.xTicks, this.DDMInstance.numericSort);
+    },
+
+    /**
+     * Creates the array of vertical tick marks if an interval was specified in
+     * setYConstraint().
+     * @private
+     */
+    setYTicks: function(iStartY, iTickSize) {
+        this.yTicks = [];
+        this.yTickSize = iTickSize;
+
+        var tickMap = {},
+            i;
+
+        for (i = this.initPageY; i >= this.minY; i = i - iTickSize) {
+            if (!tickMap[i]) {
+                this.yTicks[this.yTicks.length] = i;
+                tickMap[i] = true;
+            }
+        }
+
+        for (i = this.initPageY; i <= this.maxY; i = i + iTickSize) {
+            if (!tickMap[i]) {
+                this.yTicks[this.yTicks.length] = i;
+                tickMap[i] = true;
+            }
+        }
+
+        Ext.Array.sort(this.yTicks, this.DDMInstance.numericSort);
+    },
+
+    /**
+     * By default, the element can be dragged any place on the screen.  Use
+     * this method to limit the horizontal travel of the element.  Pass in
+     * 0,0 for the parameters if you want to lock the drag to the y axis.
+     * @param {Number} iLeft the number of pixels the element can move to the left
+     * @param {Number} iRight the number of pixels the element can move to the
+     * right
+     * @param {Number} iTickSize (optional) parameter for specifying that the
+     * element should move iTickSize pixels at a time.
+     */
+    setXConstraint: function(iLeft, iRight, iTickSize) {
+        this.leftConstraint = iLeft;
+        this.rightConstraint = iRight;
+
+        this.minX = this.initPageX - iLeft;
+        this.maxX = this.initPageX + iRight;
+        if (iTickSize) { this.setXTicks(this.initPageX, iTickSize); }
+
+        this.constrainX = true;
+    },
+
+    /**
+     * Clears any constraints applied to this instance.  Also clears ticks
+     * since they can't exist independent of a constraint at this time.
+     */
+    clearConstraints: function() {
+        this.constrainX = false;
+        this.constrainY = false;
+        this.clearTicks();
+    },
+
+    /**
+     * Clears any tick interval defined for this instance
+     */
+    clearTicks: function() {
+        this.xTicks = null;
+        this.yTicks = null;
+        this.xTickSize = 0;
+        this.yTickSize = 0;
+    },
+
+    /**
+     * By default, the element can be dragged any place on the screen.  Set
+     * this to limit the vertical travel of the element.  Pass in 0,0 for the
+     * parameters if you want to lock the drag to the x axis.
+     * @param {Number} iUp the number of pixels the element can move up
+     * @param {Number} iDown the number of pixels the element can move down
+     * @param {Number} iTickSize (optional) parameter for specifying that the
+     * element should move iTickSize pixels at a time.
+     */
+    setYConstraint: function(iUp, iDown, iTickSize) {
+        this.topConstraint = iUp;
+        this.bottomConstraint = iDown;
+
+        this.minY = this.initPageY - iUp;
+        this.maxY = this.initPageY + iDown;
+        if (iTickSize) { this.setYTicks(this.initPageY, iTickSize); }
+
+        this.constrainY = true;
+
+    },
+
+    /**
+     * Must be called if you manually reposition a dd element.
+     * @param {Boolean} maintainOffset
+     */
+    resetConstraints: function() {
+        // Maintain offsets if necessary
+        if (this.initPageX || this.initPageX === 0) {
+            // figure out how much this thing has moved
+            var dx = (this.maintainOffset) ? this.lastPageX - this.initPageX : 0,
+                dy = (this.maintainOffset) ? this.lastPageY - this.initPageY : 0;
+
+            this.setInitPosition(dx, dy);
+
+        // This is the first time we have detected the element's position
+        } else {
+            this.setInitPosition();
+        }
+
+        if (this.constrainX) {
+            this.setXConstraint( this.leftConstraint,
+                                 this.rightConstraint,
+                                 this.xTickSize        );
+        }
+
+        if (this.constrainY) {
+            this.setYConstraint( this.topConstraint,
+                                 this.bottomConstraint,
+                                 this.yTickSize         );
+        }
+    },
+
+    /**
+     * Normally the drag element is moved pixel by pixel, but we can specify
+     * that it move a number of pixels at a time.  This method resolves the
+     * location when we have it set up like this.
+     * @param {Number} val where we want to place the object
+     * @param {Number[]} tickArray sorted array of valid points
+     * @return {Number} the closest tick
+     * @private
+     */
+    getTick: function(val, tickArray) {
+        if (!tickArray) {
+            // If tick interval is not defined, it is effectively 1 pixel,
+            // so we return the value passed to us.
+            return val;
+        } else if (tickArray[0] >= val) {
+            // The value is lower than the first tick, so we return the first
+            // tick.
+            return tickArray[0];
+        } else {
+            var i, len, next, diff1, diff2;
+            for (i=0, len=tickArray.length; i<len; ++i) {
+                next = i + 1;
+                if (tickArray[next] && tickArray[next] >= val) {
+                    diff1 = val - tickArray[i];
+                    diff2 = tickArray[next] - val;
+                    return (diff2 > diff1) ? tickArray[i] : tickArray[next];
+                }
+            }
+
+            // The value is larger than the last tick, so we return the last
+            // tick.
+            return tickArray[tickArray.length - 1];
+        }
+    },
+
+    /**
+     * toString method
+     * @return {String} string representation of the dd obj
+     */
+    toString: function() {
+        return ("DragDrop " + this.id);
+    }
+
+});
+
+/*
+ * This is a derivative of the similarly named class in the YUI Library.
+ * The original license:
+ * Copyright (c) 2006, Yahoo! Inc. All rights reserved.
+ * Code licensed under the BSD License:
+ * http://developer.yahoo.net/yui/license.txt
+ */
+
+
+/**
+ * A DragDrop implementation where the linked element follows the
+ * mouse cursor during a drag.
+ */
+Ext.define('Ext.dd.DD', {
+    extend: 'Ext.dd.DragDrop',
+    requires: ['Ext.dd.DragDropManager'],
+
+    /**
+     * Creates new DD instance.
+     * @param {String} id the id of the linked element
+     * @param {String} sGroup the group of related DragDrop items
+     * @param {Object} config an object containing configurable attributes.
+     * Valid properties for DD: scroll
+     */
+    constructor: function(id, sGroup, config) {
+        if (id) {
+            this.init(id, sGroup, config);
+        }
+    },
+
+    /**
+     * @property {Boolean} scroll
+     * When set to true, the utility automatically tries to scroll the browser
+     * window when a drag and drop element is dragged near the viewport boundary.
+     */
+    scroll: true,
+
+    /**
+     * Sets the pointer offset to the distance between the linked element's top
+     * left corner and the location the element was clicked.
+     * @param {Number} iPageX the X coordinate of the click
+     * @param {Number} iPageY the Y coordinate of the click
+     */
+    autoOffset: function(iPageX, iPageY) {
+        var x = iPageX - this.startPageX,
+            y = iPageY - this.startPageY;
+        this.setDelta(x, y);
+    },
+
+    /**
+     * Sets the pointer offset.  You can call this directly to force the
+     * offset to be in a particular location (e.g., pass in 0,0 to set it
+     * to the center of the object)
+     * @param {Number} iDeltaX the distance from the left
+     * @param {Number} iDeltaY the distance from the top
+     */
+    setDelta: function(iDeltaX, iDeltaY) {
+        this.deltaX = iDeltaX;
+        this.deltaY = iDeltaY;
+    },
+
+    /**
+     * Sets the drag element to the location of the mousedown or click event,
+     * maintaining the cursor location relative to the location on the element
+     * that was clicked.  Override this if you want to place the element in a
+     * location other than where the cursor is.
+     * @param {Number} iPageX the X coordinate of the mousedown or drag event
+     * @param {Number} iPageY the Y coordinate of the mousedown or drag event
+     */
+    setDragElPos: function(iPageX, iPageY) {
+        // the first time we do this, we are going to check to make sure
+        // the element has css positioning
+
+        var el = this.getDragEl();
+        this.alignElWithMouse(el, iPageX, iPageY);
+    },
+
+    /**
+     * Sets the element to the location of the mousedown or click event,
+     * maintaining the cursor location relative to the location on the element
+     * that was clicked.  Override this if you want to place the element in a
+     * location other than where the cursor is.
+     * @param {HTMLElement} el the element to move
+     * @param {Number} iPageX the X coordinate of the mousedown or drag event
+     * @param {Number} iPageY the Y coordinate of the mousedown or drag event
+     */
+    alignElWithMouse: function(el, iPageX, iPageY) {
+        var oCoord = this.getTargetCoord(iPageX, iPageY),
+            fly = el.dom ? el : Ext.fly(el, '_dd'),
+            elSize = fly.getSize(),
+            EL = Ext.Element,
+            vpSize,
+            aCoord,
+            newLeft,
+            newTop;
+
+        if (!this.deltaSetXY) {
+            vpSize = this.cachedViewportSize = { width: EL.getDocumentWidth(), height: EL.getDocumentHeight() };
+            aCoord = [
+                Math.max(0, Math.min(oCoord.x, vpSize.width - elSize.width)),
+                Math.max(0, Math.min(oCoord.y, vpSize.height - elSize.height))
+            ];
+            fly.setXY(aCoord);
+            newLeft = fly.getLocalX();
+            newTop  = fly.getLocalY();
+            this.deltaSetXY = [newLeft - oCoord.x, newTop - oCoord.y];
+        } else {
+            vpSize = this.cachedViewportSize;
+            fly.setLeftTop(
+                Math.max(0, Math.min(oCoord.x + this.deltaSetXY[0], vpSize.width - elSize.width)),
+                Math.max(0, Math.min(oCoord.y + this.deltaSetXY[1], vpSize.height - elSize.height))
+            );
+        }
+
+        this.cachePosition(oCoord.x, oCoord.y);
+        this.autoScroll(oCoord.x, oCoord.y, el.offsetHeight, el.offsetWidth);
+        return oCoord;
+    },
+
+    /**
+     * Saves the most recent position so that we can reset the constraints and
+     * tick marks on-demand.  We need to know this so that we can calculate the
+     * number of pixels the element is offset from its original position.
+     *
+     * @param {Number} [iPageX] the current x position (this just makes it so we
+     * don't have to look it up again)
+     * @param {Number} [iPageY] the current y position (this just makes it so we
+     * don't have to look it up again)
+     */
+    cachePosition: function(iPageX, iPageY) {
+        if (iPageX) {
+            this.lastPageX = iPageX;
+            this.lastPageY = iPageY;
+        } else {
+            var aCoord = Ext.Element.getXY(this.getEl());
+            this.lastPageX = aCoord[0];
+            this.lastPageY = aCoord[1];
+        }
+    },
+
+    /**
+     * Auto-scroll the window if the dragged object has been moved beyond the
+     * visible window boundary.
+     * @param {Number} x the drag element's x position
+     * @param {Number} y the drag element's y position
+     * @param {Number} h the height of the drag element
+     * @param {Number} w the width of the drag element
+     * @private
+     */
+    autoScroll: function(x, y, h, w) {
+
+        if (this.scroll) {
+            // The client height
+            var clientH = Ext.Element.getViewHeight(),
+                // The client width
+                clientW = Ext.Element.getViewWidth(),
+                // The amt scrolled down
+                st = this.DDMInstance.getScrollTop(),
+                // The amt scrolled right
+                sl = this.DDMInstance.getScrollLeft(),
+                // Location of the bottom of the element
+                bot = h + y,
+                // Location of the right of the element
+                right = w + x,
+                // The distance from the cursor to the bottom of the visible area,
+                // adjusted so that we don't scroll if the cursor is beyond the
+                // element drag constraints
+                toBot = (clientH + st - y - this.deltaY),
+                // The distance from the cursor to the right of the visible area
+                toRight = (clientW + sl - x - this.deltaX),
+                // How close to the edge the cursor must be before we scroll
+                // var thresh = (document.all) ? 100 : 40;
+                thresh = 40,
+                // How many pixels to scroll per autoscroll op.  This helps to reduce
+                // clunky scrolling. IE is more sensitive about this ... it needs this
+                // value to be higher.
+                scrAmt = (document.all) ? 80 : 30;
+
+            // Scroll down if we are near the bottom of the visible page and the
+            // obj extends below the crease
+            if ( bot > clientH && toBot < thresh ) {
+                window.scrollTo(sl, st + scrAmt);
+            }
+
+            // Scroll up if the window is scrolled down and the top of the object
+            // goes above the top border
+            if ( y < st && st > 0 && y - st < thresh ) {
+                window.scrollTo(sl, st - scrAmt);
+            }
+
+            // Scroll right if the obj is beyond the right border and the cursor is
+            // near the border.
+            if ( right > clientW && toRight < thresh ) {
+                window.scrollTo(sl + scrAmt, st);
+            }
+
+            // Scroll left if the window has been scrolled to the right and the obj
+            // extends past the left border
+            if ( x < sl && sl > 0 && x - sl < thresh ) {
+                window.scrollTo(sl - scrAmt, st);
+            }
+        }
+    },
+
+    /**
+     * Finds the location the element should be placed if we want to move
+     * it to where the mouse location less the click offset would place us.
+     * @param {Number} iPageX the X coordinate of the click
+     * @param {Number} iPageY the Y coordinate of the click
+     * @return an object that contains the coordinates (Object.x and Object.y)
+     * @private
+     */
+    getTargetCoord: function(iPageX, iPageY) {
+        var x = iPageX - this.deltaX,
+            y = iPageY - this.deltaY;
+
+        if (this.constrainX) {
+            if (x < this.minX) {
+                x = this.minX;
+            }
+            if (x > this.maxX) {
+                x = this.maxX;
+            }
+        }
+
+        if (this.constrainY) {
+            if (y < this.minY) {
+                y = this.minY;
+            }
+            if (y > this.maxY) {
+                y = this.maxY;
+            }
+        }
+
+        x = this.getTick(x, this.xTicks);
+        y = this.getTick(y, this.yTicks);
+
+
+        return {x: x, y: y};
+    },
+
+    /**
+     * Sets up config options specific to this class. Overrides
+     * Ext.dd.DragDrop, but all versions of this method through the
+     * inheritance chain are called
+     */
+    applyConfig: function() {
+        this.callParent();
+        this.scroll = (this.config.scroll !== false);
+    },
+
+    /**
+     * Event that fires prior to the onMouseDown event.  Overrides
+     * Ext.dd.DragDrop.
+     */
+    b4MouseDown: function(e) {
+        // this.resetConstraints();
+        this.autoOffset(e.getPageX(), e.getPageY());
+    },
+
+    /**
+     * Event that fires prior to the onDrag event.  Overrides
+     * Ext.dd.DragDrop.
+     */
+    b4Drag: function(e) {
+        this.setDragElPos(e.getPageX(), e.getPageY());
+    },
+
+    toString: function() {
+        return ("DD " + this.id);
+    }
+
+    //////////////////////////////////////////////////////////////////////////
+    // Debugging ygDragDrop events that can be overridden
+    //////////////////////////////////////////////////////////////////////////
+    /*
+    startDrag: function(x, y) {
+    },
+
+    onDrag: function(e) {
+    },
+
+    onDragEnter: function(e, id) {
+    },
+
+    onDragOver: function(e, id) {
+    },
+
+    onDragOut: function(e, id) {
+    },
+
+    onDragDrop: function(e, id) {
+    },
+
+    endDrag: function(e) {
+    }
+
+    */
+
+});
+
+/*
+ * This is a derivative of the similarly named class in the YUI Library.
+ * The original license:
+ * Copyright (c) 2006, Yahoo! Inc. All rights reserved.
+ * Code licensed under the BSD License:
+ * http://developer.yahoo.net/yui/license.txt
+ */
+
+/**
+ * A DragDrop implementation that inserts an empty, bordered div into
+ * the document that follows the cursor during drag operations.  At the time of
+ * the click, the frame div is resized to the dimensions of the linked html
+ * element, and moved to the exact location of the linked element.
+ *
+ * References to the "frame" element refer to the single proxy element that
+ * was created to be dragged in place of all DDProxy elements on the
+ * page.
+ */
+Ext.define('Ext.dd.DDProxy', {
+    extend: 'Ext.dd.DD',
+
+    statics: {
+        /**
+         * The default drag frame div id
+         * @static
+         */
+        dragElId: "ygddfdiv"
+    },
+
+    /**
+     * Creates new DDProxy.
+     * @param {String} id the id of the linked html element
+     * @param {String} sGroup the group of related DragDrop objects
+     * @param {Object} config an object containing configurable attributes.
+     * Valid properties for DDProxy in addition to those in DragDrop:
+     * 
+     * - resizeFrame
+     * - centerFrame
+     * - dragElId
+     */
+    constructor: function(id, sGroup, config) {
+        if (id) {
+            this.init(id, sGroup, config);
+            this.initFrame();
+        }
+    },
+
+    /**
+     * @property {Boolean} resizeFrame
+     * By default we resize the drag frame to be the same size as the element
+     * we want to drag (this is to get the frame effect).  We can turn it off
+     * if we want a different behavior.
+     */
+    resizeFrame: true,
+
+    /**
+     * @property {Boolean} centerFrame
+     * By default the frame is positioned exactly where the drag element is, so
+     * we use the cursor offset provided by Ext.dd.DD.  Another option that works only if
+     * you do not have constraints on the obj is to have the drag frame centered
+     * around the cursor.  Set centerFrame to true for this effect.
+     */
+    centerFrame: false,
+
+    /**
+     * Creates the proxy element if it does not yet exist
+     */
+    createFrame: function() {
+        var self = this,
+            body = document.body,
+            div,
+            s;
+
+        if (!body || !body.firstChild) {
+            setTimeout( function() { self.createFrame(); }, 50 );
+            return;
+        }
+
+        div = this.getDragEl();
+
+        if (!div) {
+            div    = document.createElement("div");
+            div.id = this.dragElId;
+            s  = div.style;
+
+            s.position   = "absolute";
+            s.visibility = "hidden";
+            s.cursor     = "move";
+            s.border     = "2px solid #aaa";
+            s.zIndex     = 999;
+
+            // appendChild can blow up IE if invoked prior to the window load event
+            // while rendering a table.  It is possible there are other scenarios
+            // that would cause this to happen as well.
+            body.insertBefore(div, body.firstChild);
+        }
+    },
+
+    /**
+     * Initialization for the drag frame element.  Must be called in the
+     * constructor of all subclasses
+     */
+    initFrame: function() {
+        this.createFrame();
+    },
+
+    applyConfig: function() {
+        this.callParent();
+
+        this.resizeFrame = (this.config.resizeFrame !== false);
+        this.centerFrame = (this.config.centerFrame);
+        this.setDragElId(this.config.dragElId || Ext.dd.DDProxy.dragElId);
+    },
+
+    /**
+     * Resizes the drag frame to the dimensions of the clicked object, positions
+     * it over the object, and finally displays it
+     * @param {Number} iPageX X click position
+     * @param {Number} iPageY Y click position
+     * @private
+     */
+    showFrame: function(iPageX, iPageY) {
+        var el = this.getEl(),
+            dragEl = this.getDragEl(),
+            s = dragEl.style;
+
+        this._resizeProxy();
+
+        if (this.centerFrame) {
+            this.setDelta( Math.round(parseInt(s.width,  10)/2),
+                           Math.round(parseInt(s.height, 10)/2) );
+        }
+
+        this.setDragElPos(iPageX, iPageY);
+
+        Ext.fly(dragEl).show();
+    },
+
+    /**
+     * The proxy is automatically resized to the dimensions of the linked
+     * element when a drag is initiated, unless resizeFrame is set to false
+     * @private
+     */
+    _resizeProxy: function() {
+        if (this.resizeFrame) {
+            var el = this.getEl();
+            Ext.fly(this.getDragEl()).setSize(el.offsetWidth, el.offsetHeight);
+        }
+    },
+
+    // overrides Ext.dd.DragDrop
+    b4MouseDown: function(e) {
+        var x = e.getPageX(),
+            y = e.getPageY();
+        this.autoOffset(x, y);
+        this.setDragElPos(x, y);
+    },
+
+    // overrides Ext.dd.DragDrop
+    b4StartDrag: function(x, y) {
+        // show the drag frame
+        this.showFrame(x, y);
+    },
+
+    // overrides Ext.dd.DragDrop
+    b4EndDrag: function(e) {
+        Ext.fly(this.getDragEl()).hide();
+    },
+
+    // overrides Ext.dd.DragDrop
+    // By default we try to move the element to the last location of the frame.
+    // This is so that the default behavior mirrors that of Ext.dd.DD.
+    endDrag: function(e) {
+
+        var lel = this.getEl(),
+            del = this.getDragEl();
+
+        // Show the drag frame briefly so we can get its position
+        del.style.visibility = "";
+
+        this.beforeMove();
+        // Hide the linked element before the move to get around a Safari
+        // rendering bug.
+        lel.style.visibility = "hidden";
+        Ext.dd.DDM.moveToEl(lel, del);
+        del.style.visibility = "hidden";
+        lel.style.visibility = "";
+
+        this.afterDrag();
+    },
+
+    beforeMove : function(){
+
+    },
+
+    afterDrag : function(){
+
+    },
+
+    toString: function() {
+        return ("DDProxy " + this.id);
+    }
+
+});
+
+/**
+ * A simple class that provides the basic implementation needed to make any element draggable.
+ */
+Ext.define('Ext.dd.DragSource', {
+    extend: 'Ext.dd.DDProxy',
+    requires: [
+        'Ext.dd.StatusProxy',
+        'Ext.dd.DragDropManager'
+    ],
+
+    /**
+     * @cfg {String} ddGroup
+     * A named drag drop group to which this object belongs.  If a group is specified, then this object will only
+     * interact with other drag drop objects in the same group.
+     */
+
+    /**
+     * @cfg {String} dropAllowed
+     * The CSS class returned to the drag source when drop is allowed.
+     */
+    dropAllowed : Ext.baseCSSPrefix + 'dd-drop-ok',
+    /**
+     * @cfg {String} dropNotAllowed
+     * The CSS class returned to the drag source when drop is not allowed.
+     */
+    dropNotAllowed : Ext.baseCSSPrefix + 'dd-drop-nodrop',
+
+    /**
+     * @cfg {Boolean} animRepair
+     * If true, animates the proxy element back to the position of the handle element used to trigger the drag.
+     */
+    animRepair: true,
+
+    /**
+     * @cfg {String} repairHighlightColor
+     * The color to use when visually highlighting the drag source in the afterRepair
+     * method after a failed drop (defaults to light blue). The color must be a 6 digit hex value, without
+     * a preceding '#'.
+     */
+    repairHighlightColor: 'c3daf9',
+
+    /**
+     * Creates new drag-source.
+     * @param {String/HTMLElement/Ext.Element} el The container element or ID of it.
+     * @param {Object} config (optional) Config object.
+     */
+    constructor: function(el, config) {
+        this.el = Ext.get(el);
+        if(!this.dragData){
+            this.dragData = {};
+        }
+
+        Ext.apply(this, config);
+
+        if(!this.proxy){
+            this.proxy = new Ext.dd.StatusProxy({
+                id: this.el.id + '-drag-status-proxy',
+                animRepair: this.animRepair
+            });
+        }
+        this.callParent([this.el.dom, this.ddGroup || this.group,
+              {dragElId : this.proxy.id, resizeFrame: false, isTarget: false, scroll: this.scroll === true}]);
+
+        this.dragging = false;
+    },
+
+    /**
+     * Returns the data object associated with this drag source
+     * @return {Object} data An object containing arbitrary data
+     */
+    getDragData : function(e){
+        return this.dragData;
+    },
+
+    // private
+    onDragEnter : function(e, id){
+        var target = Ext.dd.DragDropManager.getDDById(id),
+            status;
+        this.cachedTarget = target;
+        if (this.beforeDragEnter(target, e, id) !== false) {
+            if (target.isNotifyTarget) {
+                status = target.notifyEnter(this, e, this.dragData);
+                this.proxy.setStatus(status);
+            } else {
+                this.proxy.setStatus(this.dropAllowed);
+            }
+
+            if (this.afterDragEnter) {
+                /**
+                 * An empty function by default, but provided so that you can perform a custom action
+                 * when the dragged item enters the drop target by providing an implementation.
+                 * @param {Ext.dd.DragDrop} target The drop target
+                 * @param {Event} e The event object
+                 * @param {String} id The id of the dragged element
+                 * @method afterDragEnter
+                 */
+                this.afterDragEnter(target, e, id);
+            }
+        }
+    },
+
+    /**
+     * An empty function by default, but provided so that you can perform a custom action
+     * before the dragged item enters the drop target and optionally cancel the onDragEnter.
+     * @param {Ext.dd.DragDrop} target The drop target
+     * @param {Event} e The event object
+     * @param {String} id The id of the dragged element
+     * @return {Boolean} isValid True if the drag event is valid, else false to cancel
+     * @template
+     */
+    beforeDragEnter: function(target, e, id) {
+        return true;
+    },
+
+    // private
+    onDragOver: function(e, id) {
+        var target = this.cachedTarget || Ext.dd.DragDropManager.getDDById(id),
+            status;
+        if (this.beforeDragOver(target, e, id) !== false) {
+            if(target.isNotifyTarget){
+                status = target.notifyOver(this, e, this.dragData);
+                this.proxy.setStatus(status);
+            }
+
+            if (this.afterDragOver) {
+                /**
+                 * An empty function by default, but provided so that you can perform a custom action
+                 * while the dragged item is over the drop target by providing an implementation.
+                 * @param {Ext.dd.DragDrop} target The drop target
+                 * @param {Event} e The event object
+                 * @param {String} id The id of the dragged element
+                 * @method afterDragOver
+                 */
+                this.afterDragOver(target, e, id);
+            }
+        }
+    },
+
+    /**
+     * An empty function by default, but provided so that you can perform a custom action
+     * while the dragged item is over the drop target and optionally cancel the onDragOver.
+     * @param {Ext.dd.DragDrop} target The drop target
+     * @param {Event} e The event object
+     * @param {String} id The id of the dragged element
+     * @return {Boolean} isValid True if the drag event is valid, else false to cancel
+     * @template
+     */
+    beforeDragOver: function(target, e, id) {
+        return true;
+    },
+
+    // private
+    onDragOut: function(e, id) {
+        var target = this.cachedTarget || Ext.dd.DragDropManager.getDDById(id);
+        if (this.beforeDragOut(target, e, id) !== false) {
+            if (target.isNotifyTarget) {
+                target.notifyOut(this, e, this.dragData);
+            }
+            this.proxy.reset();
+            if (this.afterDragOut) {
+                /**
+                 * An empty function by default, but provided so that you can perform a custom action
+                 * after the dragged item is dragged out of the target without dropping.
+                 * @param {Ext.dd.DragDrop} target The drop target
+                 * @param {Event} e The event object
+                 * @param {String} id The id of the dragged element
+                 * @method afterDragOut
+                 */
+                this.afterDragOut(target, e, id);
+            }
+        }
+        this.cachedTarget = null;
+    },
+
+    /**
+     * An empty function by default, but provided so that you can perform a custom action before the dragged
+     * item is dragged out of the target without dropping, and optionally cancel the onDragOut.
+     * @param {Ext.dd.DragDrop} target The drop target
+     * @param {Event} e The event object
+     * @param {String} id The id of the dragged element
+     * @return {Boolean} isValid True if the drag event is valid, else false to cancel
+     * @template
+     */
+    beforeDragOut: function(target, e, id){
+        return true;
+    },
+
+    // private
+    onDragDrop: function(e, id){
+        var target = this.cachedTarget || Ext.dd.DragDropManager.getDDById(id);
+        if (this.beforeDragDrop(target, e, id) !== false) {
+            if (target.isNotifyTarget) {
+                if (target.notifyDrop(this, e, this.dragData) !== false) { // valid drop?
+                    this.onValidDrop(target, e, id);
+                } else {
+                    this.onInvalidDrop(target, e, id);
+                }
+            } else {
+                this.onValidDrop(target, e, id);
+            }
+
+            if (this.afterDragDrop) {
+                /**
+                 * An empty function by default, but provided so that you can perform a custom action
+                 * after a valid drag drop has occurred by providing an implementation.
+                 * @param {Ext.dd.DragDrop} target The drop target
+                 * @param {Event} e The event object
+                 * @param {String} id The id of the dropped element
+                 * @method afterDragDrop
+                 */
+                this.afterDragDrop(target, e, id);
+            }
+        }
+        delete this.cachedTarget;
+    },
+
+    /**
+     * An empty function by default, but provided so that you can perform a custom action before the dragged
+     * item is dropped onto the target and optionally cancel the onDragDrop.
+     * @param {Ext.dd.DragDrop} target The drop target
+     * @param {Event} e The event object
+     * @param {String} id The id of the dragged element
+     * @return {Boolean} isValid True if the drag drop event is valid, else false to cancel
+     * @template
+     */
+    beforeDragDrop: function(target, e, id){
+        return true;
+    },
+
+    // private
+    onValidDrop: function(target, e, id){
+        this.hideProxy();
+        if(this.afterValidDrop){
+            /**
+             * An empty function by default, but provided so that you can perform a custom action
+             * after a valid drop has occurred by providing an implementation.
+             * @param {Object} target The target DD
+             * @param {Event} e The event object
+             * @param {String} id The id of the dropped element
+             * @method afterValidDrop
+             */
+            this.afterValidDrop(target, e, id);
+        }
+    },
+
+    // private
+    getRepairXY: function(e, data){
+        return this.el.getXY();
+    },
+
+    // private
+    onInvalidDrop: function(target, e, id) {
+        // This method may be called by the DragDropManager.
+        // To preserve backwards compat, it only passes the event object
+        // Here we correct the arguments.
+        if (!e) {
+            e = target;
+            target = null;
+            id = e.getTarget().id;
+        }
+        this.beforeInvalidDrop(target, e, id);
+        if (this.cachedTarget) {
+            if(this.cachedTarget.isNotifyTarget){
+                this.cachedTarget.notifyOut(this, e, this.dragData);
+            }
+            this.cacheTarget = null;
+        }
+        this.proxy.repair(this.getRepairXY(e, this.dragData), this.afterRepair, this);
+
+        if (this.afterInvalidDrop) {
+            /**
+             * An empty function by default, but provided so that you can perform a custom action
+             * after an invalid drop has occurred by providing an implementation.
+             * @param {Event} e The event object
+             * @param {String} id The id of the dropped element
+             * @method afterInvalidDrop
+             */
+            this.afterInvalidDrop(e, id);
+        }
+    },
+
+    // private
+    afterRepair: function() {
+        var me = this;
+        if (Ext.enableFx) {
+            me.el.highlight(me.repairHighlightColor);
+        }
+        me.dragging = false;
+    },
+
+    /**
+     * An empty function by default, but provided so that you can perform a custom action after an invalid
+     * drop has occurred.
+     * @param {Ext.dd.DragDrop} target The drop target
+     * @param {Event} e The event object
+     * @param {String} id The id of the dragged element
+     * @return {Boolean} isValid True if the invalid drop should proceed, else false to cancel
+     * @template
+     */
+    beforeInvalidDrop: function(target, e, id) {
+        return true;
+    },
+
+    // private
+    handleMouseDown: function(e) {
+        if (this.dragging) {
+            return;
+        }
+        var data = this.getDragData(e);
+        if (data && this.onBeforeDrag(data, e) !== false) {
+            this.dragData = data;
+            this.proxy.stop();
+            this.callParent(arguments);
+        }
+    },
+
+    /**
+     * An empty function by default, but provided so that you can perform a custom action before the initial
+     * drag event begins and optionally cancel it.
+     * @param {Object} data An object containing arbitrary data to be shared with drop targets
+     * @param {Event} e The event object
+     * @return {Boolean} isValid True if the drag event is valid, else false to cancel
+     * @template
+     */
+    onBeforeDrag: function(data, e){
+        return true;
+    },
+
+    /**
+     * An empty function by default, but provided so that you can perform a custom action once the initial
+     * drag event has begun.  The drag cannot be canceled from this function.
+     * @param {Number} x The x position of the click on the dragged object
+     * @param {Number} y The y position of the click on the dragged object
+     * @method
+     * @template
+     */
+    onStartDrag: Ext.emptyFn,
+
+    alignElWithMouse: function() {
+        this.proxy.ensureAttachedToBody(true);
+        return this.callParent(arguments);
+    },
+
+    // private override
+    startDrag: function(x, y) {
+        this.proxy.reset();
+        this.proxy.hidden = false;
+        this.dragging = true;
+        this.proxy.update("");
+        this.onInitDrag(x, y);
+        this.proxy.show();
+    },
+
+    // private
+    onInitDrag: function(x, y) {
+        var clone = this.el.dom.cloneNode(true);
+        clone.id = Ext.id(); // prevent duplicate ids
+        this.proxy.update(clone);
+        this.onStartDrag(x, y);
+        return true;
+    },
+
+    /**
+     * Returns the drag source's underlying {@link Ext.dd.StatusProxy}
+     * @return {Ext.dd.StatusProxy} proxy The StatusProxy
+     */
+    getProxy: function() {
+        return this.proxy;
+    },
+
+    /**
+     * Hides the drag source's {@link Ext.dd.StatusProxy}
+     */
+    hideProxy: function() {
+        this.proxy.hide();
+        this.proxy.reset(true);
+        this.dragging = false;
+    },
+
+    // private
+    triggerCacheRefresh: function() {
+        Ext.dd.DDM.refreshCache(this.groups);
+    },
+
+    // private - override to prevent hiding
+    b4EndDrag: function(e) {
+    },
+
+    // private - override to prevent moving
+    endDrag : function(e){
+        this.onEndDrag(this.dragData, e);
+    },
+
+    // private
+    onEndDrag : function(data, e){
+    },
+
+    // private - pin to cursor
+    autoOffset : function(x, y) {
+        this.setDelta(-12, -20);
+    },
+
+    destroy: function(){
+        this.callParent();
+        Ext.destroy(this.proxy);
+    }
+});
+
+/**
+ * DD implementation for Panels.
+ * @private
+ */
+Ext.define('Ext.panel.DD', {
+    extend: 'Ext.dd.DragSource',
+    requires: ['Ext.panel.Proxy'],
+
+    constructor : function(panel, cfg){
+        var me = this;
+        
+        me.panel = panel;
+        me.dragData = {panel: panel};
+        me.panelProxy = new Ext.panel.Proxy(panel, cfg);
+        me.proxy = me.panelProxy.proxy;
+
+        me.callParent([panel.el, cfg]);
+        me.setupEl(panel);
+    },
+    
+    setupEl: function(panel){
+        var me = this,
+            header = panel.header,
+            el = panel.body;
+            
+        if (header) {
+            me.setHandleElId(header.id);
+            el = header.el;
+        }
+        if (el) {
+            el.setStyle('cursor', 'move');
+            me.scroll = false;
+        } else {
+            // boxready fires after first layout, so we'll definitely be rendered
+            panel.on('boxready', me.setupEl, me, {single: true});
+        }
+    },
+
+    showFrame: Ext.emptyFn,
+    startDrag: Ext.emptyFn,
+    
+    b4StartDrag: function(x, y) {
+        this.panelProxy.show();
+    },
+    
+    b4MouseDown: function(e) {
+        var x = e.getPageX(),
+            y = e.getPageY();
+            
+        this.autoOffset(x, y);
+    },
+    
+    onInitDrag : function(x, y){
+        this.onStartDrag(x, y);
+        return true;
+    },
+    
+    createFrame : Ext.emptyFn,
+    
+    getDragEl : function(e){
+        return this.panelProxy.ghost.el.dom;
+    },
+    
+    endDrag : function(e){
+        this.panelProxy.hide();
+        this.panel.saveState();
+    },
+
+    autoOffset : function(x, y) {
+        x -= this.startPageX;
+        y -= this.startPageY;
+        this.setDelta(x, y);
+    },
+    
+    // Override this, we don't want to repair on an "invalid" drop, the panel
+    // should main it's position
+    onInvalidDrop: function(target, e, id) {
+        var me = this;
+        
+        me.beforeInvalidDrop(target, e, id);
+        if (me.cachedTarget) {
+            if(me.cachedTarget.isNotifyTarget){
+                me.cachedTarget.notifyOut(me, e, me.dragData);
+            }
+            me.cacheTarget = null;
+        }
+
+        if (me.afterInvalidDrop) {
+            /**
+             * An empty function by default, but provided so that you can perform a custom action
+             * after an invalid drop has occurred by providing an implementation.
+             * @param {Event} e The event object
+             * @param {String} id The id of the dropped element
+             * @method afterInvalidDrop
+             */
+            me.afterInvalidDrop(e, id);
+        }
+    }
+});
 /**
  * This class is intended to be extended or created via the {@link Ext.container.Container#layout layout}
  * configuration property.  See {@link Ext.container.Container#layout} for additional details.
@@ -33587,47 +33678,6 @@ Ext.define('Ext.panel.Header', {
 });
 
 /**
- * The base class that other non-interacting Toolbar Item classes should extend in order to
- * get some basic common toolbar item functionality.
- */
-Ext.define('Ext.toolbar.Item', {
-    extend: 'Ext.Component',
-    alias: 'widget.tbitem',
-    alternateClassName: 'Ext.Toolbar.Item',
-    enable:Ext.emptyFn,
-    disable:Ext.emptyFn,
-    focus:Ext.emptyFn
-    /**
-     * @cfg {String} overflowText
-     * Text to be used for the menu if the item is overflowed.
-     */
-});
-/**
- * A simple class that adds a vertical separator bar between toolbar items (css class: 'x-toolbar-separator').
- *
- *     @example
- *     Ext.create('Ext.panel.Panel', {
- *         title: 'Toolbar Separator Example',
- *         width: 300,
- *         height: 200,
- *         tbar : [
- *             'Item 1',
- *             { xtype: 'tbseparator' },
- *             'Item 2'
- *         ],
- *         renderTo: Ext.getBody()
- *     });
- */
-Ext.define('Ext.toolbar.Separator', {
-    extend: 'Ext.toolbar.Item',
-    alias: 'widget.tbseparator',
-    alternateClassName: 'Ext.Toolbar.Separator',
-    baseCls: Ext.baseCSSPrefix + 'toolbar-separator',
-    focusable: false,
-    // Force border: true so container border is not set on this
-    border: true
-});
-/**
  * @private
  */
 Ext.define('Ext.layout.container.boxOverflow.Scroller', {
@@ -34103,6 +34153,47 @@ Ext.define('Ext.layout.container.boxOverflow.Scroller', {
     }
 });
 
+/**
+ * The base class that other non-interacting Toolbar Item classes should extend in order to
+ * get some basic common toolbar item functionality.
+ */
+Ext.define('Ext.toolbar.Item', {
+    extend: 'Ext.Component',
+    alias: 'widget.tbitem',
+    alternateClassName: 'Ext.Toolbar.Item',
+    enable:Ext.emptyFn,
+    disable:Ext.emptyFn,
+    focus:Ext.emptyFn
+    /**
+     * @cfg {String} overflowText
+     * Text to be used for the menu if the item is overflowed.
+     */
+});
+/**
+ * A simple class that adds a vertical separator bar between toolbar items (css class: 'x-toolbar-separator').
+ *
+ *     @example
+ *     Ext.create('Ext.panel.Panel', {
+ *         title: 'Toolbar Separator Example',
+ *         width: 300,
+ *         height: 200,
+ *         tbar : [
+ *             'Item 1',
+ *             { xtype: 'tbseparator' },
+ *             'Item 2'
+ *         ],
+ *         renderTo: Ext.getBody()
+ *     });
+ */
+Ext.define('Ext.toolbar.Separator', {
+    extend: 'Ext.toolbar.Item',
+    alias: 'widget.tbseparator',
+    alternateClassName: 'Ext.Toolbar.Separator',
+    baseCls: Ext.baseCSSPrefix + 'toolbar-separator',
+    focusable: false,
+    // Force border: true so container border is not set on this
+    border: true
+});
 /**
  * Provides a common registry of all menus on a page.
  * @singleton
@@ -44257,88 +44348,6 @@ Ext.define('Ext.panel.Tool', {
 });
 
 /**
- * Component layout for components which maintain an inner body element which must be resized to synchronize with the
- * Component size.
- * @private
- */
-Ext.define('Ext.layout.component.Body', {
-
-    /* Begin Definitions */
-
-    alias: ['layout.body'],
-
-    extend: 'Ext.layout.component.Auto',
-
-    /* End Definitions */
-
-    type: 'body',
-
-    beginLayout: function (ownerContext) {
-        this.callParent(arguments);
-
-        ownerContext.bodyContext = ownerContext.getEl('body');
-    },
-
-    // Padding is exciting here because we have 2 el's: owner.el and owner.body. Content
-    // size always includes the padding of the targetEl, which should be owner.body. But
-    // it is common to have padding on owner.el also (such as a panel header), so we need
-    // to do some more padding work if targetContext is not owner.el. The base class has
-    // already handled the ownerContext's frameInfo (border+framing) so all that is left
-    // is padding.
-
-    calculateOwnerHeightFromContentHeight: function (ownerContext, contentHeight) {
-        var height = this.callParent(arguments);
-
-        if (ownerContext.targetContext != ownerContext) {
-            height += ownerContext.getPaddingInfo().height;
-        }
-
-        return height;
-    },
-
-    calculateOwnerWidthFromContentWidth: function (ownerContext, contentWidth) {
-        var width = this.callParent(arguments);
-
-        if (ownerContext.targetContext != ownerContext) {
-            width += ownerContext.getPaddingInfo().width;
-        }
-
-        return width;
-    },
-
-    measureContentWidth: function (ownerContext) {
-        return ownerContext.bodyContext.setWidth(ownerContext.bodyContext.el.dom.offsetWidth, false);
-    },
-
-    measureContentHeight: function (ownerContext) {
-        return ownerContext.bodyContext.setHeight(ownerContext.bodyContext.el.dom.offsetHeight, false);
-    },
-
-    publishInnerHeight: function (ownerContext, height) {
-        var innerHeight = height - ownerContext.getFrameInfo().height,
-            targetContext = ownerContext.targetContext;
-
-        if (targetContext != ownerContext) {
-            innerHeight -= ownerContext.getPaddingInfo().height;
-        }
-
-        // return the value here, it may get used in a subclass
-        return ownerContext.bodyContext.setHeight(innerHeight, !ownerContext.heightModel.natural);
-    },
-
-    publishInnerWidth: function (ownerContext, width) {
-        var innerWidth = width - ownerContext.getFrameInfo().width,
-            targetContext = ownerContext.targetContext;
-
-        if (targetContext != ownerContext) {
-            innerWidth -= ownerContext.getPaddingInfo().width;
-        }
-
-        ownerContext.bodyContext.setWidth(innerWidth, !ownerContext.widthModel.natural);
-    }
-});
-
-/**
  * Utility class for manipulating CSS rules
  * @singleton
  */
@@ -44523,6 +44532,88 @@ Ext.define('Ext.util.CSS', (function() {
         }
     };
 }()));
+/**
+ * Component layout for components which maintain an inner body element which must be resized to synchronize with the
+ * Component size.
+ * @private
+ */
+Ext.define('Ext.layout.component.Body', {
+
+    /* Begin Definitions */
+
+    alias: ['layout.body'],
+
+    extend: 'Ext.layout.component.Auto',
+
+    /* End Definitions */
+
+    type: 'body',
+
+    beginLayout: function (ownerContext) {
+        this.callParent(arguments);
+
+        ownerContext.bodyContext = ownerContext.getEl('body');
+    },
+
+    // Padding is exciting here because we have 2 el's: owner.el and owner.body. Content
+    // size always includes the padding of the targetEl, which should be owner.body. But
+    // it is common to have padding on owner.el also (such as a panel header), so we need
+    // to do some more padding work if targetContext is not owner.el. The base class has
+    // already handled the ownerContext's frameInfo (border+framing) so all that is left
+    // is padding.
+
+    calculateOwnerHeightFromContentHeight: function (ownerContext, contentHeight) {
+        var height = this.callParent(arguments);
+
+        if (ownerContext.targetContext != ownerContext) {
+            height += ownerContext.getPaddingInfo().height;
+        }
+
+        return height;
+    },
+
+    calculateOwnerWidthFromContentWidth: function (ownerContext, contentWidth) {
+        var width = this.callParent(arguments);
+
+        if (ownerContext.targetContext != ownerContext) {
+            width += ownerContext.getPaddingInfo().width;
+        }
+
+        return width;
+    },
+
+    measureContentWidth: function (ownerContext) {
+        return ownerContext.bodyContext.setWidth(ownerContext.bodyContext.el.dom.offsetWidth, false);
+    },
+
+    measureContentHeight: function (ownerContext) {
+        return ownerContext.bodyContext.setHeight(ownerContext.bodyContext.el.dom.offsetHeight, false);
+    },
+
+    publishInnerHeight: function (ownerContext, height) {
+        var innerHeight = height - ownerContext.getFrameInfo().height,
+            targetContext = ownerContext.targetContext;
+
+        if (targetContext != ownerContext) {
+            innerHeight -= ownerContext.getPaddingInfo().height;
+        }
+
+        // return the value here, it may get used in a subclass
+        return ownerContext.bodyContext.setHeight(innerHeight, !ownerContext.heightModel.natural);
+    },
+
+    publishInnerWidth: function (ownerContext, width) {
+        var innerWidth = width - ownerContext.getFrameInfo().width,
+            targetContext = ownerContext.targetContext;
+
+        if (targetContext != ownerContext) {
+            innerWidth -= ownerContext.getPaddingInfo().width;
+        }
+
+        ownerContext.bodyContext.setWidth(innerWidth, !ownerContext.widthModel.natural);
+    }
+});
+
 /**
  * Simple helper class for easily creating image components. This renders an image tag to
  * the DOM with the configured src.
@@ -48697,170 +48788,6 @@ Ext.define('Ext.layout.ClassList', (function () {
 }()));
 
 /**
- * @author Ed Spencer
- *
- * Base Writer class used by most subclasses of {@link Ext.data.proxy.Server}. This class is responsible for taking a
- * set of {@link Ext.data.Operation} objects and a {@link Ext.data.Request} object and modifying that request based on
- * the Operations.
- *
- * For example a Ext.data.writer.Json would format the Operations and their {@link Ext.data.Model} instances based on
- * the config options passed to the JsonWriter's constructor.
- *
- * Writers are not needed for any kind of local storage - whether via a {@link Ext.data.proxy.WebStorage Web Storage
- * proxy} (see {@link Ext.data.proxy.LocalStorage localStorage} and {@link Ext.data.proxy.SessionStorage
- * sessionStorage}) or just in memory via a {@link Ext.data.proxy.Memory MemoryProxy}.
- */
-Ext.define('Ext.data.writer.Writer', {
-    alias: 'writer.base',
-    alternateClassName: ['Ext.data.DataWriter', 'Ext.data.Writer'],
-    
-    /**
-     * @cfg {Boolean} writeAllFields
-     * True to write all fields from the record to the server. If set to false it will only send the fields that were
-     * modified. Note that any fields that have {@link Ext.data.Field#persist} set to false will still be ignored.
-     */
-    writeAllFields: true,
-    
-    /**
-     * @cfg {String} nameProperty
-     * This property is used to read the key for each value that will be sent to the server. For example:
-     *
-     *     Ext.define('Person', {
-     *         extend: 'Ext.data.Model',
-     *         fields: [{
-     *             name: 'first',
-     *             mapping: 'firstName'
-     *         }, {
-     *             name: 'last',
-     *             mapping: 'lastName'
-     *         }, {
-     *             name: 'age'
-     *         }]
-     *     });
-     *     new Ext.data.writer.Writer({
-     *         writeAllFields: true,
-     *         nameProperty: 'mapping'
-     *     });
-     *
-     *     // This will be sent to the server
-     *     {
-     *         firstName: 'first name value',
-     *         lastName: 'last name value',
-     *         age: 1
-     *     }
-     *
-     * If the value is not present, the field name will always be used.
-     */
-    nameProperty: 'name',
-
-    /*
-     * @property {Boolean} isWriter
-     * `true` in this class to identify an object as an instantiated Writer, or subclass thereof.
-     */
-    isWriter: true,
-
-    /**
-     * Creates new Writer.
-     * @param {Object} [config] Config object.
-     */
-    constructor: function(config) {
-        Ext.apply(this, config);
-    },
-
-    /**
-     * Prepares a Proxy's Ext.data.Request object
-     * @param {Ext.data.Request} request The request object
-     * @return {Ext.data.Request} The modified request object
-     */
-    write: function(request) {
-        var operation = request.operation,
-            records   = operation.records || [],
-            len       = records.length,
-            i         = 0,
-            data      = [];
-
-        for (; i < len; i++) {
-            data.push(this.getRecordData(records[i], operation));
-        }
-        return this.writeRecords(request, data);
-    },
-
-    /**
-     * Formats the data for each record before sending it to the server. This
-     * method should be overridden to format the data in a way that differs from the default.
-     * @param {Ext.data.Model} record The record that we are writing to the server.
-     * @param {Ext.data.Operation} [operation] An operation object.
-     * @return {Object} An object literal of name/value keys to be written to the server.
-     * By default this method returns the data property on the record.
-     */
-    getRecordData: function(record, operation) {
-        var isPhantom = record.phantom === true,
-            writeAll = this.writeAllFields || isPhantom,
-            nameProperty = this.nameProperty,
-            fields = record.fields,
-            fieldItems = fields.items,
-            data = {},
-            clientIdProperty = record.clientIdProperty,
-            changes,
-            name,
-            field,
-            key,
-            value,
-            f, fLen;
-
-        if (writeAll) {
-            fLen = fieldItems.length;
-
-            for (f = 0; f < fLen; f++) {
-                field = fieldItems[f];
-                if (field.persist) {
-                    name = field[nameProperty] || field.name;
-                    value = record.get(field.name);
-                    if (field.serialize) {
-                        data[name] = field.serialize(value, record);
-                    } else if (field.type === Ext.data.Types.DATE && field.dateFormat) {
-                        data[name] = Ext.Date.format(value, field.dateFormat);
-                    } else {
-                        data[name] = value;
-                    }
-                }
-            }
-        } else {
-            // Only write the changes
-            changes = record.getChanges();
-            for (key in changes) {
-                if (changes.hasOwnProperty(key)) {
-                    field = fields.get(key);
-                    if (field.persist) {
-                        name = field[nameProperty] || field.name;
-                        value = record.get(field.name);
-                        if (field.serialize) {
-                            data[name] = field.serialize(value, record);
-                        } else if (field.type === Ext.data.Types.DATE && field.dateFormat) {
-                            data[name] = Ext.Date.format(value, field.dateFormat);
-                        } else {
-                            data[name] = value;
-                        }
-                    }
-                }
-            }
-        }
-        if (isPhantom) {
-            if (clientIdProperty && operation && operation.records.length > 1) {
-                // include clientId for phantom records, if multiple records are being written to the server in one operation.
-                // The server can then return the clientId with each record so the operation can match the server records with the client records
-                data[clientIdProperty] = record.internalId;
-            }
-        } else {
-            // always include the id for non phantoms
-            data[record.idProperty] = record.getId();
-        }
-
-        return data;
-    }
-});
-
-/**
  * @private
  * @class Ext.util.LruCache
  * @extend Ext.util.HashMap
@@ -49117,6 +49044,170 @@ Ext.define('Ext.util.LruCache', {
    * @private
    */
 });
+/**
+ * @author Ed Spencer
+ *
+ * Base Writer class used by most subclasses of {@link Ext.data.proxy.Server}. This class is responsible for taking a
+ * set of {@link Ext.data.Operation} objects and a {@link Ext.data.Request} object and modifying that request based on
+ * the Operations.
+ *
+ * For example a Ext.data.writer.Json would format the Operations and their {@link Ext.data.Model} instances based on
+ * the config options passed to the JsonWriter's constructor.
+ *
+ * Writers are not needed for any kind of local storage - whether via a {@link Ext.data.proxy.WebStorage Web Storage
+ * proxy} (see {@link Ext.data.proxy.LocalStorage localStorage} and {@link Ext.data.proxy.SessionStorage
+ * sessionStorage}) or just in memory via a {@link Ext.data.proxy.Memory MemoryProxy}.
+ */
+Ext.define('Ext.data.writer.Writer', {
+    alias: 'writer.base',
+    alternateClassName: ['Ext.data.DataWriter', 'Ext.data.Writer'],
+    
+    /**
+     * @cfg {Boolean} writeAllFields
+     * True to write all fields from the record to the server. If set to false it will only send the fields that were
+     * modified. Note that any fields that have {@link Ext.data.Field#persist} set to false will still be ignored.
+     */
+    writeAllFields: true,
+    
+    /**
+     * @cfg {String} nameProperty
+     * This property is used to read the key for each value that will be sent to the server. For example:
+     *
+     *     Ext.define('Person', {
+     *         extend: 'Ext.data.Model',
+     *         fields: [{
+     *             name: 'first',
+     *             mapping: 'firstName'
+     *         }, {
+     *             name: 'last',
+     *             mapping: 'lastName'
+     *         }, {
+     *             name: 'age'
+     *         }]
+     *     });
+     *     new Ext.data.writer.Writer({
+     *         writeAllFields: true,
+     *         nameProperty: 'mapping'
+     *     });
+     *
+     *     // This will be sent to the server
+     *     {
+     *         firstName: 'first name value',
+     *         lastName: 'last name value',
+     *         age: 1
+     *     }
+     *
+     * If the value is not present, the field name will always be used.
+     */
+    nameProperty: 'name',
+
+    /*
+     * @property {Boolean} isWriter
+     * `true` in this class to identify an object as an instantiated Writer, or subclass thereof.
+     */
+    isWriter: true,
+
+    /**
+     * Creates new Writer.
+     * @param {Object} [config] Config object.
+     */
+    constructor: function(config) {
+        Ext.apply(this, config);
+    },
+
+    /**
+     * Prepares a Proxy's Ext.data.Request object
+     * @param {Ext.data.Request} request The request object
+     * @return {Ext.data.Request} The modified request object
+     */
+    write: function(request) {
+        var operation = request.operation,
+            records   = operation.records || [],
+            len       = records.length,
+            i         = 0,
+            data      = [];
+
+        for (; i < len; i++) {
+            data.push(this.getRecordData(records[i], operation));
+        }
+        return this.writeRecords(request, data);
+    },
+
+    /**
+     * Formats the data for each record before sending it to the server. This
+     * method should be overridden to format the data in a way that differs from the default.
+     * @param {Ext.data.Model} record The record that we are writing to the server.
+     * @param {Ext.data.Operation} [operation] An operation object.
+     * @return {Object} An object literal of name/value keys to be written to the server.
+     * By default this method returns the data property on the record.
+     */
+    getRecordData: function(record, operation) {
+        var isPhantom = record.phantom === true,
+            writeAll = this.writeAllFields || isPhantom,
+            nameProperty = this.nameProperty,
+            fields = record.fields,
+            fieldItems = fields.items,
+            data = {},
+            clientIdProperty = record.clientIdProperty,
+            changes,
+            name,
+            field,
+            key,
+            value,
+            f, fLen;
+
+        if (writeAll) {
+            fLen = fieldItems.length;
+
+            for (f = 0; f < fLen; f++) {
+                field = fieldItems[f];
+                if (field.persist) {
+                    name = field[nameProperty] || field.name;
+                    value = record.get(field.name);
+                    if (field.serialize) {
+                        data[name] = field.serialize(value, record);
+                    } else if (field.type === Ext.data.Types.DATE && field.dateFormat) {
+                        data[name] = Ext.Date.format(value, field.dateFormat);
+                    } else {
+                        data[name] = value;
+                    }
+                }
+            }
+        } else {
+            // Only write the changes
+            changes = record.getChanges();
+            for (key in changes) {
+                if (changes.hasOwnProperty(key)) {
+                    field = fields.get(key);
+                    if (field.persist) {
+                        name = field[nameProperty] || field.name;
+                        value = record.get(field.name);
+                        if (field.serialize) {
+                            data[name] = field.serialize(value, record);
+                        } else if (field.type === Ext.data.Types.DATE && field.dateFormat) {
+                            data[name] = Ext.Date.format(value, field.dateFormat);
+                        } else {
+                            data[name] = value;
+                        }
+                    }
+                }
+            }
+        }
+        if (isPhantom) {
+            if (clientIdProperty && operation && operation.records.length > 1) {
+                // include clientId for phantom records, if multiple records are being written to the server in one operation.
+                // The server can then return the clientId with each record so the operation can match the server records with the client records
+                data[clientIdProperty] = record.internalId;
+            }
+        } else {
+            // always include the id for non phantoms
+            data[record.idProperty] = record.getId();
+        }
+
+        return data;
+    }
+});
+
 /**
  * @author Ed Spencer
  *
@@ -62325,340 +62416,6 @@ Ext.define('Ext.util.Grouper', {
     }
 });
 /**
- * A utility class for exporting a {@link Ext.draw.Surface Surface} to a string
- * that may be saved or used for processing on the server.
- *
- * @singleton
- */
-Ext.define('Ext.draw.engine.SvgExporter', function(){
-   var commaRe = /,/g,
-       fontRegex = /(-?\d*\.?\d*){1}(em|ex|px|in|cm|mm|pt|pc|%)\s('*.*'*)/,
-       rgbColorRe = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/g,
-       rgbaColorRe = /rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,([\d\.]+)\)/g,
-       surface, len, width, height,
-
-   init = function(s){
-       surface = s;
-       len = surface.length;
-       width = surface.width;
-       height = surface.height;
-   },
-   spriteProcessor = {
-       path: function(sprite){
-
-           var attr = sprite.attr,
-               path = attr.path,
-               pathString = '',
-               props, p, pLen;
-
-           if (Ext.isArray(path[0])) {
-               pLen = path.length;
-               for (p = 0; p < pLen; p++) {
-                   pathString += path[p].join(' ');
-               }
-           } else if (Ext.isArray(path)) {
-               pathString = path.join(' ');
-           } else {
-               pathString = path.replace(commaRe,' ');
-           }
-
-           props = toPropertyString({
-               d: pathString,
-               fill: attr.fill || 'none',
-               stroke: attr.stroke,
-               'fill-opacity': attr.opacity,
-               'stroke-width': attr['stroke-width'],
-               'stroke-opacity': attr['stroke-opacity'],
-               "z-index": attr.zIndex,
-               transform: sprite.matrix.toSvg()
-           });
-
-           return '<path ' + props + '/>';
-       },
-       text: function(sprite){
-
-           // TODO
-           // implement multi line support (@see Svg.js tuneText)
-
-           var attr = sprite.attr,
-               match = fontRegex.exec(attr.font),
-               size = (match && match[1]) || "12",
-               // default font family is Arial
-               family = (match && match[3]) || 'Arial',
-               text = attr.text,
-               factor = (Ext.isFF3_0 || Ext.isFF3_5) ? 2 : 4,
-               tspanString = '',
-               props;
-
-           sprite.getBBox();
-           tspanString += '<tspan x="' + (attr.x || '') + '" dy="';
-           tspanString += (size/factor)+'">';
-           tspanString += Ext.htmlEncode(text) + '</tspan>';
-
-
-           props = toPropertyString({
-               x: attr.x,
-               y: attr.y,
-               'font-size': size,
-               'font-family': family,
-               'font-weight': attr['font-weight'],
-               'text-anchor': attr['text-anchor'],
-               // if no fill property is set it will be black
-               fill: attr.fill || '#000',
-               'fill-opacity': attr.opacity,
-               transform: sprite.matrix.toSvg()
-           });
-
-
-
-           return '<text '+ props + '>' +  tspanString + '</text>';
-       },
-       rect: function(sprite){
-
-           var attr = sprite.attr,
-               props =  toPropertyString({
-                   x: attr.x,
-                   y: attr.y,
-                   rx: attr.rx,
-                   ry: attr.ry,
-                   width: attr.width,
-                   height: attr.height,
-                   fill: attr.fill || 'none',
-                   'fill-opacity': attr.opacity,
-                   stroke: attr.stroke,
-                   'stroke-opacity': attr['stroke-opacity'],
-                   'stroke-width':attr['stroke-width'],
-                   transform: sprite.matrix && sprite.matrix.toSvg()
-               });
-
-           return '<rect ' + props + '/>';
-       },
-       circle: function(sprite){
-
-           var attr = sprite.attr,
-               props = toPropertyString({
-                   cx: attr.x,
-                   cy: attr.y,
-                   r: attr.radius,
-                   fill: attr.translation.fill || attr.fill || 'none',
-                   'fill-opacity': attr.opacity,
-                   stroke: attr.stroke,
-                   'stroke-opacity': attr['stroke-opacity'],
-                   'stroke-width':attr['stroke-width'],
-                   transform: sprite.matrix.toSvg()
-               });
-
-           return '<circle ' + props + ' />';
-       },
-       image: function(sprite){
-
-           var attr = sprite.attr,
-               props = toPropertyString({
-                   x: attr.x - (attr.width/2 >> 0),
-                   y: attr.y - (attr.height/2 >> 0),
-                   width: attr.width,
-                   height: attr.height,
-                   'xlink:href': attr.src,
-                   transform: sprite.matrix.toSvg()
-               });
-
-           return '<image ' + props + ' />';
-       }
-   },
-   svgHeader = function(){
-       var svg = '<?xml version="1.0" standalone="yes"?>';
-       svg += '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
-       return svg;
-   },
-   svgContent = function(){
-       var svg = '<svg width="'+width+'px" height="'+height+'px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">',
-           defs = '', item, itemsLen, items, gradient,
-           getSvgString, colorstops, stop,
-           coll, keys, colls, k, kLen, key, collI, i, j, stopsLen, sortedItems, za, zb;
-
-       items = surface.items.items;
-       itemsLen = items.length;
-
-
-       getSvgString = function(node){
-
-           var childs = node.childNodes,
-               childLength = childs.length,
-               i = 0,
-               attrLength,
-               j,
-               svgString = '', child, attr, tagName, attrItem;
-
-               for(; i < childLength; i++){
-                   child = childs[i];
-                   attr = child.attributes;
-                   tagName = child.tagName;
-
-                   svgString += '<' +tagName;
-
-                   for(j = 0, attrLength = attr.length; j < attrLength; j++){
-                       attrItem = attr.item(j);
-                       svgString += ' '+attrItem.name+'="'+attrItem.value+'"';
-                   }
-
-                   svgString += '>';
-
-                   if(child.childNodes.length > 0){
-                       svgString += getSvgString(child);
-                   }
-
-                   svgString += '</' + tagName + '>';
-
-               }
-           return svgString;
-       };
-
-
-       if(surface.getDefs){
-           defs = getSvgString(surface.getDefs());
-       }else{
-           // IE
-           coll = surface.gradientsColl;
-           if (coll) {
-               keys  = coll.keys;
-               colls = coll.items;
-               k     = 0;
-               kLen  = keys.length;
-           }
-
-           for (; k < kLen; k++) {
-               key   = keys[k];
-               collI = colls[k];
-
-               gradient = surface.gradientsColl.getByKey(key);
-               defs += '<linearGradient id="' + key + '" x1="0" y1="0" x2="1" y2="1">';
-
-               var color = gradient.colors.replace(rgbColorRe, 'rgb($1|$2|$3)');
-               color = color.replace(rgbaColorRe, 'rgba($1|$2|$3|$4)')
-               colorstops = color.split(',');
-               for(i=0, stopsLen = colorstops.length; i < stopsLen; i++){
-                   stop = colorstops[i].split(' ');
-                   color = Ext.draw.Color.fromString(stop[1].replace(/\|/g,','));
-                   defs += '<stop offset="'+stop[0]+'" stop-color="' + color.toString() + '" stop-opacity="1"></stop>';
-               }
-               defs += '</linearGradient>';
-           }
-       }
-
-       svg += '<defs>' + defs + '</defs>';
-
-       // thats the background rectangle
-       svg += spriteProcessor.rect({
-           attr: {
-                   width: '100%',
-                   height: '100%',
-                   fill: '#fff',
-                   stroke: 'none',
-                   opacity: '0'
-           }
-       });
-
-       // Sort the items (stable sort guaranteed)
-       sortedItems = new Array(itemsLen);
-       for(i = 0; i < itemsLen; i++){
-           sortedItems[i] = i;
-       }
-       sortedItems.sort(function (a, b) {
-           za = items[a].attr.zIndex || 0;
-           zb = items[b].attr.zIndex || 0;
-           if (za == zb) {
-               return a - b;
-           }
-           return za - zb;
-       });
-
-       for(i = 0; i < itemsLen; i++){
-           item = items[sortedItems[i]];
-           if(!item.attr.hidden){
-               svg += spriteProcessor[item.type](item);
-           }
-       }
-
-       svg += '</svg>';
-
-       return svg;
-   },
-   toPropertyString = function(obj){
-       var propString = '',
-           key;
-
-       for(key in obj){
-
-           if(obj.hasOwnProperty(key) && obj[key] != null){
-               propString += key +'="'+ obj[key]+'" ';
-           }
-
-       }
-
-       return propString;
-   };
-
-   return {
-       singleton: true,
-
-       /**
-        * Exports the passed surface to a SVG string representation
-        * @param {Ext.draw.Surface} surface The surface to export
-        * @param {Object} [config] Any configuration for the export. Currently this is
-        * unused but may provide more options in the future
-        * @return {String} The SVG as a string
-        */
-       generate: function(surface, config){
-           config = config || {};
-           init(surface);
-           return svgHeader() + svgContent();
-       }
-   };
-});
-/**
- * Private utility class that manages the internal Shadow cache.
- * @private
- */
-Ext.define('Ext.ShadowPool', {
-    singleton: true,
-    requires: ['Ext.DomHelper'],
-
-    markup: (function() {
-        return Ext.String.format(
-            '<div class="{0}{1}-shadow" role="presentation"></div>',
-            Ext.baseCSSPrefix,
-            Ext.isIE && !Ext.supports.CSS3BoxShadow ? 'ie' : 'css'
-        );
-    }()),
-
-    shadows: [],
-
-    pull: function() {
-        var sh = this.shadows.shift();
-        if (!sh) {
-            sh = Ext.get(Ext.DomHelper.insertHtml("beforeBegin", document.body.firstChild, this.markup));
-            sh.autoBoxAdjust = false;
-        }
-        return sh;
-    },
-
-    push: function(sh) {
-        this.shadows.push(sh);
-    },
-    
-    reset: function() {
-        var shadows = [].concat(this.shadows),
-            s,
-            sLen    = shadows.length;
-
-        for (s = 0; s < sLen; s++) {
-            shadows[s].remove();
-        }
-
-        this.shadows = [];
-    }
-});
-/**
  * Private utility class for Ext.resizer.Resizer.
  * @private
  */
@@ -63005,6 +62762,340 @@ Ext.define('Ext.resizer.ResizeTracker', {
     }
 });
 
+/**
+ * A utility class for exporting a {@link Ext.draw.Surface Surface} to a string
+ * that may be saved or used for processing on the server.
+ *
+ * @singleton
+ */
+Ext.define('Ext.draw.engine.SvgExporter', function(){
+   var commaRe = /,/g,
+       fontRegex = /(-?\d*\.?\d*){1}(em|ex|px|in|cm|mm|pt|pc|%)\s('*.*'*)/,
+       rgbColorRe = /rgb\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)/g,
+       rgbaColorRe = /rgba\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,([\d\.]+)\)/g,
+       surface, len, width, height,
+
+   init = function(s){
+       surface = s;
+       len = surface.length;
+       width = surface.width;
+       height = surface.height;
+   },
+   spriteProcessor = {
+       path: function(sprite){
+
+           var attr = sprite.attr,
+               path = attr.path,
+               pathString = '',
+               props, p, pLen;
+
+           if (Ext.isArray(path[0])) {
+               pLen = path.length;
+               for (p = 0; p < pLen; p++) {
+                   pathString += path[p].join(' ');
+               }
+           } else if (Ext.isArray(path)) {
+               pathString = path.join(' ');
+           } else {
+               pathString = path.replace(commaRe,' ');
+           }
+
+           props = toPropertyString({
+               d: pathString,
+               fill: attr.fill || 'none',
+               stroke: attr.stroke,
+               'fill-opacity': attr.opacity,
+               'stroke-width': attr['stroke-width'],
+               'stroke-opacity': attr['stroke-opacity'],
+               "z-index": attr.zIndex,
+               transform: sprite.matrix.toSvg()
+           });
+
+           return '<path ' + props + '/>';
+       },
+       text: function(sprite){
+
+           // TODO
+           // implement multi line support (@see Svg.js tuneText)
+
+           var attr = sprite.attr,
+               match = fontRegex.exec(attr.font),
+               size = (match && match[1]) || "12",
+               // default font family is Arial
+               family = (match && match[3]) || 'Arial',
+               text = attr.text,
+               factor = (Ext.isFF3_0 || Ext.isFF3_5) ? 2 : 4,
+               tspanString = '',
+               props;
+
+           sprite.getBBox();
+           tspanString += '<tspan x="' + (attr.x || '') + '" dy="';
+           tspanString += (size/factor)+'">';
+           tspanString += Ext.htmlEncode(text) + '</tspan>';
+
+
+           props = toPropertyString({
+               x: attr.x,
+               y: attr.y,
+               'font-size': size,
+               'font-family': family,
+               'font-weight': attr['font-weight'],
+               'text-anchor': attr['text-anchor'],
+               // if no fill property is set it will be black
+               fill: attr.fill || '#000',
+               'fill-opacity': attr.opacity,
+               transform: sprite.matrix.toSvg()
+           });
+
+
+
+           return '<text '+ props + '>' +  tspanString + '</text>';
+       },
+       rect: function(sprite){
+
+           var attr = sprite.attr,
+               props =  toPropertyString({
+                   x: attr.x,
+                   y: attr.y,
+                   rx: attr.rx,
+                   ry: attr.ry,
+                   width: attr.width,
+                   height: attr.height,
+                   fill: attr.fill || 'none',
+                   'fill-opacity': attr.opacity,
+                   stroke: attr.stroke,
+                   'stroke-opacity': attr['stroke-opacity'],
+                   'stroke-width':attr['stroke-width'],
+                   transform: sprite.matrix && sprite.matrix.toSvg()
+               });
+
+           return '<rect ' + props + '/>';
+       },
+       circle: function(sprite){
+
+           var attr = sprite.attr,
+               props = toPropertyString({
+                   cx: attr.x,
+                   cy: attr.y,
+                   r: attr.radius,
+                   fill: attr.translation.fill || attr.fill || 'none',
+                   'fill-opacity': attr.opacity,
+                   stroke: attr.stroke,
+                   'stroke-opacity': attr['stroke-opacity'],
+                   'stroke-width':attr['stroke-width'],
+                   transform: sprite.matrix.toSvg()
+               });
+
+           return '<circle ' + props + ' />';
+       },
+       image: function(sprite){
+
+           var attr = sprite.attr,
+               props = toPropertyString({
+                   x: attr.x - (attr.width/2 >> 0),
+                   y: attr.y - (attr.height/2 >> 0),
+                   width: attr.width,
+                   height: attr.height,
+                   'xlink:href': attr.src,
+                   transform: sprite.matrix.toSvg()
+               });
+
+           return '<image ' + props + ' />';
+       }
+   },
+   svgHeader = function(){
+       var svg = '<?xml version="1.0" standalone="yes"?>';
+       svg += '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">';
+       return svg;
+   },
+   svgContent = function(){
+       var svg = '<svg width="'+width+'px" height="'+height+'px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1">',
+           defs = '', item, itemsLen, items, gradient,
+           getSvgString, colorstops, stop,
+           coll, keys, colls, k, kLen, key, collI, i, j, stopsLen, sortedItems, za, zb;
+
+       items = surface.items.items;
+       itemsLen = items.length;
+
+
+       getSvgString = function(node){
+
+           var childs = node.childNodes,
+               childLength = childs.length,
+               i = 0,
+               attrLength,
+               j,
+               svgString = '', child, attr, tagName, attrItem;
+
+               for(; i < childLength; i++){
+                   child = childs[i];
+                   attr = child.attributes;
+                   tagName = child.tagName;
+
+                   svgString += '<' +tagName;
+
+                   for(j = 0, attrLength = attr.length; j < attrLength; j++){
+                       attrItem = attr.item(j);
+                       svgString += ' '+attrItem.name+'="'+attrItem.value+'"';
+                   }
+
+                   svgString += '>';
+
+                   if(child.childNodes.length > 0){
+                       svgString += getSvgString(child);
+                   }
+
+                   svgString += '</' + tagName + '>';
+
+               }
+           return svgString;
+       };
+
+
+       if(surface.getDefs){
+           defs = getSvgString(surface.getDefs());
+       }else{
+           // IE
+           coll = surface.gradientsColl;
+           if (coll) {
+               keys  = coll.keys;
+               colls = coll.items;
+               k     = 0;
+               kLen  = keys.length;
+           }
+
+           for (; k < kLen; k++) {
+               key   = keys[k];
+               collI = colls[k];
+
+               gradient = surface.gradientsColl.getByKey(key);
+               defs += '<linearGradient id="' + key + '" x1="0" y1="0" x2="1" y2="1">';
+
+               var color = gradient.colors.replace(rgbColorRe, 'rgb($1|$2|$3)');
+               color = color.replace(rgbaColorRe, 'rgba($1|$2|$3|$4)')
+               colorstops = color.split(',');
+               for(i=0, stopsLen = colorstops.length; i < stopsLen; i++){
+                   stop = colorstops[i].split(' ');
+                   color = Ext.draw.Color.fromString(stop[1].replace(/\|/g,','));
+                   defs += '<stop offset="'+stop[0]+'" stop-color="' + color.toString() + '" stop-opacity="1"></stop>';
+               }
+               defs += '</linearGradient>';
+           }
+       }
+
+       svg += '<defs>' + defs + '</defs>';
+
+       // thats the background rectangle
+       svg += spriteProcessor.rect({
+           attr: {
+                   width: '100%',
+                   height: '100%',
+                   fill: '#fff',
+                   stroke: 'none',
+                   opacity: '0'
+           }
+       });
+
+       // Sort the items (stable sort guaranteed)
+       sortedItems = new Array(itemsLen);
+       for(i = 0; i < itemsLen; i++){
+           sortedItems[i] = i;
+       }
+       sortedItems.sort(function (a, b) {
+           za = items[a].attr.zIndex || 0;
+           zb = items[b].attr.zIndex || 0;
+           if (za == zb) {
+               return a - b;
+           }
+           return za - zb;
+       });
+
+       for(i = 0; i < itemsLen; i++){
+           item = items[sortedItems[i]];
+           if(!item.attr.hidden){
+               svg += spriteProcessor[item.type](item);
+           }
+       }
+
+       svg += '</svg>';
+
+       return svg;
+   },
+   toPropertyString = function(obj){
+       var propString = '',
+           key;
+
+       for(key in obj){
+
+           if(obj.hasOwnProperty(key) && obj[key] != null){
+               propString += key +'="'+ obj[key]+'" ';
+           }
+
+       }
+
+       return propString;
+   };
+
+   return {
+       singleton: true,
+
+       /**
+        * Exports the passed surface to a SVG string representation
+        * @param {Ext.draw.Surface} surface The surface to export
+        * @param {Object} [config] Any configuration for the export. Currently this is
+        * unused but may provide more options in the future
+        * @return {String} The SVG as a string
+        */
+       generate: function(surface, config){
+           config = config || {};
+           init(surface);
+           return svgHeader() + svgContent();
+       }
+   };
+});
+/**
+ * Private utility class that manages the internal Shadow cache.
+ * @private
+ */
+Ext.define('Ext.ShadowPool', {
+    singleton: true,
+    requires: ['Ext.DomHelper'],
+
+    markup: (function() {
+        return Ext.String.format(
+            '<div class="{0}{1}-shadow" role="presentation"></div>',
+            Ext.baseCSSPrefix,
+            Ext.isIE && !Ext.supports.CSS3BoxShadow ? 'ie' : 'css'
+        );
+    }()),
+
+    shadows: [],
+
+    pull: function() {
+        var sh = this.shadows.shift();
+        if (!sh) {
+            sh = Ext.get(Ext.DomHelper.insertHtml("beforeBegin", document.body.firstChild, this.markup));
+            sh.autoBoxAdjust = false;
+        }
+        return sh;
+    },
+
+    push: function(sh) {
+        this.shadows.push(sh);
+    },
+    
+    reset: function() {
+        var shadows = [].concat(this.shadows),
+            s,
+            sLen    = shadows.length;
+
+        for (s = 0; s < sLen; s++) {
+            shadows[s].remove();
+        }
+
+        this.shadows = [];
+    }
+});
 /**
  * Exports a {@link Ext.draw.Surface Surface} to an image. To do this,
  * the svg string must be sent to a remote server and processed.
@@ -67643,23 +67734,6 @@ Ext.define('Ext.selection.Model', {
 
 });
 
-Ext.define('devilry_nodeadmin.utils.UrlLookup', {
-    singleton: true,
-
-    qualifiedForExamsSummary: function(node_id) {
-        return Ext.String.format('{0}/devilry_qualifiesforexam/#/summary/{1}',
-            window.DevilrySettings.DEVILRY_URLPATH_PREFIX, node_id);
-    },
-
-    nodeChildren: function( node_id ) {
-        return Ext.String.format('#/rest/{0}/children', node_id );
-    },
-
-    aggregatedstudentinfo: function(user_id) {
-        return Ext.String.format('/aggregatedstudentinfo/{0}', user_id);
-    }
-});
-
 Ext.define('devilry_extjsextras.DatetimeHelpers', {
     singleton: true,
     requires: [
@@ -67728,131 +67802,21 @@ Ext.define('devilry_extjsextras.DatetimeHelpers', {
     }
 });
 
-Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOverview' ,{
-  extend: 'Ext.container.Container',
-  alias: 'widget.aggregatedstudentinfo',
-  cls: 'bootstrap',
-  title: 'Aggregated Student Info',
+Ext.define('devilry_nodeadmin.utils.UrlLookup', {
+    singleton: true,
 
-  //layout: 'fit',
-  padding: '40',
-  autoScroll: true,
+    qualifiedForExamsSummary: function(node_id) {
+        return Ext.String.format('{0}/devilry_qualifiesforexam/#/summary/{1}',
+            window.DevilrySettings.DEVILRY_URLPATH_PREFIX, node_id);
+    },
 
-  items: [{
-      xtype: 'container',
-      layout: 'column',
-      items: [{
-          xtype: 'box',
-          itemId: 'headerBox',
-          columnWidth: 1.0,
-          tpl: [
-              '<h1 style="margin-top: 0;">', gettext('Student Information'), '</h1>',
-              '<dl>',
-                '<dt>', gettext('Name') ,'</dt>',
-                '<dd>',
-                    '<tpl if="data.user.full_name">',
-                        '{data.user.full_name}',
-                    '<tpl else>',
-                        '<em class="text-warning">', gettext('Name missing'), '</em>',
-                    '</tpl>',
-                    '{data.user.name}',
-                '<dd>',
-                '<dt>', gettext('Username') ,'</dt>',
-                '<dd>{data.user.username}<dd>',
-                '<dt>', gettext('Email') ,'</dt>',
-                '<dd>{data.user.email}<dd>',
-              '</dl>'
-          ]
-      }, {
-          xtype: 'container',
-          width: 320,
-          items: [{
-              xtype: 'box',
-              cls: 'bootstrap',
-              margin: '0 0 4px 0',
-              html: [
-                  '<strong>',
-                      gettext('Find details about another student:'),
-                  '</strong>'
-                  ].join('')
-          }, {
-              xtype: 'autocompleteuserwidget',
-              itemId: 'userSearchBox',
-              fieldLabel: '',
-              emptyText: gettext('Search by name, username or email...'),
-              width: 300
-          }]
-      }]
-  }, {
-    xtype: 'box',
-    itemId: 'aggregatedStudentInfoBox',
-    tpl: [
-              '<tpl for="data.grouped_by_hierarky">',
-                    '<div class="devilry_focuscontainer" style="padding: 20px; margin-bottom: 20px;">',
-                      '<h2> {long_name} </h2>',
-                      '<tpl for="periods">',
-                          '<h3> {long_name} </h3>',
-                          '<p>',
-                          '<tpl if="is_relatedstudent">',
-                              '<span class="label label-success" style="margin: 0 10px 0 0;">', gettext('Registred as student on period'), '</span>',
-                          '<tpl else>',
-                              '<span class="label label-important" style="margin: 0 10px 0 0;">', gettext('Not registred as student on period'), '</span>',
-                          '</tpl>',
-                          '<tpl if="qualified_forexams === null">',
-                              '<span class="label">', gettext('No information on exam qualification'), '</span>',
-                          '<tpl elseif="qualified_forexams">',
-                              '<span class="label label-success">', gettext('Qualified for final exam'), '</span>',
-                          '<tpl else>',
-                              '<span class="label label-important">', gettext('Not Qualified for final exam'), '</span>',
-                          '</tpl>',
-                          '</p>',
-                          '<table class="table table-striped table-bordered table-hover">',
-          '<tr class="info"> <td>', gettext('Assignment'), '</td> <td>', gettext('Feedback Status'), '</td>', '</tr>',
-                          '<tpl for="assignments">',
-                              '<tr>',
-                              '<tpl for="groups">',
-                                  '<td> <a href="{[this.getGroupUrl(parent, values)]}">{parent.long_name}</a></td>',
-                                  '<td style="width: 200px;">',
-                                  '<tpl if="status === \'corrected\'">',
-                                      '<strong class="grade">',
-                                          '{active_feedback.feedback.grade}',
-                                      '</strong> ',
-                                      '<tpl if="active_feedback.feedback.is_passing_grade">',
-                                          '<span class="label label-success">', gettext('Passed'), '</span>',
-                                      '<tpl else>',
-                                          '<span class="label label-error">', gettext('Failed'), '</span>',
-                                      '</tpl>',
-                                  '<tpl elseif="status === \'waiting-for-deliveries\'">',
-                                      '<em><small class="muted">',
-                                      gettext('Waiting for deliveries, or for deadline to expire'),
-                                      '</small></em>',
-                                  '<tpl elseif="status === \'waiting-for-feedback\'">',
-                                      '<em><small class="muted">', gettext('Waiting for feedback'), '</small></em>',
-                                  '</tpl>',
-                                  '</td>',
+    nodeChildren: function( node_id ) {
+        return Ext.String.format('#/rest/{0}/children', node_id );
+    },
 
-                              '</tpl>',
-                              '</tr>',
-                          '</tpl>',
-                      '</table>',
-                      '</tpl>',
-                    '</div>', 
-                '</tpl>',
-
-              {
-
-                getGroupUrl: function(assignment, group) {
-                    return Ext.String.format('{0}/devilry_subjectadmin/#/assignment/{1}/@@manage-students/@@select/{2}',
-                                             window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
-                                             assignment.id, group.id);
-                }
-
-                
-                
-              }]
-    
-  }]
-
+    aggregatedstudentinfo: function(user_id) {
+        return Ext.String.format('/aggregatedstudentinfo/{0}', user_id);
+    }
 });
 
 /**
@@ -68141,6 +68105,133 @@ Ext.define('Ext.util.History', {
         return this.ready ? this.currentToken : this.getHash();
     }
 });
+Ext.define('devilry_nodeadmin.view.aggregatedstudentview.AggregatedStudentInfoOverview' ,{
+  extend: 'Ext.container.Container',
+  alias: 'widget.aggregatedstudentinfo',
+  cls: 'bootstrap',
+  title: 'Aggregated Student Info',
+
+  //layout: 'fit',
+  padding: '40',
+  autoScroll: true,
+
+  items: [{
+      xtype: 'container',
+      layout: 'column',
+      items: [{
+          xtype: 'box',
+          itemId: 'headerBox',
+          columnWidth: 1.0,
+          tpl: [
+              '<h1 style="margin-top: 0;">', gettext('Student Information'), '</h1>',
+              '<dl>',
+                '<dt>', gettext('Name') ,'</dt>',
+                '<dd>',
+                    '<tpl if="data.user.full_name">',
+                        '{data.user.full_name}',
+                    '<tpl else>',
+                        '<em class="text-warning">', gettext('Name missing'), '</em>',
+                    '</tpl>',
+                    '{data.user.name}',
+                '<dd>',
+                '<dt>', gettext('Username') ,'</dt>',
+                '<dd>{data.user.username}<dd>',
+                '<dt>', gettext('Email') ,'</dt>',
+                '<dd>{data.user.email}<dd>',
+              '</dl>'
+          ]
+      }, {
+          xtype: 'container',
+          width: 320,
+          items: [{
+              xtype: 'box',
+              cls: 'bootstrap',
+              margin: '0 0 4px 0',
+              html: [
+                  '<strong>',
+                      gettext('Find details about another student:'),
+                  '</strong>'
+                  ].join('')
+          }, {
+              xtype: 'autocompleteuserwidget',
+              itemId: 'userSearchBox',
+              fieldLabel: '',
+              emptyText: gettext('Search by name, username or email...'),
+              width: 300
+          }]
+      }]
+  }, {
+    xtype: 'box',
+    itemId: 'aggregatedStudentInfoBox',
+    tpl: [
+              '<tpl for="data.grouped_by_hierarky">',
+                    '<div class="devilry_focuscontainer" style="padding: 20px; margin-bottom: 20px;">',
+                      '<h2> {long_name} </h2>',
+                      '<tpl for="periods">',
+                          '<h3> {long_name} </h3>',
+                          '<p>',
+                          '<tpl if="is_relatedstudent">',
+                              '<span class="label label-success" style="margin: 0 10px 0 0;">', gettext('Registred as student on period'), '</span>',
+                          '<tpl else>',
+                              '<span class="label label-important" style="margin: 0 10px 0 0;">', gettext('Not registred as student on period'), '</span>',
+                          '</tpl>',
+                          '<tpl if="qualified_forexams === null">',
+                              '<span class="label">', gettext('No information on exam qualification'), '</span>',
+                          '<tpl elseif="qualified_forexams">',
+                              '<span class="label label-success">', gettext('Qualified for final exam'), '</span>',
+                          '<tpl else>',
+                              '<span class="label label-important">', gettext('Not Qualified for final exam'), '</span>',
+                          '</tpl>',
+                          '</p>',
+                          '<table class="table table-striped table-bordered table-hover">',
+          '<tr class="info"> <td>', gettext('Assignment'), '</td> <td>', gettext('Feedback Status'), '</td>', '</tr>',
+                          '<tpl for="assignments">',
+                              '<tr>',
+                              '<tpl for="groups">',
+                                  '<td> <a href="{[this.getGroupUrl(parent, values)]}">{parent.long_name}</a></td>',
+                                  '<td style="width: 200px;">',
+                                  '<tpl if="status === \'corrected\'">',
+                                      '<strong class="grade">',
+                                          '{active_feedback.feedback.grade}',
+                                      '</strong> ',
+                                      '<tpl if="active_feedback.feedback.is_passing_grade">',
+                                          '<span class="label label-success">', gettext('Passed'), '</span>',
+                                      '<tpl else>',
+                                          '<span class="label label-error">', gettext('Failed'), '</span>',
+                                      '</tpl>',
+                                  '<tpl elseif="status === \'waiting-for-deliveries\'">',
+                                      '<em><small class="muted">',
+                                      gettext('Waiting for deliveries, or for deadline to expire'),
+                                      '</small></em>',
+                                  '<tpl elseif="status === \'waiting-for-feedback\'">',
+                                      '<em><small class="muted">', gettext('Waiting for feedback'), '</small></em>',
+                                  '</tpl>',
+                                  '</td>',
+
+                              '</tpl>',
+                              '</tr>',
+                          '</tpl>',
+                      '</table>',
+                      '</tpl>',
+                    '</div>', 
+                '</tpl>',
+
+              {
+
+                getGroupUrl: function(assignment, group) {
+                    return Ext.String.format('{0}/devilry_subjectadmin/#/assignment/{1}/@@manage-students/@@select/{2}',
+                                             window.DevilrySettings.DEVILRY_URLPATH_PREFIX,
+                                             assignment.id, group.id);
+                }
+
+                
+                
+              }]
+    
+  }]
+
+});
+
 /**
  * Base class for proxy error handling.
  */
@@ -68234,6 +68325,271 @@ Ext.define('devilry_extjsextras.ProxyErrorHandler', {
         ).apply({
             messages: this.asArrayOfStrings()
         });
+    }
+});
+
+/**
+ * This class functions **between siblings of a {@link Ext.layout.container.VBox VBox} or {@link Ext.layout.container.HBox HBox}
+ * layout** to resize both immediate siblings.
+ *
+ * A Splitter will preserve the flex ratio of any flexed siblings it is required to resize. It does this by setting the `flex` property of *all* flexed siblings
+ * to equal their pixel size. The actual numerical `flex` property in the Components will change, but the **ratio** to the total flex value will be preserved.
+ *
+ * A Splitter may be configured to show a centered mini-collapse tool orientated to collapse the {@link #collapseTarget}.
+ * The Splitter will then call that sibling Panel's {@link Ext.panel.Panel#method-collapse collapse} or {@link Ext.panel.Panel#method-expand expand} method
+ * to perform the appropriate operation (depending on the sibling collapse state). To create the mini-collapse tool but take care
+ * of collapsing yourself, configure the splitter with `{@link #performCollapse}: false`.
+ */
+Ext.define('Ext.resizer.Splitter', {
+    extend: 'Ext.Component',
+    requires: ['Ext.XTemplate'],
+    uses: ['Ext.resizer.SplitterTracker'],
+    alias: 'widget.splitter',
+
+    childEls: [
+        'collapseEl'
+    ],
+
+    renderTpl: [
+        '<tpl if="collapsible===true">',
+            '<div id="{id}-collapseEl" class="', Ext.baseCSSPrefix, 'collapse-el ',
+                Ext.baseCSSPrefix, 'layout-split-{collapseDir}">&#160;</div>',
+        '</tpl>'
+    ],
+
+    baseCls: Ext.baseCSSPrefix + 'splitter',
+    collapsedClsInternal: Ext.baseCSSPrefix + 'splitter-collapsed',
+    
+    // Default to tree, allow internal classes to disable resizing
+    canResize: true,
+
+    /**
+     * @cfg {Boolean} collapsible
+     * True to show a mini-collapse tool in the Splitter to toggle expand and collapse on the {@link #collapseTarget} Panel.
+     * Defaults to the {@link Ext.panel.Panel#collapsible collapsible} setting of the Panel.
+     */
+    collapsible: false,
+
+    /**
+     * @cfg {Boolean} performCollapse
+     * Set to false to prevent this Splitter's mini-collapse tool from managing the collapse
+     * state of the {@link #collapseTarget}.
+     */
+
+    /**
+     * @cfg {Boolean} collapseOnDblClick
+     * True to enable dblclick to toggle expand and collapse on the {@link #collapseTarget} Panel.
+     */
+    collapseOnDblClick: true,
+
+    /**
+     * @cfg {Number} defaultSplitMin
+     * Provides a default minimum width or height for the two components
+     * that the splitter is between.
+     */
+    defaultSplitMin: 40,
+
+    /**
+     * @cfg {Number} defaultSplitMax
+     * Provides a default maximum width or height for the two components
+     * that the splitter is between.
+     */
+    defaultSplitMax: 1000,
+
+    /**
+     * @cfg {String} collapsedCls
+     * A class to add to the splitter when it is collapsed. See {@link #collapsible}.
+     */
+
+    /**
+     * @cfg {String/Ext.panel.Panel} collapseTarget
+     * A string describing the relative position of the immediate sibling Panel to collapse. May be 'prev' or 'next'.
+     *
+     * Or the immediate sibling Panel to collapse.
+     *
+     * The orientation of the mini-collapse tool will be inferred from this setting.
+     *
+     * **Note that only Panels may be collapsed.**
+     */
+    collapseTarget: 'next',
+
+    /**
+     * @property {String} orientation
+     * Orientation of this Splitter. `'vertical'` when used in an hbox layout, `'horizontal'`
+     * when used in a vbox layout.
+     */
+
+    horizontal: false,
+    vertical: false,
+
+    /**
+     * Returns the config object (with an `xclass` property) for the splitter tracker. This
+     * is overridden by {@link Ext.resizer.BorderSplitter BorderSplitter} to create a
+     * {@link Ext.resizer.BorderSplitterTracker BorderSplitterTracker}.
+     * @protected
+     */
+    getTrackerConfig: function () {
+        return {
+            xclass: 'Ext.resizer.SplitterTracker',
+            el: this.el,
+            splitter: this
+        };
+    },
+
+    beforeRender: function() {
+        var me = this,
+            target = me.getCollapseTarget(),
+            collapseDir = me.getCollapseDirection(),
+            vertical = me.vertical,
+            fixedSizeProp = vertical ? 'width' : 'height',
+            stretchSizeProp = vertical ? 'height' : 'width',
+            cls;
+
+        me.callParent();
+
+        if (!me.hasOwnProperty(stretchSizeProp)) {
+            me[stretchSizeProp] = '100%';
+        }
+        if (!me.hasOwnProperty(fixedSizeProp)) {
+            me[fixedSizeProp] = 5;
+        }
+
+        if (target.collapsed) {
+            me.addCls(me.collapsedClsInternal);
+        }
+        
+        cls = me.baseCls + '-' + me.orientation;
+        me.addCls(cls);
+        if (!me.canResize) {
+            me.addCls(cls + '-noresize');
+        }
+        
+        Ext.applyIf(me.renderData, {
+            collapseDir: collapseDir,
+            collapsible: me.collapsible || target.collapsible
+        });
+    },
+
+    onRender: function() {
+        var me = this;
+
+        me.callParent(arguments);
+
+        // Add listeners on the mini-collapse tool unless performCollapse is set to false
+        if (me.performCollapse !== false) {
+            if (me.renderData.collapsible) {
+                me.mon(me.collapseEl, 'click', me.toggleTargetCmp, me);
+            }
+            if (me.collapseOnDblClick) {
+                me.mon(me.el, 'dblclick', me.toggleTargetCmp, me);
+            }
+        }
+
+        // Ensure the mini collapse icon is set to the correct direction when the target is collapsed/expanded by any means
+        me.mon(me.getCollapseTarget(), {
+            collapse: me.onTargetCollapse,
+            expand: me.onTargetExpand,
+            scope: me
+        });
+
+        me.el.unselectable();
+        if (me.canResize) {
+            me.tracker = Ext.create(me.getTrackerConfig());
+            // Relay the most important events to our owner (could open wider later):
+            me.relayEvents(me.tracker, [ 'beforedragstart', 'dragstart', 'dragend' ]);
+        }
+    },
+
+    getCollapseDirection: function() {
+        var me = this,
+            dir = me.collapseDirection,
+            collapseTarget, idx, items, type;
+
+        if (!dir) {
+            collapseTarget = me.collapseTarget;
+            if (collapseTarget.isComponent) {
+                dir = collapseTarget.collapseDirection;
+            }
+
+            if (!dir) {
+                // Avoid duplication of string tests.
+                // Create a two bit truth table of the configuration of the Splitter:
+                // Collapse Target | orientation
+                //        0              0             = next, horizontal
+                //        0              1             = next, vertical
+                //        1              0             = prev, horizontal
+                //        1              1             = prev, vertical
+                type = me.ownerCt.layout.type;
+                if (collapseTarget.isComponent) {
+                    items = me.ownerCt.items;
+                    idx = Number(items.indexOf(collapseTarget) == items.indexOf(me) - 1) << 1 | Number(type == 'hbox');
+                } else {
+                    idx = Number(me.collapseTarget == 'prev') << 1 | Number(type == 'hbox');
+                }
+
+                // Read the data out the truth table
+                dir = ['bottom', 'right', 'top', 'left'][idx];
+            }
+
+            me.collapseDirection = dir;
+        }
+
+        me.orientation = (dir == 'top' || dir == 'bottom') ? 'horizontal' : 'vertical';
+        me[me.orientation] = true;
+
+        return dir;
+    },
+
+    getCollapseTarget: function() {
+        var me = this;
+
+        return me.collapseTarget.isComponent ? me.collapseTarget : me.collapseTarget == 'prev' ? me.previousSibling() : me.nextSibling();
+    },
+
+    onTargetCollapse: function(target) {
+        this.el.addCls([this.collapsedClsInternal, this.collapsedCls]);
+    },
+
+    onTargetExpand: function(target) {
+        this.el.removeCls([this.collapsedClsInternal, this.collapsedCls]);
+    },
+
+    toggleTargetCmp: function(e, t) {
+        var cmp = this.getCollapseTarget(),
+            placeholder = cmp.placeholder,
+            toggle;
+
+        if (placeholder && !placeholder.hidden) {
+            toggle = true;
+        } else {
+            toggle = !cmp.hidden;
+        }
+
+        if (toggle) {
+            if (cmp.collapsed) {
+                cmp.expand();
+            } else if (cmp.collapseDirection) {
+                cmp.collapse();
+            } else {
+                cmp.collapse(this.renderData.collapseDir);
+            }
+        }
+    },
+
+    /*
+     * Work around IE bug. %age margins do not get recalculated on element resize unless repaint called.
+     */
+    setSize: function() {
+        var me = this;
+        me.callParent(arguments);
+        if (Ext.isIE && me.el) {
+            me.el.repaint();
+        }
+    },
+    
+    beforeDestroy: function(){
+        Ext.destroy(this.tracker);
+        this.callParent();
     }
 });
 
@@ -68545,271 +68901,6 @@ Ext.define('devilry_extjsextras.MarkupMoreInfoBox', {
     update: function(data) {
         this.setTplAttrs(data);
         return this.callParent([data]);
-    }
-});
-
-/**
- * This class functions **between siblings of a {@link Ext.layout.container.VBox VBox} or {@link Ext.layout.container.HBox HBox}
- * layout** to resize both immediate siblings.
- *
- * A Splitter will preserve the flex ratio of any flexed siblings it is required to resize. It does this by setting the `flex` property of *all* flexed siblings
- * to equal their pixel size. The actual numerical `flex` property in the Components will change, but the **ratio** to the total flex value will be preserved.
- *
- * A Splitter may be configured to show a centered mini-collapse tool orientated to collapse the {@link #collapseTarget}.
- * The Splitter will then call that sibling Panel's {@link Ext.panel.Panel#method-collapse collapse} or {@link Ext.panel.Panel#method-expand expand} method
- * to perform the appropriate operation (depending on the sibling collapse state). To create the mini-collapse tool but take care
- * of collapsing yourself, configure the splitter with `{@link #performCollapse}: false`.
- */
-Ext.define('Ext.resizer.Splitter', {
-    extend: 'Ext.Component',
-    requires: ['Ext.XTemplate'],
-    uses: ['Ext.resizer.SplitterTracker'],
-    alias: 'widget.splitter',
-
-    childEls: [
-        'collapseEl'
-    ],
-
-    renderTpl: [
-        '<tpl if="collapsible===true">',
-            '<div id="{id}-collapseEl" class="', Ext.baseCSSPrefix, 'collapse-el ',
-                Ext.baseCSSPrefix, 'layout-split-{collapseDir}">&#160;</div>',
-        '</tpl>'
-    ],
-
-    baseCls: Ext.baseCSSPrefix + 'splitter',
-    collapsedClsInternal: Ext.baseCSSPrefix + 'splitter-collapsed',
-    
-    // Default to tree, allow internal classes to disable resizing
-    canResize: true,
-
-    /**
-     * @cfg {Boolean} collapsible
-     * True to show a mini-collapse tool in the Splitter to toggle expand and collapse on the {@link #collapseTarget} Panel.
-     * Defaults to the {@link Ext.panel.Panel#collapsible collapsible} setting of the Panel.
-     */
-    collapsible: false,
-
-    /**
-     * @cfg {Boolean} performCollapse
-     * Set to false to prevent this Splitter's mini-collapse tool from managing the collapse
-     * state of the {@link #collapseTarget}.
-     */
-
-    /**
-     * @cfg {Boolean} collapseOnDblClick
-     * True to enable dblclick to toggle expand and collapse on the {@link #collapseTarget} Panel.
-     */
-    collapseOnDblClick: true,
-
-    /**
-     * @cfg {Number} defaultSplitMin
-     * Provides a default minimum width or height for the two components
-     * that the splitter is between.
-     */
-    defaultSplitMin: 40,
-
-    /**
-     * @cfg {Number} defaultSplitMax
-     * Provides a default maximum width or height for the two components
-     * that the splitter is between.
-     */
-    defaultSplitMax: 1000,
-
-    /**
-     * @cfg {String} collapsedCls
-     * A class to add to the splitter when it is collapsed. See {@link #collapsible}.
-     */
-
-    /**
-     * @cfg {String/Ext.panel.Panel} collapseTarget
-     * A string describing the relative position of the immediate sibling Panel to collapse. May be 'prev' or 'next'.
-     *
-     * Or the immediate sibling Panel to collapse.
-     *
-     * The orientation of the mini-collapse tool will be inferred from this setting.
-     *
-     * **Note that only Panels may be collapsed.**
-     */
-    collapseTarget: 'next',
-
-    /**
-     * @property {String} orientation
-     * Orientation of this Splitter. `'vertical'` when used in an hbox layout, `'horizontal'`
-     * when used in a vbox layout.
-     */
-
-    horizontal: false,
-    vertical: false,
-
-    /**
-     * Returns the config object (with an `xclass` property) for the splitter tracker. This
-     * is overridden by {@link Ext.resizer.BorderSplitter BorderSplitter} to create a
-     * {@link Ext.resizer.BorderSplitterTracker BorderSplitterTracker}.
-     * @protected
-     */
-    getTrackerConfig: function () {
-        return {
-            xclass: 'Ext.resizer.SplitterTracker',
-            el: this.el,
-            splitter: this
-        };
-    },
-
-    beforeRender: function() {
-        var me = this,
-            target = me.getCollapseTarget(),
-            collapseDir = me.getCollapseDirection(),
-            vertical = me.vertical,
-            fixedSizeProp = vertical ? 'width' : 'height',
-            stretchSizeProp = vertical ? 'height' : 'width',
-            cls;
-
-        me.callParent();
-
-        if (!me.hasOwnProperty(stretchSizeProp)) {
-            me[stretchSizeProp] = '100%';
-        }
-        if (!me.hasOwnProperty(fixedSizeProp)) {
-            me[fixedSizeProp] = 5;
-        }
-
-        if (target.collapsed) {
-            me.addCls(me.collapsedClsInternal);
-        }
-        
-        cls = me.baseCls + '-' + me.orientation;
-        me.addCls(cls);
-        if (!me.canResize) {
-            me.addCls(cls + '-noresize');
-        }
-        
-        Ext.applyIf(me.renderData, {
-            collapseDir: collapseDir,
-            collapsible: me.collapsible || target.collapsible
-        });
-    },
-
-    onRender: function() {
-        var me = this;
-
-        me.callParent(arguments);
-
-        // Add listeners on the mini-collapse tool unless performCollapse is set to false
-        if (me.performCollapse !== false) {
-            if (me.renderData.collapsible) {
-                me.mon(me.collapseEl, 'click', me.toggleTargetCmp, me);
-            }
-            if (me.collapseOnDblClick) {
-                me.mon(me.el, 'dblclick', me.toggleTargetCmp, me);
-            }
-        }
-
-        // Ensure the mini collapse icon is set to the correct direction when the target is collapsed/expanded by any means
-        me.mon(me.getCollapseTarget(), {
-            collapse: me.onTargetCollapse,
-            expand: me.onTargetExpand,
-            scope: me
-        });
-
-        me.el.unselectable();
-        if (me.canResize) {
-            me.tracker = Ext.create(me.getTrackerConfig());
-            // Relay the most important events to our owner (could open wider later):
-            me.relayEvents(me.tracker, [ 'beforedragstart', 'dragstart', 'dragend' ]);
-        }
-    },
-
-    getCollapseDirection: function() {
-        var me = this,
-            dir = me.collapseDirection,
-            collapseTarget, idx, items, type;
-
-        if (!dir) {
-            collapseTarget = me.collapseTarget;
-            if (collapseTarget.isComponent) {
-                dir = collapseTarget.collapseDirection;
-            }
-
-            if (!dir) {
-                // Avoid duplication of string tests.
-                // Create a two bit truth table of the configuration of the Splitter:
-                // Collapse Target | orientation
-                //        0              0             = next, horizontal
-                //        0              1             = next, vertical
-                //        1              0             = prev, horizontal
-                //        1              1             = prev, vertical
-                type = me.ownerCt.layout.type;
-                if (collapseTarget.isComponent) {
-                    items = me.ownerCt.items;
-                    idx = Number(items.indexOf(collapseTarget) == items.indexOf(me) - 1) << 1 | Number(type == 'hbox');
-                } else {
-                    idx = Number(me.collapseTarget == 'prev') << 1 | Number(type == 'hbox');
-                }
-
-                // Read the data out the truth table
-                dir = ['bottom', 'right', 'top', 'left'][idx];
-            }
-
-            me.collapseDirection = dir;
-        }
-
-        me.orientation = (dir == 'top' || dir == 'bottom') ? 'horizontal' : 'vertical';
-        me[me.orientation] = true;
-
-        return dir;
-    },
-
-    getCollapseTarget: function() {
-        var me = this;
-
-        return me.collapseTarget.isComponent ? me.collapseTarget : me.collapseTarget == 'prev' ? me.previousSibling() : me.nextSibling();
-    },
-
-    onTargetCollapse: function(target) {
-        this.el.addCls([this.collapsedClsInternal, this.collapsedCls]);
-    },
-
-    onTargetExpand: function(target) {
-        this.el.removeCls([this.collapsedClsInternal, this.collapsedCls]);
-    },
-
-    toggleTargetCmp: function(e, t) {
-        var cmp = this.getCollapseTarget(),
-            placeholder = cmp.placeholder,
-            toggle;
-
-        if (placeholder && !placeholder.hidden) {
-            toggle = true;
-        } else {
-            toggle = !cmp.hidden;
-        }
-
-        if (toggle) {
-            if (cmp.collapsed) {
-                cmp.expand();
-            } else if (cmp.collapseDirection) {
-                cmp.collapse();
-            } else {
-                cmp.collapse(this.renderData.collapseDir);
-            }
-        }
-    },
-
-    /*
-     * Work around IE bug. %age margins do not get recalculated on element resize unless repaint called.
-     */
-    setSize: function() {
-        var me = this;
-        me.callParent(arguments);
-        if (Ext.isIE && me.el) {
-            me.el.repaint();
-        }
-    },
-    
-    beforeDestroy: function(){
-        Ext.destroy(this.tracker);
-        this.callParent();
     }
 });
 
@@ -71277,136 +71368,6 @@ Ext.define('devilry_extjsextras.Router', {
 });
 
 /**
- * Adds utilites for ``djangorestframework`` errors,
- */
-Ext.define('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', {
-    extend: 'devilry_extjsextras.ProxyErrorHandler',
-
-    _decodeResponseTextJSON: function(response) {
-        try {
-            return Ext.JSON.decode(response.responseText);
-        } catch(e) {
-            return null;
-        }
-    },
-
-    _addFieldErrors: function(responseData) {
-        if(!Ext.isEmpty(responseData.field_errors)) {
-            this.fielderrors = responseData.field_errors;
-        }
-    },
-
-    _addMessages: function(responseData) {
-        if(responseData.detail) {
-            this.errormessages.push(responseData.detail);
-        }
-        if(responseData.errors) {
-            this.errormessages = this.errormessages.concat(responseData.errors);
-        }
-    },
-
-    /**
-     * Add errors from an extjs response object (such as the one given to proxy
-     * exception events).
-     */
-    addRestErrorsFromResponse: function(response) {
-        var responseData = this._decodeResponseTextJSON(response);
-        if(responseData) {
-            this._addMessages(responseData);
-            this._addFieldErrors(responseData);
-        }
-    },
-
-    addErrors: function(response, operation) {
-        if(response) {
-            this.addRestErrorsFromResponse(response);
-        }
-        if(!this.hasErrors()) {
-            this.addErrorsFromOperation(operation);
-        }
-    },
-
-    addBatchErrors: function(batch) {
-        Ext.Array.each(batch.exceptions, function(exception) {
-            var message = this.parseHttpError(exception.error, exception.request);
-            this.errormessages.push(message);
-        }, this);
-    }
-});
-
-Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
-    extend: 'Ext.Component',
-    alias: 'widget.nodedetailsoverview',
-    cls: 'devilry_nodeadmin_nodedetailsoverview bootstrap devilry_focuscontainer',
-    padding: 20,
-
-    requires: [
-        'devilry_nodeadmin.utils.UrlLookup'
-    ],
-
-    tpl: [
-        '<h1>{node.long_name}</h1>',
-        '<p class="muted">',
-            '<span class="subject_count">{node.subject_count} ', gettext( 'courses' ), '</span>, ',
-            '<span class="assignment_count">{node.assignment_count} ', gettext( 'assignments' ), '</span>',
-            '</p>',
-        '<hr />',
-        '<tpl if="node.subjects.length">',
-            '<h2>', gettext('Tools'), '</h2>',
-            '<ul class="unstyled devilry_nodeadmin_toolslist">',
-                '<li>',
-                    '<strong><a href="{[this.getQualifiedForExamsSummaryUrl(values.node.id)]}">',
-                        gettext('Qualified for final exams'),
-                    '</strong></a>',
-                    '<small class="muted"> - ',
-                        gettext('View, print and browse students "qualified for final exams"-status.'),
-                    '</small>',
-                '</li>',
-            '</ul>',
-            '<h2>', gettext( "Subjects" ), ' <small>', gettext( 'on this level' ), '</small></h2>',
-            '<p class="muted"><small>',
-                gettext('Follow these links to get access to all the details available to course managers. This includes the ability to extend deadlines, view detailed information about students and their feedback, and much more.'),
-            '</small></p>',
-            '<ul>',
-                '<tpl for="node.subjects">',
-                    '<li class="course"><a href="/devilry_subjectadmin/#/subject/{ id }/">{ long_name }</a></li>',
-                '</tpl>',
-            '</ul>',
-        '</tpl>',
-
-        '<tpl if="childnodes.length">',
-            '<h2>',
-                gettext('Childnodes'),
-            '</h2>',
-            '<ul>',
-                '<tpl for="childnodes">',
-                    '<li>',
-                        '<a href="/devilry_nodeadmin/#/node/{ id }">{ long_name }</a>',
-                    '</li>',
-                '</tpl>',
-            '</ul>',
-        '</tpl>',
-
-        '<tpl if="noChildren">',
-            '<p class="muted">',
-                gettext('There is nothing here.'),
-            '</p>',
-        '</tpl>',
-
-        '<h2>',
-            gettext('Add courses or nodes?'),
-        '</h2>',
-        '</p>',
-            gettext('Adding course or nodes requires superuser permissions. If you have superuser permissions, you will find the superuser role on the frontpage.'),
-        '</p>', {
-            getQualifiedForExamsSummaryUrl: function(node_id) {
-                return devilry_nodeadmin.utils.UrlLookup.qualifiedForExamsSummary(node_id);
-            }
-        }
-    ]
-});
-
-/**
  * Private utility class for Ext.layout.container.Border.
  * @private
  */
@@ -72270,6 +72231,136 @@ Ext.define('Ext.layout.container.Border', {
 
     Ext.apply(props.horz, methods);
     Ext.apply(props.vert, methods);
+});
+
+Ext.define('devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview', {
+    extend: 'Ext.Component',
+    alias: 'widget.nodedetailsoverview',
+    cls: 'devilry_nodeadmin_nodedetailsoverview bootstrap devilry_focuscontainer',
+    padding: 20,
+
+    requires: [
+        'devilry_nodeadmin.utils.UrlLookup'
+    ],
+
+    tpl: [
+        '<h1>{node.long_name}</h1>',
+        '<p class="muted">',
+            '<span class="subject_count">{node.subject_count} ', gettext( 'courses' ), '</span>, ',
+            '<span class="assignment_count">{node.assignment_count} ', gettext( 'assignments' ), '</span>',
+            '</p>',
+        '<hr />',
+        '<tpl if="node.subjects.length">',
+            '<h2>', gettext('Tools'), '</h2>',
+            '<ul class="unstyled devilry_nodeadmin_toolslist">',
+                '<li>',
+                    '<strong><a href="{[this.getQualifiedForExamsSummaryUrl(values.node.id)]}">',
+                        gettext('Qualified for final exams'),
+                    '</strong></a>',
+                    '<small class="muted"> - ',
+                        gettext('View, print and browse students "qualified for final exams"-status.'),
+                    '</small>',
+                '</li>',
+            '</ul>',
+            '<h2>', gettext( "Subjects" ), ' <small>', gettext( 'on this level' ), '</small></h2>',
+            '<p class="muted"><small>',
+                gettext('Follow these links to get access to all the details available to course managers. This includes the ability to extend deadlines, view detailed information about students and their feedback, and much more.'),
+            '</small></p>',
+            '<ul>',
+                '<tpl for="node.subjects">',
+                    '<li class="course"><a href="/devilry_subjectadmin/#/subject/{ id }/">{ long_name }</a></li>',
+                '</tpl>',
+            '</ul>',
+        '</tpl>',
+
+        '<tpl if="childnodes.length">',
+            '<h2>',
+                gettext('Childnodes'),
+            '</h2>',
+            '<ul>',
+                '<tpl for="childnodes">',
+                    '<li>',
+                        '<a href="/devilry_nodeadmin/#/node/{ id }">{ long_name }</a>',
+                    '</li>',
+                '</tpl>',
+            '</ul>',
+        '</tpl>',
+
+        '<tpl if="noChildren">',
+            '<p class="muted">',
+                gettext('There is nothing here.'),
+            '</p>',
+        '</tpl>',
+
+        '<h2>',
+            gettext('Add courses or nodes?'),
+        '</h2>',
+        '</p>',
+            gettext('Adding course or nodes requires superuser permissions. If you have superuser permissions, you will find the superuser role on the frontpage.'),
+        '</p>', {
+            getQualifiedForExamsSummaryUrl: function(node_id) {
+                return devilry_nodeadmin.utils.UrlLookup.qualifiedForExamsSummary(node_id);
+            }
+        }
+    ]
+});
+
+/**
+ * Adds utilites for ``djangorestframework`` errors,
+ */
+Ext.define('devilry_extjsextras.DjangoRestframeworkProxyErrorHandler', {
+    extend: 'devilry_extjsextras.ProxyErrorHandler',
+
+    _decodeResponseTextJSON: function(response) {
+        try {
+            return Ext.JSON.decode(response.responseText);
+        } catch(e) {
+            return null;
+        }
+    },
+
+    _addFieldErrors: function(responseData) {
+        if(!Ext.isEmpty(responseData.field_errors)) {
+            this.fielderrors = responseData.field_errors;
+        }
+    },
+
+    _addMessages: function(responseData) {
+        if(responseData.detail) {
+            this.errormessages.push(responseData.detail);
+        }
+        if(responseData.errors) {
+            this.errormessages = this.errormessages.concat(responseData.errors);
+        }
+    },
+
+    /**
+     * Add errors from an extjs response object (such as the one given to proxy
+     * exception events).
+     */
+    addRestErrorsFromResponse: function(response) {
+        var responseData = this._decodeResponseTextJSON(response);
+        if(responseData) {
+            this._addMessages(responseData);
+            this._addFieldErrors(responseData);
+        }
+    },
+
+    addErrors: function(response, operation) {
+        if(response) {
+            this.addRestErrorsFromResponse(response);
+        }
+        if(!this.hasErrors()) {
+            this.addErrorsFromOperation(operation);
+        }
+    },
+
+    addBatchErrors: function(batch) {
+        Ext.Array.each(batch.exceptions, function(exception) {
+            var message = this.parseHttpError(exception.error, exception.request);
+            this.errormessages.push(message);
+        }, this);
+    }
 });
 
 Ext.define('devilry_nodeadmin.model.AggregatedStudentInfo', {
@@ -80247,25 +80338,6 @@ Ext.define('Ext.form.field.ComboBox', {
     }
 });
 
-Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
-    extend: 'Ext.container.Container',
-    alias: 'widget.nodebrowseroverview',
-    cls: 'devilry_nodeadmin_nodebrowseroverview',
-
-    autoScroll: true,
-    margin: '0',
-    padding: '20',
-
-    /**
-     * @cfg {int} [node_pk]
-     */
-
-    items: [{
-        xtype: 'nodedetailsoverview',
-        columnWidth: 1.0
-    }]
-});
-
 Ext.define('devilry_nodeadmin.view.dashboard.BetaWarning', {
     extend: 'Ext.view.View',
     alias: 'widget.betawarning',
@@ -80281,31 +80353,6 @@ Ext.define('devilry_nodeadmin.view.dashboard.BetaWarning', {
 
     initComponent: function() {
         this.callParent(arguments);
-    }
-});
-
-Ext.define( 'devilry_nodeadmin.model.NodeDetail', {
-    extend: 'Ext.data.Model',
-    fields: [
-        { name: 'id', type: 'int' },
-        { name: 'short_name', type: 'string' },
-        { name: 'long_name', type: 'string' },
-        { name: 'assignment_count', type: 'int' },
-        { name: 'subject_count', type: 'int' },
-        { name: 'etag', type: 'string' },
-        { name: 'subjects', type: 'auto'},
-        { name: 'childnodes', type: 'auto'},
-        { name: 'path', type: 'auto'}
-    ],
-    proxy: {
-        type: 'rest',
-        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_nodeadmin/rest/node/details/',
-        extraParams: {
-            format: 'json'
-        },
-        reader: {
-            type: 'json'
-        }
     }
 });
 
@@ -80331,6 +80378,50 @@ Ext.define('devilry_nodeadmin.view.dashboard.ToplevelNodeList', {
 
     itemSelector: 'a.node'
 
+});
+
+Ext.define('devilry_nodeadmin.view.nodebrowser.NodeBrowserOverview', {
+    extend: 'Ext.container.Container',
+    alias: 'widget.nodebrowseroverview',
+    cls: 'devilry_nodeadmin_nodebrowseroverview',
+
+    autoScroll: true,
+    margin: '0',
+    padding: '20',
+
+    /**
+     * @cfg {int} [node_pk]
+     */
+
+    items: [{
+        xtype: 'nodedetailsoverview',
+        columnWidth: 1.0
+    }]
+});
+
+Ext.define( 'devilry_nodeadmin.model.NodeDetail', {
+    extend: 'Ext.data.Model',
+    fields: [
+        { name: 'id', type: 'int' },
+        { name: 'short_name', type: 'string' },
+        { name: 'long_name', type: 'string' },
+        { name: 'assignment_count', type: 'int' },
+        { name: 'subject_count', type: 'int' },
+        { name: 'etag', type: 'string' },
+        { name: 'subjects', type: 'auto'},
+        { name: 'childnodes', type: 'auto'},
+        { name: 'path', type: 'auto'}
+    ],
+    proxy: {
+        type: 'rest',
+        url: DevilrySettings.DEVILRY_URLPATH_PREFIX + '/devilry_nodeadmin/rest/node/details/',
+        extraParams: {
+            format: 'json'
+        },
+        reader: {
+            type: 'json'
+        }
+    }
 });
 
 Ext.define( 'devilry_nodeadmin.model.ToplevelNode', {
