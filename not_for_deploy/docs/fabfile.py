@@ -10,6 +10,9 @@ def docs():
     """
     local('sphinx-build -b html . _build')
 
+@task
+def doc2dash():
+    local('doc2dash -Af --name Devilry _build')
 
 @task
 def clean():
