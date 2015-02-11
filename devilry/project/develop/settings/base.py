@@ -108,13 +108,6 @@ PASSWORD_HASHERS = (
 
 
 ##################################################################################
-# Make Devilry speak in typical university terms (semester instead of period, ...)
-##################################################################################
-INSTALLED_APPS += ['devilry.devilry_university_translations']
-DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = ('devilry.devilry_university_translations',)
-
-
-##################################################################################
 # Email
 ##################################################################################
 DEVILRY_SEND_EMAIL_TO_USERS = True
