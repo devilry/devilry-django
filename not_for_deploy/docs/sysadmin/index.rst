@@ -1,5 +1,6 @@
+#####################
 Devilry sysadmin docs
-=====================
+#####################
 
 .. toctree::
    :maxdepth: 2
@@ -7,7 +8,7 @@ Devilry sysadmin docs
    gettingstarted
    elasticsearch
    authbackend
-   sysadmin_celery
+   celery
    supervisord
    webserver
    debug

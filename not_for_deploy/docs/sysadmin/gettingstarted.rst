@@ -243,7 +243,7 @@ You now have a working Devilry server, but you still need to:
 
 - :doc:`elasticsearch`.
 - :doc:`authbackend`.
-- :doc:`sysadmin_celery`.
+- :doc:`celery`.
 - :doc:`supervisord`.
 - :doc:`webserver`.
 
