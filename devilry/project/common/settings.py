@@ -126,7 +126,9 @@ HAYSTACK_SIGNAL_PROCESSOR = 'devilry.devilry_search.haystack_signal_processor.De
 # Celery
 #
 ########################################################################
-# BROKER_URL = 'amqp://devilry:secret@localhost:5672/devilryhost'
+CELERY_ALWAYS_EAGER = True
+CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
+CELERY_EAGER_TRANSACTION = True
 CELERY_TIMEZONE = 'Europe/Oslo'
 CELERY_ENABLE_UTC = True
 
