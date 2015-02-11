@@ -3,7 +3,7 @@ from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
 from devilry.django_decoupled_docs.registry import documentationregistry
-from devilry.project.common.docproxies import DevilryUserDocsProxy
+from devilry.project.common.docproxies import DevilryDocsProxy
 from .views.feedbackdraft_preview import FeedbackDraftPreviewView
 from .views.feedbackdraft_bulkpreview import FeedbackDraftBulkPreviewView
 from .views.admin.summary import SummaryView
@@ -42,5 +42,5 @@ urlpatterns = patterns('devilry.devilry_gradingsystem',
 )
 
 
-documentationregistry.add('devilry_gradingsystem/markdown', DevilryUserDocsProxy(
-    en='markdown.html'))
+documentationregistry.add('devilry_gradingsystem/markdown', DevilryDocsProxy(
+    en='user/markdown.html'))

@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
 from devilry.django_decoupled_docs.registry import documentationregistry
-from devilry.project.common.docproxies import DevilryUserDocsProxy
+from devilry.project.common.docproxies import DevilryDocsProxy
 from .views.dashboard import DashboardView
 from .views.singlegroupoverview import SingleGroupOverview
 from .views.allgroupsoverview import AllGroupsOverview
@@ -63,5 +63,5 @@ urlpatterns = patterns('devilry.devilry_examiner',
 )
 
 
-documentationregistry.add('devilry_examiner/gettingstarted', DevilryUserDocsProxy(
-    en='examiner.html'))
+documentationregistry.add('devilry_examiner/gettingstarted', DevilryDocsProxy(
+    en='user/examiner.html'))
