@@ -81,8 +81,9 @@ Make sure all services work as excpected
 To run supervisord in the foreground (for testing), run::
 
     $ cd ~/devilrydeploy
-    $ venv/bin/supervisord -n
+    $ venv/bin/supervisord -n -c supervisord.conf
 
+You should now be able to open http://localhost:8002 in a browser and use Devilry.
 Use ``ctrl-c`` to kill supervisord and all the services it is running.
 
 
@@ -94,17 +95,14 @@ Run Supervisord for production
 To run supervisord in the background with a PID, run::
 
     $ cd ~/devilrydeploy
-    $ venv/bin/supervisord
+    $ venv/bin/supervisord -c supervisord.conf
 
 See :ref:`supervisord-configure` to see and configure where the PID-file is
 written, and for an init-script example.
 
 .. warning::
 
-    Do NOT run supervisord as root. Run it as an unpriviledged used, preferably
-    a user that is only used for Devilry. Use the ``supervisord-user``, as shown
-    in :ref:`supervisord-configure`, to define a user if running supervisord as
-    root.
+    Do NOT run supervisord as root. Run it as the ``devilryrunner`` user.
 
 
 .. _supervisord-initscript:
