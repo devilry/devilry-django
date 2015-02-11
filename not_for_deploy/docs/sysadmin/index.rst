@@ -12,8 +12,8 @@ Devilry sysadmin docs
    webserver
    debug
    update
+   autoset_empty_email_by_username
    managementcommands
-
 
 
 Migration guides

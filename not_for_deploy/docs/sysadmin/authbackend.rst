@@ -43,3 +43,10 @@ Add the following to your ``~/devilrydeploy/devilry_settings.py``::
 
 You will also have to configure how to authenticate via LDAP. That is explained in
 the django-auth-ldap docs: https://pythonhosted.org/django-auth-ldap/authentication.html
+
+
+*************
+Autoset email
+*************
+If your authentication backend does not provide an email address for your users, you
+will most likely want to take a look at: :doc:`autoset_empty_email_by_username`.
