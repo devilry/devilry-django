@@ -54,7 +54,9 @@ messy to maintain. Instead, we use a PIP requirements-file. Create
 
     # The devilry library/djangoproject
     # - See http://devilry.org for the latest devilry version
-    devilry==X.Y.Z
+    devilry==VERSION
+
+Where ``VERSION`` should be set to the latest version of Devilry.
 
 
 **********************************
