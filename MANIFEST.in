@@ -6,6 +6,10 @@ recursive-include devilry *.css
 recursive-include devilry *.html
 recursive-include devilry *.png
 recursive-include devilry *.json
+recursive-include devilry *.woff
+recursive-include devilry *.woff2
+recursive-include devilry *.svg
+recursive-include devilry *.otf
 prune devilry/devilry_gradingsystem/static/devilry_gradingsystem/node_modules
 prune devilry/devilry_header/static/devilry_header/node_modules
 prune devilry/devilry_theme2/static/devilry_theme2/node_modules
