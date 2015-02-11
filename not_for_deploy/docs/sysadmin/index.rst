@@ -14,9 +14,6 @@ Contents:
    debug
    update
    nginx
-   specifyversion
-   awsfab
    custom_root_urls
-   vagrant
    migrationguidelisting
    managementcommands
