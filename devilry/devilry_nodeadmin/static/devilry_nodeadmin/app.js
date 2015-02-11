@@ -15,7 +15,6 @@ if(Ext.isEmpty(querystring.routeTo)) {
         },
 
         requires: [
-            'Ext.util.Cookies',
             'Ext.container.Viewport',
             'Ext.view.View',
             'Ext.layout.container.Border',
@@ -24,6 +23,7 @@ if(Ext.isEmpty(querystring.routeTo)) {
             'Ext.selection.DataViewModel',
             'Ext.selection.Model',
             'Ext.layout.container.Anchor',
+            'Ext.util.Cookies',
 
             'devilry_header.Header2',
             'devilry_header.Breadcrumbs',

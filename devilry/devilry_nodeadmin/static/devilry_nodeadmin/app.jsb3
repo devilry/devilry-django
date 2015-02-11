@@ -29,14 +29,14 @@
                     "name": "Operation.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/data/", 
-                    "clsName": "Ext.data.SortTypes", 
-                    "name": "SortTypes.js"
-                }, 
-                {
                     "path": "static/extjs4/src/util/", 
                     "clsName": "Ext.util.Observable", 
                     "name": "Observable.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/data/", 
+                    "clsName": "Ext.data.SortTypes", 
+                    "name": "SortTypes.js"
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
@@ -59,14 +59,14 @@
                     "name": "KeyMap.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/panel/", 
-                    "clsName": "Ext.panel.Proxy", 
-                    "name": "Proxy.js"
-                }, 
-                {
                     "path": "static/extjs4/src/util/", 
                     "clsName": "Ext.util.Memento", 
                     "name": "Memento.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/panel/", 
+                    "clsName": "Ext.panel.Proxy", 
+                    "name": "Proxy.js"
                 }, 
                 {
                     "path": "static/extjs4/src/fx/", 
@@ -80,13 +80,13 @@
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
-                    "clsName": "Ext.util.Animate", 
-                    "name": "Animate.js"
+                    "clsName": "Ext.util.ElementContainer", 
+                    "name": "ElementContainer.js"
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
-                    "clsName": "Ext.util.ElementContainer", 
-                    "name": "ElementContainer.js"
+                    "clsName": "Ext.util.Animate", 
+                    "name": "Animate.js"
                 }, 
                 {
                     "path": "static/extjs4/src/util/", 
@@ -244,14 +244,14 @@
                     "name": "XTemplate.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/fx/target/", 
-                    "clsName": "Ext.fx.target.Element", 
-                    "name": "Element.js"
-                }, 
-                {
                     "path": "static/extjs4/src/fx/", 
                     "clsName": "Ext.fx.Queue", 
                     "name": "Queue.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/fx/target/", 
+                    "clsName": "Ext.fx.target.Element", 
+                    "name": "Element.js"
                 }, 
                 {
                     "path": "static/extjs4/src/fx/target/", 
@@ -270,6 +270,11 @@
                 }, 
                 {
                     "path": "static/extjs4/src/fx/target/", 
+                    "clsName": "Ext.fx.target.Component", 
+                    "name": "Component.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/fx/target/", 
                     "clsName": "Ext.fx.target.Sprite", 
                     "name": "Sprite.js"
                 }, 
@@ -277,11 +282,6 @@
                     "path": "static/extjs4/src/fx/target/", 
                     "clsName": "Ext.fx.target.CompositeSprite", 
                     "name": "CompositeSprite.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/fx/target/", 
-                    "clsName": "Ext.fx.target.Component", 
-                    "name": "Component.js"
                 }, 
                 {
                     "path": "static/extjs4/src/fx/", 
@@ -354,21 +354,6 @@
                     "name": "Anim.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/layout/", 
-                    "clsName": "Ext.layout.Layout", 
-                    "name": "Layout.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/layout/component/", 
-                    "clsName": "Ext.layout.component.Component", 
-                    "name": "Component.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/layout/component/", 
-                    "clsName": "Ext.layout.component.Dock", 
-                    "name": "Dock.js"
-                }, 
-                {
                     "path": "static/extjs4/src/dd/", 
                     "clsName": "Ext.dd.DragDrop", 
                     "name": "DragDrop.js"
@@ -392,6 +377,21 @@
                     "path": "static/extjs4/src/panel/", 
                     "clsName": "Ext.panel.DD", 
                     "name": "DD.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/layout/", 
+                    "clsName": "Ext.layout.Layout", 
+                    "name": "Layout.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/layout/component/", 
+                    "clsName": "Ext.layout.component.Component", 
+                    "name": "Component.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/layout/component/", 
+                    "clsName": "Ext.layout.component.Dock", 
+                    "name": "Dock.js"
                 }, 
                 {
                     "path": "static/extjs4/src/layout/container/", 
@@ -539,14 +539,14 @@
                     "name": "Tool.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/util/", 
-                    "clsName": "Ext.util.CSS", 
-                    "name": "CSS.js"
-                }, 
-                {
                     "path": "static/extjs4/src/layout/component/", 
                     "clsName": "Ext.layout.component.Body", 
                     "name": "Body.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/util/", 
+                    "clsName": "Ext.util.CSS", 
+                    "name": "CSS.js"
                 }, 
                 {
                     "path": "static/extjs4/src/", 
@@ -759,14 +759,14 @@
                     "name": "Grouper.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/resizer/", 
-                    "clsName": "Ext.resizer.ResizeTracker", 
-                    "name": "ResizeTracker.js"
-                }, 
-                {
                     "path": "static/extjs4/src/draw/engine/", 
                     "clsName": "Ext.draw.engine.SvgExporter", 
                     "name": "SvgExporter.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/resizer/", 
+                    "clsName": "Ext.resizer.ResizeTracker", 
+                    "name": "ResizeTracker.js"
                 }, 
                 {
                     "path": "static/extjs4/src/", 
@@ -839,19 +839,19 @@
                     "name": "Model.js"
                 }, 
                 {
-                    "path": "static/devilry_extjsextras/", 
-                    "clsName": "devilry_extjsextras.DatetimeHelpers", 
-                    "name": "DatetimeHelpers.js"
-                }, 
-                {
                     "path": "static/devilry_nodeadmin/app/utils/", 
                     "clsName": "devilry_nodeadmin.utils.UrlLookup", 
                     "name": "UrlLookup.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/util/", 
-                    "clsName": "Ext.util.History", 
-                    "name": "History.js"
+                    "path": "static/devilry_nodeadmin/app/view/nodebrowser/", 
+                    "clsName": "devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview", 
+                    "name": "NodeDetailsOverview.js"
+                }, 
+                {
+                    "path": "static/devilry_extjsextras/", 
+                    "clsName": "devilry_extjsextras.DatetimeHelpers", 
+                    "name": "DatetimeHelpers.js"
                 }, 
                 {
                     "path": "static/devilry_nodeadmin/app/view/aggregatedstudentview/", 
@@ -864,9 +864,9 @@
                     "name": "ProxyErrorHandler.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/resizer/", 
-                    "clsName": "Ext.resizer.Splitter", 
-                    "name": "Splitter.js"
+                    "path": "static/extjs4/src/util/", 
+                    "clsName": "Ext.util.History", 
+                    "name": "History.js"
                 }, 
                 {
                     "path": "static/extjs4/src/data/proxy/", 
@@ -877,6 +877,11 @@
                     "path": "static/devilry_extjsextras/", 
                     "clsName": "devilry_extjsextras.MarkupMoreInfoBox", 
                     "name": "MarkupMoreInfoBox.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/resizer/", 
+                    "clsName": "Ext.resizer.Splitter", 
+                    "name": "Splitter.js"
                 }, 
                 {
                     "path": "static/extjs4/src/layout/component/", 
@@ -929,21 +934,6 @@
                     "name": "Router.js"
                 }, 
                 {
-                    "path": "static/extjs4/src/resizer/", 
-                    "clsName": "Ext.resizer.BorderSplitter", 
-                    "name": "BorderSplitter.js"
-                }, 
-                {
-                    "path": "static/extjs4/src/layout/container/", 
-                    "clsName": "Ext.layout.container.Border", 
-                    "name": "Border.js"
-                }, 
-                {
-                    "path": "static/devilry_nodeadmin/app/view/nodebrowser/", 
-                    "clsName": "devilry_nodeadmin.view.nodebrowser.NodeDetailsOverview", 
-                    "name": "NodeDetailsOverview.js"
-                }, 
-                {
                     "path": "static/devilry_extjsextras/", 
                     "clsName": "devilry_extjsextras.DjangoRestframeworkProxyErrorHandler", 
                     "name": "DjangoRestframeworkProxyErrorHandler.js"
@@ -957,6 +947,16 @@
                     "path": "static/devilry_nodeadmin/app/controller/", 
                     "clsName": "devilry_nodeadmin.controller.AggregatedStudentInfoController", 
                     "name": "AggregatedStudentInfoController.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/resizer/", 
+                    "clsName": "Ext.resizer.BorderSplitter", 
+                    "name": "BorderSplitter.js"
+                }, 
+                {
+                    "path": "static/extjs4/src/layout/container/", 
+                    "clsName": "Ext.layout.container.Border", 
+                    "name": "Border.js"
                 }, 
                 {
                     "path": "static/devilry_extjsextras/", 
