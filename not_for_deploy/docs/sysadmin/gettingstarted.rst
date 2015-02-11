@@ -3,8 +3,9 @@ Getting started
 ###############
 
 
+********************************
 Install required system packages
-================================
+********************************
 
 #. Python 2.7.X. Check your current version by running ``python --version``.
 #. PIP_
@@ -13,15 +14,17 @@ Install required system packages
    but you will need PostgreSQL for production.
 
 
+********************************
 Create a system user for Devilry
-================================
+********************************
 You should run Devilry as a non-privledged user. We suggest you name the user
 something like ``devilryrunner``. **Run all commands in this documentation as
 this user unless stated otherwise**.
 
 
+****************************************
 Make a directory for your Devilry deploy
-========================================
+****************************************
 You need a directory for your Devilry settings and other Devilry-related files.
 We suggest you use the ``~/devilrydeploy/`` directory (in the HOME folder of
 the ``devilryrunner``-user)::
@@ -31,8 +34,9 @@ the ``devilryrunner``-user)::
 The rest of the guide will assume you use the ``~/devilrydeploy``-directory
 
 
+********************************************
 Make a requirements file for Python packages
-============================================
+********************************************
 To run Devilry in production, you need the Devilry library, and a couple
 of extra Python packages and perhaps you will want to install some third
 party devilry addons. We could just install these, but that would be
@@ -53,8 +57,9 @@ messy to maintain. Instead, we use a PIP requirements-file. Create
     devilry==X.Y.Z
 
 
+**********************************
 Install from the requirements file
-==================================
+**********************************
 ::
 
     $ cd ~/devilrydeploy
@@ -167,6 +172,10 @@ The format is::
 
     DATABASE_URL = "postgres://USER:PASSWORD@HOST:PORT/NAME"
 
+.. note::
+
+    If you are just testing out Devilry, you can keep SQLite as the database.
+
 
 Configure where to store files
 ==============================
@@ -211,6 +220,7 @@ or if you are starting from an empty database, you need to run::
 This will create any missing database tables, and migrate any unmigrated database changes.
 
 
+
 ********************
 Collect static files
 ********************
@@ -231,9 +241,38 @@ Run::
     $ DJANGO_SETTINGS_MODULE=devilry_settings venv/bin/gunicorn devilry.project.production.wsgi -b 0.0.0.0:8000 --workers=12 --preload
 
 You can adjust the number of worker threads in the ``--workers`` argument,
-and the port number in the ``-b`` argument. You can run this on port 80,
-but if you want to have SSL support, you will need to use a HTTP proxy
-server like Apache og Nginx.
+and the port number in the ``-b`` argument. Use ``ctrl-c`` to stop the server.
+
+.. note::
+
+    This is not how you should run this in production. Below, you will learn how to setup
+    SSL via a webserver proxy, and Supervisord for process management.
+
+
+
+*************
+Add some data
+*************
+If you do not have a Devilry database from a previous version of Devilry,
+you will want to add some data. If you already have a working Devilry
+database, skip this step.
+
+First, create a superuser::
+
+    $ venv/bin/python manage.py createsuperuser
+
+Next:
+
+- Go to http://localhost:8000/
+- Login with your newly created superuser.
+- Select the *Superuser* role.
+- Add a **Node**. The toplevel node is typically the name of your school/university.
+- Add a **Course** within the created node. Make sure you make yourself admin on the course.
+- Go back to http://localhost:8000/. You should now have a new *Course manager* role available
+  on the frontpage.
+
+When you are done testing, stop the gunicorn server (with ``ctrl-c``), and move on to
+setting up the more complex parts of the system.
 
 
 ***********
