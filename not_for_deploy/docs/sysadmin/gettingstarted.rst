@@ -238,7 +238,7 @@ Run the gunicorn server
 Run::
 
     $ cd ~/devilrydeploy/
-    $ DJANGO_SETTINGS_MODULE=devilry_settings venv/bin/gunicorn devilry.project.production.wsgi -b 0.0.0.0:8000 --workers=12 --preload
+    $ DJANGO_SETTINGS_MODULE=devilry_settings venv/bin/gunicorn devilry.project.production.wsgi -b 0.0.0.0:8000 --workers=3 --preload
 
 You can adjust the number of worker threads in the ``--workers`` argument,
 and the port number in the ``-b`` argument.
