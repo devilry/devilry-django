@@ -24,7 +24,7 @@ setup(
         'Pygments==1.5',
         'flup==1.0.2',
         'django-extjs4==1.1.4-extjs4.1.1',
-        'gunicorn==0.14.6',
+        'gunicorn==0.17.2',
         'django-crispy-forms==1.4.0',
         'openpyxl==1.6.1',
         'django==1.6.5',

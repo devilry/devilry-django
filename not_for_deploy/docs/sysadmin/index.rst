@@ -6,14 +6,13 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   deploy
+   gettingstarted
    elasticsearch
    authbackend
    sysadmin_celery
    supervisord
+   webserver
    debug
    update
-   nginx
-   custom_root_urls
    migrationguidelisting
    managementcommands

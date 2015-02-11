@@ -1,8 +1,6 @@
-.. _deploy:
-
-****************************
-Deploy Devilry in production
-****************************
+###############
+Getting started
+###############
 
 
 Install required system packages
@@ -42,10 +40,13 @@ messy to maintain. Instead, we use a PIP requirements-file. Create
 ``~/devilrydeploy/requirements.txt`` with the following contents::
 
     # PostgreSQL python bindings
-    psycopg2==2.4.6
+    psycopg2
 
     # Elastic search python bindings
-    elasticsearch==1.3.0
+    elasticsearch
+
+    # Supervisord process manager
+    supervisor
 
     # The devilry library/djangoproject
     # - See http://devilry.org for the latest devilry version
@@ -242,8 +243,8 @@ You now have a working Devilry server, but you still need to:
 - :doc:`elasticsearch`.
 - :doc:`authbackend`.
 - :doc:`sysadmin_celery`.
-- Setup Supervisord for process management, log handling and log rotation.
-- Setup Nginx, Apache or some other web proxy server with SSL.
+- :doc:`supervisord`.
+- :doc:`webserver`.
 
 
 .. _PIP: https://pip.pypa.io
