@@ -14,6 +14,7 @@ setup(
     zip_safe=False,
     author=(u'Tor Johansen, Espen Angell Kristiansen, Bendik Opstad, Vegard Angell, '
             u'Magne Westlie, Ilya Kostolomov, Christian Tryti, Rebekka M\u00F8rken'),
+    author_email='devilry-contact@googlegroups.com',
     include_package_data=True,
     description="A system for handling electronic deliveries.",
     packages=find_packages(),
