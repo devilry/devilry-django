@@ -241,9 +241,9 @@ You now have a working Devilry server, but you still need to:
 
 - :doc:`elasticsearch`.
 - :doc:`authbackend`.
-- Setup the Celery background task server.
+- :doc:`sysadmin_celery`.
 - Setup Supervisord for process management, log handling and log rotation.
-
+- Setup Nginx, Apache or some other web proxy server with SSL.
 
 
 .. _PIP: https://pip.pypa.io

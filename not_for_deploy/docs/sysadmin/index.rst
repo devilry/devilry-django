@@ -7,6 +7,9 @@ Contents:
    :maxdepth: 2
 
    deploy
+   elasticsearch
+   authbackend
+   sysadmin_celery
    supervisord
    debug
    update
