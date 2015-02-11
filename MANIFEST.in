@@ -5,6 +5,7 @@ recursive-include devilry *.js
 recursive-include devilry *.css
 recursive-include devilry *.html
 recursive-include devilry *.png
+recursive-include devilry *.gif
 recursive-include devilry *.json
 recursive-include devilry *.woff
 recursive-include devilry *.woff2
