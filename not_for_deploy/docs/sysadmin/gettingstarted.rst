@@ -232,16 +232,16 @@ Run the following command to collect all static files (CSS, javascript, ...) for
 The files are written to the ``staticfiles`` sub-directory (``~/devilrydeploy/staticfiles``).
 
 
-*************************
-Run the production server
-*************************
+***********************
+Run the gunicorn server
+***********************
 Run::
 
     $ cd ~/devilrydeploy/
     $ DJANGO_SETTINGS_MODULE=devilry_settings venv/bin/gunicorn devilry.project.production.wsgi -b 0.0.0.0:8000 --workers=12 --preload
 
 You can adjust the number of worker threads in the ``--workers`` argument,
-and the port number in the ``-b`` argument. Use ``ctrl-c`` to stop the server.
+and the port number in the ``-b`` argument.
 
 .. note::
 
@@ -250,15 +250,15 @@ and the port number in the ``-b`` argument. Use ``ctrl-c`` to stop the server.
 
 
 
-*************
-Add some data
-*************
+*********************************************************
+If you do not have an existing database --- Add some data
+*********************************************************
 If you do not have a Devilry database from a previous version of Devilry,
-you will want to add some data. If you already have a working Devilry
-database, skip this step.
+you will want to add some data.
 
 First, create a superuser::
 
+    $ cd ~/devilrydeploy/
     $ venv/bin/python manage.py createsuperuser
 
 Next:
@@ -271,6 +271,17 @@ Next:
 - Go back to http://localhost:8000/. You should now have a new *Course manager* role available
   on the frontpage.
 
+
+********************************
+If you have an existing database
+********************************
+If you already have a working Devilry database, you will most likely have to configure
+and authentication backend before you can do any more testing (explained below).
+
+
+************************
+Stop the gunicorn server
+************************
 When you are done testing, stop the gunicorn server (with ``ctrl-c``), and move on to
 setting up the more complex parts of the system.
 
@@ -280,8 +291,8 @@ Whats next?
 ***********
 You now have a working Devilry server, but you still need to:
 
-- :doc:`elasticsearch`.
 - :doc:`authbackend`.
+- :doc:`elasticsearch`.
 - :doc:`celery`.
 - :doc:`supervisord`.
 - :doc:`webserver`.
