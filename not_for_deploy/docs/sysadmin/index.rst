@@ -1,8 +1,6 @@
 Devilry sysadmin docs
 =====================
 
-Contents:
-
 .. toctree::
    :maxdepth: 2
 
@@ -14,5 +12,17 @@ Contents:
    webserver
    debug
    update
-   migrationguidelisting
    managementcommands
+
+
+
+Migration guides
+================
+If a minor version is not listed here, it is a code-only update, which means that
+the :doc:`update guide <update>` is all you need.
+
+.. toctree::
+    :maxdepth: 1
+    :glob:
+
+    migrationguides/*
