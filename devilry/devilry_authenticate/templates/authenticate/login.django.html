@@ -17,7 +17,7 @@
             function onPageLoad() {
                 document.getElementById('id_username').focus();
                 var hashField = document.getElementById('id_urlhash');
-                if(hashField.value == '') {
+                if(typeof(hashField) != 'undefined' && hashField != null && hashField.value === '') {
                     hashField.value = window.location.hash;
                 }
             }

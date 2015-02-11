@@ -53,7 +53,9 @@ def login(request):
     formhelper.label_class = 'sr-only'
     formhelper.layout = layout.Layout(
         layout.Field('username', placeholder='Username', css_class='input-lg'),
-        layout.Field('password', placeholder='Password', css_class='input-lg'))
+        layout.Field('password', placeholder='Password', css_class='input-lg'),
+        'urlhash',
+        'next')
     return render(request,
                   'authenticate/login.django.html',
                   {'form': form,
