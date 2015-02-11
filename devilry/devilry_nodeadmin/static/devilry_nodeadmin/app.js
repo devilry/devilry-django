@@ -15,6 +15,7 @@ if(Ext.isEmpty(querystring.routeTo)) {
         },
 
         requires: [
+            'Ext.util.Cookies',
             'Ext.container.Viewport',
             'Ext.view.View',
             'Ext.layout.container.Border',

@@ -14,13 +14,13 @@ if(Ext.isEmpty(querystring.routeTo)) {
         },
 
         requires: [
+            'Ext.util.Cookies',
             'Ext.container.Viewport',
             'Ext.layout.container.Border',
             'Ext.layout.container.Column',
             'Ext.layout.container.Card',
             'Ext.form.RadioGroup',
             'Ext.form.field.Radio',
-            'Ext.util.Cookies',
             'devilry_extjsextras.Router',
             'devilry_extjsextras.RouteNotFound',
             'devilry_extjsextras.AlertMessage',
