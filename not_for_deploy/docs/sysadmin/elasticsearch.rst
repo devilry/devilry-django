@@ -20,3 +20,11 @@ Add the following to ``~/devilrydeploy/devilry_settings.py``::
     }
 
 Adjust the URL if you are running ElasticSearch on a separate server or another port.
+
+
+Build the search index
+======================
+To index the data currently in the database, run::
+
+    $ cd ~/devilrydeploy/
+    $ python manage.py rebuild_index --noinput
