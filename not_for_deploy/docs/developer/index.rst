@@ -20,8 +20,6 @@ Essentials
     testsuite
     mock
     devilry.project.develop.teshelpers.corebuilder
-    create_app
-
 
 
 Essential wiki pages for developers
