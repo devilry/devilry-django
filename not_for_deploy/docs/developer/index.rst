@@ -20,7 +20,6 @@ Essentials
     testsuite
     mock
     devilry.project.develop.teshelpers.corebuilder
-    extend_devilry
     create_app
 
 
