@@ -1,9 +1,12 @@
-.. _plugins:
-
-
-=====================
+*********************
 How to write a plugin
-=====================
+*********************
+
+.. warning::
+
+    Plugins will be phased out in 2.1.0 when we update to Django 1.7.
+
+
 
 A plugin is basically just a normal Django application. The only thing making
 it a *pugin* is that it integrates itself into the Devilry system in some way.
