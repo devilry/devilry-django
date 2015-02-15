@@ -16,7 +16,7 @@ setup(
             u'Magne Westlie, Ilya Kostolomov, Christian Tryti, Rebekka M\u00F8rken'),
     author_email='devilry-contact@googlegroups.com',
     include_package_data=True,
-    description="A system for handling electronic deliveries.",
+    description="A system for handling electronic deliveries. See https://github.com/devilry/devilry-django.",
     packages=find_packages(),
     install_requires=[
         'setuptools',
