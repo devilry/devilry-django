@@ -75,7 +75,7 @@ Ext.define('devilry_subjectadmin.view.subject.SubjectOverview' ,{
                         itemId: 'renameButton',
                         id: 'subjectRenameButton',
                         titleText: gettext('Loading') + ' ...',
-                        bodyHtml: gettext('Renaming a course should not done without a certain amount of consideration. The name of a course, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
+                        bodyHtml: gettext('Renaming a course should not be done without a certain amount of consideration. The name of a course, especially the short name, is often used as an identifier when integrating other systems with Devilry.'),
                         buttonText: gettext('Rename') + ' ...'
                     }, {
                         xtype: 'singleactionbox',
