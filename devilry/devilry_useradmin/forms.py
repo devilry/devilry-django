@@ -10,16 +10,17 @@ def get_setting(attrname, default=None):
     return getattr(settings, attrname, default)
 
 
-
 class CustomUserCreationForm(forms.ModelForm):
     """
     A form that creates a user, with no privileges, from the given username.
     """
-    username = forms.RegexField(label=_("Username"), max_length=30,
+    username = forms.RegexField(
+        label=_("Username"),
+        max_length=30,
         regex=r'^[\w.@+-]+$',
-        help_text = _("Required. 30 characters or fewer. Letters, digits and "
+        help_text=_("Required. 30 characters or fewer. Letters, digits and "
                       "@/./+/-/_ only."),
-        error_messages = {
+        error_messages={
             'invalid': _("This value may contain only letters, numbers and "
                          "@/./+/-/_ characters.")})
 
@@ -45,14 +46,16 @@ class CustomUserCreationForm(forms.ModelForm):
         return user
 
 
-
-default_password_helptext = _("Raw passwords are not stored, so there is no way to see "
+default_password_helptext = _("Unencrypted passwords are not stored, so there is no way to see "
                               "this user's password, but you can change the password "
                               "using <a href=\"password/\">this form</a>.")
 password_helptext = getattr(settings, 'DEVILRY_USERADMIN_PASSWORD_HELPMESSAGE', default_password_helptext)
-is_staff_help = _('Should the user have access to this admin site? Unless you make the user superuser (below), their admin site will be empty unless you give them permissions using the Groups and Permissions fields below.')
+is_staff_help = _('Should the user have access to this admin site? '
+                  'You should select this for superusers, and leave it unchecked for all other users.')
 if not get_setting('DEVILRY_USERADMIN_USER_INCLUDE_PERMISSIONFRAMEWORK'):
-    is_staff_help = _('Should the user have access to this admin site? Unless you make the user superuser (below), their admin site will be empty.')
+    is_staff_help = _('Should the user have access to this admin site? '
+                      'Unless you make the user superuser (below), their admin site will be empty.')
+
 
 class CustomUserChangeForm(UserChangeForm):
     """
@@ -63,9 +66,13 @@ class CustomUserChangeForm(UserChangeForm):
                                          help_text=password_helptext)
     is_staff = forms.BooleanField(label=_("Staff status"), required=False,
                                   help_text=is_staff_help)
-    is_superuser = forms.BooleanField(label=_("Superuser status"), required=False,
-                                      help_text=_('Should the user have access to all data in Devilry? You normally want superusers to be Staff users as well, however if they are not staff, they simply have access to everything in the regular administrator panel in Devilry, but not to this admin site.'))
-
+    is_superuser = forms.BooleanField(
+        label=_("Superuser status"), required=False,
+        help_text=_('Should the user have access to all data in Devilry? '
+                    'You normally want superusers to be Staff users as well, '
+                    'however if they are not staff, they simply have access to '
+                    'everything in the regular administrator panel in Devilry, '
+                    'but not to this admin site.'))
 
     def clean_username(self):
         username = self.cleaned_data["username"]
