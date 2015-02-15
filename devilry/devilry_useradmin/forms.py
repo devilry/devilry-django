@@ -18,11 +18,9 @@ class CustomUserCreationForm(forms.ModelForm):
         label=_("Username"),
         max_length=30,
         regex=r'^[\w.@+-]+$',
-        help_text=_("Required. 30 characters or fewer. Letters, digits and "
-                      "@/./+/-/_ only."),
+        help_text=_("Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."),
         error_messages={
-            'invalid': _("This value may contain only letters, numbers and "
-                         "@/./+/-/_ characters.")})
+            'invalid': _("This value may contain only letters, numbers and @/./+/-/_ characters.")})
 
     class Meta:
         model = User
@@ -80,6 +78,9 @@ class CustomUserChangeForm(UserChangeForm):
             saved_user = User.objects.get(id=self.instance.id)
             if saved_user.username != username:
                 error = get_setting('DEVILRY_USERADMIN_USERNAME_NOT_EDITABLE_MESSAGE',
-                                    _('The system administrator has configured Devilry to not allow changing usernames. If this is wrong, you can ask them to set DEVILRY_USERADMIN_USERNAME_EDITABLE=True in settings.py.'))
+                                    _('The system administrator has configured Devilry to '
+                                      'not allow changing usernames. If this is wrong, you '
+                                      'can ask them to set DEVILRY_USERADMIN_USERNAME_EDITABLE=True '
+                                      'in settings.py.'))
                 raise forms.ValidationError(_(error))
         return username
