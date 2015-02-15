@@ -678,7 +678,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Check if the given user is permitted to delete this AssignmentGroup. A user is
         permitted to delete an object if the user is superadmin, or if the user
         is admin on the assignment (uses :meth:`.is_admin`). Only superusers
-        are allowed to delete AssignmentGroups where :meth:`.is_empty` returns ``False``.
+        are allowed to delete AssignmentGroups where :meth:`.AssignmentGroup.is_empty` returns ``False``.
 
         .. note::
             This method can also be used to check if candidates can be

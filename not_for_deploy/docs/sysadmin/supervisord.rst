@@ -97,8 +97,6 @@ To run supervisord in the background with a PID, run::
     $ cd ~/devilrydeploy
     $ venv/bin/supervisord -c supervisord.conf
 
-See :ref:`supervisord-configure` to see and configure where the PID-file is
-written, and for an init-script example.
 
 .. warning::
 

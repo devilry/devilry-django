@@ -44,7 +44,7 @@ students to join your group as follows:
 
 .. note::
 
-    Refer your course administrator to :ref:`subjectadmin_groups` if you think
+    Refer your course administrator to :doc:`subjectadmin_groups` if you think
     they should enable collaboration.
 
 

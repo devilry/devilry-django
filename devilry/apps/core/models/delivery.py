@@ -124,7 +124,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
     .. attribute:: copy_of
 
-        Link to a delivery that this delivery is a copy of. This is set by :meth:`.copy`.
+        Link to a delivery that this delivery is a copy of. This is set by :meth:`.Delivery.copy`.
 
     .. attribute:: last_feedback
 

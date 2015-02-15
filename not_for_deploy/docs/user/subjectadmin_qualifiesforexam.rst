@@ -43,4 +43,5 @@ of the page showing a status.
 
 No plugin fits my needs!
 ########################
-:doc:`Contact the Devilry developers <contact>` and we will try to help you.
+
+:doc:`Contact the Devilry developers <../contact>` and we will try to help you.
