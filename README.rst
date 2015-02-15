@@ -12,8 +12,13 @@ Devilry
    :target: https://travis-ci.org/devilry/devilry-django
 
 
-http://devilry.org should always be the starting point when looking for documentation.
+Docs and help
+=============
+http://devilry.org should always be the starting point when looking for documentation or help.
 
+
+Develop
+=======
 If you just want to get up a development environment to test out Devilry on you own machine,
 read the developer section of our `developer docs <http://devilry.readthedocs.org>`_.
 
