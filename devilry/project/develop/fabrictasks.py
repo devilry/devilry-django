@@ -260,22 +260,6 @@ def jsbuild(appname, nocompress=False, watch=False, no_jsbcreate=False, no_build
 
 
 @task
-def jsbuildall():
-    """
-    Build all the Devilry apps using the ``jsbuild`` task with compression enabled.
-    """
-    for appname in (
-            "devilry.devilry_frontpage",
-            "devilry.devilry_header",
-            "devilry.devilry_nodeadmin",
-            "devilry.devilry_qualifiesforexam",
-            "devilry.devilry_qualifiesforexam_select",
-            "devilry.devilry_student",
-            "devilry.devilry_subjectadmin"):
-        jsbuild(appname)
-
-
-@task
 def makemessages():
     for languagecode in LANGUAGES:
         _managepy(
