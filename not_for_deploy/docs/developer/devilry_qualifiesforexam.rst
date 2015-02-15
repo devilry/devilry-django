@@ -1,6 +1,6 @@
-===============================
+###############################
 :mod:`devilry_qualifiesforexam`
-===============================
+###############################
 
 .. module:: devilry_qualifiesforexam
 
@@ -9,9 +9,10 @@ Database models, APIs and UI for qualifying students for final exams.
 
 .. _qualifiesforexam-uiworkflow:
 
-#######################################################
+***********
 UI workflow
-#######################################################
+***********
+
 How users are qualified for final exam i plugin-based. The subject/period admin is taken through
 a wizard with the following steps/pages:
 
@@ -34,9 +35,10 @@ a wizard with the following steps/pages:
 
 .. _qualifiesforexam-plugins:
 
-#######################################################
+*******
 Plugins
-#######################################################
+*******
+
 A plugin is a regular Django app. Your best source for a simple example is the
 ``devilry_qualifiesforexam_approved``-module which contains two plugins. You will find the
 package in the ``src/``-directory of the devilry repository.
@@ -112,14 +114,14 @@ use. See the ``tests``-module in ``devilry_qualifiesforexam_approved`` for examp
 
 .. _qualifiesforexam-pluginhelpers:
 
-#######################################################
+**************
 Plugin helpers
-#######################################################
+**************
 
 .. py:currentmodule:: devilry_qualifiesforexam.pluginhelpers
 
 The mixin classes
-=========================================
+=================
 
 :class:`~devilry_qualifiesforexam.pluginhelpers.QualifiesForExamPluginViewMixin` is a mixin class
 that simplifies the common tasks for all plugin views (getting input and setting
@@ -390,25 +392,22 @@ Other helpers
 
 
 
-#######################################################
+****************************
 Plugins shipped with Devilry
-#######################################################
+****************************
 
 ``devilry_qualifiesforexam_approved``
-==========================================
+=====================================
 TODO
-
-
-
 
 
 
 
 .. _qualifiesforexam-models:
 
-#######################################################
+***************
 Database models
-#######################################################
+***************
 
 .. py:currentmodule:: devilry_qualifiesforexam.models
 
