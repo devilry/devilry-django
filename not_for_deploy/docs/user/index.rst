@@ -66,13 +66,3 @@ Node/Department admin
    nodeadmin
    nodeadmin-finditems
    nodeadmin_qualifiesforexam
-
-
-
-Superusers
-----------
-
-.. toctree::
-   :maxdepth: 1
-
-   helplinks
