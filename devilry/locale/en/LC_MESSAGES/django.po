@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-11 15:26+0100\n"
+"POT-Creation-Date: 2015-02-15 12:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2069,7 +2069,7 @@ msgstr ""
 msgid "Save cancelled by user. Nothing was saved."
 msgstr ""
 
-#: devilry_useradmin/forms.py:20
+#: devilry_useradmin/forms.py:21
 msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr ""
 
@@ -2077,43 +2077,42 @@ msgstr ""
 msgid "This value may contain only letters, numbers and @/./+/-/_ characters."
 msgstr ""
 
-#: devilry_useradmin/forms.py:38
+#: devilry_useradmin/forms.py:37
 msgid "A user with that username already exists."
 msgstr ""
 
-#: devilry_useradmin/forms.py:49
+#: devilry_useradmin/forms.py:47
 msgid ""
-"Raw passwords are not stored, so there is no way to see this user's "
+"Unencrypted passwords are not stored, so there is no way to see this user's "
 "password, but you can change the password using <a href=\"password/\">this "
 "form</a>."
 msgstr ""
 
-#: devilry_useradmin/forms.py:53
+#: devilry_useradmin/forms.py:51
 msgid ""
-"Should the user have access to this admin site? Unless you make the user "
-"superuser (below), their admin site will be empty unless you give them "
-"permissions using the Groups and Permissions fields below."
+"Should the user have access to this admin site? You should select this for "
+"superusers, and leave it unchecked for all other users."
 msgstr ""
 
-#: devilry_useradmin/forms.py:55
+#: devilry_useradmin/forms.py:54
 msgid ""
 "Should the user have access to this admin site? Unless you make the user "
 "superuser (below), their admin site will be empty."
 msgstr ""
 
-#: devilry_useradmin/forms.py:62
+#: devilry_useradmin/forms.py:63
 msgid "Password"
 msgstr ""
 
-#: devilry_useradmin/forms.py:64
+#: devilry_useradmin/forms.py:65
 msgid "Staff status"
 msgstr ""
 
-#: devilry_useradmin/forms.py:66
+#: devilry_useradmin/forms.py:68
 msgid "Superuser status"
 msgstr ""
 
-#: devilry_useradmin/forms.py:67
+#: devilry_useradmin/forms.py:69
 msgid ""
 "Should the user have access to all data in Devilry? You normally want "
 "superusers to be Staff users as well, however if they are not staff, they "
@@ -2121,7 +2120,7 @@ msgid ""
 "Devilry, but not to this admin site."
 msgstr ""
 
-#: devilry_useradmin/forms.py:76
+#: devilry_useradmin/forms.py:81
 msgid ""
 "The system administrator has configured Devilry to not allow changing "
 "usernames. If this is wrong, you can ask them to set "
