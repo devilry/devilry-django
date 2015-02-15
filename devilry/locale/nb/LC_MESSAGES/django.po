@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-15 12:31+0100\n"
+"POT-Creation-Date: 2015-02-15 13:35+0100\n"
 "PO-Revision-Date: 2015-02-11 21:19+0000\n"
 "Last-Translator: Tone Angell Kristiansen <tone@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
@@ -2295,22 +2295,22 @@ msgstr "Lagring avbrutt av bruker. Ingenting ble lagret."
 msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
 msgstr "Påkrevd. 30 tegn eller mindre. Kun bokstaver, tall og @/./+/-/_"
 
-#: devilry_useradmin/forms.py:24
+#: devilry_useradmin/forms.py:23
 msgid "This value may contain only letters, numbers and @/./+/-/_ characters."
 msgstr "Denne verdien kan kun inneholde bokstaver, tall og @/./+/-/_"
 
-#: devilry_useradmin/forms.py:39
+#: devilry_useradmin/forms.py:37
 msgid "A user with that username already exists."
 msgstr "Det finnes allerede en bruker med det brukernavnet."
 
-#: devilry_useradmin/forms.py:49
+#: devilry_useradmin/forms.py:47
 msgid ""
 "Unencrypted passwords are not stored, so there is no way to see this user's "
 "password, but you can change the password using <a href=\"password/\">this "
 "form</a>."
 msgstr ""
 
-#: devilry_useradmin/forms.py:53
+#: devilry_useradmin/forms.py:51
 #, fuzzy
 msgid ""
 "Should the user have access to this admin site? You should select this for "
@@ -2319,7 +2319,7 @@ msgstr ""
 "Burde brukeren ha tilgang til denne adminsiden? Med mindre du gjør brukeren "
 "til superbruker (nedenfor), vil deres adminside være tom."
 
-#: devilry_useradmin/forms.py:56
+#: devilry_useradmin/forms.py:54
 msgid ""
 "Should the user have access to this admin site? Unless you make the user "
 "superuser (below), their admin site will be empty."
@@ -2327,19 +2327,19 @@ msgstr ""
 "Burde brukeren ha tilgang til denne adminsiden? Med mindre du gjør brukeren "
 "til superbruker (nedenfor), vil deres adminside være tom."
 
-#: devilry_useradmin/forms.py:65
+#: devilry_useradmin/forms.py:63
 msgid "Password"
 msgstr "Passord"
 
-#: devilry_useradmin/forms.py:67
+#: devilry_useradmin/forms.py:65
 msgid "Staff status"
 msgstr "Ansattestatus"
 
-#: devilry_useradmin/forms.py:70
+#: devilry_useradmin/forms.py:68
 msgid "Superuser status"
 msgstr "Superbrukerstatus"
 
-#: devilry_useradmin/forms.py:71
+#: devilry_useradmin/forms.py:69
 msgid ""
 "Should the user have access to all data in Devilry? You normally want "
 "superusers to be Staff users as well, however if they are not staff, they "
@@ -2351,7 +2351,7 @@ msgstr ""
 "vil de enkelt og greit ha tilgang til alt i det vanlige administratorpanelet "
 "i Devilry, men ikke til denne adminsiden."
 
-#: devilry_useradmin/forms.py:83
+#: devilry_useradmin/forms.py:81
 msgid ""
 "The system administrator has configured Devilry to not allow changing "
 "usernames. If this is wrong, you can ask them to set "
@@ -2427,7 +2427,7 @@ msgid "Home"
 msgstr "Hjem"
 
 #: devilry_useradmin/templates/devilry_useradmin/confirm_change_view.django.html:12
-msgid "Confirm change dangerous options"
+msgid "Confirm changes to dangerous options"
 msgstr ""
 
 #: devilry_useradmin/templates/devilry_useradmin/confirm_change_view.django.html:17

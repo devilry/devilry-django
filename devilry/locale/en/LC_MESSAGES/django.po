@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-15 12:37+0100\n"
+"POT-Creation-Date: 2015-02-15 13:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2183,7 +2183,7 @@ msgid "Home"
 msgstr ""
 
 #: devilry_useradmin/templates/devilry_useradmin/confirm_change_view.django.html:12
-msgid "Confirm change dangerous options"
+msgid "Confirm changes to dangerous options"
 msgstr ""
 
 #: devilry_useradmin/templates/devilry_useradmin/confirm_change_view.django.html:17

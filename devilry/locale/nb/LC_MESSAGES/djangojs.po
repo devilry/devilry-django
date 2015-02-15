@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Espen Angell Kristiansen <espen@appresso.no>, 2015
 # Tone Angell Kristiansen <tone@appresso.no>, 2015
@@ -9,14 +9,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-11 15:36+0100\n"
+"POT-Creation-Date: 2015-02-15 13:35+0100\n"
 "PO-Revision-Date: 2015-02-11 22:07+0000\n"
 "Last-Translator: Tone Angell Kristiansen <tone@appresso.no>\n"
-"Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/language/nb/)\n"
+"Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/"
+"language/nb/)\n"
+"Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nb\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: devilry_authenticateduserinfo/static/devilry_authenticateduserinfo/UserInfo.js:62
@@ -29,7 +30,9 @@ msgstr "Feil"
 msgid ""
 "Failed to load infomation about the authenticated user. Try to reload the "
 "page."
-msgstr "Klarte ikke å laste informasjonen om den autentiserte brukeren. Prøv å laste siden på nytt."
+msgstr ""
+"Klarte ikke å laste informasjonen om den autentiserte brukeren. Prøv å laste "
+"siden på nytt."
 
 #: devilry_extjsextras/static/devilry_extjsextras/AlertMessage.js:87
 #: devilry_extjsextras/static/devilry_extjsextras/AlertMessage.js:88
@@ -54,7 +57,9 @@ msgstr "SLETT"
 msgid ""
 "Type {required_confirm_text} in the field below to confirm that you really "
 "intend to delete {short_description}."
-msgstr "Skriv {required_confirm_text} i feltet nedenform for å bekrefte at du virkelig ønsker å slette {short_description}."
+msgstr ""
+"Skriv {required_confirm_text} i feltet nedenform for å bekrefte at du "
+"virkelig ønsker å slette {short_description}."
 
 #: devilry_extjsextras/static/devilry_extjsextras/ConfirmDeleteDialog.js:55
 msgid "Write \"{something}\""
@@ -493,8 +498,10 @@ msgid "{0} is not a valid date - it must be in the format {1}"
 msgstr "{0} er ikke en gyldig dato - det m[ være på formatet {1}"
 
 #: devilry_extjsextras/static/devilry_extjsextras/extjslocale.js:183
-msgid "This field should be an e-mail address in the format \"user@example.com\""
-msgstr "Dette feltet må være en epost-addresse på formatet \"user@example.com\""
+msgid ""
+"This field should be an e-mail address in the format \"user@example.com\""
+msgstr ""
+"Dette feltet må være en epost-addresse på formatet \"user@example.com\""
 
 #: devilry_extjsextras/static/devilry_extjsextras/extjslocale.js:184
 msgid "This field should be a URL in the format \"http://www.example.com\""
@@ -705,9 +712,12 @@ msgstr "Venter på tilbakemelding"
 msgid ""
 "This part of Devilry is in experemental stage. To make sure you get things "
 "done, we have kept a stable environment accessible, providing the same "
-"functionality. If you ever encounter issues with this page, please make sure"
-" to report them and head over  "
-msgstr "Vi jobber med å forbedre denne delen av Devilry. For at det ikke skal hindre din bruk av systemet har vi satt opp en midlertidig versjon med tilsvarende funksjonalitet. Hvis du finner feil, vennligst rapporter dem og gå over "
+"functionality. If you ever encounter issues with this page, please make sure "
+"to report them and head over  "
+msgstr ""
+"Vi jobber med å forbedre denne delen av Devilry. For at det ikke skal hindre "
+"din bruk av systemet har vi satt opp en midlertidig versjon med tilsvarende "
+"funksjonalitet. Hvis du finner feil, vennligst rapporter dem og gå over "
 
 #: devilry_nodeadmin/static/devilry_nodeadmin/app/view/dashboard/BetaWarning.js:8
 msgid "to the alternative interface"
@@ -721,7 +731,9 @@ msgstr "Hent opp detaljer om student"
 msgid ""
 "These are only the nodes you control. Select an element to see the child "
 "levels, its courses and periods."
-msgstr "Dette er kun de nodene du kontrollerer. Velg et element for å se underliggende nivåer, emner og perioder."
+msgstr ""
+"Dette er kun de nodene du kontrollerer. Velg et element for å se "
+"underliggende nivåer, emner og perioder."
 
 #: devilry_nodeadmin/static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:14
 msgid "courses"
@@ -764,7 +776,11 @@ msgid ""
 "Follow these links to get access to all the details available to course "
 "managers. This includes the ability to extend deadlines, view detailed "
 "information about students and their feedback, and much more."
-msgstr "Følg disse linkene for å få tilgang til alle detaljene tilgjengelig for emneadministratorer. Dette inkluderer mulighet for å utvide innleveringsfrister, se detaljert informasjon om studenter og tilbakemeldinger, og mye mer."
+msgstr ""
+"Følg disse linkene for å få tilgang til alle detaljene tilgjengelig for "
+"emneadministratorer. Dette inkluderer mulighet for å utvide "
+"innleveringsfrister, se detaljert informasjon om studenter og "
+"tilbakemeldinger, og mye mer."
 
 #: devilry_nodeadmin/static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:43
 msgid "Childnodes"
@@ -780,9 +796,11 @@ msgstr "Legge til emner eller noder?"
 
 #: devilry_nodeadmin/static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:64
 msgid ""
-"Adding course or nodes requires superuser permissions. If you have superuser"
-" permissions, you will find the superuser role on the frontpage."
-msgstr "Det kreves superbrukertillatelser for å legge til emner eller noder. Dersom du har superbrukertillatelser vil du finne superbrukerrollen på forsiden."
+"Adding course or nodes requires superuser permissions. If you have superuser "
+"permissions, you will find the superuser role on the frontpage."
+msgstr ""
+"Det kreves superbrukertillatelser for å legge til emner eller noder. Dersom "
+"du har superbrukertillatelser vil du finne superbrukerrollen på forsiden."
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/controller/QualifiesForExamPreviewController.js:58
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/preview/QualifiesForExamPreview.js:26
@@ -805,7 +823,9 @@ msgstr "Hvorfor behøver du å trekke tilbake nåværende status?"
 msgid ""
 "Explain why you need to change the status to \"Not ready\", and hit OK to "
 "save."
-msgstr "Forklar hvorfor du behøver å endtre status til \"Ikke klar for eksportering\", og klikk OK for å lagre."
+msgstr ""
+"Forklar hvorfor du behøver å endtre status til \"Ikke klar for eksportering"
+"\", og klikk OK for å lagre."
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/controller/QualifiesForExamShowStatusController.js:192
 msgid "Invalid input"
@@ -866,7 +886,9 @@ msgstr "Hvordan kvalifisere studenter til avsluttende eksamen?"
 msgid ""
 "Select one of the options from the list. Each option starts a wizard that "
 "ends with a preview of the results before you get the option to save."
-msgstr "Velg en av valgene i liste. Hvert valg starter en interraktiv guide som ender med forhåndsvisning før du får muligheten til å lagre."
+msgstr ""
+"Velg en av valgene i liste. Hvert valg starter en interraktiv guide som "
+"ender med forhåndsvisning før du får muligheten til å lagre."
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:25
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:88
@@ -879,7 +901,9 @@ msgstr "Lagret {savetime} av {saveuser}"
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:34
 msgid "{qualifiedstudents}/{totalstudents} students qualify for final exams."
-msgstr "{qualifiedstudents}/{totalstudents} studenter kan gå opp til avsluttende eksamen."
+msgstr ""
+"{qualifiedstudents}/{totalstudents} studenter kan gå opp til avsluttende "
+"eksamen."
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:43
 msgid "Plugin"
@@ -895,17 +919,29 @@ msgid ""
 "about the results of each student for all assignments. This information may "
 "not match the information used to calculate if the students qualify for "
 "exams when students have been given new feedback after the status was saved."
-msgstr "Se tabellen nedenfor for detailjer. Tabellen inkluderer detaljert informasjon om resultetet til hver student på alle deres oppgaver. Denne informasjonen kan være ulik informasjonen som ble brukt for å beregne om studentene kan gå opp til eksamen hvis studenter har fått ny tilbakemelding etter at nåværende status ble lagret."
+msgstr ""
+"Se tabellen nedenfor for detailjer. Tabellen inkluderer detaljert "
+"informasjon om resultetet til hver student på alle deres oppgaver. Denne "
+"informasjonen kan være ulik informasjonen som ble brukt for å beregne om "
+"studentene kan gå opp til eksamen hvis studenter har fått ny tilbakemelding "
+"etter at nåværende status ble lagret."
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:59
 msgid ""
 "This status was generated without a plugin. This means that the status was "
 "generated by {saveuser} using the programming interface for Devilry or "
-"imported by a system administrator. Only users with administrator-rights for"
-" the current term can set the status through the programming interface. This"
-" means that the lack of a plugin should not be a problem as long as the "
+"imported by a system administrator. Only users with administrator-rights for "
+"the current term can set the status through the programming interface. This "
+"means that the lack of a plugin should not be a problem as long as the "
 "message (below) explains why a plugin was not used."
-msgstr "Denne statusen ble generert uten en plugin. Det betyr at statusen ble generert av {saveuser} ved bruk av programmeringsgrensesnittet for Devilry eller at den ble importert av en systemadministrator. Bare brukere med administratorrettigheter for det gjeldende semesteret kan sette status via programmeringsgrensesnittet. Dette betyr at mangel på en plugin ikke burde være et problem, så lenge meldingen (nedenfor) forklarer hvorfor en plugin ikke ble brukt."
+msgstr ""
+"Denne statusen ble generert uten en plugin. Det betyr at statusen ble "
+"generert av {saveuser} ved bruk av programmeringsgrensesnittet for Devilry "
+"eller at den ble importert av en systemadministrator. Bare brukere med "
+"administratorrettigheter for det gjeldende semesteret kan sette status via "
+"programmeringsgrensesnittet. Dette betyr at mangel på en plugin ikke burde "
+"være et problem, så lenge meldingen (nedenfor) forklarer hvorfor en plugin "
+"ikke ble brukt."
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/showstatus/QualifiesForExamShowStatus.js:65
 msgid "Message"
@@ -944,7 +980,9 @@ msgstr "Klar for eksportering"
 msgid ""
 "The list of qualified students are ready for export. Use the view- or print-"
 "button to browse the list of qualified students."
-msgstr "Listen med kvalifiserte studenter er klar for eksportering. Bruk 'se på' eller 'skriv ut' knappen for å utforske listen med kvalifiserte studenter."
+msgstr ""
+"Listen med kvalifiserte studenter er klar for eksportering. Bruk 'se på' "
+"eller 'skriv ut' knappen for å utforske listen med kvalifiserte studenter."
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:36
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:28
@@ -953,9 +991,11 @@ msgstr "Ingen"
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:37
 msgid ""
-"The {subject} manager has not selected students that qualify for final exams"
-" yet."
-msgstr "{subject}-administratoren har ikke valgt studenter som kvalifiseres for slutteksamen enda. "
+"The {subject} manager has not selected students that qualify for final exams "
+"yet."
+msgstr ""
+"{subject}-administratoren har ikke valgt studenter som kvalifiseres for "
+"slutteksamen enda. "
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:40
 msgid "Not ready for export (retracted)"
@@ -965,7 +1005,9 @@ msgstr "Ikke klar for eksportering (trukket tilbake)"
 msgid ""
 "The course manager has retracted a previously \"Ready for export\" status. "
 "This may be bad if you have already exported the status."
-msgstr "Emneadministratoren har trukket tilbake en tidligere \"Klar for eksport\"-status. Dette kan være farlig hvis du allerede har eksportert statusen."
+msgstr ""
+"Emneadministratoren har trukket tilbake en tidligere \"Klar for eksport\"-"
+"status. Dette kan være farlig hvis du allerede har eksportert statusen."
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:48
 msgid "WARNING"
@@ -974,10 +1016,14 @@ msgstr "ADVARSEL"
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/summaryview/SummaryView.js:50
 msgid ""
 "Devilry does NOT notify you when a status is changed. This could lead to "
-"problems when someone retracts or updates an exported status. Please contact"
-" the Devilry project if you want to help us create a good workflow for "
+"problems when someone retracts or updates an exported status. Please contact "
+"the Devilry project if you want to help us create a good workflow for "
 "handling status changes."
-msgstr "Devilry sier IKKE ifra til deg når en status endres. Dette kan føre til problemer når noen trekker tilbake eller oppdaterer en eksportert status. Venneligst kontakt Devilry-prosjektet hvis du ønsker å hjelpe oss med å lage en god arbeidsflyt for å håndtere status-endringer."
+msgstr ""
+"Devilry sier IKKE ifra til deg når en status endres. Dette kan føre til "
+"problemer når noen trekker tilbake eller oppdaterer en eksportert status. "
+"Venneligst kontakt Devilry-prosjektet hvis du ønsker å hjelpe oss med å lage "
+"en god arbeidsflyt for å håndtere status-endringer."
 
 #: devilry_qualifiesforexam/static/devilry_qualifiesforexam/app/view/summaryview/SummaryViewGrid.js:50
 msgid "View"
@@ -1038,10 +1084,13 @@ msgstr "Innleveringsfrister"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:390
 msgid ""
-"Note that deleting a deadlines deletes all deliveries made on that deadline."
-" For this reason, only superusers are permitted to delete deadlines with any"
-" deliveries."
-msgstr "Noter at å slette en innleveringsfrist også sletter alle innleveringer gjort til den innleveringsfristen. Grunnet dette, kan kun superbrukere slette innleveringsfrister med innleveringer."
+"Note that deleting a deadlines deletes all deliveries made on that deadline. "
+"For this reason, only superusers are permitted to delete deadlines with any "
+"deliveries."
+msgstr ""
+"Noter at å slette en innleveringsfrist også sletter alle innleveringer gjort "
+"til den innleveringsfristen. Grunnet dette, kan kun superbrukere slette "
+"innleveringsfrister med innleveringer."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/controller/BulkManageDeadlines.js:577
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/controller/managestudents/ManageStudentsController.js:381
@@ -1060,7 +1109,9 @@ msgstr "Lag ny oppgave"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:292
 msgid "The publishing time is set to a later date than the submission date."
-msgstr "Publiseringstidspunktet er satt til et senere tidspunkt enn første innleveringsfrist."
+msgstr ""
+"Publiseringstidspunktet er satt til et senere tidspunkt enn første "
+"innleveringsfrist."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:326
 msgid "Devilry suggested values for: {labels}."
@@ -1081,14 +1132,21 @@ msgid ""
 "Calculated by adding the most common timespan between submission dates "
 "({days} days) to the submission date of the last published assignment, "
 "{previous_assignment} ({previous_first_deadline})."
-msgstr "Beregnet ved å legge til det mest vanlige tidsrommet mellom innleveringsfrister ({days} dager) til innleveringsfristen på den forrige publiserte oppgaven, {previous_assignment} ({previous_first_deadline})."
+msgstr ""
+"Beregnet ved å legge til det mest vanlige tidsrommet mellom "
+"innleveringsfrister ({days} dager) til innleveringsfristen på den forrige "
+"publiserte oppgaven, {previous_assignment} ({previous_first_deadline})."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:385
 msgid ""
 "You have a break in the regular timespan. Since you use a short interval "
-"between 1 day and 14 days, we assume this means you have skipped an interval"
-" or two, and suggested a submission date based on those assumptions."
-msgstr "Du har en pause i det vanlige tidsrommet mellom innleveringsfrister. Siden du bruker et kort tidsintervall, mellom 1 og 14 dager, antar vi at det betyr at du har hoppet over et intervall eller to, og foreslo en innleveringsfrist basert på den antagelsen."
+"between 1 day and 14 days, we assume this means you have skipped an interval "
+"or two, and suggested a submission date based on those assumptions."
+msgstr ""
+"Du har en pause i det vanlige tidsrommet mellom innleveringsfrister. Siden "
+"du bruker et kort tidsintervall, mellom 1 og 14 dager, antar vi at det betyr "
+"at du har hoppet over et intervall eller to, og foreslo en innleveringsfrist "
+"basert på den antagelsen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/controller/CreateNewAssignment.js:535
 msgid "Copy from %(assignment)s."
@@ -1127,7 +1185,10 @@ msgstr "Bestått tidligere"
 msgid ""
 "We did not detect any groups that Devilry does not believe should be "
 "ignored. Use the checkbox below the table to see and select ignored groups."
-msgstr "Vi kunne ikke finne noen grupper som Devilry ikke tror bør ignoreres. Det er en knapp under tabellen som du kan klikke på for å se og velge ignorerte grupper."
+msgstr ""
+"Vi kunne ikke finne noen grupper som Devilry ikke tror bør ignoreres. Det er "
+"en knapp under tabellen som du kan klikke på for å se og velge ignorerte "
+"grupper."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/controller/PassedPreviousPeriodController.js:276
 msgid "Marked %(count)s groups as previously passed."
@@ -1137,7 +1198,9 @@ msgstr "Markerte %(count)s grupper som tidligere bestått."
 msgid ""
 "At least one group has an invalid grade. Please review the help for the "
 "grade format in the sidebar."
-msgstr "Minst en gruppe har ugyldig karakter. Venligst les hjelpen for karakterformatet på venstre del av siden."
+msgstr ""
+"Minst en gruppe har ugyldig karakter. Venligst les hjelpen for "
+"karakterformatet på venstre del av siden."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/controller/RelatedExaminers.js:125
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:155
@@ -1264,24 +1327,33 @@ msgid ""
 "A short name with at most 20 letters. Can only contain lowercase english "
 "letters (a-z), numbers, underscore ('_') and hyphen ('-'). This is used the "
 "the regular name takes to much space."
-msgstr "Et kort navn med inntil 20 bokstaver. Kan kun inneholde små engelske bokstaver (a-z)m tall, understrek ('_') og bindestrek ('-'). Dette navnet brukes når det vanlige navet tar for mye plass."
+msgstr ""
+"Et kort navn med inntil 20 bokstaver. Kan kun inneholde små engelske "
+"bokstaver (a-z)m tall, understrek ('_') og bindestrek ('-'). Dette navnet "
+"brukes når det vanlige navet tar for mye plass."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:10
 msgid "May contain any characters, including language-specific characters."
-msgstr "Kan inneholde alle mulige tegn, inkludert språkspesifikke tegn, slik som norske æ, ø og å."
+msgstr ""
+"Kan inneholde alle mulige tegn, inkludert språkspesifikke tegn, slik som "
+"norske æ, ø og å."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:15
 msgid ""
-"Choose a long and a short name. Short name is used in places where long name"
-" takes too much space, such as table headers and navigation."
-msgstr "Velg et langt og et kort navn. Det korte navnet brukes når det lange navnet er for langt, f.eks. i tabeller og navigasjon."
+"Choose a long and a short name. Short name is used in places where long name "
+"takes too much space, such as table headers and navigation."
+msgstr ""
+"Velg et langt og et kort navn. Det korte navnet brukes når det lange navnet "
+"er for langt, f.eks. i tabeller og navigasjon."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/utils/BaseNodeHelp.js:16
 msgid ""
 "The short name can contain up to 20 letters, and it can only contain "
-"lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and"
-" <em>'-'</em>."
-msgstr "Det korte navnet kan inneholde inntil 20 små bokstaver (<em>a-z</em>) fra det engelske alfabetet, samt <em>tall</em>, <em>'_'</em> og <em>'-'</em>."
+"lowercase english letters (<em>a-z</em>), <em>numbers</em>, <em>'_'</em> and "
+"<em>'-'</em>."
+msgstr ""
+"Det korte navnet kan inneholde inntil 20 små bokstaver (<em>a-z</em>) fra "
+"det engelske alfabetet, samt <em>tall</em>, <em>'_'</em> og <em>'-'</em>."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/AdminsBox.js:21
 msgid "Administrator rights"
@@ -1300,14 +1372,19 @@ msgid ""
 "Devilry has a very simple permission system for administrators. You are "
 "either administrator on an item, or you have no access to the administrator "
 "views for an item."
-msgstr "Devilry har et veldig enkelt rettighetssystem for administratorer. Du er enten administrator på et objekt, eller så har du ingen tilgang til administratorsidene for objektet."
+msgstr ""
+"Devilry har et veldig enkelt rettighetssystem for administratorer. Du er "
+"enten administrator på et objekt, eller så har du ingen tilgang til "
+"administratorsidene for objektet."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/AdminsBox.js:34
 msgid ""
 "Administrators can be set anywhere in the hierarchy, from nodes on the top, "
 "to assignments at the bottom, and permissions propagate downwards in the "
 "hierarchy."
-msgstr "Administratorer kan settes hvor som helst i hierarkiet, fra noder på toppen, til oppgaver på bunnen, og rettigheter propagerer nedover i hierarkiet."
+msgstr ""
+"Administratorer kan settes hvor som helst i hierarkiet, fra noder på toppen, "
+"til oppgaver på bunnen, og rettigheter propagerer nedover i hierarkiet."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/AdminsBox.js:37
 msgid "Administrators on this item"
@@ -1346,13 +1423,18 @@ msgid ""
 "Use the field at the bottom of this window to search for users. When you "
 "select a user from the search results, they are immediatly made "
 "administrator. Close the window or hit ESC when you are finished."
-msgstr "Bruk feltet på bunnen av dette viduet for å søke etter brukere. Når du velger en bruker fra søkeresultatene, blir de øyeblikkelig lagt til som administrator. Lukk vinduet eller kikk ESC når du er ferdig."
+msgstr ""
+"Bruk feltet på bunnen av dette viduet for å søke etter brukere. Når du "
+"velger en bruker fra søkeresultatene, blir de øyeblikkelig lagt til som "
+"administrator. Lukk vinduet eller kikk ESC når du er ferdig."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/AdminsBox.js:192
 msgid ""
 "Select one or more users and click the remove-button to remove them from "
 "administrators."
-msgstr "Velg en eller flere brukere og klikk på slett-knappen for å fjerne fra administratorlisten."
+msgstr ""
+"Velg en eller flere brukere og klikk på slett-knappen for å fjerne fra "
+"administratorlisten."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/AdminsBox.js:196
 msgid "You can remove yourself from administrators."
@@ -1360,10 +1442,14 @@ msgstr "Du kan fjerne deg selv fra administratorlisten."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/AdminsBox.js:199
 msgid ""
-"If you remove yourself by accident, you need to ask another administrator to"
-" re-add you. Close this window and use the list of administrators and other "
+"If you remove yourself by accident, you need to ask another administrator to "
+"re-add you. Close this window and use the list of administrators and other "
 "administrators to get in touch with them."
-msgstr "Hvis du fjerner deg selv ved et uhell, må du be en annen administrator om å legge deg til på nytt. Lukk dette vinduet, og bruk listen over administratorer og andre administratorer til å få kontakt med en annen administrator."
+msgstr ""
+"Hvis du fjerner deg selv ved et uhell, må du be en annen administrator om å "
+"legge deg til på nytt. Lukk dette vinduet, og bruk listen over "
+"administratorer og andre administratorer til å få kontakt med en annen "
+"administrator."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/DangerousActions.js:6
 msgid "Dangerous actions"
@@ -1374,7 +1460,10 @@ msgid ""
 "You do not have permissions required to delete {short_description}. Only "
 "superusers can delete non-empty items. You can only delete items where you "
 "are admin on an item higher up in the hierarchy."
-msgstr "Du har ikke rettighetene som kreves for å slette {short_description}. Kun superbrukere kan slette objekter med innhold. Du kan bare slette objekter der du er administrator et nivå høyere opp i hierarkiet."
+msgstr ""
+"Du har ikke rettighetene som kreves for å slette {short_description}. Kun "
+"superbrukere kan slette objekter med innhold. Du kan bare slette objekter "
+"der du er administrator et nivå høyere opp i hierarkiet."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/DeleteDjangoRestframeworkRecordDialog.js:18
 msgid "Permission denied"
@@ -1396,7 +1485,9 @@ msgstr "Langt navn"
 msgid ""
 "Choose the students you want to add to the assignment, and click "
 "{savebuttonlabel}."
-msgstr "Velg studentene du ønsker å legge til på oppgaven, og klikk {savebuttonlabel}."
+msgstr ""
+"Velg studentene du ønsker å legge til på oppgaven, og klikk "
+"{savebuttonlabel}."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:36
 msgid "Move your mouse over the checkboxes for help."
@@ -1416,14 +1507,19 @@ msgstr "Legg til eller rediger studenter på {periodpath}"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:49
 msgid "You need to reload this page when you return after adding students."
-msgstr "Du må laste denne siden på nytt når du returnerer etter å ha lagt til studenter."
+msgstr ""
+"Du må laste denne siden på nytt når du returnerer etter å ha lagt til "
+"studenter."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:53
 msgid ""
 "You do not have administrator rights on {periodpath}, so you need to ask "
 "someone with administrator rights if you need to add more students than the "
 "ones available in the list."
-msgstr "Du har ikke administrator-rettigheter på {periodpath}, så du må be noen med administrator-rettigheter om hjelp hvis du trenger å legge til flere studenter enn de som er tilgjengelig i listen."
+msgstr ""
+"Du har ikke administrator-rettigheter på {periodpath}, så du må be noen med "
+"administrator-rettigheter om hjelp hvis du trenger å legge til flere "
+"studenter enn de som er tilgjengelig i listen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:58
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:24
@@ -1436,7 +1532,11 @@ msgid ""
 "because they are already registered on the assignment. Select <em>Allow "
 "duplicates</em> if you want to allow students to be in multiple groups on "
 "the same assignment."
-msgstr "<strong>{ignoredcount}</strong> studenter er ikke tilgjengelig i listen fordi de allerede er registrert på oppgaven. Velg <em>Tillat duplikater</em> hvis du ønsker å tillate samme student å være i flere grupper på samme oppgave."
+msgstr ""
+"<strong>{ignoredcount}</strong> studenter er ikke tilgjengelig i listen "
+"fordi de allerede er registrert på oppgaven. Velg <em>Tillat duplikater</em> "
+"hvis du ønsker å tillate samme student å være i flere grupper på samme "
+"oppgave."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:64
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:251
@@ -1454,9 +1554,13 @@ msgstr "Tags"
 msgid ""
 "You can copy tags from {periodpath} when you add students. The tags on "
 "{periodpath} and tags on assignments in {periodpath} is not kept in sync "
-"after you add students to the assignment, so you can safely edit tags on the"
-" assignment without affecting any other assignments or {periodpath}."
-msgstr "Du kan kopiere tags fra {periodpath} når du legget til studenter. Tags fra {periodpath} og tags på oppgavene i {periodpath} holdes ikke i synk etter at du legger til studenter på oppgavene. Det betyr at du trygt kan redigere tags på en oppgave uten at det på virker andre oppgaver eller {periodpath}."
+"after you add students to the assignment, so you can safely edit tags on the "
+"assignment without affecting any other assignments or {periodpath}."
+msgstr ""
+"Du kan kopiere tags fra {periodpath} når du legget til studenter. Tags fra "
+"{periodpath} og tags på oppgavene i {periodpath} holdes ikke i synk etter at "
+"du legger til studenter på oppgavene. Det betyr at du trygt kan redigere "
+"tags på en oppgave uten at det på virker andre oppgaver eller {periodpath}."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:102
 msgid "No matching examiners"
@@ -1485,17 +1589,24 @@ msgstr "Inkluder tags"
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:149
 msgid ""
 "Check this to tag the added students with the tags they have on "
-"%(periodpath)s. Keep this checked if you are unsure of what to do. When this"
-" is checked, tags are displayed in the second column of the table."
-msgstr "Velg denne for å tagge alle studenten som legges til med taggene de har på %(periodpath)s. Behold denne som valgt hvis du er usikker på hva du bør gjøre. Når denne er valgt, vises tags som vil kopieres fra %(periodpath)s i andre kolonne i tabellen."
+"%(periodpath)s. Keep this checked if you are unsure of what to do. When this "
+"is checked, tags are displayed in the second column of the table."
+msgstr ""
+"Velg denne for å tagge alle studenten som legges til med taggene de har på "
+"%(periodpath)s. Behold denne som valgt hvis du er usikker på hva du bør "
+"gjøre. Når denne er valgt, vises tags som vil kopieres fra %(periodpath)s i "
+"andre kolonne i tabellen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:156
 msgid ""
 "Check this to automatically set examiners that have at least one tag in "
 "common with a student as their examiner on this assignment. When this is "
-"checked, the result of the tag-matching is displayed in the second column of"
-" the table."
-msgstr "Velg denne for å automatisk sette rettere som har minst en tag til felles med en student som studentens retter på denne oppgaven. Når denne er valgt, vises resultatet av i andre kolonne i tabellen."
+"checked, the result of the tag-matching is displayed in the second column of "
+"the table."
+msgstr ""
+"Velg denne for å automatisk sette rettere som har minst en tag til felles "
+"med en student som studentens retter på denne oppgaven. Når denne er valgt, "
+"vises resultatet av i andre kolonne i tabellen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:158
 msgid "Autoset examiners by tags"
@@ -1525,7 +1636,10 @@ msgid ""
 "Students must submit their delivery before this time. This becomes their "
 "first deadline on this assignment, and it can be edited just like any other "
 "deadline."
-msgstr "Studenter må laste opp sin innlevering før dette tidspunktet. Dette blir deres første innleveringsfrist på denne oppgaven, og den kan redigeres akkurat som alle andre innleveringsfrister."
+msgstr ""
+"Studenter må laste opp sin innlevering før dette tidspunktet. Dette blir "
+"deres første innleveringsfrist på denne oppgaven, og den kan redigeres "
+"akkurat som alle andre innleveringsfrister."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AddGroups.js:242
 msgid "Tags and matching examiners"
@@ -1542,7 +1656,11 @@ msgid ""
 "assignment, click the button below. The use-case for this feature is if you "
 "have project assignments where students are in more than one project group. "
 "<strong>Keep this unchecked if you are unsure of what to do</strong>."
-msgstr "Klikk på knappen nedenfor hvis du ønsker å tillate at studenter er i mer enn en gruppe. Bruksområdet for dette valget er prosjektoppgaver der samme student kan være med i mer enn en prosjektgruppe. <strong>Ikke bruk dette valget hvis du er usikker eller ikke forstår hva det innebærer</strong>."
+msgstr ""
+"Klikk på knappen nedenfor hvis du ønsker å tillate at studenter er i mer enn "
+"en gruppe. Bruksområdet for dette valget er prosjektoppgaver der samme "
+"student kan være med i mer enn en prosjektgruppe. <strong>Ikke bruk dette "
+"valget hvis du er usikker eller ikke forstår hva det innebærer</strong>."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:38
 msgid "No students available"
@@ -1552,13 +1670,16 @@ msgstr "Ingen studenter tilgjengelige"
 msgid ""
 "All students registered on {periodpath} is already registered on the "
 "assignment."
-msgstr "Alle studenter registrert på {periodpath} er allerede registrert på oppgaven."
+msgstr ""
+"Alle studenter registrert på {periodpath} er allerede registrert på oppgaven."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:45
 msgid ""
 "There is no students on {periodpath}. Only students registered on "
 "{periodpath} can be added to this assignment."
-msgstr "Det er ingen studenter på {periodpath}. Kun studenter registrert på {periodpath} kan legges til på denne oppgaven."
+msgstr ""
+"Det er ingen studenter på {periodpath}. Kun studenter registrert på "
+"{periodpath} kan legges til på denne oppgaven."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:50
 msgid "Add students to {periodpath}"
@@ -1566,13 +1687,17 @@ msgstr "Legg til studenter på {periodpath}"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:53
 msgid "When you return to this page, reload it to see newly added students."
-msgstr "Oppdater (refresh) denne siden når du kommer tilbake etter å lagt til nye studenter."
+msgstr ""
+"Oppdater (refresh) denne siden når du kommer tilbake etter å lagt til nye "
+"studenter."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AllIgnoredHelp.js:57
 msgid ""
 "You do not have administrator rights on {periodpath}, so you need to ask "
 "someone with administrator rights if you need to add more students."
-msgstr "Du har ikke administrator-rettigheter på {periodpath}, så du må be noen med administrator-rettigheter hvis du behøver å legge til flere studenter."
+msgstr ""
+"Du har ikke administrator-rettigheter på {periodpath}, så du må be noen med "
+"administrator-rettigheter hvis du behøver å legge til flere studenter."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AllowDuplicatesCheckbox.js:7
 msgid "Allow duplicates"
@@ -1581,7 +1706,9 @@ msgstr "Tillat duplikater"
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/addgroups/AllowDuplicatesCheckbox.js:8
 msgid ""
 "Uncheck this to hide any students already in a group from the list below."
-msgstr "Velg vekk denne for å utelate studenter som allerede er i en gruppe fra listen nedenfor."
+msgstr ""
+"Velg vekk denne for å utelate studenter som allerede er i en gruppe fra "
+"listen nedenfor."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/allwhereisadmin/AllWhereIsAdminPanel.js:25
 msgid ""
@@ -1590,7 +1717,12 @@ msgid ""
 "rights on the assignment, and not on the terms or courses containing the "
 "assignment. The courses name is a link if you have administrator rights on "
 "the courses."
-msgstr "Dette er alle emner, semestre og oppgaver hvor du har administratorrettigheter. Oppgaver er inkludert i listen hvis du har administratorrettigheter på oppgaven, og ikke på semestrene eller emnene som inneholder oppgaven. Emnets navn er en link hvis du har administratorrettigheter på emnet."
+msgstr ""
+"Dette er alle emner, semestre og oppgaver hvor du har "
+"administratorrettigheter. Oppgaver er inkludert i listen hvis du har "
+"administratorrettigheter på oppgaven, og ikke på semestrene eller emnene som "
+"inneholder oppgaven. Emnets navn er en link hvis du har "
+"administratorrettigheter på emnet."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:73
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/period/PeriodOverview.js:86
@@ -1599,9 +1731,11 @@ msgstr "Ingen studenter"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:74
 msgid ""
-"This assignment has no students. You need to <a "
-"href=\"%(addstudents_url)s\">add students</a>."
-msgstr "Denne oppgaven har ingen studenter. Du må <a href=\"%(addstudents_url)s\">legge til studenter</a>."
+"This assignment has no students. You need to <a href=\"%(addstudents_url)s"
+"\">add students</a>."
+msgstr ""
+"Denne oppgaven har ingen studenter. Du må <a href=\"%(addstudents_url)s"
+"\">legge til studenter</a>."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:92
 msgid "View, edit and add students on this assignment"
@@ -1644,7 +1778,9 @@ msgstr "Du er retter for {mygroupscount}/{totalgroups} grupper."
 msgid ""
 "When this assignment is published, you will get a link here that takes you "
 "to the examiner interface."
-msgstr "Når denne oppgaven publiseres vil du få en link her som tar deg til brukergrensesnittet for rettere."
+msgstr ""
+"Når denne oppgaven publiseres vil du få en link her som tar deg til "
+"brukergrensesnittet for rettere."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:164
 msgid "You are not examiner for any groups on this assignment."
@@ -1652,7 +1788,9 @@ msgstr "Du er ikke retter for noen grupper på denne oppgaven."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:169
 msgid "Follow the Students-link above if you wish to manage examiners."
-msgstr "Følg Studenter-linken ovenfor hvis du ønsker å administrere rettere på denne oppgaven."
+msgstr ""
+"Følg Studenter-linken ovenfor hvis du ønsker å administrere rettere på denne "
+"oppgaven."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:172
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:69
@@ -1664,7 +1802,10 @@ msgid ""
 "Renaming an assignment should not be done without a certain amount of "
 "consideration. The name of an assignment, especially the short name, is "
 "often used as an identifier when integrating other systems with Devilry."
-msgstr "Å endre navn på en oppgave bør ikke gjøres uten nøye gjennomtanke. Navnet til en oppgave, spesielt det korte navnet, brukes ofte som identifikator av systemer som integrerer seg med Devilry."
+msgstr ""
+"Å endre navn på en oppgave bør ikke gjøres uten nøye gjennomtanke. Navnet "
+"til en oppgave, spesielt det korte navnet, brukes ofte som identifikator av "
+"systemer som integrerer seg med Devilry."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:199
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/period/PeriodOverview.js:156
@@ -1676,7 +1817,9 @@ msgstr "Gi nytt navn"
 msgid ""
 "Once you delete an assignment, there is no going back. Only superusers can "
 "delete an assignment with deliveries."
-msgstr "Når du har slettet en oppgave, er det ingen mulighet for å angre. Kun superbrukere kan slette oppgaver med innleveringer."
+msgstr ""
+"Når du har slettet en oppgave, er det ingen mulighet for å angre. Kun "
+"superbrukere kan slette oppgaver med innleveringer."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/AssignmentOverview.js:211
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/MultiDangerousActions.js:17
@@ -1717,26 +1860,35 @@ msgstr "Ikke anonym"
 msgid ""
 "On anonymous assignments, examiners and students can NOT see each other and "
 "they can NOT communicate."
-msgstr "Studenter og rettere kan IKKE se hverandre, og de kan IKKE kommunisere på anonyme oppgaver."
+msgstr ""
+"Studenter og rettere kan IKKE se hverandre, og de kan IKKE kommunisere på "
+"anonyme oppgaver."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:45
 msgid ""
 "If an assignment is anonymous, examiners see candidate-id instead of any "
 "personal information about the students."
-msgstr "Hvis en oppgave er anonym, ser rettere candidat-id istedenfor personlig informasjon om studentene."
+msgstr ""
+"Hvis en oppgave er anonym, ser rettere candidat-id istedenfor personlig "
+"informasjon om studentene."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/EditAnonymousWidget.js:48
 msgid ""
 "This means that anonymous assignments is perfect for exams, and for "
-"assignments where you do not want prior experiences with a student to affect"
-" results."
-msgstr "Dette betyr at anonyme oppgaver er perfekte for eksamener, og for oppgaver der du ikke ønsker at tidligere erfaringer med en student skal påvirke resultatet."
+"assignments where you do not want prior experiences with a student to affect "
+"results."
+msgstr ""
+"Dette betyr at anonyme oppgaver er perfekte for eksamener, og for oppgaver "
+"der du ikke ønsker at tidligere erfaringer med en student skal påvirke "
+"resultatet."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:28
 msgid ""
 "Enable hard deadlines if you want to make it impossible for students to add "
 "deliveries after their active deadline."
-msgstr "Slå på harde innleveringsfrister hvis du ønsker å gjøre det umulig for studenter å legge til innlevering etter den aktive innleveringsfristen."
+msgstr ""
+"Slå på harde innleveringsfrister hvis du ønsker å gjøre det umulig for "
+"studenter å legge til innlevering etter den aktive innleveringsfristen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingPanel.js:36
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:36
@@ -1755,14 +1907,18 @@ msgstr "Myke innleveringsfrister"
 msgid ""
 "With HARD deadlines, students will be unable to make deliveries when a "
 "deadline has expired."
-msgstr "Med HARDE innleveringsfrister, er det ikke mulig for studenter å levere etter innleveringsfristen."
+msgstr ""
+"Med HARDE innleveringsfrister, er det ikke mulig for studenter å levere "
+"etter innleveringsfristen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:49
 msgid ""
 "With SOFT deadlines students will be able to make deliveries after the "
 "deadline has expired. All deliveries after their deadline are clearly "
 "highligted."
-msgstr "Med MYKE innleveringsfrister kan studenter levere etter innleveringsfristen. Alle innleveringer etter fristen er tydelig markert."
+msgstr ""
+"Med MYKE innleveringsfrister kan studenter levere etter innleveringsfristen. "
+"Alle innleveringer etter fristen er tydelig markert."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/EditDeadlineHandlingWidget.js:52
 msgid ""
@@ -1770,33 +1926,46 @@ msgid ""
 "deadlines. Students have to perform an extra confirm-step when adding "
 "deliveries after their active deadline, and assignments where the deadline "
 "has expired is clearly marked for both students and examiners."
-msgstr "MERK: Devilry er designet for å håndtere MYKE innleveringsfrister på en fornuftig måte. Studenter må gjennom et ekstra steg for å bekrefte at de ønsker å levere etter fristen, og oppgaver der innleveringsfristen har gått ut er tydelig markert for både rettere og studenter."
+msgstr ""
+"MERK: Devilry er designet for å håndtere MYKE innleveringsfrister på en "
+"fornuftig måte. Studenter må gjennom et ekstra steg for å bekrefte at de "
+"ønsker å levere etter fristen, og oppgaver der innleveringsfristen har gått "
+"ut er tydelig markert for både rettere og studenter."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/EditPublishingTimePanel.js:32
 msgid ""
 "Choose a time when students will be able to start adding deliveries on the "
 "assignment. Note that students must be registered on the assignment as well "
 "before they can add any deliveries."
-msgstr "Velg tidspunktet når studenter vil kunne begynne å levere. Merk at studenter også må være registrert på oppgaven før de kan levere."
+msgstr ""
+"Velg tidspunktet når studenter vil kunne begynne å levere. Merk at studenter "
+"også må være registrert på oppgaven før de kan levere."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/EditPublishingTimeWidget.js:42
 msgid ""
 "The time when students will be able to start adding deliveries on the "
 "assignment."
-msgstr "Tidspunktet da studenter vil få muligheten til å begynne å legge til innleveringer på oppgaven."
+msgstr ""
+"Tidspunktet da studenter vil få muligheten til å begynne å legge til "
+"innleveringer på oppgaven."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:26
 msgid ""
-"Click the edit button for more information about your current grading system"
-" configuration."
-msgstr "Klikk rediger-knappen for mer informasjon om karaktersystemer og ditt nåværende karaktersystem."
+"Click the edit button for more information about your current grading system "
+"configuration."
+msgstr ""
+"Klikk rediger-knappen for mer informasjon om karaktersystemer og ditt "
+"nåværende karaktersystem."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/assignment/GradeEditorSelectWidget.js:30
 msgid ""
 "Missing grading system configuration. You have to configure this grading "
-"system before any feeback may be provided on this assignment. Click the edit"
-" button above for more information."
-msgstr "Mangler karaktersystemkonfigurasjon. Du må konfigurere dette karaktersystemet før tilbakemeldinger kan gis på denne oppgaven. Klikk rediger-knappen ovenfor for mer informasjon."
+"system before any feeback may be provided on this assignment. Click the edit "
+"button above for more information."
+msgstr ""
+"Mangler karaktersystemkonfigurasjon. Du må konfigurere dette "
+"karaktersystemet før tilbakemeldinger kan gis på denne oppgaven. Klikk "
+"rediger-knappen ovenfor for mer informasjon."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:66
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BaseDeadlineForm.js:74
@@ -1835,14 +2004,21 @@ msgstr "Legg til innleveringsfrist"
 msgid ""
 "Students are in a group even if they work alone. Each group has their own "
 "individual deadlines. Use the form below to add a deadline to many groups."
-msgstr "Studenter er i en gruppe selv om de jobber alene. Hver gruppe har sine egne individuelle innleveringsfrister. Use the form below to add a deadline to many groups."
+msgstr ""
+"Studenter er i en gruppe selv om de jobber alene. Hver gruppe har sine egne "
+"individuelle innleveringsfrister. Use the form below to add a deadline to "
+"many groups."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/bulkmanagedeadlines/BulkManageDeadlinesPanel.js:102
 msgid ""
 "Students are in a group even if they work alone. Each group has their own "
 "individual deadlines. In this view, we have grouped deadlines with exactly "
 "the same date/time and text to make it easy for you to change them in bulk."
-msgstr "Studenter er i en gruppe selv om de jobber alene. Hver gruppe har sine egne individuelle innleveringsfrister. På denne siden har vi gruppert innleveringsfrister med nøyaktig samme dato/tid og tekst, slik at du kan redigere de samlet."
+msgstr ""
+"Studenter er i en gruppe selv om de jobber alene. Hver gruppe har sine egne "
+"individuelle innleveringsfrister. På denne siden har vi gruppert "
+"innleveringsfrister med nøyaktig samme dato/tid og tekst, slik at du kan "
+"redigere de samlet."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:18
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:26
@@ -1855,9 +2031,11 @@ msgstr "grupper der den aktive tilbakemeldingen ikke er en bestått karakter"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:35
 msgid ""
-"groups where active feedback is a failing grade, groups with no feedback and"
-" groups with no deadlines."
-msgstr "grupper der aktiv tilbakemelding ikke er en bestått karakter, grupper uten tilbakemelding og grupper uten innleveringsfrist."
+"groups where active feedback is a failing grade, groups with no feedback and "
+"groups with no deadlines."
+msgstr ""
+"grupper der aktiv tilbakemelding ikke er en bestått karakter, grupper uten "
+"tilbakemelding og grupper uten innleveringsfrist."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/bulkmanagedeadlines/CreateDeadlineForm.js:40
 msgid "groups with no deadlines."
@@ -1871,12 +2049,16 @@ msgstr "spesifiser grupper manuelt."
 msgid ""
 "Select one or more groups. The deadline will only be added to the selected "
 "groups."
-msgstr "Velg en eller flere grupper. Innleveringsfristen legges bare til på de gruppene du velger."
+msgstr ""
+"Velg en eller flere grupper. Innleveringsfristen legges bare til på de "
+"gruppene du velger."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:62
 msgid ""
 "This deadline has no text. Use the edit button if you want to set a text."
-msgstr "Denne innleveringsfristen har ikke noen tekst. Bruk rediger-knappen hvis du vil sette en tekst."
+msgstr ""
+"Denne innleveringsfristen har ikke noen tekst. Bruk rediger-knappen hvis du "
+"vil sette en tekst."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/bulkmanagedeadlines/DeadlinePanel.js:71
 msgid "Students are organized in groups, even when they work alone"
@@ -1892,18 +2074,29 @@ msgstr "Rediger/flytt"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/bulkmanagedeadlines/EditDeadlineForm.js:22
 msgid "Only apply these changes to some of the groups in the deadline."
-msgstr "Gjør disse endrigene kun på noen av gruppene innenfor denne innleveringsfristen."
+msgstr ""
+"Gjør disse endrigene kun på noen av gruppene innenfor denne "
+"innleveringsfristen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/bulkmanagedeadlines/EditDeadlineForm.js:43
 msgid ""
 "Applying deadline changes to only some groups will effectively split this "
 "deadline in two. Remember that groups have individual deadlines and that "
-"this view groups deadlines with the same timestamp and text. This means that"
-" editing a deadline actually updates a bunch of individual deadlines (one "
-"for each group). So when you select only some of the groups within the "
-"current deadline, you choose to change only some of the individual "
-"deadlines, which appears to split this deadline in two."
-msgstr "Å lagre endringer på en innleveringsfrist til kun noen grupper vil splitte innleveringsfristen i to. Husk at grupper har individuelle innleveringsfrister og at denne siden grupperer innleveringsfrister med samme tidspunkt og tekst. Det betyr at redigering av en innleveringsfrist egentlig oppdaterer en mengde med individuelle innleveringsfrister (en for hver gruppe). Så når du velger bare noen av gruppene innenfor en innleveringsfrist, velger du bare å endre noen av de individuelle innleveringsfristene, noe som tilsynelatende splitter denne innleveringsfristen i to."
+"this view groups deadlines with the same timestamp and text. This means that "
+"editing a deadline actually updates a bunch of individual deadlines (one for "
+"each group). So when you select only some of the groups within the current "
+"deadline, you choose to change only some of the individual deadlines, which "
+"appears to split this deadline in two."
+msgstr ""
+"Å lagre endringer på en innleveringsfrist til kun noen grupper vil splitte "
+"innleveringsfristen i to. Husk at grupper har individuelle "
+"innleveringsfrister og at denne siden grupperer innleveringsfrister med "
+"samme tidspunkt og tekst. Det betyr at redigering av en innleveringsfrist "
+"egentlig oppdaterer en mengde med individuelle innleveringsfrister (en for "
+"hver gruppe). Så når du velger bare noen av gruppene innenfor en "
+"innleveringsfrist, velger du bare å endre noen av de individuelle "
+"innleveringsfristene, noe som tilsynelatende splitter denne "
+"innleveringsfristen i to."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/createnewassignment/Form.js:61
 msgctxt "createnewassignment"
@@ -1932,7 +2125,9 @@ msgid ""
 "If you only use Devilry to give feedback, and students deliver paper copies "
 "or through an alternative channel (oral presentation, email, ...), choose "
 "<em>Not using Devilry</em>."
-msgstr "Velg <em>Ikke gjennom Devilry</em> hvis studenter leverer på papir, eller via alternative kanaler (muntlig presentasjon, epost, ...)."
+msgstr ""
+"Velg <em>Ikke gjennom Devilry</em> hvis studenter leverer på papir, eller "
+"via alternative kanaler (muntlig presentasjon, epost, ...)."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/createnewassignment/Form.js:142
 msgid "Students must submit their delivery before this time."
@@ -1951,15 +2146,20 @@ msgid ""
 "For exams, this should normally be checked. If an assignment is anonymous, "
 "examiners see candidate-id instead of any personal information about the "
 "students."
-msgstr "For eksamener bør denne være valgt. Hvis en oppgave er anonym, ser rettere kandidat-id istedenfor personlig informasjon om studentene."
+msgstr ""
+"For eksamener bør denne være valgt. Hvis en oppgave er anonym, ser rettere "
+"kandidat-id istedenfor personlig informasjon om studentene."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/createnewassignment/Form.js:205
 msgid ""
 "Choose a time when students will be able to start adding deliveries to the "
 "assignment. Note that students must be registered on the assignment before "
-"they can add any deliveries. You have the option to add students on the next"
-" page."
-msgstr "Velg tidspunktet når studenter vil kunne begynne å levere. Merk at studenter må være registrert på oppgaven før de kan levere. Du får muligheten til å legge til studenter på neste side."
+"they can add any deliveries. You have the option to add students on the next "
+"page."
+msgstr ""
+"Velg tidspunktet når studenter vil kunne begynne å levere. Merk at studenter "
+"må være registrert på oppgaven før de kan levere. Du får muligheten til å "
+"legge til studenter på neste side."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/createnewassignment/Form.js:241
 msgid "Students?"
@@ -1992,7 +2192,11 @@ msgid ""
 "project groups, you should still add them to the assignment now. You can "
 "organize them in project groups at any time, even after they have made "
 "deliveries."
-msgstr "Hvis du velger å ikke legge til studenter, må du legge de til manuelt senere. Hvis du har planer om å la studentene jobbe i prosjektgrupper, bør du allikevel legge de til på oppgaven nå. Du kan opprette prosjektgrupper når som helst også etter at studentene har levert"
+msgstr ""
+"Hvis du velger å ikke legge til studenter, må du legge de til manuelt "
+"senere. Hvis du har planer om å la studentene jobbe i prosjektgrupper, bør "
+"du allikevel legge de til på oppgaven nå. Du kan opprette prosjektgrupper "
+"når som helst også etter at studentene har levert"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/createnewassignment/Form.js:336
 msgid "Examiners?"
@@ -2010,20 +2214,24 @@ msgstr "Sett opp rette etter tags."
 msgid ""
 "Add examiners to students that have at least one tag in common with the "
 "examiner."
-msgstr "Tildeler studenter til rettere som har minst en tag til felles med studenten."
+msgstr ""
+"Tildeler studenter til rettere som har minst en tag til felles med studenten."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/createnewassignment/Form.js:370
 msgid ""
 "E.g.: If you tag two examiners and 20 students with <em>group1</em>, those "
 "two examiners will be set up to correct those 20 students."
-msgstr "F.eks.: Hvis du tagger to rettere og 20 studenter med <em>group1</em>, vil de to retterne settes opp som rettere for de 20 studentene."
+msgstr ""
+"F.eks.: Hvis du tagger to rettere og 20 studenter med <em>group1</em>, vil "
+"de to retterne settes opp som rettere for de 20 studentene."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/createnewassignment/Form.js:372
 msgid ""
-"You may want to view and edit tags for <a "
-"{relatedstudents_link}>students</a> and <a "
-"{relatedexaminers_link}>examiners</a>."
-msgstr "Du kan se på og redigere tags for <a {relatedstudents_link}>studenter</a> og <a {relatedexaminers_link}>rettere</a>."
+"You may want to view and edit tags for <a {relatedstudents_link}>students</"
+"a> and <a {relatedexaminers_link}>examiners</a>."
+msgstr ""
+"Du kan se på og redigere tags for <a {relatedstudents_link}>studenter</a> og "
+"<a {relatedexaminers_link}>rettere</a>."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/createnewassignment/Form.js:392
 msgid "Make me examiner for all students."
@@ -2031,7 +2239,9 @@ msgstr "Gjør meg til retter for alle studentene."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/createnewassignment/Form.js:402
 msgid "I.e.: you plan to provide feedback to all students yourself."
-msgstr "Velg dette hvis du har planer om å gi tilbakemelding til alle studentene alene."
+msgstr ""
+"Velg dette hvis du har planer om å gi tilbakemelding til alle studentene "
+"alene."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/createnewassignment/Form.js:407
 msgid "Do not setup examiners at this time."
@@ -2080,9 +2290,11 @@ msgstr "Interraktive guider"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:54
 msgid ""
-"Takes you through creating any kind of assignment (electronic, paper, exam, "
-"...)."
-msgstr "Tar deg gjennom alle stegene som trengs for å lage en hvilken som helst type oppgave (elektronisk, papir, eksamen, ...)."
+"Takes you through creating any kind of assignment (electronic, paper, "
+"exam, ...)."
+msgstr ""
+"Tar deg gjennom alle stegene som trengs for å lage en hvilken som helst type "
+"oppgave (elektronisk, papir, eksamen, ...)."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/dashboard/Dashboard.js:58
 msgid "Takes you through selecting students that qualify for final exams."
@@ -2115,9 +2327,12 @@ msgstr "Andre formater"
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/detailedperiodoverview/ExportPeriodOverviewMenu.js:31
 msgid ""
 "These formats are mostly useful for programmers that need formats that are "
-"easy to parse. Refer to the Devilry website and Wiki for how to use the REST"
-" API."
-msgstr "Disse formatene er for det meste kun for programmerere som behøver formater som er lette å lese. Se Devilry websiden og Wikien for informasjon om hvordan du kan bruke REST APIet."
+"easy to parse. Refer to the Devilry website and Wiki for how to use the REST "
+"API."
+msgstr ""
+"Disse formatene er for det meste kun for programmerere som behøver formater "
+"som er lette å lese. Se Devilry websiden og Wikien for informasjon om "
+"hvordan du kan bruke REST APIet."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGrid.js:20
 msgid "Export"
@@ -2133,7 +2348,9 @@ msgstr "Ignorert, har tilbakemelding(er) så dette kan være et problem"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:51
 msgid "Ignored, has no feedback so probably not a problem"
-msgstr "Ignorert, har ingen tilbakemeldinger så dette er sannsynligvis ikke et problem"
+msgstr ""
+"Ignorert, har ingen tilbakemeldinger så dette er sannsynligvis ikke et "
+"problem"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewGridBase.js:60
 msgid "Not registered on assignment"
@@ -2194,15 +2411,21 @@ msgid ""
 "Some students are registered on groups within this term, but are not "
 "registered on the term. It is common to remove students from the term when "
 "they quit the course, so this may not indicate a problem."
-msgstr "Noen studenter er registrert på grupper innen dette semesteret, men er ikke lenger registrert på semesteret. Det er vanlig å fjerne studenter fra semesteret når de avslutter emnet, så dette trenger ikke bety at det er et problem."
+msgstr ""
+"Noen studenter er registrert på grupper innen dette semesteret, men er ikke "
+"lenger registrert på semesteret. Det er vanlig å fjerne studenter fra "
+"semesteret når de avslutter emnet, så dette trenger ikke bety at det er et "
+"problem."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:17
 msgid "Students in groups with feedback and not registered on the term."
-msgstr "Studenter i grupper med tilbakemelding og ikke registrert på semesteret."
+msgstr ""
+"Studenter i grupper med tilbakemelding og ikke registrert på semesteret."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:23
 msgid "Students in groups without feedback but not registered on the term."
-msgstr "Studenter i grupper uten tilbakemelding, men ikke registrert på semesteret."
+msgstr ""
+"Studenter i grupper uten tilbakemelding, men ikke registrert på semesteret."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/detailedperiodoverview/PeriodOverviewIgnoredMenu.js:30
 msgid "Show ignored students in the table"
@@ -2310,10 +2533,13 @@ msgstr "Velg et aktivt emne fra listen øverst i venstre hjørne."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:23
 msgid ""
-"For courses where you only have admin rights for selected assignments, those"
-" assignments will be listed. If you only have assignments in your list, you "
+"For courses where you only have admin rights for selected assignments, those "
+"assignments will be listed. If you only have assignments in your list, you "
 "do not have the required rights to create new assignments."
-msgstr "På emner der du kun har administratorrettigheter på utvalgte oppgaver, vil bare oppgavene listes. Hvis du kun har oppgaver i din liste, har du ikke de nødvendige rettighetene for å lage nye oppgaver."
+msgstr ""
+"På emner der du kun har administratorrettigheter på utvalgte oppgaver, vil "
+"bare oppgavene listes. Hvis du kun har oppgaver i din liste, har du ikke de "
+"nødvendige rettighetene for å lage nye oppgaver."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:31
 msgid "Click <em>Create new assignment</em>."
@@ -2336,8 +2562,7 @@ msgid "Paper deliveries?"
 msgstr "Papirinnleveringer?"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:49
-msgid ""
-"If your students hand in deliveries on paper, choose Not using Devilry."
+msgid "If your students hand in deliveries on paper, choose Not using Devilry."
 msgstr "Hvis studenene dine leverer på papir, velg Ikke gjennom Devilry."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:57
@@ -2352,7 +2577,10 @@ msgstr "Behøver du å redigere studenter eller retter?"
 msgid ""
 "The links to view or edit students and examiners open a new browser window, "
 "so you will not loose your progress when you click them."
-msgstr "Linkene for å se på eller redigere studenter og rettere åpner et nytt nettleservindu, så du vil ikke miste det du har fylt inn til nå hvis du klikker på de."
+msgstr ""
+"Linkene for å se på eller redigere studenter og rettere åpner et nytt "
+"nettleservindu, så du vil ikke miste det du har fylt inn til nå hvis du "
+"klikker på de."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:65
 msgid "Create another?"
@@ -2361,17 +2589,24 @@ msgstr "Lag en til?"
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/guides/CreateNewAssignment.js:67
 msgid ""
 "This guide closes when you click Create new assignment. At the top of the "
-"next page, you will get a link to quickly create another assignment with the"
-" same settings that you used for this assignment."
-msgstr "Denne guiden lukkes når du klikker Lag ny oppgave. På toppen av neste side vil du få en link som lar deg raskt opprette en oppgave til med de samme innstillingene som du brukte på denne oppgaven."
+"next page, you will get a link to quickly create another assignment with the "
+"same settings that you used for this assignment."
+msgstr ""
+"Denne guiden lukkes når du klikker Lag ny oppgave. På toppen av neste side "
+"vil du få en link som lar deg raskt opprette en oppgave til med de samme "
+"innstillingene som du brukte på denne oppgaven."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:23
 msgid ""
-"For courses where you only have admin rights for selected assignments, those"
-" assignments will be listed. If you only have assignments in your list, you "
+"For courses where you only have admin rights for selected assignments, those "
+"assignments will be listed. If you only have assignments in your list, you "
 "do not have the required rights to select students that qualify for final "
 "exams."
-msgstr "På emner der du kun har administratorrettigheter på utvalgte oppgaver, vil bare oppgavene listes. Hvis du kun har oppgaver i din liste, har du ikke de nødvendige rettighetene for å velge studenter som kan gå opp til avsluttende eksamen."
+msgstr ""
+"På emner der du kun har administratorrettigheter på utvalgte oppgaver, vil "
+"bare oppgavene listes. Hvis du kun har oppgaver i din liste, har du ikke de "
+"nødvendige rettighetene for å velge studenter som kan gå opp til avsluttende "
+"eksamen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:31
 msgid ""
@@ -2381,11 +2616,15 @@ msgstr "Klikk på linken <em>Kan gå opp til eksamen</em> nær bunnen av siden."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/guides/QualifiedForFinalExams.js:34
 msgid ""
-"On the next page this guide will disappear, and a wizard guiding you through"
-" the required steps will begin. If you, or another admin, have already "
+"On the next page this guide will disappear, and a wizard guiding you through "
+"the required steps will begin. If you, or another admin, have already "
 "selected students that qualify for final exams, you will see the results of "
 "that selection instead of beginning the wizard."
-msgstr "På neste side vil denne guiden forsvinne, og en ny guide som tar deg gjennom de påkrevde stegene vil begynne. Hvis du, eller en annen admin, allerede har valgt studentene som kan gå opp til eksamen, vil du se resultatet av det valget istedenfor å begynne en ny guide."
+msgstr ""
+"På neste side vil denne guiden forsvinne, og en ny guide som tar deg gjennom "
+"de påkrevde stegene vil begynne. Hvis du, eller en annen admin, allerede har "
+"valgt studentene som kan gå opp til eksamen, vil du se resultatet av det "
+"valget istedenfor å begynne en ny guide."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:25
 msgid "Step {current} of {total}"
@@ -2397,16 +2636,20 @@ msgstr "Ugyldig side for denne guiden"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/guidesystem/GuideView.js:38
 msgid ""
-"The current guide does not recognize this page. Please use your browser back"
-" button to return to the previous page, and read the instructions one more "
+"The current guide does not recognize this page. Please use your browser back "
+"button to return to the previous page, and read the instructions one more "
 "time."
-msgstr "Denne guiden kjenner ikke igjen nåværende side. Venligst bruk tilbakeknappen for å returnere til forrige side, og les instruksjonene en gang til."
+msgstr ""
+"Denne guiden kjenner ikke igjen nåværende side. Venligst bruk tilbakeknappen "
+"for å returnere til forrige side, og les instruksjonene en gang til."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/AutocompleteRelatedUserWidget.js:12
 msgid ""
-"Click the arrow to select a user, or search for username, full name, tags or"
-" email..."
-msgstr "Klikk på pilen for å velge en bruker, eller søk etter et brukernavn, fullt navn, tags eller epost..."
+"Click the arrow to select a user, or search for username, full name, tags or "
+"email..."
+msgstr ""
+"Klikk på pilen for å velge en bruker, eller søk etter et brukernavn, fullt "
+"navn, tags eller epost..."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ChooseTagsPanel.js:52
 msgctxt "tagsexample"
@@ -2436,9 +2679,12 @@ msgstr "Ingen innleveringsfrister"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:26
 msgid ""
-"This group has no deadlines. This is probably caused by a third-party plugin"
-" or integration script behaving incorrectly, or it may be a bug in Devilry."
-msgstr "Denne gruppen har ingen innleveringsfrister. Dette er sannsynligvis forårsaket av et tredjeparts-plugin eller script som oppfører seg feil. Det kan også komme av en feil i Devilry."
+"This group has no deadlines. This is probably caused by a third-party plugin "
+"or integration script behaving incorrectly, or it may be a bug in Devilry."
+msgstr ""
+"Denne gruppen har ingen innleveringsfrister. Dette er sannsynligvis "
+"forårsaket av et tredjeparts-plugin eller script som oppfører seg feil. Det "
+"kan også komme av en feil i Devilry."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/DeadlinesContainer.js:50
 msgid "More than one deadline on non-electronic assignment"
@@ -2451,7 +2697,13 @@ msgid ""
 "deadline. This assignment is non-electronic, but it has more than one "
 "deadline. The most likely cause is a third-party integration with Devilry "
 "that handles non-electronic assignments incorrectly, or a bug in Devilry."
-msgstr "Devilry støtter ikke innleveringsfrister på ikke-elektroniske oppgaver. For å unngå spesialhåndtering av ikke-elektroniske oppgaver, lagess NØYAKTIG EN skjult innleveringsfrist. Denne oppgaven er ikke-elektronisk, men den har mer enn en innleveringsfrist. Den mest sannsynlige årsaken er en tredjeparts integrasjon med Devilry som ikke håndterer ikke-elektroniske oppgaver korrekt, eller en feil i Devilry."
+msgstr ""
+"Devilry støtter ikke innleveringsfrister på ikke-elektroniske oppgaver. For "
+"å unngå spesialhåndtering av ikke-elektroniske oppgaver, lagess NØYAKTIG EN "
+"skjult innleveringsfrist. Denne oppgaven er ikke-elektronisk, men den har "
+"mer enn en innleveringsfrist. Den mest sannsynlige årsaken er en tredjeparts "
+"integrasjon med Devilry som ikke håndterer ikke-elektroniske oppgaver "
+"korrekt, eller en feil i Devilry."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:29
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:15
@@ -2470,9 +2722,12 @@ msgstr "Aktiv tilbakemelding"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:56
 msgid ""
-"This is the active feedback on this assignment. Unless an examiner creates a"
-" new feedback, this will be the final grade on this assignment."
-msgstr "Dette er den aktive tilbakemeldingen på denne oppgaven. Med mindre en retter lager en ny tilbakemelding, vil dette forbli den avsluttende karakteren på denne oppgaven."
+"This is the active feedback on this assignment. Unless an examiner creates a "
+"new feedback, this will be the final grade on this assignment."
+msgstr ""
+"Dette er den aktive tilbakemeldingen på denne oppgaven. Med mindre en retter "
+"lager en ny tilbakemelding, vil dette forbli den avsluttende karakteren på "
+"denne oppgaven."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/DeliveryPanel.js:63
 msgid "Time of delivery"
@@ -2509,13 +2764,17 @@ msgstr "Innlevering"
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:5
 msgid ""
 "Examiners are the ones that give feedback to students on their deliveries."
-msgstr "Rettere er de som gir tilbakemelding til studenter på deres innleveringer."
+msgstr ""
+"Rettere er de som gir tilbakemelding til studenter på deres innleveringer."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:12
 msgid ""
 "Administrators can not give feedback. If you want to give feedback to any "
 "groups, you have to make yourself examiner on those groups."
-msgstr "Administratorer kan ikke gi tilbakemelding. Hvis du ønsker å gi tilbakemelding til noen grupper, må du gjøre deg selv til retter på de gruppene."
+msgstr ""
+"Administratorer kan ikke gi tilbakemelding. Hvis du ønsker å gi "
+"tilbakemelding til noen grupper, må du gjøre deg selv til retter på de "
+"gruppene."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:13
 msgid "An examiner can open/close their groups."
@@ -2533,13 +2792,17 @@ msgstr "En gruppe kan ha flere rettere."
 msgid ""
 "Removing an examiner from a group does NOT remove any feedback already "
 "provided by that examiner."
-msgstr "Fjerning av en retter fra en gruppe sletter IKKE noen tilbakemeldinger allerede gitt av den retteren."
+msgstr ""
+"Fjerning av en retter fra en gruppe sletter IKKE noen tilbakemeldinger "
+"allerede gitt av den retteren."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ExaminersHelp.js:38
 msgid ""
 "Only <a {relatedexaminers_link}>examiners registered on the term</a> are "
 "available."
-msgstr "Kun <a {relatedexaminers_link}>rettere registrert på semesteret</a> er tilgjengelig."
+msgstr ""
+"Kun <a {relatedexaminers_link}>rettere registrert på semesteret</a> er "
+"tilgjengelig."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/GridOfGroupsBase.js:67
 msgid "delivery"
@@ -2593,7 +2856,9 @@ msgstr "Mangler-fulltnavn"
 msgid ""
 "Each group is listed with full names first, then usernames, and lastly we "
 "display their status."
-msgstr "Hver gruppe listes med navn først, så brukernavn, og til slutt gruppens status."
+msgstr ""
+"Hver gruppe listes med navn først, så brukernavn, og til slutt gruppens "
+"status."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:9
 msgid "The status of a group is one of:"
@@ -2608,13 +2873,18 @@ msgid ""
 "If the examiner(s) has completed correcting the group. This is the active "
 "grade for the group on this assignment, which is not always their active "
 "grade on the current deadline."
-msgstr "Hvis retteren(e) har fullført retting av gruppen. Dette er den aktive tilbakemeldingen til gruppen på denne oppgaven, noe som ikke alltid er deres aktive karakter på nåværende innleveringsfrist."
+msgstr ""
+"Hvis retteren(e) har fullført retting av gruppen. Dette er den aktive "
+"tilbakemeldingen til gruppen på denne oppgaven, noe som ikke alltid er deres "
+"aktive karakter på nåværende innleveringsfrist."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:24
 msgid ""
 "If their active deadline has expired, and they have not been given any "
 "feedback."
-msgstr "Hvis deres aktive innleveringsfrist har utgått, og de ikke har fått tilbakemelding enda."
+msgstr ""
+"Hvis deres aktive innleveringsfrist har utgått, og de ikke har fått "
+"tilbakemelding enda."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/GroupHelp.js:28
 msgid "If their active deadline has not expired."
@@ -2624,7 +2894,9 @@ msgstr "Hvis gruppens aktive innleveringsfrist ikke har utgått."
 msgid ""
 "You may get other status-messages. In that case there is probably an error "
 "with some system integrating itself with Devilry, or a bug in Devilry."
-msgstr "Du kan få andre statusbeskjeder. I så tilfelle er det sannsynligvis en feil med et system som integrerer seg med Devilry, eller en feil i Devilry."
+msgstr ""
+"Du kan få andre statusbeskjeder. I så tilfelle er det sannsynligvis en feil "
+"med et system som integrerer seg med Devilry, eller en feil i Devilry."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:7
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOverview.js:72
@@ -2646,7 +2918,11 @@ msgid ""
 "groups. Each student is added to their own group when you add them to an "
 "assignment. This means that the list to your left is all groups registered "
 "on this assignment."
-msgstr "Selv når studenter leverer individuelt, organiseres de i grupper, med en gruppe per student. Hver student legges til på sin egen gruppe når du legger de til på en oppgave. Dette betyr at listen på din venste side er alle gruppene registret på denne oppgaven."
+msgstr ""
+"Selv når studenter leverer individuelt, organiseres de i grupper, med en "
+"gruppe per student. Hver student legges til på sin egen gruppe når du legger "
+"de til på en oppgave. Dette betyr at listen på din venste side er alle "
+"gruppene registret på denne oppgaven."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:18
 msgid "How to create project groups"
@@ -2664,7 +2940,9 @@ msgstr "TIPS"
 msgid ""
 "Use <em>Select by search</em> (further down in the help) to efficiently "
 "select students."
-msgstr "Bruk <em>Velg via søk</em> (lenger ned på denne hjelpsiden) for å effektivt velge studenter."
+msgstr ""
+"Bruk <em>Velg via søk</em> (lenger ned på denne hjelpsiden) for å effektivt "
+"velge studenter."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:32
 msgid "You are administrator, which is NOT the same as examiner."
@@ -2674,7 +2952,9 @@ msgstr "Du er administrator, noe som IKKE er det samme som å være retter."
 msgid ""
 "If you want to provide feedback to some groups, you have to make yourself "
 "examiner on those groups."
-msgstr "Hvis du ønsker å gi tilbakemelding til noen grupper, må du gjøre deg selv til retter på de gruppene."
+msgstr ""
+"Hvis du ønsker å gi tilbakemelding til noen grupper, må du gjøre deg selv "
+"til retter på de gruppene."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:41
 msgid "How to set examiners"
@@ -2682,15 +2962,19 @@ msgstr "Hvordan sette opp rettere"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:43
 msgid ""
-"To set examiners on a single group, select the group and use the edit button"
-" in the examiner heading on your right hand side."
-msgstr "For å tilordne rettere til en enkel gruppe, velg gruppen og bruk rediger-knappen i rettere-overskriften på din høyre side."
+"To set examiners on a single group, select the group and use the edit button "
+"in the examiner heading on your right hand side."
+msgstr ""
+"For å tilordne rettere til en enkel gruppe, velg gruppen og bruk rediger-"
+"knappen i rettere-overskriften på din høyre side."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:46
 msgid ""
 "To set examiners on multiple groups, select the groups and use the buttons "
 "in the Examiners section."
-msgstr "For å tilordne rettere til flere gruper, velg gruppene, og bruk knappene i seksjonen Rettere."
+msgstr ""
+"For å tilordne rettere til flere gruper, velg gruppene, og bruk knappene i "
+"seksjonen Rettere."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:50
 msgid "Find/select efficiently"
@@ -2700,7 +2984,10 @@ msgstr "Finn/velg effektivt"
 msgid ""
 "Selecting groups from the list using the checkboxes works if you have few "
 "groups. With huge amounts of groups, manual selection is rarely useful."
-msgstr "Å velge studenter fra listen ved å bla i listen å klikke på grupper så lenge du har få grupper. Når du har store mengder grupper blir det upraktisk å velge grupper manuelt."
+msgstr ""
+"Å velge studenter fra listen ved å bla i listen å klikke på grupper så lenge "
+"du har få grupper. Når du har store mengder grupper blir det upraktisk å "
+"velge grupper manuelt."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:54
 msgid "Select by pre-defined filters"
@@ -2710,7 +2997,9 @@ msgstr "Velg via forhåndsdefinerte filtre"
 msgid ""
 "The Select-button in the upper left corner lets you select groups using a "
 "good set of pre-defined filters."
-msgstr "Velg-knappen i øvre venstre hjørne lar deg velge grupper ved hjelp av et godt utvalg av forhåndsdefinerte filtre."
+msgstr ""
+"Velg-knappen i øvre venstre hjørne lar deg velge grupper ved hjelp av et "
+"godt utvalg av forhåndsdefinerte filtre."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:58
 msgid "Select by search"
@@ -2719,9 +3008,11 @@ msgstr "Velg via søk"
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:60
 msgid ""
 "The search field at the top of the group-list allows you to search for "
-"groups. The results is displayed in a menu, and when you select a group from"
-" the menu, the group is selected."
-msgstr "Søkefeltet på toppen av gruppelisten lar deg søke etter grupper. Resultatet vises i en meny, og når du velger en gruppe fra menyen blir gruppen valgt."
+"groups. The results is displayed in a menu, and when you select a group from "
+"the menu, the group is selected."
+msgstr ""
+"Søkefeltet på toppen av gruppelisten lar deg søke etter grupper. Resultatet "
+"vises i en meny, og når du velger en gruppe fra menyen blir gruppen valgt."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:63
 msgid ""
@@ -2729,13 +3020,19 @@ msgid ""
 "results list, and the RETURN/ENTER key to select groups. After selecting a "
 "group, the focus is returned to the search field. This makes the following "
 "workflow very efficient:"
-msgstr "Du kan bruke opp og ned knappene på tastaturet ditt til å navigere søkeresultatlisten, og ENTER-knappen til å velge grupper. Etter at du har valgt en gruppe, returnerer fokuset til søkefeltet. Dette gjør følgende arbeidsfly veldig effektiv:"
+msgstr ""
+"Du kan bruke opp og ned knappene på tastaturet ditt til å navigere "
+"søkeresultatlisten, og ENTER-knappen til å velge grupper. Etter at du har "
+"valgt en gruppe, returnerer fokuset til søkefeltet. Dette gjør følgende "
+"arbeidsfly veldig effektiv:"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:66
 msgid ""
 "Select the search field, type a name, hit ENTER, type another name, hit "
 "ENTER, ..."
-msgstr "Velg søkefeltet, skriv inn et navn, trykk ENTER, skriv inn ett navn til, trykk ENTER, ..."
+msgstr ""
+"Velg søkefeltet, skriv inn et navn, trykk ENTER, skriv inn ett navn til, "
+"trykk ENTER, ..."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/HelpPanel.js:69
 msgid "Using a small or huge display?"
@@ -2750,7 +3047,15 @@ msgid ""
 "will apear. Your selected sizes is saved as a cookie in your browser, which "
 "means that they will be remembered when you return to this view in your "
 "current browser."
-msgstr "Bredden på gruppelisten, og høyden på <em>Oppsummering av valgte grupper</em> panelet (når flere grupper er valgt), er ikke perfekt for alle skjermoppløsninger. For å forbedre dette, tillater vi deg å endre størrelsen på disse panelene. Flytt musepekeren over den indre rammen på en av dissen listene, så vil du få en ramme som du kan bruke til å justere størrelsen på listene. Dine valgte størrelser lagres som en cookie i din nettleser, noe som betyr at de vil huskes hvis du returnerer til denne siden med denne nettleseren senere."
+msgstr ""
+"Bredden på gruppelisten, og høyden på <em>Oppsummering av valgte grupper</"
+"em> panelet (når flere grupper er valgt), er ikke perfekt for alle "
+"skjermoppløsninger. For å forbedre dette, tillater vi deg å endre størrelsen "
+"på disse panelene. Flytt musepekeren over den indre rammen på en av dissen "
+"listene, så vil du få en ramme som du kan bruke til å justere størrelsen på "
+"listene. Dine valgte størrelser lagres som en cookie i din nettleser, noe "
+"som betyr at de vil huskes hvis du returnerer til denne siden med denne "
+"nettleseren senere."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ListOfGroups.js:60
 msgid "Invert selection"
@@ -2882,7 +3187,10 @@ msgid ""
 "set of examiners that you select. The distribution of groups for each "
 "examiner is even, no examiners get more that one group more than any other "
 "examiner."
-msgstr "Erstatt retterne på de valgte gruppene med tilfeldige rettere fra et sett med rettere som du velger. Distribusjonen av studenter per retter er jevn, ingen rettere får mer enn en gruppe mer enn noen andre rettere."
+msgstr ""
+"Erstatt retterne på de valgte gruppene med tilfeldige rettere fra et sett "
+"med rettere som du velger. Distribusjonen av studenter per retter er jevn, "
+"ingen rettere får mer enn en gruppe mer enn noen andre rettere."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:80
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:186
@@ -2902,7 +3210,9 @@ msgstr "Erstatt rettere"
 msgid ""
 "Select one or more examiner. Any current examiners on the selected groups "
 "will be <strong>replaced</strong> when you confirm your selection."
-msgstr "Velg en eller flere rettere. Alle nåverende rettere på valgte grupper vil bli <strong>erstattet</strong> når du bekrefter valget ditt."
+msgstr ""
+"Velg en eller flere rettere. Alle nåverende rettere på valgte grupper vil "
+"bli <strong>erstattet</strong> når du bekrefter valget ditt."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:131
 msgid "Random distribute selected examiners"
@@ -2914,10 +3224,11 @@ msgstr "Legg til valgte rettere"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:170
 msgid ""
-"Select one or more examiner. The selected examiners will be "
-"<strong>added</strong> to the selected groups when you confirm your "
-"selection."
-msgstr "Velg en eller flere rette. De valgte retterne vil blir <strong>lagt til</strong> på de valgte gruppene når du bekrefter ditt valg."
+"Select one or more examiner. The selected examiners will be <strong>added</"
+"strong> to the selected groups when you confirm your selection."
+msgstr ""
+"Velg en eller flere rette. De valgte retterne vil blir <strong>lagt til</"
+"strong> på de valgte gruppene når du bekrefter ditt valg."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnMultiple.js:191
 msgid "Do you really want to clear all examiners on the selected groups?"
@@ -2927,7 +3238,9 @@ msgstr "Vil du virkelig fjerne alle retterne fra de valgte gruppene?"
 msgid ""
 "<strong>Note</strong>: Only examiners registered on the current term are "
 "available."
-msgstr "<strong>Noter</strong>: Kun rettere registrert dette semesteret er tilgjengelige."
+msgstr ""
+"<strong>Noter</strong>: Kun rettere registrert dette semesteret er "
+"tilgjengelige."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:76
 msgid "Examiners help ..."
@@ -2941,10 +3254,13 @@ msgstr "Skjul hjelp"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ManageExaminersOnSingle.js:100
 msgid ""
-"The selected examiners will <strong>replace</strong> any examiners currently"
-" on the group when you confirm your selection. Removing an examiner from the"
-" group does not affect any feedback they have already made on the group."
-msgstr "De valgte retterne vil <strong>erstatte</strong> alle nåværende rettere på gruppen når du bekrefter ditt valg. Å fjerne en retter fra grupper påvirker ikke tilbakemeldinger som retteren allerede har gitt til gruppen."
+"The selected examiners will <strong>replace</strong> any examiners currently "
+"on the group when you confirm your selection. Removing an examiner from the "
+"group does not affect any feedback they have already made on the group."
+msgstr ""
+"De valgte retterne vil <strong>erstatte</strong> alle nåværende rettere på "
+"gruppen når du bekrefter ditt valg. Å fjerne en retter fra grupper påvirker "
+"ikke tilbakemeldinger som retteren allerede har gitt til gruppen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:13
 msgid "A group can have one or more students."
@@ -2954,7 +3270,8 @@ msgstr "En gruppe kan ha en eller flere studenter."
 msgid ""
 "Feedback is given to a group as a whole, not to individual students on a "
 "group."
-msgstr "Tilbakemelding gis til en gruppe, ikke til individuelle studenter på gruppen."
+msgstr ""
+"Tilbakemelding gis til en gruppe, ikke til individuelle studenter på gruppen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ManageStudentsOnSingle.js:57
 msgid "Students help ..."
@@ -2966,7 +3283,11 @@ msgid ""
 "student from this project group, into a copy of this group. Copies "
 "everything except the other students (deadlines, deliveries, feedback, tags "
 "and examiners)."
-msgstr "Vil du virkelig delee denne gruppen i to? Dette vil fytte den valgte studenten fra denne prosjektgruppen til den kopi av denne gruppen. Kopierer alt bortsett fra de andre studentene (innleveringsfrister, innleveringer, tilbakemeldinger tags og rettere)."
+msgstr ""
+"Vil du virkelig delee denne gruppen i to? Dette vil fytte den valgte "
+"studenten fra denne prosjektgruppen til den kopi av denne gruppen. Kopierer "
+"alt bortsett fra de andre studentene (innleveringsfrister, innleveringer, "
+"tilbakemeldinger tags og rettere)."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/ManageTagsOnMultiple.js:51
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:99
@@ -3029,33 +3350,44 @@ msgstr "Lagre tags"
 msgid ""
 "Multiple students on a single group is used when students cooperate on an "
 "assignment. Such project groups have the following properties:"
-msgstr "Flere studenter på en enkelt gruppe brukes når studenter samarbeider på en oppgave. Slike prosjektgrupper har følgende egenskaper:"
+msgstr ""
+"Flere studenter på en enkelt gruppe brukes når studenter samarbeider på en "
+"oppgave. Slike prosjektgrupper har følgende egenskaper:"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:12
 msgid ""
 "Any student in the group will be able to make deliveries on behalf of the "
-"group. Information about the student that made the delivery is available for"
-" each delivery."
-msgstr "Alle studenter på gruppern kan legge til innleveringer på vegne av hele gruppen. Informasjon om hvem som leverte er tilgjengelig for hver innlevering."
+"group. Information about the student that made the delivery is available for "
+"each delivery."
+msgstr ""
+"Alle studenter på gruppern kan legge til innleveringer på vegne av hele "
+"gruppen. Informasjon om hvem som leverte er tilgjengelig for hver "
+"innlevering."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:13
 msgid ""
 "Feedback will be given to the group as a whole, not to individual students "
 "in the group."
-msgstr "Tilbakemelding gis til hele gruppen, ikke til inviduelle studenter i gruppen."
+msgstr ""
+"Tilbakemelding gis til hele gruppen, ikke til inviduelle studenter i gruppen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:14
 msgid ""
 "If any of the selected groups already have any deadlines, deliveries or "
 "feedback, they will be moved into the new group."
-msgstr "Hvis noen av de valgte gruppene allerede har noen innleveringsfrister, innleveringer eller tilbakemelding, flyttes disse inn i den nye gruppen."
+msgstr ""
+"Hvis noen av de valgte gruppene allerede har noen innleveringsfrister, "
+"innleveringer eller tilbakemelding, flyttes disse inn i den nye gruppen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:15
 msgid ""
 "You can split up a group later, however any deliveries and feedback will "
 "follow all students on the group, even if they where made before you merged "
 "the groups into a single group in the first place."
-msgstr "Du kan spitte gruppen opp senere, men da vil alle innleveringer og tilbakemeldinger følge alle studentene på gruppen, selv om de ble lagt til før du slo gruppene sammen til en prosjektgruppe i første omgang."
+msgstr ""
+"Du kan spitte gruppen opp senere, men da vil alle innleveringer og "
+"tilbakemeldinger følge alle studentene på gruppen, selv om de ble lagt til "
+"før du slo gruppene sammen til en prosjektgruppe i første omgang."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/MergeGroups.js:16
 msgid ""
@@ -3082,7 +3414,9 @@ msgstr "Slå samme valgte grupper til en gruppe"
 msgid ""
 "Once you delete a group, there is no going back. Only superusers can delete "
 "a group with deliveries."
-msgstr "Når du har slettet en gruppe, er det ingen mulighet for å angre. Kun superbrukere kan slette grupper med innleveringer."
+msgstr ""
+"Når du har slettet en gruppe, er det ingen mulighet for å angre. Kun "
+"superbrukere kan slette grupper med innleveringer."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/MultipleGroupsSelectedView.js:58
 msgid "Summary of selected groups (click to show/hide)"
@@ -3103,7 +3437,9 @@ msgstr "Klikk på hjelp-kolonnen på din høyre side hvis du trenger hjelp"
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/NoGroupSelectedView.js:46
 msgid ""
 "First time visitors should read the help to avoid common misconceptions."
-msgstr "Førstegangs brukere bør skumme gjennom hjelp for å unngå vanlige misforståelser."
+msgstr ""
+"Førstegangs brukere bør skumme gjennom hjelp for å unngå vanlige "
+"misforståelser."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/SelectGroupsBySearchWidget.js:6
 msgid "Search (adds to selection)"
@@ -3125,7 +3461,9 @@ msgstr "Valgt gruppe er ikke lastet"
 msgid ""
 "The group you selected is not loaded. This is probably because someone else "
 "added a group after you loaded this page. Try reloading the page."
-msgstr "Gruppen du valgte er ikke lastet. Det er sannsynligvis fordi noen andre la til grupper etter at du lastet denne siden. Prøv å laste siden på nytt."
+msgstr ""
+"Gruppen du valgte er ikke lastet. Det er sannsynligvis fordi noen andre la "
+"til grupper etter at du lastet denne siden. Prøv å laste siden på nytt."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/SelectedGroupsButton.js:13
 msgid "{selected}/{total} selected"
@@ -3152,19 +3490,22 @@ msgid "You are examiner for this group."
 msgstr "Du er retter for denne gruppen"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:58
-msgid ""
-"You need to be examiner for this group if you want to provide feedback."
-msgstr "Du må være retter for denne gruppen hvis du ønsker å gi de tilbakemelding."
+msgid "You need to be examiner for this group if you want to provide feedback."
+msgstr ""
+"Du må være retter for denne gruppen hvis du ønsker å gi de tilbakemelding."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:66
 msgid "See the help to your right for information about setting examiners."
-msgstr "Se hjelp på din høyre side for informasjon om hvordan du setter rettere."
+msgstr ""
+"Se hjelp på din høyre side for informasjon om hvordan du setter rettere."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/SingleGroupSelectedView.js:78
 msgid ""
 "This assignment will be published {pubtimeOffset}. Examiners and students "
 "can not see the assignment before it is published."
-msgstr "Denne oppgaven vil publiseres {pubtimeOffset}. Rettere og studenter kan ikke se oppgaven før den er publisert."
+msgstr ""
+"Denne oppgaven vil publiseres {pubtimeOffset}. Rettere og studenter kan ikke "
+"se oppgaven før den er publisert."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/SingleMetaInfo.js:35
 msgid "Note"
@@ -3174,20 +3515,28 @@ msgstr "Merk"
 msgid ""
 "Students can not see their points, only the grade, and if it is failed or "
 "passed."
-msgstr "Studenter kan ikke se sine poeng, kun karakter, og om den er bestått eller ikke."
+msgstr ""
+"Studenter kan ikke se sine poeng, kun karakter, og om den er bestått eller "
+"ikke."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/StudentsInGroupGrid.js:48
 msgid ""
 "Move the student from this project group into a copy of this group. Copies "
 "deadlines, deliveries, feedback, tags and examiners."
-msgstr "Flytt studenten fra denne prosjektgruppen til en kopi av denne gruppen. Kopierer innleveringsfrister, innleveringer, tilbakemeldinger, tags og rettere."
+msgstr ""
+"Flytt studenten fra denne prosjektgruppen til en kopi av denne gruppen. "
+"Kopierer innleveringsfrister, innleveringer, tilbakemeldinger, tags og "
+"rettere."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:4
 msgid ""
 "Tags is a flexible method of organizing groups. Only administrators and "
 "examiners can see tags. You can search and select groups by their tags. "
 "Common use-cases are:"
-msgstr "Tag er en fleksibel metode for å organisere grupper. Kun administratorer og rettere kan se tags. Du kan søke og velge grupper etter deres tags. Vanlige bruksområder er:"
+msgstr ""
+"Tag er en fleksibel metode for å organisere grupper. Kun administratorer og "
+"rettere kan se tags. Du kan søke og velge grupper etter deres tags. Vanlige "
+"bruksområder er:"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:11
 msgid ""
@@ -3196,7 +3545,12 @@ msgid ""
 "examiners to students. Tags from the term may have been included when you "
 "added groups to this assignment, however you can safely edit tags on groups "
 "without affecting the tags on the term."
-msgstr "<strong>NOTER:</strong> Tagger på grupper må ikke forveksles med tagger på studenter og rettere på et semester. De taggene brukes til å automatisere tildeling av rettere til studenter. Tagger fra semesteret kan ha blitt inkludert når grupper til denne oppgaven ble lagt til, men du kan trygt endre tagger på grupper uten at det påvirker taggene på semesteret."
+msgstr ""
+"<strong>NOTER:</strong> Tagger på grupper må ikke forveksles med tagger på "
+"studenter og rettere på et semester. De taggene brukes til å automatisere "
+"tildeling av rettere til studenter. Tagger fra semesteret kan ha blitt "
+"inkludert når grupper til denne oppgaven ble lagt til, men du kan trygt "
+"endre tagger på grupper uten at det påvirker taggene på semesteret."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/managestudents/TagsHelp.js:19
 msgid "Mark groups with special needs."
@@ -3226,7 +3580,9 @@ msgstr "Er allerede markert som bestått tidligere."
 msgid ""
 "The student has delivered this assignment previously, but never achieved a "
 "passing grade."
-msgstr "Studenten har levert denne oppgaven tidligere, men aldri fått bestått karakter."
+msgstr ""
+"Studenten har levert denne oppgaven tidligere, men aldri fått bestått "
+"karakter."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/passedpreviousperiod/GridBase.js:38
 msgid "Group has feedback for this assignment."
@@ -3239,30 +3595,42 @@ msgstr "Gruppe"
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:59
 msgid ""
 "Show groups that Devilry believes should not be marked as previously passed?"
-msgstr "Vis grupper som Devilry mener ikke burde markeres som tidligere bestått?"
+msgstr ""
+"Vis grupper som Devilry mener ikke burde markeres som tidligere bestått?"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:93
 msgid ""
-"Select one or more groups. Groups that we belive have passed this assignment"
-" before has been selected automatically, and they are marked with the name "
-"of the old term."
-msgstr "Velg en eller flere grupper. Grupper vi tror har bestått denne oppgaven tidligere er automatisk valgt, og de er markert med navnet på det tidligere semesteret."
+"Select one or more groups. Groups that we belive have passed this assignment "
+"before has been selected automatically, and they are marked with the name of "
+"the old term."
+msgstr ""
+"Velg en eller flere grupper. Grupper vi tror har bestått denne oppgaven "
+"tidligere er automatisk valgt, og de er markert med navnet på det tidligere "
+"semesteret."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:98
 msgid ""
 "The search for previously passed students match the short name of old "
 "assignments against the short name of this assignment. Only groups with "
 "exactly one student in both the old and the current assignment is matched. "
-"You can find the short name of an assignment by looking at the breadcrumb in"
-" the header, or in the title of the Rename-section of \"Dangerous actions\" "
+"You can find the short name of an assignment by looking at the breadcrumb in "
+"the header, or in the title of the Rename-section of \"Dangerous actions\" "
 "when visiting the assignment."
-msgstr "Søket etter studenter som tidligere har bestått matcher det korte navnet på gamle oppgaver mot det korte navnet på denne oppgaven. Kun oppgaver med nøyaktig en student i både den gamle og den nåværende oppgaven matches.Du finner det korte navnet til en oppgave ved å se i stien til oppgaven iheaderen, eller i tittelen i seksjonen \"Endre navn\" i seksjonen \"Farlige handlinger\" når du er inne på siden med oversikt over oppgaven."
+msgstr ""
+"Søket etter studenter som tidligere har bestått matcher det korte navnet på "
+"gamle oppgaver mot det korte navnet på denne oppgaven. Kun oppgaver med "
+"nøyaktig en student i både den gamle og den nåværende oppgaven matches.Du "
+"finner det korte navnet til en oppgave ved å se i stien til oppgaven "
+"iheaderen, eller i tittelen i seksjonen \"Endre navn\" i seksjonen \"Farlige "
+"handlinger\" når du er inne på siden med oversikt over oppgaven."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:121
 msgid ""
 "Make sure you really want to mark these groups as previously passed before "
 "saving."
-msgstr "Forsikre deg om at du virkelig ønsker å markere disse gruppene som bestått tidligere semester før du lagrer."
+msgstr ""
+"Forsikre deg om at du virkelig ønsker å markere disse gruppene som bestått "
+"tidligere semester før du lagrer."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:127
 msgid "Grade format"
@@ -3282,16 +3650,25 @@ msgid ""
 "You must specify passing grades. Many users find it confusing when the "
 "autodetected grade is not a passing grade, but that is simply because the "
 "grading system has been configured differently this term."
-msgstr "Du må spesifisere beståtte karakterer. Mange brukere synes det er forvirrende når den automatisk valgte karakteren ikke er en bestått karakter, men det er kun fordi karaktersystemet har blitt konfigurert annerledes dette semesteret."
+msgstr ""
+"Du må spesifisere beståtte karakterer. Mange brukere synes det er "
+"forvirrende når den automatisk valgte karakteren ikke er en bestått "
+"karakter, men det er kun fordi karaktersystemet har blitt konfigurert "
+"annerledes dette semesteret."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:150
 msgid ""
 "You have to specify a grade for each group. You do so by clicking the cells "
-"in the Grade-column and specifying a grade. If Devilry autodetected that the"
-" group has passed this assignment previously, the grade will already be "
+"in the Grade-column and specifying a grade. If Devilry autodetected that the "
+"group has passed this assignment previously, the grade will already be "
 "specified, but you can still override the detected value if you grade "
 "students differently this term."
-msgstr "Du må spesifisere karakter for hver gruppe. Dette gjøres ved å klikke på cellene i Karakter-kolonnen og spesifisere en karakter. Hvis Devilry automatisk oppdager at gruppen har bestått denne oppgaven tidligere, vil karakteren allerede være spesifisert, men du kan fremdeles overskrive den tidligere karakteren dersom karaktersettingen er annerledes dette semesteret."
+msgstr ""
+"Du må spesifisere karakter for hver gruppe. Dette gjøres ved å klikke på "
+"cellene i Karakter-kolonnen og spesifisere en karakter. Hvis Devilry "
+"automatisk oppdager at gruppen har bestått denne oppgaven tidligere, vil "
+"karakteren allerede være spesifisert, men du kan fremdeles overskrive den "
+"tidligere karakteren dersom karaktersettingen er annerledes dette semesteret."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:156
 msgid "How it works"
@@ -3301,15 +3678,22 @@ msgstr "Hvordan det fungerer"
 msgid ""
 "When you click save, we will create a new delivery for each of the groups, "
 "mark the delivery as a placeholder for a previously approved delivery, and "
-"create a feedback on the delivery. The grade of the feedback will be the one"
-" specified in the Grade-column."
-msgstr "Når du velger Lagre vil vi lage en ny innlevering for hver av gruppene, markere innleveringen som en link til en tidligere bestått innlevering, for så å lage en tilbakemelding med bestått karakter på innleveringen. Karakteren til tilbakemeldingen vil være den som er spesifisert i Karakter-kolonnen."
+"create a feedback on the delivery. The grade of the feedback will be the one "
+"specified in the Grade-column."
+msgstr ""
+"Når du velger Lagre vil vi lage en ny innlevering for hver av gruppene, "
+"markere innleveringen som en link til en tidligere bestått innlevering, for "
+"så å lage en tilbakemelding med bestått karakter på innleveringen. "
+"Karakteren til tilbakemeldingen vil være den som er spesifisert i Karakter-"
+"kolonnen."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/passedpreviousperiod/PassedPreviousPeriodOverview.js:189
 msgid ""
 "The passed previously functionality is not supported by the grading system "
 "configured on this assignment ({gradingsystem})."
-msgstr "Karaktersystemet konfigurert på denne oppgaven, {gradingsystem}, støtter ikke funksjonaliteten som kreves for bestått tidligere."
+msgstr ""
+"Karaktersystemet konfigurert på denne oppgaven, {gradingsystem}, støtter "
+"ikke funksjonaliteten som kreves for bestått tidligere."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/passedpreviousperiod/SelectGroupsGrid.js:27
 msgid "Autodetected as previously passed"
@@ -3321,11 +3705,13 @@ msgstr "Tidsrom"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/period/PeriodOverview.js:87
 msgid ""
-"This term has no students. Go to the <a "
-"href=\"%(relatedstudents_url)s\">students</a> page and add some students. "
-"You will not be able to add any assignments until you have at least one "
-"student."
-msgstr "Dette semester har ingen studenter. Gå til <a href=\"%(relatedstudents_url)s\">studenter</a>-siden og legg til studenter. Det er ikke mulig å legge til oppgaver før det er lagt til minst en student."
+"This term has no students. Go to the <a href=\"%(relatedstudents_url)s"
+"\">students</a> page and add some students. You will not be able to add any "
+"assignments until you have at least one student."
+msgstr ""
+"Dette semester har ingen studenter. Gå til <a href=\"%(relatedstudents_url)s"
+"\">studenter</a>-siden og legg til studenter. Det er ikke mulig å legge til "
+"oppgaver før det er lagt til minst en student."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/period/PeriodOverview.js:95
 msgid "No examiners"
@@ -3333,9 +3719,11 @@ msgstr "Ingen rettere"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/period/PeriodOverview.js:96
 msgid ""
-"This term has no examiners. Go to the <a "
-"href=\"%(relatedexaminers_url)s\">examiners</a> page and add some examiners."
-msgstr "Dette semesteret har ingen rettere. Gå til <a href=\"%(relatedexaminers_url)s\">rettere</a>-siden og legg til rettere."
+"This term has no examiners. Go to the <a href=\"%(relatedexaminers_url)s"
+"\">examiners</a> page and add some examiners."
+msgstr ""
+"Dette semesteret har ingen rettere. Gå til <a href=\"%(relatedexaminers_url)s"
+"\">rettere</a>-siden og legg til rettere."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/period/PeriodOverview.js:107
 msgid "Edit and view related information"
@@ -3350,19 +3738,24 @@ msgid ""
 "Renaming a term should not be done without a certain amount of "
 "consideration. The name of a term, especially the short name, is often used "
 "as an identifier when integrating other systems with Devilry."
-msgstr "Å endre navn på et semester bør ikke gjøres uten nøye gjennomtanke. Navnet til et semester, spesielt det korte navnet, brukes ofte som identifikator av systemer som integrerer seg med Devilry."
+msgstr ""
+"Å endre navn på et semester bør ikke gjøres uten nøye gjennomtanke. Navnet "
+"til et semester, spesielt det korte navnet, brukes ofte som identifikator av "
+"systemer som integrerer seg med Devilry."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/period/PeriodOverview.js:166
 msgid ""
-"Once you delete a term, there is no going back. Only superusers can delete a"
-" non-empty term."
-msgstr "Når du har slettet et semester, er det ingen mulighet for å angre. Kun superbrukere kan slette et semester som ikke er tomt."
+"Once you delete a term, there is no going back. Only superusers can delete a "
+"non-empty term."
+msgstr ""
+"Når du har slettet et semester, er det ingen mulighet for å angre. Kun "
+"superbrukere kan slette et semester som ikke er tomt."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:27
 msgid ""
-"These are the examiners that can be added to any assignments within the "
-"term."
-msgstr "Dette er rettere som kan legges til på eventuelle oppgaver dette semesteret. "
+"These are the examiners that can be added to any assignments within the term."
+msgstr ""
+"Dette er rettere som kan legges til på eventuelle oppgaver dette semesteret. "
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:29
 msgid "Removing examiners"
@@ -3372,7 +3765,9 @@ msgstr "Slette rettere"
 msgid ""
 "Removing an examiner from a term does not affect any groups, deliveries or "
 "feedback already registered on an assignment."
-msgstr "Fjerning av rettere fra et semester påvirker ikke eventuelle grupper, innleveringer eller tilbakemeldinger allerede registrert på en oppgave."
+msgstr ""
+"Fjerning av rettere fra et semester påvirker ikke eventuelle grupper, "
+"innleveringer eller tilbakemeldinger allerede registrert på en oppgave."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:34
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:44
@@ -3382,11 +3777,16 @@ msgstr "Assosier rettere med studenter via tags"
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:36
 msgid ""
 "If you tag your students and examiners with the same tags, you can "
-"automatically assign examiners to students when creating a new assignment. "
-"E.g.: If you tag two examiners and 20 students with <em>group1</em>, those "
-"two examiners will be set up to correct those 20 students when you create a "
-"new assignment if you choose to use tags to set up examiners."
-msgstr "Hvis du tagger dine studenter og rettere med samme tags, kan du automatisk tilegne rettere til studenter når du lager en ny oppgave. F.eks.: Hvis du tagger to rettere og 20 studenter med <em>gruppe1</em>, vil de to retterne settes opp som rettere på de 20 studentene når du lager en ny oppgave hvis du velger å bruke tags for å sette opp rettere."
+"automatically assign examiners to students when creating a new assignment. E."
+"g.: If you tag two examiners and 20 students with <em>group1</em>, those two "
+"examiners will be set up to correct those 20 students when you create a new "
+"assignment if you choose to use tags to set up examiners."
+msgstr ""
+"Hvis du tagger dine studenter og rettere med samme tags, kan du automatisk "
+"tilegne rettere til studenter når du lager en ny oppgave. F.eks.: Hvis du "
+"tagger to rettere og 20 studenter med <em>gruppe1</em>, vil de to retterne "
+"settes opp som rettere på de 20 studentene når du lager en ny oppgave hvis "
+"du velger å bruke tags for å sette opp rettere."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:86
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:157
@@ -3416,10 +3816,13 @@ msgstr "Vil du virkelig fjerne alle de valgte retterne?"
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:163
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:174
 msgid ""
-"They will not be removed from any existing assignments. You will not be able"
-" to add them on any new assignments, and they will not be available in "
+"They will not be removed from any existing assignments. You will not be able "
+"to add them on any new assignments, and they will not be available in "
 "statistics for the entire term."
-msgstr "De vil ikke fjernes fra allerede eksisterende oppgaver, de kan ikke bli lagt til på nye oppgaver, og de vil ikke være tilgjengelige i statistikken for semesteret."
+msgstr ""
+"De vil ikke fjernes fra allerede eksisterende oppgaver, de kan ikke bli lagt "
+"til på nye oppgaver, og de vil ikke være tilgjengelige i statistikken for "
+"semesteret."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedexaminers/Overview.js:187
 msgid "Do you really want to clear all tags on the selected examiners?"
@@ -3431,9 +3834,10 @@ msgstr "Kandidat ID"
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:28
 msgid ""
-"These are the students that can be added to any assignments within this "
-"term."
-msgstr "Dette er studentene som kan legges til på eventuelle oppgaver dette semesteret."
+"These are the students that can be added to any assignments within this term."
+msgstr ""
+"Dette er studentene som kan legges til på eventuelle oppgaver dette "
+"semesteret."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:30
 msgid "Removing students"
@@ -3444,29 +3848,44 @@ msgid ""
 "When you remove a student from this list, Devilry assumes that the student "
 "is not planning on completing the term. This means that they will disappear "
 "from any term summaries, including calculation of final grade on the term."
-msgstr "Når du fjerner en student fra denne listen, vil Devilry anta at studenten ikke planlegger å fullføre semesteret. Dette betyr at studenten vil forsvinne fra eventuelle sammendrag av semesteret, inkludert kalkulasjon av avsluttende karakter for semesteret."
+msgstr ""
+"Når du fjerner en student fra denne listen, vil Devilry anta at studenten "
+"ikke planlegger å fullføre semesteret. Dette betyr at studenten vil "
+"forsvinne fra eventuelle sammendrag av semesteret, inkludert kalkulasjon av "
+"avsluttende karakter for semesteret."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:36
 msgid ""
 "Removing a student from a term does not affect any groups, deliveries or "
 "feedback already registered on an assignment."
-msgstr "Fjerning av studenter fra et semester påvirker ikke eventuelle grupper, innleveringer eller tilbakemeldinger allerede registrert på en oppgave."
+msgstr ""
+"Fjerning av studenter fra et semester påvirker ikke eventuelle grupper, "
+"innleveringer eller tilbakemeldinger allerede registrert på en oppgave."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:41
 msgid ""
 "Tags is a flexible way of organizing students and examiners. Since both "
 "examiners and administrators can see tags, they are a great way of marking "
 "students that needs special attention, such as students with special needs."
-msgstr "Tags er en fleksibel metode for å organisere studenter og rettere. Siden både rettere og administratorer kan se tags, er de en flott måte å markere studenter som trenger spesiell oppmerksomhet, slik som studenter med spesielle behov."
+msgstr ""
+"Tags er en fleksibel metode for å organisere studenter og rettere. Siden "
+"både rettere og administratorer kan se tags, er de en flott måte å markere "
+"studenter som trenger spesiell oppmerksomhet, slik som studenter med "
+"spesielle behov."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:46
 msgid ""
 "If you tag your students and examiners with the same tags, you can "
-"automatically assign examiners to students when creating a new assignment. "
-"E.g.: If you tag two examiners and 20 students with <em>group1</em>, those "
-"two examiners will be set up to correct those 20 students when you create a "
-"new assignment."
-msgstr "Hvis du tagger dine studenter og rettere med samme tags, kan du automatisk tilegne rettere til studenter når du lager en ny oppgave. F.eks.: Hvis du tagger to rettere og 20 studenter med <em>gruppe1</em>, vil de to retterne settes opp som rettere på de 20 studentene når du lager en ny oppgave hvis du velger å bruke tags for å sette opp rettere."
+"automatically assign examiners to students when creating a new assignment. E."
+"g.: If you tag two examiners and 20 students with <em>group1</em>, those two "
+"examiners will be set up to correct those 20 students when you create a new "
+"assignment."
+msgstr ""
+"Hvis du tagger dine studenter og rettere med samme tags, kan du automatisk "
+"tilegne rettere til studenter når du lager en ny oppgave. F.eks.: Hvis du "
+"tagger to rettere og 20 studenter med <em>gruppe1</em>, vil de to retterne "
+"settes opp som rettere på de 20 studentene når du lager en ny oppgave hvis "
+"du velger å bruke tags for å sette opp rettere."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/relatedstudents/Overview.js:122
 msgid "Add student"
@@ -3485,17 +3904,23 @@ msgid "Search by username, name or email ..."
 msgstr "Søk etter brukernavn, navn eller epost ..."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:78
+#, fuzzy
 msgid ""
-"Renaming a course should not done without a certain amount of consideration."
-" The name of a course, especially the short name, is often used as an "
-"identifier when integrating other systems with Devilry."
-msgstr "Å endre navn på et emne bør ikke gjøres uten nøye gjennomtanke. Navnet på et emne, spesielt det korte navnet, brukes ofte som identifikator av systemer som integrerer seg med Devilry."
+"Renaming a course should not be done without a certain amount of "
+"consideration. The name of a course, especially the short name, is often "
+"used as an identifier when integrating other systems with Devilry."
+msgstr ""
+"Å endre navn på et emne bør ikke gjøres uten nøye gjennomtanke. Navnet på et "
+"emne, spesielt det korte navnet, brukes ofte som identifikator av systemer "
+"som integrerer seg med Devilry."
 
 #: devilry_subjectadmin/static/devilry_subjectadmin/app/view/subject/SubjectOverview.js:86
 msgid ""
-"Once you delete a course, there is no going back. Only superusers can delete"
-" a non-empty course."
-msgstr "Når du har slettet et emne, er det ingen mulighet for å angre. Kun superbrukere kan slette et emne som ikke er tomt."
+"Once you delete a course, there is no going back. Only superusers can delete "
+"a non-empty course."
+msgstr ""
+"Når du har slettet et emne, er det ingen mulighet for å angre. Kun "
+"superbrukere kan slette et emne som ikke er tomt."
 
 #: devilry_usersearch/static/devilry_usersearch/AbstractManageUsersPanel.js:133
 msgid "Search ..."
@@ -3514,7 +3939,9 @@ msgstr "Vil du virkelig slette de {numselected} valgte brukerne fra listen?"
 msgid ""
 "Start typing name, username or email, and select the user from the popup "
 "list ..."
-msgstr "Begynn å skrive et navn, brukernavn eller en epost, og velg brukeren fra popup-listen..."
+msgstr ""
+"Begynn å skrive et navn, brukernavn eller en epost, og velg brukeren fra "
+"popup-listen..."
 
 #: devilry_usersearch/static/devilry_usersearch/AutocompleteUserWidget.js:11
 msgid "Add user"
