@@ -1,16 +1,16 @@
-====================================
-1.3 release notes
-====================================
+#################
+Release Notes 1.3
+#################
 
 .. seealso:: :devilrydeploy:`Migration guide for sysadmins <migrationguides/1.3.html>`
 
 
-##############################
+*************
 Major changes
-##############################
+*************
 
 REST APIs
-================
+=========
 We are working on migrating from ``djangorestframework`` version 1 to
 ``django-simple-rest``. The reason for this is that ``djangorestframework``
 version 2 is incompatible with version one, but they use the same namespace,
