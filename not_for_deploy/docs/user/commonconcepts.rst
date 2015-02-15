@@ -4,17 +4,6 @@
 Common concepts
 ###############
 
-
-************
-Localization
-************
-Devilry can be translated to multiple languages and dialects. Each dialect
-makes Devilry feel more at home in its environment. A dialect translates
-special terms (see :ref:`specialtermsandconcepts`). This is important to
-understand when reading this documentation, because we use the special terms
-throughout the documentation, not the dialects.
-
-
 .. _specialtermsandconcepts:
 
 **************************

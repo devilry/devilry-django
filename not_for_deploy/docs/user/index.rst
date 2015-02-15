@@ -43,7 +43,7 @@ Examiner/Corrector
 Subject/Course administrator
 ----------------------------
 .. note::
-    For users managing one or more subjects/courses.
+    For users managing one or more courses.
 
 .. toctree::
    :maxdepth: 1
@@ -58,7 +58,7 @@ Subject/Course administrator
 Node/Department admin
 ---------------------
 .. note::
-    For users managing a Node containing multiple subjects/courses.
+    For users managing a Node containing multiple courses.
 
 .. toctree::
    :maxdepth: 1
