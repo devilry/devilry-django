@@ -10,20 +10,20 @@ Introduction to the Subjectadmin role
 Who this guide is for
 #####################
 A subject is, as explained in the common concepts guide, typically a course.
-This means that this guide is for administrators managing a course or a period
-(semester) within a course. If you have *yellow* background color in your
+This means that this guide is for administrators managing a course or a term
+(semester) within a course. If you have *orange* background color in your
 header, you are using the user interface for the Subjectadmin role.
 
 
 The responibilities of a Subjectadmin
 #####################################
-A Subjectadmin manage one or more :ref:`subject`, and/or :ref:`period`. They set up
+A Subjectadmin manage one or more :ref:`subject`, and/or :ref:`term`. They set up
 assignments, organize students into :ref:`Groups <group_candidate_student>`, and
 assignment :ref:`Examiners <examiner>` to give feedback to students.
 
 
 Commmon tasks
-##########################
+#############
 
 .. _findsubjectadminfrontpage:
 
@@ -35,7 +35,7 @@ local dialect), from the Devilry frontpage.
 
 
 Create an assignment
-===========================
+====================
 We provide an interractive guide to help you create assignments. Simply go to
 the Subjectadmin frontpage (see :ref:`findsubjectadminfrontpage`), and select
 the guide on the right hand side.
@@ -43,8 +43,8 @@ the guide on the right hand side.
 
 Get an overview over all your students
 ======================================
-Select an active :ref:`period` from the Subjectadmin frontpage (see
-:ref:`findsubjectadminfrontpage`), or an old/expired :ref:`period` via
+Select an active :ref:`term` from the Subjectadmin frontpage (see
+:ref:`findsubjectadminfrontpage`), or an old/expired :ref:`term` via
 the link further down on the frontpage.
 
 Under the *Edit and view related information* heading, you will find links to
