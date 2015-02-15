@@ -55,7 +55,6 @@ Extending Devilry
 
 Apps
 ----
-
 * :ref:`devilry_subjectadmin`
 * :doc:`devilry_qualifiesforexam`
 * :doc:`devilry_search`

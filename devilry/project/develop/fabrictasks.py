@@ -7,6 +7,7 @@ from fabric.context_managers import shell_env, lcd
 
 
 DB_FILE = join('developfiles', 'db.sqlite3')
+LANGUAGES = ['en', 'nb']
 
 
 def _managepy(args, djangoenv='develop', environment={}, working_directory=None):
@@ -275,23 +276,28 @@ def jsbuildall():
 
 
 @task
-def makemessages(lanaguagecode):
-    _managepy(
-        'makemessages '
-        '--ignore "static*" '
-        '-l {}'.format(lanaguagecode), working_directory='devilry')
+def makemessages():
+    for languagecode in LANGUAGES:
+        _managepy(
+            'makemessages '
+            '--ignore "static*" '
+            '-l {}'.format(languagecode), working_directory='devilry')
 
 
 @task
-def makemessages_javascript(lanaguagecode):
-    _managepy(
-        'makemessages '
-        '-d djangojs '
-        '--ignore "app-all.js" '
-        '--ignore "all-classes.js" '
-        '--ignore "node_modules" '
-        '--ignore "bower_components" '
-        '-l {}'.format(lanaguagecode), working_directory='devilry')
+def makemessages_javascript():
+    """
+    Build
+    """
+    for languagecode in LANGUAGES:
+        _managepy(
+            'makemessages '
+            '-d djangojs '
+            '--ignore "app-all.js" '
+            '--ignore "all-classes.js" '
+            '--ignore "node_modules" '
+            '--ignore "bower_components" '
+            '-l {}'.format(languagecode), working_directory='devilry')
 
 @task
 def compilemessages():
