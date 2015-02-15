@@ -25,14 +25,14 @@ students to join your group as follows:
 
 1. Log in to Devilry.
 2. Select the *Student* role on the frontpage.
-3. Select *Active semester* in the *Navigate* section at the bottom of the page.
-4. Select the assignment.
-5. You should have a *Group members* section in the top of the left hand column
-   with the current group members, and an *Invite students to the group* link.
-   Click the link.
-6. Use the wizard to send an invite. Other students will get their invite via
-   email, and they can accept or decline the invite. You can delete an unanswered
-   invite.
+3. Select the assignment.
+4. Select *Project group* in the list on the left.
+5. It will say *Invite someone to join your group?* at the top of the page. Under you
+   can select the student you want to invite to your group, and send an invite. Other
+   students will get their invite via email, and they can accept or decline the invite.
+   You can delete an unanswered invite.
+   If any, your group members will be in the list *Project group members* at the bottom
+   of the page.   
 
 .. warning::
 
