@@ -139,7 +139,7 @@ class TestAddDeliveryView(TestCase):
         self.assertTrue(selector.exists('#div_id_confirm_delivery_after_soft_deadline'))
         self.assertIn(
             'Do you really want to add a delivery after the deadline? '
-            'You normally need to have a valid reason when adding deadline after the deadline.',
+            'You normally need to have a valid reason when adding a delivery after the deadline.',
             selector.one('#devilry_student_add_delivery_form').alltext_normalized,)
 
     def test_get_no_deadlines(self):
