@@ -1,16 +1,11 @@
-.. _devenv:
-
-===========================
-The development environment
-===========================
-
-
 #####################################
 Setup a local development environment
 #####################################
 
+
+******************
 Check out from GIT
-==================
+******************
 
 If you plan to develop devilry, you should fork the devilry-django repo,
 changes to your own repo and request inclusion to the master repo using
@@ -23,8 +18,9 @@ latest semi-stable development version. The latest stable version is in
 the ``latest-stable`` branch.
 
 
+*********************************
 Install dependencies/requirements
-=================================
+*********************************
 
 .. note::
     Devilry should work perfectly well with only Python 2.7 or later Python2 versions.
@@ -42,21 +38,20 @@ Install dependencies/requirements
 
 
 Mac OSX
--------
+=======
 
 1. Install **XCode** (from app store).
-2. Install command line tools for XCode (includes Git and Python):
-    - Open XCode
-    - Choose ``XCode->Preferences`` (or ``CMD,``).
-    - Select the *Downloads*-tab.
-    - Install the *Command line tools* component.
+2. Install command line tools for XCode (includes Git and Python)::
+
+    $ xcode-select --install
+
 3. Install other dependencies/requirements::
 
-    $ sudo easy_install fabric virtualenv
+    $ sudo easy_install virtualenv
 
 
 Ubuntu Linux
-------------
+============
 ::
 
     $ sudo apt-get install build-essential python-dev python-virtualenv libncurses5-dev virtualenvwrapper libxslt1-dev libxml2 libxml2-dev zlib1g-dev
@@ -67,22 +62,22 @@ Setup the development virtualenv
 ================================
 ::
 
-    $ mkvirtualenv devilry
+    $ mkvirtualenv devilry-django
     $ pip install -r requirements/development.txt
 
 
 
 .. _createdevenvdb:
 
-#################
+*****************
 Create a database
-#################
+*****************
 We have several alternatives for setting up a demo database. They all
 use Fabric tasks. See :ref:`aboutfabric`.
 
-First, make sure you are in the ``devilry`` virtualenv::
+First, make sure you are in the ``devilry-django`` virtualenv::
 
-    $ workon devilry
+    $ workon devilry-django
 
 You can create a fairly full featured demo database with::
 
@@ -104,12 +99,12 @@ things the script does).
 
 .. _devrunserver:
 
-#################################
+*********************************
 Run the Django development server
-#################################
-First, make sure you are in the ``devilry`` virtualenv::
+*********************************
+First, make sure you are in the ``devilry-django`` virtualenv::
 
-    $ workon devilry
+    $ workon devilry-django
 
 Start the Django development server with::
 
@@ -134,9 +129,9 @@ role.
 
 .. _aboutfabric:
 
-######
+******
 Fabric
-######
+******
 
 We use `Fabric <http://fabfile.org>`_ to simplify common tasks. Fabric
 simply runs the requested ``@task`` decorated functions in

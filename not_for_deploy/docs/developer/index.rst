@@ -1,6 +1,6 @@
-===============================
+###############################
 Devilry developer documentation
-===============================
+###############################
 
 
 .. note::
@@ -9,88 +9,61 @@ Devilry developer documentation
     and https://github.com/devilry/devilry-django for the code.
 
 
-####################################################
-Common topics (see Table of contents for all topics)
-####################################################
+**********
+Essentials
+**********
+
+.. toctree::
+    :maxdepth: 1
+
+    gettingstarted
+    testsuite
+    mock
+    devilry.project.develop.teshelpers.corebuilder
+    extend_devilry
+    create_app
 
 
-Core
-----
 
-.. module:: devilry.apps.core
-
-* **devilry.apps.core.models:** :ref:`API <devilry.apps.core.models>`
-* :ref:`userobj`
-* :ref:`devilry.apps.core.deliverystore <devilry.apps.core.deliverystore>`
-
-
-Essential information for new developers
-----------------------------------------
-* :ref:`devenv`
-* :ref:`sourceorganized`
-* :ref:`buildout`
-* :ref:`testsuite`
-* :doc:`devilry.project.develop.teshelpers.corebuilder`
-* :doc:`mock`
-* :ref:`javascript`
-* :doc:`celery`
+Essential wiki pages for developers
+===================================
+* `How to write API documentation - wiki page <https://github.com/devilry/devilry-django/wiki/How-to-write-API-documentation>`_
 * More info available on the `Developer wiki page <https://github.com/devilry/devilry-django/wiki/Developer>`_.
 
 
-How to document Devilry
------------------------
-* `How to write API documentation - wiki page <https://github.com/devilry/devilry-django/wiki/How-to-write-API-documentation>`_
-* :ref:`readthedocs` --- If you need to debug build errors from readthedocs.org.
-
-
-Extending Devilry
------------------
-
-* :doc:`extend_devilry`
-* **Plugins:** :ref:`plugins`, :doc:`Grading system plugins <devilry_gradingsystem>`,
-  :doc:`Qualifies for exam <devilry_qualifiesforexam>`.
-* **Apps**: Read the `Django docs <https://www.djangoproject.com/>`_.
-
-
-
-Apps
-----
-* :ref:`devilry_subjectadmin`
-* :doc:`devilry_qualifiesforexam`
-* :doc:`devilry_search`
-
-.. note:: The apps listing is incomplete.
-
-
-########
-Releases
-########
-
-* :ref:`releasenoteslisting`
-
-
-#################
-Table of contents
-#################
+*****************
+API and utilities
+*****************
 
 .. toctree::
-    :maxdepth: 2
+    :maxdepth: 1
 
     core.models
     userobj
     core.deliverystore
+    devilry.utils
 
-    devenv
-    sourceorganized
-    buildout
-    testsuite
-    mock
-    devilry.project.develop.teshelpers.corebuilder
-    testhelper
-    extend_devilry
-    create_app
-    plugins
+
+***************
+Advanced topics
+***************
+Most developers will not need to bother with these topics.
+
+.. toctree::
+    :maxdepth: 1
+
     celery
+    plugins
+    i18n
+    javascript
+
+
+****
+Apps
+****
+
+.. toctree::
+    :maxdepth: 1
 
     devilry_subjectadmin
     devilry_qualifiesforexam
@@ -98,12 +71,23 @@ Table of contents
     devilry_search
     devilry_theme
 
-    devilry.utils
 
-    readthedocs
-    i18n
-    javascript
-    pycharm
+******************************
+Deprecated APIs and frameworks
+******************************
+
+.. toctree::
+    :maxdepth: 1
+
+    testhelper
+
+
+********
+Releases
+********
+
+.. toctree::
+    :maxdepth: 2
 
     releasenoteslisting
     release
