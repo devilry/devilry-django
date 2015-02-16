@@ -49,7 +49,7 @@ Run Celery
 To run Celery, use::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/celery -A devilry.project.common worker -l debug
+    $ DJANGO_SETTINGS_MODULE=devilry_settings venv/bin/celery -A devilry.project.common worker -l debug
 
 If this starts without any errors, Celery should be working. You can stop the
 server using ``ctrl-c``. For all other cases than debugging and testing, we will be
