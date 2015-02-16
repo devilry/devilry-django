@@ -27,4 +27,4 @@ Build the search index
 To index the data currently in the database, run::
 
     $ cd ~/devilrydeploy/
-    $ python manage.py rebuild_index --noinput
+    $ venv/bin/python manage.py rebuild_index --noinput
