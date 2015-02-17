@@ -52,6 +52,9 @@ messy to maintain. Instead, we use a PIP requirements-file. Create
     # Supervisord process manager
     supervisor
 
+    # Email backend that send email in a Celery background queue
+    django-celery-email
+
     # The devilry library/djangoproject
     # - See http://devilry.org for the latest devilry version
     devilry==VERSION
