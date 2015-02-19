@@ -212,6 +212,9 @@ DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_URL = None
 #: Text for the DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_URL link.
 DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_TEXT = None
 
+#: The documentation version to use.
+DEVILRY_DOCUMENTATION_VERSION = 'latest'
+
 
 #: Django apps that override the Devilry javascript translations (which is most
 #: of the Devilry user interface).
