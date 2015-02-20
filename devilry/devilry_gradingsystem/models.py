@@ -1,4 +1,6 @@
 from datetime import datetime
+import os
+import uuid
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
@@ -61,3 +63,27 @@ class FeedbackDraft(models.Model):
 
     class Meta:
         ordering = ['-save_timestamp']
+
+
+def feedback_draft_file_upload_to(instance, filename):
+    return u'devilry_gradingsystem/feedbackdraftfile/{deliveryid}/{uuid}'.format(
+        deliveryid=instance.delivery_id,
+        uuid=str(uuid.uuid1()))
+
+
+class FeedbackDraftFile(models.Model):
+    """
+    A file that is part of the current draft.
+
+    Unlike :class:`.FeedbackDraft`, we only keep one copy of the files.
+    """
+    delivery = models.ForeignKey(Delivery, related_name='+')
+    saved_by = models.ForeignKey(User, related_name='+')
+
+    #: The orginal filename.
+    filename = models.TextField()
+
+    #: The uploaded file.
+    file = models.FileField(
+        upload_to=feedback_draft_file_upload_to
+    )
