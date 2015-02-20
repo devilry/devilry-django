@@ -7,10 +7,12 @@ from django import forms
 from django.views.generic import FormView
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
+from django_cradmin.widgets import filewidgets
+from devilry.devilry_gradingsystem.widgets.filewidget import FeedbackEditorFileWidget
 
 from devilry.devilry_markup.parse_markdown import markdown_full
 from devilry.apps.core.models import Delivery
-from devilry.devilry_gradingsystem.models import FeedbackDraft
+from devilry.devilry_gradingsystem.models import FeedbackDraft, FeedbackDraftFile
 from devilry.devilry_gradingsystem.widgets.editmarkdown import EditMarkdownLayoutObject
 from devilry.devilry_gradingsystem.widgets.editfeedbackbuttonbar import EditFeedbackButtonBar
 
@@ -36,9 +38,12 @@ class FeedbackEditorSingleDeliveryObjectMixin(SingleObjectMixin):
     def _setup_common_data(self):
         self.object = self.get_object()
         self.delivery = self.object
-        self.last_draft = None
-        if self.delivery.devilry_gradingsystem_feedbackdraft_set.count() > 0:
-            self.last_draft = self.delivery.devilry_gradingsystem_feedbackdraft_set.all()[0]
+        self.last_feedbackfile = None
+        self.last_draft = self.delivery.devilry_gradingsystem_feedbackdraft_set.first()
+        if self.last_draft:
+            self.last_feedbackfile = FeedbackDraftFile.objects\
+                .filter(delivery=self.delivery, saved_by=self.request.user)\
+                .first()
 
     def get(self, *args, **kwargs):
         self._setup_common_data()
@@ -53,7 +58,6 @@ class FeedbackEditorSingleDeliveryObjectMixin(SingleObjectMixin):
         if not assignment.has_valid_grading_setup():
             return HttpResponseBadRequest('Grading system is not set up correctly')
         return super(FeedbackEditorSingleDeliveryObjectMixin, self).post(*args, **kwargs)
-
 
     def get_queryset(self):
         """
@@ -76,7 +80,6 @@ class FeedbackEditorSingleDeliveryObjectMixin(SingleObjectMixin):
         return context
 
 
-
 class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
     """
     Base mixin class for all feedback editor views.
@@ -86,7 +89,7 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
         return reverse('devilry_examiner_singledeliveryview',
             kwargs={'deliveryid': self.delivery.id})
 
-    def create_feedbackdraft(self, points, feedbacktext_raw, feedbacktext_html, publish=False):
+    def create_feedbackdraft(self, points, feedbacktext_raw, feedbacktext_html, feedbackfile, publish=False):
         draft = FeedbackDraft(
             delivery=self.delivery,
             points=points,
@@ -94,6 +97,14 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
             feedbacktext_html=feedbacktext_html,
             saved_by=self.request.user
         )
+
+        if feedbackfile:
+            feedbackdraftfile = FeedbackDraftFile(
+                delivery=self.delivery,
+                saved_by=self.request.user,
+                filename=feedbackfile.name)
+            feedbackdraftfile.file.save(feedbackfile.name, feedbackfile)
+
         if publish:
             draft.published = True
             draft.staticfeedback = draft.to_staticfeedback()
@@ -103,25 +114,30 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
         return draft
 
 
-
 class FeedbackEditorFormBase(forms.Form):
     def __init__(self, *args, **kwargs):
         self.last_draft = kwargs.pop('last_draft')
         self.assignment = kwargs.pop('assignment')
+        self.feedbackfile = kwargs.pop('feedbackfile')
         super(FeedbackEditorFormBase, self).__init__(*args, **kwargs)
         self._add_feedbacktext_field()
 
     def _add_feedbacktext_field(self):
-        if self.last_draft:
-            feedbacktext_editor = self.last_draft.feedbacktext_editor
-        else:
-            feedbacktext_editor = FeedbackDraft.DEFAULT_FEEDBACKTEXT_EDITOR
+        # if self.last_draft:
+        #     feedbacktext_editor = self.last_draft.feedbacktext_editor
+        # else:
+        #     feedbacktext_editor = FeedbackDraft.DEFAULT_FEEDBACKTEXT_EDITOR
         self.fields['feedbacktext'] = forms.CharField(
             label=_('Feedback text'),
             required=False)
 
+        self.fields['feedbackfile'] = forms.FileField(
+            label=_('Feedback file'),
+            required=False,
+            widget=FeedbackEditorFileWidget(feedbackfile=self.feedbackfile))
+
     def get_feedbacktext_layout_elements(self):
-        return [EditMarkdownLayoutObject()]
+        return [EditMarkdownLayoutObject(), 'feedbackfile']
 
     def get_submitbuttons_layout_elements(self):
         return [EditFeedbackButtonBar()]
@@ -133,12 +149,12 @@ class FeedbackEditorFormBase(forms.Form):
             self.helper.layout.append(element)
 
 
-
 class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
     def get_form_kwargs(self):
         kwargs = super(FeedbackEditorFormView, self).get_form_kwargs()
         kwargs['last_draft'] = self.last_draft
         kwargs['assignment'] = self.delivery.deadline.assignment_group.assignment
+        kwargs['feedbackfile'] = self.last_feedbackfile
         return kwargs
 
     def get_success_url(self):
@@ -152,11 +168,21 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
         raise NotImplementedError()
 
     def get_create_feedbackdraft_kwargs(self, form, publish):
+        print
+        print "*" * 70
+        print
+        print self.request.POST
+        print form.cleaned_data
+        print
+        print "*" * 70
+        print
+
         return {
            'feedbacktext_raw': form.cleaned_data['feedbacktext'],
            'feedbacktext_html': markdown_full(form.cleaned_data['feedbacktext']),
            'publish': publish,
-           'points': self.get_points_from_form(form)
+           'points': self.get_points_from_form(form),
+           'feedbackfile': form.cleaned_data['feedbackfile']
         }
 
     def save_pluginspecific_state(self, form):
@@ -179,7 +205,6 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
         else:
             return super(FeedbackEditorFormView, self).form_valid(form)
 
-
     def get_initial_from_last_draft(self):
         return {
             'feedbacktext': self.last_draft.feedbacktext_raw
@@ -189,4 +214,15 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
         initial = {}
         if self.last_draft:
             initial = self.get_initial_from_last_draft()
+            if self.last_feedbackfile:
+                initial['feedbackfile'] = self.last_feedbackfile.file
+            # print
+            # print "*" * 70
+            # print
+            # print last_feedbackfile
+            # print initial
+            # print
+            # print "*" * 70
+            # print
+
         return initial

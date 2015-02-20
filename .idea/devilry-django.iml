@@ -25,6 +25,7 @@
       <list>
         <option value="$MODULE_DIR$/devilry/devilry_student/templates" />
         <option value="$MODULE_DIR$/devilry/devilry_markup/templates" />
+        <option value="$MODULE_DIR$/devilry/devilry_gradingsystem/templates" />
       </list>
     </option>
   </component>

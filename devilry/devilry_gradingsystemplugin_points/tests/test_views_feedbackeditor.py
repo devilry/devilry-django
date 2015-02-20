@@ -1,5 +1,9 @@
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+import htmls
+from devilry.devilry_gradingsystem.models import FeedbackDraftFile
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
@@ -43,8 +47,9 @@ class TestFeedbackEditorView(TestCase):
     def test_render(self):
         response = self._get_as(self.examiner1)
         self.assertEquals(response.status_code, 200)
-        html = response.content
-        self.assertTrue(cssExists(html, '#id_points'))
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('#id_points'))
+        self.assertTrue(selector.exists('input#id_feedbackfile'))
 
     def test_post_draft_valid_value_creates_draft_but_not_staticfeedback(self):
         delivery = self.deliverybuilder.delivery
@@ -88,3 +93,31 @@ class TestFeedbackEditorView(TestCase):
         successurl = reverse('devilry_examiner_singledeliveryview',
             kwargs={'deliveryid': self.deliverybuilder.delivery.id})
         self.assertTrue(response['Location'].endswith(successurl))
+
+    def test_post_with_file(self):
+        delivery = self.deliverybuilder.delivery
+        self.assertEquals(delivery.feedbacks.count(), 0)
+        self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
+        self._post_as(self.examiner1, {
+            'points': '20',
+            'feedbackfile': SimpleUploadedFile('testfile.txt', 'Feedback file test')
+        })
+        self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
+        self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
+        feedbackdraftfile = FeedbackDraftFile.objects.get(delivery=delivery)
+        self.assertEqual(feedbackdraftfile.filename, 'testfile.txt')
+        self.assertEqual(feedbackdraftfile.file.read(), 'Feedback file test')
+
+    # def test_post_with_file(self):
+    #     delivery = self.deliverybuilder.delivery
+    #     self.assertEquals(delivery.feedbacks.count(), 0)
+    #     self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
+    #     self._post_as(self.examiner1, {
+    #         'points': '20',
+    #         'feedbackfile': SimpleUploadedFile('testfile.txt', 'Feedback file test')
+    #     })
+    #     self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
+    #     self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
+    #     feedbackdraftfile = FeedbackDraftFile.objects.get(delivery=delivery)
+    #     self.assertEqual(feedbackdraftfile.filename, 'testfile.txt')
+    #     self.assertEqual(feedbackdraftfile.file.read(), 'Feedback file test')

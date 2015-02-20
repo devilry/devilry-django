@@ -66,9 +66,11 @@ class FeedbackDraft(models.Model):
 
 
 def feedback_draft_file_upload_to(instance, filename):
-    return u'devilry_gradingsystem/feedbackdraftfile/{deliveryid}/{uuid}'.format(
+    extension = os.path.splitext(filename)[1]
+    return u'devilry_gradingsystem/feedbackdraftfile/{deliveryid}/{uuid}{extension}'.format(
         deliveryid=instance.delivery_id,
-        uuid=str(uuid.uuid1()))
+        uuid=str(uuid.uuid1()),
+        extension=extension)
 
 
 class FeedbackDraftFile(models.Model):
@@ -81,9 +83,12 @@ class FeedbackDraftFile(models.Model):
     saved_by = models.ForeignKey(User, related_name='+')
 
     #: The orginal filename.
-    filename = models.TextField()
+    filename = models.TextField(blank=False, null=False)
 
     #: The uploaded file.
     file = models.FileField(
         upload_to=feedback_draft_file_upload_to
     )
+
+    def get_download_url(self):
+        return '/to/do'
