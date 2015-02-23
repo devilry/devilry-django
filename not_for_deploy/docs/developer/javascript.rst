@@ -93,10 +93,6 @@ Simply point JSHint at a directory::
 
 The defaults are sane (unlike JSLint), so you should not need to supply any options.
 
-You can also use JSHint with :ref:`pycharm`.
-
-
-
 
 
 ############################################

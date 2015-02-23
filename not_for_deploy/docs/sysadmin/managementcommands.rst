@@ -1,8 +1,8 @@
 .. _managmentcommands:
 
-***************************
+**************************
 Devilry Managment Commands
-***************************
+**************************
 This section describe the managment commands available in devilry.
 To learn more about Django and their administrative support visit the `django managment commands`_
 page in their docs. The set of commands may be altered or extended by packages used in Devilry.
@@ -24,9 +24,9 @@ The source code of the commands can be found in the official Devilry repository 
 
 .. _superadmin managment commands: https://github.com/devilry/devilry-django/tree/master/src/devilry/devilry/apps/superadmin/management/commands
 
-================
+===============
 devilry_nodeadd
-================
+===============
 **django.py devilry_nodeadd <node path> <short name>**
 
 Creates a new node in the Devilry node hierarchy. To create a root node
@@ -52,23 +52,23 @@ Creates a new subject within the devilry hierarchy. The path and short name are 
 --long_name
     A longer and more descriptive name of the node.
 
-========================
+=======================
 devilry_subjectadminadd
-========================
+=======================
 **django.py devilry_subjectadminadd <subject-short_name> <admin username>** 
 
 Add a user as admin on the specified subject.
 
-==========================
+=========================
 devilry_subjectadminclear
-==========================
+=========================
 **django.py devilry_subjectadminclear <subject short name>** 
 
 Removes all administrators from the specified subject.
 
-=======================
+=====================
 devilry_subjectsearch
-=======================
+=====================
 **django.py devilry_subjectsearch <short name>** 
 
 Search for a subject by short name. Matches any part of the name.
@@ -76,9 +76,9 @@ Search for a subject by short name. Matches any part of the name.
 --short_name-only
     Only print short name (one line per short name)
 
-==================
+=================
 devilry_periodadd
-==================
+=================
 **django.py devilry_periodadd <subject short name> <period short name>**
 
 Create a new period on a new subject.
@@ -107,16 +107,16 @@ devilry_periodadminadd
 
 Add a user as admin on the period.
 
-=========================
+========================
 devilry_periodadminclear
-=========================
+========================
 **django.py devilry_periodadminclear <subject short name> <period short name>**
 
 Clear administrators on the the subject.
 
-=====================
+====================
 devilry_periodsearch
-=====================
+====================
 **django.py devilry_periodsearch <period short name>**
 
 Searches for periods based on the specified short name
@@ -124,9 +124,9 @@ Searches for periods based on the specified short name
 --short_name-only
     Only print short name (one line per short name)
 
-==================================
+=================================
 devilry_periodsetrelatedexaminers
-==================================
+=================================
 **django.py devilry_periodsetrelatedexaminers <subject short name> <period short name>**
 
 Set related examiners on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedExaminer model. 
@@ -150,9 +150,9 @@ See `relatedstudents.json`_ for an example.
 --clearall
     Clear all related students before adding
 
-==========================
+========================
 devilry_resave_all_users
-=========================
+========================
 **django.py devilrly_resave_all_users**
 
 Resaves all users. This command is useful if you have any apps that listens for `post_save` signals on **User**.
@@ -164,9 +164,9 @@ devilry_sync_candidates
 
 Sync the cached fields in Candidate with the actual data from User.
 
-================
+===============
 devilry_useradd
-================
+===============
 **django.py devilry_userad <username>**
 
 Creates a new user.
@@ -185,9 +185,9 @@ Creates a new user.
 
 Returns a non-zero value when the user already exists in Devilry.
 
-====================
+===================
 devilry_useraddbulk
-====================
+===================
 **django.py devilry_useraddbulk**
 
 Reading usernames from `stdin`
@@ -195,9 +195,9 @@ Reading usernames from `stdin`
 --emailsuffix
     Email suffix are set on all users in the list. Example: <username>@example.com
 
-================
+===============
 devilry_usermod
-================
+===============
 **django.py devilry_usermod <username>**
 
 Modify the credentials of an existing user
@@ -214,9 +214,9 @@ Modify the credentials of an existing user
 --normaluser
     Make the user a normal user, with access to everything within their rank in Devilry hierarchy
 
-===================
+==================
 devilry_usersearch
-===================
+==================
 **django.py devilry_usersearch <username>**
 
 Search for a user by username. Matches any part of the username.

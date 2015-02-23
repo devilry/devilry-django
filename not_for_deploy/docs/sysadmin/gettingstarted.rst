@@ -52,6 +52,9 @@ messy to maintain. Instead, we use a PIP requirements-file. Create
     # Supervisord process manager
     supervisor
 
+    # Email backend that send email in a Celery background queue
+    django-celery-email
+
     # The devilry library/djangoproject
     # - See http://devilry.org for the latest devilry version
     devilry==VERSION
@@ -140,6 +143,7 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
     #: Configure an email backend
     EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
     CELERY_EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    INSTALLED_APPS += ['djcelery_email']
     EMAIL_HOST_USER = ''
     EMAIL_HOST_PASSWORD = ''
     EMAIL_PORT = 25

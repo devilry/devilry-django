@@ -69,6 +69,7 @@ Students can not leave groups on their own (yet). So an admin has to manage that
 3. Click the red minus button on the right hand side of the student you wish to remove from the group.
 
 This will do the following:
+
 - Create a copy of the group with *all* deliveries and feedback, even
   deliveries made by other students before the student you are removing joined
   the group.

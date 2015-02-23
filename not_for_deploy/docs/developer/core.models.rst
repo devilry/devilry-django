@@ -4,10 +4,6 @@
 :mod:`devilry.apps.core.models` --- Devilry core datastructure
 ===============================================================
 
-.. For some reason required to make cross references work.
-   http://groups.google.com/group/sphinx-dev/browse_thread/thread/dd921549bc146a5c/2f39d79ce46d447f
-.. currentmodule:: devilry.apps.core.models
-
 
 .. image:: images/devilry.core.models.1.png
 

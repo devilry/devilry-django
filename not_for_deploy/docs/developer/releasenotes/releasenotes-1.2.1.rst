@@ -1,13 +1,10 @@
-====================================
-1.2.1 release notes
-====================================
+###################
+Release Notes 1.2.1
+###################
 
-.. seealso:: :devilrydeploy:`Migration guide for sysadmins <migrationguides/1.2.1.html>`
-
-
-##############################
+*************
 Major changes
-##############################
+*************
 
 Semantic changes
 ================
