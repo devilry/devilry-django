@@ -3,10 +3,9 @@
     <ul class="devilry-feedback-rendered-view-files">
         {% for fileattachment in feedback.files.all %}
             <li>
-                <span class="fa fa-download"></span>
-                <a href="{{ fileattachment.get_download_url }}">
-                    {{ fileattachment.filename }}
-                </a>
+                <a href="{{ fileattachment.get_download_url }}" target="_blank">
+                    {{ fileattachment.filename }}</a>
+                <span class="fa fa-external-link"></span>
             </li>
         {% endfor %}
     </ul>
