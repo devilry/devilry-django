@@ -97,7 +97,10 @@ class FeedbackDraftFile(models.Model):
     )
 
     def get_download_url(self):
-        return reverse('devilry_gradingsystem_feedbackdraftfile', kwargs={'pk': self.pk})
+        return reverse('devilry_gradingsystem_feedbackdraftfile', kwargs={
+            'pk': self.pk,
+            'asciifilename': self.get_ascii_filename()
+        })
 
     def __unicode__(self):
         return u'FeedbackDraftFile#{} by user#{} on delivery#{}'.format(
@@ -112,6 +115,9 @@ class FeedbackDraftFile(models.Model):
             staticfeedback=staticfeedback, filename=self.filename)
         fileattachment.file.save(self.filename, self.file)
         return fileattachment
+
+    def get_ascii_filename(self):
+        return self.filename.encode('ascii', 'ignore')
 
     class Meta:
         ordering = ['filename']  # Should have the same ordering as StaticFeedbackFileAttachment
