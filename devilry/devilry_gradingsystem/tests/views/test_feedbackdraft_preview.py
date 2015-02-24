@@ -1,21 +1,22 @@
+from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 import htmls
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.devilry_gradingsystem.models import FeedbackDraft
+from devilry.devilry_gradingsystem.models import FeedbackDraft, FeedbackDraftFile
 
 
 class TestFeedbackDraftPreviewView(TestCase):
     def setUp(self):
-        self.examiner1 = UserBuilder('examiner1').user
+        self.testexaminer = UserBuilder('testexaminer').user
         self.deliverybuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1',
                             points_to_grade_mapper='raw-points',
                             passing_grade_min_points=20,
                             max_points=100) \
-            .add_group(examiners=[self.examiner1])\
+            .add_group(examiners=[self.testexaminer])\
             .add_deadline_in_x_weeks(weeks=1)\
             .add_delivery_x_hours_before_deadline(hours=1)
 
@@ -35,17 +36,17 @@ class TestFeedbackDraftPreviewView(TestCase):
         self.assertEquals(response.status_code, 404)
 
     def test_get_draft_not_found_404(self):
-        response = self._get_as(self.examiner1, 1)
+        response = self._get_as(self.testexaminer, 1)
         self.assertEquals(response.status_code, 404)
 
     def test_render(self):
         draft = FeedbackDraft.objects.create(
             points=40,
             delivery=self.deliverybuilder.delivery,
-            saved_by=self.examiner1,
+            saved_by=self.testexaminer,
             feedbacktext_html='This is a test.'
         )
-        response = self._get_as(self.examiner1, draft.id)
+        response = self._get_as(self.testexaminer, draft.id)
         self.assertEquals(response.status_code, 200)
         selector = htmls.S(response.content)
         self.assertTrue(selector.exists('.read-feedback-box'))
@@ -61,3 +62,26 @@ class TestFeedbackDraftPreviewView(TestCase):
         self.assertEquals(
             selector.one('.read-feedback-box .devilry-feedback-rendered-view').alltext_normalized,
             'This is a test.')
+        self.assertFalse(selector.exists('ul.devilry-feedback-rendered-view-files'))
+
+    def test_render_with_draftfile(self):
+        draft = FeedbackDraft.objects.create(
+            points=40,
+            delivery=self.deliverybuilder.delivery,
+            saved_by=self.testexaminer,
+            feedbacktext_html='This is a test.'
+        )
+        draftfile = FeedbackDraftFile(
+            delivery=self.deliverybuilder.delivery,
+            saved_by=self.testexaminer,
+            filename='test.txt')
+        draftfile.file.save('test.txt', ContentFile('Test'))
+
+        response = self._get_as(self.testexaminer, draft.id)
+        self.assertEquals(response.status_code, 200)
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('ul.devilry-feedback-rendered-view-files'))
+        self.assertEqual(selector.count('ul.devilry-feedback-rendered-view-files li'), 1)
+        self.assertEqual(
+            selector.one('ul.devilry-feedback-rendered-view-files li').alltext_normalized,
+            'test.txt')

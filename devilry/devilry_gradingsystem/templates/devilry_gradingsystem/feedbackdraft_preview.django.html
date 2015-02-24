@@ -12,7 +12,7 @@
 
 {% block pagecontent %}
     <div class="read-feedback-box">
-        {% include "devilry_examiner/readonly-feedback.django.html" with feedback=unsaved_staticfeedback %}
+        {% include "devilry_examiner/readonly-feedback.django.html" with feedback=unsaved_staticfeedback feedback_fileattachments=feedback_fileattachments %}
     </div>
 
     <div class="container-fluid django-cradmin-container-fluid-focus">

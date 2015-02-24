@@ -48,7 +48,7 @@ class TestFeedbackDraftFile(TestCase):
             .add_delivery_x_hours_before_deadline(hours=1)
 
     def test_to_staticfeedbackfileattachment(self):
-        draftfile = FeedbackDraftFile.objects.create(
+        draftfile = FeedbackDraftFile(
             delivery=self.deliverybuilder.delivery,
             saved_by=self.testexaminer,
             filename='test.txt')

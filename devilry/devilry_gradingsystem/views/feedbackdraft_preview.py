@@ -4,7 +4,7 @@ from django.http import Http404
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
-from devilry.devilry_gradingsystem.models import FeedbackDraft
+from devilry.devilry_gradingsystem.models import FeedbackDraft, FeedbackDraftFile
 
 
 class FeedbackDraftPreviewView(DetailView):
@@ -35,10 +35,13 @@ class FeedbackDraftPreviewView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(FeedbackDraftPreviewView, self).get_context_data(**kwargs)
+        delivery = context['object']
         draft = self.get_feedbackdraft()
-        delivery = self.object
         context['unsaved_staticfeedback'] = draft.to_staticfeedback()
         context['valid_grading_system_setup'] = True
+        feedback_fileattachments = FeedbackDraftFile.objects.filter(
+            saved_by=self.request.user, delivery=delivery)
+        context['feedback_fileattachments'] = feedback_fileattachments
         return context
 
     def post(self, *args, **kwargs):
