@@ -37,7 +37,6 @@ class FeedbackEditorSingleDeliveryObjectMixin(SingleObjectMixin):
     def _setup_common_data(self):
         self.object = self.get_object()
         self.delivery = self.object
-        self.last_feedbackdraftfile = None
         self.last_draft = self.delivery.devilry_gradingsystem_feedbackdraft_set.first()
         self.last_feedbackdraftfile = FeedbackDraftFile.objects\
             .filter(delivery=self.delivery, saved_by=self.request.user)\

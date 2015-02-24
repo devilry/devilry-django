@@ -2,6 +2,7 @@ from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 import htmls
+from devilry.apps.core.models import StaticFeedback
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
@@ -29,6 +30,14 @@ class TestFeedbackDraftPreviewView(TestCase):
             'deliveryid': self.deliverybuilder.delivery.id,
             'draftid': draftid
         }))
+
+    def _post_as(self, user, draftid, data=None):
+        self._login(user)
+        url = reverse('devilry_gradingsystem_feedbackdraft_preview', kwargs={
+            'deliveryid': self.deliverybuilder.delivery.id,
+            'draftid': draftid
+        })
+        return self.client.post(url, data=data)
 
     def test_get_not_examiner_404(self):
         nobody = UserBuilder('nobody').user
@@ -85,3 +94,48 @@ class TestFeedbackDraftPreviewView(TestCase):
         self.assertEqual(
             selector.one('ul.devilry-feedback-rendered-view-files li').alltext_normalized,
             'test.txt')
+
+    def test_post(self):
+        draft = FeedbackDraft.objects.create(
+            points=40,
+            delivery=self.deliverybuilder.delivery,
+            saved_by=self.testexaminer,
+            feedbacktext_html='<p>This is a test.</p>'
+        )
+
+        self.assertEquals(StaticFeedback.objects.count(), 0)
+        response = self._post_as(self.testexaminer, draft.id, {
+            'submit_publish': 'yes'
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(StaticFeedback.objects.count(), 1)
+        staticfeedback = StaticFeedback.objects.first()
+        self.assertEquals(staticfeedback.delivery, self.deliverybuilder.delivery)
+        self.assertEquals(staticfeedback.points, 40)
+        self.assertEquals(staticfeedback.saved_by, self.testexaminer)
+        self.assertEquals(staticfeedback.rendered_view, '<p>This is a test.</p>')
+
+    def test_post_with_draftfile(self):
+        draft = FeedbackDraft.objects.create(
+            points=40,
+            delivery=self.deliverybuilder.delivery,
+            saved_by=self.testexaminer,
+            feedbacktext_html=''
+        )
+        draftfile = FeedbackDraftFile(
+            delivery=self.deliverybuilder.delivery,
+            saved_by=self.testexaminer,
+            filename='test.txt')
+        draftfile.file.save('test.txt', ContentFile('Test'))
+
+        self.assertEquals(StaticFeedback.objects.count(), 0)
+        response = self._post_as(self.testexaminer, draft.id, {
+            'submit_publish': 'yes'
+        })
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(StaticFeedback.objects.count(), 1)
+        staticfeedback = StaticFeedback.objects.first()
+        self.assertEqual(staticfeedback.files.count(), 1)
+        fileattachment = staticfeedback.files.first()
+        self.assertEqual(fileattachment.filename, 'test.txt')
+        self.assertEqual(fileattachment.file.read(), 'Test')

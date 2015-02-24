@@ -82,6 +82,12 @@ class FeedbackDraftPreviewView(DetailView):
             draft.staticfeedback = draft.to_staticfeedback()
             draft.staticfeedback.full_clean()
             draft.staticfeedback.save()
+            last_feedbackdraftfile = FeedbackDraftFile.objects\
+                .filter(delivery=delivery, saved_by=self.request.user)\
+                .first()
+            if last_feedbackdraftfile:
+                last_feedbackdraftfile.to_staticfeedbackfileattachment(
+                    staticfeedback=draft.staticfeedback)
             return redirect('devilry_examiner_singledeliveryview', deliveryid=delivery.id)
         else:
             return redirect(delivery.assignment.get_gradingsystem_plugin_api().get_edit_feedback_url(delivery.id))
