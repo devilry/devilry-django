@@ -1,17 +1,16 @@
-from django.core.files.base import ContentFile
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.urlresolvers import reverse
+
 from django.test import TestCase
 import htmls
-from devilry.devilry_gradingsystem.models import FeedbackDraftFile
 
+from devilry.devilry_gradingsystem.tests.helpers import FeedbackEditorViewTestMixin
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
+
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.project.develop.testhelpers.soupselect import cssExists
 from devilry.devilry_gradingsystemplugin_points.devilry_plugin import PointsPluginApi
 
 
-class TestFeedbackEditorView(TestCase):
+class TestFeedbackEditorView(TestCase, FeedbackEditorViewTestMixin):
     def setUp(self):
         self.examiner1 = UserBuilder('examiner1').user
         self.assignment1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -28,24 +27,13 @@ class TestFeedbackEditorView(TestCase):
         pluginapi = PointsPluginApi(self.assignment1builder.assignment)
         self.url = pluginapi.get_edit_feedback_url(self.deliverybuilder.delivery.id)
 
-    def _login(self, user):
-        self.client.login(username=user.username, password='test')
-
-    def _get_as(self, user):
-        self._login(user)
-        return self.client.get(self.url)
-
-    def _post_as(self, user, *args, **kwargs):
-        self._login(user)
-        return self.client.post(self.url, *args, **kwargs)
-
     def test_get_not_examiner_404(self):
         nobody = UserBuilder('nobody').user
-        response = self._get_as(nobody)
+        response = self.get_as(nobody)
         self.assertEquals(response.status_code, 404)
 
     def test_render(self):
-        response = self._get_as(self.examiner1)
+        response = self.get_as(self.examiner1)
         self.assertEquals(response.status_code, 200)
         selector = htmls.S(response.content)
         self.assertTrue(selector.exists('#id_points'))
@@ -55,7 +43,7 @@ class TestFeedbackEditorView(TestCase):
         delivery = self.deliverybuilder.delivery
         self.assertEquals(delivery.feedbacks.count(), 0)
         self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
-        response = self._post_as(self.examiner1, {
+        response = self.post_as(self.examiner1, {
             'points': '20'
         })
         self.assertEquals(delivery.feedbacks.count(), 0)
@@ -65,7 +53,7 @@ class TestFeedbackEditorView(TestCase):
         delivery = self.deliverybuilder.delivery
         self.assertEquals(delivery.feedbacks.count(), 0)
         self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
-        response = self._post_as(self.examiner1, {
+        response = self.post_as(self.examiner1, {
             'points': '20',
             'submit_publish': 'publish'
         })
@@ -77,7 +65,7 @@ class TestFeedbackEditorView(TestCase):
         delivery = self.deliverybuilder.delivery
         self.assertEquals(delivery.feedbacks.count(), 0)
         self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
-        response = self._post_as(self.examiner1, {
+        response = self.post_as(self.examiner1, {
             'points': '200'
         })
         self.assertEquals(delivery.feedbacks.count(), 0)
@@ -85,39 +73,20 @@ class TestFeedbackEditorView(TestCase):
         self.assertIn('Ensure this value is less than or equal to 100', response.content)
 
     def test_post_draft_redirect_back_to_self(self):
-        response = self._post_as(self.examiner1, {'points': '20'})
+        response = self.post_as(self.examiner1, {'points': '20'})
         self.assertTrue(response['Location'].endswith(self.url))
 
     def test_post_publish_redirect_to_successurl(self):
-        response = self._post_as(self.examiner1, {'points': '20', 'submit_publish': 'publish'})
+        response = self.post_as(self.examiner1, {'points': '20', 'submit_publish': 'publish'})
         successurl = reverse('devilry_examiner_singledeliveryview',
-            kwargs={'deliveryid': self.deliverybuilder.delivery.id})
+                             kwargs={'deliveryid': self.deliverybuilder.delivery.id})
         self.assertTrue(response['Location'].endswith(successurl))
 
-    def test_post_with_file(self):
-        delivery = self.deliverybuilder.delivery
-        self.assertEquals(delivery.feedbacks.count(), 0)
-        self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
-        self._post_as(self.examiner1, {
-            'points': '20',
-            'feedbackfile': SimpleUploadedFile('testfile.txt', 'Feedback file test')
-        })
-        self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
-        self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
-        feedbackdraftfile = FeedbackDraftFile.objects.get(delivery=delivery)
-        self.assertEqual(feedbackdraftfile.filename, 'testfile.txt')
-        self.assertEqual(feedbackdraftfile.file.read(), 'Feedback file test')
+    def get_valid_post_data_without_feedbackfile_or_feedbacktext(self):
+        return {'points': '1'}
 
-    # def test_post_with_file(self):
-    #     delivery = self.deliverybuilder.delivery
-    #     self.assertEquals(delivery.feedbacks.count(), 0)
-    #     self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
-    #     self._post_as(self.examiner1, {
-    #         'points': '20',
-    #         'feedbackfile': SimpleUploadedFile('testfile.txt', 'Feedback file test')
-    #     })
-    #     self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 1)
-    #     self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 1)
-    #     feedbackdraftfile = FeedbackDraftFile.objects.get(delivery=delivery)
-    #     self.assertEqual(feedbackdraftfile.filename, 'testfile.txt')
-    #     self.assertEqual(feedbackdraftfile.file.read(), 'Feedback file test')
+    def get_empty_delivery_with_testexaminer_as_examiner(self):
+        return self.deliverybuilder.delivery
+
+    def get_testexaminer(self):
+        return self.examiner1

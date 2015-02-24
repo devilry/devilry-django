@@ -96,3 +96,7 @@ class FeedbackDraftFile(models.Model):
 
     def get_download_url(self):
         return '/to/do'
+
+    def __unicode__(self):
+        return u'FeedbackDraftFile#{} by user#{} on delivery#{}'.format(
+            self.pk, self.saved_by_id, self.delivery_id)

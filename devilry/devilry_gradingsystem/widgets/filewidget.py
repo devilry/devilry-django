@@ -19,19 +19,9 @@ class FeedbackEditorFileWidget(forms.ClearableFileInput):
     def render(self, name, value, attrs=None):
         attrs = attrs or {}
         input_html = forms.FileInput.render(self, name, value, attrs)
-        print
-        print "*" * 70
-        print
-        print value
-        print input_html
-        print
-        print "*" * 70
-        print
-
         output = render_to_string(self.template_name, {
             'input_html': input_html,
-            'filename': self.feedbackfile.filename,
-            'download_url': self.feedbackfile.get_download_url(),
+            'feedbackfile': self.feedbackfile,
             'clear_checkbox_name': self.clear_checkbox_name(name)
         })
         return mark_safe(output)
