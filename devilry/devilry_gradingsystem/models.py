@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
+from devilry.apps.core.models import StaticFeedbackFileAttachment
 
 
 class FeedbackDraft(models.Model):
@@ -100,3 +101,12 @@ class FeedbackDraftFile(models.Model):
     def __unicode__(self):
         return u'FeedbackDraftFile#{} by user#{} on delivery#{}'.format(
             self.pk, self.saved_by_id, self.delivery_id)
+
+    def to_staticfeedbackfileattachment(self, staticfeedback):
+        """
+        Create a :class:`devilry.apps.core.models.StaticFeedbackFileAttachment`
+        from this FeedbackDraftFile.
+        """
+        fileattachment = StaticFeedbackFileAttachment(
+            staticfeedback=staticfeedback, filename=self.filename)
+        fileattachment.file.save(self.filename, self.file)
