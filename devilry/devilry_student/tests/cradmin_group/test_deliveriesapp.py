@@ -667,3 +667,43 @@ class TestDeliveryDetailsView(TestCase):
         self.assertEquals(
             selector.one('#devilry_student_group_deliverydetails_feedback_summary').alltext_normalized,
             'This delivery has been corrected, and the grade is: 2/20 (failed)')
+
+    def test_feedback_rendered_view(self):
+        self.groupbuilder.add_students(self.testuser)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=10, delivered_by=None)
+        deliverybuilder.add_passed_A_feedback(
+            saved_by=UserBuilder('testexaminer1').user,
+            rendered_view='<p>This is a test</p>')
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+
+        self.assertTrue(selector.exists('#devilry_student_group_deliverydetails_feedback_rendered_view'))
+        self.assertEqual(
+            selector.one('#devilry_student_group_deliverydetails_feedback_rendered_view').alltext_normalized,
+            'This is a test')
+        self.assertEqual(  # Ensure we do not strip html
+            selector.count('#devilry_student_group_deliverydetails_feedback_rendered_view p'),
+            1)
+
+    def test_feedback_rendered_view_fileattachments(self):
+        self.groupbuilder.add_students(self.testuser)
+        deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=10, delivered_by=None)
+        deliverybuilder\
+            .add_passed_A_feedback(saved_by=UserBuilder('testexaminer1').user,
+                                   rendered_view='')\
+            .add_fileattachment(filename='testfile.txt')
+
+        response = self._get_as('testuser', deliverybuilder.delivery.id)
+        response.render()
+        selector = htmls.S(response.content)
+
+        self.assertTrue(selector.exists('#devilry_student_group_deliverydetails_feedback_rendered_view'))
+        self.assertTrue(selector.exists('ul.devilry-feedback-rendered-view-files'))
+        self.assertEqual(selector.count('ul.devilry-feedback-rendered-view-files li'), 1)
+        self.assertEqual(
+            selector.one('ul.devilry-feedback-rendered-view-files li').alltext_normalized,
+            'testfile.txt')
