@@ -1,4 +1,6 @@
 from datetime import datetime
+import os
+import uuid
 
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
@@ -11,6 +13,7 @@ from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from delivery import Delivery
 from node import Node
+
 
 class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate):
     """ Represents a feedback for a `Delivery`_.
@@ -164,7 +167,6 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         feedback.clean(assignment=assignment)
         return feedback
 
-
     def _publish_if_allowed(self):
         assignment = self.delivery.deadline.assignment_group.parentnode
         if assignment.examiners_publish_feedbacks_directly:
@@ -216,7 +218,6 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             raise ValidationError(_('You are not allowed to give more than {max_points} points on this assignment.').format(
                 max_points=max_points))
 
-
     def __unicode__(self):
         return "StaticFeedback on %s" % self.delivery
 
@@ -243,3 +244,38 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         feedbackcopy.save(autoupdate_related_models=False,
                           autoset_timestamp_to_now=False)
         return feedbackcopy
+
+
+def staticfeedback_fileattachment_upload_to(instance, filename):
+    extension = os.path.splitext(filename)[1]
+    return u'devilry_core/staticfeedbackfileattachment/{staticfeedback_id}/{uuid}{extension}'.format(
+        staticfeedback_id=instance.staticfeedback_id,
+        uuid=str(uuid.uuid1()),
+        extension=extension)
+
+
+class StaticFeedbackFileAttachment(models.Model):
+    """
+    A file attachment for a :class:`.StaticFeedback`.
+    """
+
+    #: The :class:`.StaticFeedback` where that the file is attached to.
+    staticfeedback = models.ForeignKey(StaticFeedback, related_name='files')
+
+    #: The original filename.
+    filename = models.TextField(blank=False, null=False)
+
+    #: The uploaded file.
+    file = models.FileField(
+        upload_to=staticfeedback_fileattachment_upload_to
+    )
+
+    def get_download_url(self):
+        """
+        Get the URL where anyone with access to the file can download it.
+        """
+        return '/to/do'
+
+    def __unicode__(self):
+        return u'StaticFeedbackFileAttachment#{} StaticFeedback#{}'.format(
+            self.pk, self.staticfeedback_id)

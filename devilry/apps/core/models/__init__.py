@@ -13,7 +13,7 @@ from .assignment_group import AssignmentGroup, AssignmentGroupTag
 from .delivery import Delivery
 from .deadline import Deadline
 from .candidate import Candidate
-from .static_feedback import StaticFeedback
+from .static_feedback import StaticFeedback, StaticFeedbackFileAttachment
 from .filemeta import FileMeta
 from .devilryuserprofile import DevilryUserProfile
 from .examiner import Examiner
@@ -24,4 +24,4 @@ __all__ = ("AbstractIsAdmin", "AbstractIsExaminer", "AbstractIsCandidate",
            "RelatedStudentKeyValue", "Assignment", "AssignmentGroup",
            "AssignmentGroupTag", "Delivery", "Deadline", "Candidate", "StaticFeedback",
            "FileMeta", "DevilryUserProfile", 'PeriodApplicationKeyValue', 'Examiner',
-           'GroupInvite')
+           'GroupInvite', 'StaticFeedbackFileAttachment')
