@@ -19,6 +19,8 @@ dbdev_tempdata/
 .sass-cache/
 
 /devilry_developfiles/
+/devilry/devilry_developfiles/
+/not_for_deploy/docs/devilry_developfiles/
 /dist/
 
 .ipynb_checkpoints/
@@ -36,3 +38,6 @@ node_modules/
 
 # Ignore phantomjs ghostdriver log
 /ghostdriver.log
+
+.idea/dataSources.ids
+.idea/dataSources.local.xml
