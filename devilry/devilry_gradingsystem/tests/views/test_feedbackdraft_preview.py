@@ -1,12 +1,10 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+import htmls
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.project.develop.testhelpers.soupselect import cssGet
-from devilry.project.develop.testhelpers.soupselect import cssExists
 from devilry.devilry_gradingsystem.models import FeedbackDraft
-
 
 
 class TestFeedbackDraftPreviewView(TestCase):
@@ -14,10 +12,9 @@ class TestFeedbackDraftPreviewView(TestCase):
         self.examiner1 = UserBuilder('examiner1').user
         self.deliverybuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1',
-                points_to_grade_mapper='raw-points',
-                passing_grade_min_points=20,
-                max_points=100
-            )\
+                            points_to_grade_mapper='raw-points',
+                            passing_grade_min_points=20,
+                            max_points=100) \
             .add_group(examiners=[self.examiner1])\
             .add_deadline_in_x_weeks(weeks=1)\
             .add_delivery_x_hours_before_deadline(hours=1)
@@ -50,13 +47,17 @@ class TestFeedbackDraftPreviewView(TestCase):
         )
         response = self._get_as(self.examiner1, draft.id)
         self.assertEquals(response.status_code, 200)
-        html = response.content
-        self.assertTrue(cssExists(html, '.read-feedback-box'))
-        self.assertEquals(cssGet(html, '.read-feedback-box .feedback_gradebox .feedback_grade').text.strip(),
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('.read-feedback-box'))
+        self.assertEquals(
+            selector.one('.read-feedback-box .feedback_gradebox .feedback_grade').alltext_normalized,
             '40/100')
-        self.assertEquals(cssGet(html, '.read-feedback-box .feedback_gradebox .feedback_is_passing_grade').text.strip(),
+        self.assertEquals(
+            selector.one('.read-feedback-box .feedback_gradebox .feedback_is_passing_grade').alltext_normalized,
             'passed')
-        self.assertIn('django-cradmin-container-fluid-focus-success',
-                      cssGet(html, '.read-feedback-box .feedback_gradebox')['class'])
-        self.assertEquals(cssGet(html, '.read-feedback-box .devilry-feedback-rendered-view').text.strip(),
+        self.assertIn(
+            'django-cradmin-container-fluid-focus-success',
+            selector.one('.read-feedback-box .feedback_gradebox')['class'])
+        self.assertEquals(
+            selector.one('.read-feedback-box .devilry-feedback-rendered-view').alltext_normalized,
             'This is a test.')
