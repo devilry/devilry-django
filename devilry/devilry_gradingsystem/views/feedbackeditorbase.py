@@ -37,9 +37,9 @@ class FeedbackEditorSingleDeliveryObjectMixin(SingleObjectMixin):
     def _setup_common_data(self):
         self.object = self.get_object()
         self.delivery = self.object
-        self.last_feedbackfile = None
+        self.last_feedbackdraftfile = None
         self.last_draft = self.delivery.devilry_gradingsystem_feedbackdraft_set.first()
-        self.last_feedbackfile = FeedbackDraftFile.objects\
+        self.last_feedbackdraftfile = FeedbackDraftFile.objects\
             .filter(delivery=self.delivery, saved_by=self.request.user)\
             .first()
 
@@ -98,24 +98,24 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
         )
 
         if feedbackfile_has_changed:
-            if self.last_feedbackfile:
-                self.last_feedbackfile.file.delete()
-                self.last_feedbackfile.delete()
+            if self.last_feedbackdraftfile:
+                self.last_feedbackdraftfile.file.delete()
+                self.last_feedbackdraftfile.delete()
             if feedbackfile_uploadedfile:
                 feedbackdraftfile = FeedbackDraftFile(
                     delivery=self.delivery,
                     saved_by=self.request.user,
                     filename=feedbackfile_uploadedfile.name)
                 feedbackdraftfile.file.save(feedbackfile_uploadedfile.name, feedbackfile_uploadedfile)
-                self.last_feedbackfile = feedbackdraftfile
+                self.last_feedbackdraftfile = feedbackdraftfile
 
         if publish:
             draft.published = True
             draft.staticfeedback = draft.to_staticfeedback()
             draft.staticfeedback.full_clean()
             draft.staticfeedback.save()
-            if self.last_feedbackfile:
-                self.last_feedbackfile.to_staticfeedbackfileattachment(
+            if self.last_feedbackdraftfile:
+                self.last_feedbackdraftfile.to_staticfeedbackfileattachment(
                     staticfeedback=draft.staticfeedback)
         draft.save()
         return draft
@@ -161,7 +161,7 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
         kwargs = super(FeedbackEditorFormView, self).get_form_kwargs()
         kwargs['last_draft'] = self.last_draft
         kwargs['assignment'] = self.delivery.deadline.assignment_group.assignment
-        kwargs['feedbackfile'] = self.last_feedbackfile
+        kwargs['feedbackfile'] = self.last_feedbackdraftfile
         return kwargs
 
     def get_success_url(self):
@@ -214,6 +214,6 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
         initial = {}
         if self.last_draft:
             initial = self.get_initial_from_last_draft()
-            if self.last_feedbackfile:
-                initial['feedbackfile'] = self.last_feedbackfile.file
+            if self.last_feedbackdraftfile:
+                initial['feedbackfile'] = self.last_feedbackdraftfile.file
         return initial
