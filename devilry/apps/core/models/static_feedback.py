@@ -78,6 +78,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
                                                      'is immutable, this never changes.'))
     saved_by = models.ForeignKey(User, blank=False, null=False,
                                  help_text='The user (examiner) who saved this feedback')
+
     class Meta:
         app_label = 'core'
         verbose_name = 'Static feedback'
@@ -269,6 +270,11 @@ class StaticFeedbackFileAttachment(models.Model):
     file = models.FileField(
         upload_to=staticfeedback_fileattachment_upload_to
     )
+
+    class Meta:
+        app_label = 'core'
+        verbose_name = 'Static feedback file attachment'
+        verbose_name_plural = 'Static feedback file attachments'
 
     def get_download_url(self):
         """
