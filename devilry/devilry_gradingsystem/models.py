@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import uuid
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
@@ -96,7 +97,7 @@ class FeedbackDraftFile(models.Model):
     )
 
     def get_download_url(self):
-        return '/to/do'
+        return reverse('devilry_gradingsystem_feedbackdraftfile', kwargs={'pk': self.pk})
 
     def __unicode__(self):
         return u'FeedbackDraftFile#{} by user#{} on delivery#{}'.format(

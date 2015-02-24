@@ -213,9 +213,13 @@ class AssignmentGroupBuilder(CoreBuilderBase):
     object_attribute_name = 'group'
 
     @classmethod
-    def quickadd_ducku_duck1010_active_assignment1_group(cls, studentuser):
-        return AssignmentBuilder.quickadd_ducku_duck1010_active_assignment1()\
-            .add_group(students=[studentuser])
+    def quickadd_ducku_duck1010_active_assignment1_group(cls, studentuser=None):
+        students = []
+        if studentuser:
+            students.append(studentuser)
+        return AssignmentBuilder\
+            .quickadd_ducku_duck1010_active_assignment1()\
+            .add_group(students=students)
 
     def __init__(self, students=[], candidates=[], examiners=[], **kwargs):
         self.group = AssignmentGroup.objects.create(**kwargs)

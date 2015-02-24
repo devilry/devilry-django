@@ -12,15 +12,21 @@ from .views.admin.setmaxpoints import SetMaxPointsView
 from .views.admin.select_points_to_grade_mapper import SelectPointsToGradeMapperView
 from .views.admin.setup_custom_table import SetupCustomTableView
 from .views.admin.setpassing_grade_min_points import SetPassingGradeMinPointsView
+from .views.download_feedbackdraftfile import DownloadFeedbackDraftFileView
 
 
-urlpatterns = patterns('devilry.devilry_gradingsystem',
+urlpatterns = patterns(
+    'devilry.devilry_gradingsystem',
     url('^feedbackdraft_preview/(?P<deliveryid>\d+)/(?P<draftid>\d+)$',
         login_required(FeedbackDraftPreviewView.as_view()),
         name='devilry_gradingsystem_feedbackdraft_preview'),
     url('^feedbackdraft_bulkpreview/(?P<assignmentid>\d+)/(?P<randomkey>[0-9_.-]+)$',
         login_required(FeedbackDraftBulkPreviewView.as_view()),
         name='devilry_gradingsystem_feedbackdraft_bulkpreview'),
+    url('^feedbackdraftfile/(?P<pk>\d+)$',
+        login_required(DownloadFeedbackDraftFileView.as_view()),
+        name='devilry_gradingsystem_feedbackdraftfile'),
+
     url('^admin/summary/(?P<assignmentid>\d+)$',
         login_required(SummaryView.as_view()),
         name='devilry_gradingsystem_admin_summary'),
