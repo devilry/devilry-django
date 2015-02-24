@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
 from datetime import datetime
 from datetime import timedelta
+from django.core.files.base import ContentFile
 
-from devilry.apps.core.models import Node
+from devilry.apps.core.models import Node, StaticFeedbackFileAttachment
 from devilry.apps.core.models import Subject
 from devilry.apps.core.models import Period
 from devilry.apps.core.models import Assignment
@@ -104,11 +105,23 @@ class FileMetaBuilder(CoreBuilderBase):
         self.filemeta.save()
 
 
+class StaticFeedbackFileAttachmentBuilder(CoreBuilderBase):
+    object_attribute_name = 'fileattachment'
+
+    def __init__(self, staticfeedback, filename='test.txt', filedata='Testdata'):
+        self.fileattachment = StaticFeedbackFileAttachment(staticfeedback=staticfeedback, filename=filename)
+        self.fileattachment.file.save(filename, ContentFile(filedata))
+
+
 class StaticFeedbackBuilder(CoreBuilderBase):
     object_attribute_name = 'feedback'
 
     def __init__(self, **kwargs):
         self.feedback = StaticFeedback.objects.create(**kwargs)
+
+    def add_fileattachment(self, **kwargs):
+        kwargs['staticfeedback'] = self.feedback
+        return StaticFeedbackFileAttachmentBuilder(**kwargs)
 
 
 class DeliveryBuilder(CoreBuilderBase):

@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+import htmls
 from devilry.apps.core.models import Delivery
 
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
@@ -143,6 +144,22 @@ class TestSingleDeliveryView(TestCase):
                       cssGet(html, '.read-feedback-box .feedback_gradebox')['class'])
         self.assertEquals(cssGet(html, '.read-feedback-box #devilry_examiner_feedback_rendered_view').text.strip(),
             'This is a test.')
+
+    def test_readonly_feedback_render_fileattachments(self):
+        feedbackbuilder = self.week1builder\
+            .add_group(examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)\
+            .add_passed_A_feedback(saved_by=UserBuilder('testuser').user)
+        feedbackbuilder.add_fileattachment(filename='testfile.txt')
+
+        response = self._getas('examiner1', feedbackbuilder.feedback.delivery.id)
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('.read-feedback-box ul.devilry-feedback-rendered-view-files'))
+        self.assertEqual(selector.count('.read-feedback-box ul.devilry-feedback-rendered-view-files li'), 1)
+        self.assertEqual(
+            selector.one('.read-feedback-box ul.devilry-feedback-rendered-view-files li').alltext_normalized,
+            'testfile.txt')
 
     def test_filemeta_links_nofiles(self):
         deliverybuilder = self.week1builder\
