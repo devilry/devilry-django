@@ -1,5 +1,6 @@
 from django.core.files.base import ContentFile
 from django.test import TestCase
+from devilry.apps.core.models import StaticFeedbackFileAttachment
 from devilry.devilry_gradingsystem.models import FeedbackDraft, FeedbackDraftFile
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
@@ -52,8 +53,10 @@ class TestFeedbackDraftFile(TestCase):
             saved_by=self.testexaminer,
             filename='test.txt')
         draftfile.file.save('test.txt', ContentFile('Test'))
-        staticfeedback = self.deliverybuilder.add_passed_A_feedback().feedback
+        staticfeedback = self.deliverybuilder.add_passed_A_feedback(saved_by=self.testexaminer).feedback
         fileattachment = draftfile.to_staticfeedbackfileattachment(staticfeedback)
         self.assertEquals(fileattachment.filename, 'test.txt')
         self.assertEquals(fileattachment.file.read(), 'Test')
         self.assertEquals(fileattachment.staticfeedback, staticfeedback)
+        self.assertIsNotNone(fileattachment.pk)
+        self.assertTrue(StaticFeedbackFileAttachment.objects.filter(pk=fileattachment.pk).exists())

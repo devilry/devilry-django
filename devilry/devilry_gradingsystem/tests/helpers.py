@@ -1,5 +1,6 @@
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
+from devilry.apps.core.models import StaticFeedback
 from devilry.devilry_gradingsystem.models import FeedbackDraftFile
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
@@ -119,3 +120,19 @@ class FeedbackEditorViewTestMixin(object):
         self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery).count(), 2)
         self.assertEquals(FeedbackDraftFile.objects.filter(delivery=delivery, saved_by=testexaminer).count(), 1)
 
+    def test_post_publish_with_feedbackfile(self):
+        delivery = self.get_empty_delivery_with_testexaminer_as_examiner()
+        testexaminer = self.get_testexaminer()
+        feedbackdraftfile = FeedbackDraftFile(delivery=delivery, saved_by=testexaminer, filename='testfile.txt')
+        feedbackdraftfile.file.save('unused.txt', ContentFile('Feedback file test'))
+        postdata = self.get_valid_post_data_without_feedbackfile_or_feedbacktext()
+        postdata['submit_publish'] = 'yes'
+
+        self.assertEquals(StaticFeedback.objects.count(), 0)
+        self.post_as(testexaminer, postdata)
+        self.assertEquals(StaticFeedback.objects.count(), 1)
+        staticfeedback = StaticFeedback.objects.get(delivery=delivery)
+        self.assertEquals(staticfeedback.files.count(), 1)
+        fileattachment = staticfeedback.files.first()
+        self.assertEquals(fileattachment.filename, 'testfile.txt')
+        self.assertEquals(fileattachment.file.read(), 'Feedback file test')

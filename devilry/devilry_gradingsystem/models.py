@@ -110,3 +110,4 @@ class FeedbackDraftFile(models.Model):
         fileattachment = StaticFeedbackFileAttachment(
             staticfeedback=staticfeedback, filename=self.filename)
         fileattachment.file.save(self.filename, self.file)
+        return fileattachment
