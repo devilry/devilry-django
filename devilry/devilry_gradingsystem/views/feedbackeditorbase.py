@@ -107,6 +107,7 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
                     saved_by=self.request.user,
                     filename=feedbackfile_uploadedfile.name)
                 feedbackdraftfile.file.save(feedbackfile_uploadedfile.name, feedbackfile_uploadedfile)
+                self.last_feedbackfile = feedbackdraftfile
 
         if publish:
             draft.published = True
