@@ -31,9 +31,12 @@ class FeedbackDraft(models.Model):
     points = models.PositiveIntegerField(
         blank=False, null=False)
     saved_by = models.ForeignKey(User, related_name='devilry_gradingsystem_feedbackdraft_set')
-    published = models.BooleanField(default=False,
-        help_text='Has this draft been published as a StaticFeedback? Setting this to true on create automatically creates a StaticFeedback.')
-    staticfeedback = models.OneToOneField(StaticFeedback,
+    published = models.BooleanField(
+        default=False,
+        help_text=('Has this draft been published as a StaticFeedback? '
+                   'Setting this to true on create automatically creates a StaticFeedback.'))
+    staticfeedback = models.OneToOneField(
+        StaticFeedback,
         blank=True, null=True,
         related_name='devilry_gradingsystem_feedbackdraft_set',
         help_text='The StaticFeedback where this was published if this draft has been published.')
@@ -42,9 +45,9 @@ class FeedbackDraft(models.Model):
         help_text='Time when this feedback was saved. Since FeedbackDraft is immutable, this never changes.')
 
     def clean(self):
-        if self.id == None: # If creating a new FeedbackDraft
+        if self.id is None:  # If creating a new FeedbackDraft
             if not self.published:
-                self.staticfeedback = None # We should NEVER set staticfeedback if published is not True
+                self.staticfeedback = None  # We should NEVER set staticfeedback if published is not True
         else:
             raise ValidationError('FeedbackDraft is immutable (it can not be changed).')
         if self.published and self.staticfeedack is None:
@@ -55,7 +58,8 @@ class FeedbackDraft(models.Model):
         super(FeedbackDraft, self).save(*args, **kwargs)
 
     def to_staticfeedback(self, assignment=None):
-        return StaticFeedback.from_points(self.points,
+        return StaticFeedback.from_points(
+            self.points,
             assignment=assignment,
             delivery=self.delivery,
             rendered_view=self.feedbacktext_html,
@@ -82,7 +86,7 @@ class FeedbackDraftFile(models.Model):
     delivery = models.ForeignKey(Delivery, related_name='+')
     saved_by = models.ForeignKey(User, related_name='+')
 
-    #: The orginal filename.
+    #: The original filename.
     filename = models.TextField(blank=False, null=False)
 
     #: The uploaded file.
