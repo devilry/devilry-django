@@ -275,6 +275,7 @@ class StaticFeedbackFileAttachment(models.Model):
         app_label = 'core'
         verbose_name = 'Static feedback file attachment'
         verbose_name_plural = 'Static feedback file attachments'
+        ordering = ['filename']
 
     def get_download_url(self):
         """

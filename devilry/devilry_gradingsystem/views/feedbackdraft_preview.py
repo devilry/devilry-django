@@ -3,8 +3,28 @@ from django.shortcuts import redirect
 from django.http import Http404
 
 from devilry.apps.core.models import Delivery
-from devilry.apps.core.models import StaticFeedback
 from devilry.devilry_gradingsystem.models import FeedbackDraft, FeedbackDraftFile
+
+
+class StaticFeedbackPreviewMock(object):
+    """
+    Mocks the parts of a :class:`devilry.apps.core.models.StaticFeedback`
+    that is needed to create a preview.
+
+    We use this to avoid having to save a StaticFeedback before we
+    preview it. Note that the only reasons why we need this wrapper
+    is because:
+
+    1. We want to use the same template to render the preview
+       as we use to render the actual feedback.
+    2. We can not set the ``filess``-attribute of an unsaved
+       StaticFeedback.
+    """
+    def __init__(self, rendered_view, is_passing_grade, grade, files):
+        self.rendered_view = rendered_view
+        self.is_passing_grade = is_passing_grade
+        self.grade = grade
+        self.files = files
 
 
 class FeedbackDraftPreviewView(DetailView):
@@ -35,13 +55,22 @@ class FeedbackDraftPreviewView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(FeedbackDraftPreviewView, self).get_context_data(**kwargs)
+
         delivery = context['object']
         draft = self.get_feedbackdraft()
-        context['unsaved_staticfeedback'] = draft.to_staticfeedback()
-        context['valid_grading_system_setup'] = True
-        feedback_fileattachments = FeedbackDraftFile.objects.filter(
+        unsaved_staticfeedback = draft.to_staticfeedback()
+        draftfiles = FeedbackDraftFile.objects.filter(
             saved_by=self.request.user, delivery=delivery)
-        context['feedback_fileattachments'] = feedback_fileattachments
+        staticfeedbackmock = StaticFeedbackPreviewMock(
+            rendered_view=unsaved_staticfeedback.rendered_view,
+            grade=unsaved_staticfeedback.grade,
+            is_passing_grade=unsaved_staticfeedback.is_passing_grade,
+            # We send in a FeedbackDraftFile queryset. This works because it
+            # has the same attributes as StaticFeedbackFileAttachment.
+            files=draftfiles)
+
+        context['staticfeedbackmock'] = staticfeedbackmock
+        context['valid_grading_system_setup'] = True
         return context
 
     def post(self, *args, **kwargs):

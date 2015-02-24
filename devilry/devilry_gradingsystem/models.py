@@ -111,3 +111,6 @@ class FeedbackDraftFile(models.Model):
             staticfeedback=staticfeedback, filename=self.filename)
         fileattachment.file.save(self.filename, self.file)
         return fileattachment
+
+    class Meta:
+        ordering = ['filename']  # Should have the same ordering as StaticFeedbackFileAttachment

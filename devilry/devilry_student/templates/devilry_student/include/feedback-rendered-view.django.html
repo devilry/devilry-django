@@ -1,0 +1,13 @@
+{{ feedback.rendered_view|safe }}
+{% if feedback.files.exists %}
+    <ul class="devilry-feedback-rendered-view-files">
+        {% for fileattachment in feedback.files.all %}
+            <li>
+                <span class="fa fa-download"></span>
+                <a href="{{ fileattachment.get_download_url }}">
+                    {{ fileattachment.filename }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
