@@ -44,7 +44,7 @@ setup(
         'django-celery-transactions==0.2.0',
         'django-haystack==2.3.1',
         'httplib2==0.7.7',
-        'South==0.8.2',
+        'South==1.0.0',
         'detektor==1.1.0-beta.011',
         'djangorestframework==0.3.3',
         'django_cradmin==1.0.0-beta.018',
