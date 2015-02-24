@@ -1,5 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from devilry.devilry_gradingsystem.tests.helpers import FeedbackEditorViewTestMixin
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
@@ -7,7 +8,16 @@ from devilry.project.develop.testhelpers.soupselect import cssExists
 from devilry.devilry_gradingsystemplugin_approved.devilry_plugin import ApprovedPluginApi
 
 
-class TestFeedbackEditorView(TestCase):
+class TestFeedbackEditorView(TestCase, FeedbackEditorViewTestMixin):
+    def get_valid_post_data_without_feedbackfile_or_feedbacktext(self):
+        return {'points': 'on'}
+
+    def get_empty_delivery_with_testexaminer_as_examiner(self):
+        return self.deliverybuilder.delivery
+
+    def get_testexaminer(self):
+        return self.examiner1
+
     def setUp(self):
         self.examiner1 = UserBuilder('examiner1').user
         self.assignment1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -76,8 +86,6 @@ class TestFeedbackEditorView(TestCase):
         successurl = reverse('devilry_examiner_singledeliveryview',
                              kwargs={'deliveryid': self.deliverybuilder.delivery.id})
         self.assertTrue(response['Location'].endswith(successurl))
-
-
 
 
 class TestFeedbackBulkEditorView(TestCase):

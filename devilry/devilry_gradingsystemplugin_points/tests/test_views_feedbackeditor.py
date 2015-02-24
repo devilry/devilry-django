@@ -11,6 +11,15 @@ from devilry.devilry_gradingsystemplugin_points.devilry_plugin import PointsPlug
 
 
 class TestFeedbackEditorView(TestCase, FeedbackEditorViewTestMixin):
+    def get_valid_post_data_without_feedbackfile_or_feedbacktext(self):
+        return {'points': '1'}
+
+    def get_empty_delivery_with_testexaminer_as_examiner(self):
+        return self.deliverybuilder.delivery
+
+    def get_testexaminer(self):
+        return self.examiner1
+
     def setUp(self):
         self.examiner1 = UserBuilder('examiner1').user
         self.assignment1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
@@ -81,12 +90,3 @@ class TestFeedbackEditorView(TestCase, FeedbackEditorViewTestMixin):
         successurl = reverse('devilry_examiner_singledeliveryview',
                              kwargs={'deliveryid': self.deliverybuilder.delivery.id})
         self.assertTrue(response['Location'].endswith(successurl))
-
-    def get_valid_post_data_without_feedbackfile_or_feedbacktext(self):
-        return {'points': '1'}
-
-    def get_empty_delivery_with_testexaminer_as_examiner(self):
-        return self.deliverybuilder.delivery
-
-    def get_testexaminer(self):
-        return self.examiner1
