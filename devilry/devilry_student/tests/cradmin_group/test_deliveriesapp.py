@@ -51,6 +51,18 @@ class TestDeliveryListView(TestCase):
         selector = htmls.S(response.content)
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 2)
 
+    def test_list_exclude_electronic_deliveries_without_feedback(self):
+        deadlinebuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
+        deadlinebuilder.add_delivery_x_hours_before_deadline(
+            hours=1, delivery_type=deliverytypes.NON_ELECTRONIC)
+        deadlinebuilder\
+            .add_delivery_x_hours_before_deadline(hours=2, delivery_type=deliverytypes.NON_ELECTRONIC)\
+            .add_passed_A_feedback(saved_by=UserBuilder('testexaminer').user)
+        response = self._mock_get_request()
+        response.render()
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
+
     def test_render_no_feedback(self):
         deadlinebuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
         deadlinebuilder.add_delivery_x_hours_before_deadline(hours=26)

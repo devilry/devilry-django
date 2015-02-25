@@ -1,4 +1,5 @@
 from datetime import datetime
+from django.db.models import Q
 from django.dispatch import Signal
 from django.shortcuts import get_object_or_404
 from django_cradmin import crinstance
@@ -18,7 +19,7 @@ from django_cradmin.viewhelpers import formbase
 
 from devilry.apps.core.models import Candidate, Delivery, FileMeta, Deadline
 from devilry.devilry_student.cradmin_group.utils import check_if_last_deadline_has_expired
-from devilry.devilry_student.cradminextensions.columntypes import DeliverySummaryColumn
+from devilry.apps.core.models import deliverytypes
 
 
 DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES = getattr(settings, 'DELIVERY_DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES', 120)
@@ -76,6 +77,12 @@ class DeliveryListView(QuerySetForRoleMixin, objecttable.ObjectTableView):
         DeliveryNumberColumn,
         DeliveryStatusColumn,
     ]
+
+    def get_queryset(self):
+        return super(DeliveryListView, self).get_queryset()\
+            .filter(
+                Q(delivery_type=deliverytypes.ELECTRONIC) |
+                Q(last_feedback__isnull=False))
 
     def get_pagetitle(self):
         return _('Deliveries')
