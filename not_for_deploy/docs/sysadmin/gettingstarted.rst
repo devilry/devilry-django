@@ -117,8 +117,13 @@ Start by copying the following into ``~/devilrydeploy/devilry_settings.py``::
     #: The URL that is used to link back to devilry from emails
     DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 
-    #: Where should Devilry store your files
-    DEVILRY_FSHIERDELIVERYSTORE_ROOT = '/devilry-filestorage'
+    #: Where should Devilry store files delivered by students.
+    #: This directory should be backed up.
+    DEVILRY_FSHIERDELIVERYSTORE_ROOT = '/path/to/directory/for/deliveryfiles/'
+
+    #: The directory where user uploaded files such as attachments to feedback is uploaded.
+    #: This directory should be backed up.
+    MEDIA_ROOT = '/path/to/directory/for/uploadedfiles/'
 
     #: Url where users are directed when they do not have the permissions they believe they should have.
     DEVILRY_LACKING_PERMISSIONS_URL = None
@@ -186,7 +191,8 @@ The format is::
 Configure where to store files
 ==============================
 Adjust the ``DEVILRY_FSHIERDELIVERYSTORE_ROOT`` setting to a directory where you want delivered files
-to be stored.
+to be stored, and the ``MEDIA_ROOT`` setting to a directory where you want to place all other uploaded files,
+such as files uploaded as attachments when examiners provide feedback.
 
 
 Configure various external pages
