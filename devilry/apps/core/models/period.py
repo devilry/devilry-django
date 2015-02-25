@@ -25,10 +25,16 @@ class PeriodQuerySet(models.query.QuerySet):
         """
         See :meth:`.PeriodManager.filter_is_candidate_or_relatedstudent`.
         """
-        return self.filter(
+        from devilry.apps.core.models import Candidate
+        periods_where_is_candidate_queryset = Candidate.objects\
+            .filter(student=user)\
+            .values_list('assignment_group__parentnode__parentnode_id', flat=True)\
+            .distinct()
+        queryset = self.filter(
             Q(relatedstudent__user=user) |
-            Q(assignments__assignmentgroups__candidates__student=user)
-        ).distinct()
+            Q(id__in=periods_where_is_candidate_queryset)
+        )
+        return queryset.distinct()
 
     def filter_active(self):
         """
