@@ -3,6 +3,7 @@ from datetime import datetime
 from django.db import models
 from django.db.models import Q, Max
 from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext_lazy as _
 
 from deadline import Deadline
 from filemeta import FileMeta
@@ -147,9 +148,12 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                                 help_text='0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.')
     # Fields automatically 
     time_of_delivery = models.DateTimeField(
+        verbose_name=_('Time of delivery'),
         help_text='Holds the date and time the Delivery was uploaded.',
         default=datetime.now)
-    deadline = models.ForeignKey(Deadline, related_name='deliveries')
+    deadline = models.ForeignKey(
+        Deadline, related_name='deliveries',
+        verbose_name=_('Deadline'))
     number = models.PositiveIntegerField(
         help_text='The delivery-number within this assignment-group. This number is automatically '
                     'incremented within each AssignmentGroup, starting from 1. Always '
