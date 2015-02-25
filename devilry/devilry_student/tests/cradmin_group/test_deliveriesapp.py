@@ -50,7 +50,6 @@ class TestDeliveryListView(TestCase):
         response.render()
         selector = htmls.S(response.content)
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 2)
-        self.assertEquals(selector.count('.devilry-student-delivery-summarycolumn'), 2)
 
     def test_render_no_feedback(self):
         deadlinebuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)

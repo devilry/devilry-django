@@ -1,0 +1,15 @@
+{% load i18n %}
+{% load devilry_examiner_tags %}
+
+{% if delivery.last_feedback %}
+    <span class="text-{{ delivery.last_feedback|feedback_to_bootstrapclass }} devilry-student-delivery-summarycolumn-feedback">
+        <strong class="devilry-student-delivery-summarycolumn-feedback-grade">
+            {{ delivery.last_feedback.grade }}
+        </strong>
+        (<span class="devilry-student-delivery-summarycolumn-feedback-is_passing_grade">{{ delivery.last_feedback.is_passing_grade|format_is_passing_grade }}</span>)
+    </span>
+{% else %}
+    <span class="devilry-student-delivery-summarycolumn-no-feedback">
+        {% trans "No feedback" %}
+    </span>
+{% endif %}

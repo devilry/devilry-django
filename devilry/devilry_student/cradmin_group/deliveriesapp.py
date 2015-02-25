@@ -1,8 +1,8 @@
 from datetime import datetime
 from django.dispatch import Signal
 from django.shortcuts import get_object_or_404
+from django_cradmin import crinstance
 
-from django.template import defaultfilters
 from django.views.generic import DetailView
 from django_cradmin.viewhelpers import objecttable
 from crispy_forms import layout
@@ -27,22 +27,37 @@ DELIVERY_TEMPFILES_TIME_TO_LIVE_MINUTES = getattr(settings, 'DELIVERY_DELIVERY_T
 successful_delivery_signal = Signal(providing_args=["delivery"])
 
 
-class TimeOfDeliveryColumn(objecttable.DatetimeColumn):
-    modelfield = 'time_of_delivery'
+class DeliveryNumberColumn(objecttable.SingleActionColumn):
+    modelfield = 'number'
+    template_name = 'devilry_student/cradmin_group/deliveriesapp/delivery-number-column.django.html'
+    context_object_name = 'delivery'
 
-    def get_default_order_is_ascending(self):
-        return None
+    def get_header(self):
+        return _('Delivery')
+
+    def get_actionurl(self, delivery):
+        return crinstance.reverse_cradmin_url(
+            instanceid='devilry_student_group',
+            appname='deliveries',
+            roleid=delivery.deadline.assignment_group_id,
+            viewname='deliverydetails',
+            kwargs={'pk': delivery.pk}
+        )
+
+    def is_sortable(self):
+        return False
 
 
-class DeadlineColumn(objecttable.DatetimeColumn):
-    modelfield = 'deadline'
-    orderingfield = 'deadline__deadline'
+class DeliveryStatusColumn(objecttable.PlainTextColumn):
+    modelfield = 'id'
+    template_name = 'devilry_student/cradmin_group/deliveriesapp/delivery-status-column.django.html'
+    context_object_name = 'delivery'
 
-    def render_value(self, delivery):
-        return defaultfilters.date(delivery.deadline.deadline, self.datetime_format)
+    def get_header(self):
+        return _('Status')
 
-    def get_default_order_is_ascending(self):
-        return None
+    def is_sortable(self):
+        return False
 
 
 class QuerySetForRoleMixin(object):
@@ -56,10 +71,10 @@ class DeliveryListView(QuerySetForRoleMixin, objecttable.ObjectTableView):
     model = Delivery
     template_name = 'devilry_student/cradmin_group/deliveriesapp/delivery_list.django.html'
     context_object_name = 'deliveries'
+
     columns = [
-        DeliverySummaryColumn,
-        TimeOfDeliveryColumn,
-        DeadlineColumn,
+        DeliveryNumberColumn,
+        DeliveryStatusColumn,
     ]
 
     def get_pagetitle(self):

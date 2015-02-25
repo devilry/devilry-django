@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load devilry_examiner_tags %}
+
+<strong>
+    <a href="{{ action_url }}">
+        {% block deliverydescription %}
+            {% blocktrans with number=delivery.number%}Delivery#{{ number }}{% endblocktrans %}
+        {% endblock deliverydescription %}
+    </a>
+</strong>
