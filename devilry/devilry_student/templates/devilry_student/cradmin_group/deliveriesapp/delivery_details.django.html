@@ -63,7 +63,8 @@
                 </dd>
             {% endif %}
 
-            {% if group.assignment.is_electronic %}
+{#            {% if group.assignment.is_electronic %}#}
+            {% if delivery.is_electronic %}
                 {% if delivery.delivered_by %}
                     <dt id="devilry_student_group_deliverydetails_delivered_by_title">
                         {% trans "Delivered by" %}:

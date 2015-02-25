@@ -575,11 +575,11 @@ class TestDeliveryDetailsView(TestCase):
             'February 1, 2004, 12:30')
 
     def test_delivery_metadata_no_time_of_delivery_or_deadline_or_deliveredby_for_nonelectronic(self):
-        self.assignmentbuilder.update(delivery_types=deliverytypes.NON_ELECTRONIC)
         self.groupbuilder.add_students(self.testuser)
         candidate = Candidate.objects.create(student=self.testuser, assignment_group=self.groupbuilder.group)
         deliverybuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)\
-            .add_delivery_x_hours_before_deadline(hours=1, delivered_by=candidate)
+            .add_delivery_x_hours_before_deadline(hours=1, delivered_by=candidate,
+                                                  delivery_type=deliverytypes.NON_ELECTRONIC)
 
         response = self._get_as('testuser', deliverybuilder.delivery.id)
         response.render()
