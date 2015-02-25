@@ -3,9 +3,10 @@ from django.test import TestCase
 from django_cradmin.crinstance import reverse_cradmin_url
 import htmls
 from django_cradmin import crinstance
+from devilry.apps.core.models import deliverytypes
 
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder, \
-    AssignmentGroupBuilder
+    AssignmentGroupBuilder, AssignmentBuilder
 
 
 class TestRecentDeliveries(TestCase):
@@ -22,6 +23,15 @@ class TestRecentDeliveries(TestCase):
             .quickadd_ducku_duck1010_active_assignment1_group(studentuser=UserBuilder('otheruser').user)\
             .add_deadline_in_x_weeks(weeks=1)\
             .add_delivery_x_hours_before_deadline(hours=1)
+        response = self._get_as('testuser')
+        self.assertEquals(response.status_code, 200)
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.count('#objecttableview-table tbody tr'), 0)
+
+    def test_exclude_nonelectronic(self):
+        assignmentbuilder = AssignmentBuilder.quickadd_ducku_duck1010_active_assignment1()
+        assignmentbuilder.update(delivery_types=deliverytypes.NON_ELECTRONIC)
+        assignmentbuilder.add_group(students=[self.testuser])
         response = self._get_as('testuser')
         self.assertEquals(response.status_code, 200)
         selector = htmls.S(response.content)

@@ -1,8 +1,8 @@
 from django_cradmin.viewhelpers import objecttable
 from django.utils.translation import ugettext_lazy as _
-from django.conf import settings
 from django_cradmin import crapp
 
+from devilry.apps.core.models import deliverytypes
 from devilry.apps.core.models import Delivery
 from devilry.devilry_student.cradminextensions.columntypes import DeliverySummaryColumn, NaturaltimeColumn
 
@@ -77,6 +77,7 @@ class RecentDeliveriesListView(objecttable.ObjectTableView):
 
     def get_queryset_for_role(self, user):
         return Delivery.objects\
+            .filter(deadline__assignment_group__parentnode__delivery_types=deliverytypes.ELECTRONIC)\
             .filter_is_candidate(user)\
             .select_related(
                 'deadline',
