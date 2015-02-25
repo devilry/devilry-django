@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-15 14:38+0100\n"
-"PO-Revision-Date: 2015-02-15 13:40+0000\n"
+"POT-Creation-Date: 2015-02-25 02:11+0100\n"
+"PO-Revision-Date: 2015-02-25 01:12+0000\n"
 "Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/language/nb/)\n"
 "MIME-Version: 1.0\n"
@@ -1352,14 +1352,29 @@ msgstr "Overskrift"
 msgid "Programming language"
 msgstr "Programmeringsspråk"
 
+#: devilry_gradingsystem/templates/devilry_gradingsystem/widgets/feedbackeditorfilewidget.django.html:6
+msgid "Uploaded file"
+msgstr "Opplastet fil"
+
+#: devilry_gradingsystem/templates/devilry_gradingsystem/widgets/feedbackeditorfilewidget.django.html:14
+msgid "Remove file"
+msgstr "Fjern fil"
+
 #: devilry_gradingsystem/views/feedbackbulkeditorbase.py:36
 msgid "One or more of the selected groups has no deliveries."
 msgstr "En eller flere av de valgte gruppene har ingen innleveringer"
 
 #: devilry_gradingsystem/views/feedbackbulkeditorbase.py:49
-#: devilry_gradingsystem/views/feedbackeditorbase.py:120
 msgid "Feedback text"
 msgstr "Tilbakemeldingstekst"
+
+#: devilry_gradingsystem/views/feedbackeditorbase.py:138
+msgid "Feedback text (optional)"
+msgstr "Tilbakemeldingstekst (ikke påkrevd)"
+
+#: devilry_gradingsystem/views/feedbackeditorbase.py:145
+msgid "Attach a file file to your feedback (optional)"
+msgstr "Last opp et vedlegg til din tilbakemelding (ikke påkrevd)"
 
 #: devilry_gradingsystem/views/admin/base.py:63
 msgid "Configure"
@@ -2211,10 +2226,10 @@ msgstr "Legg først til et brukernavn. Deretter kan du endre flere brukervalg."
 msgid "Enter a username."
 msgstr "Legg til et brukernavn."
 
-#: project/common/settings.py:225
+#: project/common/settings.py:228
 msgid "English"
 msgstr "Engelsk"
 
-#: project/common/settings.py:226
+#: project/common/settings.py:229
 msgid "Norwegian Bokmal"
 msgstr "Norsk bokmål"

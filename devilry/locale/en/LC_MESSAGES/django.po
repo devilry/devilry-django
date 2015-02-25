@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-02-15 14:38+0100\n"
+"POT-Creation-Date: 2015-02-25 02:11+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1352,13 +1352,28 @@ msgstr ""
 msgid "Programming language"
 msgstr ""
 
+#: devilry_gradingsystem/templates/devilry_gradingsystem/widgets/feedbackeditorfilewidget.django.html:6
+msgid "Uploaded file"
+msgstr ""
+
+#: devilry_gradingsystem/templates/devilry_gradingsystem/widgets/feedbackeditorfilewidget.django.html:14
+msgid "Remove file"
+msgstr ""
+
 #: devilry_gradingsystem/views/feedbackbulkeditorbase.py:36
 msgid "One or more of the selected groups has no deliveries."
 msgstr ""
 
 #: devilry_gradingsystem/views/feedbackbulkeditorbase.py:49
-#: devilry_gradingsystem/views/feedbackeditorbase.py:120
 msgid "Feedback text"
+msgstr ""
+
+#: devilry_gradingsystem/views/feedbackeditorbase.py:138
+msgid "Feedback text (optional)"
+msgstr ""
+
+#: devilry_gradingsystem/views/feedbackeditorbase.py:145
+msgid "Attach a file file to your feedback (optional)"
 msgstr ""
 
 #: devilry_gradingsystem/views/admin/base.py:63
@@ -2210,10 +2225,10 @@ msgstr ""
 msgid "Enter a username."
 msgstr ""
 
-#: project/common/settings.py:225
+#: project/common/settings.py:228
 msgid "English"
 msgstr ""
 
-#: project/common/settings.py:226
+#: project/common/settings.py:229
 msgid "Norwegian Bokmal"
 msgstr ""
