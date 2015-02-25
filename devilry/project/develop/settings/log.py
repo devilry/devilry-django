@@ -92,6 +92,11 @@ def create_logging_conf(logdir):
                 'level': 'INFO',
                 'propagate': False
             },
+            'sh': {  # Affects the output of django_dbdev, and any other library using the ``sh`` library
+                'handlers': ['console'],
+                'level': 'WARNING',
+                'propagate': True
+            },
             '': {
                 'handlers': ['allButExceptionTracebacks',
                              #'sentry',
