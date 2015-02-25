@@ -24,6 +24,7 @@ devilry_urls = (
     url(r'^cradmin_temporaryfileuploadstore/', include('django_cradmin.apps.cradmin_temporaryfileuploadstore.urls')),
 
     (r'^devilry_help/', include('devilry.devilry_help.urls')),
+    (r'^devilry_core/', include('devilry.apps.core.urls')),
     (r'^devilry_usersearch/', include('devilry.devilry_usersearch.urls')),
     (r'^devilry_authenticateduserinfo/', include('devilry.devilry_authenticateduserinfo.urls')),
     (r'^devilry_settings/', include('devilry.devilry_settings.urls')),

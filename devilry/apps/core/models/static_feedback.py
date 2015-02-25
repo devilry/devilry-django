@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import uuid
+from django.core.urlresolvers import reverse
 
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
@@ -281,7 +282,13 @@ class StaticFeedbackFileAttachment(models.Model):
         """
         Get the URL where anyone with access to the file can download it.
         """
-        return '/to/do'
+        return reverse('devilry_core_feedbackfileattachment', kwargs={
+            'pk': self.pk,
+            'asciifilename': self.get_ascii_filename()
+        })
+
+    def get_ascii_filename(self):
+        return self.filename.encode('ascii', 'ignore')
 
     def __unicode__(self):
         return u'StaticFeedbackFileAttachment#{} StaticFeedback#{}'.format(
