@@ -10168,6 +10168,26 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 #devilry_help_list li#devilry_help_official a {
   font-weight: bold;
 }
+.devilry-gradingsystem-feedbackeditorfilewidget .devilry-gradingsystem-feedbackeditorfilewidget-uploadedfile {
+  color: #777;
+}
+.devilry-gradingsystem-feedbackeditorfilewidget .devilry-gradingsystem-feedbackeditorfilewidget-uploadedfile .devilry-gradingsystem-feedbackeditorfilewidget-downloadlink {
+  color: inherit;
+  text-decoration: underline;
+}
+.devilry-gradingsystem-feedbackeditorfilewidget .devilry-gradingsystem-feedbackeditorfilewidget-uploadedfile .fa {
+  margin-left: 3px;
+}
+.devilry-gradingsystem-feedbackeditorfilewidget label.devilry-gradingsystem-feedbackeditorfilewidget-clear {
+  font-weight: normal;
+  display: inline-block;
+  margin-left: 5px;
+}
+.devilry-gradingsystem-feedbackeditor-feedbackfile-wrapper {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 25px;
+}
 body {
   background-image: url('../images/groovepaper.png');
 }

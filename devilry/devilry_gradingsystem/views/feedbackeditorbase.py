@@ -1,3 +1,4 @@
+from crispy_forms import layout
 from django.core.urlresolvers import reverse
 from django.views.generic.detail import SingleObjectMixin
 from django.utils.decorators import method_decorator
@@ -134,16 +135,25 @@ class FeedbackEditorFormBase(forms.Form):
         # else:
         #     feedbacktext_editor = FeedbackDraft.DEFAULT_FEEDBACKTEXT_EDITOR
         self.fields['feedbacktext'] = forms.CharField(
-            label=_('Feedback text'),
+            label=_('Feedback text (optional)'),
             required=False)
 
+        feedbackfile_helptext = None
+        # if self.feedbackfile:
+        #     feedbackfile_helptext = _('')
         self.fields['feedbackfile'] = forms.FileField(
-            label=_('Feedback file'),
+            label=_('Attach a file file to your feedback (optional)'),
             required=False,
+            help_text=feedbackfile_helptext,
             widget=FeedbackEditorFileWidget(feedbackfile=self.feedbackfile))
 
     def get_feedbacktext_layout_elements(self):
-        return [EditMarkdownLayoutObject(), 'feedbackfile']
+        return [
+            EditMarkdownLayoutObject(),
+            layout.Div(
+                layout.Field('feedbackfile'),
+                css_class='devilry-gradingsystem-feedbackeditor-feedbackfile-wrapper')
+        ]
 
     def get_submitbuttons_layout_elements(self):
         return [EditFeedbackButtonBar()]

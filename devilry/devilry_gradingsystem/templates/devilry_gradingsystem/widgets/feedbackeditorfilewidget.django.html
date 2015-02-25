@@ -1,20 +1,19 @@
 {% load i18n %}
 
-<div class="devilry_gradingsystem_feedbackeditorfilewidget">
+<div class="devilry-gradingsystem-feedbackeditorfilewidget">
     {% if feedbackfile %}
-        <a href="{{ feedbackfile.get_download_url }}" target="_blank"
-                class="devilry_gradingsystem_feedbackeditorfilewidget_fullviewlink">
-            {{ feedbackfile.filename }}
-            <span class="fa fa_external_link"></span>
-        </a>
+        <span class="devilry-gradingsystem-feedbackeditorfilewidget-uploadedfile">
+            {% trans "Uploaded file" %}:
+            <a href="{{ feedbackfile.get_download_url }}" target="_blank"
+                    class="devilry-gradingsystem-feedbackeditorfilewidget-downloadlink">
+                {{ feedbackfile.filename }}</a>
+            <span class="fa fa-external-link"></span>
+        </span>
+        <label class="devilry-gradingsystem-feedbackeditorfilewidget-clear">
+            (<input type="checkbox" name="{{ clear_checkbox_name }}">
+            {% trans "Remove file" %})
+        </label>
     {% endif %}
 
     {{ input_html|safe }}
-
-    {% if feedbackfile %}
-        <label class="devilry_gradingsystem_feedbackeditorfilewidget_clear">
-            <input type="checkbox" name="{{ clear_checkbox_name }}">
-            {% trans "Remove file" %}
-        </label>
-    {% endif %}
 </div>
