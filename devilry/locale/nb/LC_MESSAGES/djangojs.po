@@ -5,13 +5,14 @@
 # Translators:
 # Espen Angell Kristiansen <espen@appresso.no>, 2015
 # Tone Angell Kristiansen <tone@appresso.no>, 2015
+# Tor Ivar Johansen <tor@appresso.no>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Devilry\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2015-02-15 13:35+0100\n"
-"PO-Revision-Date: 2015-02-15 12:40+0000\n"
-"Last-Translator: Espen Angell Kristiansen <espen@appresso.no>\n"
+"PO-Revision-Date: 2015-02-19 19:56+0000\n"
+"Last-Translator: Tor Ivar Johansen <tor@appresso.no>\n"
 "Language-Team: Norwegian Bokmål (http://www.transifex.com/projects/p/devilry/language/nb/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -768,7 +769,7 @@ msgstr "Følg disse linkene for å få tilgang til alle detaljene tilgjengelig f
 
 #: devilry_nodeadmin/static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:43
 msgid "Childnodes"
-msgstr "Barnenoder"
+msgstr "Undernoder"
 
 #: devilry_nodeadmin/static/devilry_nodeadmin/app/view/nodebrowser/NodeDetailsOverview.js:56
 msgid "There is nothing here."
