@@ -331,3 +331,15 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                 deliverycopy.last_feedback = staticfeedbackcopy
                 save_deliverycopy()
         return deliverycopy
+
+    def is_electronic(self):
+        """
+        Returns ``True`` if :attr:`Delivery.delivery_type` is ``0`` (electric).
+        """
+        return self.delivery_type == deliverytypes.ELECTRONIC
+
+    def is_nonelectronic(self):
+        """
+        Returns ``True`` if :attr:`Delivery.delivery_type` is ``1`` (non-electric).
+        """
+        return self.delivery_type == deliverytypes.NON_ELECTRONIC
