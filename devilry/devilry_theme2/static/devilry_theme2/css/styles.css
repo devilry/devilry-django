@@ -9775,6 +9775,15 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .devilry-feedback-rendered-view p:first-child {
   margin-top: 0;
 }
+.devilry-feedback-rendered-view ul.devilry-feedback-rendered-view-files {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.devilry-feedback-rendered-view ul.devilry-feedback-rendered-view-files li {
+  margin: 0;
+  padding: 0;
+}
 .alert.feedback_gradebox {
   position: relative;
   padding-right: 200px;
