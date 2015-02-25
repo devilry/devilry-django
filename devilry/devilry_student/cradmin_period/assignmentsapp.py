@@ -27,22 +27,22 @@ class LongNameColumn(objecttable.SingleActionColumn):
         return False
 
 
-class LastDeadlineColumn(objecttable.DatetimeColumn):
-    orderingfield = 'last_deadline_datetime'
-    modelfield = 'last_deadline_datetime'
-
-    def get_header(self):
-        return _('Deadline')
-
-    def is_sortable(self):
-        return False
+# class LastDeadlineColumn(objecttable.DatetimeColumn):
+#     orderingfield = 'last_deadline_datetime'
+#     modelfield = 'last_deadline_datetime'
+#
+#     def get_header(self):
+#         return _('Deadline')
+#
+#     def is_sortable(self):
+#         return False
 
 
 class StatusColumn(objecttable.Column):
     template_name = 'devilry_student/cradmin_period/assignmentsapp/statuscolumn.django.html'
     context_value_name = 'status'
     context_object_name = 'group'
-    column_width = '200px'
+    column_width = '250px'
 
     def get_header(self):
         return _('Status')
@@ -56,7 +56,7 @@ class AssignmentGroupListView(studentobjecttable.StudentObjectTableView):
     template_name = 'devilry_student/cradmin_period/assignmentsapp/assignmentgroup-list.django.html'
     columns = [
         LongNameColumn,
-        LastDeadlineColumn,
+        # LastDeadlineColumn,
         StatusColumn,
     ]
 

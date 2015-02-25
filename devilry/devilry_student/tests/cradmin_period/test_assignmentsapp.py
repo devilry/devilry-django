@@ -51,9 +51,9 @@ class TestAssignmentGroupListView(TestCase):
                 instanceid='devilry_student_group',
                 appname='overview',
                 roleid=groupbuilder.group.id))
-        self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
-            defaultfilters.date(deadline.deadline, 'SHORT_DATETIME_FORMAT'))
+        # self.assertEquals(
+        #     selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
+        #     defaultfilters.date(deadline.deadline, 'SHORT_DATETIME_FORMAT'))
 
     def test_no_deadlines(self):
         self.periodbuilder\
@@ -65,10 +65,10 @@ class TestAssignmentGroupListView(TestCase):
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
 
         self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(3)').alltext_normalized,
+            selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
             'No deadlines')
         self.assertTrue(
-            selector.exists('#objecttableview-table tbody tr td:nth-child(3) .text-danger'))
+            selector.exists('#objecttableview-table tbody tr td:nth-child(2) .text-danger'))
 
     def test_waiting_for_deliveries_no_deliveries(self):
         self.periodbuilder\
@@ -81,7 +81,7 @@ class TestAssignmentGroupListView(TestCase):
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
 
         self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(3)').alltext_normalized,
+            selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
             'Waiting for deliveries or for deadline to expire.')
 
     def test_waiting_for_feedback_no_deliveries(self):
@@ -95,7 +95,7 @@ class TestAssignmentGroupListView(TestCase):
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
 
         self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(3)').alltext_normalized,
+            selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
             'Waiting for feedback.')
 
     def test_corrected_passed(self):
@@ -115,7 +115,7 @@ class TestAssignmentGroupListView(TestCase):
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
 
         self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(3)').alltext_normalized,
+            selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
             'Good (Passed)')
 
     def test_corrected_failed(self):
@@ -135,5 +135,5 @@ class TestAssignmentGroupListView(TestCase):
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
 
         self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(3)').alltext_normalized,
+            selector.one('#objecttableview-table tbody tr td:nth-child(2)').alltext_normalized,
             'Bad (Failed)')
