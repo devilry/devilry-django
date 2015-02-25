@@ -31,7 +31,7 @@ class TestDownloadFeedbackDraftFileView(TestCase):
             'pk': pk
         })
         if querystring:
-            url = '{}?{}'.format(urlencode(querystring))
+            url = '{}?{}'.format(url, urlencode(querystring))
         return self.client.get(url)
 
     def test_403_not_owner_or_superuser(self):
@@ -55,8 +55,8 @@ class TestDownloadFeedbackDraftFileView(TestCase):
     def test_ok_as_superuser(self):
         self._test_as(UserBuilder('superuser', is_superuser=True).user)
 
-    def get_download_content_disposition(self, user):
-        response = self._get_as(user, self.draftfile.id, download='yes')
+    def test_download_content_disposition(self):
+        response = self._get_as(self.testexaminer, self.draftfile.id, download='yes')
         self.assertEquals(response.status_code, 200)
         self.assertIn('content-disposition', response)
         self.assertEquals(response['content-disposition'], 'attachment; filename=test.txt')
