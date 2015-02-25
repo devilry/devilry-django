@@ -30,8 +30,10 @@ class TestRecentDeliveries(TestCase):
 
     def test_exclude_nonelectronic(self):
         assignmentbuilder = AssignmentBuilder.quickadd_ducku_duck1010_active_assignment1()
-        assignmentbuilder.update(delivery_types=deliverytypes.NON_ELECTRONIC)
-        assignmentbuilder.add_group(students=[self.testuser])
+        assignmentbuilder.add_group(students=[self.testuser])\
+            .add_deadline_in_x_weeks(weeks=1)\
+            .add_delivery_x_hours_before_deadline(
+                hours=1, delivery_type=deliverytypes.NON_ELECTRONIC)
         response = self._get_as('testuser')
         self.assertEquals(response.status_code, 200)
         selector = htmls.S(response.content)

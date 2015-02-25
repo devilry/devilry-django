@@ -77,7 +77,7 @@ class RecentDeliveriesListView(objecttable.ObjectTableView):
 
     def get_queryset_for_role(self, user):
         return Delivery.objects\
-            .filter(deadline__assignment_group__parentnode__delivery_types=deliverytypes.ELECTRONIC)\
+            .filter(delivery_type=deliverytypes.ELECTRONIC)\
             .filter_is_candidate(user)\
             .select_related(
                 'deadline',
