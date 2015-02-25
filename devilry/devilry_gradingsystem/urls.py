@@ -23,7 +23,7 @@ urlpatterns = patterns(
     url('^feedbackdraft_bulkpreview/(?P<assignmentid>\d+)/(?P<randomkey>[0-9_.-]+)$',
         login_required(FeedbackDraftBulkPreviewView.as_view()),
         name='devilry_gradingsystem_feedbackdraft_bulkpreview'),
-    url('^feedbackdraftfile/(?P<pk>\d+)/(?P<asciifilename>.+)$',
+    url('^feedbackdraftfile/(?P<pk>\d+)/(?P<asciifilename>.+)?$',
         login_required(DownloadFeedbackDraftFileView.as_view()),
         name='devilry_gradingsystem_feedbackdraftfile'),
 
