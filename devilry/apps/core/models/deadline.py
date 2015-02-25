@@ -296,6 +296,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
                     deadline=self,
                     successful=True,
                     time_of_delivery=datetime.now(),
+                    delivery_type=deliverytypes.NON_ELECTRONIC,
                     number=1)
                 delivery.save()
                 groupsave_needed = True
