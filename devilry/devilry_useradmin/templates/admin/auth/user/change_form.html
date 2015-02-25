@@ -31,7 +31,7 @@
     {% if change %}{% if not is_popup %}
     <ul class="object-tools">
         <li>
-            <a href="#" onclick="onSendTestEmail('{% url 'send_email_to_students_email_sending_debug user_obj.username' %}');">
+            <a href="#" onclick="onSendTestEmail('{% url 'send_email_to_students_email_sending_debug' user_obj.username %}');">
                 Send a test-email to {{ user_obj.username }}
             </a>
         </li>
