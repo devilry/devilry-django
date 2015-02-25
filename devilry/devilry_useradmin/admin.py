@@ -146,7 +146,7 @@ class DevilryUserAdmin(UserAdmin):
         queryset = super(UserAdmin, self).queryset(request)
         return queryset.select_related('devilryuserprofile')
 
-    @sensitive_post_parameters()
+    @method_decorator(sensitive_post_parameters())
     @csrf_protect_m
     @transaction.commit_on_success
     def add_view(self, request, form_url='', extra_context=None):
@@ -196,7 +196,7 @@ class DevilryUserAdmin(UserAdmin):
                       'devilry_useradmin/confirm_change_view.django.html',
                       context, current_app=self.admin_site.name)
 
-    @sensitive_post_parameters()
+    @method_decorator(sensitive_post_parameters())
     @csrf_protect_m
     @transaction.commit_on_success
     def change_view(self, request, object_id, form_url='', extra_context=None):
