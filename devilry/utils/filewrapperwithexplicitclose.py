@@ -9,7 +9,7 @@ class FileWrapperWithExplicitClose(object):
         data = self.filelike.read(self.blksize)
         if data:
             return data
-        raise IndexError
+        raise IndexError()
 
     def __iter__(self):
         return self
@@ -19,4 +19,4 @@ class FileWrapperWithExplicitClose(object):
         if data:
             return data
         self.filelike.close()
-        raise StopIteration
+        raise StopIteration()

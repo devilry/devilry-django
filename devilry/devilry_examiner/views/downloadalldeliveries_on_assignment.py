@@ -27,12 +27,12 @@ class DownloadAllDeliveriesOnAssignmentView(View):
         response = HttpResponse(FileWrapperWithExplicitClose(ziptempfile),
                                 content_type="application/zip")
         response['Content-Disposition'] = "attachment; filename={}".format(zip_file_name)
-        response['Content-Length'] = os.stat(ziptempfile.name).st_size
+        # response['Content-Length'] = os.stat(ziptempfile.name).st_size
         return response
 
     def _create_zip(self, assignment, zip_rootdir_name):
         tempfile = NamedTemporaryFile()
-        zip_file = zipfile.ZipFile(tempfile, 'w');
+        zip_file = zipfile.ZipFile(tempfile, 'w')
 
         for group in self._get_queryset(assignment):
             groupname = '{} (groupid={})'.format(group.short_displayname, group.id)
