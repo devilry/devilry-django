@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'errortemplates',
     'errortemplates',
     'crispy_forms',
-    'djangorestframework',
+    'devilry.thirdpartylibs.djangorestframework',
     'gunicorn',
     'extjs4',
     'haystack',
