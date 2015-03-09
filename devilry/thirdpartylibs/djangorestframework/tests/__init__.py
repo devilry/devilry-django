@@ -7,7 +7,7 @@ modules = [filename.rsplit('.', 1)[0]
 __test__ = dict()
 
 for module in modules:
-    exec("from djangorestframework.tests.%s import __doc__ as module_doc" % module)
-    exec("from djangorestframework.tests.%s import *" % module)
+    exec("from devilry.thirdpartylibs.djangorestframework.tests.%s import __doc__ as module_doc" % module)
+    exec("from devilry.thirdpartylibs.djangorestframework.tests.%s import *" % module)
     __test__[module] = module_doc or ""
 

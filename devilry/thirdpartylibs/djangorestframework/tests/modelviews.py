@@ -2,10 +2,10 @@ from django.conf.urls import patterns, url
 from django.test import TestCase
 from django.forms import ModelForm
 from django.contrib.auth.models import Group, User
-from djangorestframework.resources import ModelResource
-from djangorestframework.views import ListOrCreateModelView, InstanceModelView
-from djangorestframework.tests.models import CustomUser
-from djangorestframework.tests.testcases import TestModelsTestCase
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.views import ListOrCreateModelView, InstanceModelView
+from devilry.thirdpartylibs.djangorestframework.tests.models import CustomUser
+from devilry.thirdpartylibs.djangorestframework.tests.testcases import TestModelsTestCase
 
 class GroupResource(ModelResource):
     model = Group
@@ -34,7 +34,7 @@ urlpatterns = patterns('',
 
 class ModelViewTests(TestModelsTestCase):
     """Test the model views djangorestframework provides"""
-    urls = 'djangorestframework.tests.modelviews'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.modelviews'
 
     def test_creation(self):
         """Ensure that a model object can be created"""

@@ -4,14 +4,14 @@ Tests for content parsing, and form-overloaded content parsing.
 from django.conf.urls import patterns
 from django.contrib.auth.models import User
 from django.test import TestCase, Client
-from djangorestframework import status
-from djangorestframework.authentication import UserLoggedInAuthentication
-from djangorestframework.compat import RequestFactory, unittest
-from djangorestframework.mixins import RequestMixin
-from djangorestframework.parsers import FormParser, MultiPartParser, \
+from devilry.thirdpartylibs.djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework.authentication import UserLoggedInAuthentication
+from devilry.thirdpartylibs.djangorestframework.compat import RequestFactory, unittest
+from devilry.thirdpartylibs.djangorestframework.mixins import RequestMixin
+from devilry.thirdpartylibs.djangorestframework.parsers import FormParser, MultiPartParser, \
     PlainTextParser, JSONParser
-from djangorestframework.response import Response
-from djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.response import Response
+from devilry.thirdpartylibs.djangorestframework.views import View
 
 class MockView(View):
     authentication = (UserLoggedInAuthentication,)
@@ -200,7 +200,7 @@ class TestContentParsing(TestCase):
         self.assertEqual(view.DATA.items(), data.items())
 
 class TestContentParsingWithAuthentication(TestCase):
-    urls = 'djangorestframework.tests.content'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.content'
 
     def setUp(self):
         self.csrf_client = Client(enforce_csrf_checks=True)

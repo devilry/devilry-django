@@ -4,8 +4,8 @@ from django.test import Client, TestCase
 
 from django.utils import simplejson as json
 
-from djangorestframework.views import View
-from djangorestframework import permissions
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework import permissions
 
 import base64
 
@@ -26,7 +26,7 @@ urlpatterns = patterns('',
 
 class BasicAuthTests(TestCase):
     """Basic authentication"""
-    urls = 'djangorestframework.tests.authentication'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.authentication'
 
     def setUp(self):
         self.csrf_client = Client(enforce_csrf_checks=True)
@@ -60,7 +60,7 @@ class BasicAuthTests(TestCase):
 
 class SessionAuthTests(TestCase):
     """User session authentication"""
-    urls = 'djangorestframework.tests.authentication'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.authentication'
 
     def setUp(self):
         self.csrf_client = Client(enforce_csrf_checks=True)

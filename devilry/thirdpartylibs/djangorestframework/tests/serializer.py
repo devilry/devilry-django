@@ -2,7 +2,7 @@
 from django.db import models
 from django.test import TestCase
 from django.utils.translation import ugettext_lazy
-from djangorestframework.serializer import Serializer
+from devilry.thirdpartylibs.djangorestframework.serializer import Serializer
 
 import datetime
 import decimal

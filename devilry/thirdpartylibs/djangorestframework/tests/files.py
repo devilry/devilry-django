@@ -1,8 +1,8 @@
 from django.test import TestCase
 from django import forms
-from djangorestframework.compat import RequestFactory
-from djangorestframework.views import View
-from djangorestframework.resources import FormResource
+from devilry.thirdpartylibs.djangorestframework.compat import RequestFactory
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.resources import FormResource
 import StringIO
 
 class UploadFilesTests(TestCase):

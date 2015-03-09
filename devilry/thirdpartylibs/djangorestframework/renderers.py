@@ -12,11 +12,11 @@ from django.template import RequestContext, loader
 from django.utils import simplejson as json
 
 
-from djangorestframework.compat import yaml
-from djangorestframework.utils import dict2xml, url_resolves
-from djangorestframework.utils.breadcrumbs import get_breadcrumbs
-from djangorestframework.utils.mediatypes import get_media_type_params, add_media_type_param, media_type_matches
-from djangorestframework import VERSION
+from devilry.thirdpartylibs.djangorestframework.compat import yaml
+from devilry.thirdpartylibs.djangorestframework.utils import dict2xml, url_resolves
+from devilry.thirdpartylibs.djangorestframework.utils.breadcrumbs import get_breadcrumbs
+from devilry.thirdpartylibs.djangorestframework.utils.mediatypes import get_media_type_params, add_media_type_param, media_type_matches
+from devilry.thirdpartylibs.djangorestframework import VERSION
 
 import string
 from urllib import quote_plus

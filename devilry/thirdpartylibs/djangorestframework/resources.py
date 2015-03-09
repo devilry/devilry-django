@@ -2,9 +2,9 @@ from django import forms
 from django.core.urlresolvers import reverse, get_urlconf, get_resolver, NoReverseMatch
 from django.db import models
 
-from djangorestframework.response import ErrorResponse
-from djangorestframework.serializer import Serializer, _SkipField
-from djangorestframework.utils import as_tuple
+from devilry.thirdpartylibs.djangorestframework.response import ErrorResponse
+from devilry.thirdpartylibs.djangorestframework.serializer import Serializer, _SkipField
+from devilry.thirdpartylibs.djangorestframework.utils import as_tuple
 
 
 class BaseResource(Serializer):

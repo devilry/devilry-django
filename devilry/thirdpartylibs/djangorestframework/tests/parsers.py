@@ -1,8 +1,8 @@
 # """
 # ..
-#     >>> from djangorestframework.parsers import FormParser
-#     >>> from djangorestframework.compat import RequestFactory
-#     >>> from djangorestframework.views import View
+#     >>> from devilry.thirdpartylibs.djangorestframework.parsers import FormParser
+#     >>> from devilry.thirdpartylibs.djangorestframework.compat import RequestFactory
+#     >>> from devilry.thirdpartylibs.djangorestframework.views import View
 #     >>> from StringIO import StringIO
 #     >>> from urllib import urlencode
 #     >>> req = RequestFactory().get('/')
@@ -83,9 +83,9 @@
 # import httplib, mimetypes
 # from tempfile import TemporaryFile
 # from django.test import TestCase
-# from djangorestframework.compat import RequestFactory
-# from djangorestframework.parsers import MultiPartParser
-# from djangorestframework.views import View
+# from devilry.thirdpartylibs.djangorestframework.compat import RequestFactory
+# from devilry.thirdpartylibs.djangorestframework.parsers import MultiPartParser
+# from devilry.thirdpartylibs.djangorestframework.views import View
 # from StringIO import StringIO
 #
 # def encode_multipart_formdata(fields, files):
@@ -135,8 +135,8 @@ from StringIO import StringIO
 from cgi import parse_qs
 from django import forms
 from django.test import TestCase
-from djangorestframework.parsers import FormParser
-from djangorestframework.parsers import XMLParser
+from devilry.thirdpartylibs.djangorestframework.parsers import FormParser
+from devilry.thirdpartylibs.djangorestframework.parsers import XMLParser
 import datetime
 
 class Form(forms.Form):

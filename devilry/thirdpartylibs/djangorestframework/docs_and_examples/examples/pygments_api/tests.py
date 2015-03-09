@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.utils import simplejson as json
 
-from djangorestframework.compat import RequestFactory
+from devilry.thirdpartylibs.djangorestframework.compat import RequestFactory
 
 from pygments_api import views
 import tempfile, shutil

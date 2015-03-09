@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import simplejson as json
 
-from djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.views import View
 
 
 class MockView(View):
@@ -21,7 +21,7 @@ urlpatterns = patterns('',
 
 class ReverseTests(TestCase):
     """Tests for """
-    urls = 'djangorestframework.tests.reverse'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.reverse'
 
     def test_reversed_urls_are_fully_qualified(self):
         response = self.client.get('/')

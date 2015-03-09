@@ -3,14 +3,14 @@ import re
 from django.conf.urls import patterns, url
 from django.test import TestCase
 
-from djangorestframework import status
-from djangorestframework.views import View
-from djangorestframework.compat import View as DjangoView
-from djangorestframework.renderers import BaseRenderer, JSONRenderer, YAMLRenderer, \
+from devilry.thirdpartylibs.djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.compat import View as DjangoView
+from devilry.thirdpartylibs.djangorestframework.renderers import BaseRenderer, JSONRenderer, YAMLRenderer, \
     XMLRenderer, JSONPRenderer, DocumentingHTMLRenderer
-from djangorestframework.parsers import JSONParser, YAMLParser, XMLParser
-from djangorestframework.mixins import ResponseMixin
-from djangorestframework.response import Response
+from devilry.thirdpartylibs.djangorestframework.parsers import JSONParser, YAMLParser, XMLParser
+from devilry.thirdpartylibs.djangorestframework.mixins import ResponseMixin
+from devilry.thirdpartylibs.djangorestframework.response import Response
 
 from StringIO import StringIO
 import datetime
@@ -81,7 +81,7 @@ class RendererIntegrationTests(TestCase):
     End-to-end testing of renderers using an RendererMixin on a generic view.
     """
 
-    urls = 'djangorestframework.tests.renderers'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.renderers'
 
     def test_default_renderer_serializes_content(self):
         """If the Accept header is not set the default renderer should serialize the response."""
@@ -228,7 +228,7 @@ class JSONPRendererTests(TestCase):
     Tests specific to the JSONP Renderer
     """
 
-    urls = 'djangorestframework.tests.renderers'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.renderers'
 
     def test_without_callback_with_json_renderer(self):
         """
@@ -396,7 +396,7 @@ class Issue122Tests(TestCase):
     """
     Tests that covers #122.
     """
-    urls = 'djangorestframework.tests.renderers'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.renderers'
 
     def test_only_html_renderer(self):
         """

@@ -5,8 +5,8 @@ class to your view by setting your View's :attr:`permissions` class attribute.
 """
 
 from django.core.cache import cache
-from djangorestframework import status
-from djangorestframework.response import ErrorResponse
+from devilry.thirdpartylibs.djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework.response import ErrorResponse
 import time
 
 __all__ = (

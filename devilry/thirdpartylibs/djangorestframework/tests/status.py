@@ -1,6 +1,6 @@
 """Tests for the status module"""
 from django.test import TestCase
-from djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework import status
 
 
 class TestStatus(TestCase):

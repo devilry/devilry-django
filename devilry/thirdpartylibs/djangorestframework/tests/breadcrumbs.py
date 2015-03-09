@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from django.test import TestCase
-from djangorestframework.utils.breadcrumbs import get_breadcrumbs
-from djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.utils.breadcrumbs import get_breadcrumbs
+from devilry.thirdpartylibs.djangorestframework.views import View
 
 class Root(View):
     pass
@@ -30,7 +30,7 @@ urlpatterns = patterns('',
 class BreadcrumbTests(TestCase):
     """Tests the breadcrumb functionality used by the HTML renderer."""
 
-    urls = 'djangorestframework.tests.breadcrumbs'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.breadcrumbs'
 
     def test_root_breadcrumbs(self):
         url = '/'

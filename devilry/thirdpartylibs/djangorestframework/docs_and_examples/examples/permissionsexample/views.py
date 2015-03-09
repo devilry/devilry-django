@@ -1,5 +1,5 @@
-from djangorestframework.views import View
-from djangorestframework.permissions import PerUserThrottling, IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.permissions import PerUserThrottling, IsAuthenticated
 from django.core.urlresolvers import reverse
 
 

@@ -1,6 +1,6 @@
 from django.test import TestCase
-from djangorestframework.views import View
-from djangorestframework.compat import apply_markdown
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.compat import apply_markdown
 
 # We check that docstrings get nicely un-indented.
 DESCRIPTION = """an example docstring

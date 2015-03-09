@@ -2,11 +2,11 @@ from __future__ import with_statement  # for python 2.5
 from django.conf import settings
 from django.core.urlresolvers import reverse
 
-from djangorestframework.resources import FormResource
-from djangorestframework.response import Response
-from djangorestframework.renderers import BaseRenderer
-from djangorestframework.views import View
-from djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework.resources import FormResource
+from devilry.thirdpartylibs.djangorestframework.response import Response
+from devilry.thirdpartylibs.djangorestframework.renderers import BaseRenderer
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework import status
 
 from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name

@@ -4,7 +4,7 @@ from django.conf.urls import patterns, url, include
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
-from djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.views import View
 
 # Since oauth2 / django-oauth-plus are optional dependancies, we don't want to
 # always run these tests.
@@ -27,7 +27,7 @@ else:
     urlpatterns = patterns('',
         url(r'^$', oauth_required(ClientView.as_view())),
         url(r'^oauth/', include('oauth_provider.urls')),
-        url(r'^accounts/login/$', 'djangorestframework.utils.staticviews.api_login'),
+        url(r'^accounts/login/$', 'devilry.thirdpartylibs.djangorestframework.utils.staticviews.api_login'),
     )
 
 
@@ -41,7 +41,7 @@ else:
         * if confirmed, the user is redirected to the third-party website through the callback view
         * the third-party website is able to retrieve data from the API
         """
-        urls = 'djangorestframework.tests.oauthentication'
+        urls = 'devilry.thirdpartylibs.djangorestframework.tests.oauthentication'
 
         def setUp(self):
             self.client = Client()

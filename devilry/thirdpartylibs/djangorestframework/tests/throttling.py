@@ -6,10 +6,10 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from django.core.cache import cache
 
-from djangorestframework.compat import RequestFactory
-from djangorestframework.views import View
-from djangorestframework.permissions import PerUserThrottling, PerViewThrottling, PerResourceThrottling
-from djangorestframework.resources import FormResource
+from devilry.thirdpartylibs.djangorestframework.compat import RequestFactory
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.permissions import PerUserThrottling, PerViewThrottling, PerResourceThrottling
+from devilry.thirdpartylibs.djangorestframework.resources import FormResource
 
 class MockView(View):
     permissions = ( PerUserThrottling, )
@@ -31,7 +31,7 @@ class MockView_MinuteThrottling(MockView):
 
 
 class ThrottlingTests(TestCase):
-    urls = 'djangorestframework.tests.throttling'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.throttling'
 
     def setUp(self):
         """

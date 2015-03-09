@@ -1,9 +1,9 @@
 from django import forms
 from django.db import models
 from django.test import TestCase
-from djangorestframework.resources import FormResource, ModelResource
-from djangorestframework.response import ErrorResponse
-from djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.resources import FormResource, ModelResource
+from devilry.thirdpartylibs.djangorestframework.response import ErrorResponse
+from devilry.thirdpartylibs.djangorestframework.views import View
 
 
 class TestDisabledValidations(TestCase):

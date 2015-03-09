@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
 from blogpost.models import BlogPost, Comment
 
 

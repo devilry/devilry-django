@@ -38,7 +38,7 @@ def main():
     cov.stop()
 
     # Discover the list of all modules that we should test coverage for
-    import djangorestframework
+    from devilry.thirdpartylibs import djangorestframework
 
     project_dir = os.path.dirname(djangorestframework.__file__)
     cov_files = []

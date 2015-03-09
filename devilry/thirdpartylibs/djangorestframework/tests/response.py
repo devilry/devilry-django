@@ -2,7 +2,7 @@
 # Looking forward to actually being able to raise ExpectedFailure sometime!
 #
 #from django.test import TestCase
-#from djangorestframework.response import Response
+#from devilry.thirdpartylibs.djangorestframework.response import Response
 #
 #
 #class TestResponse(TestCase):

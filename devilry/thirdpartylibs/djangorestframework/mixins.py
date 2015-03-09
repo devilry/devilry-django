@@ -9,12 +9,12 @@ from django.db.models.fields.related import ForeignKey
 from django.http import HttpResponse
 from urlobject import URLObject
 
-from djangorestframework import status
-from djangorestframework.renderers import BaseRenderer
-from djangorestframework.resources import Resource, FormResource, ModelResource
-from djangorestframework.response import Response, ErrorResponse
-from djangorestframework.utils import as_tuple, MSIE_USER_AGENT_REGEX
-from djangorestframework.utils.mediatypes import is_form_media_type, order_by_precedence
+from devilry.thirdpartylibs.djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework.renderers import BaseRenderer
+from devilry.thirdpartylibs.djangorestframework.resources import Resource, FormResource, ModelResource
+from devilry.thirdpartylibs.djangorestframework.response import Response, ErrorResponse
+from devilry.thirdpartylibs.djangorestframework.utils import as_tuple, MSIE_USER_AGENT_REGEX
+from devilry.thirdpartylibs.djangorestframework.utils.mediatypes import is_form_media_type, order_by_precedence
 
 from StringIO import StringIO
 

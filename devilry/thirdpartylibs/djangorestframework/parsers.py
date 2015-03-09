@@ -15,10 +15,10 @@ from django.http import QueryDict
 from django.http.multipartparser import MultiPartParser as DjangoMultiPartParser
 from django.http.multipartparser import MultiPartParserError
 from django.utils import simplejson as json
-from djangorestframework import status
-from djangorestframework.compat import yaml
-from djangorestframework.response import ErrorResponse
-from djangorestframework.utils.mediatypes import media_type_matches
+from devilry.thirdpartylibs.djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework.compat import yaml
+from devilry.thirdpartylibs.djangorestframework.response import ErrorResponse
+from devilry.thirdpartylibs.djangorestframework.utils.mediatypes import media_type_matches
 from xml.etree import ElementTree as ET
 import datetime
 import decimal

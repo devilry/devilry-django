@@ -1,4 +1,4 @@
-from djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
 from modelresourceexample.models import MyModel
 
 class MyModelResource(ModelResource):

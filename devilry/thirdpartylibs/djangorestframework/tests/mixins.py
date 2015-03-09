@@ -1,15 +1,15 @@
 """Tests for the mixin module"""
 from django.test import TestCase
 from django.utils import simplejson as json
-from djangorestframework import status
-from djangorestframework.compat import RequestFactory
+from devilry.thirdpartylibs.djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework.compat import RequestFactory
 from django.contrib.auth.models import Group, User
-from djangorestframework.mixins import CreateModelMixin, PaginatorMixin, ReadModelMixin
-from djangorestframework.resources import ModelResource
-from djangorestframework.response import Response, ErrorResponse
-from djangorestframework.tests.models import CustomUser
-from djangorestframework.tests.testcases import TestModelsTestCase
-from djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.mixins import CreateModelMixin, PaginatorMixin, ReadModelMixin
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.response import Response, ErrorResponse
+from devilry.thirdpartylibs.djangorestframework.tests.models import CustomUser
+from devilry.thirdpartylibs.djangorestframework.tests.testcases import TestModelsTestCase
+from devilry.thirdpartylibs.djangorestframework.views import View
 
 
 class TestModelRead(TestModelsTestCase):

@@ -56,7 +56,7 @@ copyright = u'2011, Tom Christie'
 #
 # The short X.Y version.
 
-import djangorestframework
+from devilry.thirdpartylibs import djangorestframework
 
 version = djangorestframework.__version__
 

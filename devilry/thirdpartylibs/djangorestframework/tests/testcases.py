@@ -59,5 +59,5 @@ class SettingsTestCase(TestCase):
 
 class TestModelsTestCase(SettingsTestCase):
     def setUp(self, *args, **kwargs):
-        installed_apps = tuple(settings.INSTALLED_APPS) + ('djangorestframework.tests',)
+        installed_apps = tuple(settings.INSTALLED_APPS) + ('devilry.thirdpartylibs.djangorestframework.tests',)
         self.settings_manager.set(INSTALLED_APPS=installed_apps)

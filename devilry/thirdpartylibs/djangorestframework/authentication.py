@@ -8,7 +8,7 @@ The set of authentication methods which are used is then specified by setting th
 """
 
 from django.contrib.auth import authenticate
-from djangorestframework.compat import CsrfViewMiddleware
+from devilry.thirdpartylibs.djangorestframework.compat import CsrfViewMiddleware
 import base64
 
 __all__ = (

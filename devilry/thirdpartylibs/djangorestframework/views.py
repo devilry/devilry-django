@@ -12,10 +12,10 @@ from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.views.decorators.csrf import csrf_exempt
 
-from djangorestframework.compat import View as DjangoView, apply_markdown
-from djangorestframework.response import Response, ErrorResponse
-from djangorestframework.mixins import *
-from djangorestframework import resources, renderers, parsers, authentication, permissions, status
+from devilry.thirdpartylibs.djangorestframework.compat import View as DjangoView, apply_markdown
+from devilry.thirdpartylibs.djangorestframework.response import Response, ErrorResponse
+from devilry.thirdpartylibs.djangorestframework.mixins import *
+from devilry.thirdpartylibs.djangorestframework import resources, renderers, parsers, authentication, permissions, status
 
 
 __all__ = (

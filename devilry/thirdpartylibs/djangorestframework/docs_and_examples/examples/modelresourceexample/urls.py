@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url
-from djangorestframework.views import ListOrCreateModelView, InstanceModelView
+from devilry.thirdpartylibs.djangorestframework.views import ListOrCreateModelView, InstanceModelView
 from modelresourceexample.resources import MyModelResource
 
 urlpatterns = patterns('',

@@ -5,10 +5,10 @@ from django.test import Client
 from django import forms
 from django.db import models
 
-from djangorestframework.views import View
-from djangorestframework.parsers import JSONParser
-from djangorestframework.resources import ModelResource
-from djangorestframework.views import ListOrCreateModelView, InstanceModelView
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.parsers import JSONParser
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.views import ListOrCreateModelView, InstanceModelView
 
 from StringIO import StringIO
 
@@ -45,7 +45,7 @@ class MockResource(ModelResource):
     model = MockResourceModel
     fields = ('foo', 'bar', 'baz')
 
-urlpatterns = patterns('djangorestframework.utils.staticviews',
+urlpatterns = patterns('devilry.thirdpartylibs.djangorestframework.utils.staticviews',
     url(r'^accounts/login$', 'api_login'),
     url(r'^accounts/logout$', 'api_logout'),
     url(r'^mock/$', MockView.as_view()),
@@ -57,7 +57,7 @@ urlpatterns = patterns('djangorestframework.utils.staticviews',
 
 class BaseViewTests(TestCase):
     """Test the base view class of djangorestframework"""
-    urls = 'djangorestframework.tests.views'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.views'
 
     def test_view_call_final(self):
         response = self.client.options('/mock/final/')
@@ -119,7 +119,7 @@ class BaseViewTests(TestCase):
 
 class ExtraViewsTests(TestCase):
     """Test the extra views djangorestframework provides"""
-    urls = 'djangorestframework.tests.views'
+    urls = 'devilry.thirdpartylibs.djangorestframework.tests.views'
 
     def test_login_view(self):
         """Ensure the login view exists"""

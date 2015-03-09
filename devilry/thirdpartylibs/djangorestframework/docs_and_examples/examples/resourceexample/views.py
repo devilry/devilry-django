@@ -1,8 +1,8 @@
 from django.core.urlresolvers import reverse
 
-from djangorestframework.views import View
-from djangorestframework.response import Response
-from djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.response import Response
+from devilry.thirdpartylibs.djangorestframework import status
 
 from resourceexample.forms import MyForm
 

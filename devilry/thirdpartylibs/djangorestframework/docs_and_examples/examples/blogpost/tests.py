@@ -6,8 +6,8 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.utils import simplejson as json
 
-from djangorestframework.compat import RequestFactory
-from djangorestframework.views import InstanceModelView, ListOrCreateModelView
+from devilry.thirdpartylibs.djangorestframework.compat import RequestFactory
+from devilry.thirdpartylibs.djangorestframework.views import InstanceModelView, ListOrCreateModelView
 
 from blogpost import models, urls
 #import blogpost

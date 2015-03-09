@@ -1,7 +1,7 @@
 """The root view for the examples provided with Django REST framework"""
 
 from django.core.urlresolvers import reverse
-from djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.views import View
 
 
 class Sandbox(View):

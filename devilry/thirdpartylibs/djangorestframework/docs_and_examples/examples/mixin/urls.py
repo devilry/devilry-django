@@ -1,7 +1,7 @@
-from djangorestframework.compat import View  # Use Django 1.3's django.views.generic.View, or fall back to a clone of that if Django < 1.3
-from djangorestframework.mixins import ResponseMixin
-from djangorestframework.renderers import DEFAULT_RENDERERS
-from djangorestframework.response import Response
+from devilry.thirdpartylibs.djangorestframework.compat import View  # Use Django 1.3's django.views.generic.View, or fall back to a clone of that if Django < 1.3
+from devilry.thirdpartylibs.djangorestframework.mixins import ResponseMixin
+from devilry.thirdpartylibs.djangorestframework.renderers import DEFAULT_RENDERERS
+from devilry.thirdpartylibs.djangorestframework.response import Response
 
 from django.conf.urls import patterns, url
 from django.core.urlresolvers import reverse
