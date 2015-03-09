@@ -80,11 +80,19 @@ like this::
 The recommended production deliverystore
 ########################################
 
-The recommended DeliveryStore is :class:`devilry.apps.core.deliverystore.FsHierDeliveryStore`.
+If you store files in a traditional file system:
+    The recommended DeliveryStore for traditional filesystems
+    is :class:`devilry.apps.core.deliverystore.FsHierDeliveryStore`.
 
-It stores files in a filesystem hierarcy with one directory for each
-Delivery, with the delivery-id as name. In each delivery-directory, the
-files are stored by FileMeta id.
+    It stores files in a filesystem hierarcy with one directory for each
+    Delivery, with the delivery-id as name. In each delivery-directory, the
+    files are stored by FileMeta id.
+
+If you store files in a modern cloud file system like Amazon S3:
+    The recommended DeliveryStore for cloud file systems that have no
+    upper limit on the number of files in a single directory is
+    :class:`devilry.apps.core.deliverystore.DjangoStorageDeliveryStore`.
+
 
 Directory hierachy
 ==================
@@ -140,4 +148,4 @@ API
 ###
 
 .. automodule:: devilry.apps.core.deliverystore
-    :members: F
+    :members:

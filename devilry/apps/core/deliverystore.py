@@ -254,6 +254,9 @@ class DjangoStorageDeliveryStore(DeliveryStoreInterface):
     """
     def __init__(self, root=None, storage_backend=None):
         """
+        Initialize the deliverystore with an optional root directory
+        (relative to MEDIA_ROOT) and optionally a custom storage backend.
+
         Parameters:
             root: The root-directory relative to ``MEDIA_ROOT`` where files are stored.
                 Defaults to the value of the ``DELIVERY_STORE_ROOT``-setting.
