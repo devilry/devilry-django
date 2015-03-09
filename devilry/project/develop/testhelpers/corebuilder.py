@@ -34,7 +34,7 @@ class UserBuilder(ReloadableDbBuilderInterface):
         self.user.set_password('test')
         self.user.full_clean()
         self.user.save()
-        profile = self.user.get_profile()
+        profile = self.user.devilryuserprofile
         if full_name:
             profile.full_name = full_name
         profile.save()
@@ -46,7 +46,7 @@ class UserBuilder(ReloadableDbBuilderInterface):
         self.reload_from_db()
 
     def update_profile(self, **attributes):
-        profile = self.user.get_profile()
+        profile = self.user.devilryuserprofile
         for attrname, value in attributes.iteritems():
             setattr(profile, attrname, value)
         profile.save()

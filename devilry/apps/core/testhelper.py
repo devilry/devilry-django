@@ -31,7 +31,7 @@ class TestHelper(object):
         user.full_clean()
         user.save()
         if fullname:
-            profile = user.get_profile()
+            profile = user.devilryuserprofile
             profile.full_name = fullname
             profile.save()
         vars(self)[name] = user
