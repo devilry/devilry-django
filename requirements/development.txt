@@ -12,6 +12,7 @@ htmls==0.9.5
 # Required by sphinx (to build the docs)
 Jinja2==2.6
 Sphinx==1.2.2
+sphinxcontrib-napoleon==0.2.7
 sphinx_rtd_theme==0.1.6
 
 # For test/CI automation

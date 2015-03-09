@@ -33,7 +33,13 @@ import devilry
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest', 'sphinx.ext.intersphinx', 'sphinx.ext.extlinks']
+extensions = [
+    'sphinx.ext.autodoc',
+    'sphinx.ext.doctest',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.extlinks',
+    'sphinxcontrib.napoleon',
+]
 
 
 # The version info for the project you're documenting, acts as replacement for
@@ -60,7 +66,7 @@ else:
 
 
 # Mapping to other docs
-django_version = '1.6'
+django_version = '1.7'
 intersphinx_mapping = {
     'django': ('http://docs.djangoproject.com/en/{0}/'.format(django_version), 'http://docs.djangoproject.com/en/{0}/_objects/'.format(django_version))
 }
