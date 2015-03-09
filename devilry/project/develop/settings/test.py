@@ -22,3 +22,15 @@ DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = []
 SKIP_SELENIUMTESTS = True
 # SELENIUM_BROWSER = 'phantomjs'
 # SELENIUM_DEFAULT_TIMEOUT = 20
+
+
+# Disable migrations when running tests
+class DisableMigrations(object):
+
+    def __contains__(self, item):
+        return True
+
+    def __getitem__(self, item):
+        return "notmigrations"
+
+MIGRATION_MODULES = DisableMigrations()
