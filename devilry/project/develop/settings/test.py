@@ -1,8 +1,5 @@
 from .base import *
 
-SOUTH_TESTS_MIGRATE = False  # To disable migrations and use syncdb instead
-SKIP_SOUTH_TESTS = True  # To disable South's own unit tests
-
 CELERY_ALWAYS_EAGER = True
 CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 CELERY_EAGER_TRANSACTION = True

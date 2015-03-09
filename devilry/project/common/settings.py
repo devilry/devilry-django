@@ -41,9 +41,6 @@ INSTALLED_APPS = [
     'gunicorn',
     'extjs4',
     'haystack',
-    'south',
-    # 'djcelery',
-    # 'celery_haystack',
 
     'devilry.devilry_cradmin',
     'django_cradmin',

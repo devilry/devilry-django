@@ -1,9 +1,9 @@
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db import models
-from south.modelsinspector import add_introspection_rules
 
 import re
+
 
 class ShortNameField(models.SlugField):
     """ Short name field used by several of the core models.
@@ -13,11 +13,12 @@ class ShortNameField(models.SlugField):
     unique short_name).
     """
     patt = re.compile(r'^[a-z0-9_-]+$')
+
     def __init__(self, *args, **kwargs):
         kw = dict(
-            max_length = 20,
-            verbose_name = _('Short name'),
-            db_index = True,
+            max_length=20,
+            verbose_name=_('Short name'),
+            db_index=True,
             help_text=_(
                 'A short name with at most 20 letters. Can only contain lowercase '
                 'english letters (a-z), numbers, underscore ("_") and hyphen ("-"). '
@@ -36,16 +37,9 @@ class ShortNameField(models.SlugField):
 
 class LongNameField(models.CharField):
     def __init__(self, *args, **kwargs):
-        kw = dict(max_length=100,
+        kw = dict(
+            max_length=100,
             verbose_name='Name',
-            db_index = True)
+            db_index=True)
         kw.update(kwargs)
         super(LongNameField, self).__init__(*args, **kw)
-
-
-add_introspection_rules([
-    ([ShortNameField], [], {}),
-], ["^devilry\.apps\.core\.models\.custom_db_fields\.ShortNameField"])
-add_introspection_rules([
-    ([LongNameField], [], {}),
-], ["^devilry\.apps\.core\.models\.custom_db_fields\.LongNameField"])
