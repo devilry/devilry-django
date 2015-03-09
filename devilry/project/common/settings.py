@@ -25,6 +25,7 @@ EMAIL_SUBJECT_PREFIX = '[Devilry] '
 ROOT_URLCONF = 'devilry.project.production.urls'
 AUTH_PROFILE_MODULE = 'core.DevilryUserProfile'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+TEST_RUNNER = 'django.test.runner.DiscoverRunner'
 
 
 INSTALLED_APPS = [
