@@ -2,7 +2,7 @@ from django.conf.urls import patterns
 from django.contrib.auth.models import User
 from django.test import Client, TestCase
 
-from django.utils import simplejson as json
+import json
 
 from devilry.thirdpartylibs.djangorestframework.views import View
 from devilry.thirdpartylibs.djangorestframework import permissions

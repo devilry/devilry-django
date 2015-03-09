@@ -14,7 +14,7 @@ We need a method to be able to:
 from django.http import QueryDict
 from django.http.multipartparser import MultiPartParser as DjangoMultiPartParser
 from django.http.multipartparser import MultiPartParserError
-from django.utils import simplejson as json
+import json
 from devilry.thirdpartylibs.djangorestframework import status
 from devilry.thirdpartylibs.djangorestframework.compat import yaml
 from devilry.thirdpartylibs.djangorestframework.response import ErrorResponse

@@ -4,7 +4,7 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.core.urlresolvers import reverse
-from django.utils import simplejson as json
+import json
 
 from devilry.thirdpartylibs.djangorestframework.compat import RequestFactory
 from devilry.thirdpartylibs.djangorestframework.views import InstanceModelView, ListOrCreateModelView

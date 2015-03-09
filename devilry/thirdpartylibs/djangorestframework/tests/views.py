@@ -123,13 +123,15 @@ class ExtraViewsTests(TestCase):
 
     def test_login_view(self):
         """Ensure the login view exists"""
-        response = self.client.get('/accounts/login')
+        with self.settings(ADMIN_MEDIA_PREFIX='/adminmedia', DEVILRY_LACKING_PERMISSIONS_URL='/'):
+            response = self.client.get('/accounts/login')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'].split(';')[0], 'text/html')
 
     def test_logout_view(self):
         """Ensure the logout view exists"""
-        response = self.client.get('/accounts/logout')
+        with self.settings(DEVILRY_LACKING_PERMISSIONS_URL='/'):
+            response = self.client.get('/accounts/logout')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response['Content-Type'].split(';')[0], 'text/html')
 

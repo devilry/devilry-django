@@ -402,10 +402,12 @@ class Issue122Tests(TestCase):
         """
         Test if no infinite recursion occurs.
         """
-        resp = self.client.get('/html')
+        with self.settings(DEVILRY_LACKING_PERMISSIONS_URL='/'):
+            resp = self.client.get('/html')
         
     def test_html_renderer_is_first(self):
         """
         Test if no infinite recursion occurs.
         """
-        resp = self.client.get('/html1')
+        with self.settings(DEVILRY_LACKING_PERMISSIONS_URL='/'):
+            resp = self.client.get('/html1')
