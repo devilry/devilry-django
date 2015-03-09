@@ -867,13 +867,14 @@ class TestHelper(object):
         A delivery to save the feedback on is created automatically, so all that is needed
         of the groups is an examiner, a candidate and a deadline.
 
-        Example::
+        Example:
+            ::
 
-            self.create_feedbacks(
-                (group1, {'grade': 'B', 'points': 86, 'is_passing_grade': True}),
-                (group2, {'grade': 'A', 'points': 96, 'is_passing_grade': True}, {'hello.txt', ['Hello']}),
-                (group3, {'grade': 'F', 'points': 12, 'is_passing_grade': False})
-            )
+                self.create_feedbacks(
+                    (group1, {'grade': 'B', 'points': 86, 'is_passing_grade': True}),
+                    (group2, {'grade': 'A', 'points': 96, 'is_passing_grade': True}, {'hello.txt', ['Hello']}),
+                    (group3, {'grade': 'F', 'points': 12, 'is_passing_grade': False})
+                )
         """
         for item in args:
             group = item[0]

@@ -132,16 +132,16 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         of :meth:`devilry.apps.core.models.Assignment.points_to_grade`
         and :meth:`devilry.apps.core.models.Assignment.points_is_passing_grade`.
 
+        Examples:
+            ::
 
-        Example::
-
-            feedback = StaticFeedback.from_points(
-                assignment=myassignment,
-                points=10,
-                delivery=mydelivery,
-                saved_by=someuser)
-            assert(feedback.id == None)
-            assert(feedback.grade != None)
+                feedback = StaticFeedback.from_points(
+                    assignment=myassignment,
+                    points=10,
+                    delivery=mydelivery,
+                    saved_by=someuser)
+                assert(feedback.id == None)
+                assert(feedback.grade != None)
 
         :param points:
             The number of points for the feedback.
