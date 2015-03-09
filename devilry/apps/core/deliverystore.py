@@ -1,32 +1,34 @@
 from shutil import copy as shutil_copy
-from django.utils.importlib import import_module
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from os.path import join, exists
 from os import makedirs, remove
 from StringIO import StringIO
-import dumbdbm
+import posixpath
+
+from django.utils.importlib import import_module
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+from django.core.files.storage import default_storage
 
 
 def load_deliverystore_backend():
     s = settings.DEVILRY_DELIVERY_STORE_BACKEND.rsplit('.', 1)
     if len(s) != 2:
         raise ImproperlyConfigured(
-                'Error splitting %s into module and classname.' %
-                settings.DELIVERY_STORE)
+            'Error splitting %s into module and classname.' %
+            settings.DELIVERY_STORE)
     modulepath, classname = s
     try:
         module = import_module(modulepath)
     except ImportError, e:
         raise ImproperlyConfigured(
-                'Error importing deliverystore backend %s: "%s"' % (
-                    modulepath, e))
+            'Error importing deliverystore backend %s: "%s"' % (
+                modulepath, e))
     try:
         cls = getattr(module, classname)
     except AttributeError:
         raise ImproperlyConfigured(
-                'Module "%s" does not define a "%s" deliverystore backend' % (
-                    modulepath, classname))
+            'Module "%s" does not define a "%s" deliverystore backend' % (
+                modulepath, classname))
     return cls()
 
 
@@ -244,6 +246,53 @@ class MemoryDeliveryStore(DeliveryStoreInterface):
 
     def exists(self, filemeta_obj):
         return filemeta_obj.id in self.files
+
+
+class DjangoStorageDeliveryStore(DeliveryStoreInterface):
+    """
+    Delivery store backend that uses Django storages.
+    """
+    def __init__(self, root=None, storage_backend=None):
+        """
+        Parameters:
+            root: The root-directory relative to ``MEDIA_ROOT`` where files are stored.
+                Defaults to the value of the ``DELIVERY_STORE_ROOT``-setting.
+            storage_backend:
+                The django storage backend to use.
+                Defaults to ``django.core.files.storage.default_storage``.
+        """
+        self.root = root or settings.DELIVERY_STORE_ROOT
+        if storage_backend:
+            self.storage = storage_backend
+        else:
+            self.storage = default_storage
+
+    def _get_filepath(self, filemeta_obj):
+        return posixpath.join(self.root, str(filemeta_obj.pk))
+
+    def read_open(self, filemeta_obj):
+        filepath = self._get_filepath(filemeta_obj)
+        if not self.storage.exists(filepath):
+            raise FileNotFoundError(filemeta_obj)
+        return self.storage.open(filepath, 'rb')
+
+    def write_open(self, filemeta_obj):
+        return self.storage.open(self._get_filepath(filemeta_obj), 'wb')
+
+    def remove(self, filemeta_obj):
+        filepath = self._get_filepath(filemeta_obj)
+        if not self.storage.exists(filepath):
+            raise FileNotFoundError(filemeta_obj)
+        self.storage.delete(filepath)
+
+    def exists(self, filemeta_obj):
+        filepath = self._get_filepath(filemeta_obj)
+        return self.storage.exists(filepath)
+
+    def copy(self, filemeta_obj_from, filemeta_obj_to):
+        frompath = self._get_filepath(filemeta_obj_from)
+        topath = self._get_filepath(filemeta_obj_to)
+        self.storage.save(topath, self.storage.open(frompath))
 
 
 def _test():
