@@ -15,7 +15,7 @@ def create_archive_from_assignmentgroups(assignmentgroups, file_name, archive_ty
     """
     archive = get_archive_from_archive_type(archive_type)
     it = iter_archive_assignmentgroups(archive, assignmentgroups)
-    response = HttpResponse(it, mimetype="application/%s" % archive_type)
+    response = HttpResponse(it, content_type="application/%s" % archive_type)
     response["Content-Disposition"] = "attachment; filename=%s.%s" % \
                                       (file_name, archive_type)  
     return response
@@ -31,7 +31,7 @@ def create_archive_from_delivery(delivery, archive_type):
     assignment = group.parentnode
     group_name = _get_assignmentgroup_name(group)
     it = iter_archive_deliveries(archive, group_name, assignment.get_path(), [delivery])
-    response = HttpResponse(it, mimetype="application/%s" % archive_type)  
+    response = HttpResponse(it, content_type="application/%s" % archive_type)
     response["Content-Disposition"] = "attachment; filename=%s.%s" % \
                                       (assignment.get_path(), archive_type)  
     return response
