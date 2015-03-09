@@ -73,7 +73,9 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
                                                  'whatever the grade-editor chose to dump in this field.'))
     grade = models.CharField(max_length=12, help_text='The rendered grade, such as "A" or "approved".')
     points = models.PositiveIntegerField(help_text='Number of points given on this feedback.')
-    is_passing_grade = models.BooleanField(help_text='Is this a passing grade?')
+    is_passing_grade = models.BooleanField(
+        help_text='Is this a passing grade?',
+        default=False)
     save_timestamp = models.DateTimeField(blank=True, null=True,
                                           help_text=('Time when this feedback was saved. Since StaticFeedback '
                                                      'is immutable, this never changes.'))

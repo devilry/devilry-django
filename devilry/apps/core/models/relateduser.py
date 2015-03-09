@@ -83,7 +83,9 @@ class RelatedStudent(RelatedUserBase):
 class RelatedStudentKeyValue(AbstractApplicationKeyValue, AbstractIsAdmin):
     """ Key/value pair tied to a specific RelatedStudent. """
     relatedstudent = models.ForeignKey(RelatedStudent)
-    student_can_read = models.BooleanField(help_text='Specifies if a student can read the value or not.')
+    student_can_read = models.BooleanField(
+        help_text='Specifies if a student can read the value or not.',
+        default=False)
 
     class Meta:
         unique_together = ('relatedstudent', 'application', 'key')
