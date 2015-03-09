@@ -6,7 +6,7 @@ from fabric.api import local, abort, task
 from fabric.context_managers import shell_env, lcd
 
 
-DB_FILE = join('developfiles', 'db.sqlite3')
+DB_FILE = join('devilry_developfiles', 'db.sqlite3')
 LANGUAGES = ['en', 'nb']
 
 
@@ -34,7 +34,7 @@ def syncmigrate(djangoenv='develop'):
     """
     Run ``bin/django_dev.py syncmigrate -v0 --noinput``
     """
-    _managepy('syncdb -v0 --noinput', djangoenv=djangoenv)
+    # _managepy('syncdb -v0 --noinput', djangoenv=djangoenv)
     _managepy('migrate -v0 --noinput', djangoenv=djangoenv)
 
 @task
