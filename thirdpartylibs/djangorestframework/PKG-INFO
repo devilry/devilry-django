@@ -1,0 +1,19 @@
+Metadata-Version: 1.0
+Name: djangorestframework
+Version: 0.3.3
+Summary: A lightweight REST framework for Django.
+Home-page: http://django-rest-framework.org
+Author: Tom Christie
+Author-email: tom@tomchristie.com
+License: BSD
+Download-URL: http://pypi.python.org/pypi/djangorestframework/
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Environment :: Web Environment
+Classifier: Framework :: Django
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: BSD License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python
+Classifier: Topic :: Internet :: WWW/HTTP
