@@ -59,7 +59,7 @@ class Command(BaseCommand):
                          'last_login', 'date_joined'):
             print '   {attrname}: {attr}'.format(attrname=attrname,
                                                  attr=getattr(user, attrname))
-        profile = user.get_profile()
+        profile = user.devilryuserprofile
         for attrname in ('full_name',):
             attr = getattr(profile, attrname)
             if isinstance(attr, str) or isinstance(attr, unicode):

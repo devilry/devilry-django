@@ -9,7 +9,7 @@ from devilry.apps.core.models import (Node,
                                       Period,
                                       Assignment,
                                       AssignmentGroup)
-from djangorestframework.permissions import BasePermission
+from devilry.thirdpartylibs.djangorestframework.permissions import BasePermission
 from devilry.devilry_subjectadmin.rest.errors import PermissionDeniedError
 
 

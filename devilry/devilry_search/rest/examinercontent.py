@@ -1,4 +1,4 @@
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 from haystack.query import SearchQuerySet
 
 from devilry.apps.core.models import AssignmentGroup

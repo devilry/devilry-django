@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms.fields import DateTimeField
 
-from djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
 from devilry.devilry_subjectadmin.rest.fields import DevilryUserMultipleChoiceField
 
 

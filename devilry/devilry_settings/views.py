@@ -19,7 +19,7 @@ def urlsetting_or_unsetview(settingname):
     if setting:
         return setting
     else:
-        return reverse(missing_setting, args=(settingname,))
+        return reverse('devilry_settings_missing_setting', args=(settingname,))
 
 
 @login_required

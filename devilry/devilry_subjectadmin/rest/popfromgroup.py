@@ -1,11 +1,11 @@
 from django import forms
 from django.db import transaction
 
-from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.views import View
-from djangorestframework.resources import FormResource
-from djangorestframework.response import ErrorResponse
-from djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.resources import FormResource
+from devilry.thirdpartylibs.djangorestframework.response import ErrorResponse
+from devilry.thirdpartylibs.djangorestframework import status
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models.assignment_group import GroupPopValueError
 from devilry.apps.core.models import Candidate

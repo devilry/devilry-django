@@ -3,10 +3,10 @@ Manage related users.
 """
 from django.db.models import Q
 
-from djangorestframework.resources import ModelResource
-from djangorestframework.views import ListOrCreateModelView
-from djangorestframework.views import InstanceModelView
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.views import ListOrCreateModelView
+from devilry.thirdpartylibs.djangorestframework.views import InstanceModelView
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 from devilry.apps.core.models import RelatedExaminer
 from devilry.apps.core.models import RelatedStudent
 from .auth import IsPeriodAdmin

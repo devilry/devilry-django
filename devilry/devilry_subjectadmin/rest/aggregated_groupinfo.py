@@ -2,11 +2,11 @@ from datetime import datetime
 from math import log
 from django.core.urlresolvers import reverse
 from devilry.apps.core.models import AssignmentGroup
-from djangorestframework.resources import ModelResource
-from djangorestframework.views import ModelView
-from djangorestframework.mixins import InstanceMixin
-from djangorestframework.mixins import ReadModelMixin
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.views import ModelView
+from devilry.thirdpartylibs.djangorestframework.mixins import InstanceMixin
+from devilry.thirdpartylibs.djangorestframework.mixins import ReadModelMixin
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 
 from devilry.devilry_rest.serializehelpers import format_datetime, format_timedelta
 from devilry.devilry_subjectadmin.rest.auth import IsGroupAdmin

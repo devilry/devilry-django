@@ -1,4 +1,4 @@
-from djangorestframework.views import ModelView, InstanceModelView
+from devilry.thirdpartylibs.djangorestframework.views import ModelView, InstanceModelView
 
 from .mixins import BaseNodeInstanceRestMixin
 from .mixins import SelfdocumentingBaseNodeMixin

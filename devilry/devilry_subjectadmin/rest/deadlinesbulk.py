@@ -8,10 +8,10 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from devilry.devilry_rest.serializehelpers import format_datetime
 from devilry.devilry_rest.serializehelpers import format_timedelta
-from djangorestframework.views import View
-from djangorestframework.resources import FormResource, ModelResource
-from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.response import Response
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.resources import FormResource, ModelResource
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.response import Response
 
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import AssignmentGroup

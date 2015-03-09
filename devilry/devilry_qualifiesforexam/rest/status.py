@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404
-from djangorestframework.views import View
-from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.resources import FormResource
-from djangorestframework.response import ErrorResponse
-from djangorestframework.response import Response
-from djangorestframework import status as statuscodes
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.resources import FormResource
+from devilry.thirdpartylibs.djangorestframework.response import ErrorResponse
+from devilry.thirdpartylibs.djangorestframework.response import Response
+from devilry.thirdpartylibs.djangorestframework import status as statuscodes
 from django import forms
 from django.db import transaction
 from django.core.exceptions import ValidationError

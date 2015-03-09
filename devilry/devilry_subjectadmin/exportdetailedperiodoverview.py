@@ -76,7 +76,7 @@ class ExportDetailedPeriodOverviewBase(object):
             return [self.strformat_is_passing_grade(feedback.is_passing_grade)]
 
     def get_fullname_utf8(self, user):
-        full_name = user.get_profile().full_name
+        full_name = user.devilryuserprofile.full_name
         if full_name:
             return full_name.encode('utf-8')
         else:

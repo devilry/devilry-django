@@ -8,10 +8,10 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.utils.translation import ugettext as _
 
-from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.response import Response
-from djangorestframework.resources import ModelResource
-from djangorestframework.views import ListOrCreateModelView
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.response import Response
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.views import ListOrCreateModelView
 from devilry.apps.core.models.deliverytypes import NON_ELECTRONIC
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import AssignmentGroupTag

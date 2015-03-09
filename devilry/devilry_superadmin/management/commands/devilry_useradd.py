@@ -51,7 +51,7 @@ class Command(UserModCommand):
                 user.set_unusable_password()
             self.save_user(user, verbosity)
 
-            profile = user.get_profile()
+            profile = user.devilryuserprofile
             full_name = options.get('full_name')
             if full_name:
                 profile.full_name = unicode(full_name, self.inputencoding)

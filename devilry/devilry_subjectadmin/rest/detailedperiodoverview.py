@@ -1,5 +1,5 @@
-from djangorestframework.views import View
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 from devilry.apps.core.models import Period
 from devilry.devilry_subjectadmin.rest.auth import IsPeriodAdmin
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment

@@ -1,6 +1,6 @@
-from djangorestframework.views import ListModelView
-from djangorestframework.resources import ModelResource
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.views import ListModelView
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 
 from devilry.apps.core.models import Node
 

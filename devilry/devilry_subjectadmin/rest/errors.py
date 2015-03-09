@@ -2,8 +2,8 @@
 Exceptions for ``devilry_subjectadmin.rest``.
 """
 
-from djangorestframework.response import ErrorResponse
-from djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework.response import ErrorResponse
+from devilry.thirdpartylibs.djangorestframework import status
 
 
 

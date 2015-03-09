@@ -1,8 +1,8 @@
 from django import forms
 
-from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.views import View
-from djangorestframework.resources import FormResource
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.resources import FormResource
 from devilry.apps.core.models import AssignmentGroup
 from .auth import IsAssignmentAdmin
 from .errors import NotFoundError
