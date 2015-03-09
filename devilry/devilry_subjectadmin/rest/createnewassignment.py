@@ -3,10 +3,10 @@ from django.db import transaction
 from django import forms
 from django.core.exceptions import ValidationError
 
-from djangorestframework.resources import FormResource
-from djangorestframework.response import Response
-from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.resources import FormResource
+from devilry.thirdpartylibs.djangorestframework.response import Response
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.views import View
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Period
 from devilry.apps.core.models.deliverytypes import as_choices_tuple

@@ -1,8 +1,8 @@
 """
 Read only interface that allows assignment admins to list related users.
 """
-from djangorestframework.views import ListModelView
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.views import ListModelView
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 
 from devilry.apps.core.models import Assignment
 

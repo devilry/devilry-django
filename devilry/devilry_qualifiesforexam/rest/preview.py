@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404
 
-from djangorestframework.views import View
-from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.response import ErrorResponse
-from djangorestframework import status as statuscodes
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.response import ErrorResponse
+from devilry.thirdpartylibs.djangorestframework import status as statuscodes
 from devilry.devilry_qualifiesforexam.pluginhelpers import create_sessionkey
 from devilry.apps.core.models import Period
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment

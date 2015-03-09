@@ -1,8 +1,8 @@
 from django.db.models import Count
 
-from djangorestframework.views import InstanceModelView
-from djangorestframework.resources import ModelResource
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.views import InstanceModelView
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 from devilry.apps.core.models import Node, Assignment
 from devilry.devilry_subjectadmin.rest.auth import BaseIsAdmin, nodeadmin_required
 

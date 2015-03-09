@@ -1,5 +1,5 @@
-from djangorestframework.views import View
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 
 from devilry.apps.core.models.devilryuserprofile import user_is_nodeadmin
 from devilry.apps.core.models.devilryuserprofile import user_is_subjectadmin

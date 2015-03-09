@@ -1,5 +1,5 @@
 from devilry.apps.core.models import Subject
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 
 from .auth import IsSubjectAdmin
 from .auth import nodeadmin_required

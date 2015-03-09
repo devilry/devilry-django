@@ -1,7 +1,7 @@
 import numpy
 
-from djangorestframework.views import View
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 from devilry.devilry_subjectadmin.rest.auth import IsAssignmentAdmin
 from devilry.apps.core.models import Assignment
 from devilry.devilry_rest.serializehelpers import serialize_user

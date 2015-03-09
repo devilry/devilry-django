@@ -1,11 +1,11 @@
 from django.contrib.auth.models import User
 from django.db.models import Q
-from djangorestframework.views import ListModelView
-from djangorestframework.resources import ModelResource
-from djangorestframework.permissions import IsAuthenticated
-from djangorestframework.permissions import BasePermission
-from djangorestframework.response import ErrorResponse
-from djangorestframework import status
+from devilry.thirdpartylibs.djangorestframework.views import ListModelView
+from devilry.thirdpartylibs.djangorestframework.resources import ModelResource
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.permissions import BasePermission
+from devilry.thirdpartylibs.djangorestframework.response import ErrorResponse
+from devilry.thirdpartylibs.djangorestframework import status
 
 from devilry.apps.core.models.devilryuserprofile import user_is_admin_or_superadmin
 

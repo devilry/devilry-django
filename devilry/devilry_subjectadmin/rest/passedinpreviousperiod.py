@@ -1,9 +1,9 @@
 from django import forms
 from django.db import transaction
 
-from djangorestframework.views import View
-from djangorestframework.resources import FormResource
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.views import View
+from devilry.thirdpartylibs.djangorestframework.resources import FormResource
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 from devilry.utils.passed_in_previous_period import MarkAsPassedInPreviousPeriod
 from devilry.utils.passed_in_previous_period import MarkAsPassedInPreviousPeriodError
 from devilry.apps.core.models import Assignment, StaticFeedback

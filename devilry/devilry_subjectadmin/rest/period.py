@@ -1,7 +1,7 @@
 from django.core.urlresolvers import reverse
 from django.db.models import Count
 
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 from .auth import IsPeriodAdmin
 from .auth import subjectadmin_required
 from devilry.devilry_subjectadmin.rest.viewbase import BaseNodeInstanceModelView

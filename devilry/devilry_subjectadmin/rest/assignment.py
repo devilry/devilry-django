@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.db.models import Count
 
-from djangorestframework.permissions import IsAuthenticated
+from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Examiner
 from devilry.devilry_rest.serializehelpers import format_datetime
