@@ -29,7 +29,7 @@
 #djangorestframework==0.3.3
 #django_cradmin==1.0.0-beta.018
 
-#-e git://github.com/appressoas/django_cradmin.git#egg=django_cradmin
+-e git://github.com/appressoas/django_cradmin.git#egg=django_cradmin
 
 # Local modules
 -e .

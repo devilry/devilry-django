@@ -83,3 +83,16 @@ CELERY_EAGER_TRANSACTION = True
 # INSTALLED_APPS += ['djcelery_email']
 # EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 # CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+
+
+
+# Activate django_cradmin email-based login:
+# INSTALLED_APPS += [
+#     'django_cradmin.apps.cradmin_authenticate'
+#     ]
+# DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = True
+# AUTHENTICATION_BACKENDS = (
+#     'django_cradmin.apps.cradmin_authenticate.backends.EmailAuthBackend',
+# )
+# LOGIN_REDIRECT_URL = DEVILRY_URLPATH_PREFIX + '/'

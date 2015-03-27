@@ -5,7 +5,7 @@ from django import forms
 from django import http
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 def logout(request):
@@ -25,6 +25,9 @@ class LoginForm(forms.Form):
 
 
 def login(request):
+    if getattr(settings, 'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND', False):
+        return redirect('cradmin-authenticate-login')
+
     login_failed = False
 
     if request.POST:
@@ -62,3 +65,6 @@ def login(request):
                    'login_failed': login_failed,
                    'login_message': getattr(settings, 'DEVILRY_LOGIN_MESSAGE', None),
                    'formhelper': formhelper})
+
+
+
