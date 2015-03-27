@@ -21,6 +21,7 @@ def redirecto_to_show_delivery(request, assignmentgroupid):
 devilry_urls = (
     (r'^markup/', include('devilry.devilry_markup.urls')),
     (r'^authenticate/', include('devilry.devilry_authenticate.urls')),
+    (r'^resetpassword/', include('devilry.devilry_resetpassword.urls')),
     url(r'^cradmin_temporaryfileuploadstore/', include('django_cradmin.apps.cradmin_temporaryfileuploadstore.urls')),
 
     (r'^devilry_help/', include('devilry.devilry_help.urls')),
