@@ -84,34 +84,3 @@ CELERY_EAGER_TRANSACTION = True
 # EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 # CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-
-
-#############################################
-# Django Cradmin email-based login
-#############################################
-# Add the app
-INSTALLED_APPS += [
-    'django_cradmin.apps.cradmin_authenticate'
-    ]
-# Add the backend
-AUTHENTICATION_BACKENDS = (
-    'django_cradmin.apps.cradmin_authenticate.backends.EmailAuthBackend',
-)
-# Activate the EmailAuthBackend in cradmin
-DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = True
-# And set the login redirect url
-LOGIN_REDIRECT_URL = DEVILRY_URLPATH_PREFIX + '/'
-
-##############################################
-# Django Cradmin reset password
-##############################################
-# Add app(s) - the resetpassword app requires generic_token_with_metadata to track reset-password-hashes.
-INSTALLED_APPS += [
-    'django_cradmin.apps.cradmin_resetpassword',
-    'django_cradmin.apps.cradmin_generic_token_with_metadata'
-    ]
-# Set urls
-DJANGO_CRADMIN_FORGOTPASSWORD_URL = DEVILRY_URLPATH_PREFIX+'/resetpassword/begin'
-DJANGO_CRADMIN_RESETPASSWORD_FINISHED_REDIRECT_URL = LOGIN_REDIRECT_URL
-# Set the required field for sitename
-DJANGO_CRADMIN_SITENAME = 'Devilry dev'
