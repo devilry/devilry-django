@@ -88,6 +88,5 @@ CELERY_EAGER_TRANSACTION = True
 # Testing bulk-user-creation
 ##########
 INSTALLED_APPS += [
-    'devilry.devilry_bulkcreate_users',
-    'django.contrib.formtools'
+    'devilry.devilry_bulkcreate_users'
 ]
