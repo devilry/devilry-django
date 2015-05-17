@@ -120,5 +120,5 @@ class Command(BaseCommand):
                         transaction.rollback()
                         CommandError("ValidationError occurred while migrating:\n\t{}", migrate_candidate)
                     else:
-                        if options['verbosity']:
+                        if options['display_migrations']:
                             print 'migrated: {}'.format(migrate_candidate)
