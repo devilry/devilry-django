@@ -1,0 +1,51 @@
+{% extends 'django_cradmin/standalone-base.django.html' %}
+{% load i18n %}
+
+{% block body %}
+
+    <div class="container">
+        <div class="row">
+            <h2>Conflicting users:</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>E-mail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for username, email in conflicting_users.items %}
+                        <tr>
+                            <td>{{ username }}</td>
+                              <td>{{ email }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <h2>Valid users:</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>E-mail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for username, email in valid_users.items %}
+                        <tr>
+                            <td>{{ username }}</td>
+                            <td>{{ email }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+
+            <a href="{{ confirmation_url }}" class="btn btn-primary">Confirm</a>
+            <a href="{{ cancel_url }}" class="btn">Cancel</a>
+        </div>
+    </div>
+{% endblock body %}

@@ -1,0 +1,26 @@
+{% extends 'django_cradmin/standalone-base.django.html' %}
+{% load i18n %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h2>Created users:</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>E-mail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for username, email in created_users.items %}
+                        <tr>
+                            <td>{{ username }}</td>
+                            <td>{{ email }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock body %}
