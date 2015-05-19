@@ -13,6 +13,9 @@ urlpatterns = patterns('',
     ## For Trix-development
     #(r'^trix/', include('trix.urls')),
 
+    # Testing bulk-user-creation
+    (r'^devilry_bulkcreate_users/', include('devilry.devilry_bulkcreate_users.urls')),
+
     # Add the default Devilry urls
     *devilry_urls
 ) + staticfiles_urlpatterns()

@@ -48,6 +48,11 @@ INSTALLED_APPS = [
     'django_cradmin.apps.cradmin_temporaryfileuploadstore',
     'devilry.django_decoupled_docs',
 
+    'django_cradmin.apps.cradmin_authenticate',
+    'devilry.devilry_resetpassword',
+    'django_cradmin.apps.cradmin_resetpassword',
+    'django_cradmin.apps.cradmin_generic_token_with_metadata',
+
     'devilry.apps.core',
     'devilry.apps.gradeeditors',
 
@@ -82,6 +87,7 @@ INSTALLED_APPS = [
     'devilry.devilry_gradingsystemplugin_approved',
     'devilry.devilry_rest',
     'devilry.devilry_detektor',
+    'devilry.project.common'
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
@@ -102,6 +108,18 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
                       'django.contrib.messages.middleware.MessageMiddleware',
                       'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware']
 
+##################################################################################
+# Django Cradmin settings (Auth backend, forgotten password and sitename)
+##################################################################################
+AUTHENTICATION_BACKENDS = (
+    'django_cradmin.apps.cradmin_authenticate.backends.EmailAuthBackend',
+)
+
+DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = True
+DJANGO_CRADMIN_FORGOTPASSWORD_URL = '/devilry_resetpassword/begin'
+LOGIN_REDIRECT_URL = '/'
+DJANGO_CRADMIN_RESETPASSWORD_FINISHED_REDIRECT_URL = LOGIN_REDIRECT_URL
+DJANGO_CRADMIN_SITENAME = 'Devilry'
 
 ##################################################################################
 #

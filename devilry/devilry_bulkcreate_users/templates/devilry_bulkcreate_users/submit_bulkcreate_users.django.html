@@ -1,0 +1,11 @@
+{% extends 'django_cradmin/standalone-base.django.html' %}
+{% load i18n %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            {% load crispy_forms_tags %}
+            {% crispy form %}
+        </div>
+    </div>
+{% endblock body %}

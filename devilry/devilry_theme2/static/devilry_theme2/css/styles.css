@@ -8166,6 +8166,13 @@ a {
 ul#django_cradmin_messages {
   margin: 0;
 }
+#django_cradmin_messages_standalone_wrapper ul#django_cradmin_messages .alert {
+  font-size: 20px;
+}
+#django_cradmin_messages_standalone_wrapper ul#django_cradmin_messages .alert.alert-dismissable button.close,
+#django_cradmin_messages_standalone_wrapper ul#django_cradmin_messages .alert .django-cradmin-alert-loadspinner {
+  top: 1px;
+}
 nav#cradmin_menu {
   background-color: #232828;
 }
@@ -8648,6 +8655,14 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   .django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group {
     max-width: 800px;
   }
+}
+form .alert-block.alert-danger ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+form .alert-block.alert-danger ul li {
+  margin: 0;
 }
 table.table.cradmin-table-fluid {
   margin: 0;
@@ -9259,6 +9274,46 @@ table.table.cradmin-table-fluid tbody tr td {
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-bulkfileupload-remove-file-button:hover {
   color: #7d3231;
+}
+.django-cradmin-focusedpage-wrapper {
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  padding: 24px 30px;
+  text-align: left;
+}
+.django-cradmin-focusedpage-wrapper .page-header {
+  background: none;
+  color: #333333;
+  padding: 0 0 25px;
+}
+.django-cradmin-focusedpage-wrapper .page-header h1 {
+  margin: 0 0 5px 0;
+  font-size: 26px;
+}
+@media (min-width: 768px) {
+  .django-cradmin-focusedpage-wrapper {
+    margin-top: 110px;
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+    border: 1px solid #ccc;
+    width: 600px;
+  }
+}
+@media (min-width: 768px) {
+  .django-cradmin-focusedpage-wrapper.django-cradmin-focusedpage-wrapper-narrow {
+    width: 400px;
+  }
+}
+#cradmin_authenticate_login_forgotpasswordlink {
+  margin-top: 30px;
+}
+@media (min-width: 768px) {
+  #cradmin_authenticate_login_forgotpasswordlink {
+    float: right;
+    margin-top: -30px;
+  }
 }
 @media (min-width: 992px) {
   nav#cradmin_menu {
