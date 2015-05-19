@@ -21,7 +21,9 @@
     <option name="runNoReload" value="false" />
     <option name="useCustomRunCommand" value="false" />
     <option name="customRunCommand" value="" />
+    <RunnerSettings RunnerId="PyDebugRunner" />
     <RunnerSettings RunnerId="PythonRunner" />
+    <ConfigurationWrapper RunnerId="PyDebugRunner" />
     <ConfigurationWrapper RunnerId="PythonRunner" />
     <method />
   </configuration>
