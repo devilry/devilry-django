@@ -1,5 +1,6 @@
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.test import TestCase
+from django.utils.formats import date_format
 from django_cradmin.crinstance import reverse_cradmin_url
 import htmls
 from django_cradmin import crinstance
@@ -71,7 +72,9 @@ class TestRecentDeliveries(TestCase):
             'atestcourse - testperiod')
         self.assertEquals(
             selector.one('#objecttableview-table tbody tr td:nth-child(4)').alltext_normalized,
-            htmls.normalize_whitespace(naturaltime(deliverybuilder.delivery.time_of_delivery)))
+            htmls.normalize_whitespace(
+                naturaltime(deliverybuilder.delivery.time_of_delivery)
+                + date_format(deliverybuilder.delivery.time_of_delivery, "SHORT_DATETIME_FORMAT")))
 
     def test_render_no_feedback(self):
         AssignmentGroupBuilder.quickadd_ducku_duck1010_active_assignment1_group(self.testuser)\

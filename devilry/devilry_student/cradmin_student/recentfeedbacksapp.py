@@ -4,14 +4,14 @@ from django.conf import settings
 from django_cradmin import crapp
 
 from devilry.apps.core.models import Delivery
-from devilry.devilry_student.cradminextensions.columntypes import NaturaltimeColumn
+from devilry.devilry_student.cradminextensions.columntypes import NaturaltimeAndDateTimeColumn
 
 from .recentdeliveriesapp import DeliverySummaryWithAssignmentColumn
 from .recentdeliveriesapp import PeriodInfoColumn
 from .recentdeliveriesapp import PeriodInfoXsColumn
 
 
-class FeedbackSaveTimestampColumn(NaturaltimeColumn):
+class FeedbackSaveTimestampColumn(NaturaltimeAndDateTimeColumn):
     modelfield = 'save_timestamp'
     allcells_css_classes = ['hidden-xs']
     # orderingfield = 'last_feedback__save_timestamp'

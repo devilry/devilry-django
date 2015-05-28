@@ -4,7 +4,7 @@ from django_cradmin import crapp
 
 from devilry.apps.core.models import deliverytypes
 from devilry.apps.core.models import Delivery
-from devilry.devilry_student.cradminextensions.columntypes import DeliverySummaryColumn, NaturaltimeColumn
+from devilry.devilry_student.cradminextensions.columntypes import DeliverySummaryColumn, NaturaltimeAndDateTimeColumn
 
 
 class DeliverySummaryWithAssignmentColumn(DeliverySummaryColumn):
@@ -12,7 +12,7 @@ class DeliverySummaryWithAssignmentColumn(DeliverySummaryColumn):
         'delivery-summary-with-assignment-column.django.html'
 
 
-class TimeOfDeliveryColumn(NaturaltimeColumn):
+class TimeOfDeliveryColumn(NaturaltimeAndDateTimeColumn):
     modelfield = 'time_of_delivery'
     allcells_css_classes = ['hidden-xs']
     # column_width = '270px'
