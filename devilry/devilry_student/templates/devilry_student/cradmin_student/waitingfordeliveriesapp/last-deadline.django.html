@@ -1,7 +1,9 @@
 {% load humanize %}
+<div class="devilry-student-last-deadline">
 {% if in_the_future %}
-    <strong class="text-success">{{ deadline_datetime|naturaltime }}</strong>
+    <p><strong class="text-success">{{ deadline_datetime|naturaltime }}</strong></p>
 {% else %}
-    <strong class="text-warning">{{ deadline_datetime|naturaltime }}</strong>
+    <p><strong class="text-warning">{{ deadline_datetime|naturaltime }}</strong></p>
 {% endif %}
-{#<small class="text-muted">({{ deadline_datetime|date:"SHORT_DATETIME_FORMAT" }})</small>#}
+    <p>{{ deadline_datetime|date:"SHORT_DATETIME_FORMAT" }}</p>
+</div>

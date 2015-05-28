@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.utils.formats import date_format
 from django_cradmin.crinstance import reverse_cradmin_url
 import htmls
 
@@ -50,7 +51,7 @@ class TestWaitingForDeliveries(TestCase):
             selector.one('#objecttableview-table tbody tr td:nth-child(3)').alltext_normalized,
             'atestcourse - testperiod')
         self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(4)').alltext_normalized,
+            selector.one('#objecttableview-table tbody tr td:nth-child(4) .text-success').alltext_normalized,
             u'6 days, 23 hours from now')
         self.assertTrue(selector.exists('#objecttableview-table tbody tr td:nth-child(4) .text-success'))
 
@@ -115,5 +116,5 @@ class TestWaitingForDeliveries(TestCase):
         self.assertTrue(
             selector.exists('#objecttableview-table tbody tr td:nth-child(4) .text-warning'))
         self.assertEquals(
-            selector.one('#objecttableview-table tbody tr td:nth-child(4)').alltext_normalized,
+            selector.one('#objecttableview-table tbody tr td:nth-child(4) .text-warning').alltext_normalized,
             u'1 week ago')
