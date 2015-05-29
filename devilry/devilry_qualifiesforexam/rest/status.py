@@ -20,7 +20,6 @@ from devilry.devilry_qualifiesforexam.pluginhelpers import create_settings_sessi
 from devilry.devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification
 
 
-
 class StatusForm(forms.ModelForm):
     class Meta:
         model = Status
@@ -34,7 +33,8 @@ class StatusForm(forms.ModelForm):
 class StatusResource(FormResource):
     form = StatusForm
 
-#    def validate_request(self, data, files=None):
+
+# def validate_request(self, data, files=None):
 #        if data['notready_relatedstudentids'] and data['status'] != 'almostready':
 #            return
 #        return super(StatusResource, self).validate_request(data, files)
@@ -141,11 +141,11 @@ class StatusView(View):
         self._permissioncheck(period)
         with transaction.commit_on_success():
             status = Status(
-                period = period,
-                status = self.CONTENT['status'],
-                message = self.CONTENT['message'],
-                user = self.request.user,
-                plugin = self.CONTENT['plugin']
+                period=period,
+                status=self.CONTENT['status'],
+                message=self.CONTENT['message'],
+                user=self.request.user,
+                plugin=self.CONTENT['plugin']
             )
             status.full_clean()
             status.save()
@@ -158,20 +158,19 @@ class StatusView(View):
                     else:
                         qualifies = relatedstudent.id in passing_relatedstudentids
                     qualifies = QualifiesForFinalExam(
-                        relatedstudent = relatedstudent,
-                        status = status,
-                        qualifies = qualifies
+                        relatedstudent=relatedstudent,
+                        status=status,
+                        qualifies=qualifies
                     )
                     try:
                         qualifies.full_clean()
                     except ValidationError as e:
                         raise ErrorResponse(statuscodes.HTTP_400_BAD_REQUEST,
-                            {'details': ' '.join(e.messages)})
+                                            {'details': ' '.join(e.messages)})
                     qualifies.save()
                 if status.plugin and qualifiesforexam_plugins.has_post_statussave(status):
                     self._invoke_post_statussave(status)
         return Response(201, '')
-
 
     def _create_passing_relatedstudentids_map(self, status):
         out = {}
@@ -220,19 +219,20 @@ class StatusView(View):
             period = qry.get(id=id)
         except Period.DoesNotExist:
             raise ErrorResponse(statuscodes.HTTP_404_NOT_FOUND,
-                {'detail': 'The period with ID {id} does not exist'.format(id=id)})
+                                {'detail': 'The period with ID {id} does not exist'.format(id=id)})
 
         self._permissioncheck(period)
 
         statusQry = period.qualifiedforexams_status.all()
         if statusQry.count() == 0:
             raise ErrorResponse(statuscodes.HTTP_404_NOT_FOUND,
-                {'detail': 'The period has no statuses'})
+                                {'detail': 'The period has no statuses'})
         statusQry = statusQry.select_related(
-                'period', 'user', 'user__devilryuserprofile')
+            'period', 'user', 'user__devilryuserprofile')
 
         grouper = GroupsGroupedByRelatedStudentAndAssignment(period)
         out = self._serialize_period(period)
+
         out.update({
             'perioddata': grouper.serialize(),
             'statuses': [self._serialize_status(status) for status in statusQry]

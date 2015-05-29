@@ -23,7 +23,7 @@ class QualifiesBasedOnManualSelectView(BaseAppView, QualifiesForExamPluginViewMi
 
     def post(self, request):
         try:
-            self.get_plugin_input_and_authenticate() # set self.periodid and self.pluginsessionid
+            self.get_plugin_input_and_authenticate()  # set self.periodid and self.pluginsessionid
         except PermissionDenied:
             return HttpResponseForbidden()
 
@@ -40,7 +40,7 @@ class QualifiesBasedOnManualSelectView(BaseAppView, QualifiesForExamPluginViewMi
 
     def get(self, request):
         try:
-            self.get_plugin_input_and_authenticate() # set self.periodid and self.pluginsessionid
+            self.get_plugin_input_and_authenticate()  # set self.periodid and self.pluginsessionid
         except PermissionDenied:
             return HttpResponseForbidden()
         return super(QualifiesBasedOnManualSelectView, self).get(request)

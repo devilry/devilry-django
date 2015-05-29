@@ -44,9 +44,12 @@ class Registry(object):
         item = self.items[status.plugin]
         generator = item['pluginsettings_summary_generator']
         if generator:
-            return generator(status)
-        else:
-            return None
+            pluginsettings_summary = generator(status)
+            if pluginsettings_summary is not None:
+                pluginsettings_summary = unicode(pluginsettings_summary)
+                return pluginsettings_summary
+
+        return None
 
     def get_title(self, pluginid):
         return self.items[pluginid]['title']
@@ -56,5 +59,6 @@ class Registry(object):
 
     def unregister(self, pluginid):
         del self.items[pluginid]
+
 
 qualifiesforexam_plugins = Registry()

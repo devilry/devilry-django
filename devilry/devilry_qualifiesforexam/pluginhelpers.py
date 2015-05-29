@@ -26,7 +26,7 @@ class PreviewData(object):
 
     def serialize(self):
         return {
-            'passing_relatedstudentids': self.passing_relatedstudentids
+            'passing_relatedstudentids': list(self.passing_relatedstudentids)
         }
 
 class PluginResultsFailedVerification(Exception):
