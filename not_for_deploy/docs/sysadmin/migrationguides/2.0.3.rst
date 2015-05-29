@@ -1,6 +1,9 @@
 =============================
-Migrating from 2.0.1 to 2.0.2
+Migrating from 2.0.1 to 2.0.3
 =============================
+
+.. note:: We skipped 2.0.2 because of a forgotten update to version.json.
+
 
 Backup database and files
 #########################
@@ -11,5 +14,5 @@ Update devilry
 ##############
 Follow the :doc:`Update <../update>` guide, and set the version in requirements.txt to::
 
-    devilry-django==2.0.2
+    devilry==2.0.3
 
