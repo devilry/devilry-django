@@ -9998,6 +9998,19 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .devilry-student-delivery-summarycolumn p.devilry-student-delivery-summarycolumn-no-feedback {
   color: #777777;
 }
+.devilry-student-naturaltime-and-datetime-column p,
+.devilry-student-last-deadline p {
+  margin: 0;
+}
+.devilry-student-naturaltime-and-datetime-column p:first-child,
+.devilry-student-last-deadline p:first-child {
+  margin-bottom: 5px;
+}
+.devilry-student-naturaltime-and-datetime-column p:last-child,
+.devilry-student-last-deadline p:last-child {
+  font-size: 14px;
+  color: #777777;
+}
 #devilry_search_view form .form-group {
   margin-bottom: 0;
 }
