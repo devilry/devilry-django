@@ -33,7 +33,7 @@ class TestAboutMeView(TestCase):
         with self.settings(LANGUAGES=[('en', 'English'), ('nb', 'Norwegian')]):
             html = self._getas(self.testuserbuilder.user).content
             self.assertTrue(cssExists(html,
-                '#devilry_frontpage_languageselect #devilry_change_language_form'))
+                '#devilry_change_language_form'))
             self.assertEquals(
                 cssGet(html, '#devilry_change_language_form option[value="en"]')['selected'],
                 'selected')
@@ -43,8 +43,7 @@ class TestAboutMeView(TestCase):
                 LANGUAGES=[('en', 'English'), ('nb', 'Norwegian')],
                 LANGUAGE_CODE='nb'):
             html = self._getas(self.testuserbuilder.user).content
-            self.assertTrue(cssExists(html,
-                '#devilry_frontpage_languageselect #devilry_change_language_form'))
+            self.assertTrue(cssExists(html, '#devilry_change_language_form'))
             self.assertEquals(
                 cssGet(html, '#devilry_change_language_form option[value="nb"]')['selected'],
                 'selected')
