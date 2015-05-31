@@ -10114,9 +10114,6 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   background-color: #ff9900;
 }
 #devilry_frontpage_roleselect {
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
   padding-bottom: 15px;
 }
 #devilry_frontpage_roleselect h1 {
