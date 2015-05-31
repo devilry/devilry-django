@@ -1,4 +1,4 @@
-{% extends "django_cradmin/standalone-base.django.html" %}
+{% extends "django_cradmin/layouts/standalone/focused.django.html" %}
 {% load crispy_forms_tags %}
 {% load i18n %}
 
@@ -6,19 +6,16 @@
     {% trans "About" %}
 {% endblock title %}
 
-{% block body %}
-<div class="page-header page-header-with-subheader">
-    <div class="container">
-        <h1>{% trans "About" %}</h1>
-        <p class="subheader">
-            {% trans "Below you can see information about your profile that is stored in Devilry. Report if the" %}
-            <a href="{{ wrong_info_url }}">{% trans " information is wrong" %}</a>.
-        </p>
-    </div>
-</div>
+{% block pageheader-inner %}
+    <h1>{% trans "About" %}</h1>
+    <p class="text-muted">
+        {% trans "Below you can see information about your profile that is stored in Devilry. Report if the" %}
+        <a href="{{ wrong_info_url }}">{% trans " information is wrong" %}</a>.
+    </p>
+{% endblock pageheader-inner %}
 
-<div class="container django-cradmin-container-focus">
-    <table class="table" style="margin-top: 20px;">
+{% block content %}
+    <table class="table">
         <tr>
             <th style="width: 150px;">{% trans "Name" %}:</th>
             <td> {{ user.devilryuserprofile.full_name }} </td>
@@ -52,5 +49,14 @@
             <td> {{ user.last_login|date:"SHORT_DATETIME_FORMAT" }} </td>
         </tr>
     </table>
-</div>
+{% endblock content %}
+
+{% block body %}
+    {% if DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE %}
+        {% include DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE %}
+    {% endif %}
+    {{ block.super }}
+    {% if DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE %}
+        {% include DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE %}
+    {% endif %}
 {% endblock body %}

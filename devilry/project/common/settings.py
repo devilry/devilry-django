@@ -234,6 +234,24 @@ DEVILRY_ORGANIZATION_SPECIFIC_DOCUMENTATION_TEXT = None
 #: The documentation version to use.
 DEVILRY_DOCUMENTATION_VERSION = 'latest'
 
+#: A Django template to include at the top of the frontpage (below the navbar, but above the main content).
+DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE = None
+
+#: A Django template to include at the bottom of the frontpage.
+DEVILRY_FRONTPAGE_FOOTER_INCLUDE_TEMPLATE = None
+
+#: A Django template to include at the top of the help page (below the navbar, but above the main content).
+DEVILRY_HELP_PAGE_HEADER_INCLUDE_TEMPLATE = None
+
+#: A Django template to include at the bottom of the help page.
+DEVILRY_HELP_PAGE_FOOTER_INCLUDE_TEMPLATE = None
+
+#: A Django template to include at the top of the profile page (below the navbar, but above the main content).
+DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE = None
+
+#: A Django template to include at the bottom of the profile page.
+DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE = None
+
 
 #: Django apps that override the Devilry javascript translations (which is most
 #: of the Devilry user interface).

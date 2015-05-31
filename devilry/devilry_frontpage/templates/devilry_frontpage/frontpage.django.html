@@ -63,4 +63,16 @@
             {% trans "I should have had more roles" %}
         </a>
     </div>
+
 {% endblock content %}
+
+
+{% block body %}
+    {% if DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE %}
+        {% include DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE %}
+    {% endif %}
+    {{ block.super }}
+    {% if DEVILRY_FRONTPAGE_FOOTER_INCLUDE_TEMPLATE %}
+        {% include DEVILRY_FRONTPAGE_FOOTER_INCLUDE_TEMPLATE %}
+    {% endif %}
+{% endblock body %}
