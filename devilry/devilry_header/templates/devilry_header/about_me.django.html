@@ -8,7 +8,7 @@
 
 {% block body %}
 <div class="page-header page-header-with-subheader">
-    <div class="container-fluid">
+    <div class="container">
         <h1>{% trans "About" %}</h1>
         <p class="subheader">
             {% trans "Below you can see information about your profile that is stored in Devilry. Report if the" %}
@@ -17,30 +17,40 @@
     </div>
 </div>
 
-<div class="container-fluid django-cradmin-container-fluid-focus">
-    <table class="table">
+<div class="container django-cradmin-container-focus">
+    <table class="table" style="margin-top: 20px;">
         <tr>
-            <td> {% trans "Name" %} </td>
+            <th style="width: 150px;">{% trans "Name" %}:</th>
             <td> {{ user.devilryuserprofile.full_name }} </td>
         </tr>
         <tr>
-            <td> {% trans "Email Address" %} </td>
+            <th>{% trans "Email Address" %}:</th>
             <td> {{ user.email }} </td>
         </tr>
+        {% if not DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND %}
+            <tr>
+                <th>{% trans "Username" %}:</th>
+                <td> {{ user.username }} </td>
+            </tr>
+        {% endif %}
+        {% if DJANGO_CRADMIN_FORGOTPASSWORD_URL %}
+            <tr>
+                <th>{% trans "Password" %}:</th>
+                <td>
+                    <a href="{{ DJANGO_CRADMIN_FORGOTPASSWORD_URL }}">{% trans "Reset password" %}</a>
+                </td>
+            </tr>
+        {% endif %}
         <tr>
-            <td> {% trans "Username" %} </td>
-            <td> {{ user.username }} </td>
+            <th>{% trans "Language" %}:</th>
+            <td>
+                {% include "devilry_header/includes/change_language.django.html" %}
+            </td>
         </tr>
         <tr>
-            <td> {% trans "Last login" %} </td>
-            <td> {{ user.last_login }} </td>
+            <th>{% trans "Last login" %}:</th>
+            <td> {{ user.last_login|date:"SHORT_DATETIME_FORMAT" }} </td>
         </tr>
     </table>
-
-
-    <h2>{% trans "Language?" %}</h2>
-    <div id="devilry_frontpage_languageselect">
-        {% include "devilry_header/includes/change_language.django.html" %}
-    </div>
 </div>
 {% endblock body %}
