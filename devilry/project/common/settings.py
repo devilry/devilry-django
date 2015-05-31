@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'extjs4',
     'haystack',
 
+    'devilry.devilry_bulkcreate_users'
     'devilry.devilry_cradmin',
     'django_cradmin',
     'django_cradmin.apps.cradmin_temporaryfileuploadstore',
