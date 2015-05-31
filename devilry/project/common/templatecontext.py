@@ -1,10 +1,12 @@
 from django.conf import settings
+import devilry
 
 from devilry.devilry_settings.views import urlsetting_or_unsetview
 
 
 def template_variables(request):
     return {
+        'DEVILRY_VERSION': devilry.__version__,
         'DEVILRY_STATIC_URL': settings.DEVILRY_STATIC_URL,
         'DEVILRY_URLPATH_PREFIX': settings.DEVILRY_URLPATH_PREFIX,
         'DEVILRY_LOGOUT_URL': settings.DEVILRY_LOGOUT_URL,
