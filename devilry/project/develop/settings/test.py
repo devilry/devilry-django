@@ -15,6 +15,13 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+# We need to use this because loads of tests uses username and password to login
+DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = False
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'django_cradmin.apps.cradmin_authenticate.backends.EmailAuthBackend',
+)
+
 # Ensures we are testing against the default translation strings.
 DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = []
 

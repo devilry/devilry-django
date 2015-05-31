@@ -8299,7 +8299,7 @@ nav#cradmin_menu .cradmin_menumobileheader .cradmin_menutoggle .badge {
   background-color: #fafafa;
   color: #333333;
   border: none;
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: none;
 }
 .page-header .fa.cradmin-page-header-icon,
 .page-header h1 {
