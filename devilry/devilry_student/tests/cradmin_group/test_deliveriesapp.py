@@ -39,8 +39,8 @@ class TestDeliveryListView(TestCase):
         response = self._mock_get_request()
         response.render()
         selector = htmls.S(response.content)
-        self.assertTrue(selector.exists('#objecttableview-table'))
-        self.assertFalse(selector.exists('#objecttableview-table tbody tr'))
+        self.assertFalse(selector.exists('#objecttableview-table'))
+        self.assertTrue(selector.exists('#objecttableview-no-items-message'))
 
     def test_list_has_deliveries(self):
         deadlinebuilder = self.groupbuilder.add_deadline_in_x_weeks(weeks=1)
