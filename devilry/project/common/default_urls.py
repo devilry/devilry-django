@@ -39,6 +39,7 @@ devilry_urls = (
     (r'^devilry_search/', include('devilry.devilry_search.urls')),
     (r'^devilry_header/', include('devilry.devilry_header.urls')),
     ('^devilry_nodeadmin/', include('devilry.devilry_nodeadmin.urls')),
+    (r'^devilry_bulkcreate_users/', include('devilry.devilry_bulkcreate_users.urls')),
     (r'^devilry_qualifiesforexam/', include('devilry.devilry_qualifiesforexam.urls')),
     (r'^devilry_qualifiesforexam_approved/', include('devilry.devilry_qualifiesforexam_approved.urls')),
     (r'^devilry_qualifiesforexam_points/', include('devilry.devilry_qualifiesforexam_points.urls')),
