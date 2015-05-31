@@ -83,10 +83,3 @@ CELERY_EAGER_TRANSACTION = True
 # INSTALLED_APPS += ['djcelery_email']
 # EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 # CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-##########
-# Testing bulk-user-creation
-##########
-INSTALLED_APPS += [
-    'devilry.devilry_bulkcreate_users'
-]
