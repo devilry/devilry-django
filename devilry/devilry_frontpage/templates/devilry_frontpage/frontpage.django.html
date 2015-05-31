@@ -6,12 +6,14 @@
     {% trans "Devilry frontpage" %}
 {% endblock title %}
 
-{% block body %}
-    <div class="container">
+{% block pageheader-inner %}
+    <h1>{% trans "Choose your role" %}</h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
         <h1 class="sr-only">{% trans "Devilry frontpage" %}</h1>
 
         <div id="devilry_frontpage_roleselect">
-            <h1>{% trans "Choose your role" %}</h1>
 {#            <p class="devilry-frontpage-roleselect-intro">#}
 {#                {% trans "Each distinct area of responsibilty, or role, in Devilry has its own user interface. Please choose your role." %}#}
 {#            </p>#}
@@ -61,10 +63,4 @@
                 {% trans "I should have had more roles" %}
             </a>
         </div>
-
-{#        <h2>{% trans "Need help?" %}</h2>#}
-{#        <div id="devilry_frontpage_helplinks">#}
-{#            {% include "devilry_frontpage/includes/help.django.html" %}#}
-{#        </div>#}
-    </div>
-{% endblock body %}
+{% endblock content %}
