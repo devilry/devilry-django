@@ -54,6 +54,7 @@ class AllPeriodsListView(studentobjecttable.StudentObjectTableView):
     columns = [
         PeriodInfoColumn,
     ]
+    hide_column_headers = True
 
     def get_queryset_for_role(self, period):
         return Period.objects\
