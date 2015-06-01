@@ -46,6 +46,10 @@ class FeedbackDraft(models.Model):
         blank=False, null=False,
         help_text='Time when this feedback was saved. Since FeedbackDraft is immutable, this never changes.')
 
+    def __unicode__(self):
+        return u'FeedbackDraft#{} for Delivery#{} ({} - {})'.format(
+            self.id, self.delivery_id, self.saved_by, self.save_timestamp)
+
     def clean(self):
         if self.id is None:  # If creating a new FeedbackDraft
             if not self.published:
