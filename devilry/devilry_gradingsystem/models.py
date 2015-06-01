@@ -50,13 +50,31 @@ class FeedbackDraft(models.Model):
         return u'FeedbackDraft#{} for Delivery#{} ({} - {})'.format(
             self.id, self.delivery_id, self.saved_by, self.save_timestamp)
 
+    @classmethod
+    def __query_last_feedbackdraft_anyowner(cls, delivery):
+        return delivery.devilry_gradingsystem_feedbackdraft_set.first()
+
+    @classmethod
+    def get_last_feedbackdraft(cls, assignment, delivery, user):
+        """
+        Get the last feedback draft accessible by the given user for the given ``delivery``.
+
+        The ``assignment`` is required for performance reasons since it is usually
+        available in the context where you use this method, and should not require
+        an extra query to lookup.
+        """
+        queryset = cls.objects.filter(delivery=delivery)
+        if not assignment.feedback_workflow_allows_shared_feedback_drafts():
+            queryset = queryset.filter(saved_by=user)
+        return queryset.order_by('-save_timestamp').first()
+
     def clean(self):
         if self.id is None:  # If creating a new FeedbackDraft
             if not self.published:
                 self.staticfeedback = None  # We should NEVER set staticfeedback if published is not True
         else:
             raise ValidationError('FeedbackDraft is immutable (it can not be changed).')
-        if self.published and self.staticfeedack is None:
+        if self.published and self.staticfeedback is None:
             raise ValidationError('Published FeedbackDraft requires a StaticFeedback.')
 
     def save(self, *args, **kwargs):
@@ -83,6 +101,21 @@ def feedback_draft_file_upload_to(instance, filename):
         extension=extension)
 
 
+class FeedbackDraftFileManager(models.Manager):
+    def filter_accessible_files(self, assignment, delivery, user):
+        """
+        Get the feedback draft files accessible by the given user for the given ``delivery``.
+
+        The ``assignment`` is required for performance reasons since it is usually
+        available in the context where you use this method, and should not require
+        an extra query to lookup.
+        """
+        queryset = self.get_queryset().filter(delivery=delivery)
+        if not assignment.feedback_workflow_allows_shared_feedback_drafts():
+            queryset = queryset.filter(saved_by=user)
+        return queryset
+
+
 class FeedbackDraftFile(models.Model):
     """
     A file that is part of the current draft.
@@ -99,6 +132,8 @@ class FeedbackDraftFile(models.Model):
     file = models.FileField(
         upload_to=feedback_draft_file_upload_to
     )
+
+    objects = FeedbackDraftFileManager()
 
     def get_download_url(self):
         return reverse('devilry_gradingsystem_feedbackdraftfile', kwargs={

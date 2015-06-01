@@ -379,6 +379,13 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             and (self.students_can_not_create_groups_after is None
                  or self.students_can_not_create_groups_after > datetime.now())
 
+    def feedback_workflow_allows_shared_feedback_drafts(self):
+        """
+        Return ``True`` if the :attr:`feedback_workflow` allows examiners to access
+        each others feedback drafts.
+        """
+        return self.feedback_workflow == 'trusted-cooperative-feedback-editing'
+
     def is_electronic(self):
         """
         Returns ``True`` if :attr:`.deliverytypes` is ``0`` (electric).
