@@ -58,7 +58,8 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
         group2 = group2builder.group
         groupnames = [path.split('/')[1] for path in outfile.namelist()]
         self.assertEquals(set(groupnames),
-                          {'1 (groupid={})'.format(group1.id), '2 (groupid={})'.format(group2.id)})
+                          {'{groupid} (groupid={groupid})'.format(groupid=group1.id),
+                           '{groupid} (groupid={groupid})'.format(groupid=group2.id)})
 
     def test_format_without_candidates(self):
         group1builder = self.assignmentbuilder.add_group(examiners=[self.examiner1])
@@ -68,8 +69,9 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
         response = self._getas('examiner1', self.assignmentbuilder.assignment.id)
         outfile = zipfile.ZipFile(StringIO(response.content), 'r')
         group1 = group1builder.group
-        self.assertEquals(outfile.namelist()[0],
-            'duck1010.active.assignment1/1 (groupid={groupid})/deadline-{deadline}/delivery-001/helloworld.txt'.format(
+        self.assertEquals(
+            outfile.namelist()[0],
+            'duck1010.active.assignment1/{groupid} (groupid={groupid})/deadline-{deadline}/delivery-001/helloworld.txt'.format(
                 groupid=group1.id,
                 deadline=group1.last_deadline.deadline.strftime(DownloadAllDeliveriesOnAssignmentView.DEADLINE_FORMAT)
             )

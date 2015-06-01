@@ -82,7 +82,7 @@ class TestProjectGroupOverviewView(TestCase):
 
         html = self._getas(groupbuilder.group.id, alreadyingroupuser1).content
         send_to_options = [e.text.strip() for e in cssFind(html, '#id_sent_to option')]
-        self.assertEquals(send_to_options, ['', 'matchuser1', 'Match User Two'])
+        self.assertEquals(set(send_to_options), {'', 'matchuser1', 'Match User Two'})
 
     def test_render_waiting_for_response_from(self):
         inviteuser1 = UserBuilder('inviteuser1').user

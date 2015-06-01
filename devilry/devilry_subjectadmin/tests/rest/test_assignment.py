@@ -111,7 +111,7 @@ class TestRestListOrCreateAssignmentRest(TestCase):
                                             'scale_points_percent': 100,
                                             'deadline_handling': 0,
                                             'delivery_types': 0,
-                                            'parentnode': self.testhelper.duck2000.id})
+                                            'parentnode': self.testhelper.duck2000_someperiod.id})
         self.assertEquals(response.status_code, 201)
         created = Assignment.objects.get(id=content['id'])
         admins = created.admins.all()
@@ -293,14 +293,14 @@ class TestRestInstanceAssignmentRest(TestCase):
                 'scale_points_percent': 80,
                 'deadline_handling': 0,
                 'delivery_types': 0,
-                'parentnode': 1}
+                'parentnode': self.testhelper.duck2000_someperiod.id}
         content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_someperiod_first.id),
                                                  data=data)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(content['id'], self.testhelper.duck2000_someperiod_first.id)
         self.assertEquals(content['short_name'], self.testhelper.duck2000.short_name)
         self.assertEquals(content['long_name'], 'Updated')
-        self.assertEquals(content['parentnode'], 1)
+        self.assertEquals(content['parentnode'], self.testhelper.duck2000_someperiod.id)
         self.assertEquals(content['scale_points_percent'], 80)
         self.assertEquals(content['deadline_handling'], 0)
         self.assertEquals(content['delivery_types'], 0)
@@ -336,7 +336,7 @@ class TestRestInstanceAssignmentRest(TestCase):
                 'scale_points_percent': 80,
                 'deadline_handling': 0,
                 'delivery_types': 0,
-                'parentnode': 1}
+                'parentnode': self.testhelper.duck2000_someperiod.id}
         content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_someperiod_first.id),
                                                  data=data)
         self.assertEquals(response.status_code, 200)

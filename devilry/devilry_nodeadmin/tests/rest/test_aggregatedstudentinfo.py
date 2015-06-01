@@ -32,7 +32,8 @@ class TestRestAggregatedStudentInfo(TestCase):
 
         user = {u'username': u'student1', 
                 u'displayname': u'student1', 
-                u'id': 2, u'full_name': None, 
+                u'id': self.testhelper.student1.id,
+                u'full_name': None,
                 u'email': u'student1@example.com'} 
         self.assertEquals(content['user'], user)
 
