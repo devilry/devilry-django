@@ -252,6 +252,9 @@ DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE = None
 #: A Django template to include at the bottom of the profile page.
 DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE = None
 
+#: Enable/disable creating zip-files on demand. This requires a traditional
+#: file system.
+DEVILRY_ENABLE_REALTIME_ZIPFILE_CREATION = True
 
 #: Django apps that override the Devilry javascript translations (which is most
 #: of the Devilry user interface).

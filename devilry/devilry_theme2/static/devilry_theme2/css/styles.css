@@ -9877,6 +9877,9 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 .delivery_files {
   margin-bottom: 22px;
 }
+.delivery_files #devilry_examiner_singledelivery_download_all_button {
+  margin-right: 10px;
+}
 .delivery_files ul {
   margin: 0;
   padding: 0;
@@ -9896,6 +9899,9 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
 }
 .delivery_files ul li:last-child:after {
   content: '';
+}
+.delivery_files ul li:first-child a {
+  margin-left: 0;
 }
 #devilry_examiner_feedback_rendered_view.devilry-feedback-rendered-view {
   padding: 15px 0;

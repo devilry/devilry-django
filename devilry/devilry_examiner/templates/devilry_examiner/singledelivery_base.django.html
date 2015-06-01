@@ -100,16 +100,21 @@ valid_grading_system_setup
                 <div class="delivery_files">
                     {% if filemetacount == 1 %}
                         {% for filemeta in delivery.filemetas.all %}
-                            <a href="{% url 'devilry-delivery-file-download' filemeta.id %}" class="btn btn-default">
+                            <a href="{% url 'devilry-delivery-file-download' filemeta.id %}"
+                                    class="btn btn-default">
                                 <i class="fa fa-download"></i>
                                 {{ filemeta.filename }}
                             </a>
                         {% endfor %}
                     {% else %}
-                        <a href="{% url 'devilry-delivery-download-all-zip' delivery.id %}" class="btn btn-default">
-                            <i class="fa fa-download"></i>
-                            {% trans "Download files" %}
-                        </a>
+                        {% if DEVILRY_ENABLE_REALTIME_ZIPFILE_CREATION %}
+                            <a href="{% url 'devilry-delivery-download-all-zip' delivery.id %}"
+                                    class="btn btn-default"
+                                    id="devilry_examiner_singledelivery_download_all_button">
+                                <i class="fa fa-download"></i>
+                                {% trans "Download files" %}
+                            </a>
+                        {% endif %}
                         {% spaceless %}
                             <ul>
                                 {% for filemeta in delivery.filemetas.all %}
