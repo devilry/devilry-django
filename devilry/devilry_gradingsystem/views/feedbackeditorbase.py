@@ -1,5 +1,7 @@
 from crispy_forms import layout
+from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.template import defaultfilters
 from django.views.generic.detail import SingleObjectMixin
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -8,6 +10,7 @@ from django import forms
 from django.views.generic import FormView
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
+from devilry.apps.core.templatetags.devilry_core_tags import devilry_user_displayname
 from devilry.devilry_gradingsystem.widgets.filewidget import FeedbackEditorFileWidget
 
 from devilry.devilry_markup.parse_markdown import markdown_full
@@ -52,6 +55,11 @@ class FeedbackEditorSingleDeliveryObjectMixin(SingleObjectMixin):
 
     def get(self, *args, **kwargs):
         self._setup_common_data()
+        if self.last_draft:
+            messages.info(self.request, _('Loaded draft saved %(save_datetime)s by %(user)s.') % {
+                'user': devilry_user_displayname(self.last_draft.saved_by),
+                'save_datetime': defaultfilters.date(self.last_draft.save_timestamp, 'SHORT_DATETIME_FORMAT'),
+            })
         if not self.assignment.has_valid_grading_setup():
             return redirect('devilry_examiner_singledeliveryview', deliveryid=self.delivery.id)
         return super(FeedbackEditorSingleDeliveryObjectMixin, self).get(*args, **kwargs)

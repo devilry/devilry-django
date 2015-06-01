@@ -3,6 +3,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 import htmls
 
 from devilry.apps.core.models import StaticFeedback
+from devilry.apps.core.templatetags.devilry_core_tags import devilry_user_displayname
 from devilry.devilry_gradingsystem.models import FeedbackDraftFile, FeedbackDraft
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
@@ -49,6 +50,7 @@ class FeedbackEditorViewTestMixin(object):
         self.assertEquals(response.status_code, 200)
         selector = htmls.S(response.content)
         self.assertEquals(selector.one('#id_feedbacktext').alltext_normalized, '')
+        self.assertFalse(selector.exists('#django_cradmin_messages'))
 
     def test_get_render_has_feedback_draft(self):
         FeedbackDraft.objects.create(
@@ -59,6 +61,12 @@ class FeedbackEditorViewTestMixin(object):
         response = self.get_as(self.get_testexaminer())
         selector = htmls.S(response.content)
         self.assertEquals(selector.one('#id_feedbacktext').alltext_normalized, 'Test feedback')
+        self.assertIn(
+            'Loaded draft saved',
+            selector.one('#django_cradmin_messages .alert-info').alltext_normalized)
+        self.assertIn(
+            devilry_user_displayname(self.get_testexaminer()),
+            selector.one('#django_cradmin_messages .alert-info').alltext_normalized)
 
     def test_get_render_other_examiner_has_feedback_draft_no_draft_sharing(self):
         FeedbackDraft.objects.create(
