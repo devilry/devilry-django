@@ -353,7 +353,11 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                   'Examiners share the same feedback drafts, which means that one examiner can '
                   'start writing feedback and another can continue. '
                   'When an administrator is notified by their examiners that they have finished '
-                  'correcting, they can publish the drafts via the administrator UI.')),
+                  'correcting, they can publish the drafts via the administrator UI. '
+                  'If you want one examiner to do the bulk of the work, and just let another '
+                  'examiner read it over and adjust the feedback, make the first examiner '
+                  'the only examiner, and reassign the students to the other examiner when '
+                  'the first examiner is done.')),
         )
     )
 
