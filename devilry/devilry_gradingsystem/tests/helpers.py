@@ -1,7 +1,9 @@
 from django.core.files.base import ContentFile
 from django.core.files.uploadedfile import SimpleUploadedFile
+import htmls
+
 from devilry.apps.core.models import StaticFeedback
-from devilry.devilry_gradingsystem.models import FeedbackDraftFile
+from devilry.devilry_gradingsystem.models import FeedbackDraftFile, FeedbackDraft
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
 
@@ -41,6 +43,46 @@ class FeedbackEditorViewTestMixin(object):
         See :meth:`.get_empty_delivery_with_testexaminer_as_examiner`.
         """
         raise NotImplementedError()
+
+    def test_get_render_no_feedback_draft(self):
+        response = self.get_as(self.get_testexaminer())
+        self.assertEquals(response.status_code, 200)
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.one('#id_feedbacktext').alltext_normalized, '')
+
+    def test_get_render_has_feedback_draft(self):
+        FeedbackDraft.objects.create(
+            delivery=self.get_empty_delivery_with_testexaminer_as_examiner(),
+            feedbacktext_raw='Test feedback',
+            points=30,
+            saved_by=self.get_testexaminer())
+        response = self.get_as(self.get_testexaminer())
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.one('#id_feedbacktext').alltext_normalized, 'Test feedback')
+
+    def test_get_render_other_examiner_has_feedback_draft_no_draft_sharing(self):
+        FeedbackDraft.objects.create(
+            delivery=self.get_empty_delivery_with_testexaminer_as_examiner(),
+            feedbacktext_raw='Test feedback',
+            points=30,
+            saved_by=UserBuilder('someotheruser').user)
+        response = self.get_as(self.get_testexaminer())
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.one('#id_feedbacktext').alltext_normalized, '')
+
+    def test_get_render_other_examiner_has_feedback_draft_draft_sharing(self):
+        testdelivery = self.get_empty_delivery_with_testexaminer_as_examiner()
+        assignment = testdelivery.assignment
+        assignment.feedback_workflow = 'trusted-cooperative-feedback-editing'
+        assignment.save()
+        FeedbackDraft.objects.create(
+            delivery=testdelivery,
+            feedbacktext_raw='Test feedback',
+            points=30,
+            saved_by=UserBuilder('someotheruser').user)
+        response = self.get_as(self.get_testexaminer())
+        selector = htmls.S(response.content)
+        self.assertEquals(selector.one('#id_feedbacktext').alltext_normalized, 'Test feedback')
 
     def test_post_with_feedbackfile_no_existing_file(self):
         delivery = self.get_empty_delivery_with_testexaminer_as_examiner()
