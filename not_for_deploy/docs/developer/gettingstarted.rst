@@ -27,6 +27,10 @@ Install dependencies/requirements
     Devilry does not work with Python3 yet, but we will support it when Django and all
     our dependencies gets good Python3 support.
 
+    We require postgresql to develop Devilry. You only have to have it installed,
+    Devilry comes with Django management commands that help you create and work
+    with an isolated development database.
+
     Other dependencies than are not really required, but we recommend that you:
 
     - use Virtualenv to avoid installing anything globally, and to get a clean environment
@@ -48,6 +52,10 @@ Mac OSX
 3. Install other dependencies/requirements::
 
     $ sudo easy_install virtualenv
+
+4. Install postgresql. We recommend you do this via `Homebrew <http://brew.sh/>`_::
+
+    $ brew install postgresql
 
 
 Ubuntu Linux
