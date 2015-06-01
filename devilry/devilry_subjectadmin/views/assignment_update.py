@@ -12,21 +12,28 @@ from devilry.devilry_examiner.views.add_deadline import DevilryDatetimeFormField
 class AssignmentUpdateForm(forms.ModelForm):
     publishing_time = DevilryDatetimeFormField(
         label=_('Publishing time'),
-        help_text=_('The time when the assignment is to be published (visible to students and examiners). Format: "YYYY-MM-DD hh:mm".'),
+        help_text=_(
+            'The time when the assignment is to be published (visible to students and examiners). Format: "YYYY-MM-DD hh:mm".'),
     )
     students_can_not_create_groups_after = DevilryDatetimeFormField(
         required=False,
         label=_('Students can not create project groups after'),
-        help_text=_('Students can not create project groups after this time. Ignored if "Students can create project groups" is not selected. Format: "YYYY-MM-DD hh:mm".'),
+        help_text=_(
+            'Students can not create project groups after this time. Ignored if "Students can create project groups" is not selected. Format: "YYYY-MM-DD hh:mm".'),
     )
 
     class Meta:
         model = Assignment
-        fields = ['long_name', 'short_name', 'publishing_time',
-            'anonymous', 'deadline_handling',
-            'students_can_create_groups', 'students_can_not_create_groups_after'
-            ]
-
+        fields = [
+            'long_name',
+            'short_name',
+            'publishing_time',
+            'anonymous',
+            'deadline_handling',
+            'students_can_create_groups',
+            'students_can_not_create_groups_after',
+            'feedback_workflow'
+        ]
 
     def __init__(self, *args, **kwargs):
         super(AssignmentUpdateForm, self).__init__(*args, **kwargs)
@@ -37,6 +44,7 @@ class AssignmentUpdateForm(forms.ModelForm):
             'publishing_time',
             'anonymous',
             'deadline_handling',
+            'feedback_workflow',
 
             Fieldset(
                 _('Allow students to form project groups?'),
