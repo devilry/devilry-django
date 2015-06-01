@@ -209,18 +209,17 @@ class TestRestInstanceSubjectRest(TestCase):
         data = {'short_name': 'duck2000',
                 'long_name': 'Updated',
                 'admins': [],
-                'parentnode': 1}
+                'parentnode': self.testhelper.uni.id}
         content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000.id),
                                                  data=data)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(content['id'], self.testhelper.duck2000.id)
         self.assertEquals(content['short_name'], self.testhelper.duck2000.short_name)
         self.assertEquals(content['long_name'], 'Updated')
-        self.assertEquals(content['parentnode'], 1)
+        self.assertEquals(content['parentnode'], self.testhelper.uni.id)
         self.assertEquals(set(content.keys()),
-                          set(['short_name', 'long_name', 'admins', 'etag',
-                               'can_delete', 'parentnode', 'id', 'inherited_admins',
-                               'breadcrumb']))
+                          {'short_name', 'long_name', 'admins', 'etag', 'can_delete', 'parentnode', 'id',
+                           'inherited_admins', 'breadcrumb'})
 
     def test_put_admins(self):
         self.client.login(username='duck2000admin', password='test')
@@ -234,7 +233,7 @@ class TestRestInstanceSubjectRest(TestCase):
                              'full_name': 'ignored!'},
                            {'username': 'user2'},
                            {'id': self.testhelper.user3.id}],
-                'parentnode': 1}
+                'parentnode': self.testhelper.uni.id}
         content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000.id),
                                                  data=data)
         self.assertEquals(response.status_code, 200)
@@ -249,7 +248,7 @@ class TestRestInstanceSubjectRest(TestCase):
         data = {'short_name': 'duck2000',
                 'long_name': 'Updated',
                 'admins': [],
-                'parentnode': 1,
+                'parentnode': self.testhelper.uni.id,
                 'breadcrumb': [],
                 'can_delete': False,
                 'inherited_admins': []}

@@ -27,8 +27,7 @@ class TestRestListOrCreatePeriodRest(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertEquals(len(content), 2)
         self.assertEquals(set(content[0].keys()),
-                          set(['id', 'parentnode', 'etag', 'short_name', 'long_name',
-                               'start_time', 'end_time', 'url']))
+                          {'id', 'parentnode', 'etag', 'short_name', 'long_name', 'start_time', 'end_time', 'url'})
 
     def test_list_nonadmin(self):
         self.testhelper.create_user('otheruser')
@@ -236,19 +235,18 @@ class TestRestInstancePeriodRest(TestCase):
                 'admins': [],
                 'start_time': isoformat_relativetime(days=-2),
                 'end_time': isoformat_relativetime(days=2),
-                'parentnode': 1}
+                'parentnode': self.testhelper.duck2000.id}
         content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_periodone.id),
                                                  data=data)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(content['id'], self.testhelper.duck2000_periodone.id)
         self.assertEquals(content['short_name'], self.testhelper.duck2000.short_name)
         self.assertEquals(content['long_name'], 'Updated')
-        self.assertEquals(content['parentnode'], 1)
+        self.assertEquals(content['parentnode'], self.testhelper.duck2000.id)
         self.assertEquals(set(content.keys()),
-                          set(['short_name', 'long_name', 'admins', 'etag',
-                               'can_delete', 'parentnode', 'id', 'inherited_admins',
-                               'start_time', 'end_time', 'breadcrumb',
-                               'number_of_relatedstudents', 'number_of_relatedexaminers']))
+                          {'short_name', 'long_name', 'admins', 'etag', 'can_delete', 'parentnode', 'id',
+                           'inherited_admins', 'start_time', 'end_time', 'breadcrumb', 'number_of_relatedstudents',
+                           'number_of_relatedexaminers'})
         updated = Period.objects.get(id=self.testhelper.duck2000_periodone.id)
         self.assertEquals(updated.long_name, 'Updated')
 
@@ -266,7 +264,7 @@ class TestRestInstancePeriodRest(TestCase):
                            {'id': self.testhelper.user3.id}],
                 'start_time': isoformat_relativetime(days=-2),
                 'end_time': isoformat_relativetime(days=2),
-                'parentnode': 1}
+                'parentnode': self.testhelper.duck2000.id}
         content, response = self.client.rest_put(self._geturl(self.testhelper.duck2000_periodone.id),
                                                  data=data)
         self.assertEquals(response.status_code, 200)

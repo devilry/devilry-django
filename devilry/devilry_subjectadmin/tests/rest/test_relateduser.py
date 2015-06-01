@@ -200,8 +200,10 @@ class TestInstanceRelatedUserMixin(object):
 
     def create_reluser_on_p1(self, username, tags):
         raise NotImplementedError()
+
     def get_url(self, periodid, reluserid):
         raise NotImplementedError()
+
     def get_valid_putdata(self):
         return {'period': self.testhelper.sub_p1.id,
                 'tags': 'group10,group20',
@@ -291,20 +293,20 @@ class TestInstanceRelatedStudent(TestInstanceRelatedUserMixin, TestCase):
         content, response = self._getas('p1admin', self.testhelper.sub_p1.id, self.testreluser.id)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(content,
-                          {u'id': 1,
+                          {u'id': self.testreluser.id,
                            u'tags': u'group1,group2',
-                           u'period': 1,
+                           u'period': self.testhelper.sub_p1.id,
                            u'candidate_id': None,
                            u'user': {u'username': u'testuser',
                                      u'email': u'testuser@example.com',
                                      u'full_name': None,
                                      u'displayname': 'testuser',
-                                     u'id': 4}})
+                                     u'id': self.testreluser.user_id}})
 
     def test_put(self):
         content = super(TestInstanceRelatedStudent, self).test_put()
         self.assertEquals(set(content.keys()),
-                          set(['candidate_id', 'id', 'period', 'tags', 'user']))
+                          {'candidate_id', 'id', 'period', 'tags', 'user'})
 
 
 
@@ -323,16 +325,16 @@ class TestInstanceRelatedExaminer(TestInstanceRelatedUserMixin, TestCase):
         content, response = self._getas('p1admin', self.testhelper.sub_p1.id, self.testreluser.id)
         self.assertEquals(response.status_code, 200)
         self.assertEquals(content,
-                          {u'id': 1,
+                          {u'id': self.testreluser.id,
                            u'tags': u'group1,group2',
-                           u'period': 1,
+                           u'period': self.testhelper.sub_p1.id,
                            u'user': {u'username': u'testuser',
                                      u'email': u'testuser@example.com',
                                      u'full_name': None,
                                      u'displayname': 'testuser',
-                                     u'id': 4}})
+                                     u'id': self.testreluser.user_id}})
 
     def test_put(self):
         content = super(TestInstanceRelatedExaminer, self).test_put()
         self.assertEquals(set(content.keys()),
-                          set(['id', 'period', 'tags', 'user']))
+                          {'id', 'period', 'tags', 'user'})
