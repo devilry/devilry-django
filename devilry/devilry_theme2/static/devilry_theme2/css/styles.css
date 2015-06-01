@@ -9787,6 +9787,10 @@ ul.list-inline.list-inline-commaseparated li:last-child:after {
   display: inline-block;
   margin: 5px 5px 0 0;
 }
+label.radio {
+  font-weight: normal;
+  margin-left: 23px;
+}
 .devilry-focusbox {
   background-color: #ffffff;
   margin: 0 0 15px 0;

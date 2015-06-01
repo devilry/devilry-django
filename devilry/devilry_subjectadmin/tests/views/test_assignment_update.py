@@ -57,7 +57,7 @@ class TestAssignmentUpdateView(TestCase):
         self.assertEquals(selector.one('input[name=publishing_time]')['value'],
                           isoformat_datetime(publishing_time))
         self.assertEquals(selector.one('input[name=short_name]')['value'], 'assignment1')
-        self.assertEquals(selector.one('select[name=feedback_workflow] option[value=bulk-publish]')['selected'], 'selected')
+        self.assertEquals(selector.one('input[name=feedback_workflow][value=bulk-publish]')['checked'], 'checked')
 
     def test_update(self):
         periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active() \

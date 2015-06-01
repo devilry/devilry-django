@@ -35,6 +35,10 @@ class AssignmentUpdateForm(forms.ModelForm):
             'feedback_workflow'
         ]
 
+        widgets = {
+            'feedback_workflow': forms.RadioSelect(),
+        }
+
     def __init__(self, *args, **kwargs):
         super(AssignmentUpdateForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
