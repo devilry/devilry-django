@@ -38,22 +38,27 @@ class FeedbackEditorSingleDeliveryObjectMixin(SingleObjectMixin):
     def _setup_common_data(self):
         self.object = self.get_object()
         self.delivery = self.object
-        self.last_draft = self.delivery.devilry_gradingsystem_feedbackdraft_set.first()
+        self.assignment = self.delivery.deadline.assignment_group.assignment
+        self.last_draft = FeedbackDraft.get_last_feedbackdraft(
+            assignment=self.assignment,
+            delivery=self.delivery,
+            user=self.request.user)
         self.last_feedbackdraftfile = FeedbackDraftFile.objects\
-            .filter(delivery=self.delivery, saved_by=self.request.user)\
+            .filter_accessible_files(
+                assignment=self.assignment,
+                delivery=self.delivery,
+                user=self.request.user)\
             .first()
 
     def get(self, *args, **kwargs):
         self._setup_common_data()
-        assignment = self.delivery.deadline.assignment_group.assignment
-        if not assignment.has_valid_grading_setup():
+        if not self.assignment.has_valid_grading_setup():
             return redirect('devilry_examiner_singledeliveryview', deliveryid=self.delivery.id)
         return super(FeedbackEditorSingleDeliveryObjectMixin, self).get(*args, **kwargs)
 
     def post(self, *args, **kwargs):
         self._setup_common_data()
-        assignment = self.delivery.deadline.assignment_group.assignment
-        if not assignment.has_valid_grading_setup():
+        if not self.assignment.has_valid_grading_setup():
             return HttpResponseBadRequest('Grading system is not set up correctly')
         return super(FeedbackEditorSingleDeliveryObjectMixin, self).post(*args, **kwargs)
 
