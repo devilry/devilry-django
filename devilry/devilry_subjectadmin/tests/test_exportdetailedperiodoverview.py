@@ -9,10 +9,11 @@ class TestExportDetailedPeriodOverview(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
         self.testhelper.create_user('student1', fullname='Student One')
-        self.testhelper.add(nodes='uni:admin(uniadmin)',
+        self.testhelper.add(
+            nodes='uni:admin(uniadmin)',
             subjects=['sub'],
             periods=['p1:admin(periodadmin):begins(-3):ends(6)'],
-            assignments=['a1', 'a2'],
+            assignments=['a1:pub(1)', 'a2:pub(2)'],
             assignmentgroups=[
                 'gstudent1:candidate(student1):examiner(examiner1)',
                 'gstudent2:candidate(student2):examiner(examiner1)'],
@@ -32,8 +33,10 @@ class TestExportDetailedPeriodOverview(TestCase):
 
     def test_perm_as_periodadmin(self):
         self._test_permsas('periodadmin')
+
     def test_perm_as_nodeadmin(self):
         self._test_permsas('uniadmin')
+
     def test_perm_as_superuser(self):
         self._test_permsas('superuser')
 
@@ -43,7 +46,6 @@ class TestExportDetailedPeriodOverview(TestCase):
             'format': 'csv'
         })
         self.assertEqual(response.status_code, 403)
-
 
     def _create_relatedstudent(self, username, fullname=None):
         user = getattr(self.testhelper, username, None)
