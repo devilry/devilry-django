@@ -342,15 +342,17 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                     u'Ignored if "Students can create project groups" is not selected.'))
 
     feedback_workflow = models.CharField(
-        blank=True, null=False, default='', max_length=30,
+        blank=True, null=False, default='', max_length=50,
         verbose_name=_('Feedback workflow'),
         choices=(
             ('',
                 _('Simple - Examiners write feedback, and publish it whenever '
                   'they want. Does not handle coordination of multiple examiners at all.')),
-            ('bulk-publish',
-                _('Administrator publish in bulk - Examiners can only save feedback drafts. When '
-                  'an administrator is notified by their examiners that they have finished '
+            ('trusted-cooperative-feedback-editing',
+                _('Trusted cooperative feedback editing - Examiners can only save feedback drafts. '
+                  'Examiners share the same feedback drafts, which means that one examiner can '
+                  'start writing feedback and another can continue. '
+                  'When an administrator is notified by their examiners that they have finished '
                   'correcting, they can publish the drafts via the administrator UI.')),
         )
     )

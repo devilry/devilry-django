@@ -48,7 +48,7 @@ class TestAssignmentUpdateView(TestCase):
             anonymous=True,
             publishing_time=publishing_time,
             deadline_handling=1,
-            feedback_workflow='bulk-publish')
+            feedback_workflow='trusted-cooperative-feedback-editing')
         response = self._getas(assignment1builder.assignment.id, self.testuser)
         self.assertEquals(response.status_code, 200)
         selector = htmls.S(response.content)
@@ -57,7 +57,7 @@ class TestAssignmentUpdateView(TestCase):
         self.assertEquals(selector.one('input[name=publishing_time]')['value'],
                           isoformat_datetime(publishing_time))
         self.assertEquals(selector.one('input[name=short_name]')['value'], 'assignment1')
-        self.assertEquals(selector.one('input[name=feedback_workflow][value=bulk-publish]')['checked'], 'checked')
+        self.assertEquals(selector.one('input[name=feedback_workflow][value=trusted-cooperative-feedback-editing]')['checked'], 'checked')
 
     def test_update(self):
         periodbuilder = PeriodBuilder.quickadd_ducku_duck1010_active() \
@@ -82,7 +82,7 @@ class TestAssignmentUpdateView(TestCase):
             'anonymous': '',
             'publishing_time': isoformat_datetime(new_publishing_time),
             'deadline_handling': 0,
-            'feedback_workflow': 'bulk-publish'
+            'feedback_workflow': 'trusted-cooperative-feedback-editing'
         })
         self.assertEquals(response.status_code, 302)
         assignment1builder.reload_from_db()
@@ -94,4 +94,4 @@ class TestAssignmentUpdateView(TestCase):
         self.assertEquals(assignment.deadline_handling, 0)
         self.assertEquals(assignment.max_points, 10)
         self.assertEquals(assignment.passing_grade_min_points, 8)
-        self.assertEquals(assignment.feedback_workflow, 'bulk-publish')
+        self.assertEquals(assignment.feedback_workflow, 'trusted-cooperative-feedback-editing')
