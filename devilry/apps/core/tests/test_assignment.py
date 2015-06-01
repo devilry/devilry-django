@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from model_mommy import mommy
 
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
@@ -89,6 +90,18 @@ class TestAssignment(TestCase):
         assignmentbuilder.reload_from_db()
         self.assertEquals(assignmentbuilder.assignment.max_points, 20)
         self.assertTrue(assignmentbuilder.assignment.pointtogrademap.invalid)
+
+    def test_feedback_workflow_allows_shared_feedback_drafts_default(self):
+        testassignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                            feedback_workflow='').assignment
+        self.assertFalse(testassignment.feedback_workflow_allows_shared_feedback_drafts())
+
+    def test_feedback_workflow_allows_shared_feedback_drafts_trusted_cooperative_feedback_editing(self):
+        testassignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                            feedback_workflow='trusted-cooperative-feedback-editing').assignment
+        self.assertTrue(testassignment.feedback_workflow_allows_shared_feedback_drafts())
 
 
 class TestAssignmentOld(TestCase, TestHelper):
