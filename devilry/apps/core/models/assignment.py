@@ -148,12 +148,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         A set of :class:`assignmentgroups <devilry.apps.core.models.AssignmentGroup>` for this assignment
 
-    .. attribute:: examiners_publish_feedbacks_directly
-
-       Should feedbacks published by examiners be made avalable to the
-       students immediately? If not, an administrator have to publish
-       feedbacks.
-
     .. attribute:: scale_points_percent
 
         Percent to scale points on this assignment by for period overviews. The default is 100,
@@ -277,13 +271,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         default=True,
         verbose_name="Students can see points")
     admins = models.ManyToManyField(User, blank=True, verbose_name="Administrators")
-    examiners_publish_feedbacks_directly = models.BooleanField(
-        default=True,
-        verbose_name="Examiners publish directly?",
-        help_text=('Should feedbacks published by examiners be made '
-                   'avalable to the students immediately? If not, an '
-                   'administrator have to publish feedbacks '
-                   'manually.'))
     delivery_types = models.PositiveIntegerField(
         default=deliverytypes.ELECTRONIC,
         choices=deliverytypes.as_choices_tuple(),
