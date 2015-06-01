@@ -60,7 +60,7 @@ class TestFeedbackEditorView(TestCase, FeedbackEditorViewTestMixin):
         delivery = self.deliverybuilder.delivery
         self.assertEquals(delivery.feedbacks.count(), 0)
         self.assertEquals(delivery.devilry_gradingsystem_feedbackdraft_set.count(), 0)
-        response = self._post_as(self.examiner1, {
+        self._post_as(self.examiner1, {
             'points': 'on'
         })
         self.assertEquals(delivery.feedbacks.count(), 0)

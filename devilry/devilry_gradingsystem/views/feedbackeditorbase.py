@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.views.generic import FormView
 from django.shortcuts import redirect
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseForbidden
 
 from devilry.apps.core.templatetags.devilry_core_tags import devilry_user_displayname
 from devilry.devilry_gradingsystem.widgets.filewidget import FeedbackEditorFileWidget
@@ -221,6 +221,8 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
     def form_valid(self, form):
         publish = 'submit_publish' in self.request.POST
         preview = 'submit_preview' in self.request.POST
+        if publish and not self.assignment.feedback_workflow_allows_examiners_publish_feedback():
+            return HttpResponseForbidden()
         self.save_pluginspecific_state(form)
         draft = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
         if preview:

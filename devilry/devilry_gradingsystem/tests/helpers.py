@@ -110,6 +110,17 @@ class FeedbackEditorViewTestMixin(object):
         self.assertTrue(selector.exists('button[name=submit_preview]'))
         self.assertFalse(selector.exists('button[name=submit_publish]'))
 
+    def test_post_publish_403_if_workflow_does_not_allow_publish(self):
+        testdelivery = self.get_empty_delivery_with_testexaminer_as_examiner()
+        assignment = testdelivery.assignment
+        assignment.feedback_workflow = 'trusted-cooperative-feedback-editing'
+        assignment.save()
+        testexaminer = self.get_testexaminer()
+        postdata = self.get_valid_post_data_without_feedbackfile_or_feedbacktext()
+        postdata['submit_publish'] = 'publish'
+        response = self.post_as(testexaminer, postdata)
+        self.assertEquals(response.status_code, 403)
+
     def test_post_with_feedbackfile_no_existing_file(self):
         delivery = self.get_empty_delivery_with_testexaminer_as_examiner()
         testexaminer = self.get_testexaminer()
