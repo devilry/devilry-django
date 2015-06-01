@@ -16,11 +16,7 @@ DJANGOENV = os.environ.get('DJANGOENV', 'develop')
 
 if DJANGOENV == 'develop':  # Used for local development
     from devilry.project.develop.settings.develop import *
-elif DJANGOENV == 'postgres_develop':  # Used for local development with Postgres
-    from devilry.project.develop.settings.postgres_develop import *
 elif DJANGOENV == 'test':  # Used when running the Django tests
-    from devilry.project.develop.settings.test import *
-elif DJANGOENV == 'postgres_test':  # Used when running the Django tests with Postgres
     from devilry.project.develop.settings.test import *
 elif DJANGOENV == 'extjsbuild':  # Used when building extjs apps
     from devilry.project.develop.settings.extjsbuild import *

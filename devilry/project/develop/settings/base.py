@@ -1,13 +1,9 @@
-import os
 from os.path import join
 from os.path import exists
-from os.path import dirname
-from os.path import abspath
+from django_dbdev.backends.postgres import DBSETTINGS
 
-from devilry.project.common.settings import *
+from devilry.project.common.settings import *  # noqa
 from .log import create_logging_conf
-
-
 
 
 #########################################################
@@ -27,16 +23,22 @@ DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(developfilesdir, 'deliverystorehier')
 LOGGING = create_logging_conf(logdir)
 
 
+# DATABASES = {
+#     "default": {
+#         'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+#         'NAME': join(developfilesdir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
+#         'USER': '',             # Not used with sqlite3.
+#         'PASSWORD': '',         # Not used with sqlite3.
+#         'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
+#         'PORT': '',             # Set to empty string for default. Not used with sqlite3.
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        'ENGINE': 'django.db.backends.sqlite3',  # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': join(developfilesdir, 'db.sqlite3'),    # Or path to database file if using sqlite3.
-        'USER': '',             # Not used with sqlite3.
-        'PASSWORD': '',         # Not used with sqlite3.
-        'HOST': '',             # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',             # Set to empty string for default. Not used with sqlite3.
-    }
+    'default': DBSETTINGS
 }
+DATABASES['default']['PORT'] = 24376
+
 
 INSTALLED_APPS += [
     'seleniumhelpers',

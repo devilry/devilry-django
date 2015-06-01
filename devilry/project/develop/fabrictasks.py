@@ -21,7 +21,7 @@ def _managepy(args, djangoenv='develop', environment={}, working_directory=None)
 @task
 def remove_db(djangoenv='develop'):
     """ Remove ``db.sqlite3`` if it exists. """
-    if djangoenv == 'develop':
+    if djangoenv == 'sqlite_develop':
         if exists(DB_FILE):
             remove(DB_FILE)
     else:
@@ -41,7 +41,7 @@ def syncmigrate(djangoenv='develop'):
 def reset_db(djangoenv='develop'):
     """ Run ``remove_db`` followed by ``syncmigrate``. """
     remove_db(djangoenv=djangoenv)
-    if djangoenv != 'develop':
+    if djangoenv != 'sqlite_develop':
         _managepy('dbdev_init', djangoenv=djangoenv)
     syncmigrate(djangoenv=djangoenv)
 
