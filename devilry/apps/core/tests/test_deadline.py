@@ -251,23 +251,6 @@ class TestDeadlineOld(TestCase, TestHelper):
         self.goodFile = {"good.py": "print awesome"}
         self.okVerdict = {"grade": "C", "points": 1, "is_passing_grade": True}
 
-    def test_publish_feedbacks_directly(self):
-        self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1:candidate(student1):examiner(examiner1).d1:ends(10)')
-        self.delivery = self.add_delivery("inf1100.period1.assignment1.group1", self.goodFile)
-        self.feedback = self.add_feedback(self.delivery, verdict=self.okVerdict)
-        # ..._assignment1.examiners_publish_feedbacks_directly is True by default
-        self.assertTrue(Deadline.objects.get(id=self.feedback.delivery.deadline.id).feedbacks_published)
-
-    def test_dont_publish_feedbacks_directly(self):
-        self.add_to_path('uio.ifi;inf1100.period1.assignment1.group1:candidate(student1):examiner(examiner1).d1:ends(10)')
-        # Disable publish feedbacks directly before adding delivery and feedback
-        self.inf1100_period1_assignment1.examiners_publish_feedbacks_directly = False
-        self.inf1100_period1_assignment1.save()
-
-        self.delivery = self.add_delivery("inf1100.period1.assignment1.group1", self.goodFile)
-        self.feedback = self.add_feedback(self.delivery, verdict=self.okVerdict)
-        self.assertFalse(Deadline.objects.get(id=self.feedback.delivery.deadline.id).feedbacks_published)
-
     def test_deadline_notunique(self):
         self.add_to_path('uni;sub.p1:begins(-2).a1.g1.d1:ends(5)')
         self.add_to_path('uni;sub.p1.a1.g2.d1:ends(5)')

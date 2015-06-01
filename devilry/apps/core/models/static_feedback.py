@@ -25,8 +25,6 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
     when an examiner choose to publish feedback, a static copy of the data
     he/she created in the *grade+feedback editor* is stored in a StaticFeedback.
 
-    Feedbacks are only visible to students when
-    :attr:`Deadline.feedbacks_published` on the related deadline is ``True``.
     Feedbacks are related to Deadlines through its :attr:`delivery`.
 
     Students are presented with the last feedback on a delivery, however they
@@ -171,17 +169,9 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
         feedback.clean(assignment=assignment)
         return feedback
 
-    def _publish_if_allowed(self):
-        assignment = self.delivery.deadline.assignment_group.parentnode
-        if assignment.examiners_publish_feedbacks_directly:
-            deadline = self.delivery.deadline
-            deadline.feedbacks_published = True
-            deadline.save()
-
     def _close_group(self):
         self.delivery.deadline.assignment_group.is_open = False
         self.delivery.deadline.assignment_group.save()
-
 
     def save(self, *args, **kwargs):
         """
@@ -212,7 +202,6 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             group.feedback = self
             group.is_open = False
             group.save()
-            self._publish_if_allowed()
 
     def clean(self, assignment=None):
         if not assignment: # See from_points() for why we do this

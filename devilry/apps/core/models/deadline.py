@@ -163,12 +163,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         Should deliveries on this deadline be available to examiners before the
         deadline expires? This is set by students.
 
-    .. attribute:: feedbacks_published
-
-        If this boolean field is ``True``, the student can see all
-        :class:`StaticFeedback` objects associated with this Deadline through a
-        :class:`Delivery`. See also :attr:`Assignment.examiners_publish_feedbacks_directly`.
-
     .. attribute:: added_by
 
         The User that added this deadline.
@@ -199,9 +193,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     deliveries_available_before_deadline = models.BooleanField(default=False,
                                                               help_text='Should deliveries on this deadline be available to examiners before the'
                                                                           'deadline expires? This is set by students.')
-    feedbacks_published = models.BooleanField(default=False,
-                                              help_text='If this is ``True``, the student can see all '\
-                                                          'StaticFeedbacks associated with this Deadline')
     added_by = models.ForeignKey(User,
         null=True, blank=True, default=None,
         on_delete=models.SET_NULL)
@@ -381,7 +372,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         else:
             return False
 
-
     def copy(self, newgroup):
         """
         Copy this deadline into ``newgroup``, including all deliveries and
@@ -395,8 +385,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         """
         deadlinecopy = Deadline(assignment_group=newgroup,
                                 deadline=self.deadline,
-                                text=self.text,
-                                feedbacks_published=self.feedbacks_published)
+                                text=self.text)
         deadlinecopy.full_clean()
         deadlinecopy.save()
         for delivery in self.query_successful_deliveries():

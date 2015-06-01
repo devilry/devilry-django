@@ -152,7 +152,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
        Should feedbacks published by examiners be made avalable to the
        students immediately? If not, an administrator have to publish
-       feedbacks. See also :attr:`Deadline.feedbacks_published`.
+       feedbacks.
 
     .. attribute:: scale_points_percent
 
