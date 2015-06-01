@@ -319,7 +319,7 @@ class GroupManager(object):
             else:
                 existing_candidate = existing_by_id[id]
                 self._update_candate(existing_candidate, candidatedict['candidate_id'])
-                del existing_by_id[id] # Remove existing from existing_by_id (which becomes to_delete) (thus, to_delete will be correct after the loop)
+                del existing_by_id[id]  # Remove existing from existing_by_id (which becomes to_delete) (thus, to_delete will be correct after the loop)
         if not self.createmode:
             to_delete = existing_by_id
             if len(to_delete) > 0:
