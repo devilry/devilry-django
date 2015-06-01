@@ -2,6 +2,7 @@
 -r common.txt
 
 django_dbdev==0.9.4
+model-mommy==1.2.4
 
 # Required by the soupselect tests
 BeautifulSoup==3.2.1
