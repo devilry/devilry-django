@@ -8,7 +8,7 @@ from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.soupselect import cssFind
 from devilry.project.develop.testhelpers.soupselect import cssGet
 from devilry.project.develop.testhelpers.soupselect import cssExists
-from devilry.apps.core.models import Candidate, StaticFeedback
+from devilry.apps.core.models import Candidate, StaticFeedback, AssignmentGroup
 
 
 class HeaderTest(object):
@@ -318,13 +318,13 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
         studenta = UserBuilder('studenta', full_name="Student A").user
         studentb = UserBuilder('studentb', full_name="Student B").user
         studentc = UserBuilder('studentc', full_name="Student C").user
-        self.week1builder.add_group(
+        group1builder = self.week1builder.add_group(
             students=[studenta],
             examiners=[self.examiner1])
-        self.week1builder.add_group(
+        group2builder = self.week1builder.add_group(
             students=[studentb],
             examiners=[self.examiner1])
-        self.week1builder.add_group(
+        group3builder = self.week1builder.add_group(
             students=[studentc],
             examiners=[self.examiner1])
         self.week1builder.assignment.setup_grading(
@@ -337,29 +337,29 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
                                data={'examinermode': 'quick'})
         html = response.content
 
-        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform1-points"))
-        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform2-points"))
-        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform3-points"))
+        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform{}-points".format(group1builder.group.id)))
+        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform{}-points".format(group2builder.group.id)))
+        self.assertFalse(cssExists(html, "#div_id_quickfeedbackform{}-points".format(group3builder.group.id)))
 
     def test_examinermode_quick(self):
         studenta = UserBuilder('studenta', full_name="Student A").user
         studentb = UserBuilder('studentb', full_name="Student B").user
-        group1 = self.week1builder.add_group(
+        group1builder = self.week1builder.add_group(
             students=[studenta],
             examiners=[self.examiner1])
-        delivery = group1.add_deadline_in_x_weeks(weeks=1).add_delivery_x_hours_before_deadline(hours=2)
+        delivery = group1builder.add_deadline_in_x_weeks(weeks=1).add_delivery_x_hours_before_deadline(hours=2)
         delivery.delivery.save()
-        group2 = self.week1builder.add_group(
+        group2builder = self.week1builder.add_group(
             students=[studentb],
             examiners=[self.examiner1])
-        delivery = group2.add_deadline_in_x_weeks(weeks=1).add_delivery_x_hours_before_deadline(hours=2)
+        delivery = group2builder.add_deadline_in_x_weeks(weeks=1).add_delivery_x_hours_before_deadline(hours=2)
         delivery.delivery.save()
         response = self._getas('examiner1', self.week1builder.assignment.id,
                                data={'examinermode': 'quick'})
         html = response.content
 
-        self.assertTrue(cssExists(html, "#div_id_quickfeedbackform1-points"))
-        self.assertTrue(cssExists(html, "#div_id_quickfeedbackform2-points"))
+        self.assertTrue(cssExists(html, "#div_id_quickfeedbackform{}-points".format(group1builder.group.id)))
+        self.assertTrue(cssExists(html, "#div_id_quickfeedbackform{}-points".format(group2builder.group.id)))
 
     def test_examinermode_quick_no_deliveries(self):
         studenta = UserBuilder('studenta', full_name="Student A").user
@@ -398,13 +398,9 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
         group2builder.add_deadline_in_x_weeks(weeks=1)\
             .add_delivery_x_hours_before_deadline(hours=2)
 
-        self._getas('examiner1', self.week1builder.assignment.id,
-                    data={'examinermode': 'quick'})
         self._postas('examiner1', self.week1builder.assignment.id,
-                     data={'quickfeedbackform1-points': 1,
-                           'quickfeedbackform2-points': 0})
-        # group1builder.reload_from_db()
-        # group2builder.reload_from_db()
+                     data={'quickfeedbackform{}-points'.format(group1builder.group.id): 1,
+                           'quickfeedbackform{}-points'.format(group2builder.group.id): 0})
         self.assertEqual(
             StaticFeedback.objects.get(delivery__deadline__assignment_group=group1builder.group).points,
             1)
