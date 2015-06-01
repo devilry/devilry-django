@@ -10,14 +10,15 @@ from django import forms
 from django.views.generic import FormView
 from django.shortcuts import redirect
 from django.http import HttpResponseBadRequest
+
 from devilry.apps.core.templatetags.devilry_core_tags import devilry_user_displayname
 from devilry.devilry_gradingsystem.widgets.filewidget import FeedbackEditorFileWidget
-
 from devilry.devilry_markup.parse_markdown import markdown_full
 from devilry.apps.core.models import Delivery
 from devilry.devilry_gradingsystem.models import FeedbackDraft, FeedbackDraftFile
 from devilry.devilry_gradingsystem.widgets.editmarkdown import EditMarkdownLayoutObject
-from devilry.devilry_gradingsystem.widgets.editfeedbackbuttonbar import EditFeedbackButtonBar
+from devilry.devilry_gradingsystem.widgets.editfeedbackbuttonbar import EditFeedbackButtonBar, \
+    EditFeedbackButtonBarSaveDraftOnly
 
 
 class FeedbackEditorSingleDeliveryObjectMixin(SingleObjectMixin):
@@ -169,7 +170,10 @@ class FeedbackEditorFormBase(forms.Form):
         ]
 
     def get_submitbuttons_layout_elements(self):
-        return [EditFeedbackButtonBar()]
+        if self.assignment.feedback_workflow_allows_examiners_publish_feedback():
+            return [EditFeedbackButtonBar()]
+        else:
+            return [EditFeedbackButtonBarSaveDraftOnly()]
 
     def add_common_layout_elements(self):
         for element in self.get_feedbacktext_layout_elements():

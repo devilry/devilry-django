@@ -92,6 +92,24 @@ class FeedbackEditorViewTestMixin(object):
         selector = htmls.S(response.content)
         self.assertEquals(selector.one('#id_feedbacktext').alltext_normalized, 'Test feedback')
 
+    def test_get_render_workflow_default(self):
+        response = self.get_as(self.get_testexaminer())
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('button[name=submit_save_draft]'))
+        self.assertTrue(selector.exists('button[name=submit_preview]'))
+        self.assertTrue(selector.exists('button[name=submit_publish]'))
+
+    def test_get_render_workflow_trusted_cooperative_feedback_editing(self):
+        testdelivery = self.get_empty_delivery_with_testexaminer_as_examiner()
+        assignment = testdelivery.assignment
+        assignment.feedback_workflow = 'trusted-cooperative-feedback-editing'
+        assignment.save()
+        response = self.get_as(self.get_testexaminer())
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('button[name=submit_save_draft]'))
+        self.assertTrue(selector.exists('button[name=submit_preview]'))
+        self.assertFalse(selector.exists('button[name=submit_publish]'))
+
     def test_post_with_feedbackfile_no_existing_file(self):
         delivery = self.get_empty_delivery_with_testexaminer_as_examiner()
         testexaminer = self.get_testexaminer()

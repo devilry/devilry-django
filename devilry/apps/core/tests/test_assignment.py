@@ -103,6 +103,18 @@ class TestAssignment(TestCase):
                             feedback_workflow='trusted-cooperative-feedback-editing').assignment
         self.assertTrue(testassignment.feedback_workflow_allows_shared_feedback_drafts())
 
+    def test_feedback_workflow_allows_examiners_publish_feedback_default(self):
+        testassignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                            feedback_workflow='').assignment
+        self.assertTrue(testassignment.feedback_workflow_allows_examiners_publish_feedback())
+
+    def test_feedback_workflow_allows_examiners_publish_feedback_trusted_cooperative_feedback_editing(self):
+        testassignment = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1',
+                            feedback_workflow='trusted-cooperative-feedback-editing').assignment
+        self.assertFalse(testassignment.feedback_workflow_allows_examiners_publish_feedback())
+
 
 class TestAssignmentOld(TestCase, TestHelper):
     """

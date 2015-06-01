@@ -386,6 +386,13 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         """
         return self.feedback_workflow == 'trusted-cooperative-feedback-editing'
 
+    def feedback_workflow_allows_examiners_publish_feedback(self):
+        """
+        Return ``True`` if the :attr:`feedback_workflow` allows examiners to publish
+        feedback.
+        """
+        return self.feedback_workflow != 'trusted-cooperative-feedback-editing'
+
     def is_electronic(self):
         """
         Returns ``True`` if :attr:`.deliverytypes` is ``0`` (electric).
