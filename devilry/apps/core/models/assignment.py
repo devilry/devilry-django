@@ -239,6 +239,15 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         :attr:`.students_can_create_groups` is ``False``.
 
         DateTimeField that defaults to ``None`` (null).
+
+    .. attribute:: feedback_workflow
+
+        The feedback workflow used on the assignment. A feedback workflow
+        defines how examiners and administrators work together to make
+        feedback available to students.
+
+        Introduced in :devilryissue:`765`.
+
     """
     objects = AssignmentManager()
 
@@ -331,6 +340,20 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         verbose_name=_(u'Students can not create project groups after'),
         help_text=_(u'Students can not create project groups after this time. '
                     u'Ignored if "Students can create project groups" is not selected.'))
+
+    feedback_workflow = models.CharField(
+        blank=True, null=False, default='', max_length=30,
+        verbose_name=_('Feedback workflow'),
+        choices=(
+            ('',
+                _('Simple - Examiners write feedback, and publish it whenever '
+                  'they want. Does not handle coordination of multiple examiners at all.')),
+            ('bulk-publish',
+                _('Administrator publish in bulk - Examiners can only save feedback drafts. When '
+                  'an administrator is notified by their examiners that they have finished '
+                  'correcting, they can publish the drafts via the administrator UI.')),
+        )
+    )
 
     @property
     def subject(self):
