@@ -352,7 +352,7 @@ class AllGroupsOverview(DetailView):
         context['orderingform'] = self.orderingform
         context['order_by'] = self.order_by
 
-        context['examinermode'] = 'normal' # The mode is normal for all non supported grade plugins
+        context['examinermode'] = 'normal'  # The mode is normal for all non supported grade plugins
         if assignment.grading_system_plugin_id == 'devilry_gradingsystemplugin_approved':
             context['examinermode_form'] = self.examinermode_form
             context['examinermode'] = self.examinermode
