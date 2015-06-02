@@ -125,9 +125,10 @@ class FeedbackEditorMixin(FeedbackEditorSingleDeliveryObjectMixin):
 
         if publish:
             draft.published = True
-            draft.staticfeedback = draft.to_staticfeedback()
-            draft.staticfeedback.full_clean()
-            draft.staticfeedback.save()
+            staticfeedback = draft.to_staticfeedback()
+            staticfeedback.full_clean()
+            staticfeedback.save()
+            draft.staticfeedback = staticfeedback
             if self.last_feedbackdraftfile:
                 self.last_feedbackdraftfile.to_staticfeedbackfileattachment(
                     staticfeedback=draft.staticfeedback)

@@ -1,6 +1,7 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 import htmls
+from devilry.devilry_gradingsystem.models import FeedbackDraft
 
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
@@ -258,3 +259,94 @@ class TestSingleDeliveryView(TestCase):
         self.assertEquals(groupbuilder.group.delivery_status, 'corrected')
         self.assertTrue(groupbuilder.group.feedback.is_passing_grade)
         self.assertFalse(cssExists(html, '.devilry_give_another_chance_box'))
+
+    def test_show_has_only_draft(self):
+        groupbuilder = self.week1builder \
+            .add_group(students=[self.student1], examiners=[self.examiner1])
+        deliverybuilder = groupbuilder \
+            .add_deadline_in_x_weeks(weeks=1) \
+            .add_delivery_x_hours_before_deadline(hours=1)
+        FeedbackDraft.objects.create(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test',
+            feedbacktext_html='<p>Test</p>',
+            points=1,
+            saved_by=self.examiner1)
+        response = self._getas('examiner1', deliverybuilder.delivery.id)
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('#devilry_examiner_singledelivery_draft'))
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_feedback_no_editbutton'))
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_feedback_with_editbutton'))
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_no_feedback'))
+
+    def test_has_published_feedback(self):
+        groupbuilder = self.week1builder \
+            .add_group(students=[self.student1], examiners=[self.examiner1])
+        deliverybuilder = groupbuilder \
+            .add_deadline_in_x_weeks(weeks=1) \
+            .add_delivery_x_hours_before_deadline(hours=1)
+        deliverybuilder.add_passed_feedback(saved_by=UserBuilder('testuser').user)
+        response = self._getas('examiner1', deliverybuilder.delivery.id)
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_draft'))
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_feedback_no_editbutton'))
+        self.assertTrue(selector.exists('#devilry_examiner_singledelivery_feedback_with_editbutton'))
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_no_feedback'))
+
+    def test_last_draft_is_the_published_feedback(self):
+        groupbuilder = self.week1builder \
+            .add_group(students=[self.student1], examiners=[self.examiner1])
+        deliverybuilder = groupbuilder \
+            .add_deadline_in_x_weeks(weeks=1) \
+            .add_delivery_x_hours_before_deadline(hours=1)
+        draft = FeedbackDraft.objects.create(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test',
+            feedbacktext_html='<p>Test</p>',
+            published=True,
+            points=1,
+            saved_by=self.examiner1)
+        staticfeedback = draft.to_staticfeedback()
+        staticfeedback.save()
+        draft.staticfeedback = staticfeedback
+        draft.save()
+        response = self._getas('examiner1', deliverybuilder.delivery.id)
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_draft'))
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_feedback_no_editbutton'))
+        self.assertTrue(selector.exists('#devilry_examiner_singledelivery_feedback_with_editbutton'))
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_no_feedback'))
+
+    def test_last_draft_is_not_the_published_feedback(self):
+        groupbuilder = self.week1builder \
+            .add_group(students=[self.student1], examiners=[self.examiner1])
+        deliverybuilder = groupbuilder \
+            .add_deadline_in_x_weeks(weeks=1) \
+            .add_delivery_x_hours_before_deadline(hours=1)
+        deliverybuilder.add_passed_feedback(saved_by=UserBuilder('testuser').user)
+        draft = FeedbackDraft.objects.create(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test',
+            feedbacktext_html='<p>Test</p>',
+            published=True,
+            points=1,
+            saved_by=self.examiner1)
+        response = self._getas('examiner1', deliverybuilder.delivery.id)
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('#devilry_examiner_singledelivery_draft'))
+        self.assertTrue(selector.exists('#devilry_examiner_singledelivery_feedback_no_editbutton'))
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_feedback_with_editbutton'))
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_no_feedback'))
+
+    def test_no_feedback_and_no_draft(self):
+        groupbuilder = self.week1builder \
+            .add_group(students=[self.student1], examiners=[self.examiner1])
+        deliverybuilder = groupbuilder \
+            .add_deadline_in_x_weeks(weeks=1) \
+            .add_delivery_x_hours_before_deadline(hours=1)
+        response = self._getas('examiner1', deliverybuilder.delivery.id)
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_draft'))
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_feedback_no_editbutton'))
+        self.assertFalse(selector.exists('#devilry_examiner_singledelivery_feedback_with_editbutton'))
+        self.assertTrue(selector.exists('#devilry_examiner_singledelivery_no_feedback'))
