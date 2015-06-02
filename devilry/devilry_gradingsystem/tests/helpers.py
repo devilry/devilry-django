@@ -96,6 +96,7 @@ class FeedbackEditorViewTestMixin(object):
         response = self.get_as(self.get_testexaminer())
         selector = htmls.S(response.content)
         self.assertTrue(selector.exists('button[name=submit_save_draft]'))
+        self.assertFalse(selector.exists('button[name=submit_save_and_exit]'))
         self.assertTrue(selector.exists('button[name=submit_preview]'))
         self.assertTrue(selector.exists('button[name=submit_publish]'))
 
@@ -107,7 +108,8 @@ class FeedbackEditorViewTestMixin(object):
         response = self.get_as(self.get_testexaminer())
         selector = htmls.S(response.content)
         self.assertTrue(selector.exists('button[name=submit_save_draft]'))
-        self.assertTrue(selector.exists('button[name=submit_preview]'))
+        self.assertTrue(selector.exists('button[name=submit_save_and_exit]'))
+        self.assertFalse(selector.exists('button[name=submit_preview]'))
         self.assertFalse(selector.exists('button[name=submit_publish]'))
 
     def test_post_publish_403_if_workflow_does_not_allow_publish(self):

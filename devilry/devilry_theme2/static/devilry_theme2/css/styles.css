@@ -9939,7 +9939,8 @@ label.radio {
   .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button i {
     display: inline;
   }
-  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=submit_preview] {
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=submit_preview],
+  .devilry_gradingsystem_feedbackbuttonholder.devilry_gradingsystem_feedbackbuttonholder-edit button[name=submit_save_and_exit] {
     position: absolute;
     right: 0;
     top: 0;

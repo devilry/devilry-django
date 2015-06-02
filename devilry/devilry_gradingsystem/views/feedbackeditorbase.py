@@ -221,8 +221,11 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
     def form_valid(self, form):
         publish = 'submit_publish' in self.request.POST
         preview = 'submit_preview' in self.request.POST
+        save_and_exit = 'submit_save_and_exit' in self.request.POST
+
         if publish and not self.assignment.feedback_workflow_allows_examiners_publish_feedback():
             return HttpResponseForbidden()
+
         self.save_pluginspecific_state(form)
         draft = self.create_feedbackdraft(**self.get_create_feedbackdraft_kwargs(form, publish))
         if preview:
@@ -230,6 +233,10 @@ class FeedbackEditorFormView(FeedbackEditorMixin, FormView):
                 'devilry_gradingsystem_feedbackdraft_preview',
                 deliveryid=self.delivery.id,
                 draftid=draft.id)
+        elif save_and_exit:
+            return redirect(
+                'devilry_examiner_singledeliveryview',
+                deliveryid=self.delivery.id)
         else:
             return super(FeedbackEditorFormView, self).form_valid(form)
 
