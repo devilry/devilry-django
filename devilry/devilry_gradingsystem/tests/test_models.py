@@ -16,7 +16,8 @@ class TestFeedbackDraft(TestCase):
             points_to_grade_mapper='raw-points',
             passing_grade_min_points=20,
             max_points=100)
-        self.deliverybuilder = self.assignment1builder.add_group(examiners=[self.testexaminer]) \
+        self.groupbuilder = self.assignment1builder.add_group(examiners=[self.testexaminer])
+        self.deliverybuilder = self.groupbuilder \
             .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1)
 
@@ -78,6 +79,53 @@ class TestFeedbackDraft(TestCase):
             FeedbackDraft.get_last_feedbackdraft(assignment=self.assignment1builder.assignment,
                                                  delivery=self.deliverybuilder.delivery,
                                                  user=self.testexaminer),
+            feedbackdraft)
+
+    def test_get_last_feedbackdraft_for_group_none(self):
+        self.assertEquals(
+            FeedbackDraft.get_last_feedbackdraft_for_group(assignment=self.assignment1builder.assignment,
+                                                           group=self.groupbuilder.group,
+                                                           user=self.testexaminer),
+            None)
+
+    def test_get_last_feedbackdraft_for_group_feedback_workflow_allows_shared_feedback_drafts(self):
+        self.assignment1builder.update(feedback_workflow='trusted-cooperative-feedback-editing')
+        feedbackdraft = FeedbackDraft.objects.create(
+            delivery=self.deliverybuilder.delivery,
+            feedbacktext_raw='Test',
+            feedbacktext_html='<p>Test</p>',
+            points=30,
+            saved_by=UserBuilder('otheruser').user)
+        self.assertEquals(
+            FeedbackDraft.get_last_feedbackdraft_for_group(assignment=self.assignment1builder.assignment,
+                                                           group=self.groupbuilder.group,
+                                                           user=self.testexaminer),
+            feedbackdraft)
+
+    def test_get_last_feedbackdraft_for_group_feedback_workflow_does_not_allow_shared_feedback_drafts(self):
+        FeedbackDraft.objects.create(
+            delivery=self.deliverybuilder.delivery,
+            feedbacktext_raw='Test',
+            feedbacktext_html='<p>Test</p>',
+            points=30,
+            saved_by=UserBuilder('otheruser').user)
+        self.assertEquals(
+            FeedbackDraft.get_last_feedbackdraft_for_group(assignment=self.assignment1builder.assignment,
+                                                           group=self.groupbuilder.group,
+                                                           user=self.testexaminer),
+            None)
+
+    def test_get_last_feedbackdraft_for_group_owned(self):
+        feedbackdraft = FeedbackDraft.objects.create(
+            delivery=self.deliverybuilder.delivery,
+            feedbacktext_raw='Test',
+            feedbacktext_html='<p>Test</p>',
+            points=30,
+            saved_by=self.testexaminer)
+        self.assertEquals(
+            FeedbackDraft.get_last_feedbackdraft_for_group(assignment=self.assignment1builder.assignment,
+                                                           group=self.groupbuilder.group,
+                                                           user=self.testexaminer),
             feedbackdraft)
 
 

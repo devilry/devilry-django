@@ -68,6 +68,20 @@ class FeedbackDraft(models.Model):
             queryset = queryset.filter(saved_by=user)
         return queryset.order_by('-save_timestamp').first()
 
+    @classmethod
+    def get_last_feedbackdraft_for_group(cls, assignment, group, user):
+        """
+        Get the last feedback draft accessible by the given user for the given ``group``.
+
+        The ``assignment`` is required for performance reasons since it is usually
+        available in the context where you use this method, and should not require
+        an extra query to lookup.
+        """
+        queryset = cls.objects.filter(delivery__deadline__assignment_group=group)
+        if not assignment.feedback_workflow_allows_shared_feedback_drafts():
+            queryset = queryset.filter(saved_by=user)
+        return queryset.order_by('-save_timestamp').first()
+
     def clean(self):
         if self.id is None:  # If creating a new FeedbackDraft
             if not self.published:
