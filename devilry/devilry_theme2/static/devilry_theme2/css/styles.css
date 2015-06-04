@@ -9878,6 +9878,16 @@ label.radio {
 .allgroupoverview-focusarea .btn-toolbar {
   margin-bottom: 5px;
 }
+.allgroupoverview-focusarea .last-feedback-draft-info {
+  padding: 0;
+  margin: 0;
+  color: #777777;
+  font-size: 14px;
+  font-style: italic;
+}
+.allgroupoverview-focusarea .last-feedback-draft-info .last-feedback-draft-by-you {
+  font-weight: bold;
+}
 .delivery_files {
   margin-bottom: 22px;
 }
