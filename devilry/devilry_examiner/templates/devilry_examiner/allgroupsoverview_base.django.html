@@ -29,6 +29,11 @@
 
 {% if assignment.has_valid_grading_setup %}
 <div class="container-fluid allgroupoverview-focusarea">
+    {% if assignment.feedback_workflow == 'trusted-cooperative-feedback-editing' %}
+        <div class="alert alert-info">
+            {% trans "This assignment is configured with the trusted collaborative feedback editing workflow. This means that you need to work together with the other examiners to create a feedback draft. You are not allowed to publish the feedback, so when you are finished, you should notify an administrator so they know you work is ready to be published." %}
+        </div>
+    {% endif %}
     <div class="row">
 
         <div class="col-sm-4 col-md-3">
