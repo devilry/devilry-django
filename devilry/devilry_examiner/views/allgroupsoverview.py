@@ -318,6 +318,7 @@ class AllGroupsOverview(DetailView):
         groupqueryset = AssignmentGroup.objects.get_queryset()\
             .filter(parentnode__id=self.object.id)\
             .filter_examiner_has_access(self.request.user)\
+            .select_related('parentnode')\
             .annotate_with_last_delivery_id()
         groupqueryset = self._order_groupqueryset(groupqueryset)
         return groupqueryset
@@ -346,6 +347,7 @@ class AllGroupsOverview(DetailView):
         page = self.request.GET.get('page')
 
         context['groups'] = get_paginated_page(paginator, page)
+
         context['allgroups'] = groups
         context['currentpage'] = self.currentpage
 

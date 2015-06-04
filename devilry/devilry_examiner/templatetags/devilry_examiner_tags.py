@@ -1,6 +1,7 @@
 from django import template
 from django.utils.translation import ugettext_lazy as _
 from django.template.defaultfilters import stringfilter
+from devilry.devilry_gradingsystem.models import FeedbackDraft
 
 register = template.Library()
 
@@ -79,3 +80,17 @@ def group_form(value, groupid):
 # @register.simple_tag
 # def get_quickmodeform_by_groupid(formcollection, groupid):
 #     return formcollection.get_form_by_groupid(groupid)
+
+@register.assignment_tag(takes_context=True)
+def get_last_feedback_draft_for_group(context, group):
+    """
+    Very inefficient method of getting last feedback draft for a group.
+
+    Should be removed when we implement :issue:`769`.
+    """
+    request = context['request']
+    return FeedbackDraft.get_last_feedbackdraft_for_group(
+        assignment=group.assignment,
+        group=group,
+        user=request.user
+    )

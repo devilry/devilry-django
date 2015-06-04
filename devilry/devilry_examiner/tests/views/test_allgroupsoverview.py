@@ -1,5 +1,8 @@
+from django.template import defaultfilters
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+import htmls
+from devilry.devilry_gradingsystem.models import FeedbackDraft
 
 from devilry.devilry_gradingsystemplugin_points.devilry_plugin import PointsPluginApi
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
@@ -8,7 +11,8 @@ from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.soupselect import cssFind
 from devilry.project.develop.testhelpers.soupselect import cssGet
 from devilry.project.develop.testhelpers.soupselect import cssExists
-from devilry.apps.core.models import Candidate, StaticFeedback, AssignmentGroup
+from devilry.apps.core.models import Candidate, StaticFeedback
+from devilry.utils.datetimeutils import default_timezone_datetime
 
 
 class HeaderTest(object):
@@ -113,6 +117,224 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
         deliverystatus = cssGet(html,
                                 '.infolistingtable .group .groupinfo .deliverystatus').text.strip()
         self.assertIn('Waiting for deliveries(1 delivery', deliverystatus)
+
+    def test_show_latest_feedback_draft_info_no_draft(self):
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-info'))
+
+    def test_show_latest_feedback_draft_info_draft_by_other_not_shared_feedback_drafts(self):
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        FeedbackDraft.objects.bulk_create([FeedbackDraft(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test\n*with* _markdown_.',
+            feedbacktext_html='<p>Test</p>',
+            points=1,
+            saved_by=self.examiner2,
+            save_timestamp=default_timezone_datetime(2015, 1, 1))])
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-info'))
+
+    def test_show_latest_feedback_draft_info_draft_by_other_shared_feedback_drafts(self):
+        self.week1builder.update(feedback_workflow='trusted-cooperative-feedback-editing')
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        FeedbackDraft.objects.bulk_create([FeedbackDraft(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test\n*with* _markdown_.',
+            feedbacktext_html='<p>Test</p>',
+            points=1,
+            saved_by=self.examiner2,
+            save_timestamp=default_timezone_datetime(2015, 1, 1))])
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-info'))
+
+    def test_show_latest_feedback_draft_info_only_draft(self):
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        FeedbackDraft.objects.bulk_create([FeedbackDraft(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test\n*with* _markdown_.',
+            feedbacktext_html='<p>Test</p>',
+            points=1,
+            saved_by=self.examiner1,
+            save_timestamp=default_timezone_datetime(2015, 1, 1))])
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-info'))
+
+    def test_show_latest_feedback_draft_info_draft_same_as_published_feedback(self):
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        draft = FeedbackDraft.objects.create(
+            delivery=deliverybuilder.delivery,
+            points=1,
+            feedbacktext_html='',
+            saved_by=self.examiner1)
+        staticfeedback = draft.to_staticfeedback()
+        staticfeedback.save()
+        draft.staticfeedback = staticfeedback
+        draft.save()
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-info'))
+
+    def test_show_latest_feedback_draft_info_draft_not_same_as_published_feedback(self):
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        deliverybuilder.add_passed_A_feedback(saved_by=self.examiner1)
+        FeedbackDraft.objects.create(
+            delivery=deliverybuilder.delivery,
+            points=1,
+            feedbacktext_html='',
+            saved_by=self.examiner1)
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertTrue(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-info'))
+
+    def test_show_latest_feedback_draft_info_not_shared_feedback_drafts(self):
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        FeedbackDraft.objects.bulk_create([FeedbackDraft(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test\n*with* _markdown_.',
+            feedbacktext_html='<p>Test</p>',
+            points=1,
+            saved_by=self.examiner1,
+            save_timestamp=default_timezone_datetime(2015, 1, 1))])
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-by'))
+
+    def test_show_latest_feedback_draft_info_shared_feedback_drafts_by_you(self):
+        self.week1builder.update(feedback_workflow='trusted-cooperative-feedback-editing')
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        FeedbackDraft.objects.bulk_create([FeedbackDraft(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test\n*with* _markdown_.',
+            feedbacktext_html='<p>Test</p>',
+            points=1,
+            saved_by=self.examiner1,
+            save_timestamp=default_timezone_datetime(2015, 1, 1))])
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertEqual(
+            selector.one('.infolistingtable .group .groupinfo .last-feedback-draft-by').alltext_normalized,
+            'By you,')
+        self.assertTrue(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-by-you'))
+        self.assertFalse(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-by-other'))
+
+    def test_show_latest_feedback_draft_info_shared_feedback_drafts_by_other(self):
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        self.week1builder.update(feedback_workflow='trusted-cooperative-feedback-editing')
+        FeedbackDraft.objects.bulk_create([FeedbackDraft(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test\n*with* _markdown_.',
+            feedbacktext_html='<p>Test</p>',
+            points=1,
+            saved_by=self.examiner2,
+            save_timestamp=default_timezone_datetime(2015, 1, 1))])
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertEqual(
+            selector.one('.infolistingtable .group .groupinfo .last-feedback-draft-by').alltext_normalized,
+            'examiner2,')
+        self.assertFalse(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-by-you'))
+        self.assertTrue(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-by-other'))
+
+    def test_show_latest_feedback_draft_info_savetimestamp(self):
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        FeedbackDraft.objects.bulk_create([FeedbackDraft(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test\n*with* _markdown_.',
+            feedbacktext_html='<p>Test</p>',
+            points=1,
+            saved_by=self.examiner1,
+            save_timestamp=default_timezone_datetime(2015, 1, 1))])
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertEqual(
+            selector.one('.infolistingtable .group .groupinfo .last-feedback-draft-savetimestamp').alltext_normalized,
+            defaultfilters.date(default_timezone_datetime(2015, 1, 1), 'SHORT_DATETIME_FORMAT'))
+
+    def test_show_latest_feedback_draft_info_grade(self):
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        FeedbackDraft.objects.bulk_create([FeedbackDraft(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test\n*with* _markdown_.',
+            feedbacktext_html='<p>Test</p>',
+            points=1,
+            saved_by=self.examiner1,
+            save_timestamp=default_timezone_datetime(2015, 1, 1))])
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertEqual(
+            selector.one('.infolistingtable .group .groupinfo .last-feedback-draft-grade').alltext_normalized,
+            'Passed')
+
+    def test_show_latest_feedback_draft_info_feedbacktext(self):
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        FeedbackDraft.objects.bulk_create([FeedbackDraft(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='Test\n*with* _markdown_.',
+            feedbacktext_html='<p>Test</p>',
+            points=1,
+            saved_by=self.examiner1,
+            save_timestamp=default_timezone_datetime(2015, 1, 1))])
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertEqual(
+            selector.one('.infolistingtable .group .groupinfo .last-feedback-draft-feedbacktext').alltext_normalized,
+            'Test *with* _markdown_.')
+
+    def test_show_latest_feedback_draft_info_no_feedbacktext(self):
+        deliverybuilder = self.week1builder\
+            .add_group(students=[self.student1], examiners=[self.examiner1])\
+            .add_deadline_x_weeks_ago(weeks=1)\
+            .add_delivery_x_hours_before_deadline(hours=1)
+        FeedbackDraft.objects.bulk_create([FeedbackDraft(
+            delivery=deliverybuilder.delivery,
+            feedbacktext_raw='',
+            points=1,
+            saved_by=self.examiner1,
+            save_timestamp=default_timezone_datetime(2015, 1, 1))])
+        response = self._getas('examiner1', self.week1builder.assignment.id)
+        selector = htmls.S(response.content)
+        self.assertFalse(selector.exists('.infolistingtable .group .groupinfo .last-feedback-draft-feedbacktext'))
 
     def test_group_naming(self):
         self.week1builder.add_group(

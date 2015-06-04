@@ -47,6 +47,7 @@ setup(
         'detektor==1.1.0-beta.012',
         'django_cradmin==1.0.0-beta.022',
         'dj-static>=0.0.6',
-        'dj-database-url>=0.3.0'
+        'dj-database-url>=0.3.0',
+        'bleach>=1.4',
     ]
 )

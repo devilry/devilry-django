@@ -1,5 +1,7 @@
 {% load i18n %}
 {% load devilry_examiner_tags %}
+{% load devilry_core_tags %}
+{% load humanize %}
 {% load url from future %}
 
 <form action="{{ assignment|get_feedback_url }}" method="post">{% csrf_token %}
@@ -40,7 +42,34 @@
                         <small class="text-muted">{% blocktrans with timeuntildeadline=group.last_deadline.deadline|timeuntil %}Next deadline in {{ timeuntildeadline }}{% endblocktrans %})</small>
                     {% endif %}
                 </p>
-
+                {% get_last_feedback_draft_for_group group as last_feedbackdraft %}
+                {% if last_feedbackdraft and last_feedbackdraft.staticfeedback == None or last_feedbackdraft.staticfeedback != group.feedback %}
+                    <p class="last-feedback-draft-info">
+                        {% trans "Draft" %}:
+                        {% if assignment.feedback_workflow_allows_shared_feedback_drafts %}
+                            <span class="last-feedback-draft-by">
+                                {% if last_feedbackdraft.saved_by == request.user %}
+                                    <span class="last-feedback-draft-by-you">
+                                        {% trans "By you" %}</span>,
+                                {% else %}
+                                    <span class="last-feedback-draft-by-other">
+                                        {{ last_feedbackdraft.saved_by|devilry_user_displayname }}</span>,
+                                {% endif %}
+                            </span>
+                        {% endif %}
+                        <span class="last-feedback-draft-savetimestamp">
+                            {{ last_feedbackdraft.save_timestamp|date:"SHORT_DATETIME_FORMAT" }}</span>,
+                        {% with staticfeedback=last_feedbackdraft.to_staticfeedback %}
+                            <span class="last-feedback-draft-grade">
+                            {{ staticfeedback.grade }}</span>
+                        {% endwith %}
+                        {% if last_feedbackdraft.feedbacktext_raw.strip %}
+                            -
+                            <span class="last-feedback-draft-feedbacktext">
+                                {{ last_feedbackdraft.feedbacktext_raw|devilry_escape_html|truncatechars:"300" }}</span>
+                        {% endif %}
+                    </p>
+                {% endif %}
             </td>
 
             <td class="hidden-xs">

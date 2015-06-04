@@ -1,3 +1,4 @@
+import bleach
 from django import template
 from django.utils.translation import ugettext_lazy as _
 
@@ -29,3 +30,10 @@ def devilry_feedback_shortformat(staticfeedback):
         return u'{} ({})'.format(
             staticfeedback.grade,
             format_is_passing_grade(staticfeedback.is_passing_grade))
+
+@register.filter
+def devilry_escape_html(html):
+    """
+    Escape all html in the given ``html``.
+    """
+    return bleach.clean(html)
