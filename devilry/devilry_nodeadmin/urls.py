@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from devilry.project.common.i18n import get_javascript_catalog_packages
 from devilry.devilry_nodeadmin.views import AppView
 from devilry.devilry_nodeadmin.views import RedirectToNodeAdminAppView
+from devilry.devilry_nodeadmin.crapps import pages
 
 
 i18n_packages = get_javascript_catalog_packages(
@@ -18,6 +19,9 @@ i18n_packages = get_javascript_catalog_packages(
 )
 
 urlpatterns = patterns('devilry.devilry_nodeadmin',
+    url('^test$',
+        login_required(csrf_protect(ensure_csrf_cookie(pages.PagesListView.as_view()))),
+        name='cradmin-nodeadmin'),
     url('^$',
         login_required(csrf_protect(ensure_csrf_cookie(AppView.as_view()))),
             name='devilry_nodeadmin'),

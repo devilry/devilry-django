@@ -28,6 +28,8 @@ class NodeListingCrAdminInstance(crinstance.BaseCrAdminInstance):
         :return:
         '''
 
+        return self.roleclass.q_is_admin(self.request.user)
+
     def get_titletext_for_role(self, role):
         '''
 
@@ -35,12 +37,16 @@ class NodeListingCrAdminInstance(crinstance.BaseCrAdminInstance):
         :return:
         '''
 
+        return role.short_name
+
     def get_descriptiontext_for_role(self, role):
         '''
 
         :param role:
         :return:
         '''
+
+        return role.long_name
 
     @classmethod
     def matches_urlpath(cls, urlpath):
@@ -50,3 +56,5 @@ class NodeListingCrAdminInstance(crinstance.BaseCrAdminInstance):
         :param urlpath:
         :return:
         '''
+
+        return urlpath.startswith('devilry_nodeadmin/test')
