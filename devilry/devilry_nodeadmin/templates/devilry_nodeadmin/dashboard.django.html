@@ -1,0 +1,18 @@
+{% extends "devilry_nodeadmin/app.django.html" %}
+{% load i18n %}
+{% load static %}
+
+
+{% block pageheader-inner %}
+    <span class="fa fa-home cradmin-page-header-icon"></span>
+    <h1>
+        {% trans "Demo" %}:
+        <strong>{{ request.cradmin_role.name }}</strong>
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container-fluid django-cradmin-container-fluid-focus">
+        Welcome to the Nodeadmin listing test!
+    </div>
+{% endblock content %}
