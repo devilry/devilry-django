@@ -1,60 +1,38 @@
 from devilry.apps.core.models.node import Node
 
 from django_cradmin import crmenu, crinstance
+from django.utils.translation import ugettext_lazy as _
 
-from .crapps import dashboard
-from .crapps import pages
+from .crapps import listpermissionnodes
 
 
 class Menu(crmenu.Menu):
     def build_menu(self):
-        self.add(label=_('Dashboard'), url=self.appindex_url('dashboard'), icon="home",
-                 active=self.request.cradmin_app.appname == 'dashboard')
+        self.add(label=_('List nodes'), url=self.appindex_url('listnodes_index'), icon="home",
+                 active=self.request.cradmin_app.appname == 'listnodes_index')
 
 
 class NodeListingCrAdminInstance(crinstance.BaseCrAdminInstance):
     id = 'nodepermission_listing'
     menuclass = Menu
     roleclass = Node
-    rolefrontpage_appname = 'nodeadmin_index'
+    rolefrontpage_appname = 'listnodes_index'
 
     apps = [
-        ('dashboard', dashboard.App),
+        ('listnodes_index', listpermissionnodes.App),
     ]
 
     def get_rolequeryset(self):
-        '''
-
-        :return:
-        '''
-
-        return self.roleclass.q_is_admin(self.request.user)
+        if self.request.user.is_staff:
+            return Node.objects.all()
+        return Node.objects.filter(admins=self.request.user)
 
     def get_titletext_for_role(self, role):
-        '''
-
-        :param role:
-        :return:
-        '''
-
         return role.short_name
 
     def get_descriptiontext_for_role(self, role):
-        '''
-
-        :param role:
-        :return:
-        '''
-
         return role.long_name
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        '''
-
-        :param cls:
-        :param urlpath:
-        :return:
-        '''
-
-        return urlpath.startswith('devilry_nodeadmin/test')
+        return urlpath.startswith('/devilry_nodeadmin/')
