@@ -23,9 +23,9 @@ class NodeListingCrAdminInstance(crinstance.BaseCrAdminInstance):
     ]
 
     def get_rolequeryset(self):
-        if self.request.user.is_staff:
+        if self.request.user.is_superuser:
             return Node.objects.all()
-        return Node.objects.filter(admins=self.request.user)
+        return Node.objects.filter(Node.q_is_admin(self.request.user))
 
     def get_titletext_for_role(self, role):
         return role.short_name
