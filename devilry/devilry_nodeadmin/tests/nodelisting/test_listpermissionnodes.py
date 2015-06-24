@@ -43,7 +43,7 @@ class TestPermissionNodesListView(test.TestCase):
         expected_shortnames = []
         self.assertEqual(len(queryset_nodes), len(expected_shortnames))
 
-    def test_get_queryset_for_role_as_topadmin_topnode(self):
+    def test_get_queryset_for_role_as_topnodeadmin_topnode(self):
         self.request.user = User.objects.get(username='uioadmin')
         self.view.request = self.request
         queryset_nodes = self.view.get_queryset_for_role(Node.objects.get(short_name='uio'))
@@ -53,7 +53,41 @@ class TestPermissionNodesListView(test.TestCase):
         for node in queryset_nodes:
             self.assertIn(node.short_name, expected_shortname)
 
-    def test_get_queryset_for_role_as_topadmin_midnode(self):
+    def test_get_queryset_for_role_as_topnodeadmin_midnode_matnat(self):
+        self.request.user = User.objects.get(username='uioadmin')
+        self.view.request = self.request
+        queryset_nodes = self.view.get_queryset_for_role(Node.objects.get(short_name='matnat'))
+        expected_shortnames = ['ifi']
+        self.assertEqual(len(queryset_nodes), len(expected_shortnames))
+
+        for node in queryset_nodes:
+            self.assertIn(node.short_name, expected_shortnames)
+
+    def test_get_queryset_for_role_as_topnodeadmin_midnode_med(self):
+        self.request.user = User.objects.get(username='uioadmin')
+        self.view.request = self.request
+        queryset_nodes = self.view.get_queryset_for_role(Node.objects.get(short_name='med'))
+        expected_shortnames = ['imb']
+        self.assertEqual(len(queryset_nodes), len(expected_shortnames))
+
+        for node in queryset_nodes:
+            self.assertIn(node.short_name, expected_shortnames)
+
+    def test_get_queryset_for_role_as_topnodeadmin_bottomnode_matnat(self):
+        self.request.user = User.objects.get(username='uioadmin')
+        self.view.request = self.request
+        queryset_nodes = self.view.get_queryset_for_role(Node.objects.get(short_name='ifi'))
+        expected_shortnames = []
+        self.assertEqual(len(queryset_nodes), len(expected_shortnames))
+
+    def test_get_queryset_for_role_as_topnodeadmin_bottomnode_med(self):
+        self.request.user = User.objects.get(username='uioadmin')
+        self.view.request = self.request
+        queryset_nodes = self.view.get_queryset_for_role(Node.objects.get(short_name='imb'))
+        expected_shortnames = []
+        self.assertEqual(len(queryset_nodes), len(expected_shortnames))
+
+    def test_get_queryset_for_role_as_subnodeadmin_midnode_matnat(self):
         self.request.user = User.objects.get(username='matnatadmin')
         self.view.request = self.request
         queryset_nodes = self.view.get_queryset_for_role(Node.objects.get(short_name='matnat'))
@@ -63,45 +97,7 @@ class TestPermissionNodesListView(test.TestCase):
         for node in queryset_nodes:
             self.assertIn(node.short_name, expected_shortnames)
 
-    def test_get_queryset_for_role_as_topadmin_bottomnode(self):
+    def test_get_queryset_for_role_as_wrongadmin_matnatadmin(self):
         self.request.user = User.objects.get(username='matnatadmin')
         self.view.request = self.request
-        queryset_nodes = self.view.get_queryset_for_role(Node.objects.get(short_name='ifi'))
-        expected_shortnames = []
-        self.assertEqual(len(queryset_nodes), len(expected_shortnames))
-
-    def test_get_queryset_for_role_as_subnode_admin(self):
-        # only access
-        self.request.user = User.objects.get(username='matnatadmin')
-        self.view.request = self.request
-        queryset_nodes = self.view.get_queryset_for_role(Node.objects.get(short_name='matnat'))
-        self._assert_permission(['ifi'], queryset_nodes)
-
-    def test_get_queryset_for_role_as_wrongadmin(self):
-        # test is passed when a permissionDenied exception is raised for every test
-        self.request.user = User.objects.get(username='matnatadmin')
-        self.view.request = self.request
-        # no_access = False
-
-        
-
-        # try:
-        #     self.view.get_queryset_for_role(Node.objects.get(short_name='uio'))
-        # except exceptions.PermissionDenied:
-        #     self.assertEqual(403, 403)
-        # else:
-        #     self.assertTrue(no_access)
-        #
-        # try:
-        #     self.view.get_queryset_for_role(Node.objects.get(short_name='med'))
-        # except exceptions.PermissionDenied:
-        #     self.assertEqual(403, 403)
-        # else:
-        #     self.assertTrue(no_access)
-        #
-        # try:
-        #     self.view.get_queryset_for_role(Node.objects.get(short_name='imb'))
-        # except exceptions.PermissionDenied:
-        #     self.assertEqual(403, 403)
-        # else:
-        #     self.assertTrue(no_access)
+        self.assertRaises(exceptions.PermissionDenied, self.view.get_queryset_for_role, Node.objects.get(short_name='uio'))
