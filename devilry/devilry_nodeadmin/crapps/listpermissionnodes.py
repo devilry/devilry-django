@@ -9,21 +9,21 @@ from django_cradmin import crinstance
 from devilry.apps.core.models import node
 
 
-# class TitleColumn(objecttable.TruncatecharsPlainTextColumn):
-#     modelfield = 'short_name'
+class TitleColumn(objecttable.TruncatecharsPlainTextColumn):
+    modelfield = 'short_name'
 
-class TitleColumn(objecttable.SingleActionColumn):
-    modelfield = 'long_name'
-
-    def get_actionurl(self, node):
-        return '/devilry_nodeadmin/{}/listnodes_index/'.format(node.id)
-
-    # def get_actionurl(self, node):
-    #     return crinstance.reverse_cradmin_url(
-    #         instanceid='nodepermission_listing',
-    #         appname='devilry_nodeadmin',
-    #         roleid=node.id-1
-    #     )
+# class TitleColumn(objecttable.SingleActionColumn):
+#     modelfield = 'long_name'
+#
+#     def get_actionurl(self, node):
+#         return '/devilry_nodeadmin/{}/listnodes_index/'.format(node.id)
+#
+#     def get_actionurl(self, node):
+#         return crinstance.reverse_cradmin_url(
+#             instanceid='nodepermission_listing',
+#             appname='devilry_nodeadmin',
+#             roleid=node.id-1
+#         )
 
 
 
