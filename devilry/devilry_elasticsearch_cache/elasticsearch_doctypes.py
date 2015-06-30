@@ -1,9 +1,9 @@
-from elasticsearch_dsl import DocType
+from elasticsearch_dsl import DocType, String
 
 
 class Node(DocType):
-    # short_name = String()
-    # long_name = String()
+    # short_name = String(index='not_analyzed')
+    # long_name = String(index='not_analyzed')
 
     class Meta:
         index = 'devilry'

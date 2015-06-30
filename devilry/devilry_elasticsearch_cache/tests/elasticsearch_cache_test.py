@@ -31,18 +31,47 @@ class TestNodeIndexing(test.TestCase):
     def setUp(self):
         connections.get_connection().indices.delete(index='devilry', ignore=404)
         elasticsearch_doctypes.Node.init()
+        self.__refresh()
+
+    def __refresh(self):
         connections.get_connection().indices.refresh()
 
     def test_single_node_indexing(self):
-        corebuilder.NodeBuilder(short_name='ducku',
-                                long_name='Duckburgh University')
-        connections.get_connection().indices.refresh()
+        testnode = corebuilder.NodeBuilder(
+            short_name='ducku', long_name='Duckburgh University').node
+        self.__refresh()
 
-        s = Search()
-        s = s.doc_type(NodeDocType)
-        s = s.query('match', short_name='docku')
-        print s.to_dict()
-        result = s.execute()
+        indexed_node =  elasticsearch_doctypes.Node.get(id=testnode.id)
+        self.assertEqual(indexed_node['short_name'], 'ducku')
+        self.assertEqual(indexed_node['long_name'], 'Duckburgh University')
 
-        for hit in result:
-            print hit.title
+    def test_node_match(self):
+        corebuilder.NodeBuilder(
+            short_name='ducku',
+            long_name='Duckburgh University')
+        self.__refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_doctypes.Node)
+        search = search.query('match', short_name='ducku')
+
+        self.assertEqual(search.to_dict(),
+                         {'query': {'match': {'short_name': 'ducku'}}})
+
+        result = search.execute()
+        self.assertEqual(len(result.hits), 1)
+        self.assertEqual(result[0].long_name, 'Duckburgh University')
+
+    def test_node_match_fuzzy(self):
+        corebuilder.NodeBuilder(
+            short_name='ducku',
+            long_name='Duckburgh University')
+        self.__refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_doctypes.Node)
+        search = search.query('match', long_name='University')
+
+        result = search.execute()
+        self.assertEqual(len(result.hits), 1)
+        self.assertEqual(result[0].long_name, 'Duckburgh University')
