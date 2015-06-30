@@ -107,12 +107,12 @@ def create_logging_conf(logdir):
                 'propagate': False
             },
             'elasticsearch': {
-                'handlers': ['stderr'],
+                'handlers': ['console'],
                 'level': 'WARNING',
                 'propagate': False
             },
             'urllib3': {
-                'handlers': ['stderr'],
+                'handlers': ['console'],
                 'level': 'WARNING',
                 'propagate': False
             },
