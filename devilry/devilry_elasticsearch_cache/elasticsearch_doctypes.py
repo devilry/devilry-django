@@ -1,4 +1,4 @@
-from elasticsearch_dsl import DocType, String
+from elasticsearch_dsl import DocType
 
 
 class Node(DocType):
@@ -8,5 +8,5 @@ class Node(DocType):
     class Meta:
         index = 'devilry'
 
-    def save(self, ** kwargs):
-        return super(Node, self).save(** kwargs)
+    def save(self, **kwargs):
+        return super(Node, self).save(**kwargs)
