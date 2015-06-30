@@ -106,6 +106,11 @@ def create_logging_conf(logdir):
                 'level': 'DEBUG',
                 'propagate': False
             },
+            'devilry.devilry_search.haystack_signal_processor': {
+                'handlers': ['console'],
+                'level': 'WARNING',
+                'propagate': False
+            },
             'elasticsearch': {
                 'handlers': ['console'],
                 'level': 'WARNING',
