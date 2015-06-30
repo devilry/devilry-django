@@ -1,5 +1,6 @@
 from os.path import join
 
+
 def create_logging_conf(logdir):
     return {
         'version': 1,
@@ -35,12 +36,12 @@ def create_logging_conf(logdir):
                 'class': 'logging.FileHandler',
                 'filename': join(logdir, 'dberrors.devilry.log')
             },
-            'dbdebugfile': { # Shows the SQL statements
-                'level': 'DEBUG',
-                'formatter': 'verbose',
-                'class': 'logging.FileHandler',
-                'filename': join(logdir, 'debug-containing-sqlstatements.db.devilry.log')
-            },
+            'dbdebugfile': {  # Shows the SQL statements
+                              'level': 'DEBUG',
+                              'formatter': 'verbose',
+                              'class': 'logging.FileHandler',
+                              'filename': join(logdir, 'debug-containing-sqlstatements.db.devilry.log')
+                              },
             'requestfile': {
                 'level': 'ERROR',
                 'formatter': 'verbose',
@@ -56,7 +57,7 @@ def create_logging_conf(logdir):
         },
         'loggers': {
             'devilry.utils.logexceptionsmiddleware': {
-                'handlers': ['exceptionTracebacksFile', 'console'],#, 'sentry'],
+                'handlers': ['exceptionTracebacksFile', 'console'],  # , 'sentry'],
                 'level': 'ERROR',
                 'propagate': False
             },
@@ -69,16 +70,17 @@ def create_logging_conf(logdir):
             'django.db.backends': {
                 'handlers': ['allButExceptionTracebacks',
                              'dbfile',
-                             #'console', # Comment in to see SQL statements in the log
-                             'dbdebugfile' # Not useful for production since SQL statement logging is disabled when DEBUG=False.
-                            ],
+                             # 'console', # Comment in to see SQL statements in the log
+                             'dbdebugfile'
+                             # Not useful for production since SQL statement logging is disabled when DEBUG=False.
+                             ],
                 'level': 'DEBUG',
                 'propagate': False
             },
             'devilry.utils.devilry_email': {
                 'handlers': ['allButExceptionTracebacks',
-                             #'sentry',
-                            ],
+                             # 'sentry',
+                             ],
                 'level': 'DEBUG',
                 'propagate': False
             },
@@ -93,17 +95,26 @@ def create_logging_conf(logdir):
                 'propagate': False
             },
             'sh': {  # Affects the output of django_dbdev, and any other library using the ``sh`` library
-                'handlers': ['console'],
-                'level': 'WARNING',
-                'propagate': True
-            },
+                     'handlers': ['console'],
+                     'level': 'WARNING',
+                     'propagate': True
+                     },
             '': {
                 'handlers': ['allButExceptionTracebacks',
-                             #'sentry',
+                             # 'sentry',
                              'console'],
                 'level': 'DEBUG',
                 'propagate': False
             },
+            'elasticsearch': {
+                'handlers': ['stderr'],
+                'level': 'WARNING',
+                'propagate': False
+            },
+            'urllib3': {
+                'handlers': ['stderr'],
+                'level': 'WARNING',
+                'propagate': False
+            },
         }
     }
-
