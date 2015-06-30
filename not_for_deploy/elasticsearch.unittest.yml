@@ -1,0 +1,19 @@
+#
+# Config file for an elasticsearch server suited for running Unit tests.
+#
+
+network.host: 127.0.0.1
+http.port: 9492
+cluster.name: elasticsearch_unittest
+
+# Path to directory where to store index data allocated for this node.
+path.data: elasticsearch_unittest/data/
+
+# Path to log files:
+path.logs: elasticsearch_unittest/logs/
+
+# Path to where plugins are installed:
+path.plugins: elasticsearch_unittest/plugins/
+
+# Store data in memory
+index.store.type: memory

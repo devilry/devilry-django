@@ -41,3 +41,8 @@ class DisableMigrations(object):
         return "notmigrations"
 
 MIGRATION_MODULES = DisableMigrations()
+
+
+DEVILRY_ELASTICSEARCH_HOSTS = [
+    {"host": "localhost", "port": 9492}
+]

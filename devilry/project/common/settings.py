@@ -90,7 +90,7 @@ INSTALLED_APPS = [
     'devilry.devilry_detektor',
     'devilry.project.common',
 
-    'devilry.devilry_elasticsearch_cache'
+    # 'devilry.devilry_elasticsearch_cache.apps.ElasticsearchCacheAppConfig',
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
@@ -205,6 +205,10 @@ DEVILRY_QUALIFIESFOREXAM_PLUGINS = [
     'devilry_qualifiesforexam_approved.subset',
     'devilry_qualifiesforexam_points',
     'devilry_qualifiesforexam_select',
+]
+
+DEVILRY_ELASTICSEARCH_HOSTS = [
+    {"host": "localhost", "port": 9200}
 ]
 
 
