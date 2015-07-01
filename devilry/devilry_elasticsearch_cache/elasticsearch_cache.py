@@ -1,7 +1,15 @@
+# from elasticsearch import Elasticsearch as ES, Elasticsearch
 # from elasticsearch_dsl import Search
+# from elasticsearch_dsl import Mapping
+# from elasticsearch_dsl import String
+# from elasticsearch_dsl import Nested
 # from elasticsearch_dsl import Index
 # from elasticsearch_dsl import DocType
 # from elasticsearch_dsl.connections import connections
+# from elasticsearch_dsl import analyzer
+#
+# import json, requests
+# from devilry.apps.core.models import Node
 #
 # ES_URL = 'http://127.0.0.1:9200'
 #
@@ -11,8 +19,8 @@
 #
 #
 # class NodeDocType(DocType):
-#     # short_name = String()
-#     # long_name = String()
+#     short_name = String()
+#     long_name = String(index='not_analyzed')
 #
 #     class Meta:
 #         index = 'devilry'
