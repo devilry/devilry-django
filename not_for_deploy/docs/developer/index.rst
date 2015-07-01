@@ -67,6 +67,7 @@ Apps
     devilry_gradingsystem
     devilry_search
     devilry_theme
+    devilry_elasticsearch_cache
 
 
 ******************************

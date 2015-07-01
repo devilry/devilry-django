@@ -5,6 +5,10 @@ from devilry.devilry_elasticsearch_cache import elasticsearch_registry
 
 
 class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
+    """
+    TODO: Document
+    """
+
     #: TODO - document
     modelclass = None
 
@@ -43,6 +47,9 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
 
 
 class Node(DocType):
+    """
+    TODO: Document
+    """
     # short_name = String(index='not_analyzed')
     # long_name = String(index='not_analyzed')
 
@@ -51,6 +58,9 @@ class Node(DocType):
 
 
 class NodeRegistryItem(AbstractBaseNodeRegistryItem):
+    """
+    TODO: Document
+    """
     modelclass = coremodels.Node
     doctype_class = Node
 
@@ -71,11 +81,17 @@ elasticsearch_registry.registry.add(NodeRegistryItem())
 
 
 class Subject(DocType):
+    """
+    TODO: Document
+    """
     class Meta:
         index = 'devilry'
 
 
 class SubjectRegistryItem(AbstractBaseNodeRegistryItem):
+    """
+    TODO: Document
+    """
     modelclass = coremodels.Subject
     doctype_class = Subject
 
@@ -97,11 +113,17 @@ elasticsearch_registry.registry.add(SubjectRegistryItem())
 
 
 class Period(DocType):
+    """
+    TODO: Document
+    """
     class Meta:
         index = 'devilry'
 
 
 class PeriodRegistryItem(AbstractBaseNodeRegistryItem):
+    """
+    TODO: Document
+    """
     modelclass = coremodels.Period
     doctype_class = Period
 
