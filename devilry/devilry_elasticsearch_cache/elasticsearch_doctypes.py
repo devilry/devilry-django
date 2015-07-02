@@ -302,3 +302,5 @@ class AssignmentRegistryItem(AbstractBaseNodeRegistryItem):
         ).all()
 
 elasticsearch_registry.registry.add(AssignmentRegistryItem())
+
+

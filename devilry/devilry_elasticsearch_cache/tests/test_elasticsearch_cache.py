@@ -61,7 +61,7 @@ class TestNodeIndexing(test.TestCase):
         self.assertEqual(len(result.hits), 1)
         self.assertEqual(result[0].long_name, 'Duckburgh University')
 
-    def test_free_search_searchtext_single_hit(self):
+    def test_freesearch_searchtext_single_hit(self):
         node = elasticsearch_doctypes.Node()
         node.short_name = 'duck1010'
         node.long_name = 'Duck1010 - Duckoriented programming'
@@ -77,7 +77,7 @@ class TestNodeIndexing(test.TestCase):
         self.assertEqual(len(result.hits), 1)
         self.assertEqual(result[0].long_name, 'Duck1010 - Duckoriented programming')
 
-    def test_free_search_searchtext_multiple_hits(self):
+    def test_freesearch_searchtext_multiple_hits(self):
         node = elasticsearch_doctypes.Node()
         node.short_name = 'duck1010'
         node.long_name = 'Duck1010 - Duckoriented programming'
@@ -97,7 +97,28 @@ class TestNodeIndexing(test.TestCase):
         result = search.execute()
 
         self.assertEqual(len(result.hits), 2)
-        # self.assertEqual(result[0].long_name, 'Duck1010 - Duckoriented programming')
+
+    def test_freesearch_searchtext_multiple_docs_single_hit(self):
+        node = elasticsearch_doctypes.Node()
+        node.short_name = 'duck1010'
+        node.long_name = 'Duck1010 - Duckoriented programming'
+        node.search_text = 'duck1010 DUCK1010 - Duckoriented programming iod IoD ducku Duckburgh University'
+        node.save()
+
+        node = elasticsearch_doctypes.Node()
+        node.short_name = 'duck1100'
+        node.long_name = 'Duck1100 - Programming for Ducklike Sciences'
+        node.search_text = 'duck1100 DUCK1100 - Duck1100 - Programming for Ducklike Sciences iod IoD ducku Duckburgh University'
+        node.save()
+        self.__reindex_and_refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_doctypes.Node)
+        search = search.query('match', search_text='Ducklike')
+        result = search.execute()
+
+        self.assertEqual(len(result.hits), 1)
+        self.assertEqual(result.hits[0].short_name, 'duck1100')
 
     def test_subject_match(self):
         corebuilder.SubjectBuilder.quickadd_ducku_duck1010()
