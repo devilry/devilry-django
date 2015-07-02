@@ -1,31 +1,10 @@
 from django import test
-from elasticsearch_dsl import Search, Index
+from elasticsearch_dsl import Search
 from elasticsearch_dsl.connections import connections
 
-from devilry.apps.core.testhelper import TestHelper
-from devilry.devilry_elasticsearch_cache import elasticsearch_cache as es_cache
-from devilry.devilry_elasticsearch_cache import generate_nodes
 from devilry.devilry_elasticsearch_cache import elasticsearch_doctypes
+from devilry.devilry_elasticsearch_cache import elasticsearch_registry
 from devilry.project.develop.testhelpers import corebuilder
-
-
-class TestElasticsearchCache(test.TestCase):
-    def setUp(self):
-        self.testhelper = TestHelper()
-        self.node_generator = generate_nodes.NodeGenerator()
-
-    def test_elasticsearch_configuration_empty(self):
-        es_cache.configure_elasticsearch()
-        # es_cache.experimental_test()
-        # es_cache.generate_node()
-
-        self.assertTrue(True, True)
-
-    # def test_nodes_with_restfm(self):
-    #     bottom_node = self.node_generator.generate_hierarchy()
-    #
-    #     self.assertEqual(True, True)
-
 
 class TestNodeIndexing(test.TestCase):
     def setUp(self):
@@ -34,6 +13,7 @@ class TestNodeIndexing(test.TestCase):
         self.__refresh()
 
     def __refresh(self):
+        elasticsearch_registry.registry.reindex_all()
         connections.get_connection().indices.refresh()
 
     def test_single_node_indexing(self):
@@ -75,3 +55,11 @@ class TestNodeIndexing(test.TestCase):
         result = search.execute()
         self.assertEqual(len(result.hits), 1)
         self.assertEqual(result[0].long_name, 'Duckburgh University')
+
+    def test_node_re_indexing(self):
+        testnode = corebuilder.NodeBuilder(
+            short_name='ducku', long_name='Duckburgh University'
+        )
+        self.__refresh()
+
+        self.assertEqual(True, True)
