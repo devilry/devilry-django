@@ -32,21 +32,6 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
         """
         raise NotImplementedError()
 
-    def get_tags(self, modelobject):
-        """
-        Get list of keywords/tags consisting of short_name and long_name from this object
-        and a unspecified number of parents.
-
-        Examples:
-
-            Typically something like this for a Period left to right where period is Spring 2001::
-
-                ['Spring 2001', 'spring2001', 'DUCK1010 - Objectoriented programming', 'duck1010', 'Ifi', 'ifi']
-
-        This must be implemented in all subclasses.
-        """
-        raise NotImplementedError()
-
     def __get_parentnode_id(self, modelobject):
         """
         Returns parentnode id if modelobject has parent,
@@ -80,8 +65,7 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
             'short_name': modelobject.short_name,
             'long_name': modelobject.long_name,
             'path': modelobject.get_path(),
-            'search_text': self.get_search_text(modelobject),
-            'tags': self.get_tags(modelobject)
+            'search_text': self.get_search_text(modelobject)
         }
 
     def to_doctype_object(self, modelobject):
@@ -99,7 +83,7 @@ class Node(DocType):
     # long_name = String(index='not_analyzed')
 
     class Meta:
-        index = 'devilry'
+        index = 'basenodes'
 
 
 class NodeRegistryItem(AbstractBaseNodeRegistryItem):
@@ -121,11 +105,6 @@ class NodeRegistryItem(AbstractBaseNodeRegistryItem):
                                           self.get_search_text(node.parentnode))
         return search_text
 
-    def get_tags(self, modelobject):
-        node = modelobject
-        tags = ['tag test']
-        return tags
-
     def get_all_modelobjects(self):
         return coremodels.Node.objects.select_related('parentnode').all()
 
@@ -137,7 +116,7 @@ class Subject(DocType):
     Class to represent a Subject from :class:`devilry.apps.core.models.subject.Subject`
     """
     class Meta:
-        index = 'devilry'
+        index = 'basenodes'
 
 
 class SubjectRegistryItem(AbstractBaseNodeRegistryItem):
@@ -160,11 +139,6 @@ class SubjectRegistryItem(AbstractBaseNodeRegistryItem):
                 parentnode_short_name=subject.parentnode.short_name)
         return search_text
 
-    def get_tags(self, modelobject):
-        subject = modelobject
-        tags = ['tag test']
-        return tags
-
     def get_all_modelobjects(self):
         return coremodels.Subject.objects.select_related('parentnode').all()
 
@@ -176,7 +150,7 @@ class Period(DocType):
     Class to represent a Period from :class:`devilry.apps.core.models.period.Period`
     """
     class Meta:
-        index = 'devilry'
+        index = 'basenodes'
 
 
 class PeriodRegistryItem(AbstractBaseNodeRegistryItem):
@@ -202,11 +176,6 @@ class PeriodRegistryItem(AbstractBaseNodeRegistryItem):
                 parentnode_short_name=period.subject.parentnode.short_name)
         return search_text
 
-    def get_tags(self, modelobject):
-        period = modelobject
-        tags = ['tag test']
-        return tags
-
     def get_doctype_object_kwargs(self, modelobject):
         kwargs = super(PeriodRegistryItem, self).get_doctype_object_kwargs(modelobject=modelobject)
         period = modelobject
@@ -227,7 +196,7 @@ elasticsearch_registry.registry.add(PeriodRegistryItem())
 
 class Assignment(DocType):
     class Meta:
-        index = 'devilry'
+        index = 'basenodes'
 
 
 class AssignmentRegistryItem(AbstractBaseNodeRegistryItem):
@@ -255,11 +224,6 @@ class AssignmentRegistryItem(AbstractBaseNodeRegistryItem):
                 parentnode_parentnode_long_name=assignment.period.subject.parentnode.long_name,
                 parentnode_parentnode_short_name=assignment.period.subject.parentnode.short_name)
         return search_text
-
-    def get_tags(self, modelobject):
-        assignment = modelobject
-        tags = ['tag test']
-        return tags
 
     def __get_admins_for_assignment(self, modelobject):
         assignment = modelobject
