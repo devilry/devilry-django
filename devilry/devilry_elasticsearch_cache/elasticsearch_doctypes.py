@@ -1,9 +1,10 @@
 from elasticsearch_dsl import DocType, String
-
 from django.contrib.auth import models
 
 from devilry.apps.core import models as coremodels
 from devilry.devilry_elasticsearch_cache import elasticsearch_registry
+
+import json
 
 
 class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
@@ -42,6 +43,30 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
             return parent.id
         return -1
 
+    def get_inherited_admins(self, modelobject):
+        """
+        Get a list of dictionaries containing the id(s) of admin(s)
+        for this modelobject, where modelobject is e.g: :class:`core.models.node.Node`
+
+        Example:
+
+            This is what the field will look like in Elasticsearch::
+
+                "admins": [
+                    {\"id\": 1},
+                    {\"id\": 2},
+                    ...
+                ]
+
+        """
+        admins = []
+        for admin in modelobject.get_inherited_admins():
+            admins.append(json.dumps({
+                'id': admin.user.id
+            }))
+
+        return admins
+
     def get_doctype_object_kwargs(self, modelobject):
         """
         Get the description fields for a DocType object where data for each field
@@ -65,7 +90,8 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
             'short_name': modelobject.short_name,
             'long_name': modelobject.long_name,
             'path': modelobject.get_path(),
-            'search_text': self.get_search_text(modelobject)
+            'search_text': self.get_search_text(modelobject),
+            'admins': self.get_inherited_admins(modelobject),
         }
 
     def to_doctype_object(self, modelobject):
@@ -225,17 +251,6 @@ class AssignmentRegistryItem(AbstractBaseNodeRegistryItem):
                 parentnode_parentnode_short_name=assignment.period.subject.parentnode.short_name)
         return search_text
 
-    def __get_admins_for_assignment(self, modelobject):
-        assignment = modelobject
-        admins = []
-        node = assignment
-        while node is not None:
-            for admin in node.admins.all():
-                admins.append(admin.username)
-            node = node.parentnode
-
-        return admins
-
     def get_doctype_object_kwargs(self, modelobject):
         kwargs = super(AssignmentRegistryItem, self).get_doctype_object_kwargs(modelobject=modelobject)
         assignment = modelobject
@@ -243,7 +258,6 @@ class AssignmentRegistryItem(AbstractBaseNodeRegistryItem):
             'publishing_time': assignment.publishing_time,
             'anonymous': assignment.anonymous,
             'students_can_see_points': assignment.students_can_see_points,
-            'admins': self.__get_admins_for_assignment(assignment),
             'delivery_types': assignment.delivery_types,
             'deadline_handling': assignment.deadline_handling,
             'scale_points_percent': assignment.scale_points_percent,

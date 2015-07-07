@@ -1,4 +1,5 @@
 from django import test
+from django.contrib.auth.models import User
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.connections import connections
 
