@@ -9,9 +9,15 @@ from devilry.project.develop.testhelpers import corebuilder
 
 class TestNodeIndexing(test.TestCase):
     def setUp(self):
-        connections.get_connection().indices.delete(index='devilry', ignore=404)
         elasticsearch_doctypes.Node.init()
+        self.__delete_indexes()
         self.__reindex_and_refresh()
+
+    def __delete_indexes(self):
+        '''
+        Delete all indexes.
+        '''
+        elasticsearch_registry.registry.delete_all()
 
     def __reindex_and_refresh(self):
         '''

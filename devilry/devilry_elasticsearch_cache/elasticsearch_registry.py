@@ -1,3 +1,6 @@
+from elasticsearch import Elasticsearch
+from elasticsearch_dsl.connections import connections
+es = Elasticsearch()
 
 
 class RegistryItem(object):
@@ -22,6 +25,9 @@ class Registry(object):
         doctype_object = registryitem.to_doctype_object(
             modelobject=modelobject)
         doctype_object.save()
+
+    def delete_all(self):
+        connections.get_connection().indices.delete(index='_all', ignore=404)
 
     def reindex_all(self):
         for registryitem in self.model_to_doc_type_map.itervalues():
