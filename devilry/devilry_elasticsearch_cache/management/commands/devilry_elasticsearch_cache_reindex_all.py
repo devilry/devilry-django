@@ -7,4 +7,7 @@ class Command(NoArgsCommand):
     help = 'Reindex all items in the elasticsearch index.'
 
     def handle(self, *args, **options):
+        '''
+        manage.py command for reindexing all nodes from dbdev_testserver
+        '''
         elasticsearch_registry.registry.reindex_all()

@@ -1,45 +1,30 @@
 from django import test
-from elasticsearch_dsl import Search, Index
+from elasticsearch_dsl import Search
 from elasticsearch_dsl.connections import connections
 
-from devilry.apps.core.testhelper import TestHelper
-from devilry.devilry_elasticsearch_cache import elasticsearch_cache as es_cache
-from devilry.devilry_elasticsearch_cache import generate_nodes
 from devilry.devilry_elasticsearch_cache import elasticsearch_doctypes
+from devilry.devilry_elasticsearch_cache import elasticsearch_registry
 from devilry.project.develop.testhelpers import corebuilder
-
-
-class TestElasticsearchCache(test.TestCase):
-    def setUp(self):
-        self.testhelper = TestHelper()
-        self.node_generator = generate_nodes.NodeGenerator()
-
-    def test_elasticsearch_configuration_empty(self):
-        es_cache.configure_elasticsearch()
-        # es_cache.experimental_test()
-        # es_cache.generate_node()
-
-        self.assertTrue(True, True)
-
-    # def test_nodes_with_restfm(self):
-    #     bottom_node = self.node_generator.generate_hierarchy()
-    #
-    #     self.assertEqual(True, True)
-
 
 class TestNodeIndexing(test.TestCase):
     def setUp(self):
         connections.get_connection().indices.delete(index='devilry', ignore=404)
         elasticsearch_doctypes.Node.init()
-        self.__refresh()
+        self.__reindex_and_refresh()
 
-    def __refresh(self):
+    def __reindex_and_refresh(self):
+        '''
+        Reindex to update structure changes in RegistryItem,
+        and refresh the indeces to make sure write operations
+        are completed before the query/queries execute.
+        '''
+        elasticsearch_registry.registry.reindex_all()
         connections.get_connection().indices.refresh()
 
     def test_single_node_indexing(self):
         testnode = corebuilder.NodeBuilder(
             short_name='ducku', long_name='Duckburgh University').node
-        self.__refresh()
+        self.__reindex_and_refresh()
 
         indexed_node =  elasticsearch_doctypes.Node.get(id=testnode.id)
         self.assertEqual(indexed_node['short_name'], 'ducku')
@@ -49,7 +34,7 @@ class TestNodeIndexing(test.TestCase):
         corebuilder.NodeBuilder(
             short_name='ducku',
             long_name='Duckburgh University')
-        self.__refresh()
+        self.__reindex_and_refresh()
 
         search = Search()
         search = search.doc_type(elasticsearch_doctypes.Node)
@@ -66,7 +51,7 @@ class TestNodeIndexing(test.TestCase):
         corebuilder.NodeBuilder(
             short_name='ducku',
             long_name='Duckburgh University')
-        self.__refresh()
+        self.__reindex_and_refresh()
 
         search = Search()
         search = search.doc_type(elasticsearch_doctypes.Node)
@@ -75,3 +60,98 @@ class TestNodeIndexing(test.TestCase):
         result = search.execute()
         self.assertEqual(len(result.hits), 1)
         self.assertEqual(result[0].long_name, 'Duckburgh University')
+
+    def test_freesearch_searchtext_single_hit(self):
+        node = elasticsearch_doctypes.Node()
+        node.short_name = 'duck1010'
+        node.long_name = 'Duck1010 - Duckoriented programming'
+        node.search_text = 'duck1010 DUCK1010 - Duckoriented programming iod IoD ducku Duckburgh University'
+        node.save()
+        self.__reindex_and_refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_doctypes.Node)
+        search = search.query('match', search_text='University')
+        result = search.execute()
+
+        self.assertEqual(len(result.hits), 1)
+        self.assertEqual(result[0].long_name, 'Duck1010 - Duckoriented programming')
+
+    def test_freesearch_searchtext_multiple_hits(self):
+        node = elasticsearch_doctypes.Node()
+        node.short_name = 'duck1010'
+        node.long_name = 'Duck1010 - Duckoriented programming'
+        node.search_text = 'duck1010 DUCK1010 - Duckoriented programming iod IoD ducku Duckburgh University'
+        node.save()
+
+        node = elasticsearch_doctypes.Node()
+        node.short_name = 'duck1100'
+        node.long_name = 'Duck1100 - Programming for Ducklike Sciences'
+        node.search_text = 'duck1100 DUCK1100 - Duck1100 - Programming for Ducklike Sciences iod IoD ducku Duckburgh University'
+        node.save()
+        self.__reindex_and_refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_doctypes.Node)
+        search = search.query('match', search_text='IoD')
+        result = search.execute()
+
+        self.assertEqual(len(result.hits), 2)
+
+    def test_freesearch_searchtext_multiple_docs_single_hit(self):
+        node = elasticsearch_doctypes.Node()
+        node.short_name = 'duck1010'
+        node.long_name = 'Duck1010 - Duckoriented programming'
+        node.search_text = 'duck1010 DUCK1010 - Duckoriented programming iod IoD ducku Duckburgh University'
+        node.save()
+
+        node = elasticsearch_doctypes.Node()
+        node.short_name = 'duck1100'
+        node.long_name = 'Duck1100 - Programming for Ducklike Sciences'
+        node.search_text = 'duck1100 DUCK1100 - Duck1100 - Programming for Ducklike Sciences iod IoD ducku Duckburgh University'
+        node.save()
+        self.__reindex_and_refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_doctypes.Node)
+        search = search.query('match', search_text='Ducklike')
+        result = search.execute()
+
+        self.assertEqual(len(result.hits), 1)
+        self.assertEqual(result.hits[0].short_name, 'duck1100')
+
+    def test_subject_match(self):
+        corebuilder.SubjectBuilder.quickadd_ducku_duck1010()
+        self.__reindex_and_refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_doctypes.Subject)
+        search = search.query('match', short_name='duck1010')
+        result = search.execute()
+
+        self.assertEqual(len(result.hits), 1)
+        self.assertEqual(result[0].short_name, 'duck1010')
+
+    def test_period_match(self):
+        corebuilder.PeriodBuilder.quickadd_ducku_duck1010_active()
+        self.__reindex_and_refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_doctypes.Period)
+        search = search.query('match', short_name='active')
+        result = search.execute()
+
+        self.assertEqual(len(result.hits), 1)
+        self.assertEqual(result[0].short_name, 'active')
+
+    def test_assignment_match(self):
+        corebuilder.AssignmentBuilder.quickadd_ducku_duck1010_active_assignment1()
+        self.__reindex_and_refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_doctypes.Assignment)
+        search = search.query('match', short_name='assignment1')
+        result = search.execute()
+
+        self.assertEqual(len(result.hits), 1)
+        self.assertEqual(result[0].short_name, 'assignment1')
