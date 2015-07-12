@@ -128,7 +128,7 @@ class TestNodeIndexing(test.TestCase):
         self.assertEqual(result.hits[0].short_name, 'duck1100')
 
     def test_subject_match(self):
-        corebuilder.SubjectBuilder.quickadd_ducku_duck1010()
+        c = corebuilder.SubjectBuilder.quickadd_ducku_duck1010()
         self.__reindex_and_refresh()
 
         search = Search()

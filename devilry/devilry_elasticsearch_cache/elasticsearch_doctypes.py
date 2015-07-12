@@ -60,10 +60,15 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
 
         """
         admins = []
-        for admin in modelobject.get_inherited_admins():
+        for id in modelobject.get_all_admin_ids():
             admins.append(json.dumps({
-                'id': admin.user.id
+                'id': id
             }))
+
+        # for admin in modelobject.get_inherited_admins():
+        #     admins.append(json.dumps({
+        #         'id': admin.user.id
+        #     }))
 
         return admins
 

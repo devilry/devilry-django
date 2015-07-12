@@ -8,6 +8,7 @@ class Command(NoArgsCommand):
 
     def handle(self, *args, **options):
         '''
-        manage.py command for reindexing all nodes from dbdev_testserver
+        manage.py command for deleting and reindexing all nodes from dbdev_testserver
         '''
+        elasticsearch_registry.registry.delete_all()
         elasticsearch_registry.registry.reindex_all()

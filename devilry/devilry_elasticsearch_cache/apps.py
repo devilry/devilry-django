@@ -22,6 +22,6 @@ class ElasticsearchCacheAppConfig(AppConfig):
 
         connections.create_connection(hosts=settings.DEVILRY_ELASTICSEARCH_HOSTS)
         post_save.connect(index_node_post_save, sender=Node)
-        post_save.connect(index_node_post_save, sender=Subject)
-        post_save.connect(index_node_post_save, sender=Period)
-        post_save.connect(index_node_post_save, sender=Assignment)
+        # post_save.connect(index_node_post_save, sender=Subject)
+        # post_save.connect(index_node_post_save, sender=Period)
+        # post_save.connect(index_node_post_save, sender=Assignment)
