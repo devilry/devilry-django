@@ -63,6 +63,7 @@ class TestNodeIndexing(test.TestCase):
         self.assertEqual(result[0].long_name, 'Duckburgh University')
 
     def test_freesearch_searchtext_single_hit(self):
+        self.__reindex_and_refresh()
         node = elasticsearch_doctypes.Node()
         node.short_name = 'duck1010'
         node.long_name = 'Duck1010 - Duckoriented programming'
