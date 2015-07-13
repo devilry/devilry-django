@@ -9,9 +9,15 @@ from devilry.project.develop.testhelpers import corebuilder
 
 class TestNodeIndexing(test.TestCase):
     def setUp(self):
-        connections.get_connection().indices.delete(index='devilry', ignore=404)
         elasticsearch_doctypes.Node.init()
+        self.__delete_indexes()
         self.__reindex_and_refresh()
+
+    def __delete_indexes(self):
+        '''
+        Delete all indexes.
+        '''
+        elasticsearch_registry.registry.delete_all()
 
     def __reindex_and_refresh(self):
         '''
@@ -123,7 +129,7 @@ class TestNodeIndexing(test.TestCase):
         self.assertEqual(result.hits[0].short_name, 'duck1100')
 
     def test_subject_match(self):
-        corebuilder.SubjectBuilder.quickadd_ducku_duck1010()
+        c = corebuilder.SubjectBuilder.quickadd_ducku_duck1010()
         self.__reindex_and_refresh()
 
         search = Search()
