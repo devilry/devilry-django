@@ -27,9 +27,18 @@ class Registry(object):
         doctype_object.save()
 
     def delete_all(self):
-        connections.get_connection().indices.delete(index='_all', ignore=404)
+        """
+        Delete all indices.
+        """
+        connections.get_connection().indices.delete(index='_all', ignore=[400, 404])
+
+    def delete(self, indexname):
+        connections.get_connection().indices.delete(index=indexname, ignore=[400, 404])
 
     def reindex_all(self):
+        """
+        Save all models to DocTypes again.
+        """
         for registryitem in self.model_to_doc_type_map.itervalues():
             for modelobject in registryitem.get_all_modelobjects():
                 self.index(modelobject)
