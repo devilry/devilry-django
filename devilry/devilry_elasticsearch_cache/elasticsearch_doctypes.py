@@ -1,4 +1,4 @@
-from elasticsearch_dsl import DocType, String
+from elasticsearch_dsl import DocType, String, Nested
 from django.contrib.auth import models
 
 from devilry.apps.core import models as coremodels
@@ -17,6 +17,15 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
 
     #: The DocType(elasticsearch _doc_type) class it should reflect. Ex: :class:`.Node`
     doctype_class = None
+
+    admins = Nested(
+        properties={
+            'id': String(fields={'raw': String(index='not_analyzed')})
+        }
+    )
+
+    class Meta:
+        abstract = True
 
     def get_search_text(self, modelobject):
         """
@@ -59,18 +68,12 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
                 ]
 
         """
-        admins = []
-        for id in modelobject.get_all_admin_ids():
-            admins.append(json.dumps({
-                'id': id
-            }))
-
-        # for admin in modelobject.get_inherited_admins():
+        #admins = []
+        # for id in modelobject.get_all_admin_ids():
         #     admins.append(json.dumps({
-        #         'id': admin.user.id
         #     }))
-
-        return admins
+        # for id in modelobject.get_all_admin_ids():
+        #     self.admins.append({'id': id})
 
     def get_doctype_object_kwargs(self, modelobject):
         """
@@ -89,6 +92,9 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
                     'search_text': self.get_search_text(modelobject),
                 }
         """
+
+        self.get_inherited_admins(modelobject)
+
         return {
             '_id': modelobject.id,
             'parentnode_id': self.__get_parentnode_id(modelobject),
@@ -96,7 +102,8 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
             'long_name': modelobject.long_name,
             'path': modelobject.get_path(),
             'search_text': self.get_search_text(modelobject),
-            'admins': self.get_inherited_admins(modelobject),
+            'admins': self.admins,
+            #'admins': self.get_inherited_admins(modelobject),
         }
 
     def to_doctype_object(self, modelobject):

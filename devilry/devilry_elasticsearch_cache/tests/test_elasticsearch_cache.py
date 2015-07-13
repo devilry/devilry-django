@@ -11,7 +11,7 @@ class TestNodeIndexing(test.TestCase):
     def setUp(self):
         elasticsearch_doctypes.Node.init()
         self.__delete_indexes()
-        self.__reindex_and_refresh()
+        #self.__reindex_and_refresh()
 
     def __delete_indexes(self):
         '''
