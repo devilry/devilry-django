@@ -54,11 +54,11 @@ class CommentFile(models.Model):
     mimetype = models.CharField(max_length=42)
     file = models.FileField(upload_to=commentfile_directory_path, max_length=512)
     filename = models.CharField(max_length=256)
+    filesize = models.PositiveIntegerField()
     comment = models.ForeignKey(AbstractComment)
     processing_started_datetime = models.DateTimeField(null=True, blank=True)
     processing_completed_datetime = models.DateTimeField(null=True, blank=True)
     processing_successful = models.BooleanField()
-    # add file size
 
 
 def commentfileimage_directory_path(instance, filename):
