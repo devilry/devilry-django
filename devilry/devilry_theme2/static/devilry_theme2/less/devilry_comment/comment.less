@@ -1,0 +1,270 @@
+@bs-path: "bootstrap/bootstrap-3.3.5/less/";
+
+/*
+bootstrap.less is a import file from bootstrap
+imports all neccessary requirements
+*/
+@import "@{bs-path}bootstrap.less";
+@import "colors.less";
+@import "sizes.less";
+
+
+.page{
+    .container;
+    min-width: @container-tablet;
+}
+
+.sidebar{
+
+}
+
+
+/*
+*/
+.comment{
+    display:flex;
+    margin-top: 10px;
+    font-family: Arial;
+    border-left: 0.8em solid;
+    border-left-color: @default_left_border_color;
+    background-color: @comment_background_color;
+    min-width: 40%;
+    max-width: @container-tablet;
+    max-heigth: 10.0em;
+    min-height: 5.0em;
+    box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+}
+
+/*
+*/
+.default_comment{
+    .comment;
+}
+
+/*
+*/
+.student_comment{
+    .comment;
+    border-left-color: @student_color;
+}
+
+/*
+*/
+.examiner_comment{
+    .comment;
+    border-left-color: @examiner_color;
+}
+
+/*
+*/
+.admin_comment{
+    .comment;
+    border-left-color: @admin_color;
+}
+
+/*
+*/
+.after-deadline-badge{
+    .right-badge-field;
+    background-color: @after_deadline_color;
+}
+
+
+
+
+/*
+Annotations
+*/
+.annotation_comment{
+    background-color: #ffffff;
+    min-height: 3.0em;
+}
+
+.admin_annotation_comment{
+    .admin_comment;
+    .annotation_comment;
+}
+
+.examiner_annotation_comment{
+    .examiner_comment;
+    .annotation_comment;
+}
+
+.student_annotation_comment{
+    .student_comment;
+    .annotation_comment;
+}
+
+.annotation_reply_comment{
+    .comment;
+    background-color: #fafafa;
+    margin-top: 0px;
+}
+
+.student_annotation_reply_comment{
+    .annotation_reply_comment;
+    border-left-color: @student_color; 
+}
+
+.annotation_reply_field{
+    .annotation_reply_comment;
+    max-height: 10px;
+    .col-xs-3{
+        .form-control{
+        }
+    }
+}
+
+
+
+
+/* 
+Field of content to the left in the comment box
+such as created date, created by, comment text and delivery file icons 
+ */
+.left-field{
+    float:left;
+    max-width:100%;
+    //width:@left_field_width;
+    min-width: 50%;
+    padding-bottom:1.0em;
+    padding-left:1.5em;
+    padding-right:0.8em;
+
+    .comment-meta{
+        line-height: 0%;
+        display: inline-block;
+    }
+
+
+    .comment-created-meta-text{
+        .comment-meta;
+        float: left;
+        margin-bottom: 0px auto;
+        color: @comment_text_color;
+        font-size: 1.0em;
+        padding-right: 0.3em;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .comment-created-by{
+        .comment-created-meta-text;
+        font-size: 1.5em;
+    }
+
+    /**/
+    .comment-text{
+        clear: both;
+        font-size: 0.8em;
+        margin-bottom: 10px;
+    }
+}
+
+/*
+Field to add comment status on right side of the comment box.
+*/
+.right-badge-field{
+    float: left;
+    min-width: 35%;
+    text-align: center;
+    vertical-align:center;
+
+    /*
+    After deadline div. A dark red box that fills it's parent.
+    */
+    .badge-text{
+        font-family: Helvetica;
+        font-size: @badge_text_size;
+        font-weight: @badge_text_weight;
+        color: @badge_text_color;
+        display: inline-block;
+    }
+
+}
+
+
+
+/* Icon class default size */
+.icon{
+    width: 2.5em;
+    height: 2.5em;
+    float:left;
+    margin-left: 1.0em;
+    background-size: 100%;
+    transition: all .100s ease-in-out;
+
+    /* icon class scale on mouse-over */
+    &:hover{
+        border-radius: 0.5em;
+        transform: scale(1.4);
+    }
+
+}
+
+/* File icon contains url to file icon image */
+.file-icon{
+    .icon;
+    content:url(file-icon.png) no-repeat center center fixed;
+}
+
+/* Image icon contains url to image icon image */
+.image-icon{
+    .icon;
+    content:url(image-icon.png) no-repeat center center fixed;
+}
+
+
+
+/*
+Scrollable box
+*/
+.annotation-comment-box {
+    height: 600px;
+    width: 100%;
+    overflow-y: scroll;
+}
+
+
+
+/*
+Buttons
+*/
+.button{
+    .btn;
+    .btn-success;
+    background-color: @button_default_color;
+    max-width: @button_max_width;
+    font-size: 1.0em;
+    font-weight: italic;
+    transition: all 0.1s ease-in-out;
+
+    .hover-color(@color){
+        &:hover{
+            background-color: @color + -35;
+        }
+    }
+}
+
+.button-default{
+    .button;
+    .hover-color(@button_default_color);
+}
+
+.button-admin{
+    .button;
+    background-color: @admin_color;
+    .hover-color(@admin_color);
+}
+
+.button-examiner{
+    .button;
+    background-color: @examiner_color;
+    .hover-color(@examiner_color);
+}
+
+.button-student{
+    .button;
+    background-color: @student_color;
+    .hover-color(@student_color);
+}
