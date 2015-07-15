@@ -1,6 +1,15 @@
 {% extends "devilry_theme2/base.django.html" %}
+{% load cradmin_tags %}
 
 {% block main %}
     {% include "devilry_header/header2include.django.html" with devilry_header2_role="student" %}
-    {% block body %}{% endblock %}
+
+    {% block menu %}
+        {% cradmin_render_menu %}
+    {% endblock menu %}
+
+    <div id="django_cradmin_contentwrapper">
+        {% block body %}
+        {% endblock %}
+    </div>
 {% endblock main %}
