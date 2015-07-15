@@ -32,6 +32,7 @@ devilry_urls = (
     (r'^devilry_helplinks/', include('devilry.devilry_helplinks.urls')),
     ('r^student/assignmentgroup/(?P<assignmentgroupid>\d+)$', redirecto_to_show_delivery),
     (r'^devilry_student/', include('devilry.devilry_student.urls')),
+    (r'^devilry_group/', include('devilry.devilry_group.urls')),
     (r'^devilry_i18n/', include('devilry.devilry_i18n.urls')),
     (r'^superuser/', include(admin.site.urls)),
     (r'^devilry_subjectadmin/', include('devilry.devilry_subjectadmin.urls')),
