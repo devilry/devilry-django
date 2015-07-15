@@ -1,7 +1,9 @@
 from django.contrib.auth import get_user_model
 from django_cradmin import crmenu
+from devilry.apps.core.models import AssignmentGroup
 from devilry.devilry_group.cradmin_feedback_thread import feedbackthreadapp
 from devilry.devilry_group.cradminextensions import devilrygroupcrinstance
+from devilry.devilry_student.cradmin_group import projectgroupapp
 
 
 class Menu(crmenu.Menu):
@@ -14,11 +16,12 @@ class Menu(crmenu.Menu):
 class CrAdminInstance(devilrygroupcrinstance.BaseDevilryGroupCrAdminInstance):
     id = 'devilry_group'
     menuclass = Menu
-    roleclass = get_user_model()
-    rolefrontpage_appname = 'waitingfordeliveries'
+    roleclass = AssignmentGroup
+    rolefrontpage_appname = 'feedbackthread'
 
     apps = [
         ('feedbackthread', feedbackthreadapp.App),
+        ('projectgroup', projectgroupapp.App),
     ]
 
     def get_rolequeryset(self):
