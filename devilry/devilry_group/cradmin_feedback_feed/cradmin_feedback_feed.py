@@ -13,14 +13,13 @@ class Menu(crmenu.Menu):
         group = self.request.cradmin_role
         self.add_headeritem(
             label=group.subject.long_name,
-            url=urlresolvers.reverse('devilry_group-feedbackfeed-INDEX', kwargs={
-                'roleid': group.id
-            }),
-            icon="angle-up")
+            url=self.appindex_url('feedbackfeed'),
+            icon="th-list")
 
         if group.assignment.students_can_create_groups:
             self.add(
-                label=_('Project group'), url=self.appindex_url('projectgroup'),
+                label=_('Project group'),
+                url=self.appindex_url('projectgroup'),
                 icon="users",
                 active=self.request.cradmin_app.appname == 'projectgroup')
 
