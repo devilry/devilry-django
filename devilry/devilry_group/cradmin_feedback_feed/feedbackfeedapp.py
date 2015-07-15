@@ -3,9 +3,7 @@ from django.views.generic import base
 
 class FeedbackFeedView(base.TemplateView):
     template_name = "devilry_group/cradmin_feedback_feed/feedbackfeed.django.html"
-
-
-#add SomeView here
+    context_object_name = 'feedback'
 
 class App(crapp.App):
     appurls = [

@@ -5996,9 +5996,7 @@ button.close {
 .panel-body:before,
 .panel-body:after,
 .modal-footer:before,
-.modal-footer:after,
-.page:before,
-.page:after {
+.modal-footer:after {
   content: " ";
   display: table;
 }
@@ -6016,8 +6014,7 @@ button.close {
 .navbar-collapse:after,
 .pager:after,
 .panel-body:after,
-.modal-footer:after,
-.page:after {
+.modal-footer:after {
   clear: both;
 }
 .center-block {
@@ -10316,40 +10313,6 @@ comments-box right field
 /*
 Button sizes
 */
-.page {
-  margin-right: auto;
-  margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
-  min-width: 750px;
-}
-@media (min-width: 768px) {
-  .page {
-    width: 750px;
-  }
-}
-@media (min-width: 992px) {
-  .page {
-    width: 970px;
-  }
-}
-@media (min-width: 1200px) {
-  .page {
-    width: 1170px;
-  }
-}
-.page > .navbar-header,
-.page > .navbar-collapse {
-  margin-right: -15px;
-  margin-left: -15px;
-}
-@media (min-width: 768px) {
-  .page > .navbar-header,
-  .page > .navbar-collapse {
-    margin-right: 0;
-    margin-left: 0;
-  }
-}
 /*
 */
 .comment {
@@ -10593,6 +10556,32 @@ such as created date, created by, comment text and delivery file icons
   clear: both;
   font-size: 0.8em;
   margin-bottom: 10px;
+}
+/*
+    Event messages such as passed, failed and general messages between comments.
+    */
+.event-message {
+  margin-left: 5.0em;
+  margin-top: 4.0em;
+  margin-bottom: 4.0em;
+  color: #333333;
+  font-size: 1.0em;
+}
+.event-message-passed {
+  margin-left: 5.0em;
+  margin-top: 4.0em;
+  margin-bottom: 4.0em;
+  color: #333333;
+  font-size: 1.0em;
+  color: #5d8c08;
+}
+.event-message-failed {
+  margin-left: 5.0em;
+  margin-top: 4.0em;
+  margin-bottom: 4.0em;
+  color: #333333;
+  font-size: 1.0em;
+  color: #9b0d28;
 }
 /*
 Field to add comment status on right side of the comment box.
@@ -11342,6 +11331,14 @@ fieldset[disabled] .button-student.active {
 }
 .button-student:hover {
   background-color: #3a6900;
+}
+.feedback_sidebar {
+  border-top: 1px solid #adadad;
+  background-color: #f2f2f2;
+  padding-left: 2.0em;
+}
+.feedback_feed {
+  background-color: #dddddd;
 }
 body {
   background-image: url('../images/groovepaper.png');

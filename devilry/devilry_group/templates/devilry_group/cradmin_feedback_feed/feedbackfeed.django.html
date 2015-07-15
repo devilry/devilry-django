@@ -1,13 +1,15 @@
 {% extends "devilry_group/base.django.html" %}
 
 {% block header-text %}
-    <h1>This is what I would call a test..</h1>
+    <h1>Header field</h1>
 {% endblock header-text %}
 
 {% block body %}
-    <h1>Hello, world! <small> - When I grow up, I want to be a feedback feed full of comments and stuffs!</small></h1>
-    <h2>Someone stole my sidebar menu.. :/</h2>
-    <div class="admin_comment">
+
+    <div class="col-sm-8">
+    {% block feed %}
+
+        <div class="admin_comment">
         <div class="left-field">
             <div class="comment-meta">
                 <h1 class="comment-created-by">Name</h1>
@@ -22,9 +24,8 @@
             </div>
         </div>
     </div>
-    <br>
-    <br>
-    <br>
+
+        <p class="event-message">2015-05-17 12:10:  This delivery was corrected, and given the grade 5/30 (failed).</p>
 
     <div class="examiner_comment">
         <div class="left-field">
@@ -42,11 +43,9 @@
         </div>
     </div>
 
-    <br>
-    <br>
-    <br>
+<p class="event-message-failed">2015-05-17 12:10:  This delivery was corrected, and given the grade 5/30 (failed).</p>
 
-    <div class="student_comment">
+        <div class="student_comment">
         <div class="left-field">
             <div class="comment-meta">
                 <h1 class="comment-created-by">Name</h1>
@@ -68,4 +67,42 @@
             <p class="badge-text">NOT PART OF THE DELIVERY</p>
         </div>
     </div>
+
+        <p class="event-message-passed">2015-05-17 12:10:  This delivery was corrected, and given the grade 5/30 (failed).</p>
+
+    {% endblock feed %}
+    </div>
+
+    <div class="col-sm-4 feedback_sidebar">
+    {% block sidebar %}
+        <h1>Sidebar</h1>
+        <h5>UPLOADED FILES</h5>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+        <br>
+        <h6>MyAwesome.pdf</h6>
+    {% endblock sidebar %}
+    </div>
+
 {% endblock body %}

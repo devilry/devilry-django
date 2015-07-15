@@ -9,13 +9,27 @@
     {% endblock menu %}
 
     <div id="django_cradmin_contentwrapper">
-        <div class="page-header">
+        <div class="page-header feedback_sidebar">
             <div class="container-fluid">
                 {% block header-text %}
                 {% endblock header-text %}
             </div>
         </div>
+
         {% block body %}
-        {% endblock %}
+
+            <div class="row-fluid">
+
+                {% block feed %}
+                {% endblock %}
+
+                {% block sidebar %}
+                {% endblock %}
+
+            </div>
+
+        {% endblock body %}
+
     </div>
+
 {% endblock main %}

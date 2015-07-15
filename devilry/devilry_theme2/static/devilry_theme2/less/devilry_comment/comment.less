@@ -6,16 +6,6 @@ imports all neccessary requirements
 @import "sizes.less";
 
 
-.page{
-    .container;
-    min-width: @container-tablet;
-}
-
-.sidebar{
-
-}
-
-
 /*
 */
 .comment{
@@ -113,8 +103,6 @@ Annotations
 }
 
 
-
-
 /* 
 Field of content to the left in the comment box
 such as created date, created by, comment text and delivery file icons 
@@ -157,6 +145,28 @@ such as created date, created by, comment text and delivery file icons
         margin-bottom: 10px;
     }
 }
+
+    /*
+    Event messages such as passed, failed and general messages between comments.
+    */
+    .event-message{
+        margin-left: 5.0em;
+        margin-top: 4.0em;
+        margin-bottom: 4.0em;
+        color: #333333;
+        font-size: 1.0em;
+    }
+
+    .event-message-passed{
+        .event-message;
+        color: #5d8c08;
+    }
+
+    .event-message-failed{
+        .event-message;
+        color:#9b0d28;
+    }
+
 
 /*
 Field to add comment status on right side of the comment box.
