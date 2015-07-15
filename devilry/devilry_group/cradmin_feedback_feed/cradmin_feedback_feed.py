@@ -1,5 +1,3 @@
-from django.contrib.auth import get_user_model
-from django.core import urlresolvers
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crmenu
 from devilry.apps.core.models import AssignmentGroup
