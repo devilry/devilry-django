@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth import models as auth_models
 
 
-class AbstractComment(models.Model):
+class Comment(models.Model):
     """
     Main class for a comment.
 
@@ -35,9 +35,6 @@ class AbstractComment(models.Model):
     #: What type of comment is this. Used for reverse mapping to subclasses
     comment_type = models.CharField(choices=COMMENT_TYPE_CHOICES, max_length=42)
 
-    class Meta:
-        abstract = True
-
 
 def commentfile_directory_path(instance, filename):
     return 'devilry_comment/{}/{}'.format(instance.comment.id, instance.id)
@@ -55,10 +52,10 @@ class CommentFile(models.Model):
     file = models.FileField(upload_to=commentfile_directory_path, max_length=512)
     filename = models.CharField(max_length=256)
     filesize = models.PositiveIntegerField()
-    comment = models.ForeignKey(AbstractComment)
+    comment = models.ForeignKey(Comment)
     processing_started_datetime = models.DateTimeField(null=True, blank=True)
     processing_completed_datetime = models.DateTimeField(null=True, blank=True)
-    processing_successful = models.BooleanField()
+    processing_successful = models.BooleanField(default=False)
 
 
 def commentfileimage_directory_path(instance, filename):

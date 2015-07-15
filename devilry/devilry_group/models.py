@@ -4,12 +4,12 @@ from devilry.apps.core.models import assignment_group
 from django.contrib.auth import models as auth_models
 
 
-class AbstractGroupComment(comment_models.AbstractComment):
+class AbstractGroupComment(comment_models.Comment):
     """
     The abstract superclass of all comments related to a delivery and feedback
     """
     group = models.ForeignKey(assignment_group.AssignmentGroup)
-    feedback_set = models.ForeignKey(FeedbackSet)
+    feedback_set = models.ForeignKey('FeedbackSet')
     instant_publish = models.BooleanField(default=False)
     visible_for_students = models.BooleanField(default=False)
 
