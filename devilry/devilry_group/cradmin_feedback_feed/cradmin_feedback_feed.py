@@ -42,7 +42,7 @@ class CrAdminInstance(devilrygroupcrinstance.BaseDevilryGroupCrAdminInstance):
         Get a short title briefly describing the given ``role``.
         Remember that the role is a User.
         """
-        return str(role.id)
+        return "{} - {}".format(role.period, role.assignment.short_name)
 
     @classmethod
     def matches_urlpath(cls, urlpath):
