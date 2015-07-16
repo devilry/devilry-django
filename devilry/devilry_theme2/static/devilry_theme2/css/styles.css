@@ -10521,7 +10521,7 @@ such as created date, created by, comment text and delivery file icons
   max-width: 100%;
   min-width: 65%;
   padding-bottom: 1.0em;
-  padding-left: 1.5em;
+  padding-left: 2.0em;
   padding-right: 0.8em;
   /**/
 }
@@ -10557,6 +10557,14 @@ such as created date, created by, comment text and delivery file icons
   clear: both;
   font-size: 0.8em;
   margin-bottom: 10px;
+}
+.left-field:after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid #999999;
 }
 /*
     Event messages such as passed, failed and general messages between comments.
