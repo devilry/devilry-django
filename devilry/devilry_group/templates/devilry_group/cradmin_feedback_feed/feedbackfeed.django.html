@@ -1,12 +1,17 @@
 {% extends "devilry_group/base.django.html" %}
 
+{% load custom_filter %}
+
 {% block header-text %}
-    <h1>{{ header_field_text }}</h1>
+    <h1>
+        <h1>{{ assignment }}</h1><br><br>
+        {{ subject }} {{ subject_name }} {{ period }}
+    </h1>
 {% endblock header-text %}
 
 {% block body %}
 
-    <div class="col-sm-8">
+    <div class="col-sm-9 feedback_feed">
     {% block feed %}
 
         <div class="admin_comment">
@@ -73,35 +78,18 @@
     {% endblock feed %}
     </div>
 
-    <div class="col-sm-4 feedback_sidebar">
+    <div class="col-sm-3 feedback_sidebar">
     {% block sidebar %}
         <h1>Sidebar</h1>
         <h5>UPLOADED FILES</h5>
-        <h6>MyAwesome.pdf</h6>
         <br>
-        <h6>MyAwesome.pdf</h6>
+        <a href="#"><div class="feedback_sidebar_files">{{ comment_text|devilry_truncatefileext:9 }}</div></a>
         <br>
-        <h6>MyAwesome.pdf</h6>
+        <a href="#"><div class="feedback_sidebar_files">{{ comment_text|devilry_truncatefileext:12 }}</div></a>
         <br>
-        <h6>MyAwesome.pdf</h6>
+        <a href="#"><div class="feedback_sidebar_files">{{ comment_text|devilry_truncatefileext:100 }}</div></a>
         <br>
-        <h6>MyAwesome.pdf</h6>
-        <br>
-        <h6>MyAwesome.pdf</h6>
-        <br>
-        <h6>MyAwesome.pdf</h6>
-        <br>
-        <h6>MyAwesome.pdf</h6>
-        <br>
-        <h6>MyAwesome.pdf</h6>
-        <br>
-        <h6>MyAwesome.pdf</h6>
-        <br>
-        <h6>MyAwesome.pdf</h6>
-        <br>
-        <h6>MyAwesome.pdf</h6>
-        <br>
-        <h6>MyAwesome.pdf</h6>
+
     {% endblock sidebar %}
     </div>
 

@@ -7,7 +7,11 @@ class FeedbackFeedView(base.TemplateView):
     def get_context_data(self, **kwargs):
         context = super(FeedbackFeedView, self).get_context_data(**kwargs)
 
-        context['header_field_text'] = "Hello, I was set in the FeedbackFeedView's get_context_data function!"
+        context['assignment'] = "Oblig 2 - How to duck"
+        context['subject'] = "DUCK1000 -"
+        context['subject_name'] = "Introduction to Duck -"
+        context['period'] = "Autumn 2015"
+        context['comment_text'] = 'MySuperAmazingDoctorateThesisExtremePleaseTakeMeSeriously.pdf'
         return context
 
 class App(crapp.App):
