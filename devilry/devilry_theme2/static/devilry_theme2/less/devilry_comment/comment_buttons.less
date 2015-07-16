@@ -1,0 +1,41 @@
+/*
+Buttons
+*/
+.button{
+    .btn;
+    .btn-success;
+    background-color: @button_default_color;
+    max-width: @button_max_width;
+    font-size: 1.0em;
+    font-weight: italic;
+    transition: all 0.1s ease-in-out;
+
+    .hover-color(@color){
+        &:hover{
+            background-color: @color + -35;
+        }
+    }
+}
+
+.button-default{
+    .button;
+    .hover-color(@button_default_color);
+}
+
+.button-admin{
+    .button;
+    background-color: @admin_color;
+    .hover-color(@admin_color);
+}
+
+.button-examiner{
+    .button;
+    background-color: @examiner_color;
+    .hover-color(@examiner_color);
+}
+
+.button-student{
+    .button;
+    background-color: @student_color;
+    .hover-color(@student_color);
+}

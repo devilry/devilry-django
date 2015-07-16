@@ -10289,13 +10289,13 @@ sidebar-view color
 comment 
 */
 /*
+shadow color
+*/
+/*
 left border colors 
 */
 /* 
 badges 
-*/
-/* 
-shadow color 
 */
 /*
 Button default color
@@ -10322,11 +10322,11 @@ Button sizes
   border-left: 0.8em solid;
   border-left-color: #666666;
   background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
-  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
 }
 /*
 */
@@ -10337,11 +10337,11 @@ Button sizes
   border-left: 0.8em solid;
   border-left-color: #666666;
   background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
-  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
 }
 /*
 */
@@ -10352,11 +10352,11 @@ Button sizes
   border-left: 0.8em solid;
   border-left-color: #666666;
   background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
-  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   border-left-color: #5d8c08;
 }
 /*
@@ -10368,11 +10368,11 @@ Button sizes
   border-left: 0.8em solid;
   border-left-color: #666666;
   background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
-  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   border-left-color: #055986;
 }
 /*
@@ -10384,11 +10384,11 @@ Button sizes
   border-left: 0.8em solid;
   border-left-color: #666666;
   background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
-  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   border-left-color: #ff9933;
 }
 /*
@@ -10410,108 +10410,6 @@ Button sizes
   color: #ffffff;
   display: inline-block;
 }
-/*
-Annotations
-*/
-.annotation_comment {
-  background-color: #ffffff;
-  min-height: 3.0em;
-}
-.admin_annotation_comment {
-  display: flex;
-  margin-top: 10px;
-  font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
-  background-color: #f2f2f2;
-  min-width: 40%;
-  max-width: 100%;
-  max-heigth: 10.0em;
-  min-height: 5.0em;
-  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
-  border-left-color: #ff9933;
-  background-color: #ffffff;
-  min-height: 3.0em;
-}
-.examiner_annotation_comment {
-  display: flex;
-  margin-top: 10px;
-  font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
-  background-color: #f2f2f2;
-  min-width: 40%;
-  max-width: 100%;
-  max-heigth: 10.0em;
-  min-height: 5.0em;
-  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
-  border-left-color: #055986;
-  background-color: #ffffff;
-  min-height: 3.0em;
-}
-.student_annotation_comment {
-  display: flex;
-  margin-top: 10px;
-  font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
-  background-color: #f2f2f2;
-  min-width: 40%;
-  max-width: 100%;
-  max-heigth: 10.0em;
-  min-height: 5.0em;
-  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
-  border-left-color: #5d8c08;
-  background-color: #ffffff;
-  min-height: 3.0em;
-}
-.annotation_reply_comment {
-  display: flex;
-  margin-top: 10px;
-  font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
-  background-color: #f2f2f2;
-  min-width: 40%;
-  max-width: 100%;
-  max-heigth: 10.0em;
-  min-height: 5.0em;
-  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
-  background-color: #fafafa;
-  margin-top: 0px;
-}
-.student_annotation_reply_comment {
-  display: flex;
-  margin-top: 10px;
-  font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
-  background-color: #f2f2f2;
-  min-width: 40%;
-  max-width: 100%;
-  max-heigth: 10.0em;
-  min-height: 5.0em;
-  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
-  background-color: #fafafa;
-  margin-top: 0px;
-  border-left-color: #5d8c08;
-}
-.annotation_reply_field {
-  display: flex;
-  margin-top: 10px;
-  font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
-  background-color: #f2f2f2;
-  min-width: 40%;
-  max-width: 100%;
-  max-heigth: 10.0em;
-  min-height: 5.0em;
-  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
-  background-color: #fafafa;
-  margin-top: 0px;
-  max-height: 10px;
-}
 /* 
 Field of content to the left in the comment box
 such as created date, created by, comment text and delivery file icons 
@@ -10527,36 +10425,31 @@ such as created date, created by, comment text and delivery file icons
 }
 .left-field .comment-meta {
   line-height: 0%;
-  display: inline-block;
+  word-break: break-all;
 }
 .left-field .comment-created-meta-text {
   line-height: 0%;
-  display: inline-block;
+  word-break: break-all;
   float: left;
-  margin-bottom: 0px auto;
   color: #333333;
   font-size: 1.0em;
   padding-right: 0.3em;
-  text-align: center;
-  vertical-align: middle;
 }
 .left-field .comment-created-by {
+  clear: both;
   line-height: 0%;
-  display: inline-block;
+  word-break: break-all;
   float: left;
-  margin-bottom: 0px auto;
   color: #333333;
   font-size: 1.0em;
   padding-right: 0.3em;
-  text-align: center;
-  vertical-align: middle;
   font-size: 1.5em;
 }
 .left-field .comment-text {
   max-width: 60.0em;
   clear: both;
   font-size: 0.8em;
-  margin-bottom: 10px;
+  margin-bottom: 1.0em;
 }
 .left-field:after {
   content: "";
@@ -10567,8 +10460,27 @@ such as created date, created by, comment text and delivery file icons
   border-left: 1px solid #999999;
 }
 /*
-    Event messages such as passed, failed and general messages between comments.
+Field to add comment status on right side of the comment box.
+*/
+.right-badge-field {
+  float: left;
+  min-width: 35%;
+  text-align: center;
+  vertical-align: center;
+  /*
+    After deadline div. A dark red box that fills it's parent.
     */
+}
+.right-badge-field .badge-text {
+  font-family: Helvetica;
+  font-size: 1em;
+  font-weight: bold;
+  color: #ffffff;
+  display: inline-block;
+}
+/*
+Event messages such as passed, failed and general messages between comments.
+*/
 .event-message {
   margin-left: 3.0em;
   margin-top: 4.0em;
@@ -10591,25 +10503,6 @@ such as created date, created by, comment text and delivery file icons
   color: #333333;
   font-size: 1.0em;
   color: #9b0d28;
-}
-/*
-Field to add comment status on right side of the comment box.
-*/
-.right-badge-field {
-  float: left;
-  min-width: 35%;
-  text-align: center;
-  vertical-align: center;
-  /*
-    After deadline div. A dark red box that fills it's parent.
-    */
-}
-.right-badge-field .badge-text {
-  font-family: Helvetica;
-  font-size: 1em;
-  font-weight: bold;
-  color: #ffffff;
-  display: inline-block;
 }
 /* Icon class default size */
 .icon {
@@ -10654,6 +10547,108 @@ Field to add comment status on right side of the comment box.
 .image-icon:hover {
   border-radius: 0.5em;
   transform: scale(1.4);
+}
+/*
+Annotations
+*/
+.annotation_comment {
+  background-color: #ffffff;
+  min-height: 3.0em;
+}
+.admin_annotation_comment {
+  display: flex;
+  margin-top: 10px;
+  font-family: Arial;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+  min-width: 40%;
+  max-width: 100%;
+  max-heigth: 10.0em;
+  min-height: 5.0em;
+  border-left-color: #ff9933;
+  background-color: #ffffff;
+  min-height: 3.0em;
+}
+.examiner_annotation_comment {
+  display: flex;
+  margin-top: 10px;
+  font-family: Arial;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+  min-width: 40%;
+  max-width: 100%;
+  max-heigth: 10.0em;
+  min-height: 5.0em;
+  border-left-color: #055986;
+  background-color: #ffffff;
+  min-height: 3.0em;
+}
+.student_annotation_comment {
+  display: flex;
+  margin-top: 10px;
+  font-family: Arial;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+  min-width: 40%;
+  max-width: 100%;
+  max-heigth: 10.0em;
+  min-height: 5.0em;
+  border-left-color: #5d8c08;
+  background-color: #ffffff;
+  min-height: 3.0em;
+}
+.annotation_reply_comment {
+  display: flex;
+  margin-top: 10px;
+  font-family: Arial;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+  min-width: 40%;
+  max-width: 100%;
+  max-heigth: 10.0em;
+  min-height: 5.0em;
+  background-color: #fafafa;
+  margin-top: 0px;
+}
+.student_annotation_reply_comment {
+  display: flex;
+  margin-top: 10px;
+  font-family: Arial;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+  min-width: 40%;
+  max-width: 100%;
+  max-heigth: 10.0em;
+  min-height: 5.0em;
+  background-color: #fafafa;
+  margin-top: 0px;
+  border-left-color: #5d8c08;
+}
+.annotation_reply_field {
+  display: flex;
+  margin-top: 10px;
+  font-family: Arial;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+  min-width: 40%;
+  max-width: 100%;
+  max-heigth: 10.0em;
+  min-height: 5.0em;
+  background-color: #fafafa;
+  margin-top: 0px;
+  max-height: 10px;
 }
 /*
 Scrollable box
@@ -11347,14 +11342,35 @@ fieldset[disabled] .button-student.active {
 .feedback_sidebar {
   background-color: #f2f2f2;
   border-top: 1px solid #adadad;
-  padding: 1.0em 3.0em 3.0em 3.0em;
+  padding: 2.0em 2.5em 2.5em 2.5em;
 }
 .feedback_sidebar_files {
   word-break: break-all;
+  width: 100%;
+  margin-top: 3%;
 }
 .feedback_feed {
   padding-left: 11%;
   padding-right: 11%;
+}
+.top_headline {
+  color: #999999;
+  font-size: 1.1em;
+  font-family: Helvetica;
+  border-top: 2px solid #999999;
+  margin-bottom: 0.5em;
+}
+.headline_dropdownicon {
+  float: right;
+}
+.sub_headline {
+  color: #999999;
+  font-size: 1.1em;
+  font-family: Helvetica;
+  border-top: 2px solid #999999;
+  margin-bottom: 0.5em;
+  border-top: 0px;
+  font-size: 0.9em;
 }
 body {
   background-image: url('../images/groovepaper.png');

@@ -80,16 +80,19 @@
 
     <div class="col-sm-3 feedback_sidebar">
     {% block sidebar %}
-        <h1>Sidebar</h1>
-        <h5>UPLOADED FILES</h5>
+        <div class="top_headline">UPLOADED FILES</div>
         <br>
-        <a href="#"><div class="feedback_sidebar_files">{{ comment_text|devilry_truncatefileext:9 }}</div></a>
+        <div class="sub_headline">FIRST DEADLINE</div>
+        <div class="feedback_sidebar_files"><a href="#">{{ comment_text|devilry_truncatefileext:13 }}</a></div>
         <br>
-        <a href="#"><div class="feedback_sidebar_files">{{ comment_text|devilry_truncatefileext:12 }}</div></a>
-        <br>
-        <a href="#"><div class="feedback_sidebar_files">{{ comment_text|devilry_truncatefileext:100 }}</div></a>
+        <div class="sub_headline">SECOND DEADLINE</div>
+        <a href="#"><div class="feedback_sidebar_files">{{ comment_text|devilry_truncatefileext:13 }}</div></a>
+        <a href="#"><div class="feedback_sidebar_files">{{ comment_text|devilry_truncatefileext:13 }}</div></a>
         <br>
 
+        <div class="top_headline">TEXT FORMATTING TOOLS</div>
+        <div class="top_headline">CODE FORMATTING TOOLS</div>
+        <div class="top_headline">MATH FORMATTING TOOLS</div>
     {% endblock sidebar %}
     </div>
 

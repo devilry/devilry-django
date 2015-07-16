@@ -15,12 +15,11 @@ imports all neccessary requirements
     border-left: 0.8em solid;
     border-left-color: @default_left_border_color;
     background-color: @comment_background_color;
+    box-shadow: 0.1em 0.1em 0.2em 0.1em @comment_shadow_color;
     min-width: 40%;
-    //max-width: @container-tablet;
     max-width: 100%;
     max-heigth: 10.0em;
     min-height: 5.0em;
-    box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
 }
 
 /*
@@ -58,52 +57,6 @@ imports all neccessary requirements
 }
 
 
-
-
-/*
-Annotations
-*/
-.annotation_comment{
-    background-color: #ffffff;
-    min-height: 3.0em;
-}
-
-.admin_annotation_comment{
-    .admin_comment;
-    .annotation_comment;
-}
-
-.examiner_annotation_comment{
-    .examiner_comment;
-    .annotation_comment;
-}
-
-.student_annotation_comment{
-    .student_comment;
-    .annotation_comment;
-}
-
-.annotation_reply_comment{
-    .comment;
-    background-color: #fafafa;
-    margin-top: 0px;
-}
-
-.student_annotation_reply_comment{
-    .annotation_reply_comment;
-    border-left-color: @student_color; 
-}
-
-.annotation_reply_field{
-    .annotation_reply_comment;
-    max-height: 10px;
-    .col-xs-3{
-        .form-control{
-        }
-    }
-}
-
-
 /* 
 Field of content to the left in the comment box
 such as created date, created by, comment text and delivery file icons 
@@ -119,22 +72,24 @@ such as created date, created by, comment text and delivery file icons
 
     .comment-meta{
         line-height: 0%;
-        display: inline-block;
+        word-break: break-all;
+        //display: inline-block;
     }
 
 
     .comment-created-meta-text{
         .comment-meta;
         float: left;
-        margin-bottom: 0px auto;
+        //margin-bottom: 0px auto;
         color: @comment_text_color;
         font-size: 1.0em;
         padding-right: 0.3em;
-        text-align: center;
-        vertical-align: middle;
-    }
+        //text-align: center;
+        //vertical-align: middle;
 
+    }
     .comment-created-by{
+        clear: both;
         .comment-created-meta-text;
         font-size: 1.5em;
     }
@@ -144,7 +99,7 @@ such as created date, created by, comment text and delivery file icons
         max-width: 60.0em;
         clear: both;
         font-size: 0.8em;
-        margin-bottom: 10px;
+        margin-bottom: 1.0em;
     }
 
     &:after{
@@ -156,27 +111,6 @@ such as created date, created by, comment text and delivery file icons
         border-left: 1px solid #999999;
   }
 }
-
-    /*
-    Event messages such as passed, failed and general messages between comments.
-    */
-    .event-message{
-        margin-left: 3.0em;
-        margin-top: 4.0em;
-        margin-bottom: 4.0em;
-        color: #333333;
-        font-size: 1.0em;
-    }
-
-    .event-message-passed{
-        .event-message;
-        color: #5d8c08;
-    }
-
-    .event-message-failed{
-        .event-message;
-        color:#9b0d28;
-    }
 
 
 /*
@@ -201,6 +135,27 @@ Field to add comment status on right side of the comment box.
 
 }
 
+
+/*
+Event messages such as passed, failed and general messages between comments.
+*/
+.event-message{
+    margin-left: 3.0em;
+    margin-top: 4.0em;
+    margin-bottom: 4.0em;
+    color: #333333;
+    font-size: 1.0em;
+}
+
+.event-message-passed{
+    .event-message;
+    color: #5d8c08;
+}
+
+.event-message-failed{
+    .event-message;
+    color:#9b0d28;
+}
 
 
 /* Icon class default size */
@@ -230,59 +185,4 @@ Field to add comment status on right side of the comment box.
 .image-icon{
     .icon;
     content:url(image-icon.png) no-repeat center center fixed;
-}
-
-
-
-/*
-Scrollable box
-*/
-.annotation-comment-box {
-    height: 600px;
-    width: 100%;
-    overflow-y: scroll;
-}
-
-
-
-/*
-Buttons
-*/
-.button{
-    .btn;
-    .btn-success;
-    background-color: @button_default_color;
-    max-width: @button_max_width;
-    font-size: 1.0em;
-    font-weight: italic;
-    transition: all 0.1s ease-in-out;
-
-    .hover-color(@color){
-        &:hover{
-            background-color: @color + -35;
-        }
-    }
-}
-
-.button-default{
-    .button;
-    .hover-color(@button_default_color);
-}
-
-.button-admin{
-    .button;
-    background-color: @admin_color;
-    .hover-color(@admin_color);
-}
-
-.button-examiner{
-    .button;
-    background-color: @examiner_color;
-    .hover-color(@examiner_color);
-}
-
-.button-student{
-    .button;
-    background-color: @student_color;
-    .hover-color(@student_color);
 }

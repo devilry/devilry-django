@@ -1,4 +1,6 @@
 @bg-color: #f2f2f2;
+@font_family: Helvetica;
+@sidebar_headline_color: #999999;
 
 .feedbacklayout{
   background-color: @bg-color;
@@ -7,14 +9,36 @@
 .feedback_sidebar{
   .feedbacklayout;
   border-top: 1px solid #adadad;
-  padding: 1.0em 3.0em 3.0em 3.0em;
+  padding: 2.0em 2.5em 2.5em 2.5em;
 }
 
 .feedback_sidebar_files{
   word-break: break-all;
+  width: 100%;
+  margin-top: 3%;
 }
 
 .feedback_feed{
   padding-left: 11%;
   padding-right: 11%;
+}
+
+
+.top_headline{
+  color: @sidebar_headline_color;
+  font-size: 1.1em;
+  font-family: @font_family;
+  border-top: 2px solid @sidebar_headline_color;
+  margin-bottom: 0.5em;
+}
+
+.headline_dropdownicon{
+  float: right;
+}
+
+
+.sub_headline{
+  .top_headline;
+  border-top: 0px;
+  font-size: 0.9em;
 }
