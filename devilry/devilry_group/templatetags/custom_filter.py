@@ -10,8 +10,6 @@ def devilry_truncatefileext(value, max_length):
     # Example: if max_length is 3, then "SomeFile.pdf" becomes "Som...pdf".
     if len(value) > max_length:
         extension = os.path.splitext(value)[1]
-        start_text = value[:max_length]
-        truncated_value = start_text + '..' + extension
+        truncated_value = value[:max_length] + '..' + extension
         return truncated_value
-
     return value
