@@ -16,7 +16,8 @@ imports all neccessary requirements
     border-left-color: @default_left_border_color;
     background-color: @comment_background_color;
     min-width: 40%;
-    max-width: @container-tablet;
+    //max-width: @container-tablet;
+    max-width: 100%;
     max-heigth: 10.0em;
     min-height: 5.0em;
     box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -111,7 +112,7 @@ such as created date, created by, comment text and delivery file icons
     float:left;
     max-width:100%;
     //width:@left_field_width;
-    min-width: 50%;
+    min-width: 65%;
     padding-bottom:1.0em;
     padding-left:1.5em;
     padding-right:0.8em;
@@ -140,6 +141,7 @@ such as created date, created by, comment text and delivery file icons
 
     /**/
     .comment-text{
+        max-width: 60.0em;
         clear: both;
         font-size: 0.8em;
         margin-bottom: 10px;
@@ -175,7 +177,7 @@ Field to add comment status on right side of the comment box.
     float: left;
     min-width: 35%;
     text-align: center;
-    vertical-align:center;
+    vertical-align: center;
 
     /*
     After deadline div. A dark red box that fills it's parent.

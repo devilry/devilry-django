@@ -10323,7 +10323,7 @@ Button sizes
   border-left-color: #666666;
   background-color: #f2f2f2;
   min-width: 40%;
-  max-width: 750px;
+  max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -10338,7 +10338,7 @@ Button sizes
   border-left-color: #666666;
   background-color: #f2f2f2;
   min-width: 40%;
-  max-width: 750px;
+  max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -10353,7 +10353,7 @@ Button sizes
   border-left-color: #666666;
   background-color: #f2f2f2;
   min-width: 40%;
-  max-width: 750px;
+  max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -10369,7 +10369,7 @@ Button sizes
   border-left-color: #666666;
   background-color: #f2f2f2;
   min-width: 40%;
-  max-width: 750px;
+  max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -10385,7 +10385,7 @@ Button sizes
   border-left-color: #666666;
   background-color: #f2f2f2;
   min-width: 40%;
-  max-width: 750px;
+  max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -10425,7 +10425,7 @@ Annotations
   border-left-color: #666666;
   background-color: #f2f2f2;
   min-width: 40%;
-  max-width: 750px;
+  max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -10441,7 +10441,7 @@ Annotations
   border-left-color: #666666;
   background-color: #f2f2f2;
   min-width: 40%;
-  max-width: 750px;
+  max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -10457,7 +10457,7 @@ Annotations
   border-left-color: #666666;
   background-color: #f2f2f2;
   min-width: 40%;
-  max-width: 750px;
+  max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -10473,7 +10473,7 @@ Annotations
   border-left-color: #666666;
   background-color: #f2f2f2;
   min-width: 40%;
-  max-width: 750px;
+  max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -10488,7 +10488,7 @@ Annotations
   border-left-color: #666666;
   background-color: #f2f2f2;
   min-width: 40%;
-  max-width: 750px;
+  max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -10504,7 +10504,7 @@ Annotations
   border-left-color: #666666;
   background-color: #f2f2f2;
   min-width: 40%;
-  max-width: 750px;
+  max-width: 100%;
   max-heigth: 10.0em;
   min-height: 5.0em;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
@@ -10519,7 +10519,7 @@ such as created date, created by, comment text and delivery file icons
 .left-field {
   float: left;
   max-width: 100%;
-  min-width: 50%;
+  min-width: 65%;
   padding-bottom: 1.0em;
   padding-left: 1.5em;
   padding-right: 0.8em;
@@ -10553,6 +10553,7 @@ such as created date, created by, comment text and delivery file icons
   font-size: 1.5em;
 }
 .left-field .comment-text {
+  max-width: 60.0em;
   clear: both;
   font-size: 0.8em;
   margin-bottom: 10px;
@@ -11332,10 +11333,13 @@ fieldset[disabled] .button-student.active {
 .button-student:hover {
   background-color: #3a6900;
 }
-.feedback_sidebar {
-  border-top: 1px solid #adadad;
+.feedbacklayout {
   background-color: #f2f2f2;
-  padding-left: 2.0em;
+}
+.feedback_sidebar {
+  background-color: #f2f2f2;
+  border-top: 1px solid #adadad;
+  padding: 1.0em 3.0em 3.0em 3.0em;
 }
 .feedback_feed {
   background-color: #dddddd;
