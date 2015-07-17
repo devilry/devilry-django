@@ -199,48 +199,48 @@ class Command(BaseCommand):
             def create_feedbackset_structure():
 
                 def randomize_files():
-                    return random.sample(comment_files, random.randint(1, len(comment_files)))
+                    return random.sample(comment_files, int(random.uniform(0, len(comment_files))))
 
                 comment_text = "Lorem ipsum blablablablablablabla..."
 
-                feedback_set = FeedbackSetBuilder(
+                feedbacksetbuilder = groupbuilder.add_feedback_set(
                     points=random.randint(minpoints, maxpoints),
                     published_by=examiner,
+                    deadline_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago)
                 )
 
                 # add student delivery
-                feedback_set.add_groupcomment(
+                feedbacksetbuilder.add_groupcomment(
                     files=randomize_files(),
-                    kwargs={
-                        "user": user,
-                        "instant_publish": True,
-                        "visible_to_students": True,
-                        "text": comment_text,
-                        "published_datetime": DateTimeBuilder.now().minus(weeks=weeks_ago, days=3)
-                })
+                    user=user,
+                    user_role="student",
+                    instant_publish=True,
+                    visible_for_students=True,
+                    text=comment_text,
+                    published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=4))
 
+                users = [{'user': user, 'role':'student'}, {'user': examiner, 'role':'examiner'}]
                 # add random comments
-                for i in xrange(0, random(0, 5)):
-                    feedback_set.add_groupcomment(
+                for i in xrange(0, int(random.uniform(0, 5))):
+                    random_user = users[int(random.uniform(0, 1))]
+                    feedbacksetbuilder.add_groupcomment(
                         files=randomize_files(),
-                        kwargs={
-                            "feedback_set": feedback_set,
-                            "instant_publish": True,
-                            "visible_for_students": True,
-                            "text": comment_text,
-                            "published_datetime": DateTimeBuilder.now().minus(weeks=weeks_ago, days=3)
-                        })
+                        user=random_user['user'],
+                        user_role=random_user['role'],
+                        instant_publish=True,
+                        visible_for_students=True,
+                        text=comment_text,
+                        published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=3, hours=int(random.uniform(0, 23))))
 
                 # add examiner feedback
-                feedback_set.add_groupcomment(
+                feedbacksetbuilder.add_groupcomment(
                     files=randomize_files(),
-                    kwargs={
-                        "user": examiner,
-                        "instant_publish": False,
-                        "visible_to_students": True,
-                        "text": comment_text,
-                        "published_datetime": DateTimeBuilder.now().minus(weeks=weeks_ago, days=3)
-                })
+                    user=examiner,
+                    user_role="examiner",
+                    instant_publish=False,
+                    visible_for_students=True,
+                    text=comment_text,
+                    published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=2))
 
             groupbuilder = assignmentbuilder.add_group(
                 students=[user], examiners=[examiner])

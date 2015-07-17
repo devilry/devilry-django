@@ -14,23 +14,23 @@ class Comment(models.Model):
     #: the user who made the comment
     user = models.ForeignKey(auth_models.User)
     #: if this comment is a reply to another comment, that comment will be parent
-    parent = models.ForeignKey('self', blank=True)
+    parent = models.ForeignKey('self', null=True, blank=True)
     #: when was the comment created
     created_datetime = models.DateTimeField(auto_now_add=True)
     #: when was the comment published by celery
     published_datetime = models.DateTimeField(null=True, blank=True)
 
     USER_ROLE_CHOICES = (
-        ('Student', 'Student'),
-        ('Examiner', 'Examiner'),
-        ('Admin', 'Admin'),
+        ('student', 'Student'),
+        ('examiner', 'Examiner'),
+        ('admin', 'Admin'),
     )
     #: What role did the user publish as? This determines the style of the comment
     user_role = models.CharField(choices=USER_ROLE_CHOICES, max_length=42)
 
     COMMENT_TYPE_CHOICES = (
-        ('imageannotationcomment', 'imageannotationcomment'),
-        ('groupcomment', 'groupcomment'),
+        ('imageannotationcomment', 'ImageAnnotationComment'),
+        ('groupcomment', 'GroupComment'),
     )
     #: What type of comment is this. Used for reverse mapping to subclasses
     comment_type = models.CharField(choices=COMMENT_TYPE_CHOICES, max_length=42)
@@ -47,7 +47,6 @@ class CommentFile(models.Model):
     This file will be interperated by celery-tasks based on mimetype, and images
     for annotation will be created where possible.
     """
-    user = models.ForeignKey(auth_models.User)
     mimetype = models.CharField(max_length=42)
     file = models.FileField(upload_to=commentfile_directory_path, max_length=512)
     filename = models.CharField(max_length=256)

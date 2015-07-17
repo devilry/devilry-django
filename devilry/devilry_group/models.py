@@ -33,11 +33,17 @@ class FeedbackSet(models.Model):
     published_datetime = models.DateTimeField(null=True, blank=True)
     deadline_datetime = models.DateTimeField(null=True, blank=True)
 
+    def __unicode__(self):
+        return u"{} - {}".format(self.group, self.deadline_datetime)
+
 
 class GroupComment(AbstractGroupComment):
     """
     A comment made to an `AssignmentGroup`.
     """
+
+    def __unicode__(self):
+        return u"{} - {} - {}".format(self.feedback_set, self.user_role, self.user)
 
 
 class ImageAnnotationComment(AbstractGroupComment):

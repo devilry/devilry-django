@@ -230,6 +230,7 @@ class GroupCommentBuilder(CoreBuilderBase):
     object_attribute_name = 'groupcomment'
 
     def __init__(self, **kwargs):
+        kwargs['comment_type'] = 'groupcomment'
         self.groupcomment = GroupComment.objects.create(**kwargs)
 
     def add_file(self, **kwargs):
