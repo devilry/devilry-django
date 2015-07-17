@@ -19,6 +19,7 @@ from .datebuilder import DateTimeBuilder
 
 from devilry.devilry_group.models import FeedbackSet
 from devilry.devilry_group.models import GroupComment
+from devilry.devilry_comment.models import CommentFile
 
 
 class ReloadableDbBuilderInterface(object):
@@ -212,11 +213,46 @@ class DeadlineBuilder(CoreBuilderBase):
         return self.add_delivery_before_deadline(timedelta(hours=hours), **kwargs)
 
 
+class CommentFileBuilder(CoreBuilderBase):
+    object_attribute_name = 'comment_file'
+
+    def __init__(self, **kwargs):
+        file = ContentFile(kwargs['filename'], kwargs['data'])
+        del(kwargs['data'])
+        kwargs['filesize'] = file.size
+
+        self.comment_file = CommentFile.objects.create(**kwargs)
+        self.comment_file.file = file
+        self.comment_file.save()
+
+
+class GroupCommentBuilder(CoreBuilderBase):
+    object_attribute_name = 'groupcomment'
+
+    def __init__(self, **kwargs):
+        self.groupcomment = GroupComment.objects.create(**kwargs)
+
+    def add_file(self, **kwargs):
+        kwargs['comment'] = self.groupcomment
+        return CommentFileBuilder(**kwargs)
+
+    def add_files(self, files):
+        retval = []
+        for file in files:
+            retval.append(self.add_file(**file))
+
+
 class FeedbackSetBuilder(CoreBuilderBase):
     object_attribute_name = 'feedbackset'
 
     def __init__(self, **kwargs):
-        self.FeedbackSet = FeedbackSet.objects.create(**kwargs)
+        self.feedbackset = FeedbackSet.objects.create(**kwargs)
+
+    def add_groupcomment(self, files=[], **kwargs):
+        kwargs['feedback_set'] = self.feedbackset
+        groupcomment = GroupCommentBuilder(**kwargs)
+        groupcomment.add_files(files)
+        return groupcomment.groupcomment
 
 
 class AssignmentGroupBuilder(CoreBuilderBase):
@@ -267,6 +303,12 @@ class AssignmentGroupBuilder(CoreBuilderBase):
             raise ValueError('add_deadline_x_weeks_ago does not accept ``deadline`` as kwarg, it sets it automatically.')
         kwargs['deadline'] = DateTimeBuilder.now().minus(weeks=weeks)
         return self.add_deadline(**kwargs)
+
+    def add_feedback_set(self, **kwargs):
+        kwargs['group'] = self.group
+        return FeedbackSetBuilder(**kwargs)
+
+
 
 
 class AssignmentBuilder(BaseNodeBuilderBase):

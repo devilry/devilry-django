@@ -150,34 +150,61 @@ class Command(BaseCommand):
         )
 
         def create_group(user, minpoints, maxpoints, examiner):
-            groupbuilder = assignmentbuilder.add_group(
-                students=[user], examiners=[examiner])
-            deadlinebuilder = groupbuilder\
+            def create_old_delivery_structure():
+                deadlinebuilder = groupbuilder\
                 .add_deadline(
                     deadline=Deadline.reduce_datetime_precision(assignmentbuilder.assignment.first_deadline))
 
-            deliverybuilder = deadlinebuilder.add_delivery_x_hours_before_deadline(
-                hours=random.randint(1, 30))
-            used_filenames = set()
-            for number in xrange(filecount):
-                while True:
-                    deliveryfile = random.choice(programs)
-                    filename = deliveryfile['filename']
-                    if filename not in used_filenames:
-                        used_filenames.add(filename)
-                        break
-                deliverybuilder.add_filemeta(
-                    filename=deliveryfile['filename'],
-                    data=deliveryfile['data'])
+                deliverybuilder = deadlinebuilder.add_delivery_x_hours_before_deadline(
+                    hours=random.randint(1, 30))
+                used_filenames = set()
+                for number in xrange(filecount):
+                    while True:
+                        deliveryfile = random.choice(programs)
+                        filename = deliveryfile['filename']
+                        if filename not in used_filenames:
+                            used_filenames.add(filename)
+                            break
+                    deliverybuilder.add_filemeta(
+                        filename=deliveryfile['filename'],
+                        data=deliveryfile['data'])
 
-            if random.randint(0, 100) <= feedback_percent:
-                feedback = StaticFeedback.from_points(
-                    assignment=assignmentbuilder.assignment,
-                    saved_by=examiner,
-                    delivery=deliverybuilder.delivery,
-                    rendered_view=self._lorem_paras(random.randint(1, 5)),
-                    points=random.randint(minpoints, maxpoints))
-                feedback.save()
+                if random.randint(0, 100) <= feedback_percent:
+                    feedback = StaticFeedback.from_points(
+                        assignment=assignmentbuilder.assignment,
+                        saved_by=examiner,
+                        delivery=deliverybuilder.delivery,
+                        rendered_view=self._lorem_paras(random.randint(1, 5)),
+                        points=random.randint(minpoints, maxpoints))
+                    feedback.save()
+
+            def create_feedbackset_structure():
+                comment_text = "Lorem ipsum blablablablablablabla more ipsum, generating test-data is hard, deal with it...."
+                feedback_set = FeedbackSetBuilder(some args here)
+                feedback_set.add_groupcomment(files=[1 to n files], kwargs={
+                    "user": user,
+                    "instant_publish": True,
+                    "visible_to_students": True,
+                    "text": comment_text,
+                    "published_datetime": DateTimeBuilder.now().minus(weeks=weeks_ago, days=3)
+                })
+                for i in xrange(0, random(0, 5)):
+                    feedback_set.add_groupcomment(files=[0 to n files], **kwargs)
+                feedback_set.add_groupcomment(files=[1 to n files], kwargs={
+                    "user": examiner,
+                    "instant_publish": False,
+                    "visible_to_students": True,
+                    "text": comment_text,
+                    "published_datetime": DateTimeBuilder.now().minus(weeks=weeks_ago, days=3)
+                })
+
+            groupbuilder = assignmentbuilder.add_group(
+                students=[user], examiners=[examiner])
+
+            if weeks_ago > 52:
+                create_old_delivery_structure()
+            else:
+                create_feedbackset_structure()
 
         for user in bad_students_iterator:
             create_group(user, minpoints=0, maxpoints=filecount/2,
