@@ -10280,7 +10280,7 @@ imports all neccessary requirements
 */
 /* 
 comment-view color
-@comment_background_image: url(some-url);
+@comment-background-image: url(some-url);
 */
 /* 
 sidebar-view color 
@@ -10393,7 +10393,7 @@ Button sizes
 }
 /*
 */
-.after-deadline-badge {
+.after_deadline_badge {
   float: left;
   min-width: 35%;
   text-align: center;
@@ -10403,7 +10403,7 @@ Button sizes
     */
   background-color: #971009;
 }
-.after-deadline-badge .badge-text {
+.after_deadline_badge .badge_text {
   font-family: Helvetica;
   font-size: 1em;
   font-weight: bold;
@@ -10414,7 +10414,7 @@ Button sizes
 Field of content to the left in the comment box
 such as created date, created by, comment text and delivery file icons 
  */
-.left-field {
+.left_field {
   float: left;
   max-width: 100%;
   min-width: 65%;
@@ -10423,11 +10423,11 @@ such as created date, created by, comment text and delivery file icons
   padding-right: 0.8em;
   /**/
 }
-.left-field .comment-meta {
+.left_field .comment_meta {
   line-height: 0%;
   word-break: break-all;
 }
-.left-field .comment-created-meta-text {
+.left_field .comment_created_meta_text {
   line-height: 0%;
   word-break: break-all;
   float: left;
@@ -10435,7 +10435,7 @@ such as created date, created by, comment text and delivery file icons
   font-size: 1.0em;
   padding-right: 0.3em;
 }
-.left-field .comment-created-by {
+.left_field .comment_created_by {
   clear: both;
   line-height: 0%;
   word-break: break-all;
@@ -10445,13 +10445,14 @@ such as created date, created by, comment text and delivery file icons
   padding-right: 0.3em;
   font-size: 1.5em;
 }
-.left-field .comment-text {
+.left_field .comment_text {
   max-width: 60.0em;
   clear: both;
   font-size: 0.8em;
   margin-bottom: 1.0em;
+  padding-top: 0.9em;
 }
-.left-field:after {
+.left_field:after {
   content: "";
   position: absolute;
   z-index: -1;
@@ -10462,7 +10463,7 @@ such as created date, created by, comment text and delivery file icons
 /*
 Field to add comment status on right side of the comment box.
 */
-.right-badge-field {
+.right_badge_field {
   float: left;
   min-width: 35%;
   text-align: center;
@@ -10471,7 +10472,7 @@ Field to add comment status on right side of the comment box.
     After deadline div. A dark red box that fills it's parent.
     */
 }
-.right-badge-field .badge-text {
+.right_badge_field .badge_text {
   font-family: Helvetica;
   font-size: 1em;
   font-weight: bold;
@@ -10481,14 +10482,14 @@ Field to add comment status on right side of the comment box.
 /*
 Event messages such as passed, failed and general messages between comments.
 */
-.event-message {
+.event_message {
   margin-left: 3.0em;
   margin-top: 4.0em;
   margin-bottom: 4.0em;
   color: #333333;
   font-size: 1.0em;
 }
-.event-message-passed {
+.event_message_passed {
   margin-left: 3.0em;
   margin-top: 4.0em;
   margin-bottom: 4.0em;
@@ -10496,7 +10497,7 @@ Event messages such as passed, failed and general messages between comments.
   font-size: 1.0em;
   color: #5d8c08;
 }
-.event-message-failed {
+.event_message_failed {
   margin-left: 3.0em;
   margin-top: 4.0em;
   margin-bottom: 4.0em;
@@ -10519,7 +10520,7 @@ Event messages such as passed, failed and general messages between comments.
   transform: scale(1.4);
 }
 /* File icon contains url to file icon image */
-.file-icon {
+.file_icon {
   width: 2.5em;
   height: 2.5em;
   float: left;
@@ -10529,12 +10530,12 @@ Event messages such as passed, failed and general messages between comments.
   /* icon class scale on mouse-over */
   content: url(file-icon.png) no-repeat center center fixed;
 }
-.file-icon:hover {
+.file_icon:hover {
   border-radius: 0.5em;
   transform: scale(1.4);
 }
 /* Image icon contains url to image icon image */
-.image-icon {
+.image_icon {
   width: 2.5em;
   height: 2.5em;
   float: left;
@@ -10544,7 +10545,7 @@ Event messages such as passed, failed and general messages between comments.
   /* icon class scale on mouse-over */
   content: url(image-icon.png) no-repeat center center fixed;
 }
-.image-icon:hover {
+.image_icon:hover {
   border-radius: 0.5em;
   transform: scale(1.4);
 }
@@ -10684,10 +10685,10 @@ Buttons
   color: #ffffff;
   background-color: #5cb85c;
   border-color: #4cae4c;
-  background-color: #444444;
-  max-width: 10em;
-  font-size: 1.0em;
-  font-weight: italic;
+  background_color: #444444;
+  max_width: 10em;
+  font_size: 1.0em;
+  font_weight: italic;
   transition: all 0.1s ease-in-out;
 }
 .button:focus,
@@ -10793,7 +10794,7 @@ fieldset[disabled] .button.active {
   color: #5cb85c;
   background-color: #ffffff;
 }
-.button-default {
+.button_default {
   display: inline-block;
   margin-bottom: 0;
   font-weight: normal;
@@ -10816,38 +10817,38 @@ fieldset[disabled] .button.active {
   color: #ffffff;
   background-color: #5cb85c;
   border-color: #4cae4c;
-  background-color: #444444;
-  max-width: 10em;
-  font-size: 1.0em;
-  font-weight: italic;
+  background_color: #444444;
+  max_width: 10em;
+  font_size: 1.0em;
+  font_weight: italic;
   transition: all 0.1s ease-in-out;
 }
-.button-default:focus,
-.button-default:active:focus,
-.button-default.active:focus,
-.button-default.focus,
-.button-default:active.focus,
-.button-default.active.focus {
+.button_default:focus,
+.button_default:active:focus,
+.button_default.active:focus,
+.button_default.focus,
+.button_default:active.focus,
+.button_default.active.focus {
   outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
-.button-default:hover,
-.button-default:focus,
-.button-default.focus {
+.button_default:hover,
+.button_default:focus,
+.button_default.focus {
   color: #377ca8;
   text-decoration: none;
 }
-.button-default:active,
-.button-default.active {
+.button_default:active,
+.button_default.active {
   outline: 0;
   background-image: none;
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
-.button-default.disabled,
-.button-default[disabled],
-fieldset[disabled] .button-default {
+.button_default.disabled,
+.button_default[disabled],
+fieldset[disabled] .button_default {
   cursor: not-allowed;
   pointer-events: none;
   opacity: 0.65;
@@ -10856,79 +10857,79 @@ fieldset[disabled] .button-default {
   box-shadow: none;
 }
 @media (min-width: 768px) {
-  .button-default {
+  .button_default {
     transition-duration: 0.3s;
     transition-property: background-color color border-color;
   }
 }
-.button-default.btn-default:hover {
+.button_default.btn-default:hover {
   background-color: #ffffff;
   border-color: #d9d9d9;
   color: #377ca8;
 }
 @media (min-width: 768px) {
-  .button-default.btn-default:hover {
+  .button_default.btn-default:hover {
     background-color: #377ca8;
     border-color: #377ca8;
     color: #ffffff;
   }
 }
-.button-default.btn-primary:hover {
+.button_default.btn-primary:hover {
   background-color: #224d68;
   border-color: #224d68;
   color: #ffffff;
 }
-.button-default.btn-cancel {
+.button_default.btn-cancel {
   color: #377ca8;
   text-decoration: underline;
 }
-.button-default.btn-cancel:hover {
+.button_default.btn-cancel:hover {
   color: #24516e;
 }
-.button-default:hover,
-.button-default:focus,
-.button-default.focus,
-.button-default:active,
-.button-default.active,
-.open > .dropdown-toggle.button-default {
+.button_default:hover,
+.button_default:focus,
+.button_default.focus,
+.button_default:active,
+.button_default.active,
+.open > .dropdown-toggle.button_default {
   color: #ffffff;
   background-color: #449d44;
   border-color: #398439;
 }
-.button-default:active,
-.button-default.active,
-.open > .dropdown-toggle.button-default {
+.button_default:active,
+.button_default.active,
+.open > .dropdown-toggle.button_default {
   background-image: none;
 }
-.button-default.disabled,
-.button-default[disabled],
-fieldset[disabled] .button-default,
-.button-default.disabled:hover,
-.button-default[disabled]:hover,
-fieldset[disabled] .button-default:hover,
-.button-default.disabled:focus,
-.button-default[disabled]:focus,
-fieldset[disabled] .button-default:focus,
-.button-default.disabled.focus,
-.button-default[disabled].focus,
-fieldset[disabled] .button-default.focus,
-.button-default.disabled:active,
-.button-default[disabled]:active,
-fieldset[disabled] .button-default:active,
-.button-default.disabled.active,
-.button-default[disabled].active,
-fieldset[disabled] .button-default.active {
+.button_default.disabled,
+.button_default[disabled],
+fieldset[disabled] .button_default,
+.button_default.disabled:hover,
+.button_default[disabled]:hover,
+fieldset[disabled] .button_default:hover,
+.button_default.disabled:focus,
+.button_default[disabled]:focus,
+fieldset[disabled] .button_default:focus,
+.button_default.disabled.focus,
+.button_default[disabled].focus,
+fieldset[disabled] .button_default.focus,
+.button_default.disabled:active,
+.button_default[disabled]:active,
+fieldset[disabled] .button_default:active,
+.button_default.disabled.active,
+.button_default[disabled].active,
+fieldset[disabled] .button_default.active {
   background-color: #5cb85c;
   border-color: #4cae4c;
 }
-.button-default .badge {
+.button_default .badge {
   color: #5cb85c;
   background-color: #ffffff;
 }
-.button-default:hover {
-  background-color: #212121;
+.button_default:hover {
+  background_color: #444444 _35;
 }
-.button-admin {
+.button_admin {
   display: inline-block;
   margin-bottom: 0;
   font-weight: normal;
@@ -10951,39 +10952,39 @@ fieldset[disabled] .button-default.active {
   color: #ffffff;
   background-color: #5cb85c;
   border-color: #4cae4c;
-  background-color: #444444;
-  max-width: 10em;
-  font-size: 1.0em;
-  font-weight: italic;
+  background_color: #444444;
+  max_width: 10em;
+  font_size: 1.0em;
+  font_weight: italic;
   transition: all 0.1s ease-in-out;
-  background-color: #ff9933;
+  background_color: #ff9933;
 }
-.button-admin:focus,
-.button-admin:active:focus,
-.button-admin.active:focus,
-.button-admin.focus,
-.button-admin:active.focus,
-.button-admin.active.focus {
+.button_admin:focus,
+.button_admin:active:focus,
+.button_admin.active:focus,
+.button_admin.focus,
+.button_admin:active.focus,
+.button_admin.active.focus {
   outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
-.button-admin:hover,
-.button-admin:focus,
-.button-admin.focus {
+.button_admin:hover,
+.button_admin:focus,
+.button_admin.focus {
   color: #377ca8;
   text-decoration: none;
 }
-.button-admin:active,
-.button-admin.active {
+.button_admin:active,
+.button_admin.active {
   outline: 0;
   background-image: none;
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
-.button-admin.disabled,
-.button-admin[disabled],
-fieldset[disabled] .button-admin {
+.button_admin.disabled,
+.button_admin[disabled],
+fieldset[disabled] .button_admin {
   cursor: not-allowed;
   pointer-events: none;
   opacity: 0.65;
@@ -10992,79 +10993,79 @@ fieldset[disabled] .button-admin {
   box-shadow: none;
 }
 @media (min-width: 768px) {
-  .button-admin {
+  .button_admin {
     transition-duration: 0.3s;
     transition-property: background-color color border-color;
   }
 }
-.button-admin.btn-default:hover {
+.button_admin.btn-default:hover {
   background-color: #ffffff;
   border-color: #d9d9d9;
   color: #377ca8;
 }
 @media (min-width: 768px) {
-  .button-admin.btn-default:hover {
+  .button_admin.btn-default:hover {
     background-color: #377ca8;
     border-color: #377ca8;
     color: #ffffff;
   }
 }
-.button-admin.btn-primary:hover {
+.button_admin.btn-primary:hover {
   background-color: #224d68;
   border-color: #224d68;
   color: #ffffff;
 }
-.button-admin.btn-cancel {
+.button_admin.btn-cancel {
   color: #377ca8;
   text-decoration: underline;
 }
-.button-admin.btn-cancel:hover {
+.button_admin.btn-cancel:hover {
   color: #24516e;
 }
-.button-admin:hover,
-.button-admin:focus,
-.button-admin.focus,
-.button-admin:active,
-.button-admin.active,
-.open > .dropdown-toggle.button-admin {
+.button_admin:hover,
+.button_admin:focus,
+.button_admin.focus,
+.button_admin:active,
+.button_admin.active,
+.open > .dropdown-toggle.button_admin {
   color: #ffffff;
   background-color: #449d44;
   border-color: #398439;
 }
-.button-admin:active,
-.button-admin.active,
-.open > .dropdown-toggle.button-admin {
+.button_admin:active,
+.button_admin.active,
+.open > .dropdown-toggle.button_admin {
   background-image: none;
 }
-.button-admin.disabled,
-.button-admin[disabled],
-fieldset[disabled] .button-admin,
-.button-admin.disabled:hover,
-.button-admin[disabled]:hover,
-fieldset[disabled] .button-admin:hover,
-.button-admin.disabled:focus,
-.button-admin[disabled]:focus,
-fieldset[disabled] .button-admin:focus,
-.button-admin.disabled.focus,
-.button-admin[disabled].focus,
-fieldset[disabled] .button-admin.focus,
-.button-admin.disabled:active,
-.button-admin[disabled]:active,
-fieldset[disabled] .button-admin:active,
-.button-admin.disabled.active,
-.button-admin[disabled].active,
-fieldset[disabled] .button-admin.active {
+.button_admin.disabled,
+.button_admin[disabled],
+fieldset[disabled] .button_admin,
+.button_admin.disabled:hover,
+.button_admin[disabled]:hover,
+fieldset[disabled] .button_admin:hover,
+.button_admin.disabled:focus,
+.button_admin[disabled]:focus,
+fieldset[disabled] .button_admin:focus,
+.button_admin.disabled.focus,
+.button_admin[disabled].focus,
+fieldset[disabled] .button_admin.focus,
+.button_admin.disabled:active,
+.button_admin[disabled]:active,
+fieldset[disabled] .button_admin:active,
+.button_admin.disabled.active,
+.button_admin[disabled].active,
+fieldset[disabled] .button_admin.active {
   background-color: #5cb85c;
   border-color: #4cae4c;
 }
-.button-admin .badge {
+.button_admin .badge {
   color: #5cb85c;
   background-color: #ffffff;
 }
-.button-admin:hover {
-  background-color: #dc7610;
+.button_admin:hover {
+  background_color: #ff9933 _35;
 }
-.button-examiner {
+.button_examiner {
   display: inline-block;
   margin-bottom: 0;
   font-weight: normal;
@@ -11087,39 +11088,39 @@ fieldset[disabled] .button-admin.active {
   color: #ffffff;
   background-color: #5cb85c;
   border-color: #4cae4c;
-  background-color: #444444;
-  max-width: 10em;
-  font-size: 1.0em;
-  font-weight: italic;
+  background_color: #444444;
+  max_width: 10em;
+  font_size: 1.0em;
+  font_weight: italic;
   transition: all 0.1s ease-in-out;
-  background-color: #055986;
+  background_color: #055986;
 }
-.button-examiner:focus,
-.button-examiner:active:focus,
-.button-examiner.active:focus,
-.button-examiner.focus,
-.button-examiner:active.focus,
-.button-examiner.active.focus {
+.button_examiner:focus,
+.button_examiner:active:focus,
+.button_examiner.active:focus,
+.button_examiner.focus,
+.button_examiner:active.focus,
+.button_examiner.active.focus {
   outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
-.button-examiner:hover,
-.button-examiner:focus,
-.button-examiner.focus {
+.button_examiner:hover,
+.button_examiner:focus,
+.button_examiner.focus {
   color: #377ca8;
   text-decoration: none;
 }
-.button-examiner:active,
-.button-examiner.active {
+.button_examiner:active,
+.button_examiner.active {
   outline: 0;
   background-image: none;
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
-.button-examiner.disabled,
-.button-examiner[disabled],
-fieldset[disabled] .button-examiner {
+.button_examiner.disabled,
+.button_examiner[disabled],
+fieldset[disabled] .button_examiner {
   cursor: not-allowed;
   pointer-events: none;
   opacity: 0.65;
@@ -11128,79 +11129,79 @@ fieldset[disabled] .button-examiner {
   box-shadow: none;
 }
 @media (min-width: 768px) {
-  .button-examiner {
+  .button_examiner {
     transition-duration: 0.3s;
     transition-property: background-color color border-color;
   }
 }
-.button-examiner.btn-default:hover {
+.button_examiner.btn-default:hover {
   background-color: #ffffff;
   border-color: #d9d9d9;
   color: #377ca8;
 }
 @media (min-width: 768px) {
-  .button-examiner.btn-default:hover {
+  .button_examiner.btn-default:hover {
     background-color: #377ca8;
     border-color: #377ca8;
     color: #ffffff;
   }
 }
-.button-examiner.btn-primary:hover {
+.button_examiner.btn-primary:hover {
   background-color: #224d68;
   border-color: #224d68;
   color: #ffffff;
 }
-.button-examiner.btn-cancel {
+.button_examiner.btn-cancel {
   color: #377ca8;
   text-decoration: underline;
 }
-.button-examiner.btn-cancel:hover {
+.button_examiner.btn-cancel:hover {
   color: #24516e;
 }
-.button-examiner:hover,
-.button-examiner:focus,
-.button-examiner.focus,
-.button-examiner:active,
-.button-examiner.active,
-.open > .dropdown-toggle.button-examiner {
+.button_examiner:hover,
+.button_examiner:focus,
+.button_examiner.focus,
+.button_examiner:active,
+.button_examiner.active,
+.open > .dropdown-toggle.button_examiner {
   color: #ffffff;
   background-color: #449d44;
   border-color: #398439;
 }
-.button-examiner:active,
-.button-examiner.active,
-.open > .dropdown-toggle.button-examiner {
+.button_examiner:active,
+.button_examiner.active,
+.open > .dropdown-toggle.button_examiner {
   background-image: none;
 }
-.button-examiner.disabled,
-.button-examiner[disabled],
-fieldset[disabled] .button-examiner,
-.button-examiner.disabled:hover,
-.button-examiner[disabled]:hover,
-fieldset[disabled] .button-examiner:hover,
-.button-examiner.disabled:focus,
-.button-examiner[disabled]:focus,
-fieldset[disabled] .button-examiner:focus,
-.button-examiner.disabled.focus,
-.button-examiner[disabled].focus,
-fieldset[disabled] .button-examiner.focus,
-.button-examiner.disabled:active,
-.button-examiner[disabled]:active,
-fieldset[disabled] .button-examiner:active,
-.button-examiner.disabled.active,
-.button-examiner[disabled].active,
-fieldset[disabled] .button-examiner.active {
+.button_examiner.disabled,
+.button_examiner[disabled],
+fieldset[disabled] .button_examiner,
+.button_examiner.disabled:hover,
+.button_examiner[disabled]:hover,
+fieldset[disabled] .button_examiner:hover,
+.button_examiner.disabled:focus,
+.button_examiner[disabled]:focus,
+fieldset[disabled] .button_examiner:focus,
+.button_examiner.disabled.focus,
+.button_examiner[disabled].focus,
+fieldset[disabled] .button_examiner.focus,
+.button_examiner.disabled:active,
+.button_examiner[disabled]:active,
+fieldset[disabled] .button_examiner:active,
+.button_examiner.disabled.active,
+.button_examiner[disabled].active,
+fieldset[disabled] .button_examiner.active {
   background-color: #5cb85c;
   border-color: #4cae4c;
 }
-.button-examiner .badge {
+.button_examiner .badge {
   color: #5cb85c;
   background-color: #ffffff;
 }
-.button-examiner:hover {
-  background-color: #003663;
+.button_examiner:hover {
+  background_color: #055986 _35;
 }
-.button-student {
+.button_student {
   display: inline-block;
   margin-bottom: 0;
   font-weight: normal;
@@ -11223,39 +11224,39 @@ fieldset[disabled] .button-examiner.active {
   color: #ffffff;
   background-color: #5cb85c;
   border-color: #4cae4c;
-  background-color: #444444;
-  max-width: 10em;
-  font-size: 1.0em;
-  font-weight: italic;
+  background_color: #444444;
+  max_width: 10em;
+  font_size: 1.0em;
+  font_weight: italic;
   transition: all 0.1s ease-in-out;
-  background-color: #5d8c08;
+  background_color: #5d8c08;
 }
-.button-student:focus,
-.button-student:active:focus,
-.button-student.active:focus,
-.button-student.focus,
-.button-student:active.focus,
-.button-student.active.focus {
+.button_student:focus,
+.button_student:active:focus,
+.button_student.active:focus,
+.button_student.focus,
+.button_student:active.focus,
+.button_student.active.focus {
   outline: thin dotted;
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
-.button-student:hover,
-.button-student:focus,
-.button-student.focus {
+.button_student:hover,
+.button_student:focus,
+.button_student.focus {
   color: #377ca8;
   text-decoration: none;
 }
-.button-student:active,
-.button-student.active {
+.button_student:active,
+.button_student.active {
   outline: 0;
   background-image: none;
   -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
-.button-student.disabled,
-.button-student[disabled],
-fieldset[disabled] .button-student {
+.button_student.disabled,
+.button_student[disabled],
+fieldset[disabled] .button_student {
   cursor: not-allowed;
   pointer-events: none;
   opacity: 0.65;
@@ -11264,77 +11265,77 @@ fieldset[disabled] .button-student {
   box-shadow: none;
 }
 @media (min-width: 768px) {
-  .button-student {
+  .button_student {
     transition-duration: 0.3s;
     transition-property: background-color color border-color;
   }
 }
-.button-student.btn-default:hover {
+.button_student.btn-default:hover {
   background-color: #ffffff;
   border-color: #d9d9d9;
   color: #377ca8;
 }
 @media (min-width: 768px) {
-  .button-student.btn-default:hover {
+  .button_student.btn-default:hover {
     background-color: #377ca8;
     border-color: #377ca8;
     color: #ffffff;
   }
 }
-.button-student.btn-primary:hover {
+.button_student.btn-primary:hover {
   background-color: #224d68;
   border-color: #224d68;
   color: #ffffff;
 }
-.button-student.btn-cancel {
+.button_student.btn-cancel {
   color: #377ca8;
   text-decoration: underline;
 }
-.button-student.btn-cancel:hover {
+.button_student.btn-cancel:hover {
   color: #24516e;
 }
-.button-student:hover,
-.button-student:focus,
-.button-student.focus,
-.button-student:active,
-.button-student.active,
-.open > .dropdown-toggle.button-student {
+.button_student:hover,
+.button_student:focus,
+.button_student.focus,
+.button_student:active,
+.button_student.active,
+.open > .dropdown-toggle.button_student {
   color: #ffffff;
   background-color: #449d44;
   border-color: #398439;
 }
-.button-student:active,
-.button-student.active,
-.open > .dropdown-toggle.button-student {
+.button_student:active,
+.button_student.active,
+.open > .dropdown-toggle.button_student {
   background-image: none;
 }
-.button-student.disabled,
-.button-student[disabled],
-fieldset[disabled] .button-student,
-.button-student.disabled:hover,
-.button-student[disabled]:hover,
-fieldset[disabled] .button-student:hover,
-.button-student.disabled:focus,
-.button-student[disabled]:focus,
-fieldset[disabled] .button-student:focus,
-.button-student.disabled.focus,
-.button-student[disabled].focus,
-fieldset[disabled] .button-student.focus,
-.button-student.disabled:active,
-.button-student[disabled]:active,
-fieldset[disabled] .button-student:active,
-.button-student.disabled.active,
-.button-student[disabled].active,
-fieldset[disabled] .button-student.active {
+.button_student.disabled,
+.button_student[disabled],
+fieldset[disabled] .button_student,
+.button_student.disabled:hover,
+.button_student[disabled]:hover,
+fieldset[disabled] .button_student:hover,
+.button_student.disabled:focus,
+.button_student[disabled]:focus,
+fieldset[disabled] .button_student:focus,
+.button_student.disabled.focus,
+.button_student[disabled].focus,
+fieldset[disabled] .button_student.focus,
+.button_student.disabled:active,
+.button_student[disabled]:active,
+fieldset[disabled] .button_student:active,
+.button_student.disabled.active,
+.button_student[disabled].active,
+fieldset[disabled] .button_student.active {
   background-color: #5cb85c;
   border-color: #4cae4c;
 }
-.button-student .badge {
+.button_student .badge {
   color: #5cb85c;
   background-color: #ffffff;
 }
-.button-student:hover {
-  background-color: #3a6900;
+.button_student:hover {
+  background_color: #5d8c08 _35;
 }
 .feedbacklayout {
   background-color: #f2f2f2;

@@ -13,9 +13,9 @@ imports all neccessary requirements
     margin-top: 10px;
     font-family: Arial;
     border-left: 0.8em solid;
-    border-left-color: @default_left_border_color;
-    background-color: @comment_background_color;
-    box-shadow: 0.1em 0.1em 0.2em 0.1em @comment_shadow_color;
+    border-left-color: @default-left-border-color;
+    background-color: @comment-background-color;
+    box-shadow: 0.1em 0.1em 0.2em 0.1em @comment-shadow-color;
     min-width: 40%;
     max-width: 100%;
     max-heigth: 10.0em;
@@ -32,28 +32,28 @@ imports all neccessary requirements
 */
 .student_comment{
     .comment;
-    border-left-color: @student_color;
+    border-left-color: @student-color;
 }
 
 /*
 */
 .examiner_comment{
     .comment;
-    border-left-color: @examiner_color;
+    border-left-color: @examiner-color;
 }
 
 /*
 */
 .admin_comment{
     .comment;
-    border-left-color: @admin_color;
+    border-left-color: @admin-color;
 }
 
 /*
 */
-.after-deadline-badge{
-    .right-badge-field;
-    background-color: @after_deadline_color;
+.after_deadline_badge{
+    .right_badge_field;
+    background-color: @after-deadline-color;
 }
 
 
@@ -61,7 +61,7 @@ imports all neccessary requirements
 Field of content to the left in the comment box
 such as created date, created by, comment text and delivery file icons 
  */
-.left-field{
+.left_field{
     float:left;
     max-width:100%;
     //width:@left_field_width;
@@ -70,36 +70,37 @@ such as created date, created by, comment text and delivery file icons
     padding-left:2.0em;
     padding-right:0.8em;
 
-    .comment-meta{
+    .comment_meta{
         line-height: 0%;
         word-break: break-all;
         //display: inline-block;
     }
 
 
-    .comment-created-meta-text{
-        .comment-meta;
+    .comment_created_meta_text{
+        .comment_meta;
         float: left;
         //margin-bottom: 0px auto;
-        color: @comment_text_color;
+        color: @comment-text-color;
         font-size: 1.0em;
         padding-right: 0.3em;
         //text-align: center;
         //vertical-align: middle;
 
     }
-    .comment-created-by{
+    .comment_created_by{
         clear: both;
-        .comment-created-meta-text;
+        .comment_created_meta_text;
         font-size: 1.5em;
     }
 
     /**/
-    .comment-text{
+    .comment_text{
         max-width: 60.0em;
         clear: both;
         font-size: 0.8em;
         margin-bottom: 1.0em;
+        padding-top: 0.9em;
     }
 
     &:after{
@@ -116,7 +117,7 @@ such as created date, created by, comment text and delivery file icons
 /*
 Field to add comment status on right side of the comment box.
 */
-.right-badge-field{
+.right_badge_field{
     float: left;
     min-width: 35%;
     text-align: center;
@@ -125,11 +126,11 @@ Field to add comment status on right side of the comment box.
     /*
     After deadline div. A dark red box that fills it's parent.
     */
-    .badge-text{
+    .badge_text{
         font-family: Helvetica;
-        font-size: @badge_text_size;
-        font-weight: @badge_text_weight;
-        color: @badge_text_color;
+        font-size: @badge-text-size;
+        font-weight: @badge-text-weight;
+        color: @badge-text-color;
         display: inline-block;
     }
 
@@ -139,7 +140,7 @@ Field to add comment status on right side of the comment box.
 /*
 Event messages such as passed, failed and general messages between comments.
 */
-.event-message{
+.event_message{
     margin-left: 3.0em;
     margin-top: 4.0em;
     margin-bottom: 4.0em;
@@ -147,13 +148,13 @@ Event messages such as passed, failed and general messages between comments.
     font-size: 1.0em;
 }
 
-.event-message-passed{
-    .event-message;
+.event_message_passed{
+    .event_message;
     color: #5d8c08;
 }
 
-.event-message-failed{
-    .event-message;
+.event_message_failed{
+    .event_message;
     color:#9b0d28;
 }
 
@@ -176,13 +177,13 @@ Event messages such as passed, failed and general messages between comments.
 }
 
 /* File icon contains url to file icon image */
-.file-icon{
+.file_icon{
     .icon;
     content:url(file-icon.png) no-repeat center center fixed;
 }
 
 /* Image icon contains url to image icon image */
-.image-icon{
+.image_icon{
     .icon;
     content:url(image-icon.png) no-repeat center center fixed;
 }

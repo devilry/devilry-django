@@ -8,7 +8,7 @@ from devilry.apps.core.models import StaticFeedback, Deadline
 from devilry.apps.core.models import RelatedStudent
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_markup.parse_markdown import markdown_full
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder, FeedbackSetBuilder
 from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 
 
@@ -89,6 +89,24 @@ programs = [
             '        }\n'
             '    }\n'
             '}')
+    },
+]
+
+comment_files = [
+    {
+        'filename': 'test.py',
+        'data': 'print "Test"',
+        'filesize': 64,
+    },
+    {
+        'filename': 'hello.py',
+        'data': 'if i == 10:\n    print "Hello"\nelse: pass',
+        'filesize': 64,
+    },
+    {
+        'filename': 'demo.py',
+        'data': 'while True: pass',
+        'filesize': 64,
     },
 ]
 
@@ -179,23 +197,49 @@ class Command(BaseCommand):
                     feedback.save()
 
             def create_feedbackset_structure():
-                comment_text = "Lorem ipsum blablablablablablabla more ipsum, generating test-data is hard, deal with it...."
-                feedback_set = FeedbackSetBuilder(some args here)
-                feedback_set.add_groupcomment(files=[1 to n files], kwargs={
-                    "user": user,
-                    "instant_publish": True,
-                    "visible_to_students": True,
-                    "text": comment_text,
-                    "published_datetime": DateTimeBuilder.now().minus(weeks=weeks_ago, days=3)
+
+                def randomize_files():
+                    return random.sample(comment_files, random.randint(1, len(comment_files)))
+
+                comment_text = "Lorem ipsum blablablablablablabla..."
+
+                feedback_set = FeedbackSetBuilder(
+                    points=random.randint(minpoints, maxpoints),
+                    published_by=examiner,
+                )
+
+                # add student delivery
+                feedback_set.add_groupcomment(
+                    files=randomize_files(),
+                    kwargs={
+                        "user": user,
+                        "instant_publish": True,
+                        "visible_to_students": True,
+                        "text": comment_text,
+                        "published_datetime": DateTimeBuilder.now().minus(weeks=weeks_ago, days=3)
                 })
+
+                # add random comments
                 for i in xrange(0, random(0, 5)):
-                    feedback_set.add_groupcomment(files=[0 to n files], **kwargs)
-                feedback_set.add_groupcomment(files=[1 to n files], kwargs={
-                    "user": examiner,
-                    "instant_publish": False,
-                    "visible_to_students": True,
-                    "text": comment_text,
-                    "published_datetime": DateTimeBuilder.now().minus(weeks=weeks_ago, days=3)
+                    feedback_set.add_groupcomment(
+                        files=randomize_files(),
+                        kwargs={
+                            "feedback_set": feedback_set,
+                            "instant_publish": True,
+                            "visible_for_students": True,
+                            "text": comment_text,
+                            "published_datetime": DateTimeBuilder.now().minus(weeks=weeks_ago, days=3)
+                        })
+
+                # add examiner feedback
+                feedback_set.add_groupcomment(
+                    files=randomize_files(),
+                    kwargs={
+                        "user": examiner,
+                        "instant_publish": False,
+                        "visible_to_students": True,
+                        "text": comment_text,
+                        "published_datetime": DateTimeBuilder.now().minus(weeks=weeks_ago, days=3)
                 })
 
             groupbuilder = assignmentbuilder.add_group(

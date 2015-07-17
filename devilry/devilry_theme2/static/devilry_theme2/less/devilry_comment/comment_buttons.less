@@ -4,38 +4,38 @@ Buttons
 .button{
     .btn;
     .btn-success;
-    background-color: @button_default_color;
-    max-width: @button_max_width;
-    font-size: 1.0em;
-    font-weight: italic;
+    background_color: @button-default-color;
+    max_width: @button-max-width;
+    font_size: 1.0em;
+    font_weight: italic;
     transition: all 0.1s ease-in-out;
 
-    .hover-color(@color){
+    .hover_color(@color){
         &:hover{
-            background-color: @color + -35;
+            background_color: @color + _35;
         }
     }
 }
 
-.button-default{
+.button_default{
     .button;
-    .hover-color(@button_default_color);
+    .hover_color(@button-default-color);
 }
 
-.button-admin{
+.button_admin{
     .button;
-    background-color: @admin_color;
-    .hover-color(@admin_color);
+    background_color: @admin-color;
+    .hover_color(@admin-color);
 }
 
-.button-examiner{
+.button_examiner{
     .button;
-    background-color: @examiner_color;
-    .hover-color(@examiner_color);
+    background_color: @examiner-color;
+    .hover_color(@examiner-color);
 }
 
-.button-student{
+.button_student{
     .button;
-    background-color: @student_color;
-    .hover-color(@student_color);
+    background_color: @student-color;
+    .hover_color(@student-color);
 }
