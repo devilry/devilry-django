@@ -16,7 +16,7 @@ class Comment(models.Model):
     #: if this comment is a reply to another comment, that comment will be parent
     parent = models.ForeignKey('self', blank=True)
     #: when was the comment created
-    created_datetime = models.DateTimeField(auto_now=True)
+    created_datetime = models.DateTimeField(auto_now_add=True)
     #: when was the comment published by celery
     published_datetime = models.DateTimeField(null=True, blank=True)
 

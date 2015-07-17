@@ -8,7 +8,6 @@ class AbstractGroupComment(comment_models.Comment):
     """
     The abstract superclass of all comments related to a delivery and feedback
     """
-    group = models.ForeignKey(assignment_group.AssignmentGroup)
     feedback_set = models.ForeignKey('FeedbackSet')
     instant_publish = models.BooleanField(default=False)
     visible_for_students = models.BooleanField(default=False)
@@ -27,8 +26,10 @@ class FeedbackSet(models.Model):
     All student-comments will be `instant_publish=True`, and the same applies to comments made by examiners that
     are not a part of feedback.
     """
+    group = models.ForeignKey(assignment_group.AssignmentGroup)
     points = models.PositiveIntegerField()
     published_by = models.ForeignKey(auth_models.User)
+    created_datetime = models.DateTimeField(auto_now_add=True)
     published_datetime = models.DateTimeField(null=True, blank=True)
     deadline_datetime = models.DateTimeField(null=True, blank=True)
 
