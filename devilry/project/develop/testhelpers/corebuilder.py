@@ -17,6 +17,9 @@ from devilry.apps.core.models import RelatedExaminer
 from devilry.apps.core.deliverystore import MemoryDeliveryStore
 from .datebuilder import DateTimeBuilder
 
+from devilry.devilry_group.models import FeedbackSet
+from devilry.devilry_group.models import GroupComment
+
 
 class ReloadableDbBuilderInterface(object):
     def update(self, **attributes):
@@ -207,6 +210,13 @@ class DeadlineBuilder(CoreBuilderBase):
 
     def add_delivery_x_hours_before_deadline(self, hours, **kwargs):
         return self.add_delivery_before_deadline(timedelta(hours=hours), **kwargs)
+
+
+class FeedbackSetBuilder(CoreBuilderBase):
+    object_attribute_name = 'feedbackset'
+
+    def __init__(self, **kwargs):
+        self.FeedbackSet = FeedbackSet.objects.create(**kwargs)
 
 
 class AssignmentGroupBuilder(CoreBuilderBase):
