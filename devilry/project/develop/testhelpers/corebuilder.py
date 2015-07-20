@@ -229,6 +229,22 @@ class CommentFileBuilder(CoreBuilderBase):
 class GroupCommentBuilder(CoreBuilderBase):
     object_attribute_name = 'groupcomment'
 
+    @classmethod
+    def quickadd_ducku_duck1010_active_assignment1_group_feedbackset_groupcomment(cls, studentuser=None):
+        students = []
+        if studentuser:
+            students.append(studentuser)
+        return FeedbackSetBuilder\
+            .quickadd_ducku_duck1010_active_assignment1_group_feedbackset(studentuser=studentuser)\
+            .add_groupcomment(
+                user=studentuser,
+                user_role='student',
+                instant_publish=True,
+                visible_for_students=True,
+                text='Lorem ipsum I dont know it from memory bla bla bla..',
+                published_datetime=DateTimeBuilder.now().minus(weeks=4, days=3, hours=10)
+            )
+
     def __init__(self, **kwargs):
         kwargs['comment_type'] = 'groupcomment'
         self.groupcomment = GroupComment.objects.create(**kwargs)
@@ -245,6 +261,17 @@ class GroupCommentBuilder(CoreBuilderBase):
 
 class FeedbackSetBuilder(CoreBuilderBase):
     object_attribute_name = 'feedbackset'
+
+    @classmethod
+    def quickadd_ducku_duck1010_active_assignment1_group_feedbackset(cls, studentuser=None):
+        students = []
+        if studentuser:
+            students.append(studentuser)
+        return AssignmentGroupBuilder\
+            .quickadd_ducku_duck1010_active_assignment1_group(studentuser=studentuser)\
+            .add_feedback_set(points=10,
+                    published_by=UserBuilder('donald', full_name='Donald Duck').user,
+                    deadline_datetime=DateTimeBuilder.now().minus(weeks=4))
 
     def __init__(self, **kwargs):
         self.feedbackset = FeedbackSet.objects.create(**kwargs)

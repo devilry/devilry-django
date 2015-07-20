@@ -2,8 +2,8 @@ from django import template
 import os.path
 register = template.Library()
 
-@register.filter("devilry_truncatefileext")
-def devilry_truncatefileext(value, max_length):
+@register.filter("devilry_truncatefileextension")
+def devilry_truncatefileextension(value, max_length):
     # Filter that takes a filename-string and
     # and gets the n first characters from the string
     # and combines it with the extension of the file.
