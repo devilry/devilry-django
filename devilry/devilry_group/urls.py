@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, url, include
-from devilry.devilry_group.cradmin_feedback_feed import cradmin_feedback_feed
+
+from devilry.devilry_group import cradmin
 
 urlpatterns = patterns(
     'devilry.devilry_group',
-    url(r'^', include(cradmin_feedback_feed.CrAdminInstance.urls()))
+    url(r'^', include(cradmin.CrAdminInstance.urls()))
 )

@@ -1,8 +1,9 @@
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crmenu
+from django_cradmin import crinstance
+
 from devilry.apps.core.models import AssignmentGroup
-from devilry.devilry_group.cradmin_feedback_feed import feedbackfeedapp
-from devilry.devilry_group.cradminextensions import devilrygroupcrinstance
+from devilry.devilry_group.views import cradmin_feedbackfeed
 from devilry.devilry_student.cradmin_group import projectgroupapp
 
 
@@ -22,14 +23,14 @@ class Menu(crmenu.Menu):
                 active=self.request.cradmin_app.appname == 'projectgroup')
 
 
-class CrAdminInstance(devilrygroupcrinstance.BaseDevilryGroupCrAdminInstance):
+class CrAdminInstance(crinstance.BaseCrAdminInstance):
     id = 'devilry_group'
     menuclass = Menu
     roleclass = AssignmentGroup
     rolefrontpage_appname = 'feedbackfeed'
 
     apps = [
-        ('feedbackfeed', feedbackfeedapp.App),
+        ('feedbackfeed', cradmin_feedbackfeed.App),
         ('projectgroup', projectgroupapp.App),
     ]
 
