@@ -41,7 +41,6 @@ class GroupComment(AbstractGroupComment):
     """
     A comment made to an `AssignmentGroup`.
     """
-
     def __unicode__(self):
         return u"{} - {} - {}".format(self.feedback_set, self.user_role, self.user)
 
