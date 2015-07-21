@@ -110,6 +110,28 @@ comment_files = [
     },
 ]
 
+comment_texts = [
+    u"Noooooo! Dr. Zoidberg, that doesn't make sense. But, okay! That's right, baby. I ain't your loverboy Flexo, the guy you love so much. You even love anyone pretending to be him! Now that the, uh, garbage ball is in space, Doctor, perhaps you can help me with my sexual inhibitions? No! The cat shelter's on to me. Eeeee! Now say 'nuclear wessels'!",
+    u"But I know you in the future. I cleaned your poop. Say it in Russian! I don't know what you did, Fry, but once again, you screwed up! Now all the planets are gonna start cracking wise about our mamas. Aww, it's true. I've been hiding it for so long. Check it out, y'all. Everyone who was invited is here. Does anybody else feel jealous and aroused and worried?",
+    u"I had more, but you go ahead. Now Fry, it's been a few years since medical school, so remind me. Disemboweling in your species: fatal or non-fatal? It's just like the story of the grasshopper and the octopus. All year long, the grasshopper kept burying acorns for winter, while the octopus mooched off his girlfriend and watched TV. But then the winter came, and the grasshopper died, and the octopus ate all his acorns. Also he got a race car. Is any of this getting through to you? We're rescuing ya. I'm sorry, guys. I never meant to hurt you. Just to destroy everything you ever believed in. Good news, everyone! There's a report on TV with some very bad news!",
+    u"Is today's hectic lifestyle making you tense and impatient? And so we say goodbye to our beloved pet, Nibbler, who's gone to a place where I, too, hope one day to go. The toilet. All I want is to be a monkey of moderate intelligence who wears a suit... that's why I'm transferring to business school! Can we have Bender Burgers again? Wow! A superpowers drug you can just rub onto your skin? You'd think it would be something you'd have to freebase. Have you ever tried just turning off the TV, sitting down with your children, and hitting them?",
+    u"You lived before you met me?! For one beautiful night I knew what it was like to be a grandmother. Subjugated, yet honored. Is today's hectic lifestyle making you tense and impatient? Good news, everyone! I've taught the toaster to feel love! Bender, you risked your life to save me! Shut up and get to the point!",
+    u"Maybe I love you so much I love you no matter who you are pretending to be. When I was first asked to make a film about my nephew, Hubert Farnsworth, I thought 'Why should I?' Then later, Leela made the film. But if I did make it, you can bet there would have been more topless women on motorcycles. Roll film! Oh right. I forgot about the battle. THE BIG BRAIN AM WINNING AGAIN! I AM THE GREETEST! NOW I AM LEAVING EARTH, FOR NO RAISEN!",
+    u"Is today's hectic lifestyle making you tense and impatient? Hey! I'm a porno-dealing monster, what do I care what you think? For the last time, I don't like lilacs! Your 'first' wife was the one who liked lilacs! Really?! Ah, yes! John Quincy Adding Machine. He struck a chord with the voters when he pledged not to go on a killing spree.",
+    u"Alright, let's mafia things up a bit. Joey, burn down the ship. Clamps, burn down the crew. Maybe I love you so much I love you no matter who you are pretending to be. Your best is an idiot! Well, thanks to the Internet, I'm now bored with sex. Is there a place on the web that panders to my lust for violence?",
+    u"Oh right. I forgot about the battle. And when we woke up, we had these bodies. Yep, I remember. They came in last at the Olympics, then retired to promote alcoholic beverages!",
+    u"Well, then good news! It's a suppository. Oh, how awful. Did he at least die painlessly? ...To shreds, you say. Well, how is his wife holding up? ...To shreds, you say. And when we woke up, we had these bodies. Actually, that's still true. And yet you haven't said what I told you to say! How can any of us trust you?",
+    u"Nay, I respect and admire Harold Zoid too much to beat him to death with his own Oscar. I had more, but you go ahead. Hey, whatcha watching?",
+    u"So I really am important? How I feel when I'm drunk is correct? Check it out, y'all. Everyone who was invited is here. I'm Santa Claus! Spare me your space age technobabble, Attila the Hun! So, how 'bout them Knicks?",
+    u"No! The kind with looting and maybe starting a few fires! Why not indeed! Kids don't turn rotten just from watching TV.",
+    u"Meh. Say it in Russian! THE BIG BRAIN AM WINNING AGAIN! I AM THE GREETEST! NOW I AM LEAVING EARTH, FOR NO RAISEN! Bender, being God isn't easy. If you do too much, people get dependent on you, and if you do nothing, they lose hope. You have to use a light touch. Like a safecracker, or a pickpocket. Is that a cooking show?",
+    u"It's toe-tappingly tragic! Come, Comrade Bender! We must take to the streets! Hi, I'm a naughty nurse, and I really need someone to talk to. $9.95 a minute. Bender, you risked your life to save me! I videotape every customer that comes in here, so that I may blackmail them later. Actually, that's still true.",
+    u"You guys aren't Santa! You're not even robots. How dare you lie in front of Jesus? Shut up and get to the point! You're going back for the Countess, aren't you? Meh.",
+    u"With a warning label this big, you know they gotta be fun! When I was first asked to make a film about my nephew, Hubert Farnsworth, I thought 'Why should I?' Then later, Leela made the film. But if I did make it, you can bet there would have been more topless women on motorcycles. Roll film! You are the last hope of the universe. I suppose I could part with 'one' and still be feared... I wish! It's a nickel.",
+    u"And yet you haven't said what I told you to say! How can any of us trust you? The key to victory is discipline, and that means a well made bed. You will practice until you can make your bed in your sleep. There, now he's trapped in a book I wrote: a crummy world of plot holes and spelling errors! Morbo can't understand his teleprompter because he forgot how you say that letter that's shaped like a man wearing a hat.",
+    u"Um, is this the boring, peaceful kind of taking to the streets? Man, I'm sore all over. I feel like I just went ten rounds with mighty Thor. Bender! Ship! Stop bickering or I'm going to come back there and change your opinions manually!",
+    u"And so we say goodbye to our beloved pet, Nibbler, who's gone to a place where I, too, hope one day to go. The toilet. Hey, you add a one and two zeros to that or we walk! But existing is basically all I do! You can crush me but you can't crush my spirit!"
+]
 
 class Command(BaseCommand):
     help = 'Create a database for demo/testing.'
@@ -201,7 +223,8 @@ class Command(BaseCommand):
                 def randomize_files():
                     return random.sample(comment_files, int(random.uniform(0, len(comment_files))))
 
-                comment_text = "Lorem ipsum blablablablablablabla..."
+                def get_comment_text():
+                    return comment_texts[int(random.uniform(0, len(comment_texts)))]
 
                 feedbacksetbuilder = groupbuilder.add_feedback_set(
                     points=random.randint(minpoints, maxpoints),
@@ -216,7 +239,7 @@ class Command(BaseCommand):
                     user_role="student",
                     instant_publish=True,
                     visible_for_students=True,
-                    text=comment_text,
+                    text=get_comment_text(),
                     published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=4))
 
                 users = [{'user': user, 'role':'student'}, {'user': examiner, 'role':'examiner'}]
@@ -229,7 +252,7 @@ class Command(BaseCommand):
                         user_role=random_user['role'],
                         instant_publish=True,
                         visible_for_students=True,
-                        text=comment_text,
+                        text=get_comment_text(),
                         published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=3, hours=int(random.uniform(0, 23))))
 
                 # add examiner feedback
@@ -239,7 +262,7 @@ class Command(BaseCommand):
                     user_role="examiner",
                     instant_publish=False,
                     visible_for_students=True,
-                    text=comment_text,
+                    text=get_comment_text(),
                     published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=2))
 
             groupbuilder = assignmentbuilder.add_group(

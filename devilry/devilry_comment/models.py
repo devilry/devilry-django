@@ -10,7 +10,7 @@ class Comment(models.Model):
     it possible for users to cancel publishing a comment.
     """
     #: the text of the comment
-    text = models.CharField(max_length=1024)
+    text = models.CharField(max_length=4096)
     #: the user who made the comment
     user = models.ForeignKey(auth_models.User)
     #: if this comment is a reply to another comment, that comment will be parent
