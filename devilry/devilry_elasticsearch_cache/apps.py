@@ -29,7 +29,8 @@ class ElasticsearchCacheAppConfig(AppConfig):
 
         #should be able to run unittests without having the ElasticSearch unittest server
         try:
-            httplib.HTTPConnection(settings.DEVILRY_ELASTICSEARCH_HOSTS[0]['host'], settings.DEVILRY_ELASTICSEARCH_HOSTS[0]['port']).connect()
+            for hostconfig in settings.DEVILRY_ELASTICSEARCH_HOSTS:
+                httplib.HTTPConnection(hostconfig['host'], hostconfig['port']).connect()
         except socket_error:
             print 'Connection error to ElasticSearch hosts'
             print 'Hint: If you want the model objects to be saved in ES, start the ElasticSearch unittestserver!\nElse ignore this error'
