@@ -230,12 +230,12 @@ class GroupCommentBuilder(CoreBuilderBase):
     object_attribute_name = 'groupcomment'
 
     @classmethod
-    def quickadd_ducku_duck1010_active_assignment1_group_feedbackset_groupcomment(cls, studentuser=None):
+    def quickadd_ducku_duck1010_active_assignment1_group_feedbackset_groupcomment(cls, studentuser=None, examiner=None):
         students = []
         if studentuser:
             students.append(studentuser)
         return FeedbackSetBuilder\
-            .quickadd_ducku_duck1010_active_assignment1_group_feedbackset(studentuser=studentuser)\
+            .quickadd_ducku_duck1010_active_assignment1_group_feedbackset(studentuser=studentuser, examiner=examiner)\
             .add_groupcomment(
                 user=studentuser,
                 user_role='student',
@@ -263,14 +263,14 @@ class FeedbackSetBuilder(CoreBuilderBase):
     object_attribute_name = 'feedbackset'
 
     @classmethod
-    def quickadd_ducku_duck1010_active_assignment1_group_feedbackset(cls, studentuser=None):
+    def quickadd_ducku_duck1010_active_assignment1_group_feedbackset(cls, studentuser=None, examiner=None):
         students = []
         if studentuser:
             students.append(studentuser)
         return AssignmentGroupBuilder\
             .quickadd_ducku_duck1010_active_assignment1_group(studentuser=studentuser)\
             .add_feedback_set(points=10,
-                    published_by=UserBuilder('donald', full_name='Donald Duck').user,
+                    published_by=examiner,
                     deadline_datetime=DateTimeBuilder.now().minus(weeks=4))
 
     def __init__(self, **kwargs):
