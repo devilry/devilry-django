@@ -135,9 +135,10 @@ class NodeRegistryItem(AbstractBaseNodeRegistryItem):
 
     def get_search_text(self, modelobject):
         node = modelobject
-        search_text = u'{long_name} {short_name}'.format(
-            long_name=node.long_name,
-            short_name=node.short_name)
+        search_text = \
+            u'{long_name} {short_name}'.format(
+                long_name=node.long_name,
+                short_name=node.short_name)
         if node.parentnode_id is not None:
             search_text = u'{} {}'.format(search_text,
                                           self.get_search_text(node.parentnode))
@@ -294,3 +295,34 @@ class AssignmentRegistryItem(AbstractBaseNodeRegistryItem):
 elasticsearch_registry.registry.add(AssignmentRegistryItem())
 
 
+class AssignmentGroup(DocType):
+    class Meta:
+        index = 'AssignmentGroups'
+
+
+class AssignmentGroupRegistryItem(AbstractBaseNodeRegistryItem):
+    """
+    TODO: Document
+    """
+    modelclass = coremodels.AssignmentGroup
+    doctype_class = AssignmentGroup
+
+    def get_search_text(self, modelobject):
+        assignment_group = modelobject
+        search_text = \
+            u'{long_name} {short_name} ' \
+            u'{subject_long_name} {subject_short_name} ' \
+            u'{parentnode_long_name} {parentnode_short_name} ' \
+            u'{parentnode_parentnode_long_name} {parentnode_parentnode_short_name} ' \
+            u'{parentnode_parentnode_parentnode_long_name} {parentnode_parentnode_parentnode_short_name} '.format(
+                long_name=assignment_group.long_name,
+                short_name=assignment_group.short_name,
+                assignment_long_name=assignment_group.assignment.long_name,
+                assignment_short_name=assignment_group.assignment.short_name,
+                subject_long_name=assignment_group.assignment.period.long_name,
+                subject_short_name=assignment_group.assignment.period.short_name,
+                parentnode_long_name=assignment_group.assignment.period.subject.long_name,
+                parentnode_short_name=assignment_group.assignment.period.subject.short_name,
+                parentnode_parentnode_long_name=assignment_group.assignment.period.subject.parentnode.long_name,
+                parentnode_parentnode_short_name=assignment_group.assignment.period.subject.parentnode.short_name)
+            )
