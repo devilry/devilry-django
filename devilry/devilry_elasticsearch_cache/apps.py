@@ -33,7 +33,7 @@ class ElasticsearchCacheAppConfig(AppConfig):
                 httplib.HTTPConnection(hostconfig['host'], hostconfig['port']).connect()
         except socket_error:
             print 'Connection error to ElasticSearch hosts'
-            print 'Hint: If you want the model objects to be saved in ES, start the ElasticSearch unittestserver!\nElse ignore this error'
+            print 'Hint: If you want the model objects to be saved in ES, start the ElasticSearch server!\nElse ignore this error'
         else:
             post_save.connect(index_node_post_save, sender=Node)
             post_save.connect(index_node_post_save, sender=Subject)
