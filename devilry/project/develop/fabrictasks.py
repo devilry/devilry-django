@@ -1,5 +1,6 @@
 from os.path import exists, join, relpath
 from os import remove, getcwd
+
 # from shutil import rmtree, make_archive
 # from zipfile import ZipFile
 from fabric.api import local, abort, task
@@ -286,3 +287,21 @@ def makemessages_javascript():
 @task
 def compilemessages():
     _managepy('compilemessages', working_directory='devilry')
+
+
+@task
+def run_elasticsearch_develop_server():
+    """
+    Run the elasticsearch server using not_for_deploy/elasticsearch.develop.yml
+    """
+    command = 'elasticsearch --config=not_for_deploy/elasticsearch.develop.yml'
+    return local(command)
+
+@task
+def run_elasticsearch_unittest_server():
+    """
+    Run the elasticsearch server using not_for_deploy/elasticsearch.unittest.yml
+    config file.
+    """
+    command = 'elasticsearch --config=not_for_deploy/elasticsearch.unittest.yml'
+    return local(command)

@@ -41,3 +41,7 @@ node_modules/
 
 .idea/dataSources.ids
 .idea/dataSources.local.xml
+
+# ElasticSearch
+/elasticsearch_unittest/
+/elasticsearch_develop/

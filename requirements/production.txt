@@ -3,6 +3,3 @@
 
 # PostgreSQL bindings
 psycopg2==2.4.6
-
-# Elastic search bindings
-elasticsearch==1.3.0

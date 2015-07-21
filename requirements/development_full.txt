@@ -9,9 +9,6 @@ psycopg2==2.4.6
 # Required to run selenium tests (mostly for testing deprecated UIs)
 selenium==2.44.0
 
-# Elastic search bindings
-elasticsearch==1.3.0
-
 # For building Dash docs (used by the dashdocs fabric task in not_for_deploy/docs/fabfile.py)
 doc2dash==2.0.2
 
