@@ -4,8 +4,8 @@
 
 {% block header-text %}
     <h1>
-        <h1>{{ assignment }}</h1><br><br>
-        {{ subject }} {{ subject_name }} {{ period }}
+        <h1>{{ assignment.long_name }}</h1><br><br>
+        {{ subject.long_name }} {{ period.long_name }}
     </h1>
 {% endblock header-text %}
 
@@ -13,11 +13,18 @@
     <div class="col-sm-9 feedback_feed">
         {% block feed %}
             {% for comment in comments %}
-                <div class="student_comment">
+                <div class="
+                    {% if comment.user_role == "student" %}
+                        student_comment
+                    {% elif comment.user_role == "examiner"%}
+                        examiner_comment
+                    {% elif comment.user_role == "admin"%}
+                        admin_comment
+                    {% endif %}">
                     <div class="left_field">
                         <div class="comment-meta">
                             <h1 class="comment_created_by">{{ comment.user }}</h1>
-                            <h1 class="comment_created_meta_text">({{ comment.user_role }}) - {{ comment.created_datetime }}</h1>
+                            <h1 class="comment_created_meta_text">({{ comment.user_role }}) - {{ comment.published_datetime }}</h1>
                         </div>
                         <div class="comment_text">
                             {{ comment.text }}

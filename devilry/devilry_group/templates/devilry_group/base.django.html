@@ -2,7 +2,9 @@
 {% load cradmin_tags %}
 
 {% block main %}
-    {% include "devilry_header/header2include.django.html" with devilry_header2_role="student" %}
+    {% block include %}
+        {% include "devilry_header/header2include.django.html" with devilry_header2_role=devilry_ui_role %}
+    {% endblock include %}
 
     {% block menu %}
         {% cradmin_render_menu %}

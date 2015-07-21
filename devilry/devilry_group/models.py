@@ -34,7 +34,7 @@ class FeedbackSet(models.Model):
     deadline_datetime = models.DateTimeField(null=True, blank=True)
 
     def __unicode__(self):
-        return u"{} - {}".format(self.group, self.deadline_datetime)
+        return u"{} - {} - {}".format(self.group.assignment, self.group, self.deadline_datetime)
 
 
 class GroupComment(AbstractGroupComment):
