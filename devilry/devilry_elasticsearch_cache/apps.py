@@ -24,6 +24,7 @@ class ElasticsearchCacheAppConfig(AppConfig):
         from devilry.apps.core.models import Period
         from devilry.apps.core.models import Subject
         from devilry.apps.core.models import Assignment
+        from devilry.apps.core.models import AssignmentGroup
 
         connections.create_connection(hosts=settings.DEVILRY_ELASTICSEARCH_HOSTS)
 
@@ -39,3 +40,5 @@ class ElasticsearchCacheAppConfig(AppConfig):
             post_save.connect(index_node_post_save, sender=Subject)
             post_save.connect(index_node_post_save, sender=Period)
             post_save.connect(index_node_post_save, sender=Assignment)
+
+            post_save.connect(index_node_post_save, sender=AssignmentGroup)

@@ -32,3 +32,11 @@ def index_assignment_post_save(sender, instance, **kwargs):
         short_name=assignment.short_name,
         long_name=assignment.long_name)
     es_assignment.save()
+
+def index_assignment_group_post_save(sender, instance, **kwargs):
+    assignment_group = instance
+    es_assignment_group = elasticsearch_doctypes.AssignmentGroup(
+        _id=assignment_group.id,
+        short_name=assignment_group.short_name,
+        long_name=assignment_group.long_name)
+    es_assignment_group.save()
