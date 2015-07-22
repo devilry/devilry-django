@@ -1,5 +1,6 @@
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl.connections import connections
+
 es = Elasticsearch()
 
 
@@ -21,6 +22,7 @@ class Registry(object):
         self.model_to_doc_type_map[registryitem.modelclass] = registryitem
 
     def index(self, modelobject):
+        print modelobject.__class__
         registryitem = self.model_to_doc_type_map[modelobject.__class__]
         doctype_object = registryitem.to_doctype_object(
             modelobject=modelobject)

@@ -8,7 +8,8 @@ from elasticsearch_dsl.connections import connections
 from socket import error as socket_error
 from urllib3 import exceptions as urllib3_exceptions
 
-from devilry.devilry_elasticsearch_cache.core_signal_handlers import index_node_post_save
+from devilry.devilry_elasticsearch_cache.core_signal_handlers import index_node_post_save, index_assignment_group_post_save, \
+    index_subject_post_save, index_assignment_post_save, index_period_post_save
 
 
 class ElasticsearchCacheAppConfig(AppConfig):
@@ -37,8 +38,9 @@ class ElasticsearchCacheAppConfig(AppConfig):
             print 'Hint: If you want the model objects to be saved in ES, start the ElasticSearch server!\nElse ignore this error'
         else:
             post_save.connect(index_node_post_save, sender=Node)
-            post_save.connect(index_node_post_save, sender=Subject)
-            post_save.connect(index_node_post_save, sender=Period)
-            post_save.connect(index_node_post_save, sender=Assignment)
+            post_save.connect(index_subject_post_save, sender=Subject)
+            post_save.connect(index_period_post_save, sender=Period)
+            post_save.connect(index_assignment_post_save, sender=Assignment)
 
-            post_save.connect(index_node_post_save, sender=AssignmentGroup)
+            post_save.connect(index_assignment_group_post_save, sender=AssignmentGroup)
+            # post_save.connect(index_assignment_group_post_save, sender=AssignmentGroup)
