@@ -1,8 +1,11 @@
+from django.utils.translation import override
 from elasticsearch_dsl import DocType, String, Nested
 
 from devilry.apps.core import models as coremodels
+from devilry.devilry_group import models as groupmodels
 from devilry.devilry_elasticsearch_cache import elasticsearch_registry
 
+import json
 
 class AbstractAssignmentGroupRegistryItem(elasticsearch_registry.RegistryItem):
     """
@@ -39,7 +42,7 @@ class AbstractAssignmentGroupRegistryItem(elasticsearch_registry.RegistryItem):
         """
         raise NotImplementedError()
 
-    def __get_parentnode_id(self, modelobject):
+    def _get_parentnode_id(self, modelobject):
         """
         Returns parentnode id if modelobject has parent,
         else -1 is returned (topnode)
@@ -65,7 +68,7 @@ class AbstractAssignmentGroupRegistryItem(elasticsearch_registry.RegistryItem):
                 ]
 
         """
-        #admins = []
+        # admins = []
         # for id in modelobject.get_all_admin_ids():
         #     admins.append(json.dumps({
         #     }))
@@ -90,16 +93,15 @@ class AbstractAssignmentGroupRegistryItem(elasticsearch_registry.RegistryItem):
                 }
         """
 
-        self.get_inherited_admins(modelobject)
-
         return {
             '_id': modelobject.id,
             # 'parentnode_id': self.__get_parentnode_id(modelobject),
-            'name': modelobject.name,
-            'path': 'PATH NEEDED?',
+            # 'short_name': modelobject.short_displayname,
+            # 'long_name': modelobject.long_displayname,
             'search_text': self.get_search_text(modelobject),
-            'admins': self.admins,
-            #'admins': self.get_inherited_admins(modelobject),
+            'admins': self.get_inherited_admins(modelobject),
+            # 'students': self._students_in_group_list(modelobject),
+            # 'examiners': self._examiners_for_group_list(modelobject),
         }
 
     def to_doctype_object(self, modelobject):
@@ -116,21 +118,29 @@ class AssignmentGroup(DocType):
 
 class AssignmentGroupRegistryItem(AbstractAssignmentGroupRegistryItem):
     """
-    TODO: Document
+    A RegistryItem class of :class:`coremodels.assignment.AssignmentGroup` that defines the properties of a :class:`.AssignmentGroup` as DocType.
+
+    Is added to the :file:`.elasticsearch_registry.registry` singleton.
     """
     modelclass = coremodels.AssignmentGroup
     doctype_class = AssignmentGroup
 
+    def _students_in_group_list(self, modelobject):
+        return modelobject.get_students().split()
+
+    def _examiners_for_group_list(self, modelobject):
+        return modelobject.get_examiners().split()
+
     def get_search_text(self, modelobject):
         assignment_group = modelobject
         search_text = \
-            u'{name} ' \
-            u'{assignment_long_name} {assignment_short_name}' \
+            u'{long_name} {short_name} ' \
+            u'{assignment_long_name} {assignment_short_name} ' \
             u'{period_long_name} {period_short_name} ' \
             u'{subject_long_name} {subject_short_name} ' \
-            u'{parentnode_long_name} {parentnode_short_name} ' \
-            u'{parentnode_parentnode_long_name} {parentnode_parentnode_short_name} '.format(
-                name=assignment_group.name,
+            u'{parentnode_long_name} {parentnode_short_name} '.format(
+                short_name=assignment_group.long_displayname,
+                long_name=assignment_group.short_displayname,
                 assignment_long_name=assignment_group.assignment.long_name,
                 assignment_short_name=assignment_group.assignment.short_name,
                 period_long_name=assignment_group.assignment.period.long_name,
@@ -138,26 +148,93 @@ class AssignmentGroupRegistryItem(AbstractAssignmentGroupRegistryItem):
                 subject_long_name=assignment_group.assignment.period.subject.long_name,
                 subject_short_name=assignment_group.assignment.period.subject.short_name,
                 parentnode_long_name=assignment_group.assignment.period.subject.parentnode.long_name,
-                parentnode_short_name=assignment_group.assignment.period.subject.parentnode.short_name,
-                parentnode_parentnode_long_name=assignment_group.assignment.period.subject.parentnode.parentnode.long_name,
-                parentnode_parentnode_short_name=assignment_group.assignment.period.subject.parentnode.parentnode.short_name)
+                parentnode_short_name=assignment_group.assignment.period.subject.parentnode.short_name,)
         return search_text
 
     def get_doctype_object_kwargs(self, modelobject):
         kwargs = super(AssignmentGroupRegistryItem, self).get_doctype_object_kwargs(modelobject=modelobject)
         assignment_group = modelobject
         kwargs.update({
+            'parentnode_id': self._get_parentnode_id(modelobject),
+            'short_name': modelobject.short_displayname,
+            'long_name': modelobject.long_displayname,
             'is_open': assignment_group.is_open,
             'etag': assignment_group.etag,
             'delivery_status': assignment_group.delivery_status,
+            'students': self._students_in_group_list(modelobject),
+            'examiners': self._examiners_for_group_list(modelobject),
         })
+        return kwargs
 
     def get_all_modelobjects(self):
         return coremodels.AssignmentGroup.objects.select_related(
-            'parentnode', # Assignment
-            'parentnode_parentnode', # Period
-            'parentnode_parentnode_parentnode', # subject
-            'parentnode_parentnode_parentnode_parentnode', # parentnode of subject
+            'parentnode',  # Assignment
+            'parentnode_parentnode',  # Period
+            'parentnode_parentnode_parentnode',  # subject
+            'parentnode_parentnode_parentnode_parentnode',  # parentnode of subject
         ).all()
 
+
 elasticsearch_registry.registry.add(AssignmentGroupRegistryItem())
+
+#
+# class FeedbackSet(DocType):
+#     class Meta:
+#         index = 'assignment_groups'
+#
+#
+# class FeedbackSetRegistryItem(AbstractAssignmentGroupRegistryItem):
+#     """
+#     TODO: Document
+#     """
+#     modelclass = groupmodels.FeedbackSet
+#     doctype_class = FeedbackSet
+#
+#     def get_search_text(self, modelobject):
+#         feedback_set = modelobject
+#         search_text = \
+#             u'{created} {published} {points}' \
+#             u'{assignment_group_long_name} {assignment_group_short_name} ' \
+#             u'{assignment_long_name} {assignment_short_name} ' \
+#             u'{period_long_name} {period_short_name} ' \
+#             u'{subject_long_name} {subject_short_name} ' \
+#             u'{parentnode_long_name} {parentnode_short_name} '.format(
+#                 created=feedback_set.created_datetime,
+#                 published=feedback_set.published_datetime,
+#                 points=feedback_set.points,
+#                 assignment_group_long_name=feedback_set.group.long_displayname,
+#                 assignment_group_short_name=feedback_set.group.short_displayname,
+#                 assignment_long_name=feedback_set.group.assignment.long_name,
+#                 assignment_short_name=feedback_set.group.assignment.short_name,
+#                 period_long_name=feedback_set.group.assignment.period.long_name,
+#                 period_short_name=feedback_set.group.assignment.period.short_name,
+#                 subject_long_name=feedback_set.group.assignment.period.subject.long_name,
+#                 subject_short_name=feedback_set.group.assignment.period.subject.short_name,
+#                 parentnode_long_name=feedback_set.group.assignment.period.subject.parentnode.long_name,
+#                 parentnode_short_name=feedback_set.group.assignment.period.subject.parentnode.short_name,
+#             )
+#         return search_text
+#
+#     def get_doctype_object_kwargs(self, modelobject):
+#         kwargs=super(FeedbackSetRegistryItem, self).get_doctype_object_kwargs(modelobject=modelobject)
+#         feedback_set = modelobject
+#         kwargs.update({
+#             'parentnode_id': feedback_set.group.id,
+#             'points': feedback_set.points,
+#             'published_by': feedback_set.published_by,
+#             'created_datetime': feedback_set.created_datetime,
+#             'published_datetime': feedback_set.published_datetime,
+#             'deadline_datetime': feedback_set.deadline_datetime,
+#         })
+#         return kwargs
+#
+#     def get_all_modelobjects(self):
+#         return groupmodels.FeedbackSet.objects.select_related(
+#             'group', # AssignmentGroup
+#             'group_parentnode',  # Assignment
+#             'group_parentnode_parentnode',  # Period
+#             'group_parentnode_parentnode_parentnode',  # subject
+#             'group_parentnode_parentnode_parentnode_parentnode',  # parentnode of subject
+#         ).all()
+#
+# elasticsearch_registry.registry.add(FeedbackSetRegistryItem())

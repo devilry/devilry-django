@@ -8,8 +8,13 @@ from elasticsearch_dsl.connections import connections
 from socket import error as socket_error
 from urllib3 import exceptions as urllib3_exceptions
 
-from devilry.devilry_elasticsearch_cache.core_signal_handlers import index_node_post_save, index_assignment_group_post_save, \
-    index_subject_post_save, index_assignment_post_save, index_period_post_save
+from devilry.devilry_elasticsearch_cache.core_signal_handlers import \
+    index_node_post_save, \
+    index_assignment_group_post_save, \
+    index_subject_post_save, \
+    index_assignment_post_save, \
+    index_period_post_save
+    # index_feedback_set_post_save
 
 
 class ElasticsearchCacheAppConfig(AppConfig):
@@ -27,6 +32,8 @@ class ElasticsearchCacheAppConfig(AppConfig):
         from devilry.apps.core.models import Assignment
         from devilry.apps.core.models import AssignmentGroup
 
+        from devilry.devilry_group.models import FeedbackSet
+
         connections.create_connection(hosts=settings.DEVILRY_ELASTICSEARCH_HOSTS)
 
         #should be able to run unittests without having the ElasticSearch unittest server
@@ -43,4 +50,4 @@ class ElasticsearchCacheAppConfig(AppConfig):
             post_save.connect(index_assignment_post_save, sender=Assignment)
 
             post_save.connect(index_assignment_group_post_save, sender=AssignmentGroup)
-            # post_save.connect(index_assignment_group_post_save, sender=AssignmentGroup)
+            # post_save.connect(index_feedback_set_post_save, sender=FeedbackSet)
