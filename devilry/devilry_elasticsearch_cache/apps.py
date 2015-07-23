@@ -13,8 +13,9 @@ from devilry.devilry_elasticsearch_cache.core_signal_handlers import \
     index_assignment_group_post_save, \
     index_subject_post_save, \
     index_assignment_post_save, \
-    index_period_post_save
-    # index_feedback_set_post_save
+    index_period_post_save, \
+    index_feedback_set_post_save, \
+    index_group_comment_post_save
 
 
 class ElasticsearchCacheAppConfig(AppConfig):
@@ -33,6 +34,7 @@ class ElasticsearchCacheAppConfig(AppConfig):
         from devilry.apps.core.models import AssignmentGroup
 
         from devilry.devilry_group.models import FeedbackSet
+        from devilry.devilry_group.models import GroupComment
 
         connections.create_connection(hosts=settings.DEVILRY_ELASTICSEARCH_HOSTS)
 
@@ -50,4 +52,5 @@ class ElasticsearchCacheAppConfig(AppConfig):
             post_save.connect(index_assignment_post_save, sender=Assignment)
 
             post_save.connect(index_assignment_group_post_save, sender=AssignmentGroup)
-            # post_save.connect(index_feedback_set_post_save, sender=FeedbackSet)
+            post_save.connect(index_feedback_set_post_save, sender=FeedbackSet)
+            post_save.connect(index_group_comment_post_save, sender=GroupComment)

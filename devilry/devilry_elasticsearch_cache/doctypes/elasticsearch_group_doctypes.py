@@ -177,64 +177,87 @@ class AssignmentGroupRegistryItem(AbstractAssignmentGroupRegistryItem):
 
 elasticsearch_registry.registry.add(AssignmentGroupRegistryItem())
 
-#
-# class FeedbackSet(DocType):
-#     class Meta:
-#         index = 'assignment_groups'
-#
-#
-# class FeedbackSetRegistryItem(AbstractAssignmentGroupRegistryItem):
-#     """
-#     TODO: Document
-#     """
-#     modelclass = groupmodels.FeedbackSet
-#     doctype_class = FeedbackSet
-#
-#     def get_search_text(self, modelobject):
-#         feedback_set = modelobject
-#         search_text = \
-#             u'{created} {published} {points}' \
-#             u'{assignment_group_long_name} {assignment_group_short_name} ' \
-#             u'{assignment_long_name} {assignment_short_name} ' \
-#             u'{period_long_name} {period_short_name} ' \
-#             u'{subject_long_name} {subject_short_name} ' \
-#             u'{parentnode_long_name} {parentnode_short_name} '.format(
-#                 created=feedback_set.created_datetime,
-#                 published=feedback_set.published_datetime,
-#                 points=feedback_set.points,
-#                 assignment_group_long_name=feedback_set.group.long_displayname,
-#                 assignment_group_short_name=feedback_set.group.short_displayname,
-#                 assignment_long_name=feedback_set.group.assignment.long_name,
-#                 assignment_short_name=feedback_set.group.assignment.short_name,
-#                 period_long_name=feedback_set.group.assignment.period.long_name,
-#                 period_short_name=feedback_set.group.assignment.period.short_name,
-#                 subject_long_name=feedback_set.group.assignment.period.subject.long_name,
-#                 subject_short_name=feedback_set.group.assignment.period.subject.short_name,
-#                 parentnode_long_name=feedback_set.group.assignment.period.subject.parentnode.long_name,
-#                 parentnode_short_name=feedback_set.group.assignment.period.subject.parentnode.short_name,
-#             )
-#         return search_text
-#
-#     def get_doctype_object_kwargs(self, modelobject):
-#         kwargs=super(FeedbackSetRegistryItem, self).get_doctype_object_kwargs(modelobject=modelobject)
-#         feedback_set = modelobject
-#         kwargs.update({
-#             'parentnode_id': feedback_set.group.id,
-#             'points': feedback_set.points,
-#             'published_by': feedback_set.published_by,
-#             'created_datetime': feedback_set.created_datetime,
-#             'published_datetime': feedback_set.published_datetime,
-#             'deadline_datetime': feedback_set.deadline_datetime,
-#         })
-#         return kwargs
-#
-#     def get_all_modelobjects(self):
-#         return groupmodels.FeedbackSet.objects.select_related(
-#             'group', # AssignmentGroup
-#             'group_parentnode',  # Assignment
-#             'group_parentnode_parentnode',  # Period
-#             'group_parentnode_parentnode_parentnode',  # subject
-#             'group_parentnode_parentnode_parentnode_parentnode',  # parentnode of subject
-#         ).all()
-#
-# elasticsearch_registry.registry.add(FeedbackSetRegistryItem())
+
+class FeedbackSet(DocType):
+    class Meta:
+        index = 'assignment_groups'
+
+
+class FeedbackSetRegistryItem(AbstractAssignmentGroupRegistryItem):
+    """
+    TODO: Document
+    """
+    modelclass = groupmodels.FeedbackSet
+    doctype_class = FeedbackSet
+
+    def get_search_text(self, modelobject):
+        return ''
+
+    def get_doctype_object_kwargs(self, modelobject):
+        kwargs=super(FeedbackSetRegistryItem, self).get_doctype_object_kwargs(modelobject=modelobject)
+        feedback_set = modelobject
+        kwargs.update({
+            'parentnode_id': feedback_set.group.id,
+            'points': feedback_set.points,
+            'published_by': feedback_set.published_by.id,
+            'created_by': feedback_set.created_by.id,
+            'created_datetime': feedback_set.created_datetime,
+            'published_datetime': feedback_set.published_datetime,
+            'deadline_datetime': feedback_set.deadline_datetime,
+        })
+        return kwargs
+
+    def get_all_modelobjects(self):
+        return groupmodels.FeedbackSet.objects.select_related(
+            'group', # AssignmentGroup
+            'group_parentnode',  # Assignment
+            'group_parentnode_parentnode',  # Period
+            'group_parentnode_parentnode_parentnode',  # subject
+            'group_parentnode_parentnode_parentnode_parentnode',  # parentnode of subject
+        ).all()
+
+elasticsearch_registry.registry.add(FeedbackSetRegistryItem())
+
+class GroupComment(DocType):
+    class Meta:
+        index = 'assignment_groups'
+
+
+class GroupCommentRegistryItem(AbstractAssignmentGroupRegistryItem):
+    """
+    TODO: Document
+    """
+    modelclass = groupmodels.GroupComment
+    doctype_class = GroupComment
+
+    def get_search_text(self, modelobject):
+        return ''
+
+    def get_doctype_object_kwargs(self, modelobject):
+        kwargs=super(GroupCommentRegistryItem, self).get_doctype_object_kwargs(modelobject=modelobject)
+        group_comment = modelobject
+        kwargs.update({
+            'parentnode_id': group_comment.feedback_set.id,
+            'instant_publish': group_comment.instant_publish,
+            'visible_for_students': group_comment.visible_for_students,
+            'comment_text': group_comment.text,
+            'user': group_comment.user.id,
+            'parent_comment': group_comment.parent,
+            'created_datetime': group_comment.created_datetime,
+            'published_datetime': group_comment.published_datetime,
+            'user_role': group_comment.user_role,
+            'comment_type': group_comment.comment_type,
+        })
+        return kwargs
+
+    def get_all_modelobjects(self):
+        return groupmodels.GroupComment.objects.select_related(
+            'feedback_set', # FeedbackSet
+            'feedback_set_group_comment', # AssignmentGroup
+            'feedback_set_group_parentnode',  # Assignment
+            'feedback_set_group_parentnode_parentnode',  # Period
+            'feedback_set_group_parentnode_parentnode_parentnode',  # subject
+            'feedback_set_group_parentnode_parentnode_parentnode_parentnode',  # parentnode of subject
+        ).all()
+
+elasticsearch_registry.registry.add(GroupCommentRegistryItem())

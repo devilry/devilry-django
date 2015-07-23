@@ -41,9 +41,16 @@ def index_assignment_group_post_save(sender, instance, **kwargs):
     )
     es_assignment_group.save()
 
-# def index_feedback_set_post_save(sender, instance, **kwargs):
-#     feedback_set = instance
-#     es_feedback_set = elasticsearch_group_doctypes.FeedbackSet(
-#         _id=feedback_set.id,
-#     )
-#     es_feedback_set.save()
+def index_feedback_set_post_save(sender, instance, **kwargs):
+    feedback_set = instance
+    es_feedback_set = elasticsearch_group_doctypes.FeedbackSet(
+        _id=feedback_set.id,
+    )
+    es_feedback_set.save()
+
+def index_group_comment_post_save(sender, instance, **kwargs):
+    group_comment = instance
+    es_group_comment = elasticsearch_group_doctypes.GroupComment(
+        _id=group_comment.id,
+    )
+    es_group_comment.save()
