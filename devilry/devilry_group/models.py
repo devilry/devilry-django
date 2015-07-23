@@ -28,7 +28,8 @@ class FeedbackSet(models.Model):
     """
     group = models.ForeignKey(assignment_group.AssignmentGroup)
     points = models.PositiveIntegerField()
-    published_by = models.ForeignKey(auth_models.User)
+    published_by = models.ForeignKey(auth_models.User, related_name="published_feedbacksets")
+    created_by = models.ForeignKey(auth_models.User, related_name="created_feedbacksets")
     created_datetime = models.DateTimeField(auto_now_add=True)
     published_datetime = models.DateTimeField(null=True, blank=True)
     deadline_datetime = models.DateTimeField(null=True, blank=True)

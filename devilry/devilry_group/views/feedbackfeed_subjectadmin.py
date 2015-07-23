@@ -8,7 +8,7 @@ class SubjectAdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseVie
     """
     TODO: Document
     """
-    def _get_queryset_for_group(self, group):
+    def _get_comments_for_group(self, group):
         return models.GroupComment.objects.filter(
             feedback_set__group=group
         )
