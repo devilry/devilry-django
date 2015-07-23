@@ -229,6 +229,7 @@ class Command(BaseCommand):
                 feedbacksetbuilder = groupbuilder.add_feedback_set(
                     points=random.randint(minpoints, maxpoints),
                     published_by=examiner,
+                    created_by=examiner,
                     deadline_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago)
                 )
 

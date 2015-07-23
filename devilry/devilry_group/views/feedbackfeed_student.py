@@ -6,7 +6,7 @@ from django.db.models import Q
 
 class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
 
-    def _get_queryset_for_group(self, group):
+    def _get_comments_for_group(self, group):
         print "Running get queryset for group in studentfeedbackfeed!"
         print "group:"
         print group
