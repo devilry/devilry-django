@@ -1,14 +1,18 @@
 from django import test
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.connections import connections
+from devilry.apps.core import testhelper
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
 from devilry.devilry_elasticsearch_cache.doctypes import elasticsearch_basenodes_doctypes, elasticsearch_group_doctypes
 from devilry.devilry_elasticsearch_cache import elasticsearch_registry
 from devilry.project.develop.testhelpers import corebuilder
+from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 
 
 class TestNodeIndexing(test.TestCase):
     def setUp(self):
+        self.testhelper = testhelper.TestHelper()
         elasticsearch_basenodes_doctypes.Node.init()
         self.__delete_indexes()
         #self.__reindex_and_refresh()
@@ -129,7 +133,7 @@ class TestNodeIndexing(test.TestCase):
         self.assertEqual(result.hits[0].short_name, 'duck1100')
 
     def test_subject_match(self):
-        c = corebuilder.SubjectBuilder.quickadd_ducku_duck1010()
+        corebuilder.SubjectBuilder.quickadd_ducku_duck1010()
         self.__reindex_and_refresh()
 
         search = Search()
@@ -163,3 +167,86 @@ class TestNodeIndexing(test.TestCase):
 
         self.assertEqual(len(result.hits), 1)
         self.assertEqual(result[0].short_name, 'assignment1')
+
+    def test_assignment_group_match(self):
+        corebuilder.AssignmentGroupBuilder.quickadd_ducku_duck1010_active_assignment1_group()
+        self.__reindex_and_refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_group_doctypes.AssignmentGroup)
+        search = search.query('match', short_name='1')
+        result = search.execute()
+
+        self.assertEqual(len(result.hits), 1)
+        self.assertEqual(result[0].short_name, '1')
+
+    def test_feedback_set_match(self):
+        student = UserBuilder('testuser', full_name='Test User').user
+        examiner = UserBuilder('donald', full_name='Donald Duck').user
+        corebuilder.FeedbackSetBuilder.quickadd_ducku_duck1010_active_assignment1_group_feedbackset(studentuser=student, examiner=examiner)
+        self.__reindex_and_refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_group_doctypes.FeedbackSet)
+        search = search.query('match', created_by=examiner.id)
+        result = search.execute()
+
+        self.assertEqual(len(result.hits), 1)
+        self.assertEqual(result[0].created_by, examiner.id)
+
+    def test_group_comment_match(self):
+        student = UserBuilder('testuser', full_name='Test User').user
+        examiner = UserBuilder('donald', full_name='Donald Duck').user
+        corebuilder.GroupCommentBuilder.quickadd_ducku_duck1010_active_assignment1_group_feedbackset_groupcomment(studentuser=student, examiner=examiner, comment='This is a comment')
+        self.__reindex_and_refresh()
+
+        search = Search()
+        search = search.doc_type(elasticsearch_group_doctypes.GroupComment)
+        search = search.query('match', user=student.id)
+        result = search.execute()
+
+        self.assertEqual(len(result.hits), 1)
+        self.assertEqual(result[0].user, student.id)
+        self.assertEqual(result[0].comment_text, 'This is a comment')
+
+    def test_filtered_search_for_feedback_set_points(self):
+        # tests a filtered query for points in range 8-42
+        student = UserBuilder('testuser', full_name='Test User').user
+        examiner = UserBuilder('donald', full_name='Donald Duck').user
+
+        assignment_group = corebuilder.AssignmentGroupBuilder.quickadd_ducku_duck1010_active_assignment1_group()
+        assignment_group.add_feedback_set(
+            points=8,
+            published_by=examiner,
+            created_by=examiner,
+            deadline_datetime=DateTimeBuilder.now().minus(weeks=1))
+
+        assignment_group.add_feedback_set(
+            points=5,
+            published_by=examiner,
+            created_by=examiner,
+            deadline_datetime=DateTimeBuilder.now().minus(weeks=2))
+
+        assignment_group.add_feedback_set(
+            points=42,
+            published_by=examiner,
+            created_by=examiner,
+            deadline_datetime=DateTimeBuilder.now().minus(weeks=3))
+
+        assignment_group.add_feedback_set(
+            points=2,
+            published_by=examiner,
+            created_by=examiner,
+            deadline_datetime=DateTimeBuilder.now().minus(weeks=4))
+
+        self.__reindex_and_refresh()
+
+        search = Search()
+        search = search.filter('range', points={'gte': 8})
+        result = search.execute()
+
+        expected_points = [8, 42]
+
+        self.assertEqual(len(result.hits), 2)
+        for hit in result:
+            self.assertIn(hit.points, expected_points)

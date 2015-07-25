@@ -230,7 +230,7 @@ class GroupCommentBuilder(CoreBuilderBase):
     object_attribute_name = 'groupcomment'
 
     @classmethod
-    def quickadd_ducku_duck1010_active_assignment1_group_feedbackset_groupcomment(cls, studentuser=None, examiner=None):
+    def quickadd_ducku_duck1010_active_assignment1_group_feedbackset_groupcomment(cls, studentuser=None, examiner=None, comment=None):
         students = []
         if studentuser:
             students.append(studentuser)
@@ -241,7 +241,7 @@ class GroupCommentBuilder(CoreBuilderBase):
                 user_role='student',
                 instant_publish=True,
                 visible_for_students=True,
-                text='Lorem ipsum I dont know it from memory bla bla bla..',
+                text=comment if comment is not None else 'Lorem ipsum I dont know it from memory bla bla bla..',
                 published_datetime=DateTimeBuilder.now().minus(weeks=4, days=3, hours=10)
             )
 
@@ -271,6 +271,7 @@ class FeedbackSetBuilder(CoreBuilderBase):
             .quickadd_ducku_duck1010_active_assignment1_group(studentuser=studentuser)\
             .add_feedback_set(points=10,
                     published_by=examiner,
+                    created_by=examiner,
                     deadline_datetime=DateTimeBuilder.now().minus(weeks=4))
 
     def __init__(self, **kwargs):
