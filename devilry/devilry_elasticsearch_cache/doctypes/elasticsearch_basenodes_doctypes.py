@@ -21,7 +21,7 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
 
     admins = Nested(
         properties={
-            'id': String(fields={'raw': String(index='not_analyzed')})
+            u'id': String(fields={'raw': String(index='not_analyzed')})
         }
     )
 
@@ -97,13 +97,13 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
         self.get_inherited_admins(modelobject)
 
         return {
-            '_id': modelobject.id,
-            'parentnode_id': self.__get_parentnode_id(modelobject),
-            'short_name': modelobject.short_name,
-            'long_name': modelobject.long_name,
-            'path': modelobject.get_path(),
-            'search_text': self.get_search_text(modelobject),
-            'admins': self.admins,
+            u'_id': modelobject.id,
+            u'parentnode_id': self.__get_parentnode_id(modelobject),
+            u'short_name': modelobject.short_name,
+            u'long_name': modelobject.long_name,
+            u'path': modelobject.get_path(),
+            u'search_text': self.get_search_text(modelobject),
+            u'admins': self.admins,
             #'admins': self.get_inherited_admins(modelobject),
         }
 
@@ -220,15 +220,15 @@ class PeriodRegistryItem(AbstractBaseNodeRegistryItem):
         kwargs = super(PeriodRegistryItem, self).get_doctype_object_kwargs(modelobject=modelobject)
         period = modelobject
         kwargs.update({
-            'start_time': period.start_time,
-            'end_time': period.end_time,
+            u'start_time': period.start_time,
+            u'end_time': period.end_time,
         })
         return kwargs
 
     def get_all_modelobjects(self):
         return coremodels.Period.objects.select_related(
-            'parentnode',  # Subject
-            'parentnode__parentnode'  # Parentnode of subject
+            u'parentnode',  # Subject
+            u'parentnode__parentnode'  # Parentnode of subject
         ).all()
 
 elasticsearch_registry.registry.add(PeriodRegistryItem())
@@ -269,28 +269,28 @@ class AssignmentRegistryItem(AbstractBaseNodeRegistryItem):
         kwargs = super(AssignmentRegistryItem, self).get_doctype_object_kwargs(modelobject=modelobject)
         assignment = modelobject
         kwargs.update({
-            'publishing_time': assignment.publishing_time,
-            'anonymous': assignment.anonymous,
-            'students_can_see_points': assignment.students_can_see_points,
-            'delivery_types': assignment.delivery_types,
-            'deadline_handling': assignment.deadline_handling,
-            'scale_points_percent': assignment.scale_points_percent,
-            'first_deadline': assignment.first_deadline,
-            'max_points': assignment.max_points,
-            'passing_grade_min_points': assignment.passing_grade_min_points,
-            'points_to_grade_mapper': assignment.points_to_grade_mapper,
-            'grading_system_plugin_id': assignment.grading_system_plugin_id,
-            'students_can_create_groups': assignment.students_can_create_groups,
-            'students_can_not_create_groups_after': assignment.students_can_not_create_groups_after,
-            'feedback_workflow': assignment.feedback_workflow,
+            u'publishing_time': assignment.publishing_time,
+            u'anonymous': assignment.anonymous,
+            u'students_can_see_points': assignment.students_can_see_points,
+            u'delivery_types': assignment.delivery_types,
+            u'deadline_handling': assignment.deadline_handling,
+            u'scale_points_percent': assignment.scale_points_percent,
+            u'first_deadline': assignment.first_deadline,
+            u'max_points': assignment.max_points,
+            u'passing_grade_min_points': assignment.passing_grade_min_points,
+            u'points_to_grade_mapper': assignment.points_to_grade_mapper,
+            u'grading_system_plugin_id': assignment.grading_system_plugin_id,
+            u'students_can_create_groups': assignment.students_can_create_groups,
+            u'students_can_not_create_groups_after': assignment.students_can_not_create_groups_after,
+            u'feedback_workflow': assignment.feedback_workflow,
         })
         return kwargs
 
     def get_all_modelobjects(self):
         return coremodels.Assignment.objects.select_related(
-            'parentnode', # Period
-            'parentnode_parentnode', # parentnode of subject
-            'parentnode_parentnode_parentnode', # parentnode of subjects parentnode
+            u'parentnode', # Period
+            u'parentnode_parentnode', # parentnode of subject
+            u'parentnode_parentnode_parentnode', # parentnode of subjects parentnode
         ).all()
 
 elasticsearch_registry.registry.add(AssignmentRegistryItem())
