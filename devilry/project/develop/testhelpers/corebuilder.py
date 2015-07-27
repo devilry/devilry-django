@@ -271,7 +271,7 @@ class FeedbackSetBuilder(CoreBuilderBase):
             .quickadd_ducku_duck1010_active_assignment1_group(studentuser=studentuser)\
             .add_feedback_set(points=10,
                     published_by=examiner,
-                    # created_by=examiner,
+                    created_by=examiner,
                     deadline_datetime=DateTimeBuilder.now().minus(weeks=4))
 
     def __init__(self, **kwargs):

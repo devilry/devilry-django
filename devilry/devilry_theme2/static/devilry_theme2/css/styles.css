@@ -10397,13 +10397,30 @@ Button sizes
   float: left;
   min-width: 35%;
   text-align: center;
-  vertical-align: center;
   /*
     After deadline div. A dark red box that fills it's parent.
     */
   background-color: #971009;
 }
 .after_deadline_badge .badge_text {
+  font-family: Helvetica;
+  font-size: 1em;
+  font-weight: bold;
+  color: #ffffff;
+  display: inline-block;
+}
+/*
+*/
+.not_published_badge {
+  float: left;
+  min-width: 35%;
+  text-align: center;
+  /*
+    After deadline div. A dark red box that fills it's parent.
+    */
+  background-color: #055986;
+}
+.not_published_badge .badge_text {
   font-family: Helvetica;
   font-size: 1em;
   font-weight: bold;
@@ -10467,7 +10484,6 @@ Field to add comment status on right side of the comment box.
   float: left;
   min-width: 35%;
   text-align: center;
-  vertical-align: center;
   /*
     After deadline div. A dark red box that fills it's parent.
     */

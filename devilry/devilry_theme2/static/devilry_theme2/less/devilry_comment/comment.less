@@ -58,9 +58,10 @@ imports all neccessary requirements
 
 /*
 */
-.not_published{
+.not_published_badge{
     .right_badge_field;
-    border-color: 0.5em @examiner-color;
+    //border: 0.15em solid @examiner-color;
+    background-color: @examiner-color;
 }
 
 
@@ -128,7 +129,6 @@ Field to add comment status on right side of the comment box.
     float: left;
     min-width: 35%;
     text-align: center;
-    vertical-align: center;
 
     /*
     After deadline div. A dark red box that fills it's parent.
@@ -140,9 +140,31 @@ Field to add comment status on right side of the comment box.
         color: @badge-text-color;
         display: inline-block;
     }
-
 }
 
+// view-source:http://pmob.co.uk/pob/vertical-center1.htm
+//.right_badge_field {
+//    float: left;
+//    min-width: 35%;
+//    height: 100%;
+//    vertical-align: middle;
+//    display: table;
+//
+//    .badge_text_container {
+//        text-align: center;
+//        position: relative;
+//        vertical-align: middle;
+//        display: table-cell;
+//
+//        .badge_text {
+//            font-family: Helvetica;
+//            font-size: @badge-text-size;
+//            font-weight: @badge-text-weight;
+//            color: @badge-text-color;
+//            //display: inline-block;
+//        }
+//    }
+//}
 
 /*
 Event messages such as passed, failed and general messages between comments.
