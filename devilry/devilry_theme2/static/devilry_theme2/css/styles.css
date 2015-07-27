@@ -10396,36 +10396,30 @@ Button sizes
 .after_deadline_badge {
   float: left;
   min-width: 35%;
+  heigh: 100%;
   text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
   /*
     After deadline div. A dark red box that fills it's parent.
     */
   background-color: #971009;
-}
-.after_deadline_badge .badge_text {
-  font-family: Helvetica;
-  font-size: 1em;
-  font-weight: bold;
-  color: #ffffff;
-  display: inline-block;
 }
 /*
 */
 .not_published_badge {
   float: left;
   min-width: 35%;
+  heigh: 100%;
   text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
   /*
     After deadline div. A dark red box that fills it's parent.
     */
   background-color: #055986;
-}
-.not_published_badge .badge_text {
-  font-family: Helvetica;
-  font-size: 1em;
-  font-weight: bold;
-  color: #ffffff;
-  display: inline-block;
 }
 /* 
 Field of content to the left in the comment box
@@ -10483,17 +10477,25 @@ Field to add comment status on right side of the comment box.
 .right_badge_field {
   float: left;
   min-width: 35%;
+  heigh: 100%;
   text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
   /*
     After deadline div. A dark red box that fills it's parent.
     */
 }
-.right_badge_field .badge_text {
+.badge_text {
   font-family: Helvetica;
   font-size: 1em;
   font-weight: bold;
   color: #ffffff;
-  display: inline-block;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  padding: 3em 3em 3em 3em;
+  transform: translate(0, -50%);
 }
 /*
 Event messages such as passed, failed and general messages between comments.

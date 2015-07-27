@@ -128,19 +128,30 @@ Field to add comment status on right side of the comment box.
 .right_badge_field{
     float: left;
     min-width: 35%;
+    heigh: 100%;
     text-align: center;
-
+    display: table-cell;
+    vertical-align: middle;
+    position: relative;
     /*
     After deadline div. A dark red box that fills it's parent.
     */
-    .badge_text{
-        font-family: Helvetica;
-        font-size: @badge-text-size;
-        font-weight: @badge-text-weight;
-        color: @badge-text-color;
-        display: inline-block;
-    }
+
 }
+
+.badge_text{
+    font-family: Helvetica;
+    font-size: @badge-text-size;
+    font-weight: @badge-text-weight;
+    color: @badge-text-color;
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    padding: 3em 3em 3em 3em;
+    transform: translate(0, -50%);
+    //display: inline-block;
+}
+
 
 // view-source:http://pmob.co.uk/pob/vertical-center1.htm
 //.right_badge_field {
