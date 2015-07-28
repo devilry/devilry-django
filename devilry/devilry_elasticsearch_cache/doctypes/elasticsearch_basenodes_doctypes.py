@@ -19,14 +19,10 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
     #: The DocType(elasticsearch _doc_type) class it should reflect. Ex: :class:`.Node`
     doctype_class = None
 
-    admins = Nested(
-        properties={
-            u'id': String(fields={'raw': String(index='not_analyzed')})
-        }
-    )
 
     class Meta:
         abstract = True
+
 
     def get_search_text(self, modelobject):
         """
@@ -53,29 +49,6 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
             return parent.id
         return -1
 
-    def get_inherited_admins(self, modelobject):
-        """
-        Get a list of dictionaries containing the id(s) of admin(s)
-        for this modelobject, where modelobject is e.g: :class:`core.models.node.Node`
-
-        Example:
-
-            This is what the field will look like in Elasticsearch::
-
-                "admins": [
-                    {\"id\": 1},
-                    {\"id\": 2},
-                    ...
-                ]
-
-        """
-        #admins = []
-        # for id in modelobject.get_all_admin_ids():
-        #     admins.append(json.dumps({
-        #     }))
-        # for id in modelobject.get_all_admin_ids():
-        #     self.admins.append({'id': id})
-
     def get_doctype_object_kwargs(self, modelobject):
         """
         Get the description fields for a DocType object where data for each field
@@ -93,8 +66,7 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
                     'search_text': self.get_search_text(modelobject),
                 }
         """
-
-        self.get_inherited_admins(modelobject)
+        admin_ids = [] if modelobject.get_all_admin_ids() is None else [id for id in modelobject.get_all_admin_ids() if id is not None]
 
         return {
             u'_id': modelobject.id,
@@ -103,8 +75,9 @@ class AbstractBaseNodeRegistryItem(elasticsearch_registry.RegistryItem):
             u'long_name': modelobject.long_name,
             u'path': modelobject.get_path(),
             u'search_text': self.get_search_text(modelobject),
-            u'admins': self.admins,
+            u'admins': admin_ids,
             #'admins': self.get_inherited_admins(modelobject),
+            #'admins': modelobject.get_inherited_admins(),
         }
 
     def to_doctype_object(self, modelobject):

@@ -32,6 +32,11 @@ class TestNodeIndexing(test.TestCase):
         elasticsearch_registry.registry.reindex_all()
         connections.get_connection().indices.refresh()
 
+    def test_save_es_node_as_celery_task(self):
+        corebuilder.NodeBuilder.quickadd_ducku()
+        self.__reindex_and_refresh()
+        self.assertEqual(1, 1)
+
     def test_unicode_string(self):
         testnode = corebuilder.NodeBuilder(
             short_name=u'd\u00F8cku', long_name=u'D\u00F8ckburgh University').node

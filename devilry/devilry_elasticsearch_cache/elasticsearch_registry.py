@@ -1,6 +1,7 @@
 from elasticsearch import Elasticsearch
 from elasticsearch_dsl.connections import connections
 from devilry.apps.core.models import AssignmentGroup
+from tasks import celery_save_es_model
 
 es = Elasticsearch()
 
@@ -27,6 +28,7 @@ class Registry(object):
         doctype_object = registryitem.to_doctype_object(
             modelobject=modelobject)
         doctype_object.save()
+        # celery_save_es_model(doctype_object)
 
     def delete_all(self):
         """
