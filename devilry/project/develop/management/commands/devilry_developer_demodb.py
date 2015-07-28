@@ -261,7 +261,7 @@ class Command(BaseCommand):
                     files=randomize_files(),
                     user=examiner,
                     user_role="examiner",
-                    instant_publish=False,
+                    instant_publish=bool(random.getrandbits(1)),
                     visible_for_students=True,
                     text=get_comment_text(),
                     published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=2))
