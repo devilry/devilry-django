@@ -10514,6 +10514,7 @@ Event messages such as passed, failed and general messages between comments.
   color: #333333;
   font-size: 1.0em;
   color: #5d8c08;
+  border-bottom: 1px solid #999999;
 }
 .event_message_failed {
   margin-left: 3.0em;
@@ -10522,6 +10523,7 @@ Event messages such as passed, failed and general messages between comments.
   color: #333333;
   font-size: 1.0em;
   color: #9b0d28;
+  border-bottom: 1px solid #999999;
 }
 /* Icon class default size */
 .icon {

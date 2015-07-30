@@ -422,7 +422,8 @@ class Command(BaseCommand):
                 RelatedExaminer(user=examiner)
             ]
         ).add_assignment(
-            'Oblig 1 - Domination'
+            'Oblig 1 - Domination',
+            passing_grade_min_points=3,
         ).add_group()
 
         assignmentgroupbuilder.add_students(student)
@@ -432,7 +433,7 @@ class Command(BaseCommand):
             points=1,
             published_by=examiner,
             created_by=examiner,
-            published_datetime=DateTimeBuilder.now().minus(weeks=3),
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5, hours=2),
             created_datetime=DateTimeBuilder.now().minus(weeks=4),
             deadline_datetime=DateTimeBuilder.now().minus(weeks=2, days=1)
         )
@@ -463,11 +464,8 @@ class Command(BaseCommand):
             instant_publish=True,
             visible_for_students=True,
             text='Here my assignment! I think I have a great solution! =D',
-            published_datetime=DateTimeBuilder.now().minus(weeks=2, days=1)
+            published_datetime=DateTimeBuilder.now().minus(weeks=2, days=1, hours=1)
         )
-
-        feedbacksetbuilder1.feedbackset.published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5)
-        feedbacksetbuilder1.feedbackset.points = 2
 
         feedbacksetbuilder1.add_groupcomment(
             files=[comment_files[1]],
@@ -476,7 +474,7 @@ class Command(BaseCommand):
             instant_publish=True,
             visible_for_students=True,
             text='Wuups! Forgot this file!',
-            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=6)
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5, hours=3)
         )
 
         feedbacksetbuilder1.add_groupcomment(
@@ -486,7 +484,7 @@ class Command(BaseCommand):
             instant_publish=True,
             visible_for_students=True,
             text="You failed miserably! Try to actually understand the problem. Printing 'hello world, I own you now' everywhere won't get you anywhere!",
-            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5)
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5, hours=1)
         )
 
         feedbacksetbuilder1.add_groupcomment(
@@ -511,11 +509,11 @@ class Command(BaseCommand):
 
         # Event summary for feedbackset 2
         feedbacksetbuilder2 = assignmentgroupbuilder.add_feedback_set(
-            points=0,
+            points=10,
             published_by=examiner,
             created_by=examiner,
-            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5),
-            created_datetime=DateTimeBuilder.now().minus(weeks=2),
+            published_datetime=DateTimeBuilder.now().minus(weeks=0, days=3),
+            created_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=21),
             deadline_datetime=DateTimeBuilder.now().minus(weeks=1)
         )
 
@@ -524,8 +522,17 @@ class Command(BaseCommand):
             user_role='student',
             instant_publish=True,
             visible_for_students=True,
+            text="Thanks!",
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=18)
+        )
+
+        feedbacksetbuilder2.add_groupcomment(
+            user=student,
+            user_role='student',
+            instant_publish=True,
+            visible_for_students=True,
             text="Do you like cashew nuts?",
-            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=4)
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=16)
         )
 
         feedbacksetbuilder2.add_groupcomment(
@@ -546,9 +553,6 @@ class Command(BaseCommand):
             text='Here we go again!',
             published_datetime=DateTimeBuilder.now().minus(weeks=1, days=2)
         )
-
-        feedbacksetbuilder1.feedbackset.published_datetime=DateTimeBuilder.now().minus(weeks=0, days=3)
-        feedbacksetbuilder2.feedbackset.points = 10
 
         feedbacksetbuilder2.add_groupcomment(
             files=[comment_files[2]],

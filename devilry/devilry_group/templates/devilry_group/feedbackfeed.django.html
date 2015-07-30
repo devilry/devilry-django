@@ -134,24 +134,26 @@
     <div class="col-sm-3 feedback_sidebar">
         {% block sidebar %}
             <div class="top_headline">UPLOADED FILES</div>
-            {% for timestamp, event in timeline.items %}
-                {% if event.type == "comment" %}
-                    {% with event.obj as comment %}
-                        {% for file in comment.commentfile_set.all %}
-                            <div class="feedback_sidebar_files">
-                                <a href="#" >{{ file.filename|devilry_truncatefileextension:13 }}</a>
-                                {% if comment.user_role == "examiner" %}
-                                    <p class="uploaded_file_tag_examiner">[BY EXAMINER]</p>
-                                {% elif comment.published_datetime > comment.feedback_set.deadline_datetime %}
-                                    <p class="uploaded_file_tag_examiner">[AFTER DEADLINE]</p>
-                                {% endif %}
-                            </div>
-                        {% endfor %}
-                    {% endwith %}
-                {% endif %}
-            {% endfor %}
             <br>
             <div class="sub_headline">FIRST DEADLINE</div>
+            {% for timestamp, eventlist in timeline.items %}
+                {% for event in eventlist %}
+                    {% if event.type == "comment" %}
+                        {% with event.obj as comment %}
+                            {% for file in comment.commentfile_set.all %}
+                                <div class="feedback_sidebar_files">
+                                    <a href="#" >{{ file.filename|devilry_truncatefileextension:13 }}</a>
+                                    {% if comment.user_role == "examiner" %}
+                                        <p class="uploaded_file_tag_examiner">[BY EXAMINER]</p>
+                                    {% elif comment.published_datetime > comment.feedback_set.deadline_datetime %}
+                                        <p class="uploaded_file_tag_examiner">[AFTER DEADLINE]</p>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endwith %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
             <br>
             <div class="sub_headline">SECOND DEADLINE</div>
 

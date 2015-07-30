@@ -29,7 +29,7 @@ class FeedbackFeedBaseView(base.TemplateView):
             return timeline
         first_feedbackset = feedbacksets[0]
         last_deadline = first_feedbackset.deadline_datetime
-        for feedbackset in feedbacksets[1:]:
+        for feedbackset in feedbacksets[0:]:
             if feedbackset.deadline_datetime not in timeline.keys():
                 timeline[feedbackset.deadline_datetime] = []
             timeline[feedbackset.deadline_datetime].append({
@@ -45,7 +45,7 @@ class FeedbackFeedBaseView(base.TemplateView):
                     "user": first_feedbackset.created_by
                 })
                 first_feedbackset = feedbackset
-            else:
+            elif feedbackset is not feedbacksets[0]:
                 timeline[feedbackset.created_datetime].append({
                     "type": "deadline_created",
                     "obj": feedbackset.deadline_datetime,

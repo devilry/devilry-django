@@ -1,5 +1,5 @@
 from django import test
-from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import AssignmentGroup, RelatedExaminer
 from devilry.apps.core import testhelper
 from devilry.devilry_group.cradmin import CrAdminInstance
 
