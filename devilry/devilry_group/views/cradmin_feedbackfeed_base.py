@@ -23,8 +23,7 @@ class FeedbackFeedBaseView(base.TemplateView):
             })
         return timeline
 
-    def __add_announcements_to_timeline(self, group, timeline):
-        feedbacksets = self._get_feedbacksets_for_group(group)
+    def __add_announcements_to_timeline(self, feedbacksets, timeline):
         if len(feedbacksets) == 0:
             return timeline
         first_feedbackset = feedbacksets[0]
@@ -67,10 +66,10 @@ class FeedbackFeedBaseView(base.TemplateView):
         sorted_timeline = collections.OrderedDict(sorted(timeline.items()))
         return sorted_timeline
 
-    def __build_timeline(self, group):
+    def __build_timeline(self, group, feedbacksets):
         timeline = {}
         timeline = self.__add_comments_to_timeline(group, timeline)
-        last_deadline, timeline = self.__add_announcements_to_timeline(group, timeline)
+        last_deadline, timeline = self.__add_announcements_to_timeline(feedbacksets, timeline)
         timeline = self.__sort_timeline(timeline)
 
         return last_deadline, timeline
@@ -81,8 +80,8 @@ class FeedbackFeedBaseView(base.TemplateView):
         context['assignment'] = self.request.cradmin_role.assignment
         context['period'] = self.request.cradmin_role.assignment.period
 
-        context['last_deadline'], context['timeline'] = self.__build_timeline(self.request.cradmin_role)
-        print "Timeline:"
-        print context['timeline']
+        feedbacksets = self._get_feedbacksets_for_group(self.request.cradmin_role)
+        context['last_deadline'], context['timeline'] = self.__build_timeline(self.request.cradmin_role, feedbacksets)
+        context['feedbacksets'] = feedbacksets
 
         return context

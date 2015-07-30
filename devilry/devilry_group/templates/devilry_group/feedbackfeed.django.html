@@ -14,7 +14,7 @@
 {% endblock header-text %}
 
 {% block body %}
-    <div class="col-sm-9 feedback_feed">
+    <div class="col-sm-8 feedback_feed">
         {% block feed %}
             {% for timestamp, eventlist in timeline.items %}
                 {% for event in eventlist %}
@@ -64,98 +64,28 @@
                     {% endif %}
                 {% endfor %}
             {% endfor %}
-
-
-{#            <div class="student_comment">#}
-{#                <div class="left_field">#}
-{#                    <div class="comment_meta">#}
-{#                        <h1 class="comment_created_by">Name</h1>#}
-{#                        <h1 class="comment_created_meta_text">(student) _ 2 days ago (2015_05_17 09:01)</h1>#}
-{#                    </div>#}
-{#                    <div class="comment_text">#}
-{#                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.#}
-{#                        Proin non nisl purus. Fusce elementum, odio id molestie elementum,#}
-{#                        sem eros vehicula magna, vitae blandit purus lacus sed justo.#}
-{#                        Etiam mattis tellus massa, nec vehicula nulla volutpat condimentum.#}
-{#                        Sed eget odio sit amet erat vulputate porta. Donec vitae cursus nulla.#}
-{#                    </div>#}
-{#                    <div class="file_icon"></div>#}
-{#                    <div class="file_icon"></div>#}
-{#                    <div class="file_icon"></div>#}
-{#                    <div class="image_icon"></div>#}
-{#                </div>#}
-{#                <div class="after_deadline_badge">#}
-{#                    <p class="badge_text">NOT PART OF THE DELIVERY</p>#}
-{#                </div>#}
-{#            </div>#}
-
-{#            <div class="admin_comment">#}
-{#                <div class="left_field">#}
-{#                    <div class="comment-meta">#}
-{#                        <h1 class="comment_created_by">Name</h1>#}
-{#                        <h1 class="comment_created_meta_text">(admin) - 2 days ago (2015-05-17 09:01)</h1>#}
-{#                    </div>#}
-{#                    <div class="comment_text">#}
-{#                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.#}
-{#                        Proin non nisl purus. Fusce elementum, odio id molestie elementum,#}
-{#                        sem eros vehicula magna, vitae blandit purus lacus sed justo.#}
-{#                        Etiam mattis tellus massa, nec vehicula nulla volutpat condimentum.#}
-{#                        Sed eget odio sit amet erat vulputate porta. Donec vitae cursus nulla.#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            <p class="event_message">2015-05-17 12:10:  This delivery was corrected, and given the grade 5/30 (failed).</p>#}
-{##}
-{#            <div class="examiner_comment">#}
-{#                <div class="left_field">#}
-{#                    <div class="comment_meta">#}
-{#                        <h1 class="comment_created_by">Name</h1>#}
-{#                        <h1 class="comment_created_meta_text">(examiner) _ 2 days ago (2015-05-17 09:01)</h1>#}
-{#                    </div>#}
-{#                    <div class="comment_text">#}
-{#                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.#}
-{#                        Proin non nisl purus. Fusce elementum, odio id molestie elementum,#}
-{#                        sem eros vehicula magna, vitae blandit purus lacus sed justo.#}
-{#                        Etiam mattis tellus massa, nec vehicula nulla volutpat condimentum.#}
-{#                        Sed eget odio sit amet erat vulputate porta. Donec vitae cursus nulla.#}
-{#                    </div>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            <p class="event_message_failed">2015_05_17 12:10:  This delivery was corrected, and given the grade 5/30 (failed).</p>#}
-{##}
-{##}
-{#            <p class="event_message_passed">2015_05_17 12:10:  This delivery was corrected, and given the grade 5/30 (failed).</p>#}
-
         {% endblock feed %}
     </div>
 
-    <div class="col-sm-3 feedback_sidebar">
+    <div class="col-sm-4 feedback_sidebar">
         {% block sidebar %}
             <div class="top_headline">UPLOADED FILES</div>
-            <br>
-            <div class="sub_headline">FIRST DEADLINE</div>
-            {% for timestamp, eventlist in timeline.items %}
-                {% for event in eventlist %}
-                    {% if event.type == "comment" %}
-                        {% with event.obj as comment %}
-                            {% for file in comment.commentfile_set.all %}
-                                <div class="feedback_sidebar_files">
-                                    <a href="#" >{{ file.filename|devilry_truncatefileextension:13 }}</a>
-                                    {% if comment.user_role == "examiner" %}
-                                        <p class="uploaded_file_tag_examiner">[BY EXAMINER]</p>
-                                    {% elif comment.published_datetime > comment.feedback_set.deadline_datetime %}
-                                        <p class="uploaded_file_tag_examiner">[AFTER DEADLINE]</p>
-                                    {% endif %}
-                                </div>
-                            {% endfor %}
-                        {% endwith %}
-                    {% endif %}
+            {% for feedbackset in feedbacksets %}
+                <br>
+                <div class="sub_headline">{{ forloop.counter }} DEADLINE</div>
+                {% for comment in feedbackset.groupcomment_set.all %}
+                    {% for file in comment.commentfile_set.all %}
+                        <div class="feedback_sidebar_files">
+                            <a href="#" >{{ file.filename|devilry_truncatefileextension:13 }}</a>
+                            {% if comment.user_role == "examiner" %}
+                                <p class="uploaded_file_tag_examiner">[BY EXAMINER]</p>
+                            {% elif comment.published_datetime > comment.feedback_set.deadline_datetime %}
+                                <p class="uploaded_file_tag_examiner">[AFTER DEADLINE]</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
                 {% endfor %}
             {% endfor %}
-            <br>
-            <div class="sub_headline">SECOND DEADLINE</div>
 
             <br>
 

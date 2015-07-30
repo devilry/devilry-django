@@ -484,7 +484,7 @@ class Command(BaseCommand):
             instant_publish=True,
             visible_for_students=True,
             text="You failed miserably! Try to actually understand the problem. Printing 'hello world, I own you now' everywhere won't get you anywhere!",
-            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5, hours=1)
+            published_datetime=feedbacksetbuilder1.feedbackset.published_datetime #DateTimeBuilder.now().minus(weeks=1, days=5, hours=1)
         )
 
         feedbacksetbuilder1.add_groupcomment(
@@ -561,7 +561,7 @@ class Command(BaseCommand):
             instant_publish=True,
             visible_for_students=True,
             text="Great job! You must be the most evil mutant I have ever met! Keep going like this, and you'll own the entire planet in no time!",
-            published_datetime=DateTimeBuilder.now().minus(weeks=0, days=3)
+            published_datetime=feedbacksetbuilder2.feedbackset.published_datetime#DateTimeBuilder.now().minus(weeks=0, days=3)
         )
 
         feedbacksetbuilder2.add_groupcomment(
