@@ -27,8 +27,8 @@ class Registry(object):
         registryitem = self.model_to_doc_type_map[modelobject.__class__]
         doctype_object = registryitem.to_doctype_object(
             modelobject=modelobject)
-        doctype_object.save()
-        # celery_save_es_model(doctype_object)
+        celery_save_es_model(doctype_object=doctype_object)
+        # celery_save_es_model.apply_async(countdown=1, doctype_object=doctype_object)
 
     def delete_all(self):
         """

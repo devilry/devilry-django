@@ -33,7 +33,7 @@ class TestNodeIndexing(test.TestCase):
         connections.get_connection().indices.refresh()
 
     def test_save_es_node_as_celery_task(self):
-        corebuilder.NodeBuilder.quickadd_ducku()
+        corebuilder.NodeBuilder('string uni')
         self.__reindex_and_refresh()
         self.assertEqual(1, 1)
 
