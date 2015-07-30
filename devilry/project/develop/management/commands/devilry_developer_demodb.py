@@ -164,6 +164,7 @@ class Command(BaseCommand):
         self.duckburgh = NodeBuilder('duckburgh', long_name="University of Duckburgh")
         self.add_duck1100()
         # self.add_hugecourse()
+        self.create_feedbackset_complete()
 
     def create_or_get_user(self, username, full_name):
         try:
@@ -261,7 +262,7 @@ class Command(BaseCommand):
                     files=randomize_files(),
                     user=examiner,
                     user_role="examiner",
-                    instant_publish=False,
+                    instant_publish=bool(random.getrandbits(1)),
                     visible_for_students=True,
                     text=get_comment_text(),
                     published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=2))
@@ -405,6 +406,166 @@ class Command(BaseCommand):
                     weeks_ago=weekoffset, filecount=2,
                     short_name='week6', long_name='Week 6')
 
+    def create_feedbackset_complete(self):
+        # Create a finished feedbackset for a specified user on a new subject
+        # and a new assingment in the current period
+        student = UserBuilder('psylocke', full_name='Elisabeth Braddock').user
+        examiner = UserBuilder('magneto', full_name='Erik Lehnsherr').user
+
+        assignmentgroupbuilder = self.duckburgh.add_subject(
+            short_name='inf7020',
+            long_name='INF7020 Programming for World Domination and Crashing Non-Mutant Economy',
+        ).add_6month_active_period(
+            short_name='testsemester',
+            long_name='Testsemester',
+            relatedexaminers=[
+                RelatedExaminer(user=examiner)
+            ]
+        ).add_assignment(
+            'Oblig 1 - Domination'
+        ).add_group()
+
+        assignmentgroupbuilder.add_students(student)
+        assignmentgroupbuilder.add_examiners(examiner)
+
+        feedbacksetbuilder1 = assignmentgroupbuilder.add_feedback_set(
+            points=1,
+            published_by=examiner,
+            created_by=examiner,
+            # published_datetime=DateTimeBuilder.now().minus(weeks=3),
+            deadline_datetime=DateTimeBuilder.now().minus(weeks=2)
+        )
+
+        # Event summary for feedbackset 1
+        feedbacksetbuilder1.add_groupcomment(
+            user=student,
+            user_role='student',
+            instant_publish=True,
+            visible_for_students=True,
+            text="I don't know how to solve this, can't I just use my private army?",
+            published_datetime=DateTimeBuilder.now().minus(weeks=2, days=2)
+        )
+
+        feedbacksetbuilder1.add_groupcomment(
+            user=examiner,
+            user_role='examiner',
+            instant_publish=True,
+            visible_for_students=True,
+            text="No no no, you're here to learn how to get domination using information technology. Later you will learn to use automate your abilities by programming them.",
+            published_datetime=DateTimeBuilder.now().minus(weeks=2, days=2)
+        )
+
+        feedbacksetbuilder1.add_groupcomment(
+            files=[comment_files[0]],
+            user=student,
+            user_role='student',
+            instant_publish=True,
+            visible_for_students=True,
+            text='Here my assignment! I think I have a great solution! =D',
+            published_datetime=DateTimeBuilder.now().minus(weeks=2, days=1)
+        )
+
+        feedbacksetbuilder1.feedbackset.published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5)
+        feedbacksetbuilder1.feedbackset.points = 2
+
+        feedbacksetbuilder1.add_groupcomment(
+            files=[comment_files[1]],
+            user=student,
+            user_role='student',
+            instant_publish=True,
+            visible_for_students=True,
+            text='Wuups! Forgot this file!',
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=6)
+        )
+
+        feedbacksetbuilder1.add_groupcomment(
+            files=[comment_files[1]],
+            user=examiner,
+            user_role='examiner',
+            instant_publish=True,
+            visible_for_students=True,
+            text="You failed miserably! Try to actually understand the problem. Printing 'hello world, I own you now' everywhere won't get you anywhere!",
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5)
+        )
+
+        feedbacksetbuilder1.add_groupcomment(
+            user=student,
+            user_role='student',
+            instant_publish=True,
+            visible_for_students=True,
+            text='Noooooooo! New try pls?',
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5)
+        )
+
+        feedbacksetbuilder1.add_groupcomment(
+            user=examiner,
+            user_role='examiner',
+            instant_publish=True,
+            visible_for_students=True,
+            text="Ok, I'll give you a second try!",
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5)
+        )
+
+
+
+        # Event summary for feedbackset 2
+        feedbacksetbuilder2 = assignmentgroupbuilder.add_feedback_set(
+            points=0,
+            published_by=examiner,
+            created_by=examiner,
+            # published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5),
+            deadline_datetime=DateTimeBuilder.now().minus(weeks=1)
+        )
+
+        feedbacksetbuilder2.add_groupcomment(
+            user=student,
+            user_role='student',
+            instant_publish=True,
+            visible_for_students=True,
+            text="Do you like cashew nuts?",
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=4)
+        )
+
+        feedbacksetbuilder2.add_groupcomment(
+            user=examiner,
+            user_role='examiner',
+            instant_publish=True,
+            visible_for_students=True,
+            text="Stay on topic please... But, yes...",
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=3)
+        )
+
+        feedbacksetbuilder2.add_groupcomment(
+            files=[comment_files[0], comment_files[1]],
+            user=student,
+            user_role='student',
+            instant_publish=True,
+            visible_for_students=True,
+            text='Here we go again!',
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=2)
+        )
+
+        feedbacksetbuilder1.feedbackset.published_datetime=DateTimeBuilder.now().minus(weeks=0, days=3)
+        feedbacksetbuilder2.feedbackset.points = 10
+
+        feedbacksetbuilder2.add_groupcomment(
+            files=[comment_files[2]],
+            user=examiner,
+            user_role='examiner',
+            instant_publish=True,
+            visible_for_students=True,
+            text="Great job! You must be the most evil mutant I have ever met! Keep going like this, and you'll own the entire planet in no time!",
+            published_datetime=DateTimeBuilder.now().minus(weeks=0, days=3)
+        )
+
+        feedbacksetbuilder2.add_groupcomment(
+            user=student,
+            user_role='student',
+            instant_publish=True,
+            visible_for_students=True,
+            text="Thanks! Sorry for the first delivery, I was so hungover when I worked on that!",
+            published_datetime=DateTimeBuilder.now().minus(weeks=0, days=2)
+        )
 
     def _lorem_paras(self, count):
         return markdown_full(u'\n\n'.join(lorem_ipsum.paragraphs(count, common=False)))

@@ -10396,19 +10396,30 @@ Button sizes
 .after_deadline_badge {
   float: left;
   min-width: 35%;
+  heigh: 100%;
   text-align: center;
-  vertical-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
   /*
     After deadline div. A dark red box that fills it's parent.
     */
   background-color: #971009;
 }
-.after_deadline_badge .badge_text {
-  font-family: Helvetica;
-  font-size: 1em;
-  font-weight: bold;
-  color: #ffffff;
-  display: inline-block;
+/*
+*/
+.not_published_badge {
+  float: left;
+  min-width: 35%;
+  heigh: 100%;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
+  /*
+    After deadline div. A dark red box that fills it's parent.
+    */
+  background-color: #055986;
 }
 /* 
 Field of content to the left in the comment box
@@ -10466,18 +10477,25 @@ Field to add comment status on right side of the comment box.
 .right_badge_field {
   float: left;
   min-width: 35%;
+  heigh: 100%;
   text-align: center;
-  vertical-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
   /*
     After deadline div. A dark red box that fills it's parent.
     */
 }
-.right_badge_field .badge_text {
+.badge_text {
   font-family: Helvetica;
   font-size: 1em;
   font-weight: bold;
   color: #ffffff;
-  display: inline-block;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  padding: 3em 3em 3em 3em;
+  transform: translate(0, -50%);
 }
 /*
 Event messages such as passed, failed and general messages between comments.
@@ -10510,7 +10528,7 @@ Event messages such as passed, failed and general messages between comments.
   width: 2.5em;
   height: 2.5em;
   float: left;
-  margin-left: 1.0em;
+  margin-right: 1.0em;
   background-size: 100%;
   transition: all 0.1s ease-in-out;
   /* icon class scale on mouse-over */
@@ -10524,11 +10542,11 @@ Event messages such as passed, failed and general messages between comments.
   width: 2.5em;
   height: 2.5em;
   float: left;
-  margin-left: 1.0em;
+  margin-right: 1.0em;
   background-size: 100%;
   transition: all 0.1s ease-in-out;
   /* icon class scale on mouse-over */
-  content: url(file-icon.png) no-repeat center center fixed;
+  content: url(http://megaicons.net/static/img/icons_sizes/8/178/256/very-basic-file-icon.png) no-repeat center center fixed;
 }
 .file_icon:hover {
   border-radius: 0.5em;
@@ -10539,7 +10557,7 @@ Event messages such as passed, failed and general messages between comments.
   width: 2.5em;
   height: 2.5em;
   float: left;
-  margin-left: 1.0em;
+  margin-right: 1.0em;
   background-size: 100%;
   transition: all 0.1s ease-in-out;
   /* icon class scale on mouse-over */
@@ -11360,6 +11378,16 @@ fieldset[disabled] .button_student.active {
   font-family: Helvetica;
   border-top: 2px solid #999999;
   margin-bottom: 0.5em;
+}
+.uploaded_file_tag {
+  float: right;
+}
+.uploaded_file_tag_examiner {
+  float: right;
+}
+.uploaded_file_tag_after_deadline {
+  float: right;
+  color: #FF0000;
 }
 .headline_dropdownicon {
   float: right;
