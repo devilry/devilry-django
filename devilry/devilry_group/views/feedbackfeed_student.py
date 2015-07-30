@@ -7,9 +7,6 @@ from django.db.models import Q
 class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
 
     def _get_comments_for_group(self, group):
-        print "Running get queryset for group in studentfeedbackfeed!"
-        print "group:"
-        print group
         return models.GroupComment.objects.filter(
             Q(feedback_set__published_datetime__isnull=False) | Q(instant_publish=True),
             visible_for_students=True,

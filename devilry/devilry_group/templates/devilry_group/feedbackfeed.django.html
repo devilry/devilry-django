@@ -12,7 +12,8 @@
 {% block body %}
     <div class="col-sm-9 feedback_feed">
         {% block feed %}
-            {% for timestamp, event in timeline.items %}
+            {% for timestamp, eventlist in timeline.items %}
+                {% for event in eventlist %}
                 {% if event.type == "comment" %}
                     {% with event.obj as comment %}
                         <div class="
@@ -43,6 +44,7 @@
                         <p class="event_message_failed">{{ timestamp }}: This delivery was corrected, and given the grade <strong>{{ event.obj }}/{{ assignment.max_points }} (failed)</strong></p>
                     {% endif %}
                 {% endif %}
+            {% endfor %}
             {% endfor %}
 
 {#            <div class="admin_comment">#}
