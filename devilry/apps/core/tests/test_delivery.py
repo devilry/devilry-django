@@ -115,10 +115,6 @@ class TestDeliveryOld(TestCase, TestHelper):
         self.assertEquals(d.number, 2)
         self.assertTrue(d.time_of_delivery, datetime(2005, 1, 1))
 
-        # TODO find a graceful way to handle this error:
-        d.number = 1
-        self.assertRaises(IntegrityError, d.save())
-
     def test_noalias_missing_feedback(self):
         self._create_testdata()
         deadline = self.inf1100_period1_assignment1_g3_d1
