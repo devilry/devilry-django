@@ -27,20 +27,27 @@ class FeedbackFeedBaseView(base.TemplateView):
         feedbacksets = self._get_feedbacksets_for_group(group)
         if len(feedbacksets) == 0:
             return timeline
-        first_deadline = feedbacksets[0].deadline_datetime
-        last_deadline = first_deadline
+        first_feedbackset = feedbacksets[0]
+        last_deadline = first_feedbackset.deadline_datetime
         for feedbackset in feedbacksets[1:]:
+            if feedbackset.deadline_datetime not in timeline.keys():
+                timeline[feedbackset.deadline_datetime] = []
+            timeline[feedbackset.deadline_datetime].append({
+                "type": "deadline_expired"
+            })
             if feedbackset.created_datetime not in timeline.keys():
                 timeline[feedbackset.created_datetime] = []
-            if feedbackset.deadline_datetime < first_deadline:
+
+            if feedbackset.deadline_datetime < first_feedbackset.deadline_datetime:
                 timeline[feedbackset.created_datetime].append({
-                    "type": "deadline",
-                    "obj": first_deadline
+                    "type": "deadline_created",
+                    "obj": first_feedbackset.deadline_datetime,
+                    "user": first_feedbackset.created_by
                 })
-                first_deadline = feedbackset.deadline_datetime
+                first_feedbackset = feedbackset
             else:
                 timeline[feedbackset.created_datetime].append({
-                    "type": "deadline",
+                    "type": "deadline_created",
                     "obj": feedbackset.deadline_datetime,
                     "user": feedbackset.created_by
                 })
@@ -74,6 +81,8 @@ class FeedbackFeedBaseView(base.TemplateView):
         context['assignment'] = self.request.cradmin_role.assignment
         context['period'] = self.request.cradmin_role.assignment.period
 
-        context['timeline'] = self.__build_timeline(self.request.cradmin_role)
+        context['last_deadline'], context['timeline'] = self.__build_timeline(self.request.cradmin_role)
+        print "Timeline:"
+        print context['timeline']
 
         return context

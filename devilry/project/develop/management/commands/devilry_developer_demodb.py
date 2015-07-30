@@ -432,8 +432,9 @@ class Command(BaseCommand):
             points=1,
             published_by=examiner,
             created_by=examiner,
-            # published_datetime=DateTimeBuilder.now().minus(weeks=3),
-            deadline_datetime=DateTimeBuilder.now().minus(weeks=2)
+            published_datetime=DateTimeBuilder.now().minus(weeks=3),
+            created_datetime=DateTimeBuilder.now().minus(weeks=4),
+            deadline_datetime=DateTimeBuilder.now().minus(weeks=2, days=1)
         )
 
         # Event summary for feedbackset 1
@@ -494,7 +495,7 @@ class Command(BaseCommand):
             instant_publish=True,
             visible_for_students=True,
             text='Noooooooo! New try pls?',
-            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5)
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=23)
         )
 
         feedbacksetbuilder1.add_groupcomment(
@@ -503,7 +504,7 @@ class Command(BaseCommand):
             instant_publish=True,
             visible_for_students=True,
             text="Ok, I'll give you a second try!",
-            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5)
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=22)
         )
 
 
@@ -513,7 +514,8 @@ class Command(BaseCommand):
             points=0,
             published_by=examiner,
             created_by=examiner,
-            # published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5),
+            published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5),
+            created_datetime=DateTimeBuilder.now().minus(weeks=2),
             deadline_datetime=DateTimeBuilder.now().minus(weeks=1)
         )
 

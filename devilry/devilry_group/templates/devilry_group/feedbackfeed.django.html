@@ -7,6 +7,10 @@
         <h1>{{ assignment.long_name }}</h1><br><br>
         {{ subject.long_name }} {{ period.long_name }}
     </h1>
+    <div class="pull-right">
+        <h4>Current Deadline</h4>
+        <h4>{{ last_deadline }}</h4>
+    </div>
 {% endblock header-text %}
 
 {% block body %}
@@ -14,49 +18,51 @@
         {% block feed %}
             {% for timestamp, eventlist in timeline.items %}
                 {% for event in eventlist %}
-                {% if event.type == "comment" %}
-                    {% with event.obj as comment %}
-                        <div class="
-                            {% if comment.user_role == "student" %}
-                                student_comment
-                            {% elif comment.user_role == "examiner"%}
-                                examiner_comment
-                            {% elif comment.user_role == "admin"%}
-                                admin_comment
-                            {% endif %}">
-                            <div class="left_field">
-                                <div class="comment-meta">
-                                    <h1 class="comment_created_by">{{ comment.user }}</h1>
-                                    <h1 class="comment_created_meta_text">({{ comment.user_role }}) - {{ comment.published_datetime }}</h1>
+                    {% if event.type == "comment" %}
+                        {% with event.obj as comment %}
+                            <div class="
+                                {% if comment.user_role == "student" %}
+                                    student_comment
+                                {% elif comment.user_role == "examiner"%}
+                                    examiner_comment
+                                {% elif comment.user_role == "admin"%}
+                                    admin_comment
+                                {% endif %}">
+                                <div class="left_field">
+                                    <div class="comment-meta">
+                                        <h1 class="comment_created_by">{{ comment.user }}</h1>
+                                        <h1 class="comment_created_meta_text">({{ comment.user_role }}) - {{ comment.published_datetime }}</h1>
+                                    </div>
+                                    <div class="comment_text">
+                                        {{ comment.text }}
+                                    </div>
+                                    {% for file in comment.commentfile_set.all %}
+                                        <div class="file_icon">{{ file.filename }}</div>
+                                    {% endfor %}
                                 </div>
-                                <div class="comment_text">
-                                    {{ comment.text }}
-                                </div>
-                                {% for file in comment.commentfile_set.all %}
-                                    <div class="file_icon">{{ file.filename }}</div>
-                                {% endfor %}
+                                {% if not comment.instant_publish and not comment.feedback_set.published_datetime %}
+                                    <div class="not_published_badge">
+                                        <p class="badge_text">NOT PUBLISHED</p>
+                                    </div>
+                                {% elif comment.user_role == "student" and comment.published_datetime > comment.feedback_set.deadline_datetime %}
+                                    <div class="after_deadline_badge">
+                                        <p class="badge_text">NOT PART OF DELIVERY</p>
+                                    </div>
+                                {% endif %}
                             </div>
-                            {% if not comment.instant_publish and not comment.feedback_set.published_datetime %}
-                                <div class="not_published_badge">
-                                    <p class="badge_text">NOT PUBLISHED</p>
-                                </div>
-                            {% elif comment.user_role == "student" and comment.published_datetime > comment.feedback_set.deadline_datetime %}
-                                <div class="after_deadline_badge">
-                                    <p class="badge_text">NOT PART OF DELIVERY</p>
-                                </div>
-                            {% endif %}
-                        </div>
-                    {% endwith %}
-                {% elif event.type == "deadline" %}
-                    <p class="event_message">{{ timestamp }}: {{ event.obj }}</p>
-                {% elif event.type == "grade" %}
-                    {% if event.obj >= assignment.passing_grade_min_points %}
-                        <p class="event_message_passed">{{ timestamp }}: This delivery was corrected, and given the grade <strong>{{ event.obj }}/{{ assignment.max_points }} (passed)</strong></p>
-                    {% else %}
-                        <p class="event_message_failed">{{ timestamp }}: This delivery was corrected, and given the grade <strong>{{ event.obj }}/{{ assignment.max_points }} (failed)</strong></p>
+                        {% endwith %}
+                    {% elif event.type == "deadline_created" %}
+                        <p class="event_message">{{ timestamp }}: {{ event.user }} created a new deadline: <strong>{{ event.obj }}</strong></p>
+                    {% elif event.type == "deadline_expired" %}
+                        <p class="event_message">{{ timestamp }}: <strong>Deadline expired</strong></p>
+                    {% elif event.type == "grade" %}
+                        {% if event.obj >= assignment.passing_grade_min_points %}
+                            <p class="event_message_passed">{{ timestamp }}: This delivery was corrected, and given the grade <strong>{{ event.obj }}/{{ assignment.max_points }} (passed)</strong></p>
+                        {% else %}
+                            <p class="event_message_failed">{{ timestamp }}: This delivery was corrected, and given the grade <strong>{{ event.obj }}/{{ assignment.max_points }} (failed)</strong></p>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
-            {% endfor %}
+                {% endfor %}
             {% endfor %}
 
 
