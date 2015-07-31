@@ -1,0 +1,137 @@
+#objecttableview-table {
+
+  thead {
+    th {
+      line-height: @cradmin-objecttable-header-line-height;
+      vertical-align: middle;
+    }
+    th.objecttableview-sortable-header {
+      white-space: nowrap;
+      .clearfix();
+      line-height: @cradmin-objecttable-header-line-height;
+      a {
+        line-height: @cradmin-objecttable-header-line-height;
+        text-decoration: none;
+        display: inline-block;
+        vertical-align: middle;
+        &:hover {
+          text-decoration: none;
+        }
+      }
+      a.objecttableview-flip-ordering-button {
+        display: block;
+        float: left;
+      }
+      .objecttableview-orderingmeta {
+        float: right;
+        line-height: @cradmin-objecttable-header-line-height;
+        font-weight: normal;
+        a.objecttableview-remove-ordering-button {
+          line-height: @cradmin-objecttable-header-line-height;
+          vertical-align: middle;
+          padding-left: 12px;
+          padding-right: 5px;
+          font-size: ceil(@font-size-base - 2px);
+        }
+        .objecttableview-orderingindex {
+          line-height: @cradmin-objecttable-header-line-height;
+          vertical-align: middle;
+          font-size: ceil(@font-size-base - 2px);
+          color: @cradmin-objecttable-orderingindex-color;
+        }
+        .objecttableview-orderingdirection {
+          font-size: ceil(@font-size-base + 6px);
+          line-height: @cradmin-objecttable-header-line-height;
+          vertical-align: middle;
+          color: @cradmin-objecttable-orderingdirection-color;
+        }
+      }
+    }
+  }
+
+  th, td {
+    &.objecttableview-multiselectcolumn {
+      width: 85px;
+    }
+  }
+
+  tbody {
+    tr {
+      &.objecttableview-selected-row {
+        background: @cradmin-objecttable-selected-row-bg;
+      }
+
+      td:first-child,
+      td.objecttableview-multiselectcolumn + td {
+        .objecttable-cellvalue {
+          font-weight: bold;
+        }
+      }
+      td {
+        .objecttable-cellbuttons {
+          padding: 0;
+          margin: 0;
+          .btn {
+            margin: 0 5px 10px 0;
+          }
+          .btn-sm {
+            text-transform: uppercase;
+          }
+        }
+        @media (min-width: @screen-md-min) {
+          .objecttable-cellbuttons {
+            .btn {
+              margin: 0 0 8px 0;
+            }
+            .btn-sm {
+              padding: 3px 10px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.objecttableview-multiselect-submitrow {
+  select.form-control {
+    max-width: 70%;
+    display: inline-block;
+    height: 40px;
+  }
+}
+
+.objecttable-cell-flat-paragraphs {
+  p {
+    margin: 0;
+  }
+}
+.objecttable-cell-strong {
+  font-weight: bold;
+}
+.objecttable-cell-lg {
+  font-size: @font-size-large;
+}
+
+.objecttableview-buttons-and-search-box {
+  .clearfix();
+  margin-bottom: 10px;
+  background: @cradmin-table-header-bg;
+  padding: 10px;
+  p.objecttableview-global-buttons {
+    text-align: center;
+  }
+
+  @media (min-width: @screen-sm-min) {
+    p.objecttableview-global-buttons {
+      float: left;
+      margin: 0;
+      text-align: left;
+    }
+
+    .cradmin-searchform {
+      float: right;
+      max-width: 250px;
+    }
+  }
+}

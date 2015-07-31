@@ -1,0 +1,238 @@
+// Default variables for the django_cradmin theme
+// We can override bootstrap variables here.
+
+// Body
+@cradmin-bodypadding: 50px;
+@cradmin-bodypadding-xs: 15px;
+@cradmin-bodybg: #e6e6e6;
+@cradmin-bodycolor: #666666;
+
+// Links
+@cradmin-link-tap-highlight-color: rgba(0, 0, 0, 0.5);
+
+
+// Overall styles
+@cradmin-focus-bg: #fff;
+
+
+// Containers
+@cradmin-container-focus-bg: @cradmin-focus-bg;
+@cradmin-container-focus-border-bottom-color: #ccc;
+
+
+// Page header
+@cradmin-page-header-bg: #377CA8;
+@cradmin-page-header-margin: 0 0 (@grid-gutter-width/2) 0;
+@cradmin-page-header-color: #fff;
+@cradmin-page-header-padding-top: 20px;
+@cradmin-page-header-padding-bottom: 22px;
+@cradmin-page-header-h1-font-size: ceil(@font-size-base + 5px);
+@cradmin-page-header-h1-line-height: (@cradmin-page-header-h1-font-size + 10px);
+
+
+// Form
+// @cradmin-form-selected-bg: #F4FCFC;
+@cradmin-form-bg: #fff;
+@cradmin-form-field-inactive-bg: #FAFAFA;
+@cradmin-form-field-inactive-border-color: #ddd;
+@cradmin-form-field-focus-bg: #E1EDF4;
+@cradmin-form-field-focus-border-color: darken(@cradmin-form-field-focus-bg, 10%);
+@cradmin-form-field-focus-box-shadow: none;
+@cradmin-form-max-width: @screen-sm-min;
+@cradmin-form-sidepadding-left: (@grid-gutter-width/2);
+@cradmin-form-sidepadding-right: (@grid-gutter-width/2);
+@cradmin-form-asterisk-display: inline-block;
+@cradmin-form-asterisk-color: rgb(220, 0, 0);
+
+// Submitrow
+@cradmin-submitrow-padding-top: 8px;
+@cradmin-submitrow-padding-right: @cradmin-form-sidepadding-right;
+@cradmin-submitrow-padding-bottom: 8px;
+@cradmin-submitrow-padding-left: @cradmin-form-sidepadding-left;
+@cradmin-submitrow-bg: #333;
+@cradmin-submitrow-btn-text-transform: uppercase;
+@cradmin-submitrow-btn-default-bg: #808080;
+@cradmin-submitrow-btn-default-border-color: @cradmin-submitrow-btn-default-bg;
+@cradmin-submitrow-btn-default-color: #fff;
+@cradmin-submitrow-btn-default-hover-bg: #666;
+@cradmin-submitrow-btn-default-hover-border-color: @cradmin-submitrow-btn-default-hover-bg;
+@cradmin-submitrow-btn-default-hover-color: #fff;
+@cradmin-submitrow-cancel-color: #ccc;
+@cradmin-submitrow-cancel-hover-color: #fff;
+
+// Objecttable
+@cradmin-objecttable-header-line-height: 40px;
+@cradmin-objecttable-selected-row-bg: #FFE2A8;
+@cradmin-objecttable-orderingindex-color: #666;
+@cradmin-objecttable-orderingdirection-color: #666;
+
+
+// table-cradmin-fluid
+@cradmin-table-header-bg: #FAFAFA;
+@cradmin-table-body-border-color: #E6E6E6;
+@cradmin-table-body-bg: @cradmin-focus-bg;
+@cradmin-table-body-border-color: #ccc;
+@cradmin-table-body-border-bottom-color: @cradmin-container-focus-border-bottom-color;
+@cradmin-table-body-rowseparator-color: #D9D9D9;
+@cradmin-table-body-rowseparator-style: dashed;
+
+// cradmin-roleselect
+@cradmin-roleselect-list-flat-bg: @cradmin-focus-bg;
+@cradmin-roleselect-list-flat-itemseparator-color: #D9D9D9;
+@cradmin-roleselect-list-flat-itemseparator-style: dashed;
+
+// bulkfileupload
+@cradmin-bulkfileupload-padding: 0;
+@cradmin-bulkfileupload-bg: @cradmin-form-bg;
+
+@cradmin-bulkfileupload-dropbox-bg: darken(@cradmin-bodybg, 6%);
+@cradmin-bulkfileupload-dropbox-border-style: dashed;
+@cradmin-bulkfileupload-dropbox-border-color: darken(@cradmin-bulkfileupload-dropbox-bg, 6%);
+@cradmin-bulkfileupload-dropbox-border-width: 6px;
+@cradmin-bulkfileupload-dropbox-color: @cradmin-bodycolor;
+@cradmin-bulkfileupload-dropbox-font-weight: bold;
+@cradmin-bulkfileupload-dropbox-font-size: inherit;
+@cradmin-bulkfileupload-dropbox-padding: 45px 30px;
+@cradmin-bulkfileupload-dropbox-text-align: center;
+
+@cradmin-bulkfileupload-dropbox-dragover-bg: @alert-success-bg;
+@cradmin-bulkfileupload-dropbox-dragover-border-style: solid;
+@cradmin-bulkfileupload-dropbox-dragover-border-color: @alert-success-border;
+@cradmin-bulkfileupload-dropbox-dragover-color: @alert-success-text;
+
+@cradmin-bulkfileupload-dropbox-dragover-error-bg: @alert-danger-bg;
+@cradmin-bulkfileupload-dropbox-dragover-error-border-style: solid;
+@cradmin-bulkfileupload-dropbox-dragover-error-border-color: @alert-danger-border;
+@cradmin-bulkfileupload-dropbox-dragover-error-color: @alert-danger-text;
+
+@cradmin-bulkfileupload-advanced-fileselectbutton-color: @link-color;
+@cradmin-bulkfileupload-advanced-fileselectbutton-hover-color: @link-hover-color;
+@cradmin-bulkfileupload-advanced-fileselectbutton-align: center;
+
+@cradmin-bulkfileupload-simple-button-wrapper-padding: 10px 15px;
+@cradmin-bulkfileupload-simple-button-padding: 10px 16px;
+
+@cradmin-bulkfileupload-progress-item-color: @cradmin-bodycolor;
+@cradmin-bulkfileupload-progress-item-font-weight: normal;
+@cradmin-bulkfileupload-progress-item-font-size: @font-size-base;
+@cradmin-bulkfileupload-progress-item-padding: 10px 15px;
+@cradmin-bulkfileupload-progress-item-padding-mobile: 20px 15px;
+@cradmin-bulkfileupload-progress-item-margin: 0;
+
+@cradmin-bulkfileupload-progress-item-remove-file-button-color: @alert-danger-text;
+@cradmin-bulkfileupload-progress-item-remove-file-button-hover-color: darken(@cradmin-bulkfileupload-progress-item-remove-file-button-color, 12%);
+
+@cradmin-bulkfileupload-progress-item-error-bg: @alert-danger-bg;
+@cradmin-bulkfileupload-progress-item-error-color: @alert-danger-text;
+@cradmin-bulkfileupload-progress-item-error-closebutton-color: @cradmin-bulkfileupload-progress-item-error-color;
+@cradmin-bulkfileupload-progress-item-error-closebutton-hover-color: darken(@cradmin-bulkfileupload-progress-item-error-closebutton-color, 12%);
+
+@cradmin-bulkfileupload-progressbar-bg: #333;
+@cradmin-bulkfileupload-progressbar-progress-bg: @btn-primary-bg;
+@cradmin-bulkfileupload-progresspercent-color: #fff;
+@cradmin-bulkfileupload-progresspercent-font-size: @font-size-small;
+
+// Alerts
+@cradmin-alert-dismissable-icon-top: 12px;
+
+// Filewidgets
+@cradmin-filewidget-button-height: 40px;
+@cradmin-filewidget-button-width: 220px;
+@cradmin-filewidget-button-border-radius: @cradmin-btn-border-radius-base;
+@cradmin-filewidget-clear-margin: 10px 0 0 0;
+
+
+// Buttons radius and padding
+@cradmin-btn-transition-duration: 0.15s;
+
+@cradmin-btn-border-radius-base: @border-radius-base;
+@cradmin-btn-padding-base-horizontal: @padding-base-horizontal;
+@cradmin-btn-padding-base-vertical: @padding-base-vertical;
+
+@cradmin-btn-border-radius-xs: @border-radius-small;
+@cradmin-btn-padding-xs-horizontal: @padding-xs-horizontal;
+@cradmin-btn-padding-xs-vertical: @padding-xs-vertical;
+
+@cradmin-btn-border-radius-sm: @border-radius-small;
+@cradmin-btn-padding-sm-horizontal: @padding-small-horizontal;
+@cradmin-btn-padding-sm-vertical: @padding-small-vertical;
+
+@cradmin-btn-border-radius-lg: @border-radius-large;
+@cradmin-btn-padding-lg-horizontal: @padding-large-horizontal;
+@cradmin-btn-padding-lg-vertical: @padding-large-vertical;
+
+@btn-default-color: @link-color;
+@btn-default-bg: #fff;
+@btn-default-border: #D9D9D9;
+@cradmin-btn-tap-highlight-color: rgba(0, 0, 0, 0.5);
+@cradmin-btn-default-hover-color: #fff;
+@cradmin-btn-default-hover-border: @btn-default-color;
+@cradmin-btn-default-hover-bg: @btn-default-color;
+
+@btn-primary-color: #fff;
+@btn-primary-bg: #377CA8;
+@btn-primary-border: #224D68;
+@btn-primary-hover-color: @btn-primary-color;
+@btn-primary-hover-bg: @btn-primary-border;
+@btn-primary-hover-border: @btn-primary-border;
+
+@btn-success-color: #fff;
+@btn-success-bg: #3cb63f;
+@btn-success-border: @btn-success-bg;
+@btn-success-hover-color: @btn-success-color;
+@btn-success-hover-bg: lighten(@btn-success-bg, 5%);
+@btn-success-hover-border: @btn-success-hover-bg;
+
+@cradmin-btn-danger-hover-color: @btn-danger-color;
+@cradmin-btn-danger-hover-bg: darken(@btn-danger-bg, 9%);
+@cradmin-btn-danger-hover-border: @cradmin-btn-danger-hover-bg;
+
+
+// Menu
+@cradmin-menu-color: #aaa;
+@cradmin-menu-hover-color: #eee;
+@cradmin-menu-hover-transition: color @cradmin-btn-transition-duration ease;
+@cradmin-menu-active-color: #eee;
+@cradmin-menu-expandeditem-color: @cradmin-menu-hover-color;
+@cradmin-menu-bg: #333;
+@cradmin-mainmenu-header-bg: darken(@cradmin-menu-bg, 5%);
+@cradmin-mainmenu-footer-bg: darken(@cradmin-menu-bg, 5%);
+@cradmin-menu-mobiletoggle-bg: @cradmin-menu-bg;
+@cradmin-menu-mobiletoggle-color: @cradmin-menu-color;
+@cradmin-menu-mobiletoggle-hover-bg: darken(@cradmin-menu-mobiletoggle-bg, 5%);
+@cradmin-menu-mobiletoggle-hover-color: @cradmin-menu-hover-color;
+@cradmin-menu-mobiletoggle-height: 50px;
+@cradmin-menu-vertical-desktop-height: 50px;
+@cradmin-menu-vertical-desktop-item-padding: 0 16px;
+
+
+// Floating iframe overlay
+@cradmin-floating-iframe-zindex: 50000;
+@cradmin-floating-iframe-backdrop-bg: none;
+@cradmin-floating-iframe-showhide-transition-duration: 0.15s;
+
+@cradmin-floating-iframe-closebutton-bg: rgba(30, 30, 30, 0.8);
+@cradmin-floating-iframe-closebutton-color: rgb(190, 190, 190);
+@cradmin-floating-iframe-closebutton-hover-color: rgb(248, 248, 248);
+@cradmin-floating-iframe-closebutton-hover-bg: @cradmin-floating-iframe-closebutton-bg;
+@cradmin-floating-iframe-closebutton-width: 10%;
+@cradmin-floating-iframe-closebutton-icon-font-size: 30px;
+@cradmin-floating-iframe-closebutton-transition-duration: @cradmin-btn-transition-duration;
+
+@cradmin-floating-iframe-content-bg: rgb(30, 30, 30);
+@cradmin-floating-iframe-navbar-height: @cradmin-menu-mobiletoggle-height;
+
+@cradmin-floating-iframe-scrollbar-width: 14px;
+@cradmin-floating-iframe-scrollbar-track-bg: lighten(@cradmin-floating-iframe-content-bg, 5%);
+@cradmin-floating-iframe-scrollbar-thumb-bg: @btn-primary-bg;
+@cradmin-floating-iframe-scrollbar-thumb-hover-bg: lighten(@cradmin-floating-iframe-scrollbar-thumb-bg, 10%);
+
+
+// Varius bootstrap overrides
+@font-family-sans-serif: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+@link-color: #377CA8;
+@font-size-base: 16px;
+
+@border-radius-base: 2px;
+@border-radius-large: 3px;
+@icon-font-path: '../../vendor/fonts/glyphicons/';

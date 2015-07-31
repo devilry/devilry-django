@@ -1,0 +1,51 @@
+table.table.django-cradmin-table {
+  margin: 0;
+
+  thead {
+    border-bottom: 1px solid @cradmin-table-body-border-color;
+    //border-top: 1px solid @cradmin-table-body-border-color;
+    background: @cradmin-table-header-bg;
+    tr th {
+      border: none;
+    }
+  }
+  tbody {
+    background: @cradmin-table-body-bg;
+    border-bottom: 1px solid @cradmin-table-body-border-color;
+    tr {
+      border-top: 1px @cradmin-table-body-rowseparator-style @cradmin-table-body-rowseparator-color;
+      &:first-child {
+        border-top: none;
+      }
+      td {
+        border: none;
+        padding-top: 15px;
+        padding-bottom: 15px;
+      }
+    }
+  }
+
+  thead, tbody {
+    th, td {
+      &:first-child {
+        padding-left: (@grid-gutter-width/2);
+      }
+      &:last-child {
+        padding-right: (@grid-gutter-width/2);
+      }
+    }
+  }
+
+  //@media (min-width: @screen-sm-min) {
+  //  width: @container-sm;
+  //  margin-left: auto;
+  //  margin-right: auto;
+  //}
+  //@media (min-width: @screen-md-min) {
+  //  width: @container-md;
+  //}
+  //@media (min-width: @screen-lg-min) {
+  //  width: @container-lg;
+  //}
+}
+

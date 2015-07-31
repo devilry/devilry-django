@@ -1,0 +1,21 @@
+ul#django_cradmin_messages {
+  margin: 0 0 10px 0;
+}
+
+body.django-cradmin-formview-page {
+  ul#django_cradmin_messages {
+    max-width: @cradmin-form-max-width;
+  }
+}
+
+#django_cradmin_messages_standalone_wrapper {
+  ul#django_cradmin_messages {
+    .alert {
+      font-size: @font-size-large;
+      &.alert-dismissable button.close,
+      .django-cradmin-alert-loadspinner {
+        top: 1px;
+      }
+    }
+  }
+}

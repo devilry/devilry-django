@@ -1,0 +1,36 @@
+.django_cradmin_submitrow {
+  background: @cradmin-submitrow-bg;
+
+  // NOTE: The bottom padding is handled by the bottom margin of .btn.
+  padding: @cradmin-submitrow-padding-top @cradmin-submitrow-padding-right 0 @cradmin-submitrow-padding-left;
+
+  &.django_cradmin_submitrow_hidden {
+    display: none;
+  }
+
+  .btn {
+    text-transform: @cradmin-submitrow-btn-text-transform;
+    font-size: ceil(@font-size-base - 2px);
+    line-height: (@line-height-computed - 4px);
+    padding: 10px 12px;
+    margin-bottom: @cradmin-submitrow-padding-bottom;
+    &.btn-default {
+      background: @cradmin-submitrow-btn-default-bg;
+      border-color: @cradmin-submitrow-btn-default-border-color;
+      color: @cradmin-submitrow-btn-default-color;
+      &:hover {
+        background: @cradmin-submitrow-btn-default-hover-bg;
+        border-color: @cradmin-submitrow-btn-default-hover-border-color;
+        color: @cradmin-submitrow-btn-default-hover-color;
+      }
+    }
+    &.btn-cancel {
+      color: @cradmin-submitrow-cancel-color;
+      font-size: @font-size-base;
+      text-transform: none;
+      &:hover {
+        color: @cradmin-submitrow-cancel-hover-color;
+      }
+    }
+  }
+}

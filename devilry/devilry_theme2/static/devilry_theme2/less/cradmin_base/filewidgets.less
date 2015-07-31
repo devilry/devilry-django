@@ -1,0 +1,77 @@
+.django-cradmin-form {
+  .django-cradmin-filewidget {
+    //padding: 10px 15px;
+
+    img {
+      max-width: 300px;
+      height: auto;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    a.django-cradmin-filewidget-fullviewlink {
+      display: block;
+      border: none;
+      margin-bottom: 10px;
+    }
+
+    .django-cradmin-filewidget-field-and-overlay-wrapper {
+      position: relative;
+
+      // Style button and file field the same size
+      input[type=file],
+      a.django-cradmin-filewidget-fieldoverlay {
+        width: @cradmin-filewidget-button-width;
+        height: @cradmin-filewidget-button-height;
+        border-radius: @cradmin-filewidget-button-border-radius;
+        padding: 0;
+        line-height: @cradmin-filewidget-button-height;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      &.django-cradmin-filewidget-field-and-overlay-wrapper-hover {
+        a.btn.btn-default {
+          .btn-default-hoverstyle-mixin();
+        }
+      }
+
+      // Put the file field on top of the button, making the user click
+      // the invisible file field instead of the button.
+      input[type=file] {
+        opacity: 0 !important;
+        position: absolute;
+        top: 0;
+        left: 0;
+        overflow: hidden !important;
+        cursor: pointer;
+      }
+    }
+
+    &.django-cradmin-filewidget-clearable {
+      .django-cradmin-filewidget-clear {
+        margin: @cradmin-filewidget-clear-margin;
+      }
+    }
+  }
+
+  .django-cradmin-imagewidget.django-cradmin-filewidget {
+    &.django-cradmin-filewidget-clearable {
+      .django-cradmin-imagewidget-preview-and-clear {
+        .django-cradmin-imagewidget-preview-and-clear-inner {
+          display: inline-block;
+          position: relative;
+          .django-cradmin-filewidget-clear {
+            margin: 0;
+            display: inline-block;
+            position: absolute;
+            top: 0;
+            right: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+

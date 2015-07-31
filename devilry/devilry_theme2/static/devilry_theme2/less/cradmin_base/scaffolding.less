@@ -1,0 +1,60 @@
+#django_cradmin_bodycontentwrapper {
+  width: 100%;
+  height: 100%;
+}
+
+
+body {
+  background: @cradmin-bodybg;
+  color: @cradmin-bodycolor;
+
+  &.django-cradmin-noscroll {
+    overflow: hidden;
+  }
+}
+
+a {
+  -webkit-tap-highlight-color: @cradmin-link-tap-highlight-color;
+}
+
+
+.django_cradmin_container_fluid_focus_variant(@bg, @bordercolor, @color) {
+  background: @bg;
+  border-color: @bordercolor;
+  color: @color;
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+}
+
+.django-cradmin-container-focus {
+  background: @cradmin-container-focus-bg;
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid @cradmin-container-focus-border-bottom-color;
+
+  &.django-cradmin-container-focus-danger {
+    .django_cradmin_container_fluid_focus_variant(@alert-danger-bg, @alert-danger-border, @alert-danger-text);
+  }
+  &.django-cradmin-container-focus-warning {
+    .django_cradmin_container_fluid_focus_variant(@alert-warning-bg, @alert-warning-border, @alert-warning-text);
+  }
+  &.django-cradmin-container-focus-info {
+    .django_cradmin_container_fluid_focus_variant(@alert-info-bg, @alert-info-border, @alert-info-text);
+  }
+  &.django-cradmin-container-focus-success {
+    .django_cradmin_container_fluid_focus_variant(@alert-success-bg, @alert-success-border, @alert-success-text);
+  }
+
+  @media (min-width: @screen-sm-min) {
+    width: (@container-sm - @grid-gutter-width);
+  }
+  @media (min-width: @screen-md-min) {
+    width: (@container-md - @grid-gutter-width);
+  }
+  @media (min-width: @screen-lg-min) {
+    width: (@container-lg - @grid-gutter-width);
+  }
+
+}

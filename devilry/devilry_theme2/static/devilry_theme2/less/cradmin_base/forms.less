@@ -1,0 +1,191 @@
+
+.scaleToScreenHeight(@size) {
+  @media (min-height: @size) {
+    height: @size - 200px;
+  }
+}
+
+
+.django-cradmin-formsized-wrapper,
+.django-cradmin-form-wrapper .django-cradmin-form {
+  max-width: @cradmin-form-max-width;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.django-cradmin-form-wrapper {
+
+  // Add some padding below the form. This is to avoid that the
+  // floating submitrow overlaps anything in the form. It is not perfect,
+  // but it works as long as there are not too many items in the submit row.
+  padding-bottom: 150px;
+  @media (min-width: @screen-sm-min) {
+    padding-bottom: 80px;
+  }
+
+  .django-cradmin-form {
+    background: @cradmin-form-bg;
+    padding-bottom: 0;
+
+    label {
+      font-weight: normal;
+      &.requiredField {
+        font-weight: bold;
+      }
+      .asteriskField {
+        color: @cradmin-form-asterisk-color;
+        display: @cradmin-form-asterisk-display;
+        padding-left: 5px;
+        font-size: ceil(@font-size-base + 2px);
+        line-height: ceil(@font-size-base + 6px);
+      }
+    }
+
+    &.django-cradmin-form-noasterisk {
+      label .asteriskField {
+        display: none;
+      }
+    }
+
+      /**
+      # .cradmin-focusfield-screenheight
+      Scale the field focusfield to the screen height.
+      Uses css media queries just like the bootstrap responsive grid does
+      for the screen width.
+      */
+    //  &.cradmin-focusfield-screenheight {
+    //    .form-group {
+    //      margin: 0;
+    //      box-sizing: border-box;
+    //      .controls {
+    //        textarea,
+    //        .cradmin-div-styled-as-textarea {
+    //          height: 200px;
+    //          .scaleToScreenHeight(500px);
+    //          .scaleToScreenHeight(550px);
+    //          .scaleToScreenHeight(650px);
+    //          .scaleToScreenHeight(750px);
+    //          .scaleToScreenHeight(850px);
+    //          .scaleToScreenHeight(950px);
+    //          .scaleToScreenHeight(1050px);
+    //        }
+    //      }
+    //    }
+    //  }
+    //}
+
+    fieldset legend,
+    .cradmin-focusfield label {
+      display: block;
+      margin: 0;
+      background: rgb(220, 220, 220);
+      border: none;
+      padding: 10px @cradmin-form-sidepadding-right 10px @cradmin-form-sidepadding-left;
+      //    font-weight: normal;
+      //text-transform: uppercase;
+      font-size: ceil(@font-size-base - 2px);
+      line-height: ceil(@font-size-base + 6px);
+    }
+
+    fieldset,
+    .cradmin-globalfields {
+      margin-bottom: 30px;
+      .form-group {
+        padding: 20px @cradmin-form-sidepadding-right 4px @cradmin-form-sidepadding-left;
+        margin: 0;
+        &:last-child {
+          padding-bottom: 30px;
+        }
+      }
+    }
+
+    .form-group {
+      input[type=text],
+      input[type=email],
+      input[type=number],
+      textarea,
+      .django-cradmin-bulkfileupload,
+      .cradmin-div-styled-as-textarea,
+      select {
+        border: 1px solid @cradmin-form-field-inactive-border-color;
+        border-radius: 4px;
+        outline: none;
+        box-shadow: none;
+        padding: 10px 12px;
+        background: @cradmin-form-field-inactive-bg;
+        &:focus {
+          background: @cradmin-form-field-focus-bg;
+          border-color: @cradmin-form-field-focus-border-color;
+          box-shadow: @cradmin-form-field-focus-box-shadow;
+        }
+      }
+
+      input[type=text],
+      input[type=email],
+      input[type=number],
+      textarea {
+        height: auto;
+        margin: 0;
+        text-align: left;
+      }
+
+      textarea {
+        &.cradmin-textarea-small {
+          height: 60px;
+        }
+      }
+    }
+
+    .cradmin-focusfield {
+      .controls {
+        padding: 20px @cradmin-form-sidepadding-right 4px @cradmin-form-sidepadding-left;
+      }
+
+      &.cradmin-focusfield-lg {
+        .form-group {
+          input[type=text],
+          input[type=email],
+          input[type=number] {
+            font-size: ceil(@font-size-base + 8px);
+          }
+        }
+      }
+    }
+  }
+}
+
+
+// Django crispy forms global form errors
+form .alert-block.alert-danger {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    li {
+      margin: 0;
+    }
+  }
+}
+
+
+.django-cradmin-create-foreignkey-select-mode-buttonbar {
+  margin-bottom: (@grid-gutter-width/2);
+}
+
+
+.django-cradmin-datetimepicker {
+  max-width: 250px;
+  .clearfix();
+
+  .django-cradmin-datepicker {
+    float: left;
+    width: 65%;
+    padding-right: 5px;
+  }
+  .django-cradmin-timepicker {
+    float: right;
+    width: 35%;
+    padding-left: 5px;
+  }
+}
