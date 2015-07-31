@@ -1,0 +1,20 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load static %}
+{% load i18n %}
+
+
+{% block title %}
+    {{ request.cradmin_role.get_path }}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {{ request.cradmin_role.subject.short_name|capfirst }} {{ request.cradmin_role.subject.long_name }}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container django-cradmin-container-focus">
+        TODO
+    </div>
+{% endblock content %}
