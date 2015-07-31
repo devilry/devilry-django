@@ -471,6 +471,9 @@ class NodeBuilder(BaseNodeBuilderBase):
         kwargs['parentnode'] = self.node
         return SubjectBuilder(*args, **kwargs)
 
+    def add_duck1010_subject(self):
+        return SubjectBuilder(parentnode=self.node, short_name='duck1010')
+
     def add_childnode(self, *args, **kwargs):
         kwargs['parentnode'] = self.node
         return NodeBuilder(*args, **kwargs)
