@@ -20,7 +20,7 @@
 {% block content %}
     {% if examiners %}
         <div id="devilry_student_group_contact_hasexaminers"
-                class="container-fluid django-cradmin-container-fluid-focus">
+                class="container django-cradmin-container-focus">
             {% trans "The following people are responsible for giving you feedback on this assignment" %}:
             <ul class="list-unstyled">
                 {% for examiner in examiners %}
@@ -33,7 +33,7 @@
         </div>
     {% else %}
         <div id="devilry_student_group_contact_noexaminers"
-                class="container-fluid django-cradmin-container-fluid-focus django-cradmin-container-fluid-focus-warning">
+                class="container django-cradmin-container-focus django-cradmin-container-focus-warning">
             {% trans "Nobody is registered as responsible for giving you feedback for this assignment at this time." %}
         </div>
     {% endif %}

@@ -1,0 +1,163 @@
+nav.django-cradmin-menu {
+  background: @cradmin-menu-bg;
+
+  .django-cradmin-menu-content {
+    display: none;
+    background: @cradmin-menu-bg;
+    &.django-cradmin-menu-content-display {
+      display: block;
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      li {
+        .django-cradmin-menu-activeitemwrapper {
+          font-size: @font-size-base;
+          margin: 0;
+          padding: 0;
+          border: none;
+          line-height: @line-height-base;
+        }
+
+        a {
+          display: block;
+          color: @cradmin-menu-color;
+          padding: 10px 16px 10px 16px;
+          transition: @cradmin-menu-hover-transition;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          line-height: @line-height-base;
+          text-decoration: none;
+          &:hover {
+            text-decoration: none;
+            color: @cradmin-menu-hover-color;
+          }
+        }
+
+        &.django-cradmin-menu-activeitem {
+          .django-cradmin-menu-activeitemwrapper > a,
+          & > a {
+            color: @cradmin-menu-active-color;
+            font-weight: bold;
+            text-decoration: none;
+          }
+        }
+
+        &.django-cradmin-menu-expandeditem {
+          & > a {
+            color: @cradmin-menu-expandeditem-color;
+          }
+
+          .django-cradmin-menu-childitems ul {
+            padding-left: 15px;
+          }
+        }
+      }
+    }
+  }
+
+  .django-cradmin-menu-mobileheader {
+    .django-cradmin-menu-mobiletoggle {
+      display: block;
+      text-align: center;
+      width: 100%;
+      border: none;
+      text-transform: uppercase;
+      font-weight: bold;
+      line-height: @cradmin-menu-mobiletoggle-height;
+      height: @cradmin-menu-mobiletoggle-height;
+
+      border-radius: 0;
+      cursor: pointer;
+      text-decoration: none;
+      color: @cradmin-menu-mobiletoggle-color;
+      background-color: @cradmin-menu-mobiletoggle-bg;
+
+      &:hover,
+      &.django-cradmin-menu-mobile-toggle-button-expanded {
+        color: @cradmin-menu-mobiletoggle-hover-color;
+        background-color: @cradmin-menu-mobiletoggle-hover-bg;
+        outline: none;
+        text-decoration: none;
+      }
+    }
+  }
+
+  @media (min-width: @screen-md-min) {
+    .django-cradmin-menu-mobileheader {
+      display: none;
+    }
+    .django-cradmin-menu-content {
+      display: block;
+    }
+  }
+}
+
+nav#django_cradmin_mainmenu.django-cradmin-menu {
+  @media (min-width: @screen-md-min) {
+    .django-cradmin-menu-content {
+      ul {
+        &.django-cradmin-menu-content-header {
+          background: @cradmin-mainmenu-header-bg;
+        }
+        &.django-cradmin-menu-content-footer {
+          background: @cradmin-mainmenu-footer-bg;
+        }
+      }
+    }
+  }
+}
+
+.djangoCradminMenuVertical (@desktop-height, @desktop-itempadding, @mobiletoggle-height) {
+  .django-cradmin-menu-mobileheader {
+    .django-cradmin-menu-mobiletoggle {
+      line-height: @mobiletoggle-height;
+      height: @mobiletoggle-height;
+    }
+  }
+
+  @media (min-width: @screen-md-min) {
+    height: @desktop-height;
+
+    .django-cradmin-menu-content {
+      display: block;
+      height: @desktop-height;
+
+      ul {
+        display: inline-block;
+        height: @desktop-height;
+        li {
+          display: inline-block;
+          height: @desktop-height;
+          a {
+            height: @desktop-height;
+            line-height: @desktop-height;
+            display: block;
+            padding: @desktop-itempadding;
+          }
+          &.django-cradmin-menu-activeitem {
+            .django-cradmin-menu-activeitemwrapper > a,
+            & > a {
+              font-weight: normal;
+            }
+          }
+        }
+
+        &.django-cradmin-menu-content-footer {
+          margin: 0;
+          float: right;
+        }
+      }
+    }
+  }
+}
+
+nav.django-cradmin-menu.django-cradmin-menu-vertical {
+  .djangoCradminMenuVertical(
+    @cradmin-menu-vertical-desktop-height,
+    @cradmin-menu-vertical-desktop-item-padding,
+    @cradmin-menu-mobiletoggle-height);
+}

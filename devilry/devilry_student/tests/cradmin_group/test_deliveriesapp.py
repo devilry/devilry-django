@@ -652,7 +652,7 @@ class TestDeliveryDetailsView(TestCase):
         selector = htmls.S(response.content)
         self.assertTrue(selector.exists('.devilry-student-deliverydetails-feedbacksummary-passed'))
         self.assertTrue(selector.exists(
-            '.django-cradmin-container-fluid-focus.django-cradmin-container-fluid-focus-success'))
+            '.django-cradmin-container-focus.django-cradmin-container-focus-success'))
         self.assertEquals(
             selector.one('#devilry_student_group_deliverydetails_feedback_summary').alltext_normalized,
             'This delivery has been corrected, and the grade is: 10/20 (passed)')
@@ -674,7 +674,7 @@ class TestDeliveryDetailsView(TestCase):
 
         self.assertTrue(selector.exists('.devilry-student-deliverydetails-feedbacksummary-failed'))
         self.assertTrue(selector.exists
-                        ('.django-cradmin-container-fluid-focus.django-cradmin-container-fluid-focus-warning'))
+                        ('.django-cradmin-container-focus.django-cradmin-container-focus-warning'))
         self.assertEquals(
             selector.one('#devilry_student_group_deliverydetails_feedback_summary').alltext_normalized,
             'This delivery has been corrected, and the grade is: 2/20 (failed)')

@@ -13,12 +13,10 @@ class Menu(crmenu.Menu):
         self.add_headeritem(
             label=_('Browse all'),
             url=reverse_cradmin_url(
-                'devilry_student', 'allperiods', roleid=self.request.user.id),
-            icon="angle-up")
+                'devilry_student', 'allperiods', roleid=self.request.user.id),)
         self.add(
             label=_('Assignments'),
             url=self.appindex_url('assignments'),
-            icon="list",
             active=self.request.cradmin_app.appname == 'assignments')
 
 

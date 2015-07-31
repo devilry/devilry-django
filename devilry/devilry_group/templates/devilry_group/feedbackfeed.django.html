@@ -3,22 +3,13 @@
 {% load custom_filter %}
 
 {% block header-text %}
-    <div class="col-sm-9">
     <h1>
         <h1>{{ assignment.long_name }}</h1><br><br>
         {{ subject.long_name }} {{ period.long_name }}
     </h1>
-    </div>
-    <div class="col-sm-3">
-        <h4>CURRENT DEADLINE</h4>
-        {% if current_date > last_deadline %}
-            <div class="current_deadline_container">
-                <h5 class="current_deadline_expired">expired </h5>
-                <h5 class="current_deadline">- {{ last_deadline }}</h5>
-            </div>
-        {% else %}
-            <h5>{{ last_deadline }}</h5>
-        {% endif %}
+    <div class="pull-right">
+        <h4>Current Deadline</h4>
+        <h4>{{ last_deadline }}</h4>
     </div>
 {% endblock header-text %}
 
@@ -81,7 +72,7 @@
             <div class="top_headline">UPLOADED FILES</div>
             {% for feedbackset in feedbacksets %}
                 <br>
-                <div class="sub_headline">{{ ""|devilry_verbosenumber:forloop.counter }} DEADLINE</div>
+                <div class="sub_headline">{{ forloop.counter }} DEADLINE</div>
                 {% for comment in feedbackset.groupcomment_set.all %}
                     {% for file in comment.commentfile_set.all %}
                         <div class="feedback_sidebar_files">

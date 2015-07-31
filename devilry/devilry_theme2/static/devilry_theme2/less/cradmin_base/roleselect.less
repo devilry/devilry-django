@@ -1,0 +1,48 @@
+//#django_cradmin_roleselect {
+  ul.django-cradmin-roleselect-list {
+
+    /**
+    ## .django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat
+    The roleselect list rendered as a flat list.
+    */
+    &.django-cradmin-roleselect-list-flat {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      background: @cradmin-roleselect-list-flat-bg;
+      li {
+        margin: 0;
+        border-bottom: 1px @cradmin-roleselect-list-flat-itemseparator-style @cradmin-roleselect-list-flat-itemseparator-color;
+        padding: 15px 0;
+        a {
+          display: block;
+
+          h2.django-cradmin-roleselect-role-title {
+            font-size: @font-size-large;
+            margin: 0;
+            padding: 0;
+            font-weight: bold;
+          }
+          .django-cradmin-roleselect-role-description {
+            color: @text-muted;
+            font-size: @font-size-small;
+            p:last-child {
+              margin-bottom: 0;
+            }
+          }
+
+          &:hover {
+            text-decoration: none;
+            .django-cradmin-roleselect-role-description {
+              color: darken(@text-muted, 10%);
+            }
+          }
+        }
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+//}

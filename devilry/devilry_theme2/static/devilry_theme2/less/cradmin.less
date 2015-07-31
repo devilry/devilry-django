@@ -1,8 +1,21 @@
-@import "cradmin/cradmin-styles";
+@import "cradmin_theme_default/theme";
 
-nav#cradmin_menu {
+nav#django_cradmin_mainmenu {
   @media (min-width: @screen-md-min) {
     z-index: 1000;
     padding-top: @header-height;
+  }
+}
+
+
+.django-cradmin-page-header-outer {
+  .django-cradmin-page-header-inner {
+    h1 {
+      .django-cradmin-page-header-inner-subtitle {
+        font-size: @font-size-base;
+        font-weight: normal;
+        display: block;
+      }
+    }
   }
 }

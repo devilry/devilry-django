@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     'devilry.devilry_gradingsystemplugin_approved',
     'devilry.devilry_rest',
     'devilry.devilry_detektor',
+    'devilry.devilry_admin',
     'devilry.project.common',
 
     'devilry.devilry_elasticsearch_cache.apps.ElasticsearchCacheAppConfig',

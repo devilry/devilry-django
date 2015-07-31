@@ -11,8 +11,7 @@ class Menu(crmenu.Menu):
         group = self.request.cradmin_role
         self.add_headeritem(
             label=group.subject.long_name,
-            url=self.appindex_url('feedbackfeed'),
-            icon="th-list")
+            url=self.appindex_url('feedbackfeed'))
 
 
 class ExaminerCrInstance(crinstance.BaseCrAdminInstance):

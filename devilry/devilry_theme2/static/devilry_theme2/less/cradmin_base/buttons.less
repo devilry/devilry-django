@@ -1,0 +1,66 @@
+.btn {
+  @media (min-width: @screen-sm-min) {
+    .css3-transition(all @cradmin-btn-transition-duration ease-in-out);
+  }
+  -webkit-tap-highlight-color: @cradmin-btn-tap-highlight-color;
+
+  border-radius: @cradmin-btn-border-radius-base;
+  padding: @cradmin-btn-padding-base-vertical @cradmin-btn-padding-base-horizontal;
+
+  &.btn-xs {
+    border-radius: @cradmin-btn-border-radius-xs;
+    padding: @cradmin-btn-padding-xs-vertical @cradmin-btn-padding-xs-horizontal;
+  }
+  &.btn-sm {
+    border-radius: @cradmin-btn-border-radius-sm;
+    padding: @cradmin-btn-padding-sm-vertical @cradmin-btn-padding-sm-horizontal;
+  }
+  &.btn-lg {
+    border-radius: @cradmin-btn-border-radius-lg;
+    padding: @cradmin-btn-padding-lg-vertical @cradmin-btn-padding-lg-horizontal;
+  }
+
+  &.btn-default {
+    &:hover, &:focus {
+      .btn-default-hoverstyle-mixin();
+    }
+  }
+
+  &.btn-primary {
+    &:hover, &:focus {
+      background: @btn-primary-hover-bg;
+      border-color: @btn-primary-hover-border;
+      color: @btn-primary-hover-color;
+    }
+  }
+
+  &.btn-success {
+    &:hover, &:focus {
+      background: @btn-success-hover-bg;
+      border-color: @btn-success-hover-border;
+      color: @btn-success-hover-color;
+    }
+  }
+
+  &.btn-danger {
+     &:hover, &:focus {
+       background: @btn-danger-bg;
+       border-color: @btn-danger-border;
+       color: @btn-danger-color;
+       @media (min-width: @screen-sm-min) {
+         background: @cradmin-btn-danger-hover-bg;
+         border-color: @cradmin-btn-danger-hover-border;
+         color: @cradmin-btn-danger-hover-color;
+       }
+     }
+  }
+
+  // A django_cradmin extension to the set of bootstrap buttons.
+  &.btn-cancel {
+    color: @link-color;
+    text-decoration: underline;
+    &:hover, &:focus {
+      color: darken(@link-color, 15%);
+    }
+  }
+}

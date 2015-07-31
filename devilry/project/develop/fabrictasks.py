@@ -1,8 +1,10 @@
+import os
 from os.path import exists, join, relpath
 from os import remove, getcwd
 
 # from shutil import rmtree, make_archive
 # from zipfile import ZipFile
+import shutil
 from fabric.api import local, abort, task
 from fabric.context_managers import shell_env, lcd
 
@@ -305,3 +307,21 @@ def run_elasticsearch_unittest_server():
     """
     command = 'elasticsearch --config=not_for_deploy/elasticsearch.unittest.yml'
     return local(command)
+
+
+@task
+def sync_cradmin_theme_into_devilry_theme(cradmin_root_dir):
+    """
+    Copies ``cradmin_base/`` and ``cradmin_theme_default/`` into
+    the devilry_theme ``less/`` directory.
+    """
+    devilry_theme_lessdir = os.path.join(*'devilry/devilry_theme2/static/devilry_theme2/less'.split('/'))
+    cradmin_lessdir = os.path.join(cradmin_root_dir, *'django_cradmin/static/django_cradmin/src/less'.split('/'))
+    for directory in 'cradmin_base', 'cradmin_theme_default':
+        sourcedir = os.path.join(cradmin_lessdir, directory)
+        destinationdir = os.path.join(devilry_theme_lessdir, directory)
+        print 'Syncing', sourcedir, 'to', destinationdir
+        if os.path.exists(destinationdir):
+            shutil.rmtree(destinationdir)
+        shutil.copytree(sourcedir, destinationdir)
+        local('git add {}'.format(destinationdir))

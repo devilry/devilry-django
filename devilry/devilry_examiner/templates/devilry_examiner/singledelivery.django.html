@@ -22,7 +22,7 @@
 {% block pagecontent %}
     {% if last_feedbackdraft %}
         {% if delivery.last_feedback %}
-            <div class="container-fluid">
+            <div class="container">
                 <h2>{% trans "Last feedback draft" %}</h2>
             </div>
         {% endif %}
@@ -30,7 +30,7 @@
             {% include "devilry_examiner/readonly-feedback-with-editbutton.django.html" with feedback=last_feedbackdraft_staticfeedbackmock %}
         </div>
         {% if delivery.last_feedback %}
-            <div class="container-fluid">
+            <div class="container">
                 <h2>{% trans "Published feedback" %}</h2>
             </div>
             <div class="read-feedback-box" id="devilry_examiner_singledelivery_feedback_no_editbutton">
@@ -42,7 +42,7 @@
             {% include "devilry_examiner/readonly-feedback-with-editbutton.django.html" with feedback=delivery.last_feedback %}
         </div>
     {% else %}
-        <div class="container-fluid django-cradmin-container-fluid-focus django-cradmin-container-fluid-focus-info no-feedback-box"
+        <div class="container django-cradmin-container-focus django-cradmin-container-focus-info no-feedback-box"
                 id="devilry_examiner_singledelivery_no_feedback">
             <a href="?edit_feedback=true" class="pull-right">
                 <strong>{% trans "Write feedback" %}</strong>
