@@ -10548,7 +10548,7 @@ Event messages such as passed, failed and general messages between comments.
   background-size: 100%;
   transition: all 0.1s ease-in-out;
   /* icon class scale on mouse-over */
-  content: url(http://megaicons.net/static/img/icons_sizes/8/178/256/very-basic-file-icon.png) no-repeat center center fixed;
+  content: url('http://megaicons.net/static/img/icons_sizes/8/178/256/very-basic-file-icon.png') no-repeat center center fixed;
 }
 .file_icon:hover {
   border-radius: 0.5em;
@@ -11373,6 +11373,18 @@ fieldset[disabled] .button_student.active {
 .feedback_feed {
   padding-left: 11%;
   padding-right: 11%;
+}
+.current_deadline_container {
+  display: inline-block;
+}
+.current_deadline {
+  float: right;
+}
+.current_deadline_expired {
+  float: left;
+  font-weight: bold;
+  margin-right: 0.2em;
+  color: #971009;
 }
 .top_headline {
   color: #999999;

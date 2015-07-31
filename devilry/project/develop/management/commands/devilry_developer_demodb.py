@@ -94,17 +94,17 @@ programs = [
 
 comment_files = [
     {
-        'filename': 'test.py',
+        'filename': 'ObligNDelivery.py',
         'data': 'print "Test"',
         'filesize': 64,
     },
     {
-        'filename': 'hello.py',
-        'data': 'if i == 10:\n    print "Hello"\nelse: pass',
+        'filename': 'DesignDocumentForObligN.pdf',
+        'data': 'Some text.',
         'filesize': 64,
     },
     {
-        'filename': 'demo.py',
+        'filename': 'ObligN.py',
         'data': 'while True: pass',
         'filesize': 64,
     },

@@ -1,3 +1,4 @@
+import datetime
 from django.views.generic import base
 from devilry.devilry_group import models
 import collections
@@ -83,5 +84,6 @@ class FeedbackFeedBaseView(base.TemplateView):
         feedbacksets = self._get_feedbacksets_for_group(self.request.cradmin_role)
         context['last_deadline'], context['timeline'] = self.__build_timeline(self.request.cradmin_role, feedbacksets)
         context['feedbacksets'] = feedbacksets
+        context['current_date'] = datetime.datetime.now()
 
         return context

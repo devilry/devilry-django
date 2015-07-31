@@ -1,5 +1,6 @@
 from django.test import TestCase
 from devilry.devilry_group.templatetags.custom_filter import devilry_truncatefileextension
+from devilry.devilry_group.templatetags.custom_filter import devilry_verbosenumber
 
 
 class TestDevilryGroupTemplateTags(TestCase):
@@ -42,3 +43,37 @@ class TestDevilryGroupTemplateTags(TestCase):
     def test_min_truncation(self):
         truncated_filename = devilry_truncatefileextension('DesignDocument.pdf', 0)
         self.assertEqual('Des...pdf', truncated_filename)
+    
+    def test_verbosenumber_1_to_10(self):
+        self.assertEqual('FIRST', devilry_verbosenumber('', 1))
+        self.assertEqual('SECOND', devilry_verbosenumber('', 2))
+        self.assertEqual('THIRD', devilry_verbosenumber('', 3))
+        self.assertEqual('FOURTH', devilry_verbosenumber('', 4))
+        self.assertEqual('FIFTH', devilry_verbosenumber('', 5))
+        self.assertEqual('SIXTH', devilry_verbosenumber('', 6))
+        self.assertEqual('SEVENTH', devilry_verbosenumber('', 7))
+        self.assertEqual('EIGHTH', devilry_verbosenumber('', 8))
+        self.assertEqual('NINTH', devilry_verbosenumber('', 9))
+        self.assertEqual('TENTH', devilry_verbosenumber('', 10))
+
+    def test_verbose_number_ending_with_zero(self):
+        self.assertEqual('20th', devilry_verbosenumber('', 20))
+        self.assertEqual('2220th', devilry_verbosenumber('', 2220))
+
+    def test_verbose_number_ending_th(self):
+        self.assertEqual('14th', devilry_verbosenumber('', 14))
+        self.assertEqual('111th', devilry_verbosenumber('', 111))
+        self.assertEqual('114th', devilry_verbosenumber('', 114))
+        self.assertEqual('65535th', devilry_verbosenumber('', 65535))
+
+    def test_verbose_number_ending_st(self):
+        self.assertEqual('31st', devilry_verbosenumber('', 31))
+        self.assertEqual('87121st', devilry_verbosenumber('', 87121))
+
+    def test_verbose_number_ending_nd(self):
+        self.assertEqual('42nd', devilry_verbosenumber('', 42))
+        self.assertEqual('41262nd', devilry_verbosenumber('', 41262))
+
+    def test_verbose_number_ending_rd(self):
+        self.assertEqual('733rd', devilry_verbosenumber('', 733))
+        self.assertEqual('628353rd', devilry_verbosenumber('', 628353))
