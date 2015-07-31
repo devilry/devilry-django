@@ -28,12 +28,12 @@
 
     {% if delivery.last_feedback %}
         <div id="devilry_student_group_deliverydetails_feedback_summary"
-             class="container-fluid django-cradmin-container-fluid-focus
+             class="container django-cradmin-container-focus
                 {% if delivery.last_feedback.is_passing_grade %}
-                    django-cradmin-container-fluid-focus-success
+                    django-cradmin-container-focus-success
                     devilry-student-deliverydetails-feedbacksummary-passed
                 {% else %}
-                    django-cradmin-container-fluid-focus-warning
+                    django-cradmin-container-focus-warning
                     devilry-student-deliverydetails-feedbacksummary-failed
                 {% endif %}
              ">
@@ -42,7 +42,7 @@
         </div>
         {% if delivery.last_feedback.rendered_view or delivery.last_feedback.files.exists %}
             <div id="devilry_student_group_deliverydetails_feedback_text"
-                 class="container-fluid django-cradmin-container-fluid-focus">
+                 class="container django-cradmin-container-focus">
                 <div id="devilry_student_group_deliverydetails_feedback_rendered_view"
                         class="devilry-feedback-rendered-view">
                     {% include "devilry_student/include/feedback-rendered-view.django.html" with feedback=delivery.last_feedback only %}
@@ -52,7 +52,7 @@
     {% endif %}
 
     <div id="devilry_student_group_deliverydetails_metadata"
-            class="container-fluid {% if not delivery.last_feedback %}django-cradmin-container-fluid-focus{% endif %}">
+            class="container {% if not delivery.last_feedback %}django-cradmin-container-focus{% endif %}">
         <dl>
             {% if filemetas %}
                 <dt id="devilry_student_group_deliverydetails_files_title">{% trans "Files" %}:</dt>

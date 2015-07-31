@@ -17,14 +17,14 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
-    <div class="container-fluid django-cradmin-container-fluid-focus
+    <div class="container django-cradmin-container-focus
                 devilry-student-groupoverview-{{ status }}
                 {% if status == 'corrected' %}
                     {% if group.feedback.is_passing_grade %}
-                        django-cradmin-container-fluid-focus-success
+                        django-cradmin-container-focus-success
                         devilry-student-groupoverview-{{ status }}-passed
                     {% else %}
-                        django-cradmin-container-fluid-focus-warning
+                        django-cradmin-container-focus-warning
                         devilry-student-groupoverview-{{ status }}-failed
                     {% endif %}
                 {% endif %}

@@ -13,7 +13,7 @@
 {% endblock breadcrumbtail %}
 
 {% block pagecontent %}
-<div class="container-fluid django-cradmin-container-fluid-focus">
+<div class="container django-cradmin-container-focus">
     {% if optionsform and not optionsform.is_valid %}
         {% include "devilry_examiner/include/django_formerrors_as_alertboxes.django.html" with form=optionsform %}
     {% else %}
