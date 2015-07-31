@@ -80,7 +80,7 @@
                             {% if comment.user_role == "examiner" %}
                                 <p class="uploaded_file_tag_examiner">[BY EXAMINER]</p>
                             {% elif comment.published_datetime > comment.feedback_set.deadline_datetime %}
-                                <p class="uploaded_file_tag_examiner">[AFTER DEADLINE]</p>
+                                <p class="uploaded_file_tag_after_deadline">[AFTER DEADLINE]</p>
                             {% endif %}
                         </div>
                     {% endfor %}

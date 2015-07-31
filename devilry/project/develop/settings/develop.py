@@ -59,9 +59,9 @@ CELERY_EAGER_TRANSACTION = True
 
 ## For testing celery
 ## - Se the "Developing and testing Celery background tasks" chapter of the developer docs.
-# CELERY_ALWAYS_EAGER = False
-# BROKER_URL = 'amqp://'
-# CELERY_RESULT_BACKEND = 'amqp://'
+CELERY_ALWAYS_EAGER = False
+BROKER_URL = 'amqp://'
+CELERY_RESULT_BACKEND = 'amqp://'
 
 
 
