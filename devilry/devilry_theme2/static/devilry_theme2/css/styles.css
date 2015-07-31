@@ -9392,6 +9392,11 @@ body {
     padding-top: 42px;
   }
 }
+.django-cradmin-page-header-outer .django-cradmin-page-header-inner h1 .django-cradmin-page-header-inner-subtitle {
+  font-size: 16px;
+  font-weight: normal;
+  display: block;
+}
 /*
 Styles for Pygments.
 

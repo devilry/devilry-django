@@ -2,18 +2,24 @@
 
 {% load custom_filter %}
 
-{% block header-text %}
-    <h1>
-        <h1>{{ assignment.long_name }}</h1><br><br>
-        {{ subject.long_name }} {{ period.long_name }}
-    </h1>
-    <div class="pull-right">
-        <h4>Current Deadline</h4>
-        <h4>{{ last_deadline }}</h4>
+{% block pageheader-inner %}
+    <div class="row">
+        <div class="col-sm-8">
+            <h1>
+                {{ assignment.long_name }}
+                <span class="django-cradmin-page-header-inner-subtitle">
+                    {{ subject.long_name }} {{ period.long_name }}
+                </span>
+            </h1>
+        </div>
+        <div class="col-sm-4 text-right">
+            <h4>Current Deadline</h4>
+            <h4>{{ last_deadline }}</h4>
+        </div>
     </div>
-{% endblock header-text %}
+{% endblock pageheader-inner %}
 
-{% block body %}
+{% block content %}
     <div class="col-sm-8 feedback_feed">
         {% block feed %}
             {% for timestamp, eventlist in timeline.items %}
@@ -95,4 +101,4 @@
         {% endblock sidebar %}
     </div>
 
-{% endblock body %}
+{% endblock content %}
