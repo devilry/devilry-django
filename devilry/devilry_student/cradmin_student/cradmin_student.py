@@ -14,22 +14,18 @@ class Menu(crmenu.Menu):
         self.add(
             label=_('Add delivery'),
             url=self.appindex_url('waitingfordeliveries'),
-            icon="plus",
             active=self.request.cradmin_app.appname == 'waitingfordeliveries')
         self.add(
             label=_('Recent deliveries'),
             url=self.appindex_url('recentdeliveries'),
-            icon="th-list",
             active=self.request.cradmin_app.appname == 'recentdeliveries')
         self.add(
             label=_('Recent feedbacks'),
             url=self.appindex_url('recentfeedbacks'),
-            icon="th-list",
             active=self.request.cradmin_app.appname == 'recentfeedbacks')
         self.add(
             label=_('Browse all'),
             url=self.appindex_url('allperiods'),
-            icon="th-list",
             active=self.request.cradmin_app.appname == 'allperiods')
 
 

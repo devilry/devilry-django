@@ -8,7 +8,7 @@ from .crapps import listpermissionnodes
 
 class Menu(crmenu.Menu):
     def build_menu(self):
-        self.add(label=_('List nodes'), url=self.appindex_url('listnodes_index'), icon="home",
+        self.add(label=_('List nodes'), url=self.appindex_url('listnodes_index'),
                  active=self.request.cradmin_app.appname == 'listnodes_index')
 
 

@@ -18,27 +18,22 @@ class Menu(crmenu.Menu):
             label=group.subject.long_name,
             url=reverse('devilry_student_period-assignments-INDEX', kwargs={
                 'roleid': group.parentnode.parentnode.id
-            }),
-            icon="angle-up")
+            }))
         self.add(
             label=_('Overview'), url=self.appindex_url('overview'),
-            icon="info-circle",
             active=self.request.cradmin_app.appname == 'overview')
         self.add(
             label=_('Deliveries'), url=self.appindex_url('deliveries'),
-            icon="th-list",
             active=self.request.cradmin_app.appname == 'deliveries')
 
         if not group.assignment.anonymous:
             self.add(
                 label=_('Contact examiner'), url=self.appindex_url('contact'),
-                icon="envelope",
                 active=self.request.cradmin_app.appname == 'contact')
 
         if group.assignment.students_can_create_groups:
             self.add(
                 label=_('Project group'), url=self.appindex_url('projectgroup'),
-                icon="users",
                 active=self.request.cradmin_app.appname == 'projectgroup')
 
 
