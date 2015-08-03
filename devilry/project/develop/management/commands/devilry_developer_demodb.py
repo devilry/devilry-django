@@ -424,6 +424,7 @@ class Command(BaseCommand):
         ).add_assignment(
             'Oblig 1 - Domination',
             passing_grade_min_points=3,
+            max_points=10,
         ).add_group()
 
         assignmentgroupbuilder.add_students(student)
