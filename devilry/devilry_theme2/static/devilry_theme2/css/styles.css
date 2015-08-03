@@ -11436,10 +11436,25 @@ fieldset[disabled] .button_student {
 .feedbacklayout {
   background-color: #f2f2f2;
 }
+.feedback_header {
+  background-color: #f2f2f2;
+  margin-top: 0;
+  width: 100%;
+  height: 10.0em;
+}
 .feedback_sidebar {
   background-color: #f2f2f2;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
   border-top: 1px solid #adadad;
   padding: 2.0em 2.5em 2.5em 2.5em;
+}
+.feedback_sidebar_content {
+  padding-top: 42px;
+  position: fixed;
+  margin: 0 auto;
 }
 .feedback_sidebar_files {
   word-break: break-all;
@@ -11470,14 +11485,17 @@ fieldset[disabled] .button_student {
   margin-bottom: 0.5em;
 }
 .uploaded_file_tag {
+  display: inline-block;
   float: right;
 }
 .uploaded_file_tag_examiner {
+  display: inline-block;
   float: right;
 }
 .uploaded_file_tag_after_deadline {
+  display: inline-block;
   float: right;
-  color: #FF0000;
+  color: #971009;
 }
 .headline_dropdownicon {
   float: right;

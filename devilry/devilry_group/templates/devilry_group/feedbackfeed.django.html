@@ -14,6 +14,17 @@
 {% endblock header-text %}
 
 {% block body %}
+    <div class="feedback_header">
+        <h1>
+            <h1>{{ assignment.long_name }}</h1><br><br>
+            {{ subject.long_name }} {{ period.long_name }}
+        </h1>
+        <div class="pull-right">
+            <h4>Current Deadline</h4>
+            <h4>{{ last_deadline }}</h4>
+        </div>
+    </div>
+
     <div class="col-sm-8 feedback_feed">
         {% block feed %}
             {% for timestamp, eventlist in timeline.items %}
@@ -68,15 +79,16 @@
     </div>
 
     <div class="col-sm-4 feedback_sidebar">
+        <div class="col-md-3 feedback_sidebar_content">
         {% block sidebar %}
             <div class="top_headline">UPLOADED FILES</div>
             {% for feedbackset in feedbacksets %}
                 <br>
-                <div class="sub_headline">{{ forloop.counter }} DEADLINE</div>
+                <div class="sub_headline">{{ ''|devilry_verbosenumber:forloop.counter }} DEADLINE</div>
                 {% for comment in feedbackset.groupcomment_set.all %}
                     {% for file in comment.commentfile_set.all %}
                         <div class="feedback_sidebar_files">
-                            <a href="#" >{{ file.filename|devilry_truncatefileextension:13 }}</a>
+                            <a href="http://www.uio.no/index.html" >{{ file.filename|devilry_truncatefileextension:13 }}</a>
                             {% if comment.user_role == "examiner" %}
                                 <p class="uploaded_file_tag_examiner">[BY EXAMINER]</p>
                             {% elif comment.published_datetime > comment.feedback_set.deadline_datetime %}
@@ -93,6 +105,7 @@
             <div class="top_headline">CODE FORMATTING TOOLS</div>
             <div class="top_headline">MATH FORMATTING TOOLS</div>
         {% endblock sidebar %}
+        </div>
     </div>
 
 {% endblock body %}
