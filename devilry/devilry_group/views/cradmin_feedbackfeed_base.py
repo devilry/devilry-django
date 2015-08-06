@@ -140,7 +140,6 @@ class FeedbackFeedBaseView(create.CreateView):
         elif assignment_group.is_examiner(user):
             object.user_role = 'examiner'
             object.instant_publish = True
-            # need check for visible_for_students
             object.visible_for_students = True
             if object.instant_publish is True:
                 object.published_datetime = time
