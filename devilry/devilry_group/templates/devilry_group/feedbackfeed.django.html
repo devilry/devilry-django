@@ -13,12 +13,16 @@
             <div class="feedback_header">
 
                     <div class="col-sm-7 text-left">
-                        <h2>{{ assignment.long_name }}</h2>
+                        <h4><strong>{{ assignment.long_name }}</strong></h4>
                         <h5>{{ subject.long_name }} {{ period.long_name }}</h5>
                     </div>
                     <div class="col-sm-5 text-right">
-                        <h4 style="margin-top:30px;">CURRENT DEADLINE</h4>
-                        <h4>{{ last_deadline }}</h4>
+                        <h4>CURRENT DEADLINE</h4>
+                        {% if current_date >= last_feedbackset.deadline_datetime %}
+                                <h5 class="current_deadline_expired">expired - {{ last_deadline }}</h5>
+                        {% else %}
+                            <h5>{{ last_deadline }}</h5>
+                        {% endif %}
                     </div>
 
             </div>
@@ -30,43 +34,41 @@
             <!--
             Sidebar
             -->
-            <div class="col-sm-12 col-md-5 feedback_sidebar_not_fixed pull-right">
+            <dl class="col-sm-12 col-md-4 feedback_sidebar_not_fixed pull-right">
                 {% block sidebar %}
-                    <div class="top_headline">
-                        <p>UPLOADED FILES</p>
-                    </div>
+                    <dl class="top_headline">
+                        <h4>UPLOADED FILES</h4>
+                    </dl>
                         {% for feedbackset in feedbacksets %}
-                            <br>
-                            <div class="sub_headline">{{ ''|devilry_verbosenumber:forloop.counter }} DEADLINE</div>
+                            <dl class="sub_headline">
+                                <h5>
+                                    {{ ''|devilry_verbosenumber:forloop.counter }} DEADLINE
+                                </h5>
+                            </dl>
                             {% for comment in feedbackset.groupcomment_set.all %}
                                 {% for file in comment.commentfile_set.all %}
-                                    <div class="feedback_sidebar_files">
-                                        <a href="#" >{{ file.filename|devilry_truncatefileextension:16 }}</a>
-                                        {% if comment.user_role == "examiner" %}
-                                            <p class="uploaded_file_tag_examiner">[BY EXAMINER]</p>
-                                        {% elif comment.published_datetime > comment.feedback_set.deadline_datetime %}
-                                            <p class="uploaded_file_tag_after_deadline">[AFTER DEADLINE]</p>
-                                        {% endif %}
-                                    </div>
+                                    <dl class="feedback_sidebar_files">
+                                        <a href="#" ><p>{{ file.filename|devilry_truncatefileextension:26 }}</p></a>
+                                    </dl>
                                 {% endfor %}
                             {% endfor %}
                         {% endfor %}
 
                     <br>
 
-                    <div class="top_headline">
-                        <p>TEXT FORMATTING TOOLS</p>
-                    </div>
-                    <div class="top_headline">
-                        <p>CODE FORMATTING TOOLS</p>
-                    </div>
-                    <div class="top_headline">
-                        <p>MATH FORMATTING TOOLS</p>
-                    </div>
+                    <dl class="top_headline">
+                        <h4>TEXT FORMATTING TOOLS</h4>
+                    </dl>
+                    <dl class="top_headline">
+                        <h4>CODE FORMATTING TOOLS</h4>
+                    </dl>
+                    <dl class="top_headline">
+                        <h4>MATH FORMATTING TOOLS</h4>
+                    </dl>
                 {% endblock sidebar %}
-            </div>
+            </dl>
 
-            <div class="col-sm-12 col-md-7 pull-left feedback_feed">
+            <div class="col-sm-12 col-md-8 pull-left feedback_feed">
                 {% block feed %}
 
                     {% for timestamp, eventlist in timeline.items %}
@@ -92,10 +94,10 @@
                                                 <div class="comment_created_date"><p> {{ comment.published_datetime }}</p></div>
                                             </div>
                                             <div class="comment_text">
-                                                {{ comment.text }}
+                                                <p>{{ comment.text }}</p>
                                             </div>
                                             {% for file in comment.commentfile_set.all %}
-                                                <div class="file_icon">{{ file.filename }}</div>
+                                                <div class="file_icon"><p>{{ file.filename }}</p></div>
                                             {% endfor %}
                                         </div>
                                         {% if not comment.instant_publish and not comment.feedback_set.published_datetime %}
@@ -154,9 +156,9 @@
                     <br>
                     <br>
                     <br>
-                    <div class="comment_box_style">
+{#                    <div class="comment_box_style">#}
                         {% crispy form formhelper %}
-                    </div>
+{#                    </div>#}
                     <br>
                     <br>
                     <br>

@@ -10633,6 +10633,20 @@ Field to add comment status on right side of the comment box.
   border: 0.15em solid #055986;
   background-color: #055986;
 }
+.badge-text-new {
+  background-color: #f2dede;
+  float: right;
+  min-width: 35%;
+  min-height: 100%;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
+  border: 1px solid;
+}
+a.badge-text-new:hover {
+  background-color: #e4b9b9;
+}
 .badge_text {
   font-family: Helvetica;
   font-size: 1em;
@@ -11621,7 +11635,9 @@ fieldset[disabled] .button_student {
 .feedback_header {
   background-color: #f2f2f2;
   width: 100%;
-  height: 7em;
+  padding-right: 2.5em;
+  border-bottom: 2px solid #cccccc;
+  min-height: 7em;
 }
 .feedback_header .header_assignment_meta {
   float: left;
@@ -11635,24 +11651,20 @@ fieldset[disabled] .button_student {
   top: 0;
   right: 0;
   bottom: 0;
-  border-top: 1px solid #adadad;
   padding: 10em 2.5em 2.5em 2.5em;
 }
 .feedback_sidebar_not_fixed {
   background-color: #f2f2f2;
-  border-top: 1px solid #adadad;
   padding: 2em 2.5em 2.5em 2.5em;
   height: 100%;
 }
 .feedback_sidebar_content {
   padding-top: 42px;
   position: fixed;
-  margin: auto;
 }
 .feedback_sidebar_files {
   word-break: break-all;
   width: 100%;
-  margin-top: 3%;
 }
 .current_deadline_container {
   display: inline-block;
@@ -11661,16 +11673,14 @@ fieldset[disabled] .button_student {
   float: right;
 }
 .current_deadline_expired {
-  float: left;
   font-weight: bold;
-  margin-right: 0.2em;
   color: #971009;
 }
 .top_headline {
-  color: #999999;
+  color: #888888;
   font-size: 1.1em;
   font-family: Helvetica;
-  border-top: 2px solid #999999;
+  border-top: 2px solid #cccccc;
   margin-bottom: 0.5em;
 }
 .uploaded_file_tag {
@@ -11690,12 +11700,13 @@ fieldset[disabled] .button_student {
   float: right;
 }
 .sub_headline {
-  color: #999999;
+  color: #888888;
   font-size: 1.1em;
   font-family: Helvetica;
-  border-top: 2px solid #999999;
+  border-top: 2px solid #cccccc;
   margin-bottom: 0.5em;
   border-top: 0px;
+  margin-top: 1.5em;
   font-size: 0.9em;
 }
 /*

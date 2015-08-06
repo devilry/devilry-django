@@ -1,5 +1,5 @@
 import datetime
-from crispy_forms.layout import Submit, Layout, Fieldset, ButtonHolder
+from crispy_forms.layout import Submit, Layout, Fieldset, ButtonHolder, Button
 from django.db.models.sql.datastructures import DateTime
 from django import forms
 from devilry.devilry_group import models
@@ -97,23 +97,38 @@ class FeedbackFeedBaseView(create.CreateView):
         feedbacksets = self._get_feedbacksets_for_group(self.request.cradmin_role)
         context['last_deadline'], context['timeline'] = self.__build_timeline(self.request.cradmin_role, feedbacksets)
         context['feedbacksets'] = feedbacksets
+        context['last_feedbackset'] = feedbacksets[0]
         context['current_date'] = datetime.datetime.now()
 
         return context
 
-    submit_use_label = _('Submit comment')
+    submit_use_label = _('Post comment')
 
     def get_buttons(self):
-        return PrimarySubmit('submit-use', self.submit_use_label, css_class='btn btn-success'),
+        app = self.request.cradmin_app
+        user = self.request.user
+        if self.request.cradmin_role.is_candidate(user):
+            return [Submit('add comment',
+                           'Add comment',
+                           css_class='btn btn-success')]
+        elif self.request.cradmin_role.is_examiner(user):
+            return [Submit('add comment for examiners',
+                           'Add comment for examiners',
+                           css_class='btn btn-primary'),
+                    Submit('add public comment',
+                           'Add public comment',
+                           css_class='btn btn-primary'),
+                    Submit('add comment',
+                           'Add comment',
+                           css_class='btn btn-primary')]
+
 
     # def get_field_layout(self):
     #     return [
-    #         layout.Div('text', css_class='comment_box_style'),
-    #         layout.Fieldset(
-    #             'Post comment',
-    #             'text',
-    #         ),
-    #         layout.ButtonHolder('submit', 'Submit')
+    #             layout.Fieldset(
+    #                 'Post comment',
+    #                 'text',
+    #             )
     #     ]
 
     def save_object(self, form, commit=True):
@@ -160,6 +175,7 @@ class FeedbackFeedBaseView(create.CreateView):
         # print object.instant_publish
         # print object.visible_for_students
 
+        # return
         if commit:
             object.save()
         return object
