@@ -1,6 +1,7 @@
 @bg-color: #f2f2f2;
 @font-family: Helvetica;
 @sidebar-headline-color: #999999;
+@feedbackfeed-header-height: 7em;
 
 .feedbacklayout{
   background-color: @bg-color;
@@ -8,26 +9,41 @@
 
 .feedback_header{
   .feedbacklayout;
-  //position: fixed;
-  margin-top: 0;
+  //position: relative;
+  //margin: 0 auto;
   width: 100%;
-  height: 10.0em;
+  height: @feedbackfeed-header-height;
+
+    .header_assignment_meta{
+      float:left;
+    }
+
+    .header_current_deadline{
+      float: right;
+    }
 }
 
-.feedback_sidebar{
+.feedback_sidebar_fixed{
   .feedbacklayout;
   position:fixed;
   top:0;
   right:0;
   bottom:0;
   border-top: 1px solid #adadad;
-  padding: 2.0em 2.5em 2.5em 2.5em;
+  padding: 10em 2.5em 2.5em 2.5em;
+}
+
+.feedback_sidebar_not_fixed{
+  .feedbacklayout;
+  border-top: 1px solid #adadad;
+  padding: 2em 2.5em 2.5em 2.5em;
+  height: 100%;
 }
 
 .feedback_sidebar_content{
   padding-top: @header-height;
   position: fixed;
-  margin: 0 auto;
+  margin: auto;
 }
 
 .feedback_sidebar_files{
@@ -37,8 +53,8 @@
 }
 
 .feedback_feed{
-  padding-left: 11%;
-  padding-right: 11%;
+  //padding-left: 11%;
+  //padding-right: 11%;
 }
 
 .current_deadline_container{
@@ -87,4 +103,16 @@
   .top_headline;
   border-top: 0px;
   font-size: 0.9em;
+}
+
+
+
+
+
+/*
+New ordering of elements in view
+*/
+
+.feedback_wrapper {
+  width: 100%;
 }

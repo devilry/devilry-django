@@ -6,20 +6,32 @@ imports all neccessary requirements
 @import "sizes.less";
 
 
-/*
-*/
-.comment{
+.comment_box_style{
     display:flex;
     margin-top: 10px;
     font-family: Arial;
-    border-left: 0.8em solid;
-    border-left-color: @default-left-border-color;
     background-color: @comment-background-color;
     box-shadow: 0.1em 0.1em 0.2em 0.1em @comment-shadow-color;
     min-width: 40%;
     max-width: 100%;
-    max-heigth: 10.0em;
+    max-heigth: 100%;
     min-height: 5.0em;
+    border-bottom-left-radius: 3px 3px;
+    border-bottom-right-radius: 3px 3px;
+    border-top-left-radius: 3px 3px;
+    border-top-right-radius: 3px 3px;
+}
+
+/*
+*/
+.comment{
+    .comment_box_style;
+    border-left: 0.8em solid;
+    border-left-color: @default-left-border-color;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 /*
@@ -49,21 +61,6 @@ imports all neccessary requirements
     border-left-color: @admin-color;
 }
 
-/*
-*/
-.after_deadline_badge{
-    .right_badge_field;
-    background-color: @after-deadline-color;
-}
-
-/*
-*/
-.not_published_badge{
-    .right_badge_field;
-    //border: 0.15em solid @examiner-color;
-    background-color: @examiner-color;
-}
-
 
 /* 
 Field of content to the left in the comment box
@@ -72,41 +69,39 @@ such as created date, created by, comment text and delivery file icons
 .left_field{
     float:left;
     max-width:100%;
-    //width:@left_field_width;
     min-width: 65%;
     padding-bottom:1.0em;
-    padding-left:2.0em;
-    padding-right:0.8em;
+    padding-left:1.5em;
+    padding-right:0.3em;
+    padding-top: 1.0em;
 
     .comment_meta{
-        line-height: 0%;
         word-break: break-all;
-        //display: inline-block;
-    }
-
-
-    .comment_created_meta_text{
-        .comment_meta;
+        white-space: normal;
         float: left;
-        //margin-bottom: 0px auto;
         color: @comment-text-color;
-        font-size: 1.0em;
-        padding-right: 0.3em;
-        //text-align: center;
-        //vertical-align: middle;
-
+        font-size: 1.2em;
+        display: inline-block;
     }
+
     .comment_created_by{
-        clear: both;
-        .comment_created_meta_text;
-        font-size: 1.5em;
+        .comment_meta;
+        font-weight: bold;
+    }
+
+    .comment_created_by_role{
+        .comment_meta;
+    }
+
+    .comment_created_date{
+        .comment_meta;
     }
 
     /**/
     .comment_text{
         max-width: 60.0em;
         clear: both;
-        font-size: 0.8em;
+        font-size: 1.0em;
         margin-bottom: 1.0em;
         padding-top: 0.9em;
     }
@@ -126,17 +121,33 @@ such as created date, created by, comment text and delivery file icons
 Field to add comment status on right side of the comment box.
 */
 .right_badge_field{
-    float: left;
+    float: right;
     min-width: 35%;
-    heigh: 100%;
+    min-height: 100%;
     text-align: center;
     display: table-cell;
     vertical-align: middle;
     position: relative;
+    border: 1px solid;
     /*
     After deadline div. A dark red box that fills it's parent.
     */
 
+}
+
+/*
+*/
+.after_deadline_badge{
+    .right_badge_field;
+    background-color: @after-deadline-color;
+}
+
+/*
+*/
+.not_published_badge{
+    .right_badge_field;
+    border: 0.15em solid @examiner-color;
+    background-color: @examiner-color;
 }
 
 .badge_text{
@@ -147,7 +158,7 @@ Field to add comment status on right side of the comment box.
     margin: 0;
     position: absolute;
     top: 50%;
-    padding: 3em 3em 3em 3em;
+    //padding: 3em 3em 3em 3em;
     transform: translate(0, -50%);
     //display: inline-block;
 }
@@ -186,6 +197,11 @@ Event messages such as passed, failed and general messages between comments.
     margin-bottom: 4.0em;
     color: #333333;
     font-size: 1.0em;
+}
+
+.event-spacing{
+    //margin-top: 4.0em;
+    //margin-bottom: 4.0em;
 }
 
 .event_message_passed{
@@ -229,3 +245,85 @@ Event messages such as passed, failed and general messages between comments.
     .icon;
     content:url(image-icon.png) no-repeat center center fixed;
 }
+
+
+
+
+
+
+.comment-style{
+    display:flex;
+    margin-top: 10px;
+    font-family: Arial;
+    border-left: 0.8em solid;
+    border-left-color: @default-left-border-color;
+    background-color: @comment-background-color;
+    box-shadow: 0.1em 0.1em 0.2em 0.1em @comment-shadow-color;
+}
+
+.student-comment-style{
+    .comment-style;
+    border-left-color: @student-color;
+}
+
+.examiner-comment-style{
+    .comment-style;
+    border-left-color: @examiner-color;
+}
+
+.admin-comment-style{
+    .comment-style;
+    border-left-color: @admin-color;
+}
+
+.left-field-style{
+    //border: 1px solid #00ff00;
+
+    .created-by-info{
+        //border: 1px solid #0000ff;
+    }
+
+    .created-by{
+        color: @comment-text-color;
+        font-size: 1.5em;
+        font-weight: bold;
+        padding:0px 0px 0px 0px;
+    }
+
+    .created-by-meta{
+        color: @comment-text-color;
+        font-size: 1.3em;
+        padding:0px 0px 0px 0px;
+    }
+
+    &.after{
+        content: "";
+        position: absolute;
+        z-index: -1;
+        top: 0;
+        bottom: 0;
+        border-left: 1px solid #999999;
+    }
+}
+
+.after-deadline-badge{
+    background-color: @after-deadline-color;
+}
+
+.not-published-badge{
+    background-color: @examiner-color;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

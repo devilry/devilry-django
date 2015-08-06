@@ -10389,20 +10389,43 @@ comments-box right field
 /*
 Button sizes
 */
+.comment_box_style {
+  display: flex;
+  margin-top: 10px;
+  font-family: Arial;
+  background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+  min-width: 40%;
+  max-width: 100%;
+  max-heigth: 100%;
+  min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+}
 /*
 */
 .comment {
   display: flex;
   margin-top: 10px;
   font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
   background-color: #f2f2f2;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
-  max-heigth: 10.0em;
+  max-heigth: 100%;
   min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 /*
 */
@@ -10410,14 +10433,22 @@ Button sizes
   display: flex;
   margin-top: 10px;
   font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
   background-color: #f2f2f2;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
-  max-heigth: 10.0em;
+  max-heigth: 100%;
   min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 /*
 */
@@ -10425,14 +10456,22 @@ Button sizes
   display: flex;
   margin-top: 10px;
   font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
   background-color: #f2f2f2;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
-  max-heigth: 10.0em;
+  max-heigth: 100%;
   min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   border-left-color: #5d8c08;
 }
 /*
@@ -10441,14 +10480,22 @@ Button sizes
   display: flex;
   margin-top: 10px;
   font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
   background-color: #f2f2f2;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
-  max-heigth: 10.0em;
+  max-heigth: 100%;
   min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   border-left-color: #055986;
 }
 /*
@@ -10457,45 +10504,23 @@ Button sizes
   display: flex;
   margin-top: 10px;
   font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
   background-color: #f2f2f2;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
-  max-heigth: 10.0em;
+  max-heigth: 100%;
   min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   border-left-color: #ff9933;
-}
-/*
-*/
-.after_deadline_badge {
-  float: left;
-  min-width: 35%;
-  heigh: 100%;
-  text-align: center;
-  display: table-cell;
-  vertical-align: middle;
-  position: relative;
-  /*
-    After deadline div. A dark red box that fills it's parent.
-    */
-  background-color: #971009;
-}
-/*
-*/
-.not_published_badge {
-  float: left;
-  min-width: 35%;
-  heigh: 100%;
-  text-align: center;
-  display: table-cell;
-  vertical-align: middle;
-  position: relative;
-  /*
-    After deadline div. A dark red box that fills it's parent.
-    */
-  background-color: #055986;
 }
 /* 
 Field of content to the left in the comment box
@@ -10506,36 +10531,48 @@ such as created date, created by, comment text and delivery file icons
   max-width: 100%;
   min-width: 65%;
   padding-bottom: 1.0em;
-  padding-left: 2.0em;
-  padding-right: 0.8em;
+  padding-left: 1.5em;
+  padding-right: 0.3em;
+  padding-top: 1.0em;
   /**/
 }
 .left_field .comment_meta {
-  line-height: 0%;
   word-break: break-all;
-}
-.left_field .comment_created_meta_text {
-  line-height: 0%;
-  word-break: break-all;
+  white-space: normal;
   float: left;
   color: #333333;
-  font-size: 1.0em;
-  padding-right: 0.3em;
+  font-size: 1.2em;
+  display: inline-block;
 }
 .left_field .comment_created_by {
-  clear: both;
-  line-height: 0%;
   word-break: break-all;
+  white-space: normal;
   float: left;
   color: #333333;
-  font-size: 1.0em;
-  padding-right: 0.3em;
-  font-size: 1.5em;
+  font-size: 1.2em;
+  display: inline-block;
+  font-weight: bold;
+}
+.left_field .comment_created_by_role {
+  word-break: break-all;
+  white-space: normal;
+  float: left;
+  color: #333333;
+  font-size: 1.2em;
+  display: inline-block;
+}
+.left_field .comment_created_date {
+  word-break: break-all;
+  white-space: normal;
+  float: left;
+  color: #333333;
+  font-size: 1.2em;
+  display: inline-block;
 }
 .left_field .comment_text {
   max-width: 60.0em;
   clear: both;
-  font-size: 0.8em;
+  font-size: 1.0em;
   margin-bottom: 1.0em;
   padding-top: 0.9em;
 }
@@ -10551,16 +10588,50 @@ such as created date, created by, comment text and delivery file icons
 Field to add comment status on right side of the comment box.
 */
 .right_badge_field {
-  float: left;
+  float: right;
   min-width: 35%;
-  heigh: 100%;
+  min-height: 100%;
   text-align: center;
   display: table-cell;
   vertical-align: middle;
   position: relative;
+  border: 1px solid;
   /*
     After deadline div. A dark red box that fills it's parent.
     */
+}
+/*
+*/
+.after_deadline_badge {
+  float: right;
+  min-width: 35%;
+  min-height: 100%;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
+  border: 1px solid;
+  /*
+    After deadline div. A dark red box that fills it's parent.
+    */
+  background-color: #971009;
+}
+/*
+*/
+.not_published_badge {
+  float: right;
+  min-width: 35%;
+  min-height: 100%;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+  position: relative;
+  border: 1px solid;
+  /*
+    After deadline div. A dark red box that fills it's parent.
+    */
+  border: 0.15em solid #055986;
+  background-color: #055986;
 }
 .badge_text {
   font-family: Helvetica;
@@ -10570,7 +10641,6 @@ Field to add comment status on right side of the comment box.
   margin: 0;
   position: absolute;
   top: 50%;
-  padding: 3em 3em 3em 3em;
   transform: translate(0, -50%);
 }
 /*
@@ -10645,6 +10715,70 @@ Event messages such as passed, failed and general messages between comments.
   border-radius: 0.5em;
   transform: scale(1.4);
 }
+.comment-style {
+  display: flex;
+  margin-top: 10px;
+  font-family: Arial;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+}
+.student-comment-style {
+  display: flex;
+  margin-top: 10px;
+  font-family: Arial;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+  border-left-color: #5d8c08;
+}
+.examiner-comment-style {
+  display: flex;
+  margin-top: 10px;
+  font-family: Arial;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+  border-left-color: #055986;
+}
+.admin-comment-style {
+  display: flex;
+  margin-top: 10px;
+  font-family: Arial;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  background-color: #f2f2f2;
+  box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
+  border-left-color: #ff9933;
+}
+.left-field-style .created-by {
+  color: #333333;
+  font-size: 1.5em;
+  font-weight: bold;
+  padding: 0px 0px 0px 0px;
+}
+.left-field-style .created-by-meta {
+  color: #333333;
+  font-size: 1.3em;
+  padding: 0px 0px 0px 0px;
+}
+.left-field-style.after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid #999999;
+}
+.after-deadline-badge {
+  background-color: #971009;
+}
+.not-published-badge {
+  background-color: #055986;
+}
 /*
 Annotations
 */
@@ -10656,14 +10790,22 @@ Annotations
   display: flex;
   margin-top: 10px;
   font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
   background-color: #f2f2f2;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
-  max-heigth: 10.0em;
+  max-heigth: 100%;
   min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   border-left-color: #ff9933;
   background-color: #ffffff;
   min-height: 3.0em;
@@ -10672,14 +10814,22 @@ Annotations
   display: flex;
   margin-top: 10px;
   font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
   background-color: #f2f2f2;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
-  max-heigth: 10.0em;
+  max-heigth: 100%;
   min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   border-left-color: #055986;
   background-color: #ffffff;
   min-height: 3.0em;
@@ -10688,14 +10838,22 @@ Annotations
   display: flex;
   margin-top: 10px;
   font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
   background-color: #f2f2f2;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
-  max-heigth: 10.0em;
+  max-heigth: 100%;
   min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   border-left-color: #5d8c08;
   background-color: #ffffff;
   min-height: 3.0em;
@@ -10704,14 +10862,22 @@ Annotations
   display: flex;
   margin-top: 10px;
   font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
   background-color: #f2f2f2;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
-  max-heigth: 10.0em;
+  max-heigth: 100%;
   min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   background-color: #fafafa;
   margin-top: 0px;
 }
@@ -10719,14 +10885,22 @@ Annotations
   display: flex;
   margin-top: 10px;
   font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
   background-color: #f2f2f2;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
-  max-heigth: 10.0em;
+  max-heigth: 100%;
   min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   background-color: #fafafa;
   margin-top: 0px;
   border-left-color: #5d8c08;
@@ -10735,14 +10909,22 @@ Annotations
   display: flex;
   margin-top: 10px;
   font-family: Arial;
-  border-left: 0.8em solid;
-  border-left-color: #666666;
   background-color: #f2f2f2;
   box-shadow: 0.1em 0.1em 0.2em 0.1em #888888;
   min-width: 40%;
   max-width: 100%;
-  max-heigth: 10.0em;
+  max-heigth: 100%;
   min-height: 5.0em;
+  border-bottom-left-radius: 3px 3px;
+  border-bottom-right-radius: 3px 3px;
+  border-top-left-radius: 3px 3px;
+  border-top-right-radius: 3px 3px;
+  border-left: 0.8em solid;
+  border-left-color: #666666;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
   background-color: #fafafa;
   margin-top: 0px;
   max-height: 10px;
@@ -11438,32 +11620,39 @@ fieldset[disabled] .button_student {
 }
 .feedback_header {
   background-color: #f2f2f2;
-  margin-top: 0;
   width: 100%;
-  height: 10.0em;
+  height: 7em;
 }
-.feedback_sidebar {
+.feedback_header .header_assignment_meta {
+  float: left;
+}
+.feedback_header .header_current_deadline {
+  float: right;
+}
+.feedback_sidebar_fixed {
   background-color: #f2f2f2;
   position: fixed;
   top: 0;
   right: 0;
   bottom: 0;
   border-top: 1px solid #adadad;
-  padding: 2.0em 2.5em 2.5em 2.5em;
+  padding: 10em 2.5em 2.5em 2.5em;
+}
+.feedback_sidebar_not_fixed {
+  background-color: #f2f2f2;
+  border-top: 1px solid #adadad;
+  padding: 2em 2.5em 2.5em 2.5em;
+  height: 100%;
 }
 .feedback_sidebar_content {
   padding-top: 42px;
   position: fixed;
-  margin: 0 auto;
+  margin: auto;
 }
 .feedback_sidebar_files {
   word-break: break-all;
   width: 100%;
   margin-top: 3%;
-}
-.feedback_feed {
-  padding-left: 11%;
-  padding-right: 11%;
 }
 .current_deadline_container {
   display: inline-block;
@@ -11508,6 +11697,12 @@ fieldset[disabled] .button_student {
   margin-bottom: 0.5em;
   border-top: 0px;
   font-size: 0.9em;
+}
+/*
+New ordering of elements in view
+*/
+.feedback_wrapper {
+  width: 100%;
 }
 body {
   background-image: url('../images/groovepaper.png');

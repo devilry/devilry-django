@@ -1,3 +1,4 @@
+from devilry.devilry_comment.models import Comment
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
 from django_cradmin import crapp
