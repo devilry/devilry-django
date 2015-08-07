@@ -2,6 +2,7 @@ import datetime
 from crispy_forms.layout import Submit, Layout, Fieldset, ButtonHolder, Button
 from django.db.models.sql.datastructures import DateTime
 from django import forms
+from django_cradmin.wysihtml5.widgets import WysiHtmlTextArea
 from devilry.devilry_group import models
 from django_cradmin.viewhelpers import create
 import collections
@@ -104,6 +105,28 @@ class FeedbackFeedBaseView(create.CreateView):
 
     submit_use_label = _('Post comment')
 
+    def get_form_css_classes(self):
+        """
+        Returns list of css classes set on the form. You normally
+        want to override :meth:`.get_extra_form_css_classes` instead
+        of this method unless you want to provide completely custom
+        form styles.
+        """
+        form_css_classes = [
+        ]
+        return form_css_classes
+
+    def get_button_layout(self):
+        """
+        Get the button layout. This is added to the crispy form layout.
+
+        Defaults to a :class:`crispy_forms.layout.Div` with css class
+        ``django_cradmin_submitrow`` containing all the buttons
+        returned by :meth:`.get_buttons`.
+        """
+        return [
+        ]
+
     def get_buttons(self):
         app = self.request.cradmin_app
         user = self.request.user
@@ -114,25 +137,48 @@ class FeedbackFeedBaseView(create.CreateView):
         elif self.request.cradmin_role.is_examiner(user):
             return [Submit('add comment for examiners',
                            'Add comment for examiners',
-                           css_class='btn btn-primary'),
+                           css_class='btn button_examiner'),
                     Submit('add public comment',
                            'Add public comment',
-                           css_class='btn btn-primary'),
-                    Submit('add comment',
-                           'Add comment',
-                           css_class='btn btn-primary')]
+                           css_class='btn button_examiner'),
+                    Submit('add comment to feedback draft',
+                           'Add comment to feedback draft',
+                           css_class='btn button_examiner')]
 
 
-    # def get_field_layout(self):
-    #     return [
-    #             layout.Fieldset(
-    #                 'Post comment',
-    #                 'text',
-    #             )
-    #     ]
+    def get_field_layout(self):
+        return [
+            layout.Fieldset(
+                '',
+                layout.Div(
+                    layout.Div(
+                        'text',
+                        css_class='panel-body'
+                    ),
+                    layout.Div(
+                        layout.HTML('Drag and drop, or click <strong>here</strong> to upload files'),
+                        css_class='panel-footer'
+                    ),
+                    css_class='panel panel-default'
+                ),
+                layout.Div(
+                    layout.Div(*self.get_buttons(), css_class="btn-group"),
+                    css_class="text-right"
+                ),
+                css_class='comment_box_style'
+            )
+        ]
+
+    def get_form(self, form_class=None):
+        form = super(FeedbackFeedBaseView, self).get_form(form_class=form_class)
+        form.fields['text'].widget = WysiHtmlTextArea(attrs={})
+        form.fields['text'].label = False
+        return form
 
     def save_object(self, form, commit=True):
         print '\nsave object from form\n'
+
+        print form.data
 
         object = form.save(commit=False)
         assignment_group = self.request.cradmin_role
@@ -175,7 +221,6 @@ class FeedbackFeedBaseView(create.CreateView):
         # print object.instant_publish
         # print object.visible_for_students
 
-        # return
         if commit:
             object.save()
         return object
