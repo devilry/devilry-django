@@ -1,18 +1,12 @@
 import datetime
-from crispy_forms.layout import Submit, Layout, Fieldset, ButtonHolder, Button
-from django.db.models.sql.datastructures import DateTime
-from django import forms
+from crispy_forms.layout import Submit
 from django_cradmin.wysihtml5.widgets import WysiHtmlTextArea
 from devilry.devilry_group import models
 from django_cradmin.viewhelpers import create
 import collections
 from devilry.devilry_group.models import GroupComment
-from django_cradmin.viewhelpers import objecttable
 from django.utils.translation import ugettext_lazy as _
-from django_cradmin import crapp
 from crispy_forms import layout
-from crispy_forms.helper import FormHelper
-from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
 
 
 class FeedbackFeedBaseView(create.CreateView):
@@ -142,9 +136,10 @@ class FeedbackFeedBaseView(create.CreateView):
                     Submit('examiner_add_public_comment',
                            'Add public comment',
                            css_class='btn btn btn-primary'),
-                    Submit('examiner_add_comment_to_feedback_draft',
-                           'Add comment to feedback draft',
-                           css_class='btn btn-primary')]
+                    # Submit('examiner_add_comment_to_feedback_draft',
+                    #        'Add comment to feedback draft',
+                    #        css_class='btn btn-primary')
+                    ]
 
     def get_field_layout(self):
         return [
@@ -223,24 +218,12 @@ class FeedbackFeedBaseView(create.CreateView):
                 object.instant_publish = False
                 object.visible_for_students = False
 
-            # object.published_datetime = time
             if object.instant_publish:
                 object.published_datetime = time
         else:
             object.user_role = 'admin'
             object.instant_publish = True
             object.visible_for_students = True
-
-        # print '\nComment object debug:\n'
-        # print object.user
-        # print object.text
-        # print object.created_datetime
-        # print object.published_datetime
-        # print object.user_role
-        # print object.comment_type
-        # print object.feedback_set
-        # print object.instant_publish
-        # print object.visible_for_students
 
         if commit:
             object.save()
