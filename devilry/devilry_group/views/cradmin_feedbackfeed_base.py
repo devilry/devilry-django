@@ -12,7 +12,8 @@ from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crapp
 from crispy_forms import layout
 from crispy_forms.helper import FormHelper
-from django_cradmin.crispylayouts import PrimarySubmit
+from django_cradmin.crispylayouts import PrimarySubmit, DefaultSubmit
+
 
 class FeedbackFeedBaseView(create.CreateView):
     template_name = "devilry_group/feedbackfeed.django.html"
@@ -131,41 +132,54 @@ class FeedbackFeedBaseView(create.CreateView):
         app = self.request.cradmin_app
         user = self.request.user
         if self.request.cradmin_role.is_candidate(user):
-            return [Submit('add comment',
+            return [Submit('student_add_comment',
                            'Add comment',
                            css_class='btn btn-success')]
         elif self.request.cradmin_role.is_examiner(user):
-            return [Submit('add comment for examiners',
+            return [Submit('examiner_add_comment_for_examiners',
                            'Add comment for examiners',
-                           css_class='btn button_examiner'),
-                    Submit('add public comment',
+                           css_class='btn btn-primary'),
+                    Submit('examiner_add_public_comment',
                            'Add public comment',
-                           css_class='btn button_examiner'),
-                    Submit('add comment to feedback draft',
+                           css_class='btn btn btn-primary'),
+                    Submit('examiner_add_comment_to_feedback_draft',
                            'Add comment to feedback draft',
-                           css_class='btn button_examiner')]
-
+                           css_class='btn btn-primary')]
 
     def get_field_layout(self):
         return [
             layout.Fieldset(
                 '',
                 layout.Div(
+                        layout.Div(
+                            layout.HTML('<h5>h1</h5>'),
+                            css_class='btn btn-default'
+                        ),
+                        layout.Div(
+                            layout.HTML('<h5>h2</h5>'),
+                            css_class='btn btn-default'
+                        ),
+                        layout.Div(
+                            layout.HTML('<h5>h3</h5>'),
+                            css_class='btn btn-default'
+                        ),
+                    ),
+                layout.Div(
                     layout.Div(
                         'text',
-                        css_class='panel-body'
+                        # css_class='panel-body'
                     ),
                     layout.Div(
-                        layout.HTML('Drag and drop, or click <strong>here</strong> to upload files'),
+                        layout.HTML('<p>Drag and drop, or click <a href="#"><strong>here</strong></a> to upload files</p>'),
                         css_class='panel-footer'
                     ),
                     css_class='panel panel-default'
                 ),
                 layout.Div(
-                    layout.Div(*self.get_buttons(), css_class="btn-group"),
-                    css_class="text-right"
+                    layout.Div(*self.get_buttons()),
+                    css_class="col-xs-12 text-right"
                 ),
-                css_class='comment_box_style'
+                css_class='comment_post_container'
             )
         ]
 
@@ -178,17 +192,12 @@ class FeedbackFeedBaseView(create.CreateView):
     def save_object(self, form, commit=True):
         print '\nsave object from form\n'
 
-        print form.data
-
-        object = form.save(commit=False)
         assignment_group = self.request.cradmin_role
         user = self.request.user
         time = datetime.datetime.now()
 
+        object = form.save(commit=False)
         object.user = user
-        object.created_datetime = time
-        object.published_datetime = time
-
         object.comment_type = 'groupcomment'
         object.feedback_set = assignment_group.feedbackset_set.latest('created_datetime')
 
@@ -197,14 +206,26 @@ class FeedbackFeedBaseView(create.CreateView):
             object.instant_publish = True
             object.visible_for_students = True
             object.published_datetime = time
-
         elif assignment_group.is_examiner(user):
             object.user_role = 'examiner'
-            object.instant_publish = True
-            object.visible_for_students = True
-            if object.instant_publish is True:
-                object.published_datetime = time
+            print 'is examiner'
 
+            if form.data.get('examiner_add_comment_for_examiners'):
+                print 'examiner_add_comment_for_examiners'
+                object.instant_publish = True
+                object.visible_for_students = False
+            elif form.data.get('examiner_add_public_comment'):
+                print 'examiner_add_public_comment'
+                object.instant_publish = True
+                object.visible_for_students = True
+            elif form.data.get('examiner_add_comment_to_feedback_draft'):
+                print 'examiner_add_comment_to_feedback_draft'
+                object.instant_publish = False
+                object.visible_for_students = False
+
+            # object.published_datetime = time
+            if object.instant_publish:
+                object.published_datetime = time
         else:
             object.user_role = 'admin'
             object.instant_publish = True
