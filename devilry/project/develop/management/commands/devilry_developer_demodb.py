@@ -411,6 +411,7 @@ class Command(BaseCommand):
         # and a new assingment in the current period
         student = UserBuilder('psylocke', full_name='Elisabeth Braddock').user
         examiner = UserBuilder('magneto', full_name='Erik Lehnsherr').user
+        examiner2 = UserBuilder('beast', full_name='Hank McCoy').user
 
         assignmentgroupbuilder = self.duckburgh.add_subject(
             short_name='inf7020',
@@ -419,7 +420,8 @@ class Command(BaseCommand):
             short_name='testsemester',
             long_name='Testsemester',
             relatedexaminers=[
-                RelatedExaminer(user=examiner)
+                RelatedExaminer(user=examiner),
+                RelatedExaminer(user=examiner2),
             ]
         ).add_assignment(
             'Oblig 1 - Domination',
@@ -428,7 +430,7 @@ class Command(BaseCommand):
         ).add_group()
 
         assignmentgroupbuilder.add_students(student)
-        assignmentgroupbuilder.add_examiners(examiner)
+        assignmentgroupbuilder.add_examiners(examiner, examiner2)
 
         feedbacksetbuilder1 = assignmentgroupbuilder.add_feedback_set(
             points=1,
