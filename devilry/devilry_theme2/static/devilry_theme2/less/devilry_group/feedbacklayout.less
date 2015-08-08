@@ -1,115 +1,61 @@
-@bg-color: #f2f2f2;
-@font-family: Helvetica;
-@sidebar-headline-color: #cccccc;
-@feedbackfeed-header-height: 7em;
 
-.feedbacklayout{
-  background-color: @bg-color;
-}
+.devilry-group-feedbackfeed-header {
+  .devilry-group-feedbackfeed-current-deadline-heading {
+    margin: 0 0 0 0;
+    padding: 0;
+    font-size: @cradmin-page-header-h1-font-size;
+    line-height: @cradmin-page-header-h1-line-height;
+    vertical-align: middle;
+    text-transform: uppercase;
 
-.feedback_header{
-  .feedbacklayout;
-  //position: relative;
-  //margin: 0 auto;
-  width: 100%;
-  padding-right: 2.5em;
-  border-bottom: 2px solid @sidebar-headline-color;
-  min-height: @feedbackfeed-header-height;
-
-    .header_assignment_meta{
-      float:left;
+  }
+  .devilry-group-feedbackfeed-current-current-deadline {
+    &.devilry-group-feedbackfeed-current-current-deadline-expired {
+      font-weight: bold;
+      color: @after-deadline-color;
     }
-
-    .header_current_deadline{
-      float: right;
-    }
+  }
 }
 
-.feedback_sidebar_fixed{
-  .feedbacklayout;
-  position:fixed;
-  top:0;
-  right:0;
-  bottom:0;
-  padding: 10em 2.5em 2.5em 2.5em;
-}
-
-.feedback_sidebar_not_fixed{
-  .feedbacklayout;
+.devilry-group-feedbackfeed-sidebar {
+  background: @devilry-feedbackfeed-focus-bg;
   padding: 2em 2.5em 2.5em 2.5em;
   height: 100%;
-}
 
-.feedback_sidebar_content{
-  padding-top: @header-height;
-  position: fixed;
-}
+  h4 {
+    text-transform: uppercase;
+    font-size: @font-size-base;
+    //.devilry-group-feedbackfeed-sidebar-dropdownicon{
+    //  float: right;
+    //}
+  }
 
-.feedback_sidebar_files{
-  word-break: break-all;
-  width: 100%;
-}
-
-.feedback_feed{
-  //padding-left: 11%;
-  //padding-right: 11%;
-}
-
-.current_deadline_container{
-  display: inline-block;
-}
-
-.current_deadline{
-  float:right;
-}
-
-.current_deadline_expired{
-  font-weight: bold;
-  color:@after-deadline-color;
-}
-
-.top_headline{
-  color: #888888;
-  font-size: 1.1em;
-  font-family: @font-family;
-  border-top: 2px solid @sidebar-headline-color;
-  margin-bottom: 0.5em;
-}
-
-.uploaded_file_tag{
-  display: inline-block;
-  float:right;
-}
-
-.uploaded_file_tag_examiner{
-  .uploaded_file_tag;
-}
-
-.uploaded_file_tag_after_deadline{
-  .uploaded_file_tag;
-  color: @after-deadline-color;
-}
-
-.headline_dropdownicon{
-  float: right;
+  dl {
+    dt {
+      text-transform: uppercase;
+      font-weight: normal;
+      font-size: @font-size-small;
+    }
+    dd {
+      .devilry-group-feedbackfeed-sidebar-files {
+        word-break: break-all;
+        width: 100%;
+      }
+    }
+  }
 }
 
 
-.sub_headline{
-  .top_headline;
-  border-top: 0px;
-  margin-top: 1.5em;
-  font-size: 0.9em;
-}
+.devilry-group-feedbackfeed-feed {
+  .devilry-group-feedbackfeed-feed-uploaded-file-tag{
+    display: inline-block;
+    float:right;
 
+    &.devilry-group-feedbackfeed-feed-uploaded-file-tag-examiner{
+    }
 
-
-
-
-/*
-New ordering of elements in view
-*/
-
-.feedback_wrapper {
-  width: 100%;
+    &.devilry-group-feedbackfeed-feed-uploaded-file-tag-after-deadline{
+      color: @after-deadline-color;
+    }
+  }
 }

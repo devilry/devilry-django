@@ -42,8 +42,8 @@ def devilry_verbosenumber(value, number):
     and all numbers above 10 has the number and the corresponding ending(11th, 23rd, 32nd, 41st, ...)
     """
     numbers = {
-        1: 'FIRST', 2: 'SECOND', 3: 'THIRD', 4: 'FOURTH', 5: 'FIFTH',
-        6: 'SIXTH', 7: 'SEVENTH', 8: 'EIGHTH', 9: 'NINTH', 10: 'TENTH'
+        1: 'first', 2: 'second', 3: 'third', 4: 'fourth', 5: 'fifth',
+        6: 'sixth', 7: 'seventh', 8: 'eighth', 9: 'ninth', 10: 'tenth'
     }
 
     def last_digit(num):

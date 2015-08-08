@@ -1,74 +1,79 @@
 {% extends "devilry_group/base.django.html" %}
-
 {% load custom_filter %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
-{% block body %}
+{% block title %}
+    {{ assignment.get_path }}
+{% endblock title %}
 
-<!-- Content -->
-
-    <div class="container">
-        <div class="row">
-
-            <div class="feedback_header">
-
-                    <div class="col-sm-7 text-left">
-                        <h4><strong>{{ assignment.long_name }}</strong></h4>
-                        <h5>{{ subject.long_name }} {{ period.long_name }}</h5>
-                    </div>
-                    <div class="col-sm-5 text-right">
-                        <h4>CURRENT DEADLINE</h4>
-                        {% if current_date >= last_feedbackset.deadline_datetime %}
-                                <h5 class="current_deadline_expired">expired - {{ last_deadline }}</h5>
-                        {% else %}
-                            <h5>{{ last_deadline }}</h5>
-                        {% endif %}
-                    </div>
-
+{% block pageheader-inner %}
+    <div class="row">
+        <div class="devilry-group-feedbackfeed-header">
+            <div class="col-sm-7 text-left">
+                <h1>{{ assignment.long_name }}</h1>
+                <p>{{ subject.long_name }} {{ period.long_name }}</p>
+            </div>
+            <div class="col-sm-5 text-right">
+                <h2 class="devilry-group-feedbackfeed-current-deadline-heading">
+                    {% trans "Current deadline" %}
+                </h2>
+                <p class="devilry-group-feedbackfeed-current-current-deadline
+                            {% if current_date >= last_feedbackset.deadline_datetime %}
+                                devilry-group-feedbackfeed-current-current-deadline-expired
+                            {% endif %}">
+                    {% if current_date >= last_feedbackset.deadline_datetime %}
+                        <span class="devilry-group-feedbackfeed-current-current-deadline-expired-label">
+                            {% trans "Expired" %} -
+                        </span>
+                    {% endif %}
+                    <span class="devilry-group-feedbackfeed-current-current-deadline-datetime">
+                        {{ last_deadline|date:"SHORT_DATETIME_FORMAT" }}
+                    </span>
+                </p>
             </div>
         </div>
+    </div>
+{% endblock pageheader-inner %}
 
-
+{% block content %}
+<!-- Content -->
+    <div class="container">
         <div class="row">
-
             <!--
             Sidebar
             -->
-            <dl class="col-sm-12 col-md-4 feedback_sidebar_not_fixed pull-right">
+            <div class="col-md-4 col-md-push-8 devilry-group-feedbackfeed-sidebar">
                 {% block sidebar %}
-                    <dl class="top_headline">
-                        <h4>UPLOADED FILES</h4>
-                    </dl>
-                        {% for feedbackset in feedbacksets %}
-                            <dl class="sub_headline">
-                                <h5>
-                                    {{ ''|devilry_verbosenumber:forloop.counter }} DEADLINE
-                                </h5>
-                            </dl>
+                    <h4>{% trans "Uploaded files" %}</h4>
+                    {% for feedbackset in feedbacksets %}
+                        <dl>
+                            <dt>
+                                {% blocktrans with counter=''|devilry_verbosenumber:forloop.counter %}{{ counter }} deadline{% endblocktrans %}
+                            </dt>
                             {% for comment in feedbackset.groupcomment_set.all %}
                                 {% for file in comment.commentfile_set.all %}
-                                    <dl class="feedback_sidebar_files">
-                                        <a href="#" ><p>{{ file.filename|devilry_truncatefileextension:26 }}</p></a>
-                                    </dl>
+                                    <dd class="devilry-group-feedbackfeed-sidebar-files">
+                                        <a href="#" >{{ file.filename|devilry_truncatefileextension:26 }}</a>
+                                    </dd>
                                 {% endfor %}
                             {% endfor %}
-                        {% endfor %}
+                        </dl>
+                    {% endfor %}
 
-                    <br>
+                    <h4>{% trans "Text formatting" %}</h4>
+                    <p>Todo</p>
 
-                    <dl class="top_headline">
-                        <h4>TEXT FORMATTING TOOLS</h4>
-                    </dl>
-                    <dl class="top_headline">
-                        <h4>CODE FORMATTING TOOLS</h4>
-                    </dl>
-                    <dl class="top_headline">
-                        <h4>MATH FORMATTING TOOLS</h4>
-                    </dl>
+                    <h4>{% trans "Code formatting" %}</h4>
+                    <p>Todo</p>
+
+                    <h4>{% trans "Math formatting" %}</h4>
+                    <p>Todo</p>
+
                 {% endblock sidebar %}
-            </dl>
+            </div>
 
-            <div class="col-sm-12 col-md-8 pull-left feedback_feed">
+            <div class="col-md-8 col-md-pull-4 devilry-group-feedbackfeed-feed">
                 {% block feed %}
 
                     {% for timestamp, eventlist in timeline.items %}
@@ -80,14 +85,16 @@
                             {% if event.type == "comment" %}
                                 {% with event.obj as comment %}
                                     <div class="
+                                        devilry-feedbackfeed-comment
                                         {% if comment.user_role == "student" %}
-                                            student_comment
+                                            devilry-feedbackfeed-comment-student
                                         {% elif comment.user_role == "examiner"%}
+                                            devilry-feedbackfeed-comment-examiner
                                             examiner_comment
                                         {% elif comment.user_role == "admin"%}
-                                            admin_comment
+                                            devilry-feedbackfeed-comment-admin
                                         {% endif %}">
-                                        <div class="left_field">
+                                        <div class="devilry-feedbackfeed-comment-content">
                                             <div class="comment-meta">
                                                 <div class="comment_created_by"><p>{{ comment.user }}&nbsp;</p></div>
                                                 <div class="comment_created_by_role"><p>({{ comment.user_role }})&nbsp;</p></div>
@@ -152,15 +159,16 @@
                     {% endfor %}
 
 
-                    <br>
-                    <br>
-                    <br>
-                    <br>
-                    {% crispy form formhelper %}
-                    <br>
-                    <br>
-                    <br>
-                    <br>
+                    {% block pre_form %}{% endblock pre_form %}
+                    {% block form %}
+                        {% crispy form formhelper %}
+
+                        {% comment %}
+                            NOTE: This will probably break when https://github.com/maraujop/django-crispy-forms/issues/263 is fixed
+                        {% endcomment %}
+                        {{ form.media }}
+                    {% endblock form %}
+                    {% block post_form %}{% endblock post_form %}
 
 
                 {% endblock feed %}
@@ -168,7 +176,7 @@
 
 
 
-{% endblock body %}
+{% endblock content %}
 
 
 
