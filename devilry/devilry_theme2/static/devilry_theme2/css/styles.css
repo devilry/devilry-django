@@ -10521,7 +10521,7 @@ Event messages such as passed, failed and general messages between comments.
 }
 .devilry-feedbackfeed-comment {
   display: flex;
-  margin-top: 10px;
+  margin-bottom: 15px;
   background-color: #f2f2f2;
   min-width: 40%;
   max-width: 100%;
