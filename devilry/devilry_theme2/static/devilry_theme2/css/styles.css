@@ -10350,6 +10350,10 @@ label.radio {
   color: #444;
   margin-bottom: 25px;
 }
+.comment-form-container {
+  background-color: #f2f2f2;
+  padding: 10px 10px 10px 10px;
+}
 .devilry-group-feedbackfeed-comment {
   display: flex;
   margin-bottom: 15px;
