@@ -1,12 +1,13 @@
 import datetime
 from crispy_forms.layout import Submit
-from django_cradmin.wysihtml5.widgets import WysiHtmlTextArea
+from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from devilry.devilry_group import models
 from django_cradmin.viewhelpers import create
 import collections
 from devilry.devilry_group.models import GroupComment
 from django.utils.translation import ugettext_lazy as _
 from crispy_forms import layout
+from devilry.devilry_markup import parse_markdown
 
 
 class FeedbackFeedBaseView(create.CreateView):
@@ -135,7 +136,7 @@ class FeedbackFeedBaseView(create.CreateView):
                            css_class='btn btn-primary'),
                     Submit('examiner_add_public_comment',
                            'Add public comment',
-                           css_class='button_student'),
+                           css_class='btn btn-primary'),
                     Submit('examiner_add_comment_to_feedback_draft',
                            'Add comment to feedback draft',
                            css_class='btn btn-primary')
@@ -145,20 +146,6 @@ class FeedbackFeedBaseView(create.CreateView):
         return [
             layout.Fieldset(
                 '',
-                layout.Div(
-                        layout.Div(
-                            layout.HTML('<h5>h1</h5>'),
-                            css_class='btn btn-default'
-                        ),
-                        layout.Div(
-                            layout.HTML('<h5>h2</h5>'),
-                            css_class='btn btn-default'
-                        ),
-                        layout.Div(
-                            layout.HTML('<h5>h3</h5>'),
-                            css_class='btn btn-default'
-                        ),
-                    ),
                 layout.Div(
                     layout.Div(
                         'text',
@@ -180,7 +167,8 @@ class FeedbackFeedBaseView(create.CreateView):
 
     def get_form(self, form_class=None):
         form = super(FeedbackFeedBaseView, self).get_form(form_class=form_class)
-        form.fields['text'].widget = WysiHtmlTextArea(attrs={})
+        # form.fields['text'].widget = WysiHtmlTextArea(attrs={})
+        form.fields['text'].widget = AceMarkdownWidget()
         form.fields['text'].label = False
         return form
 

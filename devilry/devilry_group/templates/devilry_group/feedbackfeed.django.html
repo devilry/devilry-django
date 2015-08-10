@@ -37,6 +37,7 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
+
 <!-- Content -->
     <div class="container">
         <div class="row">
@@ -100,7 +101,7 @@
                                                 <div class="comment-created-date"><p> {{ comment.published_datetime }}</p></div>
                                             </div>
                                             <div class="comment-text">
-                                                <p>{{ comment.text }}</p>
+                                                {% blocktrans with text=comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}
                                             </div>
                                             {% for file in comment.commentfile_set.all %}
                                                 <div class="file_icon"><p>{{ file.filename }}</p></div>

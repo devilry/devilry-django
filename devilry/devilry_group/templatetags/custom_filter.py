@@ -1,5 +1,7 @@
 from django import template
 import os.path
+from devilry.devilry_markup import parse_markdown
+
 register = template.Library()
 
 @register.filter("devilry_truncatefileextension")
@@ -72,3 +74,8 @@ def devilry_verbosenumber(value, number):
             2: str(number)+'nd',
             3: str(number)+'rd',
         }[n]
+
+
+@register.filter("devilry_group_markdown")
+def devilry_group_markdown(value):
+    return parse_markdown.markdown_full(value)
