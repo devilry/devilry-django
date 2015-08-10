@@ -10,7 +10,7 @@ class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     """
     def _get_comments_for_group(self, group):
         return models.GroupComment.objects.filter(
-            feedback_set__group=group
+            Q(instant_publish=True) | Q(user=self.request.user), feedback_set__group=group,
         )
 
     def get_context_data(self, **kwargs):

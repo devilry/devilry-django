@@ -11,7 +11,7 @@ class Comment(models.Model):
     """
     #: the text of the comment
     text = models.CharField(max_length=4096)
-    #: the user who made the comment
+    #: the user who posted the comment
     user = models.ForeignKey(auth_models.User)
     #: if this comment is a reply to another comment, that comment will be parent
     parent = models.ForeignKey('self', null=True, blank=True)

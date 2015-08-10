@@ -135,10 +135,10 @@ class FeedbackFeedBaseView(create.CreateView):
                            css_class='btn btn-primary'),
                     Submit('examiner_add_public_comment',
                            'Add public comment',
-                           css_class='btn btn btn-primary'),
-                    # Submit('examiner_add_comment_to_feedback_draft',
-                    #        'Add comment to feedback draft',
-                    #        css_class='btn btn-primary')
+                           css_class='button_student'),
+                    Submit('examiner_add_comment_to_feedback_draft',
+                           'Add comment to feedback draft',
+                           css_class='btn btn-primary')
                     ]
 
     def get_field_layout(self):
@@ -174,7 +174,7 @@ class FeedbackFeedBaseView(create.CreateView):
                     layout.Div(*self.get_buttons()),
                     css_class="col-xs-12 text-right"
                 ),
-                css_class='comment_post_container'
+                css_class='comment-form-container'
             )
         ]
 
@@ -217,6 +217,7 @@ class FeedbackFeedBaseView(create.CreateView):
                 print 'examiner_add_comment_to_feedback_draft'
                 object.instant_publish = False
                 object.visible_for_students = False
+                object.published_datetime = time # special case
 
             if object.instant_publish:
                 object.published_datetime = time
