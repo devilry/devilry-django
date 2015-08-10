@@ -10350,25 +10350,101 @@ label.radio {
   color: #444;
   margin-bottom: 25px;
 }
-/*
-Field to add comment status on right side of the comment box.
-*/
-.right_badge_field {
-  float: right;
-  min-width: 35%;
-  min-height: 100%;
-  text-align: center;
-  display: table-cell;
-  vertical-align: middle;
-  position: relative;
-  border: 1px solid;
-  /*
-    After deadline div. A dark red box that fills it's parent.
-    */
+.devilry-group-feedbackfeed-comment {
+  display: flex;
+  margin-bottom: 15px;
+  background-color: #f2f2f2;
+  min-width: 40%;
+  max-width: 100%;
+  min-height: 5.0em;
+  border-style: solid;
+  border-color: #666666;
+  border-width: 0 0 0 12px;
 }
-/*
-*/
-.after_deadline_badge {
+.devilry-group-feedbackfeed-comment:before,
+.devilry-group-feedbackfeed-comment:after {
+  content: " ";
+  display: table;
+}
+.devilry-group-feedbackfeed-comment:after {
+  clear: both;
+}
+.devilry-group-feedbackfeed-comment:before,
+.devilry-group-feedbackfeed-comment:after {
+  content: " ";
+  display: table;
+}
+.devilry-group-feedbackfeed-comment:after {
+  clear: both;
+}
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-student {
+  border-left-color: #5d8c08;
+}
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-examiner {
+  border-left-color: #055986;
+}
+.devilry-group-feedbackfeed-comment.devilry-group-feedbackfeed-comment-admin {
+  border-left-color: #ff9900;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content {
+  float: left;
+  max-width: 100%;
+  min-width: 65%;
+  padding-bottom: 1.0em;
+  padding-left: 1.5em;
+  padding-right: 0.3em;
+  padding-top: 1.0em;
+  /**/
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .comment-meta {
+  word-break: break-all;
+  white-space: normal;
+  float: left;
+  color: #333333;
+  font-size: 1.2em;
+  display: inline-block;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .comment-created-by {
+  word-break: break-all;
+  white-space: normal;
+  float: left;
+  color: #333333;
+  font-size: 1.2em;
+  display: inline-block;
+  font-weight: bold;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .comment-created-by-role {
+  word-break: break-all;
+  white-space: normal;
+  float: left;
+  color: #333333;
+  font-size: 1.2em;
+  display: inline-block;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .comment-created-date {
+  word-break: break-all;
+  white-space: normal;
+  float: left;
+  color: #333333;
+  font-size: 1.2em;
+  display: inline-block;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .comment-text {
+  max-width: 60.0em;
+  clear: both;
+  font-size: 1.0em;
+  margin-bottom: 1.0em;
+  padding-top: 0.9em;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content.after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid #999999;
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field {
   float: right;
   min-width: 35%;
   min-height: 100%;
@@ -10376,27 +10452,11 @@ Field to add comment status on right side of the comment box.
   display: table-cell;
   vertical-align: middle;
   position: relative;
-  border: 1px solid;
-  /*
-    After deadline div. A dark red box that fills it's parent.
-    */
+}
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field.after-deadline-badge {
   background-color: #971009;
 }
-/*
-*/
-.not_published_badge {
-  float: right;
-  min-width: 35%;
-  min-height: 100%;
-  text-align: center;
-  display: table-cell;
-  vertical-align: middle;
-  position: relative;
-  border: 1px solid;
-  /*
-    After deadline div. A dark red box that fills it's parent.
-    */
-  border: 0.15em solid #055986;
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-right-badge-field.not-published-badge {
   background-color: #055986;
 }
 .badge-text-new {
@@ -10413,7 +10473,7 @@ Field to add comment status on right side of the comment box.
 a.badge-text-new:hover {
   background-color: #e4b9b9;
 }
-.badge_text {
+.badge-text {
   font-size: 1em;
   font-weight: bold;
   color: #ffffff;
@@ -10422,17 +10482,33 @@ a.badge-text-new:hover {
   top: 50%;
   transform: translate(0, -50%);
 }
+.badge-text:before,
+.badge-text:after {
+  content: " ";
+  display: table;
+}
+.badge-text:after {
+  clear: both;
+}
+.badge-text:before,
+.badge-text:after {
+  content: " ";
+  display: table;
+}
+.badge-text:after {
+  clear: both;
+}
 /*
 Event messages such as passed, failed and general messages between comments.
 */
-.event_message {
+.event-message {
   margin-left: 3.0em;
   margin-top: 4.0em;
   margin-bottom: 4.0em;
   color: #333333;
   font-size: 1.0em;
 }
-.event_message_passed {
+.event-message-passed {
   margin-left: 3.0em;
   margin-top: 4.0em;
   margin-bottom: 4.0em;
@@ -10441,7 +10517,7 @@ Event messages such as passed, failed and general messages between comments.
   color: #5d8c08;
   border-bottom: 1px solid #999999;
 }
-.event_message_failed {
+.event-message-failed {
   margin-left: 3.0em;
   margin-top: 4.0em;
   margin-bottom: 4.0em;
@@ -10493,125 +10569,6 @@ Event messages such as passed, failed and general messages between comments.
 .image_icon:hover {
   border-radius: 0.5em;
   transform: scale(1.4);
-}
-.left-field-style .created-by {
-  color: #333333;
-  font-size: 1.5em;
-  font-weight: bold;
-  padding: 0;
-}
-.left-field-style .created-by-meta {
-  color: #333333;
-  font-size: 1.3em;
-  padding: 0;
-}
-.left-field-style.after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  bottom: 0;
-  border-left: 1px solid #999999;
-}
-.after-deadline-badge {
-  background-color: #971009;
-}
-.not-published-badge {
-  background-color: #055986;
-}
-.devilry-feedbackfeed-comment {
-  display: flex;
-  margin-bottom: 15px;
-  background-color: #f2f2f2;
-  min-width: 40%;
-  max-width: 100%;
-  min-height: 5.0em;
-  border-style: solid;
-  border-color: #666666;
-  border-width: 0 0 0 12px;
-}
-.devilry-feedbackfeed-comment:before,
-.devilry-feedbackfeed-comment:after {
-  content: " ";
-  display: table;
-}
-.devilry-feedbackfeed-comment:after {
-  clear: both;
-}
-.devilry-feedbackfeed-comment:before,
-.devilry-feedbackfeed-comment:after {
-  content: " ";
-  display: table;
-}
-.devilry-feedbackfeed-comment:after {
-  clear: both;
-}
-.devilry-feedbackfeed-comment.devilry-feedbackfeed-comment-student {
-  border-left-color: #5d8c08;
-}
-.devilry-feedbackfeed-comment.devilry-feedbackfeed-comment-examiner {
-  border-left-color: #055986;
-}
-.devilry-feedbackfeed-comment.devilry-feedbackfeed-comment-admin {
-  border-left-color: #ff9933;
-}
-.devilry-feedbackfeed-comment .devilry-feedbackfeed-comment-content {
-  float: left;
-  max-width: 100%;
-  min-width: 65%;
-  padding-bottom: 1.0em;
-  padding-left: 1.5em;
-  padding-right: 0.3em;
-  padding-top: 1.0em;
-  /**/
-}
-.devilry-feedbackfeed-comment .devilry-feedbackfeed-comment-content .comment_meta {
-  word-break: break-all;
-  white-space: normal;
-  float: left;
-  color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
-}
-.devilry-feedbackfeed-comment .devilry-feedbackfeed-comment-content .comment_created_by {
-  word-break: break-all;
-  white-space: normal;
-  float: left;
-  color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
-  font-weight: bold;
-}
-.devilry-feedbackfeed-comment .devilry-feedbackfeed-comment-content .comment_created_by_role {
-  word-break: break-all;
-  white-space: normal;
-  float: left;
-  color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
-}
-.devilry-feedbackfeed-comment .devilry-feedbackfeed-comment-content .comment_created_date {
-  word-break: break-all;
-  white-space: normal;
-  float: left;
-  color: #333333;
-  font-size: 1.2em;
-  display: inline-block;
-}
-.devilry-feedbackfeed-comment .devilry-feedbackfeed-comment-content .comment_text {
-  max-width: 60.0em;
-  clear: both;
-  font-size: 1.0em;
-  margin-bottom: 1.0em;
-  padding-top: 0.9em;
-}
-.devilry-feedbackfeed-comment .devilry-feedbackfeed-comment-content:after {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  bottom: 0;
-  border-left: 1px solid #999999;
 }
 /*
 Buttons
@@ -10908,7 +10865,7 @@ fieldset[disabled] .button_default {
   font_size: 1.0em;
   font_weight: italic;
   transition: all 0.1s ease-in-out;
-  background_color: #ff9933;
+  background_color: #ff9900;
 }
 .button_admin:focus,
 .button_admin:active:focus,
@@ -11017,7 +10974,7 @@ fieldset[disabled] .button_admin {
   color: #ffffff;
 }
 .button_admin:hover {
-  background_color: #ff9933 _35;
+  background_color: #ff9900 _35;
 }
 .button_examiner {
   display: inline-block;

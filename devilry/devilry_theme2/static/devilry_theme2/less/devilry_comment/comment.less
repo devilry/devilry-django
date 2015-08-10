@@ -1,90 +1,95 @@
-//.comment_box_style{
-//    display:flex;
-//    margin-top: 10px;
-//    background-color: @comment-background-color;
-//    min-width: 40%;
-//    max-width: 100%;
-//    max-heigth: 100%;
-//    min-height: 5.0em;
-//}
-//
-//.comment_post_container{
-//    .comment_box_style;
-//    padding: 0.5em 0.5em 0.5em 0.5em;
-//}
-//
-///*
-//*/
-//.comment{
-//    .comment_box_style;
-//    border-left: 0.8em solid;
-//    border-left-color: @default-left-border-color;
-//    border-bottom-left-radius: 0;
-//    border-bottom-right-radius: 0;
-//    border-top-left-radius: 0;
-//    border-top-right-radius: 0;
-//}
-
-///*
-//*/
-//.default_comment{
-//    .comment;
-//}
-
-///*
-//*/
-//.student_comment{
-//    .comment;
-//    border-left-color: @student-color;
-//}
-//
-///*
-//*/
-//.examiner_comment{
-//    .comment;
-//    border-left-color: @examiner-color;
-//}
-//
-///*
-//*/
-//.admin_comment{
-//    .comment;
-//    border-left-color: @admin-color;
-//}
+.devilry-group-feedbackfeed-comment {
+    display:flex;
+    margin-bottom: 15px;
+    background-color: @comment-background-color;
+    min-width: 40%;
+    max-width: 100%;
+    min-height: 5.0em;
+    border-style: solid;
+    border-color: @default-left-border-color;
+    border-width: 0 0 0 12px;
+    .clearfix();
 
 
 
-/*
-Field to add comment status on right side of the comment box.
-*/
-.right_badge_field{
-    float: right;
-    min-width: 35%;
-    min-height: 100%;
-    text-align: center;
-    display: table-cell;
-    vertical-align: middle;
-    position: relative;
-    border: 1px solid;
-    /*
-    After deadline div. A dark red box that fills it's parent.
-    */
+    &.devilry-group-feedbackfeed-comment-student {
+        border-left-color: @devilry-student-bgcolor;
+    }
+    &.devilry-group-feedbackfeed-comment-examiner {
+        border-left-color: @devilry-examiner-bgcolor;
+    }
+    &.devilry-group-feedbackfeed-comment-admin {
+        border-left-color: @devilry-admin-bgcolor;
+    }
 
-}
+    .devilry-group-feedbackfeed-comment-content {
+        float:left;
+        max-width:100%;
+        min-width: 65%;
+        padding-bottom:1.0em;
+        padding-left:1.5em;
+        padding-right:0.3em;
+        padding-top: 1.0em;
 
-/*
-*/
-.after_deadline_badge{
-    .right_badge_field;
-    background-color: @after-deadline-color;
-}
+        .comment-meta{
+            word-break: break-all;
+            white-space: normal;
+            float: left;
+            color: @comment-text-color;
+            font-size: 1.2em;
+            display: inline-block;
+        }
 
-/*
-*/
-.not_published_badge{
-    .right_badge_field;
-    border: 0.15em solid @examiner-color;
-    background-color: @examiner-color;
+        .comment-created-by{
+            .comment-meta;
+            font-weight: bold;
+        }
+
+        .comment-created-by-role{
+            .comment-meta;
+        }
+
+        .comment-created-date{
+            .comment-meta;
+        }
+
+        /**/
+        .comment-text{
+            max-width: 60.0em;
+            clear: both;
+            font-size: 1.0em;
+            margin-bottom: 1.0em;
+            padding-top: 0.9em;
+        }
+
+        &.after{
+            content: "";
+            position: absolute;
+            z-index: -1;
+            top: 0;
+            bottom: 0;
+            border-left: 1px solid #999999;
+      }
+
+    }
+
+    .devilry-group-feedbackfeed-right-badge-field{
+        float: right;
+        min-width: 35%;
+        min-height: 100%;
+        text-align: center;
+        display: table-cell;
+        vertical-align: middle;
+        position: relative;
+
+        &.after-deadline-badge{
+            background-color: #971009;
+        }
+
+        &.not-published-badge{
+            background-color: @devilry-examiner-bgcolor;
+        }
+    }
 }
 
 
@@ -101,7 +106,7 @@ Field to add comment status on right side of the comment box.
 }
 
 
-.badge_text{
+.badge-text{
     font-size: @badge-text-size;
     font-weight: @badge-text-weight;
     color: @badge-text-color;
@@ -111,6 +116,7 @@ Field to add comment status on right side of the comment box.
     //padding: 3em 3em 3em 3em;
     transform: translate(0, -50%);
     //display: inline-block;
+    .clearfix();
 }
 
 
@@ -141,7 +147,7 @@ Field to add comment status on right side of the comment box.
 /*
 Event messages such as passed, failed and general messages between comments.
 */
-.event_message{
+.event-message{
     margin-left: 3.0em;
     margin-top: 4.0em;
     margin-bottom: 4.0em;
@@ -154,14 +160,14 @@ Event messages such as passed, failed and general messages between comments.
     //margin-bottom: 4.0em;
 }
 
-.event_message_passed{
-    .event_message;
+.event-message-passed{
+    .event-message;
     color: #5d8c08;
     border-bottom: 1px solid #999999;
 }
 
-.event_message_failed{
-    .event_message;
+.event-message-failed{
+    .event-message;
     color:#9b0d28;
     border-bottom: 1px solid #999999;
 }
@@ -194,156 +200,4 @@ Event messages such as passed, failed and general messages between comments.
 .image_icon{
     .icon;
     content:url(image-icon.png) no-repeat center center fixed;
-}
-
-
-
-
-
-
-//.comment-style{
-//    display:flex;
-//    margin-top: 10px;
-//    border-left: 0.8em solid;
-//    border-left-color: @default-left-border-color;
-//    background-color: @comment-background-color;
-//}
-//
-//.student-comment-style{
-//    .comment-style;
-//    border-left-color: @student-color;
-//}
-//
-//.examiner-comment-style{
-//    .comment-style;
-//    border-left-color: @examiner-color;
-//}
-//
-//.admin-comment-style{
-//    .comment-style;
-//    border-left-color: @admin-color;
-//}
-
-.left-field-style{
-    //border: 1px solid #00ff00;
-
-    .created-by-info{
-        //border: 1px solid #0000ff;
-    }
-
-    .created-by{
-        color: @comment-text-color;
-        font-size: 1.5em;
-        font-weight: bold;
-        padding: 0;
-    }
-
-    .created-by-meta{
-        color: @comment-text-color;
-        font-size: 1.3em;
-        padding: 0;
-    }
-
-    &.after{
-        content: "";
-        position: absolute;
-        z-index: -1;
-        top: 0;
-        bottom: 0;
-        border-left: 1px solid #999999;
-    }
-}
-
-.after-deadline-badge{
-    background-color: @after-deadline-color;
-}
-
-.not-published-badge{
-    background-color: @examiner-color;
-}
-
-
-
-
-
-
-
-
-
-
-
-.devilry-feedbackfeed-comment {
-    display:flex;
-    margin-bottom: 15px;
-    background-color: @comment-background-color;
-    min-width: 40%;
-    max-width: 100%;
-    min-height: 5.0em;
-    border-style: solid;
-    border-color: @default-left-border-color;
-    border-width: 0 0 0 12px;
-    .clearfix();
-
-
-
-    &.devilry-feedbackfeed-comment-student {
-        border-left-color: @student-color;
-    }
-    &.devilry-feedbackfeed-comment-examiner {
-        border-left-color: @examiner-color;
-    }
-    &.devilry-feedbackfeed-comment-admin {
-        border-left-color: @admin-color;
-    }
-
-    .devilry-feedbackfeed-comment-content {
-        float:left;
-        max-width:100%;
-        min-width: 65%;
-        padding-bottom:1.0em;
-        padding-left:1.5em;
-        padding-right:0.3em;
-        padding-top: 1.0em;
-
-        .comment_meta{
-            word-break: break-all;
-            white-space: normal;
-            float: left;
-            color: @comment-text-color;
-            font-size: 1.2em;
-            display: inline-block;
-        }
-
-        .comment_created_by{
-            .comment_meta;
-            font-weight: bold;
-        }
-
-        .comment_created_by_role{
-            .comment_meta;
-        }
-
-        .comment_created_date{
-            .comment_meta;
-        }
-
-        /**/
-        .comment_text{
-            max-width: 60.0em;
-            clear: both;
-            font-size: 1.0em;
-            margin-bottom: 1.0em;
-            padding-top: 0.9em;
-        }
-
-        &:after{
-            content: "";
-            position: absolute;
-            z-index: -1;
-            top: 0;
-            bottom: 0;
-            border-left: 1px solid #999999;
-      }
-
-    }
 }

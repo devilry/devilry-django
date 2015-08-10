@@ -85,22 +85,21 @@
                             {% if event.type == "comment" %}
                                 {% with event.obj as comment %}
                                     <div class="
-                                        devilry-feedbackfeed-comment
+                                        devilry-group-feedbackfeed-comment
                                         {% if comment.user_role == "student" %}
-                                            devilry-feedbackfeed-comment-student
+                                            devilry-group-feedbackfeed-comment-student
                                         {% elif comment.user_role == "examiner"%}
-                                            devilry-feedbackfeed-comment-examiner
-                                            examiner_comment
+                                            devilry-group-feedbackfeed-comment-examiner
                                         {% elif comment.user_role == "admin"%}
-                                            devilry-feedbackfeed-comment-admin
+                                            devilry-group-feedbackfeed-comment-admin
                                         {% endif %}">
-                                        <div class="devilry-feedbackfeed-comment-content">
+                                        <div class="devilry-group-feedbackfeed-comment-content">
                                             <div class="comment-meta">
-                                                <div class="comment_created_by"><p>{{ comment.user }}&nbsp;</p></div>
-                                                <div class="comment_created_by_role"><p>({{ comment.user_role }})&nbsp;</p></div>
-                                                <div class="comment_created_date"><p> {{ comment.published_datetime }}</p></div>
+                                                <div class="comment-created-by"><p>{{ comment.user }}&nbsp;</p></div>
+                                                <div class="comment-created-by-role"><p>({{ comment.user_role }})&nbsp;</p></div>
+                                                <div class="comment-created-date"><p> {{ comment.published_datetime }}</p></div>
                                             </div>
-                                            <div class="comment_text">
+                                            <div class="comment-text">
                                                 <p>{{ comment.text }}</p>
                                             </div>
                                             {% for file in comment.commentfile_set.all %}
@@ -108,13 +107,16 @@
                                             {% endfor %}
                                         </div>
                                         {% if not comment.instant_publish and not comment.feedback_set.published_datetime %}
-                                            <div class="not_published_badge">
-                                                <p class="badge_text">NOT PUBLISHED</p>
+                                            <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">
+                                                <p class="badge-text">{% trans "NOT PUBLISHED" %}</p>
+{#                                                <p class="badge-text-new">{% trans "NOT PUBLISHED" %}</p>#}
                                             </div>
                                         {% elif comment.user_role == "student" and comment.published_datetime > comment.feedback_set.deadline_datetime %}
-                                            <div class="after_deadline_badge">
-                                                <p class="badge_text">NOT PART OF DELIVERY</p>
+                                            <div class="devilry-group-feedbackfeed-right-badge-field after-deadline-badge">
+                                                <p class="badge-text">{% trans "NOT PART OF DELIVERY" %}</p>
+{#                                                <p class="badge-text-new">{% trans "NOT PART OF DELIVERY" %}</p>#}
                                             </div>
+
                                         {% endif %}
                                     </div>
                                 {% endwith %}
@@ -123,15 +125,15 @@
                                 Handle the deadline events
                                 -->
                                 {% elif event.type == "deadline_created" %}
-                                    <div class="event_message">
+                                    <div class="event-message">
                                         <p>
-                                            {{ timestamp }}: {{ event.user }} created a new deadline: <strong>{{ event.obj }}</strong>
+                                            {{ timestamp }}: {{ event.user }} {%  trans "created a new deadline" %}: <strong>{{ event.obj }}</strong>
                                         </p>
                                     </div>
                                 {% elif event.type == "deadline_expired" %}
-                                    <div class="event_message">
+                                    <div class="event-message">
                                         <p>
-                                            {{ timestamp }}: <strong>Deadline expired</strong>
+                                            {{ timestamp }}: <strong> {% trans "Deadline expired" %}</strong>
                                         </p>
                                     </div>
 
@@ -140,16 +142,16 @@
                                 -->
                                 {% elif event.type == "grade" %}
                                     {% if event.obj >= assignment.passing_grade_min_points %}
-                                        <div class="event_message_passed">
-                                            <p>{{ timestamp }}: This delivery was corrected, and given the grade
-                                                <strong>{{ event.obj }}/{{ assignment.max_points }} (passed)</strong>
+                                        <div class="event-message-passed">
+                                            <p>{{ timestamp }}: {% trans "This delivery was corrected, and given the grade" %}
+                                                <strong>{{ event.obj }}/{{ assignment.max_points }} {% trans "(passed)" %}</strong>
                                             </p>
                                         </div>
                                     {% else %}
-                                        <div class="event_message_failed">
+                                        <div class="event-message-failed">
                                             <p>
-                                                {{ timestamp }}: This delivery was corrected, and given the grade
-                                                <strong>{{ event.obj }}/{{ assignment.max_points }} (failed)</strong>
+                                                {{ timestamp }}: {% trans "This delivery was corrected, and given the grade" %}
+                                                <strong>{{ event.obj }}/{{ assignment.max_points }} {%  trans "(failed)" %}</strong>
                                             </p>
                                         </div>
                                     {% endif %}
