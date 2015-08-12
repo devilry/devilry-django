@@ -13,6 +13,11 @@
   margin-right: auto;
 }
 
+.django-cradmin-form.django-cradmin-form-fullwidth {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
 
 .django-cradmin-form-wrapper {
 
@@ -39,6 +44,12 @@
         padding-left: 5px;
         font-size: ceil(@font-size-base + 2px);
         line-height: ceil(@font-size-base + 6px);
+      }
+    }
+
+    .django-cradmin-formfield-label-sr-only {
+      label {
+        .cradmin-sr-only();
       }
     }
 
@@ -187,5 +198,12 @@ form .alert-block.alert-danger {
     float: right;
     width: 35%;
     padding-left: 5px;
+  }
+}
+
+.django-cradmin-form-collapsed-section {
+  .django-cradmin-form-collapsed-section-header {
+    padding-left: @cradmin-form-sidepadding-left;
+    padding-right: @cradmin-form-sidepadding-right;
   }
 }

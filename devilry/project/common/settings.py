@@ -104,7 +104,8 @@ TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",
                                "django.core.context_processors.request",
                                'django.contrib.messages.context_processors.messages',
                                'extjs4.context_processors.extjs4',
-                               'devilry.project.common.templatecontext.template_variables')
+                               'devilry.project.common.templatecontext.template_variables',
+                               'django_cradmin.context_processors.cradmin')
 
 
 MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
@@ -126,6 +127,8 @@ DJANGO_CRADMIN_FORGOTPASSWORD_URL = '/devilry_resetpassword/begin'
 LOGIN_REDIRECT_URL = '/'
 DJANGO_CRADMIN_RESETPASSWORD_FINISHED_REDIRECT_URL = LOGIN_REDIRECT_URL
 DJANGO_CRADMIN_SITENAME = 'Devilry'
+
+DJANGO_CRADMIN_MENU_SCROLL_TOP_FIXED=True
 
 ##################################################################################
 #

@@ -8166,13 +8166,6 @@ ul#django_cradmin_messages {
 body.django-cradmin-formview-page ul#django_cradmin_messages {
   max-width: 768px;
 }
-#django_cradmin_messages_standalone_wrapper ul#django_cradmin_messages .alert {
-  font-size: 20px;
-}
-#django_cradmin_messages_standalone_wrapper ul#django_cradmin_messages .alert.alert-dismissable button.close,
-#django_cradmin_messages_standalone_wrapper ul#django_cradmin_messages .alert .django-cradmin-alert-loadspinner {
-  top: 1px;
-}
 .container-focus {
   padding-top: 40px;
   padding-bottom: 40px;
@@ -8183,6 +8176,11 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
   max-width: 768px;
   margin-left: auto;
   margin-right: auto;
+}
+.django-cradmin-form.django-cradmin-form-fullwidth {
+  max-width: 100%;
+  margin-left: 0;
+  margin-right: 0;
 }
 .django-cradmin-form-wrapper {
   padding-bottom: 150px;
@@ -8214,6 +8212,16 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
   padding-left: 5px;
   font-size: 18px;
   line-height: 22px;
+}
+.django-cradmin-form-wrapper .django-cradmin-form .django-cradmin-formfield-label-sr-only label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
 }
 .django-cradmin-form-wrapper .django-cradmin-form.django-cradmin-form-noasterisk label .asteriskField {
   display: none;
@@ -8324,6 +8332,10 @@ form .alert-block.alert-danger ul li {
   float: right;
   width: 35%;
   padding-left: 5px;
+}
+.django-cradmin-form-collapsed-section .django-cradmin-form-collapsed-section-header {
+  padding-left: 15px;
+  padding-right: 15px;
 }
 table.table.django-cradmin-table {
   margin: 0;
@@ -8583,18 +8595,18 @@ table.table.django-cradmin-table tbody td:last-child {
     display: inline-block;
     height: 50px;
   }
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li {
+  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item {
     display: inline-block;
     height: 50px;
   }
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li a {
+  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item a {
     height: 50px;
     line-height: 50px;
     display: block;
     padding: 0 16px;
   }
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
-  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-activeitem > a {
+  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
+  .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem > a {
     font-weight: normal;
   }
   .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content .django-cradmin-floating-fullsize-iframe-navbar nav.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-footer {
@@ -9133,25 +9145,6 @@ ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li:last-ch
 .django-cradmin-focusedpage-wrapper {
   width: 100%;
   height: 100%;
-  background: #fff;
-  padding: 24px 30px;
-  text-align: left;
-  margin-bottom: 30px;
-}
-.django-cradmin-focusedpage-wrapper .page-header {
-  background: none;
-  color: #333333;
-  padding: 0 0 25px 0;
-  border: none;
-  margin: 0;
-}
-.django-cradmin-focusedpage-wrapper .page-header h1 {
-  margin: 0 0 5px 0;
-  font-size: 26px;
-  font-weight: bold;
-}
-.django-cradmin-focusedpage-wrapper .page-header p:last-child {
-  margin: 0;
 }
 @media (min-width: 768px) {
   .django-cradmin-focusedpage-wrapper {
@@ -9159,13 +9152,38 @@ ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li:last-ch
     margin-left: auto;
     margin-right: auto;
     height: auto;
-    border: 1px solid #ccc;
     width: 600px;
   }
 }
 @media (min-width: 768px) {
   .django-cradmin-focusedpage-wrapper.django-cradmin-focusedpage-wrapper-narrow {
     width: 400px;
+  }
+}
+.django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner {
+  background: #fff;
+  padding: 24px 30px;
+  text-align: left;
+  margin-bottom: 30px;
+}
+.django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner .page-header {
+  background: none;
+  color: #333333;
+  padding: 0 0 25px 0;
+  border: none;
+  margin: 0;
+}
+.django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner .page-header h1 {
+  margin: 0 0 5px 0;
+  font-size: 26px;
+  font-weight: bold;
+}
+.django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner .page-header p:last-child {
+  margin: 0;
+}
+@media (min-width: 768px) {
+  .django-cradmin-focusedpage-wrapper .django-cradmin-focusedpage-wrapper-inner {
+    border: 1px solid #ccc;
   }
 }
 nav.django-cradmin-menu {
@@ -9183,14 +9201,14 @@ nav.django-cradmin-menu .django-cradmin-menu-content ul {
   margin: 0;
   padding: 0;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li .django-cradmin-menu-activeitemwrapper {
+nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item .django-cradmin-menu-activeitemwrapper {
   font-size: 16px;
   margin: 0;
   padding: 0;
   border: none;
   line-height: 1.428571429;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li a {
+nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item a {
   display: block;
   color: #aaaaaa;
   padding: 10px 16px 10px 16px;
@@ -9201,20 +9219,20 @@ nav.django-cradmin-menu .django-cradmin-menu-content ul li a {
   line-height: 1.428571429;
   text-decoration: none;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li a:hover {
+nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item a:hover {
   text-decoration: none;
   color: #eeeeee;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
-nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-activeitem > a {
+nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
+nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem > a {
   color: #eeeeee;
   font-weight: bold;
   text-decoration: none;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-expandeditem > a {
+nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-expandeditem > a {
   color: #eeeeee;
 }
-nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-expandeditem .django-cradmin-menu-childitems ul {
+nav.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-expandeditem .django-cradmin-menu-childitems ul {
   padding-left: 15px;
 }
 nav.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle {
@@ -9271,23 +9289,72 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
     display: inline-block;
     height: 50px;
   }
-  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li {
+  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li.django-cradmin-menu-item {
     display: inline-block;
     height: 50px;
   }
-  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li a {
+  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li.django-cradmin-menu-item a {
     height: 50px;
     line-height: 50px;
     display: block;
     padding: 0 16px;
   }
-  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
-  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li.django-cradmin-menu-activeitem > a {
+  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
+  nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem > a {
     font-weight: normal;
   }
   nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-content ul.django-cradmin-menu-content-footer {
     margin: 0;
     float: right;
+  }
+}
+.django-cradmin-modal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 50000;
+  display: none;
+}
+.django-cradmin-modal.django-cradmin-modal-visible {
+  display: block;
+}
+.django-cradmin-modal .django-cradmin-modal-backdrop {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  z-index: 50001;
+}
+.django-cradmin-modal .django-cradmin-modal-content {
+  z-index: 50002;
+  position: absolute;
+  background: #fff;
+  overflow: auto;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  padding: 15px;
+}
+.django-cradmin-modal .django-cradmin-modal-content > p:last-child,
+.django-cradmin-modal .django-cradmin-modal-content > ul:last-child,
+.django-cradmin-modal .django-cradmin-modal-content > ol:last-child {
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+@media (min-width: 768px) {
+  .django-cradmin-modal .django-cradmin-modal-content {
+    width: 500px;
+    top: 30px;
+    bottom: auto;
+    left: 50%;
+    margin-left: -250px;
+    border: 4px solid #000;
   }
 }
 #cradmin_authenticate_login_forgotpasswordlink {
@@ -9301,13 +9368,16 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
 }
 @media (min-width: 992px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu {
-    position: fixed;
+    position: absolute;
     top: 0;
-    bottom: 0;
+    height: 100%;
     left: 0;
     width: 200px;
     overflow-y: auto;
     overflow-x: hidden;
+    -webkit-transition: top 0.12s ease-in-out;
+    -moz-transition: top 0.12s ease-in-out;
+    transition: top 0.12s ease-in-out;
   }
   nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content {
     padding-bottom: 110px;
@@ -10483,6 +10553,7 @@ a.badge-text-new:hover {
   color: #ffffff;
   margin: 0;
   position: absolute;
+  text-transform: uppercase;
   top: 50%;
   transform: translate(0, -50%);
 }
@@ -11404,6 +11475,26 @@ fieldset[disabled] .button_student {
   background: #f3f3f3;
   padding: 2em 2.5em 2.5em 2.5em;
   height: 100%;
+  margin-bottom: 15px;
+  position: static;
+}
+@media (min-width: 992px) {
+  .devilry-group-feedbackfeed-sidebar {
+    position: absolute;
+    top: 153px;
+    width: 260px;
+    left: 710px;
+    margin-bottom: 0;
+  }
+}
+@media (min-width: 1200px) {
+  .devilry-group-feedbackfeed-sidebar {
+    position: absolute;
+    top: 153px;
+    width: 323px;
+    left: 847px;
+    margin-bottom: 0;
+  }
 }
 .devilry-group-feedbackfeed-sidebar h4 {
   text-transform: uppercase;

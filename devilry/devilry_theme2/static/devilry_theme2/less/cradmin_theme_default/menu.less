@@ -1,12 +1,13 @@
 nav#django_cradmin_mainmenu.django-cradmin-menu {
   @media (min-width: @screen-md-min) {
-    position: fixed;
+    position: absolute;
     top: 0;
-    bottom: 0;
+    height: 100%;
     left: 0;
     width: @cradmin-default-theme-mainmenu-width;
     overflow-y: auto;
     overflow-x: hidden;
+    .css3-transition(top @cradmin-default-theme-mainmenu-top-transition-duration ease-in-out);
 
     .django-cradmin-menu-content {
       padding-bottom: @cradmin-default-theme-mainmenu-footer-height;
