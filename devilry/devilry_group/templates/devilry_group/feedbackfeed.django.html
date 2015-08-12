@@ -7,6 +7,13 @@
     {{ assignment.get_path }}
 {% endblock title %}
 
+{% block jsimports %}
+    {{ block.super }}
+    {% load static %}
+
+    <script src="{% static 'devilry_group/src/js/devilry_group.js'%}"></script>
+{% endblock jsimports %}
+
 {% block pageheader-inner %}
     <div class="row">
         <div class="devilry-group-feedbackfeed-header">
@@ -39,7 +46,7 @@
 {% block content %}
 
 <!-- Content -->
-    <div class="container">
+    <div class="container" ng-controller="devilryGroupTestController">
         <div class="row">
             <!--
             Sidebar
@@ -93,7 +100,7 @@
                                             devilry-group-feedbackfeed-comment-examiner
                                         {% elif comment.user_role == "admin"%}
                                             devilry-group-feedbackfeed-comment-admin
-                                        {% endif %}">
+                                        {% endif %}" devilry-group-test-directive="nisse">
                                         <div class="devilry-group-feedbackfeed-comment-content">
                                             <div class="comment-meta">
                                                 <div class="comment-created-by"><p>{{ comment.user }}&nbsp;</p></div>
@@ -181,6 +188,11 @@
 
 {% endblock content %}
 
+{% block initialize_angular %}
+    <script>
+        angular.module('djangoCradminUi', ['djangoCradmin', 'devilryGroupTestApp'])
+    </script>
+{% endblock initialize_angular %}
 
 
 {#<br>#}
