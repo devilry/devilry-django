@@ -13,7 +13,7 @@ setup(
     license='BSD',
     zip_safe=False,
     author=(u'Tor Johansen, Espen Angell Kristiansen, Bendik Opstad, Vegard Angell, '
-            u'Magne Westlie, Ilya Kostolomov, Christian Tryti, Rebekka M\u00F8rken'),
+            u'Magne Westlie, Ilya Kostolomov, Christian Tryti, Rebekka M\u00F8rken, Stian Julseth'),
     author_email='devilry-contact@googlegroups.com',
     include_package_data=True,
     description="A system for handling electronic deliveries. See https://github.com/devilry/devilry-django.",
@@ -45,7 +45,7 @@ setup(
         'django-haystack==2.3.1',
         'httplib2==0.7.7',
         'detektor==1.1.0-beta.012',
-        'django_cradmin==1.0.0b32',
+        'django_cradmin==1.0.0b43',
         'dj-static>=0.0.6',
         'dj-database-url>=0.3.0',
         'bleach>=1.4',

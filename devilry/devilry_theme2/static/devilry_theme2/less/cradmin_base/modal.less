@@ -1,0 +1,52 @@
+.django-cradmin-modal {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 50000;
+  display: none;
+
+  &.django-cradmin-modal-visible {
+    display: block;
+  }
+
+  .django-cradmin-modal-backdrop {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, .6);
+    cursor: pointer;
+    z-index: 50001;
+  }
+
+  .django-cradmin-modal-content {
+    z-index: 50002;
+    position: absolute;
+    background: #fff;
+    overflow: auto;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: (@grid-gutter-width/2);
+
+    &>p, &>ul, &>ol {
+      &:last-child {
+        padding-bottom: 0;
+        margin-bottom: 0;
+      }
+    }
+
+    @media (min-width: @screen-sm-min) {
+      width: 500px;
+      top: 30px;
+      bottom: auto;
+      left: 50%;
+      margin-left: -(500px/2);
+      border: 4px solid #000;
+    }
+  }
+}
