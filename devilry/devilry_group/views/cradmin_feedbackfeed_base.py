@@ -205,9 +205,6 @@ class FeedbackFeedBaseView(create.CreateView):
                 print 'examiner_add_comment_to_feedback_draft'
                 object.instant_publish = False
                 object.visible_for_students = False
-                object.published_datetime = time # special case
-
-            if object.instant_publish:
                 object.published_datetime = time
         else:
             object.user_role = 'admin'
