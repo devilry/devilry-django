@@ -11425,6 +11425,10 @@ fieldset[disabled] .button_student {
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-feed-uploaded-file-tag.devilry-group-feedbackfeed-feed-uploaded-file-tag-after-deadline {
   color: #971009;
 }
+.fix-to-top {
+  position: fixed;
+  top: 0;
+}
 body {
   background-image: url('../images/groovepaper.png');
 }

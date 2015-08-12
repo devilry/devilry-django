@@ -1,7 +1,6 @@
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
 from django_cradmin import crapp
-from django.db.models import Q
 
 
 class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
@@ -10,7 +9,7 @@ class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     """
     def _get_comments_for_group(self, group):
         return models.GroupComment.objects.filter(
-            Q(instant_publish=True) | Q(user=self.request.user), feedback_set__group=group,
+            feedback_set__group=group
         )
 
     def get_context_data(self, **kwargs):
