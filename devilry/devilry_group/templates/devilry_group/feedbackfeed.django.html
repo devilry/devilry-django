@@ -7,12 +7,12 @@
     {{ assignment.get_path }}
 {% endblock title %}
 
-{% block jsimports %}
-    {{ block.super }}
-    {% load static %}
-
-    <script src="{% static 'devilry_group/src/js/devilry_group.js'%}"></script>
-{% endblock jsimports %}
+{#{% block jsimports %}#}
+{#    {{ block.super }}#}
+{#    {% load static %}#}
+{##}
+{#    <script src="{% static 'devilry_group/src/js/devilry_group.js'%}"></script>#}
+{#{% endblock jsimports %}#}
 
 {% block pageheader-inner %}
     <div class="row">
@@ -46,12 +46,9 @@
 {% block content %}
 
 <!-- Content -->
-    <div class="container" ng-controller="devilryGroupTestController">
-        <div class="row">
-            <!--
-            Sidebar
-            -->
-            <div class="col-md-4 col-md-push-8 devilry-group-feedbackfeed-sidebar">
+    <div class="container">
+
+        <div class="devilry-group-feedbackfeed-sidebar" django-cradmin-scroll-top-fixed='{"pinToTopOnScroll":true}'>
                 {% block sidebar %}
                     <h4>{% trans "Uploaded files" %}</h4>
                     {% for feedbackset in feedbacksets %}
@@ -80,6 +77,12 @@
 
                 {% endblock sidebar %}
             </div>
+
+        <div class="row">
+            <!--
+            Sidebar
+            -->
+            <div class="col-md-4 col-md-push-8"></div>
 
             <div class="col-md-8 col-md-pull-4 devilry-group-feedbackfeed-feed">
                 {% block feed %}
@@ -188,89 +191,8 @@
 
 {% endblock content %}
 
-{% block initialize_angular %}
-    <script>
-        angular.module('djangoCradminUi', ['djangoCradmin', 'devilryGroupTestApp'])
-    </script>
-{% endblock initialize_angular %}
-
-
-{#<br>#}
-{#<br>#}
-{#<br>#}
-{#<br>#}
-{#<form method="post" class="uniform">#}
-{#    {% crispy form formhelper %}#}
-{#</form>#}
-{#<br>#}
-{#<br>#}
-{#<br>#}
-{#<br>#}
-{##}
-{#{% for timestamp, eventlist in timeline.items %}#}
-{#    {% for event in eventlist %}#}
-{#        {% if event.type == "comment" %}#}
-{#            {% with event.obj as comment %}#}
-{#                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12#}
-{#                    {%  if comment.user_role == "student" %}#}
-{#                        student-comment-style#}
-{#                    {%  elif comment.user_role == "examiner" %}#}
-{#                        examiner-comment-style#}
-{#                    {%  elif comment.user_role == "admin" %}#}
-{#                    {% endif %}">#}
-{#                        <div class="col-xs-10 col-sm-10 col-md-10 pull-left left-field-style">#}
-{#                            <div class="row">#}
-{#                                <div class="col-xs-12 col-sm-12 col-md-12 created-by-info">#}
-{#                                    <div class="row">#}
-{##}
-{#                                        <div class="col-xs-12 col-sm-12 col-md-4">#}
-{#                                            <h4 class="created-by">{{ comment.user }}</h4>#}
-{#                                        </div>#}
-{##}
-{#                                        <div class="col-xs-12 col-sm-12 col-md-8">#}
-{#                                            <h4 class="created-by-meta">({{ comment.user_role }}) - {{ comment.published_datetime }}</h4>#}
-{#                                        </div>#}
-{##}
-{#                                    </div>#}
-{#                                </div>#}
-{#                            </div>#}
-{#                            <div class="row">#}
-{#                                <div class="col-xs-12 col-sm-12 col-md-12">#}
-{#                                    <p>#}
-{#                                        {{ comment.text }}#}
-{#                                    </p>#}
-{#                                    {% for file in comment.commentfile_set.all %}#}
-{#                                        <div class="file_icon">{{ file.filename }}</div>#}
-{#                                    {% endfor %}#}
-{#                                </div>#}
-{#                            </div>#}
-{##}
-{#                        </div>#}
-{##}
-{#                        {% if not comment.instant_publish and not comment.feedback_set.published_datetime %}#}
-{#                            <div class="col-xs-2 col-sm-2 col-md-2 pull-right text-center not-published-badge">#}
-{#                                    <strong><p>NOT PUBLISHED</p></strong>#}
-{#                            </div>#}
-{#                        {% elif comment.user_role == "student" and comment.published_datetime > comment.feedback_set.deadline_datetime %}#}
-{#                            <div class="col-xs-2 col-sm-2 col-md-2 pull-right text-center after-deadline-badge">#}
-{#                                    <p>NOT PART OF DELIVERY</p>#}
-{#                            </div>#}
-{#                        {% endif %}#}
-{#                </div>#}
-{#            {% endwith %}#}
-{##}
-{#        {% elif event.type == "deadline_created" %}#}
-{#                <p class="event_message">{{ timestamp }}: {{ event.user }} created a new deadline: <strong>{{ event.obj }}</strong></p>#}
-{#        {% elif event.type == "deadline_expired" %}#}
-{#            <p class="event_message">{{ timestamp }}: <strong>Deadline expired</strong></p>#}
-{#        {% elif event.type == "grade" %}#}
-{#            {% if event.obj >= assignment.passing_grade_min_points %}#}
-{#                <p class="event_message_passed">{{ timestamp }}: This delivery was corrected, and given the grade <strong>{{ event.obj }}/{{ assignment.max_points }} (passed)</strong></p>#}
-{#            {% else %}#}
-{#                <p class="event_message_failed">{{ timestamp }}: This delivery was corrected, and given the grade <strong>{{ event.obj }}/{{ assignment.max_points }} (failed)</strong></p>#}
-{#            {% endif %}#}
-{#        {% endif %}#}
-{#    {% endfor %}#}
-{#{% endfor %}#}
-{##}
-{#{% endblock feed %}#}
+{#{% block initialize_angular %}#}
+{#    <script>#}
+{#        angular.module('djangoCradminUi', ['djangoCradmin', 'devilryGroupTestApp'])#}
+{#    </script>#}
+{#{% endblock initialize_angular %}#}

@@ -1,11 +1,10 @@
-app = angular.module 'devilryGroupTestApp', ['ui.bootstrap']
+app = angular.module 'devilryGroupTestApp', []
 
 app.controller 'devilryGroupTestController', ($scope) ->
   alert "I am testController, and I am here to kill you all!!"
 
 app.directive 'devilryGroupTestDirective', [
-  '$modal',
-  ($modal) ->
+  ->
     return {
       restrict: 'A'
       scope:
