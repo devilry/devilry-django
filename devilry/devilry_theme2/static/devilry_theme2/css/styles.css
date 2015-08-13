@@ -11429,6 +11429,10 @@ fieldset[disabled] .button_student {
   text-transform: uppercase;
   font-size: 16px;
 }
+.devilry-group-feedbackfeed-sidebar h4 a {
+  text-decoration: none;
+  color: inherit;
+}
 .devilry-group-feedbackfeed-sidebar dl dt {
   text-transform: uppercase;
   font-weight: normal;
