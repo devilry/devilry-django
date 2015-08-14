@@ -1,0 +1,54 @@
+{% load cradmin_icon_tags %}
+{% load i18n %}
+
+<div django-cradmin-acemarkdown="{{ directiveconfig }}" class="cradmin-acemarkdown cradmin-div-styled-as-textarea">
+    <div class="btn-toolbar" role="toolbar">
+        {% block toolbar %}
+
+            {% block codebuttons %}
+                <div class="btn-group">
+                    <a class="btn btn-default devilry-group-feedbackfeed-sidebar-markdown-button" django-cradmin-acemarkdown-tool="{
+                                pre: '``` ', post: '\n\n```',
+                                emptyText: '{% trans "programminglanguage" %}'
+                            }">
+                        <span class="{% cradmin_icon 'codeblock' %}"></span>
+                        <span class="sr-only">{% trans "Code block" %}</span>
+                    </a>
+
+                    <a class="btn btn-default devilry-group-feedbackfeed-sidebar-markdown-button" django-cradmin-acemarkdown-tool="{
+                                pre: '``` ', post: '\n\n```',
+                                emptyText: '{% trans "python" %}'
+                            }">
+                        <span><p>py</p></span>
+                        <span class="sr-only">{% trans "Code block" %}</span>
+                    </a>
+
+                    <a class="btn btn-default devilry-group-feedbackfeed-sidebar-markdown-button" django-cradmin-acemarkdown-tool="{
+                                pre: '``` ', post: '\n\n```',
+                                emptyText: '{% trans "java" %}'
+                            }">
+                        <span><p>java</p></span>
+                        <span class="sr-only">{% trans "Code block" %}</span>
+                    </a>
+
+                    <a class="btn btn-default devilry-group-feedbackfeed-sidebar-markdown-button" django-cradmin-acemarkdown-tool="{
+                                pre: '``` ', post: '\n\n```',
+                                emptyText: '{% trans "c" %}'
+                            }">
+                        <span><p>c</p></span>
+                        <span class="sr-only">{% trans "Code block" %}</span>
+                    </a>
+
+                    <a class="btn btn-default devilry-group-feedbackfeed-sidebar-markdown-button" django-cradmin-acemarkdown-tool="{
+                                pre: '``` ', post: '\n\n```',
+                                emptyText: '{% trans "scheme" %}'
+                            }">
+                        <span>scheme</span>
+                        <span class="sr-only">{% trans "Code block" %}</span>
+                    </a>
+                </div>
+            {% endblock codebuttons %}
+
+        {% endblock toolbar %}
+    </div>
+</div>
