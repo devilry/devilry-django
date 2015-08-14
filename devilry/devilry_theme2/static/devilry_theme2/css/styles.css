@@ -11442,6 +11442,9 @@ fieldset[disabled] .button_student {
   word-break: break-all;
   width: 100%;
 }
+.devilry-group-feedbackfeed-sidebar-smooth-transition {
+  transition: height 2s linear;
+}
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-feed-uploaded-file-tag {
   display: inline-block;
   float: right;

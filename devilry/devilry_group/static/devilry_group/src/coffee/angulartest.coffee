@@ -9,7 +9,6 @@ app.controller 'devilryGroupSidebarContentCollapse', ($scope) ->
   $scope.isMathFormattingCollapsed = true
 
   $scope.toggleSidebarContentCollapse = (collapseElement) ->
-#    console.log collapseElement
     if collapseElement == 'isUploadedFilesCollapsed'
       $scope.isUploadedFilesCollapsed = !$scope.isUploadedFilesCollapsed
       $scope.isTextFormattingCollapsed = true

@@ -48,10 +48,10 @@
 <!-- Content -->
     <div class="container">
 
-        <div class="devilry-group-feedbackfeed-sidebar" django-cradmin-scroll-top-fixed='{"pinToTopOnScroll":true}'  ng-app="devilryGroupTestApp" ng-controller="devilryGroupSidebarContentCollapse">
+        <div class="devilry-group-feedbackfeed-sidebar scrollable" django-cradmin-scroll-top-fixed='{"pinToTopOnScroll":true}'  ng-app="devilryGroupTestApp" ng-controller="devilryGroupSidebarContentCollapse">
                 {% block sidebar %}
                     <h4 ng-click="toggleSidebarContentCollapse('isUploadedFilesCollapsed')"><a href="">{% trans "Uploaded files" %}</a></h4>
-                        <div collapse="isUploadedFilesCollapsed">
+                    <div collapse="isUploadedFilesCollapsed">
                             {% for feedbackset in feedbacksets %}
                                 <dl>
                                     <dt>
@@ -68,7 +68,7 @@
                             {% endfor %}
                         </div>
 
-                    <h4 class="devilry-group-feedbackfeed-smooth-transition" ng-click="toggleSidebarContentCollapse('isTextFormattingCollapsed')"><a href=""> {% trans "Text formatting" %}</a></h4>
+                    <h4 ng-click="toggleSidebarContentCollapse('isTextFormattingCollapsed')"><a href=""> {% trans "Text formatting" %}</a></h4>
                         <div collapse="isTextFormattingCollapsed">
                             <p>Todo</p>
                             <p>Todo</p>
