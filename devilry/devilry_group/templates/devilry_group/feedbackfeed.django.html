@@ -51,7 +51,9 @@
                         {% for comment in feedbackset.groupcomment_set.all %}
                             {% for file in comment.commentfile_set.all %}
                                 <dd class="devilry-group-feedbackfeed-sidebar-files">
-                                    <a href="#" >{{ file.filename|devilry_truncatefileextension:26 }}</a>
+                                    <a href="{% url 'devilry-feedbackfeed-file-download' feedbackset.id file.id %}" >{{ file.filename|devilry_truncatefileextension:26 }}</a>
+                                    <p>{{ feedbackset.group.id }}</p>
+                                    <a href="{% url 'devilry-feedbackfeed-compressed-file-download' feedbackset.id %}"><strong>Download all</strong></a>
                                 </dd>
                             {% endfor %}
                         {% endfor %}
