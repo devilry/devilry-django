@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import models as auth_models
+from django.core import files
 
 
 class Comment(models.Model):
@@ -36,6 +37,19 @@ class Comment(models.Model):
     comment_type = models.CharField(choices=COMMENT_TYPE_CHOICES, max_length=42)
 
 
+    def add_commentfile_from_temporary_file(self, tempfile):
+        print "running add_commentfile_from_temporary_file"
+        commentfile = CommentFile.objects.create(filename=tempfile.filename,
+                                                 mimetype=tempfile.mimetype,
+                                                 filesize=tempfile.file.size,
+                                                 comment=self)
+
+
+        commentfile.file = files.File(tempfile.file, tempfile.filename)
+        commentfile.save()
+        print "returning from add_commentfile_from_temporary_file"
+
+
 def commentfile_directory_path(instance, filename):
     return 'devilry_comment/{}/{}'.format(instance.comment.id, instance.id)
 
@@ -47,14 +61,19 @@ class CommentFile(models.Model):
     This file will be interperated by celery-tasks based on mimetype, and images
     for annotation will be created where possible.
     """
+    MAX_FILENAME_LENGTH = 255
+
     mimetype = models.CharField(max_length=42)
     file = models.FileField(upload_to=commentfile_directory_path, max_length=512)
-    filename = models.CharField(max_length=256)
+    filename = models.CharField(max_length=MAX_FILENAME_LENGTH)
     filesize = models.PositiveIntegerField()
     comment = models.ForeignKey(Comment)
     processing_started_datetime = models.DateTimeField(null=True, blank=True)
     processing_completed_datetime = models.DateTimeField(null=True, blank=True)
     processing_successful = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return u'{} - {}'.format(self.comment.user, self.filename)
 
 
 def commentfileimage_directory_path(instance, filename):

@@ -1,10 +1,9 @@
 from devilry.devilry_group.views import cradmin_feedbackfeed_base
 from devilry.devilry_group import models
 from django_cradmin import crapp
-from django.db.models import Q
 
 
-class SubjectAdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
+class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     """
     TODO: Document
     """
@@ -14,8 +13,8 @@ class SubjectAdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseVie
         )
 
     def get_context_data(self, **kwargs):
-        context = super(SubjectAdminFeedbackFeedView, self).get_context_data(**kwargs)
-        context['devilry_ui_role'] = 'subjectadmin'
+        context = super(AdminFeedbackFeedView, self).get_context_data(**kwargs)
+        context['devilry_ui_role'] = 'admin'
         return context
 
 
@@ -23,6 +22,6 @@ class App(crapp.App):
     appurls = [
         crapp.Url(
             r'^$',
-            SubjectAdminFeedbackFeedView.as_view(),
+            AdminFeedbackFeedView.as_view(),
             name=crapp.INDEXVIEW_NAME),
     ]

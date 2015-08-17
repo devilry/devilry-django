@@ -1,21 +1,37 @@
-import datetime
-from crispy_forms.layout import Submit
-from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
-from devilry.devilry_group import models
-from django_cradmin.viewhelpers import create
-import collections
-from devilry.devilry_group.models import GroupComment
+# Django imports
+from django.core.exceptions import PermissionDenied
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
+from django import http
+from django.core.urlresolvers import reverse
+from django import forms
+
+# Python imports
+import json
+import datetime
+import collections
+
+# Devilry imports
+from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
+from devilry.devilry_group import models
+from devilry.devilry_comment import models as comment_models
+
+# 3rd party imports
 from crispy_forms import layout
-from devilry.devilry_markup import parse_markdown
+from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
+from django_cradmin.viewhelpers import create
+from xml.sax.saxutils import quoteattr
 
 
 class FeedbackFeedBaseView(create.CreateView):
     template_name = "devilry_group/feedbackfeed.django.html"
 
     # for cradmin CreateView
-    model=GroupComment
+    model=models.GroupComment
     fields=["text"]
+    form_attributes = {
+        'django-cradmin-bulkfileupload-form': ''
+    }
 
     def _get_comments_for_group(self, group):
         raise NotImplementedError("Subclasses must implement _get_queryset_for_group!")
@@ -127,18 +143,18 @@ class FeedbackFeedBaseView(create.CreateView):
         app = self.request.cradmin_app
         user = self.request.user
         if self.request.cradmin_role.is_candidate(user):
-            return [Submit('student_add_comment',
-                           'Add comment',
+            return [layout.Submit('student_add_comment',
+                           _('Add comment'),
                            css_class='btn btn-success')]
         elif self.request.cradmin_role.is_examiner(user):
-            return [Submit('examiner_add_comment_for_examiners',
-                           'Add comment for examiners',
+            return [layout.Submit('examiner_add_comment_for_examiners',
+                           _('Add comment for examiners'),
                            css_class='btn btn-primary'),
-                    Submit('examiner_add_public_comment',
-                           'Add public comment',
+                    layout.Submit('examiner_add_public_comment',
+                           _('Add public comment'),
                            css_class='btn btn-primary'),
-                    Submit('examiner_add_comment_to_feedback_draft',
-                           'Add comment to feedback draft',
+                    layout.Submit('examiner_add_comment_to_feedback_draft',
+                           _('Add to feedback'),
                            css_class='btn btn-primary')
                     ]
 
@@ -152,10 +168,18 @@ class FeedbackFeedBaseView(create.CreateView):
                         # css_class='panel-body'
                     ),
                     layout.Div(
-                        layout.HTML('<p>Drag and drop, or click <a href="#"><strong>here</strong></a> to upload files</p>'),
-                        css_class='panel-footer'
+                        layout.HTML(render_to_string('devilry_group/include/fileupload.django.html',
+                                                     {
+                                                         "apiparameters": quoteattr(json.dumps({
+                                                             "unique_filenames": True,
+                                                             "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH
+                                                         })),
+                                                         "hiddenfieldname": "temporary_file_collection_id",
+                                                         "apiurl": reverse('cradmin_temporary_file_upload_api')
+                                                      })),
+                        # css_class='panel-footer'
                     ),
-                    css_class='panel panel-default'
+                    # css_class='panel panel-default'
                 ),
                 layout.Div(
                     layout.Div(*self.get_buttons()),
@@ -170,6 +194,7 @@ class FeedbackFeedBaseView(create.CreateView):
         # form.fields['text'].widget = WysiHtmlTextArea(attrs={})
         form.fields['text'].widget = AceMarkdownWidget()
         form.fields['text'].label = False
+        form.fields['temporary_file_collection_id'] = forms.IntegerField()
         return form
 
     def save_object(self, form, commit=True):
@@ -183,12 +208,12 @@ class FeedbackFeedBaseView(create.CreateView):
         object.user = user
         object.comment_type = 'groupcomment'
         object.feedback_set = assignment_group.feedbackset_set.latest('created_datetime')
+        object.published_datetime = time
 
         if assignment_group.is_candidate(user):
             object.user_role = 'student'
             object.instant_publish = True
             object.visible_for_students = True
-            object.published_datetime = time
         elif assignment_group.is_examiner(user):
             object.user_role = 'examiner'
             print 'is examiner'
@@ -205,12 +230,36 @@ class FeedbackFeedBaseView(create.CreateView):
                 print 'examiner_add_comment_to_feedback_draft'
                 object.instant_publish = False
                 object.visible_for_students = False
-                object.published_datetime = time
-        else:
+        elif assignment_group.is_admin_or_superadmin(user):
             object.user_role = 'admin'
             object.instant_publish = True
             object.visible_for_students = True
+        else:
+            raise PermissionDenied("User attempting to post comment has no verified role in the assignment group!")
 
         if commit:
             object.save()
+            self.__convert_temporary_files_to_comment_files(form, object)
         return object
+
+    def get_collectionqueryset(self):
+        return TemporaryFileCollection.objects \
+            .filter_for_user(self.request.user) \
+            .prefetch_related('files')
+
+    def __convert_temporary_files_to_comment_files(self, form, groupcomment):
+        filecollection_id = form.cleaned_data.get('temporary_file_collection_id')
+        if not filecollection_id:
+            return
+        try:
+            temporaryfilecollection = self.get_collectionqueryset().get(id=filecollection_id)
+        except TemporaryFileCollection.DoesNotExist:
+            return
+
+        for temporaryfile in temporaryfilecollection.files.all():
+            print "creating commentfile for file: {}".format(temporaryfile.filename)
+            groupcomment.add_commentfile_from_temporary_file(tempfile=temporaryfile)
+
+
+
+
