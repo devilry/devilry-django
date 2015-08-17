@@ -19,7 +19,7 @@
 
 .devilry-group-feedbackfeed-sidebar {
   background: @devilry-feedbackfeed-focus-bg;
-  padding: 2em 2.5em 2.5em 2.5em;
+  padding: 10px 20px 10px 20px;
   height: 100%;
   margin-bottom: 15px;
 
@@ -40,11 +40,20 @@
   }
 
   h4 {
+    padding: 2px 2px 2px 2px;
     text-transform: uppercase;
     font-size: @font-size-base;
+    cursor: pointer;
     //.devilry-group-feedbackfeed-sidebar-dropdownicon{
     //  float: right;
     //}
+  }
+
+  h4:hover {
+    background: #ccc;
+    color: #fff;
+    transition: background .2s ease-in-out;
+    transition: color .2s ease-in-out;
   }
 
   dl {

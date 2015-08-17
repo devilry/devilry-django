@@ -10,8 +10,6 @@ urlpatterns = patterns(
     url(r'^student/', include(crinstance_student.StudentCrInstance.urls())),
     url(r'^examiner/', include(crinstance_examiner.ExaminerCrInstance.urls())),
     url(r'^admin/', include(crinstance_admin.AdminCrInstance.urls())),
-    url(r'^nodeadmin/', include(crinstance_nodeadmin.NodeAdminCrInstance.urls())),
-    url(r'^subjectadmin/', include(crinstance_subjectadmin.SubjectAdminCrInstance.urls())),
 
     url(r'devilry-feedbackfeed-file-download/(?P<feedbackset_id>[0-9]+)/(?P<commentfile_id>[0-9]+)',
         feedbackfeed_download_files.FileDownloadFeedbackfeedView.as_view(),

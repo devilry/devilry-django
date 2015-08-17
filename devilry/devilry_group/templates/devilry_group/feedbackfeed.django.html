@@ -7,6 +7,12 @@
     {{ assignment.get_path }}
 {% endblock title %}
 
+{% block jsimports %}
+    {{ block.super }}
+    {% load static %}
+    <script src="{% static "devilry_group/src/js/devilry-group.js"%}" type="application/javascript"></script>
+{% endblock jsimports %}
+
 {% block pageheader-inner %}
     <div class="row">
         <div class="devilry-group-feedbackfeed-header">
@@ -42,43 +48,70 @@
     <div class="container">
         <div class="devilry-group-feedbackfeed-sidebar" django-cradmin-scroll-top-fixed='{"pinToTopOnScroll":true}'>
             {% block sidebar %}
-                <h4>{% trans "Uploaded files" %}</h4>
-                {% for feedbackset in feedbacksets %}
-                    <dl>
-                        <dt>
-                            {% blocktrans with counter=''|devilry_verbosenumber:forloop.counter %}{{ counter }} deadline{% endblocktrans %}
-                        </dt>
-                        {% for comment in feedbackset.groupcomment_set.all %}
-                            {% for file in comment.commentfile_set.all %}
-                                <dd class="devilry-group-feedbackfeed-sidebar-files">
-                                    <a href="{% url 'devilry-feedbackfeed-file-download' feedbackset.id file.id %}" >{{ file.filename|devilry_truncatefileextension:26 }}</a>
-                                    <p>{{ feedbackset.group.id }}</p>
+                <div ng-controller="sidebarCollapseCtrl">
+                    <div ng-init="filecollapse=register_collapse('uploaded_files', true)">
+                        <h4 ng-click="toggle_collapse('uploaded_files')">
+                            {% trans "Uploaded files" %}
+                            <i class="pull-right fa" ng-class="{'fa-chevron-up': filecollapse.value, 'fa-chevron-down': !filecollapse.value}"></i>
+                        </h4>
+                        <div ng-show="filecollapse.value">
+                            {% for feedbackset in feedbacksets %}
+                                <dl>
+                                    <dt>
+                                        {% blocktrans with counter=''|devilry_verbosenumber:forloop.counter %}{{ counter }} deadline{% endblocktrans %}
+                                    </dt>
+                                    {% for comment in feedbackset.groupcomment_set.all %}
+                                        {% for file in comment.commentfile_set.all %}
+                                            <dd class="devilry-group-feedbackfeed-sidebar-files">
+                                                <a href="{% url 'devilry-feedbackfeed-file-download' feedbackset.id file.id %}" >{{ file.filename|devilry_truncatefileextension:26 }}</a>
+                                            </dd>
+                                        {% endfor %}
+                                    {% endfor %}
                                     <a href="{% url 'devilry-feedbackfeed-compressed-file-download' feedbackset.id %}"><strong>Download all</strong></a>
-                                </dd>
+                                </dl>
                             {% endfor %}
-                        {% endfor %}
-                    </dl>
-                {% endfor %}
+                        </div>
+                    </div>
 
-                <h4>{% trans "Text formatting" %}</h4>
-                <p>Todo</p>
+                    <div ng-init="textcollapse=register_collapse('text_format')">
+                        <h4 ng-click="toggle_collapse('text_format')">
+                            {% trans "Text formatting" %}
+                            <i class="pull-right fa" ng-class="{'fa-chevron-up': textcollapse.value, 'fa-chevron-down': !textcollapse.value}"></i>
+                        </h4>
+                        <div ng-show="textcollapse.value">
+                            <p>Todo</p>
+                        </div>
+                    </div>
 
-                <h4>{% trans "Code formatting" %}</h4>
-                <p>Todo</p>
+                    <div ng-init="codecollapse=register_collapse('code_format')">
+                        <h4 ng-click="toggle_collapse('code_format')">
+                            {% trans "Code formatting" %}
+                            <i class="pull-right fa" ng-class="{'fa-chevron-up': codecollapse.value, 'fa-chevron-down': !codecollapse.value}"></i>
+                        </h4>
+                        <div ng-show="codecollapse.value">
+                            <p>Todo</p>
+                        </div>
+                    </div>
 
-                <h4>{% trans "Math formatting" %}</h4>
-                <p>Todo</p>
-
+                    <div ng-init="mathcollapse=register_collapse('math_format')">
+                        <h4 ng-click="toggle_collapse('math_format')">
+                            {% trans "Math formatting" %}
+                            <i class="pull-right fa" ng-class="{'fa-chevron-up': mathcollapse.value, 'fa-chevron-down': !mathcollapse.value}"></i>
+                        </h4>
+                        <div ng-show="mathcollapse.value">
+                            <p>Todo</p>
+                        </div>
+                    </div>
+                </div>
             {% endblock sidebar %}
         </div>
 
 
         <div class="row">
-            <!--
-            Sidebar
-            -->
+            {# empty space for Sidebar #}
             <div class="col-md-4 col-md-push-8"></div>
 
+            {# Feedbackfeed #}
             <div class="col-md-8 col-md-pull-4 devilry-group-feedbackfeed-feed">
                 {% block feed %}
 
@@ -184,3 +217,8 @@
 
 {% endblock content %}
 
+{% block initialize_angular %}
+    <script>
+        angular.module('djangoCradminUi', ['djangoCradmin', 'devilryGroup.sidebar'])
+    </script>
+{% endblock %}
