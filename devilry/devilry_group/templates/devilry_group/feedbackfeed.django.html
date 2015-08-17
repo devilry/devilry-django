@@ -37,8 +37,7 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
-
-<!-- Content -->
+    {# Sidebar #}
     <div class="container">
         <div class="devilry-group-feedbackfeed-sidebar" django-cradmin-scroll-top-fixed='{"pinToTopOnScroll":true}'>
             {% block sidebar %}
@@ -51,7 +50,7 @@
                         {% for comment in feedbackset.groupcomment_set.all %}
                             {% for file in comment.commentfile_set.all %}
                                 <dd class="devilry-group-feedbackfeed-sidebar-files">
-                                    <a href="#" >{{ file.filename|devilry_truncatefileextension:26 }}</a>
+                                    <a href="{{ file.file.url }}" >{{ file.filename|devilry_truncatefileextension:26 }}</a>
                                 </dd>
                             {% endfor %}
                         {% endfor %}
@@ -72,11 +71,10 @@
 
 
         <div class="row">
-            <!--
-            Sidebar
-            -->
+            {# empty space for Sidebar #}
             <div class="col-md-4 col-md-push-8"></div>
 
+            {# Feedbackfeed #}
             <div class="col-md-8 col-md-pull-4 devilry-group-feedbackfeed-feed">
                 {% block feed %}
 
@@ -175,6 +173,8 @@
                         {{ form.media }}
                     {% endblock form %}
                     {% block post_form %}{% endblock post_form %}
+
+                    {# File upload #}
 
 
                 {% endblock feed %}

@@ -3,7 +3,7 @@ from django_cradmin import crmenu
 from django_cradmin import crinstance
 
 from devilry.apps.core.models import AssignmentGroup
-from devilry.devilry_group.views import feedbackfeed_nodeadmin
+from devilry.devilry_group.views import feedbackfeed_admin
 
 
 class Menu(crmenu.Menu):
@@ -11,16 +11,16 @@ class Menu(crmenu.Menu):
         group = self.request.cradmin_role
         self.add_headeritem(
             label=group.subject.long_name,
-            url=self.appindex_url('feedbackfeed'),)
+            url=self.appindex_url('feedbackfeed'))
 
 
-class NodeAdminCrInstance(crinstance.BaseCrAdminInstance):
+class AdminCrInstance(crinstance.BaseCrAdminInstance):
     menuclass = Menu
     roleclass = AssignmentGroup
     apps = [
-        ('feedbackfeed', feedbackfeed_nodeadmin.App)
+        ('feedbackfeed', feedbackfeed_admin.App)
     ]
-    id = 'devilry_group_nodeadmin'
+    id = 'devilry_group_admin'
     rolefrontpage_appname = 'feedbackfeed'
 
     def get_rolequeryset(self):
@@ -35,4 +35,4 @@ class NodeAdminCrInstance(crinstance.BaseCrAdminInstance):
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return urlpath.startswith('/devilry_group/nodeadmin')
+        return urlpath.startswith('/devilry_group/admin')
