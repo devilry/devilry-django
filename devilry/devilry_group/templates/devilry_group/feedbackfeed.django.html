@@ -55,6 +55,10 @@
                             <i class="pull-right fa" ng-class="{'fa-chevron-up': filecollapse.value, 'fa-chevron-down': !filecollapse.value}"></i>
                         </h4>
                         <div ng-show="filecollapse.value">
+                            {% if feedbacksets|length > 1 %}
+                                <a href="{% url 'devilry-feedbackfeed-compressed-all-feedbacksets-file-download' last_feedbackset.id %}"><strong>Download all assignment files</strong></a>
+                                <br><br>
+                            {% endif %}
                             {% for feedbackset in feedbacksets %}
                                 <dl>
                                     <dt>
@@ -67,7 +71,7 @@
                                             </dd>
                                         {% endfor %}
                                     {% endfor %}
-                                    <a href="{% url 'devilry-feedbackfeed-compressed-file-download' feedbackset.id %}"><strong>Download all</strong></a>
+                                    <a href="{% url 'devilry-feedbackfeed-compressed-feedbackset-file-download' feedbackset.id %}"><strong>Download all</strong></a>
                                 </dl>
                             {% endfor %}
                         </div>
