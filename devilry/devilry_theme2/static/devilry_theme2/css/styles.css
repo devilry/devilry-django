@@ -8252,6 +8252,7 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 .django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=text],
 .django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=email],
 .django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=number],
+.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=url],
 .django-cradmin-form-wrapper .django-cradmin-form .form-group textarea,
 .django-cradmin-form-wrapper .django-cradmin-form .form-group .django-cradmin-bulkfileupload,
 .django-cradmin-form-wrapper .django-cradmin-form .form-group .cradmin-div-styled-as-textarea,
@@ -8266,6 +8267,7 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 .django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=text]:focus,
 .django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=email]:focus,
 .django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=number]:focus,
+.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=url]:focus,
 .django-cradmin-form-wrapper .django-cradmin-form .form-group textarea:focus,
 .django-cradmin-form-wrapper .django-cradmin-form .form-group .django-cradmin-bulkfileupload:focus,
 .django-cradmin-form-wrapper .django-cradmin-form .form-group .cradmin-div-styled-as-textarea:focus,
@@ -8277,6 +8279,7 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 .django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=text],
 .django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=email],
 .django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=number],
+.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=url],
 .django-cradmin-form-wrapper .django-cradmin-form .form-group textarea {
   height: auto;
   margin: 0;
@@ -8290,7 +8293,8 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 }
 .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=text],
 .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=email],
-.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=number] {
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=number],
+.django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=url] {
   font-size: 24px;
 }
 form .alert-block.alert-danger ul {
