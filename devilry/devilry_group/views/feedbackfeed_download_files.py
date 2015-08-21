@@ -94,11 +94,13 @@ class CompressedAllFeedbackSetsFileDownloadView(generic.View):
         tempfile = NamedTemporaryFile()
         zip_file = zipfile.ZipFile(tempfile, 'w')
 
+        deadline_count = 1
         for feedbackset in assignmentgroup.feedbackset_set.all():
             for group_comment in feedbackset.groupcomment_set.all():
                 if not (group_comment.commentfile_set is None):
                     for comment_file in group_comment.commentfile_set.all():
-                        zip_file.write(comment_file.file.file.name, posixpath.join(dirname, comment_file.filename))
+                        zip_file.write(comment_file.file.file.name, posixpath.join(u'deadline{}'.format(deadline_count), comment_file.filename))
+            deadline_count += 1
 
         zip_file.close()
 
