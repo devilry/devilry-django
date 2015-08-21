@@ -68,6 +68,9 @@
                                         {% for file in comment.commentfile_set.all %}
                                             <dd class="devilry-group-feedbackfeed-sidebar-files">
                                                 <a href="{% url 'devilry-feedbackfeed-file-download' feedbackset.id file.id %}" >{{ file.filename|devilry_truncatefileextension:26 }}</a>
+                                                {% if file.comment.published_datetime > file.comment.feedback_set.deadline_datetime and file.comment.user_role != 'examiner' %}
+                                                    <i class="fa fa-exclamation-triangle" title="Submitted after deadline"></i>
+                                                {% endif %}
                                             </dd>
                                         {% endfor %}
                                     {% endfor %}
@@ -146,7 +149,10 @@
                                                 {% blocktrans with text=comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}
                                             </div>
                                             {% for file in comment.commentfile_set.all %}
-                                                <div class="file_icon"><p>{{ file.filename }}</p></div>
+                                                <a href="{% url 'devilry-feedbackfeed-file-download' comment.feedback_set.id file.id %}">
+                                                    <i class="fa fa-file fa-3x" title="{{ file.filename }}"></i>
+                                                </a>
+{#                                                <div class="file_icon" title="{{ file.filename }}"><p>{{ file.filename }}</p></div>#}
                                             {% endfor %}
                                         </div>
                                         {% if not comment.instant_publish and not comment.feedback_set.published_datetime %}
