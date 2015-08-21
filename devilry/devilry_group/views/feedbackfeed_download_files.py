@@ -13,10 +13,13 @@ from devilry.apps.core import models as core_models
 
 class FileDownloadFeedbackfeedView(generic.View):
     """
-
+    Download a single file uncompressed.
     """
 
     def get(self, request, feedbackset_id, commentfile_id):
+        """
+
+        """
         feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
         comment_file = get_object_or_404(comment_models.CommentFile, id=commentfile_id)
 
@@ -37,6 +40,8 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
     Compress all files from a specific FeedbackSet for an assignment into a zip folder.
     """
     def get(self, request, feedbackset_id):
+        """
+        """
         feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
 
         if not (feedbackset.group.is_candidate(request.user) \
@@ -44,14 +49,12 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
                 or feedbackset.group.is_admin(request.user)):
             return http.HttpResponseForbidden('Forbidden')
 
-        dirname = u'{}-{}-delivery-{}'.format(
+        dirname = u'{}-{}-delivery'.format(
             feedbackset.group.parentnode.get_path(),
-            feedbackset.group.short_displayname,
-            feedbackset.group.id
+            feedbackset.group.short_displayname
         )
 
         zip_file_name = u'{}.zip'.format(dirname.encode('ascii', 'ignore'))
-
         tempfile = NamedTemporaryFile()
         zip_file = zipfile.ZipFile(tempfile, 'w');
 
@@ -74,23 +77,20 @@ class CompressedAllFeedbackSetsFileDownloadView(generic.View):
     """
     Compress all files from all feedbacksets for an assignment.
     """
-    def get(self, request, feedbackset_id):
-        feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
-        assignmentgroup = get_object_or_404(core_models.AssignmentGroup, id=feedbackset.group.id)
+    def get(self, request, assignmentgroup_id):
+        assignmentgroup = get_object_or_404(core_models.AssignmentGroup, id=assignmentgroup_id)
 
         if not (assignmentgroup.is_candidate(request.user) \
                 or assignmentgroup.is_examiner(request.user) \
                 or assignmentgroup.is_admin(request.user)):
             return http.HttpResponseForbidden('Forbidden')
 
-        dirname = u'{}-{}-delivery{}'.format(
+        dirname = u'{}-{}-delivery'.format(
             assignmentgroup.parentnode.get_path(),
-            assignmentgroup.short_displayname,
-            assignmentgroup.id
+            assignmentgroup.short_displayname
         )
 
         zip_file_name = u'{}.zip'.format(dirname.encode('ascii', 'ignore'))
-
         tempfile = NamedTemporaryFile()
         zip_file = zipfile.ZipFile(tempfile, 'w')
 

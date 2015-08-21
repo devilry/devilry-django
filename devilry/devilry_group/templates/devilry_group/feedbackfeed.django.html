@@ -56,7 +56,7 @@
                         </h4>
                         <div ng-show="filecollapse.value">
                             {% if feedbacksets|length > 1 %}
-                                <a href="{% url 'devilry-feedbackfeed-compressed-all-feedbacksets-file-download' last_feedbackset.id %}"><strong>Download all assignment files</strong></a>
+                                <a href="{% url 'devilry-feedbackfeed-compressed-all-feedbacksets-file-download' last_feedbackset.group.id %}"><strong>Download all assignment files</strong></a>
                                 <br><br>
                             {% endif %}
                             {% for feedbackset in feedbacksets %}
