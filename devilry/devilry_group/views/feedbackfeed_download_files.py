@@ -1,11 +1,15 @@
-import StringIO
-import posixpath
-from tempfile import NamedTemporaryFile
-import os
-import zipfile
+# django imports
 from django import http
 from django.shortcuts import get_object_or_404
 from django.views import generic
+
+# python imports
+from tempfile import NamedTemporaryFile
+import posixpath
+import os
+import zipfile
+
+# devilry imports
 from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
 from devilry.apps.core import models as core_models
@@ -17,9 +21,16 @@ class FileDownloadFeedbackfeedView(generic.View):
     """
 
     def get(self, request, feedbackset_id, commentfile_id):
-        """
-
-        """
+        '''
+        :param request:
+            The request object with a user.
+        :param feedbackset_id:
+            The FeedbackSet the files belong to.
+        :param commentfile_id:
+            The CommentFile to retreive the file from.
+        :return:
+            HttpResponse with FileWrapper containing the file.
+        '''
         feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
         comment_file = get_object_or_404(comment_models.CommentFile, id=commentfile_id)
 
@@ -35,13 +46,20 @@ class FileDownloadFeedbackfeedView(generic.View):
 
         return response
 
+
 class CompressedFeedbackSetFileDownloadView(generic.View):
     """
     Compress all files from a specific FeedbackSet for an assignment into a zip folder.
     """
     def get(self, request, feedbackset_id):
-        """
-        """
+        '''
+        :param request:
+            The request object with a user.
+        :param assignmentgroup_id:
+            The FeedbackSet the files belong to.
+        :return:
+            HttpResponse with FileWrapper containing the zipped folder.
+        '''
         feedbackset = get_object_or_404(group_models.FeedbackSet, id=feedbackset_id)
 
         if not (feedbackset.group.is_candidate(request.user) \
@@ -61,7 +79,10 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
         for group_comment in feedbackset.groupcomment_set.all():
             if not (group_comment.commentfile_set is None):
                 for comment_file in group_comment.commentfile_set.all():
-                    zip_file.write(comment_file.file.file.name, posixpath.join(dirname, comment_file.filename))
+                    zip_file.write(
+                        comment_file.file.file.name,
+                        posixpath.join(dirname, comment_file.filename)
+                    )
 
         zip_file.close()
 
@@ -73,11 +94,20 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
 
         return response
 
+
 class CompressedAllFeedbackSetsFileDownloadView(generic.View):
     """
     Compress all files from all feedbacksets for an assignment.
     """
     def get(self, request, assignmentgroup_id):
+        """
+        :param request:
+            The request object with a user.
+        :param assignmentgroup_id:
+            The AssignmentGroup the files belong to.
+        :return:
+            HttpResponse with FileWrapper containing the zipped folder.
+        """
         assignmentgroup = get_object_or_404(core_models.AssignmentGroup, id=assignmentgroup_id)
 
         if not (assignmentgroup.is_candidate(request.user) \
