@@ -38,7 +38,7 @@ class MockResource(ModelResource):
     """This is a mock model-based resource"""
 
     class MockResourceModel(models.Model):
-        foo = models.BooleanField()
+        foo = models.BooleanField(default=False)
         bar = models.IntegerField(help_text='Must be an integer.')
         baz = models.CharField(max_length=32, help_text='Free text.  Max length 32 chars.')
 
