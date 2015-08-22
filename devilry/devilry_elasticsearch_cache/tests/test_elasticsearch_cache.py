@@ -1,3 +1,4 @@
+import unittest
 from django import test
 from elasticsearch_dsl import Search
 from elasticsearch_dsl.connections import connections
@@ -10,6 +11,7 @@ from devilry.project.develop.testhelpers import corebuilder
 from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 
 
+@unittest.skip('Not in use')
 class TestNodeIndexing(test.TestCase):
     def setUp(self):
         self.testhelper = testhelper.TestHelper()
