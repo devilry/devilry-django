@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="847403656">
-    <data-source source="LOCAL" name="SQLite - developfiles/db.sqlite" uuid="93d4f361-9647-453c-954b-ee019d682441">
-      <driver-ref>sqlite.xerial</driver-ref>
-      <synchronize>true</synchronize>
-      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/developfiles/db.sqlite3</jdbc-url>
-      <libraries />
-    </data-source>
+  <component name="DataSourceManagerImpl" format="xml" hash="2607937362">
     <data-source source="LOCAL" name="PostgreSQL - dbdev@localhost" uuid="67ef09e2-cab1-4963-9e04-f906429e4f5f">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
