@@ -72,7 +72,7 @@ INSTALLED_APPS = [
     'devilry.devilry_i18n',
     'devilry.devilry_settings',
     'devilry.devilry_search',
-    # 'devilry.devilry_qualifiesforexam',
+    'devilry.devilry_qualifiesforexam',
     # 'devilry.devilry_qualifiesforexam_approved',
     # 'devilry.devilry_qualifiesforexam_points',
     # 'devilry.devilry_qualifiesforexam_select',
