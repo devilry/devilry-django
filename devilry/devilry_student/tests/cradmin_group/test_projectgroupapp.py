@@ -275,8 +275,8 @@ class TestGroupInviteDeleteView(TestCase):
         response = self._getas(groupbuilder.group.id, invite.id, self.testfromuser)
         self.assertEquals(response.status_code, 200)
         selector = htmls.S(response.content)
-        self.assertEquals(selector.one('.page-header h1').alltext_normalized, 'Delete group invite')
-        self.assertEquals(selector.one('.page-header p').alltext_normalized, 'assignment1 - duck1010 - active')
+        self.assertEquals(selector.one('.django-cradmin-page-header-inner h1').alltext_normalized, 'Delete group invite')
+        self.assertEquals(selector.one('.django-cradmin-page-header-inner p').alltext_normalized, 'assignment1 - duck1010 - active')
 
     def test_get_only_if_sender(self):
         notalloweduser = UserBuilder('notalloweduser').user

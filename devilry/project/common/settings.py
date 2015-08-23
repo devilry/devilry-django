@@ -93,7 +93,7 @@ INSTALLED_APPS = [
     'devilry.devilry_admin',
     'devilry.project.common',
 
-    'devilry.devilry_elasticsearch_cache.apps.ElasticsearchCacheAppConfig',
+    # 'devilry.devilry_elasticsearch_cache.apps.ElasticsearchCacheAppConfig',
 ]
 
 TEMPLATE_CONTEXT_PROCESSORS = ("django.contrib.auth.context_processors.auth",

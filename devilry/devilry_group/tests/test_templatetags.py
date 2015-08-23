@@ -45,16 +45,16 @@ class TestDevilryGroupTemplateTags(TestCase):
         self.assertEqual('Des...pdf', truncated_filename)
     
     def test_verbosenumber_1_to_10(self):
-        self.assertEqual('FIRST', devilry_verbosenumber('', 1))
-        self.assertEqual('SECOND', devilry_verbosenumber('', 2))
-        self.assertEqual('THIRD', devilry_verbosenumber('', 3))
-        self.assertEqual('FOURTH', devilry_verbosenumber('', 4))
-        self.assertEqual('FIFTH', devilry_verbosenumber('', 5))
-        self.assertEqual('SIXTH', devilry_verbosenumber('', 6))
-        self.assertEqual('SEVENTH', devilry_verbosenumber('', 7))
-        self.assertEqual('EIGHTH', devilry_verbosenumber('', 8))
-        self.assertEqual('NINTH', devilry_verbosenumber('', 9))
-        self.assertEqual('TENTH', devilry_verbosenumber('', 10))
+        self.assertEqual('first', devilry_verbosenumber('', 1))
+        self.assertEqual('second', devilry_verbosenumber('', 2))
+        self.assertEqual('third', devilry_verbosenumber('', 3))
+        self.assertEqual('fourth', devilry_verbosenumber('', 4))
+        self.assertEqual('fifth', devilry_verbosenumber('', 5))
+        self.assertEqual('sixth', devilry_verbosenumber('', 6))
+        self.assertEqual('seventh', devilry_verbosenumber('', 7))
+        self.assertEqual('eighth', devilry_verbosenumber('', 8))
+        self.assertEqual('ninth', devilry_verbosenumber('', 9))
+        self.assertEqual('tenth', devilry_verbosenumber('', 10))
 
     def test_verbose_number_ending_with_zero(self):
         self.assertEqual('20th', devilry_verbosenumber('', 20))
