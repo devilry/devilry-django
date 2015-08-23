@@ -101,7 +101,7 @@ class Command(BaseCommand):
                 group = delivery.deadline.assignment_group
                 def strcandidate(candidate):
                     return u'{fullname}({username})'.format(username=candidate.student.username,
-                                                            fullname=candidate.student.devilryuserprofile.full_name)
+                                                            fullname=candidate.student.fullname)
                 candidates = map(strcandidate, group.candidates.all())
                 msg = (u' - [{path} deliveryID={id}]: '
                        u'students=[{candidates}], deadline={deadline}, '

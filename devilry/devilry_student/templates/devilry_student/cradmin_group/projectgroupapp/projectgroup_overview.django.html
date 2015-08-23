@@ -91,7 +91,7 @@
                     <tbody>
                         {% for candidate in group.candidates.all %}                
                             <tr>
-                                <td>{{ candidate.student.devilryuserprofile.full_name }}</td>
+                                <td>{{ candidate.student.fullname }}</td>
                                 <td class="groupmember_username">{{ candidate.student.username }}</td>
                                 <td><a href="mailto:{{ candidate.student.email }}">{{ candidate.student.email }}</a></td>
                             </tr>

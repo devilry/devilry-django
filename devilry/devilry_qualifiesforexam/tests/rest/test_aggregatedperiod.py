@@ -36,8 +36,8 @@ class TestRestAggregatedPeriod(TestCase):
                                                      tags='a,b',
                                                      candidate_id='secret',
                                                      labels=['qualified'])
-        self.testhelper.student1.devilryuserprofile.full_name = 'Student One'
-        self.testhelper.student1.devilryuserprofile.save()
+        self.testhelper.student1.fullname = 'Student One'
+        self.testhelper.student1.save()
 
         self.client.login(username=username, password='test')
         content, response = self.client.rest_get(self._geturl(self.testhelper.sub_p1.id))

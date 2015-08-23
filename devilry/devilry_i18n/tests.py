@@ -1,6 +1,6 @@
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.test import TestCase
-from django.contrib.auth.models import User
 
 from devilry.devilry_rest.testclient import RestClient
 from devilry.apps.core.testhelper import TestHelper
@@ -20,13 +20,13 @@ class TestLanguageSelect(TestCase):
         return self.client.rest_get(self.url)
 
     def _get_languagecode(self, username):
-        user = User.objects.get(username=username)
+        user = get_user_model().objects.get(username=username)
         return user.languagecode
 
     def _set_languagecode(self, username, languagecode):
-        profile = User.objects.get(username=username).devilryuserprofile
-        profile.languagecode = languagecode
-        profile.save()
+        user = get_user_model().objects.get(username=username)
+        user.languagecode = languagecode
+        user.save()
 
     def test_get_languagecode_none(self):
         self.assertEquals(self._get_languagecode('testuser'), None)
