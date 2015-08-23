@@ -3,11 +3,10 @@
 Tests the StreamableZip and StreamableTar implementations.
 """
 
-from django.test import TestCase
-from devilry.devilry_account.models import User
-
-from devilry.apps.core.models import (Node, Subject, Period, Assignment, AssignmentGroup,
-                                      Delivery, Candidate)
+# from django.test import TestCase
+#
+# from devilry.apps.core.models import (Node, Subject, Period, Assignment, AssignmentGroup,
+#                                       Delivery, Candidate)
 
 #class TestDeliveryCollection(TestCase):
     #fixtures = ['core/deprecated_users.json', 'core/core.json']

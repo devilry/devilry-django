@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
+
 from django.contrib.auth import get_user_model
-from devilry.devilry_account.models import User
+from django.core.exceptions import ValidationError
+
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
                     Candidate, Deadline, Delivery, StaticFeedback, FileMeta)
 from deliverystore import MemoryDeliveryStore
-from django.core.exceptions import ValidationError
 from devilry.apps.core.models import deliverytypes
 
 
@@ -61,7 +62,8 @@ class TestHelper(object):
         vars(self)[name] = su
         return su
 
-    def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False, delivered_by=None, successful=True, time_of_delivery=None):
+    def add_delivery(self, assignmentgroup, files={}, after_last_deadline=False, delivered_by=None, successful=True,
+                     time_of_delivery=None):
         """
         :param assignmentgroup:
             Expects either an AssignmentGroup object or a string path to an
@@ -112,7 +114,7 @@ class TestHelper(object):
             delivered_by_to_use = group.candidates.all()[0]
 
         # Create the delivery
-        #delivery = group.deliveries.create(delivered_by=delivered_by_to_use, successful=False)
+        # delivery = group.deliveries.create(delivered_by=delivered_by_to_use, successful=False)
         delivery = Delivery(
             deadline=group.get_active_deadline(),
             delivered_by=delivered_by_to_use,
@@ -139,8 +141,8 @@ class TestHelper(object):
 
         # add it to the groups delivery list
         prefix = (group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-                  group.parentnode.parentnode.short_name + '_' +             # period_
-                  group.parentnode.short_name + '_' +                        # assignment_
+                  group.parentnode.parentnode.short_name + '_' +  # period_
+                  group.parentnode.short_name + '_' +  # assignment_
                   group.name + '_')
         varname = prefix + 'deliveries'
         if varname in vars(self).keys():
@@ -226,8 +228,8 @@ class TestHelper(object):
 
         # add it to the groups feedbacks list
         varname = (delivery.deadline.assignment_group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-                   delivery.deadline.assignment_group.parentnode.parentnode.short_name + '_' +             # period_
-                   delivery.deadline.assignment_group.parentnode.short_name + '_' +                        # assignment_
+                   delivery.deadline.assignment_group.parentnode.parentnode.short_name + '_' +  # period_
+                   delivery.deadline.assignment_group.parentnode.short_name + '_' +  # assignment_
                    delivery.deadline.assignment_group.name + '_feedbacks')
 
         if varname in vars(self).keys():
@@ -253,12 +255,12 @@ class TestHelper(object):
             key = section[:section.index('(')]
             if key not in res:
                 raise ValueError("{0} is not an allowed command.".format(key))
-            res[key] = section[section.index('(') + 1 : section.index(')')].split(',')
+            res[key] = section[section.index('(') + 1: section.index(')')].split(',')
         return res
 
     def _create_or_add_user(self, name):
         if get_user_model().objects.filter(shortname=name).exists():
-            user = User.objects.get(username=name)
+            user = get_user_model().objects.get(shortname=name)
         else:
             user = get_user_model()(shortname=name)
             user.username_set.create(username=name)
@@ -269,11 +271,11 @@ class TestHelper(object):
         vars(self)[user.username] = user
         return user
 
-#######
-##
-## Node specifics
-##
-#######
+    #######
+    ##
+    ## Node specifics
+    ##
+    #######
     def _create_or_add_node(self, parent, name, users):
         node = Node(parentnode=parent, short_name=name, long_name=name.capitalize())
         try:
@@ -316,11 +318,11 @@ class TestHelper(object):
             prev_node = new_node
         return new_node
 
-#######
-##
-## Subject specifics
-##
-#######
+    #######
+    ##
+    ## Subject specifics
+    ##
+    #######
     def _create_or_add_subject(self, subject_name, parentnode, extras):
         subject = Subject(parentnode=parentnode, short_name=subject_name, long_name=subject_name.capitalize())
         try:
@@ -362,11 +364,11 @@ class TestHelper(object):
             created_subjects.append(new_subject)
         return created_subjects
 
-#######
-##
-## Period specifics
-##
-#######
+    #######
+    ##
+    ## Period specifics
+    ##
+    #######
     def _create_or_add_period(self, period_name, parentnode, extras):
         period = Period(parentnode=parentnode, short_name=period_name, long_name=period_name.capitalize(),
                         start_time=datetime.now(), end_time=datetime.now() + timedelta(days=5 * 30))
@@ -418,11 +420,11 @@ class TestHelper(object):
                 created_periods.append(new_period)
         return created_periods
 
-#######
-##
-## Assignment specifics
-##
-#######
+    #######
+    ##
+    ## Assignment specifics
+    ##
+    #######
     def _create_or_add_assignment(self, assignment_name, parentnode, extras):
         # NOTE: Set default publishing_time two seconds after start_time to
         # make sure it evaluates as "within" the period.
@@ -437,9 +439,9 @@ class TestHelper(object):
             delivery_types = deliverytypes.ELECTRONIC
 
         assignment = Assignment(parentnode=parentnode, short_name=assignment_name,
-            long_name=assignment_name.capitalize(), publishing_time=publishing_time,
-            delivery_types=delivery_types,
-            max_points=200)
+                                long_name=assignment_name.capitalize(), publishing_time=publishing_time,
+                                delivery_types=delivery_types,
+                                max_points=200)
         try:
             assignment.full_clean()
             assignment.save()
@@ -477,7 +479,7 @@ class TestHelper(object):
         assignment.save()
 
         vars(self)[parentnode.parentnode.short_name + '_' +  # subject
-                   parentnode.short_name + '_' +             # period
+                   parentnode.short_name + '_' +  # period
                    assignment.short_name] = assignment
         return assignment
 
@@ -504,11 +506,11 @@ class TestHelper(object):
                 created_assignments.append(new_assignment)
         return created_assignments
 
-#######
-##
-## Assignmentgroups specifics
-##
-#######
+    #######
+    ##
+    ## Assignmentgroups specifics
+    ##
+    #######
     def _create_or_add_assignmentgroup(self, group_name, parentnode, extras):
         if AssignmentGroup.objects.filter(parentnode=parentnode, name=group_name).count() == 1:
             group = AssignmentGroup.objects.get(parentnode=parentnode, name=group_name)
@@ -531,7 +533,7 @@ class TestHelper(object):
 
             group.candidates.add(Candidate(student=self._create_or_add_user(candidate_name)))
             cand = group.candidates.order_by('-id')[0]
-            #cand.candidate_id = cid if cid != None else str(cand.student.id)
+            # cand.candidate_id = cid if cid != None else str(cand.student.id)
             cand.candidate_id = cid
             cand.full_clean()
             cand.save()
@@ -546,8 +548,8 @@ class TestHelper(object):
         group.save()
 
         vars(self)[parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-                   parentnode.parentnode.short_name + '_' +             # period_
-                   parentnode.short_name + '_' +                        # assignment_
+                   parentnode.parentnode.short_name + '_' +  # period_
+                   parentnode.short_name + '_' +  # assignment_
                    group_name] = group
 
         # # create the default deadline, deadline0, variable
@@ -579,13 +581,14 @@ class TestHelper(object):
                 created_groups.append(new_group)
         return created_groups
 
-#######
-##
-## Deadlines specifics
-##
-#######
+    #######
+    ##
+    ## Deadlines specifics
+    ##
+    #######
     def _create_or_add_deadline(self, deadline_name, parentnode, extras):
-        deadline = Deadline(assignment_group=parentnode, deadline=parentnode.parentnode.publishing_time + timedelta(days=10))
+        deadline = Deadline(assignment_group=parentnode,
+                            deadline=parentnode.parentnode.publishing_time + timedelta(days=10))
 
         if extras['ends']:
             deadline.deadline = parentnode.parentnode.publishing_time + timedelta(int(extras['ends'][0]))
@@ -594,8 +597,8 @@ class TestHelper(object):
 
         # create the variable ref'ing directly to the deadline
         prefix = (parentnode.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-                  parentnode.parentnode.parentnode.short_name + '_' +             # period_
-                  parentnode.parentnode.short_name + '_' +                        # assignment_
+                  parentnode.parentnode.parentnode.short_name + '_' +  # period_
+                  parentnode.parentnode.short_name + '_' +  # assignment_
                   parentnode.name + '_')
 
         deadline.full_clean()
@@ -825,7 +828,6 @@ class TestHelper(object):
         varname = rest.replace('.', '_')
         return vars(self)[varname]
 
-
     def set_attributes_from_path(self, path, **attributes):
         """
         Shortcut to :meth:`get_object_from_path`, set the given attributes on
@@ -835,7 +837,6 @@ class TestHelper(object):
         for key, value in attributes.iteritems():
             setattr(obj, key, value)
         obj.save()
-
 
     def create_feedbacks(self, *args):
         """
@@ -882,7 +883,6 @@ class TestHelper(object):
                 delivery = item[2]
             self.add_delivery(group, delivery)
             self.add_feedback(group, verdict=feedback)
-
 
     def load_generic_scenario(self):
         # set up the base structure

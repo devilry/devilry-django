@@ -1,22 +1,22 @@
 from datetime import datetime, timedelta
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
-from devilry.devilry_account.models import User
 from django.db import IntegrityError
 
 from ..models import Node, Subject
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
 
-class TestSubject(TestCase, TestHelper):
 
+class TestSubject(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
                  subjects=["inf1060:admin(teacher1)", "inf1100"],
                  periods=["autumn10:begins(-1)", "spring9:begins(-1)"],
                  assignments=["assignment1", "assignment2"],
                  assignmentgroups=["g1:examiner(examiner1)", "g2:examiner(examiner2)"])
-        
+
     def test_unique(self):
         s = Subject(parentnode=Node.objects.get(short_name='ifi'),
                     short_name='inf1060', long_name='INF1060')
@@ -24,7 +24,7 @@ class TestSubject(TestCase, TestHelper):
 
     def test_unique2(self):
         s = Subject(parentnode=Node.objects.get(short_name='uio'),
-                short_name='inf1060', long_name='INF1060')
+                    short_name='inf1060', long_name='INF1060')
         self.assertRaises(IntegrityError, s.save)
 
     def test_etag_update(self):
@@ -41,8 +41,8 @@ class TestSubject(TestCase, TestHelper):
         self.assertEquals(obj2.long_name, "Test")
 
     def test_where_is_admin(self):
-        uioadmin = User.objects.get(username='uioadmin')
-        teacher1 = User.objects.get(username='teacher1')
+        uioadmin = get_user_model().objects.get(username='uioadmin')
+        teacher1 = get_user_model().objects.get(username='teacher1')
         self.assertEquals(Subject.where_is_admin(teacher1).count(), 1)
         self.assertEquals(Subject.where_is_admin(uioadmin).count(), 2)
 
@@ -50,7 +50,7 @@ class TestSubject(TestCase, TestHelper):
         self.assertEquals(self.inf1100.get_path(), 'inf1100')
 
     def test_where_is_examiner(self):
-        examiner1 = User.objects.get(username='examiner1')
+        examiner1 = get_user_model().objects.get(username='examiner1')
         q = Subject.where_is_examiner(examiner1)
         self.assertEquals(q.count(), 2)
         self.assertEquals(q[0].short_name, 'inf1060')
@@ -65,7 +65,7 @@ class TestSubject(TestCase, TestHelper):
         self.assertEquals(q[1].short_name, 'inf1060')
 
     def test_published_where_is_examiner(self):
-        examiner1 = User.objects.get(username='examiner1')
+        examiner1 = get_user_model().objects.get(username='examiner1')
         q = Subject.published_where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 2)
         self.assertEquals(q[0].short_name, 'inf1060')

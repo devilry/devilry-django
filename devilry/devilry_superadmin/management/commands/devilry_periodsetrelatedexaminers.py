@@ -1,7 +1,7 @@
 import json
 from optparse import make_option
+from django.contrib.auth import get_user_model
 
-from devilry.devilry_account.models import User
 from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ValidationError
 
@@ -87,9 +87,9 @@ class RelatedBaseCommand(BaseCommand):
 
     def _get_user(self, username):
             try:
-                user = User.objects.get(username=username)
+                user = get_user_model().objects.get(username=username)
                 return user
-            except User.DoesNotExist, e:
+            except get_user_model().DoesNotExist, e:
                 raise CommandError('User {0} does not exists', username)
 
 

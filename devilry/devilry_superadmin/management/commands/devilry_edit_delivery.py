@@ -1,6 +1,6 @@
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Count
-from devilry.devilry_account.models import User
 from optparse import make_option
 
 from devilry.apps.core.models import Delivery
@@ -71,7 +71,7 @@ class Command(BaseCommand):
             qry = qry.filter(feedback_count__gt=0,
                              successful=False)
         if username:
-            user = self._get_or_error(User, username=username)
+            user = self._get_or_error(get_user_model(), username=username)
             qry = qry.filter(deadline__assignment_group__candidates__student=user)
 
         qry = qry.select_related('deadline', 'deadline__assignment_group', 'deadline__assignment_group__parentnode',

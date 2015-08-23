@@ -1,15 +1,16 @@
-from devilry.devilry_account.models import User
+from django.contrib.auth import get_user_model
 
 from django.test import TestCase
+
 from ..models import Node, Subject
 from ..testhelper import TestHelper
 
-class TestBaseNode(TestCase, TestHelper):
 
+class TestBaseNode(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin,ifitechsupport)")
         self.add(nodes="uio.deepdummy1")
-        self.thesuperuser = User.objects.create(username='thesuperuser', is_superuser=True)
+        self.thesuperuser = get_user_model().objects.create(username='thesuperuser', is_superuser=True)
 
     def test_is_admin(self):
         self.assertTrue(self.uio.is_admin(self.uioadmin))
@@ -22,9 +23,10 @@ class TestBaseNode(TestCase, TestHelper):
             l = admins.split(', ')
             l.sort()
             return ', '.join(l)
+
         self.assertEquals(self.uio.get_admins(), 'uioadmin')
         self.assertEquals(split_and_sort(self.uio_ifi.get_admins()),
-                'ifiadmin, ifitechsupport')
+                          'ifiadmin, ifitechsupport')
 
     def test_can_save(self):
         self.assertTrue(self.uio.can_save(self.uioadmin))
@@ -59,7 +61,7 @@ class TestBaseNode(TestCase, TestHelper):
         self.assertFalse(self.ifiadmin2 in admins)
 
         inherited_admins = self.duck2000_aboutnow.get_inherited_admins()
-        inherited_admins.sort(cmp=lambda a,b: cmp(a.user.username, b.user.username))
+        inherited_admins.sort(cmp=lambda a, b: cmp(a.user.username, b.user.username))
         self.assertEquals(inherited_admins[0].user.username, 'duck2000adm')
         self.assertEquals(inherited_admins[0].basenode.short_name, 'duck2000')
 
@@ -71,6 +73,5 @@ class TestBaseNode(TestCase, TestHelper):
         admin_ids = self.duck2000_aboutnow.get_all_admin_ids()
         self.assertEquals(len(admin_ids), 6)
         self.assertEquals(admin_ids,
-            set([self.uioadmin.id, self.matnatadm.id, self.ifiadmin.id,
-                 self.ifiadmin2.id, self.duck2000adm.id, self.aboutnowadm.id]))
-
+                          set([self.uioadmin.id, self.matnatadm.id, self.ifiadmin.id,
+                               self.ifiadmin2.id, self.duck2000adm.id, self.aboutnowadm.id]))

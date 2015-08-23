@@ -1,8 +1,8 @@
 from optparse import make_option
 import re
 from datetime import timedelta, datetime
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
-from devilry.devilry_account.models import User
 import sys
 
 
@@ -48,7 +48,7 @@ class Command(BaseCommand):
 
     def _find_first_studentnumber(self):
         try:
-            user = User.objects\
+            user = get_user_model().objects\
                 .filter(username__startswith=self.username_prefix)\
                 .order_by('-username')[0]
         except IndexError:
@@ -62,7 +62,7 @@ class Command(BaseCommand):
         for usernumber in xrange(first_studentnumber, first_studentnumber + self.groupcount * self.groupsize):
             username = '{}{:08}'.format(self.username_prefix, usernumber)
             self._print_message('Creating user: {}'.format(username))
-            user = User.objects.create(
+            user = get_user_model().objects.create(
                 username=username,
                 fullname=u'{} {}'.format(self.username_prefix.title(), usernumber))
             self.users.append(user)

@@ -1,8 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.http import HttpResponseForbidden
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseNotFound
 from django.core.urlresolvers import reverse
-from devilry.devilry_account.models import User
 from django.shortcuts import render
 from django.views.generic import View
 
@@ -29,8 +29,8 @@ class EmailSendingDebug(View):
         if not request.user.is_superuser:
             return HttpResponseForbidden('Requires superuser')
         try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
+            user = get_user_model().objects.get(username=username)
+        except get_user_model().DoesNotExist:
             return HttpResponseNotFound('ERROR: User "{username}" does not exist'.format(**vars()))
 
         if not request.user.email:

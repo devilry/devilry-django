@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from devilry.devilry_account.models import User
+from django.contrib.auth import get_user_model
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from django.test import TestCase
@@ -9,8 +9,8 @@ from ..models import Node
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
 
-class TestNode(TestCase, TestHelper):
 
+class TestNode(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)")
         self.add(nodes="uio.phys")
@@ -61,7 +61,7 @@ class TestNode(TestCase, TestHelper):
 
     def test_unicode(self):
         self.assertEquals(unicode(self.uio_deepdummy1_deepdummy2_deepdummy3),
-                'uio.deepdummy1.deepdummy2.deepdummy3')
+                          'uio.deepdummy1.deepdummy2.deepdummy3')
 
     def test_get_path(self):
         self.assertEquals(self.uio.get_path(), 'uio')
@@ -71,8 +71,8 @@ class TestNode(TestCase, TestHelper):
 
     def test_iter_childnodes(self):
         self.assertEquals(
-                [n.short_name for n in self.uio_deepdummy1.iter_childnodes()],
-                [u'deepdummy2', u'deepdummy3'])
+            [n.short_name for n in self.uio_deepdummy1.iter_childnodes()],
+            [u'deepdummy2', u'deepdummy3'])
         s = set([n.short_name for n in self.uio.iter_childnodes()])
         self.assertEquals(s, set([u'deepdummy1', u'deepdummy2', u'deepdummy3', u'phys', u'ifi']))
 
@@ -115,7 +115,7 @@ class TestNode(TestCase, TestHelper):
         pk_verify.append(self.uio_matnat_bio.id)
         pk_verify.append(self.uio_matnat_bio_test1.id)
 
-        testadmin = User.objects.get(username='testadmin')
+        testadmin = get_user_model().objects.get(username='testadmin')
         pks = Node._get_nodepks_where_isadmin(testadmin)
         pks.sort()
         pk_verify.sort()
@@ -129,11 +129,13 @@ class TestNode(TestCase, TestHelper):
 
     def test_can_delete(self):
         self.create_superuser('grandma')
-        self.assertTrue(self.uio_deepdummy1_deepdummy2_deepdummy3.can_delete(self.deepdummyadmin)) # Admin on parent, and empty
-        self.assertFalse(self.uio_deepdummy1_deepdummy2.can_delete(self.deepdummyadmin)) # Not empty (contains childnodes)
+        self.assertTrue(
+            self.uio_deepdummy1_deepdummy2_deepdummy3.can_delete(self.deepdummyadmin))  # Admin on parent, and empty
+        self.assertFalse(
+            self.uio_deepdummy1_deepdummy2.can_delete(self.deepdummyadmin))  # Not empty (contains childnodes)
 
-        self.assertTrue(self.uio_ifi.can_delete(self.grandma)) # Superadmin
-        self.assertFalse(self.uio_ifi.can_delete(self.ifiadmin)) # Not admin on parentnode
-        self.assertTrue(self.uio_ifi.can_delete(self.uioadmin)) # Admin on parentnode
+        self.assertTrue(self.uio_ifi.can_delete(self.grandma))  # Superadmin
+        self.assertFalse(self.uio_ifi.can_delete(self.ifiadmin))  # Not admin on parentnode
+        self.assertTrue(self.uio_ifi.can_delete(self.uioadmin))  # Admin on parentnode
         self.add(nodes="uio.ifi", subjects=['duck1010'])
-        self.assertFalse(self.uio_ifi.can_delete(self.uioadmin)) # Not empty (contains a subject)
+        self.assertFalse(self.uio_ifi.can_delete(self.uioadmin))  # Not empty (contains a subject)

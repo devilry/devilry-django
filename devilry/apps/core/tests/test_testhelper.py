@@ -1,15 +1,14 @@
+from datetime import datetime, timedelta
+from django.contrib.auth import get_user_model
+
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from devilry.devilry_account.models import User
 
 from ..models import Node, Subject, Period, Assignment, AssignmentGroup, Deadline, Delivery, StaticFeedback
 from ..testhelper import TestHelper
 
-from datetime import datetime, timedelta
-
 
 class TestTestHelper(TestCase):
-
     def setUp(self):
         self.ti = TestHelper()
 
@@ -50,8 +49,8 @@ class TestTestHelper(TestCase):
         # Assert that all nodes and admins are created
         self.assertEquals(Node.objects.filter(short_name='uio').count(), 1)
         self.assertEquals(Node.objects.filter(short_name='ifi').count(), 1)
-        self.assertEquals(User.objects.filter(username='rektor').count(), 1)
-        self.assertEquals(User.objects.filter(username='mortend').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(username='rektor').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(username='mortend').count(), 1)
 
         # assert that they are both admins
         self.assertTrue(self.ti.rektor in self.ti.uio.admins.all())
@@ -68,7 +67,7 @@ class TestTestHelper(TestCase):
         self.assertEquals(Node.objects.filter(short_name='uio').count(), 1)
         self.assertEquals(Node.objects.filter(short_name='ifi').count(), 1)
 
-        # mortend = User.objects.get(username='mortend')
+        # mortend = get_user_model().objects.get(username='mortend')
         # ifi = Node.objects.get(short_name='ifi')
         self.assertTrue(self.ti.mortend in self.ti.uio_ifi.admins.all())
 
@@ -89,16 +88,16 @@ class TestTestHelper(TestCase):
                     subjects=['inf1000:admin(arnem)', 'inf1010:admin(steinm,steingj)'])
 
         # assert that the subject admin users where created
-        self.assertEquals(User.objects.filter(username='arnem').count(), 1)
-        self.assertEquals(User.objects.filter(username='steinm').count(), 1)
-        self.assertEquals(User.objects.filter(username='steingj').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(username='arnem').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(username='steinm').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(username='steingj').count(), 1)
 
         # inf1000 = Subject.objects.get(short_name='inf1000')
         # inf1010 = Subject.objects.get(short_name='inf1010')
 
-        # arnem = User.objects.get(username='arnem')
-        # steinm = User.objects.get(username='steinm')
-        # steingj = User.objects.get(username='steingj')
+        # arnem = get_user_model().objects.get(username='arnem')
+        # steinm = get_user_model().objects.get(username='steinm')
+        # steingj = get_user_model().objects.get(username='steingj')
 
         # assert that they are all admins in their subjects
         self.assertTrue(self.ti.arnem in self.ti.inf1000.admins.all())
@@ -125,8 +124,8 @@ class TestTestHelper(TestCase):
                     periods=['fall01:admin(steingj)', 'spring01:admin(steinm)'])
 
         # assert that the users are created
-        self.assertEquals(User.objects.filter(username='steingj').count(), 1)
-        self.assertEquals(User.objects.filter(username='steinm').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(username='steingj').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(username='steinm').count(), 1)
 
         # assert that they are admins for the periods
         self.assertTrue(self.ti.steingj in self.ti.inf1000_fall01.admins.all())
@@ -154,8 +153,8 @@ class TestTestHelper(TestCase):
                     assignments=['oblig1:admin(jose)', 'oblig2:admin(jose)'])
 
         # Assert that the admins are created
-        self.assertEquals(User.objects.filter(username='arnem').count(), 1)
-        self.assertEquals(User.objects.filter(username='jose').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(username='arnem').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(username='jose').count(), 1)
 
         # check that jose is an admin for the assignment
         self.assertTrue(self.ti.jose in self.ti.inf1000_fall01_oblig1.admins.all())
@@ -208,7 +207,8 @@ class TestTestHelper(TestCase):
         # assert that uio doesn't have any subjects and stuff
         self.assertEquals(self.ti.uio.subjects.all().count(), 0)
 
-        self.ti.add(nodes='uio.ifi', subjects=['inf2220'], periods=['fall01', 'spring01'], assignments=['oblig1', 'oblig2'])
+        self.ti.add(nodes='uio.ifi', subjects=['inf2220'], periods=['fall01', 'spring01'],
+                    assignments=['oblig1', 'oblig2'])
 
         # assert that inf2220 has 2 assignments
         self.assertEquals(self.ti.inf2220_fall01.assignments.all().count(), 2)
@@ -226,7 +226,6 @@ class TestTestHelper(TestCase):
                     deadlines=[])
 
     def test_period_times(self):
-
         self.ti.add(nodes='uio.ifi',
                     subjects=['inf1000'],
                     periods=['first:begins(0)', 'second:begins(6):ends(1)'],
@@ -314,7 +313,6 @@ class TestTestHelper(TestCase):
         self.assertEquals(self.ti.inf1000_first_oblig1_g1_d1, self.ti.inf1000_first_oblig1_g1_deadlines[-1])
 
     def test_get_object_from_path(self):
-
         self.ti.add(nodes='uio.ifi',
                     subjects=['inf1000'],
                     periods=['first:begins(0)', 'second:begins(6):ends(1)'],
@@ -351,7 +349,7 @@ class TestTestHelper(TestCase):
         file1 = {'test.py': ['print', 'hello world']}
         file2 = {'test2.py': ['print "hi"']}
         files = {'test.py': ['print', 'hello world'],
-                 'test2.py': ['print "hi"'] }
+                 'test2.py': ['print "hi"']}
 
         # deliver with path
         d1 = self.ti.add_delivery('inf1000.first.oblig1.g1', file1)
@@ -380,7 +378,8 @@ class TestTestHelper(TestCase):
         # add a late delivery
         d5 = self.ti.add_delivery(self.ti.inf1000_second_oblig1_g2, files=file2, after_last_deadline=True)
         # and assert that it's really delivered after the deadline
-        self.assertGreater(d5.time_of_delivery.date(), d5.deadline.deadline.date())   # self.ti.inf1000_second_oblig1.publishing_time)
+        self.assertGreater(d5.time_of_delivery.date(),
+                           d5.deadline.deadline.date())  # self.ti.inf1000_second_oblig1.publishing_time)
         self.assertTrue(d5.after_deadline)
 
     def test_feedback(self):
@@ -441,7 +440,7 @@ class TestTestHelper(TestCase):
         with self.assertRaises(ValueError):
             self.ti.add(nodes='uio', subjects='inf101', assignments='oblig1')
 
-            #self.ti.add(nodes='uio', subjects='inf101', assignments='oblig1')
+            # self.ti.add(nodes='uio', subjects='inf101', assignments='oblig1')
 
     def test_refresh_var(self):
         self.ti.add(nodes='uio.ifi',
@@ -489,7 +488,7 @@ class TestTestHelper(TestCase):
 
         self.ti.create_user('someUser')
 
-        self.assertEquals(self.ti.someUser, User.objects.get(username='someUser'))
+        self.assertEquals(self.ti.someUser, get_user_model().objects.get(username='someUser'))
         with self.assertRaises(Exception):
             self.ti.create_user('cotryti')
 

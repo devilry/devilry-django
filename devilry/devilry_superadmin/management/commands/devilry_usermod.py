@@ -1,8 +1,9 @@
-from django.core.management.base import BaseCommand, CommandError
-from devilry.devilry_account.models import User
-from django.core.exceptions import ValidationError
 from optparse import make_option
-import sys
+from django.contrib.auth import get_user_model
+
+from django.core.management.base import BaseCommand, CommandError
+
+from django.core.exceptions import ValidationError
 
 from devilry.utils.management import make_input_encoding_option
 
@@ -27,29 +28,28 @@ class UserModCommand(BaseCommand):
         self.save(profile)
 
 
-
 class Command(UserModCommand):
     args = '<username>'
     help = 'Create new user.'
     option_list = BaseCommand.option_list + (
         make_option('--email',
-            dest='email',
-            default=None,
-            help='Email address'),
+                    dest='email',
+                    default=None,
+                    help='Email address'),
         make_option('--full_name',
-            dest='full_name',
-            default=None,
-            help='Full name'),
+                    dest='full_name',
+                    default=None,
+                    help='Full name'),
         make_option('--superuser',
-            action='store_true',
-            dest='superuser',
-            default=False,
-            help='Make the user a superuser, with access to everything in the system.'),
+                    action='store_true',
+                    dest='superuser',
+                    default=False,
+                    help='Make the user a superuser, with access to everything in the system.'),
         make_option('--normaluser',
-            action='store_true',
-            dest='normaluser',
-            default=False,
-            help='Make the user a normal user, with access to everything that they are given explicit access to.'),
+                    action='store_true',
+                    dest='normaluser',
+                    default=False,
+                    help='Make the user a normal user, with access to everything that they are given explicit access to.'),
         make_input_encoding_option()
     )
 
@@ -72,8 +72,8 @@ class Command(UserModCommand):
             kw['is_staff'] = False
 
         try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
+            user = get_user_model().objects.get(username=username)
+        except get_user_model().DoesNotExist:
             raise CommandError('User "{0}" does not exist.'.format(username))
         else:
             for key, value in kw.iteritems():

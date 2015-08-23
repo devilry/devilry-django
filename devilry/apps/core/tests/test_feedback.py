@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from devilry.devilry_account.models import User
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
@@ -10,19 +9,19 @@ from devilry.project.develop.testhelpers.corebuilder import DeliveryBuilder
 from devilry.apps.core.models import StaticFeedback
 from devilry.apps.core.testhelper import TestHelper
 
-class TestStaticFeedback(TestCase):
 
+class TestStaticFeedback(TestCase):
     def setUp(self):
         DeliveryBuilder.set_memory_deliverystore()
-        self.assignment1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+        self.assignment1builder = PeriodBuilder.quickadd_ducku_duck1010_active() \
             .add_assignment('assignment1')
         self.testuser = UserBuilder('testuser').user
 
     def test_save_groupclose(self):
         # Setup
         groupbuilder = self.assignment1builder.add_group()
-        delivery = groupbuilder\
-            .add_deadline_in_x_weeks(weeks=1)\
+        delivery = groupbuilder \
+            .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1).delivery
         feedback = StaticFeedback(
             delivery=delivery,
@@ -41,8 +40,8 @@ class TestStaticFeedback(TestCase):
     def test_save_groupclose_False(self):
         # Setup
         groupbuilder = self.assignment1builder.add_group()
-        delivery = groupbuilder\
-            .add_deadline_in_x_weeks(weeks=1)\
+        delivery = groupbuilder \
+            .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1).delivery
         feedback = StaticFeedback(
             delivery=delivery,
@@ -58,12 +57,11 @@ class TestStaticFeedback(TestCase):
         groupbuilder.reload_from_db()
         self.assertTrue(groupbuilder.group.is_open)
 
-
     def test_save_autoset_as_active_feedback_on_group(self):
         # Setup
         groupbuilder = self.assignment1builder.add_group()
-        delivery = groupbuilder\
-            .add_deadline_in_x_weeks(weeks=1)\
+        delivery = groupbuilder \
+            .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1).delivery
         feedback = StaticFeedback(
             delivery=delivery,
@@ -82,8 +80,8 @@ class TestStaticFeedback(TestCase):
     def test_save_autoset_as_active_feedback_on_group_False(self):
         # Setup
         groupbuilder = self.assignment1builder.add_group()
-        delivery = groupbuilder\
-            .add_deadline_in_x_weeks(weeks=1)\
+        delivery = groupbuilder \
+            .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1).delivery
         feedback = StaticFeedback(
             delivery=delivery,
@@ -99,11 +97,10 @@ class TestStaticFeedback(TestCase):
         groupbuilder.reload_from_db()
         self.assertIsNone(groupbuilder.group.feedback)
 
-
     def test_save_autoset_as_last_feedback_on_delivery(self):
         # Setup
-        deliverybuilder = self.assignment1builder.add_group()\
-            .add_deadline_in_x_weeks(weeks=1)\
+        deliverybuilder = self.assignment1builder.add_group() \
+            .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1)
         feedback = StaticFeedback(
             delivery=deliverybuilder.delivery,
@@ -121,8 +118,8 @@ class TestStaticFeedback(TestCase):
 
     def test_save_autoset_as_last_feedback_on_delivery_False(self):
         # Setup
-        deliverybuilder = self.assignment1builder.add_group()\
-            .add_deadline_in_x_weeks(weeks=1)\
+        deliverybuilder = self.assignment1builder.add_group() \
+            .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1)
         feedback = StaticFeedback(
             delivery=deliverybuilder.delivery,
@@ -143,8 +140,8 @@ class TestStaticFeedback(TestCase):
             points_to_grade_mapper='raw-points',
             passing_grade_min_points=4,
             max_points=10)
-        deliverybuilder = self.assignment1builder.add_group()\
-            .add_deadline_in_x_weeks(weeks=1)\
+        deliverybuilder = self.assignment1builder.add_group() \
+            .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1)
         feedback = StaticFeedback.from_points(
             assignment=self.assignment1builder.assignment,
@@ -158,11 +155,11 @@ class TestStaticFeedback(TestCase):
             points_to_grade_mapper='raw-points',
             passing_grade_min_points=4,
             max_points=19)
-        deliverybuilder = self.assignment1builder.add_group()\
-            .add_deadline_in_x_weeks(weeks=1)\
+        deliverybuilder = self.assignment1builder.add_group() \
+            .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1)
         with self.assertRaisesRegexp(ValidationError,
-                '.*You are not allowed to give more than 19 points on this assignment.*'):
+                                     '.*You are not allowed to give more than 19 points on this assignment.*'):
             feedback = StaticFeedback.from_points(
                 assignment=self.assignment1builder.assignment,
                 points=20)
@@ -175,12 +172,13 @@ class TestStaticFeedbackOld(TestCase, TestHelper):
     moved to TestStaticFeedback if we update any of the tested 
     methods, or need to add more tests.
     """
+
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin)",
                  subjects=["inf1100"],
                  periods=[
-                          "period1:admin(teacher1):begins(-1):ends(5)",
-                          "old_period:begins(-2):ends(1)"],
+                     "period1:admin(teacher1):begins(-1):ends(5)",
+                     "old_period:begins(-2):ends(1)"],
                  assignments=["assignment1"],
                  assignmentgroups=["g1:candidate(student1):examiner(examiner1)",
                                    "g2:candidate(student2):examiner(examiner2)"],
@@ -265,5 +263,3 @@ class TestStaticFeedbackOld(TestCase, TestHelper):
         self.assertEquals(StaticFeedback.published_where_is_examiner(self.examiner2).count(), 1)
         self.assertEquals(StaticFeedback.published_where_is_examiner(self.examiner2, active=False).count(), 0)
         self.assertEquals(StaticFeedback.published_where_is_examiner(self.examiner2, old=False).count(), 1)
-
-

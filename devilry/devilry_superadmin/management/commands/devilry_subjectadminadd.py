@@ -1,14 +1,12 @@
-from devilry.devilry_account.models import User
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
-
-
 
 
 class AdminAddBase(BaseCommand):
     def add_admin(self, record, username):
         try:
-            user= User.objects.get(username=username)
-        except User.DoesNotExist, e:
+            user = get_user_model().objects.get(username=username)
+        except get_user_model().DoesNotExist, e:
             raise CommandError('Invalid username.')
 
         if record.admins.filter(username=username).count() > 0:

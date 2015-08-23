@@ -1,9 +1,8 @@
+from django.contrib.auth import get_user_model
 from django.test import TestCase
-from devilry.devilry_account.models import User
 
 from devilry.apps.core.testhelper import TestHelper
 from devilry.devilry_rest.testclient import RestClient
-
 
 
 class TestRestAggregatedPeriod(TestCase):
@@ -20,7 +19,7 @@ class TestRestAggregatedPeriod(TestCase):
 
     def _create_relateduser(self, username, tags='', candidate_id=None,
                             labels=[]):
-        user = User.objects.get(username=username)
+        user = get_user_model().objects.get(username=username)
         relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user,
                                                                       tags=tags,
                                                                       candidate_id=candidate_id)
@@ -63,8 +62,10 @@ class TestRestAggregatedPeriod(TestCase):
 
     def test_get_as_periodadmin(self):
         self._test_get_as('p1admin')
+
     def test_get_as_nodeadmin(self):
         self._test_get_as('uniadmin')
+
     def test_get_as_superuser(self):
         self.testhelper.create_superuser('super')
         self._test_get_as('super')
@@ -102,9 +103,9 @@ class TestRestAggregatedPeriod(TestCase):
         self.assertEquals(len(student1item['groups']), 1)
         self.assertEquals(student1item['groups'][0],
                           {u'assignment_id': self.testhelper.sub_p1_a1.id,
-                            u'feedback': None,
-                            u'id': self.testhelper.sub_p1_a1_g1.id,
-                            u'is_open': True})
+                           u'feedback': None,
+                           u'id': self.testhelper.sub_p1_a1_g1.id,
+                           u'is_open': True})
 
     def test_include_nonrelated(self):
         self.testhelper.create_user('student1')

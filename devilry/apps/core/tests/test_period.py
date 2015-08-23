@@ -1,12 +1,12 @@
 from datetime import datetime
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
-from devilry.devilry_account.models import User
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 
-from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder, PeriodBuilder
+from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.apps.core.models import Period, Subject
 from devilry.apps.core.testhelper import TestHelper
@@ -28,13 +28,13 @@ class TestPeriodManager(TestCase):
         subjectbuilder = SubjectBuilder.quickadd_ducku_duck1010()
         testuser = UserBuilder('testuser').user
 
-        period_a_builder = subjectbuilder\
-            .add_6month_active_period(short_name='periodA')\
+        period_a_builder = subjectbuilder \
+            .add_6month_active_period(short_name='periodA') \
             .add_relatedstudents(testuser)
-        period_b_builder = subjectbuilder\
+        period_b_builder = subjectbuilder \
             .add_6month_active_period(short_name='periodB')
-        period_b_builder\
-            .add_assignment('week1')\
+        period_b_builder \
+            .add_assignment('week1') \
             .add_group(students=[testuser])
         subjectbuilder.add_6month_active_period(short_name='periodC')
 
@@ -48,7 +48,7 @@ class TestPeriodManagerQualifiesForExam(TestCase):
         self.testuser = UserBuilder('testuser').user
         self.testadmin = UserBuilder('testadmin').user
         self.subjectbuilder = SubjectBuilder.quickadd_ducku_duck1010()
-        self.periodbuilder = self.subjectbuilder.add_6month_active_period()\
+        self.periodbuilder = self.subjectbuilder.add_6month_active_period() \
             .add_relatedstudents(self.testuser)
         self.relatedstudent = self.periodbuilder.period.relatedstudent_set.get(user=self.testuser)
 
@@ -63,7 +63,7 @@ class TestPeriodManagerQualifiesForExam(TestCase):
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertTrue(
             Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).first()
-            .user_qualifies_for_final_exam)
+                .user_qualifies_for_final_exam)
 
     def test_not_qualfied(self):
         status = self.__create_status(Status.READY)
@@ -71,20 +71,20 @@ class TestPeriodManagerQualifiesForExam(TestCase):
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertFalse(
             Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-            .first().user_qualifies_for_final_exam)
+                .first().user_qualifies_for_final_exam)
 
     def test_not_set(self):
         self.__create_status(Status.READY)
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertIsNone(
             Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-            .first().user_qualifies_for_final_exam)
+                .first().user_qualifies_for_final_exam)
 
     def test_no_status(self):
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertIsNone(
             Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-            .first().user_qualifies_for_final_exam)
+                .first().user_qualifies_for_final_exam)
 
     def test_not_ready(self):
         status = self.__create_status(Status.NOTREADY)
@@ -92,7 +92,7 @@ class TestPeriodManagerQualifiesForExam(TestCase):
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertIsNone(
             Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-            .first().user_qualifies_for_final_exam)
+                .first().user_qualifies_for_final_exam)
 
     def test_almostready(self):
         status = self.__create_status(Status.ALMOSTREADY)
@@ -100,7 +100,7 @@ class TestPeriodManagerQualifiesForExam(TestCase):
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertTrue(
             Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-            .first().user_qualifies_for_final_exam)
+                .first().user_qualifies_for_final_exam)
 
     def test_multiple_statuses_use_last(self):
         status = self.__create_status(Status.READY)
@@ -109,10 +109,10 @@ class TestPeriodManagerQualifiesForExam(TestCase):
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertIsNone(
             Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).first()
-            .user_qualifies_for_final_exam)
+                .user_qualifies_for_final_exam)
 
     def test_use_correct_period(self):
-        otherperiodbuilder = self.subjectbuilder.add_6month_lastyear_period()\
+        otherperiodbuilder = self.subjectbuilder.add_6month_lastyear_period() \
             .add_relatedstudents(self.testuser)
         status = Status.objects.create(period=otherperiodbuilder.period,
                                        user=self.testadmin,
@@ -122,13 +122,14 @@ class TestPeriodManagerQualifiesForExam(TestCase):
             qualifies=True)
         self.assertIsNone(
             Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-            .get(id=self.periodbuilder.period.id).user_qualifies_for_final_exam)
+                .get(id=self.periodbuilder.period.id).user_qualifies_for_final_exam)
 
 
 class TestPeriodOld(TestCase, TestHelper):
     """
     Do not add new tests to this testcase, add to the newer testcases above, or add new testcases and use corebuilder instead.
     """
+
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi",
                  subjects=["inf1100"],
@@ -138,9 +139,9 @@ class TestPeriodOld(TestCase, TestHelper):
 
     def test_unique(self):
         n = Period(parentnode=Subject.objects.get(short_name='inf1100'),
-                short_name='old', long_name='Old',
-                start_time=datetime.now(),
-                end_time=datetime.now())
+                   short_name='old', long_name='Old',
+                   start_time=datetime.now(),
+                   end_time=datetime.now())
         self.assertRaises(IntegrityError, n.save)
 
     def test_etag_update(self):
@@ -179,7 +180,7 @@ class TestPeriodOld(TestCase, TestHelper):
         self.assertEquals(q[2].short_name, 'spring10')
 
     def test_published_where_is_examiner(self):
-        examiner1 = User.objects.get(username='examiner1')
+        examiner1 = get_user_model().objects.get(username='examiner1')
         self.add_to_path('uio.ifi;inf1010.spring10:begins(-1):ends(2).oblig1.student1:examiner(examiner1)')
         q = Period.published_where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 3)
@@ -192,7 +193,6 @@ class TestPeriodOld(TestCase, TestHelper):
         self.assertFalse(self.inf1100_old.is_empty())
         self.add(nodes="uio.ifi", subjects=['duck9000'], periods=['emptyperiod'])
         self.assertTrue(self.duck9000_emptyperiod.is_empty())
-
 
     def test_q_is_active(self):
         activeperiods = Period.objects.filter(Period.q_is_active())

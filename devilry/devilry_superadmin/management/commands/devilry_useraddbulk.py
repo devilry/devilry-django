@@ -1,8 +1,8 @@
 from optparse import make_option
 import sys
+from django.contrib.auth import get_user_model
 
 from django.core.management.base import BaseCommand
-from devilry.devilry_account.models import User
 
 from devilry.devilry_superadmin.management.commands.devilry_usermod import UserModCommand
 
@@ -11,9 +11,9 @@ class Command(UserModCommand):
     help = 'Add users from standard in.'
     option_list = BaseCommand.option_list + (
         make_option('--emailsuffix',
-            dest='emailsuffix',
-            default=None,
-            help='Email suffix set for all users. Example: {username}@example.com'),
+                    dest='emailsuffix',
+                    default=None,
+                    help='Email suffix set for all users. Example: {username}@example.com'),
     )
 
     def handle(self, *args, **options):
@@ -22,11 +22,11 @@ class Command(UserModCommand):
         users_created_count = 0
         verbosity = int(options.get('verbosity', '1'))
         emailsuffix = options['emailsuffix']
-        
+
         for username in usernames:
             try:
-                User.objects.get(username=username)
-            except User.DoesNotExist:
+                get_user_model().objects.get(username=username)
+            except get_user_model().DoesNotExist:
                 email = None
                 if emailsuffix != None:
                     try:
@@ -34,7 +34,7 @@ class Command(UserModCommand):
                     except KeyError:
                         print "Error: emailsuffix must contain '{username}'"
                         sys.exit()
-                user = User(username=username, email=email)
+                user = get_user_model()(username=username, email=email)
                 print "Create user:%s with email %s" % (username, email)
                 user.set_unusable_password()
                 self.save_user(user, verbosity)
