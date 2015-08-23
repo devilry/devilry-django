@@ -1,5 +1,5 @@
+from django.conf import settings
 from django.db import models
-from devilry.devilry_account.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 
@@ -29,7 +29,7 @@ class Status(models.Model):
     status = models.SlugField(max_length=30, blank=False, choices=STATUS_CHOICES)
     createtime = models.DateTimeField(auto_now_add=True)
     message = models.TextField(blank=True)
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     plugin = models.CharField(max_length=500, null=True, blank=True)
     exported_timestamp = models.DateTimeField(null=True, blank=True)
 

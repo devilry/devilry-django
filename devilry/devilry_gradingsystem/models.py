@@ -1,10 +1,11 @@
 from datetime import datetime
 import os
 import uuid
+
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.core.exceptions import ValidationError
-from devilry.devilry_account.models import User
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback
@@ -32,7 +33,7 @@ class FeedbackDraft(models.Model):
         blank=True, null=True)
     points = models.PositiveIntegerField(
         blank=False, null=False)
-    saved_by = models.ForeignKey(User, related_name='devilry_gradingsystem_feedbackdraft_set')
+    saved_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='devilry_gradingsystem_feedbackdraft_set')
     published = models.BooleanField(
         default=False,
         help_text=('Has this draft been published as a StaticFeedback? '
@@ -137,7 +138,7 @@ class FeedbackDraftFile(models.Model):
     Unlike :class:`.FeedbackDraft`, we only keep one copy of the files.
     """
     delivery = models.ForeignKey(Delivery, related_name='+')
-    saved_by = models.ForeignKey(User, related_name='+')
+    saved_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='+')
 
     #: The original filename.
     filename = models.TextField(blank=False, null=False)

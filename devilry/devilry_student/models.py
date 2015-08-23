@@ -1,25 +1,23 @@
 from os.path import splitext
 from os.path import basename
+from django.conf import settings
 from django.db import models
-from devilry.devilry_account.models import User
 
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import Delivery
 
 
-
 def uploaded_deliveryfile_path(uploaded_deliveryfile, filename):
-    if uploaded_deliveryfile.id == None:
+    if uploaded_deliveryfile.id is None:
         raise ValueError('Can not add the file to UploadedDeliveryFile before it has an ID.')
     return 'devilry_student/incomplete_deliveries/{id}'.format(id=uploaded_deliveryfile.id)
-
-
 
 
 class UploadedDeliveryFileQuerySet(models.query.QuerySet):
     """
     QuerySet for :class:`.UploadedDeliveryFileManager`.
     """
+
     def delete_objects_and_files(self):
         """
         Delete all UploadedDeliveryFile objects in the queryset along
@@ -34,6 +32,7 @@ class UploadedDeliveryFileManager(models.Manager):
     """
     Manager for :class:`.UploadedDeliveryFile`.
     """
+
     def get_queryset(self):
         return UploadedDeliveryFileQuerySet(self.model, using=self._db)
 
@@ -76,13 +75,12 @@ class UploadedDeliveryFileManager(models.Manager):
 
         for uploaded_deliveryfile in queryset:
             delivery.add_file(uploaded_deliveryfile.filename,
-                uploaded_deliveryfile.uploaded_file)
+                              uploaded_deliveryfile.uploaded_file)
 
         delivery.successful = True
         delivery.save()
 
         return delivery, queryset
-
 
     def create_with_file(self, deadline, user, filename, filecontent):
         """
@@ -121,12 +119,12 @@ class UploadedDeliveryFile(models.Model):
     :meth:`.UploadedDeliveryFileManager.convert_to_delivery`.
     """
     objects = UploadedDeliveryFileManager()
-    
+
     #: The :class:`devilry.apps.core.models.Deadline` that the file was uploaded to.
     deadline = models.ForeignKey(Deadline)
 
     #: The User that uploaded the file. Only this user has access to the file.
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
 
     #: The datetime when this UploadedDeliveryFile was created.
     uploaded_datetime = models.DateTimeField(auto_now_add=True)
@@ -140,12 +138,11 @@ class UploadedDeliveryFile(models.Model):
     class Meta:
         unique_together = ('deadline', 'user', 'filename')
 
-
     @staticmethod
     def prepare_filename(filename):
         filename = basename(filename)
         if len(filename) > 255:
             name, ext = splitext(filename)
-            return '{}{}'.format(name[:255-len(ext)], ext)
+            return '{}{}'.format(name[:255 - len(ext)], ext)
         else:
             return filename
