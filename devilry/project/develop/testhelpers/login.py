@@ -19,7 +19,7 @@ class LoginTestCaseMixin(object):
         """
         Login the given ``user``.
         """
-        self.client.login(username=user.username, password=password)
+        self.client.login(username=user.shortname, password=password)
 
     def get_as(self, user, *args, **kwargs):
         """
