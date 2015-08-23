@@ -1,3 +1,4 @@
+import unittest
 from django.test import TestCase
 from django.test import Client
 from django.core.urlresolvers import reverse
@@ -11,6 +12,7 @@ from devilry.devilry_qualifiesforexam_approved.models import SubsetPluginSetting
 from devilry.devilry_qualifiesforexam.pluginhelpers import PluginResultsFailedVerification
 
 
+@unittest.skip('devilry_qualifiesforexam will need rewrite for 3.0')
 class TestAllApprovedView(TestCase, QualifiesForExamPluginTestMixin):
     def setUp(self):
         self.testhelper = TestHelper()
