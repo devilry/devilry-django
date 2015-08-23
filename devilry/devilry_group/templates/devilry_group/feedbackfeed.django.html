@@ -88,9 +88,8 @@
                                             </div>
                                             {% for file in comment.commentfile_set.all %}
                                                 <a href="{% url 'devilry-feedbackfeed-file-download' comment.feedback_set.id file.id %}">
-                                                    <i class="fa fa-file fa-3x" title="{{ file.filename }}"></i>
+                                                    <i class="fa fa-file fa-3x" tooltip="{{ file.filename }}"></i>
                                                 </a>
-{#                                                <div class="file_icon" title="{{ file.filename }}"><p>{{ file.filename }}</p></div>#}
                                             {% endfor %}
                                         </div>
                                         {% if not comment.instant_publish and not comment.feedback_set.published_datetime %}
