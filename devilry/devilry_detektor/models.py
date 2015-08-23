@@ -1,6 +1,6 @@
 import json
+from django.conf import settings
 from django.db import models
-from devilry.devilry_account.models import User
 import detektor
 import detektor.parseresult
 
@@ -32,7 +32,7 @@ class DetektorAssignment(models.Model):
         null=True, blank=True
     )
     processing_started_by = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         null=True, blank=True)
 
     def __unicode__(self):
