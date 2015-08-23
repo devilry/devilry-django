@@ -202,8 +202,8 @@ class AllGroupsOverview(DetailView):
     paginate_by = 100
 
     order_by_map = {
-        '': 'candidates__student__devilryuserprofile__full_name',
-        'name_descending': '-candidates__student__devilryuserprofile__full_name',
+        '': 'candidates__student__fullname',
+        'name_descending': '-candidates__student__fullname',
         'username': 'candidates__student__username',
         'username_descending': '-candidates__student__username',
         # 'lastname': 'candidates__student__last_name',
@@ -252,14 +252,12 @@ class AllGroupsOverview(DetailView):
                         SELECT selected_candidate.selected_candidate_full_name
                         FROM (
                             SELECT
-                              core_devilryuserprofile.full_name as selected_candidate_full_name
+                              user_model.fullname as selected_candidate_full_name
                             FROM core_candidate
-                            INNER JOIN auth_user
-                              ON auth_user.id=core_candidate.student_id
-                            INNER JOIN core_devilryuserprofile
-                              ON core_devilryuserprofile.user_id=auth_user.id
+                            INNER JOIN devilry_account_user
+                              ON devilry_account_user.id=core_candidate.student_id
                             WHERE core_assignmentgroup.id=core_candidate.assignment_group_id
-                            ORDER BY core_devilryuserprofile.full_name
+                            ORDER BY user_model.fullname
                             LIMIT 1
                         ) AS selected_candidate
                     """
@@ -277,12 +275,12 @@ class AllGroupsOverview(DetailView):
                         SELECT selected_candidate.selected_candidate_username
                         FROM (
                             SELECT
-                              auth_user.username as selected_candidate_username
+                              devilry_account_user.username as selected_candidate_username
                             FROM core_candidate
-                            INNER JOIN auth_user
-                              ON auth_user.id=core_candidate.student_id
+                            INNER JOIN devilry_account_user
+                              ON devilry_account_user.id=core_candidate.student_id
                             WHERE core_assignmentgroup.id=core_candidate.assignment_group_id
-                            ORDER BY auth_user.username
+                            ORDER BY devilry_account_user.username
                             LIMIT 1
                         ) AS selected_candidate
                     """

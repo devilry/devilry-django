@@ -68,18 +68,14 @@ class StatusPrintView(TemplateView):
     @classmethod
     def get_studentstatuses_by_sorter(cls, status, sortby):
         if sortby == 'name':
-            orderby = 'relatedstudent__user__devilryuserprofile__full_name'
+            orderby = 'relatedstudent__user__fullname'
         elif sortby == 'username' or sortby == 'lastname':
             orderby = 'relatedstudent__user__username'
         else:
             raise ValueError('Invalid sortby: {0}'.format(sortby))
 
         studentstatuses = status.students.all().order_by(orderby)
-        studentstatuses = studentstatuses.select_related(
-                'relatedstudent',
-                'relatedstudent__user',
-                'relatedstudent__user__devilryuserprofile'
-            )
+        studentstatuses = studentstatuses.select_related('relatedstudent', 'relatedstudent__user')
         if sortby == 'lastname':
             studentstatuses = list(studentstatuses)
             studentstatuses.sort(lambda a, b: cmp_lastname(a.relatedstudent.user, b.relatedstudent.user))

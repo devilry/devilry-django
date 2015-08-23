@@ -78,8 +78,7 @@ class Command(BaseCommand):
                                  'deadline__assignment_group__parentnode__parentnode',
                                  'deadline__assignment_group__parentnode__parentnode__parentnode')
         qry = qry.prefetch_related('deadline__assignment_group__candidates',
-                                   'deadline__assignment_group__candidates__student',
-                                   'deadline__assignment_group__candidates__student__devilryuserprofile')
+                                   'deadline__assignment_group__candidates__student')
         return qry
 
     def mark_all_unsuccessful_with_feedback_as_successful(self):

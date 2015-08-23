@@ -136,7 +136,7 @@ class AggregatePeriod(View):
 
     def _initialize_from_relatedstudents(self, period):
         relatedstudents = RelatedStudent.objects.filter(period=period)
-        relatedstudents = relatedstudents.select_related('user', 'user__devilryuserprofile')
+        relatedstudents = relatedstudents.select_related('user')
         result = {}
         for relatedstudent in relatedstudents:
             result[str(relatedstudent.user.id)] = self._create_resultdict(relatedstudent.user, relatedstudent)
@@ -155,8 +155,7 @@ class AggregatePeriod(View):
     def _add_groups(self, period, result, include_nonrelated):
         groups = AssignmentGroup.objects.filter(parentnode__parentnode=period)
         groups = groups.select_related('feedback')
-        groups = groups.prefetch_related('candidates', 'candidates__student',
-                                         'candidates__student__devilryuserprofile')
+        groups = groups.prefetch_related('candidates', 'candidates__student')
         groups = groups.order_by('parentnode__publishing_time')
         for group in groups:
             groupdct = self._serialize_group(group)

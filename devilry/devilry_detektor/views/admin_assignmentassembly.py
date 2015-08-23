@@ -100,10 +100,8 @@ class AssignmentAssemblyView(ListView):
                 .prefetch_related(
                     'parseresult1__delivery__deadline__assignment_group__candidates',
                     'parseresult1__delivery__deadline__assignment_group__candidates__student',
-                    'parseresult1__delivery__deadline__assignment_group__candidates__student__devilryuserprofile',
                     'parseresult2__delivery__deadline__assignment_group__candidates',
-                    'parseresult2__delivery__deadline__assignment_group__candidates__student',
-                    'parseresult2__delivery__deadline__assignment_group__candidates__student__devilryuserprofile')
+                    'parseresult2__delivery__deadline__assignment_group__candidates__student')
         else:
             return super(AssignmentAssemblyView, self).get_queryset().none()
 

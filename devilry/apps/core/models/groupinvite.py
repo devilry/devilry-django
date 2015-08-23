@@ -103,8 +103,7 @@ class GroupInvite(models.Model):
         users = User.objects.filter(relatedstudent__period=group.period)\
             .exclude(id__in=students_in_group)\
             .exclude(id__in=students_invited_to_group)\
-            .order_by('devilryuserprofile__full_name', 'username')\
-            .select_related('devilryuserprofile')
+            .order_by('fullname', 'username')
         return users
 
 

@@ -171,7 +171,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         Override if you need to optimize the query for your usecase
         (``select_related``, ``prefetch_related``, etc.)
         """
-        return self.period.relatedstudent_set.all().select_related('user', 'user__devilryuserprofile')
+        return self.period.relatedstudent_set.all().select_related('user')
 
     def get_groups_queryset(self):
         """
@@ -181,8 +181,7 @@ class GroupsGroupedByRelatedStudentAndAssignment(object):
         """
         groupqry = AssignmentGroup.objects.filter(parentnode__parentnode=self.period)
         groupqry = groupqry.select_related('parentnode', 'parentnode__parentnode', 'feedback')
-        groupqry = groupqry.prefetch_related('candidates', 'candidates__student',
-            'candidates__student__devilryuserprofile', 'deadlines')
+        groupqry = groupqry.prefetch_related('candidates', 'candidates__student', 'deadlines')
         return groupqry
 
 

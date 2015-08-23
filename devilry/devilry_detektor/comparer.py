@@ -44,8 +44,7 @@ class CompareManyCollection(object):
             )\
             .prefetch_related(
                 'delivery__deadline__assignment_group__candidates',
-                'delivery__deadline__assignment_group__candidates__student',
-                'delivery__deadline__assignment_group__candidates__student__devilryuserprofile')
+                'delivery__deadline__assignment_group__candidates__student')
         return parseresults
 
     def _group_by_language_and_compare(self, parseresults):

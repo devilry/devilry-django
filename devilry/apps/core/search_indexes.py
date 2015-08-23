@@ -108,8 +108,8 @@ class AssignmentGroupIndex(AdminsSearchIndex, indexes.Indexable):
             'parentnode__admins',
             'parentnode__parentnode__admins',
             'parentnode__parentnode__parentnode__admins',
-            'examiners', 'examiners__user', 'examiners__user__devilryuserprofile',
-            'candidates', 'candidates__student', 'candidates__student__devilryuserprofile')
+            'examiners', 'examiners__user',
+            'candidates', 'candidates__student')
         return qry
 
     def prepare_is_active(self, obj):

@@ -228,7 +228,7 @@ class StatusView(View):
             raise ErrorResponse(statuscodes.HTTP_404_NOT_FOUND,
                                 {'detail': 'The period has no statuses'})
         statusQry = statusQry.select_related(
-            'period', 'user', 'user__devilryuserprofile')
+            'period', 'user')
 
         grouper = GroupsGroupedByRelatedStudentAndAssignment(period)
         out = self._serialize_period(period)

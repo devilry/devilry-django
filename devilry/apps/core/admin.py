@@ -20,7 +20,7 @@ class BaseNodeAdmin(admin.ModelAdmin):
         'long_name',
         'admins__username',
         'admins__email',
-        'admins__devilryuserprofile__full_name',
+        'admins__fullname',
     ]
 
     def admins_as_string(self, obj):
@@ -34,8 +34,7 @@ class BaseNodeAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
         return super(BaseNodeAdmin, self).get_queryset(request)\
             .prefetch_related(
-                'admins',
-                'admins__devilryuserprofile')
+                'admins')
 
 
 class NodeAdmin(BaseNodeAdmin):

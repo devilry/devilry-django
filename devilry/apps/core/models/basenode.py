@@ -62,7 +62,7 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
     get_admins.short_description = _('Administrators')
 
     def _get_inherited_admins(self, admins):
-        for admin in self.admins.all().select_related('devilryuserprofile'):
+        for admin in self.admins.all():
             admins[admin.id] = InheritedAdmin(user=admin, basenode=self)
         if self.parentnode:
             self.parentnode._get_inherited_admins(admins)
