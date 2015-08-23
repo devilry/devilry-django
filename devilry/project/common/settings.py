@@ -114,7 +114,7 @@ MIDDLEWARE_CLASSES = ['django.middleware.common.CommonMiddleware',
 # Django Cradmin settings (Auth backend, forgotten password and sitename)
 ##################################################################################
 AUTHENTICATION_BACKENDS = (
-    'django_cradmin.apps.cradmin_authenticate.backends.EmailAuthBackend',
+    'devilry.devilry_account.authbackend.default.EmailAuthBackend',
 )
 
 DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = True
