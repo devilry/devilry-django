@@ -1,3 +1,4 @@
+import unittest
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
@@ -6,7 +7,7 @@ from devilry.devilry_rest.testclient import RestClient
 from devilry.apps.core.testhelper import TestHelper
 
 
-
+@unittest.skip('We will replace the languageselect view in 3.0')
 class TestLanguageSelect(TestCase):
     def setUp(self):
         self.client = RestClient()
