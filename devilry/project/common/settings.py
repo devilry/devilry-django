@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'devilry.apps.core',
     'devilry.apps.gradeeditors',
 
+    'devilry.devilry_account',
     'devilry.devilry_markup',
     'devilry.devilry_superadmin',
     'devilry.devilry_authenticate',
