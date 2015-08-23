@@ -9,6 +9,82 @@ class UserManager(BaseUserManager):
     """
     Manager for :class:`User`.
     """
+    def user_is_basenodeadmin(self, userobj, *basenode_modelsclasses):
+        """
+        Check if the given user is admin on any of the given
+        ``basenode_modelsclasses``.
+
+        :param basenode_modelsclasses:
+            Model classes. They must have an ``admins`` one-to-many relationship
+            with User.
+        """
+        for cls in basenode_modelsclasses:
+            if cls.objects.filter(admins__id=userobj.id).exists():
+                return True
+        return False
+
+    def user_is_nodeadmin(self, userobj):
+        """
+        Check if the given user is admin on any node.
+        """
+        from devilry.apps.core.models.node import Node
+        return self.user_is_basenodeadmin(userobj, Node)
+
+    def user_is_subjectadmin(self, userobj):
+        """
+        Check if the given user is admin on any subject.
+        """
+        from devilry.apps.core.models.subject import Subject
+        return self.user_is_basenodeadmin(userobj, Subject)
+
+    def user_is_periodadmin(self, userobj):
+        """
+        Check if the given user is admin on any period.
+        """
+        from devilry.apps.core.models.period import Period
+        return self.user_is_basenodeadmin(userobj, Period)
+
+    def user_is_assignmentadmin(self, userobj):
+        """
+        Check if the given user is admin on any assignment.
+        """
+        from devilry.apps.core.models.assignment import Assignment
+        return self.user_is_basenodeadmin(userobj, Assignment)
+
+    def user_is_admin(self, userobj):
+        """
+        Check if the given user is admin on any node, subject, period or
+        assignment.
+        """
+        from devilry.apps.core.models.node import Node
+        from devilry.apps.core.models.subject import Subject
+        from devilry.apps.core.models.period import Period
+        from devilry.apps.core.models.assignment import Assignment
+        return self.user_is_basenodeadmin(userobj, Node, Subject, Period, Assignment)
+
+    def user_is_admin_or_superadmin(self, userobj):
+        """
+        Return ``True`` if ``userobj.is_superuser``, and fall back to calling
+        :func:`.user_is_admin` if not.
+        """
+        if userobj.is_superuser:
+            return True
+        else:
+            return self.user_is_admin(userobj)
+
+    def user_is_examiner(self, userobj):
+        """
+        Returns ``True`` if the given ``userobj`` is examiner on any AssignmentGroup.
+        """
+        from devilry.apps.core.models.assignment_group import AssignmentGroup
+        return AssignmentGroup.published_where_is_examiner(userobj).exists()
+
+    def user_is_student(self, userobj):
+        """
+        Returns ``True`` if the given ``userobj`` is candidate on any AssignmentGroup.
+        """
+        from devilry.apps.core.models.assignment_group import AssignmentGroup
+        return AssignmentGroup.published_where_is_candidate(userobj).exists()
 
 
 class User(AbstractBaseUser):
