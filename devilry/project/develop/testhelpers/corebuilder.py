@@ -31,14 +31,14 @@ class ReloadableDbBuilderInterface(object):
 
 
 class UserBuilder(ReloadableDbBuilderInterface):
-    def __init__(self, username, full_name=None, email=None, is_superuser=False, is_staff=False):
+    def __init__(self, username, full_name=None, email=None, is_superuser=False):
         email = email or u'{}@example.com'.format(username)
-        self.user = get_user_model()(username=username, email=email,
-                                     is_superuser=is_superuser, is_staff=is_staff,
-                                     fullname=full_name or '')
-        self.user.set_password('test')
-        self.user.full_clean()
-        self.user.save()
+        self.user = get_user_model().objects.create_user(
+            username=username,
+            email=email,
+            is_superuser=is_superuser,
+            password='test',
+            fullname=full_name or '')
 
     def update(self, **attributes):
         for attrname, value in attributes.iteritems():

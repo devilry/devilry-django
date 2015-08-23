@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from django.contrib.auth import get_user_model
 from devilry.devilry_account.models import User
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
                     Candidate, Deadline, Delivery, StaticFeedback, FileMeta)
@@ -25,13 +26,10 @@ class TestHelper(object):
 
         :return: The created user object.
         """
-        user = User(username=name)
-        user.set_password('test')
-        user.email = name + '@example.com'
-        if fullname:
-            user.fullname = fullname
-        user.full_clean()
-        user.save()
+        user = get_user_model().objects.create_user(
+            username=name,
+            email=name + '@example.com',
+            fullname=fullname or '')
         vars(self)[name] = user
         return user
 
@@ -55,11 +53,11 @@ class TestHelper(object):
 
         :return: The created user object.
         """
-        su = User(username=name, is_superuser=True)
-        su.email = name + '@example.com'
-        su.set_password("test")
-        su.full_clean()
-        su.save()
+        su = get_user_model().objects.create_user(
+            is_superuser=True,
+            username=name,
+            email=name + '@example.com',
+            password='test')
         vars(self)[name] = su
         return su
 
@@ -98,7 +96,7 @@ class TestHelper(object):
         # Get the user/candidate to deliver
         delivered_by_to_use = None
         if delivered_by:
-            if type(delivered_by) == User:
+            if type(delivered_by) == get_user_model():
                 for can in group.candidates.all():
                     if can.student.username == delivered_by.username:
                         delivered_by_to_use = can
@@ -259,13 +257,15 @@ class TestHelper(object):
         return res
 
     def _create_or_add_user(self, name):
-        user = User(username=name, email="%s@example.com" % name.strip())
-        user.set_password("test")
-        try:
+        if get_user_model().objects.filter(shortname=name).exists():
+            user = User.objects.get(username=name)
+        else:
+            user = get_user_model()(shortname=name)
+            user.username_set.create(username=name)
+            user.useremail_set.create(email=name.strip() + '@example.com')
+            user.set_password("test")
             user.full_clean()
             user.save()
-        except ValidationError:
-            user = User.objects.get(username=name)
         vars(self)[user.username] = user
         return user
 

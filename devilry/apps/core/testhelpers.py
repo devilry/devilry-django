@@ -2,8 +2,8 @@ from datetime import datetime, timedelta
 import unittest
 import os
 
-from devilry.devilry_account.models import User
 from django.conf import settings
+from django.contrib.auth import get_user_model
 
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \
         FileMeta, Candidate
@@ -81,11 +81,10 @@ def create_from_path(path):
         usernames = pathsplit[3].split(',')
         users = []
         for u in usernames:
-            user = User(username=u)
             try:
-                user.save()
-            except:
-                user = User.objects.get(username=u)
+                user = get_user_model().objects.get(shortname=u)
+            except get_user_model().DoesNotExist:
+                user = get_user_model().objects.create_user(username=u)
             users.append(user)
         assignment_group = AssignmentGroup(parentnode=assignment)
         assignment_group.clean()

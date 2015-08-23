@@ -86,6 +86,20 @@ class UserManager(BaseUserManager):
         from devilry.apps.core.models.assignment_group import AssignmentGroup
         return AssignmentGroup.published_where_is_candidate(user).exists()
 
+    def create_user(self, username=None, email=None, password=None, **kwargs):
+        shortname = username or email
+        user = self.model(shortname=shortname, **kwargs)
+        if password:
+            user.set_password(password)
+        else:
+            user.set_unusable_password()
+        if username:
+            user.username_set().create(username=username, is_primary=True)
+        if email:
+            user.useremail_set().create(email=email)
+
+        user.save(using=self._db)
+
 
 class User(AbstractBaseUser):
     """
