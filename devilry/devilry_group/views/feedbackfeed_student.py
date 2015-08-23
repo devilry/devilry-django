@@ -1,8 +1,16 @@
-from devilry.devilry_comment.models import Comment
-from devilry.devilry_group.views import cradmin_feedbackfeed_base
-from devilry.devilry_group import models
+# django imports
+import datetime
+from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crapp
 from django.db.models import Q
+
+# devilry imports
+from devilry.devilry_group.views import cradmin_feedbackfeed_base
+from devilry.devilry_group import models
+
+# crispy forms
+from crispy_forms import layout
+from devilry.simplified import PermissionDenied
 
 
 class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
@@ -18,6 +26,23 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         context = super(StudentFeedbackFeedView, self).get_context_data(**kwargs)
         context['devilry_ui_role'] = 'student'
         return context
+
+    def get_buttons(self):
+        return [layout.Submit('student_add_comment',
+                           _('Add comment'),
+                           css_class='btn btn-success')]
+
+    def save_object(self, form, commit=True):
+        object = super(StudentFeedbackFeedView, self).save_object(form)
+        object.user_role = 'student'
+        object.instant_publish = True
+        object.visible_for_students = True
+
+        if commit:
+            object.save()
+            self._convert_temporary_files_to_comment_files(form, object)
+
+        return object
 
 
 class App(crapp.App):
