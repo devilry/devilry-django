@@ -1,3 +1,4 @@
+from django.apps import AppConfig
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
@@ -16,4 +17,9 @@ class PointsPluginApi(GradingSystemPluginInterface):
     def get_bulkedit_feedback_url(self, assignmentid):
         return reverse('devilry_gradingsystemplugin_points_feedbackbulkeditor', kwargs={'assignmentid': assignmentid})
 
-gradingsystempluginregistry.add(PointsPluginApi)
+
+class GradingsystemPointsAppConfig(AppConfig):
+    name = 'devilry.devilry_gradingsystemplugin_points'
+
+    def ready(self):
+        gradingsystempluginregistry.add(PointsPluginApi)
