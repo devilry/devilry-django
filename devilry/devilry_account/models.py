@@ -103,10 +103,12 @@ class User(AbstractBaseUser):
     #: Short name for the user.
     #: This will be set to the primary email address or to the primary username
     #: depending on the auth backend.
+    #: Must be unique.
     shortname = models.CharField(
         max_length=255,
         blank=False, null=False,
         editable=False,
+        unique=True,
         help_text=_('The short name for the user. This is set automatically to the '
                     'email or username based ')
     )

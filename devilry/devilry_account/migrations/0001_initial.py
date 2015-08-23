@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
                 ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('last_login', models.DateTimeField(default=django.utils.timezone.now, verbose_name='last login')),
                 ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('shortname', models.CharField(help_text='The short name for the user. This is set automatically to the email or username based ', max_length=255, editable=False)),
+                ('shortname', models.CharField(help_text='The short name for the user. This is set automatically to the email or username based ', unique=True, max_length=255, editable=False)),
                 ('fullname', models.TextField(default=b'', verbose_name='Full name', blank=True)),
                 ('lastname', models.TextField(default=b'', verbose_name='Last name', blank=True)),
                 ('datetime_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
