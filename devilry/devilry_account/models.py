@@ -87,6 +87,20 @@ class UserManager(BaseUserManager):
         return AssignmentGroup.published_where_is_candidate(user).exists()
 
     def create_user(self, username='', email='', password=None, **kwargs):
+        """
+        Create a new user.
+
+        Requires ``username`` or ``email``, and both can be supplied.
+        If ``username`` is supplied, we create a UserName object with ``is_primary=True``,
+        and if ``email`` is supplied, we create a UserEmail object with
+        ``use_for_notifications=True``.
+
+        If ``password`` is supplied, we set the password, otherwise we
+        set an unusable password.
+
+        Other than that, you can provide any :class:`.User` fields except
+        ``shortname``. ``shortname`` is created from username or email (in that order).
+        """
         shortname = username or email
         user = self.model(shortname=shortname, **kwargs)
         if password:
@@ -100,6 +114,28 @@ class UserManager(BaseUserManager):
         if email:
             user.useremail_set.create(email=email)
         return user
+
+    def get_by_email(self, email):
+        """
+        Get a user by any of their emails.
+
+        Raises:
+            User.DoesNotExist: If no :class:`.UserEmail` with the given email is found.
+        Returns:
+            User: The user object.
+        """
+        return self.get_queryset().filter(useremail__email=email).get()
+
+    def get_by_username(self, username):
+        """
+        Get a user by any of their username.
+
+        Raises:
+            User.DoesNotExist: If no :class:`.UserName` with the given username is found.
+        Returns:
+            User: The user object.
+        """
+        return self.get_queryset().filter(username__username=username).get()
 
 
 class User(AbstractBaseUser):

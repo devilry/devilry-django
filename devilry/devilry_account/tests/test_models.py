@@ -66,6 +66,7 @@ class TestUserManager(TestCase):
         self.assertEqual(user.username_set.count(), 0)
         self.assertEqual(user.useremail_set.count(), 1)
         self.assertEqual(user.useremail_set.first().email, 'testuser@example.com')
+        self.assertTrue(user.useremail_set.first().use_for_notifications)
 
     def test_create_user_username_or_email_required(self):
         with self.assertRaises(ValidationError):
@@ -93,6 +94,32 @@ class TestUserManager(TestCase):
         user = User.objects.create_user(email='testuser@example.com',
                                         fullname='')
         self.assertEqual(user.lastname, '')
+
+    def test_get_by_email(self):
+        user = mommy.make('devilry_account.User')
+        mommy.make('devilry_account.UserEmail', user=user, email='test@example.com')
+        self.assertEqual(
+            User.objects.get_by_email(email='test@example.com'),
+            user)
+
+    def test_get_by_email_doesnotexist(self):
+        user = mommy.make('devilry_account.User')
+        mommy.make('devilry_account.UserEmail', user=user, email='test2@example.com')
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get_by_email(email='test@example.com')
+
+    def test_get_by_username(self):
+        user = mommy.make('devilry_account.User')
+        mommy.make('devilry_account.UserName', user=user, username='test@example.com')
+        self.assertEqual(
+            User.objects.get_by_username(username='test@example.com'),
+            user)
+
+    def test_get_by_username_doesnotexist(self):
+        user = mommy.make('devilry_account.User')
+        mommy.make('devilry_account.UserName', user=user, username='test2@example.com')
+        with self.assertRaises(User.DoesNotExist):
+            User.objects.get_by_username(username='test@example.com')
 
 
 class TestUserEmail(TestCase):
