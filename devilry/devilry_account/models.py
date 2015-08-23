@@ -189,7 +189,7 @@ class User(AbstractBaseUser):
         """
         return self.shortname
 
-    def __str__(self):
+    def __unicode__(self):
         return self.shortname
 
     def clean(self):
