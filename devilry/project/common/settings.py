@@ -70,7 +70,6 @@ INSTALLED_APPS = [
     'devilry.devilry_usersearch',
     'devilry.devilry_authenticateduserinfo',
     'devilry.devilry_header',
-    'devilry.devilry_useradmin',
     'devilry.devilry_helplinks',
     'devilry.devilry_frontpage',
     'devilry.devilry_student',
