@@ -1,3 +1,4 @@
+import unittest
 from mock import patch
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -15,7 +16,7 @@ from .base import MockPointsPluginApi
 # from .base import MockRequiresConfigurationPluginApi
 
 
-
+@unittest.skip('devilry_gradingsystem will most likely be replaced in 3.0')
 class TestSetMaxPointsView(TestCase, AdminViewTestMixin):
 
     def setUp(self):

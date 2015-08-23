@@ -1,18 +1,17 @@
+import unittest
+
 from mock import patch
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.project.develop.testhelpers.soupselect import cssGet
-from devilry.project.develop.testhelpers.soupselect import cssFind
 from devilry.devilry_gradingsystem.pluginregistry import GradingSystemPluginRegistry
-
 from .base import AdminViewTestMixin
 from .base import MockPointsPluginApi
 
 
-
+@unittest.skip('devilry_gradingsystem will most likely be replaced in 3.0')
 class TestSetupCustomTableView(TestCase, AdminViewTestMixin):
 
     def setUp(self):

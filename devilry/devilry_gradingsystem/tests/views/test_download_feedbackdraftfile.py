@@ -1,3 +1,4 @@
+import unittest
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -8,6 +9,7 @@ from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.devilry_gradingsystem.models import FeedbackDraftFile
 
 
+@unittest.skip('devilry_gradingsystem will most likely be replaced in 3.0')
 class TestDownloadFeedbackDraftFileView(TestCase):
     def setUp(self):
         self.testexaminer = UserBuilder('testexaminer').user

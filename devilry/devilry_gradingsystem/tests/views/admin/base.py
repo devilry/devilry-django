@@ -33,7 +33,6 @@ class AdminViewTestMixin(object):
         self.assertEquals(response.status_code, 404)
 
 
-
 class MockPointsPluginApi(GradingSystemPluginInterface):
     id = 'mock_gradingsystemplugin_points'
     title = 'Mock points'

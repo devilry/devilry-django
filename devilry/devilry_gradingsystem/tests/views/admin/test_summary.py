@@ -1,3 +1,4 @@
+import unittest
 from mock import patch
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -15,7 +16,7 @@ from .base import AdminViewTestMixin
 from .base import MockPointsPluginApi
 
 
-
+@unittest.skip('devilry_gradingsystem will most likely be replaced in 3.0')
 class TestSummaryView(TestCase, AdminViewTestMixin):
 
     def setUp(self):
@@ -104,6 +105,7 @@ class TestSummaryView(TestCase, AdminViewTestMixin):
             self.assertIn('You SHOULD NOT reconfigure the grading system for this assignment.', html)
 
 
+@unittest.skip('devilry_gradingsystem will most likely be replaced in 3.0')
 class TestSummaryViewBreadcrumb(TestCase, AdminViewTestMixin):
 
     def setUp(self):

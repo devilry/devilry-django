@@ -1,3 +1,4 @@
+import unittest
 from django.core.files.base import ContentFile
 from django.test import TestCase
 from devilry.apps.core.models import StaticFeedbackFileAttachment
@@ -7,6 +8,7 @@ from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
 
+@unittest.skip('devilry_gradingsystem will most likely be replaced in 3.0')
 class TestFeedbackDraft(TestCase):
     def setUp(self):
         self.testexaminer = UserBuilder('testexaminer').user
@@ -129,6 +131,7 @@ class TestFeedbackDraft(TestCase):
             feedbackdraft)
 
 
+@unittest.skip('devilry_gradingsystem will most likely be replaced in 3.0')
 class TestFeedbackDraftFile(TestCase):
     def setUp(self):
         self.testexaminer = UserBuilder('testexaminer').user
