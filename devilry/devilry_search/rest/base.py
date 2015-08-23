@@ -32,7 +32,7 @@ class SearchRestViewBase(View):
         raise NotImplementedError()
 
     def serialize_students(self, assignment):
-        studentnames = [c.student.devilryuserprofile.get_displayname()
+        studentnames = [c.student.get_full_name()
                         for c in assignment.candidates.all()]
         return studentnames
 

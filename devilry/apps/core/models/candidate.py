@@ -39,4 +39,4 @@ class Candidate(models.Model):
             group=self.assignment_group)
 
     def get_student_displayname(self):
-        return self.student.devilryuserprofile.get_displayname()
+        return self.student.get_full_name()

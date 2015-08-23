@@ -89,7 +89,7 @@
                                                             </strong><br>
                                                         {% endif %}
                                                         {% for candidate in parseresult.delivery.assignment_group.candidates.all %}
-                                                            {{ candidate.student.devilryuserprofile.get_displayname }}{% if not forloop.last %}, {% endif %}
+                                                            {{ candidate.student.get_full_name }}{% if not forloop.last %}, {% endif %}
                                                         {% endfor %}
                                                     </span>
                                                     {% trans "delivery" %}#{{ parseresult.delivery.number }}

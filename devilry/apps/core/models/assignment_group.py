@@ -625,7 +625,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             out = self._get_candidateids()
         else:
             candidates = self.candidates.select_related('student', 'student__devilryuserprofile')
-            names = [candidate.student.devilryuserprofile.get_displayname() for candidate in candidates]
+            names = [candidate.student.get_full_name() for candidate in candidates]
             out = u', '.join(names)
             if self.name:
                 if out:
