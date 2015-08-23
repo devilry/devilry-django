@@ -9,7 +9,7 @@ class UserManager(BaseUserManager):
     """
     Manager for :class:`User`.
     """
-    def user_is_basenodeadmin(self, userobj, *basenode_modelsclasses):
+    def user_is_basenodeadmin(self, user, *basenode_modelsclasses):
         """
         Check if the given user is admin on any of the given
         ``basenode_modelsclasses``.
@@ -19,39 +19,39 @@ class UserManager(BaseUserManager):
             with User.
         """
         for cls in basenode_modelsclasses:
-            if cls.objects.filter(admins__id=userobj.id).exists():
+            if cls.objects.filter(admins__id=user.id).exists():
                 return True
         return False
 
-    def user_is_nodeadmin(self, userobj):
+    def user_is_nodeadmin(self, user):
         """
         Check if the given user is admin on any node.
         """
         from devilry.apps.core.models.node import Node
-        return self.user_is_basenodeadmin(userobj, Node)
+        return self.user_is_basenodeadmin(user, Node)
 
-    def user_is_subjectadmin(self, userobj):
+    def user_is_subjectadmin(self, user):
         """
         Check if the given user is admin on any subject.
         """
         from devilry.apps.core.models.subject import Subject
-        return self.user_is_basenodeadmin(userobj, Subject)
+        return self.user_is_basenodeadmin(user, Subject)
 
-    def user_is_periodadmin(self, userobj):
+    def user_is_periodadmin(self, user):
         """
         Check if the given user is admin on any period.
         """
         from devilry.apps.core.models.period import Period
-        return self.user_is_basenodeadmin(userobj, Period)
+        return self.user_is_basenodeadmin(user, Period)
 
-    def user_is_assignmentadmin(self, userobj):
+    def user_is_assignmentadmin(self, user):
         """
         Check if the given user is admin on any assignment.
         """
         from devilry.apps.core.models.assignment import Assignment
-        return self.user_is_basenodeadmin(userobj, Assignment)
+        return self.user_is_basenodeadmin(user, Assignment)
 
-    def user_is_admin(self, userobj):
+    def user_is_admin(self, user):
         """
         Check if the given user is admin on any node, subject, period or
         assignment.
@@ -60,31 +60,31 @@ class UserManager(BaseUserManager):
         from devilry.apps.core.models.subject import Subject
         from devilry.apps.core.models.period import Period
         from devilry.apps.core.models.assignment import Assignment
-        return self.user_is_basenodeadmin(userobj, Node, Subject, Period, Assignment)
+        return self.user_is_basenodeadmin(user, Node, Subject, Period, Assignment)
 
-    def user_is_admin_or_superadmin(self, userobj):
+    def user_is_admin_or_superadmin(self, user):
         """
-        Return ``True`` if ``userobj.is_superuser``, and fall back to calling
+        Return ``True`` if ``user.is_superuser``, and fall back to calling
         :func:`.user_is_admin` if not.
         """
-        if userobj.is_superuser:
+        if user.is_superuser:
             return True
         else:
-            return self.user_is_admin(userobj)
+            return self.user_is_admin(user)
 
-    def user_is_examiner(self, userobj):
+    def user_is_examiner(self, user):
         """
-        Returns ``True`` if the given ``userobj`` is examiner on any AssignmentGroup.
+        Returns ``True`` if the given ``user`` is examiner on any AssignmentGroup.
         """
         from devilry.apps.core.models.assignment_group import AssignmentGroup
-        return AssignmentGroup.published_where_is_examiner(userobj).exists()
+        return AssignmentGroup.published_where_is_examiner(user).exists()
 
-    def user_is_student(self, userobj):
+    def user_is_student(self, user):
         """
-        Returns ``True`` if the given ``userobj`` is candidate on any AssignmentGroup.
+        Returns ``True`` if the given ``user`` is candidate on any AssignmentGroup.
         """
         from devilry.apps.core.models.assignment_group import AssignmentGroup
-        return AssignmentGroup.published_where_is_candidate(userobj).exists()
+        return AssignmentGroup.published_where_is_candidate(user).exists()
 
 
 class User(AbstractBaseUser):
