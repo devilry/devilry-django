@@ -53,6 +53,81 @@ class TestUser(TestCase):
         self.assertEqual(user.lastname, '')
 
 
+class TestUserQuerySet(TestCase):
+    def test_prefetch_related_notification_emails(self):
+        user = mommy.make('devilry_account.User')
+        notification_useremail1 = mommy.make('devilry_account.UserEmail',
+                                             user=user,
+                                             use_for_notifications=True,
+                                             email='test1@example.com')
+        notification_useremail2 = mommy.make('devilry_account.UserEmail',
+                                             user=user,
+                                             use_for_notifications=True,
+                                             email='test2@example.com')
+        mommy.make('devilry_account.UserEmail',
+                   user=user,
+                   use_for_notifications=False,
+                   email='unused@example.com')
+        with self.assertNumQueries(2):
+            user_with_prefetch = User.objects\
+                .prefetch_related_notification_emails().first()
+            self.assertEqual(len(user_with_prefetch.notification_useremail_objects), 2)
+            self.assertTrue(isinstance(user_with_prefetch.notification_useremail_objects,
+                                       list))
+            self.assertEqual({notification_useremail1, notification_useremail2},
+                             set(user_with_prefetch.notification_useremail_objects))
+            self.assertEqual({'test1@example.com', 'test2@example.com'},
+                             set(user_with_prefetch.notification_emails))
+
+    def test_prefetch_related_primary_email(self):
+        user = mommy.make('devilry_account.User')
+        primary_useremail = mommy.make('devilry_account.UserEmail',
+                                       user=user,
+                                       email='test@example.com',
+                                       is_primary=True)
+        mommy.make('devilry_account.UserEmail',
+                   user=user,
+                   is_primary=None)
+        mommy.make('devilry_account.UserEmail',
+                   user=user,
+                   is_primary=None)
+        with self.assertNumQueries(2):
+            user_with_prefetch = User.objects\
+                .prefetch_related_primary_email().first()
+            self.assertEqual(len(user_with_prefetch.primary_useremail_objects), 1)
+            self.assertTrue(isinstance(user_with_prefetch.primary_useremail_objects, list))
+            self.assertEqual(primary_useremail,
+                             user_with_prefetch.primary_useremail_objects[0])
+            self.assertEqual(primary_useremail,
+                             user_with_prefetch.primary_useremail_object)
+            self.assertEqual('test@example.com',
+                             user_with_prefetch.primary_email)
+
+    def test_prefetch_related_primary_username(self):
+        user = mommy.make('devilry_account.User')
+        primary_username = mommy.make('devilry_account.UserName',
+                                      user=user,
+                                      username='testuser',
+                                      is_primary=True)
+        mommy.make('devilry_account.UserEmail',
+                   user=user,
+                   is_primary=None)
+        mommy.make('devilry_account.UserEmail',
+                   user=user,
+                   is_primary=None)
+        with self.assertNumQueries(2):
+            user_with_prefetch = User.objects\
+                .prefetch_related_primary_username().first()
+            self.assertEqual(len(user_with_prefetch.primary_username_objects), 1)
+            self.assertTrue(isinstance(user_with_prefetch.primary_username_objects, list))
+            self.assertEqual(primary_username,
+                             user_with_prefetch.primary_username_objects[0])
+            self.assertEqual(primary_username,
+                             user_with_prefetch.primary_username_object)
+            self.assertEqual('testuser',
+                             user_with_prefetch.primary_username)
+
+
 class TestUserManager(TestCase):
     def test_create_user_username(self):
         user = User.objects.create_user(username='testuser')

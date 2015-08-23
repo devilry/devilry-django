@@ -5,10 +5,78 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 
+class UserQuerySet(models.QuerySet):
+    def prefetch_related_notification_emails(self):
+        """
+        Use this if need to get efficient access to the primary :class:`.UserEmail`.
+
+        This will add the ``notification_useremail_objects`` attribute to each returned
+        :class:`.User`. ``notification_useremail_objects`` is a list that you can use
+        if you need access to the :class:`.UserEmail` objects.
+        Use :meth:`.User.notification_emails` to access the emails as a list of
+        strings.
+        """
+        return self.prefetch_related(
+            models.Prefetch('useremail_set',
+                            queryset=UserEmail.objects.filter(use_for_notifications=True),
+                            to_attr='notification_useremail_objects'))
+
+    def prefetch_related_primary_email(self):
+        """
+        Use this if need to get efficient access to the primary :class:`.UserEmail`.
+
+        This will add the ``primary_useremail_objects`` attribute to each returned
+        :class:`.User`. ``primary_useremail_objects`` is a list, and you should not
+        use it directly. Use :meth:`.User.primary_useremail_object` or
+        :meth:`.User.primary_email` to access the primary email.
+        """
+        return self.prefetch_related(
+            models.Prefetch('useremail_set',
+                            queryset=UserEmail.objects.filter(is_primary=True),
+                            to_attr='primary_useremail_objects'))
+
+    def prefetch_related_primary_username(self):
+        """
+        Use this if need to get efficient access to the primary :class:`.UserName`.
+
+        This will add the ``primary_username_objects`` attribute to each returned
+        :class:`.User`. ``primary_username_objects`` is a list, and you should not
+        use it directly. Use :meth:`.User.primary_username_object` or
+        :meth:`.User.primary_username` to access the primary username.
+        """
+        return self.prefetch_related(
+            models.Prefetch('username_set',
+                            queryset=UserName.objects.filter(is_primary=True),
+                            to_attr='primary_username_objects'))
+
+
 class UserManager(BaseUserManager):
     """
     Manager for :class:`User`.
     """
+    use_for_related_fields = True
+
+    def get_queryset(self):
+        return UserQuerySet(self.model, using=self._db)
+
+    def prefetch_related_notification_emails(self):
+        """
+        See :meth:`.UserQuerySet.prefetch_related_notification_emails`.
+        """
+        return self.get_queryset().prefetch_related_notification_emails()
+
+    def prefetch_related_primary_email(self):
+        """
+        See :meth:`.UserQuerySet.prefetch_related_primary_email`.
+        """
+        return self.get_queryset().prefetch_related_primary_email()
+
+    def prefetch_related_primary_username(self):
+        """
+        See :meth:`.UserQuerySet.prefetch_related_primary_username`.
+        """
+        return self.get_queryset().prefetch_related_primary_username()
+
     def user_is_basenodeadmin(self, user, *basenode_modelsclasses):
         """
         Check if the given user is admin on any of the given
@@ -237,6 +305,78 @@ class User(AbstractBaseUser):
             raise ValidationError(_('Short name is required.'))
         if self.fullname:
             self.lastname = self.fullname.split()[-1]
+
+    @property
+    def notification_emails(self):
+        """
+        Get the notification emails as a list of strings.
+
+        Only works if you have used :meth:`.UserQuerySet.prefetch_related_notification_emails`
+        on the queryset.
+        """
+        return [useremail.email for useremail in self.notification_useremail_objects]
+
+    @property
+    def primary_useremail_object(self):
+        """
+        Get the primary email address of the user as a :class:`.UserEmail` object.
+
+        Only works if you have used :meth:`.UserQuerySet.prefetch_related_primary_email`
+        on the queryset.
+
+        Returns ``None`` if we have no primary email.
+        """
+        try:
+            return self.primary_useremail_objects[0]
+        except IndexError:
+            return None
+
+    @property
+    def primary_email(self):
+        """
+        Get the primary email address of the user as a string.
+
+        Only works if you have used :meth:`.UserQuerySet.prefetch_related_primary_email`
+        on the queryset.
+
+        Returns ``None`` if we have no primary email.
+        """
+        primary_useremail_object = self.primary_useremail_object
+        if primary_useremail_object:
+            return primary_useremail_object.email
+        else:
+            return None
+
+    @property
+    def primary_username_object(self):
+        """
+        Get the primary username of the user as a :class:`.UserName` object.
+
+        Only works if you have used :meth:`.UserQuerySet.prefetch_related_primary_username`
+        on the queryset.
+
+        Returns ``None`` if we have no primary username.
+        """
+        try:
+            return self.primary_username_objects[0]
+        except IndexError:
+            return None
+
+    @property
+    def primary_username(self):
+        """
+        Get the primary username of the user as a string.
+
+        Only works if you have used :meth:`.UserQuerySet.prefetch_related_primary_username`
+        on the queryset.
+
+        Returns ``None`` if we have no primary username.
+        """
+        primary_username_object = self.primary_username_object
+        if primary_username_object:
+            return primary_username_object.username
+        else:
+            return None
 
 
 class AbstractUserIdentity(models.Model):
