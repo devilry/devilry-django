@@ -13,12 +13,12 @@ class TestAssignmentUpdateView(TestCase):
         self.testuser = UserBuilder('testuser').user
 
     def _getas(self, id, user, *args, **kwargs):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
         url = reverse('devilry_subjectadmin_assignment_update', kwargs={'id': id})
         return self.client.get(url, *args, **kwargs)
 
     def _postas(self, id, user, *args, **kwargs):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
         url = reverse('devilry_subjectadmin_assignment_update', kwargs={'id': id})
         return self.client.post(url, *args, **kwargs)
 

@@ -23,7 +23,7 @@ class TestDownloadFeedbackDraftFileView(TestCase):
         self.draftfile.file.save('test.txt', ContentFile('A testfile'))
 
     def _login(self, user):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
 
     def _get_as(self, user, pk, **querystring):
         self._login(user)

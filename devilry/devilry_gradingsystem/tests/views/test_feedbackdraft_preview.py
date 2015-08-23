@@ -22,7 +22,7 @@ class TestFeedbackDraftPreviewView(TestCase):
             .add_delivery_x_hours_before_deadline(hours=1)
 
     def _login(self, user):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
 
     def _get_as(self, user, draftid):
         self._login(user)

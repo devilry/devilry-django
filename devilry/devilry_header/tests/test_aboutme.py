@@ -14,7 +14,7 @@ class TestAboutMeView(TestCase):
         self.url = reverse('devilry_header_aboutme')
 
     def _getas(self, user, *args, **kwargs):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
         return self.client.get(self.url, *args, **kwargs)
 
     def test_nologin(self):

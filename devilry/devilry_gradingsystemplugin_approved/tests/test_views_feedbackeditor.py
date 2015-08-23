@@ -35,7 +35,7 @@ class TestFeedbackEditorView(TestCase, FeedbackEditorViewTestMixin):
         self.url = pluginapi.get_edit_feedback_url(self.deliverybuilder.delivery.id)
 
     def _login(self, user):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
 
     def _get_as(self, user):
         self._login(user)
@@ -103,7 +103,7 @@ class TestFeedbackBulkEditorView(TestCase):
         self.url = pluginapi.get_bulkedit_feedback_url(self.assignment1builder.assignment.id)
 
     def _login(self, user):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
 
     def _get_as(self, user, *args, **kwargs):
         self._login(user)

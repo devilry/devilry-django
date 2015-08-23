@@ -14,7 +14,7 @@ class FeedbackEditorViewTestMixin(object):
     that each gradingsystem plugin must implement.
     """
     def login(self, user):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
 
     def get_as(self, user):
         self.login(user)

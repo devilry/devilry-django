@@ -9,7 +9,7 @@ class AdminViewTestMixin(object):
     so we can allow them to share some code.
     """
     def login(self, user):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
 
     def get_as(self, user, *args, **kwargs):
         """

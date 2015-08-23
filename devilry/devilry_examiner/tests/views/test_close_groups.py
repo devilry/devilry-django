@@ -19,11 +19,11 @@ class TestCloseGroupsView(TestCase):
             'assignmentid': self.assignment1builder.assignment.id})
 
     def _getas(self, user, *args, **kwargs):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
         return self.client.get(self.url, *args, **kwargs)
 
     def _postas(self, user, *args, **kwargs):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
         return self.client.post(self.url, *args, **kwargs)
 
 

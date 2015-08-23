@@ -19,7 +19,7 @@ class TestProjectGroupOverviewView(TestCase):
         self.testuser = UserBuilder('testuser').user
 
     def _getas(self, group_id, user, *args, **kwargs):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
         url = reverse_cradmin_url(
             instanceid='devilry_student_group',
             appname='projectgroup',
@@ -28,7 +28,7 @@ class TestProjectGroupOverviewView(TestCase):
         return self.client.get(url, *args, **kwargs)
 
     def _postas(self, group_id, user, *args, **kwargs):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
         url = reverse_cradmin_url(
             instanceid='devilry_student_group',
             appname='projectgroup',
@@ -156,12 +156,12 @@ class TestGroupInviteRespondView(TestCase):
         self.testtouser = UserBuilder('testtouser').user
 
     def _getas(self, id, user, *args, **kwargs):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
         url = reverse('devilry_student_groupinvite_respond', kwargs={'invite_id': id})
         return self.client.get(url, *args, **kwargs)
 
     def _postas(self, id, user, *args, **kwargs):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
         url = reverse('devilry_student_groupinvite_respond', kwargs={'invite_id': id})
         return self.client.post(url, *args, **kwargs)
 
@@ -243,7 +243,7 @@ class TestGroupInviteDeleteView(TestCase):
         self.testtouser = UserBuilder('testtouser').user
 
     def _getas(self, group_id, invite_id, user, *args, **kwargs):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
         url = reverse_cradmin_url(
             instanceid='devilry_student_group',
             appname='projectgroup',
@@ -254,7 +254,7 @@ class TestGroupInviteDeleteView(TestCase):
         return self.client.get(url, *args, **kwargs)
 
     def _postas(self, group_id, invite_id, user, *args, **kwargs):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
         url = reverse_cradmin_url(
             instanceid='devilry_student_group',
             appname='projectgroup',
