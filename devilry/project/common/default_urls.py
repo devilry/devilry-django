@@ -26,8 +26,6 @@ devilry_urls = (
 
     (r'^devilry_help/', include('devilry.devilry_help.urls')),
     (r'^devilry_core/', include('devilry.apps.core.urls')),
-    (r'^devilry_usersearch/', include('devilry.devilry_usersearch.urls')),
-    (r'^devilry_authenticateduserinfo/', include('devilry.devilry_authenticateduserinfo.urls')),
     (r'^devilry_settings/', include('devilry.devilry_settings.urls')),
     (r'^devilry_helplinks/', include('devilry.devilry_helplinks.urls')),
     ('r^student/assignmentgroup/(?P<assignmentgroupid>\d+)$', redirecto_to_show_delivery),
@@ -40,7 +38,6 @@ devilry_urls = (
     (r'^devilry_send_email_to_students/', include('devilry.devilry_send_email_to_students.urls')),
     (r'^devilry_search/', include('devilry.devilry_search.urls')),
     (r'^devilry_header/', include('devilry.devilry_header.urls')),
-    ('^devilry_nodeadmin/', include('devilry.devilry_nodeadmin.urls')),
     (r'^devilry_bulkcreate_users/', include('devilry.devilry_bulkcreate_users.urls')),
     (r'^devilry_qualifiesforexam/', include('devilry.devilry_qualifiesforexam.urls')),
     (r'^devilry_qualifiesforexam_approved/', include('devilry.devilry_qualifiesforexam_approved.urls')),
