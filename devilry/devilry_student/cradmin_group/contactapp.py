@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.http import Http404
 from django.views.generic import TemplateView
 from django_cradmin import crapp
@@ -18,7 +19,10 @@ class ContactView(TemplateView):
         context = super(ContactView, self).get_context_data(**kwargs)
         group = self.request.cradmin_role
         context['group'] = group
-        context['examiners'] = list(group.examiners.all())
+        context['examinerusers'] = list(
+            get_user_model().objects
+            .filter(id__in=group.examiners.values_list('user_id', flat=True))
+            .prefetch_related_primary_email())
         return context
 
 

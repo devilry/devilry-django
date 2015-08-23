@@ -18,15 +18,15 @@
 {% endblock pageheader-inner %}
 
 {% block content %}
-    {% if examiners %}
+    {% if examinerusers %}
         <div id="devilry_student_group_contact_hasexaminers"
                 class="container django-cradmin-container-focus">
             {% trans "The following people are responsible for giving you feedback on this assignment" %}:
             <ul class="list-unstyled">
-                {% for examiner in examiners %}
+                {% for user in examinerusers %}
                     <li>
-                        <strong>{{ examiner.user|devilry_user_displayname }}</strong>
-                        &lt;<a href="mailto:{{ examiner.user.email }}?subject={{ group.assignment }}%20-%20{{ group.long_displayname|iriencode }}">{{ examiner.user.email }}</a>&gt;
+                        <strong>{{ user|devilry_user_displayname }}</strong>
+                        &lt;<a href="mailto:{{ user.primary_email }}?subject={{ group.assignment }}%20-%20{{ group.long_displayname|iriencode }}">{{ user.primary_email }}</a>&gt;
                     </li>
                 {% endfor %}
             </ul>
