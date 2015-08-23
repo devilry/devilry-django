@@ -16,7 +16,8 @@ from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 
 class TestProjectGroupOverviewView(TestCase):
     def setUp(self):
-        self.testuser = UserBuilder('testuser').user
+        self.testuserbuilder = UserBuilder('testuser')
+        self.testuser = self.testuserbuilder.user
 
     def _getas(self, group_id, user, *args, **kwargs):
         self.client.login(username=user.shortname, password='test')
@@ -101,7 +102,7 @@ class TestProjectGroupOverviewView(TestCase):
             cssFind(html, '#devilry_student_projectgroup_overview_waiting_for_response_from .invite_sent_to_displayname')]
         self.assertEquals(set(names), {'inviteuser1', 'inviteuser2'})
 
-    def test_render_current_group_members(self):
+    def test_render_current_group_members_usernames(self):
         otheruser = UserBuilder('otheruser').user
         groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1', students_can_create_groups=True)\
@@ -109,9 +110,37 @@ class TestProjectGroupOverviewView(TestCase):
         groupbuilder.add_deadline_in_x_weeks(weeks=1)
 
         html = self._getas(groupbuilder.group.id, self.testuser).content
-        names = [element.text.strip() for element in \
-            cssFind(html, '#devilry_student_projectgroup_overview_already_in_group .groupmember_username')]
-        self.assertEquals(set(names), {'testuser', 'otheruser'})
+        selector = htmls.S(html)
+        usernames = [element.alltext_normalized
+                     for element in selector.list('.devilry-student-projectgroupoverview-username')]
+        self.assertEquals({'testuser', 'otheruser'}, set(usernames))
+
+    def test_render_current_group_members_emails(self):
+        otheruser = UserBuilder('otheruser').user
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', students_can_create_groups=True)\
+            .add_group(students=[self.testuser, otheruser])
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
+
+        html = self._getas(groupbuilder.group.id, self.testuser).content
+        selector = htmls.S(html)
+        emails = [element.alltext_normalized
+                  for element in selector.list('.devilry-student-projectgroupoverview-email')]
+        self.assertEquals({'testuser@example.com', 'otheruser@example.com'}, set(emails))
+
+    def test_render_current_group_members_fullnames(self):
+        otheruser = UserBuilder('otheruser', full_name='Other User').user
+        self.testuserbuilder.update(fullname='Test User')
+        groupbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', students_can_create_groups=True)\
+            .add_group(students=[self.testuserbuilder.user, otheruser])
+        groupbuilder.add_deadline_in_x_weeks(weeks=1)
+
+        html = self._getas(groupbuilder.group.id, self.testuserbuilder.user).content
+        selector = htmls.S(html)
+        emails = [element.alltext_normalized
+                  for element in selector.list('.devilry-student-projectgroupoverview-fullname')]
+        self.assertEquals({'Test User', 'Other User'}, set(emails))
 
     def test_send_to_post(self):
         inviteuser = UserBuilder('inviteuser').user

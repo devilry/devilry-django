@@ -1,3 +1,5 @@
+from django.contrib.auth import get_user_model
+
 from django.views.generic import TemplateView
 from django.utils.translation import ugettext_lazy as _
 from django import forms
@@ -8,12 +10,10 @@ from django.views.generic.detail import DetailView
 from django.shortcuts import redirect
 from django.core.exceptions import ValidationError
 from django_cradmin.crinstance import reverse_cradmin_url
+from django.views.generic.edit import DeleteView
 
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import GroupInvite
-from django.views.generic.edit import DeleteView
-from django.core.urlresolvers import reverse
-
 
 
 class CreateForm(forms.ModelForm):
@@ -66,11 +66,11 @@ class ProjectGroupOverviewView(TemplateView):
     context_object_name = 'group'
 
     def get_queryset(self):
-        return AssignmentGroup.objects.filter_student_has_access(self.request.user)\
+        return AssignmentGroup.objects.filter_student_has_access(self.request.user) \
             .select_related(
-                'parentnode',  # Assignment
-                'parentnode__parentnode',  # Period
-                'parentnode__parentnode__parentnode')  # Subject
+            'parentnode',  # Assignment
+            'parentnode__parentnode',  # Period
+            'parentnode__parentnode__parentnode')  # Subject
 
     def _form_kwargs(self):
         return dict(
@@ -102,10 +102,16 @@ class ProjectGroupOverviewView(TemplateView):
             context['form'] = CreateForm(**self._form_kwargs())
         else:
             context['form'] = self.invalidform
-        context['unanswered_received_invites'] = GroupInvite.objects\
-            .filter_unanswered_received_invites(self.request.user)\
+        context['unanswered_received_invites'] = GroupInvite.objects \
+            .filter_unanswered_received_invites(self.request.user) \
             .filter(group__parentnode=group.parentnode)
         context['unanswered_sent_invites'] = GroupInvite.objects.filter_unanswered_sent_invites(group)
+
+        context['groupmemberusers'] = list(
+            get_user_model().objects
+            .filter(id__in=group.candidates.values_list('student_id', flat=True))
+            .prefetch_related_primary_email()
+            .prefetch_related_primary_username())
         return context
 
 
