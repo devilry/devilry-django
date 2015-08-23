@@ -1,7 +1,7 @@
 {% load i18n %}
 {% with studentstatus.relatedstudent.user as user %}
-    {% if user.devilryuserprofile.full_name %}
-        <span class="fullname">{{ user.devilryuserprofile.full_name }}</span>
+    {% if user.fullname %}
+        <span class="fullname">{{ user.fullname }}</span>
     {% endif %}
     <span class="username">({{ studentstatus.relatedstudent.user.username }})</span>
 {% endwith %}

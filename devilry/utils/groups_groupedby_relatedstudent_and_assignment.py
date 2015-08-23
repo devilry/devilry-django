@@ -124,7 +124,7 @@ class AggreatedRelatedStudentInfo(object):
         return {'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'full_name': user.devilryuserprofile.full_name}
+                'full_name': user.fullname}
 
     def serialize(self):
         out = {'id': self.user.id, # NOTE: This is added to support stupid datamodel layers, like ExtJS, which does not support the ID of a record to be within an attribute

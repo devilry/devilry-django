@@ -63,7 +63,7 @@ class Command(BaseCommand):
             username = '{}{:08}'.format(self.username_prefix, usernumber)
             self._print_message('Creating user: {}'.format(username))
             user = User.objects.create(username=username)
-            user.devilryuserprofile.full_name=u'{} {}'.format(self.username_prefix.title(), usernumber)
+            user.fullname=u'{} {}'.format(self.username_prefix.title(), usernumber)
             user.devilryuserprofile.save()
             self.users.append(user)
 

@@ -100,7 +100,7 @@ class AggregatePeriod(View):
         return {'id': user.id,
                 'username': user.username,
                 'email': user.email,
-                'full_name': user.devilryuserprofile.full_name}
+                'full_name': user.fullname}
 
     def _serialize_relatedstudent(self, relatedstudent):
         return {'id': relatedstudent.id,
