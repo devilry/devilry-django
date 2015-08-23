@@ -86,16 +86,3 @@ class Migration(migrations.Migration):
     ]
 
     operations = operations
-    # operations = [
-        # migrations.RunPython(datamigrate_foreignkeys_to_new_user_model),
-        # migrations.RunSQL(
-        #     """
-        #     ALTER TABLE core_node_admins
-        #       DROP CONSTRAINT core_node_admins_user_id_168b63ac6db71014_fk_auth_user_id;
-        #     ALTER TABLE core_node_admins
-        #       ADD CONSTRAINT "core_node_admins_user_id_fk_devilry_account_user_id"
-        #       FOREIGN KEY (user_id)
-        #       REFERENCES devilry_account_user(id) DEFERRABLE INITIALLY DEFERRED;
-        # """
-        # )
-    # ]
