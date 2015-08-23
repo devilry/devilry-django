@@ -55,7 +55,6 @@ INSTALLED_APPS = [
     'django_cradmin.apps.cradmin_generic_token_with_metadata',
 
     'devilry.apps.core',
-    'devilry.apps.gradeeditors',
 
     'devilry.devilry_account',
     'devilry.devilry_markup',
