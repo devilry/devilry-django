@@ -1,9 +1,0 @@
-{
-  "name": "devilry_subjectadmin",
-  "version": "0.0.0",
-  "dependencies": {
-    "font-awesome": "git://github.com/FortAwesome/Font-Awesome.git#~4.0.3",
-    "bootstrap": "git://github.com/twbs/bootstrap.git#3.0.3",
-    "jquery": "git://github.com/components/jquery.git#2.0.3"
-  }
-}

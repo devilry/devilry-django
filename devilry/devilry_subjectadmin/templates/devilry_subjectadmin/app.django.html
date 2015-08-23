@@ -1,8 +1,0 @@
-{% extends "devilry_theme/apptemplate.django.html" %}
-{% load static %}
-
-{% block head_preapp %}
-    <link rel="stylesheet" type="text/css" href="{% static "devilry_subjectadmin/resources/stylesheets/devilry_subjectadmin.css" %}" />
-    {% include "markup/mathjaxheader.django.html" %}
-    <script type="text/javascript" src="{% url 'devilry_subjectadmin_i18n' %}"></script>
-{%  endblock %}
