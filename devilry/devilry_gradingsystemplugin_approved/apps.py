@@ -27,7 +27,7 @@ class ApprovedPluginApi(GradingSystemPluginInterface):
 
 
 class GradingsystemApprovedAppConfig(AppConfig):
-    name = 'devilry.devilry_gradingsystemplugin_points'
+    name = 'devilry.devilry_gradingsystemplugin_approved'
 
     def ready(self):
         gradingsystempluginregistry.add(ApprovedPluginApi)

@@ -4,10 +4,10 @@ from django.test import TestCase
 import htmls
 
 from devilry.devilry_gradingsystem.tests.helpers import FeedbackEditorViewTestMixin
+from devilry.devilry_gradingsystemplugin_points.apps import PointsPluginApi
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.devilry_gradingsystemplugin_points.devilry_plugin import PointsPluginApi
 
 
 class TestFeedbackEditorView(TestCase, FeedbackEditorViewTestMixin):

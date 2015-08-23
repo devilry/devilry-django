@@ -1,11 +1,11 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from devilry.devilry_gradingsystem.tests.helpers import FeedbackEditorViewTestMixin
+from devilry.devilry_gradingsystemplugin_approved.apps import ApprovedPluginApi
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.soupselect import cssExists
-from devilry.devilry_gradingsystemplugin_approved.devilry_plugin import ApprovedPluginApi
 
 
 class TestFeedbackEditorView(TestCase, FeedbackEditorViewTestMixin):

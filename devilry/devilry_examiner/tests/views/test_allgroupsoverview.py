@@ -3,8 +3,8 @@ from django.test import TestCase
 from django.core.urlresolvers import reverse
 import htmls
 from devilry.devilry_gradingsystem.models import FeedbackDraft
+from devilry.devilry_gradingsystemplugin_points.apps import PointsPluginApi
 
-from devilry.devilry_gradingsystemplugin_points.devilry_plugin import PointsPluginApi
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
