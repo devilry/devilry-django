@@ -86,13 +86,14 @@ class UserManager(BaseUserManager):
         from devilry.apps.core.models.assignment_group import AssignmentGroup
         return AssignmentGroup.published_where_is_candidate(user).exists()
 
-    def create_user(self, username=None, email=None, password=None, **kwargs):
+    def create_user(self, username='', email='', password=None, **kwargs):
         shortname = username or email
         user = self.model(shortname=shortname, **kwargs)
         if password:
             user.set_password(password)
         else:
             user.set_unusable_password()
+        user.full_clean()
         user.save(using=self._db)
         if username:
             user.username_set.create(username=username, is_primary=True)
@@ -124,7 +125,7 @@ class User(AbstractBaseUser):
         editable=False,
         unique=True,
         help_text=_('The short name for the user. This is set automatically to the '
-                    'email or username based ')
+                    'email or username depending on the method used for authentication.')
     )
 
     #: Full name of the user. Optional.
@@ -195,6 +196,10 @@ class User(AbstractBaseUser):
     def clean(self):
         if self.suspended_datetime is None and self.suspended_reason != '':
             raise ValidationError(_('Can not provide a reason for suspension when suspension time is blank.'))
+        if not self.shortname:
+            raise ValidationError(_('Short name is required.'))
+        if self.fullname:
+            self.lastname = self.fullname.split()[-1]
 
 
 class AbstractUserIdentity(models.Model):
