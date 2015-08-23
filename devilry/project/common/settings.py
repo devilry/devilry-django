@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'errortemplates',
     'crispy_forms',
-    'devilry.thirdpartylibs.djangorestframework',
     'gunicorn',
     'extjs4',
     'haystack',
