@@ -66,7 +66,6 @@ INSTALLED_APPS = [
     'devilry.devilry_theme',
     'devilry.devilry_theme2',
     'devilry.devilry_header',
-    'devilry.devilry_helplinks',
     'devilry.devilry_frontpage',
     'devilry.devilry_student',
     'devilry.devilry_group',
