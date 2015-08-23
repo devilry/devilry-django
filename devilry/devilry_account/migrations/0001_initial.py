@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import django.utils.timezone
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
@@ -40,7 +41,7 @@ class Migration(migrations.Migration):
                 ('last_updated_datetime', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('email', models.EmailField(unique=True, max_length=255, verbose_name='Email')),
                 ('use_for_notifications', models.BooleanField(default=True, verbose_name='Send notifications to this email address?')),
-                ('user', models.ForeignKey(to='devilry_account.User')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Email address',
@@ -56,7 +57,7 @@ class Migration(migrations.Migration):
                 ('last_updated_datetime', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('username', models.CharField(unique=True, max_length=255, verbose_name='Username')),
                 ('is_primary', models.NullBooleanField(help_text='Your primary username is shown alongside your full name to identify you to teachers, examiners and other students.', verbose_name='Is this your primary username?', choices=[(None, 'No'), (True, 'Yes')])),
-                ('user', models.ForeignKey(to='devilry_account.User')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Username',
