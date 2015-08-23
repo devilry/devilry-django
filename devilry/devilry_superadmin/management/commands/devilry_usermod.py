@@ -80,10 +80,7 @@ class Command(UserModCommand):
                 setattr(user, key, value)
             if user.password == '':
                 user.set_unusable_password()
-            self.save_user(user, verbosity)
-
-            profile = user.devilryuserprofile
             full_name = options.get('full_name')
             if full_name:
-                profile.full_name = unicode(full_name, self.inputencoding)
-            self.save_profile(profile)
+                user.fullname = unicode(full_name, self.inputencoding)
+            self.save_user(user, verbosity)

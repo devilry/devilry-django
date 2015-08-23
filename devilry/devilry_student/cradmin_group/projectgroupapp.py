@@ -30,7 +30,7 @@ class CreateForm(forms.ModelForm):
 
     def _sent_to_choices(self):
         users = GroupInvite.send_invite_to_choices_queryset(self.group)
-        choices = [(user.id, user.devilryuserprofile.get_displayname()) for user in users]
+        choices = [(user.id, user.get_full_name()) for user in users]
         choices.insert(0, ('', ''))
         return choices
 

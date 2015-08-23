@@ -18,10 +18,10 @@ class ChangeLanguageView(View):
     def post(self, request):
         form = ChangeLanguageForm(self.request.POST)
         if form.is_valid():
-            profile = self.request.user.devilryuserprofile
-            profile.languagecode = form.cleaned_data['languagecode']
-            profile.full_clean()
-            profile.save()
+            user = self.request.user
+            user.languagecode = form.cleaned_data['languagecode']
+            user.full_clean()
+            user.save()
             return redirect(form.cleaned_data['redirect_url'])
         else:
             return HttpResponseBadRequest(form.errors.as_text())

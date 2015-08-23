@@ -16,7 +16,7 @@ class TestChangeLanguage(TestCase, LoginTestCaseMixin):
 
     def test_post_valid(self):
         testuser = UserBuilder('testuser')
-        testuser.update_profile(
+        testuser.update(
             languagecode='nb'
         )
         with self.settings(LANGUAGES=[('en', 'English')]):
@@ -31,7 +31,7 @@ class TestChangeLanguage(TestCase, LoginTestCaseMixin):
 
     def test_post_invalid(self):
         testuser = UserBuilder('testuser')
-        testuser.update_profile(
+        testuser.update(
             languagecode='nb'
         )
         with self.settings(LANGUAGES=[('en', 'English')]):

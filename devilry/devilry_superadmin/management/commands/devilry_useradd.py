@@ -45,16 +45,13 @@ class Command(UserModCommand):
 
         if User.objects.filter(username=username).count() == 0:
             user = User(username=username, **kw)
+            full_name = options.get('full_name')
+            if full_name:
+                user.fullname = unicode(full_name, self.inputencoding)
             if options['password']:
                 user.set_password(options['password'])
             else:
                 user.set_unusable_password()
             self.save_user(user, verbosity)
-
-            profile = user.devilryuserprofile
-            full_name = options.get('full_name')
-            if full_name:
-                profile.full_name = unicode(full_name, self.inputencoding)
-            self.save_profile(profile)
         else:
             raise CommandError('User "{0}" already exists.'.format(username))

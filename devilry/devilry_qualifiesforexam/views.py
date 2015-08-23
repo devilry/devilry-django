@@ -39,14 +39,12 @@ class StatusPrintViewForm(forms.Form):
 
 
 def extract_lastname(user):
-    profile = user.devilryuserprofile
-    name = profile.full_name
-    if not name or not name.strip():
-        return ''
-    return name.rsplit(' ', 1)[-1]
+    return user.lastname
+
 
 def cmp_lastname(user_a, user_b):
     return cmp(extract_lastname(user_a), extract_lastname(user_b))
+
 
 class StatusPrintView(TemplateView):
     template_name = 'devilry_qualifiesforexam/statusprint.django.html'

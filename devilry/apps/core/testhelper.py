@@ -28,12 +28,10 @@ class TestHelper(object):
         user = User(username=name)
         user.set_password('test')
         user.email = name + '@example.com'
+        if fullname:
+            user.fullname = fullname
         user.full_clean()
         user.save()
-        if fullname:
-            profile = user.devilryuserprofile
-            profile.full_name = fullname
-            profile.save()
         vars(self)[name] = user
         return user
 

@@ -27,7 +27,7 @@ class TestAboutMeView(TestCase):
         # html = response.content
 
     def test_languageselect(self):
-        self.testuserbuilder.update_profile(
+        self.testuserbuilder.update(
             languagecode='en'
         )
         with self.settings(LANGUAGES=[('en', 'English'), ('nb', 'Norwegian')]):

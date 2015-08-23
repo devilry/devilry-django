@@ -82,7 +82,6 @@ class LanguageSelect(View):
     def put(self, request):
         languagecode = self.CONTENT['preferred']
         user = self.request.user
-        profile = user.devilryuserprofile
-        profile.languagecode = languagecode
-        profile.save()
+        user.languagecode = languagecode
+        user.save()
         return self.get(request)

@@ -56,12 +56,8 @@ class Command(BaseCommand):
     def _print_user_details(self, user):
         print '{0}:'.format(user.username)
         for attrname in ('email', 'is_superuser',
-                         'last_login', 'date_joined'):
-            print '   {attrname}: {attr}'.format(attrname=attrname,
-                                                 attr=getattr(user, attrname))
-        profile = user.devilryuserprofile
-        for attrname in ('full_name',):
-            attr = getattr(profile, attrname)
+                         'last_login', 'date_joined', 'fullname'):
+            attr = getattr(user, attrname)
             if isinstance(attr, str) or isinstance(attr, unicode):
                 attr = attr.encode(self.outputencoding)
             print '   {attrname}: {attr}'.format(attrname=attrname,
