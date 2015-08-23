@@ -30,6 +30,7 @@ class TestHelper(object):
         user = get_user_model().objects.create_user(
             username=name,
             email=name + '@example.com',
+            password='test',
             fullname=fullname or '')
         vars(self)[name] = user
         return user

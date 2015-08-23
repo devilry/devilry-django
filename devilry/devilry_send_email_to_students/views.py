@@ -25,27 +25,29 @@ email, and if the frontpage URL is correct.
 
 
 class EmailSendingDebug(View):
-    def get(self, request, username):
+    def get(self, request, pk):
         if not request.user.is_superuser:
             return HttpResponseForbidden('Requires superuser')
         try:
-            user = get_user_model().objects.get(shortname=username)
+            user = get_user_model().objects.get(pk=pk)
         except get_user_model().DoesNotExist:
-            return HttpResponseNotFound('ERROR: User "{username}" does not exist'.format(**vars()))
+            return HttpResponseNotFound('ERROR: User "#{}" does not exist'.format(pk))
 
-        if not request.user.email:
-            return HttpResponseBadRequest('ERROR: YOU ({username}) have no email address'.format(username=request.user.username))
-        if not user.email:
-            return HttpResponseBadRequest('ERROR: User "{username}" has no email address'.format(**vars()))
+        if not request.user.useremail_set.exists():
+            return HttpResponseBadRequest('ERROR: YOU ({user}) have no email address'.format(
+                user=request.user))
+        if not user.useremail_set.exists():
+            return HttpResponseBadRequest('ERROR: User "{user}" has no email address'.format(
+                user=user))
 
         subject = 'Test email from Devilry.'
-        body = emailbodytpl.format(username=request.user.username,
+        body = emailbodytpl.format(username=request.user.shortname,
                                    frontpageurl=create_absolute_url(reverse('devilry_frontpage')),
-                                   superuseremail=request.user.email)
+                                   superuseremail=request.user.useremail_set.first().email)
 
         send_message(subject, body, user)
         return render(request, 'send_email_to_users/email_sending_debug.django.html',
-                      {'email': user.email,
+                      {'email': user.useremail_set.first().email,
                        'subject': subject,
                        'body': body},
                       content_type="text/html")

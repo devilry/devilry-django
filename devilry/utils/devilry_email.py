@@ -22,7 +22,7 @@ def send_message(subject, message, *user_objects_to_send_to):
         if users_notification_emails:
             emails.extend(users_notification_emails)
         else:
-            errmsg = "User {0} has no email address.".format(user.username)
+            errmsg = "User {0} has no email address.".format(user.shortname)
             logger.error(errmsg)
     subject = settings.EMAIL_SUBJECT_PREFIX + subject
     try:
@@ -30,7 +30,7 @@ def send_message(subject, message, *user_objects_to_send_to):
                   emails, fail_silently=False)
     except SMTPException, e:
         errormsg = ('SMTPException when sending email to users {users} on addresses {emails}. '
-                    'Exception: {exception}'.format(users = ','.join([user.username for user in user_objects_to_send_to]),
+                    'Exception: {exception}'.format(users = ','.join([user.shortname for user in user_objects_to_send_to]),
                                                     exception = e))
         logger.error(errormsg)
     else:

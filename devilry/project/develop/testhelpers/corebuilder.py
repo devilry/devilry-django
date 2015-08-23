@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from datetime import datetime
 from datetime import timedelta
 from django.core.files.base import ContentFile
+from model_mommy import mommy
 
 from devilry.apps.core.models import Node, StaticFeedbackFileAttachment
 from devilry.apps.core.models import Subject
@@ -31,6 +32,11 @@ class ReloadableDbBuilderInterface(object):
 
 
 class UserBuilder(ReloadableDbBuilderInterface):
+    """
+    The old user builder class.
+
+    Use :class:`.UserBuilder2` for new tests.
+    """
     def __init__(self, username, full_name=None, email=None, is_superuser=False):
         email = email or u'{}@example.com'.format(username)
         self.user = get_user_model().objects.create_user(
@@ -48,6 +54,46 @@ class UserBuilder(ReloadableDbBuilderInterface):
 
     def reload_from_db(self):
         self.user = get_user_model().objects.get(id=self.user.id)
+
+
+class UserBuilder2(ReloadableDbBuilderInterface):
+    """
+    A user builder much more suitable for :class:`devilry.devilry_account.model.User`
+    than :class:`.UserBuilder`.
+
+    Use this insted of :class:`.UserBuilder` for new tests.
+    """
+    def __init__(self, **kwargs):
+        self.user = mommy.make_recipe('devilry.devilry_account.user', **kwargs)
+        self.user.save()
+
+    def update(self, **attributes):
+        for attrname, value in attributes.iteritems():
+            setattr(self.user, attrname, value)
+        self.user.save()
+        self.reload_from_db()
+
+    def reload_from_db(self):
+        self.user = get_user_model().objects.get(id=self.user.id)
+
+    def add_emails(self, *emails):
+        for email in emails:
+            self.user.useremail_set.create(email=email, use_for_notifications=False)
+        return self
+
+    def add_usernames(self, *usernames):
+        for username in usernames:
+            self.user.username_set.create(username=username, is_primary=False)
+        return self
+
+    def add_notification_emails(self, *emails):
+        for email in emails:
+            self.user.useremail_set.create(email=email, use_for_notifications=True)
+        return self
+
+    def add_primary_username(self, username):
+        self.user.username_set.create(username=username, is_primary=True)
+        return self
 
 
 class CoreBuilderBase(ReloadableDbBuilderInterface):
