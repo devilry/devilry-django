@@ -1,12 +1,12 @@
 from datetime import datetime
 import os
 import uuid
+from django.conf import settings
 from django.core.urlresolvers import reverse
 
 from django.utils.translation import ugettext_lazy as _
 from django.db import models
 from django.db.models import Q
-from devilry.devilry_account.models import User
 from django.core.exceptions import ValidationError
 
 from abstract_is_admin import AbstractIsAdmin
@@ -42,7 +42,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
 
     .. attribute:: saved_by
 
-       The django.contrib.auth.models.User_ that created the StaticFeedback.
+       The User that created the StaticFeedback.
 
     .. attribute:: save_timestamp
 
@@ -77,7 +77,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
     save_timestamp = models.DateTimeField(blank=True, null=True,
                                           help_text=('Time when this feedback was saved. Since StaticFeedback '
                                                      'is immutable, this never changes.'))
-    saved_by = models.ForeignKey(User, blank=False, null=False,
+    saved_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False, null=False,
                                  help_text='The user (examiner) who saved this feedback')
 
     class Meta:

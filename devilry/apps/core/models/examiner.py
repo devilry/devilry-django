@@ -1,4 +1,4 @@
-from devilry.devilry_account.models import User
+from django.conf import settings
 from django.db import models
 from django.db.models import Q
 
@@ -21,7 +21,7 @@ class Examiner(models.Model, AbstractIsAdmin):
         unique_together = ('user', 'assignmentgroup')
         db_table = 'core_assignmentgroup_examiners'
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     assignmentgroup = models.ForeignKey('AssignmentGroup', related_name='examiners')
 
     @classmethod

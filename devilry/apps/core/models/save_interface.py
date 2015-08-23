@@ -1,4 +1,4 @@
-from devilry.devilry_account.models import User
+
 
 class SaveInterface(object):
     def can_save(self, user_obj):
@@ -16,7 +16,7 @@ class SaveInterface(object):
             - Is admin on any parentnode.
             - Is admin on the node.
 
-        :param user_obj: A django.contrib.auth.models.User_ object.
+        :param user_obj: A User object.
         :rtype: bool
         """
         raise NotImplementedError()

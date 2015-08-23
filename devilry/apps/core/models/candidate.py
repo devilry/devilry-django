@@ -1,4 +1,4 @@
-from devilry.devilry_account.models import User
+from django.conf import settings
 from django.db import models
 
 
@@ -23,7 +23,7 @@ class Candidate(models.Model):
     class Meta:
         app_label = 'core'
 
-    student = models.ForeignKey(User)
+    student = models.ForeignKey(settings.AUTH_USER_MODEL)
     assignment_group = models.ForeignKey(
         'AssignmentGroup',
         related_name='candidates')

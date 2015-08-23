@@ -1,9 +1,9 @@
+from datetime import datetime
+from django.conf import settings
+
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.db import transaction
-from datetime import datetime
-from devilry.devilry_account.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from abstract_is_examiner import AbstractIsExaminer
@@ -11,9 +11,7 @@ from abstract_is_candidate import AbstractIsCandidate
 from assignment_group import AssignmentGroup
 from abstract_is_admin import AbstractIsAdmin
 import deliverytypes
-
 from node import Node
-
 
 
 class NewerDeadlineExistsError(Exception):
@@ -193,7 +191,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     deliveries_available_before_deadline = models.BooleanField(default=False,
                                                               help_text='Should deliveries on this deadline be available to examiners before the'
                                                                           'deadline expires? This is set by students.')
-    added_by = models.ForeignKey(User,
+    added_by = models.ForeignKey(settings.AUTH_USER_MODEL,
         null=True, blank=True, default=None,
         on_delete=models.SET_NULL)
     why_created = models.CharField(

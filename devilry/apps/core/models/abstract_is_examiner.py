@@ -30,7 +30,7 @@ class AbstractIsExaminer(object):
         """ Get all items of this type where the given ``user_obj`` is
         examiner on one of the assignment groups.
 
-        :param user_obj: A django.contrib.auth.models.User_ object.
+        :param user_obj: A User object.
         :rtype: QuerySet
         """
         return cls.objects.filter(

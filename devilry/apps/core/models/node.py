@@ -1,12 +1,13 @@
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db.models import Q
-from devilry.devilry_account.models import User
 from django.db import models
 
 from basenode import BaseNode
 from custom_db_fields import ShortNameField, LongNameField
-from model_utils import Etag, EtagMismatchException
+from model_utils import Etag
+
 
 class Node(models.Model, BaseNode, Etag):
     """
@@ -41,7 +42,7 @@ class Node(models.Model, BaseNode, Etag):
     long_name = LongNameField()
     parentnode = models.ForeignKey('self', blank=True, null=True,
                                    related_name='child_nodes')
-    admins = models.ManyToManyField(User, blank=True)
+    admins = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     etag = models.DateTimeField(auto_now=True)
 
     class Meta:

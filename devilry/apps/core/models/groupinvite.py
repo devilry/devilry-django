@@ -1,8 +1,10 @@
 from datetime import datetime
+
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
-from devilry.devilry_account.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from devilry.utils.devilry_email import send_templated_message
@@ -74,8 +76,8 @@ class GroupInvite(models.Model):
     """
     group = models.ForeignKey(AssignmentGroup)
     sent_datetime = models.DateTimeField(default=datetime.now)
-    sent_by = models.ForeignKey(User, related_name='groupinvite_sent_by_set')
-    sent_to = models.ForeignKey(User, related_name='groupinvite_sent_to_set')
+    sent_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='groupinvite_sent_by_set')
+    sent_to = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='groupinvite_sent_to_set')
 
     accepted = models.NullBooleanField(default=None)
     responded_datetime = models.DateTimeField(
@@ -100,7 +102,7 @@ class GroupInvite(models.Model):
         students_in_group = [c.student.id for c in group.candidates.all()]
         students_invited_to_group = [invite.sent_to.id \
             for invite in GroupInvite.objects.filter_unanswered_sent_invites(group)]
-        users = User.objects.filter(relatedstudent__period=group.period)\
+        users = get_user_model().objects.filter(relatedstudent__period=group.period)\
             .exclude(id__in=students_in_group)\
             .exclude(id__in=students_invited_to_group)\
             .order_by('fullname', 'username')

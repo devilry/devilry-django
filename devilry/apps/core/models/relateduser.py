@@ -1,15 +1,14 @@
 import re
+from django.conf import settings
 
 from django.db import models
 from django.db.models import Q
-from devilry.devilry_account.models import User
 from django.core.exceptions import ValidationError
 
 from period import Period
 from node import Node
 from abstract_is_admin import AbstractIsAdmin
 from abstract_applicationkeyvalue import AbstractApplicationKeyValue
-
 
 
 class RelatedUserBase(models.Model, AbstractIsAdmin):
@@ -22,7 +21,7 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
 
     .. attribute:: user
 
-        A django.contrib.auth.models.User_ object. Must be unique within this
+        A User object. Must be unique within this
         period.
 
     .. attribute:: tags
@@ -34,7 +33,7 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
     period = models.ForeignKey(Period,
                                verbose_name='Period',
                                help_text="The period.")
-    user = models.ForeignKey(User, help_text="The related user.")
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, help_text="The related user.")
     tags = models.TextField(blank=True, null=True, help_text="Comma-separated list of tags. Each tag is a word with the following letters allowed: a-z, 0-9, ``_`` and ``-``. Each word is separated by a comma, and no whitespace.")
 
     tags_patt = re.compile('^(?:[a-z0-9_-]+,)*[a-z0-9_-]+$')

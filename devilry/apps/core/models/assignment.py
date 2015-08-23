@@ -1,12 +1,12 @@
 import warnings
 from datetime import datetime
 
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-from devilry.devilry_account.models import User
 from django.conf import settings
 
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
@@ -15,7 +15,6 @@ from node import Node
 from period import Period
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
-from model_utils import *
 from custom_db_fields import ShortNameField, LongNameField
 from . import deliverytypes
 
@@ -279,7 +278,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     students_can_see_points = models.BooleanField(
         default=True,
         verbose_name="Students can see points")
-    admins = models.ManyToManyField(User, blank=True, verbose_name="Administrators")
+    admins = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, verbose_name="Administrators")
     delivery_types = models.PositiveIntegerField(
         default=deliverytypes.ELECTRONIC,
         choices=deliverytypes.as_choices_tuple(),

@@ -1,5 +1,5 @@
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
-from devilry.devilry_account.models import User
 
 from abstract_is_admin import AbstractIsAdmin
 from save_interface import SaveInterface
@@ -98,12 +98,12 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
     def is_admin(self, user_obj):
         """ Check if the given user is admin on this node or any parentnode.
 
-        :param user_obj: A django.contrib.auth.models.User_ object.
+        :param user_obj: A User object.
         :rtype: bool
         """
         try:
             self.admins.get(pk=user_obj.pk)
-        except User.DoesNotExist, e:
+        except get_user_model().DoesNotExist, e:
             if self.parentnode:
                 return self.parentnode.is_admin(user_obj)
         else:

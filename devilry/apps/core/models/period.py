@@ -1,9 +1,9 @@
 from datetime import datetime
+from django.conf import settings
 
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db.models import Q
-from devilry.devilry_account.models import User
 from django.db import models
 
 from abstract_is_examiner import AbstractIsExaminer
@@ -174,7 +174,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         help_text='Start time and end time defines when the period is active.')
     end_time = models.DateTimeField(
         help_text='Start time and end time defines when the period is active.')
-    admins = models.ManyToManyField(User, blank=True)
+    admins = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 
     @classmethod

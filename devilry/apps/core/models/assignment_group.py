@@ -470,7 +470,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """ Returns a QuerySet matching all AssignmentGroups where the
         given user is student.
 
-        :param user_obj: A django.contrib.auth.models.User_ object.
+        :param user_obj: A User object.
         :rtype: QuerySet
         """
         return AssignmentGroup.objects.filter(cls.q_is_candidate(user_obj))
@@ -481,7 +481,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         <assignment-classifications>` assignment groups where the given user
         is student.
 
-        :param user_obj: A django.contrib.auth.models.User_ object.
+        :param user_obj: A User object.
         :rtype: QuerySet
         """
         return AssignmentGroup.objects.filter(
@@ -494,7 +494,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         <assignment-classifications>` assignment groups where the given user
         is student.
 
-        :param user_obj: A django.contrib.auth.models.User_ object.
+        :param user_obj: A User object.
         :rtype: QuerySet
         """
         return cls.published_where_is_candidate(user_obj, old=False)
@@ -505,7 +505,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         <assignment-classifications>` assignment groups where the given user
         is student.
 
-        :param user_obj: A django.contrib.auth.models.User_ object.
+        :param user_obj: A User object.
         :rtype: QuerySet
         """
         return cls.published_where_is_candidate(user_obj, active=False)
