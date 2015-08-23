@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import datetime
 import django.utils.timezone
 from django.conf import settings
 
@@ -38,8 +37,8 @@ class Migration(migrations.Migration):
             name='UserEmail',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('created_datetime', models.DateTimeField(default=datetime.datetime(2015, 8, 23, 4, 52, 24, 161648), editable=False)),
-                ('last_updated_datetime', models.DateTimeField(default=datetime.datetime(2015, 8, 23, 4, 52, 24, 161675), editable=False)),
+                ('created_datetime', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('last_updated_datetime', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('email', models.EmailField(unique=True, max_length=255, verbose_name='Email')),
                 ('use_for_notifications', models.BooleanField(default=True, verbose_name='Send notifications to this email address?')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
@@ -54,8 +53,8 @@ class Migration(migrations.Migration):
             name='UserName',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('created_datetime', models.DateTimeField(default=datetime.datetime(2015, 8, 23, 4, 52, 24, 161648), editable=False)),
-                ('last_updated_datetime', models.DateTimeField(default=datetime.datetime(2015, 8, 23, 4, 52, 24, 161675), editable=False)),
+                ('created_datetime', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
+                ('last_updated_datetime', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('username', models.CharField(unique=True, max_length=255, verbose_name='Username')),
                 ('is_primary', models.NullBooleanField(help_text='Your primary username is shown alongside your full name to identify you to teachers, examiners and other students.', verbose_name='Is this your primary username?', choices=[(None, 'No'), (True, 'Yes')])),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),

@@ -190,13 +190,13 @@ class AbstractUserIdentity(models.Model):
 
     #: The datetime when this was created.
     created_datetime = models.DateTimeField(
-        default=timezone.now(),
+        default=timezone.now,
         editable=False,
         null=False, blank=False)
 
     #: The datetime when this was last updated.
     last_updated_datetime = models.DateTimeField(
-        default=timezone.now(),
+        default=timezone.now,
         editable=False,
         null=False, blank=False)
 
