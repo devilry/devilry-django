@@ -1,9 +1,10 @@
+import datetime
+
+from django.conf import settings
 from django.db import models
+
 from devilry.devilry_comment import models as comment_models
 from devilry.apps.core.models import assignment_group
-from django.contrib.auth import models as auth_models
-
-import datetime
 
 
 class AbstractGroupComment(comment_models.Comment):
@@ -30,8 +31,8 @@ class FeedbackSet(models.Model):
     """
     group = models.ForeignKey(assignment_group.AssignmentGroup)
     points = models.PositiveIntegerField()
-    published_by = models.ForeignKey(auth_models.User, related_name="published_feedbacksets")
-    created_by = models.ForeignKey(auth_models.User, related_name="created_feedbacksets")
+    published_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="published_feedbacksets")
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="created_feedbacksets")
     created_datetime = models.DateTimeField(default=datetime.datetime.now)
     published_datetime = models.DateTimeField(null=True, blank=True)
     deadline_datetime = models.DateTimeField(null=True, blank=True)

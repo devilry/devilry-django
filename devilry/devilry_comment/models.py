@@ -1,5 +1,5 @@
+from django.conf import settings
 from django.db import models
-from django.contrib.auth import models as auth_models
 from django.core import files
 
 
@@ -13,7 +13,7 @@ class Comment(models.Model):
     #: the text of the comment
     text = models.CharField(max_length=4096)
     #: the user who posted the comment
-    user = models.ForeignKey(auth_models.User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     #: if this comment is a reply to another comment, that comment will be parent
     parent = models.ForeignKey('self', null=True, blank=True)
     #: when was the comment created

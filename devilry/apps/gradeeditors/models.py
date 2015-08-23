@@ -1,7 +1,7 @@
+from django.conf import settings
 from django.db.models.signals import post_save
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.contrib.auth.models import User
 
 from devilry.apps.core.models import Delivery, Assignment, StaticFeedback
 from registry import gradeeditor_registry
@@ -85,7 +85,7 @@ class FeedbackDraft(models.Model):
     save_timestamp = models.DateTimeField(auto_now=True, blank=False, null=False,
                                           help_text='Time when this feedback was saved. Since FeedbackDraft '
                                                     'is immutable, this never changes.')
-    saved_by = models.ForeignKey(User)
+    saved_by = models.ForeignKey(settings.AUTH_USER_MODEL)
     published = models.BooleanField(default=False,
                                     help_text='Has this draft been published as a StaticFeedback? Setting this to true on create automatically creates a StaticFeedback.')
     staticfeedback = models.OneToOneField(StaticFeedback, blank=True, null=True,
