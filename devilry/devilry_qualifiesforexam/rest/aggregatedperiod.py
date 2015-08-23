@@ -1,9 +1,3 @@
-from devilry.thirdpartylibs.djangorestframework.views import View
-from devilry.thirdpartylibs.djangorestframework.permissions import IsAuthenticated
-from devilry.thirdpartylibs.djangorestframework.permissions import BasePermission
-from devilry.thirdpartylibs.djangorestframework.response import ErrorResponse
-from devilry.thirdpartylibs.djangorestframework import status
-
 from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.models import Period
 from devilry.apps.core.models import RelatedStudent
