@@ -77,7 +77,7 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
         zip_file = zipfile.ZipFile(tempfile, 'w');
 
         for group_comment in feedbackset.groupcomment_set.all():
-            if not (group_comment.commentfile_set is None):
+            if group_comment.commentfile_set is not None:
                 for comment_file in group_comment.commentfile_set.all():
                     if comment_file.comment.published_datetime > group_comment.feedback_set.deadline_datetime \
                             and comment_file.comment.user_role == u'student':
@@ -133,7 +133,7 @@ class CompressedAllFeedbackSetsFileDownloadView(generic.View):
         deadline_count = 1
         for feedbackset in assignmentgroup.feedbackset_set.all():
             for group_comment in feedbackset.groupcomment_set.all():
-                if not (group_comment.commentfile_set is None):
+                if group_comment.commentfile_set is not None:
                     for comment_file in group_comment.commentfile_set.all():
                         if comment_file.comment.published_datetime > feedbackset.deadline_datetime \
                                         and comment_file.comment.user_role == u'student':
