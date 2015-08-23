@@ -27,7 +27,7 @@ class TestChangeLanguage(TestCase, LoginTestCaseMixin):
             self.assertEquals(response.status_code, 302)
             self.assertEquals(response['Location'], 'http://testserver/successtest')
             testuser.reload_from_db()
-            self.assertEquals(testuser.user.devilryuserprofile.languagecode, 'en')
+            self.assertEquals(testuser.user.languagecode, 'en')
 
     def test_post_invalid(self):
         testuser = UserBuilder('testuser')
@@ -41,4 +41,4 @@ class TestChangeLanguage(TestCase, LoginTestCaseMixin):
             })
             self.assertEquals(response.status_code, 400)
             testuser.reload_from_db()
-            self.assertEquals(testuser.user.devilryuserprofile.languagecode, 'nb')
+            self.assertEquals(testuser.user.languagecode, 'nb')

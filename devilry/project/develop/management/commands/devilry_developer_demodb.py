@@ -158,7 +158,7 @@ class Command(BaseCommand):
         self.april = UserBuilder('april', full_name='April Duck').user
 
         for user in [self.thor, self.donald, self.april]:
-            user.devilryuserprofile.languagecode = 'nb'
+            user.languagecode = 'nb'
             user.devilryuserprofile.save()
 
         self.duckburgh = NodeBuilder('duckburgh', long_name="University of Duckburgh")

@@ -14,7 +14,7 @@ class LocaleMiddleware(object):
 
     def _get_language(self, request):
         if request.user.is_authenticated():
-            languagecode = request.user.devilryuserprofile.languagecode
+            languagecode = request.user.languagecode
             if languagecode:
                 languages_dict = dict(settings.LANGUAGES)
                 if languagecode in languages_dict:

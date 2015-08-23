@@ -21,7 +21,7 @@ class TestLanguageSelect(TestCase):
 
     def _get_languagecode(self, username):
         user = User.objects.get(username=username)
-        return user.devilryuserprofile.languagecode
+        return user.languagecode
 
     def _set_languagecode(self, username, languagecode):
         profile = User.objects.get(username=username).devilryuserprofile

@@ -65,7 +65,7 @@ class LanguageSelect(View):
     resource = LanguageSelectResource
 
     def get(self, request):
-        preferred = request.user.devilryuserprofile.languagecode
+        preferred = request.user.languagecode
         languagecode = request.LANGUAGE_CODE
         return {'preferred': preferred,
                 'selected': self._get_language_info(languagecode),
