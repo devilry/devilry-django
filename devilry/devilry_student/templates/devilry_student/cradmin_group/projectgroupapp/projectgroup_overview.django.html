@@ -23,7 +23,7 @@
                 <div class="alert alert-success">
                     <p>
                         <strong>{% trans "You have been invited to join a group!" %}</strong>
-                        {% blocktrans with sent_by=invite.sent_by.devilryuserprofile.get_displayname %}{{ sent_by }} invited you to join their group.{% endblocktrans %}
+                        {% blocktrans with sent_by=invite.sent_by.get_full_name %}{{ sent_by }} invited you to join their group.{% endblocktrans %}
                     </p>
                     <p>
                         <a class="btn btn-default" href="{% url 'devilry_student_groupinvite_respond' invite.id %}">
@@ -65,10 +65,10 @@
                                     </a>
                                     &nbsp;
                                     <span class="invite_sent_to_displayname">
-                                        {{ invite.sent_to.devilryuserprofile.get_displayname }}
+                                        {{ invite.sent_to.get_full_name }}
                                     </span>
                                 </td>
-                                <td>{{ invite.sent_by.devilryuserprofile.get_displayname }}</td>
+                                <td>{{ invite.sent_by.get_full_name }}</td>
                                 <td>{{ invite.sent_datetime|date:"DATETIME_FORMAT" }}</td>
                             </tr>
                         {% endfor %}

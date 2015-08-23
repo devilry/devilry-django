@@ -177,7 +177,7 @@ class GroupInvite(models.Model):
             existing_group.merge_into(self.group)
 
     def _send_response_notification(self):
-        sent_to_displayname = self.sent_to.devilryuserprofile.get_displayname()
+        sent_to_displayname = self.sent_to.get_full_name()
         if self.accepted:
             subject = _('{user} accepted your project group invite').format(user=sent_to_displayname)
             template_name = 'devilry_core/groupinvite_accepted.django.txt'
@@ -209,7 +209,7 @@ class GroupInvite(models.Model):
             raise ValueError('Can not send notification for an accepted GroupInvite.')
         elif self.id == None:
             raise ValueError('Can not send notification for an unsaved GroupInvite.')
-        sent_by_displayname = self.sent_by.devilryuserprofile.get_displayname()
+        sent_by_displayname = self.sent_by.get_full_name()
         assignment = self.group.assignment
         subject = _('Project group invite for {assignment}').format(assignment=assignment.get_path())
         template_name = 'devilry_core/groupinvite_invite.django.txt'
