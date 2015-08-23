@@ -9,7 +9,7 @@ register = template.Library()
 def devilry_user_displayname(user):
     if not user:
         return ''
-    return user.fullname or user.username
+    return user.get_full_name()
 
 
 @register.filter

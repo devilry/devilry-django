@@ -275,12 +275,12 @@ class AllGroupsOverview(DetailView):
                         SELECT selected_candidate.selected_candidate_username
                         FROM (
                             SELECT
-                              devilry_account_user.username as selected_candidate_username
+                              devilry_account_user.shortname as selected_candidate_username
                             FROM core_candidate
                             INNER JOIN devilry_account_user
                               ON devilry_account_user.id=core_candidate.student_id
                             WHERE core_assignmentgroup.id=core_candidate.assignment_group_id
-                            ORDER BY devilry_account_user.username
+                            ORDER BY devilry_account_user.shortname
                             LIMIT 1
                         ) AS selected_candidate
                     """
