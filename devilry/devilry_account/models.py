@@ -380,6 +380,9 @@ class User(AbstractBaseUser):
 
 
 class AbstractUserIdentity(models.Model):
+    """
+    Base class for :class:`.UserEmail` and :class:`.UserName`.
+    """
     class Meta:
         abstract = True
 
