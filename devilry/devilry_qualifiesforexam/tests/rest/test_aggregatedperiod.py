@@ -1,3 +1,4 @@
+import unittest
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 
@@ -5,6 +6,7 @@ from devilry.apps.core.testhelper import TestHelper
 from devilry.devilry_rest.testclient import RestClient
 
 
+@unittest.skip('devilry_qualifiesforexam will need rewrite for 3.0')
 class TestRestAggregatedPeriod(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()

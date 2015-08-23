@@ -1,3 +1,4 @@
+import unittest
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
@@ -7,6 +8,7 @@ from devilry.devilry_rest.testclient import RestClient
 from devilry.devilry_qualifiesforexam.pluginhelpers import PreviewData
 
 
+@unittest.skip('devilry_qualifiesforexam will need rewrite for 3.0')
 class TestRestPreview(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()

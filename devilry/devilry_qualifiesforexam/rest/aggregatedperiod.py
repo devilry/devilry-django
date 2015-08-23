@@ -98,7 +98,7 @@ class AggregatePeriod(View):
 
     def _serialize_user(self, user):
         return {'id': user.id,
-                'username': user.username,
+                'username': user.shortname,
                 'email': user.email,
                 'full_name': user.fullname}
 

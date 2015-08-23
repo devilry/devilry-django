@@ -1,3 +1,4 @@
+import unittest
 from django.test import TransactionTestCase
 from django.core.urlresolvers import reverse
 
@@ -15,6 +16,7 @@ def noop(*args):
 
 
 
+@unittest.skip('devilry_qualifiesforexam will need rewrite for 3.0')
 class TestRestStatus(TransactionTestCase):
     def setUp(self):
         self.testhelper = TestHelper()

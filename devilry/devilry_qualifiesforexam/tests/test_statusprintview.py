@@ -1,4 +1,5 @@
 import re
+import unittest
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.core.urlresolvers import reverse
@@ -10,6 +11,7 @@ from devilry.devilry_qualifiesforexam.views import extract_lastname
 from devilry.devilry_qualifiesforexam.views import cmp_lastname
 
 
+@unittest.skip('devilry_qualifiesforexam will need rewrite for 3.0')
 class TestStatusPrintView(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()
