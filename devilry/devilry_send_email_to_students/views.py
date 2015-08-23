@@ -2,7 +2,7 @@ from django.http import HttpResponseForbidden
 from django.http import HttpResponseBadRequest
 from django.http import HttpResponseNotFound
 from django.core.urlresolvers import reverse
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 from django.shortcuts import render
 from django.views.generic import View
 

@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import unittest
 import os
 
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 from django.conf import settings
 
 from models import Node, Subject, Period, Assignment, AssignmentGroup, \

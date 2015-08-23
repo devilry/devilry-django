@@ -3,7 +3,7 @@ from django.db import models
 from django.db.models import Q
 from django.db import transaction
 from datetime import datetime
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 from django.utils.translation import ugettext_lazy as _
 
 from abstract_is_examiner import AbstractIsExaminer

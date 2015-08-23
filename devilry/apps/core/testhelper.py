@@ -1,5 +1,5 @@
 from datetime import datetime, timedelta
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 from models import (Node, Subject, Period, Assignment, AssignmentGroup,
                     Candidate, Deadline, Delivery, StaticFeedback, FileMeta)
 from deliverystore import MemoryDeliveryStore

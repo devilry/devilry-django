@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 from django.core.exceptions import ValidationError
 from optparse import make_option
 import sys

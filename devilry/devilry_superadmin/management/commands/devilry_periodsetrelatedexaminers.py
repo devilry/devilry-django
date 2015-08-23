@@ -1,7 +1,7 @@
 import json
 from optparse import make_option
 
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 from django.core.management.base import BaseCommand, CommandError
 from django.core.exceptions import ValidationError
 

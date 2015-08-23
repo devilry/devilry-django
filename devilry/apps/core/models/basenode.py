@@ -1,5 +1,5 @@
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 
 from abstract_is_admin import AbstractIsAdmin
 from save_interface import SaveInterface

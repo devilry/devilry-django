@@ -3,8 +3,6 @@ import hashlib
 from datetime import datetime
 from simple_rest.auth.decorators import request_passes_test
 from simple_rest.utils.decorators import wrap_object
-#from django.contrib.auth.models import User
-
 
 
 

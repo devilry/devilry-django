@@ -1,7 +1,7 @@
 from optparse import make_option
 
 from django.core.management.base import BaseCommand, CommandError
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 
 from devilry.devilry_superadmin.management.commands.devilry_usermod import UserModCommand
 from devilry.utils.management import make_input_encoding_option

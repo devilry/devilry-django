@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 
 class SaveInterface(object):
     def can_save(self, user_obj):

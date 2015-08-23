@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.db.models import Count
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 from optparse import make_option
 
 from devilry.apps.core.models import Delivery

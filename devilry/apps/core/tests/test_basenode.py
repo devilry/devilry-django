@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 
 from django.test import TestCase
 from ..models import Node, Subject

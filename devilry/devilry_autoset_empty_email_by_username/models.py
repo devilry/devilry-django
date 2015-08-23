@@ -1,5 +1,5 @@
 from django.db.models.signals import post_save
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 from django.conf import settings
 
 

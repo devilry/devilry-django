@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 

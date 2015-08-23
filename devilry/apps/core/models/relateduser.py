@@ -2,7 +2,7 @@ import re
 
 from django.db import models
 from django.db.models import Q
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 from django.core.exceptions import ValidationError
 
 from period import Period

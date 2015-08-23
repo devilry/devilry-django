@@ -2,7 +2,7 @@ from optparse import make_option
 import sys
 
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 
 from devilry.devilry_superadmin.management.commands.devilry_usermod import UserModCommand
 

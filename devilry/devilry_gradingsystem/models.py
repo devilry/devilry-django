@@ -4,7 +4,7 @@ import uuid
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 
 from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import StaticFeedback

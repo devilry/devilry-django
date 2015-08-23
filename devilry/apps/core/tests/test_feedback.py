@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder

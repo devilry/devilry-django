@@ -1,7 +1,7 @@
 from os.path import splitext
 from os.path import basename
 from django.db import models
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import Delivery

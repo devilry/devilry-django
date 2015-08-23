@@ -4,7 +4,7 @@ Tests the StreamableZip and StreamableTar implementations.
 """
 
 from django.test import TestCase
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 
 from devilry.apps.core.models import (Node, Subject, Period, Assignment, AssignmentGroup,
                                       Delivery, Candidate)

@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 
 from ..models import Node, Subject, Period, Assignment, AssignmentGroup, Deadline, Delivery, StaticFeedback
 from ..testhelper import TestHelper

@@ -1,5 +1,5 @@
 from django.views.generic import DetailView
-from django.contrib.auth.models import User
+from devilry.devilry_account.models import User
 from django.conf import settings
 
 from devilry.devilry_settings.views import urlsetting_or_unsetview
