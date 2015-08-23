@@ -112,7 +112,8 @@ class UserManager(BaseUserManager):
         if username:
             user.username_set.create(username=username, is_primary=True)
         if email:
-            user.useremail_set.create(email=email)
+            user.useremail_set.create(email=email, is_primary=True,
+                                      use_for_notifications=True)
         return user
 
     def get_by_email(self, email):
@@ -268,6 +269,9 @@ class UserEmail(AbstractUserIdentity):
     class Meta:
         verbose_name = _('Email address')
         verbose_name_plural = _('Email addresses')
+        unique_together = [
+            ('user', 'is_primary')
+        ]
 
     #: The email address of the user.
     #: Must be unique.
@@ -281,6 +285,19 @@ class UserEmail(AbstractUserIdentity):
     use_for_notifications = models.BooleanField(
         default=True,
         verbose_name=_('Send notifications to this email address?'))
+
+    #: Is this the primary email for the user?
+    #: Valid values are: ``None`` and ``True``, and only
+    #: one UserEmail per user can have ``is_primary=True``.
+    is_primary = models.NullBooleanField(
+        verbose_name=_('Is this your primary email?'),
+        choices=[
+            (None, _('No')),
+            (True, _('Yes'))
+        ],
+        help_text=_('Your primary username is the email address used when we '
+                    'need to display a single email address.')
+    )
 
 
 class UserName(AbstractUserIdentity):

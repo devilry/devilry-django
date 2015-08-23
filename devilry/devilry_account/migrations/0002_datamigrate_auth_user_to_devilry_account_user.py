@@ -31,7 +31,7 @@ def datamigrate_auth_user_to_devilry_account_user(apps, schema_editor):
         if old_user.email:
             useremail = useremail_model(
                 user=new_user,
-                email=old_user.email, use_for_notifications=True)
+                email=old_user.email, use_for_notifications=True, is_primary=True)
             useremail.save()
 
 
