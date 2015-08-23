@@ -62,9 +62,9 @@ class Command(BaseCommand):
         for usernumber in xrange(first_studentnumber, first_studentnumber + self.groupcount * self.groupsize):
             username = '{}{:08}'.format(self.username_prefix, usernumber)
             self._print_message('Creating user: {}'.format(username))
-            user = User.objects.create(username=username)
-            user.fullname=u'{} {}'.format(self.username_prefix.title(), usernumber)
-            user.devilryuserprofile.save()
+            user = User.objects.create(
+                username=username,
+                fullname=u'{} {}'.format(self.username_prefix.title(), usernumber))
             self.users.append(user)
 
     def _create_groups(self):
