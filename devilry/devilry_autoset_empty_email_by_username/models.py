@@ -1,5 +1,3 @@
-from django.db.models.signals import post_save
-from devilry.devilry_account.models import User
 from django.conf import settings
 
 
@@ -11,5 +9,5 @@ def set_email_by_username(sender, **kwargs):
     if not user.email:
         user.email = '{0}@{1}'.format(user.username, settings.DEVILRY_DEFAULT_EMAIL_SUFFIX)
 
-post_save.connect(set_email_by_username,
-                  sender=User)
+# post_save.connect(set_email_by_username,
+#                   sender=User)
