@@ -295,9 +295,18 @@ class UserEmail(AbstractUserIdentity):
             (None, _('No')),
             (True, _('Yes'))
         ],
-        help_text=_('Your primary username is the email address used when we '
+        help_text=_('Your primary email is the email address used when we '
                     'need to display a single email address.')
     )
+
+    def clean(self):
+        if self.is_primary == False:
+            raise ValidationError('is_primary can not be False. Valid values are: True, None.')
+        if self.is_primary:
+            other_useremails = UserEmail.objects.filter(user=self.user)
+            if self.id is not None:
+                other_useremails = other_useremails.exclude(id=self.id)
+            other_useremails.update(is_primary=None)
 
 
 class UserName(AbstractUserIdentity):
@@ -335,3 +344,12 @@ class UserName(AbstractUserIdentity):
                     'name to identify you to teachers, examiners and '
                     'other students.')
     )
+
+    def clean(self):
+        if self.is_primary == False:
+            raise ValidationError('is_primary can not be False. Valid values are: True, None.')
+        if self.is_primary:
+            other_usernames = UserName.objects.filter(user=self.user)
+            if self.id is not None:
+                other_usernames = other_usernames.exclude(id=self.id)
+            other_usernames.update(is_primary=None)

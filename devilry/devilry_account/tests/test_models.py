@@ -3,7 +3,8 @@ from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
-from devilry.devilry_account.models import User
+
+from devilry.devilry_account.models import User, UserEmail, UserName
 
 
 class TestUser(TestCase):
@@ -128,6 +129,26 @@ class TestUserEmail(TestCase):
         with self.assertRaises(IntegrityError):
             mommy.make('devilry_account.UserEmail', email='test@example.com')
 
+    def test_clean_is_primary_can_not_be_false(self):
+        useremail = mommy.make('devilry_account.UserEmail')
+        useremail.clean()  # No error
+        useremail.is_primary = False
+        with self.assertRaisesMessage(ValidationError,
+                                      'is_primary can not be False. Valid values are: True, None.'):
+            useremail.clean()
+
+    def test_clean_useremail_set_is_primary_unsets_other(self):
+        user = mommy.make('devilry_account.User')
+        useremail1 = mommy.make('devilry_account.UserEmail',
+                                user=user,
+                                is_primary=True)
+        useremail2 = mommy.make('devilry_account.UserEmail',
+                                user=user,
+                                is_primary=None)
+        useremail2.is_primary = True
+        useremail2.clean()
+        self.assertIsNone(UserEmail.objects.get(pk=useremail1.pk).is_primary)
+
 
 class TestUserName(TestCase):
     def test_username_unique(self):
@@ -145,3 +166,23 @@ class TestUserName(TestCase):
         user = mommy.make('devilry_account.User')
         mommy.make('devilry_account.UserName', user=user, is_primary=None)
         mommy.make('devilry_account.UserName', user=user, is_primary=None)
+
+    def test_clean_is_primary_can_not_be_false(self):
+        usernameobject = mommy.make('devilry_account.UserName')
+        usernameobject.clean()  # No error
+        usernameobject.is_primary = False
+        with self.assertRaisesMessage(ValidationError,
+                                      'is_primary can not be False. Valid values are: True, None.'):
+            usernameobject.clean()
+
+    def test_clean_usernam_set_is_primary_unsets_other(self):
+        user = mommy.make('devilry_account.User')
+        usernameobject1 = mommy.make('devilry_account.UserName',
+                                     user=user,
+                                     is_primary=True)
+        usernameobject2 = mommy.make('devilry_account.UserName',
+                                     user=user,
+                                     is_primary=None)
+        usernameobject2.is_primary = True
+        usernameobject2.clean()
+        self.assertIsNone(UserName.objects.get(pk=usernameobject1.pk).is_primary)
