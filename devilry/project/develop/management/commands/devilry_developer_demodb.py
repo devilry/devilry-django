@@ -170,7 +170,7 @@ class Command(BaseCommand):
         try:
             return UserBuilder(username, full_name=full_name).user
         except ValidationError:
-            return get_user_model().objects.get(username=username)
+            return get_user_model().objects.get(shortname=username)
 
     def build_random_pointassignmentdata(self,
                                          periodbuilder, weeks_ago, short_name, long_name,

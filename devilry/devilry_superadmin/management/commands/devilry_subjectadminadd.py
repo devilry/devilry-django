@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand, CommandError
 class AdminAddBase(BaseCommand):
     def add_admin(self, record, username):
         try:
-            user = get_user_model().objects.get(username=username)
+            user = get_user_model().objects.get(shortname=username)
         except get_user_model().DoesNotExist, e:
             raise CommandError('Invalid username.')
 

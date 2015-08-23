@@ -20,11 +20,11 @@ class TestLanguageSelect(TestCase):
         return self.client.rest_get(self.url)
 
     def _get_languagecode(self, username):
-        user = get_user_model().objects.get(username=username)
+        user = get_user_model().objects.get(shortname=username)
         return user.languagecode
 
     def _set_languagecode(self, username, languagecode):
-        user = get_user_model().objects.get(username=username)
+        user = get_user_model().objects.get(shortname=username)
         user.languagecode = languagecode
         user.save()
 

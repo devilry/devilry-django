@@ -115,7 +115,7 @@ class TestNode(TestCase, TestHelper):
         pk_verify.append(self.uio_matnat_bio.id)
         pk_verify.append(self.uio_matnat_bio_test1.id)
 
-        testadmin = get_user_model().objects.get(username='testadmin')
+        testadmin = get_user_model().objects.get(shortname='testadmin')
         pks = Node._get_nodepks_where_isadmin(testadmin)
         pks.sort()
         pk_verify.sort()

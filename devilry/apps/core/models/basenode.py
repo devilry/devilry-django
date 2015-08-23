@@ -53,12 +53,12 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
     get_path.short_description = _('Path')
 
     def get_admins(self):
-        """ Get a string with the username of all administrators on this node
+        """ Get a string with the shortname of all administrators on this node
         separated by comma and a space like: ``"uioadmin, superuser"``.
 
         Note that admins on parentnode(s) is not included.
         """
-        return u', '.join([u.username for u in self.admins.all()])
+        return u', '.join([u.shortname for u in self.admins.all()])
     get_admins.short_description = _('Administrators')
 
     def _get_inherited_admins(self, admins):

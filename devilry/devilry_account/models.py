@@ -93,12 +93,12 @@ class UserManager(BaseUserManager):
             user.set_password(password)
         else:
             user.set_unusable_password()
-        if username:
-            user.username_set().create(username=username, is_primary=True)
-        if email:
-            user.useremail_set().create(email=email)
-
         user.save(using=self._db)
+        if username:
+            user.username_set.create(username=username, is_primary=True)
+        if email:
+            user.useremail_set.create(email=email)
+        return user
 
 
 class User(AbstractBaseUser):

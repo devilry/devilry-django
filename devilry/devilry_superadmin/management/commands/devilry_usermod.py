@@ -72,7 +72,7 @@ class Command(UserModCommand):
             kw['is_staff'] = False
 
         try:
-            user = get_user_model().objects.get(username=username)
+            user = get_user_model().objects.get(shortname=username)
         except get_user_model().DoesNotExist:
             raise CommandError('User "{0}" does not exist.'.format(username))
         else:

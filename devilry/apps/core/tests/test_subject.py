@@ -41,8 +41,8 @@ class TestSubject(TestCase, TestHelper):
         self.assertEquals(obj2.long_name, "Test")
 
     def test_where_is_admin(self):
-        uioadmin = get_user_model().objects.get(username='uioadmin')
-        teacher1 = get_user_model().objects.get(username='teacher1')
+        uioadmin = get_user_model().objects.get(shortname='uioadmin')
+        teacher1 = get_user_model().objects.get(shortname='teacher1')
         self.assertEquals(Subject.where_is_admin(teacher1).count(), 1)
         self.assertEquals(Subject.where_is_admin(uioadmin).count(), 2)
 
@@ -50,7 +50,7 @@ class TestSubject(TestCase, TestHelper):
         self.assertEquals(self.inf1100.get_path(), 'inf1100')
 
     def test_where_is_examiner(self):
-        examiner1 = get_user_model().objects.get(username='examiner1')
+        examiner1 = get_user_model().objects.get(shortname='examiner1')
         q = Subject.where_is_examiner(examiner1)
         self.assertEquals(q.count(), 2)
         self.assertEquals(q[0].short_name, 'inf1060')
@@ -65,7 +65,7 @@ class TestSubject(TestCase, TestHelper):
         self.assertEquals(q[1].short_name, 'inf1060')
 
     def test_published_where_is_examiner(self):
-        examiner1 = get_user_model().objects.get(username='examiner1')
+        examiner1 = get_user_model().objects.get(shortname='examiner1')
         q = Subject.published_where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 2)
         self.assertEquals(q[0].short_name, 'inf1060')

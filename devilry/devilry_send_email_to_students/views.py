@@ -29,7 +29,7 @@ class EmailSendingDebug(View):
         if not request.user.is_superuser:
             return HttpResponseForbidden('Requires superuser')
         try:
-            user = get_user_model().objects.get(username=username)
+            user = get_user_model().objects.get(shortname=username)
         except get_user_model().DoesNotExist:
             return HttpResponseNotFound('ERROR: User "{username}" does not exist'.format(**vars()))
 

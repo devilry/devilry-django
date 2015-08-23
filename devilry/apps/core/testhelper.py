@@ -263,12 +263,12 @@ class TestHelper(object):
             user = get_user_model().objects.get(shortname=name)
         else:
             user = get_user_model()(shortname=name)
-            user.username_set.create(username=name)
-            user.useremail_set.create(email=name.strip() + '@example.com')
             user.set_password("test")
             user.full_clean()
             user.save()
-        vars(self)[user.username] = user
+            user.username_set.create(username=name)
+            user.useremail_set.create(email=name.strip() + '@example.com')
+        vars(self)[user.shortname] = user
         return user
 
     #######

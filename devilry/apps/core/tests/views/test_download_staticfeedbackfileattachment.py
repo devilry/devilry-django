@@ -19,7 +19,7 @@ class TestDownloadStaticFeedbackFileAttachmentView(TestCase):
             .add_fileattachment(filename='test.txt', filedata='A testfile').fileattachment
 
     def _login(self, user):
-        self.client.login(username=user.username, password='test')
+        self.client.login(username=user.shortname, password='test')
 
     def _get_as(self, user, pk, **querystring):
         self._login(user)

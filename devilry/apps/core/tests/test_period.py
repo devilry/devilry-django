@@ -180,7 +180,7 @@ class TestPeriodOld(TestCase, TestHelper):
         self.assertEquals(q[2].short_name, 'spring10')
 
     def test_published_where_is_examiner(self):
-        examiner1 = get_user_model().objects.get(username='examiner1')
+        examiner1 = get_user_model().objects.get(shortname='examiner1')
         self.add_to_path('uio.ifi;inf1010.spring10:begins(-1):ends(2).oblig1.student1:examiner(examiner1)')
         q = Period.published_where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 3)

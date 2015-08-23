@@ -498,7 +498,7 @@ class TestAssignmentGroupSplit(TestCase):
 
         # Examiners
         self.assertEquals(g1copy.examiners.count(), 3)
-        examiner_usernames = [e.user.username for e in g1copy.examiners.all()]
+        examiner_usernames = [e.user.shortname for e in g1copy.examiners.all()]
         examiner_usernames.sort()
         self.assertEquals(examiner_usernames, ['examiner1', 'examiner2', 'examiner3'])
 
@@ -536,7 +536,7 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(g1copy.name, 'Stuff') # Sanity test - the tests for copying are above
         self.assertEquals(g1copy.candidates.count(), 1)
         self.assertEquals(g1.candidates.count(), 2)
-        self.assertEquals(candidate.student.username, 'student2')
+        self.assertEquals(candidate.student.shortname, 'student2')
         self.assertEquals(g1copy.candidates.all()[0], candidate)
 
     def test_pop_candidate_not_candidate(self):
@@ -619,14 +619,14 @@ class TestAssignmentGroupSplit(TestCase):
         source, target = self._create_mergetestdata()
         source.merge_into(target)
         self.assertEquals(target.examiners.count(), 4)
-        self.assertEquals(set([e.user.username for e in target.examiners.all()]),
+        self.assertEquals(set([e.user.shortname for e in target.examiners.all()]),
                           set(['donald', 'examiner1', 'examiner2', 'examiner3']))
 
     def test_merge_into_examiners(self):
         source, target = self._create_mergetestdata()
         source.merge_into(target)
         self.assertEquals(target.candidates.count(), 4)
-        self.assertEquals(set([e.student.username for e in target.candidates.all()]),
+        self.assertEquals(set([e.student.shortname for e in target.candidates.all()]),
                           set(['dewey', 'student1', 'student2', 'student3']))
 
     def test_merge_into_deadlines(self):
@@ -830,11 +830,11 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertFalse(AssignmentGroup.objects.filter(id=b.id).exists())
         self.assertTrue(AssignmentGroup.objects.filter(id=c.id).exists())
         c = self.testhelper.reload_from_db(self.testhelper.sub_p1_a1_c)
-        candidates = [cand.student.username for cand in c.candidates.all()]
+        candidates = [cand.student.shortname for cand in c.candidates.all()]
         self.assertEquals(len(candidates), 3)
         self.assertEquals(set(candidates), set(['student1', 'student2', 'student3']))
 
-        examiners = [cand.user.username for cand in c.examiners.all()]
+        examiners = [cand.user.shortname for cand in c.examiners.all()]
         self.assertEquals(len(examiners), 3)
         self.assertEquals(set(examiners), set(['examiner1', 'examiner2', 'examiner3']))
 

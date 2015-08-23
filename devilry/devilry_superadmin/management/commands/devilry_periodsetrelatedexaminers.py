@@ -87,7 +87,7 @@ class RelatedBaseCommand(BaseCommand):
 
     def _get_user(self, username):
             try:
-                user = get_user_model().objects.get(username=username)
+                user = get_user_model().objects.get(shortname=username)
                 return user
             except get_user_model().DoesNotExist, e:
                 raise CommandError('User {0} does not exists', username)

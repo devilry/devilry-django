@@ -19,7 +19,7 @@ class TestRestAggregatedPeriod(TestCase):
 
     def _create_relateduser(self, username, tags='', candidate_id=None,
                             labels=[]):
-        user = get_user_model().objects.get(username=username)
+        user = get_user_model().objects.get(shortname=username)
         relstudent = self.testhelper.sub_p1.relatedstudent_set.create(user=user,
                                                                       tags=tags,
                                                                       candidate_id=candidate_id)

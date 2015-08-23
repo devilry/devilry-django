@@ -1,7 +1,6 @@
-from django.contrib.auth import get_user_model
-
 from django.test import TestCase
 
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from ..models import Node, Subject
 from ..testhelper import TestHelper
 
@@ -10,7 +9,7 @@ class TestBaseNode(TestCase, TestHelper):
     def setUp(self):
         self.add(nodes="uio:admin(uioadmin).ifi:admin(ifiadmin,ifitechsupport)")
         self.add(nodes="uio.deepdummy1")
-        self.thesuperuser = get_user_model().objects.create(username='thesuperuser', is_superuser=True)
+        self.thesuperuser = UserBuilder('thesuperuser', is_superuser=True).user
 
     def test_is_admin(self):
         self.assertTrue(self.uio.is_admin(self.uioadmin))
@@ -61,8 +60,8 @@ class TestBaseNode(TestCase, TestHelper):
         self.assertFalse(self.ifiadmin2 in admins)
 
         inherited_admins = self.duck2000_aboutnow.get_inherited_admins()
-        inherited_admins.sort(cmp=lambda a, b: cmp(a.user.username, b.user.username))
-        self.assertEquals(inherited_admins[0].user.username, 'duck2000adm')
+        inherited_admins.sort(cmp=lambda a, b: cmp(a.user.shortname, b.user.shortname))
+        self.assertEquals(inherited_admins[0].user.shortname, 'duck2000adm')
         self.assertEquals(inherited_admins[0].basenode.short_name, 'duck2000')
 
     def test_get_all_admin_ids(self):

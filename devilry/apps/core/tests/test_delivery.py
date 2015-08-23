@@ -88,7 +88,7 @@ class TestDeliveryOld(TestCase, TestHelper):
 
     def test_where_is_admin(self):
         self._create_testdata()
-        teacher1 = get_user_model().objects.get(username='teacher1')
+        teacher1 = get_user_model().objects.get(shortname='teacher1')
         self.assertEquals(Delivery.where_is_admin(teacher1).count(), 3)
         delivery0 = self.inf1100_period1_assignment1_g1_d1.deliveries.all()[0]
         delivery0.successful = False
@@ -97,7 +97,7 @@ class TestDeliveryOld(TestCase, TestHelper):
 
     def test_published_where_is_examiner(self):
         self._create_testdata()
-        examiner1 = get_user_model().objects.get(username='examiner1')
+        examiner1 = get_user_model().objects.get(shortname='examiner1')
         deliveries = Delivery.published_where_is_examiner(examiner1)
         self.assertEquals(deliveries.count(), 2)
         delivery0 = deliveries.all()[0]

@@ -15,19 +15,22 @@ def send_message(subject, message, *user_objects_to_send_to):
     message += settings.DEVILRY_EMAIL_SIGNATURE
     emails = []
 
-    for u in user_objects_to_send_to:
-        if u.email == None or u.email.strip() == '':
-            errmsg = "User {0} has no email address.".format(u.username)
-            logger.error(errmsg)
+    for user in user_objects_to_send_to:
+        users_notification_emails = []
+        for useremail in user.useremail_set.filter(use_for_notifications=True):
+            users_notification_emails.append(useremail.email)
+        if users_notification_emails:
+            emails.extend(users_notification_emails)
         else:
-            emails.append(u.email)
+            errmsg = "User {0} has no email address.".format(user.username)
+            logger.error(errmsg)
     subject = settings.EMAIL_SUBJECT_PREFIX + subject
     try:
         send_mail(subject, message, settings.DEVILRY_EMAIL_DEFAULT_FROM,
                   emails, fail_silently=False)
     except SMTPException, e:
         errormsg = ('SMTPException when sending email to users {users} on addresses {emails}. '
-                    'Exception: {exception}'.format(users = ','.join([u.username for u in user_objects_to_send_to]),
+                    'Exception: {exception}'.format(users = ','.join([user.username for user in user_objects_to_send_to]),
                                                     exception = e))
         logger.error(errormsg)
     else:

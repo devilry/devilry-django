@@ -195,11 +195,11 @@ class TestAssignmentOld(TestCase, TestHelper):
             self.assertEquals(can.student.username, can.identifier)
 
     def test_where_is_admin(self):
-        ifiadmin = get_user_model().objects.get(username='ifiadmin')
+        ifiadmin = get_user_model().objects.get(shortname='ifiadmin')
         self.assertEquals(Assignment.where_is_admin(ifiadmin).count(), 6)
 
     def test_where_is_examiner(self):
-        examiner3 = get_user_model().objects.get(username='examiner3')
+        examiner3 = get_user_model().objects.get(shortname='examiner3')
         q = Assignment.where_is_examiner(examiner3)
         self.assertEquals(q.count(), 1)
         self.assertEquals(q[0].short_name, 'oldassignment')
@@ -207,7 +207,7 @@ class TestAssignmentOld(TestCase, TestHelper):
         self.assertEquals(q.count(), 2)
 
     def test_published_where_is_examiner(self):
-        get_user_model().objects.get(username='examiner3')
+        get_user_model().objects.get(shortname='examiner3')
         q = Assignment.published_where_is_examiner(self.examiner3, old=False, active=False)
         self.assertEquals(q.count(), 0)
 
@@ -226,7 +226,7 @@ class TestAssignmentOld(TestCase, TestHelper):
 
     def test_active_where_is_examiner(self):
         past = datetime.now() - timedelta(10)
-        examiner1 = get_user_model().objects.get(username='examiner1')
+        examiner1 = get_user_model().objects.get(shortname='examiner1')
         # Get assignments where the period is active
         q = Assignment.active_where_is_examiner(examiner1).order_by('short_name')
         self.assertEquals(q.count(), 3)
@@ -248,7 +248,7 @@ class TestAssignmentOld(TestCase, TestHelper):
 
     def test_old_where_is_examiner(self):
         past = datetime.now() - timedelta(10)
-        examiner3 = get_user_model().objects.get(username='examiner3')
+        examiner3 = get_user_model().objects.get(shortname='examiner3')
         q = Assignment.old_where_is_examiner(examiner3)
         self.assertEquals(q.count(), 1)
         self.assertEquals(q[0].short_name, 'oldassignment')

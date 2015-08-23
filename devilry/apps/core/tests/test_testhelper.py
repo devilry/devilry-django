@@ -49,8 +49,8 @@ class TestTestHelper(TestCase):
         # Assert that all nodes and admins are created
         self.assertEquals(Node.objects.filter(short_name='uio').count(), 1)
         self.assertEquals(Node.objects.filter(short_name='ifi').count(), 1)
-        self.assertEquals(get_user_model().objects.filter(username='rektor').count(), 1)
-        self.assertEquals(get_user_model().objects.filter(username='mortend').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(shortname='rektor').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(shortname='mortend').count(), 1)
 
         # assert that they are both admins
         self.assertTrue(self.ti.rektor in self.ti.uio.admins.all())
@@ -67,7 +67,7 @@ class TestTestHelper(TestCase):
         self.assertEquals(Node.objects.filter(short_name='uio').count(), 1)
         self.assertEquals(Node.objects.filter(short_name='ifi').count(), 1)
 
-        # mortend = get_user_model().objects.get(username='mortend')
+        # mortend = get_user_model().objects.get(shortname='mortend')
         # ifi = Node.objects.get(short_name='ifi')
         self.assertTrue(self.ti.mortend in self.ti.uio_ifi.admins.all())
 
@@ -88,16 +88,16 @@ class TestTestHelper(TestCase):
                     subjects=['inf1000:admin(arnem)', 'inf1010:admin(steinm,steingj)'])
 
         # assert that the subject admin users where created
-        self.assertEquals(get_user_model().objects.filter(username='arnem').count(), 1)
-        self.assertEquals(get_user_model().objects.filter(username='steinm').count(), 1)
-        self.assertEquals(get_user_model().objects.filter(username='steingj').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(shortname='arnem').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(shortname='steinm').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(shortname='steingj').count(), 1)
 
         # inf1000 = Subject.objects.get(short_name='inf1000')
         # inf1010 = Subject.objects.get(short_name='inf1010')
 
-        # arnem = get_user_model().objects.get(username='arnem')
-        # steinm = get_user_model().objects.get(username='steinm')
-        # steingj = get_user_model().objects.get(username='steingj')
+        # arnem = get_user_model().objects.get(shortname='arnem')
+        # steinm = get_user_model().objects.get(shortname='steinm')
+        # steingj = get_user_model().objects.get(shortname='steingj')
 
         # assert that they are all admins in their subjects
         self.assertTrue(self.ti.arnem in self.ti.inf1000.admins.all())
@@ -124,8 +124,8 @@ class TestTestHelper(TestCase):
                     periods=['fall01:admin(steingj)', 'spring01:admin(steinm)'])
 
         # assert that the users are created
-        self.assertEquals(get_user_model().objects.filter(username='steingj').count(), 1)
-        self.assertEquals(get_user_model().objects.filter(username='steinm').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(shortname='steingj').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(shortname='steinm').count(), 1)
 
         # assert that they are admins for the periods
         self.assertTrue(self.ti.steingj in self.ti.inf1000_fall01.admins.all())
@@ -153,8 +153,8 @@ class TestTestHelper(TestCase):
                     assignments=['oblig1:admin(jose)', 'oblig2:admin(jose)'])
 
         # Assert that the admins are created
-        self.assertEquals(get_user_model().objects.filter(username='arnem').count(), 1)
-        self.assertEquals(get_user_model().objects.filter(username='jose').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(shortname='arnem').count(), 1)
+        self.assertEquals(get_user_model().objects.filter(shortname='jose').count(), 1)
 
         # check that jose is an admin for the assignment
         self.assertTrue(self.ti.jose in self.ti.inf1000_fall01_oblig1.admins.all())
@@ -470,7 +470,7 @@ class TestTestHelper(TestCase):
         self.ti.create_superuser('grandma')
         self.assertTrue(self.ti.grandma.is_superuser)
 
-        # assert that the username needs to be unique!
+        # assert that the shortname needs to be unique!
         with self.assertRaises(Exception):
             self.ti.create_superuser('cotryti')
 
@@ -488,7 +488,7 @@ class TestTestHelper(TestCase):
 
         self.ti.create_user('someUser')
 
-        self.assertEquals(self.ti.someUser, get_user_model().objects.get(username='someUser'))
+        self.assertEquals(self.ti.someUser, get_user_model().objects.get(shortname='someUser'))
         with self.assertRaises(Exception):
             self.ti.create_user('cotryti')
 

@@ -25,7 +25,7 @@ class Command(UserModCommand):
 
         for username in usernames:
             try:
-                get_user_model().objects.get(username=username)
+                get_user_model().objects.get(shortname=username)
             except get_user_model().DoesNotExist:
                 email = None
                 if emailsuffix != None:

@@ -615,7 +615,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         we list the candidate IDs.
 
         If the assignment is not anonymous, we use a comma separated list of
-        the displaynames (full names with fallback to username) of the
+        the displaynames (full names with fallback to shortname) of the
         students. If the group has a name, we use the groupname with the names
         of the students in parenthesis.
 
@@ -648,17 +648,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         **WARNING:** You should never use this method when the user is not
         an administrator.
         """
-        return u', '.join([c.student.username for c in self.candidates.select_related('student')])
+        return u', '.join([c.student.shortname for c in self.candidates.select_related('student')])
 
     def get_examiners(self, separator=u', '):
         """
-        Get a string contaning the username of all examiners in the group separated by
+        Get a string contaning the shortname of all examiners in the group separated by
         comma (``','``).
 
         :param separator: The unicode string used to separate candidates. Defaults to ``u', '``.
         """
         warnings.warn("deprecated", DeprecationWarning)
-        return separator.join([examiner.user.username for examiner in self.examiners.select_related('user')])
+        return separator.join([examiner.user.shortname for examiner in self.examiners.select_related('user')])
 
     def is_admin(self, user_obj):
         warnings.warn("deprecated", DeprecationWarning)
