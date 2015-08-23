@@ -12,6 +12,7 @@ def datamigrate_auth_user_to_devilry_account_user(apps, schema_editor):
     for old_user in old_user_model.objects.all():
         old_profile = old_profile_model.objects.get(user_id=old_user.id)
         new_user = new_user_model(
+            id=old_user.id,
             shortname=old_user.username,
             is_superuser=old_user.is_superuser,
             last_login=old_user.last_login,
