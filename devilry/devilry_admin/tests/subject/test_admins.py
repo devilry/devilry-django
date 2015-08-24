@@ -24,6 +24,11 @@ class TestRemoveAdminView(TestCase, admins_common_testmixins.RemoveAdminViewTest
     viewclass = admins.RemoveAdminView
 
 
+class TestAdminUserSelectView(TestCase, admins_common_testmixins.AdminUserSelectViewTestMixin):
+    builderclass = SubjectBuilder
+    viewclass = admins.AdminUserSelectView
+
+
 class TestAddAdminView(TestCase, admins_common_testmixins.AddAdminViewTestMixin):
     builderclass = SubjectBuilder
     viewclass = admins.AddAdminView

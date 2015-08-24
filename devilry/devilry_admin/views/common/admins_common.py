@@ -62,7 +62,7 @@ class AbstractAdminsListView(GetQuerysetForRoleMixin, objecttable.ObjectTableVie
         app = self.request.cradmin_app
         return [
             objecttable.Button(label=_('Add administrator'),
-                               url=app.reverse_appurl('add-select-user'),
+                               url=app.reverse_appurl('select-user-to-add-as-admin'),
                                buttonclass='btn btn-primary'),
         ]
 
@@ -128,6 +128,13 @@ class AdminUserSelectView(userselect_common.AbstractUserSelectView):
         return _('Please select the user you want to add as administrator for %(what)s') % {
             'what': self.request.cradmin_role.long_name
         }
+
+    def get_form_action(self):
+        return self.request.cradmin_app.reverse_appurl('add-user-as-admin')
+
+    def get_excluded_user_ids(self):
+        basenode = self.request.cradmin_role
+        return basenode.admins.values_list('id', flat=True)
 
 
 class AbstractAddAdminView(BaseFormView):

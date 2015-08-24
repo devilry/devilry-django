@@ -27,14 +27,14 @@ class AbstractUserSelectView(objecttable.ObjectTableView):
     model = get_user_model()
 
     def get_excluded_user_ids(self):
-        return []
+        raise NotImplementedError()
 
     def get_queryset_for_role(self, role):
         excluded_user_ids = self.get_excluded_user_ids()
         queryset = get_user_model().objects.all().order_by('shortname')
         if excluded_user_ids:
-            queryset = queryset.exclude(id=excluded_user_ids)
+            queryset = queryset.exclude(id__in=excluded_user_ids)
         return queryset
 
     def get_form_action(self):
-        return self.request.cradmin_app.reverse_appurl('add-perform')
+        raise NotImplementedError()

@@ -5,6 +5,7 @@ from django.http import Http404
 from django.test import RequestFactory
 import htmls
 import mock
+from devilry.devilry_admin.views.common.admins_common import AdminUserSelectView
 
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder2
 
@@ -189,6 +190,42 @@ class RemoveAdminViewTestMixin(object):
             messages.SUCCESS, 'Jane Doe is no longer administrator for testbasenode.', '')
         self.assertTrue(get_user_model().objects.filter(pk=janedoe.pk).exists())
         self.assertFalse(builder.get_object().admins.filter(pk=janedoe.pk).exists())
+
+
+class AdminUserSelectViewTestMixin(object):
+    builderclass = None
+    viewclass = None
+
+    def __mock_get_request(self, role, user):
+        request = RequestFactory().get('/')
+        request.user = user
+        request.cradmin_role = role
+        request.cradmin_app = mock.MagicMock()
+        request.cradmin_instance = mock.MagicMock()
+        request.session = mock.MagicMock()
+        response = self.viewclass.as_view()(request)
+        return response
+
+    def mock_http200_getrequest_htmls(self, role, user):
+        response = self.__mock_get_request(role=role, user=user)
+        self.assertEqual(response.status_code, 200)
+        response.render()
+        selector = htmls.S(response.content)
+        return selector
+
+    def test_render(self):
+        testuser = UserBuilder2().user
+        builder = self.builderclass.make()\
+            .add_admins(testuser)  # testuser should be excluded since it is already admin
+        UserBuilder2(shortname='Jane Doe')
+        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
+                                                      user=testuser)
+        self.assertTrue(selector.exists(
+            '#objecttableview-table tbody .devilry-admin-userselect-select-button'))
+        self.assertEqual(
+            selector.one('#objecttableview-table tbody '
+                         '.devilry-admin-userselect-select-button').alltext_normalized,
+            'Add as administrator')
 
 
 class AddAdminViewTestMixin(object):

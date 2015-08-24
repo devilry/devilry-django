@@ -3,20 +3,24 @@ from devilry.apps.core.models import Subject
 from devilry.devilry_admin.views.common import admins_common
 
 
-class PermissionMixin(object):
+class CommonMixin(object):
     model = Subject.admins.through
     basenodefield = 'subject'
 
 
-class AdminsListView(PermissionMixin, admins_common.AbstractAdminsListView):
+class AdminsListView(CommonMixin, admins_common.AbstractAdminsListView):
     pass
 
 
-class RemoveAdminView(PermissionMixin, admins_common.AbstractRemoveAdminView):
+class RemoveAdminView(CommonMixin, admins_common.AbstractRemoveAdminView):
     pass
 
 
-class AddAdminView(PermissionMixin, admins_common.AbstractAddAdminView):
+class AdminUserSelectView(admins_common.AdminUserSelectView):
+    pass
+
+
+class AddAdminView(CommonMixin, admins_common.AbstractAddAdminView):
     pass
 
 
@@ -28,11 +32,11 @@ class App(crapp.App):
             RemoveAdminView.as_view(),
             name="remove"),
         crapp.Url(
-            r'^add/select-user$',
-            admins_common.AdminUserSelectView.as_view(),
-            name="add-select-user"),
+            r'^select-user-to-add-as-admin$',
+            AdminUserSelectView.as_view(),
+            name="select-user-to-add-as-admin"),
         crapp.Url(
-            r'^add/perform$',
+            r'^add',
             AddAdminView.as_view(),
-            name="add-perform"),
+            name="add-user-as-admin"),
     ]
