@@ -227,7 +227,7 @@ class User(AbstractBaseUser):
     shortname = models.CharField(
         max_length=255,
         blank=False, null=False,
-        editable=False,
+        editable=True,
         unique=True,
         help_text=_('The short name for the user. This is set automatically to the '
                     'email or username depending on the method used for authentication.')
@@ -267,8 +267,8 @@ class User(AbstractBaseUser):
         verbose_name=_('Preferred language')
     )
 
-    USERNAME_FIELD = 'id'
-    REQUIRED_FIELDS = ['short_name']
+    USERNAME_FIELD = 'shortname'
+    REQUIRED_FIELDS = []
 
     class Meta:
         verbose_name = _('User')
@@ -294,6 +294,21 @@ class User(AbstractBaseUser):
         Get the short name for the user.
         """
         return self.shortname
+
+    def has_module_perms(self, *args, **kwargs):
+        return self.is_superuser
+
+    def has_perm(self, *args, **kwargs):
+        return self.is_superuser
+
+    def get_all_permissions(self, *args, **kwargs):
+        return set()
+
+    def get_group_permissions(self, *args, **kwargs):
+        return set()
+
+    def get_user_permissions(self, *args, **kwargs):
+        return set()
 
     def __unicode__(self):
         return self.shortname
