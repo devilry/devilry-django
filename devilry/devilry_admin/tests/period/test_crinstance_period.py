@@ -25,7 +25,7 @@ class TestCrAdminInstance(TestCase):
         request.user = self.testuser
         instance = crinstance_period.CrAdminInstance(request=request)
         self.assertEqual(
-            instance.get_role_from_rolequeryset(role=self.testuser),
+            instance.get_role_from_rolequeryset(role=self.periodbuilder.period),
             self.periodbuilder.period)
 
     def test_admin_on_subject(self):
@@ -34,7 +34,7 @@ class TestCrAdminInstance(TestCase):
         request.user = self.testuser
         instance = crinstance_period.CrAdminInstance(request=request)
         self.assertEqual(
-            instance.get_role_from_rolequeryset(role=self.testuser),
+            instance.get_role_from_rolequeryset(role=self.periodbuilder.period),
             self.periodbuilder.period)
 
     def test_admin_on_node(self):
@@ -43,5 +43,5 @@ class TestCrAdminInstance(TestCase):
         request.user = self.testuser
         instance = crinstance_period.CrAdminInstance(request=request)
         self.assertEqual(
-            instance.get_role_from_rolequeryset(role=self.testuser),
+            instance.get_role_from_rolequeryset(role=self.periodbuilder.period),
             self.periodbuilder.period)
