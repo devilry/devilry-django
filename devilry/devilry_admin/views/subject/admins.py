@@ -16,6 +16,10 @@ class RemoveAdminView(PermissionMixin, admins_common.AbstractRemoveAdminView):
     pass
 
 
+class AddAdminView(PermissionMixin, admins_common.AbstractAddAdminView):
+    pass
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$', AdminsListView.as_view(), name=crapp.INDEXVIEW_NAME),
@@ -23,4 +27,12 @@ class App(crapp.App):
             r'^remove/(?P<pk>\d+)$',
             RemoveAdminView.as_view(),
             name="remove"),
+        crapp.Url(
+            r'^add/$',
+            admins_common.AdminUserSelectView.as_view(),
+            name="add-select-user"),
+        crapp.Url(
+            r'^add/(?P<pk>\d+)$',
+            AddAdminView.as_view(),
+            name="add"),
     ]

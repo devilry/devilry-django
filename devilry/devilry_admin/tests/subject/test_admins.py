@@ -22,3 +22,9 @@ class TestAdminsListView(TestCase, admins_common_testmixins.AdminsListViewTestMi
 class TestRemoveAdminView(TestCase, admins_common_testmixins.RemoveAdminViewTestMixin):
     builderclass = SubjectBuilder
     viewclass = admins.RemoveAdminView
+
+
+class TestAddAdminView(TestCase, admins_common_testmixins.AddAdminViewTestMixin):
+    builderclass = SubjectBuilder
+    viewclass = admins.AddAdminView
+    cradmin_instance_id = 'devilry_admin_subjectadmin'
