@@ -5,10 +5,8 @@ from django_cradmin.viewhelpers import objecttable
 class UserInfoColumn(objecttable.MultiActionColumn):
     modelfield = 'shortname'
     select_label = None
-
-    def render_value(self, obj):
-        user = obj
-        return user.get_displayname()
+    template_name = 'devilry_admin/common/userselect-column.django.html'
+    context_object_name = 'user'
 
     def get_buttons(self, obj):
         user = obj
