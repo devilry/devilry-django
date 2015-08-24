@@ -33,11 +33,11 @@ class AdminsListViewTestMixin(object):
 
     def __get_shortnames(self, selector):
         return [element.alltext_normalized
-                for element in selector.list('.devilry-admin-adminlist-shortname')]
+                for element in selector.list('.devilry-user-verbose-inline-shortname')]
 
     def __get_names(self, selector):
         return [element.alltext_normalized
-                for element in selector.list('.devilry-admin-adminlist-name')]
+                for element in selector.list('.devilry-user-verbose-inline')]
 
     def test_remove_not_shown_for_requesting_user(self):
         testuser = UserBuilder2().user
