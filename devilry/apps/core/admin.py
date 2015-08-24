@@ -1,5 +1,5 @@
 from django.contrib import admin
-from devilry.apps.core.models import AssignmentGroup, Node, Subject
+from devilry.apps.core.models import AssignmentGroup, Node, Subject, Period
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -51,6 +51,10 @@ class SubjectAdmin(BaseNodeAdmin):
 
 admin.site.register(Subject, SubjectAdmin)
 
+class PeriodAdmin(BaseNodeAdmin):
+    pass
+
+admin.site.register(Period, PeriodAdmin)
 
 class AssignmentGroupAdmin(admin.ModelAdmin):
     list_display = ('id', 'assignment', 'long_displayname')
