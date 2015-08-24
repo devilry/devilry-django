@@ -16,6 +16,15 @@ class TestUser(TestCase):
         user = mommy.make('devilry_account.User', shortname='test@example.com')
         self.assertEqual("test@example.com", user.get_full_name())
 
+    def test_get_displayname_has_fullname(self):
+        user = mommy.make('devilry_account.User', shortname='elvis',
+                          fullname="Elvis Aron Presley")
+        self.assertEqual("Elvis Aron Presley (elvis)", user.get_displayname())
+
+    def test_get_displayname_fullname_blank(self):
+        user = mommy.make('devilry_account.User', shortname='elvis')
+        self.assertEqual("elvis", user.get_displayname())
+
     def test_is_active(self):
         user = mommy.make('devilry_account.User')
         self.assertTrue(user.is_active)
