@@ -1,11 +1,9 @@
 from django import test
-from devilry.apps.core.models import AssignmentGroup, RelatedExaminer
-from devilry.apps.core import testhelper
-from devilry.devilry_group.cradmin import CrAdminInstance
 
+from devilry.apps.core import testhelper
+from devilry.devilry_student.cradmin_group.cradmin_group import CrAdminInstance
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder, \
-    AssignmentBuilder, AssignmentGroupBuilder, FeedbackSetBuilder, GroupCommentBuilder, \
-    CommentFileBuilder
+    FeedbackSetBuilder
 from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 
 
