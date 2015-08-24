@@ -27,7 +27,10 @@ The source code of the commands can be found in the official Devilry repository 
 ===============
 devilry_nodeadd
 ===============
-**django.py devilry_nodeadd <node path> <short name>**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_nodeadd <node path> <short name>
 
 Creates a new node in the Devilry node hierarchy. To create a root node
 use *None* as <node path>.
@@ -42,7 +45,10 @@ use *None* as <node path>.
 ==================
 devilry_subjectadd
 ==================
-**django.py devilry_subjectadd <node path> <short name>**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_subjectadd <node path> <short name>
 
 Creates a new subject within the devilry hierarchy. The path and short name are required.
 
@@ -55,21 +61,30 @@ Creates a new subject within the devilry hierarchy. The path and short name are 
 =======================
 devilry_subjectadminadd
 =======================
-**django.py devilry_subjectadminadd <subject-short_name> <admin username>** 
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_subjectadminadd <subject-short_name> <admin username>
 
 Add a user as admin on the specified subject.
 
 =========================
 devilry_subjectadminclear
 =========================
-**django.py devilry_subjectadminclear <subject short name>** 
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_subjectadminclear <subject short name>
 
 Removes all administrators from the specified subject.
 
 =====================
 devilry_subjectsearch
 =====================
-**django.py devilry_subjectsearch <short name>** 
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_subjectsearch <short name>
 
 Search for a subject by short name. Matches any part of the name.
 
@@ -79,7 +94,10 @@ Search for a subject by short name. Matches any part of the name.
 =================
 devilry_periodadd
 =================
-**django.py devilry_periodadd <subject short name> <period short name>**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_periodadd <subject short name> <period short name>
 
 Create a new period on a new subject.
 
@@ -103,21 +121,30 @@ Create a new period on a new subject.
 ======================
 devilry_periodadminadd
 ======================
-**django.py devilry_periodadminadd <subject-short_name> <period-short-name> <admin-username>**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_periodadminadd <subject-short_name> <period-short-name> <admin-username>
 
 Add a user as admin on the period.
 
 ========================
 devilry_periodadminclear
 ========================
-**django.py devilry_periodadminclear <subject short name> <period short name>**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_periodadminclear <subject short name> <period short name>
 
 Clear administrators on the the subject.
 
 ====================
 devilry_periodsearch
 ====================
-**django.py devilry_periodsearch <period short name>**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_periodsearch <period short name>
 
 Searches for periods based on the specified short name
 
@@ -127,7 +154,10 @@ Searches for periods based on the specified short name
 =================================
 devilry_periodsetrelatedexaminers
 =================================
-**django.py devilry_periodsetrelatedexaminers <subject short name> <period short name>**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_periodsetrelatedexaminers <subject short name> <period short name>
 
 Set related examiners on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedExaminer model. 
 See `relatedexaminers.json`_ for an example. 
@@ -140,7 +170,10 @@ See `relatedexaminers.json`_ for an example.
 ================================
 devilry_periodsetrelatedstudents
 ================================
-**django.py devilry_periodsetrelatedstudents <subject short name> <period short name>**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_periodsetrelatedstudents <subject short name> <period short name>
 
 Set related students on a period. Users are read from stdin, as a JSON encoded array of arguments to the RelatedStudent model. 
 See `relatedstudents.json`_ for an example.
@@ -153,21 +186,30 @@ See `relatedstudents.json`_ for an example.
 ========================
 devilry_resave_all_users
 ========================
-**django.py devilrly_resave_all_users**
+::
 
-Resaves all users. This command is useful if you have any apps that listens for `post_save` signals on **User**.
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilrly_resave_all_users
+
+Resaves all users. This command is useful if you have any apps that listens for `post_save` signals on User.
 
 =======================
 devilry_sync_candidates
 =======================
-**django.py devilry_sync_candidates**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_sync_candidates
 
 Sync the cached fields in Candidate with the actual data from User.
 
 ===============
 devilry_useradd
 ===============
-**django.py devilry_userad <username>**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_userad <username>
 
 Creates a new user.
 
@@ -188,7 +230,10 @@ Returns a non-zero value when the user already exists in Devilry.
 ===================
 devilry_useraddbulk
 ===================
-**django.py devilry_useraddbulk**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_useraddbulk
 
 Reading usernames from `stdin`
 
@@ -198,7 +243,10 @@ Reading usernames from `stdin`
 ===============
 devilry_usermod
 ===============
-**django.py devilry_usermod <username>**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_usermod <username>
 
 Modify the credentials of an existing user
 
@@ -217,7 +265,10 @@ Modify the credentials of an existing user
 ==================
 devilry_usersearch
 ==================
-**django.py devilry_usersearch <username>**
+::
+
+    $ cd ~/devilrydeploy/
+    $ venv/bin/manage.py devilry_usersearch <username>
 
 Search for a user by username. Matches any part of the username.
 
