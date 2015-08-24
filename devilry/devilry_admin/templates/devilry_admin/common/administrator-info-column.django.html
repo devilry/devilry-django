@@ -1,0 +1,15 @@
+<p class="objecttable-cellvalue devilry-admin-adminlist-name">
+    {% if user.fullname %}
+        <span class="devilry-admin-adminlist-fullname">{{ user.fullname }}</span>
+        <small class="devilry-admin-adminlist-shortname">({{ user.shortname }})</small>
+    {% else %}
+        <span class="devilry-admin-adminlist-shortname">{{ user.shortname }}</span>
+    {% endif %}
+</p>
+{% if buttons %}
+    <p class="objecttable-cellbuttons">
+        {% for button in buttons %}
+            {{ button.render }}
+        {% endfor %}
+    </p>
+{% endif %}
