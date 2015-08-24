@@ -1,39 +1,38 @@
 from django_cradmin import crmenu
-
 from django_cradmin import crinstance
 
-from devilry.apps.core.models import Period
-from devilry.devilry_admin.views.period import overview
+from devilry.apps.core.models import Subject
+from devilry.devilry_admin.views.subject import overview
 
 
 class Menu(crmenu.Menu):
     def build_menu(self):
-        period = self.request.cradmin_role
+        subject = self.request.cradmin_role
         self.add_headeritem(
-            label=period.short_name,
+            label=subject.short_name,
             url=self.appindex_url('overview'))
 
 
 class CrAdminInstance(crinstance.BaseCrAdminInstance):
     menuclass = Menu
-    roleclass = Period
+    roleclass = Subject
     apps = [
         ('overview', overview.App)
     ]
-    id = 'devilry_admin_periodadmin'
+    id = 'devilry_admin_subjectadmin'
     rolefrontpage_appname = 'overview'
 
     def get_rolequeryset(self):
-        return Period.where_is_admin_or_superadmin(self.request.user)
+        return Subject.where_is_admin_or_superadmin(self.request.user)
 
     def get_titletext_for_role(self, role):
         """
         Get a short title briefly describing the given ``role``.
-        Remember that the role is an Period.
+        Remember that the role is an Subject.
         """
-        period = role
-        return period
+        subject = role
+        return subject
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return urlpath.startswith('/devilry_admin/period')
+        return urlpath.startswith('/devilry_admin/subject')

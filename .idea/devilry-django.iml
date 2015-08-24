@@ -27,6 +27,7 @@
         <option value="$MODULE_DIR$/devilry/devilry_markup/templates" />
         <option value="$MODULE_DIR$/devilry/devilry_gradingsystem/templates" />
         <option value="$MODULE_DIR$/devilry/devilry_group/templates" />
+        <option value="$MODULE_DIR$/devilry/devilry_admin/templates" />
       </list>
     </option>
   </component>
