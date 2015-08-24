@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 
 from devilry.apps.core.models import Node
-from devilry.devilry_admin.cradmin_instances import crinstance_node
+from devilry.devilry_admin.views.node import crinstance_node
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder
 
 

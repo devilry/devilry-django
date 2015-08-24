@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 
 from devilry.apps.core.models import Assignment
-from devilry.devilry_admin.cradmin_instances import crinstance_assignment
+from devilry.devilry_admin.views.assignment import crinstance_assignment
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder
 
 

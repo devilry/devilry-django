@@ -1,9 +1,9 @@
 from django.conf.urls import patterns, url, include
 
-from devilry.devilry_admin.cradmin_instances import crinstance_node
-from devilry.devilry_admin.cradmin_instances import crinstance_subject
-from devilry.devilry_admin.cradmin_instances import crinstance_period
-from devilry.devilry_admin.cradmin_instances import crinstance_assignment
+from devilry.devilry_admin.views.node import crinstance_node
+from devilry.devilry_admin.views.subject import crinstance_subject
+from devilry.devilry_admin.views.period import crinstance_period
+from devilry.devilry_admin.views.assignment import crinstance_assignment
 
 urlpatterns = patterns(
     '',

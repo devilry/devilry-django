@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory
 
 from devilry.apps.core.models import Period
-from devilry.devilry_admin.cradmin_instances import crinstance_period
+from devilry.devilry_admin.views.period import crinstance_period
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder
 
 
