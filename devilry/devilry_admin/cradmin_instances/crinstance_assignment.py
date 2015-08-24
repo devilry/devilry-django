@@ -23,7 +23,8 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     rolefrontpage_appname = 'overview'
 
     def get_rolequeryset(self):
-        return Assignment.where_is_admin_or_superadmin(self.request.user)
+        return Assignment.where_is_admin_or_superadmin(self.request.user)\
+            .order_by('-publishing_time')
 
     def get_titletext_for_role(self, role):
         """
