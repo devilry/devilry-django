@@ -1,3 +1,7 @@
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.http import Http404
+
 from django.test import RequestFactory
 import htmls
 import mock
@@ -36,7 +40,7 @@ class AdminsListViewTestMixin(object):
 
     def test_remove_not_shown_for_requesting_user(self):
         testuser = UserBuilder2().user
-        builder = self.builderclass.make()\
+        builder = self.builderclass.make() \
             .add_admins(testuser)
         selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
                                                       user=testuser)
@@ -45,7 +49,7 @@ class AdminsListViewTestMixin(object):
 
     def test_remove_shown_for_requesting_user_if_superuser(self):
         testuser = UserBuilder2(is_superuser=True).user
-        builder = self.builderclass.make()\
+        builder = self.builderclass.make() \
             .add_admins(testuser)
         selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
                                                       user=testuser)
@@ -54,7 +58,7 @@ class AdminsListViewTestMixin(object):
 
     def test_remove_shown_other_than_requesting_user(self):
         testuser = UserBuilder2().user
-        builder = self.builderclass.make()\
+        builder = self.builderclass.make() \
             .add_admins(testuser, UserBuilder2(shortname='other').user)
         selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
                                                       user=testuser)
@@ -63,7 +67,7 @@ class AdminsListViewTestMixin(object):
 
     def test_ordering(self):
         testuser = UserBuilder2(is_superuser=True).user
-        builder = self.builderclass.make()\
+        builder = self.builderclass.make() \
             .add_admins(UserBuilder2(shortname='userb').user,
                         UserBuilder2(shortname='usera').user,
                         UserBuilder2(shortname='userc').user)
@@ -73,7 +77,7 @@ class AdminsListViewTestMixin(object):
 
     def test_render_user_with_fullname(self):
         testuser = UserBuilder2(is_superuser=True).user
-        builder = self.builderclass.make()\
+        builder = self.builderclass.make() \
             .add_admins(UserBuilder2(shortname='test', fullname='Test User').user)
         selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
                                                       user=testuser)
@@ -81,7 +85,7 @@ class AdminsListViewTestMixin(object):
 
     def test_render_user_without_fullname(self):
         testuser = UserBuilder2(is_superuser=True).user
-        builder = self.builderclass.make()\
+        builder = self.builderclass.make() \
             .add_admins(UserBuilder2(shortname='test').user)
         selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
                                                       user=testuser)
@@ -89,10 +93,99 @@ class AdminsListViewTestMixin(object):
 
     def test_render_only_users_from_current_basenode(self):
         testuser = UserBuilder2(is_superuser=True).user
-        self.builderclass.make()\
+        self.builderclass.make() \
             .add_admins(UserBuilder2(shortname='otherbasenodeuser').user)
-        builder = self.builderclass.make()\
+        builder = self.builderclass.make() \
             .add_admins(UserBuilder2(shortname='expecteduser').user)
         selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
                                                       user=testuser)
         self.assertEqual(['expecteduser'], self.__get_names(selector))
+
+
+class RemoveAdminViewTestMixin(object):
+    builderclass = None
+    viewclass = None
+
+    def __mock_get_request(self, method, role, requestuser, user_to_remove,
+                           messagesmock=None):
+        request = getattr(RequestFactory(), method)('/')
+        request.user = requestuser
+        request.cradmin_role = role
+        request.cradmin_app = mock.MagicMock()
+        request.cradmin_instance = mock.MagicMock()
+        request.session = mock.MagicMock()
+        if messagesmock:
+            request._messages = messagesmock
+        else:
+            request._messages = mock.MagicMock()
+        admin_to_remove = self.builderclass.modelcls.admins.through.objects.get(user=user_to_remove)
+        response = self.viewclass.as_view()(request, pk=admin_to_remove.pk)
+        return response
+
+    def __mock_http200_getrequest_htmls(self, role, requestuser, user_to_remove):
+        response = self.__mock_get_request(method='get',
+                                           role=role,
+                                           requestuser=requestuser,
+                                           user_to_remove=user_to_remove)
+        self.assertEqual(response.status_code, 200)
+        response.render()
+        selector = htmls.S(response.content)
+        return selector
+
+    def __mock_postrequest(self, role, requestuser, user_to_remove, messagesmock=None):
+        response = self.__mock_get_request(method='post',
+                                           role=role,
+                                           requestuser=requestuser,
+                                           user_to_remove=user_to_remove,
+                                           messagesmock=messagesmock)
+        return response
+
+    def test_get(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        builder = self.builderclass.make(short_name='testbasenode') \
+            .add_admins(requestuser, janedoe)
+        selector = self.__mock_http200_getrequest_htmls(role=builder.get_object(),
+                                                        requestuser=requestuser,
+                                                        user_to_remove=janedoe)
+        self.assertEqual(selector.one('title').alltext_normalized,
+                         'Remove Jane Doe')
+        self.assertEqual(selector.one('#deleteview-preview').alltext_normalized,
+                         'Are you sure you want to remove Jane Doe '
+                         'as administrator for testbasenode?')
+
+    def test_post_remove_yourself_404(self):
+        requestuser = UserBuilder2().user
+        builder = self.builderclass.make() \
+            .add_admins(requestuser)
+        with self.assertRaises(Http404):
+            self.__mock_postrequest(role=builder.get_object(),
+                                    requestuser=requestuser,
+                                    user_to_remove=requestuser)
+
+    def test_post_remove_yourself_superuser_ok(self):
+        requestuser = UserBuilder2(is_superuser=True).user
+        builder = self.builderclass.make() \
+            .add_admins(requestuser)
+        response = self.__mock_postrequest(role=builder.get_object(),
+                                           requestuser=requestuser,
+                                           user_to_remove=requestuser)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(get_user_model().objects.filter(pk=requestuser.pk).exists())
+        self.assertFalse(builder.get_object().admins.filter(pk=requestuser.pk).exists())
+
+    def test_post_remove_ok(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        builder = self.builderclass.make(short_name='testbasenode') \
+            .add_admins(requestuser, janedoe)
+        messagesmock = mock.MagicMock()
+        response = self.__mock_postrequest(role=builder.get_object(),
+                                           requestuser=requestuser,
+                                           user_to_remove=janedoe,
+                                           messagesmock=messagesmock)
+        self.assertEqual(response.status_code, 302)
+        messagesmock.add.assert_called_once_with(
+            messages.SUCCESS, 'Jane Doe is no longer administrator for testbasenode.', '')
+        self.assertTrue(get_user_model().objects.filter(pk=janedoe.pk).exists())
+        self.assertFalse(builder.get_object().admins.filter(pk=janedoe.pk).exists())

@@ -17,3 +17,8 @@ class TestAdminsListView(TestCase, admins_common_testmixins.AdminsListViewTestMi
                                                       user=testuser)
         self.assertEqual(selector.one('title').alltext_normalized,
                          'Administrators for DUCK 1010 - Programming')
+
+
+class TestRemoveAdminView(TestCase, admins_common_testmixins.RemoveAdminViewTestMixin):
+    builderclass = SubjectBuilder
+    viewclass = admins.RemoveAdminView

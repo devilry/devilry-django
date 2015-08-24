@@ -70,27 +70,35 @@ class AbstractRemoveAdminView(GetQuerysetForRoleMixin, delete.DeleteView):
     View used to remove admins from a basenode.
     """
 
-    def get_object_preview(self):
-        """
-        The preview of the object. Used when asking the user if he/she wants to
-        delete the current object.
-        """
-        basenode_admin = self.get_object()
-        return basenode_admin.user.get_full_name()
+    def get_queryset_for_role(self, role):
+        queryset = super(AbstractRemoveAdminView, self)\
+            .get_queryset_for_role(role=role)
+        if not self.request.user.is_superuser:
+            queryset = queryset.exclude(user=self.request.user)
+        return queryset
+
+    def get_object(self, *args, **kwargs):
+        if not hasattr(self, '_object'):
+            self._object = super(AbstractRemoveAdminView, self).get_object(*args, **kwargs)
+        return self._object
 
     def get_pagetitle(self):
-        return _('Remove %(what)s') % {'what': self.get_object_preview()}
+        return _('Remove %(what)s') % {'what': self.get_object().user.get_full_name()}
 
     def get_success_message(self, object_preview):
-        return _('"%(user)s is no longer administrator"') % {
-            'what': object_preview
+        basenode_admin = self.get_object()
+        basenode = self.get_basenode_for_object(basenode_admin)
+        user = basenode_admin.user
+        return _('%(user)s is no longer administrator for %(what)s.') % {
+            'user': user.get_full_name(),
+            'what': basenode,
         }
 
     def get_confirm_message(self):
         basenode_admin = self.get_object()
         basenode = self.get_basenode_for_object(basenode_admin)
         user = basenode_admin.user
-        return _('Are you sure you want to remove "%(user)s" as administrator for "%(what)s"?') % {
+        return _('Are you sure you want to remove %(user)s as administrator for %(what)s?') % {
             'user': user.get_full_name(),
             'what': basenode,
         }
