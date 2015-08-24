@@ -1,11 +1,9 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.http import Http404
-
 from django.test import RequestFactory
 import htmls
 import mock
-from devilry.devilry_admin.views.common.admins_common import AdminUserSelectView
 
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder2
 
@@ -38,6 +36,15 @@ class AdminsListViewTestMixin(object):
     def __get_names(self, selector):
         return [element.alltext_normalized
                 for element in selector.list('.devilry-user-verbose-inline')]
+
+    def test_title(self):
+        testuser = UserBuilder2().user
+        subjectbuilder = self.builderclass.make(long_name='The Long Name')\
+            .add_admins(testuser)
+        selector = self.mock_http200_getrequest_htmls(role=subjectbuilder.get_object(),
+                                                      user=testuser)
+        self.assertEqual(selector.one('title').alltext_normalized,
+                         'Administrators for The Long Name')
 
     def test_remove_not_shown_for_requesting_user(self):
         testuser = UserBuilder2().user
@@ -153,7 +160,7 @@ class RemoveAdminViewTestMixin(object):
                          'Remove Jane Doe')
         self.assertEqual(selector.one('#deleteview-preview').alltext_normalized,
                          'Are you sure you want to remove Jane Doe '
-                         'as administrator for testbasenode?')
+                         'as administrator for {}?'.format(builder.get_object()))
 
     def test_post_remove_yourself_404(self):
         requestuser = UserBuilder2().user
@@ -187,7 +194,9 @@ class RemoveAdminViewTestMixin(object):
                                            messagesmock=messagesmock)
         self.assertEqual(response.status_code, 302)
         messagesmock.add.assert_called_once_with(
-            messages.SUCCESS, 'Jane Doe is no longer administrator for testbasenode.', '')
+            messages.SUCCESS,
+            'Jane Doe is no longer administrator for {}.'.format(builder.get_object()),
+            '')
         self.assertTrue(get_user_model().objects.filter(pk=janedoe.pk).exists())
         self.assertFalse(builder.get_object().admins.filter(pk=janedoe.pk).exists())
 
@@ -279,7 +288,9 @@ class AddAdminViewTestMixin(object):
                                                     requestuser=requestuser,
                                                     data={'user': janedoe.id})
         request._messages.add.assert_called_once_with(
-            messages.SUCCESS, 'Jane Doe added as administrator for testbasenode.', '')
+            messages.SUCCESS,
+            'Jane Doe added as administrator for {}.'.format(builder.get_object()),
+            '')
 
     def test_success_redirect_without_next(self):
         requestuser = UserBuilder2().user

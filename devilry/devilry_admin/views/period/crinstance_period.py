@@ -1,24 +1,29 @@
+from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crmenu
-
 from django_cradmin import crinstance
 
 from devilry.apps.core.models import Period
 from devilry.devilry_admin.views.period import overview
+from devilry.devilry_admin.views.period import admins
 
 
 class Menu(crmenu.Menu):
     def build_menu(self):
         period = self.request.cradmin_role
-        self.add_headeritem(
+        self.add_menuitem(
             label=period.short_name,
             url=self.appindex_url('overview'))
+        self.add_menuitem(
+            label=_('Administrators'),
+            url=self.appindex_url('admins'))
 
 
 class CrAdminInstance(crinstance.BaseCrAdminInstance):
     menuclass = Menu
     roleclass = Period
     apps = [
-        ('overview', overview.App)
+        ('overview', overview.App),
+        ('admins', admins.App)
     ]
     id = 'devilry_admin_periodadmin'
     rolefrontpage_appname = 'overview'
