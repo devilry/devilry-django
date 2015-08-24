@@ -1,11 +1,13 @@
 from django.test import TestCase
 
 from devilry.devilry_admin.tests.common import admins_common_testmixins
+from devilry.devilry_admin.views.subject import admins
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder2, SubjectBuilder
 
 
 class TestAdminsListView(TestCase, admins_common_testmixins.AdminsListViewTestMixin):
     builderclass = SubjectBuilder
+    viewclass = admins.AdminsListView
 
     def test_title(self):
         testuser = UserBuilder2().user
