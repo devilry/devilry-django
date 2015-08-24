@@ -77,15 +77,21 @@ class CompressedFeedbackSetFileDownloadView(generic.View):
         zip_file = zipfile.ZipFile(tempfile, 'w');
 
         for group_comment in feedbackset.groupcomment_set.all():
-            if not (group_comment.commentfile_set is None):
+            if group_comment.commentfile_set is not None:
                 for comment_file in group_comment.commentfile_set.all():
+                    if comment_file.comment.published_datetime > group_comment.feedback_set.deadline_datetime \
+                            and comment_file.comment.user_role == u'student':
+                        path = u'after_deadline_files'
+                    elif comment_file.comment.user_role == u'examiner':
+                        path = u'examiner_files'
+                    else:
+                        path = u'delivery_files'
                     zip_file.write(
-                        comment_file.file.file.name,
-                        posixpath.join(dirname, comment_file.filename)
-                    )
+                            comment_file.file.file.name,
+                            posixpath.join(path, comment_file.filename)
+                        )
 
         zip_file.close()
-
         tempfile.seek(0)
         response = http.HttpResponse(tempfile, content_type=comment_file.mimetype)
         response['content-disposition'] = 'attachement; filename=%s' % \
@@ -127,16 +133,22 @@ class CompressedAllFeedbackSetsFileDownloadView(generic.View):
         deadline_count = 1
         for feedbackset in assignmentgroup.feedbackset_set.all():
             for group_comment in feedbackset.groupcomment_set.all():
-                if not (group_comment.commentfile_set is None):
+                if group_comment.commentfile_set is not None:
                     for comment_file in group_comment.commentfile_set.all():
+                        if comment_file.comment.published_datetime > feedbackset.deadline_datetime \
+                                        and comment_file.comment.user_role == u'student':
+                            path = u'deadline{}/after_deadline_files'.format(deadline_count)
+                        elif comment_file.comment.user_role == u'examiner':
+                            path = u'deadline{}/examiner_files'.format(deadline_count)
+                        else:
+                            path = u'deadline{}/delivery_files'.format(deadline_count)
                         zip_file.write(
-                            comment_file.file.file.name,
-                            posixpath.join(u'deadline{}'.format(deadline_count), comment_file.filename)
-                        )
+                                comment_file.file.file.name,
+                                posixpath.join(path, comment_file.filename)
+                            )
             deadline_count += 1
 
         zip_file.close()
-
         tempfile.seek(0)
         response = http.HttpResponse(tempfile, content_type=comment_file.mimetype)
         response['content-disposition'] = 'attachement; filename=%s' % \

@@ -23,7 +23,9 @@
                                 <dd class="devilry-group-feedbackfeed-sidebar-files">
                                     <a href="{% url 'devilry-feedbackfeed-file-download' feedbackset.id file.id %}" >{{ file.filename|devilry_truncatefileextension:26 }}</a>
                                     {% if file.comment.published_datetime > file.comment.feedback_set.deadline_datetime and file.comment.user_role != 'examiner' %}
-                                        <i class="fa fa-exclamation-triangle" title="Submitted after deadline"></i>
+                                        <i class="after-deadline-icon fa fa-exclamation-triangle pull-left" tooltip="Submitted after deadline"></i>
+                                    {% elif file.comment.user_role == 'examiner' %}
+                                        <i class="examiner-file-icon fa fa-file-text pull-left" tooltip="Submitted by examiner"></i>
                                     {% endif %}
                                 </dd>
                             {% endfor %}

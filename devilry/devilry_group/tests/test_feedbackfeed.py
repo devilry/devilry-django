@@ -28,7 +28,7 @@ class TestFeedbackFeed(test.TestCase):
         rolequeryset = self.cr_instance.get_rolequeryset()
         assignmentgroups = rolequeryset.all()
 
-        self.assertEqual(1, len(assignmentgroups))
+        self.assertEqual(1, assignmentgroups.count())
 
     def test_getrolequeryset_for_wrong_user(self):
         testuser = self.testhelper.create_user('testuser')
@@ -42,7 +42,7 @@ class TestFeedbackFeed(test.TestCase):
         rolequeryset = self.cr_instance.get_rolequeryset()
         assignmentgroups = rolequeryset.all()
 
-        self.assertEqual(0, len(assignmentgroups))
+        self.assertEqual(0, assignmentgroups.count())
 
     def test_getrolequeryset_multiple_groups_user(self):
         testuser = self.testhelper.create_user('testuser')
@@ -87,4 +87,4 @@ class TestFeedbackFeed(test.TestCase):
         rolequeryset = self.cr_instance.get_rolequeryset()
         assignmentgroups = rolequeryset.all()
 
-        self.assertEqual(2, len(assignmentgroups))
+        self.assertEqual(2, assignmentgroups.count())

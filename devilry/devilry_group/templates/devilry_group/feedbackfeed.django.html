@@ -88,9 +88,8 @@
                                             </div>
                                             {% for file in comment.commentfile_set.all %}
                                                 <a href="{% url 'devilry-feedbackfeed-file-download' comment.feedback_set.id file.id %}">
-                                                    <i class="fa fa-file fa-3x" title="{{ file.filename }}"></i>
+                                                    <i class="fa fa-file fa-3x" tooltip="{{ file.filename }}"></i>
                                                 </a>
-{#                                                <div class="file_icon" title="{{ file.filename }}"><p>{{ file.filename }}</p></div>#}
                                             {% endfor %}
                                         </div>
                                         {% if not comment.instant_publish and not comment.feedback_set.published_datetime %}
@@ -100,7 +99,7 @@
                                             </div>
                                         {% elif comment.user_role == "student" and comment.published_datetime > comment.feedback_set.deadline_datetime %}
                                             <div class="devilry-group-feedbackfeed-right-badge-field after-deadline-badge">
-                                                <p class="badge-text">{% trans "Not part of delivery" %}</p>
+                                                <p class="devilry-group-feedbackfeed-badge-text">{% trans "Not part of delivery" %}</p>
 {#                                                <p class="badge-text-new">{% trans "NOT PART OF DELIVERY" %}</p>#}
                                             </div>
 

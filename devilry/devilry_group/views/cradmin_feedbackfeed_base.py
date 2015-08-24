@@ -11,9 +11,9 @@ import json
 import datetime
 import collections
 
-# Devilry imports
+# Devilry/cradmin imports
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
-from devilry.devilry_group import models
+from devilry.devilry_group import models as group_models
 from devilry.devilry_comment import models as comment_models
 
 # 3rd party imports
@@ -27,7 +27,7 @@ class FeedbackFeedBaseView(create.CreateView):
     template_name = "devilry_group/feedbackfeed.django.html"
 
     # for cradmin CreateView
-    model=models.GroupComment
+    model=group_models.GroupComment
     fields=["text"]
     form_attributes = {
         'django-cradmin-bulkfileupload-form': ''
@@ -37,7 +37,7 @@ class FeedbackFeedBaseView(create.CreateView):
         raise NotImplementedError("Subclasses must implement _get_queryset_for_group!")
 
     def _get_feedbacksets_for_group(self, group):
-        return models.FeedbackSet.objects.filter(group=group)
+        return group_models.FeedbackSet.objects.filter(group=group)
 
     def __add_comments_to_timeline(self, group, timeline):
         comments = self._get_comments_for_group(group)
@@ -117,17 +117,6 @@ class FeedbackFeedBaseView(create.CreateView):
 
     submit_use_label = _('Post comment')
 
-    def get_form_css_classes(self):
-        """
-        Returns list of css classes set on the form. You normally
-        want to override :meth:`.get_extra_form_css_classes` instead
-        of this method unless you want to provide completely custom
-        form styles.
-        """
-        form_css_classes = [
-        ]
-        return form_css_classes
-
     def get_button_layout(self):
         """
         Get the button layout. This is added to the crispy form layout.
@@ -139,24 +128,8 @@ class FeedbackFeedBaseView(create.CreateView):
         return [
         ]
 
-    def get_buttons(self):
-        app = self.request.cradmin_app
-        user = self.request.user
-        if self.request.cradmin_role.is_candidate(user):
-            return [layout.Submit('student_add_comment',
-                           _('Add comment'),
-                           css_class='btn btn-success')]
-        elif self.request.cradmin_role.is_examiner(user):
-            return [layout.Submit('examiner_add_comment_for_examiners',
-                           _('Add comment for examiners'),
-                           css_class='btn btn-primary'),
-                    layout.Submit('examiner_add_public_comment',
-                           _('Add public comment'),
-                           css_class='btn btn-primary'),
-                    layout.Submit('examiner_add_comment_to_feedback_draft',
-                           _('Add to feedback'),
-                           css_class='btn btn-primary')
-                    ]
+    def get_buttons(self, group):
+        raise NotImplementedError("Subclasses must implement get_buttons!")
 
     def get_field_layout(self):
         return [
@@ -191,14 +164,14 @@ class FeedbackFeedBaseView(create.CreateView):
 
     def get_form(self, form_class=None):
         form = super(FeedbackFeedBaseView, self).get_form(form_class=form_class)
-        # form.fields['text'].widget = WysiHtmlTextArea(attrs={})
         form.fields['text'].widget = AceMarkdownWidget()
         form.fields['text'].label = False
-        form.fields['temporary_file_collection_id'] = forms.IntegerField()
+        form.fields['temporary_file_collection_id'] = forms.IntegerField(required=False)
         return form
 
-    def save_object(self, form, commit=True):
-        print '\nsave object from form\n'
+    def save_object(self, form, commit=False):
+        if commit:
+            raise NotImplementedError('Must be implemented by subclass!')
 
         assignment_group = self.request.cradmin_role
         user = self.request.user
@@ -210,44 +183,58 @@ class FeedbackFeedBaseView(create.CreateView):
         object.feedback_set = assignment_group.feedbackset_set.latest('created_datetime')
         object.published_datetime = time
 
-        if assignment_group.is_candidate(user):
-            object.user_role = 'student'
-            object.instant_publish = True
-            object.visible_for_students = True
-        elif assignment_group.is_examiner(user):
-            object.user_role = 'examiner'
-            print 'is examiner'
-
-            if form.data.get('examiner_add_comment_for_examiners'):
-                print 'examiner_add_comment_for_examiners'
-                object.instant_publish = True
-                object.visible_for_students = False
-            elif form.data.get('examiner_add_public_comment'):
-                print 'examiner_add_public_comment'
-                object.instant_publish = True
-                object.visible_for_students = True
-            elif form.data.get('examiner_add_comment_to_feedback_draft'):
-                print 'examiner_add_comment_to_feedback_draft'
-                object.instant_publish = False
-                object.visible_for_students = False
-        elif assignment_group.is_admin_or_superadmin(user):
-            object.user_role = 'admin'
-            object.instant_publish = True
-            object.visible_for_students = True
-        else:
-            raise PermissionDenied("User attempting to post comment has no verified role in the assignment group!")
-
-        if commit:
-            object.save()
-            self.__convert_temporary_files_to_comment_files(form, object)
         return object
+
+    # def save_object(self, form, commit=True):
+    #     print '\nsave object from form\n'
+    #     assignment_group = self.request.cradmin_role
+    #     user = self.request.user
+    #     time = datetime.datetime.now()
+    #
+    #     object = form.save(commit=False)
+    #     object.user = user
+    #     object.comment_type = 'groupcomment'
+    #     object.feedback_set = assignment_group.feedbackset_set.latest('created_datetime')
+    #     object.published_datetime = time
+    #
+    #     if assignment_group.is_candidate(user):
+    #         object.user_role = 'student'
+    #         object.instant_publish = True
+    #         object.visible_for_students = True
+    #     elif assignment_group.is_examiner(user):
+    #         object.user_role = 'examiner'
+    #         print 'is examiner'
+    #
+    #         if form.data.get('examiner_add_comment_for_examiners'):
+    #             print 'examiner_add_comment_for_examiners'
+    #             object.instant_publish = True
+    #             object.visible_for_students = False
+    #         elif form.data.get('examiner_add_public_comment'):
+    #             print 'examiner_add_public_comment'
+    #             object.instant_publish = True
+    #             object.visible_for_students = True
+    #         elif form.data.get('examiner_add_comment_to_feedback_draft'):
+    #             print 'examiner_add_comment_to_feedback_draft'
+    #             object.instant_publish = False
+    #             object.visible_for_students = False
+    #     elif assignment_group.is_admin_or_superadmin(user):
+    #         object.user_role = 'admin'
+    #         object.instant_publish = True
+    #         object.visible_for_students = True
+    #     else:
+    #         raise PermissionDenied("User attempting to post comment has no verified role in the assignment group!")
+    #
+    #     if commit:
+    #         object.save()
+    #         self._convert_temporary_files_to_comment_files(form, object)
+    #     return object
 
     def get_collectionqueryset(self):
         return TemporaryFileCollection.objects \
             .filter_for_user(self.request.user) \
             .prefetch_related('files')
 
-    def __convert_temporary_files_to_comment_files(self, form, groupcomment):
+    def _convert_temporary_files_to_comment_files(self, form, groupcomment):
         filecollection_id = form.cleaned_data.get('temporary_file_collection_id')
         if not filecollection_id:
             return
