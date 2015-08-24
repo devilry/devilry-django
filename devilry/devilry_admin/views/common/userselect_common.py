@@ -11,10 +11,12 @@ class UserInfoColumn(objecttable.MultiActionColumn):
         return user.get_displayname()
 
     def get_buttons(self, obj):
+        user = obj
         return [
-            objecttable.Button(
+            objecttable.SubmitButton(
                 label=self.select_label,
-                url=self.reverse_appurl('add', args=[obj.id]),
+                name='user',
+                value=str(user.id),
                 buttonclass="btn btn-default btn-sm devilry-admin-userselect-select-button"),
         ]
 
@@ -33,3 +35,6 @@ class AbstractUserSelectView(objecttable.ObjectTableView):
         if excluded_user_ids:
             queryset = queryset.exclude(id=excluded_user_ids)
         return queryset
+
+    def get_form_action(self):
+        return self.request.cradmin_app.reverse_appurl('add-perform')

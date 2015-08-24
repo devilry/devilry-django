@@ -28,11 +28,11 @@ class App(crapp.App):
             RemoveAdminView.as_view(),
             name="remove"),
         crapp.Url(
-            r'^add/$',
+            r'^add/select-user$',
             admins_common.AdminUserSelectView.as_view(),
             name="add-select-user"),
         crapp.Url(
-            r'^add/(?P<pk>\d+)$',
+            r'^add/perform$',
             AddAdminView.as_view(),
-            name="add"),
+            name="add-perform"),
     ]
