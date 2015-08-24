@@ -95,3 +95,15 @@ CELERY_RESULT_BACKEND = 'amqp://'
 DEVILRY_ELASTICSEARCH_HOSTS = [
     {"host": "localhost", "port": 9491}
 ]
+
+
+# Disable migrations when running tests
+class DisableMigrations(object):
+
+    def __contains__(self, item):
+        return True
+
+    def __getitem__(self, item):
+        return "notmigrations"
+
+MIGRATION_MODULES = DisableMigrations()

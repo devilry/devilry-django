@@ -11,7 +11,6 @@ from devilry.devilry_markup.parse_markdown import markdown_full
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder, FeedbackSetBuilder
 from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 
-
 bad_students = [
     ('dewey', 'Dewey Duck'),
     ('louie', 'Louie Duck'),
@@ -64,7 +63,7 @@ programs = [
             '        if getattr(item, attribute):\n'
             '            count += 1\n'
             '    return count\n'
-            )
+        )
     },
     {
         'filename': 'Hello.java',
@@ -133,19 +132,20 @@ comment_texts = [
     u"And so we say goodbye to our beloved pet, Nibbler, who's gone to a place where I, too, hope one day to go. The toilet. Hey, you add a one and two zeros to that or we walk! But existing is basically all I do! You can crush me but you can't crush my spirit!"
 ]
 
+
 class Command(BaseCommand):
     help = 'Create a database for demo/testing.'
 
     def handle(self, *args, **options):
         self.grandma = UserBuilder('grandma',
-            full_name='Elvira "Grandma" Coot',
-            is_superuser=True, is_staff=True).user
+                                   full_name='Elvira "Grandma" Coot',
+                                   is_superuser=True).user
         self.thor = UserBuilder('thor',
-            full_name='God of Thunder and Battle').user
+                                full_name='God of Thunder and Battle').user
         self.donald = UserBuilder('donald',
-            full_name='Donald Duck').user
+                                  full_name='Donald Duck').user
         self.scrooge = UserBuilder('scrooge',
-            full_name='Scrooge McDuck').user
+                                   full_name='Scrooge McDuck').user
         self.examiners = [self.donald, self.scrooge, self.thor]
 
         self.bad_students = {}
@@ -187,13 +187,13 @@ class Command(BaseCommand):
             grading_system_plugin_id='devilry_gradingsystemplugin_points',
             points_to_grade_mapper='raw-points',
             max_points=filecount,
-            first_deadline=DateTimeBuilder.now().minus(weeks=weeks_ago-1)
+            first_deadline=DateTimeBuilder.now().minus(weeks=weeks_ago - 1)
         )
 
         def create_group(user, minpoints, maxpoints, examiner):
             def create_old_delivery_structure():
-                deadlinebuilder = groupbuilder\
-                .add_deadline(
+                deadlinebuilder = groupbuilder \
+                    .add_deadline(
                     deadline=Deadline.reduce_datetime_precision(assignmentbuilder.assignment.first_deadline))
 
                 deliverybuilder = deadlinebuilder.add_delivery_x_hours_before_deadline(
@@ -244,7 +244,7 @@ class Command(BaseCommand):
                     text=get_comment_text(),
                     published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=4))
 
-                users = [{'user': user, 'role':'student'}, {'user': examiner, 'role':'examiner'}]
+                users = [{'user': user, 'role': 'student'}, {'user': examiner, 'role': 'examiner'}]
                 # add random comments
                 for i in xrange(0, int(random.uniform(0, 5))):
                     random_user = users[int(random.uniform(0, 1))]
@@ -255,7 +255,8 @@ class Command(BaseCommand):
                         instant_publish=True,
                         visible_for_students=True,
                         text=get_comment_text(),
-                        published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=3, hours=int(random.uniform(0, 23))))
+                        published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=3,
+                                                                       hours=int(random.uniform(0, 23))))
 
                 # add examiner feedback
                 feedbacksetbuilder.add_groupcomment(
@@ -276,10 +277,10 @@ class Command(BaseCommand):
                 create_feedbackset_structure()
 
         for user in bad_students_iterator:
-            create_group(user, minpoints=0, maxpoints=filecount/2,
+            create_group(user, minpoints=0, maxpoints=filecount / 2,
                          examiner=random.choice(self.examiners))
         for user in good_students_iterator:
-            create_group(user, minpoints=filecount/2, maxpoints=filecount,
+            create_group(user, minpoints=filecount / 2, maxpoints=filecount,
                          examiner=random.choice(self.examiners))
         create_group(self.april, minpoints=1, maxpoints=filecount,
                      examiner=self.donald)
@@ -358,29 +359,29 @@ class Command(BaseCommand):
             ])
 
         for periodbuilder, weekoffset in [
-                (oldtestsemester, 52),
-                (testsemester, 0)]:
+            (oldtestsemester, 52),
+            (testsemester, 0)]:
             week1 = self.build_random_pointassignmentdata(
                 periodbuilder=periodbuilder,
-                weeks_ago=weekoffset+6, filecount=4,
+                weeks_ago=weekoffset + 6, filecount=4,
                 short_name='week1', long_name='Week 1')
             week2 = self.build_random_pointassignmentdata(
                 periodbuilder=periodbuilder,
-                weeks_ago=weekoffset+5, filecount=2,
+                weeks_ago=weekoffset + 5, filecount=2,
                 short_name='week2', long_name='Week 2')
             week3 = self.build_random_pointassignmentdata(
                 periodbuilder=periodbuilder,
-                weeks_ago=weekoffset+4, filecount=4,
+                weeks_ago=weekoffset + 4, filecount=4,
                 short_name='week3', long_name='Week 3')
             week4 = self.build_random_pointassignmentdata(
                 periodbuilder=periodbuilder,
-                weeks_ago=weekoffset+3, filecount=8,
+                weeks_ago=weekoffset + 3, filecount=8,
                 short_name='week4', long_name='Week 4')
 
             if weekoffset == 0:
                 week5 = self.build_random_pointassignmentdata(
                     periodbuilder=periodbuilder,
-                    weeks_ago=weekoffset+1, filecount=6,
+                    weeks_ago=weekoffset + 1, filecount=6,
                     short_name='week5', long_name='Week 5',
                     feedback_percent=50)
 
@@ -393,13 +394,13 @@ class Command(BaseCommand):
                 )
                 for user in self.allstudentslist + [self.april]:
                     examiner = random.choice(self.examiners)
-                    week6\
-                        .add_group(students=[user], examiners=[examiner])\
+                    week6 \
+                        .add_group(students=[user], examiners=[examiner]) \
                         .add_deadline(deadline=Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=7)))
             else:
                 week5 = self.build_random_pointassignmentdata(
                     periodbuilder=periodbuilder,
-                    weeks_ago=weekoffset+1, filecount=1,
+                    weeks_ago=weekoffset + 1, filecount=1,
                     short_name='week5', long_name='Week 5')
                 week6 = self.build_random_pointassignmentdata(
                     periodbuilder=periodbuilder,
@@ -487,7 +488,8 @@ class Command(BaseCommand):
             instant_publish=True,
             visible_for_students=True,
             text="You failed miserably! Try to actually understand the problem. Printing 'hello world, I own you now' everywhere won't get you anywhere!",
-            published_datetime=feedbacksetbuilder1.feedbackset.published_datetime #DateTimeBuilder.now().minus(weeks=1, days=5, hours=1)
+            published_datetime=feedbacksetbuilder1.feedbackset.published_datetime
+            # DateTimeBuilder.now().minus(weeks=1, days=5, hours=1)
         )
 
         feedbacksetbuilder1.add_groupcomment(
@@ -564,7 +566,8 @@ class Command(BaseCommand):
             instant_publish=True,
             visible_for_students=True,
             text="Great job! You must be the most evil mutant I have ever met! Keep going like this, and you'll own the entire planet in no time!",
-            published_datetime=feedbacksetbuilder2.feedbackset.published_datetime#DateTimeBuilder.now().minus(weeks=0, days=3)
+            published_datetime=feedbacksetbuilder2.feedbackset.published_datetime
+            # DateTimeBuilder.now().minus(weeks=0, days=3)
         )
 
         feedbacksetbuilder2.add_groupcomment(
