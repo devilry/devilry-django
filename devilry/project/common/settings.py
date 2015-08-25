@@ -264,6 +264,14 @@ DEVILRY_ENABLE_REALTIME_ZIPFILE_CREATION = True
 #: of the Devilry user interface).
 DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = tuple()
 
+#: If this is ``True``, we assume that users authenticate via a
+#: thirdpary authentication backend, and that users can only be added
+#: via that backend.
+#:
+#: This does not actually enable an authentication backend, it just changes
+#: the UI to reflect how users are added.
+DEVILRY_USE_THIRDPARY_AUTHBACKEND = False
+
 #: Default language
 LANGUAGE_CODE = 'en'
 
