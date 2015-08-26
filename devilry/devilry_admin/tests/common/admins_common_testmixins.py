@@ -110,6 +110,14 @@ class AdminsListViewTestMixin(object):
         self.assertEqual(selector.one('.devilry-admin-adminlist-email')['href'],
                          'mailto:test@example.com')
 
+    def test_render_email_no_primary_email(self):
+        testuser = UserBuilder2(is_superuser=True).user
+        builder = self.builderclass.make() \
+            .add_admins(UserBuilder2(shortname='test').user)
+        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
+                                                      user=testuser)
+        self.assertFalse(selector.exists('.devilry-admin-adminlist-email')),
+
     def test_render_only_users_from_current_basenode(self):
         testuser = UserBuilder2(is_superuser=True).user
         self.builderclass.make() \
