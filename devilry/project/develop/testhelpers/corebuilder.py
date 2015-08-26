@@ -102,10 +102,15 @@ class CoreBuilderBase(ReloadableDbBuilderInterface):
     def _save(self):
         getattr(self, self.object_attribute_name).save()
 
+    def get_object(self):
+        return getattr(self, self.object_attribute_name)
+
+    def __set_object_value(self, attribute, value):
+        setattr(self.get_object(), attribute, value)
+
     def update(self, **attributes):
-        obj = getattr(self, self.object_attribute_name)
-        for attrname, value in attributes.iteritems():
-            setattr(obj, attrname, value)
+        for attribute, value in attributes.iteritems():
+            self.__set_object_value(attribute, value)
         self._save()
         self.reload_from_db()
 
@@ -113,17 +118,34 @@ class CoreBuilderBase(ReloadableDbBuilderInterface):
         obj = getattr(self, self.object_attribute_name)
         setattr(self, self.object_attribute_name, obj.__class__.objects.get(pk=obj.pk))
 
+    @classmethod
+    def make(cls, **kwargs):
+        """
+        Creates a usable object of this builders model.
+
+        Use this when you just need an object with no special
+        meaning.
+        """
+        raise NotImplementedError()
+
 
 class BaseNodeBuilderBase(CoreBuilderBase):
     modelcls = None
 
-    def __init__(self, short_name, long_name=None, **kwargs):
+    #: Used to generate unique names.
+    sequencenumber = 0
+
+    def __init__(self, short_name=None, long_name=None, **kwargs):
+        if not short_name:
+            short_name = '{}{}'.format(self.object_attribute_name,
+                                       self.sequencenumber)
         full_kwargs = {
             'short_name': short_name,
             'long_name': long_name or short_name
         }
         full_kwargs.update(kwargs)
         setattr(self, self.object_attribute_name, self.modelcls.objects.create(**full_kwargs))
+        BaseNodeBuilderBase.sequencenumber += 1
 
     def add_admins(self, *users):
         for user in users:
@@ -395,6 +417,13 @@ class AssignmentBuilder(BaseNodeBuilderBase):
         kwargs['parentnode'] = self.assignment
         return AssignmentGroupBuilder(*args, **kwargs)
 
+    @classmethod
+    def make(cls, **kwargs):
+        if 'publishing_time' in kwargs:
+            return PeriodBuilder.make().add_assignment(**kwargs)
+        else:
+            return PeriodBuilder.make().add_assignment_in_x_weeks(weeks=1, **kwargs)
+
 
 class PeriodBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'period'
@@ -452,6 +481,10 @@ class PeriodBuilder(BaseNodeBuilderBase):
         RelatedExaminer.objects.bulk_create(relatedexaminers)
         return self
 
+    @classmethod
+    def make(cls, **kwargs):
+        return SubjectBuilder.make().add_period(**kwargs)
+
 
 class SubjectBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'subject'
@@ -463,6 +496,10 @@ class SubjectBuilder(BaseNodeBuilderBase):
 
     def add_period(self, *args, **kwargs):
         kwargs['parentnode'] = self.subject
+        if 'start_time' not in kwargs:
+            kwargs['start_time'] = DateTimeBuilder.now().minus(days=30 * 3)
+        if 'end_time' not in kwargs:
+            kwargs['end_time'] = DateTimeBuilder.now().plus(days=30 * 3)
         return PeriodBuilder(*args, **kwargs)
 
     def add_6month_active_period(self, **kwargs):
@@ -498,6 +535,10 @@ class SubjectBuilder(BaseNodeBuilderBase):
             kwargs['short_name'] = 'nextyear'
         return self.add_period(**kwargs)
 
+    @classmethod
+    def make(cls, **kwargs):
+        return NodeBuilder.make().add_subject(**kwargs)
+
 
 class NodeBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'node'
@@ -517,3 +558,7 @@ class NodeBuilder(BaseNodeBuilderBase):
     def add_childnode(self, *args, **kwargs):
         kwargs['parentnode'] = self.node
         return NodeBuilder(*args, **kwargs)
+
+    @classmethod
+    def make(cls, **kwargs):
+        return NodeBuilder(**kwargs)

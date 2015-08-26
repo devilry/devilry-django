@@ -1,0 +1,12 @@
+{% load devilry_theme2_tags %}
+
+<p class="objecttable-cellvalue">
+    {% devilry_user_verbose_inline user %}
+</p>
+{% if buttons %}
+    <p class="objecttable-cellbuttons">
+        {% for button in buttons %}
+            {{ button.render }}
+        {% endfor %}
+    </p>
+{% endif %}

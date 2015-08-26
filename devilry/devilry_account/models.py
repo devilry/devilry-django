@@ -295,6 +295,17 @@ class User(AbstractBaseUser):
         """
         return self.shortname
 
+    def get_displayname(self):
+        """
+        Get as much of the name as possible. If we have only
+        shortname, return that, if we have both shortname and
+        fullname, return ``<fullname> (<shortname>)``.
+        """
+        if self.fullname:
+            return u'{} ({})'.format(self.fullname, self.shortname)
+        else:
+            return self.shortname
+
     def has_module_perms(self, *args, **kwargs):
         return self.is_superuser
 

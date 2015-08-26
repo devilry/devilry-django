@@ -1,0 +1,10 @@
+{% if user.fullname %}
+    <span class="devilry-user-verbose-inline devilry-user-verbose-inline-both">
+        <span class="devilry-user-verbose-inline-fullname">{{ user.fullname }}</span>
+        <small class="devilry-user-verbose-inline-shortname">({{ user.shortname }})</small>
+    </span>
+{% else %}
+    <span class="devilry-user-verbose-inline devilry-user-verbose-inline-shortnameonly">
+        <span class="devilry-user-verbose-inline-shortname">{{ user.shortname }}</span>
+    </span>
+{% endif %}
