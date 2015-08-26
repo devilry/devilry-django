@@ -1,4 +1,5 @@
 {% load devilry_theme2_tags %}
+{% load i18n %}
 
 <p class="objecttable-cellvalue devilry-admin-adminlist-name">
     {% devilry_user_verbose_inline user %}
@@ -7,6 +8,13 @@
     <p class="objecttable-cellbuttons">
         {% for button in buttons %}
             {{ button.render }}
+        {% endfor %}
+        {% for primary_useremail_object in user.primary_useremail_objects %}
+            <a class="btn btn-sm btn-link devilry-btn-link-nouppercase
+                        devilry-admin-adminlist-email"
+                    href="mailto:{{ primary_useremail_object.email }}">
+                {% blocktrans trimmed with email=primary_useremail_object.email %}Contact at {{ email }}{% endblocktrans %}
+            </a>
         {% endfor %}
     </p>
 {% endif %}

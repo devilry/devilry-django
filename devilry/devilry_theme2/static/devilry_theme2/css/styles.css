@@ -9842,6 +9842,9 @@ table.infolistingtable tr th p:first-child {
   margin: 0;
   padding: 0;
 }
+.btn.btn-link.devilry-btn-link-nouppercase {
+  text-transform: none !important;
+}
 /*
 Style text with ``white-space: pre-wrap``. Perfect for the case where we
 allow users to write text in a textarea and want to render it more or less as
@@ -10737,6 +10740,9 @@ fieldset[disabled] .button {
 .button.btn-cancel:focus {
   color: #24516e;
 }
+.button.btn-link.devilry-btn-link-nouppercase {
+  text-transform: none !important;
+}
 .button:hover,
 .button:focus {
   background: #49c34c;
@@ -10868,6 +10874,9 @@ fieldset[disabled] .button_default {
 .button_default.btn-cancel:hover,
 .button_default.btn-cancel:focus {
   color: #24516e;
+}
+.button_default.btn-link.devilry-btn-link-nouppercase {
+  text-transform: none !important;
 }
 .button_default:hover,
 .button_default:focus {
@@ -11005,6 +11014,9 @@ fieldset[disabled] .button_admin {
 .button_admin.btn-cancel:focus {
   color: #24516e;
 }
+.button_admin.btn-link.devilry-btn-link-nouppercase {
+  text-transform: none !important;
+}
 .button_admin:hover,
 .button_admin:focus {
   background: #49c34c;
@@ -11140,6 +11152,9 @@ fieldset[disabled] .button_examiner {
 .button_examiner.btn-cancel:hover,
 .button_examiner.btn-cancel:focus {
   color: #24516e;
+}
+.button_examiner.btn-link.devilry-btn-link-nouppercase {
+  text-transform: none !important;
 }
 .button_examiner:hover,
 .button_examiner:focus {
@@ -11277,6 +11292,9 @@ fieldset[disabled] .button_examiner_grayed {
 .button_examiner_grayed.btn-cancel:focus {
   color: #24516e;
 }
+.button_examiner_grayed.btn-link.devilry-btn-link-nouppercase {
+  text-transform: none !important;
+}
 .button_examiner_grayed:hover,
 .button_examiner_grayed:focus {
   background: #49c34c;
@@ -11412,6 +11430,9 @@ fieldset[disabled] .button_student {
 .button_student.btn-cancel:hover,
 .button_student.btn-cancel:focus {
   color: #24516e;
+}
+.button_student.btn-link.devilry-btn-link-nouppercase {
+  text-transform: none !important;
 }
 .button_student:hover,
 .button_student:focus {

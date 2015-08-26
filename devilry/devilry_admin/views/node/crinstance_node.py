@@ -34,7 +34,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     def get_titletext_for_role(self, role):
         """
         Get a short title briefly describing the given ``role``.
-        Remember that the role is an Node.
+        Remember that the role is a Node.
         """
         node = role
         return node
