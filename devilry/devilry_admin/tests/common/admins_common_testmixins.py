@@ -39,7 +39,7 @@ class AdminsListViewTestMixin(object):
 
     def test_title(self):
         testuser = UserBuilder2().user
-        subjectbuilder = self.builderclass.make(long_name='The Long Name')\
+        subjectbuilder = self.builderclass.make(long_name='The Long Name') \
             .add_admins(testuser)
         selector = self.mock_http200_getrequest_htmls(role=subjectbuilder.get_object(),
                                                       user=testuser)
@@ -127,7 +127,6 @@ class AdminsListViewTestMixin(object):
         selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
                                                       user=testuser)
         self.assertEqual(['expecteduser'], self.__get_names(selector))
-
 
 
 class RemoveAdminViewTestMixin(object):
@@ -244,7 +243,7 @@ class AdminUserSelectViewTestMixin(object):
 
     def test_render(self):
         testuser = UserBuilder2().user
-        builder = self.builderclass.make()\
+        builder = self.builderclass.make() \
             .add_admins(testuser)  # testuser should be excluded since it is already admin
         UserBuilder2(shortname='Jane Doe')
         selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
