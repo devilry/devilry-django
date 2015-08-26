@@ -403,6 +403,13 @@ class AssignmentGroupBuilder(CoreBuilderBase):
         kwargs['group'] = self.group
         return FeedbackSetBuilder(**kwargs)
 
+    @classmethod
+    def make(cls, **kwargs):
+        assignmentbuilder_kwargs = {}
+        if 'assignment__publishing_time' in kwargs:
+            assignmentbuilder_kwargs['published_datetime'] = kwargs['assignment__publishing_time']
+        return AssignmentBuilder.make(**assignmentbuilder_kwargs).add_group(**kwargs)
+
 
 class AssignmentBuilder(BaseNodeBuilderBase):
     object_attribute_name = 'assignment'
