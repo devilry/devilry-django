@@ -1,5 +1,6 @@
 {% extends "devilry_group/base.django.html" %}
-{% load custom_filter %}
+{% load devilry_group_tags %}
+{% load devilry_theme2_tags %}
 {% load crispy_forms_tags %}
 {% load i18n %}
 
@@ -79,7 +80,7 @@
                                         {% endif %}">
                                         <div class="devilry-group-feedbackfeed-comment-content">
                                             <div class="comment-meta">
-                                                <div class="comment-created-by"><p>{{ comment.user }}&nbsp;</p></div>
+                                                <div class="comment-created-by"><p>{% devilry_user_verbose_inline comment.user %} &nbsp;</p></div>
                                                 <div class="comment-created-by-role"><p>({{ comment.user_role }})&nbsp;</p></div>
                                                 <div class="comment-created-date"><p> {{ comment.published_datetime }}</p></div>
                                             </div>
