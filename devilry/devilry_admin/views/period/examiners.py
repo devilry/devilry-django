@@ -1,40 +1,36 @@
-from django import forms
 from django.contrib import messages
 from django.contrib.auth import get_user_model
+from django import forms
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import BaseFormView
+
+from django_cradmin import crapp
 from django_cradmin.viewhelpers import objecttable
+from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin.viewhelpers import delete
-from django.db import models
-from devilry.devilry_account.models import UserEmail
 
+from devilry.apps.core.models import RelatedExaminer
+from devilry.devilry_account.models import UserEmail
 from devilry.devilry_admin.views.common import userselect_common
 
 
 class GetQuerysetForRoleMixin(object):
-    #: Must be set in subclasses. Example: ``Subject.admins.through``
-    model = None
-
-    #: The field in the many-to-many model pointing to the basenode.
-    #: Must be set in subclasses. Example: ``subject``
-    basenodefield = None
+    model = RelatedExaminer
 
     def get_queryset_for_role(self, role):
+        period = role
         return self.model.objects \
-            .filter(**{self.basenodefield: role}) \
+            .filter(period=period) \
             .order_by('user__shortname')
 
-    def get_basenode_for_object(self, obj):
-        return getattr(obj, self.basenodefield)
 
-
-class AdministratorInfoColumn(objecttable.MultiActionColumn):
+class ExaminerInfoColumn(objecttable.MultiActionColumn):
     modelfield = 'id'
     template_name = 'devilry_admin/common/user-info-column.django.html'
 
     def get_header(self):
-        return _('Administrators')
+        return _('Examiners')
 
     def get_buttons(self, obj):
         if not self.view.request.user.is_superuser and obj.user == self.view.request.user:
@@ -44,52 +40,46 @@ class AdministratorInfoColumn(objecttable.MultiActionColumn):
                 objecttable.Button(
                     label=_('Remove'),
                     url=self.reverse_appurl('remove', args=[obj.id]),
-                    buttonclass="btn btn-danger btn-sm devilry-admin-adminlist-remove-button"),
+                    buttonclass="btn btn-danger btn-sm devilry-relatedexaminerlist-remove-button"),
             ]
 
     def get_context_data(self, obj):
-        context = super(AdministratorInfoColumn, self).get_context_data(obj=obj)
+        context = super(ExaminerInfoColumn, self).get_context_data(obj=obj)
         context['user'] = obj.user
         return context
 
 
-class AbstractAdminsListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
-    columns = [
-        AdministratorInfoColumn,
-    ]
-    searchfields = ['shortname', 'fullname']
+class ExaminerListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
+    searchfields = ['user__shortname', 'user__fullname']
     hide_column_headers = True
+    columns = [ExaminerInfoColumn]
 
     def get_buttons(self):
         app = self.request.cradmin_app
         return [
-            objecttable.Button(label=_('Add administrator'),
-                               url=app.reverse_appurl('select-user-to-add-as-admin'),
+            objecttable.Button(label=_('Add examiner'),
+                               url=app.reverse_appurl('select-user-to-add-as-examiner'),
                                buttonclass='btn btn-primary'),
         ]
 
     def get_pagetitle(self):
-        return _('Administrators for %(what)s') % {
-            'what': self.request.cradmin_role.long_name
-        }
+        return _('Examiners')
 
     def get_queryset_for_role(self, role):
-        return self.model.objects \
-            .filter(**{self.basenodefield: role}) \
-            .order_by('user__shortname')\
+        return super(ExaminerListView, self).get_queryset_for_role(role)\
             .prefetch_related(
                 models.Prefetch('user__useremail_set',
                                 queryset=UserEmail.objects.filter(is_primary=True),
                                 to_attr='primary_useremail_objects'))
 
 
-class AbstractRemoveAdminView(GetQuerysetForRoleMixin, delete.DeleteView):
+class RemoveExaminerView(GetQuerysetForRoleMixin, delete.DeleteView):
     """
     View used to remove admins from a basenode.
     """
 
     def get_queryset_for_role(self, role):
-        queryset = super(AbstractRemoveAdminView, self) \
+        queryset = super(RemoveExaminerView, self) \
             .get_queryset_for_role(role=role)
         if not self.request.user.is_superuser:
             queryset = queryset.exclude(user=self.request.user)
@@ -97,28 +87,28 @@ class AbstractRemoveAdminView(GetQuerysetForRoleMixin, delete.DeleteView):
 
     def get_object(self, *args, **kwargs):
         if not hasattr(self, '_object'):
-            self._object = super(AbstractRemoveAdminView, self).get_object(*args, **kwargs)
+            self._object = super(RemoveExaminerView, self).get_object(*args, **kwargs)
         return self._object
 
     def get_pagetitle(self):
         return _('Remove %(what)s') % {'what': self.get_object().user.get_full_name()}
 
     def get_success_message(self, object_preview):
-        basenode_admin = self.get_object()
-        basenode = self.get_basenode_for_object(basenode_admin)
-        user = basenode_admin.user
-        return _('%(user)s is no longer administrator for %(what)s.') % {
+        relatedexaminer = self.get_object()
+        period = relatedexaminer.period
+        user = relatedexaminer.user
+        return _('%(user)s is no longer examiner for %(what)s.') % {
             'user': user.get_full_name(),
-            'what': basenode,
+            'what': period.get_path(),
         }
 
     def get_confirm_message(self):
-        basenode_admin = self.get_object()
-        basenode = self.get_basenode_for_object(basenode_admin)
-        user = basenode_admin.user
-        return _('Are you sure you want to remove %(user)s as administrator for %(what)s?') % {
+        relatedexaminer = self.get_object()
+        period = relatedexaminer.period
+        user = relatedexaminer.user
+        return _('Are you sure you want to remove %(user)s as examiner for %(what)s?') % {
             'user': user.get_full_name(),
-            'what': basenode,
+            'what': period.get_path(),
         }
 
     def get_action_label(self):
@@ -127,44 +117,39 @@ class AbstractRemoveAdminView(GetQuerysetForRoleMixin, delete.DeleteView):
 
 class UserInfoColumn(userselect_common.UserInfoColumn):
     modelfield = 'shortname'
-    select_label = _('Add as administrator')
+    select_label = _('Add as examiners')
 
 
-class AdminUserSelectView(userselect_common.AbstractUserSelectView):
+class ExaminerUserSelectView(userselect_common.AbstractUserSelectView):
     columns = [
         UserInfoColumn,
     ]
 
     def get_pagetitle(self):
-        return _('Please select the user you want to add as administrator for %(what)s') % {
+        return _('Please select the user you want to add as examiners for %(what)s') % {
             'what': self.request.cradmin_role.long_name
         }
 
     def get_form_action(self):
-        return self.request.cradmin_app.reverse_appurl('add-user-as-admin')
+        return self.request.cradmin_app.reverse_appurl('add-user-as-examiner')
 
     def get_excluded_user_ids(self):
         basenode = self.request.cradmin_role
         return basenode.admins.values_list('id', flat=True)
 
 
-class AbstractAddAdminView(BaseFormView):
+class AddExaminerView(BaseFormView):
     """
-    View used to add an admin to a basenode.
+    View used to add a RelatedExaminer to a Period.
     """
     http_method_names = ['post']
 
-    #: Must be set in subclasses. Example: ``Subject.admins.through``
-    model = None
-
-    #: The field in the many-to-many model pointing to the basenode.
-    #: Must be set in subclasses. Example: ``subject``
-    basenodefield = None
+    model = RelatedExaminer
 
     def get_form_class(self):
-        basenode = self.request.cradmin_role
+        period = self.request.cradmin_role
         userqueryset = get_user_model().objects \
-            .exclude(pk__in=basenode.admins.values_list('id', flat=True))
+            .exclude(pk__in=period.relatedexaminer_set.values_list('id', flat=True))
 
         class AddAdminForm(forms.Form):
             user = forms.ModelChoiceField(
@@ -173,19 +158,19 @@ class AbstractAddAdminView(BaseFormView):
 
         return AddAdminForm
 
-    def __make_user_admin(self, user):
-        basenode = self.request.cradmin_role
+    def __make_user_examiner(self, user):
+        period = self.request.cradmin_role
         self.model.objects.create(user=user,
-                                  **{self.basenodefield: basenode})
+                                  period=period)
 
     def form_valid(self, form):
         user = form.cleaned_data['user']
-        self.__make_user_admin(user)
+        self.__make_user_examiner(user)
 
-        basenode = self.request.cradmin_role
-        successmessage = _('%(user)s added as administrator for %(what)s.') % {
+        period = self.request.cradmin_role
+        successmessage = _('%(user)s added as examiner for %(what)s.') % {
             'user': user.get_full_name(),
-            'what': basenode,
+            'what': period,
         }
         messages.success(self.request, successmessage)
 
@@ -197,5 +182,23 @@ class AbstractAddAdminView(BaseFormView):
 
     def form_invalid(self, form):
         messages.error(self.request,
-                       _('Error: The user may not exist, or it may already be administrator.'))
+                       _('Error: The user may not exist, or it may already be examiner.'))
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
+
+
+class App(crapp.App):
+    appurls = [
+        crapp.Url(r'^$', ExaminerListView.as_view(), name=crapp.INDEXVIEW_NAME),
+        crapp.Url(
+            r'^remove/(?P<pk>\d+)$',
+            RemoveExaminerView.as_view(),
+            name="remove"),
+        crapp.Url(
+            r'^select-user-to-add-as-examiner$',
+            ExaminerUserSelectView.as_view(),
+            name="select-user-to-add-as-examiner"),
+        crapp.Url(
+            r'^add',
+            AddExaminerView.as_view(),
+            name="add-user-as-examiner"),
+    ]
