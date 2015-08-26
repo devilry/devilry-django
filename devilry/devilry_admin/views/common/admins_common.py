@@ -6,6 +6,8 @@ from django.views.generic.edit import BaseFormView
 from django_cradmin.viewhelpers import objecttable
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin.viewhelpers import delete
+from django.db import models
+from devilry.devilry_account.models import UserEmail
 
 from devilry.devilry_admin.views.common import userselect_common
 
@@ -70,6 +72,15 @@ class AbstractAdminsListView(GetQuerysetForRoleMixin, objecttable.ObjectTableVie
         return _('Administrators for %(what)s') % {
             'what': self.request.cradmin_role.long_name
         }
+
+    def get_queryset_for_role(self, role):
+        return self.model.objects \
+            .filter(**{self.basenodefield: role}) \
+            .order_by('user__shortname')\
+            .prefetch_related(
+                models.Prefetch('user__useremail_set',
+                                queryset=UserEmail.objects.filter(is_primary=True),
+                                to_attr='primary_useremail_objects'))
 
 
 class AbstractRemoveAdminView(GetQuerysetForRoleMixin, delete.DeleteView):

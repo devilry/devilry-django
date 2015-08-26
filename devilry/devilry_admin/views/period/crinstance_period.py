@@ -35,7 +35,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     def get_titletext_for_role(self, role):
         """
         Get a short title briefly describing the given ``role``.
-        Remember that the role is an Period.
+        Remember that the role is n Period.
         """
         period = role
         return period

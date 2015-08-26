@@ -81,6 +81,11 @@ class UserBuilder2(ReloadableDbBuilderInterface):
             self.user.useremail_set.create(email=email, use_for_notifications=False)
         return self
 
+    def add_primary_email(self, email, use_for_notifications=True):
+        self.user.useremail_set.create(email=email, use_for_notifications=use_for_notifications,
+                                       is_primary=True)
+        return self
+
     def add_usernames(self, *usernames):
         for username in usernames:
             self.user.username_set.create(username=username, is_primary=False)

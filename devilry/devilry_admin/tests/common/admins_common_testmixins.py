@@ -99,6 +99,25 @@ class AdminsListViewTestMixin(object):
                                                       user=testuser)
         self.assertEqual(['test'], self.__get_names(selector))
 
+    def test_render_email_has_primary_email(self):
+        testuser = UserBuilder2(is_superuser=True).user
+        builder = self.builderclass.make() \
+            .add_admins(UserBuilder2(shortname='test').add_primary_email('test@example.com').user)
+        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
+                                                      user=testuser)
+        self.assertEqual(selector.one('.devilry-admin-adminlist-email').alltext_normalized,
+                         'Contact at test@example.com')
+        self.assertEqual(selector.one('.devilry-admin-adminlist-email')['href'],
+                         'mailto:test@example.com')
+
+    def test_render_email_no_primary_email(self):
+        testuser = UserBuilder2(is_superuser=True).user
+        builder = self.builderclass.make() \
+            .add_admins(UserBuilder2(shortname='test').user)
+        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
+                                                      user=testuser)
+        self.assertFalse(selector.exists('.devilry-admin-adminlist-email')),
+
     def test_render_only_users_from_current_basenode(self):
         testuser = UserBuilder2(is_superuser=True).user
         self.builderclass.make() \
@@ -108,6 +127,7 @@ class AdminsListViewTestMixin(object):
         selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
                                                       user=testuser)
         self.assertEqual(['expecteduser'], self.__get_names(selector))
+
 
 
 class RemoveAdminViewTestMixin(object):
