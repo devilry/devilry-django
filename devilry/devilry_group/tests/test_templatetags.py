@@ -1,6 +1,6 @@
 from django.test import TestCase
-from devilry.devilry_group.templatetags.custom_filter import devilry_truncatefileextension
-from devilry.devilry_group.templatetags.custom_filter import devilry_verbosenumber
+from devilry.devilry_group.templatetags.devilry_group_tags import devilry_truncatefileextension
+from devilry.devilry_group.templatetags.devilry_group_tags import devilry_verbosenumber
 
 
 class TestDevilryGroupTemplateTags(TestCase):
