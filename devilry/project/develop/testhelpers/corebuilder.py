@@ -327,7 +327,7 @@ class GroupCommentBuilder(CoreBuilderBase):
             if key.startswith('feedback_set__'):
                 feedbacksetbuilder_kwargs[key[len('feedback_set__'):]] = kwargs.pop(key)
         groupbuilder = FeedbackSetBuilder.make(**feedbacksetbuilder_kwargs)
-        return cls(group=groupbuilder.feedback_set, **kwargs)
+        return cls(feedback_set=groupbuilder.feedback_set, **kwargs)
 
 
 class FeedbackSetBuilder(CoreBuilderBase):
