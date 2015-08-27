@@ -31,7 +31,7 @@ class GetQuerysetForRoleMixin(object):
 
 class AdministratorInfoColumn(objecttable.MultiActionColumn):
     modelfield = 'id'
-    template_name = 'devilry_admin/common/administrator-info-column.django.html'
+    template_name = 'devilry_admin/common/user-info-column.django.html'
 
     def get_header(self):
         return _('Administrators')

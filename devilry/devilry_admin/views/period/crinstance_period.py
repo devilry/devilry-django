@@ -4,6 +4,8 @@ from django_cradmin import crinstance
 
 from devilry.apps.core.models import Period
 from devilry.devilry_admin.views.period import overview
+from devilry.devilry_admin.views.period import students
+from devilry.devilry_admin.views.period import examiners
 from devilry.devilry_admin.views.period import admins
 
 
@@ -14,6 +16,12 @@ class Menu(crmenu.Menu):
             label=period.short_name,
             url=self.appindex_url('overview'))
         self.add_menuitem(
+            label=_('Students'),
+            url=self.appindex_url('students'))
+        self.add_menuitem(
+            label=_('Examiners'),
+            url=self.appindex_url('examiners'))
+        self.add_menuitem(
             label=_('Administrators'),
             url=self.appindex_url('admins'))
 
@@ -23,7 +31,9 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     roleclass = Period
     apps = [
         ('overview', overview.App),
-        ('admins', admins.App)
+        ('students', students.App),
+        ('examiners', examiners.App),
+        ('admins', admins.App),
     ]
     id = 'devilry_admin_periodadmin'
     rolefrontpage_appname = 'overview'
