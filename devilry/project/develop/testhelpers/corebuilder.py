@@ -352,7 +352,11 @@ class FeedbackSetBuilder(CoreBuilderBase):
 
     @classmethod
     def make(cls, **kwargs):
-        groupbuilder = AssignmentGroupBuilder.make()
+        groupbuilder_kwargs = {}
+        for key in kwargs.keys():
+            if key.startswith('group__'):
+                groupbuilder_kwargs[key[len('group__'):]] = kwargs.pop(key)
+        groupbuilder = AssignmentGroupBuilder.make(**groupbuilder_kwargs)
         return cls(group=groupbuilder.group, **kwargs)
 
 
@@ -413,11 +417,11 @@ class AssignmentGroupBuilder(CoreBuilderBase):
     @classmethod
     def make(cls, **kwargs):
         assignmentbuilder_kwargs = {}
-        if 'assignment__publishing_time' in kwargs:
-            assignmentbuilder_kwargs['publishing_time'] = kwargs.pop('assignment__publishing_time')
-        if 'assignment__first_deadline' in kwargs:
-            assignmentbuilder_kwargs['first_deadline'] = kwargs.pop('assignment__first_deadline')
-        return AssignmentBuilder.make(**assignmentbuilder_kwargs).add_group(**kwargs)
+        for key in kwargs.keys():
+            if key.startswith('assignment__'):
+                assignmentbuilder_kwargs[key[len('assignment__'):]] = kwargs.pop(key)
+        assignmentbuilder = AssignmentBuilder.make(**assignmentbuilder_kwargs)
+        return cls(assignment=assignmentbuilder.assignment, **kwargs)
 
 
 class AssignmentBuilder(BaseNodeBuilderBase):
