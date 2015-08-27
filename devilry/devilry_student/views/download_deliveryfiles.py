@@ -51,7 +51,7 @@ class CompressedFileDownloadView(View):
         zip_file_name = u'{}.zip'.format(dirname.encode('ascii', 'ignore'))
 
         tempfile = NamedTemporaryFile()
-        zip_file = zipfile.ZipFile(tempfile, 'w');
+        zip_file = zipfile.ZipFile(tempfile, 'w')
 
         for filemeta in delivery.filemetas.all():
             file_content = filemeta.deliverystore.read_open(filemeta)
