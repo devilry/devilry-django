@@ -146,7 +146,7 @@ class AddView(BaseFormView):
     def get_form_class(self):
         period = self.request.cradmin_role
         userqueryset = get_user_model().objects \
-            .exclude(pk__in=period.relatedexaminer_set.values_list('id', flat=True))
+            .exclude(pk__in=period.relatedexaminer_set.values_list('user_id', flat=True))
 
         class AddAdminForm(forms.Form):
             user = forms.ModelChoiceField(
