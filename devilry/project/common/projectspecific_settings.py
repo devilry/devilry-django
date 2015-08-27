@@ -41,10 +41,6 @@ DEVILRY_ENABLE_CELERY = True
 #: to automatically set email to "<username>@DEVILRY_DEFAULT_EMAIL_SUFFIX" if it is not set when a user is saved.
 # DEVILRY_DEFAULT_EMAIL_SUFFIX = 'example.com'
 
-#: When sorting by fullname, would you like to sort by last name? Currently
-#: only affects the overview over an entire period.
-DEVILRY_SORT_FULL_NAME_BY_LASTNAME = True
-
 
 # DEVILRY_QUALIFIESFOREXAM_PLUGINS = [
 #     'devilry_qualifiesforexam_approved.all',
