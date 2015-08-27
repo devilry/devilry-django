@@ -37,9 +37,12 @@ DEVILRY_SCHEME_AND_DOMAIN = 'https://devilry.example.com'
 DEVILRY_ENABLE_CELERY = True
 
 
-#: Email pattern. Set this, and add 'devilry.devilry_autoset_empty_email_by_username' to INSTALLED_APPS
-#: to automatically set email to "<username>@DEVILRY_DEFAULT_EMAIL_SUFFIX" if it is not set when a user is saved.
+#: If this is set, and the ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting
+#: is ``False``, users will be assigned
+#: ``"<username>@DEVILRY_DEFAULT_EMAIL_SUFFIX"`` as their primary email
+#: address when they are created.
 # DEVILRY_DEFAULT_EMAIL_SUFFIX = 'example.com'
+DEVILRY_DEFAULT_EMAIL_SUFFIX = None
 
 
 # DEVILRY_QUALIFIESFOREXAM_PLUGINS = [
