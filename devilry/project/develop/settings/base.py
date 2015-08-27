@@ -121,7 +121,7 @@ DEVILRY_DEFAULT_EMAIL_SUFFIX = '@example.com'
 # Logging
 #######################################################################
 
-if not 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:
+if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' not in MIDDLEWARE_CLASSES:
     MIDDLEWARE_CLASSES.append('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
 
 # MIDDLEWARE_CLASSES += [
@@ -138,4 +138,23 @@ CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
     }
+}
+
+
+class GenerateShortName(object):
+    counter = 0
+
+    def __call__(self):
+        GenerateShortName.counter += 1
+        return 'mommyshort{}'.format(self.counter)
+
+
+def generate_long_name():
+    from model_mommy.recipe import seq as mommy_seq
+    return mommy_seq('Mommy Long Name')
+
+
+MOMMY_CUSTOM_FIELDS_GEN = {
+    'devilry.apps.core.models.custom_db_fields.ShortNameField': GenerateShortName(),
+    'devilry.apps.core.models.custom_db_fields.LongNameField': generate_long_name,
 }
