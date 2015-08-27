@@ -1,6 +1,7 @@
-from django.contrib.auth import get_user_model
 from datetime import datetime
 from datetime import timedelta
+
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from model_mommy import mommy
 
@@ -17,9 +18,6 @@ from devilry.apps.core.models import RelatedStudent
 from devilry.apps.core.models import RelatedExaminer
 from devilry.apps.core.deliverystore import MemoryDeliveryStore
 from .datebuilder import DateTimeBuilder
-
-from devilry.devilry_group.models import FeedbackSet
-from devilry.devilry_group.models import GroupComment
 from devilry.devilry_comment.models import CommentFile
 
 
