@@ -340,13 +340,18 @@ class FeedbackSetBuilder(CoreBuilderBase):
                               deadline_datetime=DateTimeBuilder.now().minus(weeks=4))
 
     def __init__(self, **kwargs):
-        self.feedbackset = FeedbackSet.objects.create(**kwargs)
+        self.feedbackset = mommy.make('devilry_group.FeedbackSet', **kwargs)
 
     def add_groupcomment(self, files=[], **kwargs):
         kwargs['feedback_set'] = self.feedbackset
         groupcomment = GroupCommentBuilder(**kwargs)
         groupcomment.add_files(files)
         return groupcomment.groupcomment
+
+    @classmethod
+    def make(cls, **kwargs):
+        groupbuilder = AssignmentGroupBuilder.make()
+        return cls(group=groupbuilder.group)
 
 
 class AssignmentGroupBuilder(CoreBuilderBase):
