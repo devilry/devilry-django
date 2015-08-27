@@ -45,6 +45,15 @@ class TestListView(TestCase):
         self.assertEqual(selector.one('title').alltext_normalized,
                          'Students')
 
+    def test_no_students_messages(self):
+        testuser = UserBuilder2(is_superuser=True).user
+        periodbuilder = PeriodBuilder.make()
+        selector = self.mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
+                                                      user=testuser)
+        self.assertEqual(selector.one('#objecttableview-no-items-message').alltext_normalized,
+                         'There is no students registered for {}.'.format(
+                             periodbuilder.get_object().get_path()))
+
     def test_ordering(self):
         testuser = UserBuilder2(is_superuser=True).user
         periodbuilder = PeriodBuilder.make() \

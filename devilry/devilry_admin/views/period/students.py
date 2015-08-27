@@ -69,6 +69,14 @@ class ListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
                             queryset=UserEmail.objects.filter(is_primary=True),
                             to_attr='primary_useremail_objects'))
 
+    def get_no_items_message(self):
+        """
+        Get the message to show when there are no items.
+        """
+        return _('There is no students registered for %(what)s.') % {
+            'what': self.request.cradmin_role.get_path()
+        }
+
 
 class RemoveView(GetQuerysetForRoleMixin, delete.DeleteView):
     """
