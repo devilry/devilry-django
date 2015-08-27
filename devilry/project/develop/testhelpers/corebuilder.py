@@ -414,9 +414,9 @@ class AssignmentGroupBuilder(CoreBuilderBase):
     def make(cls, **kwargs):
         assignmentbuilder_kwargs = {}
         if 'assignment__publishing_time' in kwargs:
-            assignmentbuilder_kwargs['publishing_time'] = kwargs['assignment__publishing_time']
+            assignmentbuilder_kwargs['publishing_time'] = kwargs.pop('assignment__publishing_time')
         if 'assignment__first_deadline' in kwargs:
-            assignmentbuilder_kwargs['first_deadline'] = kwargs['assignment__first_deadline']
+            assignmentbuilder_kwargs['first_deadline'] = kwargs.pop('assignment__first_deadline')
         return AssignmentBuilder.make(**assignmentbuilder_kwargs).add_group(**kwargs)
 
 
