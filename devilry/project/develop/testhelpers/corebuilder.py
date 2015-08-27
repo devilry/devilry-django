@@ -425,7 +425,7 @@ class AssignmentGroupBuilder(CoreBuilderBase):
             if key.startswith('assignment__'):
                 assignmentbuilder_kwargs[key[len('assignment__'):]] = kwargs.pop(key)
         assignmentbuilder = AssignmentBuilder.make(**assignmentbuilder_kwargs)
-        return cls(assignment=assignmentbuilder.assignment, **kwargs)
+        return cls(parentnode=assignmentbuilder.assignment, **kwargs)
 
 
 class AssignmentBuilder(BaseNodeBuilderBase):
