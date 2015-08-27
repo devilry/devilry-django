@@ -206,6 +206,60 @@ class TestUserManager(TestCase):
         with self.assertRaises(User.DoesNotExist):
             User.objects.get_by_username(username='test@example.com')
 
+    def test_bulk_create_from_usernames_empty_input_list(self):
+        created_users, existing_usernames = User.objects.bulk_create_from_usernames([])
+        self.assertEqual(created_users.count(), 0)
+        self.assertEqual(User.objects.count(), 0)
+        self.assertEqual(UserName.objects.count(), 0)
+        self.assertEqual(set(), existing_usernames)
+
+    def test_bulk_create_from_usernames_single_new_user(self):
+        created_users, existing_usernames = User.objects.bulk_create_from_usernames(['testuser'])
+
+        self.assertEqual(created_users.count(), 1)
+        self.assertEqual(User.objects.count(), 1)
+        created_user = created_users.first()
+        self.assertEqual(created_user.shortname, 'testuser')
+
+        self.assertEqual(UserName.objects.count(), 1)
+        created_username_object = UserName.objects.first()
+        self.assertEqual(created_username_object.username, 'testuser')
+        self.assertTrue(created_username_object.is_primary)
+
+        self.assertEqual(set(), existing_usernames)
+
+    def test_bulk_create_from_usernames_multiple_new_users(self):
+        created_users, existing_usernames = User.objects.bulk_create_from_usernames(
+            ['testuser1', 'testuser2', 'testuser3'])
+
+        self.assertEqual(created_users.count(), 3)
+        self.assertEqual(User.objects.count(), 3)
+        self.assertEqual({'testuser1', 'testuser2', 'testuser3'},
+                         set(User.objects.all().values_list('shortname', flat=True)))
+
+        self.assertEqual(UserName.objects.count(), 3)
+        self.assertEqual({'testuser1', 'testuser2', 'testuser3'},
+                         set(UserName.objects.all().values_list('username', flat=True)))
+        self.assertEqual(3, UserName.objects.filter(is_primary=True).count())
+
+        self.assertEqual(set(), existing_usernames)
+
+    def test_bulk_create_from_usernames_exclude_existing(self):
+        mommy.make('devilry_account.User', shortname='testuser1')
+        mommy.make('devilry_account.UserName', username='testuser2')
+
+        created_users, existing_usernames = User.objects.bulk_create_from_usernames(
+            ['testuser1', 'testuser2', 'testuser3'])
+
+        self.assertEqual(User.objects.count(), 3)
+        self.assertEqual(created_users.count(), 1)
+        self.assertEqual(created_users.first().shortname, 'testuser3')
+
+        self.assertEqual(UserName.objects.count(), 2)  # We only have 2, since ``testuser1`` did not have a UserName
+        self.assertEqual(created_users.first().username_set.first().username, 'testuser3')
+
+        self.assertEqual({'testuser1', 'testuser2'}, existing_usernames)
+
 
 class TestUserEmail(TestCase):
     def test_email_unique(self):

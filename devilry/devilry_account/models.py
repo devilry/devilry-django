@@ -206,6 +206,56 @@ class UserManager(BaseUserManager):
         """
         return self.get_queryset().filter(username__username=username).get()
 
+    def __create_primary_username_objects_from_users(self, users):
+        """
+        Create :class:`.UserName` objects for the given iterable of
+        :class:`.User` objects.
+
+        Uses the ``shortname`` as username, and the UserName objects
+        is all marked as primary usernames.
+        """
+        new_username_objects = []
+        for user in users:
+            new_username_object = UserName(username=user.shortname, is_primary=True, user=user)
+            new_username_objects.append(new_username_object)
+        UserName.objects.bulk_create(new_username_objects)
+
+    def bulk_create_from_usernames(self, usernames):
+        """
+        Bulk create users for all the usernames
+        in the given ``usernames`` iterator.
+
+        All users is created with unusable password.
+
+        We create a :class:`.UserName` object for each of the created
+        users. This UserName object has ``is_primary`` set to ``True``.
+
+        Returns:
+            A ``(created_users, excluded_usernames)``-tuple.
+
+            ``created_users`` is a queryset with the created users.
+
+            ``excluded_username`` is a set of the usernames that already existed.
+        """
+        existing_usernames = set(UserName.objects.filter(username__in=usernames).values_list('username', flat=True))
+        existing_shortnames = set(User.objects.filter(shortname__in=usernames).values_list('shortname', flat=True))
+        existing_usernames = existing_usernames.union(existing_shortnames)
+
+        all_usernames_set = set(usernames)
+        new_usernames_set = all_usernames_set.difference(existing_usernames)
+
+        new_user_objects = []
+        for username in new_usernames_set:
+            new_user = User(shortname=username)
+            new_user.set_unusable_password()
+            new_user_objects.append(new_user)
+        User.objects.bulk_create(new_user_objects)
+        created_users = User.objects.filter(shortname__in=new_usernames_set)
+
+        self.__create_primary_username_objects_from_users(created_users)
+
+        return created_users, existing_usernames
+
 
 class User(AbstractBaseUser):
     """
