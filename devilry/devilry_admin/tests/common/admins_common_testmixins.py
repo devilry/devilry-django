@@ -73,6 +73,15 @@ class AdminsListViewTestMixin(object):
         self.assertEqual(1, selector.count(
             '#objecttableview-table tbody .devilry-admin-adminlist-remove-button'))
 
+    def test_no_admins_messages(self):
+        testuser = UserBuilder2(is_superuser=True).user
+        builder = self.builderclass.make()
+        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
+                                                      user=testuser)
+        self.assertEqual(selector.one('#objecttableview-no-items-message').alltext_normalized,
+                         'There is no administrators registered for {}.'.format(
+                             builder.get_object().get_path()))
+
     def test_ordering(self):
         testuser = UserBuilder2(is_superuser=True).user
         builder = self.builderclass.make() \
