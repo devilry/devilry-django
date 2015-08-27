@@ -1,12 +1,11 @@
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.http import Http404
-
 from django.test import TestCase, RequestFactory
 import htmls
 import mock
-from devilry.apps.core.models import RelatedExaminer
 
+from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_admin.views.period import examiners
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder, UserBuilder2
 

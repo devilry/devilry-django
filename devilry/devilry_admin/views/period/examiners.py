@@ -63,11 +63,11 @@ class ListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
         return _('Examiners')
 
     def get_queryset_for_role(self, role):
-        return super(ListView, self).get_queryset_for_role(role)\
+        return super(ListView, self).get_queryset_for_role(role) \
             .prefetch_related(
-                models.Prefetch('user__useremail_set',
-                                queryset=UserEmail.objects.filter(is_primary=True),
-                                to_attr='primary_useremail_objects'))
+            models.Prefetch('user__useremail_set',
+                            queryset=UserEmail.objects.filter(is_primary=True),
+                            to_attr='primary_useremail_objects'))
 
 
 class RemoveView(GetQuerysetForRoleMixin, delete.DeleteView):
