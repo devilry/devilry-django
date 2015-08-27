@@ -281,12 +281,12 @@ class CommentFileBuilder(CoreBuilderBase):
     object_attribute_name = 'comment_file'
 
     def __init__(self, **kwargs):
-        file = ContentFile(kwargs['filename'], kwargs['data'])
+        fileobject = ContentFile(kwargs['filename'], kwargs['data'])
         del (kwargs['data'])
-        kwargs['filesize'] = file.size
+        kwargs['filesize'] = fileobject.size
 
         self.comment_file = CommentFile.objects.create(**kwargs)
-        self.comment_file.file = file
+        self.comment_file.fileobject = fileobject
         self.comment_file.save()
 
 
@@ -302,17 +302,16 @@ class GroupCommentBuilder(CoreBuilderBase):
         return FeedbackSetBuilder \
             .quickadd_ducku_duck1010_active_assignment1_group_feedbackset(studentuser=studentuser, examiner=examiner) \
             .add_groupcomment(
-            user=studentuser,
-            user_role='student',
-            instant_publish=True,
-            visible_for_students=True,
-            text=comment if comment is not None else 'Lorem ipsum I dont know it from memory bla bla bla..',
-            published_datetime=DateTimeBuilder.now().minus(weeks=4, days=3, hours=10)
-        )
+                user=studentuser,
+                user_role='student',
+                instant_publish=True,
+                visible_for_students=True,
+                text=comment if comment is not None else 'Lorem ipsum I dont know it from memory bla bla bla..',
+                published_datetime=DateTimeBuilder.now().minus(weeks=4, days=3, hours=10))
 
     def __init__(self, **kwargs):
         kwargs['comment_type'] = 'groupcomment'
-        self.groupcomment = GroupComment.objects.create(**kwargs)
+        self.groupcomment = mommy.make('devilry_group.GroupComment', **kwargs)
 
     def add_file(self, **kwargs):
         kwargs['comment'] = self.groupcomment
@@ -320,12 +319,17 @@ class GroupCommentBuilder(CoreBuilderBase):
 
     def add_files(self, files):
         retval = []
-        for file in files:
-            retval.append(self.add_file(**file))
+        for fileobject in files:
+            retval.append(self.add_file(**fileobject))
+
+    @classmethod
+    def make(cls, **kwargs):
+        feedbacksetbuilder = FeedbackSetBuilder.make()
+        return cls(feedback_set=feedbacksetbuilder.feedback_set, **kwargs)
 
 
 class FeedbackSetBuilder(CoreBuilderBase):
-    object_attribute_name = 'feedbackset'
+    object_attribute_name = 'feedback_set'
 
     @classmethod
     def quickadd_ducku_duck1010_active_assignment1_group_feedbackset(cls, studentuser=None, examiner=None):
@@ -340,10 +344,10 @@ class FeedbackSetBuilder(CoreBuilderBase):
                               deadline_datetime=DateTimeBuilder.now().minus(weeks=4))
 
     def __init__(self, **kwargs):
-        self.feedbackset = mommy.make('devilry_group.FeedbackSet', **kwargs)
+        self.feedback_set = mommy.make('devilry_group.FeedbackSet', **kwargs)
 
     def add_groupcomment(self, files=[], **kwargs):
-        kwargs['feedback_set'] = self.feedbackset
+        kwargs['feedback_set'] = self.feedback_set
         groupcomment = GroupCommentBuilder(**kwargs)
         groupcomment.add_files(files)
         return groupcomment.groupcomment
@@ -351,7 +355,7 @@ class FeedbackSetBuilder(CoreBuilderBase):
     @classmethod
     def make(cls, **kwargs):
         groupbuilder = AssignmentGroupBuilder.make()
-        return cls(group=groupbuilder.group)
+        return cls(group=groupbuilder.group, **kwargs)
 
 
 class AssignmentGroupBuilder(CoreBuilderBase):
