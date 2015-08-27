@@ -1,0 +1,38 @@
+{% extends "django_cradmin/viewhelpers/objecttable/objecttable.django.html" %}
+{% load devilry_theme2_tags %}
+{% load i18n %}
+
+{% block content %}
+    {{ block.super }}
+
+    {% if inherited_admin_users %}
+        <div id="devilry_admin_listview_inherited_admin_users">
+            <div class="django-cradmin-page-header-outer django-cradmin-page-header-outer-secondary">
+                <div class="container">
+                    <div class="django-cradmin-page-header-inner">
+                        <h2>{% trans "Inherited administrators" %}</h2>
+                        <p>
+                            {% trans "The following administrators is inherited from higher up in the hierarchy." %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <ul class="list-unstyled">
+                    {% for inherited_admin_user in inherited_admin_users %}
+                        <li>
+                            {% devilry_user_verbose_inline inherited_admin_user %}
+                            {% if inherited_admin_user.primary_email %}
+                                <a href="mailto:{{ inherited_admin_user.primary_email }}"
+                                        class="devilry-admin-listview-inherited-admin-user-email">
+                                    ({% blocktrans trimmed with email=inherited_admin_user.primary_email %}Contact at {{ email }}{% endblocktrans %})
+                                </a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock content %}

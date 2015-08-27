@@ -59,6 +59,7 @@ class AbstractAdminsListView(GetQuerysetForRoleMixin, objecttable.ObjectTableVie
     ]
     searchfields = ['shortname', 'fullname']
     hide_column_headers = True
+    template_name = 'devilry_admin/common/admin-list-view.django.html'
 
     def get_buttons(self):
         app = self.request.cradmin_app
@@ -90,6 +91,21 @@ class AbstractAdminsListView(GetQuerysetForRoleMixin, objecttable.ObjectTableVie
             'what': self.request.cradmin_role.get_path()
         }
 
+    def __get_inherited_admin_users(self):
+        parentnode = self.request.cradmin_role.parentnode
+        if parentnode:
+            admin_user_ids = parentnode.get_all_admin_ids()
+            return get_user_model().objects\
+                .filter(id__in=admin_user_ids)\
+                .prefetch_related_primary_email()\
+                .order_by('shortname')
+        else:
+            return []
+
+    def get_context_data(self, **kwargs):
+        context = super(AbstractAdminsListView, self).get_context_data(**kwargs)
+        context['inherited_admin_users'] = list(self.__get_inherited_admin_users())
+        return context
 
 
 class AbstractRemoveAdminView(GetQuerysetForRoleMixin, delete.DeleteView):
