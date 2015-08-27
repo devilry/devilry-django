@@ -25,7 +25,7 @@ class GetQuerysetForRoleMixin(object):
             .order_by('user__shortname')
 
 
-class ExaminerInfoColumn(objecttable.MultiActionColumn):
+class InfoColumn(objecttable.MultiActionColumn):
     modelfield = 'id'
     template_name = 'devilry_admin/common/user-info-column.django.html'
 
@@ -33,26 +33,23 @@ class ExaminerInfoColumn(objecttable.MultiActionColumn):
         return _('Examiners')
 
     def get_buttons(self, obj):
-        if not self.view.request.user.is_superuser and obj.user == self.view.request.user:
-            return []
-        else:
-            return [
-                objecttable.Button(
-                    label=_('Remove'),
-                    url=self.reverse_appurl('remove', args=[obj.id]),
-                    buttonclass="btn btn-danger btn-sm devilry-relatedexaminerlist-remove-button"),
-            ]
+        return [
+            objecttable.Button(
+                label=_('Remove'),
+                url=self.reverse_appurl('remove', args=[obj.id]),
+                buttonclass="btn btn-danger btn-sm devilry-relatedexaminerlist-remove-button"),
+        ]
 
     def get_context_data(self, obj):
-        context = super(ExaminerInfoColumn, self).get_context_data(obj=obj)
+        context = super(InfoColumn, self).get_context_data(obj=obj)
         context['user'] = obj.user
         return context
 
 
-class ExaminerListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
+class ListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
     searchfields = ['user__shortname', 'user__fullname']
     hide_column_headers = True
-    columns = [ExaminerInfoColumn]
+    columns = [InfoColumn]
 
     def get_buttons(self):
         app = self.request.cradmin_app
@@ -66,20 +63,20 @@ class ExaminerListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
         return _('Examiners')
 
     def get_queryset_for_role(self, role):
-        return super(ExaminerListView, self).get_queryset_for_role(role)\
+        return super(ListView, self).get_queryset_for_role(role)\
             .prefetch_related(
                 models.Prefetch('user__useremail_set',
                                 queryset=UserEmail.objects.filter(is_primary=True),
                                 to_attr='primary_useremail_objects'))
 
 
-class RemoveExaminerView(GetQuerysetForRoleMixin, delete.DeleteView):
+class RemoveView(GetQuerysetForRoleMixin, delete.DeleteView):
     """
-    View used to remove admins from a basenode.
+    View used to remove examiners from a period.
     """
 
     def get_queryset_for_role(self, role):
-        queryset = super(RemoveExaminerView, self) \
+        queryset = super(RemoveView, self) \
             .get_queryset_for_role(role=role)
         if not self.request.user.is_superuser:
             queryset = queryset.exclude(user=self.request.user)
@@ -87,7 +84,7 @@ class RemoveExaminerView(GetQuerysetForRoleMixin, delete.DeleteView):
 
     def get_object(self, *args, **kwargs):
         if not hasattr(self, '_object'):
-            self._object = super(RemoveExaminerView, self).get_object(*args, **kwargs)
+            self._object = super(RemoveView, self).get_object(*args, **kwargs)
         return self._object
 
     def get_pagetitle(self):
@@ -117,10 +114,10 @@ class RemoveExaminerView(GetQuerysetForRoleMixin, delete.DeleteView):
 
 class UserInfoColumn(userselect_common.UserInfoColumn):
     modelfield = 'shortname'
-    select_label = _('Add as examiners')
+    select_label = _('Add as examiner')
 
 
-class ExaminerUserSelectView(userselect_common.AbstractUserSelectView):
+class UserSelectView(userselect_common.AbstractUserSelectView):
     columns = [
         UserInfoColumn,
     ]
@@ -134,11 +131,11 @@ class ExaminerUserSelectView(userselect_common.AbstractUserSelectView):
         return self.request.cradmin_app.reverse_appurl('add-user-as-examiner')
 
     def get_excluded_user_ids(self):
-        basenode = self.request.cradmin_role
-        return basenode.admins.values_list('id', flat=True)
+        period = self.request.cradmin_role
+        return period.relatedexaminer_set.values_list('user_id', flat=True)
 
 
-class AddExaminerView(BaseFormView):
+class AddView(BaseFormView):
     """
     View used to add a RelatedExaminer to a Period.
     """
@@ -188,17 +185,17 @@ class AddExaminerView(BaseFormView):
 
 class App(crapp.App):
     appurls = [
-        crapp.Url(r'^$', ExaminerListView.as_view(), name=crapp.INDEXVIEW_NAME),
+        crapp.Url(r'^$', ListView.as_view(), name=crapp.INDEXVIEW_NAME),
         crapp.Url(
             r'^remove/(?P<pk>\d+)$',
-            RemoveExaminerView.as_view(),
+            RemoveView.as_view(),
             name="remove"),
         crapp.Url(
             r'^select-user-to-add-as-examiner$',
-            ExaminerUserSelectView.as_view(),
+            UserSelectView.as_view(),
             name="select-user-to-add-as-examiner"),
         crapp.Url(
             r'^add',
-            AddExaminerView.as_view(),
+            AddView.as_view(),
             name="add-user-as-examiner"),
     ]

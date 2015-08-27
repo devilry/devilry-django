@@ -1,12 +1,17 @@
+from django.contrib import messages
+from django.contrib.auth import get_user_model
+from django.http import Http404
+
 from django.test import TestCase, RequestFactory
 import htmls
 import mock
+from devilry.apps.core.models import RelatedExaminer
 
 from devilry.devilry_admin.views.period import examiners
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder, UserBuilder2
 
 
-class TestExaminerListView(TestCase):
+class TestListView(TestCase):
     def __mock_get_request(self, role, user):
         request = RequestFactory().get('/')
         request.user = user
@@ -14,7 +19,7 @@ class TestExaminerListView(TestCase):
         request.cradmin_app = mock.MagicMock()
         request.cradmin_instance = mock.MagicMock()
         request.session = mock.MagicMock()
-        response = examiners.ExaminerListView.as_view()(request)
+        response = examiners.ListView.as_view()(request)
         return response
 
     def mock_http200_getrequest_htmls(self, role, user):
@@ -40,33 +45,6 @@ class TestExaminerListView(TestCase):
                                                       user=testuser)
         self.assertEqual(selector.one('title').alltext_normalized,
                          'Examiners')
-
-    def test_remove_not_shown_for_requesting_user(self):
-        testuser = UserBuilder2().user
-        builder = PeriodBuilder.make() \
-            .add_relatedexaminers(testuser)
-        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
-                                                      user=testuser)
-        self.assertFalse(selector.exists(
-            '#objecttableview-table tbody .devilry-relatedexaminerlist-remove-button'))
-
-    def test_remove_shown_for_requesting_user_if_superuser(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        builder = PeriodBuilder.make() \
-            .add_relatedexaminers(testuser)
-        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
-                                                      user=testuser)
-        self.assertTrue(selector.exists(
-            '#objecttableview-table tbody .devilry-relatedexaminerlist-remove-button'))
-
-    def test_remove_shown_other_than_requesting_user(self):
-        testuser = UserBuilder2().user
-        builder = PeriodBuilder.make() \
-            .add_relatedexaminers(testuser, UserBuilder2(shortname='other').user)
-        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
-                                                      user=testuser)
-        self.assertEqual(1, selector.count(
-            '#objecttableview-table tbody .devilry-relatedexaminerlist-remove-button'))
 
     def test_ordering(self):
         testuser = UserBuilder2(is_superuser=True).user
@@ -123,10 +101,199 @@ class TestExaminerListView(TestCase):
                                                       user=testuser)
         self.assertEqual(['expecteduser'], self.__get_names(selector))
 
-# class TestRemoveExaminerView(TestCase):
-#
-#
-# class TestExaminerUserSelectView(TestCase):
-#
-#
-# class TestAddExaminerView(TestCase):
+
+class TestRemoveExaminerView(TestCase):
+    def __mock_request(self, method, role, requestuser, user_to_remove,
+                       messagesmock=None):
+        request = getattr(RequestFactory(), method)('/')
+        request.user = requestuser
+        request.cradmin_role = role
+        request.cradmin_app = mock.MagicMock()
+        request.cradmin_instance = mock.MagicMock()
+        request.session = mock.MagicMock()
+        if messagesmock:
+            request._messages = messagesmock
+        else:
+            request._messages = mock.MagicMock()
+        admin_to_remove = RelatedExaminer.objects.get(user=user_to_remove)
+        response = examiners.RemoveView.as_view()(request, pk=admin_to_remove.pk)
+        return response
+
+    def __mock_http200_getrequest_htmls(self, role, requestuser, user_to_remove):
+        response = self.__mock_request(method='get',
+                                       role=role,
+                                       requestuser=requestuser,
+                                       user_to_remove=user_to_remove)
+        self.assertEqual(response.status_code, 200)
+        response.render()
+        selector = htmls.S(response.content)
+        return selector
+
+    def __mock_postrequest(self, role, requestuser, user_to_remove, messagesmock=None):
+        response = self.__mock_request(method='post',
+                                       role=role,
+                                       requestuser=requestuser,
+                                       user_to_remove=user_to_remove,
+                                       messagesmock=messagesmock)
+        return response
+
+    def test_get(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        builder = PeriodBuilder.make(short_name='testbasenode') \
+            .add_relatedexaminers(requestuser, janedoe)
+        selector = self.__mock_http200_getrequest_htmls(role=builder.get_object(),
+                                                        requestuser=requestuser,
+                                                        user_to_remove=janedoe)
+        self.assertEqual(selector.one('title').alltext_normalized,
+                         'Remove Jane Doe')
+        self.assertEqual(selector.one('#deleteview-preview').alltext_normalized,
+                         'Are you sure you want to remove Jane Doe '
+                         'as examiner for {}?'.format(builder.get_object()))
+
+    def test_post_remove_yourself_404(self):
+        requestuser = UserBuilder2().user
+        builder = PeriodBuilder.make() \
+            .add_relatedexaminers(requestuser)
+        with self.assertRaises(Http404):
+            self.__mock_postrequest(role=builder.get_object(),
+                                    requestuser=requestuser,
+                                    user_to_remove=requestuser)
+
+    def test_post_remove_yourself_superuser_ok(self):
+        requestuser = UserBuilder2(is_superuser=True).user
+        builder = PeriodBuilder.make() \
+            .add_relatedexaminers(requestuser)
+        response = self.__mock_postrequest(role=builder.get_object(),
+                                           requestuser=requestuser,
+                                           user_to_remove=requestuser)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(get_user_model().objects.filter(pk=requestuser.pk).exists())
+        self.assertFalse(builder.get_object().relatedexaminer_set.filter(pk=requestuser.pk).exists())
+
+    def test_post_remove_ok(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        builder = PeriodBuilder.make(short_name='testbasenode') \
+            .add_relatedexaminers(requestuser, janedoe)
+        messagesmock = mock.MagicMock()
+        response = self.__mock_postrequest(role=builder.get_object(),
+                                           requestuser=requestuser,
+                                           user_to_remove=janedoe,
+                                           messagesmock=messagesmock)
+        self.assertEqual(response.status_code, 302)
+        messagesmock.add.assert_called_once_with(
+            messages.SUCCESS,
+            'Jane Doe is no longer examiner for {}.'.format(builder.get_object()),
+            '')
+        self.assertTrue(get_user_model().objects.filter(pk=janedoe.pk).exists())
+        self.assertFalse(builder.get_object().relatedexaminer_set.filter(pk=janedoe.pk).exists())
+
+
+class TestUserSelectView(TestCase):
+    def __mock_get_request(self, role, user):
+        request = RequestFactory().get('/')
+        request.user = user
+        request.cradmin_role = role
+        request.cradmin_app = mock.MagicMock()
+        request.cradmin_instance = mock.MagicMock()
+        request.session = mock.MagicMock()
+        response = examiners.UserSelectView.as_view()(request)
+        return response
+
+    def mock_http200_getrequest_htmls(self, role, user):
+        response = self.__mock_get_request(role=role, user=user)
+        self.assertEqual(response.status_code, 200)
+        response.render()
+        selector = htmls.S(response.content)
+        return selector
+
+    def test_render(self):
+        testuser = UserBuilder2().user
+        builder = PeriodBuilder.make() \
+            .add_relatedexaminers(testuser)  # testuser should be excluded since it is already examiner
+        UserBuilder2(shortname='Jane Doe')
+        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
+                                                      user=testuser)
+        self.assertTrue(selector.exists(
+            '#objecttableview-table tbody .devilry-admin-userselect-select-button'))
+        self.assertEqual(
+            selector.one('#objecttableview-table tbody '
+                         '.devilry-admin-userselect-select-button').alltext_normalized,
+            'Add as examiner')
+
+
+class TestAddView(TestCase):
+    def __mock_postrequest(self, role, requestuser, data, messagesmock=None):
+        request = RequestFactory().post('/', data=data)
+        request.user = requestuser
+        request.cradmin_role = role
+        request.cradmin_app = mock.MagicMock()
+        request.cradmin_instance = mock.MagicMock()
+        request.session = mock.MagicMock()
+        if messagesmock:
+            request._messages = messagesmock
+        else:
+            request._messages = mock.MagicMock()
+        response = examiners.AddView.as_view()(request)
+        return response, request
+
+    def test_invalid_user(self):
+        requestuser = UserBuilder2().user
+        builder = PeriodBuilder.make(short_name='testbasenode') \
+            .add_relatedexaminers(requestuser)
+        response, request = self.__mock_postrequest(role=builder.get_object(),
+                                                    requestuser=requestuser,
+                                                    data={'user': 10000000001})
+        self.assertEqual(response.status_code, 302)
+        request._messages.add.assert_called_once_with(
+            messages.ERROR,
+            'Error: The user may not exist, or it may already be examiner.', '')
+        request.cradmin_app.reverse_appindexurl.assert_called_once()
+
+    def test_adds_user_to_relatedexaminers(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2().user
+        builder = PeriodBuilder.make() \
+            .add_relatedexaminers(requestuser)
+        self.assertFalse(builder.get_object().relatedexaminer_set.filter(user=janedoe).exists())
+        self.__mock_postrequest(role=builder.get_object(),
+                                requestuser=requestuser,
+                                data={'user': janedoe.id})
+        self.assertTrue(builder.get_object().relatedexaminer_set.filter(user=janedoe).exists())
+
+    def test_success_message(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        builder = PeriodBuilder.make(short_name='testbasenode') \
+            .add_relatedexaminers(requestuser)
+        response, request = self.__mock_postrequest(role=builder.get_object(),
+                                                    requestuser=requestuser,
+                                                    data={'user': janedoe.id})
+        request._messages.add.assert_called_once_with(
+            messages.SUCCESS,
+            'Jane Doe added as examiner for {}.'.format(builder.get_object()),
+            '')
+
+    def test_success_redirect_without_next(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        builder = PeriodBuilder.make(short_name='testbasenode') \
+            .add_relatedexaminers(requestuser)
+        response, request = self.__mock_postrequest(role=builder.get_object(),
+                                                    requestuser=requestuser,
+                                                    data={'user': janedoe.id})
+        self.assertEqual(response.status_code, 302)
+        request.cradmin_app.reverse_appindexurl.assert_called_once()
+
+    def test_success_redirect_with_next(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        builder = PeriodBuilder.make(short_name='testbasenode') \
+            .add_relatedexaminers(requestuser)
+        response, request = self.__mock_postrequest(role=builder.get_object(),
+                                                    requestuser=requestuser,
+                                                    data={'user': janedoe.id,
+                                                          'next': '/next'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response['location'], '/next')
