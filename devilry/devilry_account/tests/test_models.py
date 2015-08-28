@@ -3,8 +3,8 @@ from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
-from devilry.devilry_account.exceptions import IllegalOperationError
 
+from devilry.devilry_account.exceptions import IllegalOperationError
 from devilry.devilry_account.models import User, UserEmail, UserName
 
 
@@ -79,7 +79,7 @@ class TestUserQuerySet(TestCase):
                    use_for_notifications=False,
                    email='unused@example.com')
         with self.assertNumQueries(2):
-            user_with_prefetch = User.objects\
+            user_with_prefetch = User.objects \
                 .prefetch_related_notification_emails().first()
             self.assertEqual(len(user_with_prefetch.notification_useremail_objects), 2)
             self.assertTrue(isinstance(user_with_prefetch.notification_useremail_objects,
@@ -102,7 +102,7 @@ class TestUserQuerySet(TestCase):
                    user=user,
                    is_primary=None)
         with self.assertNumQueries(2):
-            user_with_prefetch = User.objects\
+            user_with_prefetch = User.objects \
                 .prefetch_related_primary_email().first()
             self.assertEqual(len(user_with_prefetch.primary_useremail_objects), 1)
             self.assertTrue(isinstance(user_with_prefetch.primary_useremail_objects, list))
@@ -126,7 +126,7 @@ class TestUserQuerySet(TestCase):
                    user=user,
                    is_primary=None)
         with self.assertNumQueries(2):
-            user_with_prefetch = User.objects\
+            user_with_prefetch = User.objects \
                 .prefetch_related_primary_username().first()
             self.assertEqual(len(user_with_prefetch.primary_username_objects), 1)
             self.assertTrue(isinstance(user_with_prefetch.primary_username_objects, list))
@@ -426,7 +426,6 @@ class TestUserEmail(TestCase):
             self.assertEqual(emailobject.email, 'newname@example.com')
             user = User.objects.get(id=user.id)
             self.assertEqual(user.shortname, 'oldname')
-
 
 
 class TestUserName(TestCase):
