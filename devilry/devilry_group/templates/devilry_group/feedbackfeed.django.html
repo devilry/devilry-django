@@ -26,9 +26,8 @@
                     <h2 class="devilry-group-feedbackfeed-current-deadline-heading">
                         {% trans "Current deadline" %}
                     </h2>
-
                     <p class="
-                        {% if current_date > last_deadline %}
+                        {% if current_date >= last_deadline %}
                             devilry-group-feedbackfeed-current-deadline-expired
                         {% else %}
                             devilry-group-feedbackfeed-current-deadline
