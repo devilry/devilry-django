@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
@@ -614,7 +614,7 @@ class UserEmail(AbstractUserIdentity):
     )
 
     def clean(self):
-        if self.is_primary == False:
+        if self.is_primary is False:
             raise ValidationError('is_primary can not be False. Valid values are: True, None.')
         if self.is_primary:
             other_useremails = UserEmail.objects.filter(user=self.user)
@@ -669,7 +669,7 @@ class UserName(AbstractUserIdentity):
         if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
             raise ValidationError('Can not create UserName objects when the '
                                   'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND is True.')
-        if self.is_primary == False:
+        if self.is_primary is False:
             raise ValidationError('is_primary can not be False. Valid values are: True, None.')
         if self.is_primary:
             other_usernames = UserName.objects.filter(user=self.user)
