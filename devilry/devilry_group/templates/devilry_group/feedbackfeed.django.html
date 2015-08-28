@@ -22,22 +22,27 @@
                 <p>{{ subject.long_name }} {{ period.long_name }}</p>
             </div>
             <div class="col-sm-5 text-right">
-                <h2 class="devilry-group-feedbackfeed-current-deadline-heading">
-                    {% trans "Current deadline" %}
-                </h2>
-                <p class="devilry-group-feedbackfeed-current-current-deadline
-                            {% if current_date >= last_feedbackset.deadline_datetime %}
-                                devilry-group-feedbackfeed-current-current-deadline-expired
-                            {% endif %}">
-                    {% if current_date >= last_feedbackset.deadline_datetime %}
-                        <span class="devilry-group-feedbackfeed-current-current-deadline-expired-label">
-                            {% trans "Expired" %} -
+                {% if last_deadline %}
+                    <h2 class="devilry-group-feedbackfeed-current-deadline-heading">
+                        {% trans "Current deadline" %}
+                    </h2>
+
+                    <p class="
+                        {% if current_date > last_deadline %}
+                            devilry-group-feedbackfeed-current-deadline-expired
+                        {% else %}
+                            devilry-group-feedbackfeed-current-deadline
+                        {% endif %}">
+                        {% if current_date >= last_deadline %}
+                            <span class="devilry-group-feedbackfeed-current-deadline-expired-label">
+                                {% trans "Expired" %} -
+                            </span>
+                        {% endif %}
+                        <span class="devilry-group-feedbackfeed-current-deadline-datetime">
+                            {{ last_deadline|date:"SHORT_DATETIME_FORMAT" }}
                         </span>
-                    {% endif %}
-                    <span class="devilry-group-feedbackfeed-current-current-deadline-datetime">
-                        {{ last_deadline|date:"SHORT_DATETIME_FORMAT" }}
-                    </span>
-                </p>
+                    </p>
+                {% endif %}
             </div>
         </div>
     </div>
