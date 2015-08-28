@@ -116,7 +116,6 @@ class TestFeedbackFeedMixin(object):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make()
-
         feedbackset_builder.add_groupcomment(
             user=janedoe,
             user_role='student',
@@ -135,7 +134,6 @@ class TestFeedbackFeedMixin(object):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make()
-
         feedbackset_builder.add_groupcomment(
             user=janedoe,
             user_role='student',
@@ -154,7 +152,6 @@ class TestFeedbackFeedMixin(object):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make()
-
         feedbackset_builder.add_groupcomment(
             user=janedoe,
             user_role='examiner',
@@ -173,7 +170,6 @@ class TestFeedbackFeedMixin(object):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make()
-
         feedbackset_builder.add_groupcomment(
             user=janedoe,
             user_role='admin',
