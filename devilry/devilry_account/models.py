@@ -279,7 +279,7 @@ class UserManager(BaseUserManager):
         users. This UserEmail object has ``is_primary`` set to ``True``.
 
         Raises:
-            devilry_account.exceptions.ConfigurationError: If the
+            devilry_account.exceptions.IllegalOperationError: If the
             ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting is ``False``.
 
         Returns:
