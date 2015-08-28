@@ -55,30 +55,37 @@ class FeedbackFeedBaseView(create.CreateView):
             return group.assignment.first_deadline, timeline
         first_feedbackset = feedbacksets[0]
         last_deadline = first_feedbackset.deadline_datetime
-        for feedbackset in feedbacksets:
-            if feedbackset.deadline_datetime not in timeline.keys():
-                timeline[feedbackset.deadline_datetime] = []
-            timeline[feedbackset.deadline_datetime].append({
+        for index, feedbackset in enumerate(feedbacksets):
+            if index == 0:
+                deadline_datetime = group.assignment.first_deadline
+            else:
+                deadline_datetime = feedbackset.deadline_datetime
+            if deadline_datetime not in timeline.keys():
+                timeline[deadline_datetime] = []
+            timeline[deadline_datetime].append({
                 "type": "deadline_expired"
             })
             if feedbackset.created_datetime not in timeline.keys():
                 timeline[feedbackset.created_datetime] = []
 
-            if feedbackset.deadline_datetime < first_feedbackset.deadline_datetime:
+            if deadline_datetime < group.assignment.first_deadline:
                 timeline[feedbackset.created_datetime].append({
                     "type": "deadline_created",
-                    "obj": first_feedbackset.deadline_datetime,
+                    "obj": group.assignment.first_deadline,
                     "user": first_feedbackset.created_by
                 })
                 first_feedbackset = feedbackset
             elif feedbackset is not feedbacksets[0]:
                 timeline[feedbackset.created_datetime].append({
                     "type": "deadline_created",
-                    "obj": feedbackset.deadline_datetime,
+                    "obj": deadline_datetime,
                     "user": feedbackset.created_by
                 })
-            if feedbackset.deadline_datetime > last_deadline:
-                last_deadline = feedbackset.deadline_datetime
+
+            if deadline_datetime is None or last_deadline is None:
+                pass
+            elif deadline_datetime > last_deadline:
+                last_deadline = deadline_datetime
 
             if feedbackset.published_datetime is not None:
                 if feedbackset.published_datetime not in timeline.keys():
@@ -90,7 +97,16 @@ class FeedbackFeedBaseView(create.CreateView):
         return last_deadline, timeline
 
     def __sort_timeline(self, timeline):
-        sorted_timeline = collections.OrderedDict(sorted(timeline.items()))
+        def compare_timeline_items(a, b):
+            datetime_a = a[0]
+            datetime_b = b[0]
+            if datetime_a is None:
+                datetime_a = datetime.datetime(1970, 1, 1)
+            if datetime_b is None:
+                datetime_b = datetime.datetime(1970, 1, 1)
+            return cmp(datetime_a, datetime_b)
+
+        sorted_timeline = collections.OrderedDict(sorted(timeline.items(), compare_timeline_items))
         return sorted_timeline
 
     def __build_timeline(self, group, feedbacksets):
