@@ -1,8 +1,10 @@
 from datetime import datetime
 from datetime import timedelta
+from django.conf import settings
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
+
 from model_mommy import mommy
 
 from devilry.apps.core.models import Node, StaticFeedbackFileAttachment
@@ -35,8 +37,11 @@ class UserBuilder(ReloadableDbBuilderInterface):
 
     Use :class:`.UserBuilder2` for new tests.
     """
+
     def __init__(self, username, full_name=None, email=None, is_superuser=False):
         email = email or u'{}@example.com'.format(username)
+        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            username = ''
         self.user = get_user_model().objects.create_user(
             username=username,
             email=email,
@@ -61,6 +66,7 @@ class UserBuilder2(ReloadableDbBuilderInterface):
 
     Use this insted of :class:`.UserBuilder` for new tests.
     """
+
     def __init__(self, **kwargs):
         self.user = mommy.make_recipe('devilry.devilry_account.user', **kwargs)
         self.user.save()
@@ -300,12 +306,12 @@ class GroupCommentBuilder(CoreBuilderBase):
         return FeedbackSetBuilder \
             .quickadd_ducku_duck1010_active_assignment1_group_feedbackset(studentuser=studentuser, examiner=examiner) \
             .add_groupcomment(
-                user=studentuser,
-                user_role='student',
-                instant_publish=True,
-                visible_for_students=True,
-                text=comment if comment is not None else 'Lorem ipsum I dont know it from memory bla bla bla..',
-                published_datetime=DateTimeBuilder.now().minus(weeks=4, days=3, hours=10))
+            user=studentuser,
+            user_role='student',
+            instant_publish=True,
+            visible_for_students=True,
+            text=comment if comment is not None else 'Lorem ipsum I dont know it from memory bla bla bla..',
+            published_datetime=DateTimeBuilder.now().minus(weeks=4, days=3, hours=10))
 
     def __init__(self, **kwargs):
         kwargs['comment_type'] = 'groupcomment'
