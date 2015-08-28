@@ -172,6 +172,9 @@ class UserManager(BaseUserManager):
         Other than that, you can provide any :class:`.User` fields except
         ``shortname``. ``shortname`` is created from username or email (in that order).
         """
+        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND and username:
+            raise IllegalOperationError('Can not create user with username when the '
+                                        'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND-setting is True')
         shortname = username or email
         user = self.model(shortname=shortname, **kwargs)
         if password:

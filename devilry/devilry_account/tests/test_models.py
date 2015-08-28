@@ -140,11 +140,17 @@ class TestUserQuerySet(TestCase):
 
 class TestUserManager(TestCase):
     def test_create_user_username(self):
-        user = User.objects.create_user(username='testuser')
-        self.assertEqual(user.shortname, 'testuser')
-        self.assertEqual(user.username_set.count(), 1)
-        self.assertEqual(user.username_set.first().username, 'testuser')
-        self.assertEqual(user.useremail_set.count(), 0)
+        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+            user = User.objects.create_user(username='testuser')
+            self.assertEqual(user.shortname, 'testuser')
+            self.assertEqual(user.username_set.count(), 1)
+            self.assertEqual(user.username_set.first().username, 'testuser')
+            self.assertEqual(user.useremail_set.count(), 0)
+
+    def test_create_user_username_fails_with_email_auth_backend(self):
+        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+            with self.assertRaises(IllegalOperationError):
+                User.objects.create_user(username='testuser')
 
     def test_create_user_email(self):
         user = User.objects.create_user(email='testuser@example.com')
