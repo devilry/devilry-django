@@ -1,4 +1,0 @@
-from assignment import AssignmentExtjsModelMeta
-from assignment_group import AssignmentGroupExtjsModelMeta
-from deadline import DeadlineExtjsModelMeta
-from delivery import DeliveryExtjsModelMeta
