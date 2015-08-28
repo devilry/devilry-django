@@ -660,6 +660,9 @@ class UserName(AbstractUserIdentity):
     )
 
     def clean(self):
+        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            raise ValidationError('Can not create UserName objects when the '
+                                  'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND is True.')
         if self.is_primary == False:
             raise ValidationError('is_primary can not be False. Valid values are: True, None.')
         if self.is_primary:
