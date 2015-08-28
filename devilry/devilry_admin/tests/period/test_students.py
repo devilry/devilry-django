@@ -58,8 +58,8 @@ class TestListView(TestCase):
         testuser = UserBuilder2(is_superuser=True).user
         periodbuilder = PeriodBuilder.make() \
             .add_relatedstudents(UserBuilder2(shortname='userb').user,
-                                  UserBuilder2(shortname='usera').user,
-                                  UserBuilder2(shortname='userc').user)
+                                 UserBuilder2(shortname='usera').user,
+                                 UserBuilder2(shortname='userc').user)
         selector = self.mock_http200_getrequest_htmls(role=periodbuilder.get_object(),
                                                       user=testuser)
         self.assertEqual(['usera', 'userb', 'userc'], self.__get_shortnames(selector))
