@@ -249,6 +249,9 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
 
 
 class RelatedExaminerManager(AbstractRelatedUserManager):
+    """
+    Manager for :class:`.RelatedExaminer`.
+    """
     use_for_related_fields = True
 
 
@@ -260,6 +263,13 @@ class RelatedExaminer(RelatedUserBase):
     objects = RelatedExaminerManager()
 
 
+class RelatedStudentManager(AbstractRelatedUserManager):
+    """
+    Manager for :class:`.RelatedStudent`.
+    """
+    use_for_related_fields = True
+
+
 class RelatedStudent(RelatedUserBase):
     """ Related student.
 
@@ -269,6 +279,7 @@ class RelatedStudent(RelatedUserBase):
         a semester, this field can be set to simplify setting candidate IDs on
         each assignment.
     """
+    objects = RelatedStudentManager()
     candidate_id = models.CharField(max_length=30, blank=True, null=True,
                                     help_text="If a candidate has the same Candidate ID for all or many assignments "
                                               "in a semester, this field can be set to simplify setting candidate IDs "
