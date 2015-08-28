@@ -1,14 +1,17 @@
 import random
+from django.conf import settings
+
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
+
 from django.contrib.webdesign import lorem_ipsum
 
 from devilry.apps.core.models import StaticFeedback, Deadline
 from devilry.apps.core.models import RelatedStudent
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_markup.parse_markdown import markdown_full
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder, FeedbackSetBuilder
+from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder
 from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
 
 bad_students = [
@@ -110,26 +113,75 @@ comment_files = [
 ]
 
 comment_texts = [
-    u"Noooooo! Dr. Zoidberg, that doesn't make sense. But, okay! That's right, baby. I ain't your loverboy Flexo, the guy you love so much. You even love anyone pretending to be him! Now that the, uh, garbage ball is in space, Doctor, perhaps you can help me with my sexual inhibitions? No! The cat shelter's on to me. Eeeee! Now say 'nuclear wessels'!",
-    u"But I know you in the future. I cleaned your poop. Say it in Russian! I don't know what you did, Fry, but once again, you screwed up! Now all the planets are gonna start cracking wise about our mamas. Aww, it's true. I've been hiding it for so long. Check it out, y'all. Everyone who was invited is here. Does anybody else feel jealous and aroused and worried?",
-    u"I had more, but you go ahead. Now Fry, it's been a few years since medical school, so remind me. Disemboweling in your species: fatal or non-fatal? It's just like the story of the grasshopper and the octopus. All year long, the grasshopper kept burying acorns for winter, while the octopus mooched off his girlfriend and watched TV. But then the winter came, and the grasshopper died, and the octopus ate all his acorns. Also he got a race car. Is any of this getting through to you? We're rescuing ya. I'm sorry, guys. I never meant to hurt you. Just to destroy everything you ever believed in. Good news, everyone! There's a report on TV with some very bad news!",
-    u"Is today's hectic lifestyle making you tense and impatient? And so we say goodbye to our beloved pet, Nibbler, who's gone to a place where I, too, hope one day to go. The toilet. All I want is to be a monkey of moderate intelligence who wears a suit... that's why I'm transferring to business school! Can we have Bender Burgers again? Wow! A superpowers drug you can just rub onto your skin? You'd think it would be something you'd have to freebase. Have you ever tried just turning off the TV, sitting down with your children, and hitting them?",
-    u"You lived before you met me?! For one beautiful night I knew what it was like to be a grandmother. Subjugated, yet honored. Is today's hectic lifestyle making you tense and impatient? Good news, everyone! I've taught the toaster to feel love! Bender, you risked your life to save me! Shut up and get to the point!",
-    u"Maybe I love you so much I love you no matter who you are pretending to be. When I was first asked to make a film about my nephew, Hubert Farnsworth, I thought 'Why should I?' Then later, Leela made the film. But if I did make it, you can bet there would have been more topless women on motorcycles. Roll film! Oh right. I forgot about the battle. THE BIG BRAIN AM WINNING AGAIN! I AM THE GREETEST! NOW I AM LEAVING EARTH, FOR NO RAISEN!",
-    u"Is today's hectic lifestyle making you tense and impatient? Hey! I'm a porno-dealing monster, what do I care what you think? For the last time, I don't like lilacs! Your 'first' wife was the one who liked lilacs! Really?! Ah, yes! John Quincy Adding Machine. He struck a chord with the voters when he pledged not to go on a killing spree.",
-    u"Alright, let's mafia things up a bit. Joey, burn down the ship. Clamps, burn down the crew. Maybe I love you so much I love you no matter who you are pretending to be. Your best is an idiot! Well, thanks to the Internet, I'm now bored with sex. Is there a place on the web that panders to my lust for violence?",
-    u"Oh right. I forgot about the battle. And when we woke up, we had these bodies. Yep, I remember. They came in last at the Olympics, then retired to promote alcoholic beverages!",
-    u"Well, then good news! It's a suppository. Oh, how awful. Did he at least die painlessly? ...To shreds, you say. Well, how is his wife holding up? ...To shreds, you say. And when we woke up, we had these bodies. Actually, that's still true. And yet you haven't said what I told you to say! How can any of us trust you?",
-    u"Nay, I respect and admire Harold Zoid too much to beat him to death with his own Oscar. I had more, but you go ahead. Hey, whatcha watching?",
-    u"So I really am important? How I feel when I'm drunk is correct? Check it out, y'all. Everyone who was invited is here. I'm Santa Claus! Spare me your space age technobabble, Attila the Hun! So, how 'bout them Knicks?",
-    u"No! The kind with looting and maybe starting a few fires! Why not indeed! Kids don't turn rotten just from watching TV.",
-    u"Meh. Say it in Russian! THE BIG BRAIN AM WINNING AGAIN! I AM THE GREETEST! NOW I AM LEAVING EARTH, FOR NO RAISEN! Bender, being God isn't easy. If you do too much, people get dependent on you, and if you do nothing, they lose hope. You have to use a light touch. Like a safecracker, or a pickpocket. Is that a cooking show?",
-    u"It's toe-tappingly tragic! Come, Comrade Bender! We must take to the streets! Hi, I'm a naughty nurse, and I really need someone to talk to. $9.95 a minute. Bender, you risked your life to save me! I videotape every customer that comes in here, so that I may blackmail them later. Actually, that's still true.",
-    u"You guys aren't Santa! You're not even robots. How dare you lie in front of Jesus? Shut up and get to the point! You're going back for the Countess, aren't you? Meh.",
-    u"With a warning label this big, you know they gotta be fun! When I was first asked to make a film about my nephew, Hubert Farnsworth, I thought 'Why should I?' Then later, Leela made the film. But if I did make it, you can bet there would have been more topless women on motorcycles. Roll film! You are the last hope of the universe. I suppose I could part with 'one' and still be feared... I wish! It's a nickel.",
-    u"And yet you haven't said what I told you to say! How can any of us trust you? The key to victory is discipline, and that means a well made bed. You will practice until you can make your bed in your sleep. There, now he's trapped in a book I wrote: a crummy world of plot holes and spelling errors! Morbo can't understand his teleprompter because he forgot how you say that letter that's shaped like a man wearing a hat.",
-    u"Um, is this the boring, peaceful kind of taking to the streets? Man, I'm sore all over. I feel like I just went ten rounds with mighty Thor. Bender! Ship! Stop bickering or I'm going to come back there and change your opinions manually!",
-    u"And so we say goodbye to our beloved pet, Nibbler, who's gone to a place where I, too, hope one day to go. The toilet. Hey, you add a one and two zeros to that or we walk! But existing is basically all I do! You can crush me but you can't crush my spirit!"
+    u"Noooooo! Dr. Zoidberg, that doesn't make sense. But, okay! That's right, baby. I ain't your loverboy Flexo, the "
+    u"guy you love so much. You even love anyone pretending to be him! Now that the, uh, garbage ball is in space, "
+    u"Doctor, perhaps you can help me with my sexual inhibitions? No! The cat shelter's on to me. Eeeee! Now say "
+    u"'nuclear wessels'!",
+    u"But I know you in the future. I cleaned your poop. Say it in Russian! I don't know what you did, Fry, but once "
+    u"again, you screwed up! Now all the planets are gonna start cracking wise about our mamas. Aww, it's true. I've "
+    u"been hiding it for so long. Check it out, y'all. Everyone who was invited is here. Does anybody else feel "
+    u"jealous and aroused and worried?",
+    u"I had more, but you go ahead. Now Fry, it's been a few years since medical school, so remind me. Disemboweling "
+    u"in your species: fatal or non-fatal? It's just like the story of the grasshopper and the octopus. All year long, "
+    u"the grasshopper kept burying acorns for winter, while the octopus mooched off his girlfriend and watched TV. "
+    u"But then the winter came, and the grasshopper died, and the octopus ate all his acorns. Also he got a race car. "
+    u"Is any of this getting through to you? We're rescuing ya. I'm sorry, guys. I never meant to hurt you. Just to "
+    u"destroy everything you ever believed in. Good news, everyone! There's a report on TV with some very bad news!",
+    u"Is today's hectic lifestyle making you tense and impatient? And so we say goodbye to our beloved pet, Nibbler, "
+    u"who's gone to a place where I, too, hope one day to go. The toilet. All I want is to be a monkey of moderate "
+    u"intelligence who wears a suit... that's why I'm transferring to business school! Can we have Bender "
+    u"Burgers again? Wow! A superpowers drug you can just rub onto your skin? You'd think it would be something you'd "
+    u"have to freebase. Have you ever tried just turning off the TV, sitting down with your children, "
+    u"and hitting them?",
+    u"You lived before you met me?! For one beautiful night I knew what it was like to be a grandmother. Subjugated, "
+    u"yet honored. Is today's hectic lifestyle making you tense and impatient? Good news, everyone! I've taught the "
+    u"toaster to feel love! Bender, you risked your life to save me! Shut up and get to the point!",
+    u"Maybe I love you so much I love you no matter who you are pretending to be. When I was first asked to make a "
+    u"film about my nephew, Hubert Farnsworth, I thought 'Why should I?' Then later, Leela made the film. But if I "
+    u"did make it, you can bet there would have been more topless women on motorcycles. Roll film! Oh right. "
+    u"I forgot about the battle. THE BIG BRAIN AM WINNING AGAIN! I AM THE GREETEST! NOW I AM LEAVING EARTH, "
+    u"FOR NO RAISEN!",
+    u"Is today's hectic lifestyle making you tense and impatient? Hey! I'm a porno-dealing monster, what do "
+    u"I care what you think? For the last time, I don't like lilacs! Your 'first' wife was the one who liked "
+    u"lilacs! Really?! Ah, yes! John Quincy Adding Machine. He struck a chord with the voters when he pledged not to "
+    u"go on a killing spree.",
+    u"Alright, let's mafia things up a bit. Joey, burn down the ship. Clamps, burn down the crew. Maybe I love "
+    u"you so much I love you no matter who you are pretending to be. Your best is an idiot! Well, thanks to the "
+    u"Internet, I'm now bored with sex. Is there a place on the web that panders to my lust for violence?",
+    u"Oh right. I forgot about the battle. And when we woke up, we had these bodies. Yep, I remember. They came "
+    u"in last at the Olympics, then retired to promote alcoholic beverages!",
+    u"Well, then good news! It's a suppository. Oh, how awful. Did he at least die painlessly? ...To shreds, you "
+    u"say. Well, how is his wife holding up? ...To shreds, you say. And when we woke up, we had these bodies. "
+    u"Actually, that's still true. And yet you haven't said what I told you to say! How can any of us trust you?",
+    u"Nay, I respect and admire Harold Zoid too much to beat him to death with his own Oscar. I had more, but "
+    u"you go ahead. Hey, whatcha watching?",
+    u"So I really am important? How I feel when I'm drunk is correct? Check it out, y'all. Everyone who was invited "
+    u"is here. I'm Santa Claus! Spare me your space age technobabble, Attila the Hun! So, how 'bout them Knicks?",
+    u"No! The kind with looting and maybe starting a few fires! Why not indeed! Kids don't turn rotten just from "
+    u"watching TV.",
+    u"Meh. Say it in Russian! THE BIG BRAIN AM WINNING AGAIN! I AM THE GREETEST! NOW I AM LEAVING EARTH, "
+    u"FOR NO RAISEN! Bender, being God isn't easy. If you do too much, people get dependent on you, and if "
+    u"you do nothing, they lose hope. You have to use a light touch. Like a safecracker, or a pickpocket. Is "
+    u"that a cooking show?",
+    u"It's toe-tappingly tragic! Come, Comrade Bender! We must take to the streets! Hi, I'm a naughty nurse, "
+    u"and I really need someone to talk to. $9.95 a minute. Bender, you risked your life to save me! I videotape "
+    u"every customer that comes in here, so that I may blackmail them later. Actually, that's still true.",
+    u"You guys aren't Santa! You're not even robots. How dare you lie in front of Jesus? Shut up and get to the "
+    u"point! You're going back for the Countess, aren't you? Meh.",
+    u"With a warning label this big, you know they gotta be fun! When I was first asked to make a film about my "
+    u"nephew, Hubert Farnsworth, I thought 'Why should I?' Then later, Leela made the film. But if I did make it, "
+    u"you can bet there would have been more topless women on motorcycles. Roll film! You are the last hope of the "
+    u"universe. I suppose I could part with 'one' and still be feared... I wish! It's a nickel.",
+    u"And yet you haven't said what I told you to say! How can any of us trust you? The key to victory is discipline, "
+    u"and that means a well made bed. You will practice until you can make your bed in your sleep. There, now he's "
+    u"trapped in a book I wrote: a crummy world of plot holes and spelling errors! Morbo can't understand his "
+    u"teleprompter because he forgot how you say that letter that's shaped like a man wearing a hat.",
+    u"Um, is this the boring, peaceful kind of taking to the streets? Man, I'm sore all over. I feel like I just "
+    u"went ten rounds with mighty Thor. Bender! Ship! Stop bickering or I'm going to come back there and change "
+    u"your opinions manually!",
+    u"And so we say goodbye to our beloved pet, Nibbler, who's gone to a place where I, too, hope one day to go. "
+    u"The toilet. Hey, you add a one and two zeros to that or we walk! But existing is basically all I do! "
+    u"You can crush me but you can't crush my spirit!"
 ]
 
 
@@ -170,7 +222,11 @@ class Command(BaseCommand):
         try:
             return UserBuilder(username, full_name=full_name).user
         except ValidationError:
-            return get_user_model().objects.get(shortname=username)
+            if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+                shortname = '{}@example.com'.format(username)
+            else:
+                shortname = username
+            return get_user_model().objects.get(shortname=shortname)
 
     def build_random_pointassignmentdata(self,
                                          periodbuilder, weeks_ago, short_name, long_name,
@@ -194,7 +250,8 @@ class Command(BaseCommand):
             def create_old_delivery_structure():
                 deadlinebuilder = groupbuilder \
                     .add_deadline(
-                    deadline=Deadline.reduce_datetime_precision(assignmentbuilder.assignment.first_deadline))
+                        deadline=Deadline.reduce_datetime_precision(
+                            assignmentbuilder.assignment.first_deadline))
 
                 deliverybuilder = deadlinebuilder.add_delivery_x_hours_before_deadline(
                     hours=random.randint(1, 30))
@@ -359,27 +416,27 @@ class Command(BaseCommand):
             ])
 
         for periodbuilder, weekoffset in [
-            (oldtestsemester, 52),
-            (testsemester, 0)]:
-            week1 = self.build_random_pointassignmentdata(
+                (oldtestsemester, 52),
+                (testsemester, 0)]:
+            self.build_random_pointassignmentdata(
                 periodbuilder=periodbuilder,
                 weeks_ago=weekoffset + 6, filecount=4,
                 short_name='week1', long_name='Week 1')
-            week2 = self.build_random_pointassignmentdata(
+            self.build_random_pointassignmentdata(
                 periodbuilder=periodbuilder,
                 weeks_ago=weekoffset + 5, filecount=2,
                 short_name='week2', long_name='Week 2')
-            week3 = self.build_random_pointassignmentdata(
+            self.build_random_pointassignmentdata(
                 periodbuilder=periodbuilder,
                 weeks_ago=weekoffset + 4, filecount=4,
                 short_name='week3', long_name='Week 3')
-            week4 = self.build_random_pointassignmentdata(
+            self.build_random_pointassignmentdata(
                 periodbuilder=periodbuilder,
                 weeks_ago=weekoffset + 3, filecount=8,
                 short_name='week4', long_name='Week 4')
 
             if weekoffset == 0:
-                week5 = self.build_random_pointassignmentdata(
+                self.build_random_pointassignmentdata(
                     periodbuilder=periodbuilder,
                     weeks_ago=weekoffset + 1, filecount=6,
                     short_name='week5', long_name='Week 5',
@@ -398,17 +455,17 @@ class Command(BaseCommand):
                         .add_group(students=[user], examiners=[examiner]) \
                         .add_deadline(deadline=Deadline.reduce_datetime_precision(DateTimeBuilder.now().plus(days=7)))
             else:
-                week5 = self.build_random_pointassignmentdata(
+                self.build_random_pointassignmentdata(
                     periodbuilder=periodbuilder,
                     weeks_ago=weekoffset + 1, filecount=1,
                     short_name='week5', long_name='Week 5')
-                week6 = self.build_random_pointassignmentdata(
+                self.build_random_pointassignmentdata(
                     periodbuilder=periodbuilder,
                     weeks_ago=weekoffset, filecount=2,
                     short_name='week6', long_name='Week 6')
 
     def create_feedbackset_complete(self):
-        # Create a finished feedbackset for a specified user on a new subject
+        # Create a finished feedback_set for a specified user on a new subject
         # and a new assingment in the current period
         student = UserBuilder('psylocke', full_name='Elisabeth Braddock').user
         examiner = UserBuilder('magneto', full_name='Erik Lehnsherr').user
@@ -442,7 +499,7 @@ class Command(BaseCommand):
             deadline_datetime=DateTimeBuilder.now().minus(weeks=2, days=1)
         )
 
-        # Event summary for feedbackset 1
+        # Event summary for feedback_set 1
         feedbacksetbuilder1.add_groupcomment(
             user=student,
             user_role='student',
@@ -457,7 +514,8 @@ class Command(BaseCommand):
             user_role='examiner',
             instant_publish=True,
             visible_for_students=True,
-            text="No no no, you're here to learn how to get domination using information technology. Later you will learn to use automate your abilities by programming them.",
+            text="No no no, you're here to learn how to get domination using information "
+                 "technology. Later you will learn to use automate your abilities by programming them.",
             published_datetime=DateTimeBuilder.now().minus(weeks=2, days=2)
         )
 
@@ -487,8 +545,9 @@ class Command(BaseCommand):
             user_role='examiner',
             instant_publish=True,
             visible_for_students=True,
-            text="You failed miserably! Try to actually understand the problem. Printing 'hello world, I own you now' everywhere won't get you anywhere!",
-            published_datetime=feedbacksetbuilder1.feedbackset.published_datetime
+            text="You failed miserably! Try to actually understand the problem. Printing 'hello world, I own you now' "
+                 "everywhere won't get you anywhere!",
+            published_datetime=feedbacksetbuilder1.feedback_set.published_datetime
             # DateTimeBuilder.now().minus(weeks=1, days=5, hours=1)
         )
 
@@ -510,9 +569,7 @@ class Command(BaseCommand):
             published_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=22)
         )
 
-
-
-        # Event summary for feedbackset 2
+        # Event summary for feedback_set 2
         feedbacksetbuilder2 = assignmentgroupbuilder.add_feedback_set(
             points=10,
             published_by=examiner,
@@ -565,8 +622,9 @@ class Command(BaseCommand):
             user_role='examiner',
             instant_publish=True,
             visible_for_students=True,
-            text="Great job! You must be the most evil mutant I have ever met! Keep going like this, and you'll own the entire planet in no time!",
-            published_datetime=feedbacksetbuilder2.feedbackset.published_datetime
+            text="Great job! You must be the most evil mutant I have ever met! Keep going like this, "
+                 "and you'll own the entire planet in no time!",
+            published_datetime=feedbacksetbuilder2.feedback_set.published_datetime
             # DateTimeBuilder.now().minus(weeks=0, days=3)
         )
 
