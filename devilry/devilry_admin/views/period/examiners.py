@@ -147,7 +147,7 @@ class UserSelectView(userselect_common.AbstractUserSelectView):
         return period.relatedexaminer_set.values_list('user_id', flat=True)
 
     def get_no_searchresults_message_template_name(self):
-        return 'devilry_admin/period/examiner/userselectview-no-searchresults-message.django.html'
+        return 'devilry_admin/period/examiners/userselectview-no-searchresults-message.django.html'
 
 
 class AddView(BaseFormView):
@@ -208,7 +208,7 @@ class BulkImportView(bulkimport_users_common.AbstractTypeInUsersView):
         period = self.request.cradmin_role
         result = RelatedExaminer.objects.bulk_create_from_emails(period=period, emails=emails)
         if result.new_relatedusers_was_created():
-            messages.success(self.request, _('Added %(count)s new examiners for %(period)s.') % {
+            messages.success(self.request, _('Added %(count)s new examiners to %(period)s.') % {
                 'count': result.created_relatedusers_queryset.count(),
                 'period': period.get_path()
             })
@@ -216,7 +216,7 @@ class BulkImportView(bulkimport_users_common.AbstractTypeInUsersView):
             messages.warning(self.request, _('No new examiners was added.'))
 
         if result.existing_relateduser_emails_set:
-            messages.info(self.request, _('%(count)s users was already examiner for %(period)s.') % {
+            messages.info(self.request, _('%(count)s users was already examiner on %(period)s.') % {
                 'count': len(result.existing_relateduser_emails_set),
                 'period': period.get_path()
             })
@@ -225,7 +225,7 @@ class BulkImportView(bulkimport_users_common.AbstractTypeInUsersView):
         period = self.request.cradmin_role
         result = RelatedExaminer.objects.bulk_create_from_usernames(period=period, usernames=usernames)
         if result.new_relatedusers_was_created():
-            messages.success(self.request, _('Added %(count)s new examiners for %(period)s.') % {
+            messages.success(self.request, _('Added %(count)s new examiners to %(period)s.') % {
                 'count': result.created_relatedusers_queryset.count(),
                 'period': period.get_path()
             })
@@ -233,7 +233,7 @@ class BulkImportView(bulkimport_users_common.AbstractTypeInUsersView):
             messages.warning(self.request, _('No new examiners was added.'))
 
         if result.existing_relateduser_usernames_set:
-            messages.info(self.request, _('%(count)s users was already examiner for %(period)s.') % {
+            messages.info(self.request, _('%(count)s users was already examiner on %(period)s.') % {
                 'count': len(result.existing_relateduser_usernames_set),
                 'period': period.get_path()
             })

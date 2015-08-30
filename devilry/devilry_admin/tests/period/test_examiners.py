@@ -351,7 +351,7 @@ class TestBulkImportView(TestCase, AbstractTypeInUsersViewTestMixin):
             )
             messagesmock.add.assert_any_call(
                 messages.SUCCESS,
-                'Added 2 new examiners for {}.'.format(testperiod.get_path()),
+                'Added 2 new examiners to {}.'.format(testperiod.get_path()),
                 '')
 
     def test_post_valid_with_email_backend_none_added_message(self):
@@ -389,7 +389,7 @@ class TestBulkImportView(TestCase, AbstractTypeInUsersViewTestMixin):
             )
             messagesmock.add.assert_called_with(
                 messages.INFO,
-                '1 users was already examiner for {}.'.format(testperiod.get_path()),
+                '1 users was already examiner on {}.'.format(testperiod.get_path()),
                 '')
 
     def test_post_valid_with_username_backend_creates_relatedusers(self):
@@ -419,7 +419,7 @@ class TestBulkImportView(TestCase, AbstractTypeInUsersViewTestMixin):
             )
             messagesmock.add.assert_any_call(
                 messages.SUCCESS,
-                'Added 2 new examiners for {}.'.format(testperiod.get_path()),
+                'Added 2 new examiners to {}.'.format(testperiod.get_path()),
                 '')
 
     def test_post_valid_with_username_backend_none_added_message(self):
@@ -457,5 +457,5 @@ class TestBulkImportView(TestCase, AbstractTypeInUsersViewTestMixin):
             )
             messagesmock.add.assert_any_call(
                 messages.INFO,
-                '1 users was already examiner for {}.'.format(testperiod.get_path()),
+                '1 users was already examiner on {}.'.format(testperiod.get_path()),
                 '')
