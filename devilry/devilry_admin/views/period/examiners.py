@@ -146,6 +146,9 @@ class UserSelectView(userselect_common.AbstractUserSelectView):
         period = self.request.cradmin_role
         return period.relatedexaminer_set.values_list('user_id', flat=True)
 
+    def get_no_searchresults_message_template_name(self):
+        return 'devilry_admin/period/examiner/userselectview-no-searchresults-message.django.html'
+
 
 class AddView(BaseFormView):
     """
