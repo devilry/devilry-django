@@ -4,8 +4,10 @@ from django.http import Http404
 from django.test import TestCase, RequestFactory
 import htmls
 import mock
+from model_mommy import mommy
 
 from devilry.apps.core.models import RelatedExaminer
+from devilry.devilry_admin.tests.common.test_bulkimport_users_common import AbstractTypeInUsersViewTestMixin
 from devilry.devilry_admin.views.period import examiners
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder, UserBuilder2
 
@@ -317,3 +319,143 @@ class TestAddView(TestCase):
                                                           'next': '/next'})
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response['location'], '/next')
+
+
+class TestBulkImportView(TestCase, AbstractTypeInUsersViewTestMixin):
+    viewclass = examiners.BulkImportView
+
+    def test_post_valid_with_email_backend_creates_relatedusers(self):
+        testperiod = mommy.make('core.Period')
+        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+            self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                requestkwargs=dict(data={
+                    'users_blob': 'test1@example.com\ntest2@example.com'
+                })
+            )
+            self.assertEqual(2, RelatedExaminer.objects.count())
+            self.assertEqual({'test1@example.com', 'test2@example.com'},
+                             {relatedexaminer.user.shortname
+                              for relatedexaminer in RelatedExaminer.objects.all()})
+
+    def test_post_valid_with_email_backend_added_message(self):
+        testperiod = mommy.make('core.Period')
+        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+            messagesmock = mock.MagicMock()
+            self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                messagesmock=messagesmock,
+                requestkwargs=dict(data={
+                    'users_blob': 'test1@example.com\ntest2@example.com'
+                })
+            )
+            messagesmock.add.assert_any_call(
+                messages.SUCCESS,
+                'Added 2 new examiners for {}.'.format(testperiod.get_path()),
+                '')
+
+    def test_post_valid_with_email_backend_none_added_message(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedExaminer',
+                   period=testperiod,
+                   user=UserBuilder2().add_emails('test@example.com').user)
+        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+            messagesmock = mock.MagicMock()
+            self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                messagesmock=messagesmock,
+                requestkwargs=dict(data={
+                    'users_blob': 'test@example.com'
+                })
+            )
+            messagesmock.add.assert_any_call(
+                messages.WARNING,
+                'No new examiners was added.',
+                '')
+
+    def test_post_valid_with_email_backend_existing_message(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedExaminer',
+                   period=testperiod,
+                   user=UserBuilder2().add_emails('test@example.com').user)
+        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=True):
+            messagesmock = mock.MagicMock()
+            self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                messagesmock=messagesmock,
+                requestkwargs=dict(data={
+                    'users_blob': 'test@example.com'
+                })
+            )
+            messagesmock.add.assert_called_with(
+                messages.INFO,
+                '1 users was already examiner for {}.'.format(testperiod.get_path()),
+                '')
+
+    def test_post_valid_with_username_backend_creates_relatedusers(self):
+        testperiod = mommy.make('core.Period')
+        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+            self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                requestkwargs=dict(data={
+                    'users_blob': 'test1\ntest2'
+                })
+            )
+            self.assertEqual(2, RelatedExaminer.objects.count())
+            self.assertEqual({'test1', 'test2'},
+                             {relatedexaminer.user.shortname
+                              for relatedexaminer in RelatedExaminer.objects.all()})
+
+    def test_post_valid_with_username_backend_added_message(self):
+        testperiod = mommy.make('core.Period')
+        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+            messagesmock = mock.MagicMock()
+            self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                messagesmock=messagesmock,
+                requestkwargs=dict(data={
+                    'users_blob': 'test1\ntest2'
+                })
+            )
+            messagesmock.add.assert_any_call(
+                messages.SUCCESS,
+                'Added 2 new examiners for {}.'.format(testperiod.get_path()),
+                '')
+
+    def test_post_valid_with_username_backend_none_added_message(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedExaminer',
+                   period=testperiod,
+                   user=UserBuilder2().add_usernames('test').user)
+        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+            messagesmock = mock.MagicMock()
+            self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                messagesmock=messagesmock,
+                requestkwargs=dict(data={
+                    'users_blob': 'test'
+                })
+            )
+            messagesmock.add.assert_any_call(
+                messages.WARNING,
+                'No new examiners was added.',
+                '')
+
+    def test_post_valid_with_username_backend_existing_message(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedExaminer',
+                   period=testperiod,
+                   user=UserBuilder2().add_usernames('test').user)
+        with self.settings(DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND=False):
+            messagesmock = mock.MagicMock()
+            self.mock_http302_postrequest(
+                cradmin_role=testperiod,
+                messagesmock=messagesmock,
+                requestkwargs=dict(data={
+                    'users_blob': 'test'
+                })
+            )
+            messagesmock.add.assert_any_call(
+                messages.INFO,
+                '1 users was already examiner for {}.'.format(testperiod.get_path()),
+                '')

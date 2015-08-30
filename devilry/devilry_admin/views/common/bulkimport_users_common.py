@@ -5,6 +5,7 @@ from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.http import HttpResponseRedirect
 from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import formbase
 from django.utils.translation import ugettext_lazy as _
@@ -76,12 +77,13 @@ class AbstractTypeInUsersView(formbase.FormView):
                 for username in usernames:
                     if not valid_username_pattern.match(username):
                         invalid_usernames.append(username)
-                self.add_error(
-                    'users_blob',
-                    _('Invalid usernames: %(usernames)s') % {
-                        'usernames': ', '.join(sorted(invalid_usernames))
-                    }
-                )
+                if invalid_usernames:
+                    self.add_error(
+                        'users_blob',
+                        _('Invalid usernames: %(usernames)s') % {
+                            'usernames': ', '.join(sorted(invalid_usernames))
+                        }
+                    )
 
             def clean(self):
                 cleaned_data = super(UserImportForm, self).clean()
@@ -92,6 +94,7 @@ class AbstractTypeInUsersView(formbase.FormView):
                         self.__validate_users_blob_emails(emails=users)
                     else:
                         self.__validate_users_blob_usernames(usernames=users)
+                    self.cleaned_users_set = users
 
         return UserImportForm
 
@@ -107,5 +110,18 @@ class AbstractTypeInUsersView(formbase.FormView):
             PrimarySubmit('save', self.create_button_label),
         ]
 
-    # def form_valid(self, form):
-    #     return HttpResponseRedirect('/some/view')
+    def get_success_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
+
+    def import_users_from_emails(self, emails):
+        raise NotImplementedError()
+
+    def import_users_from_usernames(self, usernames):
+        raise NotImplementedError()
+
+    def form_valid(self, form):
+        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            self.import_users_from_emails(emails=form.cleaned_users_set)
+        else:
+            self.import_users_from_usernames(usernames=form.cleaned_users_set)
+        return HttpResponseRedirect(self.get_success_url())
