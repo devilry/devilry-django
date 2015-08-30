@@ -58,6 +58,9 @@ class ListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
             objecttable.Button(label=_('Add examiner'),
                                url=app.reverse_appurl('select-user-to-add-as-examiner'),
                                buttonclass='btn btn-primary'),
+            objecttable.Button(label=_('Bulk import examiners'),
+                               url=app.reverse_appurl('bulkimport'),
+                               buttonclass='btn btn-default'),
         ]
 
     def get_pagetitle(self):
@@ -193,6 +196,11 @@ class AddView(BaseFormView):
 
 
 class BulkImportView(bulkimport_users_common.AbstractTypeInUsersView):
+    create_button_label = _('Bulk import examiners')
+
+    def get_pagetitle(self):
+        return _('Bulk import examiners')
+
     def import_users_from_emails(self, emails):
         period = self.request.cradmin_role
         result = RelatedExaminer.objects.bulk_create_from_emails(period=period, emails=emails)
@@ -243,4 +251,8 @@ class App(crapp.App):
             r'^add',
             AddView.as_view(),
             name="add-user-as-examiner"),
+        crapp.Url(
+            r'^bulkimport',
+            BulkImportView.as_view(),
+            name="bulkimport"),
     ]

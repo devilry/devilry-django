@@ -102,7 +102,7 @@ class AbstractTypeInUsersView(formbase.FormView):
         return [
             layout.Div(
                 layout.Field('users_blob', placeholder=self.__get_users_blob_placeholder()),
-                css_class='cradmin-globalfields')
+                css_class='cradmin-globalfields django-cradmin-formfield-label-sr-only')
         ]
 
     def get_buttons(self):
