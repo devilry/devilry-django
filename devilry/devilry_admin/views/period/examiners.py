@@ -13,6 +13,7 @@ from django_cradmin.viewhelpers import delete
 from devilry.apps.core.models import RelatedExaminer
 from devilry.devilry_account.models import UserEmail
 from devilry.devilry_admin.views.common import userselect_common
+from devilry.devilry_admin.views.common import bulkimport_users_common
 
 
 class GetQuerysetForRoleMixin(object):
@@ -57,6 +58,9 @@ class ListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
             objecttable.Button(label=_('Add examiner'),
                                url=app.reverse_appurl('select-user-to-add-as-examiner'),
                                buttonclass='btn btn-primary'),
+            objecttable.Button(label=_('Bulk import examiners'),
+                               url=app.reverse_appurl('bulkimport'),
+                               buttonclass='btn btn-default'),
         ]
 
     def get_pagetitle(self):
@@ -142,6 +146,9 @@ class UserSelectView(userselect_common.AbstractUserSelectView):
         period = self.request.cradmin_role
         return period.relatedexaminer_set.values_list('user_id', flat=True)
 
+    def get_no_searchresults_message_template_name(self):
+        return 'devilry_admin/period/examiners/userselectview-no-searchresults-message.django.html'
+
 
 class AddView(BaseFormView):
     """
@@ -191,6 +198,47 @@ class AddView(BaseFormView):
         return HttpResponseRedirect(self.request.cradmin_app.reverse_appindexurl())
 
 
+class BulkImportView(bulkimport_users_common.AbstractTypeInUsersView):
+    create_button_label = _('Bulk import examiners')
+
+    def get_pagetitle(self):
+        return _('Bulk import examiners')
+
+    def import_users_from_emails(self, emails):
+        period = self.request.cradmin_role
+        result = RelatedExaminer.objects.bulk_create_from_emails(period=period, emails=emails)
+        if result.new_relatedusers_was_created():
+            messages.success(self.request, _('Added %(count)s new examiners to %(period)s.') % {
+                'count': result.created_relatedusers_queryset.count(),
+                'period': period.get_path()
+            })
+        else:
+            messages.warning(self.request, _('No new examiners was added.'))
+
+        if result.existing_relateduser_emails_set:
+            messages.info(self.request, _('%(count)s users was already examiner on %(period)s.') % {
+                'count': len(result.existing_relateduser_emails_set),
+                'period': period.get_path()
+            })
+
+    def import_users_from_usernames(self, usernames):
+        period = self.request.cradmin_role
+        result = RelatedExaminer.objects.bulk_create_from_usernames(period=period, usernames=usernames)
+        if result.new_relatedusers_was_created():
+            messages.success(self.request, _('Added %(count)s new examiners to %(period)s.') % {
+                'count': result.created_relatedusers_queryset.count(),
+                'period': period.get_path()
+            })
+        else:
+            messages.warning(self.request, _('No new examiners was added.'))
+
+        if result.existing_relateduser_usernames_set:
+            messages.info(self.request, _('%(count)s users was already examiner on %(period)s.') % {
+                'count': len(result.existing_relateduser_usernames_set),
+                'period': period.get_path()
+            })
+
+
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$', ListView.as_view(), name=crapp.INDEXVIEW_NAME),
@@ -206,4 +254,8 @@ class App(crapp.App):
             r'^add',
             AddView.as_view(),
             name="add-user-as-examiner"),
+        crapp.Url(
+            r'^bulkimport',
+            BulkImportView.as_view(),
+            name="bulkimport"),
     ]

@@ -137,6 +137,34 @@ class TestUserQuerySet(TestCase):
             self.assertEqual('testuser',
                              user_with_prefetch.primary_username)
 
+    def test_filter_by_emails(self):
+        user1 = mommy.make('devilry_account.User')
+        user2 = mommy.make('devilry_account.User')
+        user3 = mommy.make('devilry_account.User')
+        ignoreduser = mommy.make('devilry_account.User')
+        mommy.make('devilry_account.UserEmail', user=user1, email='user1@example.com')
+        mommy.make('devilry_account.UserEmail', user=user2, email='user2@example.com')
+        mommy.make('devilry_account.UserEmail', user=user3, email='user3@example.com')
+        mommy.make('devilry_account.UserEmail', user=ignoreduser, email='ignoreduser@example.com')
+        self.assertEqual(
+            {user1, user2, user3},
+            set(User.objects.filter_by_emails(['user1@example.com', 'user2@example.com', 'user3@example.com']))
+        )
+
+    def test_filter_by_usernames(self):
+        user1 = mommy.make('devilry_account.User')
+        user2 = mommy.make('devilry_account.User')
+        user3 = mommy.make('devilry_account.User')
+        ignoreduser = mommy.make('devilry_account.User')
+        mommy.make('devilry_account.UserName', user=user1, username='user1')
+        mommy.make('devilry_account.UserName', user=user2, username='user2')
+        mommy.make('devilry_account.UserName', user=user3, username='user3')
+        mommy.make('devilry_account.UserName', user=ignoreduser, username='ignoreduser')
+        self.assertEqual(
+            {user1, user2, user3},
+            set(User.objects.filter_by_usernames(['user1', 'user2', 'user3']))
+        )
+
 
 class TestUserManager(TestCase):
     def test_create_user_username(self):

@@ -1,0 +1,12 @@
+{% load i18n %}
+{% load cradmin_tags %}
+
+<p>
+    {% trans "Could not find any students matching your search." %}
+</p>
+<p>
+    <a class="btn btn-primary"
+       href="{% cradmin_appurl 'bulkimport' %}">
+        {% trans "Import users" %}
+    </a>
+</p>

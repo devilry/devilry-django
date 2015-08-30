@@ -52,6 +52,20 @@ class UserQuerySet(models.QuerySet):
                             queryset=UserName.objects.filter(is_primary=True),
                             to_attr='primary_username_objects'))
 
+    def filter_by_emails(self, emails):
+        """
+        Filter the queryset to only include users with email address
+        in the ``emails`` iterable.
+        """
+        return self.filter(useremail__email__in=emails).distinct()
+
+    def filter_by_usernames(self, usernames):
+        """
+        Filter the queryset to only include users with username
+        in the ``usernames`` iterable.
+        """
+        return self.filter(username__username__in=usernames).distinct()
+
 
 class UserManager(BaseUserManager):
     """
@@ -61,6 +75,12 @@ class UserManager(BaseUserManager):
 
     def get_queryset(self):
         return UserQuerySet(self.model, using=self._db)
+
+    #
+    #
+    # From the QuerySet
+    #
+    #
 
     def prefetch_related_notification_emails(self):
         """
@@ -79,6 +99,24 @@ class UserManager(BaseUserManager):
         See :meth:`.UserQuerySet.prefetch_related_primary_username`.
         """
         return self.get_queryset().prefetch_related_primary_username()
+
+    def filter_by_emails(self, emails):
+        """
+        See :meth:`.UserQuerySet.filter_by_emails`.
+        """
+        return self.get_queryset().filter_by_emails(emails)
+
+    def filter_by_usernames(self, usernames):
+        """
+        See :meth:`.UserQuerySet.filter_by_usernames`.
+        """
+        return self.get_queryset().filter_by_usernames(usernames)
+
+    #
+    #
+    # Manager-specific methods
+    #
+    #
 
     def user_is_basenodeadmin(self, user, *basenode_modelsclasses):
         """
@@ -241,7 +279,7 @@ class UserManager(BaseUserManager):
         users. This UserEmail object has ``is_primary`` set to ``True``.
 
         Raises:
-            devilry_account.exceptions.ConfigurationError: If the
+            devilry_account.exceptions.IllegalOperationError: If the
             ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting is ``False``.
 
         Returns:
@@ -249,7 +287,7 @@ class UserManager(BaseUserManager):
 
             ``created_users`` is a queryset with the created users.
 
-            ``excluded_email`` is a set of the emails that already existed.
+            ``excluded_emails`` is a set of the emails that already existed.
         """
         if not settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
             raise IllegalOperationError('You can not use bulk_create_from_emails() when '
@@ -325,7 +363,7 @@ class UserManager(BaseUserManager):
 
             ``created_users`` is a queryset with the created users.
 
-            ``excluded_username`` is a set of the usernames that already existed.
+            ``excluded_usernames`` is a set of the usernames that already existed.
         """
         if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
             raise IllegalOperationError('You can not use bulk_create_from_usernames() when '
