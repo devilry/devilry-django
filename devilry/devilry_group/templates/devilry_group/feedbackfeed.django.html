@@ -116,17 +116,21 @@
                                 Handle the deadline events
                                 -->
                                 {% elif event.type == "deadline_created" %}
-                                    <div class="event-message">
-                                        <p>
-                                            {{ timestamp }}: {{ event.user }} {%  trans "created a new deadline" %}: <strong>{{ event.obj }}</strong>
-                                        </p>
-                                    </div>
+{#                                    {% if event.obj != None %}#}
+                                        <div class="event-message">
+                                            <p>
+                                                {{ timestamp }}: {{ event.user }} {%  trans "created a new deadline" %}: <strong>{{ event.obj }}</strong>
+                                            </p>
+                                        </div>
+{#                                    {% endif %}#}
                                 {% elif event.type == "deadline_expired" %}
-                                    <div class="event-message">
-                                        <p>
-                                            {{ timestamp }}: <strong> {% trans "Deadline expired" %}</strong>
-                                        </p>
-                                    </div>
+                                    {% if timestamp != None %}
+                                        <div class="event-message">
+                                            <p>
+                                                {{ timestamp }}: <strong> {% trans "Deadline expired" %}</strong>
+                                            </p>
+                                        </div>
+                                    {% endif %}
 
                                 <!--
                                 Handle feedback grade events
