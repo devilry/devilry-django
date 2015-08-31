@@ -39,7 +39,7 @@ class AdminsListViewTestMixin(object):
 
     def test_title(self):
         testuser = UserBuilder2().user
-        subjectbuilder = self.builderclass.make(long_name='The Long Name')\
+        subjectbuilder = self.builderclass.make(long_name='The Long Name') \
             .add_admins(testuser)
         selector = self.mock_http200_getrequest_htmls(role=subjectbuilder.get_object(),
                                                       user=testuser)
@@ -73,6 +73,15 @@ class AdminsListViewTestMixin(object):
         self.assertEqual(1, selector.count(
             '#objecttableview-table tbody .devilry-admin-adminlist-remove-button'))
 
+    def test_no_admins_messages(self):
+        testuser = UserBuilder2(is_superuser=True).user
+        builder = self.builderclass.make()
+        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
+                                                      user=testuser)
+        self.assertEqual(selector.one('#objecttableview-no-items-message').alltext_normalized,
+                         'There is no administrators registered for {}.'.format(
+                             builder.get_object().get_path()))
+
     def test_ordering(self):
         testuser = UserBuilder2(is_superuser=True).user
         builder = self.builderclass.make() \
@@ -98,6 +107,25 @@ class AdminsListViewTestMixin(object):
         selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
                                                       user=testuser)
         self.assertEqual(['test'], self.__get_names(selector))
+
+    def test_render_email_has_primary_email(self):
+        testuser = UserBuilder2(is_superuser=True).user
+        builder = self.builderclass.make() \
+            .add_admins(UserBuilder2(shortname='test').add_primary_email('test@example.com').user)
+        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
+                                                      user=testuser)
+        self.assertEqual(selector.one('.devilry-admin-adminlist-email').alltext_normalized,
+                         'Contact at test@example.com')
+        self.assertEqual(selector.one('.devilry-admin-adminlist-email')['href'],
+                         'mailto:test@example.com')
+
+    def test_render_email_no_primary_email(self):
+        testuser = UserBuilder2(is_superuser=True).user
+        builder = self.builderclass.make() \
+            .add_admins(UserBuilder2(shortname='test').user)
+        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
+                                                      user=testuser)
+        self.assertFalse(selector.exists('.devilry-admin-adminlist-email')),
 
     def test_render_only_users_from_current_basenode(self):
         testuser = UserBuilder2(is_superuser=True).user
@@ -224,7 +252,7 @@ class AdminUserSelectViewTestMixin(object):
 
     def test_render(self):
         testuser = UserBuilder2().user
-        builder = self.builderclass.make()\
+        builder = self.builderclass.make() \
             .add_admins(testuser)  # testuser should be excluded since it is already admin
         UserBuilder2(shortname='Jane Doe')
         selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),

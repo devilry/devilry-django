@@ -6,6 +6,8 @@ from django.views.generic.edit import BaseFormView
 from django_cradmin.viewhelpers import objecttable
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin.viewhelpers import delete
+from django.db import models
+from devilry.devilry_account.models import UserEmail
 
 from devilry.devilry_admin.views.common import userselect_common
 
@@ -29,7 +31,7 @@ class GetQuerysetForRoleMixin(object):
 
 class AdministratorInfoColumn(objecttable.MultiActionColumn):
     modelfield = 'id'
-    template_name = 'devilry_admin/common/administrator-info-column.django.html'
+    template_name = 'devilry_admin/common/user-info-column.django.html'
 
     def get_header(self):
         return _('Administrators')
@@ -57,6 +59,7 @@ class AbstractAdminsListView(GetQuerysetForRoleMixin, objecttable.ObjectTableVie
     ]
     searchfields = ['shortname', 'fullname']
     hide_column_headers = True
+    template_name = 'devilry_admin/common/admin-list-view.django.html'
 
     def get_buttons(self):
         app = self.request.cradmin_app
@@ -70,6 +73,39 @@ class AbstractAdminsListView(GetQuerysetForRoleMixin, objecttable.ObjectTableVie
         return _('Administrators for %(what)s') % {
             'what': self.request.cradmin_role.long_name
         }
+
+    def get_queryset_for_role(self, role):
+        return self.model.objects \
+            .filter(**{self.basenodefield: role}) \
+            .order_by('user__shortname')\
+            .prefetch_related(
+                models.Prefetch('user__useremail_set',
+                                queryset=UserEmail.objects.filter(is_primary=True),
+                                to_attr='primary_useremail_objects'))
+
+    def get_no_items_message(self):
+        """
+        Get the message to show when there are no items.
+        """
+        return _('There is no administrators registered for %(what)s.') % {
+            'what': self.request.cradmin_role.get_path()
+        }
+
+    def __get_inherited_admin_users(self):
+        parentnode = self.request.cradmin_role.parentnode
+        if parentnode:
+            admin_user_ids = parentnode.get_all_admin_ids()
+            return get_user_model().objects\
+                .filter(id__in=admin_user_ids)\
+                .prefetch_related_primary_email()\
+                .order_by('shortname')
+        else:
+            return []
+
+    def get_context_data(self, **kwargs):
+        context = super(AbstractAdminsListView, self).get_context_data(**kwargs)
+        context['inherited_admin_users'] = list(self.__get_inherited_admin_users())
+        return context
 
 
 class AbstractRemoveAdminView(GetQuerysetForRoleMixin, delete.DeleteView):

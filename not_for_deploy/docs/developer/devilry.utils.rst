@@ -8,10 +8,6 @@
 .. toctree::
     :maxdepth: 2
 
-    utils.assignmentgroup
-    utils.ordereddict
-    utils.delivery_collection
-    utils.groupnodes
     utils.devilry_email
     utils.groups_groupedby_relatedstudent_and_assignment
 

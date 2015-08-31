@@ -32,7 +32,7 @@ class StudentCrInstance(crinstance.BaseCrAdminInstance):
     rolefrontpage_appname = 'feedbackfeed'
 
     def get_rolequeryset(self):
-        return AssignmentGroup.where_is_candidate(self.request.user)
+        return AssignmentGroup.where_is_candidate(self.request.user).select_related('assignment')
 
     def get_titletext_for_role(self, role):
         """

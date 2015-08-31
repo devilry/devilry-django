@@ -1,8 +1,11 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.conf import settings
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
+from devilry.devilry_account.exceptions import IllegalOperationError
 
 
 class UserQuerySet(models.QuerySet):
@@ -49,6 +52,20 @@ class UserQuerySet(models.QuerySet):
                             queryset=UserName.objects.filter(is_primary=True),
                             to_attr='primary_username_objects'))
 
+    def filter_by_emails(self, emails):
+        """
+        Filter the queryset to only include users with email address
+        in the ``emails`` iterable.
+        """
+        return self.filter(useremail__email__in=emails).distinct()
+
+    def filter_by_usernames(self, usernames):
+        """
+        Filter the queryset to only include users with username
+        in the ``usernames`` iterable.
+        """
+        return self.filter(username__username__in=usernames).distinct()
+
 
 class UserManager(BaseUserManager):
     """
@@ -58,6 +75,12 @@ class UserManager(BaseUserManager):
 
     def get_queryset(self):
         return UserQuerySet(self.model, using=self._db)
+
+    #
+    #
+    # From the QuerySet
+    #
+    #
 
     def prefetch_related_notification_emails(self):
         """
@@ -76,6 +99,24 @@ class UserManager(BaseUserManager):
         See :meth:`.UserQuerySet.prefetch_related_primary_username`.
         """
         return self.get_queryset().prefetch_related_primary_username()
+
+    def filter_by_emails(self, emails):
+        """
+        See :meth:`.UserQuerySet.filter_by_emails`.
+        """
+        return self.get_queryset().filter_by_emails(emails)
+
+    def filter_by_usernames(self, usernames):
+        """
+        See :meth:`.UserQuerySet.filter_by_usernames`.
+        """
+        return self.get_queryset().filter_by_usernames(usernames)
+
+    #
+    #
+    # Manager-specific methods
+    #
+    #
 
     def user_is_basenodeadmin(self, user, *basenode_modelsclasses):
         """
@@ -169,6 +210,9 @@ class UserManager(BaseUserManager):
         Other than that, you can provide any :class:`.User` fields except
         ``shortname``. ``shortname`` is created from username or email (in that order).
         """
+        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND and username:
+            raise IllegalOperationError('Can not create user with username when the '
+                                        'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND-setting is True')
         shortname = username or email
         user = self.model(shortname=shortname, **kwargs)
         if password:
@@ -205,6 +249,145 @@ class UserManager(BaseUserManager):
             User: The user object.
         """
         return self.get_queryset().filter(username__username=username).get()
+
+    def __create_primary_useremail_objects_from_users(self, users):
+        """
+        Create :class:`.UserEmail` objects for the given iterable of
+        :class:`.User` objects.
+
+        Uses the ``shortname`` as email, and the UserEmail objects
+        is all marked as primary emails, and as notification
+        emails.
+        """
+        new_useremail_objects = []
+        for user in users:
+            new_username_object = UserEmail(user=user,
+                                            email=user.shortname,
+                                            is_primary=True,
+                                            use_for_notifications=True)
+            new_useremail_objects.append(new_username_object)
+        UserEmail.objects.bulk_create(new_useremail_objects)
+
+    def bulk_create_from_emails(self, emails):
+        """
+        Bulk create users for all the emails
+        in the given ``emails`` iterator.
+
+        All users is created with unusable password.
+
+        We create a :class:`.UserEmail` object for each of the created
+        users. This UserEmail object has ``is_primary`` set to ``True``.
+
+        Raises:
+            devilry_account.exceptions.IllegalOperationError: If the
+            ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting is ``False``.
+
+        Returns:
+            A ``(created_users, excluded_emails)``-tuple.
+
+            ``created_users`` is a queryset with the created users.
+
+            ``excluded_emails`` is a set of the emails that already existed.
+        """
+        if not settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            raise IllegalOperationError('You can not use bulk_create_from_emails() when '
+                                        'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND is False.')
+        existing_emails = set(UserEmail.objects.filter(email__in=emails).values_list('email', flat=True))
+        existing_shortnames = set(User.objects.filter(shortname__in=emails).values_list('shortname', flat=True))
+        existing_emails = existing_emails.union(existing_shortnames)
+
+        all_emails_set = set(emails)
+        new_emails_set = all_emails_set.difference(existing_emails)
+
+        new_user_objects = []
+        for email in new_emails_set:
+            new_user = User(shortname=email)
+            new_user.set_unusable_password()
+            new_user_objects.append(new_user)
+        User.objects.bulk_create(new_user_objects)
+        created_users = User.objects.filter(shortname__in=new_emails_set)
+
+        self.__create_primary_useremail_objects_from_users(created_users)
+
+        return created_users, existing_emails
+
+    def __create_primary_username_objects_from_users(self, users):
+        """
+        Create :class:`.UserName` objects for the given iterable of
+        :class:`.User` objects.
+
+        Uses the ``shortname`` as username, and the UserName objects
+        is all marked as primary usernames.
+        """
+        new_username_objects = []
+        for user in users:
+            new_username_object = UserName(username=user.shortname, is_primary=True, user=user)
+            new_username_objects.append(new_username_object)
+        UserName.objects.bulk_create(new_username_objects)
+
+    def __create_primary_useremail_objects_from_users_via_suffix(self, users):
+        """
+        Create :class:`.UserEmail` objects for the given iterable of
+        :class:`.User` objects.
+
+        Uses the ``shortname@<settings.DEVILRY_DEFAULT_EMAIL_SUFFIX>`` as email,
+        and the UserEmail objects is all marked as primary emails, and as notification
+        emails.
+        """
+        new_useremail_objects = []
+        for user in users:
+            new_username_object = UserEmail(
+                user=user,
+                email=u'{}{}'.format(user.shortname, settings.DEVILRY_DEFAULT_EMAIL_SUFFIX),
+                is_primary=True,
+                use_for_notifications=True)
+            new_useremail_objects.append(new_username_object)
+        UserEmail.objects.bulk_create(new_useremail_objects)
+
+    def bulk_create_from_usernames(self, usernames):
+        """
+        Bulk create users for all the usernames
+        in the given ``usernames`` iterator.
+
+        All users is created with unusable password.
+
+        We create a :class:`.UserName` object for each of the created
+        users. This UserName object has ``is_primary`` set to ``True``.
+
+        Raises:
+            devilry_account.exceptions.IllegalOperationError: If the
+            ``DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND``-setting is ``True``.
+
+        Returns:
+            A ``(created_users, excluded_usernames)``-tuple.
+
+            ``created_users`` is a queryset with the created users.
+
+            ``excluded_usernames`` is a set of the usernames that already existed.
+        """
+        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            raise IllegalOperationError('You can not use bulk_create_from_usernames() when '
+                                        'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND is True.')
+        existing_usernames = set(UserName.objects.filter(username__in=usernames).values_list('username', flat=True))
+        existing_shortnames = set(User.objects.filter(shortname__in=usernames).values_list('shortname', flat=True))
+        existing_usernames = existing_usernames.union(existing_shortnames)
+
+        all_usernames_set = set(usernames)
+        new_usernames_set = all_usernames_set.difference(existing_usernames)
+
+        new_user_objects = []
+        for username in new_usernames_set:
+            new_user = User(shortname=username)
+            new_user.set_unusable_password()
+            new_user_objects.append(new_user)
+        User.objects.bulk_create(new_user_objects)
+        created_users = User.objects.filter(shortname__in=new_usernames_set)
+
+        self.__create_primary_username_objects_from_users(created_users)
+        if settings.DEVILRY_DEFAULT_EMAIL_SUFFIX:
+            self.__create_primary_useremail_objects_from_users_via_suffix(created_users)
+
+        return created_users, existing_usernames
 
 
 class User(AbstractBaseUser):
@@ -469,13 +652,19 @@ class UserEmail(AbstractUserIdentity):
     )
 
     def clean(self):
-        if self.is_primary == False:
+        if self.is_primary is False:
             raise ValidationError('is_primary can not be False. Valid values are: True, None.')
         if self.is_primary:
             other_useremails = UserEmail.objects.filter(user=self.user)
             if self.id is not None:
                 other_useremails = other_useremails.exclude(id=self.id)
             other_useremails.update(is_primary=None)
+
+            if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+                user = self.user
+                if user.shortname != self.email:
+                    user.shortname = self.email
+                    user.save()
 
 
 class UserName(AbstractUserIdentity):
@@ -515,10 +704,18 @@ class UserName(AbstractUserIdentity):
     )
 
     def clean(self):
-        if self.is_primary == False:
+        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            raise ValidationError('Can not create UserName objects when the '
+                                  'DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND is True.')
+        if self.is_primary is False:
             raise ValidationError('is_primary can not be False. Valid values are: True, None.')
         if self.is_primary:
             other_usernames = UserName.objects.filter(user=self.user)
             if self.id is not None:
                 other_usernames = other_usernames.exclude(id=self.id)
             other_usernames.update(is_primary=None)
+
+            user = self.user
+            if user.shortname != self.username:
+                user.shortname = self.username
+                user.save()

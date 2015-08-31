@@ -1,8 +1,8 @@
 .. _devilry.apps.core.models:
 
-===============================================================
+==============================================================
 :mod:`devilry.apps.core.models` --- Devilry core datastructure
-===============================================================
+==============================================================
 
 
 .. image:: images/devilry.core.models.1.png
@@ -15,7 +15,7 @@
 .. _umldiagram2: http://yuml.me/diagram/scruffy/class/edit/%5BAssignmentGroup%5D++1-deadlines%20%3E*%5BDeadline%5D,%20%5BAssignmentGroup%5D++1-candidates%20%3E*%5BCandidate%5D,%20%5BDelivery%5D++1-staticfeedbacks%20%3E*%5BStaticFeedback%5D,%20%5BDelivery%5D++1-filemetas%20%3E*%5BFileMeta%5D,%20%5BDeadline%5D++1-deliveries%20%3E*%5BDelivery%5D,%20%5BDelivery%5D++1-delivered_by%20%3E1%5BCandidate%5D
 
 Functions and attributes
-#########################################################
+########################
 
 .. automodule:: devilry.apps.core.models.model_utils
     :members: pathsep, splitpath
@@ -23,26 +23,26 @@ Functions and attributes
 
 
 BaseNode
-#########################################################
+########
 
 .. autoclass:: devilry.apps.core.models.BaseNode
     :no-members:
 
 
 AbstractIsAdmin
-#########################################################
+###############
 
 .. autoclass:: devilry.apps.core.models.AbstractIsAdmin
 
 
 AbstractIsExaminer
-#########################################################
+##################
 
 .. autoclass:: devilry.apps.core.models.AbstractIsExaminer
 
 
 Node
-#########################################################
+####
 
 A node at the top of the navigation tree. It is a generic element used to
 organize administrators. A Node can be organized below another Node, and it
@@ -61,7 +61,7 @@ node-hierarchy:
 
 
 Subject
-#########################################################
+#######
 
 A subject is a course, seminar, class or something else being given
 regularly. A subject is further divided into periods.
@@ -69,7 +69,7 @@ regularly. A subject is further divided into periods.
 .. autoclass:: devilry.apps.core.models.Subject
 
 Period
-#########################################################
+######
 
 A Period is a limited period of time, like *spring 2009*, *week 34 2010* or
 even a single day.
@@ -77,30 +77,19 @@ even a single day.
 .. autoclass:: devilry.apps.core.models.Period
 
 
-RelatedUserBase
-#########################################################
+Users related to a Period
+#########################
 
 Base class for :class:`devilry.apps.core.models.RelatedStudent` and :class:`devilry.apps.core.models.RelatedExaminer`.
 
-.. autoclass:: devilry.apps.core.models.relateduser.RelatedUserBase
+.. currentmodule:: devilry.apps.core.models.relateduser
 
+.. automodule:: devilry.apps.core.models.relateduser
+    :members:
 
-RelatedStudent --- Student on a period
-#########################################################
-
-A RelatedStudent is a student *related* to a :class:`devilry.apps.core.models.Period`.
-
-.. autoclass:: devilry.apps.core.models.RelatedStudent
-
-RelatedExaminer --- Examiner on a period
-#########################################################
-
-A RelatedExaminer is an examiner *related* to a :class:`devilry.apps.core.models.Period`.
-
-.. autoclass:: devilry.apps.core.models.RelatedExaminer
 
 Assignment
-#########################################################
+##########
 
 Represents one assignment within a given Period_ in a given Subject_. Each
 assignment contains one AssignmentGroup_ for each student or group of students
@@ -119,31 +108,31 @@ We have three main classifications of assignments:
 .. autoclass:: devilry.apps.core.models.Assignment
 
 Examiner
-#########################################################
+########
 
 .. autoclass:: devilry.apps.core.models.Examiner
     :no-members:
 
 
 Candidate
-#########################################################
+#########
 
 .. autoclass:: devilry.apps.core.models.Candidate
     :no-members:
 
 AssignmentGroup
-#########################################################
+###############
 
 .. autoclass:: devilry.apps.core.models.AssignmentGroup
 
 AssignmentGroupTag
-#########################################################
+##################
 
 .. autoclass:: devilry.apps.core.models.AssignmentGroupTag
 
 
 Deadline
-#########################################################
+########
 
 Each `AssignmentGroup`_ have zero or more deadlines.
 
@@ -151,7 +140,7 @@ Each `AssignmentGroup`_ have zero or more deadlines.
 
 
 Delivery
-#########################################################
+########
 
 
 Examples
@@ -185,24 +174,16 @@ Delivery API
 
 
 StaticFeedback
-#########################################################
+##############
 
 .. autoclass:: devilry.apps.core.models.StaticFeedback
 
 
 FileMeta
-#########################################################
+########
 
 .. autoclass:: devilry.apps.core.models.FileMeta
 
-
-
-DevilryUserProfile
-#########################################################
-
-**See also**: :ref:`userobj`.
-
-.. autoclass:: devilry.apps.core.models.DevilryUserProfile
 
 
 .. _django.db.models.SlugField: http://docs.djangoproject.com/en/dev/ref/models/fields/#slugfield

@@ -50,12 +50,12 @@ class FeedbackFeedBaseView(create.CreateView):
             })
         return timeline
 
-    def __add_announcements_to_timeline(self, feedbacksets, timeline):
+    def __add_announcements_to_timeline(self, group, feedbacksets, timeline):
         if len(feedbacksets) == 0:
-            return timeline
+            return group.assignment.first_deadline, timeline
         first_feedbackset = feedbacksets[0]
         last_deadline = first_feedbackset.deadline_datetime
-        for feedbackset in feedbacksets[0:]:
+        for feedbackset in feedbacksets:
             if feedbackset.deadline_datetime not in timeline.keys():
                 timeline[feedbackset.deadline_datetime] = []
             timeline[feedbackset.deadline_datetime].append({
@@ -96,7 +96,7 @@ class FeedbackFeedBaseView(create.CreateView):
     def __build_timeline(self, group, feedbacksets):
         timeline = {}
         timeline = self.__add_comments_to_timeline(group, timeline)
-        last_deadline, timeline = self.__add_announcements_to_timeline(feedbacksets, timeline)
+        last_deadline, timeline = self.__add_announcements_to_timeline(group, feedbacksets, timeline)
         timeline = self.__sort_timeline(timeline)
 
         return last_deadline, timeline
@@ -110,7 +110,10 @@ class FeedbackFeedBaseView(create.CreateView):
         feedbacksets = self._get_feedbacksets_for_group(self.request.cradmin_role)
         context['last_deadline'], context['timeline'] = self.__build_timeline(self.request.cradmin_role, feedbacksets)
         context['feedbacksets'] = feedbacksets
-        context['last_feedbackset'] = feedbacksets[0]
+        try:
+            context['last_feedbackset'] = feedbacksets[0]
+        except IndexError:
+            pass
         context['current_date'] = datetime.datetime.now()
 
         return context

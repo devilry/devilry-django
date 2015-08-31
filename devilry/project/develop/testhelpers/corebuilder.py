@@ -1,7 +1,10 @@
-from django.contrib.auth import get_user_model
 from datetime import datetime
 from datetime import timedelta
+from django.conf import settings
+
+from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
+
 from model_mommy import mommy
 
 from devilry.apps.core.models import Node, StaticFeedbackFileAttachment
@@ -17,9 +20,6 @@ from devilry.apps.core.models import RelatedStudent
 from devilry.apps.core.models import RelatedExaminer
 from devilry.apps.core.deliverystore import MemoryDeliveryStore
 from .datebuilder import DateTimeBuilder
-
-from devilry.devilry_group.models import FeedbackSet
-from devilry.devilry_group.models import GroupComment
 from devilry.devilry_comment.models import CommentFile
 
 
@@ -37,8 +37,11 @@ class UserBuilder(ReloadableDbBuilderInterface):
 
     Use :class:`.UserBuilder2` for new tests.
     """
+
     def __init__(self, username, full_name=None, email=None, is_superuser=False):
         email = email or u'{}@example.com'.format(username)
+        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            username = ''
         self.user = get_user_model().objects.create_user(
             username=username,
             email=email,
@@ -63,6 +66,7 @@ class UserBuilder2(ReloadableDbBuilderInterface):
 
     Use this insted of :class:`.UserBuilder` for new tests.
     """
+
     def __init__(self, **kwargs):
         self.user = mommy.make_recipe('devilry.devilry_account.user', **kwargs)
         self.user.save()
@@ -79,6 +83,11 @@ class UserBuilder2(ReloadableDbBuilderInterface):
     def add_emails(self, *emails):
         for email in emails:
             self.user.useremail_set.create(email=email, use_for_notifications=False)
+        return self
+
+    def add_primary_email(self, email, use_for_notifications=True):
+        self.user.useremail_set.create(email=email, use_for_notifications=use_for_notifications,
+                                       is_primary=True)
         return self
 
     def add_usernames(self, *usernames):
@@ -276,12 +285,12 @@ class CommentFileBuilder(CoreBuilderBase):
     object_attribute_name = 'comment_file'
 
     def __init__(self, **kwargs):
-        file = ContentFile(kwargs['filename'], kwargs['data'])
+        fileobject = ContentFile(kwargs['filename'], kwargs['data'])
         del (kwargs['data'])
-        kwargs['filesize'] = file.size
+        kwargs['filesize'] = fileobject.size
 
         self.comment_file = CommentFile.objects.create(**kwargs)
-        self.comment_file.file = file
+        self.comment_file.fileobject = fileobject
         self.comment_file.save()
 
 
@@ -302,12 +311,11 @@ class GroupCommentBuilder(CoreBuilderBase):
             instant_publish=True,
             visible_for_students=True,
             text=comment if comment is not None else 'Lorem ipsum I dont know it from memory bla bla bla..',
-            published_datetime=DateTimeBuilder.now().minus(weeks=4, days=3, hours=10)
-        )
+            published_datetime=DateTimeBuilder.now().minus(weeks=4, days=3, hours=10))
 
     def __init__(self, **kwargs):
         kwargs['comment_type'] = 'groupcomment'
-        self.groupcomment = GroupComment.objects.create(**kwargs)
+        self.groupcomment = mommy.make('devilry_group.GroupComment', **kwargs)
 
     def add_file(self, **kwargs):
         kwargs['comment'] = self.groupcomment
@@ -315,12 +323,21 @@ class GroupCommentBuilder(CoreBuilderBase):
 
     def add_files(self, files):
         retval = []
-        for file in files:
-            retval.append(self.add_file(**file))
+        for fileobject in files:
+            retval.append(self.add_file(**fileobject))
+
+    @classmethod
+    def make(cls, **kwargs):
+        feedbacksetbuilder_kwargs = {}
+        for key in kwargs.keys():
+            if key.startswith('feedback_set__'):
+                feedbacksetbuilder_kwargs[key[len('feedback_set__'):]] = kwargs.pop(key)
+        groupbuilder = FeedbackSetBuilder.make(**feedbacksetbuilder_kwargs)
+        return cls(feedback_set=groupbuilder.feedback_set, **kwargs)
 
 
 class FeedbackSetBuilder(CoreBuilderBase):
-    object_attribute_name = 'feedbackset'
+    object_attribute_name = 'feedback_set'
 
     @classmethod
     def quickadd_ducku_duck1010_active_assignment1_group_feedbackset(cls, studentuser=None, examiner=None):
@@ -335,13 +352,22 @@ class FeedbackSetBuilder(CoreBuilderBase):
                               deadline_datetime=DateTimeBuilder.now().minus(weeks=4))
 
     def __init__(self, **kwargs):
-        self.feedbackset = FeedbackSet.objects.create(**kwargs)
+        self.feedback_set = mommy.make('devilry_group.FeedbackSet', **kwargs)
 
     def add_groupcomment(self, files=[], **kwargs):
-        kwargs['feedback_set'] = self.feedbackset
+        kwargs['feedback_set'] = self.feedback_set
         groupcomment = GroupCommentBuilder(**kwargs)
         groupcomment.add_files(files)
         return groupcomment.groupcomment
+
+    @classmethod
+    def make(cls, **kwargs):
+        groupbuilder_kwargs = {}
+        for key in kwargs.keys():
+            if key.startswith('group__'):
+                groupbuilder_kwargs[key[len('group__'):]] = kwargs.pop(key)
+        groupbuilder = AssignmentGroupBuilder.make(**groupbuilder_kwargs)
+        return cls(group=groupbuilder.group, **kwargs)
 
 
 class AssignmentGroupBuilder(CoreBuilderBase):
@@ -397,6 +423,15 @@ class AssignmentGroupBuilder(CoreBuilderBase):
     def add_feedback_set(self, **kwargs):
         kwargs['group'] = self.group
         return FeedbackSetBuilder(**kwargs)
+
+    @classmethod
+    def make(cls, **kwargs):
+        assignmentbuilder_kwargs = {}
+        for key in kwargs.keys():
+            if key.startswith('assignment__'):
+                assignmentbuilder_kwargs[key[len('assignment__'):]] = kwargs.pop(key)
+        assignmentbuilder = AssignmentBuilder.make(**assignmentbuilder_kwargs)
+        return cls(parentnode=assignmentbuilder.assignment, **kwargs)
 
 
 class AssignmentBuilder(BaseNodeBuilderBase):
