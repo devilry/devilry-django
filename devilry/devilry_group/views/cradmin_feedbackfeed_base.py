@@ -68,13 +68,14 @@ class FeedbackFeedBaseView(create.CreateView):
             if feedbackset.created_datetime not in timeline.keys():
                 timeline[feedbackset.created_datetime] = []
 
-            if deadline_datetime < group.assignment.first_deadline:
-                timeline[feedbackset.created_datetime].append({
-                    "type": "deadline_created",
-                    "obj": group.assignment.first_deadline,
-                    "user": first_feedbackset.created_by
-                })
-                first_feedbackset = feedbackset
+            if group.assignment.first_deadline is not None:
+                if deadline_datetime < group.assignment.first_deadline:
+                    timeline[feedbackset.created_datetime].append({
+                        "type": "deadline_created",
+                        "obj": group.assignment.first_deadline,
+                        "user": first_feedbackset.created_by
+                    })
+                    first_feedbackset = feedbackset
             elif feedbackset is not feedbacksets[0]:
                 timeline[feedbackset.created_datetime].append({
                     "type": "deadline_created",
