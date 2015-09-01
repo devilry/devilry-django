@@ -18,8 +18,18 @@
     <div class="row">
         <div class="devilry-group-feedbackfeed-header">
             <div class="col-sm-7 text-left">
-                <h1>{{ assignment.long_name }}</h1>
-                <p>{{ subject.long_name }} {{ period.long_name }}</p>
+                <h1 class="devilry-group-feedbackfeed-header-assignment">
+                    {{ assignment.long_name }}
+                </h1>
+                <p class="devilry-group-feedbackfeed-header-subject-period">
+                    <p class="devilry-group-feedbackfeed-header-subject">
+                        {{ subject.long_name }}
+                    </p>
+                    <p class="devilry-group-feedbackfeed-header-period">
+                        {{ period.long_name }}
+                    </p>
+{#                    {{ subject.long_name }} {{ period.long_name }}#}
+                </p>
             </div>
             <div class="col-sm-5 text-right">
                 {% if last_deadline %}
@@ -83,10 +93,16 @@
                                             devilry-group-feedbackfeed-comment-admin
                                         {% endif %}">
                                         <div class="devilry-group-feedbackfeed-comment-content">
-                                            <div class="comment-meta">
-                                                <div class="comment-created-by"><p>{% devilry_user_verbose_inline comment.user %} &nbsp;</p></div>
-                                                <div class="comment-created-by-role"><p>({{ comment.user_role }})&nbsp;</p></div>
-                                                <div class="comment-created-date"><p> {{ comment.published_datetime }}</p></div>
+                                            <div class="devilry-group-comment-meta">
+                                                <div class="devilry-group-comment-created-by">
+                                                    <p class="comment-created-by-text">{% devilry_user_verbose_inline comment.user %} &nbsp;</p>
+                                                </div>
+                                                <div class="devilry-group-comment-created-by-role">
+                                                    <p class="comment-created-by-role-text">({{ comment.user_role }})&nbsp;</p>
+                                                </div>
+                                                <div class="devilry-group-comment-published-date">
+                                                    <p class="comment-published-date-text"> {{ comment.published_datetime }}</p>
+                                                </div>
                                             </div>
                                             <div class="comment-text">
                                                 {% blocktrans with text=comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}
@@ -117,7 +133,7 @@
                                 -->
                                 {% elif event.type == "deadline_created" %}
 {#                                    {% if event.obj != None %}#}
-                                        <div class="event-message">
+                                        <div class="devilry-group-feedbackfeed-event-message-deadline-created">
                                             <p>
                                                 {{ timestamp }}: {{ event.user }} {%  trans "created a new deadline" %}: <strong>{{ event.obj }}</strong>
                                             </p>
@@ -125,7 +141,7 @@
 {#                                    {% endif %}#}
                                 {% elif event.type == "deadline_expired" %}
                                     {% if timestamp != None %}
-                                        <div class="event-message">
+                                        <div class="devilry-group-feedbackfeed-event-message-deadline-expired">
                                             <p>
                                                 {{ timestamp }}: <strong> {% trans "Deadline expired" %}</strong>
                                             </p>
@@ -137,13 +153,13 @@
                                 -->
                                 {% elif event.type == "grade" %}
                                     {% if event.obj >= assignment.passing_grade_min_points %}
-                                        <div class="event-message-passed">
+                                        <div class="devilry-group-feedbackfeed-event-message-passed">
                                             <p>{{ timestamp }}: {% trans "This delivery was corrected, and given the grade" %}
                                                 <strong>{{ event.obj }}/{{ assignment.max_points }} {% trans "(passed)" %}</strong>
                                             </p>
                                         </div>
                                     {% else %}
-                                        <div class="event-message-failed">
+                                        <div class="devilry-group-feedbackfeed-event-message-failed">
                                             <p>
                                                 {{ timestamp }}: {% trans "This delivery was corrected, and given the grade" %}
                                                 <strong>{{ event.obj }}/{{ assignment.max_points }} {%  trans "(failed)" %}</strong>
