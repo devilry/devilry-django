@@ -205,50 +205,6 @@ class FeedbackFeedBaseView(create.CreateView):
 
         return object
 
-    # def save_object(self, form, commit=True):
-    #     print '\nsave object from form\n'
-    #     assignment_group = self.request.cradmin_role
-    #     user = self.request.user
-    #     time = datetime.datetime.now()
-    #
-    #     object = form.save(commit=False)
-    #     object.user = user
-    #     object.comment_type = 'groupcomment'
-    #     object.feedback_set = assignment_group.feedbackset_set.latest('created_datetime')
-    #     object.published_datetime = time
-    #
-    #     if assignment_group.is_candidate(user):
-    #         object.user_role = 'student'
-    #         object.instant_publish = True
-    #         object.visible_for_students = True
-    #     elif assignment_group.is_examiner(user):
-    #         object.user_role = 'examiner'
-    #         print 'is examiner'
-    #
-    #         if form.data.get('examiner_add_comment_for_examiners'):
-    #             print 'examiner_add_comment_for_examiners'
-    #             object.instant_publish = True
-    #             object.visible_for_students = False
-    #         elif form.data.get('examiner_add_public_comment'):
-    #             print 'examiner_add_public_comment'
-    #             object.instant_publish = True
-    #             object.visible_for_students = True
-    #         elif form.data.get('examiner_add_comment_to_feedback_draft'):
-    #             print 'examiner_add_comment_to_feedback_draft'
-    #             object.instant_publish = False
-    #             object.visible_for_students = False
-    #     elif assignment_group.is_admin_or_superadmin(user):
-    #         object.user_role = 'admin'
-    #         object.instant_publish = True
-    #         object.visible_for_students = True
-    #     else:
-    #         raise PermissionDenied("User attempting to post comment has no verified role in the assignment group!")
-    #
-    #     if commit:
-    #         object.save()
-    #         self._convert_temporary_files_to_comment_files(form, object)
-    #     return object
-
     def get_collectionqueryset(self):
         return TemporaryFileCollection.objects \
             .filter_for_user(self.request.user) \
