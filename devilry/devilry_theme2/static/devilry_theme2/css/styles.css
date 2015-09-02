@@ -9959,6 +9959,9 @@ label.radio {
   font-weight: normal;
   margin-left: 23px;
 }
+.django-cradmin-form-wrapper .django-cradmin-form label .asteriskField {
+  display: none;
+}
 .devilry-focusbox {
   background-color: #ffffff;
   margin: 0 0 15px 0;

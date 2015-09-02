@@ -7,6 +7,7 @@ from devilry.devilry_admin.views.period import overview
 from devilry.devilry_admin.views.period import students
 from devilry.devilry_admin.views.period import examiners
 from devilry.devilry_admin.views.period import admins
+from devilry.devilry_admin.views.period import createassignment
 
 
 class Menu(crmenu.Menu):
@@ -34,6 +35,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
         ('students', students.App),
         ('examiners', examiners.App),
         ('admins', admins.App),
+        ('createassignment', createassignment.App),
     ]
     id = 'devilry_admin_periodadmin'
     rolefrontpage_appname = 'overview'

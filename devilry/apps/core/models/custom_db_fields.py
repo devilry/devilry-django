@@ -1,8 +1,8 @@
+import re
+
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db import models
-
-import re
 
 
 class ShortNameField(models.SlugField):
