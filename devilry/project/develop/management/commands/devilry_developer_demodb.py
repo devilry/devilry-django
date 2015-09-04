@@ -1,11 +1,11 @@
 import random
-from django.conf import settings
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
-
 from django.contrib.webdesign import lorem_ipsum
+from django.utils import timezone
 
 from devilry.apps.core.models import StaticFeedback, Deadline
 from devilry.apps.core.models import RelatedStudent
@@ -471,6 +471,8 @@ class Command(BaseCommand):
         examiner = UserBuilder('magneto', full_name='Erik Lehnsherr').user
         examiner2 = UserBuilder('beast', full_name='Hank McCoy').user
 
+        first_deadline = timezone.now() - timezone.timedelta(weeks=2, days=1)
+
         assignmentgroupbuilder = self.duckburgh.add_subject(
             short_name='inf7020',
             long_name='INF7020 Programming for World Domination and Crashing Non-Mutant Economy',
@@ -485,6 +487,7 @@ class Command(BaseCommand):
             'Oblig 1 - Domination',
             passing_grade_min_points=3,
             max_points=10,
+            first_deadline=first_deadline
         ).add_group()
 
         assignmentgroupbuilder.add_students(student)
@@ -496,7 +499,7 @@ class Command(BaseCommand):
             created_by=examiner,
             published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5, hours=2),
             created_datetime=DateTimeBuilder.now().minus(weeks=4),
-            deadline_datetime=DateTimeBuilder.now().minus(weeks=2, days=1)
+            deadline_datetime=first_deadline,
         )
 
         # Event summary for feedback_set 1
