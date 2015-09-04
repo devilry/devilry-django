@@ -1,4 +1,4 @@
-{% extends "django_cradmin/base.django.html" %}
+{% extends "django_cradmin/viewhelpers/objecttable/objecttable.django.html" %}
 {% load static %}
 {% load i18n %}
 
@@ -13,8 +13,8 @@
     </h1>
 {% endblock pageheader-inner %}
 
-{% block content %}
+{{% comment %}% block content %}
     <div class="container django-cradmin-container-focus">
         TODO
     </div>
-{% endblock content %}
+{% endblock content %}{% endcomment %}
