@@ -94,3 +94,101 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                                                                  requestuser=requestuser,
                                                                  group=janedoe)
         self.assertFalse(selector.exists('.after-deadline-badge'))
+
+    def test_get_feedbackfeed_student_wysiwyg_post_comment_choise_post(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        feedbackset_builder = FeedbackSetBuilder.make(
+        )
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
+        self.assertTrue(selector.exists('#submit-id-student_add_comment'))
+
+    def test_get_feedbackfeed_student_can_see_other_student_comments(self):
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        johndoe = UserBuilder2(fullname='John Doe').user
+        time = timezone.now()
+        feedbackset_builder = FeedbackSetBuilder.make(
+            group__assignment__first_deadline=time,
+            deadline_datetime = time
+        )
+        feedbackset_builder.add_groupcomment(
+            user=johndoe,
+            user_role='student',
+            instant_publish=True,
+            visible_for_students=True,
+            text="hello world",
+            published_datetime=timezone.now()
+        )
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=janedoe,
+                                                                 group=janedoe)
+        name = selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
+        self.assertEquals(name, johndoe.fullname)
+
+    def test_get_feedbackfeed_student_can_see_admin_comment(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        admin = UserBuilder2(fullname='John Doe').user
+        time = timezone.now()
+        feedbackset_builder = FeedbackSetBuilder.make(
+            group__assignment__first_deadline=time,
+            deadline_datetime = time
+        )
+        feedbackset_builder.add_groupcomment(
+            user=admin,
+            user_role='admin',
+            instant_publish=True,
+            visible_for_students=True,
+            text="hello world",
+            published_datetime=timezone.now()
+        )
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=janedoe,
+                                                                 group=janedoe)
+        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-admin'))
+
+    def test_get_feedbackfeed_student_can_see_examiner_comment_visible_to_students_true(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        examiner = UserBuilder2(fullname='John Doe').user
+        time = timezone.now()
+        feedbackset_builder = FeedbackSetBuilder.make(
+            group__assignment__first_deadline=time,
+            deadline_datetime = time
+        )
+        feedbackset_builder.add_groupcomment(
+            user=examiner,
+            user_role='examiner',
+            instant_publish=True,
+            visible_for_students=True,
+            text="hello world",
+            published_datetime=timezone.now()
+        )
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=janedoe,
+                                                                 group=janedoe)
+        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
+
+    def test_get_feedbackfeed_student_can_not_see_examiner_comment_visible_to_students_false(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        examiner = UserBuilder2(fullname='John Doe').user
+        time = timezone.now()
+        feedbackset_builder = FeedbackSetBuilder.make(
+            group__assignment__first_deadline=time,
+            deadline_datetime = time
+        )
+        feedbackset_builder.add_groupcomment(
+            user=examiner,
+            user_role='examiner',
+            instant_publish=True,
+            visible_for_students=False,
+            text="hello world",
+            published_datetime=timezone.now()
+        )
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=janedoe,
+                                                                 group=janedoe)
+        self.assertFalse(selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
