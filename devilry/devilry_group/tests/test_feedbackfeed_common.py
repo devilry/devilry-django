@@ -307,15 +307,119 @@ class TestFeedbackFeedMixin(object):
         role = selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals('({})'.format(groupcomment_builder.get_object().user_role), role)
 
-    def test_get_feedbackset_event_deadline_created(self):
-        pass
+    def test_get_feedbackfeed_event_without_any_deadlines_created(self):
+        # Checks that when a feedbackset has been created and no first deadlines given, either on Assignment
+        # or FeedbackSet, no 'created event' is rendered to template.
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        feedbackset_builder = FeedbackSetBuilder.make()
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
+        self.assertFalse(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
-    def test_get_feedbackset_event_deadline_expired(self):
-        pass
+    def test_get_feedbackfeed_event_without_any_deadlines_expired(self):
+        # Checks that when a feedbackset has been created and no first deadlines given, either on Assignment
+        # or FeedbackSet, no 'expired event' is rendered to template.
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        feedbackset_builder = FeedbackSetBuilder.make()
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
+        self.assertFalse(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
+
+    def test_get_feedbackfeed_event_with_assignment_first_deadline_created(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        feedbackset_builder = FeedbackSetBuilder.make(
+            group__assignment__first_deadline=timezone.now()+timezone.timedelta(days=1),
+            deadline_datetime=timezone.now()+timezone.timedelta(days=1))
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
+        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+
+    def test_get_feedbackfeed_event_with_assignment_first_deadline_expired(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        feedbackset_builder = FeedbackSetBuilder.make(
+            group__assignment__first_deadline=timezone.now()-timezone.timedelta(days=1),
+            deadline_datetime=timezone.now()-timezone.timedelta(days=1))
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
+        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
+
+    def test_get_feedbackfeed_event_without_assignment_first_deadline_created(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        feedbackset_builder = FeedbackSetBuilder.make(
+            deadline_datetime=timezone.now()+timezone.timedelta(days=1))
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
+        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+
+    def test_get_feedbackfeed_event_without_assignment_first_deadline_created(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        feedbackset_builder = FeedbackSetBuilder.make(
+            deadline_datetime=timezone.now()-timezone.timedelta(days=1))
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
+        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
+
+    def test_get_feedbackfeed_event_without_feedbackfeed_deadline_datetime_created(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        feedbackset_builder = FeedbackSetBuilder.make(
+            group__assignment__first_deadline=timezone.now()+timezone.timedelta(days=1))
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
+        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+
+    def test_get_feedbackfeed_event_without_feedbackfeed_deadline_datetime_expired(self):
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        feedbackset_builder = FeedbackSetBuilder.make(
+            group__assignment__first_deadline=timezone.now()-timezone.timedelta(days=1))
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
+        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
 
     def test_get_feedbackset_event_delivery_passed(self):
-        pass
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        deadline = timezone.now()-timezone.timedelta(days=1)
+        feedbackset_builder = FeedbackSetBuilder.make(
+            group__assignment__first_deadline=deadline,
+            group__assignment__max_points=10,
+            group__assignment__passing_grade_min_points=5,
+            published_datetime=timezone.now(),
+            points=10,
+            deadline_datetime=deadline
+        )
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
+        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-passed'))
 
     def test_get_feedbackset_event_delivery_failed(self):
-        pass
-
+        requestuser = UserBuilder2().user
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        feedbackset_builder = FeedbackSetBuilder.make(
+            group__assignment__first_deadline=timezone.now()+timezone.timedelta(days=1),
+            group__assignment__max_points=10,
+            group__assignment__passing_grade_min_points=5,
+            published_datetime=timezone.now(),
+            deadline_datetime=timezone.now()+timezone.timedelta(days=1),
+            points=1
+        )
+        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
+        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-failed'))
