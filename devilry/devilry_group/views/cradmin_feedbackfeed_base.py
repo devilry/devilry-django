@@ -53,11 +53,17 @@ class FeedbackFeedBaseView(create.CreateView):
     def __add_announcements_to_timeline(self, group, feedbacksets, timeline):
         if len(feedbacksets) == 0:
             return group.assignment.first_deadline, timeline
+
         first_feedbackset = feedbacksets[0]
         last_deadline = first_feedbackset.deadline_datetime
+
         for index, feedbackset in enumerate(feedbacksets):
             if index == 0:
-                deadline_datetime = group.assignment.first_deadline
+                if group.assignment.first_deadline is not None:
+                    deadline_datetime = group.assignment.first_deadline
+                else:
+                    deadline_datetime = feedbackset.deadline_datetime
+                # deadline_datetime = group.assignment.first_deadline
             else:
                 deadline_datetime = feedbackset.deadline_datetime
             if deadline_datetime not in timeline.keys():
@@ -68,12 +74,22 @@ class FeedbackFeedBaseView(create.CreateView):
             if feedbackset.created_datetime not in timeline.keys():
                 timeline[feedbackset.created_datetime] = []
 
+            # Add available first_deadline, either assignment.first_deadline or
+            # feedbackset.deadline_datetime
             if group.assignment.first_deadline is not None:
-                if deadline_datetime < group.assignment.first_deadline:
+                if deadline_datetime <= group.assignment.first_deadline:
                     timeline[feedbackset.created_datetime].append({
                         "type": "deadline_created",
                         "obj": group.assignment.first_deadline,
                         "user": first_feedbackset.created_by
+                    })
+                    first_feedbackset = feedbackset
+            elif feedbackset.deadline_datetime is not None:
+                if deadline_datetime <= feedbackset.deadline_datetime:
+                    timeline[feedbackset.created_datetime].append({
+                        "type": "deadline_created",
+                        "obj": feedbackset.deadline_datetime,
+                        "user": feedbackset.created_by
                     })
                     first_feedbackset = feedbackset
             elif feedbackset is not feedbacksets[0]:
