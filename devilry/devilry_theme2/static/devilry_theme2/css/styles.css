@@ -10495,7 +10495,7 @@ label.radio {
   padding-top: 1.0em;
   /**/
 }
-.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .comment-meta {
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-meta {
   word-break: break-all;
   white-space: normal;
   float: left;
@@ -10503,7 +10503,7 @@ label.radio {
   font-size: 1.2em;
   display: inline-block;
 }
-.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .comment-created-by {
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-created-by {
   word-break: break-all;
   white-space: normal;
   float: left;
@@ -10512,7 +10512,7 @@ label.radio {
   display: inline-block;
   font-weight: bold;
 }
-.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .comment-created-by-role {
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-created-by-role {
   word-break: break-all;
   white-space: normal;
   float: left;
@@ -10520,7 +10520,7 @@ label.radio {
   font-size: 1.2em;
   display: inline-block;
 }
-.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .comment-created-date {
+.devilry-group-feedbackfeed-comment .devilry-group-feedbackfeed-comment-content .devilry-group-comment-published-date {
   word-break: break-all;
   white-space: normal;
   float: left;
@@ -10600,34 +10600,6 @@ a.badge-text-new:hover {
 }
 .devilry-group-feedbackfeed-badge-text:after {
   clear: both;
-}
-/*
-Event messages such as passed, failed and general messages between comments.
-*/
-.event-message {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  color: #333333;
-  font-size: 1.0em;
-}
-.event-message-passed {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  color: #333333;
-  font-size: 1.0em;
-  color: #5d8c08;
-  border-bottom: 1px solid #999999;
-}
-.event-message-failed {
-  margin-left: 3.0em;
-  margin-top: 4.0em;
-  margin-bottom: 4.0em;
-  color: #333333;
-  font-size: 1.0em;
-  color: #9b0d28;
-  border-bottom: 1px solid #999999;
 }
 /*
 Buttons
@@ -11469,7 +11441,7 @@ fieldset[disabled] .button_student {
   vertical-align: middle;
   text-transform: uppercase;
 }
-.devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-current-current-deadline.devilry-group-feedbackfeed-current-current-deadline-expired {
+.devilry-group-feedbackfeed-header .devilry-group-feedbackfeed-current-deadline-expired {
   font-weight: bold;
   color: #971009;
 }
@@ -11524,6 +11496,50 @@ fieldset[disabled] .button_student {
 }
 .devilry-group-feedbackfeed-sidebar dl dd i.examiner-file-icon {
   color: #055986;
+}
+.devilry-group-feedbackfeed-feed {
+  /*
+   Event messages such as passed, failed and general messages between comments.
+   */
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message {
+  margin-left: 3.0em;
+  margin-top: 4.0em;
+  margin-bottom: 4.0em;
+  color: #333333;
+  font-size: 1.0em;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-created {
+  margin-left: 3.0em;
+  margin-top: 4.0em;
+  margin-bottom: 4.0em;
+  color: #333333;
+  font-size: 1.0em;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-deadline-expired {
+  margin-left: 3.0em;
+  margin-top: 4.0em;
+  margin-bottom: 4.0em;
+  color: #333333;
+  font-size: 1.0em;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-passed {
+  margin-left: 3.0em;
+  margin-top: 4.0em;
+  margin-bottom: 4.0em;
+  color: #333333;
+  font-size: 1.0em;
+  color: #5d8c08;
+  border-bottom: 1px solid #999999;
+}
+.devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-event-message-failed {
+  margin-left: 3.0em;
+  margin-top: 4.0em;
+  margin-bottom: 4.0em;
+  color: #333333;
+  font-size: 1.0em;
+  color: #9b0d28;
+  border-bottom: 1px solid #999999;
 }
 .devilry-group-feedbackfeed-feed .devilry-group-feedbackfeed-feed-uploaded-file-tag {
   display: inline-block;

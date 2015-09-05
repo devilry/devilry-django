@@ -53,32 +53,56 @@ class FeedbackFeedBaseView(create.CreateView):
     def __add_announcements_to_timeline(self, group, feedbacksets, timeline):
         if len(feedbacksets) == 0:
             return group.assignment.first_deadline, timeline
+
         first_feedbackset = feedbacksets[0]
         last_deadline = first_feedbackset.deadline_datetime
-        for feedbackset in feedbacksets:
-            if feedbackset.deadline_datetime not in timeline.keys():
-                timeline[feedbackset.deadline_datetime] = []
-            timeline[feedbackset.deadline_datetime].append({
+
+        for index, feedbackset in enumerate(feedbacksets):
+            if index == 0:
+                if group.assignment.first_deadline is not None:
+                    deadline_datetime = group.assignment.first_deadline
+                else:
+                    deadline_datetime = feedbackset.deadline_datetime
+                # deadline_datetime = group.assignment.first_deadline
+            else:
+                deadline_datetime = feedbackset.deadline_datetime
+            if deadline_datetime not in timeline.keys():
+                timeline[deadline_datetime] = []
+            timeline[deadline_datetime].append({
                 "type": "deadline_expired"
             })
             if feedbackset.created_datetime not in timeline.keys():
                 timeline[feedbackset.created_datetime] = []
 
-            if feedbackset.deadline_datetime < first_feedbackset.deadline_datetime:
-                timeline[feedbackset.created_datetime].append({
-                    "type": "deadline_created",
-                    "obj": first_feedbackset.deadline_datetime,
-                    "user": first_feedbackset.created_by
-                })
-                first_feedbackset = feedbackset
+            # Add available first_deadline, either assignment.first_deadline or
+            # feedbackset.deadline_datetime
+            if group.assignment.first_deadline is not None:
+                if deadline_datetime <= group.assignment.first_deadline:
+                    timeline[feedbackset.created_datetime].append({
+                        "type": "deadline_created",
+                        "obj": group.assignment.first_deadline,
+                        "user": first_feedbackset.created_by
+                    })
+                    first_feedbackset = feedbackset
+            elif feedbackset.deadline_datetime is not None:
+                if deadline_datetime <= feedbackset.deadline_datetime:
+                    timeline[feedbackset.created_datetime].append({
+                        "type": "deadline_created",
+                        "obj": feedbackset.deadline_datetime,
+                        "user": feedbackset.created_by
+                    })
+                    first_feedbackset = feedbackset
             elif feedbackset is not feedbacksets[0]:
                 timeline[feedbackset.created_datetime].append({
                     "type": "deadline_created",
-                    "obj": feedbackset.deadline_datetime,
+                    "obj": deadline_datetime,
                     "user": feedbackset.created_by
                 })
-            if feedbackset.deadline_datetime > last_deadline:
-                last_deadline = feedbackset.deadline_datetime
+
+            if deadline_datetime is None or last_deadline is None:
+                pass
+            elif deadline_datetime > last_deadline:
+                last_deadline = deadline_datetime
 
             if feedbackset.published_datetime is not None:
                 if feedbackset.published_datetime not in timeline.keys():
@@ -90,7 +114,16 @@ class FeedbackFeedBaseView(create.CreateView):
         return last_deadline, timeline
 
     def __sort_timeline(self, timeline):
-        sorted_timeline = collections.OrderedDict(sorted(timeline.items()))
+        def compare_timeline_items(a, b):
+            datetime_a = a[0]
+            datetime_b = b[0]
+            if datetime_a is None:
+                datetime_a = datetime.datetime(1970, 1, 1)
+            if datetime_b is None:
+                datetime_b = datetime.datetime(1970, 1, 1)
+            return cmp(datetime_a, datetime_b)
+
+        sorted_timeline = collections.OrderedDict(sorted(timeline.items(), compare_timeline_items))
         return sorted_timeline
 
     def __build_timeline(self, group, feedbacksets):
@@ -187,50 +220,6 @@ class FeedbackFeedBaseView(create.CreateView):
         object.published_datetime = time
 
         return object
-
-    # def save_object(self, form, commit=True):
-    #     print '\nsave object from form\n'
-    #     assignment_group = self.request.cradmin_role
-    #     user = self.request.user
-    #     time = datetime.datetime.now()
-    #
-    #     object = form.save(commit=False)
-    #     object.user = user
-    #     object.comment_type = 'groupcomment'
-    #     object.feedback_set = assignment_group.feedbackset_set.latest('created_datetime')
-    #     object.published_datetime = time
-    #
-    #     if assignment_group.is_candidate(user):
-    #         object.user_role = 'student'
-    #         object.instant_publish = True
-    #         object.visible_for_students = True
-    #     elif assignment_group.is_examiner(user):
-    #         object.user_role = 'examiner'
-    #         print 'is examiner'
-    #
-    #         if form.data.get('examiner_add_comment_for_examiners'):
-    #             print 'examiner_add_comment_for_examiners'
-    #             object.instant_publish = True
-    #             object.visible_for_students = False
-    #         elif form.data.get('examiner_add_public_comment'):
-    #             print 'examiner_add_public_comment'
-    #             object.instant_publish = True
-    #             object.visible_for_students = True
-    #         elif form.data.get('examiner_add_comment_to_feedback_draft'):
-    #             print 'examiner_add_comment_to_feedback_draft'
-    #             object.instant_publish = False
-    #             object.visible_for_students = False
-    #     elif assignment_group.is_admin_or_superadmin(user):
-    #         object.user_role = 'admin'
-    #         object.instant_publish = True
-    #         object.visible_for_students = True
-    #     else:
-    #         raise PermissionDenied("User attempting to post comment has no verified role in the assignment group!")
-    #
-    #     if commit:
-    #         object.save()
-    #         self._convert_temporary_files_to_comment_files(form, object)
-    #     return object
 
     def get_collectionqueryset(self):
         return TemporaryFileCollection.objects \

@@ -9,12 +9,17 @@
     text-transform: uppercase;
 
   }
-  .devilry-group-feedbackfeed-current-current-deadline {
-    &.devilry-group-feedbackfeed-current-current-deadline-expired {
+
+  .devilry-group-feedbackfeed-header-assignment{}
+
+  .devilry-group-feedbackfeed-header-subject-period{}
+
+  .devilry-group-feedbackfeed-current-deadline {}
+
+  .devilry-group-feedbackfeed-current-deadline-expired {
       font-weight: bold;
       color: @after-deadline-color;
     }
-  }
 }
 
 .devilry-group-feedbackfeed-sidebar {
@@ -80,6 +85,43 @@
 
 
 .devilry-group-feedbackfeed-feed {
+
+   /*
+   Event messages such as passed, failed and general messages between comments.
+   */
+    .devilry-group-feedbackfeed-event-message{
+        margin-left: 3.0em;
+        margin-top: 4.0em;
+        margin-bottom: 4.0em;
+        color: #333333;
+        font-size: 1.0em;
+    }
+
+    .event-spacing{
+        //margin-top: 4.0em;
+        //margin-bottom: 4.0em;
+    }
+
+    .devilry-group-feedbackfeed-event-message-deadline-created{
+      .devilry-group-feedbackfeed-event-message;
+    }
+
+    .devilry-group-feedbackfeed-event-message-deadline-expired{
+      .devilry-group-feedbackfeed-event-message;
+    }
+
+    .devilry-group-feedbackfeed-event-message-passed{
+        .devilry-group-feedbackfeed-event-message;
+        color: #5d8c08;
+        border-bottom: 1px solid #999999;
+    }
+
+    .devilry-group-feedbackfeed-event-message-failed{
+        .devilry-group-feedbackfeed-event-message;
+        color:#9b0d28;
+        border-bottom: 1px solid #999999;
+    }
+
   .devilry-group-feedbackfeed-feed-uploaded-file-tag{
     display: inline-block;
     float:right;
