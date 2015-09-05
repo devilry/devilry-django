@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 
 class Candidate(models.Model):
@@ -31,6 +32,9 @@ class Candidate(models.Model):
         max_length=30, blank=True, null=True,
         help_text='An optional candidate id. This can be anything as long as it '
                   'is less than 30 characters. Used to show the user on anonymous assignmens.')
+    automatic_anonymous_id = models.CharField(
+        max_length=255, blank=True, null=False, default='',
+        help_text='An automatically generated anonymous ID.')
 
     def __unicode__(self):
         return 'Candiate id={id}, student={student}, group={group}'.format(
@@ -40,3 +44,6 @@ class Candidate(models.Model):
 
     def get_student_displayname(self):
         return self.student.get_full_name()
+
+    def get_anonymous_displayname(self):
+        return self.candidate_id or self.automatic_anonymous_id or _('Anonymous ID missing')
