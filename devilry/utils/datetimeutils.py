@@ -21,3 +21,7 @@ def default_timezone_datetime(*args, **kwargs):
     return timezone.make_aware(
         datetime.datetime(*args, **kwargs),
         timezone.get_default_timezone())
+
+
+def isoformat_noseconds(datetimeobject):
+    return datetimeobject.strftime('%Y-%m-%d %H:%M')
