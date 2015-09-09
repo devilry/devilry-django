@@ -4,12 +4,12 @@
 {% load humanize %}
 
 {% block title %}
-    {{ request.cradmin_role.get_path }}
+    {{ assignment.get_path }}
 {% endblock title %}
 
 {% block pageheader-inner %}
     <h1>
-        {{ request.cradmin_role.long_name }}
+        {{ assignment.long_name }}
     </h1>
 {% endblock pageheader-inner %}
 
