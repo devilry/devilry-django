@@ -51,7 +51,6 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
             .last()
         if last_assignment and last_assignment.first_deadline:
             for days_forward in range(7, (7*4)+1, 7):
-                print(days_forward)
                 suggested_deadline = last_assignment.first_deadline + timedelta(days=days_forward)
                 suggested_deadlines.append(suggested_deadline)
         return suggested_deadlines
