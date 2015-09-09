@@ -8164,7 +8164,7 @@ ul#django_cradmin_messages {
   margin: 0 0 10px 0;
 }
 body.django-cradmin-formview-page ul#django_cradmin_messages {
-  max-width: 768px;
+  max-width: none;
 }
 .container-focus {
   padding-top: 40px;
@@ -8173,7 +8173,7 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 }
 .django-cradmin-formsized-wrapper,
 .django-cradmin-form-wrapper .django-cradmin-form {
-  max-width: 768px;
+  max-width: none;
   margin-left: auto;
   margin-right: auto;
 }

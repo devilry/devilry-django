@@ -1,9 +1,21 @@
 from datetime import datetime, timedelta
 from django.template import defaultfilters
 from django.test import TestCase
+from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from devilry.devilry_admin.views.period import createassignment
 from devilry.project.develop.testhelpers import corebuilder
+
+
+class TestCreateSuggestedName(TestCase):
+    def test_no_number(self):
+        self.assertEqual(createassignment.create_suggested_name('test'), '')
+
+    def test_number_in_the_middle(self):
+        self.assertEqual(createassignment.create_suggested_name('Assignment 10 test'), '')
+
+    def test_suffixed_with_number(self):
+        self.assertEqual(createassignment.create_suggested_name('test10'), 'test11')
 
 
 class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -16,6 +28,44 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(mockresponse.selector.exists('input[name=long_name]'))
         self.assertTrue(mockresponse.selector.exists('input[name=short_name]'))
         self.assertTrue(mockresponse.selector.exists('input[name=first_deadline]'))
+
+    def test_get_suggested_assignment_long_name_first_assignment(self):
+        testperiod = corebuilder.PeriodBuilder.make().period
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod)
+        self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), '')
+
+    def test_get_suggested_assignment_long_name_previous_assignment_not_suffixed_with_number(self):
+        testperiod = corebuilder.AssignmentBuilder.make(long_name='Test').assignment.period
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod)
+        self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), '')
+
+    def test_get_suggested_assignment_long_name_previous_assignment_suffixed_with_number(self):
+        testperiod = corebuilder.AssignmentBuilder.make(
+            long_name='Test1', first_deadline=timezone.now()).assignment.period
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod)
+        self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), 'Test2')
+
+    def test_get_suggested_assignment_short_name_first_assignment(self):
+        testperiod = corebuilder.PeriodBuilder.make().period
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod)
+        self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
+
+    def test_get_suggested_assignment_short_name_previous_assignment_not_suffixed_with_number(self):
+        testperiod = corebuilder.AssignmentBuilder.make(short_name='Test').assignment.period
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod)
+        self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
+
+    def test_get_suggested_assignment_short_name_previous_assignment_suffixed_with_number(self):
+        testperiod = corebuilder.AssignmentBuilder.make(
+            short_name='test1', first_deadline=timezone.now()).assignment.period
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testperiod)
+        self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), 'test2')
 
     def test_get_suggested_deadlines_first_assignment(self):
         testperiod = corebuilder.PeriodBuilder.make().period

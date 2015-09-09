@@ -1,4 +1,5 @@
 from datetime import timedelta
+import re
 from crispy_forms import layout
 from django import forms
 from django.template.loader import render_to_string
@@ -8,6 +9,17 @@ from django_cradmin.viewhelpers import crudbase
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 from devilry.apps.core.models import Assignment
+
+
+def create_suggested_name(name):
+    match = re.match(r'^.+?(?P<suffixnumber>\d+)$', name)
+    if match:
+        suffixnumber = int(match.group(1))
+        prefix = name[:match.start(1)]
+        suggested_name = u'{}{}'.format(prefix, suffixnumber + 1)
+        return suggested_name
+    else:
+        return ''
 
 
 class CreateForm(forms.ModelForm):
@@ -42,16 +54,26 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     suggested_deadlines_template_name = 'devilry_admin/period/createassignment/suggested_deadlines.django.html'
     helpbox_template_name = 'devilry_admin/period/createassignment/helpbox.django.html'
 
-    def __get_suggested_deadlines(self):
-        suggested_deadlines = []
+    def dispatch(self, *args, **kwargs):
         period = self.request.cradmin_role
-        last_assignment = period.assignments\
+        self.previous_assignment = period.assignments\
             .exclude(first_deadline=None)\
             .order_by('first_deadline')\
             .last()
-        if last_assignment and last_assignment.first_deadline:
+        return super(CreateView, self).dispatch(*args, **kwargs)
+
+    def get_initial(self):
+        initial = super(CreateView, self).get_initial()
+        if self.previous_assignment:
+            initial['long_name'] = create_suggested_name(self.previous_assignment.long_name)
+            initial['short_name'] = create_suggested_name(self.previous_assignment.short_name)
+        return initial
+
+    def __get_suggested_deadlines(self):
+        suggested_deadlines = []
+        if self.previous_assignment:
             for days_forward in range(7, (7*4)+1, 7):
-                suggested_deadline = last_assignment.first_deadline + timedelta(days=days_forward)
+                suggested_deadline = self.previous_assignment.first_deadline + timedelta(days=days_forward)
                 suggested_deadlines.append(suggested_deadline)
         return suggested_deadlines
 
@@ -62,9 +84,6 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
 
     def __render_help_box(self):
         return render_to_string(self.helpbox_template_name)
-
-    def get_form_css_classes(self):
-        return super(CreateView, self).get_form_css_classes() + ['django-cradmin-form-fullwidth']
 
     def get_field_layout(self):
         return [
