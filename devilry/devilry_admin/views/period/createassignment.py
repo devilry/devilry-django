@@ -1,5 +1,7 @@
+from datetime import timedelta
 from crispy_forms import layout
 from django import forms
+from django.template.loader import render_to_string
 from django_cradmin import crapp
 from django_cradmin.viewhelpers import create
 from django_cradmin.viewhelpers import crudbase
@@ -41,17 +43,16 @@ class CreateForm(forms.ModelForm):
         # self.period = kwargs.pop('period')
         super(CreateForm, self).__init__(*args, **kwargs)
         self.fields['long_name'].help_text = _(
-            'Type the name of your assignment. Devilry will automatically suggest a name '
-            'for you if the name of the previous assignment ends with a number.')
+            'Type the name of your assignment.')
         self.fields['short_name'].help_text = _(
             'Up to 20 letters of lowercase english letters (a-z), '
             'numbers, underscore ("_") and hyphen ("-").')
         self.fields['first_deadline'].widget = DateTimePickerWidget()
         self.fields['first_deadline'].required = True
+        self.fields['first_deadline'].label = _('Set first deadline')
         self.fields['first_deadline'].help_text = _(
             'The first deadline for this assignment. This is shared by all the '
-            'students on the assignment. You can add individual deadlines '
-            'to give single students/groups an extended deadline.'
+            'students on the assignment.'
         )
         # self.__init_studentsetup()
 
@@ -59,6 +60,33 @@ class CreateForm(forms.ModelForm):
 class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     form_class = CreateForm
     model = Assignment
+    suggested_deadlines_template_name = 'devilry_admin/period/createassignment/suggested_deadlines.django.html'
+    helpbox_template_name = 'devilry_admin/period/createassignment/helpbox.django.html'
+
+    def __get_suggested_deadlines(self):
+        suggested_deadlines = []
+        period = self.request.cradmin_role
+        last_assignment = period.assignments\
+            .exclude(first_deadline=None)\
+            .order_by('first_deadline')\
+            .last()
+        if last_assignment and last_assignment.first_deadline:
+            for days_forward in range(7, (7*4)+1, 7):
+                print(days_forward)
+                suggested_deadline = last_assignment.first_deadline + timedelta(days=days_forward)
+                suggested_deadlines.append(suggested_deadline)
+        return suggested_deadlines
+
+    def __render_suggested_deadlines_box(self):
+        return render_to_string(self.suggested_deadlines_template_name, {
+            'suggested_deadlines': self.__get_suggested_deadlines()
+        })
+
+    def __render_help_box(self):
+        return render_to_string(self.helpbox_template_name)
+
+    def get_form_css_classes(self):
+        return super(CreateView, self).get_form_css_classes() + ['django-cradmin-form-fullwidth']
 
     def get_field_layout(self):
         return [
@@ -66,32 +94,31 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
                 layout.Div(
                     layout.Div(
                         layout.Field('long_name', placeholder=_('Example: Obligatory assignment 1'),
-                                     css_class='input-lg'),
+                                     focusonme='focusonme'),
+                        layout.Field('short_name', placeholder=_('Example: oblig1')),
                         css_class='col-sm-7'
                     ),
                     layout.Div(
-                        layout.Field('short_name', placeholder=_('Example: oblig1')),
+                        layout.HTML(self.__render_help_box()),
                         css_class='col-sm-5'
                     ),
                     css_class='row'
                 ),
+                # layout.HTML('<hr>'),
                 layout.Div(
                     layout.Div(
                         layout.Field('first_deadline'),
-                        css_class='col-sm-7'
+                        css_class='col-sm-6'
                     ),
-                    layout.Div(
-                        layout.Div(
-                            layout.HTML('TODO: Suggested deadlines'),
-                            css_class='form-group'
-                        ),
-                        css_class='col-sm-5'
-                    ),
+                    layout.HTML(self.__render_suggested_deadlines_box()),
                     css_class='row'
                 ),
                 css_class='cradmin-globalfields'
             )
         ]
+
+    def get_form_helper(self):
+        return
 
 
 class App(crapp.App):
