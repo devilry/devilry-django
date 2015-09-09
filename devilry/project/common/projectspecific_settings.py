@@ -110,3 +110,6 @@ DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = tuple()
 
 #: Enable MathJax?
 DEVILRY_ENABLE_MATHJAX = True
+
+#: The number of minutes to delay publishing an assignment after it is created.
+DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES = 60 * 6
