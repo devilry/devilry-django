@@ -16,6 +16,7 @@ class Overview(DetailRoleView):
         context = super(Overview, self).get_context_data(**kwargs)
         context['assignmentgroups_count'] = assignment.assignmentgroups.count()
         context['candidates_count'] = coremodels.Candidate.objects.filter(assignment_group__parentnode=assignment).count()
+        context['administrator_count'] = len(assignment.get_all_admins())
         return context
 
 
