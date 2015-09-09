@@ -81,3 +81,18 @@
   clip: rect(0,0,0,0);
   border: 0;
 }
+
+
+.cradminFormControl() {
+  border: 1px solid @cradmin-form-field-inactive-border-color;
+  border-radius: 4px;
+  outline: none;
+  box-shadow: none;
+  //padding: 10px 12px;
+  background: @cradmin-form-field-inactive-bg;
+  &:focus {
+    background: @cradmin-form-field-focus-bg;
+    border-color: @cradmin-form-field-focus-border-color;
+    box-shadow: @cradmin-form-field-focus-box-shadow;
+  }
+}
