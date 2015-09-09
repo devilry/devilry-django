@@ -8182,23 +8182,9 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
   margin-left: 0;
   margin-right: 0;
 }
-.django-cradmin-form-wrapper {
-  padding-bottom: 150px;
-}
-@media (min-width: 768px) {
-  .django-cradmin-form-wrapper {
-    padding-bottom: 80px;
-  }
-}
 .django-cradmin-form-wrapper .django-cradmin-form {
   background: #ffffff;
   padding-bottom: 0;
-  /**
-      # .cradmin-focusfield-screenheight
-      Scale the field focusfield to the screen height.
-      Uses css media queries just like the bootstrap responsive grid does
-      for the screen width.
-      */
 }
 .django-cradmin-form-wrapper .django-cradmin-form label {
   font-weight: normal;
@@ -8249,45 +8235,6 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 .django-cradmin-form-wrapper .django-cradmin-form .cradmin-globalfields .form-group:last-child {
   padding-bottom: 30px;
 }
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=text],
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=email],
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=number],
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=url],
-.django-cradmin-form-wrapper .django-cradmin-form .form-group textarea,
-.django-cradmin-form-wrapper .django-cradmin-form .form-group .django-cradmin-bulkfileupload,
-.django-cradmin-form-wrapper .django-cradmin-form .form-group .cradmin-div-styled-as-textarea,
-.django-cradmin-form-wrapper .django-cradmin-form .form-group select {
-  border: 1px solid #dddddd;
-  border-radius: 4px;
-  outline: none;
-  box-shadow: none;
-  padding: 10px 12px;
-  background: #fafafa;
-}
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=text]:focus,
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=email]:focus,
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=number]:focus,
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=url]:focus,
-.django-cradmin-form-wrapper .django-cradmin-form .form-group textarea:focus,
-.django-cradmin-form-wrapper .django-cradmin-form .form-group .django-cradmin-bulkfileupload:focus,
-.django-cradmin-form-wrapper .django-cradmin-form .form-group .cradmin-div-styled-as-textarea:focus,
-.django-cradmin-form-wrapper .django-cradmin-form .form-group select:focus {
-  background: #e1edf4;
-  border-color: #bcd7e6;
-  box-shadow: none;
-}
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=text],
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=email],
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=number],
-.django-cradmin-form-wrapper .django-cradmin-form .form-group input[type=url],
-.django-cradmin-form-wrapper .django-cradmin-form .form-group textarea {
-  height: auto;
-  margin: 0;
-  text-align: left;
-}
-.django-cradmin-form-wrapper .django-cradmin-form .form-group textarea.cradmin-textarea-small {
-  height: 60px;
-}
 .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield .controls {
   padding: 20px 15px 4px 15px;
 }
@@ -8296,6 +8243,8 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=number],
 .django-cradmin-form-wrapper .django-cradmin-form .cradmin-focusfield.cradmin-focusfield-lg .form-group input[type=url] {
   font-size: 24px;
+  padding: 10px 12px;
+  height: auto;
 }
 form .alert-block.alert-danger ul {
   list-style: none;
@@ -8340,6 +8289,85 @@ form .alert-block.alert-danger ul li {
 .django-cradmin-form-collapsed-section .django-cradmin-form-collapsed-section-header {
   padding-left: 15px;
   padding-right: 15px;
+}
+.django-cradmin-split-timepicker:before,
+.django-cradmin-split-timepicker:after {
+  content: " ";
+  display: table;
+}
+.django-cradmin-split-timepicker:after {
+  clear: both;
+}
+.django-cradmin-split-timepicker:before,
+.django-cradmin-split-timepicker:after {
+  content: " ";
+  display: table;
+}
+.django-cradmin-split-timepicker:after {
+  clear: both;
+}
+.django-cradmin-split-timepicker .django-cradmin-split-timepicker-hour,
+.django-cradmin-split-timepicker .django-cradmin-split-timepicker-minute {
+  width: 50%;
+  float: left;
+}
+.django-cradmin-split-timepicker .django-cradmin-split-timepicker-hour {
+  padding-right: 5px;
+}
+.django-cradmin-split-timepicker .django-cradmin-split-timepicker-minute {
+  padding-left: 5px;
+}
+.django-cradmin-datetimepicker-split-time {
+  max-width: 270px;
+}
+.django-cradmin-datetimepicker-split-time:before,
+.django-cradmin-datetimepicker-split-time:after {
+  content: " ";
+  display: table;
+}
+.django-cradmin-datetimepicker-split-time:after {
+  clear: both;
+}
+.django-cradmin-datetimepicker-split-time:before,
+.django-cradmin-datetimepicker-split-time:after {
+  content: " ";
+  display: table;
+}
+.django-cradmin-datetimepicker-split-time:after {
+  clear: both;
+}
+.django-cradmin-datetimepicker-split-time .django-cradmin-datepicker {
+  float: left;
+  width: 50%;
+  padding-right: 5px;
+}
+.django-cradmin-datetimepicker-split-time .django-cradmin-split-timepicker {
+  float: right;
+  width: 50%;
+  padding-left: 5px;
+}
+.django-cradmin-datetimepicker-split-time.django-cradmin-datetimepicker-split-time-fluid {
+  max-width: none;
+}
+.form-control,
+.cradmin-div-styled-as-textarea {
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  outline: none;
+  box-shadow: none;
+  background: #fafafa;
+}
+.form-control:focus,
+.cradmin-div-styled-as-textarea:focus {
+  background: #e1edf4;
+  border-color: #bcd7e6;
+  box-shadow: none;
+}
+.cradmin-div-styled-as-textarea {
+  padding: 6px 12px;
+}
+textarea.cradmin-textarea-small {
+  height: 60px;
 }
 table.table.django-cradmin-table {
   margin: 0;
@@ -9384,6 +9412,433 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
     float: right;
     margin-top: -30px;
   }
+}
+@keyframes djangoCradminDatepickerPreviewChangeanimation {
+  from {
+    opacity: 1.0;
+  }
+  to {
+    opacity: 0.5;
+  }
+}
+.django-cradmin-datepicker .django-cradmin-datepicker-preview {
+  display: block;
+  margin-bottom: 10px;
+  margin-right: 0;
+}
+@media (min-width: 768px) {
+  .django-cradmin-datepicker .django-cradmin-datepicker-preview {
+    float: left;
+    margin-right: 12px;
+    padding-top: 7px;
+  }
+}
+.django-cradmin-datepicker .django-cradmin-datepicker-preview.django-cradmin-datepicker-preview-changeanimate {
+  -webkit-animation-name: djangoCradminDatepickerPreviewChangeanimation;
+  animation-name: djangoCradminDatepickerPreviewChangeanimation;
+  -webkit-animation-duration: 0.5s;
+  animation-duration: 0.5s;
+  -webkit-animation-timing-function: ease-in-out;
+  animation-timing-function: ease-in-out;
+  -webkit-animation-direction: alternate;
+  animation-direction: alternate;
+  -webkit-animation-iteration-count: 4;
+  animation-iteration-count: 4;
+}
+.django-cradmin-datetime-selector {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  overflow: hidden;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-backdrop {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: block;
+}
+.django-cradmin-datetime-selector select.form-control {
+  display: inline-block;
+  width: auto;
+}
+@media (min-width: 768px) and (min-height: 555px) {
+  .django-cradmin-datetime-selector select.form-control.django-cradmin-datetime-selector-dayselect {
+    display: none;
+  }
+}
+@media (min-width: 768px) and (min-height: 555px) {
+  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-date-label {
+    display: none;
+  }
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  -webkit-transform: translate(0, 100%);
+  -ms-transform: translate(0, 100%);
+  -o-transform: translate(0, 100%);
+  transform: translate(0, 100%);
+  -webkit-transition: all 0.15s ease-in-out;
+  -o-transition: all 0.15s ease-in-out;
+  transition: all 0.15s ease-in-out;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-closeoverlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page {
+  z-index: 2;
+  position: absolute;
+  background: #ffffff;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page.django-cradmin-datetime-selector-dateview {
+  left: 0;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page.django-cradmin-datetime-selector-timeview {
+  display: none;
+}
+@media (min-width: 768px) and (min-height: 555px) {
+  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page {
+    width: 600px;
+    height: 480px;
+    bottom: 10px;
+    margin-left: -300px;
+  }
+  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page.django-cradmin-datetime-selector-dateview {
+    left: 50%;
+  }
+  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page.django-cradmin-datetime-selector-timeview {
+    display: block;
+    left: 150%;
+  }
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-shortcuts {
+  position: absolute;
+  left: 0;
+  right: 0;
+  text-align: center;
+  bottom: 15px;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 10px 20px;
+  font-size: 20px;
+  color: #777777;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:hover,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:active,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page .django-cradmin-datetime-selector-closebutton:focus {
+  text-decoration: none;
+  color: #377ca8;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview {
+  padding-top: 15px;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-shortcuts .django-cradmin-datetime-selector-shortcuts-todaybutton {
+  display: none;
+}
+@media (min-width: 768px) and (min-height: 555px) {
+  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-shortcuts .django-cradmin-datetime-selector-shortcuts-todaybutton {
+    display: inline-block;
+  }
+  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-shortcuts .django-cradmin-datetime-selector-shortcuts-nowbutton {
+    display: none;
+  }
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper {
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors {
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors .django-cradmin-datetime-selector-timeselectors {
+  margin-top: 15px;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors .django-cradmin-datetime-selector-use-button {
+  margin-top: 15px;
+}
+@media (min-width: 768px) and (min-height: 555px) {
+  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper {
+    display: block;
+    height: auto;
+  }
+  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors {
+    display: block;
+  }
+  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors .django-cradmin-datetime-selector-timeselectors,
+  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview .django-cradmin-datetime-selector-selectors-wrapper .django-cradmin-datetime-selector-selectors .django-cradmin-datetime-selector-use-button {
+    display: none;
+  }
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table {
+  width: 100%;
+  margin: 0;
+  display: none;
+  table-layout: fixed;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 400px;
+}
+@media (min-width: 768px) and (min-height: 555px) {
+  .django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table {
+    display: table;
+  }
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table thead {
+  height: 25px;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table thead tr th {
+  padding: 0 0 6px 0;
+  text-align: center;
+  width: 14.285714285714286%;
+  vertical-align: bottom;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell {
+  margin: 0;
+  background: #ffffff;
+  color: #377ca8;
+  border: none;
+  height: 62.5px;
+  position: relative;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 62.5px;
+  border: none;
+  border-radius: 0;
+  margin: 0;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  font-weight: bold;
+  white-space: nowrap;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button .django-cradmin-datetime-selector-daybuttoncell-label {
+  display: block;
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  right: 0;
+  font-size: 11px;
+  font-weight: normal;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button .django-cradmin-datetime-selector-daybuttoncell-label.django-cradmin-datetime-selector-daybuttoncell-label-today {
+  top: 3px;
+  bottom: auto;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:active,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button.active,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:hover {
+  text-decoration: none;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:focus,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:active:focus {
+  outline: thin dotted;
+  outline: 5px auto -webkit-focus-ring-color;
+  outline-offset: -2px;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-today button {
+  background: #e1edf4;
+  color: #377ca8;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-selected button {
+  background: #2a6082;
+  color: #ffffff;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button {
+  background: #ffffff;
+  color: #777777;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled button {
+  background: #e6e6e6;
+  color: #646464;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled button:hover,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled button:active,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled button:focus {
+  cursor: not-allowed;
+  background: #e6e6e6;
+  color: #646464;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button {
+  background: #cdcdcd;
+  color: #7e7e7e;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button:hover,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button:active,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-disabled.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button:focus {
+  background: #cdcdcd;
+  color: #7e7e7e;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:hover,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-today button:hover,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-selected button:hover,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button:hover,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell button:focus,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-today button:focus,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-selected button:focus,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell.django-cradmin-datetime-selector-daybuttoncell-not-in-current-month button:focus {
+  background: #377ca8;
+  color: #ffffff;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell:first-child {
+  border-left: none;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr td.django-cradmin-datetime-selector-daybuttoncell:last-child {
+  border-right: none;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table tbody tr:last-child td.django-cradmin-datetime-selector-daybuttoncell {
+  border-bottom: none;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview {
+  padding-left: 50px;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-shortcuts {
+  left: 50px;
+  right: 0;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  padding: 0;
+  width: 50px;
+  height: 100%;
+  color: #377ca8;
+  border-radius: 0;
+  margin: 0;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  border-right: 1px solid #e6e6e6;
+  background: none;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton .django-cradmin-datetime-selector-backbutton-icon-outer-wrapper {
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton .django-cradmin-datetime-selector-backbutton-icon-outer-wrapper .django-cradmin-datetime-selector-backbutton-icon-inner-wrapper {
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton .django-cradmin-datetime-selector-backbutton-icon-outer-wrapper .django-cradmin-datetime-selector-backbutton-icon-inner-wrapper .django-cradmin-datetime-selector-backbutton-icon {
+  width: 100%;
+  font-size: 25px;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton:hover,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton:focus,
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview .django-cradmin-datetime-selector-backbutton:active {
+  background: #f2f2f2;
+  color: #316e95;
+  text-decoration: none;
+  outline: 0;
+  background-image: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview-body-wrapper {
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview-body-wrapper .django-cradmin-datetime-selector-timeview-body {
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview-body-wrapper .django-cradmin-datetime-selector-timeview-body .django-cradmin-datetime-selector-datepreview {
+  margin-bottom: 15px;
+}
+.django-cradmin-datetime-selector .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-timeview-body-wrapper .django-cradmin-datetime-selector-timeview-body .django-cradmin-datetime-selector-use-button {
+  margin-left: 5px;
+  vertical-align: bottom;
+}
+.django-cradmin-datetime-selector.django-cradmin-datetime-selector-show {
+  display: block;
+}
+.django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page1 .django-cradmin-datetime-selector-contentwrapper {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+.django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page2 .django-cradmin-datetime-selector-contentwrapper {
+  -webkit-transform: translate(0, 0);
+  -ms-transform: translate(0, 0);
+  -o-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+@media (min-width: 768px) and (min-height: 555px) {
+  .django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page2 .django-cradmin-datetime-selector-contentwrapper {
+    -webkit-transform: translate(-100%, 0);
+    -ms-transform: translate(-100%, 0);
+    -o-transform: translate(-100%, 0);
+    transform: translate(-100%, 0);
+  }
+}
+.django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page3 .django-cradmin-datetime-selector-backdrop {
+  display: none;
+}
+.django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page3 .django-cradmin-datetime-selector-contentwrapper {
+  -webkit-transform: translate(0, 100%);
+  -ms-transform: translate(0, 100%);
+  -o-transform: translate(0, 100%);
+  transform: translate(0, 100%);
+}
+@media (min-width: 768px) and (min-height: 555px) {
+  .django-cradmin-datetime-selector.django-cradmin-datetime-selector-show.django-cradmin-datetime-selector-page3 .django-cradmin-datetime-selector-contentwrapper {
+    -webkit-transform: translate(-100%, 100%);
+    -ms-transform: translate(-100%, 100%);
+    -o-transform: translate(-100%, 100%);
+    transform: translate(-100%, 100%);
+  }
+}
+@media (min-width: 768px) and (min-height: 555px) {
+  .django-cradmin-datetime-selector.django-cradmin-datetime-selector-has-shortcuts .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-page {
+    height: 545px;
+  }
+}
+.django-cradmin-datetime-selector.django-cradmin-datetime-selector-has-shortcuts .django-cradmin-datetime-selector-contentwrapper .django-cradmin-datetime-selector-dateview table.django-cradmin-datetime-selector-table {
+  bottom: 65px;
 }
 @media (min-width: 992px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu {
