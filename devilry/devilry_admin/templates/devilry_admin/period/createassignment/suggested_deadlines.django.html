@@ -1,0 +1,32 @@
+{% load i18n %}
+{% if suggested_deadlines %}
+    <div class="col-sm-1 hidden-xs"></div>
+    <div class="col-sm-5 hidden-xs devilry-vertical-separator-container">
+        <div class="devilry-vertical-separator">
+            <div class="devilry-vertical-separator-line"></div>
+            <span class="devilry-vertical-separator-label">
+                <span class="devilry-vertical-separator-label-inner">
+                    {% trans "or" %}
+                </span>
+            </span>
+        </div>
+        <div class="form-group">
+            <div id="devilry_admin_createassignment_suggested_deadlines"
+                    aria-hidden="true">
+                <label>
+                    {% trans "Select a suggested deadline" %}
+                </label>
+                {% for suggested_deadline in suggested_deadlines %}
+                    <button type="button"
+{#                            tabindex="-1"#}
+                            class="btn btn-default btn-block btn-xs"
+                            django-cradmin-setfieldvalue="{{ suggested_deadline.isoformat }}"
+{#                            django-cradmin-setfieldvalue-move-focus-on-click="id_first_deadline_triggerbutton"#}
+                            django-cradmin-setfieldvalue-field-id="id_first_deadline">
+                        {{ suggested_deadline|date:"DATETIME_FORMAT" }}
+                    </button>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}
