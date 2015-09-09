@@ -2,10 +2,21 @@ from __future__ import unicode_literals
 from django.views.generic import TemplateView
 
 from django_cradmin import crapp
+from django_cradmin.viewhelpers.detail import DetailRoleView
+from devilry.apps.core import models as coremodels
 
 
-class Overview(TemplateView):
+class Overview(DetailRoleView):
+    model = coremodels.Assignment
+    context_object_name = "assignment"
     template_name = 'devilry_admin/assignment/overview.django.html'
+
+    def get_context_data(self, **kwargs):
+        assignment = self.get_object()
+        context = super(Overview, self).get_context_data(**kwargs)
+        context['assignmentgroups_count'] = assignment.assignmentgroups.count()
+        context['candidates_count'] = coremodels.Candidate.objects.filter(assignment_group__parentnode=assignment).count()
+        return context
 
 
 class App(crapp.App):
