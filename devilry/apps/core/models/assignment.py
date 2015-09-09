@@ -1,5 +1,6 @@
 import warnings
 from datetime import datetime
+from django.template import defaultfilters
 
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
@@ -566,18 +567,18 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
         self.first_deadline = self.first_deadline.replace(microsecond=0, tzinfo=None)
 
-        datetimeformat = '%Y-%m-%d %H:%M'
         if self.first_deadline < self.publishing_time:
-            msg = _('Submission date can not be before the publishing time '
-                    '({publishing_time}) of the assignment.')
+            msg = _('First deadline can not be before the publishing time '
+                    '(%(publishing_time)s) of the assignment.')
             raise ValidationError(
-                msg.format(publishing_time=self.publishing_time.strftime(datetimeformat)))
+                msg % {'publishing_time': defaultfilters.date(self.publishing_time, 'DATETIME_FORMAT')})
         if self.first_deadline > self.parentnode.end_time:
-            msg = _("Submission date must be within it's {period_term} ({start_time} - {end_time}).")
-            raise ValidationError(msg.format(
-                period_term=_('period'),
-                start_time=self.parentnode.start_time.strftime(datetimeformat),
-                end_time=self.parentnode.end_time.strftime(datetimeformat)))
+            msg = _("First deadline must be within it's semester (%(start_time)s - %(end_time)s).")
+            raise ValidationError(msg % {
+                'period_term': _('period'),
+                'start_time': defaultfilters.date(self.parentnode.start_time, 'DATETIME_FORMAT'),
+                'end_time': defaultfilters.date(self.parentnode.end_time, 'DATETIME_FORMAT')
+            })
 
     def clean(self, *args, **kwargs):
         """Validate the assignment.
