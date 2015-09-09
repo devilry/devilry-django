@@ -1,21 +1,23 @@
 {% load i18n %}
 {% load humanize %}
-<div class="col-sm-8">
+<div>
     <div id="devilry_admin_assignment_administrators">
         <h2>{% trans "Administrators" %}</h2>
-    </div>
-</div>
-<div class="col-sm-4">
-    <div class="panel panel-default">
-        <div class="panel-heading">
-            <h2 class="panel-title">{% trans "Tips and help" %}</h2>
-        </div>
-        <div class="panel-body">
+
+        <p>
+            {{ administrator_count }}
             {% blocktrans %}
-                Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Nullam id dolor id nibh
-                ultricies vehicula ut id elit. Cum sociis natoque penatibus et magnis dis parturient montes,
-                nascetur ridiculus mus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+                have administrator access to this assignment. You can invite users to help you administer individual
+                assignments, or the entire course.
             {% endblocktrans %}
-        </div>
+        </p>
+    </div>
+    <div class="devilry_admin_actionrow" id="devilry_admin_administrators_actions">
+        <p>
+            <a href="#">
+                {% trans "View and edit the administrators" %}
+            </a>
+        </p>
+
     </div>
 </div>
