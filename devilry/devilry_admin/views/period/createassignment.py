@@ -19,26 +19,6 @@ class CreateForm(forms.ModelForm):
             'first_deadline',
         ]
 
-    # studentsetup = forms.ChoiceField(
-    #     required=True,
-    #     label=_('How would you like to setup students and examiners?'))
-    #
-    # def __init_studentsetup(self):
-    #     choices = []
-    #     if self.period.assignments.count() > 0:
-    #         help_text = _('Choose the option that is closest to your preferences. You can '
-    #                       're-organize students and examiners after the assignment is '
-    #                       'created.')
-    #     else:
-    #         help_text = _('Choose the option that is closest to your preferences. '
-    #                       'If you have the same '
-    #                       'You can '
-    #                       're-organize students and examiners after the assignment is '
-    #                       'created.')
-    #
-    #     self.fields['studentsetup'].choices = choices
-    #     self.fields['studentsetup'].help_text = help_text
-
     def __init__(self, *args, **kwargs):
         # self.period = kwargs.pop('period')
         super(CreateForm, self).__init__(*args, **kwargs)
@@ -54,7 +34,6 @@ class CreateForm(forms.ModelForm):
             'The first deadline for this assignment. This is shared by all the '
             'students on the assignment.'
         )
-        # self.__init_studentsetup()
 
 
 class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
@@ -93,18 +72,17 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
             layout.Div(
                 layout.Div(
                     layout.Div(
+                        layout.HTML(self.__render_help_box()),
+                        css_class='col-sm-5 col-sm-push-7'
+                    ),
+                    layout.Div(
                         layout.Field('long_name', placeholder=_('Example: Obligatory assignment 1'),
                                      focusonme='focusonme'),
                         layout.Field('short_name', placeholder=_('Example: oblig1')),
-                        css_class='col-sm-7'
-                    ),
-                    layout.Div(
-                        layout.HTML(self.__render_help_box()),
-                        css_class='col-sm-5'
+                        css_class='col-sm-7 col-sm-pull-5'
                     ),
                     css_class='row'
                 ),
-                # layout.HTML('<hr>'),
                 layout.Div(
                     layout.Div(
                         layout.Field('first_deadline'),
