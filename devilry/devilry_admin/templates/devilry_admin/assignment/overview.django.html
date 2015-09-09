@@ -15,6 +15,28 @@
 
 {% block content %}
     <div class="container django-cradmin-container-focus">
-        TODO
+        <div class="row">
+            <div class="col-sm-8" id="devilry-assignment-main">
+                <h2>{% trans "Students and examiners" %}</h2>
+                <p>
+                    {{ assignmentgroups_count }} students organized in {{ candidates_count }} project groups
+                </p>
+            </div>
+            <div class="col-sm-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">{% trans "Help" %}</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% blocktrans %}
+                            Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Nullam id dolor id nibh
+                            ultricies vehicula ut id elit. Cum sociis natoque penatibus et magnis dis parturient montes,
+                            nascetur ridiculus mus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+
+                        {% endblocktrans %}
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock content %}
