@@ -24,4 +24,9 @@ def default_timezone_datetime(*args, **kwargs):
 
 
 def isoformat_noseconds(datetimeobject):
-    return datetimeobject.strftime('%Y-%m-%d %H:%M')
+    """
+    Format the given ``datetime.datetime`` object as ``YYYY-MM-DD hh:mm``.
+    """
+    # We use isoformat because strftime does not support times before
+    # year 1900.
+    return datetimeobject.isoformat(' ').split('.')[0].rsplit(':', 1)[0]
