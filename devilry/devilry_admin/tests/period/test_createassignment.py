@@ -2,11 +2,12 @@ from datetime import datetime, timedelta
 
 from django.template import defaultfilters
 from django.test import TestCase
+from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START
 from devilry.devilry_admin.views.period import createassignment
 from devilry.utils import datetimeutils
 
@@ -73,7 +74,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_get_suggested_name_previous_assignment_not_suffixed_with_number(self):
         period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       long_name='Test', short_name='test').period
+                                   long_name='Test', short_name='test').period
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
         self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), '')
@@ -81,7 +82,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_get_suggested_name_previous_assignment_suffixed_with_number(self):
         period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                       long_name='Test1', short_name='test1').period
+                                   long_name='Test1', short_name='test1').period
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
         self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), 'Test2')
@@ -201,15 +202,16 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         self.assertEqual(Assignment.objects.count(), 0)
         first_deadline_isoformat = self.__get_valid_first_deadline_isoformatted()
-        self.mock_http302_postrequest(
-            cradmin_role=period,
-            requestkwargs={
-                'data': {
-                    'long_name': 'Test assignment',
-                    'short_name': 'testassignment',
-                    'first_deadline': first_deadline_isoformat,
-                }
-            })
+        with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=60):
+            self.mock_http302_postrequest(
+                cradmin_role=period,
+                requestkwargs={
+                    'data': {
+                        'long_name': 'Test assignment',
+                        'short_name': 'testassignment',
+                        'first_deadline': first_deadline_isoformat,
+                    }
+                })
         self.assertEqual(Assignment.objects.count(), 1)
         created_assignment = Assignment.objects.first()
         self.assertEqual(created_assignment.long_name, 'Test assignment')
@@ -217,12 +219,66 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             first_deadline_isoformat,
             datetimeutils.isoformat_noseconds(created_assignment.first_deadline))
+        self.assertTrue(
+            (timezone.now() + timedelta(minutes=59))
+            < created_assignment.publishing_time
+            < (timezone.now() + timedelta(minutes=61))
+        )
 
-    def test_post_first_deadline_before_preferred_publishing_time(self):
+    def test_post_missing_short_name(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
+        first_deadline_isoformat = datetimeutils.isoformat_noseconds(OLD_PERIOD_START)
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test assignment',
+                    'short_name': '',
+                    'first_deadline': first_deadline_isoformat,
+                }
+            })
         self.assertEqual(Assignment.objects.count(), 0)
-        first_deadline_isoformat = self.__get_valid_first_deadline_isoformatted()
-        self.mock_http302_postrequest(
+        self.assertEqual(
+            'This field is required.',
+            mockresponse.selector.one('#error_1_id_short_name').alltext_normalized)
+
+    def test_post_missing_long_name(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        first_deadline_isoformat = datetimeutils.isoformat_noseconds(OLD_PERIOD_START)
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': '',
+                    'short_name': 'testassignment',
+                    'first_deadline': first_deadline_isoformat,
+                }
+            })
+        self.assertEqual(Assignment.objects.count(), 0)
+        self.assertEqual(
+            'This field is required.',
+            mockresponse.selector.one('#error_1_id_long_name').alltext_normalized)
+
+    def test_post_missing_first_deadline(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test assignment',
+                    'short_name': 'testassignment',
+                    'first_deadline': '',
+                }
+            })
+        self.assertEqual(Assignment.objects.count(), 0)
+        self.assertEqual(
+            'This field is required.',
+            mockresponse.selector.one('#error_1_id_first_deadline').alltext_normalized)
+
+    def test_post_first_deadline_outside_period(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        first_deadline_isoformat = datetimeutils.isoformat_noseconds(OLD_PERIOD_START)
+        mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=period,
             requestkwargs={
                 'data': {
@@ -231,10 +287,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                     'first_deadline': first_deadline_isoformat,
                 }
             })
-        self.assertEqual(Assignment.objects.count(), 1)
-        created_assignment = Assignment.objects.first()
-        self.assertEqual(created_assignment.long_name, 'Test assignment')
-        self.assertEqual(created_assignment.short_name, 'testassignment')
-        self.assertEqual(
-            first_deadline_isoformat,
-            datetimeutils.isoformat_noseconds(created_assignment.first_deadline))
+        self.assertEqual(Assignment.objects.count(), 0)
+        self.assertTrue(mockresponse.selector.exists('#error_1_id_first_deadline'))
+        self.assertIn('First deadline must be within',
+                      mockresponse.selector.one('#error_1_id_first_deadline').alltext_normalized)
