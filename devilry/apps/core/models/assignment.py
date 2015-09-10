@@ -568,11 +568,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
         self.first_deadline = self.first_deadline.replace(microsecond=0, tzinfo=None)
 
-        if self.first_deadline < self.publishing_time:
-            errors['first_deadline'] = _('First deadline can not be before the publishing time '
-                                         '(%(publishing_time)s) of the assignment.') %{
-                'publishing_time': defaultfilters.date(self.publishing_time, 'DATETIME_FORMAT')
-            }
         if self.first_deadline > self.parentnode.end_time or self.first_deadline < self.parentnode.start_time:
             errors['first_deadline'] = _("First deadline must be within %(periodname)s, "
                                          "which lasts from %(start_time)s to %(end_time)s.") % {

@@ -145,18 +145,6 @@ class TestAssignmentOld(TestCase, TestHelper):
         assignment1.first_deadline = assignment1.parentnode.start_time + timedelta(days=1)
         assignment1.clean()
 
-    def test_first_deadline_clean_pubtime_error(self):
-        assignment1 = self.inf1100_looong_assignment1
-        assignment1.publishing_time = assignment1.parentnode.start_time + timedelta(days=2)
-        assignment1.first_deadline = assignment1.parentnode.start_time + timedelta(days=1)
-        errors = {}
-        assignment1._clean_first_deadline(errors)
-        self.assertIn('first_deadline', errors)
-        with self.assertRaises(ValidationError):
-            assignment1.clean()
-        assignment1.first_deadline = assignment1.parentnode.start_time + timedelta(days=3)
-        assignment1.clean()
-
     def test_first_deadline_clean_perioderror(self):
         assignment1 = self.inf1100_looong_assignment1
         assignment1.first_deadline = assignment1.parentnode.start_time - timedelta(days=10)
