@@ -572,7 +572,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                     '(%(publishing_time)s) of the assignment.')
             raise ValidationError(
                 msg % {'publishing_time': defaultfilters.date(self.publishing_time, 'DATETIME_FORMAT')})
-        if self.first_deadline > self.parentnode.end_time:
+        if self.first_deadline > self.parentnode.end_time or self.first_deadline < self.parentnode.start_time:
             msg = _("First deadline must be within it's semester (%(start_time)s - %(end_time)s).")
             raise ValidationError(msg % {
                 'period_term': _('period'),
