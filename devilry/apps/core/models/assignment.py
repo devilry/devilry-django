@@ -1,12 +1,13 @@
 import warnings
 from datetime import datetime
-from django.template import defaultfilters
 
+from django.template import defaultfilters
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+
 from django.conf import settings
 
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
@@ -563,24 +564,24 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         warnings.warn("deprecated", DeprecationWarning)
         return Q(assignmentgroups__examiners__user=user_obj)
 
-    def _clean_first_deadline(self):
+    def _clean_first_deadline(self, errors):
         # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
         self.first_deadline = self.first_deadline.replace(microsecond=0, tzinfo=None)
 
         if self.first_deadline < self.publishing_time:
-            msg = _('First deadline can not be before the publishing time '
-                    '(%(publishing_time)s) of the assignment.')
-            raise ValidationError(
-                msg % {'publishing_time': defaultfilters.date(self.publishing_time, 'DATETIME_FORMAT')})
+            errors['first_deadline'] = _('First deadline can not be before the publishing time '
+                                         '(%(publishing_time)s) of the assignment.') %{
+                'publishing_time': defaultfilters.date(self.publishing_time, 'DATETIME_FORMAT')
+            }
         if self.first_deadline > self.parentnode.end_time or self.first_deadline < self.parentnode.start_time:
-            msg = _("First deadline must be within it's semester (%(start_time)s - %(end_time)s).")
-            raise ValidationError(msg % {
-                'period_term': _('period'),
+            errors['first_deadline'] = _("First deadline must be within %(periodname)s, "
+                                         "which lasts from %(start_time)s to %(end_time)s.") % {
+                'periodname': self.parentnode.long_name,
                 'start_time': defaultfilters.date(self.parentnode.start_time, 'DATETIME_FORMAT'),
                 'end_time': defaultfilters.date(self.parentnode.end_time, 'DATETIME_FORMAT')
-            })
+            }
 
-    def clean(self, *args, **kwargs):
+    def clean(self):
         """Validate the assignment.
 
         Always call this before save()! Read about validation here:
@@ -589,26 +590,28 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Raises ValidationError if ``publishing_time`` is not between
         :attr:`Period.start_time` and ``Period.end_time``.
         """
-        super(Assignment, self).clean(*args, **kwargs)
+        super(Assignment, self).clean()
+        errors = {}
         if self.publishing_time is not None and self.parentnode_id is not None:
             if self.publishing_time < self.parentnode.start_time or \
                     self.publishing_time > self.parentnode.end_time:
-                raise ValidationError(
-                    _("The publishing time, {publishing_time}, is invalid. "
-                      "It must be within it's period, {period}, "
-                      "which lasts from {start_time} to {end_time}").format(
-                        publishing_time=self.publishing_time,
-                        period=unicode(self.parentnode),
-                        end_time=self.parentnode.end_time,
-                        start_time=self.parentnode.start_time))
+                errors['publishing_time'] = _("Publishing time must be within %(periodname)s, "
+                                              "which lasts from %(start_time)s to %(end_time)s.") % {
+                    'periodname': self.parentnode.long_name,
+                    'start_time': defaultfilters.date(self.parentnode.start_time, 'DATETIME_FORMAT'),
+                    'end_time': defaultfilters.date(self.parentnode.end_time, 'DATETIME_FORMAT')
+                }
         if self.first_deadline:
-            self._clean_first_deadline()
+            self._clean_first_deadline(errors)
         if self.passing_grade_min_points > self.max_points:
-            raise ValidationError(
-                _('The minumum number of points required to pass must be less than '
-                  'the maximum number of points possible on the assignment. The '
-                  'current maximum is {max_points}').format(
-                    max_points=self.max_points))
+            errors['passing_grade_min_points'] = _('The minumum number of points required to pass must be less than '
+                                                   'the maximum number of points possible for the assignment. The '
+                                                   'current maximum is %(max_points)s.') % {
+                'max_points': self.max_points
+            }
+
+        if errors:
+            raise ValidationError(errors)
 
     def is_empty(self):
         """

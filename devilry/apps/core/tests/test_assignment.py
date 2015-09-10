@@ -149,8 +149,9 @@ class TestAssignmentOld(TestCase, TestHelper):
         assignment1 = self.inf1100_looong_assignment1
         assignment1.publishing_time = assignment1.parentnode.start_time + timedelta(days=2)
         assignment1.first_deadline = assignment1.parentnode.start_time + timedelta(days=1)
-        with self.assertRaises(ValidationError):
-            assignment1._clean_first_deadline()
+        errors = {}
+        assignment1._clean_first_deadline(errors)
+        self.assertIn('first_deadline', errors)
         with self.assertRaises(ValidationError):
             assignment1.clean()
         assignment1.first_deadline = assignment1.parentnode.start_time + timedelta(days=3)
@@ -159,14 +160,17 @@ class TestAssignmentOld(TestCase, TestHelper):
     def test_first_deadline_clean_perioderror(self):
         assignment1 = self.inf1100_looong_assignment1
         assignment1.first_deadline = assignment1.parentnode.start_time - timedelta(days=10)
-        with self.assertRaises(ValidationError):
-            assignment1._clean_first_deadline()
+        errors = {}
+        assignment1._clean_first_deadline(errors)
+        self.assertIn('first_deadline', errors)
+
         with self.assertRaises(ValidationError):
             assignment1.clean()
 
         assignment1.first_deadline = assignment1.parentnode.end_time + timedelta(days=10)
-        with self.assertRaises(ValidationError):
-            assignment1._clean_first_deadline()
+        errors = {}
+        assignment1._clean_first_deadline(errors)
+        self.assertIn('first_deadline', errors)
         with self.assertRaises(ValidationError):
             assignment1.clean()
 
