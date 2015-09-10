@@ -1,11 +1,13 @@
 from datetime import datetime, timedelta
+
 from django.template import defaultfilters
 from django.test import TestCase
-from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
+from model_mommy import mommy
+
 from devilry.apps.core.models import Assignment
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START
 from devilry.devilry_admin.views.period import createassignment
-from devilry.project.develop.testhelpers import corebuilder
 from devilry.utils import datetimeutils
 
 
@@ -55,129 +57,128 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = createassignment.CreateView
 
     def test_get_render_formfields(self):
-        testperiod = corebuilder.PeriodBuilder.make().period
+        period = mommy.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testperiod)
+            cradmin_role=period)
         self.assertTrue(mockresponse.selector.exists('input[name=long_name]'))
         self.assertTrue(mockresponse.selector.exists('input[name=short_name]'))
         self.assertTrue(mockresponse.selector.exists('input[name=first_deadline]'))
 
     def test_get_suggested_name_first_assignment(self):
-        testperiod = corebuilder.PeriodBuilder.make().period
+        period = mommy.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testperiod)
+            cradmin_role=period)
         self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), '')
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
 
     def test_get_suggested_name_previous_assignment_not_suffixed_with_number(self):
-        testperiod = corebuilder.AssignmentBuilder\
-            .make(long_name='Test', short_name='test').assignment.period
+        period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       long_name='Test', short_name='test').period
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testperiod)
+            cradmin_role=period)
         self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), '')
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
 
     def test_get_suggested_name_previous_assignment_suffixed_with_number(self):
-        testperiod = corebuilder.AssignmentBuilder\
-            .make(long_name='Test1', short_name='test1',
-                  first_deadline=timezone.now())\
-            .assignment.period
+        period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                       long_name='Test1', short_name='test1').period
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testperiod)
+            cradmin_role=period)
         self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), 'Test2')
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), 'test2')
 
     def test_get_suggested_name_previous_assignment_suffixed_with_number_namecollision_no_first_deadline(self):
-        testperiod = corebuilder.PeriodBuilder.make().period
-        corebuilder.AssignmentBuilder\
-            .make(long_name='Test1', short_name='test1',
-                  first_deadline=timezone.now(),
-                  period=testperiod)
-        corebuilder.AssignmentBuilder\
-            .make(long_name='Test2', short_name='test2',
-                  first_deadline=None,
-                  period=testperiod)
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=period,
+                          long_name='Test1', short_name='test1')
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=period,
+                          long_name='Test2', short_name='test2',
+                          first_deadline=None)
+
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testperiod)
+            cradmin_role=period)
         self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), '')
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
 
     def test_get_suggested_name_previous_assignment_suffixed_with_number_namecollision_strange_order(self):
-        periodbuilder = corebuilder.PeriodBuilder.make()
-        periodbuilder.add_assignment(long_name='Test1', short_name='test1',
-                                     first_deadline=timezone.now())
-        periodbuilder.add_assignment(long_name='Test2', short_name='test2',
-                                     first_deadline=timezone.now() - timedelta(days=30))
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=period,
+                          long_name='Test1', short_name='test1',
+                          first_deadline=ACTIVE_PERIOD_END)
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=period,
+                          long_name='Test2', short_name='test2',
+                          first_deadline=ACTIVE_PERIOD_START)
+
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=periodbuilder.period)
+            cradmin_role=period)
         self.assertEqual(mockresponse.selector.one('input[name=long_name]').get('value', ''), '')
         self.assertEqual(mockresponse.selector.one('input[name=short_name]').get('value', ''), '')
 
     def test_get_suggested_deadlines_first_assignment(self):
-        testperiod = corebuilder.PeriodBuilder.make().period
+        period = mommy.make_recipe('devilry.apps.core.period_active')
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=testperiod)
+            cradmin_role=period)
         self.assertFalse(mockresponse.selector.exists(
             '#devilry_admin_createassignment_suggested_deadlines'))
 
     def test_get_suggested_deadlines_not_first_assignment(self):
-        periodbuilder = corebuilder.PeriodBuilder.make()
-        periodbuilder.add_assignment(
-            publishing_time=datetime(2015, 1, 1),
-            first_deadline=datetime(2015, 2, 1, 12, 30),
-        )
+        period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start').period
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=periodbuilder.period)
+            cradmin_role=period)
         self.assertTrue(mockresponse.selector.exists(
             '#devilry_admin_createassignment_suggested_deadlines'))
 
-    def test_get_suggested_deadlines_not_first_assignment_no_previus_with_deadline(self):
-        periodbuilder = corebuilder.PeriodBuilder.make()
-        periodbuilder.add_assignment(
-            publishing_time=datetime(2015, 1, 1),
-            first_deadline=None)
+    def test_get_suggested_deadlines_not_first_assignment_no_previous_with_deadline(self):
+        period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                   first_deadline=None).period
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=periodbuilder.period)
+            cradmin_role=period)
         self.assertFalse(mockresponse.selector.exists(
             '#devilry_admin_createassignment_suggested_deadlines'))
 
     def test_get_suggested_deadlines_render_values(self):
-        periodbuilder = corebuilder.PeriodBuilder.make()
-        periodbuilder.add_assignment(
-            publishing_time=datetime(2015, 1, 1),
-            first_deadline=datetime(2015, 2, 1),
-        )
-        periodbuilder.add_assignment(  # This should be the one that is used for suggestions
-            publishing_time=datetime(2015, 1, 1),
-            first_deadline=datetime(2015, 3, 1, 12, 30),
-        )
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+
+        # Ignored by the suggestion system
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=period)
+
+        # This should be the one that is used for suggestions
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=period,
+                          first_deadline=datetime(2015, 3, 1, 12, 30))
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=periodbuilder.period)
+            cradmin_role=period)
         suggested_deadline_elements = mockresponse.selector.list(
             '.devilry-admin-createassignment-suggested-deadline')
         suggested_deadline_values = [element['django-cradmin-setfieldvalue']
                                      for element in suggested_deadline_elements]
         self.assertEqual(suggested_deadline_values, [
-            (datetime(2015, 3, 1, 12, 30) + timedelta(days=7)).isoformat(),
-            (datetime(2015, 3, 1, 12, 30) + timedelta(days=14)).isoformat(),
-            (datetime(2015, 3, 1, 12, 30) + timedelta(days=21)).isoformat(),
-            (datetime(2015, 3, 1, 12, 30) + timedelta(days=28)).isoformat(),
+            (datetime(2015, 3, 8, 12, 30)).isoformat(),
+            (datetime(2015, 3, 15, 12, 30)).isoformat(),
+            (datetime(2015, 3, 22, 12, 30)).isoformat(),
+            (datetime(2015, 3, 29, 12, 30)).isoformat(),
         ])
 
     def test_get_suggested_deadlines_render_labels(self):
-        periodbuilder = corebuilder.PeriodBuilder.make()
-        periodbuilder.add_assignment(
-            publishing_time=datetime(2015, 1, 1),
-            first_deadline=datetime(2015, 2, 1),
-        )
-        periodbuilder.add_assignment(  # This should be the one that is used for suggestions
-            publishing_time=datetime(2015, 1, 1),
-            first_deadline=datetime(2015, 3, 1, 12, 30),
-        )
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+
+        # Ignored by the suggestion system
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=period)
+
+        # This should be the one that is used for suggestions
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=period,
+                          first_deadline=datetime(2015, 3, 1, 12, 30))
 
         mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=periodbuilder.period)
+            cradmin_role=period)
         suggested_deadline_elements = mockresponse.selector.list(
             '.devilry-admin-createassignment-suggested-deadline')
         suggested_deadline_labels = [element.alltext_normalized
@@ -194,15 +195,14 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         ])
 
     def __get_valid_first_deadline_isoformatted(self):
-        return datetimeutils.isoformat_noseconds(
-            timezone.now() + timedelta(days=10))
+        return datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END)
 
     def test_post_ok(self):
-        periodbuilder = corebuilder.PeriodBuilder.make()
+        period = mommy.make_recipe('devilry.apps.core.period_active')
         self.assertEqual(Assignment.objects.count(), 0)
         first_deadline_isoformat = self.__get_valid_first_deadline_isoformatted()
         self.mock_http302_postrequest(
-            cradmin_role=periodbuilder.period,
+            cradmin_role=period,
             requestkwargs={
                 'data': {
                     'long_name': 'Test assignment',
@@ -218,16 +218,23 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             first_deadline_isoformat,
             datetimeutils.isoformat_noseconds(created_assignment.first_deadline))
 
-    # def test_post_first_deadline_before_preferred_publishing_time(self):
-    #     periodbuilder = corebuilder.PeriodBuilder.make()
-    #     self.assertEqual(Assignment.objects.count(), 0)
-    #     first_deadline_isoformat = datetimeutils.isoformat_noseconds(timezone.now())
-    #     mockresponse = self.mock_http200_postrequest_htmls(
-    #         cradmin_role=periodbuilder.period,
-    #         requestkwargs={
-    #             'data': {
-    #                 'long_name': 'Test assignment',
-    #                 'short_name': 'testassignment',
-    #                 'first_deadline': first_deadline_isoformat,
-    #             }
-    #         })
+    def test_post_first_deadline_before_preferred_publishing_time(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        self.assertEqual(Assignment.objects.count(), 0)
+        first_deadline_isoformat = self.__get_valid_first_deadline_isoformatted()
+        self.mock_http302_postrequest(
+            cradmin_role=period,
+            requestkwargs={
+                'data': {
+                    'long_name': 'Test assignment',
+                    'short_name': 'testassignment',
+                    'first_deadline': first_deadline_isoformat,
+                }
+            })
+        self.assertEqual(Assignment.objects.count(), 1)
+        created_assignment = Assignment.objects.first()
+        self.assertEqual(created_assignment.long_name, 'Test assignment')
+        self.assertEqual(created_assignment.short_name, 'testassignment')
+        self.assertEqual(
+            first_deadline_isoformat,
+            datetimeutils.isoformat_noseconds(created_assignment.first_deadline))
