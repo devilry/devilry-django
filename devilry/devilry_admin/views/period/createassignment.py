@@ -86,7 +86,12 @@ class CreateForm(forms.ModelForm):
         self.fields['short_name'].help_text = _(
             'Up to 20 letters of lowercase english letters (a-z), '
             'numbers, underscore ("_") and hyphen ("-").')
-        self.fields['first_deadline'].widget = DateTimePickerWidget(required=True)
+        self.fields['first_deadline'].widget = DateTimePickerWidget(
+            required=True,
+            minimum_datetime=timezone.now() + timedelta(
+                minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES),
+            maximum_datetime=self.period.end_time,
+            )
         self.fields['first_deadline'].required = True
         self.fields['first_deadline'].label = _('Set first deadline')
         self.fields['first_deadline'].help_text = _(
