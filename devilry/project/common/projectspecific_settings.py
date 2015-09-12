@@ -112,4 +112,6 @@ DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = tuple()
 DEVILRY_ENABLE_MATHJAX = True
 
 #: The number of minutes to delay publishing an assignment after it is created.
+#: This is also the minimum amount of time between the current time and
+#: the first deadline.
 DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES = 60 * 6

@@ -107,3 +107,6 @@ class DisableMigrations(object):
         return "notmigrations"
 
 MIGRATION_MODULES = DisableMigrations()
+
+
+LANGUAGE_CODE = 'nb'

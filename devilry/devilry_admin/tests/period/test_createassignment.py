@@ -7,7 +7,7 @@ from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment
-from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START
+from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START, FUTURE_PERIOD_END
 from devilry.devilry_admin.views.period import createassignment
 from devilry.utils import datetimeutils
 
@@ -277,7 +277,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_post_first_deadline_outside_period(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
-        first_deadline_isoformat = datetimeutils.isoformat_noseconds(OLD_PERIOD_START)
+        first_deadline_isoformat = datetimeutils.isoformat_noseconds(FUTURE_PERIOD_END)
         mockresponse = self.mock_http200_postrequest_htmls(
             cradmin_role=period,
             requestkwargs={
@@ -291,3 +291,39 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertTrue(mockresponse.selector.exists('#error_1_id_first_deadline'))
         self.assertIn('First deadline must be within',
                       mockresponse.selector.one('#error_1_id_first_deadline').alltext_normalized)
+
+    def test_post_first_deadline_before_publishing_time_hours(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        first_deadline_isoformat = datetimeutils.isoformat_noseconds(timezone.now())
+        with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=60*3):
+            mockresponse = self.mock_http200_postrequest_htmls(
+                cradmin_role=period,
+                requestkwargs={
+                    'data': {
+                        'long_name': 'Test assignment',
+                        'short_name': 'testassignment',
+                        'first_deadline': first_deadline_isoformat,
+                    }
+                })
+            self.assertEqual(Assignment.objects.count(), 0)
+            self.assertTrue(mockresponse.selector.exists('#error_1_id_first_deadline'))
+            self.assertEqual('First deadline must be at least 3 hours from now.',
+                             mockresponse.selector.one('#error_1_id_first_deadline').alltext_normalized)
+
+    def test_post_first_deadline_before_publishing_time_minutes(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        first_deadline_isoformat = datetimeutils.isoformat_noseconds(timezone.now())
+        with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=30):
+            mockresponse = self.mock_http200_postrequest_htmls(
+                cradmin_role=period,
+                requestkwargs={
+                    'data': {
+                        'long_name': 'Test assignment',
+                        'short_name': 'testassignment',
+                        'first_deadline': first_deadline_isoformat,
+                    }
+                })
+            self.assertEqual(Assignment.objects.count(), 0)
+            self.assertTrue(mockresponse.selector.exists('#error_1_id_first_deadline'))
+            self.assertEqual('First deadline must be at least 30 minutes from now.',
+                             mockresponse.selector.one('#error_1_id_first_deadline').alltext_normalized)

@@ -4,6 +4,8 @@ import re
 from crispy_forms import layout
 from django import forms
 from django.conf import settings
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -109,6 +111,19 @@ class CreateForm(forms.ModelForm):
         if first_deadline:
             publishing_time = timezone.now() + timedelta(
                 minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES)
+            if first_deadline < publishing_time:
+                publishing_time_naturaltime = naturaltime(timezone.now() + timedelta(
+                    minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES,
+                    # We add some seconds to make the naturaltime show the correct amount of
+                    # hours/minutes because at least a small fraction of time will pass between
+                    # creating the datetime and the formatting in the naturaltime function.
+                    seconds=10))
+                raise ValidationError({
+                    # Translators: The "delay" is formatted as "X hours/minutes from now"
+                    'first_deadline': _('First deadline must be at least %(delay)s.') % {
+                        'delay': publishing_time_naturaltime
+                    }
+                })
             cleaned_data['publishing_time'] = publishing_time
         return cleaned_data
 
