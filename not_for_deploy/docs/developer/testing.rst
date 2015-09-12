@@ -72,8 +72,8 @@ Handling time
 =============
 For a lot of cases, simply using ``mommy.make()`` is enough, but Devilry has
 a recursive hierarchi where time matters. To make this easier to handle,
-we have a set of model mommy recipes that that we use the objects that require
-time. The old test helpers used relative time to solve the challenge of building
+we have a set of model mommy recipes that that we use to create the objects that require
+date/time. The old test helpers used relative time to solve the challenge of building
 :class:`devilry.apps.core.models.Period` and :class:`devilry.apps.core.models.Assignment`
 objects, but the model mommy recipes solves this in a more elegant manner.
 
@@ -93,8 +93,8 @@ We define 3 distincs periods of time: old, active and future:
     that they will not break within any feasable life span for Devilry,
     we can safely use a normal ``datetime.datetime``, such as ``datetime.datetime(3500, 1, 1)``
     when we need to test assignment publishing times or deadlines that we need
-    to be in the future, but for the most part this is not needed since we have variables
-    and recipes to express the most common use cases.
+    to be in the future. For the most part, creating a ``datetime.datetime`` object is not
+    needed since we have variables and recipes to express the most common use cases.
 
 
 We have recipes for creating a period spanning each of these time periods:
