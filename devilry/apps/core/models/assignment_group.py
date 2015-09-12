@@ -431,7 +431,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     #: efficiently.
     copied_from = models.ForeignKey('self',
                                     on_delete=models.SET_NULL,
-                                    null=True)
+                                    blank=True, null=True)
 
     #: The time when this group was created.
     created_datetime = models.DateTimeField(null=False, blank=True,
