@@ -1,14 +1,6 @@
 # Extra development dependencies that is not needed for normal development
 -r development.txt
 
-# PostgreSQL bindings
-# - Needed to test with postgres
-# - Should match the version in production.txt
-psycopg2==2.4.6
-
-# Required to run selenium tests (mostly for testing deprecated UIs)
-selenium==2.44.0
-
 # For building Dash docs (used by the dashdocs fabric task in not_for_deploy/docs/fabfile.py)
 doc2dash==2.0.2
 

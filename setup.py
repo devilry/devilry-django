@@ -49,6 +49,7 @@ setup(
         'dj-static>=0.0.6',
         'dj-database-url>=0.3.0',
         'bleach>=1.4',
+        'psycopg2==2.4.6',
         'elasticsearch==1.6.0',
     ]
 )
