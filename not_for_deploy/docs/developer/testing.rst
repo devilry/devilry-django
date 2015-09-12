@@ -1,0 +1,134 @@
+########################
+How to unit-test Devilry
+########################
+
+This guide explains how to test Devilry.
+
+
+*************
+Running tests
+*************
+
+Run **all** test::
+
+    $ DJANGOENV=test python manage.py test devilry
+
+Skip the *selenium* tests using::
+
+    $ SKIP_SELENIUMTESTS=1 DJANGOENV=test python manage.py test
+
+Specify a browser for the selenium tests using (example uses Firefox)::
+
+    $ SELENIUM_BROWSER=Firefox DJANGOENV=test python manage.py test
+
+*Chrome* is the default browser (configured in ``devilry.project.develop.settings.base``).
+
+
+.. note::
+    We use ``DJANGOENV=test python manage.py`` to run tests, because that makes
+    ``manage.py`` use ``devilry.project.develop.settings.test``,
+    which does not load Haystack, Celery or migrations.
+
+
+***********
+Testhelpers
+***********
+Devilry has several generations of helpers that helps with
+building the devilry data structures:
+
+- `Model mommy recipes <modelmommyrecipes>`_. **This should be used for all new tests**.
+- :doc:`devilry.project.develop.teshelpers.corebuilder <devilry.project.develop.teshelpers.corebuilder>`.
+  Used in a large percentage of our tests.
+  *Should not be used for new tests*.
+- :doc:`devilry.apps.core.testhelper <testhelper>`.
+  Used for some very old tests in ``devilry.apps.core``.
+  *Should not be used for new tests*.
+
+
+.. _modelmommyrecipes:
+
+*******************
+Model mommy recipes
+*******************
+
+.. currentmodule:: devilry.apps.core.mommy_recipes
+
+`Model mommy`_ is a great library for building Django data models
+in tests. It makes it easy to write tests where you only need to
+specify data relevant for the test. This makes tests far more readable,
+since you always know that any created data models and the specified
+attributes are needed to setup data for the specific scenario tested by the
+test.
+
+Handling time
+=============
+For a lot of cases, simply using ``mommy.make()`` is enough, but Devilry has
+a recursive hierarchi where time matters. To make this easier to handle,
+we have a set of model mommy recipes that that we use the objects that require
+time. The old test helpers used relative time to solve the challenge of building
+:class:`devilry.apps.core.models.Period` and :class:`devilry.apps.core.models.Assignment`
+objects, but the model mommy recipes solves this in a more elegant manner.
+
+We define 3 distincs periods of time: old, active and future:
+
+    Old
+        The *old* time period lasts from *1000-01-01 00:00* to *1999-12-31 23:59:59*.
+    Active
+        The *active* time period lasts from *2000-01-01 00:00* to *5999-12-31 23:59:59*.
+    Future
+        The *future* time period lasts from *6000-01-01 00:00* to *9999-12-31 23:59:59*.
+
+.. note::
+
+    Since the time periods are so enourmously large, we do not (for most tests)
+    need to use relative time. As long as we use dates so far in the future
+    that they will not break within any feasable life span for Devilry,
+    we can safely use a normal ``datetime.datetime``, such as ``datetime.datetime(3500, 1, 1)``
+    when we need to test assignment publishing times or deadlines that we need
+    to be in the future, but for the most part this is not needed since we have variables
+    and recipes to express the most common use cases.
+
+
+We have recipes for creating a period spanning each of these time periods:
+
+- :obj:`devilry.apps.core.mommy_recipes.period_old`
+- :obj:`devilry.apps.core.mommy_recipes.period_active`
+- :obj:`devilry.apps.core.mommy_recipes.period_future`
+
+And we have recipes for creating assignments at the beginning, middle and end of the *active* time period:
+
+- :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_start`
+- :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_middle`
+- :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_end`
+
+Furthermore, we have defined a set of variables that define the
+bounds of the old, active and future time periods. These are very useful
+when we just need to use a datetime within the bounds a time period:
+
+.. autosummary::
+
+    OLD_PERIOD_START
+    OLD_PERIOD_END
+    ACTIVE_PERIOD_START
+    ACTIVE_PERIOD_END
+    FUTURE_PERIOD_START
+    FUTURE_PERIOD_END
+    ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE
+    ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME
+    ASSIGNMENT_ACTIVEPERIOD_MIDDLE_FIRST_DEADLINE
+    ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME
+
+
+.. automodule:: devilry.apps.core.mommy_recipes
+    :members:
+
+
+*************
+Mocking tests
+*************
+Always try to mock objects instead of creating real data unless you are actually testing
+something that needs real data. Use https://pypi.python.org/pypi/mock to mock your
+tests.
+
+
+.. _`Model mommy`: http://model-mommy.readthedocs.org

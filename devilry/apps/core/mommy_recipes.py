@@ -1,6 +1,3 @@
-"""
-Model mommy recipes for ``devilry.apps.core.models``.
-"""
 from datetime import datetime, timedelta
 
 from model_mommy import recipe
@@ -51,7 +48,6 @@ ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME = datetime(5999, 12, 1, 0, 0)
 #: Example usage::
 #:
 #:    period = mommy.make_recipe('devilry.apps.core.period_old')
-#:
 #:
 #: See also :obj:`.period_active` and :obj:`.period_future`.
 period_old = recipe.Recipe(
