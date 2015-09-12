@@ -205,18 +205,18 @@ class TestAssignment(TestCase):
         self.assertFalse(candidatesqueryset.filter(candidate_id='a').exists())
         self.assertFalse(candidatesqueryset.filter(candidate_id='b').exists())
 
-    # def test_copy_groups_from_another_assignment_querycount(self):
-    #     sourceassignment = mommy.make('core.Assignment')
-    #     group1 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
-    #     group2 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
-    #     mommy.make('core.Candidate', assignment_group=group1, _quantity=4)
-    #     mommy.make('core.Examiner', assignmentgroup=group1, _quantity=4)
-    #     mommy.make('core.Candidate', assignment_group=group2, _quantity=2)
-    #     mommy.make('core.Examiner', assignmentgroup=group2)
-    #
-    #     targetassignment = mommy.make('core.Assignment')
-    #     with self.assertNumQueries(6):
-    #         targetassignment.copy_groups_from_another_assignment(sourceassignment)
+    def test_copy_groups_from_another_assignment_querycount(self):
+        sourceassignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        mommy.make('core.Candidate', assignment_group=group1, _quantity=40)
+        mommy.make('core.Examiner', assignmentgroup=group1, _quantity=20)
+        mommy.make('core.Candidate', assignment_group=group2, _quantity=5)
+        mommy.make('core.Examiner', assignmentgroup=group2, _quantity=2)
+
+        targetassignment = mommy.make('core.Assignment')
+        with self.assertNumQueries(9):
+            targetassignment.copy_groups_from_another_assignment(sourceassignment)
 
 
 class TestAssignmentOld(TestCase, TestHelper):

@@ -666,25 +666,38 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         # Step2: Bulk create candidate and examiners from group.copied_from.<candidates|examiners>.
         candidates = []
         examiners = []
+
         for group in self.assignmentgroups \
-                .select_related('copied_from') \
-                .prefetch_related('copied_from__candidates', 'copied_from__examiners'):
-            for othercandidate in group.copied_from.candidates.all():
+                .prefetch_related(
+                    models.Prefetch(
+                        'copied_from',
+                        to_attr='copied_from_list',
+                        queryset=AssignmentGroup.objects.prefetch_related(
+                            models.Prefetch('candidates',
+                                            to_attr='candidatelist',
+                                            queryset=Candidate.objects.all()),
+                            models.Prefetch('examiners',
+                                            to_attr='examinerlist',
+                                            queryset=Examiner.objects.all()),
+                        )
+                    )
+                ):
+            for othercandidate in group.copied_from_list.candidatelist:
                 newcandidate = Candidate(
                     assignment_group=group,
-                    student=othercandidate.student
+                    student_id=othercandidate.student_id
                 )
                 if settings.DEVILRY_CANDIDATE_ID_HANDLING == 'per-period':
                     newcandidate.candidate_id = othercandidate.candidate_id
                     newcandidate.automatic_anonymous_id = othercandidate.automatic_anonymous_id
                 else:
-                    # TODO: Geneterate automatic_anonymous_id
+                    # TODO: Generate automatic_anonymous_id
                     pass
                 candidates.append(newcandidate)
-            for otherexaminer in group.copied_from.examiners.all():
+            for otherexaminer in group.copied_from_list.examinerlist:
                 newexaminer = Examiner(
                     assignmentgroup=group,
-                    user=otherexaminer.user
+                    user_id=otherexaminer.user_id
                 )
                 examiners.append(newexaminer)
         Candidate.objects.bulk_create(candidates)
