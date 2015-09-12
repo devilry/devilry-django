@@ -185,19 +185,10 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     def get_field_layout(self):
         return [
             layout.Div(
-                layout.Div(
-                    layout.Div(
-                        layout.HTML(self.__render_help_box()),
-                        css_class='col-sm-5 col-sm-push-7'
-                    ),
-                    layout.Div(
-                        layout.Field('long_name', placeholder=_('Example: Obligatory assignment 1'),
-                                     focusonme='focusonme'),
-                        layout.Field('short_name', placeholder=_('Example: oblig1')),
-                        css_class='col-sm-7 col-sm-pull-5'
-                    ),
-                    css_class='row'
-                ),
+                layout.Field('long_name', placeholder=_('Example: Obligatory assignment 1'),
+                             focusonme='focusonme'),
+                layout.Field('short_name', placeholder=_('Example: oblig1')),
+                # layout.HTML(self.__render_help_box()),
                 layout.Div(
                     layout.Div(
                         layout.Field('first_deadline'),

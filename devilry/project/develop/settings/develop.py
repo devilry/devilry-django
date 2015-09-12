@@ -109,4 +109,4 @@ class DisableMigrations(object):
 MIGRATION_MODULES = DisableMigrations()
 
 
-LANGUAGE_CODE = 'nb'
+# LANGUAGE_CODE = 'nb'
