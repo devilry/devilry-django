@@ -105,7 +105,7 @@ period_future = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 #:
 #:
 #: See also :obj:`.assignment_activeperiod_middle` :obj:`.assignment_activeperiod_end`
@@ -126,7 +126,7 @@ assignment_activeperiod_start = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
+#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
 #:
 #:
 #: See also :obj:`.assignment_activeperiod_start` :obj:`.assignment_activeperiod_end`
@@ -149,7 +149,7 @@ assignment_activeperiod_middle = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
 #:
 #:
 #: See also :obj:`.assignment_activeperiod_start` :obj:`.assignment_activeperiod_middle`

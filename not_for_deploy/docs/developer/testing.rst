@@ -30,6 +30,14 @@ Specify a browser for the selenium tests using (example uses Firefox)::
     which does not load Haystack, Celery or migrations.
 
 
+*************
+Mocking tests
+*************
+Always try to mock objects instead of creating real data unless you are actually testing
+something that needs real data. Use https://pypi.python.org/pypi/mock to mock your
+tests.
+
+
 ***********
 Testhelpers
 ***********
@@ -119,16 +127,83 @@ when we just need to use a datetime within the bounds a time period:
     ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME
 
 
+
+*********************
+Mommy recipes apidocs
+*********************
+
 .. automodule:: devilry.apps.core.mommy_recipes
     :members:
 
 
-*************
-Mocking tests
-*************
-Always try to mock objects instead of creating real data unless you are actually testing
-something that needs real data. Use https://pypi.python.org/pypi/mock to mock your
-tests.
+********
+Examples
+********
+
+Create a period that is active now::
+
+    period = mommy.make_recipe('devilry.apps.core.period_active')
+
+Create an assignment that is within an active period, but with
+publishing time and first deadline in the past::
+
+    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+Create 3 assignments within the same active period, one at the beginning, one in the middle and
+one at the end. Both the middle and end assignments will have publishin time and first deadline
+in the future (by over a 1000 years)::
+
+    period = mommy.make_recipe('devilry.apps.core.period_active')
+    assignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                    period=period)
+    assignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle',
+                                    period=period)
+    assignment3 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end',
+                                    period=period)
+
+You can specify attributes with the recipes, so to create an assignment
+within an active period, with subject name set to "Test course 101",
+period name set to "Some semester", and assignment name set to "Testassignment", use
+one of the ``assignment_activeperiod_*`` recipes like this::
+
+    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                   parentnode__parentnode__long_name='Test course 101',
+                                   parentnode__long_name='Some semester',
+                                   long_name='Testassignment')
+
+
+Creating an assignment with assignmentgroups and examiners::
+
+    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+
+    # Adding an AssignmentGroup with a single candidate.
+    mommy.make('core.Candidate', assignment_group__parentnode=assignment)
+
+    # Multiple candidates in one group require a bit more code
+    group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+    mommy.make('core.Candidate', assignment_group=assignment, student__shortname='student1')
+    mommy.make('core.Candidate', assignment_group=assignment, student__shortname='student2')
+
+    # We just need a lot of AssignmentGroup objects
+    # ... without candidates:
+    mommy.make('core.AssignmentGroup', parentnode=assignment, _quantity=100)
+    # ... with candidates:
+    mommy.make('core.Candidate', assignment_group__parentnode=assignment, _quantity=100)
+
+    # Adding examiners is just like adding candidates,
+    # except that the assignment group foreignkey is called ``assignmentgroup``
+    # instead of ``assignment_group``, and the user foreignkey is called ``user``
+    # instead of ``student``.
+    mommy.make('core.Examiner', assignmentgroup__parentnode=assignment,
+               user__shortname='examiner1')
+
+
+Creating a period with RelatedStudent and RelatedExaminer objects::
+
+    period = mommy.make_recipe('devilry.apps.core.period_active')
+    mommy.make('core.RelatedStudent', period=period, user__shortname='student1')
+    mommy.make('core.RelatedStudent', period=period, user__shortname='student2')
+    mommy.make('core.RelatedExaminer', period=period, user__shortname='examiner1')
 
 
 .. _`Model mommy`: http://model-mommy.readthedocs.org
