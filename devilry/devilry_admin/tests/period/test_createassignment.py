@@ -6,7 +6,7 @@ from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from devilry.apps.core.models import Assignment
+from devilry.apps.core.models import Assignment, Candidate
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START, FUTURE_PERIOD_END
 from devilry.devilry_admin.views.period import createassignment
 from devilry.utils import datetimeutils
@@ -195,36 +195,6 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                                 'DATETIME_FORMAT'),
         ])
 
-    def __get_valid_first_deadline_isoformatted(self):
-        return datetimeutils.isoformat_noseconds(ACTIVE_PERIOD_END)
-
-    def test_post_ok(self):
-        period = mommy.make_recipe('devilry.apps.core.period_active')
-        self.assertEqual(Assignment.objects.count(), 0)
-        first_deadline_isoformat = self.__get_valid_first_deadline_isoformatted()
-        with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=60):
-            self.mock_http302_postrequest(
-                cradmin_role=period,
-                requestkwargs={
-                    'data': {
-                        'long_name': 'Test assignment',
-                        'short_name': 'testassignment',
-                        'first_deadline': first_deadline_isoformat,
-                    }
-                })
-        self.assertEqual(Assignment.objects.count(), 1)
-        created_assignment = Assignment.objects.first()
-        self.assertEqual(created_assignment.long_name, 'Test assignment')
-        self.assertEqual(created_assignment.short_name, 'testassignment')
-        self.assertEqual(
-            first_deadline_isoformat,
-            datetimeutils.isoformat_noseconds(created_assignment.first_deadline))
-        self.assertTrue(
-            (timezone.now() + timedelta(minutes=59))
-            < created_assignment.publishing_time
-            < (timezone.now() + timedelta(minutes=61))
-        )
-
     def test_post_missing_short_name(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         first_deadline_isoformat = datetimeutils.isoformat_noseconds(OLD_PERIOD_START)
@@ -327,3 +297,52 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             self.assertTrue(mockresponse.selector.exists('#error_1_id_first_deadline'))
             self.assertEqual('First deadline must be at least 30 minutes from now.',
                              mockresponse.selector.one('#error_1_id_first_deadline').alltext_normalized)
+
+    def __valid_post_request(self, period=None, first_deadline=ACTIVE_PERIOD_END,
+                             publishing_time_delay_minutes=60):
+        if not period:
+            period = mommy.make_recipe('devilry.apps.core.period_active')
+        self.assertEqual(Assignment.objects.count(), 0)
+        with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=publishing_time_delay_minutes):
+            self.mock_http302_postrequest(
+                cradmin_role=period,
+                requestkwargs={
+                    'data': {
+                        'long_name': 'Test assignment',
+                        'short_name': 'testassignment',
+                        'first_deadline': datetimeutils.isoformat_noseconds(first_deadline),
+                    }
+                })
+        self.assertEqual(Assignment.objects.count(), 1)
+        created_assignment = Assignment.objects.first()
+        return created_assignment
+
+    def test_post_sanity(self):
+        created_assignment = self.__valid_post_request(first_deadline=ACTIVE_PERIOD_END)
+        self.assertEqual(created_assignment.long_name, 'Test assignment')
+        self.assertEqual(created_assignment.short_name, 'testassignment')
+        self.assertEqual(
+            ACTIVE_PERIOD_END,
+            created_assignment.first_deadline)
+
+    def test_post_publishing_time(self):
+        created_assignment = self.__valid_post_request(publishing_time_delay_minutes=60)
+        self.assertTrue(
+            (timezone.now() + timedelta(minutes=59))
+            < created_assignment.publishing_time
+            < (timezone.now() + timedelta(minutes=61))
+        )
+
+    # def test_post_adds_students(self):
+    #     period = mommy.make_recipe('devilry.apps.core.period_active')
+    #     mommy.make('core.RelatedStudent', period=period,
+    #                user__shortname='student1')
+    #     mommy.make('core.RelatedStudent', period=period,
+    #                user__shortname='student2')
+    #     created_assignment = self.__valid_post_request()
+    #     self.assertEqual(2, created_assignment.assignmentgroups.count())
+    #
+    #     candidatesqueryset = Candidate.objects.filter(assignment_group__assignment=created_assignment)
+    #     self.assertEqual(2, candidatesqueryset.count())
+    #     self.assertTrue(candidatesqueryset.filter(student__shortname='student1').exists())
+    #     self.assertTrue(candidatesqueryset.filter(student__shortname='student2').exists())
