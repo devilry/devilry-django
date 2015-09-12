@@ -181,8 +181,12 @@ Creating an assignment with assignmentgroups and examiners::
 
     # Multiple candidates in one group require a bit more code
     group = mommy.make('core.AssignmentGroup', parentnode=assignment)
-    mommy.make('core.Candidate', assignment_group=assignment, student__shortname='student1')
-    mommy.make('core.Candidate', assignment_group=assignment, student__shortname='student2')
+    mommy.make('core.Candidate',
+               assignment_group__parentnode=assignment,
+               student__shortname='student1')
+    mommy.make('core.Candidate',
+               assignment_group__parentnode=assignment,
+               student__shortname='student2')
 
     # We just need a lot of AssignmentGroup objects
     # ... without candidates:
