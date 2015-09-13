@@ -43,6 +43,7 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
        A DateTimeField containing the etag for this object.
 
     """
+
     class Meta:
         app_label = 'core'
         ordering = ['short_name']
@@ -57,17 +58,14 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
 
     @classmethod
     def q_is_admin(cls, user_obj):
-            return Q(admins__pk=user_obj.pk) \
-                | Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return \
+            Q(admins__pk=user_obj.pk) | \
+            Q(parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def get_path(self):
         """ Only returns :attr:`short_name` for subject since it is
         guaranteed to be unique. """
         return self.short_name
-
-    #TODO delete this?
-    #def clean(self, *args, **kwargs):
-        #super(Subject, self).clean(*args, **kwargs)
 
     @classmethod
     def q_published(cls, old=True, active=True):
