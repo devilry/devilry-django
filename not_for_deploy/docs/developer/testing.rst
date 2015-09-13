@@ -201,13 +201,30 @@ Creating an assignment with assignmentgroups and examiners::
     mommy.make('core.Examiner', assignmentgroup__parentnode=assignment,
                user__shortname='examiner1')
 
-
 Creating a period with RelatedStudent and RelatedExaminer objects::
 
     period = mommy.make_recipe('devilry.apps.core.period_active')
     mommy.make('core.RelatedStudent', period=period, user__shortname='student1')
     mommy.make('core.RelatedStudent', period=period, user__shortname='student2')
     mommy.make('core.RelatedExaminer', period=period, user__shortname='examiner1')
+
+
+Adding admins::
+
+    # Creating a node with an admin
+    node = mommy.make('core.Node', admins=[mommy.make('devilry_account.User')])
+
+    # Adding admins to the parentnode without creating a separate parentnode
+    subject = mommy.make('core.Subject', parentnode__admins=[mommy.make('devilry_account.User')])
+
+    # Combining this with the recipes for creating periods (same for other recipes).
+    # - Lets create a period with an admin, and with an admin on the subject and on the
+    #   parentnode of the subject.
+    period = mommy.make_recipe('devilry.apps.core.period_active',
+        admins=[mommy.make('devilry_account.User', shortname='periodadmin')],
+        parentnode__admins=[mommy.make('devilry_account.User', shortname='subjectadmin')],
+        parentnode__parentnode__admins=[mommy.make('devilry_account.User', shortname='nodeadmin')],
+    )
 
 
 .. _`Model mommy`: http://model-mommy.readthedocs.org
