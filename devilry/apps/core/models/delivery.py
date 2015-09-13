@@ -15,6 +15,7 @@ class DeliveryQuerySet(models.query.QuerySet):
     """
     Returns a queryset with all Deliveries where the given ``user`` is examiner.
     """
+
     def filter_is_examiner(self, user):
         return self.filter(deadline__assignment_group__examiners__user=user).distinct()
 
@@ -139,14 +140,14 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
 
         The reverse of ``copy_of`` - a queryset that returns all copies of this delivery.
     """
-    #DELIVERY_NOT_CORRECTED = 0
-    #DELIVERY_CORRECTED = 1
+    # DELIVERY_NOT_CORRECTED = 0
+    # DELIVERY_CORRECTED = 1
     objects = DeliveryManager()
 
-    delivery_type = models.PositiveIntegerField(default=deliverytypes.ELECTRONIC,
-                                                verbose_name = "Type of delivery",
-                                                help_text='0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.')
-    # Fields automatically 
+    delivery_type = models.PositiveIntegerField(
+        default=deliverytypes.ELECTRONIC,
+        verbose_name="Type of delivery",
+        help_text='0: Electronic delivery, 1: Non-electronic delivery, 2: Alias delivery. Default: 0.')
     time_of_delivery = models.DateTimeField(
         verbose_name=_('Time of delivery'),
         help_text='Holds the date and time the Delivery was uploaded.',
@@ -156,32 +157,37 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         verbose_name=_('Deadline'))
     number = models.PositiveIntegerField(
         help_text='The delivery-number within this assignment-group. This number is automatically '
-                    'incremented within each AssignmentGroup, starting from 1. Always '
-                    'unique within the assignment-group.')
+                  'incremented within each AssignmentGroup, starting from 1. Always '
+                  'unique within the assignment-group.')
 
     # Fields set by user
     successful = models.BooleanField(blank=True, default=True,
                                      help_text='Has the delivery and all its files been uploaded successfully?')
-    delivered_by = models.ForeignKey("Candidate", blank=True, null=True,
-                                     on_delete=models.SET_NULL,
-                                     help_text='The candidate that delivered this delivery. If this is None, the delivery was made by an administrator for a student.')
+    delivered_by = models.ForeignKey(
+        "Candidate", blank=True, null=True,
+        on_delete=models.SET_NULL,
+        help_text='The candidate that delivered this delivery. If this is None, '
+                  'the delivery was made by an administrator for a student.')
 
     # Only used when this is aliasing an earlier delivery, delivery_type == ALIAS
     alias_delivery = models.ForeignKey("Delivery", blank=True, null=True,
                                        on_delete=models.SET_NULL,
                                        help_text='Links to another delivery. Used when delivery_type is Alias.')
 
-    copy_of = models.ForeignKey("Delivery", blank=True, null=True,
-                                related_name='copies',
-                                on_delete=models.SET_NULL,
-                                help_text='Link to a delivery that this delivery is a copy of. This is set by the copy-method.')
-    last_feedback = models.OneToOneField("StaticFeedback", blank=True, null=True, related_name='latest_feedback_for_delivery')
+    copy_of = models.ForeignKey(
+        "Delivery", blank=True, null=True,
+        related_name='copies',
+        on_delete=models.SET_NULL,
+        help_text='Link to a delivery that this delivery is a copy of. This is set by the copy-method.')
+    last_feedback = models.OneToOneField("StaticFeedback", blank=True, null=True,
+                                         related_name='latest_feedback_for_delivery')
 
     def _delivered_too_late(self):
         """ Compares the deadline and time of delivery.
         If time_of_delivery is greater than the deadline, return True.
         """
         return self.time_of_delivery > self.deadline.deadline
+
     after_deadline = property(_delivered_too_late)
 
     class Meta:
@@ -189,7 +195,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         verbose_name = 'Delivery'
         verbose_name_plural = 'Deliveries'
         ordering = ['-time_of_delivery']
-        #unique_together = ('assignment_group', 'number')
+        # unique_together = ('assignment_group', 'number')
 
     @classmethod
     def q_is_candidate(cls, user_obj):
@@ -202,21 +208,21 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
-        q = Q(deadline__assignment_group__parentnode__publishing_time__lt = now)
+        q = Q(deadline__assignment_group__parentnode__publishing_time__lt=now)
         if not active:
-            q &= ~Q(deadline__assignment_group__parentnode__parentnode__end_time__gte = now)
+            q &= ~Q(deadline__assignment_group__parentnode__parentnode__end_time__gte=now)
         if not old:
-            q &= ~Q(deadline__assignment_group__parentnode__parentnode__end_time__lt = now)
+            q &= ~Q(deadline__assignment_group__parentnode__parentnode__end_time__lt=now)
         return q
-
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(successful=True) & \
-                Q(Q(deadline__assignment_group__parentnode__admins=user_obj) | \
-                  Q(deadline__assignment_group__parentnode__parentnode__admins=user_obj) | \
-                  Q(deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
-                  Q(deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)))
+        return \
+            Q(successful=True) & \
+            Q(Q(deadline__assignment_group__parentnode__admins=user_obj) |
+              Q(deadline__assignment_group__parentnode__parentnode__admins=user_obj) |
+              Q(deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) |
+              Q(deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj)))  # noqa
 
     @classmethod
     def q_is_examiner(cls, user_obj):
@@ -228,8 +234,8 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
         Returns ``True`` if this is the last delivery for this AssignmentGroup.
         """
         try:
-            last_delivery = Delivery.objects\
-                .filter(deadline__assignment_group_id=self.deadline.assignment_group_id)\
+            last_delivery = Delivery.objects \
+                .filter(deadline__assignment_group_id=self.deadline.assignment_group_id) \
                 .order_by('-time_of_delivery').first()
             return last_delivery == self
         except Delivery.DoesNotExist:
@@ -279,12 +285,12 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
     def set_time_of_delivery_to_now(self):
         self.time_of_delivery = datetime.now().replace(microsecond=0, tzinfo=None)
 
-    def clean(self, *args, **kwargs):
+    def clean(self):
         """ Validate the delivery. """
         if self.delivery_type == deliverytypes.ALIAS:
             if not self.alias_delivery and not self.feedbacks.exists():
                 raise ValidationError('A Delivery with delivery_type=ALIAS must have an alias_delivery or feedback.')
-        super(Delivery, self).clean(*args, **kwargs)
+        super(Delivery, self).clean()
 
     def __unicode__(self):
         return (u'Delivery(id={id}, number={number}, group={group}, '
@@ -315,7 +321,7 @@ class Delivery(models.Model, AbstractIsAdmin, AbstractIsCandidate, AbstractIsExa
                                 time_of_delivery=self.time_of_delivery,
                                 delivered_by=self.delivered_by,
                                 alias_delivery=self.alias_delivery,
-                                last_feedback = None,
+                                last_feedback=None,
                                 copy_of=self)
 
         def save_deliverycopy():
