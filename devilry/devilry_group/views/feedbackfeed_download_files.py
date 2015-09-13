@@ -39,7 +39,7 @@ class FileDownloadFeedbackfeedView(generic.View):
                 or feedbackset.group.is_admin(request.user)):
             return http.HttpResponseForbidden('Forbidden')
 
-        response = http.HttpResponse(comment_file.file, content_type=comment_file.mimetype)
+        response = http.HttpResponse(comment_file.filename, content_type=comment_file.mimetype)
         response['content-disposition'] = 'attachement; filename=%s' % \
             comment_file.filename.encode('ascii', 'replace')
         response['content-length'] = comment_file.filesize
@@ -142,6 +142,7 @@ class CompressedAllFeedbackSetsFileDownloadView(generic.View):
                             path = u'deadline{}/examiner_files'.format(deadline_count)
                         else:
                             path = u'deadline{}/delivery_files'.format(deadline_count)
+                        print 'file: ', comment_file.filename
                         zip_file.write(
                                 comment_file.file.file.name,
                                 posixpath.join(path, comment_file.filename)
