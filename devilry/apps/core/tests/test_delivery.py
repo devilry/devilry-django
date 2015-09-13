@@ -168,15 +168,15 @@ class TestDeliveryOld(TestCase, TestHelper):
     def test_published_where_is_candidate(self):
         self._create_testdata()
         # Add 2 on g1
-        d = self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
-        d = self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
+        self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
+        self.add_delivery("inf1100.period1.assignment1.g1", self.goodFile)
         # Add 3 on g2
-        d = self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
-        d = self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
-        d = self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
+        self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
+        self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
+        self.add_delivery("inf1100.period1.assignment1.g2", self.goodFile)
         # Add 2 on g3
-        d = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
-        d = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
+        self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
+        self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile)
 
         self.assertEquals(Delivery.published_where_is_candidate(self.student1).count(), 3)
         self.assertEquals(Delivery.published_where_is_candidate(self.student2).count(), 7)
@@ -317,7 +317,6 @@ class TestDeliveryOld(TestCase, TestHelper):
 
     def test_last_feedback(self):
         self._create_testdata()
-        assignmentgroup = self.inf1100_period1_assignment1_g3
         delivery = self.add_delivery("inf1100.period1.assignment1.g3", self.goodFile,
                                      time_of_delivery=datetime(2005, 1, 1))
         self.assertIsNone(delivery.last_feedback)
@@ -401,7 +400,8 @@ class TestDeliveryManager(TestCase):
             .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1).delivery
 
-        # Add deliveries on inactive assignments and on a group with another examiner to make sure we get no false positives
+        # Add deliveries on inactive assignments and on a group with another
+        # examiner to make sure we get no false positives
         duck1010builder.add_6month_lastyear_period() \
             .add_assignment('week1') \
             .add_group(examiners=[self.examiner1]) \
