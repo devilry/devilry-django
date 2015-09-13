@@ -687,12 +687,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                     assignment_group=group,
                     student_id=othercandidate.student_id
                 )
-                if settings.DEVILRY_CANDIDATE_ID_HANDLING == 'per-period':
-                    newcandidate.candidate_id = othercandidate.candidate_id
-                    newcandidate.automatic_anonymous_id = othercandidate.automatic_anonymous_id
-                else:
-                    # TODO: Generate automatic_anonymous_id
-                    pass
                 candidates.append(newcandidate)
             for otherexaminer in group.copied_from_list.examinerlist:
                 newexaminer = Examiner(
