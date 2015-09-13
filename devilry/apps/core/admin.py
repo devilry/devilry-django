@@ -128,7 +128,8 @@ class AssignmentGroupAdmin(admin.ModelAdmin):
         'get_subject',
         'get_period',
         'get_assignment',
-        'long_displayname'
+        'long_displayname',
+        'created_datetime',
     ]
     search_fields = [
         'id',
@@ -142,6 +143,9 @@ class AssignmentGroupAdmin(admin.ModelAdmin):
     readonly_fields = [
         'parentnode',
         'feedback',
+    ]
+    list_filter = [
+        'created_datetime',
     ]
 
     def get_subject(self, obj):

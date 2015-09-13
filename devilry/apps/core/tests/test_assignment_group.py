@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from django.test import TestCase
 from django.core.exceptions import ValidationError
+from model_mommy import mommy
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
@@ -393,6 +394,13 @@ class TestAssignmentGroup(TestCase):
             .add_passed_A_feedback(saved_by=UserBuilder('testexaminer').user)
         self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
 
+    def test_delete_copied_from_does_not_delete_group(self):
+        group1 = mommy.make('core.AssignmentGroup')
+        group2 = mommy.make('core.AssignmentGroup', copied_from=group1)
+        group1.delete()
+        group2 = AssignmentGroup.objects.get(id=group2.id)
+        self.assertIsNone(group2.copied_from)
+
 
 class TestAssignmentGroupCanDelete(TestCase):
     def setUp(self):
@@ -448,7 +456,8 @@ class TestAssignmentGroupSplit(TestCase):
                             assignments=['a1'])
 
     def _create_testdata(self):
-        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2,student3):examiner(examiner1,examiner2,examiner3)')
+        self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1,student2,student3)'
+                                    ':examiner(examiner1,examiner2,examiner3)')
         self.testhelper.sub_p1_a1.max_points = 100
         self.testhelper.sub_p1_a1.save()
 
@@ -457,18 +466,18 @@ class TestAssignmentGroupSplit(TestCase):
         self.testhelper.add_delivery("sub.p1.a1.g1", {"firsttry.py": "print first"},
                                      time_of_delivery=datetime(2002, 1, 1))
         delivery2 = self.testhelper.add_delivery("sub.p1.a1.g1", {"secondtry.py": "print second"},
-                                                 time_of_delivery=-1) # days after deadline
+                                                 time_of_delivery=-1)  # days after deadline
         self.testhelper.add_feedback(delivery=delivery2,
-                                     verdict={'grade': 'F', 'points':10, 'is_passing_grade':False},
+                                     verdict={'grade': 'F', 'points': 10, 'is_passing_grade': False},
                                      rendered_view='Bad',
                                      timestamp=datetime(2005, 1, 1))
 
         # Add d2 and deliveries
         self.testhelper.add_to_path('uni;sub.p1.a1.g1.d2:ends(4)')
         delivery3 = self.testhelper.add_delivery("sub.p1.a1.g1", {"thirdtry.py": "print third"},
-                                                 time_of_delivery=-1) # days after deadline
+                                                 time_of_delivery=-1)  # days after deadline
         self.testhelper.add_feedback(delivery=delivery3,
-                                     verdict={'grade': 'C', 'points':40, 'is_passing_grade':True},
+                                     verdict={'grade': 'C', 'points': 40, 'is_passing_grade': True},
                                      rendered_view='Better',
                                      timestamp=datetime(2010, 1, 1))
 
@@ -494,7 +503,7 @@ class TestAssignmentGroupSplit(TestCase):
         # Tags
         self.assertEquals(g1copy.tags.count(), 2)
         tags = [t.tag for t in g1copy.tags.all()]
-        self.assertEquals(set(tags), set(['a', 'b']))
+        self.assertEquals(set(tags), {'a', 'b'})
 
         # Examiners
         self.assertEquals(g1copy.examiners.count(), 3)
@@ -529,11 +538,11 @@ class TestAssignmentGroupSplit(TestCase):
     def test_pop_candidate(self):
         self._create_testdata()
         g1 = self.testhelper.sub_p1_a1_g1
-        self.assertEquals(g1.candidates.count(), 3) # We check this again after popping
+        self.assertEquals(g1.candidates.count(), 3)  # We check this again after popping
         candidate = g1.candidates.order_by('student__username')[1]
         g1copy = g1.pop_candidate(candidate)
 
-        self.assertEquals(g1copy.name, 'Stuff') # Sanity test - the tests for copying are above
+        self.assertEquals(g1copy.name, 'Stuff')  # Sanity test - the tests for copying are above
         self.assertEquals(g1copy.candidates.count(), 1)
         self.assertEquals(g1.candidates.count(), 2)
         self.assertEquals(candidate.student.shortname, 'student2')
@@ -546,14 +555,14 @@ class TestAssignmentGroupSplit(TestCase):
         other = self.testhelper.sub_p1_a2_other
         candidate = other.candidates.all()[0]
         with self.assertRaises(GroupPopNotCandiateError):
-            g1copy = g1.pop_candidate(candidate)
+            g1.pop_candidate(candidate)
 
     def test_pop_candidate_to_few_candidates(self):
         self.testhelper.add_to_path('uni;sub.p1.a1.g1:candidate(student1)')
         g1 = self.testhelper.sub_p1_a1_g1
         candidate = g1.candidates.all()[0]
         with self.assertRaises(GroupPopToFewCandiatesError):
-            g1copy = g1.pop_candidate(candidate)
+            g1.pop_candidate(candidate)
 
     def _create_mergetestdata(self):
         self._create_testdata()
@@ -564,12 +573,12 @@ class TestAssignmentGroupSplit(TestCase):
         # Add d1 and deliveries. d1 matches d1 in g1 (the source)
         self.testhelper.add_to_path('uni;sub.p1.a1.target.d1:ends(1)')
         self.testhelper.add_delivery("sub.p1.a1.target", {"a.py": "print a"},
-                                     time_of_delivery=1) # days after deadline
+                                     time_of_delivery=1)  # days after deadline
 
         # Add d2 and deliveries
         self.testhelper.add_to_path('uni;sub.p1.a1.target.d2:ends(11)')
         delivery = self.testhelper.add_delivery("sub.p1.a1.target", {"b.py": "print b"},
-                                                time_of_delivery=-1) # days after deadline
+                                                time_of_delivery=-1)  # days after deadline
 
         # Create a delivery in g1 that is copy of one in target
         delivery.copy(self.testhelper.sub_p1_a1_g1_d2)
@@ -583,7 +592,7 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(source.deadlines.count(), 2)
         self.assertEquals(target.deadlines.count(), 2)
         self.assertEquals(self.testhelper.sub_p1_a1_g1_d1.deliveries.count(), 2)
-        self.assertEquals(self.testhelper.sub_p1_a1_g1_d2.deliveries.count(), 2) # The one from _create_testdata() and the one copied in above
+        self.assertEquals(self.testhelper.sub_p1_a1_g1_d2.deliveries.count(), 2)
         self.assertEquals(self.testhelper.sub_p1_a1_target_d1.deliveries.count(), 1)
         self.assertEquals(self.testhelper.sub_p1_a1_target_d2.deliveries.count(), 1)
         return source, target
@@ -614,20 +623,19 @@ class TestAssignmentGroupSplit(TestCase):
             Delivery.objects.filter(deadline__assignment_group=target).first().filemetas.first().filename,
             'b.py')
 
-
     def test_merge_into_candidates(self):
         source, target = self._create_mergetestdata()
         source.merge_into(target)
         self.assertEquals(target.examiners.count(), 4)
         self.assertEquals(set([e.user.shortname for e in target.examiners.all()]),
-                          set(['donald', 'examiner1', 'examiner2', 'examiner3']))
+                          {'donald', 'examiner1', 'examiner2', 'examiner3'})
 
     def test_merge_into_examiners(self):
         source, target = self._create_mergetestdata()
         source.merge_into(target)
         self.assertEquals(target.candidates.count(), 4)
         self.assertEquals(set([e.student.shortname for e in target.candidates.all()]),
-                          set(['dewey', 'student1', 'student2', 'student3']))
+                          {'dewey', 'student1', 'student2', 'student3'})
 
     def test_merge_into_deadlines(self):
         source, target = self._create_mergetestdata()
@@ -647,9 +655,9 @@ class TestAssignmentGroupSplit(TestCase):
         self.assertEquals(deadlines[1].deadline, deadline2)
         self.assertEquals(deadlines[2].deadline, deadline3)
 
-        self.assertEquals(deadlines[0].deliveries.count(), 3) # d1 from both have been merged
-        self.assertEquals(deadlines[1].deliveries.count(), 1) # g1(source) d2
-        self.assertEquals(deadlines[2].deliveries.count(), 1) # target d2
+        self.assertEquals(deadlines[0].deliveries.count(), 3)  # d1 from both have been merged
+        self.assertEquals(deadlines[1].deliveries.count(), 1)  # g1(source) d2
+        self.assertEquals(deadlines[2].deliveries.count(), 1)  # target d2
 
         control_delivery = Delivery.objects.get(deadline__assignment_group=target,
                                                 id=control_delivery_id)
@@ -668,9 +676,9 @@ class TestAssignmentGroupSplit(TestCase):
 
         # Create the feedack that should become "active feedback" after the merge
         delivery = self.testhelper.add_delivery(target, {"good.py": "print good"},
-                                                time_of_delivery=2) # days after deadline
+                                                time_of_delivery=2)  # days after deadline
         self.testhelper.add_feedback(delivery=delivery,
-                                     verdict={'grade': 'A', 'points':100, 'is_passing_grade':True},
+                                     verdict={'grade': 'A', 'points': 100, 'is_passing_grade': True},
                                      rendered_view='Good',
                                      timestamp=datetime(2011, 1, 1))
 
@@ -734,9 +742,9 @@ class TestAssignmentGroupSplit(TestCase):
                 subjects=["sub"],
                 periods=["p1"],
                 assignments=['a1'],
-                assignmentgroups=['{groupname}:candidate(student1):examiner(examiner1)'.format(**vars())],
+                assignmentgroups=['{groupname}:candidate(student1):examiner(examiner1)'.format(groupname=groupname)],
                 deadlines=['d1:ends(1)'])
-            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(**vars()),
+            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(groupname=groupname),
                                          {'a.txt': "a"},
                                          time_of_delivery=datetime(2002, 1, 1))
         source = self.testhelper.sub_p1_a1_source
@@ -771,9 +779,9 @@ class TestAssignmentGroupSplit(TestCase):
                 subjects=["sub"],
                 periods=["p1"],
                 assignments=['a1'],
-                assignmentgroups=['{groupname}:candidate(student1):examiner(examiner1)'.format(**vars())],
+                assignmentgroups=['{groupname}:candidate(student1):examiner(examiner1)'.format(groupname=groupname)],
                 deadlines=['d1:ends(1)'])
-            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(**vars()),
+            self.testhelper.add_delivery("sub.p1.a1.{groupname}".format(groupname=groupname),
                                          {'a.txt': "a"},
                                          time_of_delivery=datetime(2002, 1, 1))
         source = self.testhelper.sub_p1_a1_source
@@ -832,11 +840,11 @@ class TestAssignmentGroupSplit(TestCase):
         c = self.testhelper.reload_from_db(self.testhelper.sub_p1_a1_c)
         candidates = [cand.student.shortname for cand in c.candidates.all()]
         self.assertEquals(len(candidates), 3)
-        self.assertEquals(set(candidates), set(['student1', 'student2', 'student3']))
+        self.assertEquals(set(candidates), {'student1', 'student2', 'student3'})
 
         examiners = [cand.user.shortname for cand in c.examiners.all()]
         self.assertEquals(len(examiners), 3)
-        self.assertEquals(set(examiners), set(['examiner1', 'examiner2', 'examiner3']))
+        self.assertEquals(set(examiners), {'examiner1', 'examiner2', 'examiner3'})
 
         deadlines = c.deadlines.all()
         self.assertEquals(len(deadlines), 1)
@@ -931,7 +939,8 @@ class TestAssignmentGroupManager(TestCase):
 
     def test_filter_waiting_for_deliveries_nonelectronic(self):
         examiner1 = UserBuilder('examiner1').user
-        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1',
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment(
+            'week1',
             delivery_types=deliverytypes.NON_ELECTRONIC)
         group1builder = week1.add_group().add_examiners(examiner1)
         group2builder = week1.add_group().add_examiners(examiner1)
@@ -953,7 +962,8 @@ class TestAssignmentGroupManager(TestCase):
 
     def test_filter_waiting_for_feedback_nonelectronic(self):
         examiner1 = UserBuilder('examiner1').user
-        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment('week1',
+        week1 = PeriodBuilder.quickadd_ducku_duck1010_active().add_assignment(
+            'week1',
             delivery_types=deliverytypes.NON_ELECTRONIC)
         group1builder = week1.add_group().add_examiners(examiner1)
         group2builder = week1.add_group().add_examiners(examiner1)
@@ -994,16 +1004,16 @@ class TestAssignmentGroupManager(TestCase):
     def test_filter_is_published(self):
         periodbuilder = SubjectBuilder.quickadd_ducku_duck1010()\
             .add_period('period1',
-                start_time=DateTimeBuilder.now().minus(days=60),
-                end_time=DateTimeBuilder.now().plus(days=60))
+                        start_time=DateTimeBuilder.now().minus(days=60),
+                        end_time=DateTimeBuilder.now().plus(days=60))
         group1 = periodbuilder.add_assignment('assignment1',
-                publishing_time=DateTimeBuilder.now().minus(days=30))\
+                                              publishing_time=DateTimeBuilder.now().minus(days=30))\
             .add_group().group
         periodbuilder.add_assignment('assignment2',
-                publishing_time=DateTimeBuilder.now().plus(days=10))\
+                                     publishing_time=DateTimeBuilder.now().plus(days=10))\
             .add_group()
         periodbuilder.add_assignment('assignment3',
-                publishing_time=DateTimeBuilder.now().plus(days=50))\
+                                     publishing_time=DateTimeBuilder.now().plus(days=50))\
             .add_group()
         qry = AssignmentGroup.objects.filter_is_published()
         self.assertEquals(qry.count(), 1)
@@ -1021,23 +1031,23 @@ class TestAssignmentGroupManager(TestCase):
             .add_group(students=[student1]).group
         qry = AssignmentGroup.objects.filter_is_candidate(student1)
         self.assertEquals(qry.count(), 2)
-        self.assertEquals(set(qry), set([group1, group3]))
+        self.assertEquals(set(qry), {group1, group3})
 
     def test_filter_student_has_access(self):
         student1 = UserBuilder('student1').user
         otherstudent = UserBuilder('otherstudent').user
         periodbuilder = SubjectBuilder.quickadd_ducku_duck1010()\
             .add_period('period1',
-                start_time=DateTimeBuilder.now().minus(days=60),
-                end_time=DateTimeBuilder.now().plus(days=60))
+                        start_time=DateTimeBuilder.now().minus(days=60),
+                        end_time=DateTimeBuilder.now().plus(days=60))
         group1 = periodbuilder.add_assignment('assignment1',
-                publishing_time=DateTimeBuilder.now().minus(days=30))\
+                                              publishing_time=DateTimeBuilder.now().minus(days=30))\
             .add_group(students=[student1]).group
         periodbuilder.add_assignment('assignment2',
-                publishing_time=DateTimeBuilder.now().minus(days=10))\
+                                     publishing_time=DateTimeBuilder.now().minus(days=10))\
             .add_group(students=[otherstudent])
         periodbuilder.add_assignment('assignment3',
-                publishing_time=DateTimeBuilder.now().plus(days=50))\
+                                     publishing_time=DateTimeBuilder.now().plus(days=50))\
             .add_group(students=[student1])
         qry = AssignmentGroup.objects.filter_student_has_access(student1)
         self.assertEquals(qry.count(), 1)
@@ -1096,15 +1106,15 @@ class TestAssignmentGroupOld(TestCase, TestHelper):
 
     def test_assignment_property(self):
         self.assertEquals(self.inf1100_looong_assignment1_g1.assignment,
-                self.inf1100_looong_assignment1)
+                          self.inf1100_looong_assignment1)
 
     def test_period_property(self):
         self.assertEquals(self.inf1100_looong_assignment1_g1.period,
-                self.inf1100_looong)
+                          self.inf1100_looong)
 
     def test_subject_property(self):
         self.assertEquals(self.inf1100_looong_assignment1_g1.subject,
-                self.inf1100)
+                          self.inf1100)
 
     def test_where_is_admin(self):
         self.assertEquals(6, AssignmentGroup.where_is_admin(self.teacher1).count())
@@ -1140,11 +1150,11 @@ class TestAssignmentGroupOld(TestCase, TestHelper):
         self.assertEquals(8, AssignmentGroup.published_where_is_examiner(self.examiner2).count())
         self.assertEquals(8, AssignmentGroup.published_where_is_examiner(self.examiner1).count())
         self.assertEquals(0, AssignmentGroup.published_where_is_examiner(self.examiner1,
-                    old=False, active=False).count())
+                                                                         old=False, active=False).count())
         self.assertEquals(4, AssignmentGroup.published_where_is_examiner(self.examiner1,
-                    old=True, active=False).count())
+                                                                         old=True, active=False).count())
         self.assertEquals(4, AssignmentGroup.published_where_is_examiner(self.examiner1,
-                    old=False, active=True).count())
+                                                                         old=False, active=True).count())
 
     def test_active_where_is_examiner(self):
         self.assertEquals(4, AssignmentGroup.active_where_is_examiner(self.examiner1).count())
@@ -1199,10 +1209,6 @@ class TestAssignmentGroupOld(TestCase, TestHelper):
         oblig1.publishing_time = future6
         deadline = assignment_group.deadlines.create(deadline=future3, text=None)
         self.assertRaises(ValidationError, deadline.clean)
-
-    def add_delivery(self, assignmentgroup, user):
-        assignmentgroup.deliveries.create(delivered_by=user,
-                                          successful=True)
 
     def test_etag_update(self):
         etag = datetime.now()

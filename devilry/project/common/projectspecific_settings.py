@@ -112,4 +112,17 @@ DEVILRY_JAVASCRIPT_LOCALE_OVERRIDE_APPS = tuple()
 DEVILRY_ENABLE_MATHJAX = True
 
 #: The number of minutes to delay publishing an assignment after it is created.
+#: This is also the minimum amount of time between the current time and
+#: the first deadline.
 DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES = 60 * 6
+
+
+#: A string setting named with one of the following values:
+#:
+#: - ``None``: Disable candidate IDs. No UI for adding candidate ID will be shown.
+#: - ``"per-period"``: Candidate IDs is added to the Period (to RelatedStudent).
+#:     No UI for adding candidate IDs to assignments will be shown. Changes to CandidateID
+#:     will propagate down to existing Candidate objects.
+#: - ``"per-assignment"``: Candidate IDs is added to the Assignment (to Candidate).
+#:    No UI for adding candidate IDs to periods will be shown.
+DEVILRY_CANDIDATE_ID_HANDLING = 'per-period'

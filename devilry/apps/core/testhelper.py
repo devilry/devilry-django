@@ -520,8 +520,8 @@ class TestHelper(object):
             try:
                 group.full_clean()
                 group.save()
-            except ValidationError:
-                raise ValueError("Assignmentgroup not created!")
+            except ValidationError as e:
+                raise ValueError("Assignmentgroup not created!: {}".format(e))
 
         # add the extras (only admins allowed in subject)
         for candidate in extras['candidate']:

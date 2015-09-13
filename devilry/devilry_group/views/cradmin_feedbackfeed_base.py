@@ -165,7 +165,7 @@ class FeedbackFeedBaseView(create.CreateView):
         return [
         ]
 
-    def get_buttons(self, group):
+    def get_buttons(self):
         raise NotImplementedError("Subclasses must implement get_buttons!")
 
     def get_field_layout(self):

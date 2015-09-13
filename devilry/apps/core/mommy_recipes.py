@@ -1,6 +1,3 @@
-"""
-Model mommy recipes for ``devilry.apps.core.models``.
-"""
 from datetime import datetime, timedelta
 
 from model_mommy import recipe
@@ -51,7 +48,6 @@ ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME = datetime(5999, 12, 1, 0, 0)
 #: Example usage::
 #:
 #:    period = mommy.make_recipe('devilry.apps.core.period_old')
-#:
 #:
 #: See also :obj:`.period_active` and :obj:`.period_future`.
 period_old = recipe.Recipe(
@@ -109,7 +105,7 @@ period_future = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
 #:
 #:
 #: See also :obj:`.assignment_activeperiod_middle` :obj:`.assignment_activeperiod_end`
@@ -130,7 +126,7 @@ assignment_activeperiod_start = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
+#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
 #:
 #:
 #: See also :obj:`.assignment_activeperiod_start` :obj:`.assignment_activeperiod_end`
@@ -153,7 +149,7 @@ assignment_activeperiod_middle = recipe.Recipe(
 #:
 #: Example usage::
 #:
-#:    period = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+#:    assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
 #:
 #:
 #: See also :obj:`.assignment_activeperiod_start` :obj:`.assignment_activeperiod_middle`

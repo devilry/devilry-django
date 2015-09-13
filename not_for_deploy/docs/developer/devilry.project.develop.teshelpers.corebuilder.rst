@@ -2,6 +2,10 @@
 corebuilder --- Setup devilry core data structures for tests
 ************************************************************
 
+.. deprecated:: 3.0
+
+    See :doc:`testing`.
+
 .. module:: devilry.project.develop.testhelpers.corebuilder
 
 :mod:`devilry.project.develop.testhelpers.corebuilder` is a module that makes it easy to create :mod:`devilry.apps.core.models` data for
@@ -12,7 +16,7 @@ When to use
 ===========
 Use this for end-to-end tests and tests where you really need real data. Always
 try to mock objects instead of creating real data unless you are actually testing
-something that needs real data. See :doc:`mock`.
+something that needs real data.
 
 Howto
 =====

@@ -140,7 +140,7 @@ class TestStaticFeedback(TestCase):
             points_to_grade_mapper='raw-points',
             passing_grade_min_points=4,
             max_points=10)
-        deliverybuilder = self.assignment1builder.add_group() \
+        self.assignment1builder.add_group() \
             .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1)
         feedback = StaticFeedback.from_points(
@@ -155,12 +155,12 @@ class TestStaticFeedback(TestCase):
             points_to_grade_mapper='raw-points',
             passing_grade_min_points=4,
             max_points=19)
-        deliverybuilder = self.assignment1builder.add_group() \
+        self.assignment1builder.add_group() \
             .add_deadline_in_x_weeks(weeks=1) \
             .add_delivery_x_hours_before_deadline(hours=1)
         with self.assertRaisesRegexp(ValidationError,
                                      '.*You are not allowed to give more than 19 points on this assignment.*'):
-            feedback = StaticFeedback.from_points(
+            StaticFeedback.from_points(
                 assignment=self.assignment1builder.assignment,
                 points=20)
 
@@ -169,7 +169,7 @@ class TestStaticFeedbackOld(TestCase, TestHelper):
     """
     WARNING: Old tests for StaticFeedback using TestHelper. We should
     NOT add new tests here, and the tests should be updated and
-    moved to TestStaticFeedback if we update any of the tested 
+    moved to TestStaticFeedback if we update any of the tested
     methods, or need to add more tests.
     """
 

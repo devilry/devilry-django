@@ -1,4 +1,5 @@
 from django.test import TestCase
+from model_mommy import mommy
 
 from devilry.devilry_admin.tests.common import admins_common_testmixins
 from devilry.devilry_admin.views.subject import admins
@@ -24,12 +25,9 @@ class TestAdminsListView(TestCase, admins_common_testmixins.AdminsListViewTestMi
         self.assertFalse(selector.exists('#devilry_admin_listview_inherited_admin_users'))
 
     def test_render_inherited_admin_users_header(self):
-        testuser = UserBuilder2(is_superuser=True).user
-        builder = SubjectBuilder.make()\
-            .add_admins(UserBuilder2(shortname='testuser').user)\
-            .add_period()
-
-        selector = self.mock_http200_getrequest_htmls(role=builder.get_object(),
+        testuser = mommy.make('devilry_account.User')
+        subject = mommy.make('core.Subject', parentnode__admins=[testuser])
+        selector = self.mock_http200_getrequest_htmls(role=subject,
                                                       user=testuser)
         self.assertEqual('Inherited administrators',
                          selector.one('#devilry_admin_listview_inherited_admin_users h2').alltext_normalized)

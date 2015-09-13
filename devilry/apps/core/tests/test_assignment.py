@@ -6,12 +6,14 @@ from django.test import TestCase
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from model_mommy import mommy
+from devilry.apps.core.models.assignment import AssignmentHasGroupsError
 
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.corebuilder import NodeBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
-from devilry.apps.core.models import Period
+from devilry.apps.core.models import Period, Examiner
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import Candidate
 from devilry.apps.core.models import PointToGradeMap
@@ -113,6 +115,119 @@ class TestAssignment(TestCase):
             .add_assignment('assignment1',
                             feedback_workflow='trusted-cooperative-feedback-editing').assignment
         self.assertFalse(testassignment.feedback_workflow_allows_examiners_publish_feedback())
+
+    def test_copy_groups_from_another_assignment_source_has_no_groups(self):
+        sourceassignment = mommy.make('core.Assignment')
+        targetassignment = mommy.make('core.Assignment')
+        targetassignment.copy_groups_from_another_assignment(sourceassignment)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 0)
+
+    def test_copy_groups_from_another_assignment_target_has_groups(self):
+        sourceassignment = mommy.make('core.Assignment')
+        targetassignment = mommy.make('core.Assignment')
+        mommy.make('core.AssignmentGroup', parentnode=targetassignment)
+        with self.assertRaises(AssignmentHasGroupsError):
+            targetassignment.copy_groups_from_another_assignment(sourceassignment)
+
+    def test_copy_groups_from_another_assignment_groups_is_created(self):
+        sourceassignment = mommy.make('core.Assignment')
+        mommy.make('core.AssignmentGroup', parentnode=sourceassignment, _quantity=5)
+        targetassignment = mommy.make('core.Assignment')
+        targetassignment.copy_groups_from_another_assignment(sourceassignment)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 5)
+
+    def test_copy_groups_from_another_assignment_candidates(self):
+        sourceassignment = mommy.make('core.Assignment')
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=sourceassignment,
+                   student__shortname='student1')
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=sourceassignment,
+                   student__shortname='student2')
+
+        targetassignment = mommy.make('core.Assignment')
+        targetassignment.copy_groups_from_another_assignment(sourceassignment)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 2)
+        candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=targetassignment)
+        self.assertTrue(candidatesqueryset.filter(student__shortname='student1').exists())
+        self.assertTrue(candidatesqueryset.filter(student__shortname='student2').exists())
+
+    def test_copy_groups_from_another_assignment_examiners(self):
+        sourceassignment = mommy.make('core.Assignment')
+        mommy.make('core.Examiner',
+                   assignmentgroup__parentnode=sourceassignment,
+                   user__shortname='examiner1')
+        mommy.make('core.Examiner',
+                   assignmentgroup__parentnode=sourceassignment,
+                   user__shortname='examiner2')
+
+        targetassignment = mommy.make('core.Assignment')
+        targetassignment.copy_groups_from_another_assignment(sourceassignment)
+        self.assertEqual(targetassignment.assignmentgroups.count(), 2)
+        candidatesqueryset = Examiner.objects.filter(assignmentgroup__parentnode=targetassignment)
+        self.assertTrue(candidatesqueryset.filter(user__shortname='examiner1').exists())
+        self.assertTrue(candidatesqueryset.filter(user__shortname='examiner2').exists())
+
+    def test_copy_groups_from_another_assignment_candidateids_handling_per_period(self):
+        sourceassignment = mommy.make('core.Assignment')
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=sourceassignment,
+                   candidate_id='a',
+                   automatic_anonymous_id='autoa',
+                   )
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=sourceassignment,
+                   candidate_id='b',
+                   automatic_anonymous_id='autob')
+
+        targetassignment = mommy.make('core.Assignment')
+        with self.settings(DEVILRY_CANDIDATE_ID_HANDLING='per-period'):
+            targetassignment.copy_groups_from_another_assignment(sourceassignment)
+        candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=targetassignment)
+        self.assertTrue(candidatesqueryset.filter(candidate_id='a').exists())
+        self.assertTrue(candidatesqueryset.filter(candidate_id='b').exists())
+        self.assertTrue(candidatesqueryset.filter(automatic_anonymous_id='autoa').exists())
+        self.assertTrue(candidatesqueryset.filter(automatic_anonymous_id='autob').exists())
+
+    def test_copy_groups_from_another_assignment_candidateids_handling_none(self):
+        sourceassignment = mommy.make('core.Assignment')
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=sourceassignment,
+                   candidate_id='a')
+        mommy.make('core.Candidate',
+                   assignment_group__parentnode=sourceassignment,
+                   candidate_id='b')
+
+        targetassignment = mommy.make('core.Assignment')
+        with self.settings(DEVILRY_CANDIDATE_ID_HANDLING=None):
+            targetassignment.copy_groups_from_another_assignment(sourceassignment)
+        candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=targetassignment)
+        self.assertFalse(candidatesqueryset.filter(candidate_id='a').exists())
+        self.assertFalse(candidatesqueryset.filter(candidate_id='b').exists())
+
+    def test_copy_groups_from_another_assignment_querycount(self):
+        sourceassignment = mommy.make('core.Assignment')
+        group1 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        group2 = mommy.make('core.AssignmentGroup', parentnode=sourceassignment)
+        mommy.make('core.Candidate', assignment_group=group1, _quantity=40)
+        mommy.make('core.Examiner', assignmentgroup=group1, _quantity=20)
+        mommy.make('core.Candidate', assignment_group=group2, _quantity=5)
+        mommy.make('core.Examiner', assignmentgroup=group2, _quantity=2)
+
+        targetassignment = mommy.make('core.Assignment')
+        # Should require only 9 queries no matter how many groups, candidates or examiners we
+        # have (at least up to the max number of bulk created object per query):
+        # 1. Check if any groups exists within the targetassignment.
+        # 2. Query for all groups within the sourceassignment.
+        # 3. Bulk create groups (without any candidates or examiners)
+        # 4. Query for all the newly bulk created groups.
+        # 5. Prefetch the source groups (via copied_from).
+        # 6. Prefetch related candidates on the targetassignment (via copied_from).
+        # 7. Prefetch related examiners on the targetassignment (via copied_from).
+        # 8. Bulk create candidates.
+        # 9. Bulk create examiners.
+        with self.assertNumQueries(9):
+            targetassignment.copy_groups_from_another_assignment(sourceassignment)
 
 
 class TestAssignmentOld(TestCase, TestHelper):

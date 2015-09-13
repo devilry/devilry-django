@@ -5,6 +5,7 @@ from shutil import rmtree
 from ..testhelpers import DeliveryStoreTestMixin
 from ..deliverystore import FsDeliveryStore
 
+
 class TestFsDeliveryStore(DeliveryStoreTestMixin, TestCase):
     def setUp(self):
         self.root = mkdtemp()
