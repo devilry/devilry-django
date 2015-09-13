@@ -88,8 +88,6 @@ class GroupInvite(models.Model):
     class Meta:
         app_label = 'core'
 
-
-
     @staticmethod
     def send_invite_to_choices_queryset(group):
         """
@@ -100,22 +98,20 @@ class GroupInvite(models.Model):
         - Students already in the group.
         """
         students_in_group = [c.student.id for c in group.candidates.all()]
-        students_invited_to_group = [invite.sent_to.id \
-            for invite in GroupInvite.objects.filter_unanswered_sent_invites(group)]
-        users = get_user_model().objects.filter(relatedstudent__period=group.period)\
-            .exclude(id__in=students_in_group)\
-            .exclude(id__in=students_invited_to_group)\
+        students_invited_to_group = [invite.sent_to.id
+                                     for invite in GroupInvite.objects.filter_unanswered_sent_invites(group)]
+        users = get_user_model().objects.filter(relatedstudent__period=group.period) \
+            .exclude(id__in=students_in_group) \
+            .exclude(id__in=students_invited_to_group) \
             .order_by('fullname', 'username')
         return users
-
-
 
     def get_sent_to_groups_queryset(self):
         """
         Returns a queryset matching all groups where the ``sent_to`` user is a candidate.
         """
         return AssignmentGroup.objects.filter_is_candidate(self.sent_to).filter(
-                parentnode=self.group.parentnode)
+            parentnode=self.group.parentnode)
 
     def clean(self):
         if self.accepted and not self.responded_datetime:
@@ -124,15 +120,20 @@ class GroupInvite(models.Model):
             raise ValidationError('The user sending an invite must be a Candiate on the group.')
         if self.sent_to and self.group.candidates.filter(student=self.sent_to).exists():
             raise ValidationError(_(u'The student is already a member of the group.'))
-        if GroupInvite.objects.filter_no_response()\
-                .filter(group=self.group, sent_to=self.sent_to)\
+        if GroupInvite.objects.filter_no_response() \
+                .filter(group=self.group, sent_to=self.sent_to) \
                 .exclude(id=self.id).exists():
-            raise ValidationError(_('The student is already invited to join the group, but they have not responded yet'))
+            raise ValidationError(
+                _('The student is already invited to join the group, but they have not responded yet'))
 
         assignment = self.group.assignment
         if assignment.students_can_create_groups:
-            if assignment.students_can_not_create_groups_after and assignment.students_can_not_create_groups_after < datetime.now():
-                raise ValidationError(_('Creating project groups without administrator approval is not allowed on this assignment anymore. Please contact you course administrator if you think this is wrong.'))
+            if assignment.students_can_not_create_groups_after and \
+                    assignment.students_can_not_create_groups_after < datetime.now():
+                raise ValidationError(_(
+                    'Creating project groups without administrator approval is not '
+                    'allowed on this assignment anymore. Please contact you course '
+                    'administrator if you think this is wrong.'))
         else:
             raise ValidationError(_('This assignment does not allow students to form project groups on their own.'))
 
@@ -140,10 +141,12 @@ class GroupInvite(models.Model):
         if not period.relatedstudent_set.filter(user=self.sent_to).exists():
             raise ValidationError(_('The invited student is not registered on this subject.'))
 
-        if self.accepted != None:
+        if self.accepted is not None:
             groups = list(self.get_sent_to_groups_queryset())
             if len(groups) > 1:
-                raise ValidationError(_('The invited student is in more than one project group on this assignment, and can not join your group.'))
+                raise ValidationError(_(
+                    'The invited student is in more than one project group on this '
+                    'assignment, and can not join your group.'))
             elif len(groups) == 1:
                 if groups[0].candidates.count() > 1:
                     raise ValidationError(_('The invited student is already in a project group.'))
@@ -206,9 +209,9 @@ class GroupInvite(models.Model):
         :raise ValueError:
             If ``accepted==None``, or ``id==None``.
         """
-        if self.accepted != None:
+        if self.accepted is not None:
             raise ValueError('Can not send notification for an accepted GroupInvite.')
-        elif self.id == None:
+        elif self.id is None:
             raise ValueError('Can not send notification for an unsaved GroupInvite.')
         sent_by_displayname = self.sent_by.get_full_name()
         assignment = self.group.assignment
