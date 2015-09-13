@@ -3,7 +3,6 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.db import transaction
 
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.apps.core.models import PointRangeToGrade
 from devilry.apps.core.models import PointToGradeMap
@@ -19,7 +18,7 @@ class TestPointRangeToGradeManager(TestCase):
         self.point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
 
     def test_filter_overlapping_ranges(self):
-        pointrange_to_grade = self.point_to_grade_map.pointrangetograde_set.create(
+        self.point_to_grade_map.pointrangetograde_set.create(
             minimum_points=10,
             maximum_points=20,
             grade='D'
@@ -33,17 +32,17 @@ class TestPointRangeToGradeManager(TestCase):
         self.assertFalse(PointRangeToGrade.objects.filter_overlapping_ranges(21, 22).exists())
 
     def test_filter_grades_matching_points(self):
-        pointrange_to_grade = self.point_to_grade_map.pointrangetograde_set.create(
+        self.point_to_grade_map.pointrangetograde_set.create(
             minimum_points=0,
             maximum_points=9,
             grade='F'
         )
-        pointrange_to_grade = self.point_to_grade_map.pointrangetograde_set.create(
+        self.point_to_grade_map.pointrangetograde_set.create(
             minimum_points=10,
             maximum_points=20,
             grade='E'
         )
-        pointrange_to_grade = self.point_to_grade_map.pointrangetograde_set.create(
+        self.point_to_grade_map.pointrangetograde_set.create(
             minimum_points=21,
             maximum_points=30,
             grade='D'
@@ -86,12 +85,11 @@ class TestPointRangeToGrade(TestCase):
             maximum_points=1,
             grade='D'
         )
-        pointrange_to_grade.clean() # Should work without error
-
+        pointrange_to_grade.clean()  # Should work without error
 
     def test_clean_overlapping_other_on_same_assignment_fails(self):
         point_to_grade_map = PointToGradeMap.objects.create(assignment=self.assignment)
-        pointrange_to_grade = point_to_grade_map.pointrangetograde_set.create(
+        point_to_grade_map.pointrangetograde_set.create(
             minimum_points=10,
             maximum_points=20,
             grade='D'
@@ -152,7 +150,7 @@ class TestPointRangeToGrade(TestCase):
 
         # Does not fail when in another assignment
         assignment2 = self.periodbuilder.add_assignment('assignment2').assignment
-        pointrange_to_grade = PointRangeToGrade(
+        PointRangeToGrade(
             point_to_grade_map=PointToGradeMap.objects.create(assignment=assignment2),
             minimum_points=5,
             maximum_points=6,
@@ -210,7 +208,7 @@ class TestPointToGradeMap(TestCase):
             .add_assignment('assignment2').assignment
 
         point_to_grade_map1 = PointToGradeMap.objects.create(assignment=self.assignment)
-        pointrange_to_grade1 = point_to_grade_map1.pointrangetograde_set.create(
+        point_to_grade_map1.pointrangetograde_set.create(
             minimum_points=0,
             maximum_points=9,
             grade='F'
@@ -227,7 +225,7 @@ class TestPointToGradeMap(TestCase):
         # matching pointrange_to_grade2. See:
         # https://github.com/devilry/devilry-django/issues/563
         matches = assignment2.pointtogrademap.pointrangetograde_set.filter_grades_matching_points(2)
-        self.assertEquals(set([pointrange_to_grade2]), set(matches))
+        self.assertEquals({pointrange_to_grade2}, set(matches))
         # self.assertEquals(set([pointrange_to_grade1, pointrange_to_grade2]), set(matches))
 
     def test_clean_no_entries(self):
