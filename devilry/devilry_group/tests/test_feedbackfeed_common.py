@@ -1,5 +1,3 @@
-from datetime import datetime
-from django.template import defaultfilters
 from django.test import RequestFactory
 from django.utils import timezone
 import htmls
@@ -165,9 +163,10 @@ class TestFeedbackFeedMixin(object):
         groupcomment_builder = GroupCommentBuilder.make(
             feedback_set__deadline_datetime=DateTimeBuilder.now().minus(days=1))
 
-        selector, request = self.__mock_http200_getrequest_htmls(role=groupcomment_builder.get_object().feedback_set.group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
+        selector, request = self.__mock_http200_getrequest_htmls(
+            role=groupcomment_builder.get_object().feedback_set.group,
+            requestuser=requestuser,
+            group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
 
     def test_get_feedbackfeed_header_with_feedbackset_deadline_datetime_not_expired(self):
@@ -307,9 +306,10 @@ class TestFeedbackFeedMixin(object):
             visible_for_students=True,
         )
 
-        selector, request = self.__mock_http200_getrequest_htmls(role=groupcomment_builder.get_object().feedback_set.group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
+        selector, request = self.__mock_http200_getrequest_htmls(
+            role=groupcomment_builder.get_object().feedback_set.group,
+            requestuser=requestuser,
+            group=janedoe)
         role = selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals('({})'.format(groupcomment_builder.get_object().user_role), role)
 
@@ -323,9 +323,10 @@ class TestFeedbackFeedMixin(object):
             instant_publish=True,
             visible_for_students=True,
         )
-        selector, request = self.__mock_http200_getrequest_htmls(role=groupcomment_builder.get_object().feedback_set.group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
+        selector, request = self.__mock_http200_getrequest_htmls(
+            role=groupcomment_builder.get_object().feedback_set.group,
+            requestuser=requestuser,
+            group=janedoe)
         role = selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals('({})'.format(groupcomment_builder.get_object().user_role), role)
 
@@ -339,9 +340,10 @@ class TestFeedbackFeedMixin(object):
             instant_publish=True,
             visible_for_students=True,
         )
-        selector, request = self.__mock_http200_getrequest_htmls(role=groupcomment_builder.get_object().feedback_set.group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
+        selector, request = self.__mock_http200_getrequest_htmls(
+            role=groupcomment_builder.get_object().feedback_set.group,
+            requestuser=requestuser,
+            group=janedoe)
         role = selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals('({})'.format(groupcomment_builder.get_object().user_role), role)
 
@@ -399,7 +401,7 @@ class TestFeedbackFeedMixin(object):
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
-    def test_get_feedbackfeed_event_without_assignment_first_deadline_created(self):
+    def test_get_feedbackfeed_event_without_assignment_first_deadline_expired(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make(
