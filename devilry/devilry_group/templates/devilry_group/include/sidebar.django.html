@@ -4,7 +4,7 @@
 <div class="devilry-group-feedbackfeed-sidebar" django-cradmin-scroll-top-fixed='{"pinToTopOnScroll":true}'>
     <div ng-controller="sidebarCollapseCtrl">
         <div ng-init="filecollapse=register_collapse('uploaded_files', true)">
-            <h4 ng-click="toggle_collapse('uploaded_files')">
+            <h4 class="devilry-group-feedbackfeed-sidebar-uploaded-files" ng-click="toggle_collapse('uploaded_files')">
                 {% trans "Uploaded files" %}
                 <i class="pull-right fa" ng-class="{'fa-chevron-up': filecollapse.value, 'fa-chevron-down': !filecollapse.value}"></i>
             </h4>
@@ -16,7 +16,9 @@
                 {% for feedbackset in feedbacksets %}
                     <dl>
                         <dt>
-                            {% blocktrans with counter=''|devilry_verbosenumber:forloop.counter %}{{ counter }} deadline{% endblocktrans %}
+                            <div class="devilry-group-feedbackfeed-sidebar-deadlines">
+                                {% blocktrans with counter=''|devilry_verbosenumber:forloop.counter %}{{ counter }} deadline{% endblocktrans %}
+                            </div>
                         </dt>
                         {% for comment in feedbackset.groupcomment_set.all %}
                             {% for file in comment.commentfile_set.all %}
