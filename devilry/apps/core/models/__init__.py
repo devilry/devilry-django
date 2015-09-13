@@ -24,4 +24,5 @@ __all__ = ("AbstractIsAdmin", "AbstractIsExaminer", "AbstractIsCandidate",
            "RelatedStudentKeyValue", "Assignment", "AssignmentGroup",
            "AssignmentGroupTag", "Delivery", "Deadline", "Candidate", "StaticFeedback",
            "FileMeta", "DevilryUserProfile", 'PeriodApplicationKeyValue', 'Examiner',
-           'GroupInvite', 'StaticFeedbackFileAttachment')
+           'GroupInvite', 'StaticFeedbackFileAttachment', 'PointRangeToGrade',
+           'PointToGradeMap')
