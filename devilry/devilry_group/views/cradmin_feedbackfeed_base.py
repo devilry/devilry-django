@@ -21,6 +21,7 @@ from crispy_forms import layout
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.viewhelpers import create
 from xml.sax.saxutils import quoteattr
+from devilry.devilry_group.views import feedbackfeed_timeline_builder
 
 
 class FeedbackFeedBaseView(create.CreateView):
@@ -36,113 +37,14 @@ class FeedbackFeedBaseView(create.CreateView):
     def _get_comments_for_group(self, group):
         raise NotImplementedError("Subclasses must implement _get_queryset_for_group!")
 
-    def _get_feedbacksets_for_group(self, group):
-        return group_models.FeedbackSet.objects.filter(group=group)
-
-    def __add_comments_to_timeline(self, group, timeline):
-        comments = self._get_comments_for_group(group)
-        for comment in comments:
-            if comment.published_datetime not in timeline.keys():
-                timeline[comment.published_datetime] = []
-            timeline[comment.published_datetime].append({
-                "type": "comment",
-                "obj": comment
-            })
-        return timeline
-
-    def __add_announcements_to_timeline(self, group, feedbacksets, timeline):
-        if len(feedbacksets) == 0:
-            return group.assignment.first_deadline, timeline
-
-        first_feedbackset = feedbacksets[0]
-        last_deadline = first_feedbackset.deadline_datetime
-
-        for index, feedbackset in enumerate(feedbacksets):
-            if index == 0:
-                if group.assignment.first_deadline is not None:
-                    deadline_datetime = group.assignment.first_deadline
-                else:
-                    deadline_datetime = feedbackset.deadline_datetime
-                # deadline_datetime = group.assignment.first_deadline
-            else:
-                deadline_datetime = feedbackset.deadline_datetime
-            if deadline_datetime not in timeline.keys():
-                timeline[deadline_datetime] = []
-            timeline[deadline_datetime].append({
-                "type": "deadline_expired"
-            })
-            if feedbackset.created_datetime not in timeline.keys():
-                timeline[feedbackset.created_datetime] = []
-
-            # Add available first_deadline, either assignment.first_deadline(if index is 0)
-            # or
-            # feedbackset.deadline_datetime
-            if group.assignment.first_deadline is not None and index == 0:
-                if deadline_datetime <= group.assignment.first_deadline:
-                    timeline[feedbackset.created_datetime].append({
-                        "type": "deadline_created",
-                        "obj": group.assignment.first_deadline,
-                        "user": first_feedbackset.created_by
-                    })
-                    first_feedbackset = feedbackset
-            elif feedbackset.deadline_datetime is not None:
-                if deadline_datetime <= feedbackset.deadline_datetime:
-                    timeline[feedbackset.created_datetime].append({
-                        "type": "deadline_created",
-                        "obj": feedbackset.deadline_datetime,
-                        "user": feedbackset.created_by
-                    })
-                    first_feedbackset = feedbackset
-            elif feedbackset is not feedbacksets[0]:
-                timeline[feedbackset.created_datetime].append({
-                    "type": "deadline_created",
-                    "obj": deadline_datetime,
-                    "user": feedbackset.created_by
-                })
-
-            if deadline_datetime is None or last_deadline is None:
-                pass
-            elif deadline_datetime > last_deadline:
-                last_deadline = deadline_datetime
-
-            if feedbackset.published_datetime is not None:
-                if feedbackset.published_datetime not in timeline.keys():
-                    timeline[feedbackset.published_datetime] = []
-                timeline[feedbackset.published_datetime].append({
-                    "type": "grade",
-                    "obj": feedbackset.points
-                })
-        return last_deadline, timeline
-
-    def __sort_timeline(self, timeline):
-        def compare_timeline_items(a, b):
-            datetime_a = a[0]
-            datetime_b = b[0]
-            if datetime_a is None:
-                datetime_a = datetime.datetime(1970, 1, 1)
-            if datetime_b is None:
-                datetime_b = datetime.datetime(1970, 1, 1)
-            return cmp(datetime_a, datetime_b)
-
-        sorted_timeline = collections.OrderedDict(sorted(timeline.items(), compare_timeline_items))
-        return sorted_timeline
-
-    def __build_timeline(self, group, feedbacksets):
-        timeline = {}
-        timeline = self.__add_comments_to_timeline(group, timeline)
-        last_deadline, timeline = self.__add_announcements_to_timeline(group, feedbacksets, timeline)
-        timeline = self.__sort_timeline(timeline)
-
-        return last_deadline, timeline
-
     def get_context_data(self, **kwargs):
         context = super(FeedbackFeedBaseView, self).get_context_data(**kwargs)
+        timelime_builder = feedbackfeed_timeline_builder.FeedbackFeedTimelineBuilder(self)
         context['subject'] = self.request.cradmin_role.assignment.period.subject
         context['assignment'] = self.request.cradmin_role.assignment
         context['period'] = self.request.cradmin_role.assignment.period
-
-        feedbacksets = self._get_feedbacksets_for_group(self.request.cradmin_role)
-        context['last_deadline'], context['timeline'] = self.__build_timeline(self.request.cradmin_role, feedbacksets)
+        feedbacksets = timelime_builder.get_feedbacksets_for_group(self.request.cradmin_role)
+        context['last_deadline'], context['timeline'] = timelime_builder.build_timeline(self.request.cradmin_role, feedbacksets)
         context['feedbacksets'] = feedbacksets
         try:
             context['last_feedbackset'] = feedbacksets[0]
