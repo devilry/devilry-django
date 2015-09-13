@@ -68,7 +68,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
     delivery = models.ForeignKey(Delivery, related_name='feedbacks')
     rendered_view = models.TextField(blank=True,
                                      help_text=('A rendered HTML version of the feedback, containing '
-                                                 'whatever the grade-editor chose to dump in this field.'))
+                                                'whatever the grade-editor chose to dump in this field.'))
     grade = models.CharField(max_length=12, help_text='The rendered grade, such as "A" or "approved".')
     points = models.PositiveIntegerField(help_text='Number of points given on this feedback.')
     is_passing_grade = models.BooleanField(
@@ -88,10 +88,12 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(delivery__deadline__assignment_group__parentnode__admins=user_obj) | \
-                Q(delivery__deadline__assignment_group__parentnode__parentnode__admins=user_obj) | \
-                Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
-                Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return \
+            Q(delivery__deadline__assignment_group__parentnode__admins=user_obj) | \
+            Q(delivery__deadline__assignment_group__parentnode__parentnode__admins=user_obj) | \
+            Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
+            Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(  # noqa
+                user_obj))
 
     @classmethod
     def q_is_candidate(cls, user_obj):
@@ -104,11 +106,11 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
-        q = Q(delivery__deadline__assignment_group__parentnode__publishing_time__lt = now)
+        q = Q(delivery__deadline__assignment_group__parentnode__publishing_time__lt=now)
         if not active:
-            q &= ~Q(delivery__deadline__assignment_group__parentnode__parentnode__end_time__gte = now)
+            q &= ~Q(delivery__deadline__assignment_group__parentnode__parentnode__end_time__gte=now)
         if not old:
-            q &= ~Q(delivery__deadline__assignment_group__parentnode__parentnode__end_time__lt = now)
+            q &= ~Q(delivery__deadline__assignment_group__parentnode__parentnode__end_time__lt=now)
         return q
 
     @classmethod
@@ -148,7 +150,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             this feedback is for belongs, but that is not checked.
 
             Defaults to ``self.delivery.deadline.assignment_group.assignment``.
-    
+
             We provide the ability to take the assignment as argument instead
             of looking it up via ``self.delivery.deadline.assignment_group``
             because we want to to be efficient when creating feedback in bulk.
@@ -204,12 +206,13 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
             group.save()
 
     def clean(self, assignment=None):
-        if not assignment: # See from_points() for why we do this
+        if not assignment:  # See from_points() for why we do this
             assignment = self.delivery.assignment
         max_points = assignment.max_points
         if self.points > max_points:
-            raise ValidationError(_('You are not allowed to give more than {max_points} points on this assignment.').format(
-                max_points=max_points))
+            raise ValidationError(
+                _('You are not allowed to give more than {max_points} points on this assignment.').format(
+                    max_points=max_points))
 
     def __unicode__(self):
         return "StaticFeedback on %s" % self.delivery
