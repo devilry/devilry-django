@@ -7,7 +7,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
-
 from django.conf import settings
 
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
@@ -383,9 +382,9 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Return ``True`` if :attr:`students_can_create_groups` is ``True``, and
         :attr:`students_can_not_create_groups_after` is in the future or ``None``.
         """
-        return self.students_can_create_groups \
-               and (self.students_can_not_create_groups_after is None
-                    or self.students_can_not_create_groups_after > datetime.now())
+        return self.students_can_create_groups and (
+            self.students_can_not_create_groups_after is None or
+            self.students_can_not_create_groups_after > datetime.now())
 
     def feedback_workflow_allows_shared_feedback_drafts(self):
         """
@@ -562,10 +561,11 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     @classmethod
     def q_is_admin(cls, user_obj):
         warnings.warn("deprecated", DeprecationWarning)
-        return Q(admins=user_obj) | \
-               Q(parentnode__admins=user_obj) | \
-               Q(parentnode__parentnode__admins=user_obj) | \
-               Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return \
+            Q(admins=user_obj) | \
+            Q(parentnode__admins=user_obj) | \
+            Q(parentnode__parentnode__admins=user_obj) | \
+            Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def q_is_examiner(cls, user_obj):
