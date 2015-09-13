@@ -4,8 +4,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
-from django.contrib.webdesign import lorem_ipsum
 from django.utils import timezone
+from django.utils import lorem_ipsum
 
 from devilry.apps.core.models import StaticFeedback, Deadline
 from devilry.apps.core.models import RelatedStudent
@@ -641,4 +641,6 @@ class Command(BaseCommand):
         )
 
     def _lorem_paras(self, count):
-        return markdown_full(u'\n\n'.join(lorem_ipsum.paragraphs(count, common=False)))
+        return markdown_full(u'\n\n'.join(
+            lorem_ipsum.paragraphs(count, common=False))
+        )

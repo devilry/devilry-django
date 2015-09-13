@@ -285,12 +285,12 @@ class CommentFileBuilder(CoreBuilderBase):
     object_attribute_name = 'comment_file'
 
     def __init__(self, **kwargs):
-        fileobject = ContentFile(kwargs['filename'], kwargs['data'])
+        fileobject = ContentFile(kwargs['data'], kwargs['filename'])
         del (kwargs['data'])
         kwargs['filesize'] = fileobject.size
 
         self.comment_file = CommentFile.objects.create(**kwargs)
-        self.comment_file.fileobject = fileobject
+        self.comment_file.file = fileobject
         self.comment_file.save()
 
 

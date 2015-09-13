@@ -10,7 +10,6 @@ from devilry.devilry_group import models
 
 # crispy forms
 from crispy_forms import layout
-from devilry.simplified import PermissionDenied
 
 
 class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):

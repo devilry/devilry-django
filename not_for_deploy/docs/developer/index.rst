@@ -17,9 +17,7 @@ Essentials
     :maxdepth: 1
 
     gettingstarted
-    testsuite
-    mock
-    devilry.project.develop.teshelpers.corebuilder
+    testing
 
 
 Essential wiki pages for developers
@@ -78,6 +76,7 @@ Deprecated APIs and frameworks
 .. toctree::
     :maxdepth: 1
 
+    devilry.project.develop.teshelpers.corebuilder
     testhelper
 
 

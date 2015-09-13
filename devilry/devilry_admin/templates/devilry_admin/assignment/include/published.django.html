@@ -1,0 +1,32 @@
+{% load i18n %}
+{% load humanize %}
+<div class="col-sm-8">
+    <div id="devilry_admin_assignment_published">
+        {% if assignment.publishing_time > now %}
+            <h2>{% trans "Will be published in: " %} {{ assignment.publishing_time|naturaltime }}</h2>
+            <p>
+                {% trans "Students and examiners will not see the assignment before it is published." %}
+            </p>
+        {% else %}
+            <h2>{% trans "Was published: " %} {{ assignment.publishing_time|naturaltime }}</h2>
+            <p>
+                {% trans "This assignment is now avaibable for both students and examiners" %}
+            </p>
+        {% endif %}
+
+    </div>
+</div>
+<div class="col-sm-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">{% trans "Tips and help" %}</h2>
+        </div>
+        <div class="panel-body">
+            {% blocktrans %}
+                Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Nullam id dolor id nibh
+                ultricies vehicula ut id elit. Cum sociis natoque penatibus et magnis dis parturient montes,
+                nascetur ridiculus mus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+            {% endblocktrans %}
+        </div>
+    </div>
+</div>

@@ -4,6 +4,7 @@ from datetime import datetime
 from django.db.models import Q
 from django.db import models
 from django.db import transaction
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
 from node import Node
@@ -423,6 +424,18 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             ("closed-without-feedback", _("Closed without feedback")),
             ("waiting-for-something", _("Waiting for something")),
         ))
+
+    #: If this group was copied from another group, this will be set.
+    #: This can safely be set to ``None`` at any time since it is only
+    #: used to make it possible to bulk copy huge amounts of groups
+    #: efficiently.
+    copied_from = models.ForeignKey('self',
+                                    on_delete=models.SET_NULL,
+                                    blank=True, null=True)
+
+    #: The time when this group was created.
+    created_datetime = models.DateTimeField(null=False, blank=True,
+                                            default=timezone.now)
 
     class Meta:
         app_label = 'core'
@@ -888,7 +901,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         from .deadline import Deadline
         from .delivery import Delivery
-        with transaction.commit_on_success():
+        with transaction.atomic():
             # Unset last_deadline - if we not do this, we will get
             # ``IntegrityError: column last_deadline_id is not unique``
             # if the last deadline after the merge is self.last_deadline

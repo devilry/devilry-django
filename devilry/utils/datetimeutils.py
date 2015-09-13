@@ -1,4 +1,5 @@
 import datetime
+
 from django.utils import timezone
 
 
@@ -21,3 +22,12 @@ def default_timezone_datetime(*args, **kwargs):
     return timezone.make_aware(
         datetime.datetime(*args, **kwargs),
         timezone.get_default_timezone())
+
+
+def isoformat_noseconds(datetimeobject):
+    """
+    Format the given ``datetime.datetime`` object as ``YYYY-MM-DD hh:mm``.
+    """
+    # We use isoformat because strftime does not support times before
+    # year 1900.
+    return datetimeobject.isoformat(' ').split('.')[0].rsplit(':', 1)[0]

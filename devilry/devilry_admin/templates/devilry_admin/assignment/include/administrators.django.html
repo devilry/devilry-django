@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load humanize %}
+<div class="col-sm-12">
+    <div id="devilry_admin_assignment_administrators">
+        <h2>{% trans "Administrators" %}</h2>
+
+        <p>
+            {{ administrator_count }}
+            {% blocktrans %}
+                have administrator access to this assignment. You can invite users to help you administer individual
+                assignments, or the entire course.
+            {% endblocktrans %}
+        </p>
+    </div>
+    <div class="devilry_admin_actionrow" id="devilry_admin_administrators_actions">
+        <p>
+            <a href="#">
+                {% trans "View and edit the administrators" %}
+            </a>
+        </p>
+
+    </div>
+</div>

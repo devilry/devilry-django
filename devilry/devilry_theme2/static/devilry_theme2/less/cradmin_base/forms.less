@@ -1,4 +1,3 @@
-
 .scaleToScreenHeight(@size) {
   @media (min-height: @size) {
     height: @size - 200px;
@@ -20,15 +19,6 @@
 }
 
 .django-cradmin-form-wrapper {
-
-  // Add some padding below the form. This is to avoid that the
-  // floating submitrow overlaps anything in the form. It is not perfect,
-  // but it works as long as there are not too many items in the submit row.
-  padding-bottom: 150px;
-  @media (min-width: @screen-sm-min) {
-    padding-bottom: 80px;
-  }
-
   .django-cradmin-form {
     background: @cradmin-form-bg;
     padding-bottom: 0;
@@ -59,33 +49,6 @@
       }
     }
 
-      /**
-      # .cradmin-focusfield-screenheight
-      Scale the field focusfield to the screen height.
-      Uses css media queries just like the bootstrap responsive grid does
-      for the screen width.
-      */
-    //  &.cradmin-focusfield-screenheight {
-    //    .form-group {
-    //      margin: 0;
-    //      box-sizing: border-box;
-    //      .controls {
-    //        textarea,
-    //        .cradmin-div-styled-as-textarea {
-    //          height: 200px;
-    //          .scaleToScreenHeight(500px);
-    //          .scaleToScreenHeight(550px);
-    //          .scaleToScreenHeight(650px);
-    //          .scaleToScreenHeight(750px);
-    //          .scaleToScreenHeight(850px);
-    //          .scaleToScreenHeight(950px);
-    //          .scaleToScreenHeight(1050px);
-    //        }
-    //      }
-    //    }
-    //  }
-    //}
-
     fieldset legend,
     .cradmin-focusfield label {
       display: block;
@@ -93,8 +56,6 @@
       background: rgb(220, 220, 220);
       border: none;
       padding: 10px @cradmin-form-sidepadding-right 10px @cradmin-form-sidepadding-left;
-      //    font-weight: normal;
-      //text-transform: uppercase;
       font-size: ceil(@font-size-base - 2px);
       line-height: ceil(@font-size-base + 6px);
     }
@@ -111,45 +72,6 @@
       }
     }
 
-    .form-group {
-      input[type=text],
-      input[type=email],
-      input[type=number],
-      input[type=url],
-      textarea,
-      .django-cradmin-bulkfileupload,
-      .cradmin-div-styled-as-textarea,
-      select {
-        border: 1px solid @cradmin-form-field-inactive-border-color;
-        border-radius: 4px;
-        outline: none;
-        box-shadow: none;
-        padding: 10px 12px;
-        background: @cradmin-form-field-inactive-bg;
-        &:focus {
-          background: @cradmin-form-field-focus-bg;
-          border-color: @cradmin-form-field-focus-border-color;
-          box-shadow: @cradmin-form-field-focus-box-shadow;
-        }
-      }
-
-      input[type=text],
-      input[type=email],
-      input[type=number],
-      input[type=url],
-      textarea {
-        height: auto;
-        margin: 0;
-        text-align: left;
-      }
-
-      textarea {
-        &.cradmin-textarea-small {
-          height: 60px;
-        }
-      }
-    }
-
     .cradmin-focusfield {
       .controls {
         padding: 20px @cradmin-form-sidepadding-right 4px @cradmin-form-sidepadding-left;
@@ -162,6 +84,8 @@
           input[type=number],
           input[type=url] {
             font-size: ceil(@font-size-base + 8px);
+            padding: @cradmin-form-focusfield-lg-padding;
+            height: auto;
           }
         }
       }
@@ -208,5 +132,57 @@ form .alert-block.alert-danger {
   .django-cradmin-form-collapsed-section-header {
     padding-left: @cradmin-form-sidepadding-left;
     padding-right: @cradmin-form-sidepadding-right;
+  }
+}
+
+.django-cradmin-split-timepicker {
+  .clearfix();
+  .django-cradmin-split-timepicker-hour,
+  .django-cradmin-split-timepicker-minute {
+    width: 50%;
+    float: left;
+  }
+  .django-cradmin-split-timepicker-hour {
+    padding-right: 5px;
+  }
+  .django-cradmin-split-timepicker-minute {
+    padding-left: 5px;
+  }
+}
+
+.django-cradmin-datetimepicker-split-time {
+  .clearfix();
+  max-width: 270px;
+
+  .django-cradmin-datepicker {
+    float: left;
+    width: 50%;
+    padding-right: 5px;
+  }
+  .django-cradmin-split-timepicker {
+    float: right;
+    width: 50%;
+    padding-left: 5px;
+  }
+
+  &.django-cradmin-datetimepicker-split-time-fluid {
+    max-width: none;
+  }
+}
+
+
+
+.form-control,
+.cradmin-div-styled-as-textarea {
+  .cradminFormControl();
+}
+.cradmin-div-styled-as-textarea {
+  padding: @padding-base-vertical @padding-base-horizontal;
+}
+
+
+textarea {
+  &.cradmin-textarea-small {
+    height: 60px;
   }
 }

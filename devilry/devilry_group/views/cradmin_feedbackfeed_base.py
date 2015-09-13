@@ -74,9 +74,10 @@ class FeedbackFeedBaseView(create.CreateView):
             if feedbackset.created_datetime not in timeline.keys():
                 timeline[feedbackset.created_datetime] = []
 
-            # Add available first_deadline, either assignment.first_deadline or
+            # Add available first_deadline, either assignment.first_deadline(if index is 0)
+            # or
             # feedbackset.deadline_datetime
-            if group.assignment.first_deadline is not None:
+            if group.assignment.first_deadline is not None and index == 0:
                 if deadline_datetime <= group.assignment.first_deadline:
                     timeline[feedbackset.created_datetime].append({
                         "type": "deadline_created",
@@ -164,7 +165,7 @@ class FeedbackFeedBaseView(create.CreateView):
         return [
         ]
 
-    def get_buttons(self, group):
+    def get_buttons(self):
         raise NotImplementedError("Subclasses must implement get_buttons!")
 
     def get_field_layout(self):

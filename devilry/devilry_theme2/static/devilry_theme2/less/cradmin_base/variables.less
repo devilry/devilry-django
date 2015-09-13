@@ -47,11 +47,12 @@
 @cradmin-form-field-focus-bg: #E1EDF4;
 @cradmin-form-field-focus-border-color: darken(@cradmin-form-field-focus-bg, 10%);
 @cradmin-form-field-focus-box-shadow: none;
-@cradmin-form-max-width: @screen-sm-min;
+@cradmin-form-max-width: none;
 @cradmin-form-sidepadding-left: (@grid-gutter-width/2);
 @cradmin-form-sidepadding-right: (@grid-gutter-width/2);
 @cradmin-form-asterisk-display: inline-block;
 @cradmin-form-asterisk-color: rgb(220, 0, 0);
+@cradmin-form-focusfield-lg-padding: 10px 12px;
 
 // Submitrow
 @cradmin-submitrow-padding-top: 8px;
@@ -237,10 +238,59 @@
 @cradmin-floating-iframe-scrollbar-thumb-hover-bg: lighten(@cradmin-floating-iframe-scrollbar-thumb-bg, 10%);
 
 
+// Dateselector
+@cradmin-datetimeselector-backdrop-bg: rgba(0, 0, 0, .6);
+@cradmin-datetimeselector-page-bg: #fff;
+@cradmin-datetimeselector-page-bottom-xs: 0;
+@cradmin-datetimeselector-page-bottom: 10px;
+@cradmin-datetimeselector-page-height: 480px;
+@cradmin-datetimeselector-page-width: 600px;
+@cradmin-datetimeselector-transition: all .15s ease-in-out;
+@cradmin-datetimeselector-horizontal-spacing: 15px;
+
+@cradmin-datetimeselector-mobile-width-breakpoint: @screen-sm-min;
+@cradmin-datetimeselector-mobile-height-breakpoint: (@cradmin-datetimeselector-page-height + @cradmin-datetimeselector-page1-shortcuts-height + @cradmin-datetimeselector-page-bottom);
+
+@cradmin-datetimeselector-closebutton-padding: 10px 20px;
+@cradmin-datetimeselector-closebutton-font-size: 20px;
+@cradmin-datetimeselector-closebutton-color: @text-muted;
+@cradmin-datetimeselector-closebutton-hover-color: @link-color;
+
+@cradmin-datetimeselector-dateview-padding-top: 15px;
+@cradmin-datetimeselector-table-height: 400px;
+@cradmin-datetimeselector-table-bottom: 65px;
+@cradmin-datetimeselector-table-bordercolor: @btn-default-border;
+@cradmin-datetimeselector-table-thead-height: 25px;
+@cradmin-datetimeselector-daybuttoncell-bg: @btn-default-bg;
+@cradmin-datetimeselector-daybuttoncell-color: @btn-default-color;
+@cradmin-datetimeselector-daybuttoncell-hover-bg: @cradmin-btn-default-hover-bg;
+@cradmin-datetimeselector-daybuttoncell-hover-color: @cradmin-btn-default-hover-color;
+@cradmin-datetimeselector-daybuttoncell-selected-bg: darken(@cradmin-btn-default-hover-bg, 10%);
+@cradmin-datetimeselector-daybuttoncell-selected-color: @cradmin-btn-default-hover-color;
+@cradmin-datetimeselector-daybuttoncell-today-bg: @cradmin-form-field-focus-bg;
+@cradmin-datetimeselector-daybuttoncell-today-color: @cradmin-datetimeselector-daybuttoncell-color;
+@cradmin-datetimeselector-daybuttoncell-not-in-current-month-bg: @cradmin-datetimeselector-daybuttoncell-bg;
+@cradmin-datetimeselector-daybuttoncell-not-in-current-month-color: @text-muted;
+@cradmin-datetimeselector-daybuttoncell-disabled-bg: rgb(230, 230, 230);
+@cradmin-datetimeselector-daybuttoncell-disabled-color: rgb(100, 100, 100);
+@cradmin-datetimeselector-daybuttoncell-not-in-current-month-disabled-bg: darken(@cradmin-datetimeselector-daybuttoncell-disabled-bg, 10%);
+@cradmin-datetimeselector-daybuttoncell-not-in-current-month-disabled-color: lighten(@cradmin-datetimeselector-daybuttoncell-disabled-color, 10%);
+
+@cradmin-datetimeselector-page1-shortcuts-height: 65px; // Height including bottom and top padding
+@cradmin-datetimeselector-page1-shortcuts-bottom: 15px;
+
+@cradmin-datetimeselector-backbutton-width: 50px;
+@cradmin-datetimeselector-backbutton-border-right: 1px solid darken(@cradmin-datetimeselector-page-bg, 10%);
+@cradmin-datetimeselector-backbutton-color: @link-color;
+@cradmin-datetimeselector-backbutton-icon-font-size: 25px;
+@cradmin-datetimeselector-backbutton-hover-bg: darken(@cradmin-datetimeselector-page-bg, 5%);
+@cradmin-datetimeselector-backbutton-hover-color: darken(@cradmin-datetimeselector-backbutton-color, 5%);
+
 // Varius bootstrap overrides
 @font-family-sans-serif: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
 @link-color: #377CA8;
 @font-size-base: 16px;
+//@input-height-base: 40px;
 
 @border-radius-base: 2px;
 @border-radius-large: 3px;

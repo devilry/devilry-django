@@ -1,0 +1,43 @@
+{% load i18n %}
+<div class="col-sm-8" id="devilry_assignment_main">
+    <div id="devilry_admin_assignment_meta">
+        <h2>{% trans "Students and examiners" %}</h2>
+
+        <p>
+            {% if assignmentgroups_count == candidates_count %}
+                {{ assignmentgroups_count }} students
+            {% else %}
+                {{ assignmentgroups_count }} students organized in {{ candidates_count }} project groups
+            {% endif %}
+        </p>
+    </div>
+    <div id="devilry_admin_assignmtent_students">
+        <h3><a href="#">{% trans "Students" %}</a></h3>
+
+        <p>
+            {% trans "View, edit or add students for this assignment" %}
+        </p>
+    </div>
+    <div id="devilry_admin_assignmtent_examiners">
+        <h3><a href="#">{% trans "Examiners" %}</a></h3>
+
+        <p>
+            {% trans "View, edit or organize examiners for this assignment" %}
+        </p>
+    </div>
+</div>
+<div class="col-sm-4">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h2 class="panel-title">{% trans "Tips and help" %}</h2>
+        </div>
+        <div class="panel-body">
+            {% blocktrans %}
+                Integer posuere erat a ante venenatis dapibus posuere velit aliquet. Nullam id dolor id nibh
+                ultricies vehicula ut id elit. Cum sociis natoque penatibus et magnis dis parturient montes,
+                nascetur ridiculus mus. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+
+            {% endblocktrans %}
+        </div>
+    </div>
+</div>

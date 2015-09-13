@@ -1,0 +1,25 @@
+{% load i18n %}
+<div class="form-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+            {% trans "Tips and help" %}
+        </h3>
+      </div>
+      <div class="panel-body">
+        <p>
+            {% blocktrans trimmed %}
+                If the name of your assignment ends with a number,
+                Devilry will automatically suggest the name for
+                the next assignment.
+            {% endblocktrans %}
+        </p>
+        <p>
+            {% blocktrans trimmed %}
+                The short name is used in places where the full name
+                takes up too much space.
+            {% endblocktrans %}
+        </p>
+      </div>
+    </div>
+</div>

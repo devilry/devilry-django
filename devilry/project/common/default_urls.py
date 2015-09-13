@@ -1,11 +1,13 @@
 from django.conf.urls import include
 from django.conf.urls import url
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest, HttpResponsePermanentRedirect
 from devilry.devilry_frontpage.views import frontpage
 
-admin.autodiscover()
+
+admin.site.login = login_required(admin.site.login)
 
 
 def redirecto_to_show_delivery(request, assignmentgroupid):

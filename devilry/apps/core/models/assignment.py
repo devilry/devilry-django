@@ -1,11 +1,13 @@
 import warnings
 from datetime import datetime
 
+from django.template import defaultfilters
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
+
 from django.conf import settings
 
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
@@ -16,6 +18,14 @@ from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from custom_db_fields import ShortNameField, LongNameField
 from . import deliverytypes
+
+
+class AssignmentHasGroupsError(Exception):
+    """
+    Raised when performing an action that requires
+    the assignment to not have any
+    :class:`devilry.apps.core.models.AssignmentGroup`.
+    """
 
 
 class AssignmentQuerySet(models.query.QuerySet):
@@ -344,18 +354,18 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         verbose_name=_('Feedback workflow'),
         choices=(
             ('',
-                _('Simple - Examiners write feedback, and publish it whenever '
-                  'they want. Does not handle coordination of multiple examiners at all.')),
+             _('Simple - Examiners write feedback, and publish it whenever '
+               'they want. Does not handle coordination of multiple examiners at all.')),
             ('trusted-cooperative-feedback-editing',
-                _('Trusted cooperative feedback editing - Examiners can only save feedback drafts. '
-                  'Examiners share the same feedback drafts, which means that one examiner can '
-                  'start writing feedback and another can continue. '
-                  'When an administrator is notified by their examiners that they have finished '
-                  'correcting, they can publish the drafts via the administrator UI. '
-                  'If you want one examiner to do the bulk of the work, and just let another '
-                  'examiner read it over and adjust the feedback, make the first examiner '
-                  'the only examiner, and reassign the students to the other examiner when '
-                  'the first examiner is done.')),
+             _('Trusted cooperative feedback editing - Examiners can only save feedback drafts. '
+               'Examiners share the same feedback drafts, which means that one examiner can '
+               'start writing feedback and another can continue. '
+               'When an administrator is notified by their examiners that they have finished '
+               'correcting, they can publish the drafts via the administrator UI. '
+               'If you want one examiner to do the bulk of the work, and just let another '
+               'examiner read it over and adjust the feedback, make the first examiner '
+               'the only examiner, and reassign the students to the other examiner when '
+               'the first examiner is done.')),
         )
     )
 
@@ -374,8 +384,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         :attr:`students_can_not_create_groups_after` is in the future or ``None``.
         """
         return self.students_can_create_groups \
-            and (self.students_can_not_create_groups_after is None
-                 or self.students_can_not_create_groups_after > datetime.now())
+               and (self.students_can_not_create_groups_after is None
+                    or self.students_can_not_create_groups_after > datetime.now())
 
     def feedback_workflow_allows_shared_feedback_drafts(self):
         """
@@ -442,8 +452,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         See: :meth:`devilry.devilry_gradingsystem.pluginregistry.GradingSystemPluginRegistry.get`.
         """
-        ApiClass = gradingsystempluginregistry.get(self.grading_system_plugin_id)
-        return ApiClass(self)
+        apiclass = gradingsystempluginregistry.get(self.grading_system_plugin_id)
+        return apiclass(self)
 
     def has_valid_grading_setup(self):
         """
@@ -553,33 +563,29 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     def q_is_admin(cls, user_obj):
         warnings.warn("deprecated", DeprecationWarning)
         return Q(admins=user_obj) | \
-            Q(parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__admins=user_obj) | \
-            Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+               Q(parentnode__admins=user_obj) | \
+               Q(parentnode__parentnode__admins=user_obj) | \
+               Q(parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     @classmethod
     def q_is_examiner(cls, user_obj):
         warnings.warn("deprecated", DeprecationWarning)
         return Q(assignmentgroups__examiners__user=user_obj)
 
-    def _clean_first_deadline(self):
+    def _clean_first_deadline(self, errors):
         # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
         self.first_deadline = self.first_deadline.replace(microsecond=0, tzinfo=None)
 
-        datetimeformat = '%Y-%m-%d %H:%M'
-        if self.first_deadline < self.publishing_time:
-            msg = _('Submission date can not be before the publishing time '
-                    '({publishing_time}) of the assignment.')
-            raise ValidationError(
-                msg.format(publishing_time=self.publishing_time.strftime(datetimeformat)))
-        if self.first_deadline > self.parentnode.end_time:
-            msg = _("Submission date must be within it's {period_term} ({start_time} - {end_time}).")
-            raise ValidationError(msg.format(
-                period_term=_('period'),
-                start_time=self.parentnode.start_time.strftime(datetimeformat),
-                end_time=self.parentnode.end_time.strftime(datetimeformat)))
+        if self.first_deadline > self.parentnode.end_time or self.first_deadline < self.parentnode.start_time:
+            errors['first_deadline'] = _("First deadline must be within %(periodname)s, "
+                                         "which lasts from %(start_time)s to %(end_time)s.") % {
+                'periodname': self.parentnode.long_name,
+                'start_time': defaultfilters.date(self.parentnode.start_time,
+                                                  'DATETIME_FORMAT'),
+                'end_time': defaultfilters.date(self.parentnode.end_time, 'DATETIME_FORMAT')
+            }
 
-    def clean(self, *args, **kwargs):
+    def clean(self):
         """Validate the assignment.
 
         Always call this before save()! Read about validation here:
@@ -588,26 +594,29 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Raises ValidationError if ``publishing_time`` is not between
         :attr:`Period.start_time` and ``Period.end_time``.
         """
-        super(Assignment, self).clean(*args, **kwargs)
+        super(Assignment, self).clean()
+        errors = {}
         if self.publishing_time is not None and self.parentnode_id is not None:
-            if self.publishing_time < self.parentnode.start_time or \
-                    self.publishing_time > self.parentnode.end_time:
-                raise ValidationError(
-                    _("The publishing time, {publishing_time}, is invalid. "
-                      "It must be within it's period, {period}, "
-                      "which lasts from {start_time} to {end_time}").format(
-                        publishing_time=self.publishing_time,
-                        period=unicode(self.parentnode),
-                        end_time=self.parentnode.end_time,
-                        start_time=self.parentnode.start_time))
+            if self.publishing_time < self.parentnode.start_time or self.publishing_time > self.parentnode.end_time:
+                errors['publishing_time'] = _("Publishing time must be within %(periodname)s, "
+                                              "which lasts from %(start_time)s to %(end_time)s.") % {
+                    'periodname': self.parentnode.long_name,
+                    'start_time': defaultfilters.date(self.parentnode.start_time,
+                                                      'DATETIME_FORMAT'),
+                    'end_time': defaultfilters.date(self.parentnode.end_time,
+                                                    'DATETIME_FORMAT')
+                }
         if self.first_deadline:
-            self._clean_first_deadline()
+            self._clean_first_deadline(errors)
         if self.passing_grade_min_points > self.max_points:
-            raise ValidationError(
-                _('The minumum number of points required to pass must be less than '
-                  'the maximum number of points possible on the assignment. The '
-                  'current maximum is {max_points}').format(
-                    max_points=self.max_points))
+            errors['passing_grade_min_points'] = _('The minumum number of points required to pass must be less than '
+                                                   'the maximum number of points possible for the assignment. The '
+                                                   'current maximum is %(max_points)s.') % {
+                'max_points': self.max_points
+            }
+
+        if errors:
+            raise ValidationError(errors)
 
     def is_empty(self):
         """
@@ -626,3 +635,70 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     def deadline_handling_is_hard(self):
         return self.deadline_handling == self.DEADLINEHANDLING_HARD
+
+    def copy_groups_from_another_assignment(self, sourceassignment):
+        """
+        Copy all AssignmentGroup objects from another assignment.
+
+        Copies:
+
+        - The name of the group.
+        - The Candidate objects, but does not copy ``candidate_id`` unless
+          the ``DEVILRY_CANDIDATE_ID_HANDLING`` setting is set to ``"per-period"``.
+        """
+        from devilry.apps.core.models import AssignmentGroup
+        from devilry.apps.core.models import Candidate
+        from devilry.apps.core.models import Examiner
+
+        if self.assignmentgroups.exists():
+            raise AssignmentHasGroupsError(_('The assignment has students. You can not '
+                                             'copy groups into assignments with students.'))
+
+        # Step1: Bulk create the groups with no candidates or examiners, but set copied_from.
+        groups = []
+        for othergroup in sourceassignment.assignmentgroups.all():
+            newgroup = AssignmentGroup(parentnode=self,
+                                       name=othergroup.name,
+                                       copied_from=othergroup)
+            groups.append(newgroup)
+        AssignmentGroup.objects.bulk_create(groups)
+
+        # Step2: Bulk create candidate and examiners from group.copied_from.<candidates|examiners>.
+        candidates = []
+        examiners = []
+
+        for group in self.assignmentgroups \
+                .prefetch_related(
+                    models.Prefetch(
+                        'copied_from',
+                        to_attr='copied_from_list',
+                        queryset=AssignmentGroup.objects.prefetch_related(
+                            models.Prefetch('candidates',
+                                            to_attr='candidatelist',
+                                            queryset=Candidate.objects.all()),
+                            models.Prefetch('examiners',
+                                            to_attr='examinerlist',
+                                            queryset=Examiner.objects.all()),
+                        )
+                    )
+                ):
+            for othercandidate in group.copied_from_list.candidatelist:
+                newcandidate = Candidate(
+                    assignment_group=group,
+                    student_id=othercandidate.student_id
+                )
+                if settings.DEVILRY_CANDIDATE_ID_HANDLING == 'per-period':
+                    newcandidate.candidate_id = othercandidate.candidate_id
+                    newcandidate.automatic_anonymous_id = othercandidate.automatic_anonymous_id
+                else:
+                    # TODO: Generate automatic_anonymous_id
+                    pass
+                candidates.append(newcandidate)
+            for otherexaminer in group.copied_from_list.examinerlist:
+                newexaminer = Examiner(
+                    assignmentgroup=group,
+                    user_id=otherexaminer.user_id
+                )
+                examiners.append(newexaminer)
+        Candidate.objects.bulk_create(candidates)
+        Examiner.objects.bulk_create(examiners)

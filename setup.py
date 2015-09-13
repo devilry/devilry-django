@@ -28,7 +28,7 @@ setup(
         'gunicorn==19.2.1',
         'django-crispy-forms==1.4.0',
         'openpyxl==1.6.1',
-        'django==1.7.9',
+        'django==1.8.4',
         'URLObject==2.0.1',
         'django-simple-rest==1.4.1',
         'mimeparse==0.1.3',
@@ -45,10 +45,11 @@ setup(
         'django-haystack==2.3.1',
         'httplib2==0.7.7',
         'detektor==1.1.0-beta.012',
-        'django_cradmin==1.0.1b9',
+        'django_cradmin==1.0.1b16',
         'dj-static>=0.0.6',
         'dj-database-url>=0.3.0',
         'bleach>=1.4',
+        'psycopg2==2.4.6',
         'elasticsearch==1.6.0',
     ]
 )
