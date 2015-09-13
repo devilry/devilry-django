@@ -215,6 +215,17 @@ class TestAssignment(TestCase):
         mommy.make('core.Examiner', assignmentgroup=group2, _quantity=2)
 
         targetassignment = mommy.make('core.Assignment')
+        # Should require only 9 queries no matter how many groups, candidates or examiners we
+        # have (at least up to the max number of bulk created object per query):
+        # 1. Check if any groups exists within the targetassignment.
+        # 2. Query for all groups within the sourceassignment.
+        # 3. Bulk create groups (without any candidates or examiners)
+        # 4. Query for all the newly bulk created groups.
+        # 5. Prefetch the source groups (via copied_from).
+        # 6. Prefetch related candidates on the targetassignment (via copied_from).
+        # 7. Prefetch related examiners on the targetassignment (via copied_from).
+        # 8. Bulk create candidates.
+        # 9. Bulk create examiners.
         with self.assertNumQueries(9):
             targetassignment.copy_groups_from_another_assignment(sourceassignment)
 
