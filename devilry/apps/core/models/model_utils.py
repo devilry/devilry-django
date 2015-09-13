@@ -5,7 +5,8 @@
     be changed.
 """
 
-pathsep = '.' # path separator for Node-paths
+pathsep = '.'  # path separator for Node-paths
+
 
 def splitpath(path, expected_len=0):
     """ Split the path on :attr:`pathsep` and return the resulting list.
@@ -33,11 +34,13 @@ class EtagMismatchException(Exception):
     def __init__(self, etag):
         self.etag = etag
 
+
 class Etag(object):
     """
     This class adds a method to update the object with an etag,
     making sure it is up to date before saving.
     """
+
     def etag_update(self, etag):
         if self.etag != etag:
             raise EtagMismatchException(self.etag)
