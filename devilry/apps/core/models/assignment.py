@@ -652,7 +652,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
         if self.assignmentgroups.exists():
             raise AssignmentHasGroupsError(_('The assignment has students. You can not '
-                                             'copy groups into assignments with students.'))
+                                             'copy use this on assignments with students.'))
 
         # Step1: Bulk create the groups with no candidates or examiners, but set copied_from.
         groups = []
@@ -702,3 +702,39 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 examiners.append(newexaminer)
         Candidate.objects.bulk_create(candidates)
         Examiner.objects.bulk_create(examiners)
+
+    def create_groups_from_relatedstudents_on_period(self):
+        """
+        Create :class:`devilry.apps.core.models.AssignmentGroup` objects
+        for all :class:`devilry.apps.core.models.RelatedStudent` objects
+        on the period owning this assignment.
+
+        Creates one AssignmentGroup for each RelatedStudent, with a
+        single Candidate in each AssignmentGroup.
+        """
+        from devilry.apps.core.models import AssignmentGroup
+        from devilry.apps.core.models import Candidate
+
+        if self.assignmentgroups.exists():
+            raise AssignmentHasGroupsError(_('The assignment has students. You can not '
+                                             'copy use this on assignments with students.'))
+
+        # We iterate over relatedstudents twice, so we
+        # use this to avoid multiple queries
+        relatedstudents = list(self.period.relatedstudent_set.all())
+
+        # Step1: Bulk create empty groups
+        groups = []
+        for relatedstudent in relatedstudents:
+            newgroup = AssignmentGroup(parentnode=self)
+            groups.append(newgroup)
+        AssignmentGroup.objects.bulk_create(groups)
+
+        # Step2: Bulk create candidates
+        candidates = []
+        for group, relatedstudent in zip(self.assignmentgroups.all(), relatedstudents):
+            candidate = Candidate(
+                assignment_group=group,
+                student_id=relatedstudent.user_id)
+            candidates.append(candidate)
+        Candidate.objects.bulk_create(candidates)

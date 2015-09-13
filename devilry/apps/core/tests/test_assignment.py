@@ -229,6 +229,56 @@ class TestAssignment(TestCase):
         with self.assertNumQueries(9):
             targetassignment.copy_groups_from_another_assignment(sourceassignment)
 
+    def test_create_groups_from_relatedstudents_on_period_period_has_no_relatedstudents(self):
+        testassignment = mommy.make('core.Assignment')
+        testassignment.create_groups_from_relatedstudents_on_period()
+        self.assertEqual(testassignment.assignmentgroups.count(), 0)
+
+    def test_create_groups_from_relatedstudents_on_period_assignment_has_groups(self):
+        testassignment = mommy.make('core.Assignment')
+        mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        with self.assertRaises(AssignmentHasGroupsError):
+            testassignment.create_groups_from_relatedstudents_on_period()
+
+    def test_create_groups_from_relatedstudents_on_period_groups_is_created(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, _quantity=5)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment.create_groups_from_relatedstudents_on_period()
+        self.assertEqual(testassignment.assignmentgroups.count(), 5)
+
+    def test_create_groups_from_relatedstudents_on_period_candidates_is_created(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, _quantity=5)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment.create_groups_from_relatedstudents_on_period()
+        candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=testassignment)
+        self.assertEqual(candidatesqueryset.count(), 5)
+
+    def test_create_groups_from_relatedstudents_on_period_candidates_has_correct_user(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student1')
+        mommy.make('core.RelatedStudent', period=testperiod, user__shortname='student2')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment.create_groups_from_relatedstudents_on_period()
+        candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=testassignment)
+        self.assertTrue(candidatesqueryset.filter(student__shortname='student1').exists())
+        self.assertTrue(candidatesqueryset.filter(student__shortname='student2').exists())
+
+    def test_create_groups_from_relatedstudents_on_period_querycount(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod, _quantity=30)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        # Should require only 5 queries no matter how many relatedstudents we
+        # have (at least up to the max number of bulk created object per query):
+        # 1. Check if any groups exists within the assignment.
+        # 2. Query for all relatedstudents within the period.
+        # 3. Bulk create empty groups.
+        # 4. Query for all the created empty groups.
+        # 5. Bulk create candidates.
+        with self.assertNumQueries(5):
+            testassignment.create_groups_from_relatedstudents_on_period()
+
 
 class TestAssignmentOld(TestCase, TestHelper):
     """
