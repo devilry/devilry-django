@@ -241,7 +241,7 @@ class TestDeadlineOld(TestCase, TestHelper):
     """
     WARNING: Old tests for Deadline using TestHelper. We should
     NOT add new tests here, and the tests should be updated and
-    moved to TestDeadline if we update any of the tested 
+    moved to TestDeadline if we update any of the tested
     methods, or need to add more tests.
     """
 
