@@ -72,7 +72,8 @@ class TestGroupInvite(TestCase):
             .add_group(students=[self.testuser1]).group
         GroupInvite(group=group, sent_by=self.testuser1, sent_to=self.testuser2).save()
         with self.assertRaisesRegexp(ValidationError,
-                                     r'^.*The student is already invited to join the group, but they have not responded yet.*$'):
+                                     r'^.*The student is already invited to join the group, '
+                                     r'but they have not responded yet.*$'):
             GroupInvite(group=group, sent_by=self.testuser1, sent_to=self.testuser2).clean()
 
     def test_can_not_invite_someone_that_is_already_in_projectgroup(self):
@@ -83,7 +84,7 @@ class TestGroupInvite(TestCase):
         assignment2builder = periodbuilder.add_assignment('assignment2',
                                                           students_can_create_groups=True)
 
-        assignment1builder.add_group(students=[self.testuser2, self.testuser3]).group
+        assignment1builder.add_group(students=[self.testuser2, self.testuser3])
         group1 = assignment1builder.add_group(students=[self.testuser1]).group
         group2 = assignment2builder.add_group(students=[self.testuser1]).group
 
@@ -107,7 +108,8 @@ class TestGroupInvite(TestCase):
             sent_by=self.testuser1,
             sent_to=self.testuser2)
         with self.assertRaisesRegexp(ValidationError,
-                                     r'^.*This assignment does not allow students to form project groups on their own.*$'):
+                                     r'^.*This assignment does not allow students to form '
+                                     r'project groups on their own.*$'):
             invite.full_clean()
 
     def test_students_can_not_create_groups_after(self):
@@ -122,7 +124,8 @@ class TestGroupInvite(TestCase):
             sent_by=self.testuser1,
             sent_to=self.testuser2)
         with self.assertRaisesRegexp(ValidationError,
-                                     r'^.*Creating project groups without administrator approval is not allowed on this assignment anymore.*$'):
+                                     r'^.*Creating project groups without administrator approval is '
+                                     r'not allowed on this assignment anymore.*$'):
             invite.full_clean()
 
     def test_invited_student_must_be_relatedstudent(self):
