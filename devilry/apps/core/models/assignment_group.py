@@ -901,7 +901,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         from .deadline import Deadline
         from .delivery import Delivery
-        with transaction.commit_on_success():
+        with transaction.atomic():
             # Unset last_deadline - if we not do this, we will get
             # ``IntegrityError: column last_deadline_id is not unique``
             # if the last deadline after the merge is self.last_deadline

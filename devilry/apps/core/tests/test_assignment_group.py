@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from django.test import TestCase
 from django.core.exceptions import ValidationError
+from model_mommy import mommy
 
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
@@ -392,6 +393,13 @@ class TestAssignmentGroup(TestCase):
             .add_delivery_x_hours_before_deadline(hours=1)\
             .add_passed_A_feedback(saved_by=UserBuilder('testexaminer').user)
         self.assertEquals(AssignmentGroup.objects.filter_can_add_deliveries().count(), 0)
+
+    def test_delete_copied_from_does_not_delete_group(self):
+        group1 = mommy.make('core.AssignmentGroup')
+        group2 = mommy.make('core.AssignmentGroup', copied_from=group1)
+        group1.delete()
+        group2 = AssignmentGroup.objects.get(id=group2.id)
+        self.assertIsNone(group2.copied_from)
 
 
 class TestAssignmentGroupCanDelete(TestCase):
