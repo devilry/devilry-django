@@ -31,6 +31,7 @@ def devilry_feedback_shortformat(staticfeedback):
             staticfeedback.grade,
             format_is_passing_grade(staticfeedback.is_passing_grade))
 
+
 @register.filter
 def devilry_escape_html(html):
     """
