@@ -76,7 +76,6 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
         selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
                                                                  requestuser=janedoe,
                                                                  group=janedoe)
-        selector.one('.devilry-group-feedbackfeed-feed').prettyprint()
         self.assertTrue(selector.one('#submit-id-examiner_add_public_comment'))
 
     def test_get_feedbackfeed_examiner_wysiwyg_get_comment_choise_add_comment_to_feedbackdraft(self):
