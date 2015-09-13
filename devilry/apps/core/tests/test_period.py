@@ -62,45 +62,45 @@ class TestPeriodManagerQualifiesForExam(TestCase):
         status.students.create(relatedstudent=self.relatedstudent, qualifies=True)
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertTrue(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).first()
-                .user_qualifies_for_final_exam)
+            Period.objects.annotate_with_user_qualifies_for_final_exam(
+                self.testuser).first().user_qualifies_for_final_exam)
 
     def test_not_qualfied(self):
         status = self.__create_status(Status.READY)
         status.students.create(relatedstudent=self.relatedstudent, qualifies=False)
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertFalse(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-                .first().user_qualifies_for_final_exam)
+            Period.objects.annotate_with_user_qualifies_for_final_exam(
+                self.testuser).first().user_qualifies_for_final_exam)
 
     def test_not_set(self):
         self.__create_status(Status.READY)
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertIsNone(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-                .first().user_qualifies_for_final_exam)
+            Period.objects.annotate_with_user_qualifies_for_final_exam(
+                self.testuser).first().user_qualifies_for_final_exam)
 
     def test_no_status(self):
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertIsNone(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-                .first().user_qualifies_for_final_exam)
+            Period.objects.annotate_with_user_qualifies_for_final_exam(
+                self.testuser).first().user_qualifies_for_final_exam)
 
     def test_not_ready(self):
         status = self.__create_status(Status.NOTREADY)
         status.students.create(relatedstudent=self.relatedstudent, qualifies=True)
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertIsNone(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-                .first().user_qualifies_for_final_exam)
+            Period.objects.annotate_with_user_qualifies_for_final_exam(
+                self.testuser).first().user_qualifies_for_final_exam)
 
     def test_almostready(self):
         status = self.__create_status(Status.ALMOSTREADY)
         status.students.create(relatedstudent=self.relatedstudent, qualifies=True)
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertTrue(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-                .first().user_qualifies_for_final_exam)
+            Period.objects.annotate_with_user_qualifies_for_final_exam(
+                self.testuser).first().user_qualifies_for_final_exam)
 
     def test_multiple_statuses_use_last(self):
         status = self.__create_status(Status.READY)
@@ -108,8 +108,8 @@ class TestPeriodManagerQualifiesForExam(TestCase):
         status.students.create(relatedstudent=self.relatedstudent, qualifies=True)
         self.assertEquals(Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).count(), 1)
         self.assertIsNone(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser).first()
-                .user_qualifies_for_final_exam)
+            Period.objects.annotate_with_user_qualifies_for_final_exam(
+                self.testuser).first().user_qualifies_for_final_exam)
 
     def test_use_correct_period(self):
         otherperiodbuilder = self.subjectbuilder.add_6month_lastyear_period() \
@@ -121,13 +121,14 @@ class TestPeriodManagerQualifiesForExam(TestCase):
             relatedstudent=otherperiodbuilder.period.relatedstudent_set.get(user=self.testuser),
             qualifies=True)
         self.assertIsNone(
-            Period.objects.annotate_with_user_qualifies_for_final_exam(self.testuser)
-                .get(id=self.periodbuilder.period.id).user_qualifies_for_final_exam)
+            Period.objects.annotate_with_user_qualifies_for_final_exam(
+                self.testuser).get(id=self.periodbuilder.period.id).user_qualifies_for_final_exam)
 
 
 class TestPeriodOld(TestCase, TestHelper):
     """
-    Do not add new tests to this testcase, add to the newer testcases above, or add new testcases and use corebuilder instead.
+    Do not add new tests to this testcase, add to the newer testcases above,
+    or add new testcases and use corebuilder instead.
     """
 
     def setUp(self):
