@@ -8,7 +8,7 @@ class AbstractApplicationKeyValue(models.Model):
     value = models.TextField(null=True, blank=True, db_index=True, help_text="Value.")
 
     class Meta:
-        abstract = True # This model will then not be used to create any database table. Instead, when it is used as a base class for other models, its fields will be added to those of the child class.
+        abstract = True
 
     def __unicode__(self):
         return '{0}.{1}={2}'.format(self.application, self.key, self.value)
