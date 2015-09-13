@@ -15,7 +15,6 @@ class AbstractIsExaminer(object):
         """
         raise NotImplementedError()
 
-
     @classmethod
     def q_is_examiner(cls, user_obj):
         """
@@ -23,7 +22,6 @@ class AbstractIsExaminer(object):
         where the given user is examiner.
         """
         raise NotImplementedError()
-
 
     @classmethod
     def where_is_examiner(cls, user_obj):
@@ -34,8 +32,8 @@ class AbstractIsExaminer(object):
         :rtype: QuerySet
         """
         return cls.objects.filter(
-                cls.q_is_examiner(user_obj)
-            ).distinct()
+            cls.q_is_examiner(user_obj)
+        ).distinct()
 
     @classmethod
     def published_where_is_examiner(cls, user_obj, old=True, active=True):
@@ -51,9 +49,9 @@ class AbstractIsExaminer(object):
             assignments eliminated.
         """
         return cls.objects.filter(
-                cls.q_published(old=old, active=active) &
-                cls.q_is_examiner(user_obj)
-                ).distinct()
+            cls.q_published(old=old, active=active) &
+            cls.q_is_examiner(user_obj)
+        ).distinct()
 
     @classmethod
     def active_where_is_examiner(cls, user_obj):
@@ -62,7 +60,7 @@ class AbstractIsExaminer(object):
         ``old=False``.
         """
         return cls.published_where_is_examiner(user_obj, old=False,
-                active=True)
+                                               active=True)
 
     @classmethod
     def old_where_is_examiner(cls, user_obj):

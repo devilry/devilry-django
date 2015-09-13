@@ -1,17 +1,15 @@
 import logging
+from datetime import datetime
+
 from django.db import models
 from django.db.models import Q
+from django.db.models.signals import pre_delete
 
 from node import Node
 from abstract_is_admin import AbstractIsAdmin
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
-
-from ..deliverystore import load_deliverystore_backend, FileNotFoundError
-
-from datetime import datetime
-
-
+from ..deliverystore import load_deliverystore_backend
 
 log = logging.getLogger(__name__)
 
@@ -91,10 +89,12 @@ class FileMeta(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(delivery__deadline__assignment_group__parentnode__admins=user_obj) | \
+        return \
+            Q(delivery__deadline__assignment_group__parentnode__admins=user_obj) | \
             Q(delivery__deadline__assignment_group__parentnode__parentnode__admins=user_obj) | \
             Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
-            Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+            Q(delivery__deadline__assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(  # noqa
+                user_obj))
 
     def __unicode__(self):
         return self.filename
@@ -128,5 +128,4 @@ def filemeta_deleted_handler(sender, **kwargs):
     filemeta.deliverystore.remove(filemeta)
 
 
-from django.db.models.signals import pre_delete
 pre_delete.connect(filemeta_deleted_handler, sender=FileMeta)

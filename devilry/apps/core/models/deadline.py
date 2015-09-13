@@ -1,6 +1,6 @@
 from datetime import datetime
-from django.conf import settings
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
@@ -22,8 +22,8 @@ class NewerDeadlineExistsError(Exception):
 
 class DeadlineQuerySet(models.query.QuerySet):
     def smart_create(self, groupqueryset, deadline_datetime, text=None,
-            why_created=None, added_by=None,
-            query_created_deadlines=False):
+                     why_created=None, added_by=None,
+                     query_created_deadlines=False):
 
         # We do this because we want to make it easy to compare deadlines based on their datetime.
         deadline_datetime = Deadline.reduce_datetime_precision(deadline_datetime)
@@ -45,6 +45,7 @@ class DeadlineQuerySet(models.query.QuerySet):
                 text=text,
                 why_created=why_created,
                 added_by=added_by)
+
         deadlines_to_create = map(init_deadline, groups)
         self.bulk_create(deadlines_to_create)
 
@@ -54,6 +55,7 @@ class DeadlineQuerySet(models.query.QuerySet):
                 assignment_group__in=groups,
                 deadline=deadline_datetime,
                 text=text).select_related('assignment_group')
+
         created_deadlines = get_created_deadlines()
 
         def save_group(deadline):
@@ -62,15 +64,16 @@ class DeadlineQuerySet(models.query.QuerySet):
             group.delivery_status = "waiting-for-something"
             group.last_deadline = deadline
             group.save(update_delivery_status=False,
-                autocreate_first_deadline_for_nonelectronic=False)
+                       autocreate_first_deadline_for_nonelectronic=False)
 
-        assignment = groups[0].assignment # NOTE: We assume all groups are within the same assignment - as documented
+        assignment = groups[0].assignment  # NOTE: We assume all groups are within the same assignment - as documented
         time_of_delivery = datetime.now().replace(microsecond=0, tzinfo=None)
         if assignment.delivery_types == deliverytypes.NON_ELECTRONIC:
             from .delivery import Delivery
 
             # DB query 6 - create deliveries
-            deliveries_to_create = [Delivery(deadline=deadline, time_of_delivery=time_of_delivery, number=1, successful=True)\
+            deliveries_to_create = [
+                Delivery(deadline=deadline, time_of_delivery=time_of_delivery, number=1, successful=True)
                 for deadline in created_deadlines]
             Delivery.objects.bulk_create(deliveries_to_create)
 
@@ -78,7 +81,7 @@ class DeadlineQuerySet(models.query.QuerySet):
             created_deliveries = Delivery.objects.filter(
                 deadline__assignment_group__in=groups,
                 time_of_delivery=time_of_delivery).select_related(
-                    'deadline', 'deadline__assignment_group')
+                'deadline', 'deadline__assignment_group')
 
             # DB query 8...N - Update groups
             for delivery in created_deliveries:
@@ -92,16 +95,14 @@ class DeadlineQuerySet(models.query.QuerySet):
         if query_created_deadlines:
             return get_created_deadlines()
 
-            
-
 
 class DeadlineManager(models.Manager):
     def get_queryset(self):
         return DeadlineQuerySet(self.model, using=self._db)
 
     def smart_create(self, groupqueryset, deadline_datetime, text=None,
-            why_created=None, added_by=None,
-            query_created_deadlines=False):
+                     why_created=None, added_by=None,
+                     query_created_deadlines=False):
         """
         Creates deadlines for all groups in the given QuerySet of AssignmentGroups.
 
@@ -109,7 +110,7 @@ class DeadlineManager(models.Manager):
 
         1. Create deadlines in bulk.
         2. If assignment is ``NON_ELECTRONIC``, create a delivery for each of the created deadlines.
-        3. Update all the groups in groupqueryset() with ``is_open=True``, 
+        3. Update all the groups in groupqueryset() with ``is_open=True``,
            ``delivery_status="waiting-for-something"``, ``last_deadline=<newly created deadline>``
            and ``last_delivery=<created delivery>`` (if a delivery was created in step 2).
 
@@ -184,16 +185,17 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     """
     objects = DeadlineManager()
     assignment_group = models.ForeignKey(AssignmentGroup,
-            related_name='deadlines')
+                                         related_name='deadlines')
     deadline = models.DateTimeField(help_text='The time of the deadline.')
     text = models.TextField(blank=True, null=True,
                             help_text='An optional text to show to students and examiners.')
-    deliveries_available_before_deadline = models.BooleanField(default=False,
-                                                              help_text='Should deliveries on this deadline be available to examiners before the'
-                                                                          'deadline expires? This is set by students.')
+    deliveries_available_before_deadline = models.BooleanField(
+        default=False,
+        help_text='Should deliveries on this deadline be available to examiners before the'
+                  'deadline expires? This is set by students.')
     added_by = models.ForeignKey(settings.AUTH_USER_MODEL,
-        null=True, blank=True, default=None,
-        on_delete=models.SET_NULL)
+                                 null=True, blank=True, default=None,
+                                 on_delete=models.SET_NULL)
     why_created = models.CharField(
         null=True, blank=True, default=None,
         max_length=50,
@@ -208,7 +210,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         verbose_name = 'Deadline'
         verbose_name_plural = 'Deadlines'
         ordering = ['-deadline']
-
 
     @classmethod
     def reduce_datetime_precision(cls, datetimeobj):
@@ -228,7 +229,8 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         return datetimeobj.replace(microsecond=0, second=0, tzinfo=None)
 
     def _clean_deadline(self):
-        self.deadline = Deadline.reduce_datetime_precision(self.deadline) # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
+        self.deadline = Deadline.reduce_datetime_precision(
+            self.deadline)  # NOTE: We want this so a unique deadline is a deadline which matches with second-specition.
         qry = Q(deadline=self.deadline, assignment_group=self.assignment_group)
         if self.id:
             qry &= ~Q(id=self.id)
@@ -236,7 +238,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         if deadlines.count() > 0:
             raise ValidationError('Can not have more than one deadline with the same date/time on a single group.')
 
-    def clean(self, *args, **kwargs):
+    def clean(self):
         """Validate the deadline.
 
         Always call this before save()! Read about validation here:
@@ -247,16 +249,16 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
             - ``deadline`` is before ``Assignment.publishing_time``.
             - ``deadline`` is not before ``Period.end_time``.
         """
-        if self.deadline != None:
+        if self.deadline is not None:
             if self.deadline < self.assignment_group.parentnode.publishing_time:
                 raise ValidationError('Deadline cannot be before publishing time.')
 
             if self.deadline > self.assignment_group.parentnode.parentnode.end_time:
                 raise ValidationError(
                     "Deadline must be within it's period (%(period)s)."
-                      % dict(period=unicode(self.assignment_group.parentnode.parentnode)))
+                    % dict(period=unicode(self.assignment_group.parentnode.parentnode)))
             self._clean_deadline()
-        super(Deadline, self).clean(*args, **kwargs)
+        super(Deadline, self).clean()
 
     def save(self, *args, **kwargs):
         """
@@ -265,7 +267,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
             and the assignment is non-electronic. Defaults to ``True``.
         """
         autocreate_delivery_if_nonelectronic = kwargs.pop('autocreate_delivery_if_nonelectronic', True)
-        created = self.id == None
+        created = self.id is None
         super(Deadline, self).save(*args, **kwargs)
         group = self.assignment_group
 
@@ -289,7 +291,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
                     number=1)
                 delivery.save()
                 groupsave_needed = True
-        if group.last_deadline == None or group.last_deadline.deadline < self.deadline:
+        if group.last_deadline is None or group.last_deadline.deadline < self.deadline:
             group.last_deadline = self
             groupsave_needed = True
 
@@ -302,26 +304,28 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     def __repr__(self):
         return 'Deadline(id={id}, deadline={deadline})'.format(**self.__dict__)
 
-    #TODO delete this?
-    #def is_old(self):
-        #""" Return True if :attr:`deadline` expired. """
-        #return self.deadline < datetime.now()
+        # TODO delete this?
+        # def is_old(self):
+        # """ Return True if :attr:`deadline` expired. """
+        # return self.deadline < datetime.now()
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(assignment_group__parentnode__admins=user_obj) | \
+        return \
+            Q(assignment_group__parentnode__admins=user_obj) | \
             Q(assignment_group__parentnode__parentnode__admins=user_obj) | \
             Q(assignment_group__parentnode__parentnode__parentnode__admins=user_obj) | \
-            Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+            Q(assignment_group__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(
+                user_obj))
 
     @classmethod
     def q_published(cls, old=True, active=True):
         now = datetime.now()
-        q = Q(assignment_group__parentnode__publishing_time__lt = now)
+        q = Q(assignment_group__parentnode__publishing_time__lt=now)
         if not active:
-            q &= ~Q(assignment_group__parentnode__parentnode__end_time__gte = now)
+            q &= ~Q(assignment_group__parentnode__parentnode__end_time__gte=now)
         if not old:
-            q &= ~Q(assignment_group__parentnode__parentnode__end_time__lt = now)
+            q &= ~Q(assignment_group__parentnode__parentnode__end_time__lt=now)
         return q
 
     @classmethod
@@ -332,7 +336,6 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
     def q_is_examiner(cls, user_obj):
         return Q(assignment_group__examiners__user=user_obj)
 
-
     def query_successful_deliveries(self):
         """
         Returns a django QuerySet that filters all the successful `deliveries
@@ -340,11 +343,9 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         """
         return self.deliveries.filter(successful=True)
 
-
     @property
     def successful_delivery_count(self):
         return self.query_successful_deliveries().count()
-    
 
     def is_empty(self):
         """
@@ -361,7 +362,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
 
         :return: ``True`` if the user is permitted to delete this object.
         """
-        if self.id == None:
+        if self.id is None:
             return False
         if user_obj.is_superuser:
             return True

@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from model_mommy import recipe
 

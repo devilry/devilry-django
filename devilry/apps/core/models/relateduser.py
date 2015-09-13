@@ -38,6 +38,7 @@ class BulkCreateFromEmailsResult(object):
         this will include all the email addresses provided to the method.
 
     """
+
     def __init__(self, modelclass, created_users_queryset, existing_user_emails_set,
                  created_relatedusers_queryset,
                  existing_relateduser_emails_set):
@@ -53,9 +54,9 @@ class BulkCreateFromEmailsResult(object):
     def new_relatedusers_was_created(self):
         return self.created_relatedusers_queryset.exists()
 
-    # def get_existing_relatedusers_queryset(self):
-    #     return self.__modelclass.objects.filter(
-    #         user__useremail__email__in=self.existing_relateduser_emails_set).distinct()
+        # def get_existing_relatedusers_queryset(self):
+        #     return self.__modelclass.objects.filter(
+        #         user__useremail__email__in=self.existing_relateduser_emails_set).distinct()
 
 
 class BulkCreateFromUsernamesResult(object):
@@ -84,6 +85,7 @@ class BulkCreateFromUsernamesResult(object):
         this will include all the username addresses provided to the method.
 
     """
+
     def __init__(self, modelclass, created_users_queryset, existing_user_usernames_set,
                  created_relatedusers_queryset,
                  existing_relateduser_usernames_set):
@@ -99,15 +101,16 @@ class BulkCreateFromUsernamesResult(object):
     def new_relatedusers_was_created(self):
         return self.created_relatedusers_queryset.exists()
 
-    # def get_existing_relatedusers_queryset(self):
-    #     return self.__modelclass.objects.filter(
-    #         user__username__username__in=self.existing_relateduser_usernames_set).distinct()
+        # def get_existing_relatedusers_queryset(self):
+        #     return self.__modelclass.objects.filter(
+        #         user__username__username__in=self.existing_relateduser_usernames_set).distinct()
 
 
 class AbstractRelatedUserManager(models.Manager):
     """
     Base class for the managers for related users.
     """
+
     def bulk_create_from_emails(self, period, emails):
         """
         Bulk create related student/examiner for all the emails in the given ``emails`` iterator.
@@ -173,12 +176,12 @@ class AbstractRelatedUserManager(models.Manager):
         new_relateduser_usernames_set = all_relateduser_usernames_set.difference(
             existing_relateduser_usernames_set)
 
-        created_users_queryset, existing_user_usernames_set = get_user_model().objects\
+        created_users_queryset, existing_user_usernames_set = get_user_model().objects \
             .bulk_create_from_usernames(
             new_relateduser_usernames_set)
 
         new_relateduser_objects = []
-        new_relateduser_users_queryset = get_user_model().objects\
+        new_relateduser_users_queryset = get_user_model().objects \
             .filter_by_usernames(new_relateduser_usernames_set)
         for user in new_relateduser_users_queryset:
             new_relateduser = self.model(period=period, user=user)
@@ -233,9 +236,10 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
 
     @classmethod
     def q_is_admin(cls, user_obj):
-        return Q(period__admins=user_obj) | \
-               Q(period__parentnode__admins=user_obj) | \
-               Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
+        return \
+            Q(period__admins=user_obj) | \
+            Q(period__parentnode__admins=user_obj) | \
+            Q(period__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(user_obj))
 
     def clean(self):
         if self.tags and not self.tags_patt.match(self.tags):

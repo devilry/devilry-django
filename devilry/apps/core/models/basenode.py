@@ -103,7 +103,7 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
         """
         try:
             self.admins.get(pk=user_obj.pk)
-        except get_user_model().DoesNotExist, e:
+        except get_user_model().DoesNotExist:
             if self.parentnode:
                 return self.parentnode.is_admin(user_obj)
         else:
@@ -122,7 +122,7 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
         """
         if user_obj.is_superuser:
             return True
-        if self.id == None:
+        if self.id is None:
             return self._can_save_id_none(user_obj)
         elif self.is_admin(user_obj):
             return True
@@ -146,11 +146,11 @@ class BaseNode(AbstractIsAdmin, SaveInterface):
 
         :return: ``True`` if the user is permitted to delete this object.
         """
-        if self.id == None:
+        if self.id is None:
             return False
         if user_obj.is_superuser:
             return True
-        if self.parentnode != None and self.is_empty():
+        if self.parentnode is not None and self.is_empty():
             return self.parentnode.is_admin(user_obj)
         else:
             return False

@@ -101,7 +101,7 @@ class AssignmentGroupIndex(AdminsSearchIndex, indexes.Indexable):
     def index_queryset(self, using=None):
         qry = super(AssignmentGroupIndex, self).index_queryset()
         qry = qry.select_related(
-            'parentnode',  'parentnode__parentnode',
+            'parentnode', 'parentnode__parentnode',
             'parentnode__parentnode__parentnode')
         qry = qry.prefetch_related(
             'tags',

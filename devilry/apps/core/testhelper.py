@@ -87,7 +87,7 @@ class TestHelper(object):
             exact timestamp.
         """
 
-        if assignmentgroup == None:
+        if assignmentgroup is None:
             return
 
         # Check if we're given a group, or fetch from a path
@@ -128,7 +128,7 @@ class TestHelper(object):
         for filename in files.keys():
             delivery.add_file(filename, files[filename])
 
-        if time_of_delivery != None:
+        if time_of_delivery is not None:
             if isinstance(time_of_delivery, datetime):
                 delivery.time_of_delivery = time_of_delivery
             else:
@@ -228,9 +228,9 @@ class TestHelper(object):
             raise
 
         # add it to the groups feedbacks list
-        varname = (delivery.deadline.assignment_group.parentnode.parentnode.parentnode.short_name + '_' +  # subject_
-                   delivery.deadline.assignment_group.parentnode.parentnode.short_name + '_' +  # period_
-                   delivery.deadline.assignment_group.parentnode.short_name + '_' +  # assignment_
+        varname = (delivery.deadline.assignment_group.parentnode.parentnode.parentnode.short_name + '_' +   # subject_
+                   delivery.deadline.assignment_group.parentnode.parentnode.short_name + '_' +   # period_
+                   delivery.deadline.assignment_group.parentnode.short_name + '_' +   # assignment_
                    delivery.deadline.assignment_group.name + '_feedbacks')
 
         if varname in vars(self).keys():
@@ -273,9 +273,9 @@ class TestHelper(object):
         return user
 
     #######
-    ##
-    ## Node specifics
-    ##
+    #
+    # Node specifics
+    #
     #######
     def _create_or_add_node(self, parent, name, users):
         node = Node(parentnode=parent, short_name=name, long_name=name.capitalize())
@@ -320,9 +320,9 @@ class TestHelper(object):
         return new_node
 
     #######
-    ##
-    ## Subject specifics
-    ##
+    #
+    # Subject specifics
+    #
     #######
     def _create_or_add_subject(self, subject_name, parentnode, extras):
         subject = Subject(parentnode=parentnode, short_name=subject_name, long_name=subject_name.capitalize())
@@ -366,9 +366,9 @@ class TestHelper(object):
         return created_subjects
 
     #######
-    ##
-    ## Period specifics
-    ##
+    #
+    # Period specifics
+    #
     #######
     def _create_or_add_period(self, period_name, parentnode, extras):
         period = Period(parentnode=parentnode, short_name=period_name, long_name=period_name.capitalize(),
@@ -422,9 +422,9 @@ class TestHelper(object):
         return created_periods
 
     #######
-    ##
-    ## Assignment specifics
-    ##
+    #
+    # Assignment specifics
+    #
     #######
     def _create_or_add_assignment(self, assignment_name, parentnode, extras):
         # NOTE: Set default publishing_time two seconds after start_time to
@@ -508,9 +508,9 @@ class TestHelper(object):
         return created_assignments
 
     #######
-    ##
-    ## Assignmentgroups specifics
-    ##
+    #
+    # Assignmentgroups specifics
+    #
     #######
     def _create_or_add_assignmentgroup(self, group_name, parentnode, extras):
         if AssignmentGroup.objects.filter(parentnode=parentnode, name=group_name).count() == 1:
@@ -583,9 +583,9 @@ class TestHelper(object):
         return created_groups
 
     #######
-    ##
-    ## Deadlines specifics
-    ##
+    #
+    # Deadlines specifics
+    #
     #######
     def _create_or_add_deadline(self, deadline_name, parentnode, extras):
         deadline = Deadline(assignment_group=parentnode,

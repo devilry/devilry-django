@@ -51,7 +51,7 @@ class Node(models.Model, BaseNode, Etag):
         ordering = ['short_name']
 
     def _can_save_id_none(self, user_obj):
-        if self.parentnode != None and self.parentnode.is_admin(user_obj):
+        if self.parentnode is not None and self.parentnode.is_admin(user_obj):
             return True
         else:
             return False
@@ -72,7 +72,7 @@ class Node(models.Model, BaseNode, Etag):
             for c in node.iter_childnodes():
                 yield c
 
-    def clean(self, *args, **kwargs):
+    def clean(self):
         """Validate the node, making sure it does not do something stupid.
 
         Always call this before save()! Read about validation here:
@@ -90,23 +90,23 @@ class Node(models.Model, BaseNode, Etag):
             raise ValidationError(_('Short Name is a required attribute.'))
 
         greater_than_count = 1
-        if self.id == None:
+        if self.id is None:
             greater_than_count = 0
 
         if self.parentnode:
-            if Node.objects.filter(short_name=self.short_name).\
-                   filter(parentnode__pk=self.parentnode.id).count() > greater_than_count:
-                raise ValidationError(_('A node can not have the same '\
+            if Node.objects.filter(short_name=self.short_name). \
+                    filter(parentnode__pk=self.parentnode.id).count() > greater_than_count:
+                raise ValidationError(_('A node can not have the same '
                                         'short name as another within the same parent.'))
         else:
-            if Node.objects.filter(short_name=self.short_name).\
-                   filter(parentnode=None).count() > greater_than_count:
-                raise ValidationError(_('A root node can not have the same '\
+            if Node.objects.filter(short_name=self.short_name). \
+                    filter(parentnode=None).count() > greater_than_count:
+                raise ValidationError(_('A root node can not have the same '
                                         'short name as another root node.'))
         for node in self.iter_childnodes():
             if node == self.parentnode:
                 raise ValidationError(_('A node can not be the child of one of it\'s own children.'))
-        super(Node, self).clean(*args, **kwargs)
+        super(Node, self).clean()
 
     @classmethod
     def _get_nodepks_where_isadmin(cls, user_obj):
@@ -120,10 +120,12 @@ class Node(models.Model, BaseNode, Etag):
         """
         admnodes = Node.objects.filter(admins=user_obj)
         l = []
+
         def add_admnodes(admnodes):
             for a in admnodes.all():
                 l.append(a.pk)
                 add_admnodes(a.child_nodes)
+
         add_admnodes(admnodes)
         return l
 

@@ -6,15 +6,17 @@ from django.utils.translation import ugettext_lazy as _
 from .assignment import Assignment
 
 
-
 class NonzeroSmallesMinimalPointsValidationError(ValidationError):
     pass
+
 
 class InvalidLargestMaximumPointsValidationError(ValidationError):
     pass
 
+
 class GapsInMapValidationError(ValidationError):
     pass
+
 
 class DuplicateGradeError(Exception):
     pass
@@ -36,13 +38,12 @@ class PointToGradeMap(models.Model):
 
     .. attribute:: invalid
 
-        This is set to ``True`` when the map has been invalidated because of 
+        This is set to ``True`` when the map has been invalidated because of
         changes to :attr:`devilry.apps.core.models.Assignment.max_points`,
         or when the map has been created, but it is empty.
     """
     assignment = models.OneToOneField(Assignment)
     invalid = models.BooleanField(default=True)
-
 
     class Meta:
         app_label = 'core'
@@ -55,20 +56,23 @@ class PointToGradeMap(models.Model):
             first_entry = mapentries[0]
             if first_entry.minimum_points != 0:
                 raise NonzeroSmallesMinimalPointsValidationError(
-                    _('The smallest entry in the map must have minimum points set to 0 (current value is {minimum_points}).').format(
+                    _('The smallest entry in the map must have minimum points set to '
+                      '0 (current value is {minimum_points}).').format(
                         minimum_points=first_entry.minimum_points))
             last_entry = mapentries[-1]
             if last_entry.maximum_points != self.assignment.max_points:
-                raise InvalidLargestMaximumPointsValidationError('The last entry in the map must have maximum_points set to the maximum points allowed on the assignment ({}).'.format(
-                    self.assignment.max_points))
+                raise InvalidLargestMaximumPointsValidationError(
+                    'The last entry in the map must have maximum_points set to the '
+                    'maximum points allowed on the assignment ({}).'.format(
+                        self.assignment.max_points))
             expected_minimum_points = 0
             for mapentry in mapentries:
                 if mapentry.minimum_points != expected_minimum_points:
-                    raise GapsInMapValidationError(u'{} must have minimum_points set to {} to avoid gaps in the point to grade map.'.format(
-                        mapentry, expected_minimum_points))
+                    raise GapsInMapValidationError(
+                        u'{} must have minimum_points set to {} to avoid gaps in the point to grade map.'.format(
+                            mapentry, expected_minimum_points))
                 expected_minimum_points = mapentry.maximum_points + 1
             self.invalid = False
-
 
     def create_map(self, *minimum_points_to_grade_list):
         gradeset = set()
@@ -82,7 +86,7 @@ class PointToGradeMap(models.Model):
             if index == len(minimum_points_to_grade_list) - 1:
                 maximum_points = self.assignment.max_points
             else:
-                maximum_points = minimum_points_to_grade_list[index+1][0] - 1
+                maximum_points = minimum_points_to_grade_list[index + 1][0] - 1
             self.pointrangetograde_set.create(
                 grade=grade,
                 minimum_points=minimum_points,
@@ -105,24 +109,20 @@ class PointToGradeMap(models.Model):
         :raises PointRangeToGrade.DoesNotExist:
             If no grade matching the given points exist.
         """
-        return PointRangeToGrade.objects\
-            .filter_grades_matching_points(points)\
+        return PointRangeToGrade.objects \
+            .filter_grades_matching_points(points) \
             .filter(point_to_grade_map=self).get()
-
 
     def as_choices(self):
         """
         Get as a list of tuples compatible with the choices argument for
         django ChoiceField and TypedChoiceField with coerce set to ``int``.
         """
-        return [(pointrange.minimum_points, pointrange.grade) \
-            for pointrange in self.pointrangetograde_set.all()]
-
+        return [(pointrange.minimum_points, pointrange.grade)
+                for pointrange in self.pointrangetograde_set.all()]
 
     def __unicode__(self):
         return u'Point to grade map for {}'.format(self.assignment.get_path())
-
-
 
 
 class PointRangeToGradeMapQueryset(models.query.QuerySet):
@@ -166,7 +166,6 @@ class PointRangeToGradeMapManager(models.Manager):
         return self.get_queryset().filter_grades_matching_points(points)
 
 
-
 class PointRangeToGrade(models.Model):
     """
     Data structure to store the mapping from a single point-range to grade
@@ -194,7 +193,7 @@ class PointRangeToGrade(models.Model):
     minimum_points = models.PositiveIntegerField()
     maximum_points = models.PositiveIntegerField()
     grade = models.CharField(max_length=12)
-    
+
     class Meta:
         unique_together = ('point_to_grade_map', 'grade')
         app_label = 'core'
@@ -203,10 +202,10 @@ class PointRangeToGrade(models.Model):
     def clean(self):
         if self.minimum_points >= self.maximum_points:
             raise ValidationError('Minimum points can not be equal to or greater than maximum points.')
-        overlapping_ranges = self.__class__.objects\
+        overlapping_ranges = self.__class__.objects \
             .filter_overlapping_ranges(self.minimum_points, self.maximum_points) \
             .filter(point_to_grade_map=self.point_to_grade_map)
-        if self.id != None:
+        if self.id is not None:
             overlapping_ranges = overlapping_ranges.exclude(id=self.id)
         if overlapping_ranges.exists():
             raise ValidationError('One or more PointRangeToGrade overlaps with this range.')
