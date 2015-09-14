@@ -10,6 +10,7 @@ from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from custom_db_fields import ShortNameField, LongNameField
 from basenode import BaseNode
+from devilry.devilry_account.models import User
 from node import Node
 from subject import Subject
 from model_utils import Etag
@@ -174,7 +175,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         help_text='Start time and end time defines when the period is active.')
     end_time = models.DateTimeField(
         help_text='Start time and end time defines when the period is active.')
-    admins = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 
     @classmethod

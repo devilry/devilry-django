@@ -9,6 +9,7 @@ from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from custom_db_fields import ShortNameField, LongNameField
 from basenode import BaseNode
+from devilry.devilry_account.models import User
 from node import Node
 from model_utils import Etag
 
@@ -53,7 +54,7 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
     short_name = ShortNameField(unique=True)
     long_name = LongNameField()
     parentnode = models.ForeignKey(Node, related_name='subjects')
-    admins = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 
     @classmethod

@@ -8,6 +8,7 @@ from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from devilry.devilry_account.models import User
 
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from basenode import BaseNode
@@ -286,7 +287,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     students_can_see_points = models.BooleanField(
         default=True,
         verbose_name="Students can see points")
-    admins = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True, verbose_name="Administrators")
+    admins = models.ManyToManyField(User, blank=True, verbose_name="Administrators")
     delivery_types = models.PositiveIntegerField(
         default=deliverytypes.ELECTRONIC,
         choices=deliverytypes.as_choices_tuple(),
