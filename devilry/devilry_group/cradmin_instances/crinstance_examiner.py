@@ -24,7 +24,7 @@ class ExaminerCrInstance(crinstance.BaseCrAdminInstance):
     rolefrontpage_appname = 'feedbackfeed'
 
     def get_rolequeryset(self):
-        return AssignmentGroup.where_is_examiner(self.request.user).select_related('assignment')
+        return AssignmentGroup.where_is_examiner(self.request.user).select_related('parentnode')
 
     def get_titletext_for_role(self, role):
         """

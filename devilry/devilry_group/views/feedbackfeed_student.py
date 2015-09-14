@@ -27,9 +27,12 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         return context
 
     def get_buttons(self):
-        return [layout.Submit('student_add_comment',
-                           _('Add comment'),
-                           css_class='btn btn-success')]
+        return [
+            layout.Submit(
+                'student_add_comment',
+                _('Add comment'),
+                css_class='btn btn-success')
+        ]
 
     def save_object(self, form, commit=True):
         object = super(StudentFeedbackFeedView, self).save_object(form)

@@ -21,7 +21,7 @@
                 <h1 class="devilry-group-feedbackfeed-header-assignment">
                     {{ assignment.long_name }}
                 </h1>
-                <p class="devilry-group-feedbackfeed-header-subject-period">
+                <div class="devilry-group-feedbackfeed-header-subject-period">
                     <p class="devilry-group-feedbackfeed-header-subject">
                         {{ subject.long_name }}
                     </p>
@@ -29,7 +29,7 @@
                         {{ period.long_name }}
                     </p>
 {#                    {{ subject.long_name }} {{ period.long_name }}#}
-                </p>
+                </div>
             </div>
             <div class="col-sm-5 text-right">
                 {% if last_deadline %}

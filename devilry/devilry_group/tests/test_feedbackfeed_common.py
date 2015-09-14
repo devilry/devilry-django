@@ -1,5 +1,3 @@
-from datetime import datetime
-from django.template import defaultfilters
 from django.test import RequestFactory
 from django.utils import timezone
 import htmls
@@ -125,7 +123,7 @@ class TestFeedbackFeedMixin(object):
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
 
-    def test_get_feedbackset_header_without_feedbackset_deadline_datetime(self):
+    def test_get_feedbackfeed_header_without_feedbackset_deadline_datetime(self):
         # tests that current-deadline-heading does not exist in view when feedbackset
         # has deadline_datetime set as none (no deadline)
         requestuser = UserBuilder2().user
@@ -165,9 +163,10 @@ class TestFeedbackFeedMixin(object):
         groupcomment_builder = GroupCommentBuilder.make(
             feedback_set__deadline_datetime=DateTimeBuilder.now().minus(days=1))
 
-        selector, request = self.__mock_http200_getrequest_htmls(role=groupcomment_builder.get_object().feedback_set.group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
+        selector, request = self.__mock_http200_getrequest_htmls(
+            role=groupcomment_builder.get_object().feedback_set.group,
+            requestuser=requestuser,
+            group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
 
     def test_get_feedbackfeed_header_with_feedbackset_deadline_datetime_not_expired(self):
@@ -190,7 +189,7 @@ class TestFeedbackFeedMixin(object):
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
 
-    def test_get_feedbackset_comment(self):
+    def test_get_feedbackfeed_comment(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make()
@@ -208,7 +207,7 @@ class TestFeedbackFeedMixin(object):
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment'))
 
-    def test_get_feedbackset_comment_student(self):
+    def test_get_feedbackfeed_comment_student(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make()
@@ -226,7 +225,7 @@ class TestFeedbackFeedMixin(object):
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-student'))
 
-    def test_get_feedbackset_comment_examiner(self):
+    def test_get_feedbackfeed_comment_examiner(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make()
@@ -244,7 +243,7 @@ class TestFeedbackFeedMixin(object):
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
 
-    def test_get_feedbackset_comment_admin(self):
+    def test_get_feedbackfeed_comment_admin(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make()
@@ -262,7 +261,7 @@ class TestFeedbackFeedMixin(object):
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-admin'))
 
-    def test_get_feedbackset_comment_poster_fullname(self):
+    def test_get_feedbackfeed_comment_poster_fullname(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make()
@@ -280,7 +279,7 @@ class TestFeedbackFeedMixin(object):
         name = selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
         self.assertEquals(name, janedoe.fullname)
 
-    def test_get_feedbackset_comment_poster_shortname(self):
+    def test_get_feedbackfeed_comment_poster_shortname(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make()
@@ -296,7 +295,7 @@ class TestFeedbackFeedMixin(object):
         name = selector.one('.devilry-user-verbose-inline-shortname').alltext_normalized
         self.assertEquals(name, '({})'.format(janedoe.shortname))
 
-    def test_get_feedbackset_comment_student_user_role(self):
+    def test_get_feedbackfeed_comment_student_user_role(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         groupcomment_builder = GroupCommentBuilder.make(
@@ -307,13 +306,14 @@ class TestFeedbackFeedMixin(object):
             visible_for_students=True,
         )
 
-        selector, request = self.__mock_http200_getrequest_htmls(role=groupcomment_builder.get_object().feedback_set.group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
+        selector, request = self.__mock_http200_getrequest_htmls(
+            role=groupcomment_builder.get_object().feedback_set.group,
+            requestuser=requestuser,
+            group=janedoe)
         role = selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals('({})'.format(groupcomment_builder.get_object().user_role), role)
 
-    def test_get_feedbackset_comment_examiner_user_role(self):
+    def test_get_feedbackfeed_comment_examiner_user_role(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         groupcomment_builder = GroupCommentBuilder.make(
@@ -323,13 +323,14 @@ class TestFeedbackFeedMixin(object):
             instant_publish=True,
             visible_for_students=True,
         )
-        selector, request = self.__mock_http200_getrequest_htmls(role=groupcomment_builder.get_object().feedback_set.group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
+        selector, request = self.__mock_http200_getrequest_htmls(
+            role=groupcomment_builder.get_object().feedback_set.group,
+            requestuser=requestuser,
+            group=janedoe)
         role = selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals('({})'.format(groupcomment_builder.get_object().user_role), role)
 
-    def test_get_feedbackset_comment_admin_user_role(self):
+    def test_get_feedbackfeed_comment_admin_user_role(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         groupcomment_builder = GroupCommentBuilder.make(
@@ -339,9 +340,10 @@ class TestFeedbackFeedMixin(object):
             instant_publish=True,
             visible_for_students=True,
         )
-        selector, request = self.__mock_http200_getrequest_htmls(role=groupcomment_builder.get_object().feedback_set.group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
+        selector, request = self.__mock_http200_getrequest_htmls(
+            role=groupcomment_builder.get_object().feedback_set.group,
+            requestuser=requestuser,
+            group=janedoe)
         role = selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals('({})'.format(groupcomment_builder.get_object().user_role), role)
 
@@ -399,7 +401,7 @@ class TestFeedbackFeedMixin(object):
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
-    def test_get_feedbackfeed_event_without_assignment_first_deadline_created(self):
+    def test_get_feedbackfeed_event_without_assignment_first_deadline_expired(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make(
@@ -508,7 +510,7 @@ class TestFeedbackFeedMixin(object):
         created = selector.list('.devilry-group-feedbackfeed-event-message-deadline-created')
         self.assertEqual(2, len(created))
 
-    def test_get_feedbackset_event_delivery_passed(self):
+    def test_get_feedbackfeed_event_delivery_passed(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         deadline = timezone.now()-timezone.timedelta(days=1)
@@ -525,7 +527,7 @@ class TestFeedbackFeedMixin(object):
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-passed'))
 
-    def test_get_feedbackset_event_delivery_failed(self):
+    def test_get_feedbackfeed_event_delivery_failed(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make(
