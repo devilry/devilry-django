@@ -28,7 +28,7 @@ EMAIL_SUBJECT_PREFIX = '[Devilry] '
 ROOT_URLCONF = 'devilry.project.production.urls'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 TEST_RUNNER = 'django.test.runner.DiscoverRunner'
-AUTH_USER_MODEL = 'devilry_account.User'
+# AUTH_USER_MODEL = 'devilry_account.User'
 LOGIN_REDIRECT_URL = '/'
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
