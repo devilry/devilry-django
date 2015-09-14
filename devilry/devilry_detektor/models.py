@@ -5,6 +5,7 @@ import detektor
 import detektor.parseresult
 
 from devilry.apps.core import models as coremodels
+from devilry.devilry_account.models import User
 
 
 class DetektorAssignment(models.Model):
@@ -32,7 +33,7 @@ class DetektorAssignment(models.Model):
         null=True, blank=True
     )
     processing_started_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
+        User,
         null=True, blank=True)
 
     def __unicode__(self):
