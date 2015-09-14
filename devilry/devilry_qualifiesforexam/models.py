@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 
 from devilry.apps.core.models import RelatedStudent
 from devilry.apps.core.models import Period
+from devilry.devilry_account.models import User
 
 
 class DeadlineTag(models.Model):
@@ -29,7 +30,7 @@ class Status(models.Model):
     status = models.SlugField(max_length=30, blank=False, choices=STATUS_CHOICES)
     createtime = models.DateTimeField(auto_now_add=True)
     message = models.TextField(blank=True)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(User)
     plugin = models.CharField(max_length=500, null=True, blank=True)
     exported_timestamp = models.DateTimeField(null=True, blank=True)
 
