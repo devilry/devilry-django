@@ -8,6 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('devilry_student', '0001_initial'),
+        ('devilry_account', '0002_datamigrate_auth_user_to_devilry_account_user'),
     ]
 
     operations = [
