@@ -13,6 +13,7 @@ from abstract_is_admin import AbstractIsAdmin
 from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from delivery import Delivery
+from devilry.devilry_account.models import User
 from node import Node
 
 
@@ -77,7 +78,7 @@ class StaticFeedback(models.Model, AbstractIsAdmin, AbstractIsExaminer, Abstract
     save_timestamp = models.DateTimeField(blank=True, null=True,
                                           help_text=('Time when this feedback was saved. Since StaticFeedback '
                                                      'is immutable, this never changes.'))
-    saved_by = models.ForeignKey(settings.AUTH_USER_MODEL, blank=False, null=False,
+    saved_by = models.ForeignKey(User, blank=False, null=False,
                                  help_text='The user (examiner) who saved this feedback')
 
     class Meta:
