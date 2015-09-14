@@ -266,6 +266,9 @@ class RelatedExaminer(RelatedUserBase):
 
 
 class RelatedStudentQueryset(models.QuerySet):
+    """
+    QuerySet for :class:`.RelatedStudent`.
+    """
     def get_userid_to_candidateid_map(self):
         """
         Get a dict mapping user ID to candidate ID.
@@ -300,10 +303,14 @@ class RelatedStudent(RelatedUserBase):
         each assignment.
     """
     objects = RelatedStudentManager()
-    candidate_id = models.CharField(max_length=30, blank=True, null=True,
-                                    help_text="If a candidate has the same Candidate ID for all or many assignments "
-                                              "in a semester, this field can be set to simplify setting candidate IDs "
-                                              "on each assignment.")
+
+    #: A candidate ID that follows the student through the entire period.
+    candidate_id = models.CharField(max_length=30, blank=True, null=True)
+
+    #: Automatic anonymous ID for a student for the entire semester.
+    automatic_anonymous_id = models.CharField(max_length=255,
+                                              blank=True, null=False, default='',
+                                              editable=False)
 
 
 class RelatedUserSyncSystemTag(models.Model):
