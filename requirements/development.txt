@@ -1,7 +1,7 @@
 # Dependencies required for development
 -r common.txt
 
-django_dbdev==0.9.3
+django_dbdev==0.9.4
 
 # Required by the soupselect tests
 BeautifulSoup==3.2.1
