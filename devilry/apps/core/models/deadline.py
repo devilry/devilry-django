@@ -11,6 +11,7 @@ from abstract_is_candidate import AbstractIsCandidate
 from assignment_group import AssignmentGroup
 from abstract_is_admin import AbstractIsAdmin
 import deliverytypes
+from devilry.devilry_account.models import User
 from node import Node
 
 
@@ -193,7 +194,7 @@ class Deadline(models.Model, AbstractIsAdmin, AbstractIsExaminer, AbstractIsCand
         default=False,
         help_text='Should deliveries on this deadline be available to examiners before the'
                   'deadline expires? This is set by students.')
-    added_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+    added_by = models.ForeignKey(User,
                                  null=True, blank=True, default=None,
                                  on_delete=models.SET_NULL)
     why_created = models.CharField(
