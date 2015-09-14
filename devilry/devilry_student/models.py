@@ -5,6 +5,7 @@ from django.db import models
 
 from devilry.apps.core.models import Deadline
 from devilry.apps.core.models import Delivery
+from devilry.devilry_account.models import User
 
 
 def uploaded_deliveryfile_path(uploaded_deliveryfile, filename):
@@ -124,7 +125,7 @@ class UploadedDeliveryFile(models.Model):
     deadline = models.ForeignKey(Deadline)
 
     #: The User that uploaded the file. Only this user has access to the file.
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(User)
 
     #: The datetime when this UploadedDeliveryFile was created.
     uploaded_datetime = models.DateTimeField(auto_now_add=True)
