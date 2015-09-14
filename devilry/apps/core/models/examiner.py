@@ -1,9 +1,9 @@
-from django.conf import settings
 from django.db import models
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
 from abstract_is_admin import AbstractIsAdmin
+from devilry.devilry_account.models import User
 from node import Node
 
 
@@ -23,7 +23,7 @@ class Examiner(models.Model, AbstractIsAdmin):
         unique_together = ('user', 'assignmentgroup')
         db_table = 'core_assignmentgroup_examiners'
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(User)
     assignmentgroup = models.ForeignKey('AssignmentGroup', related_name='examiners')
     automatic_anonymous_id = models.CharField(
         max_length=255, blank=True, null=False, default='',
