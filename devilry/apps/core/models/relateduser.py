@@ -265,11 +265,29 @@ class RelatedExaminer(RelatedUserBase):
     objects = RelatedExaminerManager()
 
 
+class RelatedStudentQueryset(models.QuerySet):
+    def get_userid_to_candidateid_map(self):
+        """
+        Get a dict mapping user ID to candidate ID.
+        """
+        queryset = self.exclude(models.Q(candidate_id='') | models.Q(candidate_id=None))
+        return dict(queryset.values_list('user_id', 'candidate_id'))
+
+
 class RelatedStudentManager(AbstractRelatedUserManager):
     """
     Manager for :class:`.RelatedStudent`.
     """
     use_for_related_fields = True
+
+    def get_queryset(self):
+        return RelatedStudentQueryset(self.model, using=self._db)
+
+    def get_userid_to_candidateid_map(self):
+        """
+        See :meth:`.RelatedStudentQueryset.get_userid_to_candidateid_map`.
+        """
+        return self.get_queryset().get_userid_to_candidateid_map()
 
 
 class RelatedStudent(RelatedUserBase):

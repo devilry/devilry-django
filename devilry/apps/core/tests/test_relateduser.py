@@ -1,11 +1,9 @@
 from django.db import IntegrityError
-
 from django.test import TestCase
 from model_mommy import mommy
 
 from devilry.apps.core.models import RelatedExaminer, RelatedStudent
 from devilry.devilry_account.exceptions import IllegalOperationError
-
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder2
 
 
@@ -321,6 +319,48 @@ class TestRelatedStudentManager(TestCase):
                              {relatedexaminer.user.shortname
                               for relatedexaminer in result.created_relatedusers_queryset.all()})
             self.assertEqual(set(), result.existing_relateduser_usernames_set)
+
+
+class TestRelatedStudentQueryset(TestCase):
+    def test_get_userid_to_candidateid_map_no_relatedstudents(self):
+        testperiod = mommy.make('core.Period')
+        self.assertEqual(dict(),
+                         testperiod.relatedstudent_set.get_userid_to_candidateid_map())
+
+    def test_get_userid_to_candidateid_map_ignore_candidate_id_none(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent',
+                   period=testperiod,
+                   candidate_id=None)
+        self.assertEqual(dict(),
+                         testperiod.relatedstudent_set.get_userid_to_candidateid_map())
+
+    def test_get_userid_to_candidateid_map_ignore_candidate_id_emptystring(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent',
+                   period=testperiod,
+                   candidate_id='')
+        self.assertEqual(dict(),
+                         testperiod.relatedstudent_set.get_userid_to_candidateid_map())
+
+    def test_get_userid_to_candidateid_map(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent1 = mommy.make('core.RelatedStudent',
+                                     period=testperiod,
+                                     candidate_id='a')
+        relatedstudent2 = mommy.make('core.RelatedStudent',
+                                     period=testperiod,
+                                     candidate_id='b')
+        relatedstudent3 = mommy.make('core.RelatedStudent',
+                                     period=testperiod,
+                                     candidate_id='c')
+        self.assertEqual(
+            {
+                relatedstudent1.id: 'a',
+                relatedstudent2.id: 'b',
+                relatedstudent3.id: 'c',
+            },
+            testperiod.relatedstudent_set.get_userid_to_candidateid_map())
 
 
 class TestRelatedStudentSyncSystemTag(TestCase):
