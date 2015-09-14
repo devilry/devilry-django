@@ -732,23 +732,3 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 student_id=relatedstudent.user_id)
             candidates.append(candidate)
         Candidate.objects.bulk_create(candidates)
-
-    def update_anonymousids(self, relatedstudents):
-        """
-        Update all candidate IDs and anonymous IDs for this assignment in a single
-        bulk update query.
-
-        Loops through all Candidate objects for this assignment, and:
-
-        - For each of the given
-
-        Parameters:
-            relatedstudents: A list of :class:`devilry.apps.core.models.RelatedStudent`.
-                Must be a list. This is for performance reasons, to avoid that
-                we get cases like a loop over all assignments in a period, and an
-                extra unneeded query for each assignment to update the related students.
-        """
-        if not isinstance(relatedstudents, list):
-            raise ValueError('relatedstudents must be a list.')
-
-

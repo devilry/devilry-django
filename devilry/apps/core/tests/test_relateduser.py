@@ -356,9 +356,9 @@ class TestRelatedStudentQueryset(TestCase):
                                      candidate_id='c')
         self.assertEqual(
             {
-                relatedstudent1.id: 'a',
-                relatedstudent2.id: 'b',
-                relatedstudent3.id: 'c',
+                relatedstudent1.user_id: 'a',
+                relatedstudent2.user_id: 'b',
+                relatedstudent3.user_id: 'c',
             },
             testperiod.relatedstudent_set.get_userid_to_candidateid_map())
 
