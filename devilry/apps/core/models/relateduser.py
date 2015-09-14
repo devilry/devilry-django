@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ValidationError
+from devilry.devilry_account.models import User
 
 from period import Period
 from node import Node
@@ -212,7 +213,7 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
 
     #: A User object. Must be unique within this
     #: period.
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, help_text="The related user.")
+    user = models.ForeignKey(User, help_text="The related user.")
 
     #: Comma-separated list of tags. Each tag is a word with the following
     #: letters allowed: a-z and 0-9. Each word is separated by a comma, and no
