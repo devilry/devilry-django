@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from devilry.devilry_account.models import User
 
 
 class Candidate(models.Model):
@@ -24,7 +25,7 @@ class Candidate(models.Model):
     class Meta:
         app_label = 'core'
 
-    student = models.ForeignKey(settings.AUTH_USER_MODEL)
+    student = models.ForeignKey(User)
     assignment_group = models.ForeignKey(
         'AssignmentGroup',
         related_name='candidates')
