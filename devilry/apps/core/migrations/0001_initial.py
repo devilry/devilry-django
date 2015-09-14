@@ -3,14 +3,15 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import datetime
-import devilry.apps.core.models.static_feedback
+import django.utils.timezone
 import devilry.apps.core.models.abstract_is_examiner
 import devilry.apps.core.models.abstract_is_candidate
 import devilry.apps.core.models.custom_db_fields
+import devilry.apps.core.models.static_feedback
 import devilry.apps.core.models.basenode
-from django.conf import settings
-import django.db.models.deletion
 import devilry.apps.core.models.model_utils
+import django.db.models.deletion
+from django.conf import settings
 import devilry.apps.core.models.abstract_is_admin
 
 
@@ -30,7 +31,6 @@ class Migration(migrations.Migration):
                 ('publishing_time', models.DateTimeField(help_text='The time when the assignment is to be published (visible to students and examiners).', verbose_name='Publishing time')),
                 ('anonymous', models.BooleanField(default=False, help_text='On anonymous assignments, examiners and students can NOT see each other and they can NOT communicate. If an assignment is anonymous, examiners see candidate-id instead of any personal information about the students. This means that anonymous assignments is perfect for exams, and for assignments where you do not want prior experiences with a student to affect results.', verbose_name='Anonymous?')),
                 ('students_can_see_points', models.BooleanField(default=True, verbose_name=b'Students can see points')),
-                ('examiners_publish_feedbacks_directly', models.BooleanField(default=True, help_text=b'Should feedbacks published by examiners be made avalable to the students immediately? If not, an administrator have to publish feedbacks manually.', verbose_name=b'Examiners publish directly?')),
                 ('delivery_types', models.PositiveIntegerField(default=0, help_text=b'This option controls what types of deliveries this assignment accepts. See the Delivery documentation for more info.', choices=[(0, b'Electronic'), (1, b'Non electronic'), (2, b'Alias')])),
                 ('deadline_handling', models.PositiveIntegerField(default=0, help_text='With HARD deadlines, students will be unable to make deliveries when a deadline has expired. With SOFT deadlines students will be able to make deliveries after the deadline has expired. All deliveries after their deadline are clearly highligted. NOTE: Devilry is designed from the bottom up to gracefully handle SOFT deadlines. Students have to perform an extra confirm-step when adding deliveries after their active deadline, and assignments where the deadline has expired is clearly marked for both students and examiners.', verbose_name='Deadline handling', choices=[(0, 'Soft deadlines'), (1, 'Hard deadlines')])),
                 ('scale_points_percent', models.PositiveIntegerField(default=100, help_text=b'Percent to scale points on this assignment by for period overviews. The default is 100, which means no change to the points.')),
@@ -41,6 +41,7 @@ class Migration(migrations.Migration):
                 ('grading_system_plugin_id', models.CharField(default=b'devilry_gradingsystemplugin_approved', max_length=300, null=True, blank=True)),
                 ('students_can_create_groups', models.BooleanField(default=False, help_text='Select this if students should be allowed to join/leave groups. Even if this is not selected, you can still organize your students in groups manually.', verbose_name='Students can create project groups?')),
                 ('students_can_not_create_groups_after', models.DateTimeField(default=None, help_text='Students can not create project groups after this time. Ignored if "Students can create project groups" is not selected.', null=True, verbose_name='Students can not create project groups after', blank=True)),
+                ('feedback_workflow', models.CharField(default=b'', max_length=50, verbose_name='Feedback workflow', blank=True, choices=[(b'', 'Simple - Examiners write feedback, and publish it whenever they want. Does not handle coordination of multiple examiners at all.'), (b'trusted-cooperative-feedback-editing', 'Trusted cooperative feedback editing - Examiners can only save feedback drafts. Examiners share the same feedback drafts, which means that one examiner can start writing feedback and another can continue. When an administrator is notified by their examiners that they have finished correcting, they can publish the drafts via the administrator UI. If you want one examiner to do the bulk of the work, and just let another examiner read it over and adjust the feedback, make the first examiner the only examiner, and reassign the students to the other examiner when the first examiner is done.')])),
                 ('admins', models.ManyToManyField(to=settings.AUTH_USER_MODEL, verbose_name=b'Administrators', blank=True)),
             ],
             options={
@@ -56,6 +57,8 @@ class Migration(migrations.Migration):
                 ('is_open', models.BooleanField(default=True, help_text=b'If this is checked, the group can add deliveries.')),
                 ('etag', models.DateTimeField(auto_now_add=True)),
                 ('delivery_status', models.CharField(blank=True, max_length=30, null=True, help_text=b'The delivery_status of a group', choices=[(b'no-deadlines', 'No deadlines'), (b'corrected', 'Corrected'), (b'closed-without-feedback', 'Closed without feedback'), (b'waiting-for-something', 'Waiting for something')])),
+                ('created_datetime', models.DateTimeField(default=django.utils.timezone.now, blank=True)),
+                ('copied_from', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, blank=True, to='core.AssignmentGroup', null=True)),
             ],
             options={
                 'ordering': ['id'],
@@ -72,19 +75,16 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ['tag'],
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Candidate',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('candidate_id', models.CharField(help_text=b'An optional candidate id. This can be anything as long as it is less than 30 characters. Used to show the user on anonymous assignmens.', max_length=30, null=True, blank=True)),
+                ('automatic_anonymous_id', models.CharField(default=b'', help_text=b'An automatically generated anonymous ID.', max_length=255, blank=True)),
                 ('assignment_group', models.ForeignKey(related_name='candidates', to='core.AssignmentGroup')),
                 ('student', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Deadline',
@@ -93,7 +93,6 @@ class Migration(migrations.Migration):
                 ('deadline', models.DateTimeField(help_text=b'The time of the deadline.')),
                 ('text', models.TextField(help_text=b'An optional text to show to students and examiners.', null=True, blank=True)),
                 ('deliveries_available_before_deadline', models.BooleanField(default=False, help_text=b'Should deliveries on this deadline be available to examiners before thedeadline expires? This is set by students.')),
-                ('feedbacks_published', models.BooleanField(default=False, help_text=b'If this is ``True``, the student can see all StaticFeedbacks associated with this Deadline')),
                 ('why_created', models.CharField(default=None, max_length=50, null=True, blank=True, choices=[(None, 'Unknown.'), (b'examiner-gave-another-chance', 'Examiner gave the student another chance.')])),
                 ('added_by', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, default=None, blank=True, to=settings.AUTH_USER_MODEL, null=True)),
                 ('assignment_group', models.ForeignKey(related_name='deadlines', to='core.AssignmentGroup')),
@@ -133,14 +132,12 @@ class Migration(migrations.Migration):
                 ('languagecode', models.CharField(max_length=100, null=True, blank=True)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Examiner',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('automatic_anonymous_id', models.CharField(default=b'', help_text=b'An automatically generated anonymous ID.', max_length=255, blank=True)),
                 ('assignmentgroup', models.ForeignKey(related_name='examiners', to='core.AssignmentGroup')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
@@ -175,9 +172,6 @@ class Migration(migrations.Migration):
                 ('sent_by', models.ForeignKey(related_name='groupinvite_sent_by_set', to=settings.AUTH_USER_MODEL)),
                 ('sent_to', models.ForeignKey(related_name='groupinvite_sent_to_set', to=settings.AUTH_USER_MODEL)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Node',
@@ -219,8 +213,6 @@ class Migration(migrations.Migration):
                 ('value', models.TextField(help_text=b'Value.', null=True, db_index=True, blank=True)),
                 ('period', models.ForeignKey(help_text=b'The period where this metadata belongs.', to='core.Period')),
             ],
-            options={
-            },
             bases=(models.Model, devilry.apps.core.models.abstract_is_admin.AbstractIsAdmin),
         ),
         migrations.CreateModel(
@@ -234,7 +226,6 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ['minimum_points'],
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='PointToGradeMap',
@@ -243,9 +234,6 @@ class Migration(migrations.Migration):
                 ('invalid', models.BooleanField(default=True)),
                 ('assignment', models.OneToOneField(to='core.Assignment')),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='RelatedExaminer',
@@ -261,11 +249,20 @@ class Migration(migrations.Migration):
             bases=(models.Model, devilry.apps.core.models.abstract_is_admin.AbstractIsAdmin),
         ),
         migrations.CreateModel(
+            name='RelatedExaminerSyncSystemTag',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('tag', models.CharField(max_length=15, db_index=True)),
+                ('relatedexaminer', models.ForeignKey(to='core.RelatedExaminer')),
+            ],
+        ),
+        migrations.CreateModel(
             name='RelatedStudent',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('tags', models.TextField(help_text=b'Comma-separated list of tags. Each tag is a word with the following letters allowed: a-z, 0-9, ``_`` and ``-``. Each word is separated by a comma, and no whitespace.', null=True, blank=True)),
-                ('candidate_id', models.CharField(help_text=b'If a candidate has the same Candidate ID for all or many assignments in a semester, this field can be set to simplify setting candidate IDs on each assignment.', max_length=30, null=True, blank=True)),
+                ('candidate_id', models.CharField(max_length=30, null=True, blank=True)),
+                ('automatic_anonymous_id', models.CharField(default=b'', max_length=255, editable=False, blank=True)),
                 ('period', models.ForeignKey(verbose_name=b'Period', to='core.Period', help_text=b'The period.')),
                 ('user', models.ForeignKey(help_text=b'The related user.', to=settings.AUTH_USER_MODEL)),
             ],
@@ -284,9 +281,15 @@ class Migration(migrations.Migration):
                 ('student_can_read', models.BooleanField(default=False, help_text=b'Specifies if a student can read the value or not.')),
                 ('relatedstudent', models.ForeignKey(to='core.RelatedStudent')),
             ],
-            options={
-            },
             bases=(models.Model, devilry.apps.core.models.abstract_is_admin.AbstractIsAdmin),
+        ),
+        migrations.CreateModel(
+            name='RelatedStudentSyncSystemTag',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('tag', models.CharField(max_length=15, db_index=True)),
+                ('relatedstudent', models.ForeignKey(to='core.RelatedStudent')),
+            ],
         ),
         migrations.CreateModel(
             name='StaticFeedback',
@@ -320,7 +323,6 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Static feedback file attachment',
                 'verbose_name_plural': 'Static feedback file attachments',
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Subject',
@@ -339,6 +341,45 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model, devilry.apps.core.models.basenode.BaseNode, devilry.apps.core.models.abstract_is_examiner.AbstractIsExaminer, devilry.apps.core.models.abstract_is_candidate.AbstractIsCandidate, devilry.apps.core.models.model_utils.Etag),
         ),
+        migrations.AddField(
+            model_name='pointrangetograde',
+            name='point_to_grade_map',
+            field=models.ForeignKey(to='core.PointToGradeMap'),
+        ),
+        migrations.AddField(
+            model_name='period',
+            name='parentnode',
+            field=models.ForeignKey(related_name='periods', verbose_name=b'Subject', to='core.Subject'),
+        ),
+        migrations.AddField(
+            model_name='delivery',
+            name='last_feedback',
+            field=models.OneToOneField(related_name='latest_feedback_for_delivery', null=True, blank=True, to='core.StaticFeedback'),
+        ),
+        migrations.AddField(
+            model_name='assignmentgroup',
+            name='feedback',
+            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, blank=True, to='core.StaticFeedback'),
+        ),
+        migrations.AddField(
+            model_name='assignmentgroup',
+            name='last_deadline',
+            field=models.OneToOneField(related_name='last_deadline_for_group', null=True, on_delete=django.db.models.deletion.SET_NULL, blank=True, to='core.Deadline'),
+        ),
+        migrations.AddField(
+            model_name='assignmentgroup',
+            name='parentnode',
+            field=models.ForeignKey(related_name='assignmentgroups', to='core.Assignment'),
+        ),
+        migrations.AddField(
+            model_name='assignment',
+            name='parentnode',
+            field=models.ForeignKey(related_name='assignments', verbose_name=b'Period', to='core.Period'),
+        ),
+        migrations.AlterUniqueTogether(
+            name='relatedstudentsyncsystemtag',
+            unique_together=set([('relatedstudent', 'tag')]),
+        ),
         migrations.AlterUniqueTogether(
             name='relatedstudentkeyvalue',
             unique_together=set([('relatedstudent', 'application', 'key')]),
@@ -348,14 +389,12 @@ class Migration(migrations.Migration):
             unique_together=set([('period', 'user')]),
         ),
         migrations.AlterUniqueTogether(
+            name='relatedexaminersyncsystemtag',
+            unique_together=set([('relatedexaminer', 'tag')]),
+        ),
+        migrations.AlterUniqueTogether(
             name='relatedexaminer',
             unique_together=set([('period', 'user')]),
-        ),
-        migrations.AddField(
-            model_name='pointrangetograde',
-            name='point_to_grade_map',
-            field=models.ForeignKey(to='core.PointToGradeMap'),
-            preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
             name='pointrangetograde',
@@ -364,12 +403,6 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='periodapplicationkeyvalue',
             unique_together=set([('period', 'application', 'key')]),
-        ),
-        migrations.AddField(
-            model_name='period',
-            name='parentnode',
-            field=models.ForeignKey(related_name='periods', verbose_name=b'Subject', to='core.Subject'),
-            preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
             name='period',
@@ -387,39 +420,9 @@ class Migration(migrations.Migration):
             name='examiner',
             unique_together=set([('user', 'assignmentgroup')]),
         ),
-        migrations.AddField(
-            model_name='delivery',
-            name='last_feedback',
-            field=models.OneToOneField(related_name='latest_feedback_for_delivery', null=True, blank=True, to='core.StaticFeedback'),
-            preserve_default=True,
-        ),
         migrations.AlterUniqueTogether(
             name='assignmentgrouptag',
             unique_together=set([('assignment_group', 'tag')]),
-        ),
-        migrations.AddField(
-            model_name='assignmentgroup',
-            name='feedback',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, blank=True, to='core.StaticFeedback'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='assignmentgroup',
-            name='last_deadline',
-            field=models.OneToOneField(related_name='last_deadline_for_group', null=True, on_delete=django.db.models.deletion.SET_NULL, blank=True, to='core.Deadline'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='assignmentgroup',
-            name='parentnode',
-            field=models.ForeignKey(related_name='assignmentgroups', to='core.Assignment'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='assignment',
-            name='parentnode',
-            field=models.ForeignKey(related_name='assignments', verbose_name=b'Period', to='core.Period'),
-            preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
             name='assignment',

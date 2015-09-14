@@ -21,9 +21,6 @@ class Migration(migrations.Migration):
                 ('scaled_points', models.IntegerField()),
                 ('summary_json', models.TextField()),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='DetektorAssignment',
@@ -34,9 +31,6 @@ class Migration(migrations.Migration):
                 ('assignment', models.OneToOneField(to='core.Assignment')),
                 ('processing_started_by', models.ForeignKey(blank=True, to=settings.AUTH_USER_MODEL, null=True)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='DetektorAssignmentCacheLanguage',
@@ -48,7 +42,6 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ['language'],
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='DetektorDeliveryParseResult',
@@ -65,9 +58,22 @@ class Migration(migrations.Migration):
                 ('delivery', models.ForeignKey(to='core.Delivery')),
                 ('detektorassignment', models.ForeignKey(related_name='parseresults', to='devilry_detektor.DetektorAssignment')),
             ],
-            options={
-            },
             bases=(models.Model, detektor.parseresult.ParseResult),
+        ),
+        migrations.AddField(
+            model_name='comparetwocacheitem',
+            name='language',
+            field=models.ForeignKey(related_name='comparetwo_cacheitems', to='devilry_detektor.DetektorAssignmentCacheLanguage'),
+        ),
+        migrations.AddField(
+            model_name='comparetwocacheitem',
+            name='parseresult1',
+            field=models.ForeignKey(related_name='+', to='devilry_detektor.DetektorDeliveryParseResult'),
+        ),
+        migrations.AddField(
+            model_name='comparetwocacheitem',
+            name='parseresult2',
+            field=models.ForeignKey(related_name='+', to='devilry_detektor.DetektorDeliveryParseResult'),
         ),
         migrations.AlterUniqueTogether(
             name='detektordeliveryparseresult',
@@ -76,23 +82,5 @@ class Migration(migrations.Migration):
         migrations.AlterUniqueTogether(
             name='detektorassignmentcachelanguage',
             unique_together=set([('detektorassignment', 'language')]),
-        ),
-        migrations.AddField(
-            model_name='comparetwocacheitem',
-            name='language',
-            field=models.ForeignKey(related_name='comparetwo_cacheitems', to='devilry_detektor.DetektorAssignmentCacheLanguage'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='comparetwocacheitem',
-            name='parseresult1',
-            field=models.ForeignKey(related_name='+', to='devilry_detektor.DetektorDeliveryParseResult'),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='comparetwocacheitem',
-            name='parseresult2',
-            field=models.ForeignKey(related_name='+', to='devilry_detektor.DetektorDeliveryParseResult'),
-            preserve_default=True,
         ),
     ]

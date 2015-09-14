@@ -31,7 +31,6 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ['-save_timestamp'],
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='FeedbackDraftFile',
@@ -45,6 +44,5 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ['filename'],
             },
-            bases=(models.Model,),
         ),
     ]

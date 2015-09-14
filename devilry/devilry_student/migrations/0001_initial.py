@@ -24,9 +24,6 @@ class Migration(migrations.Migration):
                 ('deadline', models.ForeignKey(to='core.Deadline')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.AlterUniqueTogether(
             name='uploadeddeliveryfile',

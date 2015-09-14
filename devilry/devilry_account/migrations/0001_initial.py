@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 
 from django.db import models, migrations
 import django.utils.timezone
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
@@ -16,9 +17,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(default=django.utils.timezone.now, verbose_name='last login')),
+                ('last_login', models.DateTimeField(null=True, verbose_name='last login', blank=True)),
                 ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('shortname', models.CharField(help_text='The short name for the user. This is set automatically to the email or username depending on the method used for authentication.', unique=True, max_length=255, editable=False)),
+                ('shortname', models.CharField(help_text='The short name for the user. This is set automatically to the email or username depending on the method used for authentication.', unique=True, max_length=255)),
                 ('fullname', models.TextField(default=b'', verbose_name='Full name', blank=True)),
                 ('lastname', models.TextField(default=b'', verbose_name='Last name', blank=True)),
                 ('datetime_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
@@ -30,7 +31,6 @@ class Migration(migrations.Migration):
                 'verbose_name': 'User',
                 'verbose_name_plural': 'Users',
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='UserEmail',
@@ -40,14 +40,13 @@ class Migration(migrations.Migration):
                 ('last_updated_datetime', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('email', models.EmailField(unique=True, max_length=255, verbose_name='Email')),
                 ('use_for_notifications', models.BooleanField(default=True, verbose_name='Send notifications to this email address?')),
-                ('is_primary', models.NullBooleanField(help_text='Your primary username is the email address used when we need to display a single email address.', verbose_name='Is this your primary email?', choices=[(None, 'No'), (True, 'Yes')])),
-                ('user', models.ForeignKey(to='devilry_account.User')),
+                ('is_primary', models.NullBooleanField(help_text='Your primary email is the email address used when we need to display a single email address.', verbose_name='Is this your primary email?', choices=[(None, 'No'), (True, 'Yes')])),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Email address',
                 'verbose_name_plural': 'Email addresses',
             },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='UserName',
@@ -57,13 +56,12 @@ class Migration(migrations.Migration):
                 ('last_updated_datetime', models.DateTimeField(default=django.utils.timezone.now, editable=False)),
                 ('username', models.CharField(unique=True, max_length=255, verbose_name='Username')),
                 ('is_primary', models.NullBooleanField(help_text='Your primary username is shown alongside your full name to identify you to teachers, examiners and other students.', verbose_name='Is this your primary username?', choices=[(None, 'No'), (True, 'Yes')])),
-                ('user', models.ForeignKey(to='devilry_account.User')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Username',
                 'verbose_name_plural': 'Usernames',
             },
-            bases=(models.Model,),
         ),
         migrations.AlterUniqueTogether(
             name='username',

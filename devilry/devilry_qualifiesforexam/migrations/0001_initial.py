@@ -20,9 +20,6 @@ class Migration(migrations.Migration):
                 ('timestamp', models.DateTimeField()),
                 ('tag', models.CharField(max_length=30, null=True, blank=True)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='PeriodTag',
@@ -30,9 +27,6 @@ class Migration(migrations.Migration):
                 ('period', models.OneToOneField(primary_key=True, serialize=False, to='core.Period')),
                 ('deadlinetag', models.ForeignKey(to='devilry_qualifiesforexam.DeadlineTag')),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='QualifiesForFinalExam',
@@ -41,9 +35,6 @@ class Migration(migrations.Migration):
                 ('qualifies', models.NullBooleanField()),
                 ('relatedstudent', models.ForeignKey(to='core.RelatedStudent')),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Status',
@@ -62,13 +53,11 @@ class Migration(migrations.Migration):
                 'verbose_name': 'Qualified for final exam status',
                 'verbose_name_plural': 'Qualified for final exam statuses',
             },
-            bases=(models.Model,),
         ),
         migrations.AddField(
             model_name='qualifiesforfinalexam',
             name='status',
             field=models.ForeignKey(related_name='students', to='devilry_qualifiesforexam.Status'),
-            preserve_default=True,
         ),
         migrations.AlterUniqueTogether(
             name='qualifiesforfinalexam',
