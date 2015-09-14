@@ -160,8 +160,8 @@ class AssignmentGroupAdmin(admin.ModelAdmin):
 
     def get_assignment(self, obj):
         return obj.assignment.short_name
-    get_period.short_description = _('Assignment')
-    get_period.admin_order_field = 'parentnode__short_name'
+    get_assignment.short_description = _('Assignment')
+    get_assignment.admin_order_field = 'parentnode__short_name'
 
     def get_queryset(self, request):
         return super(AssignmentGroupAdmin, self).get_queryset(request) \
