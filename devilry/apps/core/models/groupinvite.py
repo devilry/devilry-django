@@ -6,6 +6,7 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+from devilry.devilry_account.models import User
 
 from devilry.utils.devilry_email import send_templated_message
 from .assignment_group import AssignmentGroup
@@ -76,8 +77,8 @@ class GroupInvite(models.Model):
     """
     group = models.ForeignKey(AssignmentGroup)
     sent_datetime = models.DateTimeField(default=datetime.now)
-    sent_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='groupinvite_sent_by_set')
-    sent_to = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='groupinvite_sent_to_set')
+    sent_by = models.ForeignKey(User, related_name='groupinvite_sent_by_set')
+    sent_to = models.ForeignKey(User, related_name='groupinvite_sent_to_set')
 
     accepted = models.NullBooleanField(default=None)
     responded_datetime = models.DateTimeField(
