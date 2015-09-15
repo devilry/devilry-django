@@ -205,7 +205,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         # This should be the one that is used for suggestions
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
-                          first_deadline=datetime(2015, 9, 2, 13, 30))  # Wed
+                          first_deadline=datetime(3500, 9, 5, 13, 30))
 
         with self.settings(DATETIME_FORMAT='D M j Y H:i', USE_L10N=False):
             mockresponse = self.mock_http200_getrequest_htmls(
@@ -214,12 +214,12 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             '.devilry-admin-createassignment-suggested-deadline')
         suggested_deadline_labels = [element.alltext_normalized
                                      for element in suggested_deadline_elements]
-        self.assertEqual(suggested_deadline_labels, [
-            'Wed Sep 16 2015 13:30',
-            'Wed Sep 23 2015 13:30',
-            'Wed Sep 30 2015 13:30',
-            'Wed Oct 7 2015 13:30',
-        ])
+        self.assertEqual([
+            'Wed Sep 12 3500 13:30',
+            'Wed Sep 19 3500 13:30',
+            'Wed Sep 26 3500 13:30',
+            'Wed Oct 3 3500 13:30',
+        ], suggested_deadline_labels)
 
     def test_post_missing_short_name(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
