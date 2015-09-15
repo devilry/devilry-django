@@ -325,3 +325,19 @@ def sync_cradmin_theme_into_devilry_theme(cradmin_root_dir):
             shutil.rmtree(destinationdir)
         shutil.copytree(sourcedir, destinationdir)
         local('git add {}'.format(destinationdir))
+
+
+@task
+def test():
+    """
+    Run all the tests.
+    """
+    _managepy('test', djangoenv='test')
+
+
+@task
+def codeship_test():
+    """
+    Run all the tests with settings for CodeShip CI.
+    """
+    _managepy('test', djangoenv='codeship_test')
