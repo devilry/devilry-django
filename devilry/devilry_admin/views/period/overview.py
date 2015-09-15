@@ -10,7 +10,7 @@ class Overview(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
         period = self.request.cradmin_role
-        context['assignments'] = list(period.assignments.order_by('first_deadline', 'publishing_time'))
+        context['assignments'] = list(period.assignments.order_by('-first_deadline', '-publishing_time'))
         return context
 
 
