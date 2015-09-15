@@ -144,6 +144,27 @@ Mommy recipes apidocs
     :members:
 
 
+***************************
+Testing formatted date/time
+***************************
+When writing tests for rendering of formatted datetime, you should
+override the date formatting setting to ensure your tests are not
+broken by changes to the date/time formatting settings::
+
+    class MyTestCase(TestCase):
+        def test_something(self):
+            with self.settings(DATETIME_FORMAT='Y-m-d H:i', USE_L10N=False):
+                ...
+
+Since using iso format with DATETIME_FORMAT is convenient, we provide
+:obj:`devilry.utils.datetimeutils.ISODATETIME_DJANGOFORMAT`, which you can use
+in the tests::
+
+    class MyTestCase(TestCase):
+        def test_something(self):
+            with self.settings(DATETIME_FORMAT=datetimeutils.ISODATETIME_DJANGOFORMAT, USE_L10N=False):
+                ...
+
 ********
 Examples
 ********
