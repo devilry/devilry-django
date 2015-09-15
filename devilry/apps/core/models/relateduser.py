@@ -305,6 +305,10 @@ class RelatedStudent(RelatedUserBase):
     """
     objects = RelatedStudentManager()
 
+    #: Setting this to ``False`` indicates that the student has dropped out
+    #: or been kicked out of the course for this period.
+    active = models.BooleanField(default=True)
+
     #: A candidate ID that follows the student through the entire period.
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
 
