@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 from django.utils import lorem_ipsum
+import traceback
 
 from devilry.apps.core.models import StaticFeedback, Deadline
 from devilry.apps.core.models import RelatedStudent
@@ -325,8 +326,21 @@ class Command(BaseCommand):
                     text=get_comment_text(),
                     published_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago, days=2))
 
+            try:
+                relatedstudent = RelatedStudent.objects.get(period=assignmentbuilder.assignment.period,
+                                                            user=user)
+            except:
+                print()
+                print("*" * 70)
+                print()
+                print(user)
+                print()
+                print("*" * 70)
+                print()
+
+                raise
             groupbuilder = assignmentbuilder.add_group(
-                students=[user], examiners=[examiner])
+                relatedstudents=[relatedstudent], examiners=[examiner])
 
             if weeks_ago > 52:
                 create_old_delivery_structure()
@@ -389,7 +403,9 @@ class Command(BaseCommand):
             long_name='DUCK1100 - Programming for the natural sciences')
         duck1100.add_admins(self.thor)
 
-        relatedstudents = [RelatedStudent(user=self.april, tags='group1')]
+        relatedstudents = [
+            RelatedStudent(user=self.april, tags='group1'),
+        ]
         relatedstudents.extend(self._as_relatedstudents(self.good_students.values(), 'group1'))
         relatedstudents.extend(self._as_relatedstudents(self.bad_students.values(), 'group2'))
         testsemester = duck1100.add_6month_active_period(
@@ -401,14 +417,15 @@ class Command(BaseCommand):
                 RelatedExaminer(user=self.scrooge, tags='group2')
             ])
 
-        old_relatedstudentusers = [
-            self.april, self.bad_students['dewey'],
-            self.bad_students['louie'], self.bad_students['june'],
-            self.good_students['loki'], self.good_students['kvasir']]
-        old_relatedstudents = self._as_relatedstudents(old_relatedstudentusers, tags='')
+        # old_relatedstudentusers = [
+        #     self.thor,
+        #     self.april, self.bad_students['dewey'],
+        #     self.bad_students['louie'], self.bad_students['june'],
+        #     self.good_students['loki'], self.good_students['kvasir']]
+        # old_relatedstudents = self._as_relatedstudents(old_relatedstudentusers, tags='')
         oldtestsemester = duck1100.add_6month_lastyear_period(
             short_name='oldtestsemester', long_name='Old testsemester',
-            relatedstudents=old_relatedstudents,
+            relatedstudents=relatedstudents,
             relatedexaminers=[
                 RelatedExaminer(user=self.thor, tags=''),
                 RelatedExaminer(user=self.donald, tags='group1'),
@@ -473,7 +490,7 @@ class Command(BaseCommand):
 
         first_deadline = timezone.now() - timezone.timedelta(weeks=2, days=1)
 
-        assignmentgroupbuilder = self.duckburgh.add_subject(
+        periodbuilder = self.duckburgh.add_subject(
             short_name='inf7020',
             long_name='INF7020 Programming for World Domination and Crashing Non-Mutant Economy',
         ).add_6month_active_period(
@@ -482,15 +499,17 @@ class Command(BaseCommand):
             relatedexaminers=[
                 RelatedExaminer(user=examiner),
                 RelatedExaminer(user=examiner2),
-            ]
-        ).add_assignment(
+            ],
+            relatedstudents=[student])
+        assignmentgroupbuilder = periodbuilder.add_assignment(
             'Oblig 1 - Domination',
             passing_grade_min_points=3,
             max_points=10,
             first_deadline=first_deadline
         ).add_group()
 
-        assignmentgroupbuilder.add_students(student)
+        assignmentgroupbuilder.add_candidates_from_relatedstudents(
+            *periodbuilder.period.relatedstudent_set.all())
         assignmentgroupbuilder.add_examiners(examiner, examiner2)
 
         feedbacksetbuilder1 = assignmentgroupbuilder.add_feedback_set(

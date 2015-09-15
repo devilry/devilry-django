@@ -382,11 +382,17 @@ class AssignmentGroupBuilder(CoreBuilderBase):
             .quickadd_ducku_duck1010_active_assignment1() \
             .add_group(students=students)
 
-    def __init__(self, students=[], candidates=[], examiners=[], **kwargs):
+    def __init__(self, students=[], candidates=[], examiners=[], relatedstudents=[], **kwargs):
         self.group = AssignmentGroup.objects.create(**kwargs)
         self.add_students(*students)
         self.add_candidates(*candidates)
         self.add_examiners(*examiners)
+        self.add_candidates_from_relatedstudents(*relatedstudents)
+
+    def add_candidates_from_relatedstudents(self, *relatedstudents):
+        for relatedstudent in relatedstudents:
+            self.group.candidates.create(relatedstudent=relatedstudent,
+                                         student_id=relatedstudent.user_id)
 
     def add_students(self, *users):
         for user in users:
