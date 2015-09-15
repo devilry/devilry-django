@@ -686,6 +686,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             for othercandidate in group.copied_from_list.candidatelist:
                 newcandidate = Candidate(
                     assignment_group=group,
+                    relatedstudent_id=othercandidate.relatedstudent_id,
                     student_id=othercandidate.student_id
                 )
                 candidates.append(newcandidate)
@@ -730,6 +731,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         for group, relatedstudent in zip(self.assignmentgroups.all(), relatedstudents):
             candidate = Candidate(
                 assignment_group=group,
+                relatedstudent=relatedstudent,
                 student_id=relatedstudent.user_id)
             candidates.append(candidate)
         Candidate.objects.bulk_create(candidates)

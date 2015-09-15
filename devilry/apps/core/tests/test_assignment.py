@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from django.conf import settings
 from django.contrib.auth import get_user_model
 
 from mock import patch
@@ -138,12 +139,16 @@ class TestAssignment(TestCase):
 
     def test_copy_groups_from_another_assignment_candidates(self):
         sourceassignment = mommy.make('core.Assignment')
+        student1 = mommy.make(settings.AUTH_USER_MODEL, shortname='student1')
+        student2 = mommy.make(settings.AUTH_USER_MODEL, shortname='student2')
         mommy.make('core.Candidate',
                    assignment_group__parentnode=sourceassignment,
-                   student__shortname='student1')
+                   relatedstudent__user=student1,
+                   student=student1)
         mommy.make('core.Candidate',
                    assignment_group__parentnode=sourceassignment,
-                   student__shortname='student2')
+                   relatedstudent__user=student2,
+                   student=student2)
 
         targetassignment = mommy.make('core.Assignment')
         targetassignment.copy_groups_from_another_assignment(sourceassignment)
@@ -151,6 +156,8 @@ class TestAssignment(TestCase):
         candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=targetassignment)
         self.assertTrue(candidatesqueryset.filter(student__shortname='student1').exists())
         self.assertTrue(candidatesqueryset.filter(student__shortname='student2').exists())
+        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student1').exists())
+        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student2').exists())
 
     def test_copy_groups_from_another_assignment_examiners(self):
         sourceassignment = mommy.make('core.Assignment')
@@ -227,6 +234,8 @@ class TestAssignment(TestCase):
         candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=testassignment)
         self.assertTrue(candidatesqueryset.filter(student__shortname='student1').exists())
         self.assertTrue(candidatesqueryset.filter(student__shortname='student2').exists())
+        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student1').exists())
+        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student2').exists())
 
     def test_create_groups_from_relatedstudents_on_period_querycount(self):
         testperiod = mommy.make('core.Period')
