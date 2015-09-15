@@ -25,20 +25,20 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(u'Test Subject',
                          mockresponse.selector.one('h1').alltext_normalized)
 
-    # def test_createperiod_link_text(self):
-    #     testsubject = mommy.make('core.Subject')
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-    #     self.assertEqual('Create new period',
-    #                      mockresponse.selector.one(
-    #                          '#devilry_admin_period_createperiod_link').alltext_normalized)
-    #
-    # def test_createperiod_link_url(self):
-    #     testsubject = mommy.make('core.Subject')
-    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-    #     mockresponse.request.cradmin_instance.reverse_url.assert_called_once_with(
-    #         appname='createperiod',
-    #         viewname='INDEX',
-    #         args=(), kwargs={})
+    def test_createperiod_link_text(self):
+        testsubject = mommy.make('core.Subject')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        self.assertEqual('Create new period',
+                         mockresponse.selector.one(
+                             '#devilry_admin_period_createperiod_link').alltext_normalized)
+
+    def test_createperiod_link_url(self):
+        testsubject = mommy.make('core.Subject')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
+        mockresponse.request.cradmin_instance.reverse_url.assert_called_once_with(
+            appname='createperiod',
+            viewname='INDEX',
+            args=(), kwargs={})
 
     def test_periodlist_no_periods(self):
         testsubject = mommy.make('core.Subject')
