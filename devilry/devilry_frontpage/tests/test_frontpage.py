@@ -41,25 +41,23 @@ class TestFrontpage(TestCase, LoginTestCaseMixin):
         self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
         self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_examiner'))
 
-    @unittest.skip('frontpage must be updated with the new admin URL')
     def test_roleselect_subjectadmin(self):
         SubjectBuilder.quickadd_ducku_duck1010().add_admins(self.testuser.user)
         html = self.get_as(self.testuser.user, self.url).content
         self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
-        self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_subjectadmin'))
+        self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_admin'))
 
-    @unittest.skip('frontpage must be updated with the new admin URL')
     def test_roleselect_nodeadmin(self):
         NodeBuilder('univ').add_admins(self.testuser.user)
         html = self.get_as(self.testuser.user, self.url).content
         self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
-        self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_nodeadmin'))
+        self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_admin'))
 
     def test_roleselect_superuser(self):
         self.testuser.update(is_superuser=True)
         html = self.get_as(self.testuser.user, self.url).content
-        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 1)
-        # self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_nodeadmin'))
+        self.assertEquals(len(cssFind(html, '#devilry_frontpage_roleselect_list a')), 2)
+        self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_admin'))
         self.assertTrue(cssExists(html, '#devilry_frontpage_roleselect_superuser'))
 
     def test_lacking_permissions_message(self):

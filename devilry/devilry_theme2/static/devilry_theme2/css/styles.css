@@ -10902,17 +10902,11 @@ column. Usage:
 #devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_examiner a:hover {
   background-color: #043f5f;
 }
-#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_subjectadmin a {
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_admin a {
   background-color: #ff9900;
 }
-#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_subjectadmin a:hover {
+#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_admin a:hover {
   background-color: #d68100;
-}
-#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_nodeadmin a {
-  background-color: #e68a00;
-}
-#devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_nodeadmin a:hover {
-  background-color: #bd7100;
 }
 #devilry_frontpage_roleselect ul#devilry_frontpage_roleselect_list li#devilry_frontpage_roleselect_superuser a {
   background-color: #6b2b2b;

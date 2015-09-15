@@ -1,5 +1,6 @@
 {% extends "devilry_frontpage/base.django.html" %}
 {% load i18n %}
+{% load cradmin_tags %}
 
 {% block title %}
     {% trans "Devilry frontpage" %}
@@ -33,22 +34,16 @@
                     </a>
                 </li>
             {% endif %}
-{#            {% if user_is_any_subjectadmin %}#}
-{#                <li id="devilry_frontpage_roleselect_subjectadmin">#}
-{#                    <a href="{% url 'devilry_subjectadmin' %}">#}
-{#                        <strong>{% trans "Course manager" %}</strong>#}
-{#                        {% trans "Course managers manage courses, semesters and assignments where they have been explicitly registered as administrator." %}#}
-{#                    </a>#}
-{#                </li>#}
-{#            {% endif %}#}
-{#            {% if user_is_nodeadmin or request.user.is_superuser %}#}
-{#                <li id="devilry_frontpage_roleselect_nodeadmin">#}
-{#                    <a href="{% url 'devilry_nodeadmin' %}">#}
-{#                        <strong>{% trans "Administrator" %}</strong>#}
-{#                        {% trans "Administrators manage large numbers of courses, typically a faculty or a department." %}#}
-{#                    </a>#}
-{#                </li>#}
-{#            {% endif %}#}
+            {% if user_is_any_admin or request.user.is_superuser %}
+                <li id="devilry_frontpage_roleselect_admin">
+                    <a href="{% cradmin_url instanceid='devilry_admin' appname='overview' roleid=request.user.id viewname='INDEX' %}">
+                        <strong>{% trans "Administrators" %}</strong>
+                        {% blocktrans trimmed %}
+                            Administrators manage their departments, courses, semesters or assignments.
+                        {% endblocktrans %}
+                    </a>
+                </li>
+            {% endif %}
             {% if request.user.is_superuser %}
                 <li id="devilry_frontpage_roleselect_superuser">
                     <a href="{% url 'admin:index' %}">
