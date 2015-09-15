@@ -1,8 +1,8 @@
 from __future__ import unicode_literals
-from django.views.generic import TemplateView
 
 from django_cradmin import crapp
 from django_cradmin.viewhelpers.detail import DetailRoleView
+
 from devilry.apps.core import models as coremodels
 
 
@@ -15,7 +15,8 @@ class Overview(DetailRoleView):
         assignment = self.get_object()
         context = super(Overview, self).get_context_data(**kwargs)
         context['assignmentgroups_count'] = assignment.assignmentgroups.count()
-        context['candidates_count'] = coremodels.Candidate.objects.filter(assignment_group__parentnode=assignment).count()
+        context['candidates_count'] = coremodels.Candidate.objects.filter(
+            assignment_group__parentnode=assignment).count()
         context['administrator_count'] = len(assignment.get_all_admins())
         return context
 
