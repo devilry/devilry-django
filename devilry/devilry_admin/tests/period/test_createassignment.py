@@ -4,6 +4,7 @@ from django.template import defaultfilters
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
+import mock
 from model_mommy import mommy
 
 from devilry.apps.core.models import Assignment, Candidate
@@ -141,7 +142,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertFalse(mockresponse.selector.exists(
             '#devilry_admin_createassignment_suggested_deadlines'))
 
-    def test_get_suggested_deadlines_render_values(self):
+    def test_get_suggested_deadlines_render_values_previous_deadline_in_the_past(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
 
         # Ignored by the suggestion system
@@ -151,7 +152,35 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         # This should be the one that is used for suggestions
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
-                          first_deadline=datetime(2015, 3, 1, 12, 30))
+                          first_deadline=datetime(2015, 9, 2, 13, 30))  # Wed
+
+        timezonemock = mock.MagicMock()
+        timezonemock.now.return_value = datetime(2015, 9, 10, 22, 18)  # Thursday
+        with mock.patch('devilry.devilry_admin.views.period.createassignment.timezone', timezonemock):
+            mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=period)
+        suggested_deadline_elements = mockresponse.selector.list(
+            '.devilry-admin-createassignment-suggested-deadline')
+        suggested_deadline_values = [element['django-cradmin-setfieldvalue']
+                                     for element in suggested_deadline_elements]
+        self.assertEqual(suggested_deadline_values, [
+            '2015-09-16 13:30',
+            '2015-09-23 13:30',
+            '2015-09-30 13:30',
+            '2015-10-07 13:30',
+        ])
+
+    def test_get_suggested_deadlines_render_values_previous_deadline_in_the_future(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+
+        # Ignored by the suggestion system
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=period)
+
+        # This should be the one that is used for suggestions
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                          parentnode=period,
+                          first_deadline=datetime(3500, 9, 5, 13, 30))
 
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=period)
@@ -160,10 +189,10 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         suggested_deadline_values = [element['django-cradmin-setfieldvalue']
                                      for element in suggested_deadline_elements]
         self.assertEqual(suggested_deadline_values, [
-            (datetime(2015, 3, 8, 12, 30)).isoformat(),
-            (datetime(2015, 3, 15, 12, 30)).isoformat(),
-            (datetime(2015, 3, 22, 12, 30)).isoformat(),
-            (datetime(2015, 3, 29, 12, 30)).isoformat(),
+            '3500-09-12 13:30',
+            '3500-09-19 13:30',
+            '3500-09-26 13:30',
+            '3500-10-03 13:30',
         ])
 
     def test_get_suggested_deadlines_render_labels(self):
@@ -176,23 +205,20 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         # This should be the one that is used for suggestions
         mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
                           parentnode=period,
-                          first_deadline=datetime(2015, 3, 1, 12, 30))
+                          first_deadline=datetime(2015, 9, 2, 13, 30))  # Wed
 
-        mockresponse = self.mock_http200_getrequest_htmls(
-            cradmin_role=period)
+        with self.settings(DATETIME_FORMAT='D M j Y H:i', USE_L10N=False):
+            mockresponse = self.mock_http200_getrequest_htmls(
+                cradmin_role=period)
         suggested_deadline_elements = mockresponse.selector.list(
             '.devilry-admin-createassignment-suggested-deadline')
         suggested_deadline_labels = [element.alltext_normalized
                                      for element in suggested_deadline_elements]
         self.assertEqual(suggested_deadline_labels, [
-            defaultfilters.date(datetime(2015, 3, 1, 12, 30) + timedelta(days=7),
-                                'DATETIME_FORMAT'),
-            defaultfilters.date(datetime(2015, 3, 1, 12, 30) + timedelta(days=14),
-                                'DATETIME_FORMAT'),
-            defaultfilters.date(datetime(2015, 3, 1, 12, 30) + timedelta(days=21),
-                                'DATETIME_FORMAT'),
-            defaultfilters.date(datetime(2015, 3, 1, 12, 30) + timedelta(days=28),
-                                'DATETIME_FORMAT'),
+            'Wed Sep 16 2015 13:30',
+            'Wed Sep 23 2015 13:30',
+            'Wed Sep 30 2015 13:30',
+            'Wed Oct 7 2015 13:30',
         ])
 
     def test_post_missing_short_name(self):
@@ -333,7 +359,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             < (timezone.now() + timedelta(minutes=61))
         )
 
-    # def test_post_adds_students(self):
+    # def test_post_first_assignment_adds_relatedstudents(self):
     #     period = mommy.make_recipe('devilry.apps.core.period_active')
     #     mommy.make('core.RelatedStudent', period=period,
     #                user__shortname='student1')
@@ -346,3 +372,5 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     #     self.assertEqual(2, candidatesqueryset.count())
     #     self.assertTrue(candidatesqueryset.filter(student__shortname='student1').exists())
     #     self.assertTrue(candidatesqueryset.filter(student__shortname='student2').exists())
+
+    # def test_post_first_assignment_adds_examiners_from_syncsystem_tags(self):

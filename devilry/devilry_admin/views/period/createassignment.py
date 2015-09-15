@@ -16,6 +16,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core.models import Assignment
+from devilry.utils import datetimeutils
 
 
 class NameSuggestion(object):
@@ -169,8 +170,15 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     def __get_suggested_deadlines(self):
         suggested_deadlines = []
         if self.previous_assignment:
-            for days_forward in range(7, (7 * 4) + 1, 7):
-                suggested_deadline = self.previous_assignment.first_deadline + timedelta(days=days_forward)
+            if self.previous_assignment.first_deadline > timezone.now():
+                first_suggested_deadline = self.previous_assignment.first_deadline + timedelta(days=7)
+            else:
+                first_suggested_deadline = datetimeutils.datetime_with_same_day_of_week_and_time(
+                    weekdayandtimesource_datetime=self.previous_assignment.first_deadline,
+                    target_datetime=timezone.now())
+            suggested_deadlines.append(first_suggested_deadline)
+            for days_forward in range(7, (7 * 4), 7):
+                suggested_deadline = first_suggested_deadline + timedelta(days=days_forward)
                 suggested_deadlines.append(suggested_deadline)
         return suggested_deadlines
 
@@ -185,9 +193,9 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     def get_field_layout(self):
         return [
             layout.Div(
-                layout.Field('long_name', placeholder=_('Example: Obligatory assignment 1'),
+                layout.Field('long_name', placeholder=_('Example: Assignment 1'),
                              focusonme='focusonme'),
-                layout.Field('short_name', placeholder=_('Example: oblig1')),
+                layout.Field('short_name', placeholder=_('Example: assignment1')),
                 # layout.HTML(self.__render_help_box()),
                 layout.Div(
                     layout.Div(
