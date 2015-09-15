@@ -46,4 +46,4 @@ def devilry_isoformat_datetime(datetimeobject):
     """
     Isoformat the given ``datetimeobject`` as ``YYYY-MM-DD hh:mm``.
     """
-    return datetimeutils.isoformat_noseconds(datetimeutils)
+    return datetimeutils.isoformat_noseconds(datetimeobject)
