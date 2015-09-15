@@ -28,7 +28,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_createperiod_link_text(self):
         testsubject = mommy.make('core.Subject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testsubject)
-        self.assertEqual('Create new period',
+        self.assertEqual('Create new semester',
                          mockresponse.selector.one(
                              '#devilry_admin_period_createperiod_link').alltext_normalized)
 
