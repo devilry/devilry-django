@@ -31,3 +31,28 @@ def isoformat_noseconds(datetimeobject):
     # We use isoformat because strftime does not support times before
     # year 1900.
     return datetimeobject.isoformat(' ').split('.')[0].rsplit(':', 1)[0]
+
+
+def datetime_with_same_day_of_week_and_time(weekdayandtimesource_datetime, target_datetime):
+    """
+    Returns a new datetime object with the same time and day of week as
+    the given ``target_datetime``, with the day of week moved forward
+    to match the ``weekdayandtimesource_datetime``, and the time matching the
+    ``weekdayandtimesource_datetime``.
+
+    This means that if you send in a ``weekdayandtimesource_datetime`` with tuesday
+    as the weekday, the return value will be a datetime object with the day set
+    to the next tuesday unless the current day is monday or tuesday.
+    """
+    weekdayandtimesource_weekday = weekdayandtimesource_datetime.isoweekday()
+    target_weekday = target_datetime.isoweekday()
+    if weekdayandtimesource_weekday > target_weekday:
+        added_days = weekdayandtimesource_weekday - target_weekday
+    else:
+        added_days = 7 - target_weekday + weekdayandtimesource_weekday
+    new_datetimeobject = target_datetime + datetime.timedelta(days=added_days)
+    new_datetimeobject = new_datetimeobject.replace(hour=weekdayandtimesource_datetime.hour,
+                                                    minute=weekdayandtimesource_datetime.minute,
+                                                    second=weekdayandtimesource_datetime.second,
+                                                    microsecond=weekdayandtimesource_datetime.microsecond)
+    return new_datetimeobject
