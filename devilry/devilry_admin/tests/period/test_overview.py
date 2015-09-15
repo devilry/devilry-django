@@ -103,7 +103,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         assignmentnames = [element.alltext_normalized
                            for element in mockresponse.selector.list('.devilry-admin-period-overview-assignment-link')]
         self.assertEqual([
-            'Assignment 1',
-            'Assignment 2',
             'Assignment 3',
+            'Assignment 2',
+            'Assignment 1',
         ], assignmentnames)
