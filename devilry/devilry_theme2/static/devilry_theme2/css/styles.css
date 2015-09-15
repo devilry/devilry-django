@@ -9846,7 +9846,7 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
     top: 0;
     height: 100%;
     left: 0;
-    width: 200px;
+    width: 250px;
     overflow-y: auto;
     overflow-x: hidden;
     -webkit-transition: top 0.12s ease-in-out;
@@ -9881,7 +9881,7 @@ body {
 }
 @media (min-width: 992px) {
   #django_cradmin_contentwrapper {
-    padding-left: 200px;
+    padding-left: 250px;
   }
 }
 @media (min-width: 992px) {
@@ -9906,23 +9906,23 @@ body {
   .container {
     margin-left: 0;
     margin-right: auto;
-    width: 770px;
+    width: 720px;
   }
 }
 @media (min-width: 1200px) {
   .container {
-    width: 970px;
+    width: 920px;
   }
 }
 @media (min-width: 992px) {
   .container.django-cradmin-container-focus {
     margin-left: 15px;
-    width: 740px;
+    width: 690px;
   }
 }
 @media (min-width: 1200px) {
   .container.django-cradmin-container-focus {
-    width: 940px;
+    width: 890px;
   }
 }
 .django-cradmin-formsized-wrapper,
