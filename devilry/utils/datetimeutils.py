@@ -1,6 +1,11 @@
 import datetime
+from django.conf import settings
 
 from django.utils import timezone
+
+
+#: Django datetime formatting string for ``YYYY-MM-DD hh:mm``.
+ISODATETIME_DJANGOFORMAT = 'Y-m-d H:i'
 
 
 def get_current_datetime():
@@ -19,9 +24,13 @@ def default_timezone_datetime(*args, **kwargs):
 
     The parameters are the same as for ``datetime.datetime``.
     """
-    return timezone.make_aware(
-        datetime.datetime(*args, **kwargs),
-        timezone.get_default_timezone())
+    datetimeobject = datetime.datetime(*args, **kwargs)
+    if settings.USE_TZ:
+        return timezone.make_aware(
+            datetimeobject,
+            timezone.get_default_timezone())
+    else:
+        return datetimeobject
 
 
 def isoformat_noseconds(datetimeobject):

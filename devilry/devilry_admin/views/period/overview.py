@@ -7,6 +7,12 @@ from django_cradmin import crapp
 class Overview(TemplateView):
     template_name = 'devilry_admin/period/overview.django.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(Overview, self).get_context_data(**kwargs)
+        period = self.request.cradmin_role
+        context['assignments'] = list(period.assignments.order_by('first_deadline', 'publishing_time'))
+        return context
+
 
 class App(crapp.App):
     appurls = [
