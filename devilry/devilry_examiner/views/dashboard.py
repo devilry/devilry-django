@@ -24,7 +24,7 @@ class DashboardView(TemplateView):
         active_assignments = Assignment.objects\
             .filter_examiner_has_access(self.request.user)\
             .order_by('-publishing_time')\
-            .select_related('parentnode', 'parentnode__parentnode', 'examiners')\
+            .select_related('parentnode', 'parentnode__parentnode')\
             .annotate(count_total_groups=Count('assignmentgroups'))
         context['active_assignments'] = map(self._add_statistics, active_assignments)
         return context
