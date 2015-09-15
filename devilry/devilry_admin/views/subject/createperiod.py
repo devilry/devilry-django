@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from django_cradmin.widgets.datetimepicker import DateTimePickerWidget
 
 from devilry.apps.core.models import Period
-from devilry.devilry_admin.views.period.createassignment import NameSuggestion
+from devilry.utils import nodenamesuggestor
 
 
 class CreateForm(forms.ModelForm):
@@ -60,8 +60,8 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
     def get_initial(self):
         initial = super(CreateView, self).get_initial()
         if self.previous_period:
-            namesuggestion = NameSuggestion(long_name=self.previous_period.long_name,
-                                            short_name=self.previous_period.short_name)
+            namesuggestion = nodenamesuggestor.Suggest(long_name=self.previous_period.long_name,
+                                                       short_name=self.previous_period.short_name)
             if namesuggestion.has_suggestion():
                 namecollision_queryset = self.subject.periods.filter(
                     models.Q(long_name=namesuggestion.suggested_long_name) |
