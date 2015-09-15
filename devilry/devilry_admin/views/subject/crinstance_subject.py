@@ -12,9 +12,11 @@ class Menu(crmenu.Menu):
         subject = self.request.cradmin_role
         self.add_menuitem(
             label=subject.short_name,
+            active=self.request.cradmin_app.appname == 'overview',
             url=self.appindex_url('overview'))
         self.add_menuitem(
             label=_('Administrators'),
+            active=self.request.cradmin_app.appname == 'admins',
             url=self.appindex_url('admins'))
 
 
