@@ -34,7 +34,7 @@ API and utilities
     :maxdepth: 1
 
     core.models
-    userobj
+    core.tags
     core.deliverystore
     devilry.utils
 

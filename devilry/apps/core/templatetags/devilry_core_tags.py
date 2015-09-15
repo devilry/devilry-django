@@ -1,6 +1,7 @@
 import bleach
 from django import template
 from django.utils.translation import ugettext_lazy as _
+from devilry.utils import datetimeutils
 
 register = template.Library()
 
@@ -38,3 +39,11 @@ def devilry_escape_html(html):
     Escape all html in the given ``html``.
     """
     return bleach.clean(html)
+
+
+@register.filter
+def devilry_isoformat_datetime(datetimeobject):
+    """
+    Isoformat the given ``datetimeobject`` as ``YYYY-MM-DD hh:mm``.
+    """
+    return datetimeutils.isoformat_noseconds(datetimeutils)
