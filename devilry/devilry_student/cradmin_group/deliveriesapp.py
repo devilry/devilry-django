@@ -65,7 +65,7 @@ class QuerySetForRoleMixin(object):
     def get_queryset_for_role(self, group):
         return Delivery.objects\
             .filter(deadline__assignment_group=group)\
-            .select_related('deadline', 'feedback')
+            .select_related('deadline', 'last_feedback')
 
 
 class DeliveryListView(QuerySetForRoleMixin, objecttable.ObjectTableView):
