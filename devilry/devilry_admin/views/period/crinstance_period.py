@@ -15,15 +15,19 @@ class Menu(crmenu.Menu):
         period = self.request.cradmin_role
         self.add_menuitem(
             label=period.short_name,
+            active=self.request.cradmin_app.appname == 'overview',
             url=self.appindex_url('overview'))
         self.add_menuitem(
             label=_('Students'),
+            active=self.request.cradmin_app.appname == 'students',
             url=self.appindex_url('students'))
         self.add_menuitem(
             label=_('Examiners'),
+            active=self.request.cradmin_app.appname == 'examiners',
             url=self.appindex_url('examiners'))
         self.add_menuitem(
             label=_('Administrators'),
+            active=self.request.cradmin_app.appname == 'admins',
             url=self.appindex_url('admins'))
 
 
