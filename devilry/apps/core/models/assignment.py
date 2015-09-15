@@ -8,8 +8,9 @@ from django.db import models
 from django.db.models import Q
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-from devilry.devilry_account.models import User
 
+from devilry.apps.core.models.relateduser import RelatedStudentSyncSystemTag, RelatedExaminerSyncSystemTag
+from devilry.devilry_account.models import User
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
 from basenode import BaseNode
 from node import Node
@@ -735,3 +736,49 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                 student_id=relatedstudent.user_id)
             candidates.append(candidate)
         Candidate.objects.bulk_create(candidates)
+
+    def setup_examiners_by_relateduser_syncsystem_tags(self):
+        from devilry.apps.core.models import Candidate
+        from devilry.apps.core.models import Examiner
+        period = self.period
+
+        # We use this to avoid adding examiners to groups they are already on
+        # We could have used an exclude query, but this is more efficien because
+        # it only requires one query.
+        groupid_to_examineruserid_map = dict(Examiner.objects.filter(
+            assignmentgroup__parentnode=self).values_list('assignmentgroup_id', 'user_id'))
+
+        # We collect all the examiners to be created in this list, and bulk create
+        # them at the end
+        examinerobjects = []
+
+        for relatedexaminer_syncsystem_tag in RelatedExaminerSyncSystemTag.objects\
+                .filter(relatedexaminer__period=period)\
+                .select_related('relatedexaminer__user'):
+
+            # Step1: Collect all relatedstudents with same tag as examiner
+            relatedstudentids = []
+            for relatedstudent_syncsystem_tag in RelatedStudentSyncSystemTag.objects\
+                    .filter(relatedstudent__period=period,
+                            tag=relatedexaminer_syncsystem_tag.tag):
+                relatedstudentids.append(relatedstudent_syncsystem_tag.relatedstudent_id)
+
+            # Step2: Find the group of all the students matching the tag
+            #        and bulk create Examiner objects for the groups
+            #        if the user is not already examiner.
+            if relatedstudentids:
+                examineruser = relatedexaminer_syncsystem_tag.relatedexaminer.user
+                groupids = set()
+                for candidate in Candidate.objects\
+                        .filter(assignment_group__parentnode=self,
+                                relatedstudent_id__in=relatedstudentids)\
+                        .distinct():
+                    if groupid_to_examineruserid_map.get(candidate.assignment_group_id, None) != examineruser.id:
+                        groupids.add(candidate.assignment_group_id)
+
+                examinerobjects.extend([Examiner(
+                    assignmentgroup_id=groupid,
+                    user=examineruser
+                ) for groupid in groupids])
+        if examinerobjects:
+            Examiner.objects.bulk_create(examinerobjects)
