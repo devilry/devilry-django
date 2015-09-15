@@ -215,6 +215,7 @@ class Command(BaseCommand):
             user.save()
 
         self.duckburgh = NodeBuilder('duckburgh', long_name="University of Duckburgh")
+        self.add_emptycourse()
         self.add_duck1100()
         # self.add_hugecourse()
         self.create_feedbackset_complete()
@@ -360,6 +361,19 @@ class Command(BaseCommand):
     def _as_relatedstudents(self, users, tags):
         return [RelatedStudent(user=user, tags=tags) for user in users]
 
+    def add_emptycourse(self):
+        democourse = self.duckburgh.add_subject(
+            short_name='democourse',
+            long_name='DEMO101 - A demo course')
+        democourse.add_admins(self.thor)
+        print
+        print("*" * 70)
+        print
+        print('Empty course named "DEMO101 - A demo course" added')
+        print
+        print("*" * 70)
+        print
+
     def add_hugecourse(self):
         duck1100 = self.duckburgh.add_subject(
             short_name='hugecourse',
@@ -480,6 +494,14 @@ class Command(BaseCommand):
                     periodbuilder=periodbuilder,
                     weeks_ago=weekoffset, filecount=2,
                     short_name='week6', long_name='Week 6')
+
+        print
+        print("*" * 70)
+        print
+        print('duck1100 added')
+        print
+        print("*" * 70)
+        print
 
     def create_feedbackset_complete(self):
         # Create a finished feedback_set for a specified user on a new subject
