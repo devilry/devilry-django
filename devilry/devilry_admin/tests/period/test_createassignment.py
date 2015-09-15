@@ -5,6 +5,7 @@ from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 import mock
 from model_mommy import mommy
+from django_cradmin import crinstance
 
 from devilry.apps.core.models import Assignment, Candidate, Examiner
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START, FUTURE_PERIOD_END
@@ -290,7 +291,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_post_first_deadline_before_publishing_time_hours(self):
         period = mommy.make_recipe('devilry.apps.core.period_active')
         first_deadline_isoformat = datetimeutils.isoformat_noseconds(timezone.now())
-        with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=60*3):
+        with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=60 * 3):
             mockresponse = self.mock_http200_postrequest_htmls(
                 cradmin_role=period,
                 requestkwargs={
@@ -328,7 +329,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
         if not period:
             period = mommy.make_recipe('devilry.apps.core.period_active')
         with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=publishing_time_delay_minutes):
-            self.mock_http302_postrequest(
+            mockresponse = self.mock_http302_postrequest(
                 cradmin_role=period,
                 requestkwargs={
                     'data': {
@@ -338,11 +339,11 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                     }
                 })
         created_assignment = Assignment.objects.get(short_name='testassignment')
-        return created_assignment
+        return created_assignment, mockresponse
 
     def test_post_sanity(self):
         self.assertEqual(Assignment.objects.count(), 0)
-        created_assignment = self.__valid_post_request(first_deadline=ACTIVE_PERIOD_END)
+        created_assignment, mockresponse = self.__valid_post_request(first_deadline=ACTIVE_PERIOD_END)
         self.assertEqual(Assignment.objects.count(), 1)
         self.assertEqual(created_assignment.long_name, 'Test assignment')
         self.assertEqual(created_assignment.short_name, 'testassignment')
@@ -350,12 +351,21 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             ACTIVE_PERIOD_END,
             created_assignment.first_deadline)
 
+    def test_post_success_redirect(self):
+        self.assertEqual(Assignment.objects.count(), 0)
+        created_assignment, mockresponse = self.__valid_post_request(first_deadline=ACTIVE_PERIOD_END)
+        self.assertEqual(mockresponse.response['location'],
+                         crinstance.reverse_cradmin_url(
+                             instanceid='devilry_admin_assignmentadmin',
+                             appname='overview',
+                             roleid=created_assignment.id))
+
     def test_post_publishing_time(self):
-        created_assignment = self.__valid_post_request(publishing_time_delay_minutes=60)
+        created_assignment, mockresponse = self.__valid_post_request(publishing_time_delay_minutes=60)
         self.assertTrue(
-            (timezone.now() + timedelta(minutes=59))
-            < created_assignment.publishing_time
-            < (timezone.now() + timedelta(minutes=61))
+            (timezone.now() + timedelta(minutes=59)) <
+            created_assignment.publishing_time <
+            (timezone.now() + timedelta(minutes=61))
         )
 
     def test_post_first_assignment_adds_relatedstudents(self):
@@ -364,7 +374,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    user__shortname='student1')
         mommy.make('core.RelatedStudent', period=period,
                    user__shortname='student2')
-        created_assignment = self.__valid_post_request(period=period)
+        created_assignment, mockresponse = self.__valid_post_request(period=period)
         self.assertEqual(2, created_assignment.assignmentgroups.count())
 
         candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=created_assignment)
@@ -394,7 +404,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    tag='group1',
                    relatedexaminer__user__shortname='otherperiodexaminer')
 
-        created_assignment = self.__valid_post_request(period=period)
+        created_assignment, mockresponse = self.__valid_post_request(period=period)
         self.assertEqual(1, created_assignment.assignmentgroups.count())
         created_group = created_assignment.assignmentgroups.first()
         self.assertTrue(created_group.examiners.filter(user__shortname='examiner1').exists())
@@ -414,7 +424,7 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignmentgroup=group,
                    user__shortname='examiner1')
 
-        created_assignment = self.__valid_post_request(period=period)
+        created_assignment, mockresponse = self.__valid_post_request(period=period)
         self.assertEqual(1, created_assignment.assignmentgroups.count())
 
         candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=created_assignment)

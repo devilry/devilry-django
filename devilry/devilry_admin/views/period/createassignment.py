@@ -10,6 +10,7 @@ from django.db import models
 from django.template.loader import render_to_string
 from django.utils import timezone
 from django_cradmin import crapp
+from django_cradmin import crinstance
 from django_cradmin.viewhelpers import create
 from django_cradmin.viewhelpers import crudbase
 from django.utils.translation import ugettext_lazy as _
@@ -91,8 +92,7 @@ class CreateForm(forms.ModelForm):
             required=True,
             minimum_datetime=timezone.now() + timedelta(
                 minutes=settings.DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES),
-            maximum_datetime=self.period.end_time,
-            )
+            maximum_datetime=self.period.end_time)
         self.fields['first_deadline'].required = True
         self.fields['first_deadline'].label = _('Set first deadline')
         self.fields['first_deadline'].help_text = _(
@@ -209,13 +209,20 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
             )
         ]
 
+    def get_success_url(self):
+        return crinstance.reverse_cradmin_url(
+            instanceid='devilry_admin_assignmentadmin',
+            appname='overview',
+            roleid=self.created_assignment.id
+        )
+
     def form_saved(self, object):
-        created_assignment = object
+        self.created_assignment = object
         if self.previous_assignment:
-            created_assignment.copy_groups_from_another_assignment(self.previous_assignment)
+            self.created_assignment.copy_groups_from_another_assignment(self.previous_assignment)
         else:
-            created_assignment.create_groups_from_relatedstudents_on_period()
-            created_assignment.setup_examiners_by_relateduser_syncsystem_tags()
+            self.created_assignment.create_groups_from_relatedstudents_on_period()
+            self.created_assignment.setup_examiners_by_relateduser_syncsystem_tags()
 
 
 class App(crapp.App):
