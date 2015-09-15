@@ -99,6 +99,12 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
             .last()
         return super(CreateView, self).dispatch(*args, **kwargs)
 
+    def get_pagetitle(self):
+        return u'{} - {}'.format(self.get_pageheading(), self.period.get_path())
+
+    def get_pageheading(self):
+        return _('Create new assignment')
+
     def get_form_kwargs(self):
         kwargs = super(CreateView, self).get_form_kwargs()
         kwargs['period'] = self.request.cradmin_role
