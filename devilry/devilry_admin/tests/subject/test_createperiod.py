@@ -12,6 +12,20 @@ from devilry.utils import datetimeutils
 class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = createperiod.CreateView
 
+    def test_get_render_title(self):
+        subject = mommy.make('core.Subject', short_name='testcourse')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=subject)
+        self.assertEqual('Create new semester - testcourse',
+                         mockresponse.selector.one('title').alltext_normalized)
+
+    def test_get_render_h1(self):
+        subject = mommy.make('core.Subject')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=subject)
+        self.assertEqual('Create new semester',
+                         mockresponse.selector.one('h1').alltext_normalized)
+
     def test_get_render_formfields(self):
         subject = mommy.make('core.Subject')
         mockresponse = self.mock_http200_getrequest_htmls(

@@ -52,6 +52,12 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
             .last()
         return super(CreateView, self).dispatch(*args, **kwargs)
 
+    def get_pagetitle(self):
+        return u'{} - {}'.format(self.get_pageheading(), self.subject.short_name)
+
+    def get_pageheading(self):
+        return _('Create new semester')
+
     def get_form_kwargs(self):
         kwargs = super(CreateView, self).get_form_kwargs()
         kwargs['subject'] = self.subject
