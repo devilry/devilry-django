@@ -209,6 +209,14 @@ class CreateView(crudbase.OnlySaveButtonMixin, create.CreateView):
             )
         ]
 
+    def form_saved(self, object):
+        created_assignment = object
+        if self.previous_assignment:
+            created_assignment.copy_groups_from_another_assignment(self.previous_assignment)
+        else:
+            created_assignment.create_groups_from_relatedstudents_on_period()
+            created_assignment.setup_examiners_by_relateduser_syncsystem_tags()
+
 
 class App(crapp.App):
     appurls = [

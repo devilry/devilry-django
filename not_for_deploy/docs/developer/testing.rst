@@ -155,11 +155,11 @@ in the future (by over a 1000 years)::
 
     period = mommy.make_recipe('devilry.apps.core.period_active')
     assignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
-                                    period=period)
+                                    parentnode=period)
     assignment2 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle',
-                                    period=period)
+                                    parentnode=period)
     assignment3 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end',
-                                    period=period)
+                                    parentnode=period)
 
 You can specify attributes with the recipes, so to create an assignment
 within an active period, with subject name set to "Test course 101",
@@ -182,10 +182,10 @@ Creating an assignment with assignmentgroups and examiners::
     # Multiple candidates in one group require a bit more code
     group = mommy.make('core.AssignmentGroup', parentnode=assignment)
     mommy.make('core.Candidate',
-               assignment_group__parentnode=assignment,
+               assignment_group=group,
                student__shortname='student1')
     mommy.make('core.Candidate',
-               assignment_group__parentnode=assignment,
+               assignment_group=group,
                student__shortname='student2')
 
     # We just need a lot of AssignmentGroup objects

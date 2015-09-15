@@ -1,13 +1,12 @@
 from datetime import datetime, timedelta
 
-from django.template import defaultfilters
 from django.test import TestCase
 from django.utils import timezone
 from django_cradmin import cradmin_testhelpers
 import mock
 from model_mommy import mommy
 
-from devilry.apps.core.models import Assignment, Candidate
+from devilry.apps.core.models import Assignment, Candidate, Examiner
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_END, ACTIVE_PERIOD_START, OLD_PERIOD_START, FUTURE_PERIOD_END
 from devilry.devilry_admin.views.period import createassignment
 from devilry.utils import datetimeutils
@@ -328,7 +327,6 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                              publishing_time_delay_minutes=60):
         if not period:
             period = mommy.make_recipe('devilry.apps.core.period_active')
-        self.assertEqual(Assignment.objects.count(), 0)
         with self.settings(DEVILRY_ASSIGNMENT_PUBLISHING_TIME_DELAY_MINUTES=publishing_time_delay_minutes):
             self.mock_http302_postrequest(
                 cradmin_role=period,
@@ -339,12 +337,13 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
                         'first_deadline': datetimeutils.isoformat_noseconds(first_deadline),
                     }
                 })
-        self.assertEqual(Assignment.objects.count(), 1)
-        created_assignment = Assignment.objects.first()
+        created_assignment = Assignment.objects.get(short_name='testassignment')
         return created_assignment
 
     def test_post_sanity(self):
+        self.assertEqual(Assignment.objects.count(), 0)
         created_assignment = self.__valid_post_request(first_deadline=ACTIVE_PERIOD_END)
+        self.assertEqual(Assignment.objects.count(), 1)
         self.assertEqual(created_assignment.long_name, 'Test assignment')
         self.assertEqual(created_assignment.short_name, 'testassignment')
         self.assertEqual(
@@ -359,18 +358,69 @@ class TestCreateView(TestCase, cradmin_testhelpers.TestCaseMixin):
             < (timezone.now() + timedelta(minutes=61))
         )
 
-    # def test_post_first_assignment_adds_relatedstudents(self):
-    #     period = mommy.make_recipe('devilry.apps.core.period_active')
-    #     mommy.make('core.RelatedStudent', period=period,
-    #                user__shortname='student1')
-    #     mommy.make('core.RelatedStudent', period=period,
-    #                user__shortname='student2')
-    #     created_assignment = self.__valid_post_request()
-    #     self.assertEqual(2, created_assignment.assignmentgroups.count())
-    #
-    #     candidatesqueryset = Candidate.objects.filter(assignment_group__assignment=created_assignment)
-    #     self.assertEqual(2, candidatesqueryset.count())
-    #     self.assertTrue(candidatesqueryset.filter(student__shortname='student1').exists())
-    #     self.assertTrue(candidatesqueryset.filter(student__shortname='student2').exists())
+    def test_post_first_assignment_adds_relatedstudents(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        mommy.make('core.RelatedStudent', period=period,
+                   user__shortname='student1')
+        mommy.make('core.RelatedStudent', period=period,
+                   user__shortname='student2')
+        created_assignment = self.__valid_post_request(period=period)
+        self.assertEqual(2, created_assignment.assignmentgroups.count())
 
-    # def test_post_first_assignment_adds_examiners_from_syncsystem_tags(self):
+        candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=created_assignment)
+        self.assertEqual(2, candidatesqueryset.count())
+        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student1').exists())
+        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student2').exists())
+
+    def test_post_first_assignment_adds_examiners_from_syncsystem_tags(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+
+        mommy.make('core.RelatedStudentSyncSystemTag',
+                   relatedstudent__period=period,
+                   tag='group1')
+        mommy.make('core.RelatedExaminerSyncSystemTag',
+                   relatedexaminer__period=period,
+                   tag='group1',
+                   relatedexaminer__user__shortname='examiner1')
+        mommy.make('core.RelatedExaminerSyncSystemTag',
+                   relatedexaminer__period=period,
+                   tag='group1',
+                   relatedexaminer__user__shortname='examiner2')
+        mommy.make('core.RelatedExaminerSyncSystemTag',
+                   relatedexaminer__period=period,
+                   tag='group2',
+                   relatedexaminer__user__shortname='examiner3')
+        mommy.make('core.RelatedExaminerSyncSystemTag',
+                   tag='group1',
+                   relatedexaminer__user__shortname='otherperiodexaminer')
+
+        created_assignment = self.__valid_post_request(period=period)
+        self.assertEqual(1, created_assignment.assignmentgroups.count())
+        created_group = created_assignment.assignmentgroups.first()
+        self.assertTrue(created_group.examiners.filter(user__shortname='examiner1').exists())
+        self.assertTrue(created_group.examiners.filter(user__shortname='examiner2').exists())
+        self.assertFalse(created_group.examiners.filter(user__shortname='examiner3').exists())
+        self.assertFalse(created_group.examiners.filter(user__shortname='otherperiodexaminer').exists())
+
+    def test_post_second_assignment_copies_setup_from_first_assignment(self):
+        period = mommy.make_recipe('devilry.apps.core.period_active')
+        assignment1 = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                        parentnode=period)
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment1)
+        mommy.make('core.Candidate',
+                   assignment_group=group,
+                   relatedstudent__user__shortname='student1')
+        mommy.make('core.Examiner',
+                   assignmentgroup=group,
+                   user__shortname='examiner1')
+
+        created_assignment = self.__valid_post_request(period=period)
+        self.assertEqual(1, created_assignment.assignmentgroups.count())
+
+        candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=created_assignment)
+        self.assertEqual(1, candidatesqueryset.count())
+        self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student1').exists())
+
+        examinersqueryset = Examiner.objects.filter(assignmentgroup__parentnode=created_assignment)
+        self.assertEqual(1, examinersqueryset.count())
+        self.assertTrue(examinersqueryset.filter(user__shortname='examiner1').exists())
