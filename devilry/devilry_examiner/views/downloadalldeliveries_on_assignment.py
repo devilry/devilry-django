@@ -1,15 +1,14 @@
-from django.views.generic import View
 from tempfile import NamedTemporaryFile
+import zipfile
+
+from django.views.generic import View
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-import zipfile
-import os
 
 from devilry.utils.filewrapperwithexplicitclose import FileWrapperWithExplicitClose
 from devilry.defaults.encoding import ZIPFILE_FILENAME_CHARSET
 from devilry.apps.core.models import Assignment
 from devilry.apps.core.models import AssignmentGroup
-
 
 
 class DownloadAllDeliveriesOnAssignmentView(View):
@@ -40,13 +39,14 @@ class DownloadAllDeliveriesOnAssignmentView(View):
                 for delivery in deadline.deliveries.all():
                     for filemeta in delivery.filemetas.all():
                         file_content = filemeta.deliverystore.read_open(filemeta)
-                        filenametpl = '{zip_rootdir_name}/{groupname}/deadline-{deadline}/delivery-{delivery_number}/{filename}'
+                        filenametpl = '{zip_rootdir_name}/{groupname}/deadline-{deadline}/' \
+                                      'delivery-{delivery_number}/{filename}'
                         filename = filenametpl.format(
                             zip_rootdir_name=zip_rootdir_name,
                             groupname=groupname,
                             deadline=deadline.deadline.strftime(self.DEADLINE_FORMAT),
                             delivery_number="%.3d" % delivery.number,
-                            filename = filemeta.filename.encode(ZIPFILE_FILENAME_CHARSET))
+                            filename=filemeta.filename.encode(ZIPFILE_FILENAME_CHARSET))
                         zip_file.writestr(filename, file_content.read())
         zip_file.close()
 
@@ -54,5 +54,5 @@ class DownloadAllDeliveriesOnAssignmentView(View):
         return tempfile
 
     def _get_queryset(self, assignment):
-        return AssignmentGroup.objects.filter_examiner_has_access(self.request.user)\
+        return AssignmentGroup.objects.filter_examiner_has_access(self.request.user) \
             .filter(parentnode=assignment)
