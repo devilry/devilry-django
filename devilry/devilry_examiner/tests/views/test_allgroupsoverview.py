@@ -481,14 +481,14 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
                            data={'order_by': 'candidate_id'}).content
         candidate_ids = [candidate_ids.text.strip()
                          for candidate_ids in cssFind(html, '.infolistingtable .group .group_long_displayname')]
-        self.assertEquals(candidate_ids, ['a', 'z, b', 'c'])
+        self.assertEquals(candidate_ids, ['a', 'b, z', 'c'])
 
     def test_orderby_invalid(self):
         self.week1builder.add_group(
             students=[UserBuilder('studenta', full_name="Student").user],
             examiners=[self.examiner1])
         response = self._getas('examiner1', self.week1builder.assignment.id,
-                           data={'order_by': 'invalid'})
+                               data={'order_by': 'invalid'})
         self.assertEquals(response.status_code, 400)
         self.assertIn(
             'Select a valid choice. invalid is not one of the available choices',
