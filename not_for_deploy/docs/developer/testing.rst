@@ -128,6 +128,14 @@ when we just need to use a datetime within the bounds a time period:
 
 
 
+***************************************
+When NOT to use the model mommy recipes
+***************************************
+Do not use the recipes when the things they setup do not matter. For example,
+if the code just needs an Assignment object, and the period, publishing time,
+and first deadline does not matter, simpy use ``mommy.make('core.Assignment')``.
+
+
 *********************
 Mommy recipes apidocs
 *********************
