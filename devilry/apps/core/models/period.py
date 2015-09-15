@@ -166,6 +166,8 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
         app_label = 'core'
         unique_together = ('short_name', 'parentnode')
         ordering = ['short_name']
+        verbose_name = _('semester')
+        verbose_name_plural = _('semesters')
 
     short_name = ShortNameField()
     long_name = LongNameField()

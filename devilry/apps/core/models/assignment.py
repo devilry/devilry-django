@@ -267,6 +267,8 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         app_label = 'core'
         unique_together = ('short_name', 'parentnode')
         ordering = ['short_name']
+        verbose_name = _('assignment')
+        verbose_name_plural = _('assignments')
 
     short_name = ShortNameField()
     long_name = LongNameField()
