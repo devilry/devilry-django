@@ -19,7 +19,7 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
     def _getas(self, username, assignmentid, *args, **kwargs):
         self.client.login(username=username, password='test')
         return self.client.get(reverse('devilry_examiner_downloadalldeliveries_on_assignment',
-            kwargs={'assignmentid': assignmentid}), *args, **kwargs)
+                                       kwargs={'assignmentid': assignmentid}), *args, **kwargs)
 
     def test_200_as_examiner(self):
         self.assignmentbuilder.add_group(examiners=[self.examiner1])
@@ -71,7 +71,8 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
         group1 = group1builder.group
         self.assertEquals(
             outfile.namelist()[0],
-            'duck1010.active.assignment1/{groupid} (groupid={groupid})/deadline-{deadline}/delivery-001/helloworld.txt'.format(
+            'duck1010.active.assignment1/{groupid} '
+            '(groupid={groupid})/deadline-{deadline}/delivery-001/helloworld.txt'.format(
                 groupid=group1.id,
                 deadline=group1.last_deadline.deadline.strftime(DownloadAllDeliveriesOnAssignmentView.DEADLINE_FORMAT)
             )
@@ -87,9 +88,9 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
         response = self._getas('examiner1', self.assignmentbuilder.assignment.id)
         outfile = zipfile.ZipFile(StringIO(response.content), 'r')
         group1 = group1builder.group
-        groupname = outfile.namelist()[0].split('/')[1]
+        groupname = set(outfile.namelist()[0].split('/')[1].split(', '))
         self.assertEquals(groupname,
-            'student1, student2 (groupid={})'.format(group1.id))
+                          {'student1', 'student2 (groupid={})'.format(group1.id)})
 
     def test_format_with_candidates_anonymous(self):
         self.assignmentbuilder.update(anonymous=True)
@@ -105,6 +106,6 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
         response = self._getas('examiner1', self.assignmentbuilder.assignment.id)
         outfile = zipfile.ZipFile(StringIO(response.content), 'r')
         group1 = group1builder.group
-        groupname = outfile.namelist()[0].split('/')[1]
+        groupname = set(outfile.namelist()[0].split('/')[1].split(', '))
         self.assertEquals(groupname,
-            'supersecret, candidate-id missing (groupid={})'.format(group1.id))
+                          {'supersecret', 'candidate-id missing (groupid={})'.format(group1.id)})
