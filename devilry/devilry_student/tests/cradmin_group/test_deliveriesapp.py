@@ -3,6 +3,7 @@ from django.core import mail
 
 from django.core.files.base import ContentFile
 from django.core.urlresolvers import reverse
+from django.template import defaultfilters
 from django.test import TestCase, RequestFactory
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFile
@@ -498,7 +499,7 @@ class TestDeliveryDetailsView(TestCase):
         selector = htmls.S(response.content)
         self.assertEquals(
             selector.one('#devilry_student_group_deliverydetails_time_of_delivery').alltext_normalized,
-            'January 1, 2000, 12:30')
+            defaultfilters.date(datetime(2000, 1, 1, 12, 30), 'DATETIME_FORMAT'))
 
     def test_delivery_metadata_time_of_delivery_after_deadline(self):
         self.groupbuilder.add_students(self.testuser)
@@ -523,7 +524,7 @@ class TestDeliveryDetailsView(TestCase):
         selector = htmls.S(response.content)
         self.assertEquals(
             selector.one('#devilry_student_group_deliverydetails_deadline').alltext_normalized,
-            'January 1, 2004, 12:30')
+            defaultfilters.date(datetime(2004, 1, 1, 12, 30), 'DATETIME_FORMAT'))
 
     def test_delivery_metadata_feedback_written_by(self):
         self.groupbuilder.add_students(self.testuser)
@@ -572,7 +573,7 @@ class TestDeliveryDetailsView(TestCase):
         selector = htmls.S(response.content)
         self.assertEquals(
             selector.one('#devilry_student_group_deliverydetails_feedback_save_timestamp').alltext_normalized,
-            'February 1, 2004, 12:30')
+            defaultfilters.date(datetime(2004, 2, 1, 12, 30), 'DATETIME_FORMAT'))
 
     def test_delivery_metadata_no_time_of_delivery_or_deadline_or_deliveredby_for_nonelectronic(self):
         self.groupbuilder.add_students(self.testuser)
