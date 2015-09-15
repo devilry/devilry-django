@@ -88,9 +88,9 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
         response = self._getas('examiner1', self.assignmentbuilder.assignment.id)
         outfile = zipfile.ZipFile(StringIO(response.content), 'r')
         group1 = group1builder.group
-        groupname = set(outfile.namelist()[0].split('/')[1].split(', '))
+        groupname = outfile.namelist()[0].split('/')[1]
         self.assertEquals(groupname,
-                          {'student1', 'student2 (groupid={})'.format(group1.id)})
+                          'student1, student2 (groupid={})'.format(group1.id))
 
     def test_format_with_candidates_anonymous(self):
         self.assignmentbuilder.update(anonymous=True)
@@ -106,6 +106,6 @@ class TestDownloadAllDeliveriesOnAssignmentView(TestCase):
         response = self._getas('examiner1', self.assignmentbuilder.assignment.id)
         outfile = zipfile.ZipFile(StringIO(response.content), 'r')
         group1 = group1builder.group
-        groupname = set(outfile.namelist()[0].split('/')[1].split(', '))
+        groupname = outfile.namelist()[0].split('/')[1]
         self.assertEquals(groupname,
-                          {'supersecret', 'candidate-id missing (groupid={})'.format(group1.id)})
+                          'candidate-id missing, supersecret (groupid={})'.format(group1.id))
