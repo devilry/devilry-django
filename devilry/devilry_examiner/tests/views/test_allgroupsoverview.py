@@ -396,7 +396,7 @@ class TestAllGroupsOverview(TestCase, HeaderTest):
         html = self._getas('examiner1', self.week1builder.assignment.id).content
         usernames = [username.text.strip()
                      for username in cssFind(html, '.infolistingtable .group .groupinfo .group_short_displayname')]
-        self.assertEquals(usernames, ['(studentd, studente, studenta)', '(studentb, studentx, studentz)', '(studentc)'])
+        self.assertEquals(usernames, ['(studenta, studentd, studente)', '(studentb, studentx, studentz)', '(studentc)'])
 
     def test_orderby_username(self):
         self.week1builder.add_group(

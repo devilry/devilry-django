@@ -639,6 +639,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         else:
             candidates = self.candidates.select_related('student')
             names = [candidate.student.get_full_name() for candidate in candidates]
+            names.sort()
             out = u', '.join(names)
             if self.name:
                 if out:
@@ -661,7 +662,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         **WARNING:** You should never use this method when the user is not
         an administrator.
         """
-        return u', '.join([c.student.shortname for c in self.candidates.select_related('student')])
+        students = [c.student.shortname for c in self.candidates.select_related('student')]
+        students.sort()
+        return u', '.join(students)
 
     def get_examiners(self, separator=u', '):
         """
@@ -671,7 +674,9 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         :param separator: The unicode string used to separate candidates. Defaults to ``u', '``.
         """
         warnings.warn("deprecated", DeprecationWarning)
-        return separator.join([examiner.user.shortname for examiner in self.examiners.select_related('user')])
+        examiners = [examiner.user.shortname for examiner in self.examiners.select_related('user')]
+        examiners.sort()
+        return separator.join(examiners)
 
     def is_admin(self, user_obj):
         warnings.warn("deprecated", DeprecationWarning)
