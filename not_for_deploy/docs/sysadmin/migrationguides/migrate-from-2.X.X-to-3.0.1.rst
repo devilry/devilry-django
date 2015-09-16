@@ -38,4 +38,4 @@ Migrate the database for 3.0.1
 ::
 
     $ cd ~/devilrydeploy/
-    $ venv/bin/python manage.py migrate --noinput
+    $ venv/bin/python manage.py migrate --fake-initial --noinput
