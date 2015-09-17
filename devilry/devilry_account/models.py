@@ -755,12 +755,12 @@ class PermissionGroup(models.Model):
     """
     GROUPTYPE_SUBJECTADMIN = 'subjectadmin'
     GROUPTYPE_PERIODADMIN = 'periodadmin'
-    GROUPTYPE_ADMIN = 'departmentadmin'
+    GROUPTYPE_DEPARTMENTADMIN = 'departmentadmin'
 
     GROUPTYPE_CHOICES = (
         (GROUPTYPE_SUBJECTADMIN, _('Course administrator group')),
         (GROUPTYPE_PERIODADMIN, _('Semester administrator group')),
-        (GROUPTYPE_ADMIN, _('Department administrator group')),
+        (GROUPTYPE_DEPARTMENTADMIN, _('Department administrator group')),
     )
 
     class Meta:
@@ -770,20 +770,9 @@ class PermissionGroup(models.Model):
     #: The name of the group. Must be unique.
     name = models.CharField(
         max_length=255,
-        null=False, blank=True, unique=True,
+        null=False, blank=False, unique=True,
         verbose_name=_('Name'),
         help_text=_('A unique name for this group.'))
-
-    #: Is this group editable? Only superusers can edit the group
-    #: if this is ``False``. Use cases for setting this to ``False``:
-    #:
-    #: - Superusers want to create groups that they have full control over.
-    #: - Groups imported from a third party sync system.
-    editable = models.BooleanField(
-        default=False,
-        verbose_name=_('Editable'),
-        help_text=_('Is this group editable by non-superusers.')
-    )
 
     #: The time this group was created.
     created_datetime = models.DateTimeField(
@@ -817,7 +806,23 @@ class PermissionGroup(models.Model):
         verbose_name=_('Permission group type'),
         help_text=_('Course and semester administrator groups can only be assigned to a single '
                     'course or semester. Department administrator groups can be assigned to multiple '
-                    'courses.')
+                    'courses. You can not change this for existing permission groups.')
+    )
+
+    #: Is this group manageable by normal admins?
+    #:
+    #:  Only superusers can edit the group
+    #: if this is ``False``. Use cases for setting this to ``False``:
+    #:
+    #: - Superusers want to create groups that they have full control over.
+    #: - Groups imported from a third party sync system.
+    #:
+    #: If grouptype is ``departmentadmin``, this can not be ``True``.
+    is_custom_manageable = models.BooleanField(
+        default=False,
+        verbose_name=_('Custom manageable?'),
+        help_text=_('Is this group mageable by non-superusers. Can not be enabled for '
+                    'department administrator groups.')
     )
 
     #: Users belonging to this group.
@@ -829,3 +834,88 @@ class PermissionGroup(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    def clean(self):
+        if self.grouptype == self.GROUPTYPE_DEPARTMENTADMIN and self.is_custom_manageable:
+            raise ValidationError(_('Department administrator groups can not be '
+                                    'custom manageable.'))
+        if self.id is not None:
+            currently_stored_group = PermissionGroup.objects.get(id=self.id)
+            if currently_stored_group.grouptype != self.grouptype:
+                raise ValidationError(_('Permission group type can not be changed.'))
+
+
+class PeriodPermissionGroup(models.Model):
+    """
+    Defines the many-to-many relationship between
+    :class:`devilry.apps.core.Period` and :class:`.PermissionGroup`.
+    """
+    class Meta:
+        verbose_name = _('Semester permission group')
+        verbose_name_plural = _('Semester permission groups')
+        unique_together = (
+            ('permissiongroup', 'period'),
+        )
+
+    #: The group.
+    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup')
+
+    #: The :class:`devilry.apps.core.Period`.
+    period = models.ForeignKey('core.Period')
+
+    def __unicode__(self):
+        return _('Group %(permissiongroup)s assigned to %(period)s') % {
+            'permissiongroup': self.permissiongroup.name,
+            'period': self.period.get_path(),
+        }
+
+    def clean(self):
+        if self.permissiongroup.grouptype != PermissionGroup.GROUPTYPE_PERIODADMIN:
+            raise ValidationError(_(
+                'Only semesters can be added to semester administrator permission groups.'))
+        if self.permissiongroup.is_custom_manageable:
+            queryset = PeriodPermissionGroup.objects\
+                .filter(permissiongroup=self.permissiongroup)
+            if self.id is not None:
+                queryset = queryset.exclude(id=self.id)
+            if queryset.exists():
+                raise ValidationError(_('Only a single editable permission group '
+                                        'is allowed for a semester.'))
+
+
+class SubjectPermissionGroup(models.Model):
+    """
+    Defines the many-to-many relationship between
+    :class:`devilry.apps.core.Subject` and :class:`.PermissionGroup`.
+    """
+    class Meta:
+        verbose_name = _('Semester permission group')
+        verbose_name_plural = _('Semester permission groups')
+        unique_together = (
+            ('permissiongroup', 'subject'),
+        )
+
+    #: The permissiongroup.
+    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup')
+
+    #: The :class:`devilry.apps.core.Subject`.
+    subject = models.ForeignKey('core.Subject')
+
+    def __unicode__(self):
+        return _('Group %(permissiongroup)s assigned to %(subject)s') % {
+            'permissiongroup': self.permissiongroup.name,
+            'subject': self.subject.get_path(),
+        }
+
+    def clean(self):
+        if self.permissiongroup.grouptype != PermissionGroup.GROUPTYPE_SUBJECTADMIN:
+            raise ValidationError(_(
+                'Only courses can be added to course administrator permission groups.'))
+        if self.permissiongroup.is_custom_manageable:
+            queryset = SubjectPermissionGroup.objects\
+                .filter(permissiongroup=self.permissiongroup)
+            if self.id is not None:
+                queryset = queryset.exclude(id=self.id)
+            if queryset.exists():
+                raise ValidationError(_('Only a single editable permission group '
+                                        'is allowed for a course.'))

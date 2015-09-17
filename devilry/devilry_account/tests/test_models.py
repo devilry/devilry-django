@@ -5,7 +5,7 @@ from django.utils import timezone
 from model_mommy import mommy
 
 from devilry.devilry_account.exceptions import IllegalOperationError
-from devilry.devilry_account.models import User, UserEmail, UserName
+from devilry.devilry_account.models import User, UserEmail, UserName, PermissionGroup
 
 
 class TestUser(TestCase):
@@ -530,3 +530,117 @@ class TestUserName(TestCase):
             self.assertEqual(usernameobject.username, 'newname')
             user = User.objects.get(id=user.id)
             self.assertEqual(user.shortname, 'oldname')
+
+
+class TestPermissionGroup(TestCase):
+    def test_grouptype_departmentadmin_can_not_be_editable(self):
+        permissiongroup = mommy.prepare('devilry_account.PermissionGroup',
+                                        is_custom_manageable=True,
+                                        grouptype=PermissionGroup.GROUPTYPE_DEPARTMENTADMIN)
+        with self.assertRaisesMessage(ValidationError, 'Department administrator groups '
+                                                       'can not be custom manageable.'):
+            permissiongroup.clean()
+
+    def test_grouptype_periodadmin_can_be_editable(self):
+        permissiongroup = mommy.prepare('devilry_account.PermissionGroup',
+                                        is_custom_manageable=True,
+                                        grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
+        permissiongroup.clean()  # No ValidationError
+
+    def test_grouptype_subjectadmin_can_be_editable(self):
+        permissiongroup = mommy.prepare('devilry_account.PermissionGroup',
+                                        is_custom_manageable=True,
+                                        grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
+        permissiongroup.clean()  # No ValidationError
+
+    def test_grouptype_can_not_be_changed_for_existing_group(self):
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
+        permissiongroup.grouptype = PermissionGroup.GROUPTYPE_PERIODADMIN
+        with self.assertRaisesMessage(ValidationError, 'Permission group type can not'
+                                                       ' be changed.'):
+            permissiongroup.clean()
+
+
+class TestPeriodPermissionGroup(TestCase):
+    def test_grouptype_must_be_periodadmin(self):
+        periodpermissiongroup = mommy.make(
+            'devilry_account.PeriodPermissionGroup',
+            permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)
+        with self.assertRaisesMessage(ValidationError,
+                                      'Only semesters can be added to semester administrator '
+                                      'permission groups.'):
+            periodpermissiongroup.clean()
+
+    def test_only_single_editable_group_for_each_period_id_none(self):
+        period1 = mommy.make('core.Period')
+        period2 = mommy.make('core.Period')
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
+                                     is_custom_manageable=True)
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   permissiongroup=permissiongroup,
+                   period=period1)
+        with self.assertRaisesMessage(ValidationError, 'Only a single editable permission '
+                                                       'group is allowed for a semester.'):
+            mommy.prepare('devilry_account.PeriodPermissionGroup',
+                          permissiongroup=permissiongroup,
+                          period=period2).clean()
+
+    def test_only_single_editable_group_for_each_period_id_not_none(self):
+        period1 = mommy.make('core.Period')
+        period2 = mommy.make('core.Period')
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
+                                     is_custom_manageable=True)
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   permissiongroup=permissiongroup,
+                   period=period1)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=period2)
+        periodpermissiongroup.permissiongroup = permissiongroup
+        with self.assertRaisesMessage(ValidationError, 'Only a single editable permission '
+                                                       'group is allowed for a semester.'):
+            periodpermissiongroup.clean()
+
+
+class TestSubjectPermissionGroup(TestCase):
+    def test_grouptype_must_be_subjectadmin(self):
+        subjectpermissiongroup = mommy.make(
+            'devilry_account.SubjectPermissionGroup',
+            permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
+        with self.assertRaisesMessage(ValidationError,
+                                      'Only courses can be added to course administrator '
+                                      'permission groups.'):
+            subjectpermissiongroup.clean()
+
+    def test_only_single_editable_group_for_each_subject_id_none(self):
+        subject1 = mommy.make('core.Subject')
+        subject2 = mommy.make('core.Subject')
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                     is_custom_manageable=True)
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   permissiongroup=permissiongroup,
+                   subject=subject1)
+        with self.assertRaisesMessage(ValidationError, 'Only a single editable permission '
+                                                       'group is allowed for a course.'):
+            mommy.prepare('devilry_account.SubjectPermissionGroup',
+                          permissiongroup=permissiongroup,
+                          subject=subject2).clean()
+
+    def test_only_single_editable_group_for_each_subject_id_not_none(self):
+        subject1 = mommy.make('core.Subject')
+        subject2 = mommy.make('core.Subject')
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                     is_custom_manageable=True)
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   permissiongroup=permissiongroup,
+                   subject=subject1)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=subject2)
+        subjectpermissiongroup.permissiongroup = permissiongroup
+        with self.assertRaisesMessage(ValidationError, 'Only a single editable permission '
+                                                       'group is allowed for a course.'):
+            subjectpermissiongroup.clean()

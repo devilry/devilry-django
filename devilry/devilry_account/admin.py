@@ -104,7 +104,7 @@ class PermissionGroupAdmin(admin.ModelAdmin):
     list_display = [
         'id',
         'name',
-        'editable',
+        'is_custom_manageable',
         'created_datetime',
         'updated_datetime',
         'syncsystem_update_datetime',
@@ -117,13 +117,7 @@ class PermissionGroupAdmin(admin.ModelAdmin):
     ]
 
     list_filter = [
-        'editable',
-        'created_datetime',
-        'updated_datetime',
-        'syncsystem_update_datetime',
-    ]
-
-    readonly_fields = [
+        'is_custom_manageable',
         'created_datetime',
         'updated_datetime',
         'syncsystem_update_datetime',
@@ -139,5 +133,14 @@ class PermissionGroupAdmin(admin.ModelAdmin):
         return u', '.join(user.shortname for user in permissiongroup.users.all())
     get_users.short_description = _('Users')
 
+    def get_readonly_fields(self, request, permissiongroup=None):
+        readonly_fields = [
+            'created_datetime',
+            'updated_datetime',
+            'syncsystem_update_datetime',
+        ]
+        if permissiongroup is not None:
+            readonly_fields.append('grouptype')
+        return readonly_fields
 
 admin.site.register(PermissionGroup, PermissionGroupAdmin)
