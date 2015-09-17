@@ -5,7 +5,7 @@ from django.contrib.auth import models as authmodels
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 
-from devilry.devilry_account.models import User, UserEmail, UserName
+from devilry.devilry_account.models import User, UserEmail, UserName, PermissionGroup, PermissionGroupUser
 
 
 class UserEmailInline(admin.StackedInline):
@@ -92,3 +92,52 @@ class DevilryUserAdmin(UserAdmin):
 
 admin.site.unregister(authmodels.Group)
 admin.site.register(User, DevilryUserAdmin)
+
+
+class PermissionGroupUserInline(admin.TabularInline):
+    model = PermissionGroupUser
+    raw_id_fields = ['user']
+    extra = 0
+
+
+class PermissionGroupAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'name',
+        'editable',
+        'created_datetime',
+        'updated_datetime',
+        'syncsystem_update_datetime',
+        'get_users',
+    ]
+
+    search_fields = [
+        'id',
+        'name',
+    ]
+
+    list_filter = [
+        'editable',
+        'created_datetime',
+        'updated_datetime',
+        'syncsystem_update_datetime',
+    ]
+
+    readonly_fields = [
+        'created_datetime',
+        'updated_datetime',
+        'syncsystem_update_datetime',
+    ]
+
+    inlines = [PermissionGroupUserInline]
+
+    def get_queryset(self, request):
+        return super(PermissionGroupAdmin, self).get_queryset(request)\
+            .prefetch_related('users')
+
+    def get_users(self, permissiongroup):
+        return u', '.join(user.shortname for user in permissiongroup.users.all())
+    get_users.short_description = _('Users')
+
+
+admin.site.register(PermissionGroup, PermissionGroupAdmin)

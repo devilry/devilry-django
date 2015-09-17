@@ -739,6 +739,12 @@ class PermissionGroupUser(models.Model):
     #: The user.
     user = models.ForeignKey(User)
 
+    def __unicode__(self):
+        return _('%(user)s in group %(group)s') % {
+            'user': self.user.shortname,
+            'group': self.group.name,
+        }
+
 
 class PermissionGroup(models.Model):
     """
@@ -820,3 +826,6 @@ class PermissionGroup(models.Model):
         to=User,
         verbose_name=_('Users in this group'),
         blank=True)
+
+    def __unicode__(self):
+        return self.name
