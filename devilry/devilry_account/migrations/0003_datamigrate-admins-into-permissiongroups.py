@@ -18,7 +18,8 @@ def datamigrate_admins_into_permissiongroups(apps, schema_editor):
     for subject in subject_model.objects.prefetch_related('admins'):
         permissiongroup = permissiongroup_model(
             name=subject.short_name,
-            is_custom_manageable=True)
+            is_custom_manageable=True,
+            grouptype='subjectadmin')
         permissiongroup.save()
 
         subjectpermissiongroups.append(
@@ -38,7 +39,8 @@ def datamigrate_admins_into_permissiongroups(apps, schema_editor):
         permissiongroup = permissiongroup_model(
             name=u'{}.{}'.format(period.parentnode.short_name,
                                  period.short_name),
-            is_custom_manageable=True)
+            is_custom_manageable=True,
+            grouptype='periodadmin')
         permissiongroup.save()
 
         periodpermissiongroups.append(

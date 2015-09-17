@@ -803,6 +803,7 @@ class PermissionGroup(models.Model):
     grouptype = models.CharField(
         max_length=30,
         choices=GROUPTYPE_CHOICES,
+        null=False, blank=False,
         verbose_name=_('Permission group type'),
         help_text=_('Course and semester administrator groups can only be assigned to a single '
                     'course or semester. Department administrator groups can be assigned to multiple '
