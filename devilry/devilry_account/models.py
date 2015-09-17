@@ -719,3 +719,104 @@ class UserName(AbstractUserIdentity):
             if user.shortname != self.username:
                 user.shortname = self.username
                 user.save()
+
+
+class PermissionGroupUser(models.Model):
+    """
+    Defines the many-to-many relationship between :class:`.User`
+    and :class:`.PermissionGroup`.
+    """
+    class Meta:
+        verbose_name = _('Permission group user')
+        verbose_name_plural = _('Permission group users')
+        unique_together = (
+            ('group', 'user'),
+        )
+
+    #: The group.
+    group = models.ForeignKey('devilry_account.PermissionGroup')
+
+    #: The user.
+    user = models.ForeignKey(User)
+
+
+class PermissionGroup(models.Model):
+    """
+    Permission group data model.
+
+    Each group has a :obj:`~.PermissionGroup.grouptype` which determines
+    the type of objects it can be added to.
+    """
+    GROUPTYPE_SUBJECTADMIN = 'subjectadmin'
+    GROUPTYPE_PERIODADMIN = 'periodadmin'
+    GROUPTYPE_ADMIN = 'departmentadmin'
+
+    GROUPTYPE_CHOICES = (
+        (GROUPTYPE_SUBJECTADMIN, _('Course administrator group')),
+        (GROUPTYPE_PERIODADMIN, _('Semester administrator group')),
+        (GROUPTYPE_ADMIN, _('Department administrator group')),
+    )
+
+    class Meta:
+        verbose_name = _('Permission group')
+        verbose_name_plural = _('Permission group')
+
+    #: The name of the group. Must be unique.
+    name = models.CharField(
+        max_length=255,
+        null=False, blank=True, unique=True,
+        verbose_name=_('Name'),
+        help_text=_('A unique name for this group.'))
+
+    #: Is this group editable? Only superusers can edit the group
+    #: if this is ``False``. Use cases for setting this to ``False``:
+    #:
+    #: - Superusers want to create groups that they have full control over.
+    #: - Groups imported from a third party sync system.
+    editable = models.BooleanField(
+        default=False,
+        verbose_name=_('Editable'),
+        help_text=_('Is this group editable by non-superusers.')
+    )
+
+    #: The time this group was created.
+    created_datetime = models.DateTimeField(
+        null=False, auto_now_add=True,
+        editable=False,
+        verbose_name=_('Created time'),
+        help_text=_('The time when this group was created.'))
+
+    #: Last time this group was updated.
+    updated_datetime = models.DateTimeField(
+        null=False, auto_now=True,
+        editable=False,
+        verbose_name=_('Last updated time'),
+        help_text=_('The time when this group last updated.'))
+
+    #: Last time this group was updated from a third party sync system.
+    syncsystem_update_datetime = models.DateTimeField(
+        null=True,
+        editable=False,
+        verbose_name=_('Last updated from syncsystem time'),
+        help_text=_('The time when this group last updated from a third party sync system.'))
+
+    #: The grouptype determines what kind of object a group can be added to:
+    #:
+    #: - ``subjectadmin``: Can be assigned to **a single** :class:`devilry.apps.core.models.Subject`.
+    #: - ``periodadmin``: Can be assigned to **a single** :class:`devilry.apps.core.models.Period`.
+    #: - ``departmentadmin``: Can be assigned to multiple :class:`devilry.apps.core.models.Subject`.
+    grouptype = models.CharField(
+        max_length=30,
+        choices=GROUPTYPE_CHOICES,
+        verbose_name=_('Permission group type'),
+        help_text=_('Course and semester administrator groups can only be assigned to a single '
+                    'course or semester. Department administrator groups can be assigned to multiple '
+                    'courses.')
+    )
+
+    #: Users belonging to this group.
+    users = models.ManyToManyField(
+        through=PermissionGroupUser,
+        to=User,
+        verbose_name=_('Users in this group'),
+        blank=True)
