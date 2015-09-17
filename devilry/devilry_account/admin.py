@@ -105,18 +105,21 @@ class PermissionGroupAdmin(admin.ModelAdmin):
         'id',
         'name',
         'is_custom_manageable',
+        'grouptype',
+        'get_users',
         'created_datetime',
         'updated_datetime',
         'syncsystem_update_datetime',
-        'get_users',
     ]
 
     search_fields = [
         'id',
         'name',
+        'grouptype',
     ]
 
     list_filter = [
+        'grouptype',
         'is_custom_manageable',
         'created_datetime',
         'updated_datetime',
