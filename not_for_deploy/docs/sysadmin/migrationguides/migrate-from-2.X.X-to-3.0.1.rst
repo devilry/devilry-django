@@ -39,3 +39,9 @@ Migrate the database for 3.0.1
 
     $ cd ~/devilrydeploy/
     $ venv/bin/python manage.py migrate --fake-initial --noinput
+
+
+Add missing permissions
+#######################
+TODO - must include information about departments administrators
+and assignment administrators.
