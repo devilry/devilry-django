@@ -730,19 +730,19 @@ class PermissionGroupUser(models.Model):
         verbose_name = _('Permission group user')
         verbose_name_plural = _('Permission group users')
         unique_together = (
-            ('group', 'user'),
+            ('permissiongroup', 'user'),
         )
 
     #: The group.
-    group = models.ForeignKey('devilry_account.PermissionGroup')
+    permissiongroup = models.ForeignKey('devilry_account.PermissionGroup')
 
     #: The user.
     user = models.ForeignKey(User)
 
     def __unicode__(self):
-        return _('%(user)s in group %(group)s') % {
+        return _('%(user)s in group %(permissiongroup)s') % {
             'user': self.user.shortname,
-            'group': self.group.name,
+            'permissiongroup': self.permissiongroup.name,
         }
 
 

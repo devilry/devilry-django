@@ -44,7 +44,7 @@ class Migration(migrations.Migration):
             name='PermissionGroupUser',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('group', models.ForeignKey(to='devilry_account.PermissionGroup')),
+                ('permissiongroup', models.ForeignKey(to='devilry_account.PermissionGroup')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='permissiongroupuser',
-            unique_together=set([('group', 'user')]),
+            unique_together=set([('permissiongroup', 'user')]),
         ),
         migrations.AlterUniqueTogether(
             name='periodpermissiongroup',
