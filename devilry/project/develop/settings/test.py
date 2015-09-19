@@ -31,14 +31,17 @@ SKIP_SELENIUMTESTS = True
 # SELENIUM_DEFAULT_TIMEOUT = 20
 
 
-# Disable migrations when running tests
+# Disable migrations except custom test-only migrations when running tests
 class DisableMigrations(object):
+    apps_with_test_migrations = {
+        # 'devilry_account': 'devilry.devilry_account.testmigrations',
+    }
 
-    def __contains__(self, item):
+    def __contains__(self, key):
         return True
 
-    def __getitem__(self, item):
-        return "notmigrations"
+    def __getitem__(self, key):
+        return self.apps_with_test_migrations.get(key, 'notmigrations')
 
 MIGRATION_MODULES = DisableMigrations()
 
