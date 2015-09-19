@@ -15,6 +15,38 @@
 
 {% block content %}
     <div class="container">
-        TODO
+        {% if periods_where_user_is_subjectadmin_or_periodadmin %}
+            <div id="devilry_admin_dashboard_periods_where_user_is_subjectadmin_or_periodadmin">
+                <h2>
+                    {% trans "Your active semesters" %}
+                </h2>
+                <ul>
+                    {% for period in periods_where_user_is_subjectadmin_or_periodadmin %}
+                        <li>
+                            <a href="#">
+                                {{ period.subject.long_name }} {{ period.long_name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        {% if subjects_where_user_is_subjectadmin %}
+            <div id="devilry_admin_dashboard_subjects_where_user_is_subjectadmin">
+                <h2>
+                    {% trans "Your courses" %}
+                </h2>
+                <ul>
+                    {% for subject in subjects_where_user_is_subjectadmin %}
+                        <li>
+                            <a href="#">
+                                {{ subject.long_name }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
     </div>
 {% endblock content %}
