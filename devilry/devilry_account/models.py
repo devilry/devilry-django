@@ -666,6 +666,12 @@ class UserEmail(AbstractUserIdentity):
                     user.shortname = self.email
                     user.save()
 
+    def __unicode__(self):
+        return _('%(email)s - User%(userid)s') % {
+            'email': self.email,
+            'userid': self.user_id
+        }
+
 
 class UserName(AbstractUserIdentity):
 
@@ -719,6 +725,12 @@ class UserName(AbstractUserIdentity):
             if user.shortname != self.username:
                 user.shortname = self.username
                 user.save()
+
+    def __unicode__(self):
+        return _('%(username)s - User%(userid)s') % {
+            'username': self.username,
+            'userid': self.user_id
+        }
 
 
 class PermissionGroupUser(models.Model):
