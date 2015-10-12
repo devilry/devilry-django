@@ -150,7 +150,8 @@ class TestFeedbackFeedMixin(object):
         # not expired with Assignment.first_deadline set
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
-        group_builder = AssignmentGroupBuilder.make(assignment__first_deadline=DateTimeBuilder.now().plus(days=1))
+        group_builder = AssignmentGroupBuilder.make(
+            assignment__first_deadline=DateTimeBuilder.now().plus(days=1))
 
         selector, request = self.__mock_http200_getrequest_htmls(role=group_builder.get_object(),
                                                                  requestuser=requestuser,
@@ -160,13 +161,12 @@ class TestFeedbackFeedMixin(object):
     def test_get_feedbackfeed_header_with_assignment_first_deadline_expired(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
-        groupcomment_builder = GroupCommentBuilder.make(
-            feedback_set__deadline_datetime=DateTimeBuilder.now().minus(days=1))
+        group_builder = AssignmentGroupBuilder.make(
+            assignment__first_deadline=DateTimeBuilder.now().minus(days=1))
 
-        selector, request = self.__mock_http200_getrequest_htmls(
-            role=groupcomment_builder.get_object().feedback_set.group,
-            requestuser=requestuser,
-            group=janedoe)
+        selector, request = self.__mock_http200_getrequest_htmls(role=group_builder.get_object(),
+                                                                 requestuser=requestuser,
+                                                                 group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
 
     def test_get_feedbackfeed_header_with_feedbackset_deadline_datetime_not_expired(self):
