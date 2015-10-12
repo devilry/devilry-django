@@ -128,7 +128,6 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertEquals(name, johndoe.fullname)
 
     def test_get_feedbackfeed_student_can_see_admin_comment(self):
-        requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         admin = UserBuilder2(fullname='John Doe').user
         time = timezone.now()
@@ -150,7 +149,6 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-admin'))
 
     def test_get_feedbackfeed_student_can_see_examiner_comment_visible_to_students_true(self):
-        requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         examiner = UserBuilder2(fullname='John Doe').user
         time = timezone.now()
@@ -172,7 +170,6 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
 
     def test_get_feedbackfeed_student_can_not_see_examiner_comment_visible_to_students_false(self):
-        requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         examiner = UserBuilder2(fullname='John Doe').user
         time = timezone.now()
