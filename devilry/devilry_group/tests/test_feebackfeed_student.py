@@ -2,6 +2,7 @@ from django.test import TestCase, RequestFactory
 from django.utils import timezone
 import htmls
 import mock
+from model_mommy import mommy
 
 from devilry.devilry_group.tests import test_feedbackfeed_common
 from devilry.devilry_group.views import feedbackfeed_student
@@ -11,43 +12,11 @@ from devilry.project.develop.testhelpers.corebuilder import UserBuilder2, Assign
 class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
-    def __mock_request(self, method, role, requestuser, group,
-                       messagesmock=None):
-        request = getattr(RequestFactory(), method)('/')
-        request.user = requestuser
-        request.cradmin_role = role
-        request.cradmin_app = mock.MagicMock()
-        request.cradmin_instance = mock.MagicMock()
-        request.session = mock.MagicMock()
-        if messagesmock:
-            request._messages = messagesmock
-        else:
-            request._messages = mock.MagicMock()
-        response = self.viewclass.as_view()(request, pk=group.pk)
-        return response, request
-
-    def __mock_http200_getrequest_htmls(self, role, requestuser, group):
-        response, request = self.__mock_request(method='get',
-                                                role=role,
-                                                requestuser=requestuser,
-                                                group=group)
-        self.assertEqual(response.status_code, 200)
-        response.render()
-        selector = htmls.S(response.content)
-        return selector, request
-
-    def __mock_postrequest(self, role, requestuser, group, messagesmock=None):
-        return self.__mock_request(method='post',
-                                   role=role,
-                                   requestuser=requestuser,
-                                   group=group,
-                                   messagesmock=messagesmock)
-
     def test_get(self):
         requestuser = UserBuilder2().user
         janedoe = UserBuilder2(fullname='Jane Doe').user
         group_builder = AssignmentGroupBuilder.make()
-        selector, request = self.__mock_http200_getrequest_htmls(role=group_builder.get_object(),
+        selector, request = self._mock_http200_getrequest_htmls(role=group_builder.get_object(),
                                                                  requestuser=requestuser,
                                                                  group=janedoe)
         self.assertEqual(selector.one('title').alltext_normalized,
@@ -69,7 +38,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             text="hello world",
             published_datetime=timezone.now()+timezone.timedelta(seconds=1)
         )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+        selector, request = self._mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
                                                                  requestuser=requestuser,
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.after-deadline-badge'))
@@ -90,7 +59,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             text="hello world",
             published_datetime=timezone.now()-timezone.timedelta(seconds=1)
         )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+        selector, request = self._mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
                                                                  requestuser=requestuser,
                                                                  group=janedoe)
         self.assertFalse(selector.exists('.after-deadline-badge'))
@@ -100,7 +69,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         janedoe = UserBuilder2(fullname='Jane Doe').user
         feedbackset_builder = FeedbackSetBuilder.make(
         )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+        selector, request = self._mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
                                                                  requestuser=requestuser,
                                                                  group=janedoe)
         self.assertTrue(selector.exists('#submit-id-student_add_comment'))
@@ -121,7 +90,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             text="hello world",
             published_datetime=timezone.now()
         )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+        selector, request = self._mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
                                                                  requestuser=janedoe,
                                                                  group=janedoe)
         name = selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
@@ -143,7 +112,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             text="hello world",
             published_datetime=timezone.now()
         )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+        selector, request = self._mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
                                                                  requestuser=janedoe,
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-admin'))
@@ -164,7 +133,7 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             text="hello world",
             published_datetime=timezone.now()
         )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+        selector, request = self._mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
                                                                  requestuser=janedoe,
                                                                  group=janedoe)
         self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
@@ -185,7 +154,15 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             text="hello world",
             published_datetime=timezone.now()
         )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
+        selector, request = self._mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
                                                                  requestuser=janedoe,
                                                                  group=janedoe)
         self.assertFalse(selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
+
+    def test_post(self):
+        janedoe = UserBuilder2(fullname='Jane Doe').user
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment_group = mommy.make('core.AssignmentGroup')
+        response, request = self._mock_postrequest(role=assignment_group, requestuser=janedoe, group=janedoe)
+
+        self.assertEquals(response.status_code, 200)
