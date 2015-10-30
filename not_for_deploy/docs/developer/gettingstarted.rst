@@ -89,11 +89,11 @@ First, make sure you are in the ``devilry-django`` virtualenv::
 
 You can create a fairly full featured demo database with::
 
-    $ fab autodb
-
-... or you can create a much more minimalistic demo database with::
-
     $ fab demodb
+
+... or you can create a much more full featured demo database with::
+
+    $ fab autodb
 
 ... or you can create an empty database with::
 
