@@ -9,13 +9,24 @@ Check out from GIT
 
 If you plan to develop devilry, you should fork the devilry-django repo,
 changes to your own repo and request inclusion to the master repo using
-github pull requests. If you are just trying out Devilry, use::
+github pull requests.
+
+
+If you are just trying out Devilry, use
+=======================================
+::
 
     $ git clone https://github.com/devilry/devilry-django.git
 
+If you are part of the Devilry team on GitHub, use
+==================================================
+::
+
+    $ git clone git@github.com:devilry/devilry-django.git
+
+
 The ``master`` branch, which git checks out by default, is usually the
-latest semi-stable development version. The latest stable version is in
-the ``latest-stable`` branch.
+latest semi-stable development version.
 
 
 *********************************
