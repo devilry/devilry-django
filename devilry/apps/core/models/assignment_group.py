@@ -403,7 +403,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(
-        max_length=30, blank=True, null=True,
+        max_length=30, blank=True, null=False, default='',
         help_text='An optional name for the group. Typically used a project '
                   'name on project assignments.')
     is_open = models.BooleanField(
