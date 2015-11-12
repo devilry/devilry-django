@@ -68,7 +68,7 @@ Ubuntu Linux
 
 Setup the development virtualenv
 ================================
-::
+Setup a **Python 2.7** virtualenv::
 
     $ mkvirtualenv devilry-django
     $ pip install -r requirements/development.txt
