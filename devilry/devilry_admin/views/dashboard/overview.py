@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.views.generic import TemplateView
 from django_cradmin import crapp
 
-from devilry.devilry_account.models import SubjectPermissionGroup, PeriodPermissionGroup
+from devilry.devilry_account.models import SubjectPermissionGroup, PeriodPermissionGroup, PermissionGroup
 
 
 class Overview(TemplateView):
@@ -14,7 +14,8 @@ class Overview(TemplateView):
         if not hasattr(self, '_subjects_where_user_is_subjectadmin'):
             subjects = []
             for subjectpermissiongroup in SubjectPermissionGroup.objects\
-                    .filter(permissiongroup__users=self.request.user)\
+                    .filter(permissiongroup__users=self.request.user,
+                            permissiongroup__grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN)\
                     .select_related('subject')\
                     .order_by('subject__long_name')\
                     .distinct():
@@ -36,7 +37,7 @@ class Overview(TemplateView):
                     models.Q(period__parentnode__in=subjects_where_user_is_subjectadmin)
                 )\
                 .select_related('period', 'period__parentnode')\
-                .order_by('period__parentnode__long_name', 'period__start_time')\
+                .order_by('period__parentnode__long_name', '-period__start_time')\
                 .distinct():
             periods.append(periodpermissiongroup.period)
         return periods
