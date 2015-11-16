@@ -9,13 +9,24 @@ Check out from GIT
 
 If you plan to develop devilry, you should fork the devilry-django repo,
 changes to your own repo and request inclusion to the master repo using
-github pull requests. If you are just trying out Devilry, use::
+github pull requests.
+
+
+If you are just trying out Devilry, use
+=======================================
+::
 
     $ git clone https://github.com/devilry/devilry-django.git
 
+If you are part of the Devilry team on GitHub, use
+==================================================
+::
+
+    $ git clone git@github.com:devilry/devilry-django.git
+
+
 The ``master`` branch, which git checks out by default, is usually the
-latest semi-stable development version. The latest stable version is in
-the ``latest-stable`` branch.
+latest semi-stable development version.
 
 
 *********************************
@@ -68,8 +79,9 @@ Ubuntu Linux
 
 Setup the development virtualenv
 ================================
-::
+Setup a **Python 2.7** virtualenv::
 
+    $ cd devilry-django
     $ mkvirtualenv devilry-django
     $ pip install -r requirements/development.txt
 
@@ -89,11 +101,11 @@ First, make sure you are in the ``devilry-django`` virtualenv::
 
 You can create a fairly full featured demo database with::
 
-    $ fab autodb
-
-... or you can create a much more minimalistic demo database with::
-
     $ fab demodb
+
+... or you can create a much more full featured demo database with::
+
+    $ fab autodb
 
 ... or you can create an empty database with::
 
