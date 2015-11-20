@@ -1,0 +1,45 @@
+{% load i18n %}
+{% load devilry_theme2_tags %}
+
+<h3 class="devilry-admin-assignmentgroup-listbuilder-candidate-fullnames">
+    {% if me.candidateinfo_list %}
+        {% for candidateinfo in me.candidateinfo_list %}
+            {{ candidateinfo.fullname }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    {% else %}
+        <span class="text-danger">
+            {{ me.get_fallback_name }}
+        </span>
+    {% endif %}
+</h3>
+
+{% if me.has_name %}
+    <p class="devilry-admin-assignmentgroup-listbuilder-name">
+        {{ me.get_name }}
+    </p>
+{% endif %}
+
+{% if me.candidateinfo_list %}
+    <p class="devilry-admin-assignmentgroup-listbuilder-candidate-shortnames">
+        {% for candidateinfo in me.candidateinfo_list %}
+            {{ candidateinfo.shortname }}{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    </p>
+{% endif %}
+
+<p class="devilry-admin-assignmentgroup-listbuilder-examiners">
+    {% if me.examinerinfo_list %}
+        <span class="devilry-admin-assignmentgroup-listbuilder-examiners-label">
+            {% trans "Examiners" %}:
+        </span>
+        <span class="devilry-admin-assignmentgroup-listbuilder-examiners-list">
+            {% for examinerinfo in me.examinerinfo_list %}
+                {% devilry_user_verbose_inline examinerinfo %}{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        </span>
+    {% else %}
+        <span class="text-warning">
+            {% trans "No examiner(s)" %}
+        </span>
+    {% endif %}
+</p>
