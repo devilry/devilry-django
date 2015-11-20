@@ -55,6 +55,15 @@
             </div>
         </div>
     </div>
+
+
+
+    {# remove later, just shortcut for setup form #}
+    {% if devilry_ui_role == 'admin' %}
+{#        <a href="{% url 'devilry-gradeform-setup' %}">Setup form</a>#}
+    {% endif %}
+
+
 {% endblock pageheader-inner %}
 
 {% block content %}

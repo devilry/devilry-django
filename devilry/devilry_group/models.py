@@ -28,7 +28,13 @@ class FeedbackSet(models.Model):
     visible once the feedbackset is published.
     All student-comments will be `instant_publish=True`, and the same applies to comments made by examiners that
     are not a part of feedback.
+
+    .. attribute:: gradeform_json
+
+        A django.db.models.TextField_ for a gradeform filled or not filled for
+        'FeedbackSet_'
     """
+    gradeform_json = models.TextField(blank=True, null=True)
     group = models.ForeignKey(assignment_group.AssignmentGroup)
     points = models.PositiveIntegerField()
     published_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="published_feedbacksets")
