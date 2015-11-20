@@ -28,12 +28,38 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         view.request = mockrequest
         return view
 
+    def __minimal_mockrequest_with_user_and_subjectpermissiongroup(self, user, subjectpermissiongroup):
+        mockrequest = RequestFactory().get('')
+        mockrequest.user = user
+        mockrequest.subjectpermissiongroup = subjectpermissiongroup
+        view = overview.Overview()
+        view.request = mockrequest
+        return view
+
+    def __minimal_mockrequest_with_user_and_periodpermissiongroup(self, user, periodpermissiongroup):
+        mockrequest = RequestFactory().get('')
+        mockrequest.user = user
+        mockrequest.periodpermissiongroup = periodpermissiongroup
+        view = overview.Overview()
+        view.request = mockrequest
+        return view
+
+    def __minimal_mockrequest_with_user_subjectpermissiongroup_and_periodpermissiongroup(
+            self, user, subjectpermissiongroup, periodpermissiongroup):
+        mockrequest = RequestFactory().get('')
+        mockrequest.user = user
+        mockrequest.subjectpermissiongroup = subjectpermissiongroup
+        mockrequest.periodpermissiongroup = periodpermissiongroup
+        view = overview.Overview()
+        view.request = mockrequest
+        return view
+
     def test__get_all_subjects_where_user_is_subjectadmin_none(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
             [],
-            view._Overview__get_all_subjects_where_user_is_subjectadmin())
+              view._Overview__get_all_subjects_where_user_is_subjectadmin())
 
     def test__get_all_subjects_where_user_is_subjectadmin_not_subjectadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -44,4 +70,216 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
             [],
+              view._Overview__get_all_subjects_where_user_is_subjectadmin())
+
+    def test__get_all_subjects_where_user_is_subjectadmin_one_subjectadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                     users=[testuser])
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            permissiongroup=permissiongroup,
+                                            subject=testsubject)
+        view = self.__minimal_mockrequest_with_user_and_subjectpermissiongroup(
+            user=testuser, subjectpermissiongroup=subjectpermissiongroup)
+        self.assertEqual(
+            [testsubject],
             view._Overview__get_all_subjects_where_user_is_subjectadmin())
+
+    def test__get_all_subjects_where_user_is_subjectadmin_several_subjectadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject1 = mommy.make('core.Subject')
+        testsubject2 = mommy.make('core.Subject')
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                     users=[testuser])
+        subjectpermissiongroup1 = mommy.make('devilry_account.SubjectPermissionGroup',
+                                             subject=testsubject1)
+        subjectpermissiongroup2 = mommy.make('devilry_account.SubjectPermissionGroup',
+                                             permissiongroup=permissiongroup,
+                                             subject=testsubject2)
+        view = self.__minimal_mockrequest_with_user_and_subjectpermissiongroup(
+            user=testuser, subjectpermissiongroup=[
+                subjectpermissiongroup1,
+                subjectpermissiongroup2])
+        self.assertItemsEqual(
+            [testsubject2],
+            view._Overview__get_all_subjects_where_user_is_subjectadmin())
+
+    def test__get_all_subjects_where_user_is_subjectadmin_ordered_subjectadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject1 = mommy.make('core.Subject', long_name="Course A")
+        testsubject2 = mommy.make('core.Subject', long_name="Course B")
+        testsubject3 = mommy.make('core.Subject', long_name="Course C")
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                     users=[testuser])
+        subjectpermissiongroup1 = mommy.make('devilry_account.SubjectPermissionGroup',
+                                             permissiongroup=permissiongroup,
+                                             subject=testsubject1)
+        subjectpermissiongroup2 = mommy.make('devilry_account.SubjectPermissionGroup',
+                                             permissiongroup=permissiongroup,
+                                             subject=testsubject2)
+        subjectpermissiongroup3 = mommy.make('devilry_account.SubjectPermissionGroup',
+                                             permissiongroup=permissiongroup,
+                                             subject=testsubject3)
+        view = self.__minimal_mockrequest_with_user_and_subjectpermissiongroup(
+            user=testuser, subjectpermissiongroup=[
+                subjectpermissiongroup1,
+                subjectpermissiongroup2,
+                subjectpermissiongroup3])
+        self.assertEqual(
+            [testsubject1, testsubject2, testsubject3],
+            view._Overview__get_all_subjects_where_user_is_subjectadmin())
+
+    def test__get_all_periods_where_user_is_subjectadmin_or_periodadmin_none(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        view = self.__minimal_mockrequest_with_user(user=testuser)
+        self.assertEqual(
+            [],
+              view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+        )
+
+    def test__get_all_periods_where_user_is_subjectadmin_or_periodadmin_not_periodadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
+        mommy.make('devilry_account.PeriodPermissionGroup',
+                   permissiongroup=permissiongroup)
+        view = self.__minimal_mockrequest_with_user(user=testuser)
+        self.assertEqual(
+            [],
+              view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+        )
+
+    def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__one_periodadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
+                                     users=[testuser])
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           permissiongroup=permissiongroup,
+                                           period=testperiod)
+        view = self.__minimal_mockrequest_with_user_and_periodpermissiongroup(
+            user=testuser, periodpermissiongroup=periodpermissiongroup
+        )
+        self.assertEqual(
+            [[testperiod]],
+            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+        )
+
+    def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__several_periodadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod1 = mommy.make('core.Period')
+        testperiod2 = mommy.make('core.Period')
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
+                                     users=[testuser])
+        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            permissiongroup=permissiongroup,
+                                            period=testperiod1)
+        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            period=testperiod2)
+        view = self.__minimal_mockrequest_with_user_and_periodpermissiongroup(
+            user=testuser,
+            periodpermissiongroup=[periodpermissiongroup1, periodpermissiongroup2]
+        )
+        self.assertEqual(
+            [[testperiod1]],
+            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+        )
+
+    def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__ordered_periodadmin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod1 = mommy.make('core.Period', short_name="Period A")
+        testperiod2 = mommy.make('core.Period', short_name="Period C")
+        testperiod3 = mommy.make('core.Period', short_name="Period B")
+        permissiongroup = mommy.make('devilry_account.PermissionGroup',
+                                     grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
+                                     users=[testuser])
+        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            permissiongroup=permissiongroup,
+                                            period=testperiod1)
+        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            permissiongroup=permissiongroup,
+                                            period=testperiod2)
+        periodpermissiongroup3 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            permissiongroup=permissiongroup,
+                                            period=testperiod3)
+        view = self.__minimal_mockrequest_with_user_and_periodpermissiongroup(
+            user=testuser,
+            periodpermissiongroup=[periodpermissiongroup1, periodpermissiongroup2, periodpermissiongroup3]
+        )
+        self.assertEqual(
+            [[testperiod1], [testperiod3], [testperiod2]],
+            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+        )
+
+    def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__both(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod1 = mommy.make('core.Period')
+        testperiod2 = mommy.make('core.Period')
+        testsubject = mommy.make('core.Subject')
+        testperiod3 = mommy.make('core.Period', parentnode=testsubject)
+        permissiongroup1 = mommy.make('devilry_account.PermissionGroup',
+                                      grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
+                                      users=[testuser])
+        permissiongroup2 = mommy.make('devilry_account.PermissionGroup',
+                                      grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                      users=[testuser])
+        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            permissiongroup=permissiongroup1,
+                                            period=testperiod1)
+        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            permissiongroup=permissiongroup1,
+                                            period=testperiod2)
+        periodpermissiongroup3 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            period=testperiod3)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            permissiongroup=permissiongroup2,
+                                            subject=testsubject)
+        view = self.__minimal_mockrequest_with_user_subjectpermissiongroup_and_periodpermissiongroup(
+            user=testuser,
+            subjectpermissiongroup=subjectpermissiongroup,
+            periodpermissiongroup=[periodpermissiongroup1, periodpermissiongroup2, periodpermissiongroup3]
+        )
+        self.assertItemsEqual(
+            [[testperiod2], [testperiod1], [testperiod3]],
+            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+        )
+
+    def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__both_ordered(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject1 = mommy.make('core.Subject', long_name="Course A")
+        testsubject2 = mommy.make('core.Subject', long_name="Course B")
+        testperiod1 = mommy.make('core.Period', short_name="Semester 2", parentnode=testsubject1)
+        testperiod2 = mommy.make('core.Period', short_name="Semester 1", parentnode=testsubject2)
+        testperiod3 = mommy.make('core.Period', short_name="Semester 1", parentnode=testsubject1)
+        permissiongroup1 = mommy.make('devilry_account.PermissionGroup',
+                                      grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN,
+                                      users=[testuser])
+        permissiongroup2 = mommy.make('devilry_account.PermissionGroup',
+                                      grouptype=PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                      users=[testuser])
+        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            permissiongroup=permissiongroup1,
+                                            period=testperiod1)
+        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            permissiongroup=permissiongroup1,
+                                            period=testperiod2)
+        periodpermissiongroup3 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            period=testperiod3)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            permissiongroup=permissiongroup2,
+                                            subject=testsubject1)
+        view = self.__minimal_mockrequest_with_user_subjectpermissiongroup_and_periodpermissiongroup(
+            user=testuser,
+            subjectpermissiongroup=subjectpermissiongroup,
+            periodpermissiongroup=[periodpermissiongroup1, periodpermissiongroup2, periodpermissiongroup3]
+        )
+        self.assertItemsEqual(
+            [[testperiod3, testperiod2], [testperiod1]],
+            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+        )

@@ -6,6 +6,7 @@ from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.utils.translation import ugettext_lazy as _
 
 from devilry.devilry_account.models import User, UserEmail, UserName, PermissionGroup, PermissionGroupUser
+from devilry.devilry_account.models import SubjectPermissionGroup, PeriodPermissionGroup
 
 
 class UserEmailInline(admin.StackedInline):
@@ -147,3 +148,43 @@ class PermissionGroupAdmin(admin.ModelAdmin):
         return readonly_fields
 
 admin.site.register(PermissionGroup, PermissionGroupAdmin)
+
+
+class SubjectPermissionGroupAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'permissiongroup',
+        'subject',
+    ]
+
+    search_fields = [
+        'id',
+        'permissiongroup',
+        'subject',
+    ]
+
+    list_filter = [
+        'permissiongroup',
+        'subject',
+    ]
+admin.site.register(SubjectPermissionGroup, SubjectPermissionGroupAdmin)
+
+
+class PeriodPermissionGroupAdmin(admin.ModelAdmin):
+    list_display = [
+        'id',
+        'permissiongroup',
+        'period',
+    ]
+
+    search_fields = [
+        'id',
+        'permissiongroup',
+        'period',
+    ]
+
+    list_filter = [
+        'permissiongroup',
+        'period',
+    ]
+admin.site.register(PeriodPermissionGroup, PeriodPermissionGroupAdmin)

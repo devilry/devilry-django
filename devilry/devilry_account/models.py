@@ -864,8 +864,8 @@ class PeriodPermissionGroup(models.Model):
     :class:`devilry.apps.core.Period` and :class:`.PermissionGroup`.
     """
     class Meta:
-        verbose_name = _('Semester permission group')
-        verbose_name_plural = _('Semester permission groups')
+        verbose_name = _('Period permission group')
+        verbose_name_plural = _('Period permission groups')
         unique_together = (
             ('permissiongroup', 'period'),
         )
@@ -902,8 +902,8 @@ class SubjectPermissionGroup(models.Model):
     :class:`devilry.apps.core.Subject` and :class:`.PermissionGroup`.
     """
     class Meta:
-        verbose_name = _('Semester permission group')
-        verbose_name_plural = _('Semester permission groups')
+        verbose_name = _('Subject permission group')
+        verbose_name_plural = _('Subject permission groups')
         unique_together = (
             ('permissiongroup', 'subject'),
         )

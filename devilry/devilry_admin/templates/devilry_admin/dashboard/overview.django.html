@@ -1,52 +1,72 @@
 {% extends "django_cradmin/base.django.html" %}
 {% load static %}
 {% load i18n %}
+{% load cradmin_tags %}
 
 
 {% block title %}
-    {% trans "Administrator dashboard" %}
+{% trans "Administrator dashboard" %}
 {% endblock title %}
 
 {% block pageheader-inner %}
-    <h1>
-        {% trans "Administrator dashboard" %}
-    </h1>
+<h1>
+    {% trans "Administrator dashboard" %}
+</h1>
 {% endblock pageheader-inner %}
 
 {% block content %}
-    <div class="container">
-        {% if periods_where_user_is_subjectadmin_or_periodadmin %}
-            <div id="devilry_admin_dashboard_periods_where_user_is_subjectadmin_or_periodadmin">
-                <h2>
-                    {% trans "Your active semesters" %}
-                </h2>
-                <ul>
-                    {% for period in periods_where_user_is_subjectadmin_or_periodadmin %}
-                        <li>
-                            <a href="#">
-                                {{ period.subject.long_name }} {{ period.long_name }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+<div class="container">
+    {% if periods_where_user_is_subjectadmin_or_periodadmin %}
+    <div id="devilry_admin_dashboard_periods_where_user_is_subjectadmin_or_periodadmin">
+        <h2>
+            {% trans "Your active semesters" %}
+        </h2>
 
-        {% if subjects_where_user_is_subjectadmin %}
-            <div id="devilry_admin_dashboard_subjects_where_user_is_subjectadmin">
-                <h2>
-                    {% trans "Your courses" %}
-                </h2>
-                <ul>
-                    {% for subject in subjects_where_user_is_subjectadmin %}
-                        <li>
-                            <a href="#">
-                                {{ subject.long_name }}
-                            </a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+        {% for group in periods_where_user_is_subjectadmin_or_periodadmin %}
+        <h4>{{ group.0.long_name }}</h4>
+
+        <ul>
+            {% for period in group %}
+            <li>
+                <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='overview' roleid=period.id viewname='INDEX' %}"
+                                    class="devilry-admin-dashboard-overview-period-link">
+                    {{ period.subject.long_name }}
+                </a>
+                <br>{{ period.assignments.count }}
+                {% blocktrans trimmed count counter=period.assignments.count %}
+                    assignment
+                {% plural %}
+                    assignments
+                {% endblocktrans %},
+                {{ period.relatedstudent_set.count }}
+                {% blocktrans trimmed count counter=period.relatedstudent_set.count %}
+                    student
+                {% plural %}
+                    students
+                {% endblocktrans %}.
+            </li>
+            {% endfor %}
+        </ul>
+        {% endfor %}
     </div>
+    {% endif %}
+
+    {% if subjects_where_user_is_subjectadmin %}
+    <div id="devilry_admin_dashboard_subjects_where_user_is_subjectadmin">
+        <h2>
+            {% trans "Your courses" %}
+        </h2>
+        <ul>
+            {% for subject in subjects_where_user_is_subjectadmin %}
+            <li>
+                <a href="{% cradmin_url instanceid='devilry_admin_subjectadmin' appname='overview' roleid=subject.id viewname='INDEX' %}"
+                                    class="devilry-admin-dashboard-overview-subject-link">
+                    {{ subject.long_name }}
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
 {% endblock content %}
