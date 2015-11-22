@@ -8,6 +8,7 @@ from devilry.devilry_admin.views.period import students
 from devilry.devilry_admin.views.period import examiners
 from devilry.devilry_admin.views.period import admins
 from devilry.devilry_admin.views.period import createassignment
+from devilry.devilry_admin.views.period import qualifiedforfinalexams
 
 
 class Menu(crmenu.Menu):
@@ -21,6 +22,10 @@ class Menu(crmenu.Menu):
             label=_('Students'),
             active=self.request.cradmin_app.appname == 'students',
             url=self.appindex_url('students'))
+        self.add_menuitem(
+            label=_('Qualified for final exams'),
+            active=self.request.cradmin_app.appname == 'qualifiedforfinalexams',
+            url=self.appindex_url('qualifiedforfinalexams'))
         self.add_menuitem(
             label=_('Examiners'),
             active=self.request.cradmin_app.appname == 'examiners',
@@ -40,6 +45,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
         ('examiners', examiners.App),
         ('admins', admins.App),
         ('createassignment', createassignment.App),
+        ('qualifiedforfinalexams', qualifiedforfinalexams.App),
     ]
     id = 'devilry_admin_periodadmin'
     rolefrontpage_appname = 'overview'

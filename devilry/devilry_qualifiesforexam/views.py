@@ -16,8 +16,6 @@
 #     title = _('Devilry - Qualifies for final exam')
 #
 #
-#
-#
 # class StatusPrintViewForm(forms.Form):
 #     sortby = forms.ChoiceField(
 #             label=_('Sort by'),
