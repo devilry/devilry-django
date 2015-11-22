@@ -3,6 +3,21 @@ from django_cradmin.viewhelpers import listbuilder
 
 
 class Value(listbuilder.base.ItemValueRenderer):
+    """
+    Renders information about an AssignmentGroup.
+
+    It does not render a link - that is left up to the ItemFrameRenderer.
+
+    The queryset used to render these values must use::
+
+        prefetch_related(Prefetch(
+            models.Prefetch('candidates',
+                            queryset=Candidate.objects.select_related('student', 'relatedstudent'),
+                            to_attr='candidates'),
+            models.Prefetch('examiners',
+                            queryset=Candidate.objects.select_related('user', 'relatedexaminer'),
+                            to_attr='examiners'))
+    """
     template_name = 'devilry_admin/listbuilder/assignmentgroup_listbuilder/value.django.html'
     valuealias = 'group'
 
