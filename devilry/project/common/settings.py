@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'gunicorn',
     'extjs4',
     'haystack',
+    'ievv_opensource.ievvtasks_common',
 
     'devilry.devilry_bulkcreate_users',
     'devilry.devilry_cradmin',
