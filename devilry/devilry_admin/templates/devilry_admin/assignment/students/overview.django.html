@@ -1,0 +1,44 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load static %}
+{% load i18n %}
+{% load humanize %}
+
+{% block title %}
+    {% blocktrans trimmed with assignmentname=assignment.long_name %}
+        Students on {{ assignmentname }}
+    {% endblocktrans %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% blocktrans trimmed with assignmentname=assignment.long_name %}
+            Students on {{ assignmentname }}
+        {% endblocktrans %}
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <ul>
+            <li>
+                <a href="#">
+                    {% trans "Add students" %}
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    {% trans "Organize students in project groups" %}
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    {% trans "Delete students or project groups" %}
+                </a>
+            </li>
+        </ul>
+
+        <div class="alert alert-warning">
+            TODO: List all students.
+        </div>
+    </div>
+{% endblock content %}

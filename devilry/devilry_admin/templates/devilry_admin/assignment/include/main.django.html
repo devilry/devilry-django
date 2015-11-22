@@ -1,4 +1,6 @@
 {% load i18n %}
+{% load cradmin_tags %}
+
 <div class="col-sm-8" id="devilry_assignment_main">
     <div id="devilry_admin_assignment_meta">
         <h2>{% trans "Students and examiners" %}</h2>
@@ -12,14 +14,20 @@
         </p>
     </div>
     <div id="devilry_admin_assignmtent_students">
-        <h3><a href="#">{% trans "Students" %}</a></h3>
+        <h3>
+            <a href="{% cradmin_instance_url appname='studentoverview' viewname='INDEX' roleid=assignment.id %}">
+                {% trans "Students" %}
+            </a>
+        </h3>
 
         <p>
             {% trans "View, edit or add students for this assignment" %}
         </p>
     </div>
     <div id="devilry_admin_assignmtent_examiners">
-        <h3><a href="#">{% trans "Examiners" %}</a></h3>
+        <h3>
+            <a href="#">{% trans "Examiners" %}</a>
+        </h3>
 
         <p>
             {% trans "View, edit or organize examiners for this assignment" %}
