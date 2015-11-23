@@ -20,5 +20,5 @@ def devilry_status_verbose_inline(status):
     the status inline.
     """
     return {
-        'status': status
+        'status': status.qualifies
     }

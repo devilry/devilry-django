@@ -21,6 +21,8 @@ class GetQuerysetForRoleMixin(object):
 
     def get_queryset_for_role(self, role):
         period = role
+        print(self.model.objects.filter(period=period).order_by('user__shortname'))
+        print("# # #")
         return self.model.objects \
             .filter(period=period) \
             .order_by('user__shortname')
@@ -38,7 +40,7 @@ class InfoColumn1(objecttable.MultiActionColumn):
 
     def get_context_data(self, obj):
         context = super(InfoColumn1, self).get_context_data(obj=obj)
-        context['user'] = obj.user
+        context['rel_user'] = obj.user
         return context
 
 
@@ -54,15 +56,13 @@ class InfoColumn2(objecttable.MultiActionColumn):
 
     def get_context_data(self, obj):
         context = super(InfoColumn2, self).get_context_data(obj=obj)
-        context['a'] = "Prueba ... ... ..."
-        context['status'] = obj.period.qualifiedforexams_status
+        context['status'] = obj.qualifiesforfinalexam_set.get(relatedstudent=obj)
         return context
-
 
 
 class ListView(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
     searchfields = ['user__shortname', 'user__fullname', 'status__status']
-    hide_column_headers = False #True
+    hide_column_headers = True
     columns = [InfoColumn1, InfoColumn2]
 
     def get_buttons(self):

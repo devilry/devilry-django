@@ -43,7 +43,7 @@ class InfoColumn(objecttable.MultiActionColumn):
 
     def get_context_data(self, obj):
         context = super(InfoColumn, self).get_context_data(obj=obj)
-        context['user'] = obj.user
+        context['relateduser'] = obj.user
         return context
 
 
