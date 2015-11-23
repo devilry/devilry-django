@@ -14,10 +14,11 @@ from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import UserEmail
 from devilry.devilry_admin.views.common import userselect_common
 from devilry.devilry_admin.views.common import bulkimport_users_common
+from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam
 
 
 class GetQuerysetForRoleMixin(object):
-    model = RelatedStudent
+    model = QualifiesForFinalExam
 
     def get_queryset_for_role(self, role):
         period = role
@@ -25,18 +26,17 @@ class GetQuerysetForRoleMixin(object):
         print("# # #")
         return self.model.objects \
             .filter(period=period) \
-            .order_by('user__shortname')
+            .order_by('user__shortname') #change the filter
+    # On this query, we get all the data we need at once
 
 
-class InfoColumn1(objecttable.MultiActionColumn):
+class InfoColumn1(objecttable.PlainTextColumn):
     modelfield = 'id'
     template_name = 'devilry_admin/period/qualifiedforfinalexams/userlistview-info-column.django.html'
+    #orderingfield = #order by user__full_name
 
     def get_header(self):
         return _('Students')
-
-    def get_buttons(self, obj):
-        return []
 
     def get_context_data(self, obj):
         context = super(InfoColumn1, self).get_context_data(obj=obj)
@@ -44,15 +44,16 @@ class InfoColumn1(objecttable.MultiActionColumn):
         return context
 
 
-class InfoColumn2(objecttable.MultiActionColumn):
-    modelfield = 'id'
+    #BooleanColumn(objecttable)
+    #override get header, model,  when you create the column
+
+
+class InfoColumn2(objecttable.PlainTextColumn):
+    modelfield = 'qualifies'
     template_name = 'devilry_admin/period/qualifiedforfinalexams/statuslistview-info-column.django.html'
 
     def get_header(self):
         return _('Status')
-
-    def get_buttons(self, obj):
-        return []
 
     def get_context_data(self, obj):
         context = super(InfoColumn2, self).get_context_data(obj=obj)
@@ -255,6 +256,8 @@ class UserSelectView(userselect_common.AbstractUserSelectView):
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$', ListView.as_view(), name=crapp.INDEXVIEW_NAME)
+        # Step1: copiar desde overview en django_admin (hereda)
+
         # crapp.Url(
         #     # r'^remove/(?P<pk>\d+)$',
         #     # RemoveView.as_view(),
