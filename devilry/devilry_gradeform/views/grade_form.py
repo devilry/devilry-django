@@ -1,4 +1,4 @@
-
+from django.http import HttpResponse
 from devilry.devilry_gradeform.views import editable_grade_form
 
 
@@ -11,11 +11,12 @@ class AbstractGradeForm(object):
         return cls.render()
 
     def render_editable(self, assignment, feedbackset):
-        cls = self.get_editablerenderer_class()
+        renderer_class = self.get_editablerenderer_class()
+        renderer = renderer_class(assignment, feedbackset)
 
-        return cls.render()
+        return renderer.render()
 
-    def render_viewable(self, assignment, feedbackSet):
+    def render_viewable(self, assignment, feedbackset):
         cls = self.get_viewablerenderer_class()
 
         return cls.render()
