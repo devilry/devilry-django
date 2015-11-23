@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment import overview
 from devilry.devilry_admin.views.assignment import admins
+from devilry.devilry_admin.views.assignment.students import overview as studentoverview
 
 
 class Menu(crmenu.Menu):
@@ -26,6 +27,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     apps = [
         ('overview', overview.App),
         ('admins', admins.App),
+        ('studentoverview', studentoverview.App),
     ]
     id = 'devilry_admin_assignmentadmin'
     rolefrontpage_appname = 'overview'
