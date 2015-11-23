@@ -12,6 +12,7 @@
             <br>
             <br>
             <br>
+
             <div class="panel-group" id="accordion">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -21,16 +22,19 @@
                     </div>
                     <div id="collapseOne" class="panel-collapse collapse in">
                         <div class="panel-body">
+
                             {{ last_feedbackset.id }}
 
                             {% if event.gradeform != None %}
                                 {{ event.gradeform }}
                             {% endif %}
+                            {{ last_feedbackset.gradeform_json }}
 
                         </div>
                     </div>
                 </div>
             </div>
+
             <br>
             <br>
             <br>

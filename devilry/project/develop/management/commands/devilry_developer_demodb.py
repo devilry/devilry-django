@@ -290,7 +290,8 @@ class Command(BaseCommand):
                     points=random.randint(minpoints, maxpoints),
                     published_by=examiner,
                     created_by=examiner,
-                    deadline_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago)
+                    deadline_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago),
+                    gradeform_json="test"
                 )
 
                 # add student delivery
@@ -541,6 +542,7 @@ class Command(BaseCommand):
             published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5, hours=2),
             created_datetime=DateTimeBuilder.now().minus(weeks=4),
             deadline_datetime=first_deadline,
+            gradeform_json="Test1"
         )
 
         # Event summary for feedback_set 1
@@ -613,6 +615,19 @@ class Command(BaseCommand):
             published_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=22)
         )
 
+        json_advanced_gradeform = \
+        """
+        {
+            "type": "advanced",
+            "scheme": [
+                    {"points_max": 5, "points_achieved": 3, "text": "correcting description0", "comment": "could do better here"},
+                    {"points_max": 5, "points_achieved": 3, "text": "correcting description0", "comment": "could do better here"},
+                    {"points_max": 5, "points_achieved": 3, "text": "correcting description0", "comment": "could do better here"},
+                    {"points_max": 5, "points_achieved": 3, "text": "correcting description0", "comment": "could do better here"},
+                ]
+        }
+        """
+
         # Event summary for feedback_set 2
         feedbacksetbuilder2 = assignmentgroupbuilder.add_feedback_set(
             points=10,
@@ -620,7 +635,8 @@ class Command(BaseCommand):
             created_by=examiner,
             published_datetime=DateTimeBuilder.now().minus(weeks=0, days=3),
             created_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=21),
-            deadline_datetime=DateTimeBuilder.now().minus(weeks=1)
+            deadline_datetime=DateTimeBuilder.now().minus(weeks=1),
+            gradeform_json=json_advanced_gradeform
         )
 
         feedbacksetbuilder2.add_groupcomment(
