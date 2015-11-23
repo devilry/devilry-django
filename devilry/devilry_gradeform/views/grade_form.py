@@ -1,4 +1,6 @@
-from django_cradmin import renderable
+
+from devilry.devilry_gradeform.views import editable_grade_form
+
 
 class AbstractGradeForm(object):
     """
@@ -52,6 +54,13 @@ class AbstractGradeForm(object):
 #         return ApprovedNotApprovedGradeForm
 
 
-class AbstractEditableRenderer(AbstractGradeForm, renderable.AbstractRenderable):
-    """
-    """
+class AdvancedGradeForm(AbstractGradeForm):
+
+    def get_setuprenderer_class(self):
+        return None
+
+    def get_editablerenderer_class(self):
+        return editable_grade_form.AdvancedEditableGradeForm
+
+    def get_viewablerenderer_class(self):
+        return None
