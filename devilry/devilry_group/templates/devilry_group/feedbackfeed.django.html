@@ -56,14 +56,6 @@
         </div>
     </div>
 
-
-
-    {# remove later, just shortcut for setup form #}
-    {% if devilry_ui_role == 'admin' %}
-{#        <a href="{% url 'devilry-gradeform-setup' %}">Setup form</a>#}
-    {% endif %}
-
-
 {% endblock pageheader-inner %}
 
 {% block content %}
@@ -175,16 +167,25 @@
                                             </p>
                                         </div>
                                     {% endif %}
-                            {% endif %}
+                                {% endif %}
 
                         {% endfor %}
+
                     {% endfor %}
+
+
+                    {% comment %}
+                        Accordion option for examiner to edit gradeform
+                    {% endcomment %}
+                    {% block examiner_edit_last_delivery %}
+                        {% include "devilry_group/include/examiner.editlastdelivery.django.html" %}
+                    {% endblock examiner_edit_last_delivery %}
+
 
 
                     {% block pre_form %}{% endblock pre_form %}
                     {% block form %}
                         {% crispy form formhelper %}
-
                         {% comment %}
                             NOTE: This will probably break when https://github.com/maraujop/django-crispy-forms/issues/263 is fixed
                         {% endcomment %}
