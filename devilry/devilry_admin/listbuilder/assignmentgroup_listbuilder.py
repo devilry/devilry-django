@@ -10,12 +10,14 @@ class Value(listbuilder.base.ItemValueRenderer):
 
     The queryset used to render these values must use::
 
-        prefetch_related(Prefetch(
+        AssignmentGroup.objects.filter(....).prefetch_related(
             models.Prefetch('candidates',
-                            queryset=Candidate.objects.select_related('student', 'relatedstudent'),
+                            queryset=coremodels.Candidate.objects.select_related(
+                                'relatedstudent__user'),
                             to_attr='candidates'),
             models.Prefetch('examiners',
-                            queryset=Candidate.objects.select_related('user', 'relatedexaminer'),
+                            queryset=coremodels.Examiner.objects.select_related(
+                                'relatedexaminer__user'),
                             to_attr='examiners'))
     """
     template_name = 'devilry_admin/listbuilder/assignmentgroup_listbuilder/value.django.html'
