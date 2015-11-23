@@ -8,6 +8,7 @@
 {% with feedbacksets.last as last_feedbackset %}
     {% if devilry_ui_role == 'examiner' %}
         {% if last_feedbackset.deadline_datetime >= last_deadline %}
+
             <br>
             <br>
             <br>
@@ -29,11 +30,11 @@
                         </div>
                     </div>
                 </div>
-
             </div>
             <br>
             <br>
             <br>
+
         {% endif %}
     {% endif %}
 {% endwith %}
