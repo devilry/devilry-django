@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from devilry.devilry_gradeform.views import editable_grade_form
+from devilry.devilry_gradeform.views import editable_gradeform, viewable_gradeform
 
 
 class AbstractGradeForm(object):
@@ -17,9 +17,10 @@ class AbstractGradeForm(object):
         return renderer.render()
 
     def render_viewable(self, assignment, feedbackset):
-        cls = self.get_viewablerenderer_class()
+        renderer_class = self.get_viewablerenderer_class()
+        renderer = renderer_class(assignment, feedbackset)
 
-        return cls.render()
+        return renderer.render()
 
     def get_setuprenderer_class(self):
         raise NotImplementedError('Must be implemented by subclass')
@@ -61,7 +62,7 @@ class AdvancedGradeForm(AbstractGradeForm):
         return None
 
     def get_editablerenderer_class(self):
-        return editable_grade_form.AdvancedEditableGradeForm
+        return editable_gradeform.AdvancedEditableGradeForm
 
     def get_viewablerenderer_class(self):
-        return None
+        return viewable_gradeform.AdvancedViewableGradeForm
