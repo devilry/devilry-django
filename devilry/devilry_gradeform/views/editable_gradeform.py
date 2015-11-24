@@ -1,3 +1,8 @@
+import json
+
+from django import forms
+
+from crispy_forms import helper
 
 from django_cradmin import renderable
 
@@ -22,6 +27,16 @@ class AdvancedEditableGradeForm(AbstractEditableRenderer):
 
     def get_template_context_object(self, request=None):
         context = super(AdvancedEditableGradeForm, self).get_context_data()
-        context['test'] = 'Hello, I\'m template'
+        context['gradeform_type'] = 'advanced'
+        # print self.feedbackset.gradeform_json
+        data = json.loads(self.feedbackset.gradeform_json)
+        context['fields'] = []
+        for item in data['scheme']:
+            context['fields'].append({
+                'points_max': item['points_max'],
+                'points_achieved': item['points_achieved'],
+                'text': item['text'],
+                'comment': item['comment']
+            })
 
         return context
