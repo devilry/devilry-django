@@ -1,4 +1,5 @@
 {% load devilry_group_tags %}
+{% load devilry_gradeform_tags %}
 {% load i18n %}
 
 {% comment %}
@@ -7,11 +8,12 @@
 {% endcomment %}
 {% with feedbacksets.last as last_feedbackset %}
     {% if devilry_ui_role == 'examiner' %}
-        {% if last_feedbackset.deadline_datetime >= last_deadline %}
+        {% comment %}
+            Must also check that published datetime is None
+        {% endcomment %}
+{#        {% if last_feedbackset.deadline_datetime >= last_deadline %}#}
 
-            <br>
-            <br>
-            <br>
+            <br><br><br>
 
             <div class="panel-group" id="accordion">
                 <div class="panel panel-default">
@@ -21,24 +23,19 @@
                         </h4>
                     </div>
                     <div id="collapseOne" class="panel-collapse collapse in">
-                        <div class="panel-body">
+                        {% if last_feedbackset.deadline_datetime >= last_deadline%}
+                        <div class="panel-body" style="border: dotted">
 
-                            {{ last_feedbackset.id }}
-
-                            {% if event.gradeform != None %}
-                                {{ event.gradeform }}
-                            {% endif %}
-                            {{ last_feedbackset.gradeform_json }}
+                            {% devilry_gradeform_editable_advanced last_feedbackset.group.parentnode last_feedbackset %}
 
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
 
-            <br>
-            <br>
-            <br>
+            <br><br><br>
 
-        {% endif %}
+{#        {% endif %}#}
     {% endif %}
 {% endwith %}

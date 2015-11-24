@@ -167,6 +167,13 @@
                                             </p>
                                         </div>
                                     {% endif %}
+
+                                    {% if devilry_ui_role == 'student' %}
+                                        <div class="well">
+                                            {{ event.gradeform }}
+                                        </div>
+                                    {% endif %}
+
                                 {% endif %}
 
                         {% endfor %}
