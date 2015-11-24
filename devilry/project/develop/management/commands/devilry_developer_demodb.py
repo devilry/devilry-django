@@ -1,4 +1,5 @@
 import random
+import json
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -513,6 +514,26 @@ class Command(BaseCommand):
 
         first_deadline = timezone.now() - timezone.timedelta(weeks=2, days=1)
 
+        assignment_setup_gradeform_json = {
+            'type': 'advanced',
+            'scheme': [
+                {"points_max": "5", "points_achieved": "0", "text": "Has the student documented the code?", "comment": ""},
+                {"points_max": "5", "points_achieved": "0", "text": "Implemented own datastructures?", "comment": ""},
+                {"points_max": "5", "points_achieved": "0", "text": "Has the student understood the different pros and cons for the datastructures?", "comment": ""},
+                {"points_max": "5", "points_achieved": "0", "text": "Fullfilling designdocument?", "comment": ""},
+            ]
+        }
+
+        data = {
+            'type': 'advanced',
+            'scheme': [
+                {"points_max": "5", "points_achieved": "5", "text": "Has the student documented the code?", "comment": "Great documentation"},
+                {"points_max": "5", "points_achieved": "3", "text": "Implemented own datastructures?", "comment": "You where meant to implement all datastructures. You didn't implement the hashmap ='("},
+                {"points_max": "5", "points_achieved": "4", "text": "Has the student understood the different pros and cons for the datastructures?", "comment": "Shows good understanding"},
+                {"points_max": "5", "points_achieved": "0", "text": "Fullfilling designdocument?", "comment": "You where supposed to deliver a document with CONTENT, not an empty one!"},
+            ]
+        }
+
         periodbuilder = self.duckburgh.add_subject(
             short_name='inf7020',
             long_name='INF7020 Programming for World Domination and Crashing Non-Mutant Economy',
@@ -528,7 +549,8 @@ class Command(BaseCommand):
             'Oblig 1 - Domination',
             passing_grade_min_points=3,
             max_points=10,
-            first_deadline=first_deadline
+            first_deadline=first_deadline,
+            gradeform_setup_json=json.dumps(assignment_setup_gradeform_json)
         ).add_group()
 
         assignmentgroupbuilder.add_candidates_from_relatedstudents(
@@ -542,7 +564,7 @@ class Command(BaseCommand):
             published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5, hours=2),
             created_datetime=DateTimeBuilder.now().minus(weeks=4),
             deadline_datetime=first_deadline,
-            gradeform_json="Test1"
+            gradeform_json=json.dumps(data)
         )
 
         # Event summary for feedback_set 1
@@ -615,18 +637,6 @@ class Command(BaseCommand):
             published_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=22)
         )
 
-        json_advanced_gradeform = \
-        """
-        {
-            "type": "advanced",
-            "scheme": [
-                    {"points_max": 5, "points_achieved": 3, "text": "correcting description0", "comment": "could do better here"},
-                    {"points_max": 5, "points_achieved": 3, "text": "correcting description0", "comment": "could do better here"},
-                    {"points_max": 5, "points_achieved": 3, "text": "correcting description0", "comment": "could do better here"},
-                    {"points_max": 5, "points_achieved": 3, "text": "correcting description0", "comment": "could do better here"},
-                ]
-        }
-        """
 
         # Event summary for feedback_set 2
         feedbacksetbuilder2 = assignmentgroupbuilder.add_feedback_set(
@@ -636,7 +646,7 @@ class Command(BaseCommand):
             published_datetime=DateTimeBuilder.now().minus(weeks=0, days=3),
             created_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=21),
             deadline_datetime=DateTimeBuilder.now().minus(weeks=1),
-            gradeform_json=json_advanced_gradeform
+            gradeform_json=json.dumps(data)
         )
 
         feedbacksetbuilder2.add_groupcomment(
