@@ -1,1 +1,10 @@
-<h1>Hello world</h1>
+{% load crispy_forms_tags %}
+
+<h3>{{ gradeform_type }}</h3>
+
+{% for field in fields %}
+    <br><br>
+    <h4>{{ field.text }}</h4>
+    <p>{{ field.points_achieved }}/{{ field.points_max }}</p>
+    <p>{{ field.comment }}</p>
+{% endfor %}
