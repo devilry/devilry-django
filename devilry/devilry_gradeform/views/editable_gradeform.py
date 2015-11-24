@@ -1,25 +1,25 @@
 import json
+from crispy_forms.layout import Field, Layout
 
 from django import forms
 
 from crispy_forms import helper
 
 from django_cradmin import renderable
+from django_cradmin.viewhelpers import create
 
-
-class AbstractEditableRenderer(renderable.AbstractRenderable):
+class AbstractEditableRenderer(renderable.AbstractRenderable, create.CreateView):
     """
     """
+    template_name = "devilry_gradeform/advanced.editable.gradeform.django.html"
+    model = "AdvancedEditableGradeForm"
 
-
-# class EditableGradeForm(AbstractEditableRenderer):
-#     """
-#
-#     """
 
 class AdvancedEditableGradeForm(AbstractEditableRenderer):
+    """
+    """
 
-    template_name = "devilry_gradeform/advanced.gradeform.django.html"
+    test = forms.CharField(label="yay")
 
     def __init__(self, assignment, feedbackset):
         self.assignment = assignment
@@ -27,16 +27,8 @@ class AdvancedEditableGradeForm(AbstractEditableRenderer):
 
     def get_template_context_object(self, request=None):
         context = super(AdvancedEditableGradeForm, self).get_context_data()
-        context['gradeform_type'] = 'advanced'
+        # context['gradeform_type'] = 'advanced'
         # print self.feedbackset.gradeform_json
-        data = json.loads(self.feedbackset.gradeform_json)
-        context['fields'] = []
-        for item in data['scheme']:
-            context['fields'].append({
-                'points_max': item['points_max'],
-                'points_achieved': item['points_achieved'],
-                'text': item['text'],
-                'comment': item['comment']
-            })
+        data = json.loads(self.assignment.gradeform_setup_json)
 
         return context
