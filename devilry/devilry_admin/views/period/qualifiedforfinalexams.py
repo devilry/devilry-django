@@ -77,7 +77,7 @@ class ListViewMixin(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
 
 
 class ListViewStep3(ListViewMixin):
-    template_name = "devilry_admin/period/qualifiedforfinalexams/confirm-button.django.html"
+    template_name = "devilry_admin/period/qualifiedforfinalexams/step3.django.html"
 
     def get_pagetitle(self):
         return _('Preview and confirm')
@@ -91,11 +91,23 @@ class ListViewStep3(ListViewMixin):
 
 
 class ListViewStep4(ListViewMixin):
+    template_name = "devilry_admin/period/qualifiedforfinalexams/step4.django.html"
 
     def get_pagetitle(self):
         return _('Qualified for final exams')
 
     def post(self, *args, **kwargs):
+        app = self.request.cradmin_app
+        return redirect(app.reverse_appurl(crapp.INDEXVIEW_NAME))
+
+
+class StatusRetractView(TemplateView):
+    def post(self, *args, **kwargs):
+        pass
+
+
+class PrintQualifiedStudentsView(TemplateView):
+    def get(self, *args, **kwargs):
         pass
 
 
@@ -107,5 +119,8 @@ class App(crapp.App):
     appurls = [
         crapp.Url(r'^$', Overview.as_view(), name=crapp.INDEXVIEW_NAME),
         crapp.Url(r'^step3', ListViewStep3.as_view(), name="step3"),
-        crapp.Url(r'^step4', ListViewStep4.as_view(), name="step4")
+        crapp.Url(r'^step4', ListViewStep4.as_view(), name="step4"),
+        crapp.Url(r'^step4-retraction', StatusRetractView.as_view(), name="step4-retraction")
     ]
+
+
