@@ -1,30 +1,12 @@
 {% extends 'django_cradmin/viewhelpers/objecttable/objecttable.django.html' %}
 {% load i18n %}
+{% load cradmin_tags %}
 
 {% block content %}
 
 
     <div class="container">
-         <form method="get" action="{% url 'devilry_admin_step4-retraction' %}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary">
-                      {% trans "Retract" %}
-                </button>
-        </form>
 
-        <form method="post" action="{{ request.get_path }}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary">
-                      {% trans "Update" %}
-                </button>
-        </form>
-
-        <form method="get" action="{{ request.get_path }}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary">
-                      {% trans "Print" %}
-                </button>
-        </form>
     </div>
 
     {{ block.super }}

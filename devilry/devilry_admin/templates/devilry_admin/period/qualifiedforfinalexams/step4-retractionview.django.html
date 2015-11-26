@@ -1,18 +1,11 @@
-{% extends 'django_cradmin/viewhelpers/objecttable/objecttable.django.html' %}
+{% extends 'django_cradmin/standalone-base.django.html' %}
+
 {% load i18n %}
 
 {% block content %}
 
-
     <div class="container">
-        <form method="post" action="{{ request.get_path }}">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-primary">
-                      {% trans "Send" %}
-                </button>
-        </form>
+
     </div>
-
-
 
 {% endblock content %}
