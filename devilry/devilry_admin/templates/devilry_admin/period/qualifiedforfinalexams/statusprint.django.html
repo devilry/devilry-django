@@ -1,0 +1,60 @@
+{% extends "devilry_theme/printbase.django.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    {{ status.period.get_path }} - {% trans "Qualifies for final exams" %}
+{% endblock %}
+{% block head-post %}
+    <script type="text/javascript">
+        function onSortByChange() {
+            var sortform = document.getElementById('sortform');
+            sortform.submit();
+        }
+        window.onload = function(){
+            var sortbyfield = document.getElementById('sortby-field')
+            if(sortbyfield.addEventListener) {
+                sortbyfield.addEventListener('change', onSortByChange)
+            } else { // IE 8
+                sortbyfield.attachEvent('onchange', onSortByChange)
+            }
+        };
+    </script>
+{% endblock %}
+
+{% block body %}
+    <h1>
+        {{ status.period.get_path }}
+    </h1>
+    <p>{% trans "Qualifies for final exams" %}</p>
+    <div class="pull-right hidden-print">
+        {% crispy form %}
+    </div>
+    <button class="btn btn-primary btn-large hidden-print" onclick="window.print()">
+        <i class="icon-print icon-white"></i>
+        {% trans "Print" %}
+    </button>
+    <div style="clear: both;">
+        <h2>{% trans "Qualified for final exams" %}</h2>
+        <ul>
+            {% for studentstatus in studentstatuses %}
+                {% if studentstatus.qualifies %}
+                    <li>
+                        {% include "devilry_qualifiesforexam/statusprint-singlestudent.django.html" %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+        <h2>{% trans "NOT qualified for final exams" %}</h2>
+        <ul>
+            {% for studentstatus in studentstatuses %}
+                {% if not studentstatus.qualifies %}
+                    <li>
+                        {% include "devilry_qualifiesforexam/statusprint-singlestudent.django.html" %}
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

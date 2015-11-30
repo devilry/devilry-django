@@ -74,17 +74,12 @@ class ListViewStep3(ListViewMixin):
     def get_pagetitle(self):
         return _('Preview and confirm')
 
-    def get_buttons(self):
-        app = self.request.cradmin_app
-        return [
-            objecttable.Button(
-                label=ugettext_lazy('Confirm'),
-                url=app.reverse_appurl('step4'))
-        ]
-
     def post(self, *args, **kwargs):
         app = self.request.cradmin_app
-        Status.objects.filter(period=self.request.cradmin_role).update(status='ready')
+        status = Status.objects.get(period=self.request.cradmin_role)
+        status.status = Status.READY
+        status.full_clean()
+        status.save()
         return redirect(app.reverse_appurl('step4'))
 
 
@@ -98,17 +93,16 @@ class ListViewStep4(ListViewMixin):
         app = self.request.cradmin_app
         return [
             objecttable.Button(
-                label=ugettext_lazy('Update'),
-                url=app.reverse_appurl(crapp.INDEXVIEW_NAME),
-                buttonclass='btn btn-primary'),
-            objecttable.Button(
-                label=ugettext_lazy('Retract'),
-                url=app.reverse_appurl('step4-retraction'),
-                buttonclass='btn btn-primary'),
-            objecttable.Button(
                 label=ugettext_lazy('Print'),
                 url=app.reverse_appurl("step4-print"),
-                buttonclass='btn btn-primary')
+                buttonclass='btn btn-primary'),
+            objecttable.Button(
+                label=ugettext_lazy('Update'),
+                url=app.reverse_appurl(crapp.INDEXVIEW_NAME)),
+            objecttable.Button(
+                label=ugettext_lazy('Retract'),
+                url=app.reverse_appurl('step4-retraction'))#,
+                                       #args=self.request.cradmin_role.qualifiedforexams_status.get(period=self.request.cradmin_role)))
         ]
 
     def post(self, *args, **kwargs):
@@ -128,17 +122,16 @@ class RetractionView(update.UpdateView):
     #     app = self.request.cradmin_app
     #     return redirect(app.reverse_appurl(crapp.INDEXVIEW_NAME))
 
-    # def set_automatic_attributes(self, obj):
-    #     super(RetractionView, self). set_automatic_attributes(obj)
-    #     obj.status = 'notready'
-    #     #obj.save()
+    def set_automatic_attributes(self, obj):
+        super(RetractionView, self). set_automatic_attributes(obj)
+        obj.status = Status.NOTREADY
 
     # It is necessary to check the permission before retracting
     # En la plantilla: action="{% cradmin_appurl "myview" pk=status.id %}"
 
 
 class PrintQualifiedStudentsView(TemplateView):
-    template_name = 'devilry_admin/dashboard/overview.django.html'
+    template_name = 'devilry_admin/period/qualifiedforfinalexams/statusprint.django.html'
 
 
 class Overview(TemplateView):
@@ -148,10 +141,10 @@ class Overview(TemplateView):
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$', Overview.as_view(), name=crapp.INDEXVIEW_NAME),
-        crapp.Url(r'^step3', ListViewStep3.as_view(), name="step3"),
-        crapp.Url(r'^step4', ListViewStep4.as_view(), name="step4"),
-        crapp.Url(r'^step4-retraction', RetractionView.as_view(), name="step4-retraction"),
-        crapp.Url(r'^step4-print-results', PrintQualifiedStudentsView.as_view(), name="step4-print"),
+        crapp.Url(r'^step3$', ListViewStep3.as_view(), name="step3"),
+        crapp.Url(r'^step4$', ListViewStep4.as_view(), name="step4"),
+        crapp.Url(r'^step4-retraction/(?P<pk>\d+)$', RetractionView.as_view(), name="step4-retraction"),
+        crapp.Url(r'^step4-print-results$', PrintQualifiedStudentsView.as_view(), name="step4-print"),
     ]
 
 
