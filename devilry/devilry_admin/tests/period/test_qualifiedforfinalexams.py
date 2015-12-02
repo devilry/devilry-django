@@ -166,9 +166,99 @@ class TestRetractionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEquals(status_after.message, 'test')
 
 
-
-
 class TestPrintQualifiedStudentsView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = qualifiedforfinalexams.PrintQualifiedStudentsView
-    # Not implemented yet
-    pass
+
+    def test_get_view_title(self):
+        """
+        Test for the view title.
+        """
+        subject = mommy.make('core.Subject', short_name="INF100")
+        period = mommy.make('core.Period', short_name="Spring 2015", parentnode=subject)#, admins=self.requestuser)
+        status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period, viewkwargs={'status_id': status.id})
+        view_title = mockresponse.selector.one('h1').alltext_normalized
+        self.assertEquals(view_title, subject.short_name+"."+period.short_name)
+
+    def test_get_print_button_text(self):
+        """
+        Test for the button for printing the list of qualified students in view ('PrintQualifiedStudents').
+        """
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)#Also here
+        status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period, viewkwargs={'status_id': status.id})
+        button_text = mockresponse.selector.one('.btn-primary').alltext_normalized
+        self.assertEquals('Print', button_text)
+
+    def test_get_form(self):
+        """
+        Test that a form appears on the page view ('PrintQualifiedStudents').
+        """
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)#Also here
+        status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period, viewkwargs={'status_id': status.id})
+        form = mockresponse.selector.list('form')
+        self.assertEquals(1, len(form))
+
+    def test_get_students(self):
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)#Also here
+        status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
+        user1 = mommy.make('devilry_account.User', fullname="A")
+        user2 = mommy.make('devilry_account.User', fullname="C")
+        user3 = mommy.make('devilry_account.User', fullname="B")
+        related_student1 = mommy.make('core.RelatedStudent', user=user1, period=period)
+        related_student2 = mommy.make('core.RelatedStudent', user=user2, period=period)
+        related_student3 = mommy.make('core.RelatedStudent', user=user3, period=period)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student1,
+                   status=status,
+                   qualifies=True)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student2,
+                   status=status,
+                   qualifies=True)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student3,
+                   status=status,
+                   qualifies=False)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period, viewkwargs={'status_id': status.id})
+        success_labels = mockresponse.selector.list('.label-success')
+        warning_labels = mockresponse.selector.list('.label-warning')
+        self.assertEquals(2, len(success_labels))
+        self.assertEquals(1, len(warning_labels))
+
+    def test_get_students_ordered_by_name(self):
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)#Also here
+        status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
+        user1 = mommy.make('devilry_account.User', fullname="A")
+        user2 = mommy.make('devilry_account.User', fullname="C")
+        user3 = mommy.make('devilry_account.User', fullname="B")
+        related_student1 = mommy.make('core.RelatedStudent', user=user1, period=period)
+        related_student2 = mommy.make('core.RelatedStudent', user=user2, period=period)
+        related_student3 = mommy.make('core.RelatedStudent', user=user3, period=period)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student1,
+                   status=status,
+                   qualifies=True)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student2,
+                   status=status,
+                   qualifies=True)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student3,
+                   status=status,
+                   qualifies=False)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period,
+                                                          viewkwargs={'status_id': status.id})
+        mockresponse.selector.prettyprint()
+        self.assertEqual('', '')
+
+    def test_get_students_ordered_by_lastname(self):
+        pass
+
+    def test_get_students_ordered_by_username(self):
+        pass

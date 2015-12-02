@@ -1,12 +1,10 @@
 {% load i18n %}
-
 {% with studentstatus.relatedstudent.user as user %}
     {% if user.fullname %}
         <span class="fullname">{{ user.fullname }}</span>
     {% endif %}
-    <span class="username">({{ user.shortname }})</span>
+    <span class="username">({{ studentstatus.relatedstudent.user.username }})</span>
 {% endwith %}
-
 {% if studentstatus.qualifies %}
     <span class="label label-success">{% trans "Yes" %}</span>
 {% else %}

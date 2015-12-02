@@ -36,7 +36,7 @@
         {% trans "Print" %}
     </button>
     <div style="clear: both;">
-        <h2>{% trans "Qualified for final exams" %}</h2>
+        <h2>{% trans "Students qualified for final exams" %}</h2>
         <ul>
             {% for studentstatus in studentstatuses %}
                 {% if studentstatus.qualifies %}
@@ -47,7 +47,7 @@
             {% endfor %}
         </ul>
 
-        <h2>{% trans "NOT qualified for final exams" %}</h2>
+        <h2>{% trans "Students NOT qualified for final exams" %}</h2>
         <ul>
             {% for studentstatus in studentstatuses %}
                 {% if not studentstatus.qualifies %}
