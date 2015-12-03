@@ -8,7 +8,7 @@ class SubsetPluginSetting(models.Model):
     Configuration for the ``devilry_qualifiesforexam_approved.subset``-plugin.
     """
     status = models.OneToOneField(Status, primary_key=True,
-        related_name="%(app_label)s_%(class)s")
+                                  related_name="%(app_label)s_%(class)s")
 
 
 class SelectedAssignment(models.Model):

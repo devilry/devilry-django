@@ -35,7 +35,7 @@ class Registry(object):
         return self.items[pluginid]['uses_settings']
 
     def has_post_statussave(self, status):
-        return self.items[status.plugin]['post_statussave'] != None
+        return self.items[status.plugin]['post_statussave'] is not None
 
     def post_statussave(self, status, settings):
         self.items[status.plugin]['post_statussave'](status, settings)
