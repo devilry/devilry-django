@@ -19,11 +19,12 @@ class PeriodTag(models.Model):
 
 
 class Status(models.Model):
-    READY, ALMOSTREADY, NOTREADY = ('ready', 'almostready', 'notready')
+    READY, ALMOSTREADY, NOTREADY, IN_PROGRESS = ('ready', 'almostready', 'notready', 'in-progress')
     STATUS_CHOICES = (
         (READY, _('Ready for export')),
         (ALMOSTREADY, _('Most students are ready for export')),
         (NOTREADY, _('Not ready for export (retracted)')),
+        (IN_PROGRESS, _('In progress')),
     )
     STATUS_CHOICES_DICT = dict(STATUS_CHOICES)
     period = models.ForeignKey(Period, related_name='qualifiedforexams_status')

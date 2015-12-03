@@ -6,8 +6,9 @@ from django_cradmin.viewhelpers import objecttable, update
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from devilry.devilry_account.models import UserEmail
+from devilry.devilry_qualifiesforexam import registry
 from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam, Status
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, View
 from devilry.devilry_student.cradminextensions.columntypes import BooleanYesNoColumn
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseForbidden
@@ -22,6 +23,15 @@ class GetQuerysetForRoleMixin(object):
         return self.model.objects \
             .filter(status__period=period) \
             .order_by('relatedstudent__user__fullname')
+
+
+class SelectPlugin(TemplateView):
+    template_name = 'devilry_admin/period/qualifiedforfinalexams/selectplugin.django.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SelectPlugin, self).get_context_data(**kwargs)
+        context['qualifiesforexam_plugins'] = registry.qualifiesforexam_plugins
+        return context
 
 
 class UserInfoColumn(objecttable.PlainTextColumn):
@@ -71,6 +81,25 @@ class ListViewMixin(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
         return _('There is no students registered for %(what)s.') % {
             'what': self.request.cradmin_role.get_path()
         }
+
+
+class Step2View(View):
+    def __get_or_create_status(self):
+        period = self.request.cradmin_role
+        try:
+            status = Status.objects.get(period=period)
+        except Status.DoesNotExist:
+            status = Status(
+                period=period)
+        status.status = Status.IN_PROGRESS
+        return status
+
+    def get(self, request, pluginid):
+        status = self.__get_or_create_status()
+        pluginclass = registry.qualifiesforexam_plugins.get(pluginid)
+        plugin = pluginclass()
+        viewclass = plugin.get_viewclass()
+        return viewclass.as_view()(request, status=status)
 
 
 class ListViewStep3(ListViewMixin):
@@ -216,13 +245,10 @@ class PrintQualifiedStudentsView(TemplateView):
         return context
 
 
-class Overview(TemplateView):
-    template_name = 'devilry_admin/dashboard/overview.django.html'
-
-
 class App(crapp.App):
     appurls = [
-        crapp.Url(r'^$', Overview.as_view(), name=crapp.INDEXVIEW_NAME),
+        crapp.Url(r'^$', SelectPlugin.as_view(), name=crapp.INDEXVIEW_NAME),
+        crapp.Url(r'^step2/(?P<pluginid>[a-z0-9._-]+)$', Step2View.as_view(), name="step2"),
         crapp.Url(r'^step3$', ListViewStep3.as_view(), name="step3"),
         crapp.Url(r'^step4$', ListViewStep4.as_view(), name="step4"),
         crapp.Url(r'^step4-retraction/(?P<pk>\d+)$', RetractionView.as_view(), name="step4-retraction"),

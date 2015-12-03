@@ -1,0 +1,28 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+
+{% block title %}
+    TODO
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        TODO
+    </h1>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <ul>
+            {% for plugin in qualifiesforexam_plugins.iterplugins %}
+                <li>
+                    <a href="{% cradmin_appurl "step2" plugin.id %}">
+                        {{ plugin.get_title }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock content %}
