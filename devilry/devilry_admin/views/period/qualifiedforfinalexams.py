@@ -86,7 +86,7 @@ class ListViewMixin(GetQuerysetForRoleMixin, objecttable.ObjectTableView):
 
 
 class Step2View(View):
-    def __get_or_create_status(self):
+    def __get_or_create_status(self, pluginid):
         period = self.request.cradmin_role
         try:
             status = Status.objects.get(period=period)
@@ -94,12 +94,14 @@ class Step2View(View):
             status = Status(
                 period=period)
         status.status = Status.IN_PROGRESS
+        status.plugin = pluginid
+        status.user = self.request.user
         status.full_clean()
         status.save()
         return status
 
     def __route_to_pluginview(self, pluginid):
-        status = self.__get_or_create_status()
+        status = self.__get_or_create_status(pluginid=pluginid)
         pluginclass = registry.qualifiesforexam_plugins.get(pluginid)
         plugin = pluginclass()
         viewclass = plugin.get_viewclass()
