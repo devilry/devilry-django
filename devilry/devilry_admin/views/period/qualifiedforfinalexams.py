@@ -98,12 +98,18 @@ class Step2View(View):
         status.save()
         return status
 
-    def get(self, request, pluginid):
+    def __route_to_pluginview(self, pluginid):
         status = self.__get_or_create_status()
         pluginclass = registry.qualifiesforexam_plugins.get(pluginid)
         plugin = pluginclass()
         viewclass = plugin.get_viewclass()
-        return viewclass.as_view()(request, status=status)
+        return viewclass.as_view()(self.request, status=status)
+
+    def get(self, request, pluginid):
+        return self.__route_to_pluginview(pluginid=pluginid)
+
+    def post(self, request, pluginid):
+        return self.__route_to_pluginview(pluginid=pluginid)
 
 
 class ListViewStep3(ListViewMixin):
