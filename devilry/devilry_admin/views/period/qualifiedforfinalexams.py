@@ -94,6 +94,8 @@ class Step2View(View):
             status = Status(
                 period=period)
         status.status = Status.IN_PROGRESS
+        status.full_clean()
+        status.save()
         return status
 
     def get(self, request, pluginid):
