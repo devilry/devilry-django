@@ -1,6 +1,6 @@
 {% extends "devilry_theme/printbase.django.html" %}
-{% load i18n %}
 {% load crispy_forms_tags %}
+{% load i18n %}
 
 {% block title %}
     {{ status.period.get_path }} - {% trans "Qualifies for final exams" %}
@@ -13,11 +13,7 @@
         }
         window.onload = function(){
             var sortbyfield = document.getElementById('sortby-field')
-            if(sortbyfield.addEventListener) {
-                sortbyfield.addEventListener('change', onSortByChange)
-            } else { // IE 8
-                sortbyfield.attachEvent('onchange', onSortByChange)
-            }
+            sortbyfield.addEventListener('change', onSortByChange)
         };
     </script>
 {% endblock %}

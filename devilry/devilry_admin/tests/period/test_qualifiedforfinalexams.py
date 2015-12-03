@@ -1,8 +1,10 @@
 from django_cradmin import cradmin_testhelpers
 from django import test
+from django.conf import settings
 from model_mommy import mommy
 from devilry.devilry_admin.views.period import qualifiedforfinalexams
 from devilry.devilry_qualifiesforexam.models import Status
+import htmls
 
 
 class TestListViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -56,7 +58,6 @@ class TestListViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(user1.fullname, page_list[0].alltext_normalized)
         self.assertEqual(user2.fullname, page_list[2].alltext_normalized)
         self.assertEqual(user3.fullname, page_list[1].alltext_normalized)
-
 
 
 class TestListViewStep3(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -140,11 +141,9 @@ class TestRetractionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                 'data': {
                     'message': '',
                 }
-            })
-        mockresponse.selector.prettyprint()
-        self.assertEqual("", "")
-        #self.assertTrue(mockresponse.selector.exists('#div_id_message'))
-        #self.assertTrue(mockresponse.selector.exists('.alert-danger'))
+            }
+        )
+        self.assertTrue(mockresponse.selector.exists('#div_id_message.has-error'))
 
     def test_post_with_required_field_filled(self):
         """
@@ -153,7 +152,7 @@ class TestRetractionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         subject = mommy.make('core.Subject')
         period = mommy.make('core.Period', parentnode=subject)
         status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
-        mockresponse = self.mock_http302_postrequest(
+        self.mock_http302_postrequest(
             cradmin_role=period,
             viewkwargs={'pk': status.id},
             requestkwargs={
@@ -161,7 +160,6 @@ class TestRetractionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
                     'message': 'test',
                 }
             })
-        self.assertEquals(302, mockresponse.response.status_code)
         status_after = Status.objects.get(id=status.id)
         self.assertEquals(status_after.message, 'test')
 
@@ -173,10 +171,13 @@ class TestPrintQualifiedStudentsView(test.TestCase, cradmin_testhelpers.TestCase
         """
         Test for the view title.
         """
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         subject = mommy.make('core.Subject', short_name="INF100")
-        period = mommy.make('core.Period', short_name="Spring 2015", parentnode=subject)#, admins=self.requestuser)
+        period = mommy.make('core.Period', short_name="Spring 2015", parentnode=subject, admins=[requestuser])
         status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period, viewkwargs={'status_id': status.id})
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=period, viewkwargs={'status_id': status.id}, requestuser=requestuser
+        )
         view_title = mockresponse.selector.one('h1').alltext_normalized
         self.assertEquals(view_title, subject.short_name+"."+period.short_name)
 
@@ -184,10 +185,13 @@ class TestPrintQualifiedStudentsView(test.TestCase, cradmin_testhelpers.TestCase
         """
         Test for the button for printing the list of qualified students in view ('PrintQualifiedStudents').
         """
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         subject = mommy.make('core.Subject')
-        period = mommy.make('core.Period', parentnode=subject)#Also here
+        period = mommy.make('core.Period', parentnode=subject, admins=[requestuser])
         status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period, viewkwargs={'status_id': status.id})
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=period, viewkwargs={'status_id': status.id}, requestuser=requestuser
+        )
         button_text = mockresponse.selector.one('.btn-primary').alltext_normalized
         self.assertEquals('Print', button_text)
 
@@ -195,16 +199,21 @@ class TestPrintQualifiedStudentsView(test.TestCase, cradmin_testhelpers.TestCase
         """
         Test that a form appears on the page view ('PrintQualifiedStudents').
         """
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         subject = mommy.make('core.Subject')
-        period = mommy.make('core.Period', parentnode=subject)#Also here
+        period = mommy.make('core.Period', parentnode=subject, admins=[requestuser])
         status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period, viewkwargs={'status_id': status.id})
-        form = mockresponse.selector.list('form')
-        self.assertEquals(1, len(form))
+        options = 'NameUsernameLast name'
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=period, viewkwargs={'status_id': status.id}, requestuser=requestuser
+        )
+        form = mockresponse.selector.one('#sortby-field').alltext_normalized
+        self.assertEquals(form, options)
 
     def test_get_students(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         subject = mommy.make('core.Subject')
-        period = mommy.make('core.Period', parentnode=subject)#Also here
+        period = mommy.make('core.Period', parentnode=subject, admins=[requestuser])
         status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
         user1 = mommy.make('devilry_account.User', fullname="A")
         user2 = mommy.make('devilry_account.User', fullname="C")
@@ -224,19 +233,22 @@ class TestPrintQualifiedStudentsView(test.TestCase, cradmin_testhelpers.TestCase
                    relatedstudent=related_student3,
                    status=status,
                    qualifies=False)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period, viewkwargs={'status_id': status.id})
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=period, viewkwargs={'status_id': status.id}, requestuser=requestuser
+        )
         success_labels = mockresponse.selector.list('.label-success')
         warning_labels = mockresponse.selector.list('.label-warning')
         self.assertEquals(2, len(success_labels))
         self.assertEquals(1, len(warning_labels))
 
     def test_get_students_ordered_by_name(self):
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
         subject = mommy.make('core.Subject')
-        period = mommy.make('core.Period', parentnode=subject)#Also here
+        period = mommy.make('core.Period', parentnode=subject, admins=[requestuser])
         status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
-        user1 = mommy.make('devilry_account.User', fullname="A")
-        user2 = mommy.make('devilry_account.User', fullname="C")
-        user3 = mommy.make('devilry_account.User', fullname="B")
+        user1 = mommy.make('devilry_account.User', fullname="God of Fertility", shortname="fert@example.com")
+        user2 = mommy.make('devilry_account.User', fullname="Celine Redmiles", shortname="celred@example.com")
+        user3 = mommy.make('devilry_account.User', fullname="April Duck", shortname="duck32@example.com")
         related_student1 = mommy.make('core.RelatedStudent', user=user1, period=period)
         related_student2 = mommy.make('core.RelatedStudent', user=user2, period=period)
         related_student3 = mommy.make('core.RelatedStudent', user=user3, period=period)
@@ -251,14 +263,98 @@ class TestPrintQualifiedStudentsView(test.TestCase, cradmin_testhelpers.TestCase
         mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
                    relatedstudent=related_student3,
                    status=status,
-                   qualifies=False)
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period,
-                                                          viewkwargs={'status_id': status.id})
-        mockresponse.selector.prettyprint()
-        self.assertEqual('', '')
+                   qualifies=True)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=period,
+            viewkwargs={'status_id': status.id},
+            requestuser=requestuser,
+            requestkwargs={
+                'data': {
+                    'sortby': 'name',
+                }
+            }
+        )
+        student_list = mockresponse.selector.list('.fullname')
+        self.assertEquals(3, len(student_list))
+        self.assertEqual(student_list[0].alltext_normalized, user3.fullname)
+        self.assertEqual(student_list[1].alltext_normalized, user2.fullname)
+        self.assertEqual(student_list[2].alltext_normalized, user1.fullname)
 
     def test_get_students_ordered_by_lastname(self):
-        pass
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject, admins=[requestuser])
+        status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
+        user1 = mommy.make('devilry_account.User', fullname="God of Fertility", lastname="Fertility")
+        user2 = mommy.make('devilry_account.User', fullname="Celine Redmiles", lastname="Redmiles")
+        user3 = mommy.make('devilry_account.User', fullname="April Duck", lastname="Duck")
+        related_student1 = mommy.make('core.RelatedStudent', user=user1, period=period)
+        related_student2 = mommy.make('core.RelatedStudent', user=user2, period=period)
+        related_student3 = mommy.make('core.RelatedStudent', user=user3, period=period)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student1,
+                   status=status,
+                   qualifies=True)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student2,
+                   status=status,
+                   qualifies=True)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student3,
+                   status=status,
+                   qualifies=True)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=period,
+            viewkwargs={'status_id': status.id},
+            requestuser=requestuser,
+            requestkwargs={
+                'data': {
+                    'sortby': 'lastname',
+                }
+            }
+        )
+        student_list = mockresponse.selector.list('.fullname')
+        self.assertEquals(3, len(student_list))
+        self.assertEqual(student_list[0].alltext_normalized, user3.fullname)
+        self.assertEqual(student_list[1].alltext_normalized, user1.fullname)
+        self.assertEqual(student_list[2].alltext_normalized, user2.fullname)
 
     def test_get_students_ordered_by_username(self):
-        pass
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject, admins=[requestuser])
+        status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.READY, plugin="Test")
+        user1 = mommy.make('devilry_account.User', fullname="God of Fertility", shortname="fert@example.com")
+        user2 = mommy.make('devilry_account.User', fullname="Celine Redmiles", shortname="celred@example.com")
+        user3 = mommy.make('devilry_account.User', fullname="April Duck", shortname="guck32@example.com")
+        related_student1 = mommy.make('core.RelatedStudent', user=user1, period=period)
+        related_student2 = mommy.make('core.RelatedStudent', user=user2, period=period)
+        related_student3 = mommy.make('core.RelatedStudent', user=user3, period=period)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student1,
+                   status=status,
+                   qualifies=True)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student2,
+                   status=status,
+                   qualifies=True)
+        mommy.make('devilry_qualifiesforexam.QualifiesForFinalExam',
+                   relatedstudent=related_student3,
+                   status=status,
+                   qualifies=True)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=period,
+            viewkwargs={'status_id': status.id},
+            requestuser=requestuser,
+            requestkwargs={
+                'data': {
+                    'sortby': 'username',
+                }
+            }
+        )
+        student_list = mockresponse.selector.list('.fullname')
+        self.assertEquals(3, len(student_list))
+        self.assertEqual(student_list[0].alltext_normalized, user2.fullname)
+        self.assertEqual(student_list[1].alltext_normalized, user1.fullname)
+        self.assertEqual(student_list[2].alltext_normalized, user3.fullname)
+

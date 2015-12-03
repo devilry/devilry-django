@@ -6,7 +6,7 @@ from django_cradmin.viewhelpers import objecttable, update
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 from devilry.devilry_account.models import UserEmail
-from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam, Status
+from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam, Status, Period
 from django.views.generic import TemplateView
 from devilry.devilry_student.cradminextensions.columntypes import BooleanYesNoColumn
 from django.http import HttpResponseNotFound
@@ -120,19 +120,13 @@ class RetractionView(update.UpdateView):
     fields = ['message']
     submit_save_label = ugettext_lazy('Save')
 
+    def get_form(self, form_class=None):
+        form = super(RetractionView, self).get_form(form_class=form_class)
+        form.fields['message'].required = True
+        return form
+
     def get_queryset_for_role(self, role):
         return Status.objects.filter(period=self.request.cradmin_role)
-
-    # def get_success_url(self):
-    #     app = self.request.cradmin_app
-    #     return redirect(app.reverse_appurl(crapp.INDEXVIEW_NAME))
-
-    def set_automatic_attributes(self, obj):
-        super(RetractionView, self). set_automatic_attributes(obj)
-        obj.status = Status.NOTREADY
-
-    # It is necessary to check the permission before retracting
-    # En la plantilla: action="{% cradmin_appurl "myview" pk=status.id %}"
 
 
 class PrintQualifiedStudentsViewForm(forms.Form):
@@ -173,10 +167,9 @@ class PrintQualifiedStudentsView(TemplateView):
         except Status.DoesNotExist:
             return HttpResponseNotFound()
         else:
-            #if not Period.where_is_admin_or_superadmin(self.request.user).filter(id=self.status.period_id).exists():
-             #   return HttpResponseForbidden()
-           # el
-            if self.status.status != Status.READY:
+            if not Period.where_is_admin_or_superadmin(self.request.user).filter(id=self.status.period_id).exists():
+                return HttpResponseForbidden()
+            elif self.status.status != Status.READY:
                 return HttpResponseNotFound()
             else:
                 response = super(PrintQualifiedStudentsView, self).get(request, status_id)
