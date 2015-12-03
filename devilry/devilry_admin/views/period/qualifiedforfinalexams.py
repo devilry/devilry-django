@@ -5,16 +5,16 @@ from django_cradmin import crapp
 from django_cradmin.viewhelpers import objecttable, update
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext_lazy
-from devilry.devilry_account.models import UserEmail
-from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam, Status, Period
-from django.views.generic import TemplateView
-from devilry.devilry_qualifiesforexam import registry
-from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam, Status
 from django.views.generic import TemplateView, View
-from devilry.devilry_student.cradminextensions.columntypes import BooleanYesNoColumn
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseForbidden
 from django import forms
+
+from devilry.devilry_account.models import UserEmail
+from devilry.devilry_qualifiesforexam.models import Period
+from devilry.devilry_qualifiesforexam import registry
+from devilry.devilry_qualifiesforexam.models import QualifiesForFinalExam, Status
+from devilry.devilry_student.cradminextensions.columntypes import BooleanYesNoColumn
 
 
 class GetQuerysetForRoleMixin(object):
