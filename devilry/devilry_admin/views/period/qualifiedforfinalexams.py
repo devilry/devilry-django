@@ -9,6 +9,7 @@ from django.views.generic import TemplateView, View
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseForbidden
 from django import forms
+from devilry.apps.core.models import RelatedStudent, AssignmentGroup
 
 from devilry.devilry_account.models import UserEmail
 from devilry.devilry_qualifiesforexam.models import Period
@@ -111,7 +112,21 @@ class Step2View(View):
         return self.__route_to_pluginview(pluginid=pluginid)
 
     def post(self, request, pluginid):
-        return self.__route_to_pluginview(pluginid=pluginid)
+        app = self.request.cradmin_app
+        #Get assignments for related students and decide if qualified
+        assignments = self.request.POST.getlist('choices')
+
+        for student in RelatedStudent.objects.filter(period=self.request.cradmin_role):
+            #student_qualifies = True
+            print(student)
+            #No estoy filtrando bien porque cojo el longname del assgnment y deberia coger el id o algo de eso
+            for element in assignments:
+                print(AssignmentGroup.objects.filter(parentnode=element))
+                #print(AssignmentGroup.objects.filter(parentnode=element).q_is_candidate(student))
+                #print(AssignmentGroup.objects.filter(parentnode=element).q_is_candidate(student).feedback.is_passing_grade())
+                #if AssignmentGroup.objects.filter(parentnode=element).q_is_candidate(student).feedback.is_passing_grade():
+                    #student_qualifies = False
+        return redirect(app.reverse_appurl('step3'))
 
 
 class ListViewStep3(ListViewMixin):

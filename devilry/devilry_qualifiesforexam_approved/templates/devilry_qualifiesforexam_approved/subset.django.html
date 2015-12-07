@@ -1,0 +1,22 @@
+{% extends "django_cradmin/viewhelpers/objecttable/objecttable.django.html" %}
+{% load i18n %}
+{% load cradmin_tags %}
+{% load crispy_forms_tags %}
+
+
+{% block content %}
+
+<div class="container">
+    <p>{% trans "Select assignments that students must pass to qualify for final exams" %}</p>
+
+    <form method="post" action="{{ request.get_path }}">
+        {% csrf_token %}
+        {{ form }}
+        <button type="submit" class="btn btn-primary">
+            {% trans "Confirm" %}
+        </button>
+    </form>
+
+</div>
+
+{% endblock content %}
