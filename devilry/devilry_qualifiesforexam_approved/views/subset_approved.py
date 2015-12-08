@@ -9,7 +9,7 @@ class SelectForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.period = kwargs.pop('period')
         super(SelectForm, self).__init__(*args, **kwargs)
-        val = Assignment.objects.filter(parentnode=self.period).values_list('short_name', 'long_name')
+        val = Assignment.objects.filter(parentnode=self.period).values_list('id', 'long_name')
         self.fields['choices'] = forms.MultipleChoiceField(
             widget=forms.CheckboxSelectMultiple,
             choices=val,

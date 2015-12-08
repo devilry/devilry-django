@@ -9,7 +9,7 @@ from django.views.generic import TemplateView, View
 from django.http import HttpResponseNotFound
 from django.http import HttpResponseForbidden
 from django import forms
-from devilry.apps.core.models import RelatedStudent, AssignmentGroup
+from devilry.apps.core.models import RelatedStudent, AssignmentGroup, StaticFeedback
 
 from devilry.devilry_account.models import UserEmail
 from devilry.devilry_qualifiesforexam.models import Period
@@ -115,17 +115,46 @@ class Step2View(View):
         app = self.request.cradmin_app
         #Get assignments for related students and decide if qualified
         assignments = self.request.POST.getlist('choices')
+        period = self.request.cradmin_role
 
         for student in RelatedStudent.objects.filter(period=self.request.cradmin_role):
-            #student_qualifies = True
-            print(student)
-            #No estoy filtrando bien porque cojo el longname del assgnment y deberia coger el id o algo de eso
-            for element in assignments:
-                print(AssignmentGroup.objects.filter(parentnode=element))
-                #print(AssignmentGroup.objects.filter(parentnode=element).q_is_candidate(student))
-                #print(AssignmentGroup.objects.filter(parentnode=element).q_is_candidate(student).feedback.is_passing_grade())
-                #if AssignmentGroup.objects.filter(parentnode=element).q_is_candidate(student).feedback.is_passing_grade():
-                    #student_qualifies = False
+            print('----')
+            student_should_qualify = True
+            for assignment in assignments:
+                print(assignment)
+                assignment_group = AssignmentGroup.where_is_candidate(student.user).get(
+                    parentnode__parentnode=period, parentnode=assignment
+                )
+                print("Info about the Assignment Group:")
+                print(assignment_group.id)
+                print(assignment_group)
+                print(assignment_group.get_status())
+
+                if assignment_group.get_status() == 'corrected':
+                    print("Assignment is corrected: ")
+                    try:
+                        student_should_qualify = assignment_group.feedback.is_passing_grade
+                        print("There is feedback available. Feedback ID:")
+                        print(assignment_group.feedback.id)
+                        print(assignment_group.feedback.id)
+                    except StaticFeedback.DoesNotExist:
+                        print("NO feedback")
+                        student_should_qualify = False
+                else:
+                    print("NOT corrected: ")
+                    student_should_qualify = False
+
+                if not student_should_qualify:
+                    break
+
+            if student_should_qualify:
+                print("Pass")
+            else:
+                print("Fail")
+            # related_student = RelatedStudent.objects.get(id=student.id)
+            # related_student.qualifies = student_should_qualify
+            # related_student.full_clean()
+            # related_student.save()
         return redirect(app.reverse_appurl('step3'))
 
 
