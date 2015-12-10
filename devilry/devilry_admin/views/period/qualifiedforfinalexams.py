@@ -31,6 +31,9 @@ class GetQuerysetForRoleMixin(object):
 class SelectPlugin(TemplateView):
     template_name = 'devilry_admin/period/qualifiedforfinalexams/selectplugin.django.html'
 
+    def get_pagetitle(self):
+        return _('Examiners')
+
     def get_context_data(self, **kwargs):
         context = super(SelectPlugin, self).get_context_data(**kwargs)
         context['qualifiesforexam_plugins'] = registry.qualifiesforexam_plugins

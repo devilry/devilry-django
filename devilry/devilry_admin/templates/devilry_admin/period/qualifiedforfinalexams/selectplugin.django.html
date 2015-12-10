@@ -3,17 +3,14 @@
 {% load cradmin_tags %}
 
 
-{% block title %}
-    TODO
-{% endblock title %}
-
 {% block pageheader-inner %}
     <h1>
-        TODO
+        {% trans "How do students qualify for final exams?" %}
     </h1>
 {% endblock pageheader-inner %}
 
 {% block content %}
+
     <div class="container">
         <ul>
             {% for plugin in qualifiesforexam_plugins.iterplugins %}
@@ -25,4 +22,5 @@
             {% endfor %}
         </ul>
     </div>
+
 {% endblock content %}

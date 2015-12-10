@@ -1,10 +1,12 @@
+from django.utils.translation import ugettext_lazy
 from django_cradmin import cradmin_testhelpers
 from django import test
 from django.conf import settings
 from model_mommy import mommy
 from devilry.devilry_admin.views.period import qualifiedforfinalexams
 from devilry.devilry_qualifiesforexam.models import Status
-import htmls
+from devilry.devilry_qualifiesforexam.registry import RegistryItem, Registry
+from mock import patch
 
 
 class TestListViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -357,4 +359,72 @@ class TestPrintQualifiedStudentsView(test.TestCase, cradmin_testhelpers.TestCase
         self.assertEqual(student_list[0].alltext_normalized, user2.fullname)
         self.assertEqual(student_list[1].alltext_normalized, user1.fullname)
         self.assertEqual(student_list[2].alltext_normalized, user3.fullname)
+
+
+class TestSelectPluginView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = qualifiedforfinalexams.SelectPlugin
+
+    def test_get_view_title(self):
+        """
+        Test for the view title.
+        """
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period)
+        view_title = mockresponse.selector.one('.django-cradmin-page-header-inner').alltext_normalized
+        self.assertEquals('How do students qualify for final exams?', view_title)
+
+    def test_get_plugins_by_default(self):
+        """
+        Test for the plugins available
+        """
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)
+        #plugin1 = mommy.make('devilry_qualifiesforexam_approved')
+        #plugin2 = mommy.make('devilry_qualifiesforexam_points')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period)
+        plugin_list = mockresponse.selector.list('li')
+        self.assertEquals(2, len(plugin_list))
+
+    def test_get_plugins(self):
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)
+
+        class TestPlugin(RegistryItem):
+            id = 'devilry_qualifiesforexam_approved.all'
+            def get_title(self):
+                return ugettext_lazy('Plugin')
+
+        registry = Registry()
+        registry.add(TestPlugin)
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins', registry):
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period)
+        #mockresponse.selector.prettyprint()
+
+
+class TestStep2View(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = qualifiedforfinalexams.Step2View
+
+    def test_get_view_title(self):
+        """
+        Test for the view title.
+        """
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)
+
+        class TestPlugin(RegistryItem):
+            id = 'testplugin'
+
+        registry = Registry()
+        registry.add(TestPlugin())
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry', registry):
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period,
+                                                              viewkwargs={'pluginid': 'testplugin'})
+
+            #view_title = mockresponse.selector.one('.django-cradmin-page-header-inner').alltext_normalized
+            #self.assertEquals('Select assignments to qualify', view_title)
+        #mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period, pluginid='devilry_qualifiesforexam_approved.subset')
+
+
+
 

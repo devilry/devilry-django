@@ -4,7 +4,6 @@ from django import forms
 from django_cradmin.viewhelpers.formbase import FormView
 
 
-
 class SelectForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.period = kwargs.pop('period')
