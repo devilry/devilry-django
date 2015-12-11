@@ -116,8 +116,11 @@ class Step2View(View):
 
     def post(self, request, pluginid):
         app = self.request.cradmin_app
+        status = Status.objects.get(period=self.request.cradmin_role)
+
         #Get assignments for related students and decide if qualified
         assignments = self.request.POST.getlist('choices')
+        print(assignments)
         period = self.request.cradmin_role
 
         for student in RelatedStudent.objects.filter(period=self.request.cradmin_role):
@@ -154,6 +157,14 @@ class Step2View(View):
                 print("Pass")
             else:
                 print("Fail")
+            try:
+                qualifies_for_final_exam = QualifiesForFinalExam.objects.get(relatedstudent=student, status=status)
+            except QualifiesForFinalExam.DoesNotExist:
+                qualifies_for_final_exam = QualifiesForFinalExam.objects.create(relatedstudent=student, status=status)
+            qualifies_for_final_exam.qualifies = student_should_qualify
+            qualifies_for_final_exam.full_clean()
+            qualifies_for_final_exam.save()
+
             # related_student = RelatedStudent.objects.get(id=student.id)
             # related_student.qualifies = student_should_qualify
             # related_student.full_clean()

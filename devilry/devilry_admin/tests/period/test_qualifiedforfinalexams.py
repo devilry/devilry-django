@@ -3,6 +3,7 @@ from django_cradmin import cradmin_testhelpers
 from django import test
 from django.conf import settings
 from model_mommy import mommy
+from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_admin.views.period import qualifiedforfinalexams
 from devilry.devilry_qualifiesforexam.models import Status
 from devilry.devilry_qualifiesforexam.registry import RegistryItem, Registry
@@ -432,6 +433,31 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
             button_text = mockresponse.selector.one('.btn-primary').alltext_normalized
             self.assertEquals('Confirm', button_text)
 
+    def test_update_status(self):
+        """
+        Test to the status.
+        """
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)
+        status = mommy.make('devilry_qualifiesforexam.Status',
+                            period=period,
+                            plugin=SubsetApprovedPluginItem.id)
+        registry = Registry()
+        registry.add(SubsetApprovedPluginItem)
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins',
+                   registry):
+            self.mock_getrequest(cradmin_role=period,
+                                 viewkwargs={'pluginid': SubsetApprovedPluginItem.id},
+                                 requestuser=requestuser)
+            status_after = Status.objects.get(id=status.id)
+            self.assertEquals(status_after.status, Status.IN_PROGRESS)
+            self.assertEquals(status_after.plugin, SubsetApprovedPluginItem.id)
+            self.assertEquals(status_after.user, requestuser)
+    def test_create_status(self):
+        pass
+        #To be implemented
+
     def test_get_assignment(self):
         """
         Test for getting the assignments that belong to the period.
@@ -467,3 +493,41 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
             #mockresponse.selector.prettyprint()
             plugin_list = mockresponse.selector.list('li')
             self.assertEquals(3, len(plugin_list))
+
+    def test_post_without_required_fields(self):
+        """
+        Test which makes a post request without choosing any assignment.
+        """
+        # To be implemented
+        pass
+
+    def test_post_with_required_fields_without_feedback(self):
+        """
+        Test which makes a post request with the chosen assignment.
+        """
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)
+
+        assignment1 = mommy.make('core.Assignment', parentnode=period, long_name="Assignment 1")
+        user1 = mommy.make('devilry_account.User')
+        related_student1 = mommy.make('core.RelatedStudent', user=user1, period=period)
+        assignment_group_student1 = mommy.make('core.AssignmentGroup', parentnode=assignment1)
+        mommy.make('core.Candidate',
+                   student=user1,
+                   assignment_group=assignment_group_student1,
+                   relatedstudent=related_student1)
+
+        registry = Registry()
+        registry.add(SubsetApprovedPluginItem)
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins',
+                   registry):
+            mockresponse = self.mock_http302_postrequest(
+                cradmin_role=period,
+                viewkwargs={'pluginid': SubsetApprovedPluginItem.id},
+                requestkwargs={
+                    'data': {
+                        'choices': [assignment1.id],
+                    }
+                })
+            related_student_after = RelatedStudent.objects.get(pk=related_student1.id)
+            self.assertEquals(related_student_after.qualifies, False)

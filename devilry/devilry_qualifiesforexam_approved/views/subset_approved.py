@@ -12,7 +12,7 @@ class SelectForm(forms.Form):
         self.fields['choices'] = forms.MultipleChoiceField(
             widget=forms.CheckboxSelectMultiple,
             choices=val,
-            required=True
+            required=True #The required field doesn't work
         )
 
 
