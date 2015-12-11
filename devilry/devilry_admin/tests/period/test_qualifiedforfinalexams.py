@@ -7,6 +7,7 @@ from devilry.devilry_admin.views.period import qualifiedforfinalexams
 from devilry.devilry_qualifiesforexam.models import Status
 from devilry.devilry_qualifiesforexam.registry import RegistryItem, Registry
 from mock import patch
+from devilry.devilry_qualifiesforexam_approved.apps import SubsetApprovedPluginItem
 
 
 class TestListViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -374,35 +375,31 @@ class TestSelectPluginView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         view_title = mockresponse.selector.one('.django-cradmin-page-header-inner').alltext_normalized
         self.assertEquals('How do students qualify for final exams?', view_title)
 
-    def test_get_plugins_by_default(self):
-        """
-        Test for the plugins available
-        """
-        subject = mommy.make('core.Subject')
-        period = mommy.make('core.Period', parentnode=subject)
-        #plugin1 = mommy.make('devilry_qualifiesforexam_approved')
-        #plugin2 = mommy.make('devilry_qualifiesforexam_points')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period)
-        plugin_list = mockresponse.selector.list('li')
-        self.assertEquals(2, len(plugin_list))
-
     def test_get_plugins(self):
         subject = mommy.make('core.Subject')
         period = mommy.make('core.Period', parentnode=subject)
 
-        class TestPlugin(RegistryItem):
-            id = 'devilry_qualifiesforexam_approved.all'
+        class TestPlugin1(RegistryItem):
+            id = 'devilry.plugin1'
             def get_title(self):
-                return ugettext_lazy('Plugin')
+                return ugettext_lazy('Plugin1')
+
+        class TestPlugin2(RegistryItem):
+            id = 'devilry.plugin2'
+            def get_title(self):
+                return ugettext_lazy('Plugin2')
 
         registry = Registry()
-        registry.add(TestPlugin)
-        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins', registry):
+        registry.add(TestPlugin1)
+        registry.add(TestPlugin2)
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins',
+                   registry):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period)
-        #mockresponse.selector.prettyprint()
+            plugin_list = mockresponse.selector.list('li')
+            self.assertEquals(2, len(plugin_list))
 
 
-class TestStep2View(test.TestCase, cradmin_testhelpers.TestCaseMixin):
+class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = qualifiedforfinalexams.Step2View
 
     def test_get_view_title(self):
@@ -411,20 +408,62 @@ class TestStep2View(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         """
         subject = mommy.make('core.Subject')
         period = mommy.make('core.Period', parentnode=subject)
-
-        class TestPlugin(RegistryItem):
-            id = 'testplugin'
-
         registry = Registry()
-        registry.add(TestPlugin())
-        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry', registry):
+        registry.add(SubsetApprovedPluginItem)
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins',
+                   registry):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period,
-                                                              viewkwargs={'pluginid': 'testplugin'})
+                                                              viewkwargs={'pluginid': SubsetApprovedPluginItem.id})
+            view_title = mockresponse.selector.one('.django-cradmin-page-header-inner').alltext_normalized
+            self.assertEquals('Select assignments to qualify', view_title)
 
-            #view_title = mockresponse.selector.one('.django-cradmin-page-header-inner').alltext_normalized
-            #self.assertEquals('Select assignments to qualify', view_title)
-        #mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period, pluginid='devilry_qualifiesforexam_approved.subset')
+    def test_get_confirm_button_text(self):
+        """
+        Test for the button for confirming the chosen assignments.
+        """
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)
+        registry = Registry()
+        registry.add(SubsetApprovedPluginItem)
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins',
+                   registry):
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period,
+                                                              viewkwargs={'pluginid': SubsetApprovedPluginItem.id})
+            button_text = mockresponse.selector.one('.btn-primary').alltext_normalized
+            self.assertEquals('Confirm', button_text)
 
+    def test_get_assignment(self):
+        """
+        Test for getting the assignments that belong to the period.
+        """
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)
+        assignment = mommy.make('core.Assignment', parentnode=period, long_name="Assignment 1")
+        registry = Registry()
+        registry.add(SubsetApprovedPluginItem)
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins',
+                   registry):
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period,
+                                                              viewkwargs={'pluginid': SubsetApprovedPluginItem.id})
+            assignment_text = mockresponse.selector.one('li').alltext_normalized
+            self.assertEquals(assignment.long_name, assignment_text)
 
-
-
+    def test_get_assignments(self):
+        """
+        Test for getting the assingments that belong to the period.
+        """
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)
+        mommy.make('core.Assignment', parentnode=period, long_name="Assignment 1")
+        mommy.make('core.Assignment', parentnode=period, long_name="Assignment 2")
+        mommy.make('core.Assignment', parentnode=period, long_name="Assignment 3")
+        mommy.make('core.Assignment', long_name="Assignment 4")
+        registry = Registry()
+        registry.add(SubsetApprovedPluginItem)
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins',
+                   registry):
+            mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period,
+                                                              viewkwargs={'pluginid': SubsetApprovedPluginItem.id})
+            #mockresponse.selector.prettyprint()
+            plugin_list = mockresponse.selector.list('li')
+            self.assertEquals(3, len(plugin_list))
