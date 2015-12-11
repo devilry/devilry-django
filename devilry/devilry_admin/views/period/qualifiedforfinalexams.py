@@ -120,20 +120,20 @@ class Step2View(View):
 
         #Get assignments for related students and decide if qualified
         assignments = self.request.POST.getlist('choices')
-        print(assignments)
+        #print(assignments)
         period = self.request.cradmin_role
 
         for student in RelatedStudent.objects.filter(period=self.request.cradmin_role):
             print('----')
             student_should_qualify = True
             for assignment in assignments:
-                print(assignment)
+                #print(assignment)
                 assignment_group = AssignmentGroup.where_is_candidate(student.user).get(
                     parentnode__parentnode=period, parentnode=assignment
                 )
                 print("Info about the Assignment Group:")
-                print(assignment_group.id)
-                print(assignment_group)
+                #print(assignment_group.id)
+                #print(assignment_group)
                 print(assignment_group.get_status())
 
                 if assignment_group.get_status() == 'corrected':
@@ -142,12 +142,12 @@ class Step2View(View):
                         student_should_qualify = assignment_group.feedback.is_passing_grade
                         print("There is feedback available. Feedback ID:")
                         print(assignment_group.feedback.id)
-                        print(assignment_group.feedback.id)
+                        print(student_should_qualify)
                     except StaticFeedback.DoesNotExist:
                         print("NO feedback")
                         student_should_qualify = False
                 else:
-                    print("NOT corrected: ")
+                    #print("NOT corrected: ")
                     student_should_qualify = False
 
                 if not student_should_qualify:
@@ -164,11 +164,6 @@ class Step2View(View):
             qualifies_for_final_exam.qualifies = student_should_qualify
             qualifies_for_final_exam.full_clean()
             qualifies_for_final_exam.save()
-
-            # related_student = RelatedStudent.objects.get(id=student.id)
-            # related_student.qualifies = student_should_qualify
-            # related_student.full_clean()
-            # related_student.save()
         return redirect(app.reverse_appurl('step3'))
 
 

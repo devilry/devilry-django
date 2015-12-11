@@ -3,9 +3,8 @@ from django_cradmin import cradmin_testhelpers
 from django import test
 from django.conf import settings
 from model_mommy import mommy
-from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_admin.views.period import qualifiedforfinalexams
-from devilry.devilry_qualifiesforexam.models import Status
+from devilry.devilry_qualifiesforexam.models import Status, QualifiesForFinalExam
 from devilry.devilry_qualifiesforexam.registry import RegistryItem, Registry
 from mock import patch
 from devilry.devilry_qualifiesforexam_approved.apps import SubsetApprovedPluginItem
@@ -22,7 +21,7 @@ class TestListViewMixin(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         period = mommy.make('core.Period', parentnode=subject, short_name="Spring 2015")
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period)
         view_message = mockresponse.selector.one('#objecttableview-no-items-message').alltext_normalized
-        self.assertEqual("There is no students registered for "+subject.short_name+"."+period.short_name+".",
+        self.assertEqual("There is no students registered for " + subject.short_name + "." + period.short_name + ".",
                          view_message)
 
     def test_get_view_with_one_student(self):
@@ -125,7 +124,7 @@ class TestListViewStep4(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual("Update", button_list[1].alltext_normalized)
         self.assertEqual("Retract", button_list[2].alltext_normalized)
 
-    # test post_method (redirects to step1 to start the process again)
+        # test post_method (redirects to step1 to start the process again)
 
 
 class TestRetractionView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -183,7 +182,7 @@ class TestPrintQualifiedStudentsView(test.TestCase, cradmin_testhelpers.TestCase
             cradmin_role=period, viewkwargs={'status_id': status.id}, requestuser=requestuser
         )
         view_title = mockresponse.selector.one('h1').alltext_normalized
-        self.assertEquals(view_title, subject.short_name+"."+period.short_name)
+        self.assertEquals(view_title, subject.short_name + "." + period.short_name)
 
     def test_get_print_button_text(self):
         """
@@ -382,11 +381,13 @@ class TestSelectPluginView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
         class TestPlugin1(RegistryItem):
             id = 'devilry.plugin1'
+
             def get_title(self):
                 return ugettext_lazy('Plugin1')
 
         class TestPlugin2(RegistryItem):
             id = 'devilry.plugin2'
+
             def get_title(self):
                 return ugettext_lazy('Plugin2')
 
@@ -454,9 +455,22 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
             self.assertEquals(status_after.status, Status.IN_PROGRESS)
             self.assertEquals(status_after.plugin, SubsetApprovedPluginItem.id)
             self.assertEquals(status_after.user, requestuser)
+
     def test_create_status(self):
-        pass
-        #To be implemented
+        requestuser = mommy.make(settings.AUTH_USER_MODEL)
+        subject = mommy.make('core.Subject')
+        period = mommy.make('core.Period', parentnode=subject)
+        registry = Registry()
+        registry.add(SubsetApprovedPluginItem)
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins',
+                   registry):
+            self.mock_getrequest(cradmin_role=period,
+                                 viewkwargs={'pluginid': SubsetApprovedPluginItem.id},
+                                 requestuser=requestuser)
+            status_after = Status.objects.get(period=period)
+            self.assertEquals(status_after.status, Status.IN_PROGRESS)
+            self.assertEquals(status_after.plugin, SubsetApprovedPluginItem.id)
+            self.assertEquals(status_after.user, requestuser)
 
     def test_get_assignment(self):
         """
@@ -490,7 +504,7 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
                    registry):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period,
                                                               viewkwargs={'pluginid': SubsetApprovedPluginItem.id})
-            #mockresponse.selector.prettyprint()
+            # mockresponse.selector.prettyprint()
             plugin_list = mockresponse.selector.list('li')
             self.assertEquals(3, len(plugin_list))
 
@@ -501,7 +515,7 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
         # To be implemented
         pass
 
-    def test_post_with_required_fields_without_feedback(self):
+    def test_post_with_required_fields_without_feedback_one_student(self):
         """
         Test which makes a post request with the chosen assignment.
         """
@@ -510,6 +524,7 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
 
         assignment1 = mommy.make('core.Assignment', parentnode=period, long_name="Assignment 1")
         user1 = mommy.make('devilry_account.User')
+        status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.IN_PROGRESS)
         related_student1 = mommy.make('core.RelatedStudent', user=user1, period=period)
         assignment_group_student1 = mommy.make('core.AssignmentGroup', parentnode=assignment1)
         mommy.make('core.Candidate',
@@ -521,7 +536,7 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
         registry.add(SubsetApprovedPluginItem)
         with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins',
                    registry):
-            mockresponse = self.mock_http302_postrequest(
+            self.mock_http302_postrequest(
                 cradmin_role=period,
                 viewkwargs={'pluginid': SubsetApprovedPluginItem.id},
                 requestkwargs={
@@ -529,5 +544,82 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
                         'choices': [assignment1.id],
                     }
                 })
-            related_student_after = RelatedStudent.objects.get(pk=related_student1.id)
-            self.assertEquals(related_student_after.qualifies, False)
+            qualifies_after = QualifiesForFinalExam.objects.get(status=status, relatedstudent=related_student1)
+            self.assertEquals(qualifies_after.qualifies, False)
+
+    def test_post_with_required_fields_with_feedback_one_student_doesnt_pass(self):
+        """
+        Test which makes a post request with the chosen assignment.
+        """
+        subject = mommy.make('core.Subject', long_name="SubjectTest")
+        period = mommy.make('core.Period', parentnode=subject, long_name="PeriodTest")
+
+        assignment1 = mommy.make('core.Assignment', parentnode=period, long_name="AssignmentTest")
+        user1 = mommy.make('devilry_account.User')
+        status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.IN_PROGRESS)
+        related_student1 = mommy.make('core.RelatedStudent', user=user1, period=period)
+        assignment_group_student1 = mommy.make('core.AssignmentGroup',
+                                               parentnode=assignment1,
+                                               is_open=False,
+                                               delivery_status='corrected')
+        candidate = mommy.make('core.Candidate',
+                               student=user1,
+                               assignment_group=assignment_group_student1,
+                               relatedstudent=related_student1)
+        deadline = mommy.make('core.Deadline', assignment_group=assignment_group_student1)
+        delivery = mommy.make('core.Delivery', delivered_by=candidate, deadline=deadline)
+        mommy.make('core.StaticFeedback', delivery=delivery, is_passing_grade=False)
+        registry = Registry()
+        registry.add(SubsetApprovedPluginItem)
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins',
+                   registry):
+            self.mock_http302_postrequest(
+                cradmin_role=period,
+                viewkwargs={'pluginid': SubsetApprovedPluginItem.id},
+                requestkwargs={
+                    'data': {
+                        'choices': [assignment1.id],
+                    }
+                })
+            qualifies_after = QualifiesForFinalExam.objects.get(status=status, relatedstudent=related_student1)
+            self.assertEquals(qualifies_after.qualifies, False)
+
+    def test_post_with_required_fields_with_feedback_one_student_passes(self):
+        """
+        Test which makes a post request with the chosen assignment.
+        """
+        subject = mommy.make('core.Subject', long_name="SubjectTest")
+        period = mommy.make('core.Period', parentnode=subject, long_name="PeriodTest")
+
+        assignment1 = mommy.make('core.Assignment', parentnode=period, long_name="AssignmentTest")
+        user1 = mommy.make('devilry_account.User')
+        status = mommy.make('devilry_qualifiesforexam.Status', period=period, status=Status.IN_PROGRESS)
+        related_student1 = mommy.make('core.RelatedStudent', user=user1, period=period)
+        assignment_group_student1 = mommy.make('core.AssignmentGroup',
+                                               parentnode=assignment1,
+                                               is_open=False,
+                                               delivery_status='corrected')
+        candidate = mommy.make('core.Candidate',
+                               student=user1,
+                               assignment_group=assignment_group_student1,
+                               relatedstudent=related_student1)
+        deadline = mommy.make('core.Deadline', assignment_group=assignment_group_student1)
+        delivery = mommy.make('core.Delivery', delivered_by=candidate, deadline=deadline)
+        mommy.make('core.StaticFeedback', delivery=delivery, is_passing_grade=True)
+
+        registry = Registry()
+        registry.add(SubsetApprovedPluginItem)
+        with patch('devilry.devilry_admin.views.period.qualifiedforfinalexams.registry.qualifiesforexam_plugins',
+                   registry):
+            self.mock_http302_postrequest(
+                cradmin_role=period,
+                viewkwargs={'pluginid': SubsetApprovedPluginItem.id},
+                requestkwargs={
+                    'data': {
+                        'choices': [assignment1.id],
+                    }
+                })
+            qualifies_after = QualifiesForFinalExam.objects.get(status=status, relatedstudent=related_student1)
+            self.assertEquals(qualifies_after.qualifies, True)
+
+    #Questions: should test try-catch and if-else?
