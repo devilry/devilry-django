@@ -434,7 +434,7 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
             button_text = mockresponse.selector.one('.btn-primary').alltext_normalized
             self.assertEquals('Confirm', button_text)
 
-    def test_update_status(self):
+    def test_get_update_status(self):
         """
         Test to the status.
         """
@@ -456,7 +456,7 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
             self.assertEquals(status_after.plugin, SubsetApprovedPluginItem.id)
             self.assertEquals(status_after.user, requestuser)
 
-    def test_create_status(self):
+    def test_get_create_status(self):
         requestuser = mommy.make(settings.AUTH_USER_MODEL)
         subject = mommy.make('core.Subject')
         period = mommy.make('core.Period', parentnode=subject)
@@ -490,7 +490,7 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
 
     def test_get_assignments(self):
         """
-        Test for getting the assingments that belong to the period.
+        Test for getting the assignments that belong to the period.
         """
         subject = mommy.make('core.Subject')
         period = mommy.make('core.Period', parentnode=subject)
@@ -504,7 +504,6 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
                    registry):
             mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=period,
                                                               viewkwargs={'pluginid': SubsetApprovedPluginItem.id})
-            # mockresponse.selector.prettyprint()
             plugin_list = mockresponse.selector.list('li')
             self.assertEquals(3, len(plugin_list))
 
@@ -515,7 +514,7 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
         # To be implemented. At the moment, although I set to true the required field, it doesn't work
         pass
 
-    def test_post_with_required_fields_without_feedback_one_student(self):
+    def test_post_with_required_fields_when_assignment_is_not_corrected(self):
         """
         Test which makes a post request with the chosen assignment.
         """
@@ -547,7 +546,7 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
             qualifies_after = QualifiesForFinalExam.objects.get(status=status, relatedstudent=related_student1)
             self.assertEquals(qualifies_after.qualifies, False)
 
-    def test_post_with_required_fields_with_feedback_one_student_doesnt_pass(self):
+    def test_post_with_required_fields_when_assignment_is_corrected_feedback_available_student_does_not_pass(self):
         """
         Test which makes a post request with the chosen assignment.
         """
@@ -584,7 +583,7 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
             qualifies_after = QualifiesForFinalExam.objects.get(status=status, relatedstudent=related_student1)
             self.assertEquals(qualifies_after.qualifies, False)
 
-    def test_post_with_required_fields_with_feedback_one_student_passes(self):
+    def test_post_with_required_fields_when_assignment_is_corrected_feedback_available_student_passes(self):
         """
         Test which makes a post request with the chosen assignment.
         """
@@ -621,5 +620,3 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
                 })
             qualifies_after = QualifiesForFinalExam.objects.get(status=status, relatedstudent=related_student1)
             self.assertEquals(qualifies_after.qualifies, True)
-
-    #Questions: should test try-catch and if-else?

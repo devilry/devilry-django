@@ -147,7 +147,7 @@ class Step2View(View):
                         print("NO feedback")
                         student_should_qualify = False
                 else:
-                    #print("NOT corrected: ")
+                    print("NOT corrected: ")
                     student_should_qualify = False
 
                 if not student_should_qualify:
