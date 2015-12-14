@@ -512,7 +512,7 @@ class TestStep2SubsetApprovedPluginView(test.TestCase, cradmin_testhelpers.TestC
         """
         Test which makes a post request without choosing any assignment.
         """
-        # To be implemented
+        # To be implemented. At the moment, although I set to true the required field, it doesn't work
         pass
 
     def test_post_with_required_fields_without_feedback_one_student(self):
