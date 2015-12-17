@@ -1,4 +1,4 @@
-import OrderedDict
+from collections import OrderedDict
 
 
 def group_assignmentgroups(assignment_groups):
