@@ -30,3 +30,5 @@ mock==1.0.1
 fabric==1.8.3
 
 elasticsearch-dsl==0.0.4
+
+-e libs/django_cradmin
