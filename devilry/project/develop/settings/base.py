@@ -5,6 +5,7 @@ from django_dbdev.backends.postgres import DBSETTINGS
 from devilry.project.common.settings import *  # noqa
 from .log import create_logging_conf
 
+THIS_DIR = os.path.dirname(__file__)
 
 #########################################################
 #
@@ -159,3 +160,5 @@ MOMMY_CUSTOM_FIELDS_GEN = {
     'devilry.apps.core.models.custom_db_fields.ShortNameField': GenerateShortName(),
     'devilry.apps.core.models.custom_db_fields.LongNameField': generate_long_name,
 }
+
+IEVVTASKS_DUMPDATA_DIRECTORY = os.path.join(os.path.dirname(THIS_DIR), 'dumps')
