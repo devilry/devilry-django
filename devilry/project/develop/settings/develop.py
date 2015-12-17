@@ -1,3 +1,5 @@
+from ievv_opensource.utils import ievvdevrun
+
 from .base import *
 
 # MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.project.develop.middleware.FakeLoginMiddleware']
@@ -110,3 +112,11 @@ DEVILRY_ELASTICSEARCH_HOSTS = [
 
 
 # LANGUAGE_CODE = 'nb'
+
+
+IEVVTASKS_DEVRUN_RUNNABLES = {
+    'default': ievvdevrun.config.RunnableThreadList(
+        ievvdevrun.runnables.dbdev_runserver.RunnableThread(),
+        ievvdevrun.runnables.django_runserver.RunnableThread(),
+    ),
+}
