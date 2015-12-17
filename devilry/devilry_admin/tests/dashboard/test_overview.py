@@ -59,7 +59,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
             [],
-              view._Overview__get_all_subjects_where_user_is_subjectadmin())
+            list(view._Overview__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_not_subjectadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -70,7 +70,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
             [],
-              view._Overview__get_all_subjects_where_user_is_subjectadmin())
+            list(view._Overview__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_one_subjectadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -85,7 +85,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
             user=testuser, subjectpermissiongroup=subjectpermissiongroup)
         self.assertEqual(
             [testsubject],
-            view._Overview__get_all_subjects_where_user_is_subjectadmin())
+            list(view._Overview__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_several_subjectadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -105,7 +105,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 subjectpermissiongroup2])
         self.assertItemsEqual(
             [testsubject2],
-            view._Overview__get_all_subjects_where_user_is_subjectadmin())
+            list(view._Overview__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_subjects_where_user_is_subjectadmin_ordered_subjectadmin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -131,7 +131,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                 subjectpermissiongroup3])
         self.assertEqual(
             [testsubject1, testsubject2, testsubject3],
-            view._Overview__get_all_subjects_where_user_is_subjectadmin())
+            list(view._Overview__get_all_subjects_where_user_is_subjectadmin()))
 
     def test__get_all_periods_where_user_is_subjectadmin_or_periodadmin_none(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -150,7 +150,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         view = self.__minimal_mockrequest_with_user(user=testuser)
         self.assertEqual(
             [],
-              view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
+            view._Overview__get_all_periods_where_user_is_subjectadmin_or_periodadmin()
         )
 
     def test_get_all_periods_where_user_is_subjectadmin_or_periodadmin__one_periodadmin(self):

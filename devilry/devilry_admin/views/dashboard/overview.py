@@ -4,6 +4,7 @@ from itertools import groupby
 from django.views.generic import TemplateView
 from django_cradmin import crapp
 
+from devilry.apps.core.models import Period, Subject
 from devilry.devilry_account.models import SubjectPermissionGroup, PeriodPermissionGroup
 
 
@@ -11,33 +12,18 @@ class Overview(TemplateView):
     template_name = 'devilry_admin/dashboard/overview.django.html'
 
     def __get_all_subjects_where_user_is_subjectadmin(self):
-        subjects = []
-        if not hasattr(self, '_subjects_where_user_is_subjectadmin'):
-            for subjectpermissiongroup in SubjectPermissionGroup.objects\
-                    .filter(permissiongroup__users=self.request.user)\
-                    .select_related('subject')\
-                    .order_by('subject__long_name'):
-                subjects.append(subjectpermissiongroup.subject)
-            self._subjects_where_user_is_subjectadmin = subjects
-        return self._subjects_where_user_is_subjectadmin
+        return Subject.objects.filter_is_admin(user=self.request.user)\
+            .order_by('long_name')\
+            .distinct()
 
     def __get_all_periods_where_user_is_subjectadmin_or_periodadmin(self):
-        periods = []
         groups = []
-        uniquekeys = []
-        subjects_where_user_is_subjectadmin = self.__get_all_subjects_where_user_is_subjectadmin()
-        for periodpermissiongroup in PeriodPermissionGroup.objects\
-                .filter(
-                    models.Q(permissiongroup__users=self.request.user) |
-                    models.Q(period__parentnode__in=subjects_where_user_is_subjectadmin)
-                )\
-                .select_related('period', 'period__parentnode')\
-                .order_by('period__short_name', 'period__parentnode__long_name'):
-                    periods.append(periodpermissiongroup.period)
-
-        for k, g in groupby(periods, lambda x: x.short_name):
-            groups.append(list(g))
-            uniquekeys.append(k)
+        periods = Period.objects.filter_is_admin(user=self.request.user)\
+            .select_related('parentnode')\
+            .order_by('short_name', 'parentnode__long_name')\
+            .distinct()
+        for key, items in groupby(periods, lambda period: period.short_name):
+            groups.append(list(items))
         return groups
 
     def get_context_data(self, **kwargs):
