@@ -45,3 +45,5 @@ node_modules/
 # ElasticSearch
 /elasticsearch_unittest/
 /elasticsearch_develop/
+
+/libs/django_cradmin/
