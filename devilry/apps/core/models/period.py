@@ -10,7 +10,7 @@ from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from custom_db_fields import ShortNameField, LongNameField
 from basenode import BaseNode
-from devilry.devilry_account.models import User
+from devilry.devilry_account.models import User, PeriodPermissionGroup
 from node import Node
 from subject import Subject
 from model_utils import Etag
@@ -22,18 +22,19 @@ class PeriodQuerySet(models.query.QuerySet):
     """
     QuerySet for :class:`.PeriodManager`.
     """
+
     def filter_is_candidate_or_relatedstudent(self, user):
         """
         See :meth:`.PeriodManager.filter_is_candidate_or_relatedstudent`.
         """
         from devilry.apps.core.models import Candidate
-        periods_where_is_candidate_queryset = Candidate.objects\
-            .filter(student=user)\
-            .values_list('assignment_group__parentnode__parentnode_id', flat=True)\
+        periods_where_is_candidate_queryset = Candidate.objects \
+            .filter(student=user) \
+            .values_list('assignment_group__parentnode__parentnode_id', flat=True) \
             .distinct()
         queryset = self.filter(
-            Q(relatedstudent__user=user) |
-            Q(id__in=periods_where_is_candidate_queryset)
+                Q(relatedstudent__user=user) |
+                Q(id__in=periods_where_is_candidate_queryset)
         )
         return queryset.distinct()
 
@@ -44,14 +45,24 @@ class PeriodQuerySet(models.query.QuerySet):
         now = datetime.now()
         return self.filter(start_time__lt=now, end_time__gt=now)
 
+    def filter_is_admin(self, user):
+        subjectids_where_is_admin_queryset = Subject.objects.filter_is_admin(user=user).values_list("subject_id",
+                                                                                                    flat=True)
+        periodids_where_is_admin_queryset = PeriodPermissionGroup.objects \
+            .filter(
+                models.Q(permissiongroup__users=user) |
+                models.Q(period__parentnode_id__in=subjectids_where_is_admin_queryset)
+            ).values_list("period_id", flat=True)
+        return self.filter(id__in=periodids_where_is_admin_queryset)
+
     def annotate_with_user_qualifies_for_final_exam(self, user):
         """
         See :meth:`.PeriodManager.annotate_with_user_qualifies_for_final_exam`.
         """
         from devilry.devilry_qualifiesforexam.models import Status
         return self.extra(
-            select={
-                'user_qualifies_for_final_exam': """
+                select={
+                    'user_qualifies_for_final_exam': """
                     SELECT
                         CASE
                             WHEN
@@ -75,11 +86,11 @@ class PeriodQuerySet(models.query.QuerySet):
                     ORDER BY devilry_qualifiesforexam_status.createtime DESC
                     LIMIT 1
                 """
-            },
-            select_params=[
-                Status.NOTREADY,
-                user.id,
-            ]
+                },
+                select_params=[
+                    Status.NOTREADY,
+                    user.id,
+                ]
         )
 
 
@@ -96,6 +107,12 @@ class PeriodManager(models.Manager):
         Filter only active periods.
         """
         return self.get_queryset().filter_active()
+
+    def filter_is_admin(self, user):
+        """
+        Filter only periods where user is admin.
+        """
+        return self.get_queryset().filter_is_admin(user)
 
     def filter_is_candidate_or_relatedstudent(self, user):
         """
@@ -174,9 +191,9 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
     parentnode = models.ForeignKey(Subject, related_name='periods',
                                    verbose_name='Subject')
     start_time = models.DateTimeField(
-        help_text='Start time and end time defines when the period is active.')
+            help_text='Start time and end time defines when the period is active.')
     end_time = models.DateTimeField(
-        help_text='Start time and end time defines when the period is active.')
+            help_text='Start time and end time defines when the period is active.')
     admins = models.ManyToManyField(User, blank=True)
     etag = models.DateTimeField(auto_now_add=True)
 

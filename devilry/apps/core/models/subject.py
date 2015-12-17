@@ -9,9 +9,16 @@ from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
 from custom_db_fields import ShortNameField, LongNameField
 from basenode import BaseNode
-from devilry.devilry_account.models import User
+from devilry.devilry_account.models import User, SubjectPermissionGroup
 from node import Node
 from model_utils import Etag
+
+
+class SubjectQuerySet(models.QuerySet):
+    def filter_is_admin(self, user):
+        subjectids_where_is_admin_queryset = SubjectPermissionGroup.objects \
+            .filter(permissiongroup__users=user).values_list('subject_id', flat=True)
+        return self.filter(id__id=subjectids_where_is_admin_queryset)
 
 
 class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
@@ -44,6 +51,7 @@ class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, E
        A DateTimeField containing the etag for this object.
 
     """
+    objects = SubjectQuerySet.as_manager()
 
     class Meta:
         app_label = 'core'
