@@ -1,7 +1,8 @@
 # Dependencies required for development
 -r common.txt
 
-django_dbdev==0.9.4
+# django_dbdev==0.9.4
+django_dbdev==1.0.0
 model-mommy==1.2.4
 
 # Required by the soupselect tests
