@@ -1,21 +1,22 @@
+from __future__ import print_function
+
 from datetime import datetime
-from django.conf import settings
 
-from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
-from django.db.models import Q
 from django.db import models
+from django.db.models import Q
+from django.utils.translation import ugettext_lazy as _
 
-from abstract_is_examiner import AbstractIsExaminer
+from abstract_applicationkeyvalue import AbstractApplicationKeyValue
+from abstract_is_admin import AbstractIsAdmin
 from abstract_is_candidate import AbstractIsCandidate
-from custom_db_fields import ShortNameField, LongNameField
+from abstract_is_examiner import AbstractIsExaminer
 from basenode import BaseNode
+from custom_db_fields import ShortNameField, LongNameField
 from devilry.devilry_account.models import User, PeriodPermissionGroup
+from model_utils import Etag
 from node import Node
 from subject import Subject
-from model_utils import Etag
-from abstract_is_admin import AbstractIsAdmin
-from abstract_applicationkeyvalue import AbstractApplicationKeyValue
 
 
 class PeriodQuerySet(models.query.QuerySet):
@@ -46,14 +47,16 @@ class PeriodQuerySet(models.query.QuerySet):
         return self.filter(start_time__lt=now, end_time__gt=now)
 
     def filter_is_admin(self, user):
-        subjectids_where_is_admin_queryset = Subject.objects.filter_is_admin(user=user).values_list('subject_id',
-                                                                                                    flat=True)
+        subjectids_where_is_admin_queryset = Subject.objects\
+            .filter_is_admin(user=user)\
+            .values_list('id', flat=True)
         periodids_where_is_admin_queryset = PeriodPermissionGroup.objects \
-            .filter(
-                models.Q(permissiongroup__users=user) |
-                models.Q(period__parentnode_id__in=subjectids_where_is_admin_queryset)
-            ).values_list('period_id', flat=True)
-        return self.filter(id__in=periodids_where_is_admin_queryset)
+            .filter(models.Q(permissiongroup__users=user))\
+            .values_list('period_id', flat=True)
+        return self.filter(
+            models.Q(id__in=periodids_where_is_admin_queryset) |
+            models.Q(parentnode_id__in=subjectids_where_is_admin_queryset)
+        )
 
     def annotate_with_user_qualifies_for_final_exam(self, user):
         """

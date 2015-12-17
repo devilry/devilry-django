@@ -1,17 +1,17 @@
+from __future__ import print_function
 from datetime import datetime
-from django.conf import settings
 
-from django.utils.translation import ugettext_lazy as _
-from django.db.models import Q
 from django.db import models
+from django.db.models import Q
+from django.utils.translation import ugettext_lazy as _
 
-from abstract_is_examiner import AbstractIsExaminer
 from abstract_is_candidate import AbstractIsCandidate
-from custom_db_fields import ShortNameField, LongNameField
+from abstract_is_examiner import AbstractIsExaminer
 from basenode import BaseNode
+from custom_db_fields import ShortNameField, LongNameField
 from devilry.devilry_account.models import User, SubjectPermissionGroup
-from node import Node
 from model_utils import Etag
+from node import Node
 
 
 class SubjectQuerySet(models.QuerySet):

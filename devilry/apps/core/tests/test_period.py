@@ -1,17 +1,20 @@
 from datetime import datetime
 from datetime import timedelta
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.test import TestCase
-from django.db import IntegrityError
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+from django.test import TestCase
+from model_mommy import mommy
 
+from devilry.apps.core.models import Period, Subject
+from devilry.apps.core.models.model_utils import EtagMismatchException
+from devilry.apps.core.testhelper import TestHelper
+from devilry.devilry_account.models import PeriodPermissionGroup
+from devilry.devilry_qualifiesforexam.models import Status
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
-from devilry.apps.core.models import Period, Subject
-from devilry.apps.core.testhelper import TestHelper
-from devilry.apps.core.models.model_utils import EtagMismatchException
-from devilry.devilry_qualifiesforexam.models import Status
 
 
 class TestPeriodManager(TestCase):
@@ -123,6 +126,49 @@ class TestPeriodManagerQualifiesForExam(TestCase):
         self.assertIsNone(
             Period.objects.annotate_with_user_qualifies_for_final_exam(
                 self.testuser).get(id=self.periodbuilder.period.id).user_qualifies_for_final_exam)
+
+
+class TestPeriodQuerySetPermission(TestCase):
+    def test_is_not_admin_on_anything(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Period')
+        self.assertFalse(Period.objects.filter_is_admin(user=testuser).exists())
+
+    def test_is_admin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testperiod},
+                set(Period.objects.filter_is_admin(user=testuser)))
+
+    def test_is_admin_ignore_periods_where_not_admin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testperiod},
+                set(Period.objects.filter_is_admin(user=testuser)))
+
+    def test_is_admin_on_subject(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        testperiod = mommy.make('core.Period', parentnode=testsubject)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=subjectpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testperiod},
+                set(Period.objects.filter_is_admin(user=testuser)))
 
 
 class TestPeriodOld(TestCase, TestHelper):

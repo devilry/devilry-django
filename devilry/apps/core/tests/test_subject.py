@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.db import IntegrityError
 
+from devilry.devilry_account.models import SubjectPermissionGroup
 from ..models import Node, Subject
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
@@ -93,11 +94,31 @@ class TestSubject(TestCase, TestHelper):
         self.assertTrue(self.duck9000.is_empty())
 
 
-class TestSubjectPermission(TestCase):
-
-    def test_is_not_admin(self):
+class TestSubjectQuerySetPermission(TestCase):
+    def test_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        mommy.make(Subject)
-        self.assertFalse(Subject.objects.filter_is_admin(testuser).exists())
+        mommy.make('core.Subject')
+        self.assertFalse(Subject.objects.filter_is_admin(user=testuser).exists())
 
+    def test_is_admin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testsubject},
+                set(Subject.objects.filter_is_admin(user=testuser)))
 
+    def test_is_admin_ignore_subjects_where_not_admin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        mommy.make('core.Subject')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testsubject},
+                set(Subject.objects.filter_is_admin(user=testuser)))
