@@ -46,13 +46,13 @@ class PeriodQuerySet(models.query.QuerySet):
         return self.filter(start_time__lt=now, end_time__gt=now)
 
     def filter_is_admin(self, user):
-        subjectids_where_is_admin_queryset = Subject.objects.filter_is_admin(user=user).values_list("subject_id",
+        subjectids_where_is_admin_queryset = Subject.objects.filter_is_admin(user=user).values_list('subject_id',
                                                                                                     flat=True)
         periodids_where_is_admin_queryset = PeriodPermissionGroup.objects \
             .filter(
                 models.Q(permissiongroup__users=user) |
                 models.Q(period__parentnode_id__in=subjectids_where_is_admin_queryset)
-            ).values_list("period_id", flat=True)
+            ).values_list('period_id', flat=True)
         return self.filter(id__in=periodids_where_is_admin_queryset)
 
     def annotate_with_user_qualifies_for_final_exam(self, user):

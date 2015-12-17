@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.db import IntegrityError
@@ -7,6 +8,7 @@ from django.db import IntegrityError
 from ..models import Node, Subject
 from ..testhelper import TestHelper
 from ..models.model_utils import EtagMismatchException
+from model_mommy import mommy
 
 
 class TestSubject(TestCase, TestHelper):
@@ -89,3 +91,13 @@ class TestSubject(TestCase, TestHelper):
         self.assertFalse(self.inf1060.is_empty())
         self.add(nodes="uio.ifi", subjects=['duck9000'])
         self.assertTrue(self.duck9000.is_empty())
+
+
+class TestSubjectPermission(TestCase):
+
+    def test_is_not_admin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make(Subject)
+        self.assertFalse(Subject.objects.filter_is_admin(testuser).exists())
+
+

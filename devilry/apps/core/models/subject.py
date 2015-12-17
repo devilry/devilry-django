@@ -18,7 +18,7 @@ class SubjectQuerySet(models.QuerySet):
     def filter_is_admin(self, user):
         subjectids_where_is_admin_queryset = SubjectPermissionGroup.objects \
             .filter(permissiongroup__users=user).values_list('subject_id', flat=True)
-        return self.filter(id__id=subjectids_where_is_admin_queryset)
+        return self.filter(id__in=subjectids_where_is_admin_queryset)
 
 
 class Subject(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
