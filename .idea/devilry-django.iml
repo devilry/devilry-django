@@ -19,6 +19,16 @@
     <orderEntry type="jdk" jdkName="devilry-django" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="$MODULE_DIR$/requirements/development.txt" />
+  </component>
+  <component name="PyDocumentationSettings">
+    <option name="myDocStringFormat" value="Google" />
+  </component>
+  <component name="ReSTService">
+    <option name="workdir" value="$MODULE_DIR$/not_for_deploy/docs" />
+    <option name="DOC_DIR" value="$MODULE_DIR$/not_for_deploy/docs" />
+  </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
     <option name="TEMPLATE_FOLDERS">
@@ -31,5 +41,8 @@
         <option value="$MODULE_DIR$/devilry/devilry_theme2/templates" />
       </list>
     </option>
+  </component>
+  <component name="TestRunnerService">
+    <option name="PROJECT_TEST_RUNNER" value="Unittests" />
   </component>
 </module>

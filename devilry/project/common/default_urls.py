@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseBadRequest, HttpResponsePermanentRedirect
+from django_cradmin.superuserui import superuserui_registry
+
 from devilry.devilry_frontpage.views import frontpage
 
 
@@ -33,7 +35,8 @@ devilry_urls = (
     (r'^devilry_student/', include('devilry.devilry_student.urls')),
     (r'^devilry_group/', include('devilry.devilry_group.urls')),
     (r'^devilry_admin/', include('devilry.devilry_admin.urls')),
-    (r'^superuser/', include(admin.site.urls)),
+    (r'^djangoadmin/', include(admin.site.urls)),
+    url(r'^superuser/', include(superuserui_registry.default.make_cradmin_instance_class().urls())),
     (r'^devilry_send_email_to_students/', include('devilry.devilry_send_email_to_students.urls')),
     (r'^devilry_search/', include('devilry.devilry_search.urls')),
     (r'^devilry_header/', include('devilry.devilry_header.urls')),

@@ -59,9 +59,9 @@ INSTALLED_APPS = [
     'django_cradmin.apps.cradmin_resetpassword',
     'django_cradmin.apps.cradmin_generic_token_with_metadata',
 
-    'devilry.apps.core',
+    'devilry.apps.core.apps.CoreAppConfig',
 
-    'devilry.devilry_account',
+    'devilry.devilry_account.apps.AccountAppConfig',
     'devilry.devilry_markup',
     'devilry.devilry_superadmin',
     'devilry.devilry_authenticate',
