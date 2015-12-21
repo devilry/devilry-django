@@ -4271,6 +4271,7 @@ SELECT pg_catalog.setval('devilry_account_periodpermissiongroup_id_seq', 1, fals
 --
 
 COPY devilry_account_permissiongroup (id, name, created_datetime, updated_datetime, syncsystem_update_datetime, grouptype, is_custom_manageable) FROM stdin;
+1	Duckburgh Department Admins	2015-12-21 13:18:53.259494+01	2015-12-21 13:32:39.556138+01	\N	departmentadmin	f
 \.
 
 
@@ -4278,7 +4279,7 @@ COPY devilry_account_permissiongroup (id, name, created_datetime, updated_dateti
 -- Name: devilry_account_permissiongroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_permissiongroup_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_account_permissiongroup_id_seq', 1, true);
 
 
 --
@@ -4286,6 +4287,8 @@ SELECT pg_catalog.setval('devilry_account_permissiongroup_id_seq', 1, false);
 --
 
 COPY devilry_account_permissiongroupuser (id, permissiongroup_id, user_id) FROM stdin;
+1	1	2
+2	1	1
 \.
 
 
@@ -4293,7 +4296,7 @@ COPY devilry_account_permissiongroupuser (id, permissiongroup_id, user_id) FROM 
 -- Name: devilry_account_permissiongroupuser_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_permissiongroupuser_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_account_permissiongroupuser_id_seq', 2, true);
 
 
 --
@@ -4301,6 +4304,7 @@ SELECT pg_catalog.setval('devilry_account_permissiongroupuser_id_seq', 1, false)
 --
 
 COPY devilry_account_subjectpermissiongroup (id, permissiongroup_id, subject_id) FROM stdin;
+1	1	2
 \.
 
 
@@ -4308,7 +4312,7 @@ COPY devilry_account_subjectpermissiongroup (id, permissiongroup_id, subject_id)
 -- Name: devilry_account_subjectpermissiongroup_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_subjectpermissiongroup_id_seq', 1, false);
+SELECT pg_catalog.setval('devilry_account_subjectpermissiongroup_id_seq', 1, true);
 
 
 --
@@ -5734,6 +5738,10 @@ SELECT pg_catalog.setval('devilry_student_uploadeddeliveryfile_id_seq', 1, false
 --
 
 COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, change_message, content_type_id, user_id) FROM stdin;
+1	2015-12-21 13:18:53.26733+01	1	Duckburgh Department Admins	1		36	1
+2	2015-12-21 13:19:19.749762+01	1	Duckburgh Department Admins	2	Added Permission group user "thor@example.com in group Duckburgh Department Admins".	36	1
+3	2015-12-21 13:30:01.26068+01	1	Group Duckburgh Department Admins assigned to duck1100	1		38	1
+4	2015-12-21 13:32:39.5602+01	1	Duckburgh Department Admins (Department administrator group)	2	Added Permission group user "grandma@example.com in group Duckburgh Department Admins".	36	1
 \.
 
 
@@ -5741,7 +5749,7 @@ COPY django_admin_log (id, action_time, object_id, object_repr, action_flag, cha
 -- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('django_admin_log_id_seq', 1, false);
+SELECT pg_catalog.setval('django_admin_log_id_seq', 4, true);
 
 
 --
