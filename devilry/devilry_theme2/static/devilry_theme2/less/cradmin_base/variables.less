@@ -95,20 +95,37 @@
 @cradmin-bulkfileupload-padding: 0;
 @cradmin-bulkfileupload-bg: @cradmin-form-bg;
 
-@cradmin-bulkfileupload-dropbox-bg: darken(@cradmin-bodybg, 6%);
+@cradmin-bulkfileupload-dropbox-bg: lighten(@cradmin-bodybg, 6%);
 @cradmin-bulkfileupload-dropbox-border-style: dashed;
-@cradmin-bulkfileupload-dropbox-border-color: darken(@cradmin-bulkfileupload-dropbox-bg, 6%);
-@cradmin-bulkfileupload-dropbox-border-width: 6px;
+@cradmin-bulkfileupload-dropbox-border-color: darken(@cradmin-bulkfileupload-dropbox-bg, 12%);
+@cradmin-bulkfileupload-dropbox-border-width: 2px;
 @cradmin-bulkfileupload-dropbox-color: @cradmin-bodycolor;
 @cradmin-bulkfileupload-dropbox-font-weight: bold;
 @cradmin-bulkfileupload-dropbox-font-size: inherit;
-@cradmin-bulkfileupload-dropbox-padding: 45px 30px;
+@cradmin-bulkfileupload-dropbox-padding: 5px 30px 5px 30px;
+@cradmin-bulkfileupload-dropbox-height: 100px;
 @cradmin-bulkfileupload-dropbox-text-align: center;
+
+@cradmin-bulkfileupload-dropbox-backdrop-bg: rgba(0, 0, 0, .4);
+@cradmin-bulkfileupload-hide-overlay-button-color: #eee;
+@cradmin-bulkfileupload-hide-overlay-button-hover-color: #fff;
+@cradmin-bulkfileupload-hide-overlay-button-font-size: 30px;
+
+@django-cradmin-bulkfileupload-overlay-uploadingmessage-bg: #fff;
+@django-cradmin-bulkfileupload-overlay-uploadingmessage-color: @text-color;
+@django-cradmin-bulkfileupload-overlay-uploadingmessage-font-size: @font-size-base;
+@django-cradmin-bulkfileupload-overlay-uploadingmessage-font-weight: bold;
 
 @cradmin-bulkfileupload-dropbox-dragover-bg: @alert-success-bg;
 @cradmin-bulkfileupload-dropbox-dragover-border-style: solid;
 @cradmin-bulkfileupload-dropbox-dragover-border-color: @alert-success-border;
 @cradmin-bulkfileupload-dropbox-dragover-color: @alert-success-text;
+
+@cradmin-bulkfileupload-overlay-dropbox-dragover-bg: @cradmin-bulkfileupload-dropbox-dragover-bg;
+@cradmin-bulkfileupload-overlay-dropbox-dragover-border-style: @cradmin-bulkfileupload-dropbox-dragover-border-style;
+@cradmin-bulkfileupload-overlay-dropbox-dragover-border-color: @cradmin-bulkfileupload-dropbox-dragover-border-color;
+@cradmin-bulkfileupload-overlay-dropbox-dragover-color: @cradmin-bulkfileupload-dropbox-dragover-color;
+
 
 @cradmin-bulkfileupload-dropbox-dragover-error-bg: @alert-danger-bg;
 @cradmin-bulkfileupload-dropbox-dragover-error-border-style: solid;

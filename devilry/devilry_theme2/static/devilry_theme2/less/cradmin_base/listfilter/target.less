@@ -1,0 +1,41 @@
+.django-cradmin-listfilter-target-loading,
+.django-cradmin-listfilter-target-loaderror {
+  position: relative;
+
+  .django-cradmin-listfilter-message {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 15px;
+    text-align: center;
+
+    .django-cradmin-listfilter-message-loadspinner {
+      margin-bottom: 10px;
+      font-size: ceil(@font-size-base + 6px);
+    }
+    .django-cradmin-listfilter-message-text {
+      font-weight: bold;
+      display: block;
+    }
+
+    @media (min-width: @screen-sm-min) {
+      left: 50%;
+      margin-left: -150px;
+      width: 300px;
+      border-radius: @alert-border-radius;
+    }
+
+    &.django-cradmin-listfilter-message-loading {
+      background: @alert-info-bg;
+      border: 1px solid @alert-info-border;
+      color: @alert-info-text;
+    }
+
+    &.django-cradmin-listfilter-message-error {
+      background: @alert-danger-bg;
+      border: 1px solid @alert-danger-border;
+      color: @alert-danger-text;
+    }
+  }
+}

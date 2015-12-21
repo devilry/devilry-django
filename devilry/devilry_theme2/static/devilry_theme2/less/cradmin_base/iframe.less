@@ -88,18 +88,18 @@
     }
 
     .django-cradmin-floating-fullsize-iframe-inner {
-      overflow: auto;
-      -webkit-overflow-scrolling: touch;
+      overflow: hidden;
+      //-webkit-overflow-scrolling: touch;
       position: absolute;
       top: 0;
       bottom: 0;
       left: 0;
       right: 0;
 
-      .style-scrollbar(@cradmin-floating-iframe-scrollbar-width,
-        @cradmin-floating-iframe-scrollbar-track-bg,
-        @cradmin-floating-iframe-scrollbar-thumb-bg,
-        @cradmin-floating-iframe-scrollbar-thumb-hover-bg);
+      //.style-scrollbar(@cradmin-floating-iframe-scrollbar-width,
+      //  @cradmin-floating-iframe-scrollbar-track-bg,
+      //  @cradmin-floating-iframe-scrollbar-thumb-bg,
+      //  @cradmin-floating-iframe-scrollbar-thumb-hover-bg);
 
       iframe {
         position: absolute;
@@ -107,7 +107,8 @@
         bottom: 0;
         left: 0;
         right: 0;
-        height: 10px; // NOTE: This is just the default until the javascript resizes this
+        //height: 10px; // NOTE: This is just the default until the javascript resizes this
+        height: 100%;
         width: 100%;
         border: none;
       }
@@ -165,3 +166,11 @@ body.django-cradmin-formview-page {
     }
   }
 }
+
+
+//.django-cradmin-within-iframe {
+//  .style-scrollbar(@cradmin-floating-iframe-scrollbar-width,
+//    @cradmin-floating-iframe-scrollbar-track-bg,
+//    @cradmin-floating-iframe-scrollbar-thumb-bg,
+//    @cradmin-floating-iframe-scrollbar-thumb-hover-bg);
+//}

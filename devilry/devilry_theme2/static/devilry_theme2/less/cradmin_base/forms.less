@@ -186,3 +186,21 @@ textarea {
     height: 60px;
   }
 }
+
+
+.django-cradmin-clearable-textinput {
+  position: relative;
+  .django-cradmin-clearable-textinput-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: none;
+    color: @text-muted;
+    &:hover {
+      color: @link-color;
+    }
+    &.django-cradmin-clearable-textinput-button-visible {
+      display: inline-block;
+    }
+  }
+}

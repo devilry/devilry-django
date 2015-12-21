@@ -1,0 +1,79 @@
+ol.django-cradmin-listbuilder-list {
+
+  //
+  //
+  // Basic typography
+  //
+  //
+
+  h2, h3 {
+    font-size: ceil(@font-size-base + 3px);
+    &:first-child {
+      margin-top: 0;
+      padding-top: 0;
+    }
+  }
+  p, pre, table, form, h2, h3 {
+    &:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+  }
+
+
+  //
+  //
+  // .django-cradmin-listbuilder-itemframe-defaultspacing
+  //
+  //
+
+  &.django-cradmin-listbuilder-rowlist {
+    li {
+      .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+        margin-top: 5px;
+        margin-bottom: 5px;
+      }
+      &:first-child {
+        .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+          margin-top: 5px;
+        }
+      }
+      &:last-child {
+        .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  &.django-cradmin-listbuilder-floatgridlist {
+    li {
+      .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+        margin-top: 5px;
+        margin-bottom: 5px;
+        @media (min-width: @screen-sm-min) {
+          margin: 5px;
+        }
+      }
+    }
+  }
+
+  &:first-child {
+    &.django-cradmin-listbuilder-rowlist {
+      li {
+        &:first-child {
+          .django-cradmin-listbuilder-itemframe.django-cradmin-listbuilder-itemframe-defaultspacing {
+            margin-top: 0;
+          }
+        }
+      }
+    }
+  }
+
+  li {
+    a.django-cradmin-listbuilder-itemframe-link {
+      display: block;
+    }
+  }
+
+}

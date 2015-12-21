@@ -1,0 +1,35 @@
+ol.django-cradmin-listfilter-filterlist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  li {
+    margin: 0;
+    padding: 0;
+  }
+
+  &.django-cradmin-listfilter-filterlist-vertical {
+    margin-bottom: 20px;
+    @media (min-width: @screen-sm-min) {
+      margin-bottom: 0;
+    }
+    li {
+      margin-top: 18px;
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+  }
+
+  &.django-cradmin-listfilter-filterlist-horizontal {
+    margin-bottom: 10px;
+    text-align: center;
+    li {
+      display: inline-block;
+      margin-right: 10px;
+      text-align: left;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
