@@ -3,7 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 
 from devilry.devilry_account.exceptions import IllegalOperationError
 
@@ -20,9 +20,9 @@ class UserQuerySet(models.QuerySet):
         strings.
         """
         return self.prefetch_related(
-            models.Prefetch('useremail_set',
-                            queryset=UserEmail.objects.filter(use_for_notifications=True),
-                            to_attr='notification_useremail_objects'))
+                models.Prefetch('useremail_set',
+                                queryset=UserEmail.objects.filter(use_for_notifications=True),
+                                to_attr='notification_useremail_objects'))
 
     def prefetch_related_primary_email(self):
         """
@@ -34,9 +34,9 @@ class UserQuerySet(models.QuerySet):
         :meth:`.User.primary_email` to access the primary email.
         """
         return self.prefetch_related(
-            models.Prefetch('useremail_set',
-                            queryset=UserEmail.objects.filter(is_primary=True),
-                            to_attr='primary_useremail_objects'))
+                models.Prefetch('useremail_set',
+                                queryset=UserEmail.objects.filter(is_primary=True),
+                                to_attr='primary_useremail_objects'))
 
     def prefetch_related_primary_username(self):
         """
@@ -48,9 +48,9 @@ class UserQuerySet(models.QuerySet):
         :meth:`.User.primary_username` to access the primary username.
         """
         return self.prefetch_related(
-            models.Prefetch('username_set',
-                            queryset=UserName.objects.filter(is_primary=True),
-                            to_attr='primary_username_objects'))
+                models.Prefetch('username_set',
+                                queryset=UserName.objects.filter(is_primary=True),
+                                to_attr='primary_username_objects'))
 
     def filter_by_emails(self, emails):
         """
@@ -228,6 +228,14 @@ class UserManager(BaseUserManager):
                                       use_for_notifications=True)
         return user
 
+    def create_superuser(self, username='', email='', password=None, **kwargs):
+        """
+        Create a new superuser.
+        """
+        email = kwargs.pop(User.USERNAME_FIELD)
+        user = self.create_user(email=email, password=password, is_superuser=True, **kwargs)
+        return user
+
     def get_by_email(self, email):
         """
         Get a user by any of their emails.
@@ -337,10 +345,10 @@ class UserManager(BaseUserManager):
         new_useremail_objects = []
         for user in users:
             new_username_object = UserEmail(
-                user=user,
-                email=u'{}{}'.format(user.shortname, settings.DEVILRY_DEFAULT_EMAIL_SUFFIX),
-                is_primary=True,
-                use_for_notifications=True)
+                    user=user,
+                    email=u'{}{}'.format(user.shortname, settings.DEVILRY_DEFAULT_EMAIL_SUFFIX),
+                    is_primary=True,
+                    use_for_notifications=True)
             new_useremail_objects.append(new_username_object)
         UserEmail.objects.bulk_create(new_useremail_objects)
 
@@ -398,56 +406,56 @@ class User(AbstractBaseUser):
 
     #: Is this user a superuser?
     is_superuser = models.BooleanField(
-        verbose_name=_('superuser status'),
-        default=False,
-        help_text=_('Designates that this user has all permissions without '
-                    'explicitly assigning them.'))
+            verbose_name=_('superuser status'),
+            default=False,
+            help_text=_('Designates that this user has all permissions without '
+                        'explicitly assigning them.'))
 
     #: Short name for the user.
     #: This will be set to the primary email address or to the primary username
     #: depending on the auth backend.
     #: Must be unique.
     shortname = models.CharField(
-        max_length=255,
-        blank=False, null=False,
-        editable=True,
-        unique=True,
-        help_text=_('The short name for the user. This is set automatically to the '
-                    'email or username depending on the method used for authentication.')
+            max_length=255,
+            blank=False, null=False,
+            editable=True,
+            unique=True,
+            help_text=_('The short name for the user. This is set automatically to the '
+                        'email or username depending on the method used for authentication.')
     )
 
     #: Full name of the user. Optional.
     fullname = models.TextField(
-        verbose_name=_('Full name'),
-        blank=True, default="", null=False)
+            verbose_name=_('Full name'),
+            blank=True, default="", null=False)
 
     #: The last name of the user. Optional.
     #: Used to sort by last name.
     lastname = models.TextField(
-        verbose_name=_('Last name'),
-        blank=True, default="", null=False)
+            verbose_name=_('Last name'),
+            blank=True, default="", null=False)
 
     #: The datetime the user was created.
     datetime_joined = models.DateTimeField(
-        verbose_name=_('date joined'),
-        default=timezone.now)
+            verbose_name=_('date joined'),
+            default=timezone.now)
 
     #: Datetime when this account was suspended.
     suspended_datetime = models.DateTimeField(
-        null=True, blank=True,
-        verbose_name=_('Suspension time'),
-        help_text=_('Time when the account was suspended'))
+            null=True, blank=True,
+            verbose_name=_('Suspension time'),
+            help_text=_('Time when the account was suspended'))
 
     #: Reason why the account is suspended.
     suspended_reason = models.TextField(
-        blank=True, default='',
-        verbose_name=_('Reason for suspension'))
+            blank=True, default='',
+            verbose_name=_('Reason for suspension'))
 
     #: The language code for the preferred language for the user.
     languagecode = models.CharField(
-        max_length=10, blank=True, null=False,
-        default='',
-        verbose_name=_('Preferred language')
+            max_length=10, blank=True, null=False,
+            default='',
+            verbose_name=_('Preferred language')
     )
 
     USERNAME_FIELD = 'shortname'
@@ -592,6 +600,7 @@ class AbstractUserIdentity(models.Model):
     """
     Base class for :class:`.UserEmail` and :class:`.UserName`.
     """
+
     class Meta:
         abstract = True
 
@@ -600,15 +609,15 @@ class AbstractUserIdentity(models.Model):
 
     #: The datetime when this was created.
     created_datetime = models.DateTimeField(
-        default=timezone.now,
-        editable=False,
-        null=False, blank=False)
+            default=timezone.now,
+            editable=False,
+            null=False, blank=False)
 
     #: The datetime when this was last updated.
     last_updated_datetime = models.DateTimeField(
-        default=timezone.now,
-        editable=False,
-        null=False, blank=False)
+            default=timezone.now,
+            editable=False,
+            null=False, blank=False)
 
     def clean(self):
         self.last_updated_datetime = timezone.now()
@@ -618,6 +627,7 @@ class UserEmail(AbstractUserIdentity):
     """
     Stores a single email address for a :class:`.User`.
     """
+
     class Meta:
         verbose_name = _('Email address')
         verbose_name_plural = _('Email addresses')
@@ -628,27 +638,27 @@ class UserEmail(AbstractUserIdentity):
     #: The email address of the user.
     #: Must be unique.
     email = models.EmailField(
-        verbose_name=_('Email'),
-        unique=True,
-        max_length=255)
+            verbose_name=_('Email'),
+            unique=True,
+            max_length=255)
 
     #: Is this a notification email for the user?
     #: A user can have multiple notification emails.
     use_for_notifications = models.BooleanField(
-        default=True,
-        verbose_name=_('Send notifications to this email address?'))
+            default=True,
+            verbose_name=_('Send notifications to this email address?'))
 
     #: Is this the primary email for the user?
     #: Valid values are: ``None`` and ``True``, and only
     #: one UserEmail per user can have ``is_primary=True``.
     is_primary = models.NullBooleanField(
-        verbose_name=_('Is this your primary email?'),
-        choices=[
-            (None, _('No')),
-            (True, _('Yes'))
-        ],
-        help_text=_('Your primary email is the email address used when we '
-                    'need to display a single email address.')
+            verbose_name=_('Is this your primary email?'),
+            choices=[
+                (None, _('No')),
+                (True, _('Yes'))
+            ],
+            help_text=_('Your primary email is the email address used when we '
+                        'need to display a single email address.')
     )
 
     def clean(self):
@@ -674,13 +684,13 @@ class UserEmail(AbstractUserIdentity):
 
 
 class UserName(AbstractUserIdentity):
-
     """
     Stores a single username for a :class:`.User`.
 
     The username is used for login, and the primary username
     is synced into :obj:`.User.shortname`.
     """
+
     class Meta:
         verbose_name = _('Username')
         verbose_name_plural = _('Usernames')
@@ -691,22 +701,22 @@ class UserName(AbstractUserIdentity):
     #: The username of the user.
     #: Must be unique.
     username = models.CharField(
-        verbose_name=_('Username'),
-        unique=True,
-        max_length=255)
+            verbose_name=_('Username'),
+            unique=True,
+            max_length=255)
 
     #: Is this the primary username for the user?
     #: Valid values are: ``None`` and ``True``, and only
     #: one UserName per user can have ``is_primary=True``.
     is_primary = models.NullBooleanField(
-        verbose_name=_('Is this your primary username?'),
-        choices=[
-            (None, _('No')),
-            (True, _('Yes'))
-        ],
-        help_text=_('Your primary username is shown alongside your full '
-                    'name to identify you to teachers, examiners and '
-                    'other students.')
+            verbose_name=_('Is this your primary username?'),
+            choices=[
+                (None, _('No')),
+                (True, _('Yes'))
+            ],
+            help_text=_('Your primary username is shown alongside your full '
+                        'name to identify you to teachers, examiners and '
+                        'other students.')
     )
 
     def clean(self):
@@ -738,6 +748,7 @@ class PermissionGroupUser(models.Model):
     Defines the many-to-many relationship between :class:`.User`
     and :class:`.PermissionGroup`.
     """
+
     class Meta:
         verbose_name = _('Permission group user')
         verbose_name_plural = _('Permission group users')
@@ -781,31 +792,31 @@ class PermissionGroup(models.Model):
 
     #: The name of the group. Must be unique.
     name = models.CharField(
-        max_length=255,
-        null=False, blank=False, unique=True,
-        verbose_name=_('Name'),
-        help_text=_('A unique name for this group.'))
+            max_length=255,
+            null=False, blank=False, unique=True,
+            verbose_name=_('Name'),
+            help_text=_('A unique name for this group.'))
 
     #: The time this group was created.
     created_datetime = models.DateTimeField(
-        null=False, auto_now_add=True,
-        editable=False,
-        verbose_name=_('Created time'),
-        help_text=_('The time when this group was created.'))
+            null=False, auto_now_add=True,
+            editable=False,
+            verbose_name=_('Created time'),
+            help_text=_('The time when this group was created.'))
 
     #: Last time this group was updated.
     updated_datetime = models.DateTimeField(
-        null=False, auto_now=True,
-        editable=False,
-        verbose_name=_('Last updated time'),
-        help_text=_('The time when this group last updated.'))
+            null=False, auto_now=True,
+            editable=False,
+            verbose_name=_('Last updated time'),
+            help_text=_('The time when this group last updated.'))
 
     #: Last time this group was updated from a third party sync system.
     syncsystem_update_datetime = models.DateTimeField(
-        null=True,
-        editable=False,
-        verbose_name=_('Last updated from syncsystem time'),
-        help_text=_('The time when this group last updated from a third party sync system.'))
+            null=True,
+            editable=False,
+            verbose_name=_('Last updated from syncsystem time'),
+            help_text=_('The time when this group last updated from a third party sync system.'))
 
     #: The grouptype determines what kind of object a group can be added to:
     #:
@@ -813,13 +824,13 @@ class PermissionGroup(models.Model):
     #: - ``periodadmin``: Can be assigned to **a single** :class:`devilry.apps.core.models.Period`.
     #: - ``departmentadmin``: Can be assigned to multiple :class:`devilry.apps.core.models.Subject`.
     grouptype = models.CharField(
-        max_length=30,
-        choices=GROUPTYPE_CHOICES,
-        null=False, blank=False,
-        verbose_name=_('Permission group type'),
-        help_text=_('Course and semester administrator groups can only be assigned to a single '
-                    'course or semester. Department administrator groups can be assigned to multiple '
-                    'courses. You can not change this for existing permission groups.')
+            max_length=30,
+            choices=GROUPTYPE_CHOICES,
+            null=False, blank=False,
+            verbose_name=_('Permission group type'),
+            help_text=_('Course and semester administrator groups can only be assigned to a single '
+                        'course or semester. Department administrator groups can be assigned to multiple '
+                        'courses. You can not change this for existing permission groups.')
     )
 
     #: Is this group manageable by normal admins?
@@ -832,21 +843,24 @@ class PermissionGroup(models.Model):
     #:
     #: If grouptype is ``departmentadmin``, this can not be ``True``.
     is_custom_manageable = models.BooleanField(
-        default=False,
-        verbose_name=_('Custom manageable?'),
-        help_text=_('Is this group mageable by non-superusers. Can not be enabled for '
-                    'department administrator groups.')
+            default=False,
+            verbose_name=_('Custom manageable?'),
+            help_text=_('Is this group mageable by non-superusers. Can not be enabled for '
+                        'department administrator groups.')
     )
 
     #: Users belonging to this group.
     users = models.ManyToManyField(
-        through=PermissionGroupUser,
-        to=User,
-        verbose_name=_('Users in this group'),
-        blank=True)
+            through=PermissionGroupUser,
+            to=User,
+            verbose_name=_('Users in this group'),
+            blank=True)
 
     def __unicode__(self):
-        return self.name
+        return u'{name} ({grouptype})'.format(
+            name=self.name,
+            grouptype=self.get_grouptype_display()
+        )
 
     def clean(self):
         if self.grouptype == self.GROUPTYPE_DEPARTMENTADMIN and self.is_custom_manageable:
@@ -863,6 +877,7 @@ class PeriodPermissionGroup(models.Model):
     Defines the many-to-many relationship between
     :class:`devilry.apps.core.Period` and :class:`.PermissionGroup`.
     """
+
     class Meta:
         verbose_name = _('Period permission group')
         verbose_name_plural = _('Period permission groups')
@@ -885,9 +900,9 @@ class PeriodPermissionGroup(models.Model):
     def clean(self):
         if self.permissiongroup.grouptype != PermissionGroup.GROUPTYPE_PERIODADMIN:
             raise ValidationError(_(
-                'Only semesters can be added to semester administrator permission groups.'))
+                    'Only semesters can be added to semester administrator permission groups.'))
         if self.permissiongroup.is_custom_manageable:
-            queryset = PeriodPermissionGroup.objects\
+            queryset = PeriodPermissionGroup.objects \
                 .filter(permissiongroup=self.permissiongroup)
             if self.id is not None:
                 queryset = queryset.exclude(id=self.id)
@@ -901,6 +916,7 @@ class SubjectPermissionGroup(models.Model):
     Defines the many-to-many relationship between
     :class:`devilry.apps.core.Subject` and :class:`.PermissionGroup`.
     """
+
     class Meta:
         verbose_name = _('Subject permission group')
         verbose_name_plural = _('Subject permission groups')
@@ -921,11 +937,12 @@ class SubjectPermissionGroup(models.Model):
         }
 
     def clean(self):
-        if self.permissiongroup.grouptype != PermissionGroup.GROUPTYPE_SUBJECTADMIN:
+        if self.permissiongroup.grouptype not in [PermissionGroup.GROUPTYPE_SUBJECTADMIN,
+                                                  PermissionGroup.GROUPTYPE_DEPARTMENTADMIN]:
             raise ValidationError(_(
-                'Only courses can be added to course administrator permission groups.'))
+                    'Semesters can only be added to subject and department administrator permission groups.'))
         if self.permissiongroup.is_custom_manageable:
-            queryset = SubjectPermissionGroup.objects\
+            queryset = SubjectPermissionGroup.objects \
                 .filter(permissiongroup=self.permissiongroup)
             if self.id is not None:
                 queryset = queryset.exclude(id=self.id)
