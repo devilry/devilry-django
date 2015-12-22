@@ -13,7 +13,7 @@
     font-weight: bold;
     margin: 20px 0 0 0;
     padding: 0 0 5px 0;
-    border-bottom: 1px solid @cradmin-bodybg;
+    //border-bottom: 1px solid @cradmin-bodybg;
   }
   .django-cradmin-multiselect2-target-selected-items {
     background: @cradmin-focus-bg;
@@ -35,12 +35,41 @@
   .django-cradmin-multiselect2-target-without-items-content {
     display: block;
   }
+  .django-cradmin-multiselect2-target-no-items-selected {
+    display: none;
+    color: @text-muted;
+    font-style: italic;
+  }
+
   &.django-cradmin-multiselect2-target-with-items {
     .django-cradmin-multiselect2-target-with-items-content {
       display: block;
     }
     .django-cradmin-multiselect2-target-without-items-content {
       display: none;
+    }
+  }
+
+  &.django-cradmin-multiselect2-target-empty-selection-allowed {
+    .django-cradmin-multiselect2-target-with-items-content {
+      display: block;
+    }
+    .django-cradmin-multiselect2-target-selected-items {
+      display: none;
+    }
+    .django-cradmin-multiselect2-target-without-items-content {
+      display: none;
+    }
+    .django-cradmin-multiselect2-target-no-items-selected {
+      display: block;
+    }
+    &.django-cradmin-multiselect2-target-with-items {
+      .django-cradmin-multiselect2-target-selected-items {
+        display: block;
+      }
+      .django-cradmin-multiselect2-target-no-items-selected {
+        display: none;
+      }
     }
   }
 }
