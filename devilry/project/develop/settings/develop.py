@@ -130,7 +130,20 @@ IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
                 sourcefile='theme.less',
                 other_sourcefolders=[
                     'styles/cradmin_base',
+                    'styles/cradmin_theme_topmenu',
+                    'styles/cradmin_theme_devilry_common',
+                ],
+                less_include_paths=[
+                    'bower_components',
+                ]
+            ),
+            ievvbuildstatic.lessbuild.Plugin(
+                sourcefolder='styles/cradmin_theme_devilry_superuserui',
+                sourcefile='theme.less',
+                other_sourcefolders=[
+                    'styles/cradmin_base',
                     'styles/cradmin_theme_default',
+                    'styles/cradmin_theme_devilry_common',
                 ],
                 less_include_paths=[
                     'bower_components',

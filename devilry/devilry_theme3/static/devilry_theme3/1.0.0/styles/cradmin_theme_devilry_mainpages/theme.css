@@ -4572,7 +4572,7 @@ button.close {
   height: 100%;
 }
 body {
-  background: #e1e1e1;
+  background: #e6e6e6;
   color: #666666;
 }
 body.django-cradmin-noscroll {
@@ -5205,7 +5205,7 @@ table.table.django-cradmin-table tbody td:last-child {
   border: none;
 }
 .django-cradmin-floating-fullsize-iframe-wrapper.django-cradmin-modelchoicefield-iframe-wrapper .django-cradmin-floating-fullsize-content {
-  background: #e1e1e1;
+  background: #e6e6e6;
 }
 @media (min-width: 992px) {
   body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper {
@@ -5573,7 +5573,7 @@ The bulk file upload widget base styles.
   background: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
-  background: #f0f0f0;
+  background: #f5f5f5;
   color: #666666;
   font-weight: bold;
   font-size: inherit;
@@ -5581,7 +5581,7 @@ The bulk file upload widget base styles.
   height: 100px;
   text-align: center;
   border-style: dashed;
-  border-color: #d2d2d2;
+  border-color: #d7d7d7;
   border-width: 2px;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-invalid-filetype-errormessage {
@@ -6751,7 +6751,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
   font-weight: bold;
   margin: 20px 0 0 0;
   padding: 0 0 5px 0;
-  border-bottom: 1px solid #e1e1e1;
+  border-bottom: 1px solid #e6e6e6;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items {
   background: #f3f3f3;
@@ -6784,127 +6784,48 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
 .django-cradmin-loadmorepager.django-cradmin-loadmorepager-hidden {
   display: none;
 }
+nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-mobileheader .django-cradmin-menu-mobiletoggle {
+  line-height: 50px;
+  height: 50px;
+}
 @media (min-width: 992px) {
   nav#django_cradmin_mainmenu.django-cradmin-menu {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    left: 0;
-    width: 250px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-transition: top 0.12s ease-in-out;
-    -moz-transition: top 0.12s ease-in-out;
-    transition: top 0.12s ease-in-out;
+    height: 50px;
   }
   nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content {
-    padding-bottom: 110px;
+    display: block;
+    height: 50px;
+  }
+  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul {
+    display: inline-block;
+    height: 50px;
+  }
+  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item {
+    display: inline-block;
+    height: 50px;
+  }
+  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item a {
+    height: 50px;
+    line-height: 50px;
+    display: block;
+    padding: 0 16px;
+  }
+  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem .django-cradmin-menu-activeitemwrapper > a,
+  nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul li.django-cradmin-menu-item.django-cradmin-menu-activeitem > a {
+    font-weight: normal;
   }
   nav#django_cradmin_mainmenu.django-cradmin-menu .django-cradmin-menu-content ul.django-cradmin-menu-content-footer {
-    margin-top: 0;
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-  nav#django_cradmin_mainmenu.django-cradmin-menu.django-cradmin-menu-overflow-y .django-cradmin-menu-content {
-    padding-bottom: 0;
-  }
-  nav#django_cradmin_mainmenu.django-cradmin-menu.django-cradmin-menu-overflow-y .django-cradmin-menu-content ul.django-cradmin-menu-content-footer {
-    margin-top: 30px;
-    position: static;
+    margin: 0;
+    float: right;
   }
 }
-body {
-  background: #e1e1e1;
+body.django-cradmin-formview-page .django-cradmin-page-header-outer {
+  text-align: center;
 }
-#django_cradmin_contentwrapper {
-  background: #fff;
-  padding-bottom: 15px;
-  min-height: 100%;
-}
-@media (min-width: 992px) {
-  #django_cradmin_contentwrapper {
-    padding-left: 250px;
-  }
-}
-@media (min-width: 992px) {
-  #django_cradmin_contentwrapper {
-    width: 970px;
-  }
-}
-@media (min-width: 1200px) {
-  #django_cradmin_contentwrapper {
-    width: 1170px;
-  }
-}
-.django-cradmin-focusedpage-body {
-  background: #fff;
-}
-@media (min-width: 992px) {
-  body.django-cradmin-hide-menu #django_cradmin_contentwrapper {
-    padding-left: 0;
-  }
-}
-@media (min-width: 992px) {
-  .container {
-    margin-left: 0;
-    margin-right: auto;
-    width: 720px;
-  }
-}
-@media (min-width: 1200px) {
-  .container {
-    width: 920px;
-  }
-}
-@media (min-width: 992px) {
-  .container.django-cradmin-container-focus {
-    margin-left: 15px;
-    width: 690px;
-  }
-}
-@media (min-width: 1200px) {
-  .container.django-cradmin-container-focus {
-    width: 890px;
-  }
-}
-.django-cradmin-hide-menu #django_cradmin_contentwrapper {
+body.django-cradmin-formview-page ul#django_cradmin_messages {
   margin-left: auto;
   margin-right: auto;
 }
-@media (min-width: 992px) {
-  .django-cradmin-hide-menu .container {
-    margin-left: auto;
-    margin-right: auto;
-    width: 970px;
-  }
-}
-@media (min-width: 1200px) {
-  .django-cradmin-hide-menu .container {
-    width: 1170px;
-  }
-}
-@media (min-width: 992px) {
-  .django-cradmin-hide-menu .container.django-cradmin-container-focus {
-    width: 940px;
-  }
-}
-@media (min-width: 1200px) {
-  .django-cradmin-hide-menu .container.django-cradmin-container-focus {
-    width: 1140px;
-  }
-}
-.django-cradmin-formsized-wrapper,
-.django-cradmin-form-wrapper .django-cradmin-form {
-  margin-left: 0;
-  margin-right: 0;
-}
 body {
   background-image: url('../../media/images/groovepaper.png');
-}
-.django-cradmin-page-header-outer .django-cradmin-page-header-inner h1 .django-cradmin-page-header-inner-subtitle {
-  font-size: 16px;
-  font-weight: normal;
-  display: block;
 }
