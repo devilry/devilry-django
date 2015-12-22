@@ -86,12 +86,12 @@ CELERY_RESULT_BACKEND = 'amqp://'
 # EMAIL_BACKEND = 'djcelery_email.backends.CeleryEmailBackend'
 # CELERY_EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
-# DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme2/include/includetest.django.html'
-# DEVILRY_FRONTPAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme2/include/includetest.django.html'
-# DEVILRY_HELP_PAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme2/include/includetest.django.html'
-# DEVILRY_HELP_PAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme2/include/includetest.django.html'
-# DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme2/include/includetest.django.html'
-# DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme2/include/includetest.django.html'
+# DEVILRY_FRONTPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
+# DEVILRY_FRONTPAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
+# DEVILRY_HELP_PAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
+# DEVILRY_HELP_PAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
+# DEVILRY_PROFILEPAGE_HEADER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
+# DEVILRY_PROFILEPAGE_FOOTER_INCLUDE_TEMPLATE = 'devilry_theme3/include/includetest.django.html'
 
 
 DEVILRY_ELASTICSEARCH_HOSTS = [
