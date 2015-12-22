@@ -8077,7 +8077,7 @@ a {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
 }
 .django-cradmin-container-focus {
-  background: #ffffff;
+  background: #f3f3f3;
   padding-top: 15px;
   padding-bottom: 15px;
   border-bottom: 1px solid #cccccc;
@@ -8400,7 +8400,7 @@ table.table.django-cradmin-table thead tr th {
   border: none;
 }
 table.table.django-cradmin-table tbody {
-  background: #ffffff;
+  background: #f3f3f3;
   border-bottom: 1px solid #cccccc;
 }
 table.table.django-cradmin-table tbody tr {
@@ -8702,18 +8702,7 @@ table.table.django-cradmin-table tbody td:last-child {
 .django-cradmin-floating-fullsize-iframe-wrapper.django-cradmin-modelchoicefield-iframe-wrapper .django-cradmin-floating-fullsize-content {
   background: #e1e1e1;
 }
-#django_cradmin_bodycontentwrapper.django-cradmin-floating-fullsize-iframe-bodycontentwrapper {
-  -webkit-transition: all 0.15s ease-in-out;
-  -moz-transition: all 0.15s ease-in-out;
-  transition: all 0.15s ease-in-out;
-  position: relative;
-}
-#django_cradmin_bodycontentwrapper.django-cradmin-floating-fullsize-iframe-bodycontentwrapper.django-cradmin-floating-fullsize-iframe-bodycontentwrapper-push {
-  -webkit-transform: translate(90%, 0);
-  -moz-transform: translate(90%, 0);
-  transform: translate(90%, 0);
-}
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper {
     -webkit-transform: translate(-100%, 0);
     -moz-transform: translate(-100%, 0);
@@ -8726,7 +8715,7 @@ table.table.django-cradmin-table tbody td:last-child {
   }
   body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper a.django-cradmin-floating-fullsize-iframe-closebutton {
     width: auto;
-    left: 698px;
+    left: 922px;
     text-align: left;
   }
   body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper a.django-cradmin-floating-fullsize-iframe-closebutton .django-cradmin-floating-fullsize-iframe-closebutton-icon {
@@ -8735,13 +8724,16 @@ table.table.django-cradmin-table tbody td:last-child {
   body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content {
     top: 0;
     left: 0;
-    width: 698px;
+    width: 922px;
     right: auto;
   }
-  body.django-cradmin-formview-page #django_cradmin_bodycontentwrapper.django-cradmin-floating-fullsize-iframe-bodycontentwrapper.django-cradmin-floating-fullsize-iframe-bodycontentwrapper-push {
-    -webkit-transform: translate(698px, 0);
-    -moz-transform: translate(698px, 0);
-    transform: translate(698px, 0);
+}
+@media (min-width: 1200px) {
+  body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper a.django-cradmin-floating-fullsize-iframe-closebutton {
+    left: 1130px;
+  }
+  body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper .django-cradmin-floating-fullsize-content {
+    width: 1130px;
   }
 }
 .django-cradmin-form .django-cradmin-filewidget img {
@@ -9029,7 +9021,7 @@ ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat {
   list-style: none;
   margin: 0;
   padding: 0;
-  background: #ffffff;
+  background: #f3f3f3;
 }
 ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li {
   margin: 0;
@@ -10168,7 +10160,7 @@ ol.django-cradmin-listbuilder-list li a.django-cradmin-listbuilder-itemframe-lin
   display: block;
 }
 ol.django-cradmin-listbuilder-list li .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
-  background: #ffffff;
+  background: #f3f3f3;
   padding: 15px 15px;
 }
 ol.django-cradmin-listfilter-filterlist {
@@ -10264,7 +10256,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
   border-bottom: 1px solid #e1e1e1;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items {
-  background: #ffffff;
+  background: #f3f3f3;
   padding: 10px;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item .django-cradmin-multiselect2-target-selected-item-title {
