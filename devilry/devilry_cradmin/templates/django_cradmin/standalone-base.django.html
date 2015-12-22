@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block styles %}
-    <link href='{% static "devilry_theme2/css/styles.css" %}' rel="stylesheet">
+    {{ block.super }}
     {% include "devilry_theme2/favicons.django.html" %}
 {% endblock styles %}
 
