@@ -6045,6 +6045,9 @@ nav.django-cradmin-menu.django-cradmin-menu-vertical .django-cradmin-menu-mobile
     float: right;
   }
 }
+#django_cradmin_mainmenu_backdrop {
+  display: none;
+}
 .django-cradmin-modal {
   position: fixed;
   left: 0;

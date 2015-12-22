@@ -7,9 +7,12 @@ nav#django_cradmin_mainmenu.django-cradmin-menu {
     width: @cradmin-default-theme-mainmenu-width;
     overflow-y: auto;
     overflow-x: hidden;
-    .css3-transition(top @cradmin-default-theme-mainmenu-top-transition-duration ease-in-out);
+    background: none;
+    opacity: 1.0;
+    .css3-transition(all @cradmin-default-theme-mainmenu-top-transition-duration ease-in-out);
 
     .django-cradmin-menu-content {
+      background: none;
       padding-bottom: @cradmin-default-theme-mainmenu-footer-height;
       ul {
         &.django-cradmin-menu-content-footer {
@@ -31,5 +34,23 @@ nav#django_cradmin_mainmenu.django-cradmin-menu {
         }
       }
     }
+
+    &.django-cradmin-menu-scrolling {
+      opacity: 0.5;
+    }
+  }
+}
+
+
+#django_cradmin_mainmenu_backdrop {
+  @media (min-width: @screen-md-min) {
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: @cradmin-default-theme-mainmenu-width;
+    background: @cradmin-menu-bg;
   }
 }
