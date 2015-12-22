@@ -46,7 +46,7 @@
             {% endif %}
             {% if request.user.is_superuser %}
                 <li id="devilry_frontpage_roleselect_superuser">
-                    <a href="{% url 'admin:index' %}">
+                    <a href="/superuser/">
                         <strong>{% trans "Superuser" %}</strong>
                         {% trans "Superusers have access to all data stored in Devilry." %}
                     </a>
