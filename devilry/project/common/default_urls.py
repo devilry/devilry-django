@@ -32,7 +32,7 @@ devilry_urls = (
     ('r^student/assignmentgroup/(?P<assignmentgroupid>\d+)$', redirecto_to_show_delivery),
     (r'^devilry_student/', include('devilry.devilry_student.urls')),
     (r'^devilry_group/', include('devilry.devilry_group.urls')),
-    # (r'^devilry_gradeform/', include('devilry.devilry_gradeform.urls')),
+    (r'^devilry_gradeform/', include('devilry.devilry_gradeform.urls')),
     (r'^devilry_admin/', include('devilry.devilry_admin.urls')),
     (r'^superuser/', include(admin.site.urls)),
     (r'^devilry_send_email_to_students/', include('devilry.devilry_send_email_to_students.urls')),
