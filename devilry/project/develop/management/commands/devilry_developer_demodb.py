@@ -514,13 +514,59 @@ class Command(BaseCommand):
 
         first_deadline = timezone.now() - timezone.timedelta(weeks=2, days=1)
 
+
         assignment_setup_gradeform_json = {
-            'type': 'advanced',
-            'scheme': [
-                {"points_max": "5", "points_achieved": "0", "text": "Has the student documented the code?", "comment": ""},
-                {"points_max": "5", "points_achieved": "0", "text": "Implemented own datastructures?", "comment": ""},
-                {"points_max": "5", "points_achieved": "0", "text": "Has the student understood the different pros and cons for the datastructures?", "comment": ""},
-                {"points_max": "5", "points_achieved": "0", "text": "Fullfilling designdocument?", "comment": ""},
+            "type": "advanced",
+            "id": "uyagsfuyg43t763t42gtysfeg82376rf2uytf27836dgfweytfgv7238",
+            "schema":
+            [
+
+                {
+                  "id": "uasgf87###ASDSAIDQuestion title",
+                  "title":"Question title",
+                  "explanation":"Explanation of how to fill in",
+                  "options_type":"range",
+                  "range_from": 0,
+                  "range_to": 100,
+                  "value": 50,
+                  "comment": ""
+                },
+
+                {
+                  "id": "uasek32002AIDQuestion title",
+                  "title":"Question title",
+                  "explanation":"Explanation of how to fill in",
+                  "options_type":"single_select",
+                  "options":
+                  [
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""}
+                  ]
+                },
+
+                {
+                  "id": "ullsoqppp987#@asdIDQuestion title",
+                  "title":"Question title",
+                  "explanation":"Explanation of how to fill in",
+                  "options_type":"multi_select",
+                  "options":
+                  [
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""}
+                  ]
+                },
+
+                {
+                  "id": "sdaikjfoa4788698236487263847iwufghQuestion title",
+                  "title":"Question title",
+                  "explanation":"Explanation of how to fill in",
+                  "options_type":"feedback",
+                  "feedback": "some written feedback in a textarea"
+                }
             ]
         }
 
