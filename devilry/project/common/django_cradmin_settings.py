@@ -17,4 +17,6 @@ DJANGO_CRADMIN_SITENAME = 'Devilry'
 
 DJANGO_CRADMIN_MENU_SCROLL_TOP_FIXED = True
 
-DJANGO_CRADMIN_THEME_PATH = 'devilry_theme2/css/styles.css'
+DEVILRY_THEME3_VERSION = '1.0.0'
+DJANGO_CRADMIN_THEME_PATH = 'devilry_theme3/{}/styles/' \
+                            'cradmin_theme_devilry_mainpages/theme.css'.format(DEVILRY_THEME3_VERSION)

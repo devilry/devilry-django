@@ -1,5 +1,5 @@
 from ievv_opensource.utils import ievvdevrun
-
+from ievv_opensource.utils import ievvbuildstatic
 from .base import *
 
 # MIDDLEWARE_CLASSES = MIDDLEWARE_CLASSES + ['devilry.project.develop.middleware.FakeLoginMiddleware']
@@ -112,6 +112,34 @@ DEVILRY_ELASTICSEARCH_HOSTS = [
 
 
 # LANGUAGE_CODE = 'nb'
+
+
+IEVVTASKS_BUILDSTATIC_APPS = ievvbuildstatic.config.Apps(
+    ievvbuildstatic.config.App(
+        appname='devilry_theme3',
+        version=DEVILRY_THEME3_VERSION,
+        plugins=[
+            ievvbuildstatic.bowerinstall.Plugin(
+                packages={
+                    'bootstrap': '~3.1.1',
+                    'fontawesome': '~4.3.0',
+                }
+            ),
+            ievvbuildstatic.lessbuild.Plugin(
+                sourcefolder='styles/cradmin_theme_devilry_mainpages',
+                sourcefile='theme.less',
+                other_sourcefolders=[
+                    'styles/cradmin_base',
+                    'styles/cradmin_theme_default',
+                ],
+                less_include_paths=[
+                    'bower_components',
+                ]
+            ),
+            ievvbuildstatic.mediacopy.Plugin(),
+        ]
+    ),
+)
 
 
 IEVVTASKS_DEVRUN_RUNNABLES = {

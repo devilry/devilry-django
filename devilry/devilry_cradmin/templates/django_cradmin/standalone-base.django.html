@@ -3,11 +3,11 @@
 
 {% block styles %}
     {{ block.super }}
-    {% include "devilry_theme2/favicons.django.html" %}
+    {% include "devilry_theme3/favicons.django.html" %}
 {% endblock styles %}
 
 {% block global-pre-body %}
-    {% if request.user.is_authenticated %}
-        {% include "devilry_header/header2include.django.html" with devilry_header2_role=request.cradmin_instance.devilry_rolename %}
-    {% endif %}
+{#    {% if request.user.is_authenticated %}#}
+{#        {% include "devilry_header/header2include.django.html" with devilry_header2_role=request.cradmin_instance.devilry_rolename %}#}
+{#    {% endif %}#}
 {% endblock global-pre-body %}

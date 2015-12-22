@@ -39,6 +39,7 @@
         <option value="$MODULE_DIR$/devilry/devilry_group/templates" />
         <option value="$MODULE_DIR$/devilry/devilry_admin/templates" />
         <option value="$MODULE_DIR$/devilry/devilry_theme2/templates" />
+        <option value="$MODULE_DIR$/devilry/devilry_theme3/templates" />
       </list>
     </option>
   </component>
