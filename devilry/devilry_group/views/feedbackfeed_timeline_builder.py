@@ -99,15 +99,11 @@ class FeedbackFeedTimelineBuilder():
                 timeline[feedbackset.published_datetime].append({
                     "type": "grade",
                     "obj": feedbackset.points,
-                    "gradeform": grade_form.AdvancedGradeForm.render_viewable(
-                        grade_form.AdvancedGradeForm(),
-                        feedbackset.group.parentnode,
-                        feedbackset)
+                #     "gradeform": grade_form.AdvancedGradeForm.render_viewable(
+                #         grade_form.AdvancedGradeForm(),
+                #         feedbackset.group.parentnode,
+                #         feedbackset)
                 })
-                print grade_form.AdvancedGradeForm.render_viewable(
-                        grade_form.AdvancedGradeForm(),
-                        feedbackset.group.parentnode,
-                        feedbackset)
         return last_deadline, timeline
 
     def sort_timeline(self, timeline):

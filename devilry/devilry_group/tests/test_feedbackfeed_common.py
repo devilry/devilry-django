@@ -3,7 +3,6 @@ from django.utils import timezone
 from model_mommy import mommy
 
 from django_cradmin import cradmin_testhelpers
-from devilry.project.develop.testhelpers.corebuilder import FeedbackSetBuilder, UserBuilder2
 
 
 class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
@@ -288,6 +287,7 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
                                  group__parentnode__max_points=10,
                                  group__parentnode__passing_grade_min_points=5,
                                  published_datetime=timezone.now(),
+                                 deadline_datetime=timezone.now(),
                                  points=7)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-passed'))

@@ -6,7 +6,7 @@ from model_mommy import mommy
 
 from devilry.devilry_group.tests import test_feedbackfeed_common
 from devilry.devilry_group.views import feedbackfeed_student
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder2, AssignmentGroupBuilder, FeedbackSetBuilder
+from devilry.devilry_group.models import GroupComment
 
 
 class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -51,16 +51,6 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
                                                           requestuser=comment.user)
         self.assertFalse(mockresponse.selector.exists('.after-deadline-badge'))
-
-    # def test_get_feedbackfeed_student_wysiwyg_post_comment_choise_post(self):
-    #     requestuser = UserBuilder2().user
-    #     janedoe = UserBuilder2(fullname='Jane Doe').user
-    #     feedbackset_builder = FeedbackSetBuilder.make(
-    #     )
-    #     selector, request = self._mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-    #                                                              requestuser=requestuser,
-    #                                                              group=janedoe)
-    #     self.assertTrue(selector.exists('#submit-id-student_add_comment'))
 
     def test_get_feedbackfeed_student_can_see_other_student_comments(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
@@ -146,3 +136,36 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
     #     response, request = self._mock_postrequest(role=assignment_group, requestuser=janedoe, group=janedoe)
     #
     #     self.assertEquals(response.status_code, 200)
+
+
+    def test_post_feedbackset_post_comment(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5)
+        mockresponse = self.mock_http302_postrequest(
+            cradmin_role=feedbackset.group,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'test',
+                }
+            })
+
+        comment = GroupComment.objects.filter(feedback_set__id=feedbackset.id)
+        self.assertEquals(1, len(comment))
+
+    def test_post_feedbackset_post_comment_no_text(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5)
+        mockresponse = self.mock_http200_postrequest_htmls(
+            cradmin_role=feedbackset.group,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                }
+            })
+        comments = GroupComment.objects.all()
+
+        self.assertEquals(0, len(comments))
