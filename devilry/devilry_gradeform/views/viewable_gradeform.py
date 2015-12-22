@@ -2,13 +2,8 @@ import json
 
 from django_cradmin import renderable
 
-class AbstractViewableRenderer(renderable.AbstractRenderable):
-    """
 
-    """
-
-
-class AdvancedViewableGradeForm(AbstractViewableRenderer):
+class AdvancedViewableGradeForm(renderable.AbstractRenderable):
     """
 
     """
