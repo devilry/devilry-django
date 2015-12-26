@@ -3017,6 +3017,7 @@ SELECT pg_catalog.setval('core_node_id_seq', 1, false);
 --
 
 COPY core_period (id, short_name, long_name, start_time, end_time, etag, parentnode_id) FROM stdin;
+1	springaaaa	Spring AAAA	2015-01-01 00:00:00+01	2080-12-31 23:59:00+01	2015-12-26 21:31:34.148678+01	1
 \.
 
 
@@ -3039,7 +3040,7 @@ SELECT pg_catalog.setval('core_period_admins_id_seq', 1, false);
 -- Name: core_period_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_period_id_seq', 1, false);
+SELECT pg_catalog.setval('core_period_id_seq', 1, true);
 
 
 --
@@ -3214,7 +3215,7 @@ COPY core_subject_admins (id, subject_id, user_id) FROM stdin;
 -- Name: core_subject_admins_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_subject_admins_id_seq', 2, true);
+SELECT pg_catalog.setval('core_subject_admins_id_seq', 3, true);
 
 
 --
@@ -3289,7 +3290,7 @@ SELECT pg_catalog.setval('devilry_account_periodpermissiongroup_id_seq', 1, fals
 --
 
 COPY devilry_account_permissiongroup (id, name, created_datetime, updated_datetime, syncsystem_update_datetime, grouptype, is_custom_manageable) FROM stdin;
-1	The grandmas	2015-12-22 20:28:12.198719+01	2015-12-22 20:29:29.627687+01	\N	departmentadmin	f
+1	The grandmas	2015-12-22 20:28:12.198719+01	2015-12-26 21:20:48.048878+01	\N	departmentadmin	f
 \.
 
 
