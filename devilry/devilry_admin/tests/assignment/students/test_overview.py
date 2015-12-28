@@ -31,7 +31,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.count(
                     '#devilry_admin_assignment_students_overview_choices li'))
 
-    def test_choice_add_groups_link(self):
+    def test_choice_create_groups_link(self):
         testassignment = mommy.make('core.Assignment')
         mock_cradmin_instance = mock.MagicMock()
 
@@ -42,11 +42,11 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
                                                           cradmin_instance=mock_cradmin_instance)
         self.assertEqual(
-            '/create_assignmentgroups/INDEX',
+            '/create_groups/INDEX',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_overview_choice_add_groups a')['href'])
+            .one('#devilry_admin_assignment_students_overview_choice_create_groups a')['href'])
 
-    def test_choice_add_groups_text(self):
+    def test_choice_create_groups_text(self):
         testassignment = mommy.make('core.Assignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
@@ -54,7 +54,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'Add students',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_overview_choice_add_groups a')
+            .one('#devilry_admin_assignment_students_overview_choice_create_groups a')
             .alltext_normalized)
 
     def test_choice_merge_groups_link(self):
