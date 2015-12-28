@@ -18,18 +18,19 @@
 
 {% block content %}
     <div class="container">
-        <ol class="list-unstyled">
-            <li>
+        <ol id="devilry_admin_assignment_students_overview_choices"
+                class="list-unstyled">
+            <li id="devilry_admin_assignment_students_overview_choice_add_groups">
                 <a href="{% cradmin_instance_appindex_url 'create_assignmentgroups' %}">
                     {% trans "Add students" %}
                 </a>
             </li>
-            <li>
+            <li id="devilry_admin_assignment_students_overview_choice_merge_groups">
                 <a href="#">
                     {% trans "Organize students in project groups" %}
                 </a>
             </li>
-            <li>
+            <li id="devilry_admin_assignment_students_overview_choice_delete_groups">
                 <a href="#">
                     {% trans "Delete students or project groups" %}
                 </a>
