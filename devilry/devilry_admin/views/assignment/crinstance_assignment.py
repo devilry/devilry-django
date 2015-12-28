@@ -6,6 +6,7 @@ from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment import overview
 from devilry.devilry_admin.views.assignment import admins
 from devilry.devilry_admin.views.assignment.students import overview as studentoverview
+from devilry.devilry_admin.views.assignment.students import create_assignmentgroups
 
 
 class Menu(crmenu.Menu):
@@ -28,12 +29,14 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
         ('overview', overview.App),
         ('admins', admins.App),
         ('studentoverview', studentoverview.App),
+        ('create_assignmentgroups', create_assignmentgroups.App),
     ]
     id = 'devilry_admin_assignmentadmin'
     rolefrontpage_appname = 'overview'
 
     def get_rolequeryset(self):
         return Assignment.where_is_admin_or_superadmin(self.request.user)\
+            .select_related('parentnode', 'parentnode__parentnode')\
             .order_by('-publishing_time')
 
     def get_titletext_for_role(self, role):

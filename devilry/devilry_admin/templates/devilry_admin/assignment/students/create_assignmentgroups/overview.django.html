@@ -1,0 +1,39 @@
+{% extends "django_cradmin/base.django.html" %}
+{% load static %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+
+{% block title %}
+    {% blocktrans trimmed with assignment=request.cradmin_role %}Add students to {{ assignment }}{% endblocktrans %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Add students" %}
+    </h1>
+    <p class="lead">
+        {% trans "How would you like to add students?" %}
+    </p>
+{% endblock pageheader-inner %}
+
+{% block content %}
+    <div class="container">
+        <ol id="devilry_admin_assignment_students_create_assignmentgroups_overview_choices"
+            class="list-unstyled">
+
+            <li id="devilry_admin_assignment_students_create_assignmentgroups_overview_choice_all">
+                <a href="#">
+                    {% blocktrans trimmed with period=request.cradmin_role.parentnode %}
+                        Add all students registered on {{ period }}
+                    {% endblocktrans %}
+                </a>
+            </li>
+            <li id="devilry_admin_assignment_students_create_assignmentgroups_overview_choice_select">
+                <a href="#">
+                    {% trans "Select students manually" %}
+                </a>
+            </li>
+        </ol>
+    </div>
+{% endblock content %}
