@@ -3,7 +3,7 @@ from django_cradmin import crapp
 
 
 class Overview(TemplateView):
-    template_name = 'devilry_admin/assignment/students/create_assignmentgroups/overview.django.html'
+    template_name = 'devilry_admin/assignment/students/create_groups/overview.django.html'
 
 
 class App(crapp.App):

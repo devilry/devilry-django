@@ -19,17 +19,17 @@
 
 {% block content %}
     <div class="container">
-        <ol id="devilry_admin_assignment_students_create_assignmentgroups_overview_choices"
+        <ol id="devilry_admin_assignment_students_create_groups_overview_choices"
                 class="list-unstyled">
 
-            <li id="devilry_admin_assignment_students_create_assignmentgroups_overview_choice_all">
+            <li id="devilry_admin_assignment_students_create_groups_overview_choice_all">
                 <a href="#">
                     {% blocktrans trimmed with period=request.cradmin_role.parentnode %}
                         Add all students registered on {{ period }}
                     {% endblocktrans %}
                 </a>
             </li>
-            <li id="devilry_admin_assignment_students_create_assignmentgroups_overview_choice_select">
+            <li id="devilry_admin_assignment_students_create_groups_overview_choice_select">
                 <a href="#">
                     {% trans "Select students manually" %}
                 </a>

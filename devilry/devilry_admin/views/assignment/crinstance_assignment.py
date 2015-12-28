@@ -6,7 +6,7 @@ from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment import overview
 from devilry.devilry_admin.views.assignment import admins
 from devilry.devilry_admin.views.assignment.students import overview as studentoverview
-from devilry.devilry_admin.views.assignment.students import create_assignmentgroups
+from devilry.devilry_admin.views.assignment.students import create_groups
 
 
 class Menu(crmenu.Menu):
@@ -29,7 +29,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
         ('overview', overview.App),
         ('admins', admins.App),
         ('studentoverview', studentoverview.App),
-        ('create_assignmentgroups', create_assignmentgroups.App),
+        ('create_groups', create_groups.App),
     ]
     id = 'devilry_admin_assignmentadmin'
     rolefrontpage_appname = 'overview'

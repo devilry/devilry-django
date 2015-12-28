@@ -2,11 +2,11 @@ from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
 
-from devilry.devilry_admin.views.assignment.students import create_assignmentgroups
+from devilry.devilry_admin.views.assignment.students import create_groups
 
 
 class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = create_assignmentgroups.Overview
+    viewclass = create_groups.Overview
 
     def test_title(self):
         testassignment = mommy.make('core.Assignment',
@@ -38,7 +38,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             2,
             mockresponse.selector.count(
-                    '#devilry_admin_assignment_students_create_assignmentgroups_overview_choices li'))
+                    '#devilry_admin_assignment_students_create_groups_overview_choices li'))
 
     def test_choice_all_link(self):
         testassignment = mommy.make('core.Assignment')
@@ -46,7 +46,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             '#',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_create_assignmentgroups_overview_choice_all a')['href'])
+            .one('#devilry_admin_assignment_students_create_groups_overview_choice_all a')['href'])
 
     def test_choice_all_text(self):
         testassignment = mommy.make('core.Assignment',
@@ -56,7 +56,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'Add all students registered on testsubject.testperiod',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_create_assignmentgroups_overview_choice_all a')
+            .one('#devilry_admin_assignment_students_create_groups_overview_choice_all a')
             .alltext_normalized)
 
     def test_choice_select_link(self):
@@ -65,7 +65,7 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             '#',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_create_assignmentgroups_overview_choice_select a')['href'])
+            .one('#devilry_admin_assignment_students_create_groups_overview_choice_select a')['href'])
 
     def test_choice_select_text(self):
         testassignment = mommy.make('core.Assignment')
@@ -73,5 +73,5 @@ class TestOverview(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'Select students manually',
             mockresponse.selector
-            .one('#devilry_admin_assignment_students_create_assignmentgroups_overview_choice_select a')
+            .one('#devilry_admin_assignment_students_create_groups_overview_choice_select a')
             .alltext_normalized)
