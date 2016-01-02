@@ -117,3 +117,46 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
             ],
             optgroup_labels
         )
+
+
+class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = create_groups.ManualSelectStudentsView
+
+    def test_title(self):
+        testassignment = mommy.make('core.Assignment',
+                                    short_name='testassignment',
+                                    parentnode__short_name='testperiod',
+                                    parentnode__parentnode__short_name='testsubject')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertIn(
+            'Select the students you want to add to testsubject.testperiod.testassignment',
+            mockresponse.selector.one('title').alltext_normalized)
+
+    def test_h1(self):
+        testassignment = mommy.make('core.Assignment', long_name='Assignment One')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertEqual(
+            'Select the students you want to add to Assignment One',
+            mockresponse.selector.one('h1').alltext_normalized)
+
+    def test_no_relatedstudents(self):
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertEqual(
+            'No students found.',
+            mockresponse.selector.one(
+                    '.devilry-admin-create-groups-manual-select-no-relatedstudents-message').alltext_normalized)
+
+    def test_render_relatedstudent(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent',
+                   user__fullname='Test User',
+                   user__shortname='test@example.com',
+                   period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        mockresponse.selector.prettyprint()
+        # self.assertEqual(
+        #     'Select the students you want to add to Assignment One',
+        #     mockresponse.selector.one('h1').alltext_normalized)

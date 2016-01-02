@@ -5,6 +5,11 @@ from django.utils.translation import pgettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import formbase
+from django_cradmin.viewhelpers import listbuilderview
+from django_cradmin.viewhelpers import listfilter
+from django_cradmin.viewhelpers import multiselect2
+
+from devilry.apps.core.models import RelatedStudent, Candidate
 
 
 class ChooseMethod(formbase.FormView):
@@ -86,7 +91,105 @@ class ChooseMethod(formbase.FormView):
         return HttpResponseRedirect('/some/view')
 
 
+class RelatedStudentSelectedItem(multiselect2.selected_item_renderer.SelectedItem):
+    def get_title(self):
+        return self.value.user.fullname
+
+    def get_description(self):
+        return self.value.user.shortname
+
+
+class RelatedStudentItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
+    valuealias = 'relatedstudent'
+    selected_item_renderer_class = RelatedStudentSelectedItem
+
+    def get_inputfield_name(self):
+        return 'selected_related_students'
+
+    def get_title(self):
+        return self.relatedstudent.user.fullname
+
+    def get_description(self):
+        return self.relatedstudent.user.shortname
+
+
+class RelatedStudentMultiselectTarget(multiselect2.target_renderer.Target):
+    def get_submit_button_text(self):
+        return pgettext_lazy('admin create_groups',
+                             'Add students')
+
+    def get_with_items_title(self):
+        return pgettext_lazy('admin create_groups',
+                             'Selected students')
+
+    def get_without_items_text(self):
+        return pgettext_lazy('admin create_groups',
+                             'No students selected')
+
+
+class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.View):
+    model = RelatedStudent
+    value_renderer_class = RelatedStudentItemValue
+    paginate_by = 20
+
+    def dispatch(self, request, *args, **kwargs):
+        self.assignment = self.request.cradmin_role
+        self.period = self.assignment.parentnode
+        return super(ManualSelectStudentsView, self).dispatch(request, *args, **kwargs)
+
+    def get_pagetitle(self):
+        return pgettext_lazy('admin create_groups',
+                             'Select the students you want to add to %(assignment)s') % {
+            'assignment': self.assignment.get_path()
+        }
+
+    def get_pageheading(self):
+        return pgettext_lazy('admin create_groups',
+                             'Select the students you want to add to %(assignment)s') % {
+            'assignment': self.assignment.long_name
+        }
+
+    def get_filterlist_template_name(self):
+        return 'devilry_admin/assignment/students/create_groups/manual-select-students.django.html'
+
+    def add_filterlist_items(self, filterlist):
+        filterlist.append(listfilter.django.single.textinput.Search(
+            slug='search',
+            label='Search',
+            label_is_screenreader_only=True,
+            modelfields=['user__fullname', 'user__shortname']))
+
+    def get_filterlist_url(self, filters_string):
+        return self.request.cradmin_app.reverse_appurl(
+            'manual-select', kwargs={'filters_string': filters_string})
+
+    def __get_users_in_group_on_assignment(self):
+        assignment = self.request.cradmin_role
+        return Candidate.objects.filter(assignment_group__parentnode=assignment)\
+            .values_list('relatedstudent_id', flat=True)
+
+    def get_queryset_for_role(self, role):
+        queryset = self.period.relatedstudent_set\
+            .order_by('user__fullname')\
+            .select_related('user')\
+            .exclude(pk__in=self.__get_users_in_group_on_assignment())
+        queryset = self.get_filterlist().filter(queryset)
+        return queryset
+
+    def __get_multiselect_target(self):
+        return RelatedStudentMultiselectTarget()
+
+    def get_context_data(self, **kwargs):
+        context = super(ManualSelectStudentsView, self).get_context_data(**kwargs)
+        context['multiselect_target'] = self.__get_multiselect_target()
+        return context
+
+
 class App(crapp.App):
     appurls = [
-        crapp.Url(r'^$', ChooseMethod.as_view(), name=crapp.INDEXVIEW_NAME)
+        crapp.Url(r'^$', ChooseMethod.as_view(), name=crapp.INDEXVIEW_NAME),
+        crapp.Url(
+            r'^manual-select/(?P<filters_string>.+)?$',
+            ManualSelectStudentsView.as_view(),
+            name='manual-select'),
     ]
