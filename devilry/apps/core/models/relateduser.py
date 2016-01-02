@@ -256,7 +256,9 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
                                   'a-z, 0-9, ``_`` and ``-``.')
 
     def __unicode__(self):
-        return '{} #{}'.format(self.__class__.__name__, self.id)
+        return '{}#{} on {}'.format(self.__class__.__name__,
+                                    self.id,
+                                    self.period.get_path())
 
 
 class RelatedExaminerManager(AbstractRelatedUserManager):
