@@ -257,7 +257,7 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
 
     def __unicode__(self):
         return '{}#{} on {}'.format(self.__class__.__name__,
-                                    self.id,
+                                    self.user.shortname,
                                     self.period.get_path())
 
 
