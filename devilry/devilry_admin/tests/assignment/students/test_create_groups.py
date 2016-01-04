@@ -1,4 +1,7 @@
 import datetime
+
+import htmls
+import mock
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
@@ -119,6 +122,14 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
 
+class TestRelatedStudentMultiselectTarget(TestCase):
+    def test_with_items_title(self):
+        selector = htmls.S(create_groups.RelatedStudentMultiselectTarget().render(request=mock.MagicMock()))
+        self.assertEqual(
+            'Add students',
+            selector.one('button[type="submit"]').alltext_normalized)
+
+
 class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = create_groups.ManualSelectStudentsView
 
@@ -148,15 +159,196 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one(
                     '.devilry-admin-create-groups-manual-select-no-relatedstudents-message').alltext_normalized)
 
-    def test_render_relatedstudent(self):
+    def test_relatedstudent_not_in_assignment_period_excluded(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertEqual(
+            0,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_relatedstudent_in_assignment_period_included(self):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent',
-                   user__fullname='Test User',
-                   user__shortname='test@example.com',
                    period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
-        mockresponse.selector.prettyprint()
-        # self.assertEqual(
-        #     'Select the students you want to add to Assignment One',
-        #     mockresponse.selector.one('h1').alltext_normalized)
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_relatedstudent_with_candidate_on_assignment_not_included(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   relatedstudent=relatedstudent,
+                   assignment_group__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertEqual(
+            0,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_render_relatedstudent_sanity(self):
+        # This is tested in detail in the tests for
+        # devilry.devilry_admin.cradminextensions.multiselect2.multiselect2_relatedstudent.ItemValue
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent',
+                   user__fullname='Test User',
+                   period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        self.assertEqual(
+            'Test User',
+            mockresponse.selector.one('.django-cradmin-multiselect2-itemvalue-title').alltext_normalized)
+
+    def test_render_search(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent',
+                   user__fullname='Match User',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__fullname='Other User',
+                   period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'search-match'}
+        )
+        self.assertEqual(
+            1,
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+        self.assertEqual(
+            'Match User',
+            mockresponse.selector.one('.django-cradmin-multiselect2-itemvalue-title').alltext_normalized)
+
+    def test_render_orderby_default(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent',
+                   user__fullname='userb@example.com',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__fullname='UserA',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__fullname='userc',
+                   period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment)
+        titles = [element.alltext_normalized
+                  for element in mockresponse.selector.list('.django-cradmin-multiselect2-itemvalue-title')]
+        self.assertEqual(
+            ['UserA', 'userb@example.com', 'userc'],
+            titles)
+
+    def test_render_orderby_name_descending(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent',
+                   user__shortname='userb@example.com',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__fullname='UserA',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__fullname='userc',
+                   period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-name_descending'})
+        titles = [element.alltext_normalized
+                  for element in mockresponse.selector.list('.django-cradmin-multiselect2-itemvalue-title')]
+        self.assertEqual(
+            ['userc', 'userb@example.com', 'UserA'],
+            titles)
+
+    def test_render_orderby_lastname_ascending(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent',
+                   user__shortname='userb@example.com',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__fullname='User Aaa',
+                   user__lastname='Aaa',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__fullname='User ccc',
+                   user__lastname='ccc',
+                   period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-lastname_ascending'})
+        titles = [element.alltext_normalized
+                  for element in mockresponse.selector.list('.django-cradmin-multiselect2-itemvalue-title')]
+        self.assertEqual(
+            ['userb@example.com', 'User Aaa', 'User ccc'],
+            titles)
+
+    def test_render_orderby_lastname_descending(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent',
+                   user__shortname='userb@example.com',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__fullname='User Aaa',
+                   user__lastname='Aaa',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__fullname='User ccc',
+                   user__lastname='ccc',
+                   period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-lastname_descending'})
+        titles = [element.alltext_normalized
+                  for element in mockresponse.selector.list('.django-cradmin-multiselect2-itemvalue-title')]
+        self.assertEqual(
+            ['User ccc', 'User Aaa', 'userb@example.com'],
+            titles)
+
+    def test_render_orderby_shortname_ascending(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent',
+                   user__shortname='userb@example.com',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__shortname='usera@example.com',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__shortname='userc@example.com',
+                   period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-shortname_ascending'})
+        titles = [element.alltext_normalized
+                  for element in mockresponse.selector.list('.django-cradmin-multiselect2-itemvalue-title')]
+        self.assertEqual(
+            ['usera@example.com', 'userb@example.com', 'userc@example.com'],
+            titles)
+
+    def test_render_orderby_shortname_descending(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent',
+                   user__shortname='userb@example.com',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__shortname='usera@example.com',
+                   period=testperiod)
+        mommy.make('core.RelatedStudent',
+                   user__shortname='userc@example.com',
+                   period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-shortname_descending'})
+        titles = [element.alltext_normalized
+                  for element in mockresponse.selector.list('.django-cradmin-multiselect2-itemvalue-title')]
+        self.assertEqual(
+            ['userc@example.com', 'userb@example.com', 'usera@example.com'],
+            titles)

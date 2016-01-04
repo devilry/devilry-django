@@ -1,15 +1,17 @@
 from crispy_forms import layout
 from django import forms
+from django.conf import settings
+from django.db.models.functions import Lower, Concat
 from django.http import HttpResponseRedirect
-from django.utils.translation import pgettext_lazy
+from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import formbase
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
-from django_cradmin.viewhelpers import multiselect2
 
 from devilry.apps.core.models import RelatedStudent, Candidate
+from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
 
 
 class ChooseMethod(formbase.FormView):
@@ -91,46 +93,56 @@ class ChooseMethod(formbase.FormView):
         return HttpResponseRedirect('/some/view')
 
 
-class RelatedStudentSelectedItem(multiselect2.selected_item_renderer.SelectedItem):
-    def get_title(self):
-        return self.value.user.fullname
-
-    def get_description(self):
-        return self.value.user.shortname
-
-
-class RelatedStudentItemValue(multiselect2.listbuilder_itemvalues.ItemValue):
-    valuealias = 'relatedstudent'
-    selected_item_renderer_class = RelatedStudentSelectedItem
-
-    def get_inputfield_name(self):
-        return 'selected_related_students'
-
-    def get_title(self):
-        return self.relatedstudent.user.fullname
-
-    def get_description(self):
-        return self.relatedstudent.user.shortname
-
-
-class RelatedStudentMultiselectTarget(multiselect2.target_renderer.Target):
+class RelatedStudentMultiselectTarget(multiselect2_relatedstudent.Target):
     def get_submit_button_text(self):
         return pgettext_lazy('admin create_groups',
                              'Add students')
 
-    def get_with_items_title(self):
-        return pgettext_lazy('admin create_groups',
-                             'Selected students')
 
-    def get_without_items_text(self):
-        return pgettext_lazy('admin create_groups',
-                             'No students selected')
+class OrderRelatedStudentsFilter(listfilter.django.single.select.AbstractOrderBy):
+    def get_ordering_options(self):
+        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
+            shortname_ascending_label = ugettext_lazy('Order by: Email')
+            shortname_descending_label = ugettext_lazy('Order by: Email descending')
+        else:
+            shortname_ascending_label = ugettext_lazy('Order by: Username')
+            shortname_descending_label = ugettext_lazy('Order by: Username descending')
+
+        # NOTE: We use Concat below to get sorting that works even when the user
+        #       does not have a fullname, and we use Lower to sort ignoring case.
+        return [
+            ('', {
+                'label': ugettext_lazy('Order by: Name'),
+                'order_by': [Lower(Concat('user__fullname', 'user__shortname'))],
+            }),
+            ('name_descending', {
+                'label': ugettext_lazy('Order by: Name descending'),
+                'order_by': [Lower(Concat('user__fullname', 'user__shortname')).desc()],
+            }),
+            ('lastname_ascending', {
+                'label': ugettext_lazy('Order by: Last name'),
+                'order_by': [Lower('user__lastname')],
+            }),
+            ('lastname_descending', {
+                'label': ugettext_lazy('Order by: Last name descending'),
+                'order_by': [Lower('user__lastname').desc()],
+            }),
+            ('shortname_ascending', {
+                'label': shortname_ascending_label,
+                'order_by': ['user__shortname'],
+            }),
+            ('shortname_descending', {
+                'label': shortname_descending_label,
+                'order_by': ['-user__shortname'],
+            }),
+        ]
 
 
 class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.View):
     model = RelatedStudent
-    value_renderer_class = RelatedStudentItemValue
-    paginate_by = 20
+    value_renderer_class = multiselect2_relatedstudent.ItemValue
+    paginate_by = 200
+    filterlist_class = listfilter.lists.Horizontal
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
@@ -152,27 +164,31 @@ class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.
     def get_filterlist_template_name(self):
         return 'devilry_admin/assignment/students/create_groups/manual-select-students.django.html'
 
+    def get_label_is_screenreader_only_by_default(self):
+        return True
+
     def add_filterlist_items(self, filterlist):
         filterlist.append(listfilter.django.single.textinput.Search(
             slug='search',
-            label='Search',
-            label_is_screenreader_only=True,
+            label=ugettext_lazy('Search'),
             modelfields=['user__fullname', 'user__shortname']))
+        filterlist.append(OrderRelatedStudentsFilter(
+            slug='orderby',
+            label=ugettext_lazy('Order by')))
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             'manual-select', kwargs={'filters_string': filters_string})
 
-    def __get_users_in_group_on_assignment(self):
+    def __get_relatedstudents_in_group_on_assignment(self):
         assignment = self.request.cradmin_role
         return Candidate.objects.filter(assignment_group__parentnode=assignment)\
             .values_list('relatedstudent_id', flat=True)
 
     def get_queryset_for_role(self, role):
         queryset = self.period.relatedstudent_set\
-            .order_by('user__fullname')\
             .select_related('user')\
-            .exclude(pk__in=self.__get_users_in_group_on_assignment())
+            .exclude(pk__in=self.__get_relatedstudents_in_group_on_assignment())
         queryset = self.get_filterlist().filter(queryset)
         return queryset
 
