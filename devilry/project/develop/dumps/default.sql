@@ -2822,6 +2822,8 @@ SELECT pg_catalog.setval('auth_permission_id_seq', 165, true);
 --
 
 COPY core_assignment (id, short_name, long_name, publishing_time, anonymous, students_can_see_points, delivery_types, deadline_handling, scale_points_percent, first_deadline, max_points, passing_grade_min_points, points_to_grade_mapper, grading_system_plugin_id, students_can_create_groups, students_can_not_create_groups_after, feedback_workflow, parentnode_id) FROM stdin;
+1	assignment1	Assignment 1	2015-12-27 03:35:27.525662+01	f	t	0	0	100	2040-01-31 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1
+2	assignment2	Assignment 2	2016-01-03 04:41:40.730958+01	f	t	0	0	100	2040-02-14 12:30:00+01	1	1	passed-failed	devilry_gradingsystemplugin_approved	f	\N		1
 \.
 
 
@@ -2844,7 +2846,7 @@ SELECT pg_catalog.setval('core_assignment_admins_id_seq', 1, false);
 -- Name: core_assignment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_assignment_id_seq', 1, false);
+SELECT pg_catalog.setval('core_assignment_id_seq', 2, true);
 
 
 --
@@ -3123,6 +3125,10 @@ SELECT pg_catalog.setval('core_relatedexaminersyncsystemtag_id_seq', 1, false);
 --
 
 COPY core_relatedstudent (id, tags, candidate_id, automatic_anonymous_id, period_id, user_id, active) FROM stdin;
+1				1	5	t
+2				1	2	t
+3				1	6	t
+4				1	7	t
 \.
 
 
@@ -3130,7 +3136,7 @@ COPY core_relatedstudent (id, tags, candidate_id, automatic_anonymous_id, period
 -- Name: core_relatedstudent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_relatedstudent_id_seq', 1, false);
+SELECT pg_catalog.setval('core_relatedstudent_id_seq', 4, true);
 
 
 --
@@ -3290,7 +3296,7 @@ SELECT pg_catalog.setval('devilry_account_periodpermissiongroup_id_seq', 1, fals
 --
 
 COPY devilry_account_permissiongroup (id, name, created_datetime, updated_datetime, syncsystem_update_datetime, grouptype, is_custom_manageable) FROM stdin;
-1	The grandmas	2015-12-22 20:28:12.198719+01	2015-12-26 21:20:48.048878+01	\N	departmentadmin	f
+1	The grandmas	2015-12-22 20:28:12.198719+01	2015-12-29 18:36:56.731725+01	\N	departmentadmin	f
 \.
 
 
@@ -3339,7 +3345,22 @@ SELECT pg_catalog.setval('devilry_account_subjectpermissiongroup_id_seq', 2, tru
 --
 
 COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fullname, lastname, datetime_joined, suspended_datetime, suspended_reason, languagecode) FROM stdin;
-1	md5$a8X4U01RMC9e$a434fe89769ef6780b518fe34665e19b	2015-12-22 19:38:59.554641+01	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
+1	md5$wqtfXF0fIxXj$894c06ca065b6dfa906004e40da2e9a4	2015-12-22 19:38:59.554641+01	t	grandma@example.com			2015-12-21 18:01:21.212212+01	\N		
+2	md5$3KRT0BYBVYuO$94583357915e72f337fcd49100121ffe	\N	f	dewey@example.com	Dewey Duck	Duck	2016-01-03 00:01:23.904395+01	\N		
+3	md5$4kh8cjMMXX2M$7ebf58c36489254b715d79608c022101	\N	f	louie@example.com	Louie Duck	Duck	2016-01-03 00:01:23.920971+01	\N		
+4	md5$EC1N1bbdDH1I$f178f7136b3691e18906166ee0efe5ca	\N	f	huey@example.com	Huey Duck	Duck	2016-01-03 00:01:23.924138+01	\N		
+5	md5$t9KMIxJyNWXg$7136c7c30e463d0c9525f4744ef624b4	\N	f	april@example.com	April Duck	Duck	2016-01-03 00:01:23.92689+01	\N		
+6	md5$23r9I32HRrRt$a5d639300faf27693592f4fbe6d4a219	\N	f	june@example.com	June Duck	Duck	2016-01-03 00:01:23.929449+01	\N		
+7	md5$sYwPNZrUONMA$ece17aeedb49985694e73ccfb673762d	\N	f	july@example.com	July Duck	Duck	2016-01-03 00:01:23.932129+01	\N		
+8	md5$bl0XFjiSsbGA$7e0f3030e8bfd0d54b91ca7843f001a3	\N	f	baldr@example.com	God of Beauty	Beauty	2016-01-03 00:01:23.934793+01	\N		
+9	md5$b0e7QxZQhDjm$0a0c289438bb10acd7791166f22c9302	\N	f	freyja@example.com	Goddess of Love	Love	2016-01-03 00:01:23.937304+01	\N		
+10	md5$jGBsBCPiCfD4$721eefd1556ba7a2dccba060f243263e	\N	f	freyr@example.com	God of Fertility	Fertility	2016-01-03 00:01:23.939944+01	\N		
+11	md5$jTwxxR6ybeuX$7de276d388672758ce0e1991f92ee2da	\N	f	kvasir@example.com	God of Inspiration	Inspiration	2016-01-03 00:01:23.942802+01	\N		
+12	md5$tT0zXYv0Zsuo$2b9bfb86f295cfd461b0ce2bb6ea2096	\N	f	loki@example.com	Trickster and god of Mischief	Mischief	2016-01-03 00:01:23.945768+01	\N		
+13	md5$BVeSKhUc4Gkg$c5cfb847e6ef2a84bf2a0a3ab0424e8d	\N	f	thor@example.com	God of thunder and Battle	Battle	2016-01-03 00:01:23.948728+01	\N		
+14	md5$ot0qeIMptbS0$736743011a752ac3929d119435424766	\N	f	odin@example.com	The "All Father"	Father"	2016-01-03 00:01:23.951457+01	\N		
+15	md5$FQJM96zqt39y$49c4ad86e2d8bc053addcab6431db38d	\N	f	donald@example.com	Donald Duck	Duck	2016-01-03 00:03:43.101396+01	\N		
+16	md5$IwVKSAdD2ueB$5e32c9a5bfa4092cdb4b4bda8a0e122e	\N	f	scrooge@example.com	Scrooge McDuck	McDuck	2016-01-03 00:03:59.432752+01	\N		
 \.
 
 
@@ -3347,7 +3368,7 @@ COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fu
 -- Name: devilry_account_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_user_id_seq', 1, true);
+SELECT pg_catalog.setval('devilry_account_user_id_seq', 16, true);
 
 
 --
@@ -3356,6 +3377,21 @@ SELECT pg_catalog.setval('devilry_account_user_id_seq', 1, true);
 
 COPY devilry_account_useremail (id, created_datetime, last_updated_datetime, email, use_for_notifications, is_primary, user_id) FROM stdin;
 1	2015-12-21 18:01:21.217373+01	2015-12-21 18:01:21.217387+01	grandma@example.com	t	t	1
+2	2016-01-03 00:01:23.917396+01	2016-01-03 00:01:23.917407+01	dewey@example.com	t	t	2
+3	2016-01-03 00:01:23.923218+01	2016-01-03 00:01:23.923227+01	louie@example.com	t	t	3
+4	2016-01-03 00:01:23.926121+01	2016-01-03 00:01:23.926129+01	huey@example.com	t	t	4
+5	2016-01-03 00:01:23.928645+01	2016-01-03 00:01:23.928653+01	april@example.com	t	t	5
+6	2016-01-03 00:01:23.93128+01	2016-01-03 00:01:23.931289+01	june@example.com	t	t	6
+7	2016-01-03 00:01:23.934002+01	2016-01-03 00:01:23.934011+01	july@example.com	t	t	7
+8	2016-01-03 00:01:23.936541+01	2016-01-03 00:01:23.93655+01	baldr@example.com	t	t	8
+9	2016-01-03 00:01:23.939125+01	2016-01-03 00:01:23.939133+01	freyja@example.com	t	t	9
+10	2016-01-03 00:01:23.941789+01	2016-01-03 00:01:23.941798+01	freyr@example.com	t	t	10
+11	2016-01-03 00:01:23.944933+01	2016-01-03 00:01:23.944942+01	kvasir@example.com	t	t	11
+12	2016-01-03 00:01:23.947901+01	2016-01-03 00:01:23.94791+01	loki@example.com	t	t	12
+13	2016-01-03 00:01:23.950623+01	2016-01-03 00:01:23.950632+01	thor@example.com	t	t	13
+14	2016-01-03 00:01:23.953328+01	2016-01-03 00:01:23.953336+01	odin@example.com	t	t	14
+15	2016-01-03 00:03:43.104203+01	2016-01-03 00:03:43.104212+01	donald@example.com	t	t	15
+16	2016-01-03 00:03:59.437075+01	2016-01-03 00:03:59.437084+01	scrooge@example.com	t	t	16
 \.
 
 
@@ -3363,7 +3399,7 @@ COPY devilry_account_useremail (id, created_datetime, last_updated_datetime, ema
 -- Name: devilry_account_useremail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_useremail_id_seq', 1, true);
+SELECT pg_catalog.setval('devilry_account_useremail_id_seq', 16, true);
 
 
 --
