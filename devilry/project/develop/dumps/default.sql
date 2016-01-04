@@ -3129,6 +3129,10 @@ COPY core_relatedstudent (id, tags, candidate_id, automatic_anonymous_id, period
 2				1	2	t
 3				1	6	t
 4				1	7	t
+5				1	13	t
+6				1	8	t
+7				1	17	t
+8				1	16	t
 \.
 
 
@@ -3136,7 +3140,7 @@ COPY core_relatedstudent (id, tags, candidate_id, automatic_anonymous_id, period
 -- Name: core_relatedstudent_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('core_relatedstudent_id_seq', 4, true);
+SELECT pg_catalog.setval('core_relatedstudent_id_seq', 8, true);
 
 
 --
@@ -3361,6 +3365,8 @@ COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fu
 14	md5$ot0qeIMptbS0$736743011a752ac3929d119435424766	\N	f	odin@example.com	The "All Father"	Father"	2016-01-03 00:01:23.951457+01	\N		
 15	md5$FQJM96zqt39y$49c4ad86e2d8bc053addcab6431db38d	\N	f	donald@example.com	Donald Duck	Duck	2016-01-03 00:03:43.101396+01	\N		
 16	md5$IwVKSAdD2ueB$5e32c9a5bfa4092cdb4b4bda8a0e122e	\N	f	scrooge@example.com	Scrooge McDuck	McDuck	2016-01-03 00:03:59.432752+01	\N		
+17	md5$VNqEOHzoWJLP$742f1d1b4d56fb6f51cdb76efc2105fa	\N	f	noname@example.com			2016-01-04 15:08:14.258809+01	\N		
+18	md5$smoA02BvKYtp$17bc79166daf9d1c3de87d695e9708f9	\N	f	missingname@example.com			2016-01-04 15:25:10.473858+01	\N		
 \.
 
 
@@ -3368,7 +3374,7 @@ COPY devilry_account_user (id, password, last_login, is_superuser, shortname, fu
 -- Name: devilry_account_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_user_id_seq', 16, true);
+SELECT pg_catalog.setval('devilry_account_user_id_seq', 18, true);
 
 
 --
@@ -3392,6 +3398,8 @@ COPY devilry_account_useremail (id, created_datetime, last_updated_datetime, ema
 14	2016-01-03 00:01:23.953328+01	2016-01-03 00:01:23.953336+01	odin@example.com	t	t	14
 15	2016-01-03 00:03:43.104203+01	2016-01-03 00:03:43.104212+01	donald@example.com	t	t	15
 16	2016-01-03 00:03:59.437075+01	2016-01-03 00:03:59.437084+01	scrooge@example.com	t	t	16
+17	2016-01-04 15:08:14.270742+01	2016-01-04 15:08:14.270751+01	noname@example.com	t	t	17
+18	2016-01-04 15:25:10.478871+01	2016-01-04 15:25:10.478885+01	missingname@example.com	t	t	18
 \.
 
 
@@ -3399,7 +3407,7 @@ COPY devilry_account_useremail (id, created_datetime, last_updated_datetime, ema
 -- Name: devilry_account_useremail_id_seq; Type: SEQUENCE SET; Schema: public; Owner: dbdev
 --
 
-SELECT pg_catalog.setval('devilry_account_useremail_id_seq', 16, true);
+SELECT pg_catalog.setval('devilry_account_useremail_id_seq', 18, true);
 
 
 --
