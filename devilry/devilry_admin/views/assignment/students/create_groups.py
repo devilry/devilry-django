@@ -1,8 +1,10 @@
 from crispy_forms import layout
 from django import forms
 from django.conf import settings
+from django.contrib import messages
 from django.db.models.functions import Lower, Concat
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crispylayouts import PrimarySubmit
@@ -138,6 +140,17 @@ class OrderRelatedStudentsFilter(listfilter.django.single.select.AbstractOrderBy
         ]
 
 
+class ManualSelectStudentsForm(forms.Form):
+    selected_related_students = forms.ModelMultipleChoiceField(
+        queryset=RelatedStudent.objects.none()
+    )
+
+    def __init__(self, *args, **kwargs):
+        relatedstudents_queryset = kwargs.pop('relatedstudents_queryset')
+        super(ManualSelectStudentsForm, self).__init__(*args, **kwargs)
+        self.fields['selected_related_students'].queryset = relatedstudents_queryset
+
+
 class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.View):
     model = RelatedStudent
     value_renderer_class = multiselect2_relatedstudent.ItemValue
@@ -185,11 +198,10 @@ class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.
         return Candidate.objects.filter(assignment_group__parentnode=assignment)\
             .values_list('relatedstudent_id', flat=True)
 
-    def get_queryset_for_role(self, role):
+    def get_unfiltered_queryset_for_role(self, role):
         queryset = self.period.relatedstudent_set\
             .select_related('user')\
             .exclude(pk__in=self.__get_relatedstudents_in_group_on_assignment())
-        queryset = self.get_filterlist().filter(queryset)
         return queryset
 
     def __get_multiselect_target(self):
@@ -199,6 +211,34 @@ class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.
         context = super(ManualSelectStudentsView, self).get_context_data(**kwargs)
         context['multiselect_target'] = self.__get_multiselect_target()
         return context
+
+    def post(self, request, *args, **kwargs):
+        available_relatedstudents_queryset = self.get_unfiltered_queryset_for_role(
+                role=self.request.cradmin_role)
+        form = ManualSelectStudentsForm(data=self.request.POST,
+                                        relatedstudents_queryset=available_relatedstudents_queryset)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        print()
+        print("*" * 70)
+        print()
+        print(form.cleaned_data['selected_related_students'])
+        print()
+        print("*" * 70)
+        print()
+        return redirect(self.request.cradmin_instance.appindex_url('studentoverview'))
+
+    def form_invalid(self, form):
+        messages.error(self.request,
+                       pgettext_lazy('admin create_groups',
+                                     'Oups! Something went wrong. This may happen if someone edited '
+                                     'students on the assignment or the semester while you were making '
+                                     'your selection. Please try again.'))
+        return redirect(self.request.path)
 
 
 class App(crapp.App):

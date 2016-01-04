@@ -352,3 +352,20 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             ['userc@example.com', 'userb@example.com', 'usera@example.com'],
             titles)
+
+    def test_post_ok(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    user__shortname='userb@example.com',
+                                    period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            requestkwargs={
+                'data': {
+                    'selected_related_students': [
+                        relatedstudent.id
+                    ]
+                }
+            }
+        )
