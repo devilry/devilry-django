@@ -1,21 +1,25 @@
 from datetime import datetime, timedelta
 
-from django.test import TestCase
+from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
+from django.test import TestCase
+from ievv_opensource.ievv_batchframework.models import BatchOperation
 from model_mommy import mommy
 
+from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import Candidate
+from devilry.apps.core.models import Delivery
+from devilry.apps.core.models import deliverytypes, Assignment, RelatedStudent
+from devilry.apps.core.models.assignment_group import GroupPopNotCandiateError
+from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesError
+from devilry.apps.core.models.model_utils import EtagMismatchException
+from devilry.apps.core.testhelper import TestHelper
+from devilry.devilry_group.models import FeedbackSet
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
 from devilry.project.develop.testhelpers.corebuilder import SubjectBuilder
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder
 from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
-from ..models import AssignmentGroup
-from ..models import Candidate
-from ..models.assignment_group import GroupPopNotCandiateError
-from ..models.assignment_group import GroupPopToFewCandiatesError
-from ..models import Delivery
-from ..testhelper import TestHelper
-from ..models.model_utils import EtagMismatchException
-from devilry.apps.core.models import deliverytypes, Assignment
 
 
 class TestAssignmentGroup(TestCase):
@@ -400,6 +404,124 @@ class TestAssignmentGroup(TestCase):
         group1.delete()
         group2 = AssignmentGroup.objects.get(id=group2.id)
         self.assertIsNone(group2.copied_from)
+
+    def test_bulk_create_groups_creates_group(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        AssignmentGroup.objects.bulk_create_groups(created_by_user=testuser,
+                                                   assignment=testassignment,
+                                                   relatedstudents=[relatedstudent])
+        self.assertEqual(1, AssignmentGroup.objects.count())
+
+    def test_bulk_create_groups_returns_created_groups(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        created_groups_queryset = AssignmentGroup.objects.bulk_create_groups(
+                created_by_user=testuser,
+                assignment=testassignment,
+                relatedstudents=[relatedstudent])
+        self.assertEqual(1, created_groups_queryset.count())
+        self.assertEqual(list(created_groups_queryset), [AssignmentGroup.objects.first()])
+
+    def test_bulk_create_groups_creates_batchoperation_for_group(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        AssignmentGroup.objects.bulk_create_groups(created_by_user=testuser,
+                                                   assignment=testassignment,
+                                                   relatedstudents=[relatedstudent])
+        self.assertEqual(1, BatchOperation.objects.count())
+        created_group = AssignmentGroup.objects.first()
+        created_batchoperation = BatchOperation.objects.first()
+        self.assertEqual(created_batchoperation, created_group.batchoperation)
+
+    def test_bulk_create_groups_creates_candidate(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        AssignmentGroup.objects.bulk_create_groups(created_by_user=testuser,
+                                                   assignment=testassignment,
+                                                   relatedstudents=[relatedstudent])
+        created_group = AssignmentGroup.objects.first()
+        self.assertEqual(1, created_group.candidates.count())
+        created_candidate = Candidate.objects.first()
+        self.assertEqual(relatedstudent, created_candidate.relatedstudent)
+        self.assertEqual(relatedstudent.user, created_candidate.student)
+
+    def test_bulk_create_groups_creates_feedbackset(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        AssignmentGroup.objects.bulk_create_groups(created_by_user=testuser,
+                                                   assignment=testassignment,
+                                                   relatedstudents=[relatedstudent])
+        created_group = AssignmentGroup.objects.first()
+        self.assertEqual(1, created_group.feedbackset_set.count())
+        created_feedbackset = FeedbackSet.objects.first()
+        self.assertEqual(testuser, created_feedbackset.created_by)
+        self.assertIsNone(created_feedbackset.deadline_datetime)
+
+    def test_bulk_create_groups_multiple(self):
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        relatedstudent1 = mommy.make('core.RelatedStudent',
+                                     period=testperiod)
+        relatedstudent2 = mommy.make('core.RelatedStudent',
+                                     period=testperiod)
+        relatedstudent3 = mommy.make('core.RelatedStudent',
+                                     period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        AssignmentGroup.objects.bulk_create_groups(
+                created_by_user=testuser,
+                assignment=testassignment,
+                relatedstudents=[relatedstudent1, relatedstudent2, relatedstudent3])
+        self.assertEqual(3, AssignmentGroup.objects.count())
+        self.assertEqual(3, Candidate.objects.count())
+        self.assertEqual(3, FeedbackSet.objects.count())
+        self.assertEqual(1, BatchOperation.objects.count())
+
+        created_candidates = list(Candidate.objects.all())
+        self.assertEqual(
+                3,
+                len({created_candidates[0].assignment_group,
+                     created_candidates[1].assignment_group,
+                     created_candidates[2].assignment_group}))
+
+        created_feedbacksets = list(FeedbackSet.objects.all())
+        self.assertEqual(
+                3,
+                len({created_feedbacksets[0].group,
+                     created_feedbacksets[1].group,
+                     created_feedbacksets[2].group}))
+
+    def test_bulk_create_groups_num_queries(self):
+        # Trigger ContentType caching so we do not get an extra lookup in the
+        # assertNumQueries() statement below.
+        ContentType.objects.get_for_model(Assignment)
+
+        testperiod = mommy.make('core.Period')
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.RelatedStudent', period=testperiod, _quantity=20)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        relatedstudents = list(RelatedStudent.objects.select_related('user'))
+        self.assertEqual(20, len(relatedstudents))
+        with self.assertNumQueries(6):
+            AssignmentGroup.objects.bulk_create_groups(
+                created_by_user=testuser,
+                assignment=testassignment,
+                relatedstudents=relatedstudents)
 
 
 class TestAssignmentGroupCanDelete(TestCase):
