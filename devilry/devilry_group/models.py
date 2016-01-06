@@ -23,9 +23,16 @@ class AbstractGroupComment(comment_models.Comment):
     #: save a draft.
     visible_for_students = models.BooleanField(default=False)
 
+    #: If this is ``True``, the comment is published when the feedbackset
+    #: is published. This means that this comment is part of the feedback/grading
+    #: from the examiner. The same :obj:`~.AbstractGroupComment.visibility`
+    #: rules apply no matter if this is ``True`` or ``False``,
+    #: this only controls when the comment is published.
+    # part_of_grading = models.BooleanField(default=False)
+
+    ## Replaces instant_publish and visible_for_students
     # visibility = models.CharField(
     #     choices=[
-    #         ('draft', 'Draft'),
     #         ('visible-to-examiner-and-admins', 'Visible to examiners and admins'),
     #         ('visible-to-everyone', 'Visible to everyone'),
     #     ]
@@ -64,21 +71,21 @@ class FeedbackSet(models.Model):
     #: When this is ``None``, the feedbackset is not published. This means that
     #: no comments from examiners with ``instant_publish=False`` is visible,
     #: and the grade is not visible.
-    published_datetime = models.DateTimeField(null=True, blank=True)
+    published_datetime = models.DateTimeField(null=True, blank=True)  # grading_published_datetime
 
     #: Set when the feedbackset is published by an examiner.
     #: If this is ``None``, the feedback is not published, and
     #: the ``points`` (grade) is not available to the student.
-    published_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="published_feedbacksets")
+    published_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="published_feedbacksets")  # grading_published_by
 
     #: Points given by examiner for this feedbackset.
     #: The points on the last published FeedbackSet is the current
     #: grade for the AssignmentGroup.
-    points = models.PositiveIntegerField()
+    points = models.PositiveIntegerField()  # grading_points
 
     #: A :class:`django.db.models.TextField` for a gradeform filled or not filled for
     #: FeedbackSet.
-    gradeform_json = models.TextField(blank=True, null=True)
+    gradeform_json = models.TextField(blank=True, null=True)  # gradeform_data_json + null=False, default=''
 
     def __unicode__(self):
         return u"{} - {} - {}".format(self.group.assignment, self.group, self.deadline_datetime)
@@ -88,6 +95,23 @@ class FeedbackSet(models.Model):
             raise ValidationError({
                 'published_by': ugettext_lazy('An assignment can not be published witout providing "points".'),
             })
+
+    # @property
+    # def gradeform_data(self):
+    #     if self.gradeform_data_json:
+    #         if not hasattr(self, '_gradeform_data'):
+    #             # Store the decoded gradeform_data to avoid re-decoding the json for
+    #             # each access. We invalidate this cache in the setter.
+    #             self._gradeform_data = json.loads(self.gradeform_data_json)
+    #         return self._gradeform_data
+    #     else:
+    #         return None
+    #
+    # @gradeform_data.setter
+    # def gradeform_data(self, gradeform_data):
+    #     self.gradeform_data_json = json.dumps(gradeform_data)
+    #     if hasattr(self, '_gradeform_data'):
+    #         delattr(self, '_gradeform_data')
 
 
 class GroupComment(AbstractGroupComment):
