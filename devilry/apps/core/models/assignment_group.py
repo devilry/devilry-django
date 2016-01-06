@@ -6,6 +6,7 @@ from django.db import models
 from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 from node import Node
 from abstract_is_admin import AbstractIsAdmin
@@ -424,6 +425,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             ("closed-without-feedback", _("Closed without feedback")),
             ("waiting-for-something", _("Waiting for something")),
         ))
+
+    #: Foreignkey to :class:`ievv_opensource.ievv_batchframework.models.BatchOperation`.
+    #: When we perform batch operations on the assignmentgroup, this is used to reference
+    #: the operation. Batch operations include bulk-create - we use the BatchOperation
+    #: object to enable us to recursively batch create AssignmentGroup,
+    #: Candidate and FeedbackSet in a very efficient batch operation with
+    #: a fixed set of database queries.
+    batchoperation = models.ForeignKey(
+        to=BatchOperation,
+        null=True, blank=True,
+        on_delete=models.SET_NULL)
 
     #: If this group was copied from another group, this will be set.
     #: This can safely be set to ``None`` at any time since it is only
