@@ -63,29 +63,47 @@ class FeedbackSet(models.Model):
     #: The datetime when this FeedbackSet was created.
     created_datetime = models.DateTimeField(default=datetime.datetime.now)
 
+    #: The datetime of the deadline.
+    #: The first feedbackset in an AssignmentGroup
+    #: (ordered by :obj:`~.FeedbackSet.created_datetime`) does not
+    #: have a deadline. It inherits this from the ``first_deadline`` field
+    #: of :class:`devilry.apps.core.models.assignment.Assignment`.
     deadline_datetime = models.DateTimeField(null=True, blank=True)
 
     #: The datetime when the feedback was published.
     #: Set when an examiner publishes the feedback for this FeedbackSet.
     #:
     #: When this is ``None``, the feedbackset is not published. This means that
-    #: no comments from examiners with ``instant_publish=False`` is visible,
-    #: and the grade is not visible.
-    published_datetime = models.DateTimeField(null=True, blank=True)  # grading_published_datetime
+    #: no comments with :obj:`.AbstractGroupComment.part_of_grading` set to ``True``
+    #: is visible, the grade (extracted from points) is not visible, and this
+    #: feedbackset does not count when extracting the latest/active feedback/grade
+    #: for the AssignmentGroup.
+    published_datetime = models.DateTimeField(  # Rename to grading_published_datetime
+        null=True,
+        blank=True
+    )
 
     #: Set when the feedbackset is published by an examiner.
     #: If this is ``None``, the feedback is not published, and
     #: the ``points`` (grade) is not available to the student.
-    published_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="published_feedbacksets")  # grading_published_by
+    published_by = models.ForeignKey(  # rename to grading_published_by
+        to=settings.AUTH_USER_MODEL,
+        related_name="published_feedbacksets",
+        null=True, blank=True
+    )
 
     #: Points given by examiner for this feedbackset.
     #: The points on the last published FeedbackSet is the current
     #: grade for the AssignmentGroup.
-    points = models.PositiveIntegerField()  # grading_points
+    points = models.PositiveIntegerField(  # rename to grading_points
+        null=True, blank=True
+    )
 
     #: A :class:`django.db.models.TextField` for a gradeform filled or not filled for
     #: FeedbackSet.
-    gradeform_json = models.TextField(blank=True, null=True)  # gradeform_data_json + null=False, default=''
+    gradeform_json = models.TextField(  # rename to gradeform_data_json + null=False, default=''
+        blank=True, null=True
+    )
 
     def __unicode__(self):
         return u"{} - {} - {}".format(self.group.assignment, self.group, self.deadline_datetime)
