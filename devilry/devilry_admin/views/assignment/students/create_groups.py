@@ -229,9 +229,17 @@ class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.
         AssignmentGroup.objects.bulk_create(groups)
         return AssignmentGroup.objects.filter(batchoperation=batchoperation)
 
-    def __create_candidates(self, group_queryset, relatedstudent_list):
+    def __create_candidates(self, group_list, relatedstudent_list):
         candidates = []
-        for group, relatedstudent in zip(group_queryset, relatedstudent_list):
+        # print()
+        # print("*" * 70)
+        # print()
+        # print('groups', group_list)
+        # print(AssignmentGroup.objects.first().batchoperation)
+        # print()
+        # print("*" * 70)
+        # print()
+        for group, relatedstudent in zip(group_list, relatedstudent_list):
             candidate = Candidate(
                 student=relatedstudent.user,
                 relatedstudent=relatedstudent,
@@ -240,30 +248,31 @@ class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.
             candidates.append(candidate)
         Candidate.objects.bulk_create(candidates)
 
-    def __create_feedbacksets(self, group_queryset, relatedstudent_list):
+    def __create_feedbacksets(self, group_list):
         feedbacksets = []
-        for group, relatedstudent in zip(group_queryset, relatedstudent_list):
+        for group in group_list:
             feedbackset = FeedbackSet(
                 group=group,
                 created_by=self.request.user,
-
             )
             feedbacksets.append(feedbackset)
         FeedbackSet.objects.bulk_create(feedbacksets)
 
     def create_groups_with_candidate_and_feedbackset(self, relatedstudent_queryset):
         assignment = self.request.cradmin_role
-        batchoperation = BatchOperation(
+        batchoperation = BatchOperation.objects.create_syncronous(
             context_object=assignment,
-            operationtype='create-groups-with-candidate-and-feedbackset'
-        )
+            operationtype='create-groups-with-candidate-and-feedbackset')
         relatedstudent_list = list(relatedstudent_queryset)
         group_queryset = self.__create_groups(batchoperation=batchoperation,
                                               relatedstudent_list=relatedstudent_list)
-        self.__create_candidates(group_queryset=group_queryset,
+        # We iterate over the groups multiple times, so we do this to avoid multiple queries
+        group_list = list(group_queryset)
+
+        self.__create_candidates(group_list=group_list,
                                  relatedstudent_list=relatedstudent_list)
-
-
+        self.__create_feedbacksets(group_list=group_list)
+        batchoperation.finish()
 
     def form_valid(self, form):
         self.create_groups_with_candidate_and_feedbackset(relatedstudent_queryset=form.cleaned_data['selected_items'])

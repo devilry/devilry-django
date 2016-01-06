@@ -4,8 +4,10 @@ import htmls
 import mock
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
+from ievv_opensource.ievv_batchframework.models import BatchOperation
 from model_mommy import mommy
 
+from devilry.apps.core.models import AssignmentGroup
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
 from devilry.devilry_admin.views.assignment.students import create_groups
 
@@ -353,13 +355,14 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             ['userc@example.com', 'userb@example.com', 'usera@example.com'],
             titles)
 
-    def test_post_ok(self):
+    def test_post_ok_creates_group(self):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent',
                                     user__shortname='userb@example.com',
                                     period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        mockresponse = self.mock_http302_postrequest(
+        self.assertEqual(0, AssignmentGroup.objects.count())
+        self.mock_http302_postrequest(
             cradmin_role=testassignment,
             requestkwargs={
                 'data': {
@@ -369,6 +372,48 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             }
         )
+        self.assertEqual(1, AssignmentGroup.objects.count())
+
+    def test_post_ok_creates_batchoperation_for_group(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    user__shortname='userb@example.com',
+                                    period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        self.assertEqual(0, BatchOperation.objects.count())
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            requestkwargs={
+                'data': {
+                    'selected_items': [
+                        relatedstudent.id
+                    ]
+                }
+            }
+        )
+        self.assertEqual(1, BatchOperation.objects.count())
+        created_group = AssignmentGroup.objects.first()
+        created_batchoperation = BatchOperation.objects.first()
+        self.assertEqual(created_batchoperation, created_group.batchoperation)
+
+    def test_post_ok_creates_candidate(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    user__shortname='userb@example.com',
+                                    period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            requestkwargs={
+                'data': {
+                    'selected_items': [
+                        relatedstudent.id
+                    ]
+                }
+            }
+        )
+        created_group = AssignmentGroup.objects.first()
+        self.assertEqual(1, created_group.candidates.count())
 
     def test_post_relatedstudent_already_on_assignment(self):
         pass
