@@ -55,6 +55,7 @@
             </div>
         </div>
     </div>
+
 {% endblock pageheader-inner %}
 
 {% block content %}
@@ -166,16 +167,32 @@
                                             </p>
                                         </div>
                                     {% endif %}
-                            {% endif %}
+
+                                    {% if devilry_ui_role == 'student' %}
+                                        <div class="well">
+                                            {{ event.gradeform }}
+                                        </div>
+                                    {% endif %}
+
+                                {% endif %}
 
                         {% endfor %}
+
                     {% endfor %}
+
+
+                    {% comment %}
+                        Accordion option for examiner to edit gradeform
+                    {% endcomment %}
+{#                    {% block examiner_edit_last_delivery %}#}
+{#                        {% include "devilry_group/include/examiner.editlastdelivery.django.html" %}#}
+{#                    {% endblock examiner_edit_last_delivery %}#}
+
 
 
                     {% block pre_form %}{% endblock pre_form %}
                     {% block form %}
                         {% crispy form formhelper %}
-
                         {% comment %}
                             NOTE: This will probably break when https://github.com/maraujop/django-crispy-forms/issues/263 is fixed
                         {% endcomment %}

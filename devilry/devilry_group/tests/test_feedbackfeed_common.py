@@ -1,544 +1,302 @@
-from django.test import RequestFactory
+from django.test import TestCase
 from django.utils import timezone
-import htmls
-import mock
+from model_mommy import mommy
 
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder2, AssignmentGroupBuilder, FeedbackSetBuilder, \
-    GroupCommentBuilder
-from devilry.project.develop.testhelpers.datebuilder import DateTimeBuilder
+from django_cradmin import cradmin_testhelpers
 
 
-class TestFeedbackFeedMixin(object):
+class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
     viewclass = None  # must be implemented in subclasses
 
-    def __mock_request(self, method, role, requestuser, group,
-                       messagesmock=None):
-        request = getattr(RequestFactory(), method)('/')
-        request.user = requestuser
-        request.cradmin_role = role
-        request.cradmin_app = mock.MagicMock()
-        request.cradmin_instance = mock.MagicMock()
-        request.session = mock.MagicMock()
-        if messagesmock:
-            request._messages = messagesmock
-        else:
-            request._messages = mock.MagicMock()
-        response = self.viewclass.as_view()(request, pk=group.pk)
-        return response, request
-
-    def __mock_http200_getrequest_htmls(self, role, requestuser, group):
-        response, request = self.__mock_request(method='get',
-                                                role=role,
-                                                requestuser=requestuser,
-                                                group=group)
-        self.assertEqual(response.status_code, 200)
-        response.render()
-        selector = htmls.S(response.content)
-        return selector, request
-
-    def __mock_postrequest(self, role, requestuser, group, messagesmock=None):
-        return self.__mock_request(method='post',
-                                   role=role,
-                                   requestuser=requestuser,
-                                   group=group,
-                                   messagesmock=messagesmock)
-
     def test_get(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        group_builder = AssignmentGroupBuilder.make()
-        selector, request = self.__mock_http200_getrequest_htmls(role=group_builder.get_object(),
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertEqual(selector.one('title').alltext_normalized,
-                         group_builder.group.assignment.get_path())
+        group = mommy.make('core.AssignmentGroup')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        self.assertEqual(mockresponse.selector.one('title').alltext_normalized,
+                         group.assignment.get_path())
 
     def test_get_feedbackset(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-feed'))
+        assignment = mommy.make('core.Assignment')
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode=assignment,
+                                 deadline_datetime=timezone.now())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
     def test_get_feedbackfeed_header(self):
         # check that header exists
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-header'))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=mommy.make('devilry_group.FeedbackSet').group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-header'))
 
     def test_get_feedbackfeed_header_assignment_name(self):
-        # check if the name of the assignment exists
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        assignment_name = selector.one('.devilry-group-feedbackfeed-header-assignment').text_normalized
-        self.assertEqual(assignment_name, feedbackset_builder.get_object().group.assignment.short_name)
+        # check if the name of the assignment exists in view
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode__long_name='some_assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        assignment_name = mockresponse.selector.one('.devilry-group-feedbackfeed-header-assignment').alltext_normalized
+        self.assertEqual(assignment_name, feedbackset.group.assignment.long_name)
 
     def test_get_feedbackfeed_header_subject_name(self):
-        # check if the name of the subject exists
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        subject_name = selector.one('.devilry-group-feedbackfeed-header-subject').text_normalized
-        self.assertEqual(subject_name, feedbackset_builder.get_object().group.assignment.period.subject.long_name)
+        # check if the name of the subject exists in view
+        group = mommy.make('core.AssignmentGroup', parentnode__parentnode__parentnode__long_name='some_subject')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        subject_name = mockresponse.selector.one('.devilry-group-feedbackfeed-header-subject').alltext_normalized
+        self.assertEqual(subject_name, group.assignment.period.subject.long_name)
 
     def test_get_feedbackfeed_header_period_name(self):
-        # check if period name exists
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        group_builder = AssignmentGroupBuilder.make()
-        selector, request = self.__mock_http200_getrequest_htmls(role=group_builder.get_object(),
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        period_name = selector.one('.devilry-group-feedbackfeed-header-period').text_normalized
-        self.assertEqual(period_name, group_builder.get_object().assignment.period.long_name)
+        # check if period name exists in view
+        group = mommy.make('core.AssignmentGroup', parentnode__parentnode__long_name='some_period')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        period_name = mockresponse.selector.one('.devilry-group-feedbackfeed-header-period').text_normalized
+        self.assertEqual(period_name, group.assignment.period.long_name)
 
     def test_get_feedbackfeed_header_without_assignment_first_deadline(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        group_builder = AssignmentGroupBuilder.make(assignment__first_deadline=None)
-        selector, request = self.__mock_http200_getrequest_htmls(role=group_builder.get_object(),
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertFalse(selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
+        group = mommy.make('core.AssignmentGroup', parentnode__first_deadline=None)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
 
     def test_get_feedbackfeed_header_with_assignment_first_deadline(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        group_builder = AssignmentGroupBuilder.make(assignment__first_deadline=timezone.now())
-        selector, request = self.__mock_http200_getrequest_htmls(role=group_builder.get_object(),
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
+        group = mommy.make('core.AssignmentGroup', parentnode__first_deadline=timezone.now())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
 
     def test_get_feedbackfeed_header_without_feedbackset_deadline_datetime(self):
         # tests that current-deadline-heading does not exist in view when feedbackset
         # has deadline_datetime set as none (no deadline)
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make(deadline_datetime=None)
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertFalse(selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
+        feedbackset = mommy.make('devilry_group.FeedbackSet')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
 
     def test_get_feedbackfeed_header_with_feedbackset_deadline_datetime(self):
         # tests that current-deadline-heading exists in view when feedbackset
         # has deadline_datetime set as a date
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make(deadline_datetime=timezone.now())
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
+        feedbackset = mommy.make('devilry_group.FeedbackSet', deadline_datetime=timezone.now())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
 
     def test_get_feedbackfeed_header_with_assignment_first_deadline_not_expired(self):
         # tests that current-deadline-expired does not exist in header in view and is
         # not expired with Assignment.first_deadline set
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        group_builder = AssignmentGroupBuilder.make(assignment__first_deadline=DateTimeBuilder.now().plus(days=1))
-
-        selector, request = self.__mock_http200_getrequest_htmls(role=group_builder.get_object(),
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertFalse(selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
 
     def test_get_feedbackfeed_header_with_assignment_first_deadline_expired(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        groupcomment_builder = GroupCommentBuilder.make(
-            feedback_set__deadline_datetime=DateTimeBuilder.now().minus(days=1))
-
-        selector, request = self.__mock_http200_getrequest_htmls(
-            role=groupcomment_builder.get_object().feedback_set.group,
-            requestuser=requestuser,
-            group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
+        # tests that current-deadline-expired exist in header in view when only using Assignment.first_deadline
+        # as expired.
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
 
     def test_get_feedbackfeed_header_with_feedbackset_deadline_datetime_not_expired(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make(deadline_datetime=DateTimeBuilder.now().plus(days=1))
-
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertFalse(selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 deadline_datetime=timezone.now()+timezone.timedelta(days=1))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
 
     def test_get_feedbackfeed_header_with_feedbackset_deadline_datetime_expired(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make(deadline_datetime=DateTimeBuilder.now().minus(days=1))
-
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 deadline_datetime=timezone.now()-timezone.timedelta(days=1))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
 
     def test_get_feedbackfeed_comment(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        feedbackset_builder.add_groupcomment(
-            user=janedoe,
-            user_role='student',
-            instant_publish=True,
-            visible_for_students=True,
-            text="hello world",
-            published_datetime=timezone.now()
-        )
-
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment'))
+        comment = mommy.make('devilry_group.GroupComment',
+                             instant_publish=True,
+                             visible_for_students=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
 
     def test_get_feedbackfeed_comment_student(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        feedbackset_builder.add_groupcomment(
-            user=janedoe,
-            user_role='student',
-            instant_publish=True,
-            visible_for_students=True,
-            text="hello world",
-            published_datetime=timezone.now()
-        )
-
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-student'))
+        comment = mommy.make('devilry_group.GroupComment',
+                             user_role='student',
+                             instant_publish=True,
+                             visible_for_students=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-student'))
 
     def test_get_feedbackfeed_comment_examiner(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        feedbackset_builder.add_groupcomment(
-            user=janedoe,
-            user_role='examiner',
-            instant_publish=True,
-            visible_for_students=True,
-            text="hello world",
-            published_datetime=timezone.now()
-        )
-
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
+        comment = mommy.make('devilry_group.GroupComment',
+                             user_role='examiner',
+                             instant_publish=True,
+                             visible_for_students=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
 
     def test_get_feedbackfeed_comment_admin(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        feedbackset_builder.add_groupcomment(
-            user=janedoe,
-            user_role='admin',
-            instant_publish=True,
-            visible_for_students=True,
-            text="hello world",
-            published_datetime=timezone.now()
-        )
-
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-admin'))
+        comment = mommy.make('devilry_group.GroupComment',
+                             user_role='admin',
+                             instant_publish=True,
+                             visible_for_students=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
 
     def test_get_feedbackfeed_comment_poster_fullname(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        feedbackset_builder.add_groupcomment(
-            user=janedoe,
-            user_role='student',
-            instant_publish=True,
-            visible_for_students=True,
-            text="hello world",
-            published_datetime=timezone.now()
-        )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        name = selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
-        self.assertEquals(name, janedoe.fullname)
+        candidate = mommy.make('core.Candidate', student__fullname='Jane Doe')
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=candidate.student,
+                             user_role='student',
+                             instant_publish=True,
+                             visible_for_students=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        self.assertTrue(comment.user.fullname, mockresponse.selector.one('.devilry-user-verbose-inline-fullname'))
 
     def test_get_feedbackfeed_comment_poster_shortname(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        feedbackset_builder.add_groupcomment(
-            user=janedoe,
-            user_role='student',
-            instant_publish=True,
-            visible_for_students=True,
-        )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        name = selector.one('.devilry-user-verbose-inline-shortname').alltext_normalized
-        self.assertEquals(name, '({})'.format(janedoe.shortname))
+        candidate = mommy.make('core.Candidate', student__shortname='janedoe')
+        comment = mommy.make('devilry_group.GroupComment',
+                             user=candidate.student,
+                             user_role='student',
+                             instant_publish=True,
+                             visible_for_students=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        self.assertTrue(comment.user.shortname, mockresponse.selector.one('.devilry-user-verbose-inline-shortname'))
 
     def test_get_feedbackfeed_comment_student_user_role(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        groupcomment_builder = GroupCommentBuilder.make(
-            feedback_set__deadline_datetime=DateTimeBuilder.now(),
-            user=janedoe,
-            user_role='student',
-            instant_publish=True,
-            visible_for_students=True,
-        )
-
-        selector, request = self.__mock_http200_getrequest_htmls(
-            role=groupcomment_builder.get_object().feedback_set.group,
-            requestuser=requestuser,
-            group=janedoe)
-        role = selector.one('.comment-created-by-role-text').alltext_normalized
-        self.assertEquals('({})'.format(groupcomment_builder.get_object().user_role), role)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user_role='student',
+                             instant_publish=True,
+                             visible_for_students=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized
+        self.assertEquals(role, '({})'.format(comment.user_role))
 
     def test_get_feedbackfeed_comment_examiner_user_role(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        groupcomment_builder = GroupCommentBuilder.make(
-            feedback_set__deadline_datetime=DateTimeBuilder.now(),
-            user=janedoe,
-            user_role='examiner',
-            instant_publish=True,
-            visible_for_students=True,
-        )
-        selector, request = self.__mock_http200_getrequest_htmls(
-            role=groupcomment_builder.get_object().feedback_set.group,
-            requestuser=requestuser,
-            group=janedoe)
-        role = selector.one('.comment-created-by-role-text').alltext_normalized
-        self.assertEquals('({})'.format(groupcomment_builder.get_object().user_role), role)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user_role='examiner',
+                             instant_publish=True,
+                             visible_for_students=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized
+        self.assertEquals(role, '({})'.format(comment.user_role))
 
     def test_get_feedbackfeed_comment_admin_user_role(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        groupcomment_builder = GroupCommentBuilder.make(
-            feedback_set__deadline_datetime=DateTimeBuilder.now(),
-            user=janedoe,
-            user_role='admin',
-            instant_publish=True,
-            visible_for_students=True,
-        )
-        selector, request = self.__mock_http200_getrequest_htmls(
-            role=groupcomment_builder.get_object().feedback_set.group,
-            requestuser=requestuser,
-            group=janedoe)
-        role = selector.one('.comment-created-by-role-text').alltext_normalized
-        self.assertEquals('({})'.format(groupcomment_builder.get_object().user_role), role)
+        comment = mommy.make('devilry_group.GroupComment',
+                             user_role='admin',
+                             instant_publish=True,
+                             visible_for_students=True)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized
+        self.assertEquals(role, '({})'.format(comment.user_role))
 
     def test_get_feedbackfeed_event_without_any_deadlines_created(self):
         # Checks that when a feedbackset has been created and no first deadlines given, either on Assignment
         # or FeedbackSet, no 'created event' is rendered to template.
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertFalse(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+        group = mommy.make('core.AssignmentGroup')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
     def test_get_feedbackfeed_event_without_any_deadlines_expired(self):
         # Checks that when a feedbackset has been created and no first deadlines given, either on Assignment
         # or FeedbackSet, no 'expired event' is rendered to template.
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make()
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertFalse(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
+        group = mommy.make('core.AssignmentGroup')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
 
     def test_get_feedbackfeed_event_with_assignment_first_deadline_created(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make(
-            group__assignment__first_deadline=timezone.now()+timezone.timedelta(days=1),
-            deadline_datetime=timezone.now()+timezone.timedelta(days=1))
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
     def test_get_feedbackfeed_event_with_assignment_first_deadline_expired(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make(
-            group__assignment__first_deadline=timezone.now()-timezone.timedelta(days=1),
-            deadline_datetime=timezone.now()-timezone.timedelta(days=1))
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
 
-    def test_get_feedbackfeed_event_without_assignment_first_deadline_created(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make(
-            deadline_datetime=timezone.now()+timezone.timedelta(days=1))
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+    def test_get_feedbackfeed_event_with_feedbackset_deadline_datetime_created(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet', deadline_datetime=timezone.now())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
-    def test_get_feedbackfeed_event_without_assignment_first_deadline_expired(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make(
-            deadline_datetime=timezone.now()-timezone.timedelta(days=1))
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
+    def test_get_feedbackfeed_event_with_feedbackset_deadline_datetime_expired(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet', deadline_datetime=timezone.now()-timezone.timedelta(days=1))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
 
-    def test_get_feedbackfeed_event_without_feedbackfeed_deadline_datetime_created(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make(
-            group__assignment__first_deadline=timezone.now()+timezone.timedelta(days=1))
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
+    def test_get_feedbackfeed_event_without_feedbackset_deadline_datetime_created(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode__first_deadline=timezone.now())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-created'))
 
-    def test_get_feedbackfeed_event_without_feedbackset_deadline_datetime_expired(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make(
-            group__assignment__first_deadline=timezone.now()-timezone.timedelta(days=1),
-            deadline_datetime=None
-        )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
+    # def test_get_feedbackfeed_event_without_feedbackset_deadline_datetime_expired(self):
+    #     feedbackset = mommy.make('devilry_group.FeedbackSet',
+    #                              deadline_datetime=timezone.now() + timezone.timedelta(days=10)
+    #     )
+    #     mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+    #     self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-deadline-expired'))
 
     def test_get_feedbackfeed_event_two_feedbacksets_deadlines_created(self):
         # test that two deadlines created events are rendered to view
         # using feedbackset deadline_datetime as deadlines(no assignment first_deadline)
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        group_builder = AssignmentGroupBuilder.make(
-            assignment__first_deadline=None,
-            assignment__passing_grade_min_points=5,
-            assignment__max_points=10,
-        )
-        group_builder.add_feedback_set(
-            published_datetime=timezone.now() - timezone.timedelta(days=10),
-            deadline_datetime=timezone.now() - timezone.timedelta(days=9),
-            points=1
-        )
-        group_builder.add_feedback_set(
-            deadline_datetime=timezone.now() - timezone.timedelta(days=5),
-            published_datetime=timezone.now() - timezone.timedelta(days=3),
-            points=9
-        )
-        selector, request = self.__mock_http200_getrequest_htmls(role=group_builder.get_object(),
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        created = selector.list('.devilry-group-feedbackfeed-event-message-deadline-created')
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+                                  group=group,
+                                  deadline_datetime=timezone.now() + timezone.timedelta(days=3))
+        feedbackset2 = mommy.make('devilry_group.FeedbackSet',
+                                  group=group,
+                                  created_datetime=timezone.now() + timezone.timedelta(days=4),
+                                  deadline_datetime=timezone.now() + timezone.timedelta(days=6))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        created = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message-deadline-created')
         self.assertEqual(2, len(created))
 
     def test_get_feedbackfeed_event_two_feedbacksets_deadlines_expired(self):
         # test that two deadlines expired events are rendered to view
         # using feedbackset deadline_datetime as deadlines(no assignment first_deadline)
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        group_builder = AssignmentGroupBuilder.make(
-            assignment__first_deadline=None,
-            assignment__passing_grade_min_points=5,
-            assignment__max_points=10,
-        )
-        group_builder.add_feedback_set(
-            published_datetime=timezone.now() - timezone.timedelta(days=10),
-            deadline_datetime=timezone.now() - timezone.timedelta(days=9),
-            points=1
-        )
-        group_builder.add_feedback_set(
-            deadline_datetime=timezone.now() - timezone.timedelta(days=5),
-            published_datetime=timezone.now() - timezone.timedelta(days=3),
-            points=9
-        )
-        selector, request = self.__mock_http200_getrequest_htmls(role=group_builder.get_object(),
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        expired = selector.list('.devilry-group-feedbackfeed-event-message-deadline-expired')
+        group = mommy.make('core.AssignmentGroup')
+        feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+                                  group=group,
+                                  deadline_datetime=timezone.now() + timezone.timedelta(days=3))
+        feedbackset2 = mommy.make('devilry_group.FeedbackSet',
+                                  group=group,
+                                  created_datetime=timezone.now() + timezone.timedelta(days=4),
+                                  deadline_datetime=timezone.now() + timezone.timedelta(days=6))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        expired = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message-deadline-expired')
         self.assertEqual(2, len(expired))
 
     def test_get_feedbackfeed_event_two_feedbacksets_deadlines_created_assignment_firstdeadline(self):
         # test that two deadline created events are rendered to view
         # using assignment first_deadline
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        group_builder = AssignmentGroupBuilder.make(
-            assignment__first_deadline=timezone.now() - timezone.timedelta(days=9),
-            assignment__passing_grade_min_points=5,
-            assignment__max_points=10,
-        )
-        group_builder.add_feedback_set(
-            published_datetime=timezone.now() - timezone.timedelta(days=8),
-            points=1
-        )
-        group_builder.add_feedback_set(
-            deadline_datetime=timezone.now() - timezone.timedelta(days=5),
-            published_datetime=timezone.now() - timezone.timedelta(days=3),
-            points=9
-        )
-        selector, request = self.__mock_http200_getrequest_htmls(role=group_builder.get_object(),
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        created = selector.list('.devilry-group-feedbackfeed-event-message-deadline-created')
+        group = mommy.make('core.AssignmentGroup', parentnode__first_deadline=timezone.now() + timezone.timedelta(days=3))
+        feedbackset1 = mommy.make('devilry_group.FeedbackSet', group=group)
+        feedbackset2 = mommy.make('devilry_group.FeedbackSet',
+                                  group=group,
+                                  created_datetime=timezone.now() + timezone.timedelta(days=4),
+                                  deadline_datetime=timezone.now() + timezone.timedelta(days=6))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        created = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message-deadline-created')
         self.assertEqual(2, len(created))
 
+    def test_get_feedbackfeed_event_two_feedbacksets_deadlines_expired_assignment_firstdeadline(self):
+        # test that two deadline created events are rendered to view
+        # using assignment first_deadline
+        group = mommy.make('core.AssignmentGroup', parentnode__first_deadline=timezone.now() + timezone.timedelta(days=3))
+        feedbackset1 = mommy.make('devilry_group.FeedbackSet', group=group)
+        feedbackset2 = mommy.make('devilry_group.FeedbackSet',
+                                  group=group,
+                                  created_datetime=timezone.now() + timezone.timedelta(days=4),
+                                  deadline_datetime=timezone.now() + timezone.timedelta(days=6))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
+        expired = mockresponse.selector.list('.devilry-group-feedbackfeed-event-message-deadline-expired')
+        self.assertEqual(2, len(expired))
+
     def test_get_feedbackfeed_event_delivery_passed(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        deadline = timezone.now()-timezone.timedelta(days=1)
-        feedbackset_builder = FeedbackSetBuilder.make(
-            group__assignment__first_deadline=deadline,
-            group__assignment__max_points=10,
-            group__assignment__passing_grade_min_points=5,
-            published_datetime=timezone.now(),
-            points=10,
-            deadline_datetime=deadline
-        )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-passed'))
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5,
+                                 published_datetime=timezone.now(),
+                                 deadline_datetime=timezone.now(),
+                                 points=7)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-passed'))
 
     def test_get_feedbackfeed_event_delivery_failed(self):
-        requestuser = UserBuilder2().user
-        janedoe = UserBuilder2(fullname='Jane Doe').user
-        feedbackset_builder = FeedbackSetBuilder.make(
-            group__assignment__first_deadline=timezone.now()+timezone.timedelta(days=1),
-            group__assignment__max_points=10,
-            group__assignment__passing_grade_min_points=5,
-            published_datetime=timezone.now(),
-            deadline_datetime=timezone.now()+timezone.timedelta(days=1),
-            points=1
-        )
-        selector, request = self.__mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-                                                                 requestuser=requestuser,
-                                                                 group=janedoe)
-        self.assertTrue(selector.exists('.devilry-group-feedbackfeed-event-message-failed'))
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5,
+                                 published_datetime=timezone.now(),
+                                 points=3)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-failed'))

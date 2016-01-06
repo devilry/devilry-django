@@ -1,4 +1,5 @@
 import random
+import json
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -290,7 +291,8 @@ class Command(BaseCommand):
                     points=random.randint(minpoints, maxpoints),
                     published_by=examiner,
                     created_by=examiner,
-                    deadline_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago)
+                    deadline_datetime=DateTimeBuilder.now().minus(weeks=weeks_ago),
+                    gradeform_json="test"
                 )
 
                 # add student delivery
@@ -512,6 +514,72 @@ class Command(BaseCommand):
 
         first_deadline = timezone.now() - timezone.timedelta(weeks=2, days=1)
 
+
+        assignment_setup_gradeform_json = {
+            "type": "advanced",
+            "id": "uyagsfuyg43t763t42gtysfeg82376rf2uytf27836dgfweytfgv7238",
+            "schema":
+            [
+
+                {
+                  "id": "uasgf87###ASDSAIDQuestion title",
+                  "title":"Question title",
+                  "explanation":"Explanation of how to fill in",
+                  "options_type":"range",
+                  "range_from": 0,
+                  "range_to": 100,
+                  "value": 50,
+                  "comment": ""
+                },
+
+                {
+                  "id": "uasek32002AIDQuestion title",
+                  "title":"Question title",
+                  "explanation":"Explanation of how to fill in",
+                  "options_type":"single_select",
+                  "options":
+                  [
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""}
+                  ]
+                },
+
+                {
+                  "id": "ullsoqppp987#@asdIDQuestion title",
+                  "title":"Question title",
+                  "explanation":"Explanation of how to fill in",
+                  "options_type":"multi_select",
+                  "options":
+                  [
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""},
+                    {"value": "false", "points": 1, "choise_text":"some choise", "comment": ""}
+                  ]
+                },
+
+                {
+                  "id": "sdaikjfoa4788698236487263847iwufghQuestion title",
+                  "title":"Question title",
+                  "explanation":"Explanation of how to fill in",
+                  "options_type":"feedback",
+                  "feedback": "some written feedback in a textarea"
+                }
+            ]
+        }
+
+        data = {
+            'type': 'advanced',
+            'scheme': [
+                {"points_max": "5", "points_achieved": "5", "text": "Has the student documented the code?", "comment": "Great documentation"},
+                {"points_max": "5", "points_achieved": "3", "text": "Implemented own datastructures?", "comment": "You where meant to implement all datastructures. You didn't implement the hashmap ='("},
+                {"points_max": "5", "points_achieved": "4", "text": "Has the student understood the different pros and cons for the datastructures?", "comment": "Shows good understanding"},
+                {"points_max": "5", "points_achieved": "0", "text": "Fullfilling designdocument?", "comment": "You where supposed to deliver a document with CONTENT, not an empty one!"},
+            ]
+        }
+
         periodbuilder = self.duckburgh.add_subject(
             short_name='inf7020',
             long_name='INF7020 Programming for World Domination and Crashing Non-Mutant Economy',
@@ -527,7 +595,8 @@ class Command(BaseCommand):
             'Oblig 1 - Domination',
             passing_grade_min_points=3,
             max_points=10,
-            first_deadline=first_deadline
+            first_deadline=first_deadline,
+            gradeform_setup_json=json.dumps(assignment_setup_gradeform_json)
         ).add_group()
 
         assignmentgroupbuilder.add_candidates_from_relatedstudents(
@@ -541,6 +610,7 @@ class Command(BaseCommand):
             published_datetime=DateTimeBuilder.now().minus(weeks=1, days=5, hours=2),
             created_datetime=DateTimeBuilder.now().minus(weeks=4),
             deadline_datetime=first_deadline,
+            gradeform_json=json.dumps(data)
         )
 
         # Event summary for feedback_set 1
@@ -613,6 +683,7 @@ class Command(BaseCommand):
             published_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=22)
         )
 
+
         # Event summary for feedback_set 2
         feedbacksetbuilder2 = assignmentgroupbuilder.add_feedback_set(
             points=10,
@@ -620,7 +691,8 @@ class Command(BaseCommand):
             created_by=examiner,
             published_datetime=DateTimeBuilder.now().minus(weeks=0, days=3),
             created_datetime=DateTimeBuilder.now().minus(weeks=1, days=4, hours=21),
-            deadline_datetime=DateTimeBuilder.now().minus(weeks=1)
+            deadline_datetime=DateTimeBuilder.now().minus(weeks=1),
+            gradeform_json=json.dumps(data)
         )
 
         feedbacksetbuilder2.add_groupcomment(

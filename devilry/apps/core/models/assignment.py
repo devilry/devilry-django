@@ -133,6 +133,11 @@ class AssignmentManager(models.Manager):
 class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate):
     """
 
+    .. attribute:: gradeform_setup_json
+
+        A django.db.models.TextField_ for the json representing a blank
+        gradeform used for this 'Assignment_'
+
     .. attribute:: parentnode
 
         A django.db.models.ForeignKey_ that points to the parent node,
@@ -272,6 +277,7 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
 
     short_name = ShortNameField()
     long_name = LongNameField()
+    gradeform_setup_json = models.TextField(blank=True, null=True)
     parentnode = models.ForeignKey(Period, related_name='assignments',
                                    verbose_name='Period')
     publishing_time = models.DateTimeField(

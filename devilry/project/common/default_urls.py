@@ -34,6 +34,7 @@ devilry_urls = (
     ('r^student/assignmentgroup/(?P<assignmentgroupid>\d+)$', redirecto_to_show_delivery),
     (r'^devilry_student/', include('devilry.devilry_student.urls')),
     (r'^devilry_group/', include('devilry.devilry_group.urls')),
+    (r'^devilry_gradeform/', include('devilry.devilry_gradeform.urls')),
     (r'^devilry_admin/', include('devilry.devilry_admin.urls')),
     (r'^djangoadmin/', include(admin.site.urls)),
     url(r'^superuser/', include(superuserui_registry.default.make_cradmin_instance_class().urls())),

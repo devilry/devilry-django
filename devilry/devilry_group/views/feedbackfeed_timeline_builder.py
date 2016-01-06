@@ -2,6 +2,7 @@ import collections
 import datetime
 
 from devilry.devilry_group import models as group_models
+from devilry.devilry_gradeform.views import grade_form, viewable_gradeform
 
 
 class FeedbackFeedTimelineBuilder():
@@ -97,7 +98,11 @@ class FeedbackFeedTimelineBuilder():
                     timeline[feedbackset.published_datetime] = []
                 timeline[feedbackset.published_datetime].append({
                     "type": "grade",
-                    "obj": feedbackset.points
+                    "obj": feedbackset.points,
+                #     "gradeform": grade_form.AdvancedGradeForm.render_viewable(
+                #         grade_form.AdvancedGradeForm(),
+                #         feedbackset.group.parentnode,
+                #         feedbackset)
                 })
         return last_deadline, timeline
 
