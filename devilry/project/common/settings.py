@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'extjs4',
     'haystack',
     'ievv_opensource.ievvtasks_common',
+    'ievv_opensource.ievv_batchframework.apps.BatchOperationAppConfig',
 
     'devilry.devilry_bulkcreate_users',
     'devilry.devilry_cradmin',

@@ -1,3 +1,5 @@
+import logging
+
 from crispy_forms import layout
 from django import forms
 from django.conf import settings
@@ -11,9 +13,13 @@ from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import formbase
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
+from ievv_opensource.ievv_batchframework.models import BatchOperation
 
-from devilry.apps.core.models import RelatedStudent, Candidate
+from devilry.apps.core.models import RelatedStudent, Candidate, AssignmentGroup
 from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
+from devilry.devilry_group.models import FeedbackSet
+
+logger = logging.getLogger(__name__)
 
 
 class ChooseMethod(formbase.FormView):
@@ -140,17 +146,6 @@ class OrderRelatedStudentsFilter(listfilter.django.single.select.AbstractOrderBy
         ]
 
 
-class ManualSelectStudentsForm(forms.Form):
-    selected_related_students = forms.ModelMultipleChoiceField(
-        queryset=RelatedStudent.objects.none()
-    )
-
-    def __init__(self, *args, **kwargs):
-        relatedstudents_queryset = kwargs.pop('relatedstudents_queryset')
-        super(ManualSelectStudentsForm, self).__init__(*args, **kwargs)
-        self.fields['selected_related_students'].queryset = relatedstudents_queryset
-
-
 class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.View):
     model = RelatedStudent
     value_renderer_class = multiselect2_relatedstudent.ItemValue
@@ -215,29 +210,84 @@ class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.
     def post(self, request, *args, **kwargs):
         available_relatedstudents_queryset = self.get_unfiltered_queryset_for_role(
                 role=self.request.cradmin_role)
-        form = ManualSelectStudentsForm(data=self.request.POST,
-                                        relatedstudents_queryset=available_relatedstudents_queryset)
+        form = multiselect2_relatedstudent.SelectRelatedStudentsForm(
+            data=self.request.POST,
+            relatedstudents_queryset=available_relatedstudents_queryset)
         if form.is_valid():
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
 
+    def __create_groups(self, batchoperation, relatedstudent_list):
+        assignment = self.request.cradmin_role
+        groups = []
+        for relatedstudent in relatedstudent_list:
+            group = AssignmentGroup(
+                batchoperation=batchoperation,
+                parentnode=assignment)
+            groups.append(group)
+        AssignmentGroup.objects.bulk_create(groups)
+        return AssignmentGroup.objects.filter(batchoperation=batchoperation)
+
+    def __create_candidates(self, group_queryset, relatedstudent_list):
+        candidates = []
+        for group, relatedstudent in zip(group_queryset, relatedstudent_list):
+            candidate = Candidate(
+                student=relatedstudent.user,
+                relatedstudent=relatedstudent,
+                assignment_group=group
+            )
+            candidates.append(candidate)
+        Candidate.objects.bulk_create(candidates)
+
+    def __create_feedbacksets(self, group_queryset, relatedstudent_list):
+        feedbacksets = []
+        for group, relatedstudent in zip(group_queryset, relatedstudent_list):
+            feedbackset = FeedbackSet(
+                group=group,
+                created_by=self.request.user,
+
+            )
+            feedbacksets.append(feedbackset)
+        FeedbackSet.objects.bulk_create(feedbacksets)
+
+    def create_groups_with_candidate_and_feedbackset(self, relatedstudent_queryset):
+        assignment = self.request.cradmin_role
+        batchoperation = BatchOperation(
+            context_object=assignment,
+            operationtype='create-groups-with-candidate-and-feedbackset'
+        )
+        relatedstudent_list = list(relatedstudent_queryset)
+        group_queryset = self.__create_groups(batchoperation=batchoperation,
+                                              relatedstudent_list=relatedstudent_list)
+        self.__create_candidates(group_queryset=group_queryset,
+                                 relatedstudent_list=relatedstudent_list)
+
+
+
     def form_valid(self, form):
-        print()
-        print("*" * 70)
-        print()
-        print(form.cleaned_data['selected_related_students'])
-        print()
-        print("*" * 70)
-        print()
+        self.create_groups_with_candidate_and_feedbackset(relatedstudent_queryset=form.cleaned_data['selected_items'])
         return redirect(self.request.cradmin_instance.appindex_url('studentoverview'))
 
     def form_invalid(self, form):
-        messages.error(self.request,
-                       pgettext_lazy('admin create_groups',
-                                     'Oups! Something went wrong. This may happen if someone edited '
-                                     'students on the assignment or the semester while you were making '
-                                     'your selection. Please try again.'))
+        messages.error(
+                self.request,
+                pgettext_lazy('admin create_groups',
+                              'Oups! Something went wrong. This may happen if someone edited '
+                              'students on the assignment or the semester while you were making '
+                              'your selection. Please try again.') % {
+                    'errormessage': form.errors.as_data()
+                })
+        logger.warning('Manual select students view (%s.%s) failed to validate. '
+                       'This should not happen unless a user was removed '
+                       'from the semester while the user selected students, '
+                       'or if multiple admins edited/added students at the same time. '
+                       'The user that experienced this error: %s (userid=%s). '
+                       'Form validation error messages: %r',
+                       self.__class__.__module__, self.__class__.__name__,
+                       self.request.user.shortname,
+                       self.request.user.id,
+                       form.errors.as_data())
         return redirect(self.request.path)
 
 

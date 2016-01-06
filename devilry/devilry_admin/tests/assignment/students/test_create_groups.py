@@ -363,9 +363,12 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             cradmin_role=testassignment,
             requestkwargs={
                 'data': {
-                    'selected_related_students': [
+                    'selected_items': [
                         relatedstudent.id
                     ]
                 }
             }
         )
+
+    def test_post_relatedstudent_already_on_assignment(self):
+        pass
