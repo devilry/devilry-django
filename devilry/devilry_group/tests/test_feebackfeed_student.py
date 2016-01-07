@@ -70,7 +70,6 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                              feedback_set__deadline_datetime=timezone.now())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=janedoe.assignment_group,
                                                           requestuser=janedoe.student)
-        print(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
         self.assertEquals(johndoe.student.fullname, name)
 
