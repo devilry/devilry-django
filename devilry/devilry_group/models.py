@@ -15,28 +15,38 @@ class AbstractGroupComment(comment_models.Comment):
     """
     feedback_set = models.ForeignKey('FeedbackSet')
 
-    #: If this is ``True``
-    instant_publish = models.BooleanField(default=False)
-
-    #: Is the comment visible for students? This is always ``True`` for
-    #: comments added by students, but examiners can set this to ``False`` to
-    #: save a draft.
-    visible_for_students = models.BooleanField(default=False)
+    # #: If this is ``True``
+    # instant_publish = models.BooleanField(default=False)
+    #
+    # #: Is the comment visible for students? This is always ``True`` for
+    # #: comments added by students, but examiners can set this to ``False`` to
+    # #: save a draft.
+    # visible_for_students = models.BooleanField(default=False)
 
     #: If this is ``True``, the comment is published when the feedbackset
     #: is published. This means that this comment is part of the feedback/grading
     #: from the examiner. The same :obj:`~.AbstractGroupComment.visibility`
     #: rules apply no matter if this is ``True`` or ``False``,
     #: this only controls when the comment is published.
-    # part_of_grading = models.BooleanField(default=False)
+    part_of_grading = models.BooleanField(default=False)
+
+
+    VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS = 'visible-to-examiner-and-admins'
+
+    VISIBILITY_VISIBLE_TO_EVERYONE = 'visible-to-everyone'
+
+    VISIBILITY_CHOISES = [
+        (VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS, 'Visible to examiners and admins'),
+        (VISIBILITY_VISIBLE_TO_EVERYONE, 'visible-to-everyone'),
+    ]
 
     ## Replaces instant_publish and visible_for_students
-    # visibility = models.CharField(
-    #     choices=[
-    #         ('visible-to-examiner-and-admins', 'Visible to examiners and admins'),
-    #         ('visible-to-everyone', 'Visible to everyone'),
-    #     ]
-    # )
+    visibility = models.CharField(
+        max_length=50,
+        db_index=True,
+        choices=VISIBILITY_CHOISES,
+        default=VISIBILITY_VISIBLE_TO_EVERYONE,
+    )
 
     class Meta:
         abstract = True
