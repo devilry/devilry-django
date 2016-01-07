@@ -125,11 +125,11 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             .annotate(deliverycount_for_no_deliveries_exclude=models.Count('deadlines__deliveries'))\
             .filter(deliverycount_for_no_deliveries_exclude=0)
 
-    def filter_is_examiner(self, user):
-        return self.filter(examiners__user=user).distinct()
-
-    def filter_is_candidate(self, user):
-        return self.filter(candidates__student=user).distinct()
+    # def filter_is_examiner(self, user):
+    #     return self.filter(examiners__user=user).distinct()
+    #
+    # def filter_is_candidate(self, user):
+    #     return self.filter(candidates__student=user).distinct()
 
     def filter_is_published(self):
         return self.filter(parentnode__publishing_time__lt=datetime.now())
