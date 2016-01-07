@@ -51,6 +51,7 @@ class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
             object.instant_publish = False
             object.visible_for_students = False
 
+
         if commit:
             if self._convert_temporary_files_to_comment_files(form, object) or len(object.text) > 0:
                 object.save()
