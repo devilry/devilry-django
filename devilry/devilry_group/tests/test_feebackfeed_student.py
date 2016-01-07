@@ -141,7 +141,6 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
     #
     #     self.assertEquals(response.status_code, 200)
 
-
     def test_post_feedbackset_post_comment(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet',
                                  group__parentnode__max_points=10,
@@ -158,19 +157,17 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         comment = GroupComment.objects.filter(feedback_set__id=feedbackset.id)
         self.assertEquals(1, len(comment))
 
-
-    # Must fix!!! a comment is stored with no text
-    # def test_post_feedbackset_post_comment_no_text(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet',
-    #                              group__parentnode__max_points=10,
-    #                              group__parentnode__passing_grade_min_points=5)
-    #     mockresponse = self.mock_http302_postrequest(
-    #         cradmin_role=feedbackset.group,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': '',
-    #             }
-    #         })
-    #     comments = GroupComment.objects.all()
-    #     self.assertEquals(0, len(comments))
+    def test_post_feedbackset_post_comment_no_text(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet',
+                                 group__parentnode__max_points=10,
+                                 group__parentnode__passing_grade_min_points=5)
+        mockresponse = self.mock_http302_postrequest(
+            cradmin_role=feedbackset.group,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                }
+            })
+        comments = GroupComment.objects.all()
+        self.assertEquals(0, len(comments))
