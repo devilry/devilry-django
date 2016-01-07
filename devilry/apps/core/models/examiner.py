@@ -25,6 +25,7 @@ class Examiner(models.Model, AbstractIsAdmin):
         unique_together = ('user', 'assignmentgroup')
         db_table = 'core_assignmentgroup_examiners'
 
+    #: Will be removed in 3.0 - see https://github.com/devilry/devilry-django/issues/812
     user = models.ForeignKey(User)
 
     #: The :class:`devilry.apps.core.models.assignment_group.AssignmentGroup`

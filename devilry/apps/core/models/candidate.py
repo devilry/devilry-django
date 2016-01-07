@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User
 
@@ -66,6 +67,7 @@ class Candidate(models.Model):
     class Meta:
         app_label = 'core'
 
+    #: Will be removed in 3.0 - see https://github.com/devilry/devilry-django/issues/810
     student = models.ForeignKey(User)
 
     #: ForeignKey to :class:`devilry.apps.core.models.relateduser.RelatedStudent`
