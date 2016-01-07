@@ -17,7 +17,7 @@ class AbstractGroupComment(comment_models.Comment):
 
     # #: If this is ``True``
     # instant_publish = models.BooleanField(default=False)
-    #
+
     # #: Is the comment visible for students? This is always ``True`` for
     # #: comments added by students, but examiners can set this to ``False`` to
     # #: save a draft.
@@ -35,7 +35,7 @@ class AbstractGroupComment(comment_models.Comment):
 
     VISIBILITY_VISIBLE_TO_EVERYONE = 'visible-to-everyone'
 
-    VISIBILITY_CHOISES = [
+    VISIBILITY_CHOICES = [
         (VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS, 'Visible to examiners and admins'),
         (VISIBILITY_VISIBLE_TO_EVERYONE, 'visible-to-everyone'),
     ]
@@ -44,7 +44,7 @@ class AbstractGroupComment(comment_models.Comment):
     visibility = models.CharField(
         max_length=50,
         db_index=True,
-        choices=VISIBILITY_CHOISES,
+        choices=VISIBILITY_CHOICES,
         default=VISIBILITY_VISIBLE_TO_EVERYONE,
     )
 
@@ -119,9 +119,15 @@ class FeedbackSet(models.Model):
         return u"{} - {} - {}".format(self.group.assignment, self.group, self.deadline_datetime)
 
     def clean(self):
-        if self.published_by is not None and self.points is None:
+        if self.grading_published_datetime is not None and self.grading_published_by is None:
             raise ValidationError({
-                'published_by': ugettext_lazy('An assignment can not be published witout providing "points".'),
+                'grading_published_datetime': ugettext_lazy('An assignment can not be published '
+                                                            'without providing "points".'),
+            })
+        if self.grading_published_datetime is not None and self.grading_points is None:
+            raise ValidationError({
+                'grading_published_datetime': ugettext_lazy('An assignment can not be published '
+                                                            'without providing "points".'),
             })
 
     # @property

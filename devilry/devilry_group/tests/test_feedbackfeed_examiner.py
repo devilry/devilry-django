@@ -4,6 +4,7 @@ import htmls
 import mock
 from model_mommy import mommy
 
+from devilry.devilry_group import models
 from devilry.devilry_group.tests import test_feedbackfeed_common
 from devilry.devilry_group.views import feedbackfeed_examiner
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder2, AssignmentGroupBuilder, FeedbackSetBuilder
@@ -39,3 +40,16 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group,
                                                           requestuser=examiner.user)
         self.assertTrue(mockresponse.selector.exists('#submit-id-examiner_add_comment_to_feedback_draft'))
+
+    # def test_post_comment(self):
+    #     feedbackset = mommy.make('devilry_group.FeedbackSet')
+    #     mockresponse = self.mock_http302_postrequest(
+    #         cradmin_role=feedbackset.group,
+    #         viewkwargs={'pk': feedbackset.group.id},
+    #         requestkwargs={
+    #             'data': {
+    #                 'text': 'This is a comment',
+    #             }
+    #         })
+    #     comments = models.GroupComment.objects.all()
+    #     self.assertEquals(1, len(comments))

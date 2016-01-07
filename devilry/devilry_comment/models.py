@@ -55,7 +55,6 @@ class Comment(models.Model):
                                                  filesize=tempfile.file.size,
                                                  comment=self)
 
-
         commentfile.file = files.File(tempfile.file, tempfile.filename)
         commentfile.save()
         print "returning from add_commentfile_from_temporary_file"

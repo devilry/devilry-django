@@ -42,8 +42,8 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         elif form.data.get('admin_public_add_comment'):
             object.instant_publish = True
             object.visible_for_students = True
-        else:
-            commit=False
+        # else:
+        #     commit=False
 
         if commit:
             if self._convert_temporary_files_to_comment_files(form, object) or len(object.text):
