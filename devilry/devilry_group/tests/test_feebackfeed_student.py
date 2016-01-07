@@ -12,15 +12,12 @@ from devilry.devilry_group.models import GroupComment
 class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
     viewclass = feedbackfeed_student.StudentFeedbackFeedView
 
-    # def test_get(self):
-    #     requestuser = UserBuilder2().user
-    #     janedoe = UserBuilder2(fullname='Jane Doe').user
-    #     group_builder = AssignmentGroupBuilder.make()
-    #     selector, request = self._mock_http200_getrequest_htmls(role=group_builder.get_object(),
-    #                                                              requestuser=requestuser,
-    #                                                              group=janedoe)
-    #     self.assertEqual(selector.one('title').alltext_normalized,
-    #                      group_builder.group.assignment.get_path())
+    def test_get(self):
+        student = mommy.make('core.Candidate')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=student.assignment_group,
+                                                          requestuser=student.student)
+        self.assertEquals(mockresponse.selector.one('title').alltext_normalized,
+                          student.assignment_group.assignment.get_path())
 
     def test_get_feedbackset_student_comment_after_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
