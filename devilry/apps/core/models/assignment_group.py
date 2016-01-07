@@ -216,6 +216,9 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         has less :obj:`devilry.devilry_group.models.FeedbackSet.grading_points`
         than the ``passing_grade_min_points`` for the assignment.
 
+        This method performs ``filter(parentnode=assignment)``
+        in addition to the query that checks the feedbacksets.
+
         Args:
             assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
         """
