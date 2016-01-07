@@ -133,16 +133,17 @@ class FeedbackFeedBaseView(create.CreateView):
     def _convert_temporary_files_to_comment_files(self, form, groupcomment):
         filecollection_id = form.cleaned_data.get('temporary_file_collection_id')
         if not filecollection_id:
-            return
+            return False
         try:
             temporaryfilecollection = self.get_collectionqueryset().get(id=filecollection_id)
         except TemporaryFileCollection.DoesNotExist:
-            return
+            return False
 
         for temporaryfile in temporaryfilecollection.files.all():
             print "creating commentfile for file: {}".format(temporaryfile.filename)
             groupcomment.add_commentfile_from_temporary_file(tempfile=temporaryfile)
 
+        return True
 
 
 
