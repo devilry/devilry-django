@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext_lazy
 from django_cradmin.viewhelpers import listbuilderview
+from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import listfilter
 
 from devilry.apps.core.models import RelatedStudent
@@ -51,3 +52,26 @@ class VerticalFilterListView(ListViewBase):
     """
     def get_filterlist_position(self):
         return 'left'
+
+
+class RelatedStudentItemValueTitleDescriptionMixin(object):
+    valuealias = 'relatedstudent'
+
+    def get_title(self):
+        if self.relatedstudent.user.fullname:
+            return self.relatedstudent.user.fullname
+        else:
+            return self.relatedstudent.user.shortname
+
+    def get_description(self):
+        if self.relatedstudent.user.fullname:
+            return self.relatedstudent.user.shortname
+        else:
+            return ''
+
+
+class ReadOnlyItemValue(RelatedStudentItemValueTitleDescriptionMixin,
+                        listbuilder.itemvalue.TitleDescription):
+
+    def get_extra_css_classes_list(self):
+        return ['devilry-admin-listbuilder-relatedstudent-readonlyitemvalue']

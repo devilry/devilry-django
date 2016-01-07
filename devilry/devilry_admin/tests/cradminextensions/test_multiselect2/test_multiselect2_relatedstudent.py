@@ -51,7 +51,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
-            selector.one('.django-cradmin-multiselect2-itemvalue-title').alltext_normalized)
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_title_with_fullname(self):
         relatedstudent = mommy.make('core.RelatedStudent',
@@ -60,7 +60,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertEqual(
             'Test User',
-            selector.one('.django-cradmin-multiselect2-itemvalue-title').alltext_normalized)
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
 
     def test_description_without_fullname(self):
         relatedstudent = mommy.make('core.RelatedStudent',
@@ -68,7 +68,7 @@ class TestItemValue(test.TestCase):
                                     user__fullname='')
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertFalse(
-            selector.exists('.django-cradmin-multiselect2-itemvalue-description'))
+            selector.exists('.django-cradmin-listbuilder-itemvalue-titledescription-description'))
 
     def test_description_with_fullname(self):
         relatedstudent = mommy.make('core.RelatedStudent',
@@ -77,7 +77,7 @@ class TestItemValue(test.TestCase):
         selector = htmls.S(multiselect2_relatedstudent.ItemValue(value=relatedstudent).render())
         self.assertEqual(
             'test@example.com',
-            selector.one('.django-cradmin-multiselect2-itemvalue-description').alltext_normalized)
+            selector.one('.django-cradmin-listbuilder-itemvalue-titledescription-description').alltext_normalized)
 
 
 class TestTarget(test.TestCase):
