@@ -618,6 +618,28 @@ class TestAssignmentGroup(TestCase):
             [],
             list(AssignmentGroup.objects.filter_has_passing_grade(assignment=testassignment)))
 
+    # def test_filter_is_candidate(self):
+    #     testuser = mommy.make(settings.AUTH_USER_MODEL)
+    #     mommy.make('core.AssignmentGroup')
+    #     group = mommy.make('core.AssignmentGroup')
+    #     mommy.make('core.Candidate',
+    #                assignment_group=group,
+    #                relatedstudent__user=testuser)
+    #     self.assertEqual(
+    #         [group],
+    #         list(AssignmentGroup.objects.filter_is_candidate(user=testuser)))
+    #
+    # def test_filter_is_examiner(self):
+    #     testuser = mommy.make(settings.AUTH_USER_MODEL)
+    #     mommy.make('core.AssignmentGroup')
+    #     group = mommy.make('core.AssignmentGroup')
+    #     mommy.make('core.Examiner',
+    #                assignmentgroup=group,
+    #                relatedexaminer__user=testuser)
+    #     self.assertEqual(
+    #         [group],
+    #         list(AssignmentGroup.objects.filter_is_examiner(user=testuser)))
+
 
 class TestAssignmentGroupCanDelete(TestCase):
     def setUp(self):

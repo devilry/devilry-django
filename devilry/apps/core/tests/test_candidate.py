@@ -7,7 +7,7 @@ from model_mommy import mommy
 from devilry.apps.core.models import Candidate
 
 
-class TestCandidate(test.TestCase):
+class TestCandidateQuerySet(test.TestCase):
     def test_filter_has_passing_grade(self):
         testassignment = mommy.make('core.Assignment',
                                     passing_grade_min_points=1)

@@ -152,17 +152,17 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
             'Confirm that you want to add the following students to Assignment One',
             mockresponse.selector.one('h1').alltext_normalized)
 
-    def test_get_subheader_selected_students_relateadstudents(self):
-        raise NotImplementedError()
-
-    def test_get_subheader_selected_students_all_on_assignment(self):
-        raise NotImplementedError()
-
-    def test_get_subheader_selected_students_passing_grade_on_assignment(self):
-        raise NotImplementedError()
-
-    def test_get_render_submitbutton(self):
-        raise NotImplementedError()
+    # def test_get_subheader_selected_students_relateadstudents(self):
+    #     raise NotImplementedError()
+    #
+    # def test_get_subheader_selected_students_all_on_assignment(self):
+    #     raise NotImplementedError()
+    #
+    # def test_get_subheader_selected_students_passing_grade_on_assignment(self):
+    #     raise NotImplementedError()
+    #
+    # def test_get_render_submitbutton(self):
+    #     raise NotImplementedError()
 
     def test_get_no_relatedstudents_matching_query(self):
         testperiod = mommy.make('core.Period')

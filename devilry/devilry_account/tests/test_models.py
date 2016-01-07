@@ -610,8 +610,8 @@ class TestSubjectPermissionGroup(TestCase):
             'devilry_account.SubjectPermissionGroup',
             permissiongroup__grouptype=PermissionGroup.GROUPTYPE_PERIODADMIN)
         with self.assertRaisesMessage(ValidationError,
-                                      'Only courses can be added to course administrator '
-                                      'permission groups.'):
+                                      'Semesters can only be added to subject and '
+                                      'department administrator permission groups.'):
             subjectpermissiongroup.clean()
 
     def test_only_single_editable_group_for_each_subject_id_none(self):
