@@ -16,7 +16,7 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
 
     def _get_comments_for_group(self, group):
         return models.GroupComment.objects.filter(
-            Q(feedback_set__published_datetime__isnull=False) | Q(instant_publish=True),
+            Q(feedback_set__grading_published_datetime__isnull=False) | Q(instant_publish=True),
             visible_for_students=True,
             feedback_set__group=group
         )

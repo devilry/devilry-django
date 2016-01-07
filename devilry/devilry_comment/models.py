@@ -11,19 +11,22 @@ class Comment(models.Model):
     it possible for users to cancel publishing a comment.
     """
     #: the text of the comment
-    text = models.CharField(max_length=4096)  # Change to TextField with same attributes as draft_text
+    text = models.TextField(null=False, blank=True, default='')
 
-    # #: This is used for autosave. We do not change :obj:`~.Comment.text` on autosave,
-    # #: instead we store the changes here, and restore them when the user returns
-    # #: We may then ask them if they want to restore the draft or the old text.
-    # draft_text = models.TextField(null=False, blank=True, default='')
+    #: This is used for autosave. We do not change :obj:`~.Comment.text` on autosave,
+    #: instead we store the changes here, and restore them when the user returns
+    #: We may then ask them if they want to restore the draft or the old text.
+    draft_text = models.TextField(null=False, blank=True, default='')
 
     #: the user who posted the comment
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
+
     #: if this comment is a reply to another comment, that comment will be parent
     parent = models.ForeignKey('self', null=True, blank=True)
+
     #: when was the comment created
     created_datetime = models.DateTimeField(auto_now_add=True)
+
     #: when was the comment published by celery
     published_datetime = models.DateTimeField(null=True, blank=True)
 
@@ -32,6 +35,7 @@ class Comment(models.Model):
         ('examiner', 'Examiner'),
         ('admin', 'Admin'),
     )
+
     #: What role did the user publish as? This determines the style of the comment
     user_role = models.CharField(choices=USER_ROLE_CHOICES, max_length=42)
 
@@ -39,6 +43,7 @@ class Comment(models.Model):
         ('imageannotationcomment', 'ImageAnnotationComment'),
         ('groupcomment', 'GroupComment'),
     )
+
     #: What type of comment is this. Used for reverse mapping to subclasses
     comment_type = models.CharField(choices=COMMENT_TYPE_CHOICES, max_length=42)
 

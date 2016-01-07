@@ -121,7 +121,7 @@ class FeedbackFeedBaseView(create.CreateView):
         object.user = user
         object.comment_type = 'groupcomment'
         object.feedback_set = assignment_group.feedbackset_set.latest('created_datetime')
-        object.published_datetime = time
+        object.grading_published_datetime = time
 
         return object
 

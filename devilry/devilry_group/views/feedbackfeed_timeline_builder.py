@@ -93,12 +93,12 @@ class FeedbackFeedTimelineBuilder():
             elif deadline_datetime > last_deadline:
                 last_deadline = deadline_datetime
 
-            if feedbackset.published_datetime is not None:
-                if feedbackset.published_datetime not in timeline.keys():
-                    timeline[feedbackset.published_datetime] = []
-                timeline[feedbackset.published_datetime].append({
+            if feedbackset.grading_published_datetime is not None:
+                if feedbackset.grading_published_datetime not in timeline.keys():
+                    timeline[feedbackset.grading_published_datetime] = []
+                timeline[feedbackset.grading_published_datetime].append({
                     "type": "grade",
-                    "obj": feedbackset.points,
+                    "obj": feedbackset.grading_points,
                 #     "gradeform": grade_form.AdvancedGradeForm.render_viewable(
                 #         grade_form.AdvancedGradeForm(),
                 #         feedbackset.group.parentnode,
