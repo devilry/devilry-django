@@ -126,10 +126,34 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             .filter(deliverycount_for_no_deliveries_exclude=0)
 
     def filter_is_examiner(self, user):
+        warnings.warn('AssignmentGroupQuerySet.filter_is_examiner is deprecated in 3.0 - '
+                      'use filter_user_is_examiner', DeprecationWarning)
         return self.filter(examiners__user=user).distinct()
 
     def filter_is_candidate(self, user):
+        warnings.warn('AssignmentGroupQuerySet.filter_is_candidate is deprecated in 3.0 - '
+                      'use filter_user_is_candidate', DeprecationWarning)
         return self.filter(candidates__student=user).distinct()
+
+    def filter_user_is_examiner(self, user):
+        """
+        Filter all :class:`.AssignmentGroup` objects where the given
+        user is examiner.
+
+        Args:
+            user: A :class:`devilry.devilry_account.models.User` object.
+        """
+        return self.filter(examiners__relatedexaminer__user=user).distinct()
+
+    def filter_user_is_candidate(self, user):
+        """
+        Filter all :class:`.AssignmentGroup` objects where the given
+        user is candidate.
+
+        Args:
+            user: A :class:`devilry.devilry_account.models.User` object.
+        """
+        return self.filter(candidates__relatedstudent__user=user).distinct()
 
     def filter_is_published(self):
         return self.filter(parentnode__publishing_time__lt=datetime.now())
@@ -297,24 +321,34 @@ class AssignmentGroupManager(models.Manager):
         return self.get_queryset().exclude_groups_with_deliveries()
 
     def filter_is_examiner(self, user):
+        return self.get_queryset().filter_is_examiner(user)
+
+    def filter_is_candidate(self, user):
+        return self.get_queryset().filter_is_candidate(user)
+
+    def filter_user_is_examiner(self, user):
         """
         Returns a queryset with all AssignmentGroups where the given ``user`` is examiner.
+
+        See :meth:`.AssignmentGroupQuerySet.filter_user_is_examiner`.
 
         WARNING: You should normally not use this directly because it gives the
         examiner information from expired periods (which they are not supposed
         to get). Use :meth:`.filter_examiner_has_access` instead.
         """
-        return self.get_queryset().filter_is_examiner(user)
+        return self.get_queryset().filter_user_is_examiner(user)
 
-    def filter_is_candidate(self, user):
+    def filter_user_is_candidate(self, user):
         """
         Returns a queryset with all AssignmentGroups where the given ``user`` is candidate.
+
+        See :meth:`.AssignmentGroupQuerySet.filter_user_is_candidate`.
 
         WARNING: You should normally not use this directly because it gives the
         student information from unpublished assignments (which they are not supposed
         to get). Use :meth:`.filter_student_has_access` instead.
         """
-        return self.get_queryset().filter_is_candidate(user)
+        return self.get_queryset().filter_user_is_candidate(user)
 
     def filter_is_published(self):
         """
