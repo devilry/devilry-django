@@ -28,8 +28,9 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.student,
                              user_role='student',
-                             instant_publish=True,
-                             visible_for_students=True,
+                             # instant_publish=True,
+                             # visible_for_students=True,
+                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                              published_datetime=timezone.now() + timezone.timedelta(days=1),
                              feedback_set__group=candidate.assignment_group,
                              feedback_set__deadline_datetime=timezone.now())
@@ -43,8 +44,9 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.student,
                              user_role='student',
-                             instant_publish=True,
-                             visible_for_students=True,
+                             # instant_publish=True,
+                             # visible_for_students=True,
+                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                              published_datetime=timezone.now() - timezone.timedelta(days=1),
                              feedback_set__group=candidate.assignment_group,
                              feedback_set__deadline_datetime=timezone.now())
@@ -60,13 +62,15 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         comment = mommy.make('devilry_group.GroupComment',
                              user=johndoe.student,
                              user_role='student',
-                             instant_publish=True,
-                             visible_for_students=True,
+                             # instant_publish=True,
+                             # visible_for_students=True,
+                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                              published_datetime=timezone.now() - timezone.timedelta(days=1),
                              feedback_set__group=group,
                              feedback_set__deadline_datetime=timezone.now())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=janedoe.assignment_group,
                                                           requestuser=janedoe.student)
+        print(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
         self.assertEquals(johndoe.student.fullname, name)
 
