@@ -78,7 +78,7 @@ class FeedbackSet(models.Model):
     #: is visible, the grade (extracted from points) is not visible, and this
     #: feedbackset does not count when extracting the latest/active feedback/grade
     #: for the AssignmentGroup.
-    published_datetime = models.DateTimeField(  # Rename to grading_published_datetime
+    grading_published_datetime = models.DateTimeField(
         null=True,
         blank=True
     )
@@ -86,7 +86,7 @@ class FeedbackSet(models.Model):
     #: Set when the feedbackset is published by an examiner.
     #: If this is ``None``, the feedback is not published, and
     #: the ``points`` (grade) is not available to the student.
-    published_by = models.ForeignKey(  # rename to grading_published_by
+    grading_published_by = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         related_name="published_feedbacksets",
         null=True, blank=True
@@ -95,14 +95,14 @@ class FeedbackSet(models.Model):
     #: Points given by examiner for this feedbackset.
     #: The points on the last published FeedbackSet is the current
     #: grade for the AssignmentGroup.
-    points = models.PositiveIntegerField(  # rename to grading_points
+    grading_points = models.PositiveIntegerField(
         null=True, blank=True
     )
 
     #: A :class:`django.db.models.TextField` for a gradeform filled or not filled for
     #: FeedbackSet.
-    gradeform_json = models.TextField(  # rename to gradeform_data_json + null=False, default=''
-        blank=True, null=True
+    gradeform_data_json = models.TextField(
+        null=False, blank=True, default=''
     )
 
     def __unicode__(self):
