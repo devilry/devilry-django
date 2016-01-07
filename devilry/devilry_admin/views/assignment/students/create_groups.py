@@ -2,9 +2,7 @@ import logging
 
 from crispy_forms import layout
 from django import forms
-from django.conf import settings
 from django.contrib import messages
-from django.db.models.functions import Lower, Concat
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.utils.translation import pgettext_lazy, ugettext_lazy
@@ -13,11 +11,10 @@ from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import formbase
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
-from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 from devilry.apps.core.models import RelatedStudent, Candidate, AssignmentGroup
+from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
-from devilry.devilry_group.models import FeedbackSet
 
 logger = logging.getLogger(__name__)
 
@@ -107,50 +104,14 @@ class RelatedStudentMultiselectTarget(multiselect2_relatedstudent.Target):
                              'Add students')
 
 
-class OrderRelatedStudentsFilter(listfilter.django.single.select.AbstractOrderBy):
-    def get_ordering_options(self):
-        if settings.DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND:
-            shortname_ascending_label = ugettext_lazy('Order by: Email')
-            shortname_descending_label = ugettext_lazy('Order by: Email descending')
-        else:
-            shortname_ascending_label = ugettext_lazy('Order by: Username')
-            shortname_descending_label = ugettext_lazy('Order by: Username descending')
-
-        # NOTE: We use Concat below to get sorting that works even when the user
-        #       does not have a fullname, and we use Lower to sort ignoring case.
-        return [
-            ('', {
-                'label': ugettext_lazy('Order by: Name'),
-                'order_by': [Lower(Concat('user__fullname', 'user__shortname'))],
-            }),
-            ('name_descending', {
-                'label': ugettext_lazy('Order by: Name descending'),
-                'order_by': [Lower(Concat('user__fullname', 'user__shortname')).desc()],
-            }),
-            ('lastname_ascending', {
-                'label': ugettext_lazy('Order by: Last name'),
-                'order_by': [Lower('user__lastname')],
-            }),
-            ('lastname_descending', {
-                'label': ugettext_lazy('Order by: Last name descending'),
-                'order_by': [Lower('user__lastname').desc()],
-            }),
-            ('shortname_ascending', {
-                'label': shortname_ascending_label,
-                'order_by': ['user__shortname'],
-            }),
-            ('shortname_descending', {
-                'label': shortname_descending_label,
-                'order_by': ['-user__shortname'],
-            }),
-        ]
+# class PreviewAndConfirmSelectedStudentsView(listbuilderview.FilterListMixin, listbuilderview.View):
 
 
-class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.View):
-    model = RelatedStudent
+class ManualSelectStudentsView(listbuilder_relatedstudent.HorizontalFilterListView):
+    """
+    View used to manually select students when creating groups.
+    """
     value_renderer_class = multiselect2_relatedstudent.ItemValue
-    paginate_by = 200
-    filterlist_class = listfilter.lists.Horizontal
     form_invalid_message = pgettext_lazy(
             'admin create_groups',
             'Oups! Something went wrong. This may happen if someone edited '
@@ -176,18 +137,6 @@ class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.
 
     def get_filterlist_template_name(self):
         return 'devilry_admin/assignment/students/create_groups/manual-select-students.django.html'
-
-    def get_label_is_screenreader_only_by_default(self):
-        return True
-
-    def add_filterlist_items(self, filterlist):
-        filterlist.append(listfilter.django.single.textinput.Search(
-            slug='search',
-            label=ugettext_lazy('Search'),
-            modelfields=['user__fullname', 'user__shortname']))
-        filterlist.append(OrderRelatedStudentsFilter(
-            slug='orderby',
-            label=ugettext_lazy('Order by')))
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
