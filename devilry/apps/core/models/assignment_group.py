@@ -206,6 +206,40 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             delivery.full_clean()
             delivery.save()
 
+    def filter_has_passing_grade(self, assignment):
+        """
+        Filter only :class:`.AssignmentGroup` objects within the given
+        assignment that has a passing grade.
+
+        That means that this filters out all AssignmentGroups where
+        the latest published :class:`devilry.devilry_group.models.FeedbackSet`
+        has less :obj:`devilry.devilry_group.models.FeedbackSet.grading_points`
+        than the ``passing_grade_min_points`` for the assignment.
+
+        Args:
+            assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+        """
+        return self.filter(parentnode=assignment)\
+            .extra(
+                where=[
+                    """
+                    (
+                        SELECT devilry_group_feedbackset.grading_points
+                        FROM devilry_group_feedbackset
+                        WHERE
+                            devilry_group_feedbackset.group_id = core_assignmentgroup.id
+                            AND
+                            devilry_group_feedbackset.grading_published_datetime IS NOT NULL
+                        ORDER BY devilry_group_feedbackset.grading_published_datetime DESC
+                        LIMIT 1
+                    ) >= %s
+                    """
+                ],
+                params=[
+                    assignment.passing_grade_min_points
+                ]
+            )
+
 
 class AssignmentGroupManager(models.Manager):
     def get_queryset(self):
@@ -406,6 +440,12 @@ class AssignmentGroupManager(models.Manager):
                                         group_list=group_list)
         batchoperation.finish()
         return group_queryset
+
+    def filter_has_passing_grade(self, assignment):
+        """
+        See :meth:`.AssignmentGroupQuerySet.filter_has_passing_grade`.
+        """
+        return self.get_queryset().filter_has_passing_grade(assignment=assignment)
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
