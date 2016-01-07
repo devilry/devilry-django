@@ -151,6 +151,11 @@ class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.
     value_renderer_class = multiselect2_relatedstudent.ItemValue
     paginate_by = 200
     filterlist_class = listfilter.lists.Horizontal
+    form_invalid_message = pgettext_lazy(
+            'admin create_groups',
+            'Oups! Something went wrong. This may happen if someone edited '
+            'students on the assignment or the semester while you were making '
+            'your selection. Please try again.')
 
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
@@ -218,61 +223,12 @@ class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.
         else:
             return self.form_invalid(form)
 
-    def __create_groups(self, batchoperation, relatedstudent_list):
-        assignment = self.request.cradmin_role
-        groups = []
-        for relatedstudent in relatedstudent_list:
-            group = AssignmentGroup(
-                batchoperation=batchoperation,
-                parentnode=assignment)
-            groups.append(group)
-        AssignmentGroup.objects.bulk_create(groups)
-        return AssignmentGroup.objects.filter(batchoperation=batchoperation)
-
-    def __create_candidates(self, group_list, relatedstudent_list):
-        candidates = []
-        # print()
-        # print("*" * 70)
-        # print()
-        # print('groups', group_list)
-        # print(AssignmentGroup.objects.first().batchoperation)
-        # print()
-        # print("*" * 70)
-        # print()
-        for group, relatedstudent in zip(group_list, relatedstudent_list):
-            candidate = Candidate(
-                student=relatedstudent.user,
-                relatedstudent=relatedstudent,
-                assignment_group=group
-            )
-            candidates.append(candidate)
-        Candidate.objects.bulk_create(candidates)
-
-    def __create_feedbacksets(self, group_list):
-        feedbacksets = []
-        for group in group_list:
-            feedbackset = FeedbackSet(
-                group=group,
-                created_by=self.request.user,
-            )
-            feedbacksets.append(feedbackset)
-        FeedbackSet.objects.bulk_create(feedbacksets)
-
     def create_groups_with_candidate_and_feedbackset(self, relatedstudent_queryset):
         assignment = self.request.cradmin_role
-        batchoperation = BatchOperation.objects.create_syncronous(
-            context_object=assignment,
-            operationtype='create-groups-with-candidate-and-feedbackset')
-        relatedstudent_list = list(relatedstudent_queryset)
-        group_queryset = self.__create_groups(batchoperation=batchoperation,
-                                              relatedstudent_list=relatedstudent_list)
-        # We iterate over the groups multiple times, so we do this to avoid multiple queries
-        group_list = list(group_queryset)
-
-        self.__create_candidates(group_list=group_list,
-                                 relatedstudent_list=relatedstudent_list)
-        self.__create_feedbacksets(group_list=group_list)
-        batchoperation.finish()
+        return AssignmentGroup.objects.bulk_create_groups(
+            created_by_user=self.request.user,
+            assignment=assignment,
+            relatedstudents=list(relatedstudent_queryset))
 
     def form_valid(self, form):
         self.create_groups_with_candidate_and_feedbackset(relatedstudent_queryset=form.cleaned_data['selected_items'])
@@ -281,12 +237,7 @@ class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.
     def form_invalid(self, form):
         messages.error(
                 self.request,
-                pgettext_lazy('admin create_groups',
-                              'Oups! Something went wrong. This may happen if someone edited '
-                              'students on the assignment or the semester while you were making '
-                              'your selection. Please try again.') % {
-                    'errormessage': form.errors.as_data()
-                })
+                self.form_invalid_message)
         logger.warning('Manual select students view (%s.%s) failed to validate. '
                        'This should not happen unless a user was removed '
                        'from the semester while the user selected students, '
@@ -297,7 +248,7 @@ class ManualSelectStudentsView(listbuilderview.FilterListMixin, listbuilderview.
                        self.request.user.shortname,
                        self.request.user.id,
                        form.errors.as_data())
-        return redirect(self.request.path)
+        return redirect(self.request.cradmin_app.reverse_appurl('manual-select'))
 
 
 class App(crapp.App):

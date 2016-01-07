@@ -2,14 +2,15 @@ import datetime
 
 import htmls
 import mock
+from django.contrib import messages
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
-from ievv_opensource.ievv_batchframework.models import BatchOperation
 from model_mommy import mommy
 
-from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import AssignmentGroup, Candidate
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
 from devilry.devilry_admin.views.assignment.students import create_groups
+from devilry.devilry_group.models import FeedbackSet
 
 
 class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
@@ -355,11 +356,14 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             ['userc@example.com', 'userb@example.com', 'usera@example.com'],
             titles)
 
-    def test_post_ok_creates_group(self):
+    def test_post_ok_creates_groups(self):
         testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
-                                    user__shortname='userb@example.com',
-                                    period=testperiod)
+        relatedstudent1 = mommy.make('core.RelatedStudent',
+                                     period=testperiod)
+        relatedstudent2 = mommy.make('core.RelatedStudent',
+                                     period=testperiod)
+        relatedstudent3 = mommy.make('core.RelatedStudent',
+                                     period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         self.assertEqual(0, AssignmentGroup.objects.count())
         self.mock_http302_postrequest(
@@ -367,53 +371,96 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             requestkwargs={
                 'data': {
                     'selected_items': [
-                        relatedstudent.id
+                        relatedstudent1.id,
+                        relatedstudent2.id,
+                        relatedstudent3.id,
                     ]
                 }
             }
         )
-        self.assertEqual(1, AssignmentGroup.objects.count())
+        # Note: We only need a sanity tests here - the real tests are
+        # in the tests for AssignmentGroup.objects.bulk_create_groups()
+        self.assertEqual(3, AssignmentGroup.objects.count())
+        self.assertEqual(3, Candidate.objects.count())
+        self.assertEqual(3, FeedbackSet.objects.count())
+        first_group = AssignmentGroup.objects.first()
+        self.assertEqual(1, first_group.candidates.count())
+        self.assertEqual(1, first_group.feedbackset_set.count())
 
-    def test_post_ok_creates_batchoperation_for_group(self):
+    def test_post_ok_redirect(self):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent',
-                                    user__shortname='userb@example.com',
                                     period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        self.assertEqual(0, BatchOperation.objects.count())
+        self.assertEqual(0, AssignmentGroup.objects.count())
+        mock_cradmin_instance = mock.MagicMock()
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
+            cradmin_instance=mock_cradmin_instance,
             requestkwargs={
                 'data': {
                     'selected_items': [
-                        relatedstudent.id
+                        relatedstudent.id,
                     ]
                 }
             }
         )
-        self.assertEqual(1, BatchOperation.objects.count())
-        created_group = AssignmentGroup.objects.first()
-        created_batchoperation = BatchOperation.objects.first()
-        self.assertEqual(created_batchoperation, created_group.batchoperation)
-
-    def test_post_ok_creates_candidate(self):
-        testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
-                                    user__shortname='userb@example.com',
-                                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        self.mock_http302_postrequest(
-            cradmin_role=testassignment,
-            requestkwargs={
-                'data': {
-                    'selected_items': [
-                        relatedstudent.id
-                    ]
-                }
-            }
-        )
-        created_group = AssignmentGroup.objects.first()
-        self.assertEqual(1, created_group.candidates.count())
+        mock_cradmin_instance.appindex_url.assert_called_once_with('studentoverview')
 
     def test_post_relatedstudent_already_on_assignment(self):
-        pass
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    user__shortname='userb@example.com',
+                                    period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   relatedstudent=relatedstudent,
+                   assignment_group__parentnode=testassignment)
+        self.assertEqual(1, AssignmentGroup.objects.count())
+        messagesmock = mock.MagicMock()
+        mockapp = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            messagesmock=messagesmock,
+            cradmin_app=mockapp,
+            requestkwargs={
+                'data': {
+                    'selected_items': [
+                        relatedstudent.id
+                    ]
+                }
+            },
+        )
+        mockapp.reverse_appurl.assert_called_once_with('manual-select')
+        self.assertEqual(1, AssignmentGroup.objects.count())
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR,
+            create_groups.ManualSelectStudentsView.form_invalid_message,
+            '')
+
+    def test_post_relatedstudent_not_relatedstudent_on_period(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    user__shortname='userb@example.com')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        self.assertEqual(0, AssignmentGroup.objects.count())
+        messagesmock = mock.MagicMock()
+        mockapp = mock.MagicMock()
+        self.mock_http302_postrequest(
+            cradmin_role=testassignment,
+            messagesmock=messagesmock,
+            cradmin_app=mockapp,
+            requestkwargs={
+                'data': {
+                    'selected_items': [
+                        relatedstudent.id
+                    ]
+                }
+            },
+        )
+        mockapp.reverse_appurl.assert_called_once_with('manual-select')
+        self.assertEqual(0, AssignmentGroup.objects.count())
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR,
+            create_groups.ManualSelectStudentsView.form_invalid_message,
+            '')
