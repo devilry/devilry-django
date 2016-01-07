@@ -16,8 +16,9 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
 
     def _get_comments_for_group(self, group):
         return models.GroupComment.objects.filter(
-            Q(feedback_set__grading_published_datetime__isnull=False) | Q(instant_publish=True),
-            visible_for_students=True,
+            Q(feedback_set__grading_published_datetime__isnull=False) | Q(visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE),
+            # visible_for_students=True,
+            visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
             feedback_set__group=group
         )
 
@@ -37,8 +38,9 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     def save_object(self, form, commit=True):
         object = super(StudentFeedbackFeedView, self).save_object(form)
         object.user_role = 'student'
-        object.instant_publish = True
-        object.visible_for_students = True
+        # object.instant_publish = True
+        # object.visible_for_students = True
+        object.visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
 
         if commit:
             object.save()
