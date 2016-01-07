@@ -3,14 +3,14 @@ import logging
 from crispy_forms import layout
 from django import forms
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import redirect
 from django.utils.translation import pgettext_lazy
 from django_cradmin import crapp
 from django_cradmin.crispylayouts import PrimarySubmit
 from django_cradmin.viewhelpers import formbase
 
-from devilry.apps.core.models import Candidate, AssignmentGroup
+from devilry.apps.core.models import Candidate, AssignmentGroup, RelatedStudent
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
 
@@ -96,12 +96,6 @@ class ChooseMethod(formbase.FormView):
         return HttpResponseRedirect('/some/view')
 
 
-class RelatedStudentMultiselectTarget(multiselect2_relatedstudent.Target):
-    def get_submit_button_text(self):
-        return pgettext_lazy('admin create_groups',
-                             'Add students')
-
-
 class CreateGroupsViewMixin(object):
     form_invalid_message = pgettext_lazy(
         'admin create_groups',
@@ -143,10 +137,16 @@ class CreateGroupsViewMixin(object):
             assignment=assignment,
             relatedstudents=list(relatedstudent_queryset))
 
+    def get_success_url(self):
+        return self.request.cradmin_instance.appindex_url('studentoverview')
+
     def form_valid(self, form):
         self.create_groups_with_candidate_and_feedbackset(
                 relatedstudent_queryset=form.cleaned_data['selected_items'])
-        return redirect(self.request.cradmin_instance.appindex_url('studentoverview'))
+        return redirect(self.get_success_url())
+
+    def get_error_url(self):
+        raise NotImplementedError()
 
     def form_invalid(self, form):
         messages.error(self.request, self.form_invalid_message)
@@ -160,8 +160,7 @@ class CreateGroupsViewMixin(object):
                        self.request.user.shortname,
                        self.request.user.id,
                        form.errors.as_data())
-        # return redirect(self.request.cradmin_app.reverse_appindexurl())
-        return redirect(self.request.cradmin_app.reverse_appurl('preview-and-confirm'))
+        return redirect(self.get_error_url())
 
 
 class PreviewAndConfirmSelectedStudentsView(CreateGroupsViewMixin,
@@ -174,16 +173,89 @@ class PreviewAndConfirmSelectedStudentsView(CreateGroupsViewMixin,
             'assignment': self.assignment.get_path()
         }
 
+    def get_pageheading(self):
+        return pgettext_lazy('admin create_groups',
+                             'Confirm that you want to add the following students to %(assignment)s') % {
+            'assignment': self.assignment.long_name
+        }
+
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
             'preview-and-confirm',
             kwargs={'selected_students': self.kwargs['selected_students'],
                     'filters_string': filters_string})
 
+    def __get_assignment_id_form_class(self):
+        assignment_queryset = self.period.assignments.exclude(id=self.assignment.id)
+
+        class AssignmentIdForm(forms.Form):
+            assignment = forms.ModelChoiceField(
+                queryset=assignment_queryset,
+                required=True
+            )
+
+        return AssignmentIdForm
+
+    def __get_assignment_id_form(self):
+        form_class = self.__get_assignment_id_form_class()
+        return form_class(data=self.request.GET)
+
+    def __filter_students_on_assignment(self,
+                                        assignment,
+                                        relatedstudents_queryset,
+                                        only_passing_grade):
+            matching_candidates = Candidate.objects\
+                .filter(assignment_group__parentnode=assignment)
+            if only_passing_grade:
+                matching_candidates = matching_candidates\
+                    .filter_has_passing_grade(assignment=assignment)
+            matching_relatedstudent_ids = matching_candidates\
+                .values_list('relatedstudent_id', flat=True)
+            matching_relatedstudent_ids = set(matching_relatedstudent_ids)
+            return relatedstudents_queryset.filter(id__in=matching_relatedstudent_ids)
+
+    def __filter_selected_students_on_assignment(self, relatedstudents_queryset,
+                                                 only_passing_grade):
+        form = self.__get_assignment_id_form()
+        if form.is_valid():
+            assignment = form.cleaned_data['assignment']
+            return self.__filter_students_on_assignment(
+                assignment=assignment,
+                relatedstudents_queryset=relatedstudents_queryset,
+                only_passing_grade=only_passing_grade)
+        else:
+            raise Http404('Invalid assignment_id')
+
     def get_unfiltered_queryset_for_role(self, role):
-        queryset = super(PreviewAndConfirmSelectedStudentsView, self).get_unfiltered_queryset_for_role(role=role)
-        # TODO: Filter according to selection
-        return queryset
+        if self.request.method == 'POST':
+            return super(PreviewAndConfirmSelectedStudentsView, self)\
+                .get_unfiltered_queryset_for_role(role=role)
+        else:
+            selected_students = self.kwargs['selected_students']
+            relatedstudents_queryset = super(PreviewAndConfirmSelectedStudentsView, self)\
+                .get_unfiltered_queryset_for_role(role=role)
+            if selected_students == 'all_on_assignment':
+                queryset = self.__filter_selected_students_on_assignment(
+                        relatedstudents_queryset=relatedstudents_queryset,
+                        only_passing_grade=False)
+            elif selected_students == 'passing_grade_on_assignment':
+                queryset = self.__filter_selected_students_on_assignment(
+                        relatedstudents_queryset=relatedstudents_queryset,
+                        only_passing_grade=True)
+            elif selected_students == 'relatedstudents':
+                queryset = relatedstudents_queryset
+            else:
+                raise Http404('Invalid selected_students.')
+            return queryset
+
+    def get_error_url(self):
+        return self.request.cradmin_app.reverse_appindexurl()
+
+
+class RelatedStudentMultiselectTarget(multiselect2_relatedstudent.Target):
+    def get_submit_button_text(self):
+        return pgettext_lazy('admin create_groups',
+                             'Add students')
 
 
 class ManualSelectStudentsView(CreateGroupsViewMixin,
@@ -219,6 +291,9 @@ class ManualSelectStudentsView(CreateGroupsViewMixin,
         context = super(ManualSelectStudentsView, self).get_context_data(**kwargs)
         context['multiselect_target'] = self.__get_multiselect_target()
         return context
+
+    def get_error_url(self):
+        return self.request.cradmin_app.reverse_appurl('manual-select')
 
 
 class App(crapp.App):
