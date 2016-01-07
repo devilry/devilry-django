@@ -1,0 +1,41 @@
+{% load devilry_group_tags %}
+{% load devilry_gradeform_tags %}
+{% load i18n %}
+
+{% comment %}
+    Can edit gradeform for last feedbackset if
+    deadline has expired
+{% endcomment %}
+{% with feedbacksets.last as last_feedbackset %}
+    {% if devilry_ui_role == 'examiner' %}
+        {% comment %}
+            Must also check that published datetime is None
+        {% endcomment %}
+{#        {% if last_feedbackset.deadline_datetime >= last_deadline %}#}
+
+            <br><br><br>
+
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><b>Edit last delivery</b></a>
+                        </h4>
+                    </div>
+                    <div id="collapseOne" class="panel-collapse collapse in">
+                        {% if last_feedbackset.deadline_datetime >= last_deadline%}
+                        <div class="panel-body" style="border: dotted">
+
+                            {% devilry_gradeform_editable_advanced last_feedbackset.group.parentnode last_feedbackset %}
+
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <br><br><br>
+
+{#        {% endif %}#}
+    {% endif %}
+{% endwith %}

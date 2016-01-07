@@ -80,15 +80,16 @@ class FeedbackFeedBaseView(create.CreateView):
                         # css_class='panel-body'
                     ),
                     layout.Div(
-                        layout.HTML(render_to_string('devilry_group/include/fileupload.django.html',
-                                                     {
-                                                         "apiparameters": quoteattr(json.dumps({
-                                                             "unique_filenames": True,
-                                                             "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH
-                                                         })),
-                                                         "hiddenfieldname": "temporary_file_collection_id",
-                                                         "apiurl": reverse('cradmin_temporary_file_upload_api')
-                                                      })),
+                        layout.HTML(render_to_string(
+                            'devilry_group/include/fileupload.django.html',
+                            {
+                                "apiparameters": quoteattr(json.dumps({
+                                    "unique_filenames": True,
+                                    "max_filename_length": comment_models.CommentFile.MAX_FILENAME_LENGTH
+                                })),
+                                "hiddenfieldname": "temporary_file_collection_id",
+                                "apiurl": reverse('cradmin_temporary_file_upload_api')
+                            })),
                         # css_class='panel-footer'
                     ),
                     # css_class='panel panel-default'

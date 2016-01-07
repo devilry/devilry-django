@@ -6,11 +6,12 @@ from django.db import models
 from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+from ievv_opensource.ievv_batchframework.models import BatchOperation
 
-from node import Node
-from abstract_is_admin import AbstractIsAdmin
-from abstract_is_examiner import AbstractIsExaminer
-from assignment import Assignment
+from .node import Node
+from .abstract_is_admin import AbstractIsAdmin
+from .abstract_is_examiner import AbstractIsExaminer
+from .assignment import Assignment
 from model_utils import Etag
 import deliverytypes
 
@@ -335,6 +336,77 @@ class AssignmentGroupManager(models.Manager):
         """
         return self.get_queryset().add_nonelectronic_delivery()
 
+    def __bulk_create_groups(self, assignment, batchoperation, relatedstudents):
+        groups = []
+        for relatedstudent in relatedstudents:
+            group = AssignmentGroup(
+                batchoperation=batchoperation,
+                parentnode=assignment)
+            groups.append(group)
+        AssignmentGroup.objects.bulk_create(groups)
+        return AssignmentGroup.objects.filter(batchoperation=batchoperation)
+
+    def __bulk_create_candidates(self, group_list, relatedstudents):
+        from devilry.apps.core.models import Candidate
+        candidates = []
+        for group, relatedstudent in zip(group_list, relatedstudents):
+            candidate = Candidate(
+                student=relatedstudent.user,
+                relatedstudent=relatedstudent,
+                assignment_group=group)
+            candidates.append(candidate)
+        Candidate.objects.bulk_create(candidates)
+
+    def __bulk_create_feedbacksets(self, group_list, created_by_user):
+        from devilry.devilry_group.models import FeedbackSet
+        feedbacksets = []
+        for group in group_list:
+            feedbackset = FeedbackSet(
+                group=group,
+                created_by=created_by_user)
+            feedbacksets.append(feedbackset)
+        FeedbackSet.objects.bulk_create(feedbacksets)
+
+    def bulk_create_groups(self, created_by_user, assignment, relatedstudents):
+        """
+        Bulk create :class:`~.AssignmentGroup` objects, one for each
+        :class:`~devilry.apps.core.models.relateduser.RelatedStudent` in
+        ``relatedstudents``.
+
+        The groups are created with:
+
+        - one :class:`devilry.apps.core.models.candidate.Candidate` (so each RelatedStudent
+          is added a Candidate on a group).
+        - one :class:`devilry.devilry_group.models.FeedbackSet`.
+
+        Args:
+            created_by_user: The user that created the groups.
+            assignment: The :class:`:class:`~devilry.apps.core.models.assignment.Assignment` to add
+                the groups to.
+            relatedstudents: Iterable of :class:`~devilry.apps.core.models.relateduser.RelatedStudent`
+                objects. Should not be a queryset, because this method loops over the iterable
+                multiple times. So if you have a queryset of RelatedStudents, use
+                ``bulk_create_groups(relatedstudents=list(relatedstudent_queryset))``.
+
+        Returns:
+            django.db.models.query.QuerySet: A queryset with the created groups.
+        """
+        batchoperation = BatchOperation.objects.create_syncronous(
+            context_object=assignment,
+            operationtype='create-groups-with-candidate-and-feedbackset')
+        group_queryset = self.__bulk_create_groups(assignment=assignment,
+                                                   batchoperation=batchoperation,
+                                                   relatedstudents=relatedstudents)
+        # We iterate over the groups multiple times, so we do this to avoid multiple queries
+        group_list = list(group_queryset)
+
+        self.__bulk_create_candidates(group_list=group_list,
+                                      relatedstudents=relatedstudents)
+        self.__bulk_create_feedbacksets(created_by_user=created_by_user,
+                                        group_list=group_list)
+        batchoperation.finish()
+        return group_queryset
+
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
@@ -424,6 +496,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             ("closed-without-feedback", _("Closed without feedback")),
             ("waiting-for-something", _("Waiting for something")),
         ))
+
+    #: Foreignkey to :class:`ievv_opensource.ievv_batchframework.models.BatchOperation`.
+    #: When we perform batch operations on the assignmentgroup, this is used to reference
+    #: the operation. Batch operations include bulk-create - we use the BatchOperation
+    #: object to enable us to recursively batch create AssignmentGroup,
+    #: Candidate and FeedbackSet in a very efficient batch operation with
+    #: a fixed set of database queries.
+    batchoperation = models.ForeignKey(
+        to=BatchOperation,
+        null=True, blank=True,
+        on_delete=models.SET_NULL)
 
     #: If this group was copied from another group, this will be set.
     #: This can safely be set to ``None`` at any time since it is only

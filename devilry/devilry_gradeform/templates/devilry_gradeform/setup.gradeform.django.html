@@ -1,0 +1,32 @@
+{% load devilry_group_tags %}
+{% load devilry_theme2_tags %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{{ test }}</h1><br><br><br><br>
+{#    <p>{{ gradeform_json }}</p>#}
+    {% for key, value in gradeform_json.items %}
+        {% if key == 'type' %}
+            <p>Type: {{ value }}</p>
+        {% elif key == 'schema' %}
+
+            {% for item in value %}
+
+                {% for s_key, s_value in item.items %}
+                    <p>{{ s_value }}</p>
+                {% endfor %}
+
+            {% endfor %}
+
+        {% endif %}
+    {% endfor %}
+{#    {% for field in gradeform_json.fields %}#}
+{#        <br><br>#}
+{#        <h4>{{ field.text }}</h4>#}
+{#        <p>{{ field.points_achieved }}/{{ field.points_max }}</p>#}
+{#        <p>{{ field.comment }}</p>#}
+{#    {% endfor %}#}
+
+
+{% endblock content %}

@@ -11,7 +11,13 @@ class Comment(models.Model):
     it possible for users to cancel publishing a comment.
     """
     #: the text of the comment
-    text = models.CharField(max_length=4096)
+    text = models.CharField(max_length=4096)  # Change to TextField with same attributes as draft_text
+
+    # #: This is used for autosave. We do not change :obj:`~.Comment.text` on autosave,
+    # #: instead we store the changes here, and restore them when the user returns
+    # #: We may then ask them if they want to restore the draft or the old text.
+    # draft_text = models.TextField(null=False, blank=True, default='')
+
     #: the user who posted the comment
     user = models.ForeignKey(settings.AUTH_USER_MODEL)
     #: if this comment is a reply to another comment, that comment will be parent

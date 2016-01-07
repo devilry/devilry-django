@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0006_auto_20151112_1851'),
+        ('core', '0007_assignment_gradeform_setup_json'),
     ]
 
     operations = [

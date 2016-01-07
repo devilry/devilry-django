@@ -1,0 +1,15 @@
+{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+{% load static %}
+{% load i18n %}
+{% load cradmin_tags %}
+
+
+{% block title %}
+    {% blocktrans trimmed with assignment=request.cradmin_role %}Add students to {{ assignment }}{% endblocktrans %}
+{% endblock title %}
+
+{% block pageheader-inner %}
+    <h1>
+        {% trans "Add students" %}
+    </h1>
+{% endblock pageheader-inner %}
