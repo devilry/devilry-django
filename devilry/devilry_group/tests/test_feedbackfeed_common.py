@@ -4,6 +4,8 @@ from model_mommy import mommy
 
 from django_cradmin import cradmin_testhelpers
 
+from devilry.devilry_group import models
+
 
 class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
     viewclass = None  # must be implemented in subclasses
@@ -102,32 +104,36 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
 
     def test_get_feedbackfeed_comment(self):
         comment = mommy.make('devilry_group.GroupComment',
-                             instant_publish=True,
-                             visible_for_students=True)
+                             # instant_publish=True,
+                             # visible_for_students=True
+                             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment'))
 
     def test_get_feedbackfeed_comment_student(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='student',
-                             instant_publish=True,
-                             visible_for_students=True)
+                             # instant_publish=True,
+                             # visible_for_students=True
+                             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-student'))
 
     def test_get_feedbackfeed_comment_examiner(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='examiner',
-                             instant_publish=True,
-                             visible_for_students=True)
+                             # instant_publish=True,
+                             # visible_for_students=True
+                             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
 
     def test_get_feedbackfeed_comment_admin(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='admin',
-                             instant_publish=True,
-                             visible_for_students=True)
+                             # instant_publish=True,
+                             # visible_for_students=True
+                             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
 
@@ -136,8 +142,9 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.student,
                              user_role='student',
-                             instant_publish=True,
-                             visible_for_students=True)
+                             # instant_publish=True,
+                             # visible_for_students=True
+                             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(comment.user.fullname, mockresponse.selector.one('.devilry-user-verbose-inline-fullname'))
 
@@ -146,16 +153,18 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.student,
                              user_role='student',
-                             instant_publish=True,
-                             visible_for_students=True)
+                             # instant_publish=True,
+                             # visible_for_students=True
+                             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(comment.user.shortname, mockresponse.selector.one('.devilry-user-verbose-inline-shortname'))
 
     def test_get_feedbackfeed_comment_student_user_role(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='student',
-                             instant_publish=True,
-                             visible_for_students=True)
+                             # instant_publish=True,
+                             # visible_for_students=True
+                             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals(role, '({})'.format(comment.user_role))
@@ -163,8 +172,9 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
     def test_get_feedbackfeed_comment_examiner_user_role(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='examiner',
-                             instant_publish=True,
-                             visible_for_students=True)
+                             # instant_publish=True,
+                             # visible_for_students=True
+                             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals(role, '({})'.format(comment.user_role))
@@ -172,8 +182,9 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
     def test_get_feedbackfeed_comment_admin_user_role(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='admin',
-                             instant_publish=True,
-                             visible_for_students=True)
+                             # instant_publish=True,
+                             # visible_for_students=True
+                             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized
         self.assertEquals(role, '({})'.format(comment.user_role))
