@@ -102,9 +102,6 @@ class Candidate(models.Model):
             student=self.student,
             group=self.assignment_group)
 
-    def get_student_displayname(self):
-        return self.student.get_full_name()
-
     def get_anonymous_displayname(self):
         if settings.DEVILRY_CANDIDATE_ID_HANDLING == 'per-period':
             return self.relatedstudent.get_anonymous_displayname()
