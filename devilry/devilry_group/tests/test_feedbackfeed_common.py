@@ -286,9 +286,9 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         feedbackset = mommy.make('devilry_group.FeedbackSet',
                                  group__parentnode__max_points=10,
                                  group__parentnode__passing_grade_min_points=5,
-                                 published_datetime=timezone.now(),
+                                 grading_published_datetime=timezone.now(),
                                  deadline_datetime=timezone.now(),
-                                 points=7)
+                                 grading_points=7)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-passed'))
 
@@ -296,7 +296,7 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         feedbackset = mommy.make('devilry_group.FeedbackSet',
                                  group__parentnode__max_points=10,
                                  group__parentnode__passing_grade_min_points=5,
-                                 published_datetime=timezone.now(),
-                                 points=3)
+                                 grading_published_datetime=timezone.now(),
+                                 grading_points=3)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-event-message-failed'))
