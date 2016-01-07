@@ -5,6 +5,45 @@ from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User
 
 
+class CandidateQuerySet(models.QuerySet):
+    def filter_has_passing_grade(self, assignment):
+        """
+        Filter only :class:`.Candidate` objects within the given
+        assignment that has a passing grade.
+
+        That means that this filters out all Candidates on AssignmentGroups
+        the latest published :class:`devilry.devilry_group.models.FeedbackSet`
+        has less :obj:`devilry.devilry_group.models.FeedbackSet.grading_points`
+        than the ``passing_grade_min_points`` for the assignment.
+
+        This method performs ``filter(assignment_group__parentnode=assignment)``
+        in addition to the query that checks the feedbacksets.
+
+        Args:
+            assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+        """
+        return self.filter(assignment_group__parentnode=assignment)\
+            .extra(
+                where=[
+                    """
+                    (
+                        SELECT devilry_group_feedbackset.grading_points
+                        FROM devilry_group_feedbackset
+                        WHERE
+                            devilry_group_feedbackset.group_id = core_candidate.assignment_group_id
+                            AND
+                            devilry_group_feedbackset.grading_published_datetime IS NOT NULL
+                        ORDER BY devilry_group_feedbackset.grading_published_datetime DESC
+                        LIMIT 1
+                    ) >= %s
+                    """
+                ],
+                params=[
+                    assignment.passing_grade_min_points
+                ]
+            )
+
+
 class Candidate(models.Model):
     """
     .. attribute:: assignment_group
@@ -22,6 +61,7 @@ class Candidate(models.Model):
         the "name" shown to examiners instead of the username of the
         student.
     """
+    objects = CandidateQuerySet.as_manager()
 
     class Meta:
         app_label = 'core'
