@@ -167,6 +167,9 @@ class PreviewAndConfirmSelectedStudentsView(CreateGroupsViewMixin,
                                             listbuilder_relatedstudent.VerticalFilterListView):
     value_renderer_class = listbuilder_relatedstudent.ReadOnlyItemValue
 
+    def get_filterlist_template_name(self):
+        return 'devilry_admin/assignment/students/create_groups/preview-and-confirm.django.html'
+
     def get_pagetitle(self):
         return pgettext_lazy('admin create_groups',
                              'Confirm that you want to add the following students to %(assignment)s') % {
@@ -250,6 +253,12 @@ class PreviewAndConfirmSelectedStudentsView(CreateGroupsViewMixin,
 
     def get_error_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
+
+    def get_context_data(self, **kwargs):
+        context = super(PreviewAndConfirmSelectedStudentsView, self).get_context_data(**kwargs)
+        context['no_students_found'] = not self.get_unfiltered_queryset_for_role(
+            role=self.request.cradmin_role).exists()
+        return context
 
 
 class RelatedStudentMultiselectTarget(multiselect2_relatedstudent.Target):

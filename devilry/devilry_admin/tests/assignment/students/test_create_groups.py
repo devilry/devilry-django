@@ -164,6 +164,17 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
     def test_get_render_submitbutton(self):
         raise NotImplementedError()
 
+    def test_get_no_relatedstudents_matching_query(self):
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'selected_students': 'relatedstudents'})
+        self.assertEqual(
+            'No students matching your selection found.',
+            mockresponse.selector.one(
+                '.devilry-admin-create-groups-preview-and-confirm-no-students').alltext_normalized)
+
     def test_get_selected_students_relateadstudents(self):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent',
@@ -287,9 +298,6 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
                          mockresponse.response.content)
         self.assertNotIn(relatedstudent4.user.fullname,
                          mockresponse.response.content)
-
-    def test_get_no_relatedstudents_matching_query(self):
-        raise NotImplementedError()
 
     def test_post_ok_creates_groups(self):
         testperiod = mommy.make('core.Period')

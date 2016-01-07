@@ -1,0 +1,25 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-left.django.html" %}
+{% load cradmin_tags %}
+{% load i18n %}
+
+{% block pageheader-inner %}
+    {{ block.super }}
+{% endblock pageheader-inner %}
+
+
+{% block content %}
+    {% if no_students_found %}
+        <div class="container django-cradmin-container-focus django-cradmin-container-focus-warning
+                    devilry-admin-create-groups-preview-and-confirm-no-students">
+            {% trans "No students matching your selection found." %}
+        </div>
+    {% else %}
+        {{ block.super }}
+    {% endif %}
+{% endblock content %}
+
+{% block no-items-paragraph-contents %}
+    <strong class="devilry-admin-create-groups-preview-and-confirm-no-filtermatch">
+        {% trans "No students found." context "admin create_groups" %}
+    </strong>
+{% endblock no-items-paragraph-contents %}
