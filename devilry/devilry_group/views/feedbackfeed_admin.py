@@ -46,8 +46,10 @@ class AdminFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
             commit=False
 
         if commit:
-            object.save()
-            self._convert_temporary_files_to_comment_files(form, object)
+            if self._convert_temporary_files_to_comment_files(form, object) or len(object.text):
+                object.save()
+            # object.save()
+            # self._convert_temporary_files_to_comment_files(form, object)
 
 
 class App(crapp.App):
