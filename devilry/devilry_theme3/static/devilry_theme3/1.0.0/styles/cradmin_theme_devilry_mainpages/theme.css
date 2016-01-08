@@ -6854,3 +6854,11 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
 body {
   background-image: url('../../media/images/groovepaper.png');
 }
+.django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h2,
+.django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h3 {
+  font-size: 22px;
+}
+.django-cradmin-form-wrapper.devilry-django-cradmin-form-wrapper-top-bottom-spacing {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
