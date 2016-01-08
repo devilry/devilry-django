@@ -7,7 +7,7 @@ from django.http import HttpResponseRedirect, Http404
 from django.shortcuts import redirect
 from django.utils.translation import pgettext_lazy, ugettext_lazy
 from django_cradmin import crapp
-from django_cradmin.crispylayouts import PrimarySubmit
+from django_cradmin.crispylayouts import PrimarySubmit, CradminFormHelper
 from django_cradmin.viewhelpers import formbase
 
 from devilry.apps.core.models import Candidate, AssignmentGroup, RelatedStudent
@@ -119,12 +119,23 @@ class CreateGroupsViewMixin(object):
             .exclude(pk__in=self.__get_relatedstudents_in_group_on_assignment())
         return queryset
 
-    def post(self, request, *args, **kwargs):
+    def get_form_class(self):
+        return multiselect2_relatedstudent.SelectRelatedStudentsForm
+
+    def get_form_kwargs(self):
         available_relatedstudents_queryset = self.get_unfiltered_queryset_for_role(
-                role=self.request.cradmin_role)
-        form = multiselect2_relatedstudent.SelectRelatedStudentsForm(
-            data=self.request.POST,
-            relatedstudents_queryset=available_relatedstudents_queryset)
+            role=self.request.cradmin_role)
+        kwargs = {'relatedstudents_queryset': available_relatedstudents_queryset}
+        if self.request.method == 'POST':
+            kwargs['data'] = self.request.POST
+        return kwargs
+
+    def get_form(self):
+        form_class = self.get_form_class()
+        return form_class(**self.get_form_kwargs())
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -279,11 +290,33 @@ class ConfirmView(CreateGroupsViewMixin,
             }
         return self.SELECTED_STUDENTS_CHOICES_MAP[selected_students] % formatting_dict
 
+    def get_form_kwargs(self):
+        kwargs = super(ConfirmView, self).get_form_kwargs()
+        if self.request.method == 'GET':
+            relatedstudents_queryset = kwargs['relatedstudents_queryset']
+            kwargs['initial'] = {
+                'selected_items': relatedstudents_queryset.values_list('id', flat=True),
+            }
+        return kwargs
+
+    def __get_formhelper(self):
+        helper = CradminFormHelper()
+        helper.form_class = 'devilry-admin-create-groups-confirm-form'
+        helper.form_id = 'devilry_admin_create_groups_confirm_form'
+        helper.layout = layout.Layout(
+            'selected_items',
+            PrimarySubmit('add_students', pgettext_lazy('admin create_groups', 'Add students'))
+        )
+        helper.form_action = self.request.get_full_path()
+        return helper
+
     def get_context_data(self, **kwargs):
         context = super(ConfirmView, self).get_context_data(**kwargs)
         context['no_students_found'] = not self.get_unfiltered_queryset_for_role(
             role=self.request.cradmin_role).exists()
         context['selected_students_label'] = self.__get_selected_students_label()
+        context['formhelper'] = self.__get_formhelper()
+        context['form'] = self.get_form()
         return context
 
 

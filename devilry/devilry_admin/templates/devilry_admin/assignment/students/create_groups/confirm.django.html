@@ -1,14 +1,15 @@
 {% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-left.django.html" %}
 {% load cradmin_tags %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 
 {% block pageheader-inner %}
     {{ block.super }}
     <p class="devilry-admin-create-groups-confirm-subheader">
         <span class="text-muted">{% trans "You selected" %}:</span>
-        <strong id="devilry_admin_create_groups_confirm_selected_student_label">
+        <span id="devilry_admin_create_groups_confirm_selected_student_label">
             {{ selected_students_label }}
-        </strong>
+        </span>
     </p>
 {% endblock pageheader-inner %}
 
@@ -21,8 +22,15 @@
         </div>
     {% else %}
         {{ block.super }}
+        <div class="container text-right">
+            {% crispy form formhelper %}
+        </div>
     {% endif %}
 {% endblock content %}
+
+{#{% block list %}#}
+{#    {{ block.super }}#}
+{#{% endblock list %}#}
 
 {% block no-items-paragraph-contents %}
     <strong class="devilry-admin-create-groups-confirm-no-filtermatch">

@@ -37,8 +37,8 @@ class Target(multiselect2.target_renderer.Target):
 
 class SelectRelatedStudentsForm(forms.Form):
     selected_items = forms.ModelMultipleChoiceField(
-        queryset=RelatedStudent.objects.none()
-    )
+        widget=forms.MultipleHiddenInput,
+        queryset=RelatedStudent.objects.none())
 
     def __init__(self, *args, **kwargs):
         relatedstudents_queryset = kwargs.pop('relatedstudents_queryset')
