@@ -1,4 +1,4 @@
-{% extends "django_cradmin/viewhelpers/formview_base.django.html" %}
+{% extends "django_cradmin/base.django.html" %}
 {% load static %}
 {% load i18n %}
 {% load cradmin_tags %}
@@ -12,4 +12,18 @@
     <h1>
         {% trans "Add students" %}
     </h1>
+    <p>
+        {% trans "Please select how you would like to add students. You will get a preview of your choice on the next page before any students are added." %}
+    </p>
 {% endblock pageheader-inner %}
+
+{% block content %}
+
+{#    {% for assignment in  %}#}
+{#    #}
+{#    {% endfor %}#}
+    <div class="container">
+        {% cradmin_render_renderable listbuilder_list %}
+    </div>
+
+{% endblock content %}

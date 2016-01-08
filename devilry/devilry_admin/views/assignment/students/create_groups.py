@@ -3,21 +3,48 @@ import logging
 from crispy_forms import layout
 from django import forms
 from django.contrib import messages
-from django.http import HttpResponseRedirect, Http404
+from django.http import Http404
 from django.shortcuts import redirect
 from django.utils.translation import pgettext_lazy, ugettext_lazy
+from django.views.generic import TemplateView
 from django_cradmin import crapp
 from django_cradmin.crispylayouts import PrimarySubmit, CradminFormHelper
-from django_cradmin.viewhelpers import formbase
+from django_cradmin.viewhelpers import listbuilder
 
-from devilry.apps.core.models import Candidate, AssignmentGroup, RelatedStudent
+from devilry.apps.core.models import Candidate, AssignmentGroup
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
 
 logger = logging.getLogger(__name__)
 
 
-class ChooseMethod(formbase.FormView):
+class ChoosePeriodItemValue(listbuilder.itemvalue.TitleDescription):
+    valuealias = 'period'
+    template_name = 'devilry_admin/assignment/students/create_groups/choose-period-item-value.django.html'
+
+    def get_extra_css_classes_list(self):
+        return ['devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg']
+
+    def get_title(self):
+        return pgettext_lazy('admin create_groups',
+                             'Select students from %(subject)s %(period)s') % {
+            'subject': self.period.subject.long_name,
+            'period': self.period.long_name
+        }
+
+
+class ChooseAssignmentItemValue(listbuilder.itemvalue.TitleDescription):
+    valuealias = 'assignment'
+    template_name = 'devilry_admin/assignment/students/create_groups/choose-assignment-item-value.django.html'
+
+    def get_title(self):
+        return pgettext_lazy('admin create_groups',
+                             'Select students from %(assignment)s') % {
+            'assignment': self.assignment.long_name
+        }
+
+
+class ChooseMethod(TemplateView):
     template_name = 'devilry_admin/assignment/students/create_groups/choose-method.django.html'
 
     def dispatch(self, request, *args, **kwargs):
@@ -25,75 +52,23 @@ class ChooseMethod(formbase.FormView):
         self.period = self.assignment.parentnode
         return super(ChooseMethod, self).dispatch(request, *args, **kwargs)
 
-    def __make_copy_from_assignment_choice(self, assignment):
-        copy_passing_value = 'copy-passing-from-assignment-{}'.format(assignment.id)
-        copy_passing_label = pgettext_lazy('admin create_groups',
-                                           'Students with passing grade on %(assignment)s') % {
-            'assignment': assignment.long_name
-        }
-        copy_all_value = 'copy-all-from-assignment-{}'.format(assignment.id)
-        copy_all_label = pgettext_lazy('admin create_groups',
-                                       'All students registered on %(assignment)s') % {
-            'assignment': assignment.long_name
-        }
-        return (
-            pgettext_lazy('admin create_groups', 'Copy from %(assignment)s') % {
-                'assignment': assignment.long_name
-            },
-            (
-                (copy_passing_value, copy_passing_label),
-                (copy_all_value, copy_all_label),
-            )
-        )
-
-    def get_other_assignments_in_period_method_choices(self):
+    def __make_listbuilder_list(self):
+        listbuilder_list = listbuilder.lists.RowList()
+        listbuilder_list.append(listbuilder.itemframe.DefaultSpacingItemFrame(
+            ChoosePeriodItemValue(value=self.period)))
         assignments = self.period.assignments\
             .order_by('-publishing_time')\
             .exclude(pk=self.assignment.pk)
-        return [self.__make_copy_from_assignment_choice(assignment)
-                for assignment in assignments]
+        for assignment in assignments:
+            listbuilder_list.append(
+                listbuilder.itemframe.DefaultSpacingItemFrame(
+                    ChooseAssignmentItemValue(value=assignment)))
+        return listbuilder_list
 
-    def get_method_choices(self):
-        choices = [
-            ('all-from-period', pgettext_lazy(
-                    'admin create_groups',
-                    'All students registered on %(semester)s') % {'semester': self.period.get_path()}),
-            ('select-manually', pgettext_lazy(
-                    'admin create_groups',
-                    'Select manually'))
-        ]
-        choices.extend(self.get_other_assignments_in_period_method_choices())
-        return choices
-
-    def get_form_class(self):
-        method_choices = self.get_method_choices()
-
-        class SelectMethodForm(forms.Form):
-            method = forms.ChoiceField(
-                required=True,
-                label=pgettext_lazy('devilry_admin create_groups', 'How would you like to add students?'),
-                initial=method_choices[0][0],
-                choices=method_choices
-            )
-
-        return SelectMethodForm
-
-    def get_field_layout(self):
-        return [
-            layout.Div(
-                'method',
-                css_class='cradmin-globalfields')
-        ]
-
-    def get_buttons(self):
-        return [
-            PrimarySubmit('add-students',
-                          pgettext_lazy('admin create_groups', 'Add students')),
-        ]
-
-    def form_valid(self, form):
-        # ... do something with the form ...
-        return HttpResponseRedirect('/some/view')
+    def get_context_data(self, **kwargs):
+        context = super(ChooseMethod, self).get_context_data(**kwargs)
+        context['listbuilder_list'] = self.__make_listbuilder_list()
+        return context
 
 
 class CreateGroupsViewMixin(object):
@@ -153,7 +128,7 @@ class CreateGroupsViewMixin(object):
 
     def form_valid(self, form):
         self.create_groups_with_candidate_and_feedbackset(
-                relatedstudent_queryset=form.cleaned_data['selected_items'])
+            relatedstudent_queryset=form.cleaned_data['selected_items'])
         return redirect(self.get_success_url())
 
     def get_error_url(self):
@@ -263,12 +238,12 @@ class ConfirmView(CreateGroupsViewMixin,
                 .get_unfiltered_queryset_for_role(role=role)
             if selected_students == self.SELECTED_STUDENTS_ALL_ON_ASSIGNMENT:
                 queryset = self.__filter_selected_students_on_assignment(
-                        relatedstudents_queryset=relatedstudents_queryset,
-                        only_passing_grade=False)
+                    relatedstudents_queryset=relatedstudents_queryset,
+                    only_passing_grade=False)
             elif selected_students == self.SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT:
                 queryset = self.__filter_selected_students_on_assignment(
-                        relatedstudents_queryset=relatedstudents_queryset,
-                        only_passing_grade=True)
+                    relatedstudents_queryset=relatedstudents_queryset,
+                    only_passing_grade=True)
             elif selected_students == self.SELECTED_STUDENTS_RELATEDSTUDENTS:
                 queryset = relatedstudents_queryset
             else:
@@ -301,7 +276,7 @@ class ConfirmView(CreateGroupsViewMixin,
 
     def __get_formhelper(self):
         helper = CradminFormHelper()
-        helper.form_class = 'devilry-admin-create-groups-confirm-form'
+        helper.form_class = 'django-cradmin-form-wrapper devilry-django-cradmin-form-wrapper-top-bottom-spacing'
         helper.form_id = 'devilry_admin_create_groups_confirm_form'
         helper.layout = layout.Layout(
             'selected_items',
