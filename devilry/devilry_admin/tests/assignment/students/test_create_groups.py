@@ -127,8 +127,8 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
         )
 
 
-class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = create_groups.PreviewAndConfirmSelectedStudentsView
+class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = create_groups.ConfirmView
 
     def test_title(self):
         testassignment = mommy.make('core.Assignment',
@@ -137,7 +137,7 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
                                     parentnode__parentnode__short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'relatedstudents'})
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
         self.assertIn(
             'Confirm that you want to add the following students to '
             'testsubject.testperiod.testassignment',
@@ -147,33 +147,66 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         testassignment = mommy.make('core.Assignment', long_name='Assignment One')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'relatedstudents'})
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
         self.assertEqual(
             'Confirm that you want to add the following students to Assignment One',
             mockresponse.selector.one('h1').alltext_normalized)
 
-    # def test_get_subheader_selected_students_relateadstudents(self):
-    #     raise NotImplementedError()
-    #
-    # def test_get_subheader_selected_students_all_on_assignment(self):
-    #     raise NotImplementedError()
-    #
-    # def test_get_subheader_selected_students_passing_grade_on_assignment(self):
-    #     raise NotImplementedError()
-    #
-    # def test_get_render_submitbutton(self):
-    #     raise NotImplementedError()
+    def test_get_subheader_selected_students_relateadstudents(self):
+        testassignment = mommy.make('core.Assignment',
+                                    parentnode__parentnode__short_name='testsubject',
+                                    parentnode__short_name='testperiod')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
+        self.assertEqual(
+            'All students on testsubject.testperiod',
+            mockresponse.selector.one(
+                '#devilry_admin_create_groups_confirm_selected_student_label').alltext_normalized)
+
+    def test_get_subheader_selected_students_all_on_assignment(self):
+        testperiod = mommy.make('core.Period')
+        otherassignment = mommy.make('core.Assignment',
+                                     long_name='Assignment One',
+                                     parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestkwargs={'data': {'assignment': otherassignment.id}},
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_ALL_ON_ASSIGNMENT})
+        self.assertEqual(
+            'All students on Assignment One',
+            mockresponse.selector.one(
+                '#devilry_admin_create_groups_confirm_selected_student_label').alltext_normalized)
+
+    def test_get_subheader_selected_students_passing_grade_on_assignment(self):
+        testperiod = mommy.make('core.Period')
+        otherassignment = mommy.make('core.Assignment',
+                                     long_name='Assignment One',
+                                     parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestkwargs={'data': {'assignment': otherassignment.id}},
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT})
+        self.assertEqual(
+            'Students with passing grade on Assignment One',
+            mockresponse.selector.one(
+                '#devilry_admin_create_groups_confirm_selected_student_label').alltext_normalized)
+
+    def test_get_render_submitbutton(self):
+        raise NotImplementedError()
 
     def test_get_no_relatedstudents_matching_query(self):
         testperiod = mommy.make('core.Period')
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'relatedstudents'})
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
         self.assertEqual(
             'No students matching your selection found.',
             mockresponse.selector.one(
-                '.devilry-admin-create-groups-preview-and-confirm-no-students').alltext_normalized)
+                '.devilry-admin-create-groups-confirm-no-students').alltext_normalized)
 
     def test_get_selected_students_relateadstudents(self):
         testperiod = mommy.make('core.Period')
@@ -186,7 +219,7 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'relatedstudents'})
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
         self.assertEqual(
             2,
             mockresponse.selector.count('.devilry-admin-listbuilder-relatedstudent-readonlyitemvalue'))
@@ -199,7 +232,7 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         with self.assertRaisesMessage(Http404, 'Invalid assignment_id'):
             self.mock_getrequest(
                 cradmin_role=testassignment,
-                viewkwargs={'selected_students': 'all_on_assignment'},
+                viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_ALL_ON_ASSIGNMENT},
                 requestkwargs={
                     'data': {'assignment': otherassignment.id}
                 })
@@ -224,7 +257,7 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'all_on_assignment'},
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_ALL_ON_ASSIGNMENT},
             requestkwargs={
                 'data': {'assignment': otherassignment.id}
             })
@@ -242,7 +275,8 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         with self.assertRaisesMessage(Http404, 'Invalid assignment_id'):
             self.mock_getrequest(
                 cradmin_role=testassignment,
-                viewkwargs={'selected_students': 'passing_grade_on_assignment'},
+                viewkwargs={
+                    'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT},
                 requestkwargs={
                     'data': {'assignment': otherassignment.id}
                 })
@@ -285,7 +319,7 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'passing_grade_on_assignment'},
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT},
             requestkwargs={
                 'data': {'assignment': otherassignment.id}
             })
