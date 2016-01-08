@@ -40,95 +40,111 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             2,
-            mockresponse.selector.count('select#id_method option'))
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue a'))
 
-    def test_choice_all_value(self):
+    def __mock_reverse_appurl(self, tested_viewname):
+        def reverse_appurl(viewname, args, kwargs):
+            return '/{}/args={},kwargs={}'.format(viewname, args, kwargs)
+        return reverse_appurl
+
+    def test_choice_relatedstudents_url(self):
         testassignment = mommy.make('core.Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        mockapp = mock.MagicMock()
+        mockapp.reverse_appurl = self.__mock_reverse_appurl(tested_viewname='')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_app=mockapp
+        )
         self.assertEqual(
-            'all-from-period',
-            mockresponse.selector.one('select#id_method option:first-child')['value'])
+            "/confirm/args=(),kwargs={'selected_students': u'relatedstudents'}",
+            mockresponse.selector.one(
+                '#devilry_admin_create_groups_choosemethod_relatedstudents_link')['href'])
 
-    def test_choice_all_label(self):
+    def test_choice_relatedstudents_label(self):
         testassignment = mommy.make('core.Assignment',
-                                    parentnode__parentnode__short_name='testsubject',
-                                    parentnode__short_name='testperiod')
+                                    parentnode__parentnode__short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            'All students registered on testsubject.testperiod',
-            mockresponse.selector.one('select#id_method option:first-child').alltext_normalized)
+            'All students on testsubject',
+            mockresponse.selector.one(
+                '#devilry_admin_create_groups_choosemethod_relatedstudents_link').alltext_normalized)
 
-    def test_choice_select_manually_value(self):
+    def test_choice_manual_select_value(self):
         testassignment = mommy.make('core.Assignment')
-        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
+        mockapp = mock.MagicMock()
+        mockapp.reverse_appurl = self.__mock_reverse_appurl(tested_viewname='')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            cradmin_app=mockapp
+        )
         self.assertEqual(
-            'select-manually',
-            mockresponse.selector.one('select#id_method option:last-child')['value'])
+            "/manual-select/args=(),kwargs={}",
+            mockresponse.selector.one(
+                '#devilry_admin_create_groups_choosemethod_manualselect_link')['href'])
 
-    def test_choice_select_manually_label(self):
+    def test_choice_manual_select_label(self):
         testassignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'Select manually',
-            mockresponse.selector.one('select#id_method option:last-child').alltext_normalized)
+            mockresponse.selector.one(
+                '#devilry_admin_create_groups_choosemethod_manualselect_link').alltext_normalized)
 
     def test_choices_does_not_include_current_assignment(self):
         testperiod = mommy.make('core.Period')
-        mommy.make('core.Assignment', parentnode=testperiod)
+        otherassignment = mommy.make('core.Assignment', parentnode=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             4,
-            mockresponse.selector.count('select#id_method option'))
+            mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue a'))
         self.assertFalse(
-            mockresponse.selector.exists('select#id_method option[value="copy-passing-from-assignment-{}"]'.format(
-                    testassignment.pk)))
-        self.assertFalse(
-            mockresponse.selector.exists('select#id_method option[value="copy-all-from-assignment-{}"]'.format(
-                    testassignment.pk)))
+            mockresponse.selector.exists('#devilry_admin_create_groups_choosemethod_assignment_{}'.format(
+                testassignment.pk)))
+        self.assertTrue(
+            mockresponse.selector.exists('#devilry_admin_create_groups_choosemethod_assignment_{}'.format(
+                otherassignment.pk)))
 
     def test_other_assignment_rending(self):
         testperiod = mommy.make('core.Period')
         otherassignment = mommy.make('core.Assignment', parentnode=testperiod,
-                                     long_name='Other Assignment')
+                                     short_name='otherassignment')
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            'Students with passing grade on Other Assignment',
-            mockresponse.selector.one('select#id_method option[value="copy-passing-from-assignment-{}"]'.format(
-                    otherassignment.pk)).alltext_normalized)
+            'All students on otherassignment',
+            mockresponse.selector.one('#devilry_admin_create_groups_choosemethod_assignment_{}_all_link'.format(
+                otherassignment.pk)).alltext_normalized)
         self.assertEqual(
-            'All students registered on Other Assignment',
-            mockresponse.selector.one('select#id_method option[value="copy-all-from-assignment-{}"]'.format(
-                    otherassignment.pk)).alltext_normalized)
+            'Students with passing grade on otherassignment',
+            mockresponse.selector.one('#devilry_admin_create_groups_choosemethod_assignment_{}_passing_link'.format(
+                otherassignment.pk)).alltext_normalized)
 
     def test_other_assignments_ordering(self):
         testperiod = mommy.make_recipe('devilry.apps.core.period_active')
-        mommy.make('core.Assignment', parentnode=testperiod,
-                   long_name='Assignment 1',
-                   publishing_time=ACTIVE_PERIOD_START + datetime.timedelta(days=1))
-        mommy.make('core.Assignment', parentnode=testperiod,
-                   long_name='Assignment 2',
-                   publishing_time=ACTIVE_PERIOD_START + datetime.timedelta(days=2))
-        mommy.make('core.Assignment', parentnode=testperiod,
-                   long_name='Assignment 3',
-                   publishing_time=ACTIVE_PERIOD_START + datetime.timedelta(days=3))
+        assignment1 = mommy.make('core.Assignment', parentnode=testperiod,
+                                 publishing_time=ACTIVE_PERIOD_START + datetime.timedelta(days=1))
+        assignment2 = mommy.make('core.Assignment', parentnode=testperiod,
+                                 publishing_time=ACTIVE_PERIOD_START + datetime.timedelta(days=2))
+        assignment3 = mommy.make('core.Assignment', parentnode=testperiod,
+                                 publishing_time=ACTIVE_PERIOD_START + datetime.timedelta(days=3))
         assignment4 = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment4)
-        optgroup_labels = [optgroup['label']
-                           for optgroup in mockresponse.selector.list('select#id_method optgroup')]
+        assignmentboxes_dom_ids = [
+            element['id']
+            for element in mockresponse.selector.list('.devilry-admin-create-groups-choosemethod-assignment')]
         self.assertEqual(
             [
-                'Copy from Assignment 3',
-                'Copy from Assignment 2',
-                'Copy from Assignment 1',
+                'devilry_admin_create_groups_choosemethod_assignment_{}'.format(assignment3.id),
+                'devilry_admin_create_groups_choosemethod_assignment_{}'.format(assignment2.id),
+                'devilry_admin_create_groups_choosemethod_assignment_{}'.format(assignment1.id),
             ],
-            optgroup_labels
+            assignmentboxes_dom_ids
         )
 
 
-class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
-    viewclass = create_groups.PreviewAndConfirmSelectedStudentsView
+class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
+    viewclass = create_groups.ConfirmView
 
     def test_title(self):
         testassignment = mommy.make('core.Assignment',
@@ -137,7 +153,7 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
                                     parentnode__parentnode__short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'relatedstudents'})
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
         self.assertIn(
             'Confirm that you want to add the following students to '
             'testsubject.testperiod.testassignment',
@@ -147,33 +163,153 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         testassignment = mommy.make('core.Assignment', long_name='Assignment One')
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'relatedstudents'})
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
         self.assertEqual(
             'Confirm that you want to add the following students to Assignment One',
             mockresponse.selector.one('h1').alltext_normalized)
 
-    # def test_get_subheader_selected_students_relateadstudents(self):
-    #     raise NotImplementedError()
-    #
-    # def test_get_subheader_selected_students_all_on_assignment(self):
-    #     raise NotImplementedError()
-    #
-    # def test_get_subheader_selected_students_passing_grade_on_assignment(self):
-    #     raise NotImplementedError()
-    #
-    # def test_get_render_submitbutton(self):
-    #     raise NotImplementedError()
+    def test_get_subheader_selected_students_relateadstudents(self):
+        testassignment = mommy.make('core.Assignment',
+                                    parentnode__parentnode__short_name='testsubject',
+                                    parentnode__short_name='testperiod')
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
+        self.assertEqual(
+            'All students on testsubject.testperiod',
+            mockresponse.selector.one(
+                '#devilry_admin_create_groups_confirm_selected_student_label').alltext_normalized)
+
+    def test_get_subheader_selected_students_all_on_assignment(self):
+        testperiod = mommy.make('core.Period')
+        otherassignment = mommy.make('core.Assignment',
+                                     long_name='Assignment One',
+                                     parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestkwargs={'data': {'assignment': otherassignment.id}},
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_ALL_ON_ASSIGNMENT})
+        self.assertEqual(
+            'All students on Assignment One',
+            mockresponse.selector.one(
+                '#devilry_admin_create_groups_confirm_selected_student_label').alltext_normalized)
+
+    def test_get_subheader_selected_students_passing_grade_on_assignment(self):
+        testperiod = mommy.make('core.Period')
+        otherassignment = mommy.make('core.Assignment',
+                                     long_name='Assignment One',
+                                     parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestkwargs={'data': {'assignment': otherassignment.id}},
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT})
+        self.assertEqual(
+            'Students with passing grade on Assignment One',
+            mockresponse.selector.one(
+                '#devilry_admin_create_groups_confirm_selected_student_label').alltext_normalized)
+
+    def test_get_render_submitbutton(self):
+        testperiod = mommy.make('core.Period')
+        mommy.make('core.RelatedStudent', period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
+        self.assertEqual(
+            'Add students',
+            mockresponse.selector.one(
+                '#devilry_admin_create_groups_confirm_form button[name="add_students"]').alltext_normalized
+        )
+
+    def test_get_render_form_selected_items_selected_students_relatedstudents(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
+        relatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
+        selected_relatedstudent_ids = [
+            element['value']
+            for element in mockresponse.selector.list(
+                '#devilry_admin_create_groups_confirm_form input[name=selected_items]')]
+        self.assertEqual(
+            {str(relatedstudent1.id), str(relatedstudent2.id)},
+            set(selected_relatedstudent_ids))
+
+    def test_get_render_form_selected_items_selected_students_all_on_assignment(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
+        relatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
+        mommy.make('core.RelatedStudent', period=testperiod)
+        otherassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mommy.make('core.Candidate',
+                   relatedstudent=relatedstudent1,
+                   assignment_group__parentnode=otherassignment)
+        mommy.make('core.Candidate',
+                   relatedstudent=relatedstudent2,
+                   assignment_group__parentnode=otherassignment)
+
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestkwargs={
+                'data': {'assignment': otherassignment.id}
+            },
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_ALL_ON_ASSIGNMENT})
+        selected_relatedstudent_ids = [
+            element['value']
+            for element in mockresponse.selector.list(
+                '#devilry_admin_create_groups_confirm_form input[name=selected_items]')]
+        self.assertEqual(
+            {str(relatedstudent1.id), str(relatedstudent2.id)},
+            set(selected_relatedstudent_ids))
+
+    def test_get_render_form_selected_items_selected_students_passing_grade_on_assignment(self):
+        testperiod = mommy.make('core.Period')
+        relatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
+        relatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
+        mommy.make('core.RelatedStudent', period=testperiod)
+        otherassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                     passing_grade_min_points=1)
+        candidate1 = mommy.make('core.Candidate',
+                                relatedstudent=relatedstudent1,
+                                assignment_group__parentnode=otherassignment)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=candidate1.assignment_group,
+                   grading_published_datetime=timezone.now(),
+                   grading_points=1)
+        mommy.make('core.Candidate',
+                   relatedstudent=relatedstudent2,
+                   assignment_group__parentnode=otherassignment)
+
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestkwargs={
+                'data': {'assignment': otherassignment.id}
+            },
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT})
+        selected_relatedstudent_ids = [
+            element['value']
+            for element in mockresponse.selector.list(
+                '#devilry_admin_create_groups_confirm_form input[name=selected_items]')]
+        self.assertEqual(
+            {str(relatedstudent1.id)},
+            set(selected_relatedstudent_ids))
 
     def test_get_no_relatedstudents_matching_query(self):
         testperiod = mommy.make('core.Period')
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'relatedstudents'})
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
         self.assertEqual(
             'No students matching your selection found.',
             mockresponse.selector.one(
-                '.devilry-admin-create-groups-preview-and-confirm-no-students').alltext_normalized)
+                '.devilry-admin-create-groups-confirm-no-students').alltext_normalized)
 
     def test_get_selected_students_relateadstudents(self):
         testperiod = mommy.make('core.Period')
@@ -186,7 +322,7 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'relatedstudents'})
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
         self.assertEqual(
             2,
             mockresponse.selector.count('.devilry-admin-listbuilder-relatedstudent-readonlyitemvalue'))
@@ -199,7 +335,7 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         with self.assertRaisesMessage(Http404, 'Invalid assignment_id'):
             self.mock_getrequest(
                 cradmin_role=testassignment,
-                viewkwargs={'selected_students': 'all_on_assignment'},
+                viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_ALL_ON_ASSIGNMENT},
                 requestkwargs={
                     'data': {'assignment': otherassignment.id}
                 })
@@ -224,7 +360,7 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'all_on_assignment'},
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_ALL_ON_ASSIGNMENT},
             requestkwargs={
                 'data': {'assignment': otherassignment.id}
             })
@@ -242,7 +378,8 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         with self.assertRaisesMessage(Http404, 'Invalid assignment_id'):
             self.mock_getrequest(
                 cradmin_role=testassignment,
-                viewkwargs={'selected_students': 'passing_grade_on_assignment'},
+                viewkwargs={
+                    'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT},
                 requestkwargs={
                     'data': {'assignment': otherassignment.id}
                 })
@@ -285,7 +422,7 @@ class TestPreviewAndConfirmSelectedStudentsView(TestCase, cradmin_testhelpers.Te
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
-            viewkwargs={'selected_students': 'passing_grade_on_assignment'},
+            viewkwargs={'selected_students': create_groups.ConfirmView.SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT},
             requestkwargs={
                 'data': {'assignment': otherassignment.id}
             })
@@ -448,7 +585,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             'No students found.',
             mockresponse.selector.one(
-                    '.devilry-admin-create-groups-manual-select-no-relatedstudents-message').alltext_normalized)
+                '.devilry-admin-create-groups-manual-select-no-relatedstudents-message').alltext_normalized)
 
     def test_relatedstudent_not_in_assignment_period_excluded(self):
         testperiod = mommy.make('core.Period')

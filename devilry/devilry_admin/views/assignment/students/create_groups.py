@@ -3,21 +3,48 @@ import logging
 from crispy_forms import layout
 from django import forms
 from django.contrib import messages
-from django.http import HttpResponseRedirect, Http404
+from django.http import Http404
 from django.shortcuts import redirect
-from django.utils.translation import pgettext_lazy
+from django.utils.translation import pgettext_lazy, ugettext_lazy
+from django.views.generic import TemplateView
 from django_cradmin import crapp
-from django_cradmin.crispylayouts import PrimarySubmit
-from django_cradmin.viewhelpers import formbase
+from django_cradmin.crispylayouts import PrimarySubmit, CradminFormHelper
+from django_cradmin.viewhelpers import listbuilder
 
-from devilry.apps.core.models import Candidate, AssignmentGroup, RelatedStudent
+from devilry.apps.core.models import Candidate, AssignmentGroup
 from devilry.devilry_admin.cradminextensions.listbuilder import listbuilder_relatedstudent
 from devilry.devilry_admin.cradminextensions.multiselect2 import multiselect2_relatedstudent
 
 logger = logging.getLogger(__name__)
 
 
-class ChooseMethod(formbase.FormView):
+class ChoosePeriodItemValue(listbuilder.itemvalue.TitleDescription):
+    valuealias = 'period'
+    template_name = 'devilry_admin/assignment/students/create_groups/choose-period-item-value.django.html'
+
+    def get_extra_css_classes_list(self):
+        return ['devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg']
+
+    def get_title(self):
+        return pgettext_lazy('admin create_groups',
+                             'Select students from %(subject)s %(period)s') % {
+            'subject': self.period.subject.long_name,
+            'period': self.period.long_name
+        }
+
+
+class ChooseAssignmentItemValue(listbuilder.itemvalue.TitleDescription):
+    valuealias = 'assignment'
+    template_name = 'devilry_admin/assignment/students/create_groups/choose-assignment-item-value.django.html'
+
+    def get_title(self):
+        return pgettext_lazy('admin create_groups',
+                             'Select students from %(assignment)s') % {
+            'assignment': self.assignment.long_name
+        }
+
+
+class ChooseMethod(TemplateView):
     template_name = 'devilry_admin/assignment/students/create_groups/choose-method.django.html'
 
     def dispatch(self, request, *args, **kwargs):
@@ -25,75 +52,23 @@ class ChooseMethod(formbase.FormView):
         self.period = self.assignment.parentnode
         return super(ChooseMethod, self).dispatch(request, *args, **kwargs)
 
-    def __make_copy_from_assignment_choice(self, assignment):
-        copy_passing_value = 'copy-passing-from-assignment-{}'.format(assignment.id)
-        copy_passing_label = pgettext_lazy('admin create_groups',
-                                           'Students with passing grade on %(assignment)s') % {
-            'assignment': assignment.long_name
-        }
-        copy_all_value = 'copy-all-from-assignment-{}'.format(assignment.id)
-        copy_all_label = pgettext_lazy('admin create_groups',
-                                       'All students registered on %(assignment)s') % {
-            'assignment': assignment.long_name
-        }
-        return (
-            pgettext_lazy('admin create_groups', 'Copy from %(assignment)s') % {
-                'assignment': assignment.long_name
-            },
-            (
-                (copy_passing_value, copy_passing_label),
-                (copy_all_value, copy_all_label),
-            )
-        )
-
-    def get_other_assignments_in_period_method_choices(self):
+    def __make_listbuilder_list(self):
+        listbuilder_list = listbuilder.lists.RowList()
+        listbuilder_list.append(listbuilder.itemframe.DefaultSpacingItemFrame(
+            ChoosePeriodItemValue(value=self.period)))
         assignments = self.period.assignments\
             .order_by('-publishing_time')\
             .exclude(pk=self.assignment.pk)
-        return [self.__make_copy_from_assignment_choice(assignment)
-                for assignment in assignments]
+        for assignment in assignments:
+            listbuilder_list.append(
+                listbuilder.itemframe.DefaultSpacingItemFrame(
+                    ChooseAssignmentItemValue(value=assignment)))
+        return listbuilder_list
 
-    def get_method_choices(self):
-        choices = [
-            ('all-from-period', pgettext_lazy(
-                    'admin create_groups',
-                    'All students registered on %(semester)s') % {'semester': self.period.get_path()}),
-            ('select-manually', pgettext_lazy(
-                    'admin create_groups',
-                    'Select manually'))
-        ]
-        choices.extend(self.get_other_assignments_in_period_method_choices())
-        return choices
-
-    def get_form_class(self):
-        method_choices = self.get_method_choices()
-
-        class SelectMethodForm(forms.Form):
-            method = forms.ChoiceField(
-                required=True,
-                label=pgettext_lazy('devilry_admin create_groups', 'How would you like to add students?'),
-                initial=method_choices[0][0],
-                choices=method_choices
-            )
-
-        return SelectMethodForm
-
-    def get_field_layout(self):
-        return [
-            layout.Div(
-                'method',
-                css_class='cradmin-globalfields')
-        ]
-
-    def get_buttons(self):
-        return [
-            PrimarySubmit('add-students',
-                          pgettext_lazy('admin create_groups', 'Add students')),
-        ]
-
-    def form_valid(self, form):
-        # ... do something with the form ...
-        return HttpResponseRedirect('/some/view')
+    def get_context_data(self, **kwargs):
+        context = super(ChooseMethod, self).get_context_data(**kwargs)
+        context['listbuilder_list'] = self.__make_listbuilder_list()
+        return context
 
 
 class CreateGroupsViewMixin(object):
@@ -119,12 +94,23 @@ class CreateGroupsViewMixin(object):
             .exclude(pk__in=self.__get_relatedstudents_in_group_on_assignment())
         return queryset
 
-    def post(self, request, *args, **kwargs):
+    def get_form_class(self):
+        return multiselect2_relatedstudent.SelectRelatedStudentsForm
+
+    def get_form_kwargs(self):
         available_relatedstudents_queryset = self.get_unfiltered_queryset_for_role(
-                role=self.request.cradmin_role)
-        form = multiselect2_relatedstudent.SelectRelatedStudentsForm(
-            data=self.request.POST,
-            relatedstudents_queryset=available_relatedstudents_queryset)
+            role=self.request.cradmin_role)
+        kwargs = {'relatedstudents_queryset': available_relatedstudents_queryset}
+        if self.request.method == 'POST':
+            kwargs['data'] = self.request.POST
+        return kwargs
+
+    def get_form(self):
+        form_class = self.get_form_class()
+        return form_class(**self.get_form_kwargs())
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
         if form.is_valid():
             return self.form_valid(form)
         else:
@@ -142,7 +128,7 @@ class CreateGroupsViewMixin(object):
 
     def form_valid(self, form):
         self.create_groups_with_candidate_and_feedbackset(
-                relatedstudent_queryset=form.cleaned_data['selected_items'])
+            relatedstudent_queryset=form.cleaned_data['selected_items'])
         return redirect(self.get_success_url())
 
     def get_error_url(self):
@@ -163,12 +149,25 @@ class CreateGroupsViewMixin(object):
         return redirect(self.get_error_url())
 
 
-class PreviewAndConfirmSelectedStudentsView(CreateGroupsViewMixin,
-                                            listbuilder_relatedstudent.VerticalFilterListView):
+class ConfirmView(CreateGroupsViewMixin,
+                  listbuilder_relatedstudent.VerticalFilterListView):
     value_renderer_class = listbuilder_relatedstudent.ReadOnlyItemValue
 
+    SELECTED_STUDENTS_ALL_ON_ASSIGNMENT = 'all_on_assignment'
+    SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT = 'passing_grade_on_assignment'
+    SELECTED_STUDENTS_RELATEDSTUDENTS = 'relatedstudents'
+    SELECTED_STUDENTS_CHOICES_MAP = {
+        SELECTED_STUDENTS_ALL_ON_ASSIGNMENT: ugettext_lazy('All students on %(assignment)s'),
+        SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT: ugettext_lazy('Students with passing grade on %(assignment)s'),
+        SELECTED_STUDENTS_RELATEDSTUDENTS: ugettext_lazy('All students on %(period)s'),
+    }
+
+    def dispatch(self, request, *args, **kwargs):
+        self.from_assignment = None
+        return super(ConfirmView, self).dispatch(request, *args, **kwargs)
+
     def get_filterlist_template_name(self):
-        return 'devilry_admin/assignment/students/create_groups/preview-and-confirm.django.html'
+        return 'devilry_admin/assignment/students/create_groups/confirm.django.html'
 
     def get_pagetitle(self):
         return pgettext_lazy('admin create_groups',
@@ -184,7 +183,7 @@ class PreviewAndConfirmSelectedStudentsView(CreateGroupsViewMixin,
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
-            'preview-and-confirm',
+            'confirm',
             kwargs={'selected_students': self.kwargs['selected_students'],
                     'filters_string': filters_string})
 
@@ -221,9 +220,9 @@ class PreviewAndConfirmSelectedStudentsView(CreateGroupsViewMixin,
                                                  only_passing_grade):
         form = self.__get_assignment_id_form()
         if form.is_valid():
-            assignment = form.cleaned_data['assignment']
+            self.from_assignment = form.cleaned_data['assignment']
             return self.__filter_students_on_assignment(
-                assignment=assignment,
+                assignment=self.from_assignment,
                 relatedstudents_queryset=relatedstudents_queryset,
                 only_passing_grade=only_passing_grade)
         else:
@@ -231,21 +230,21 @@ class PreviewAndConfirmSelectedStudentsView(CreateGroupsViewMixin,
 
     def get_unfiltered_queryset_for_role(self, role):
         if self.request.method == 'POST':
-            return super(PreviewAndConfirmSelectedStudentsView, self)\
+            return super(ConfirmView, self)\
                 .get_unfiltered_queryset_for_role(role=role)
         else:
             selected_students = self.kwargs['selected_students']
-            relatedstudents_queryset = super(PreviewAndConfirmSelectedStudentsView, self)\
+            relatedstudents_queryset = super(ConfirmView, self)\
                 .get_unfiltered_queryset_for_role(role=role)
-            if selected_students == 'all_on_assignment':
+            if selected_students == self.SELECTED_STUDENTS_ALL_ON_ASSIGNMENT:
                 queryset = self.__filter_selected_students_on_assignment(
-                        relatedstudents_queryset=relatedstudents_queryset,
-                        only_passing_grade=False)
-            elif selected_students == 'passing_grade_on_assignment':
+                    relatedstudents_queryset=relatedstudents_queryset,
+                    only_passing_grade=False)
+            elif selected_students == self.SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT:
                 queryset = self.__filter_selected_students_on_assignment(
-                        relatedstudents_queryset=relatedstudents_queryset,
-                        only_passing_grade=True)
-            elif selected_students == 'relatedstudents':
+                    relatedstudents_queryset=relatedstudents_queryset,
+                    only_passing_grade=True)
+            elif selected_students == self.SELECTED_STUDENTS_RELATEDSTUDENTS:
                 queryset = relatedstudents_queryset
             else:
                 raise Http404('Invalid selected_students.')
@@ -254,10 +253,45 @@ class PreviewAndConfirmSelectedStudentsView(CreateGroupsViewMixin,
     def get_error_url(self):
         return self.request.cradmin_app.reverse_appindexurl()
 
+    def __get_selected_students_label(self):
+        selected_students = self.kwargs['selected_students']
+        if self.from_assignment:
+            formatting_dict = {
+                'assignment': self.from_assignment.long_name,
+            }
+        else:
+            formatting_dict = {
+                'period': self.period.get_path(),
+            }
+        return self.SELECTED_STUDENTS_CHOICES_MAP[selected_students] % formatting_dict
+
+    def get_form_kwargs(self):
+        kwargs = super(ConfirmView, self).get_form_kwargs()
+        if self.request.method == 'GET':
+            relatedstudents_queryset = kwargs['relatedstudents_queryset']
+            kwargs['initial'] = {
+                'selected_items': relatedstudents_queryset.values_list('id', flat=True),
+            }
+        return kwargs
+
+    def __get_formhelper(self):
+        helper = CradminFormHelper()
+        helper.form_class = 'django-cradmin-form-wrapper devilry-django-cradmin-form-wrapper-top-bottom-spacing'
+        helper.form_id = 'devilry_admin_create_groups_confirm_form'
+        helper.layout = layout.Layout(
+            'selected_items',
+            PrimarySubmit('add_students', pgettext_lazy('admin create_groups', 'Add students'))
+        )
+        helper.form_action = self.request.get_full_path()
+        return helper
+
     def get_context_data(self, **kwargs):
-        context = super(PreviewAndConfirmSelectedStudentsView, self).get_context_data(**kwargs)
+        context = super(ConfirmView, self).get_context_data(**kwargs)
         context['no_students_found'] = not self.get_unfiltered_queryset_for_role(
             role=self.request.cradmin_role).exists()
+        context['selected_students_label'] = self.__get_selected_students_label()
+        context['formhelper'] = self.__get_formhelper()
+        context['form'] = self.get_form()
         return context
 
 
@@ -308,9 +342,9 @@ class ManualSelectStudentsView(CreateGroupsViewMixin,
 class App(crapp.App):
     appurls = [
         crapp.Url(r'^$', ChooseMethod.as_view(), name=crapp.INDEXVIEW_NAME),
-        crapp.Url(r'^preview-and-confirm/(?P<selected_students>\w+)/(?P<filters_string>.+)?$',
-                  PreviewAndConfirmSelectedStudentsView.as_view(),
-                  name='preview-and-confirm'),
+        crapp.Url(r'^confirm/(?P<selected_students>\w+)/(?P<filters_string>.+)?$',
+                  ConfirmView.as_view(),
+                  name='confirm'),
         crapp.Url(
             r'^manual-select/(?P<filters_string>.+)?$',
             ManualSelectStudentsView.as_view(),

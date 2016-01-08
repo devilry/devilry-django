@@ -1,25 +1,39 @@
 {% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-left.django.html" %}
 {% load cradmin_tags %}
+{% load crispy_forms_tags %}
 {% load i18n %}
 
 {% block pageheader-inner %}
     {{ block.super }}
+    <p class="devilry-admin-create-groups-confirm-subheader">
+        <span class="text-muted">{% trans "You selected" %}:</span>
+        <span id="devilry_admin_create_groups_confirm_selected_student_label">
+            {{ selected_students_label }}
+        </span>
+    </p>
 {% endblock pageheader-inner %}
 
 
 {% block content %}
     {% if no_students_found %}
         <div class="container django-cradmin-container-focus django-cradmin-container-focus-warning
-                    devilry-admin-create-groups-preview-and-confirm-no-students">
+                    devilry-admin-create-groups-confirm-no-students">
             {% trans "No students matching your selection found." %}
         </div>
     {% else %}
         {{ block.super }}
+        <div class="container text-right">
+            {% crispy form formhelper %}
+        </div>
     {% endif %}
 {% endblock content %}
 
+{#{% block list %}#}
+{#    {{ block.super }}#}
+{#{% endblock list %}#}
+
 {% block no-items-paragraph-contents %}
-    <strong class="devilry-admin-create-groups-preview-and-confirm-no-filtermatch">
+    <strong class="devilry-admin-create-groups-confirm-no-filtermatch">
         {% trans "No students found." context "admin create_groups" %}
     </strong>
 {% endblock no-items-paragraph-contents %}
