@@ -5,25 +5,20 @@
 
 
 {% block title %}
-    {% blocktrans trimmed with assignment=request.cradmin_role %}Add students to {{ assignment }}{% endblocktrans %}
+    {{ pagetitle }}
 {% endblock title %}
 
 {% block pageheader-inner %}
     <h1>
-        {% trans "Add students" %}
+        {{ pageheading }}
     </h1>
     <p>
-        {% trans "Please select how you would like to add students. You will get a preview of your choice on the next page before any students are added." %}
+        {{ page_subheading }}
     </p>
 {% endblock pageheader-inner %}
 
 {% block content %}
-
-{#    {% for assignment in  %}#}
-{#    #}
-{#    {% endfor %}#}
     <div class="container">
         {% cradmin_render_renderable listbuilder_list %}
     </div>
-
 {% endblock content %}

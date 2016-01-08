@@ -47,6 +47,20 @@ class ChooseAssignmentItemValue(listbuilder.itemvalue.TitleDescription):
 class ChooseMethod(TemplateView):
     template_name = 'devilry_admin/assignment/students/create_groups/choose-method.django.html'
 
+    def get_pagetitle(self):
+        assignment = self.request.cradmin_role
+        return pgettext_lazy('admin create_group', 'Add students to %(assignment)s') % {
+            'assignment': assignment.get_path()
+        }
+
+    def get_pageheading(self):
+        return pgettext_lazy('admin create_group', 'Add students')
+
+    def get_page_subheading(self):
+        return pgettext_lazy('admin create_group',
+                             'Please select how you would like to add students. You will get a '
+                             'preview of your choice on the next page before any students are added.')
+
     def dispatch(self, request, *args, **kwargs):
         self.assignment = self.request.cradmin_role
         self.period = self.assignment.parentnode
@@ -68,6 +82,9 @@ class ChooseMethod(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(ChooseMethod, self).get_context_data(**kwargs)
         context['listbuilder_list'] = self.__make_listbuilder_list()
+        context['pagetitle'] = self.get_pagetitle()
+        context['pageheading'] = self.get_pageheading()
+        context['page_subheading'] = self.get_page_subheading()
         return context
 
 
@@ -307,6 +324,7 @@ class ManualSelectStudentsView(CreateGroupsViewMixin,
     View used to manually select students when creating groups.
     """
     value_renderer_class = multiselect2_relatedstudent.ItemValue
+    multiselect_target_class = RelatedStudentMultiselectTarget
 
     def get_pagetitle(self):
         return pgettext_lazy('admin create_groups',
@@ -328,7 +346,7 @@ class ManualSelectStudentsView(CreateGroupsViewMixin,
             'manual-select', kwargs={'filters_string': filters_string})
 
     def __get_multiselect_target(self):
-        return RelatedStudentMultiselectTarget()
+        return self.multiselect_target_class()
 
     def get_context_data(self, **kwargs):
         context = super(ManualSelectStudentsView, self).get_context_data(**kwargs)
