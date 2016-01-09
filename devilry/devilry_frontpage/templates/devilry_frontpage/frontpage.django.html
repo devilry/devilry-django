@@ -28,7 +28,7 @@
             {% endif %}
             {% if user_is_examiner %}
                 <li id="devilry_frontpage_roleselect_examiner">
-                    <a href="{% url 'devilry_examiner_dashboard' %}">
+                    <a href="{% cradmin_url instanceid='devilry_examiner' appname='assignmentlist' roleid=request.user.id viewname='INDEX' %}">
                         <strong>{% trans "Examiner" %}</strong>
                         {% trans "Examiners give students feedback on their deliveries." %}
                     </a>
