@@ -4,7 +4,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from devilry.apps.core.models import Assignment
 from devilry.devilry_admin.views.assignment import overview
-from devilry.devilry_admin.views.assignment import admins
 from devilry.devilry_admin.views.assignment.students import overview as studentoverview
 from devilry.devilry_admin.views.assignment.students import create_groups
 from devilry.devilry_admin.views.assignment.students import replace_groups
@@ -17,10 +16,6 @@ class Menu(crmenu.Menu):
             label=assignment.short_name,
             active=self.request.cradmin_app.appname == 'overview',
             url=self.appindex_url('overview'))
-        self.add_menuitem(
-            label=_('Administrators'),
-            active=self.request.cradmin_app.appname == 'admins',
-            url=self.appindex_url('admins'))
 
 
 class CrAdminInstance(crinstance.BaseCrAdminInstance):
@@ -28,7 +23,6 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     roleclass = Assignment
     apps = [
         ('overview', overview.App),
-        ('admins', admins.App),
         ('studentoverview', studentoverview.App),
         ('create_groups', create_groups.App),
         ('replace_groups', replace_groups.App),
