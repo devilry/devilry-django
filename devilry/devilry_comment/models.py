@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.db import models
 from django.core import files
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 
 class Comment(models.Model):
@@ -72,7 +74,7 @@ def commentfile_directory_path(instance, filename):
         ValidationError: If ``instance.id`` is ``None``.
     """
     if instance.id is None:
-        raise ValueError('Can not save a comment file for a comment without an id.')
+        raise ValueError('Can not save a CommentFile.file on a CommentFile without an id.')
     return 'devilry_comment/{}/{}'.format(instance.comment.id, instance.id)
 
 
@@ -105,10 +107,16 @@ class CommentFile(models.Model):
 
 
 def commentfileimage_directory_path(instance, filename):
+    if instance.id is None:
+        raise ValueError('Can not save a CommentCommentFileImageFile.image '
+                         'on a CommentFileImage without an id.')
     return 'devilry_comment/{}/{}_{}'.format(instance.comment_file.comment.id, instance.comment_file.id, instance.id)
 
 
 def commentfileimage_thumbnail_directory_path(instance, filename):
+    if instance.id is None:
+        raise ValueError('Can not save a CommentCommentFileImageFile.thumbnail '
+                         'on a CommentFileImage without an id.')
     return 'devilry_comment/{}/{}_{}_thumbnail'.format(instance.comment_file.comment.id,
                                                        instance.comment_file.id,
                                                        instance.id)
@@ -121,10 +129,31 @@ class CommentFileImage(models.Model):
     """
     comment_file = models.ForeignKey(CommentFile)
 
-    image = models.FileField(upload_to=commentfileimage_directory_path, max_length=512)
+    image = models.FileField(upload_to=commentfileimage_directory_path,
+                             max_length=512,
+                             null=False, blank=True, default='')
+
     image_width = models.PositiveIntegerField()
     image_height = models.PositiveIntegerField()
 
-    thumbnail = models.FileField(upload_to=commentfileimage_thumbnail_directory_path, max_length=512)
+    thumbnail = models.FileField(upload_to=commentfileimage_thumbnail_directory_path,
+                                 max_length=512,
+                                 null=False, blank=True, default='')
     thumbnail_width = models.PositiveIntegerField()
     thumbnail_height = models.PositiveIntegerField()
+
+
+@receiver(post_delete, sender=CommentFile)
+def on_post_delete_commentfile(sender, instance, **kwargs):
+    commentfile = instance
+    if commentfile.file:
+        commentfile.file.delete()
+
+
+@receiver(post_delete, sender=CommentFileImage)
+def on_post_delete_commentfileimage(sender, instance, **kwargs):
+    commentfileimage = instance
+    if commentfileimage.image:
+        commentfileimage.image.delete()
+    if commentfileimage.thumbnail:
+        commentfileimage.thumbnail.delete()
