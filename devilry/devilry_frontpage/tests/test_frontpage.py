@@ -12,6 +12,7 @@ from devilry.project.develop.testhelpers.soupselect import cssExists
 from devilry.project.develop.testhelpers.login import LoginTestCaseMixin
 
 
+@unittest.skip('devilry_header will be removed in 3.0')
 class TestFrontpage(TestCase, LoginTestCaseMixin):
     def setUp(self):
         self.url = reverse('devilry_frontpage')
