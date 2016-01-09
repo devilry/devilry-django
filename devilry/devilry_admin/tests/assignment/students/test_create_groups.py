@@ -42,7 +42,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
             2,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue a'))
 
-    def __mock_reverse_appurl(self, tested_viewname):
+    def __mock_reverse_appurl(self):
         def reverse_appurl(viewname, args, kwargs):
             return '/{}/args={},kwargs={}'.format(viewname, args, kwargs)
         return reverse_appurl
@@ -50,7 +50,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_choice_relatedstudents_url(self):
         testassignment = mommy.make('core.Assignment')
         mockapp = mock.MagicMock()
-        mockapp.reverse_appurl = self.__mock_reverse_appurl(tested_viewname='')
+        mockapp.reverse_appurl = self.__mock_reverse_appurl()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_app=mockapp
@@ -72,7 +72,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_choice_manual_select_value(self):
         testassignment = mommy.make('core.Assignment')
         mockapp = mock.MagicMock()
-        mockapp.reverse_appurl = self.__mock_reverse_appurl(tested_viewname='')
+        mockapp.reverse_appurl = self.__mock_reverse_appurl()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_app=mockapp

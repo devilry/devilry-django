@@ -18,8 +18,22 @@ from devilry.devilry_group.models import FeedbackSet
 class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = replace_groups.ChooseMethod
 
+    def test_redirect_if_assignment_is_published(self):
+        testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() - datetime.timedelta(days=2))
+        mock_cradmin_instance = mock.MagicMock()
+        messagesmock = mock.MagicMock()
+        self.mock_http302_getrequest(
+            cradmin_role=testassignment,
+            cradmin_instance=mock_cradmin_instance,
+            messagesmock=messagesmock)
+        mock_cradmin_instance.rolefrontpage_url.assert_called_once_with()
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR, self.viewclass.published_assignment_error_message, '')
+
     def test_title(self):
         testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2),
                                     long_name='Assignment One')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertIn(
@@ -27,28 +41,31 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'Replace students',
             mockresponse.selector.one('h1').alltext_normalized)
 
     def test_choices_sanity(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             2,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue a'))
 
-    def __mock_reverse_appurl(self, tested_viewname):
+    def __mock_reverse_appurl(self):
         def reverse_appurl(viewname, args, kwargs):
             return '/{}/args={},kwargs={}'.format(viewname, args, kwargs)
         return reverse_appurl
 
     def test_choice_relatedstudents_url(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockapp = mock.MagicMock()
-        mockapp.reverse_appurl = self.__mock_reverse_appurl(tested_viewname='')
+        mockapp.reverse_appurl = self.__mock_reverse_appurl()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_app=mockapp
@@ -60,6 +77,7 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_choice_relatedstudents_label(self):
         testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2),
                                     parentnode__parentnode__short_name='testsubject')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
@@ -68,9 +86,10 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_create_groups_choosemethod_relatedstudents_link').alltext_normalized)
 
     def test_choice_manual_select_value(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockapp = mock.MagicMock()
-        mockapp.reverse_appurl = self.__mock_reverse_appurl(tested_viewname='')
+        mockapp.reverse_appurl = self.__mock_reverse_appurl()
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             cradmin_app=mockapp
@@ -81,7 +100,8 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                 '#devilry_admin_create_groups_choosemethod_manualselect_link')['href'])
 
     def test_choice_manual_select_label(self):
-        testassignment = mommy.make('core.Assignment')
+        testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'Select manually',
@@ -91,7 +111,8 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_choices_does_not_include_current_assignment(self):
         testperiod = mommy.make('core.Period')
         otherassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             4,
@@ -107,7 +128,8 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = mommy.make('core.Period')
         otherassignment = mommy.make('core.Assignment', parentnode=testperiod,
                                      short_name='otherassignment')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'All students on otherassignment',
@@ -126,7 +148,8 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
                                  publishing_time=ACTIVE_PERIOD_START + datetime.timedelta(days=2))
         assignment3 = mommy.make('core.Assignment', parentnode=testperiod,
                                  publishing_time=ACTIVE_PERIOD_START + datetime.timedelta(days=3))
-        assignment4 = mommy.make('core.Assignment', parentnode=testperiod)
+        assignment4 = mommy.make('core.Assignment', parentnode=testperiod,
+                                 publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment4)
         assignmentboxes_dom_ids = [
             element['id']
@@ -144,8 +167,22 @@ class TestChooseMethod(TestCase, cradmin_testhelpers.TestCaseMixin):
 class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = replace_groups.ConfirmView
 
+    def test_redirect_if_assignment_is_published(self):
+        testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() - datetime.timedelta(days=2))
+        mock_cradmin_instance = mock.MagicMock()
+        messagesmock = mock.MagicMock()
+        self.mock_http302_getrequest(
+            cradmin_role=testassignment,
+            cradmin_instance=mock_cradmin_instance,
+            messagesmock=messagesmock)
+        mock_cradmin_instance.rolefrontpage_url.assert_called_once_with()
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR, self.viewclass.published_assignment_error_message, '')
+
     def test_title(self):
-        testassignment = mommy.make('core.Assignment', long_name='Assignment One')
+        testassignment = mommy.make('core.Assignment', long_name='Assignment One',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': replace_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
@@ -155,7 +192,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment', long_name='Assignment One')
+        testassignment = mommy.make('core.Assignment', long_name='Assignment One',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': replace_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
@@ -166,6 +204,7 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_get_subheader_selected_students_relateadstudents(self):
         testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2),
                                     parentnode__parentnode__short_name='testsubject',
                                     parentnode__short_name='testperiod')
         mockresponse = self.mock_http200_getrequest_htmls(
@@ -181,7 +220,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         otherassignment = mommy.make('core.Assignment',
                                      long_name='Assignment One',
                                      parentnode=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestkwargs={'data': {'assignment': otherassignment.id}},
@@ -196,7 +236,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         otherassignment = mommy.make('core.Assignment',
                                      long_name='Assignment One',
                                      parentnode=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestkwargs={'data': {'assignment': otherassignment.id}},
@@ -209,7 +250,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_get_render_submitbutton(self):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent', period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': replace_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
@@ -223,7 +265,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = mommy.make('core.Period')
         relatedstudent1 = mommy.make('core.RelatedStudent', period=testperiod)
         relatedstudent2 = mommy.make('core.RelatedStudent', period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': replace_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
@@ -248,7 +291,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent=relatedstudent2,
                    assignment_group__parentnode=otherassignment)
 
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestkwargs={
@@ -281,7 +325,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent=relatedstudent2,
                    assignment_group__parentnode=otherassignment)
 
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             requestkwargs={
@@ -298,7 +343,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_get_no_relatedstudents_matching_query(self):
         testperiod = mommy.make('core.Period')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': replace_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
@@ -315,7 +361,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent',
                    user__fullname='Other User',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': replace_groups.ConfirmView.SELECTED_STUDENTS_RELATEDSTUDENTS})
@@ -327,7 +374,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent', period=testperiod)
         otherassignment = mommy.make('core.Assignment')  # Not in testperiod!
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         with self.assertRaisesMessage(Http404, 'Invalid assignment_id'):
             self.mock_getrequest(
                 cradmin_role=testassignment,
@@ -353,7 +401,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    relatedstudent=relatedstudent2,
                    assignment_group__parentnode=otherassignment)
 
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': replace_groups.ConfirmView.SELECTED_STUDENTS_ALL_ON_ASSIGNMENT},
@@ -370,7 +419,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent', period=testperiod)
         otherassignment = mommy.make('core.Assignment')  # Not in testperiod!
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         with self.assertRaisesMessage(Http404, 'Invalid assignment_id'):
             self.mock_getrequest(
                 cradmin_role=testassignment,
@@ -415,7 +465,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                                      user__fullname='User that is not on the other assignment',
                                      period=testperiod)
 
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'selected_students': replace_groups.ConfirmView.SELECTED_STUDENTS_PASSING_GRADE_ON_ASSIGNMENT},
@@ -440,7 +491,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                                      period=testperiod)
         relatedstudent3 = mommy.make('core.RelatedStudent',
                                      period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         self.assertEqual(0, AssignmentGroup.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
@@ -467,7 +519,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent',
                                     period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         self.assertEqual(0, AssignmentGroup.objects.count())
         mock_cradmin_instance = mock.MagicMock()
         self.mock_http302_postrequest(
@@ -486,7 +539,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_post_relatedstudent_already_on_assignment(self):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testcandidate = mommy.make('core.Candidate',
                                    relatedstudent=relatedstudent,
@@ -516,7 +570,8 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent',
                                     user__shortname='userb@example.com')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         self.assertEqual(0, AssignmentGroup.objects.count())
         messagesmock = mock.MagicMock()
         mockapp = mock.MagicMock()
@@ -553,8 +608,22 @@ class TestRelatedStudentMultiselectTarget(TestCase):
 class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
     viewclass = replace_groups.ManualSelectStudentsView
 
+    def test_redirect_if_assignment_is_published(self):
+        testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() - datetime.timedelta(days=2))
+        mock_cradmin_instance = mock.MagicMock()
+        messagesmock = mock.MagicMock()
+        self.mock_http302_getrequest(
+            cradmin_role=testassignment,
+            cradmin_instance=mock_cradmin_instance,
+            messagesmock=messagesmock)
+        mock_cradmin_instance.rolefrontpage_url.assert_called_once_with()
+        messagesmock.add.assert_called_once_with(
+            messages.ERROR, self.viewclass.published_assignment_error_message, '')
+
     def test_title(self):
         testassignment = mommy.make('core.Assignment',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2),
                                     short_name='testassignment',
                                     parentnode__short_name='testperiod',
                                     parentnode__parentnode__short_name='testsubject')
@@ -564,7 +633,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             mockresponse.selector.one('title').alltext_normalized)
 
     def test_h1(self):
-        testassignment = mommy.make('core.Assignment', long_name='Assignment One')
+        testassignment = mommy.make('core.Assignment', long_name='Assignment One',
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'Select the students you want to add to Assignment One',
@@ -572,7 +642,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_no_relatedstudents(self):
         testperiod = mommy.make('core.Period')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'No students found.',
@@ -582,7 +653,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_relatedstudent_not_in_assignment_period_excluded(self):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             0,
@@ -592,7 +664,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = mommy.make('core.Period')
         mommy.make('core.RelatedStudent',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             1,
@@ -602,7 +675,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent',
                                     period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mommy.make('core.Candidate',
                    relatedstudent=relatedstudent,
                    assignment_group__parentnode=testassignment)
@@ -618,7 +692,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent',
                    user__fullname='Test User',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
             'Test User',
@@ -633,7 +708,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent',
                    user__fullname='Other User',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'search-match'}
@@ -657,7 +733,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent',
                    user__fullname='userc',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment)
         titles = [element.alltext_normalized
@@ -678,7 +755,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent',
                    user__fullname='userc',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'orderby-name_descending'})
@@ -702,7 +780,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    user__fullname='User ccc',
                    user__lastname='ccc',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'orderby-lastname_ascending'})
@@ -726,7 +805,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    user__fullname='User ccc',
                    user__lastname='ccc',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'orderby-lastname_descending'})
@@ -748,7 +828,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent',
                    user__shortname='userc@example.com',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'orderby-shortname_ascending'})
@@ -770,7 +851,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         mommy.make('core.RelatedStudent',
                    user__shortname='userc@example.com',
                    period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         mockresponse = self.mock_http200_getrequest_htmls(
             cradmin_role=testassignment,
             viewkwargs={'filters_string': 'orderby-shortname_descending'})
@@ -789,7 +871,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                                      period=testperiod)
         relatedstudent3 = mommy.make('core.RelatedStudent',
                                      period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         self.assertEqual(0, AssignmentGroup.objects.count())
         self.mock_http302_postrequest(
             cradmin_role=testassignment,
@@ -816,7 +899,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent',
                                     period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         self.assertEqual(0, AssignmentGroup.objects.count())
         mock_cradmin_instance = mock.MagicMock()
         self.mock_http302_postrequest(
@@ -835,7 +919,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_post_relatedstudent_already_on_assignment(self):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         testcandidate = mommy.make('core.Candidate',
                                    relatedstudent=relatedstudent,
@@ -865,7 +950,8 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent',
                                     user__shortname='userb@example.com')
-        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod,
+                                    publishing_time=timezone.now() + datetime.timedelta(days=2))
         self.assertEqual(0, AssignmentGroup.objects.count())
         messagesmock = mock.MagicMock()
         mockapp = mock.MagicMock()

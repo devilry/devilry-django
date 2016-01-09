@@ -1,10 +1,27 @@
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.utils import timezone
 from django.utils.translation import pgettext_lazy
 from django_cradmin import crapp
 
 from devilry.devilry_admin.views.assignment.students import create_groups
 
 
-class ChooseMethod(create_groups.ChooseMethod):
+class RequireUnpublishedAssignmentMixin(object):
+    published_assignment_error_message = pgettext_lazy(
+            'admin replace_groups',
+            'You can not use the replace students wizard on a published assignment. '
+            'You can still add new students and remove students without feedback or deliveries.')
+
+    def dispatch(self, *args, **kwargs):
+        assignment = self.request.cradmin_role
+        if assignment.publishing_time < timezone.now():
+            messages.error(self.request, self.published_assignment_error_message)
+            return redirect(self.request.cradmin_instance.rolefrontpage_url())
+        return super(RequireUnpublishedAssignmentMixin, self).dispatch(*args, **kwargs)
+
+
+class ChooseMethod(RequireUnpublishedAssignmentMixin, create_groups.ChooseMethod):
     def get_pagetitle(self):
         assignment = self.request.cradmin_role
         return pgettext_lazy('admin create_group', 'Replace students on %(assignment)s') % {
@@ -22,7 +39,7 @@ class ChooseMethod(create_groups.ChooseMethod):
                              'before any students are added.')
 
 
-class ConfirmView(create_groups.ConfirmView):
+class ConfirmView(RequireUnpublishedAssignmentMixin, create_groups.ConfirmView):
     replace_groups = True
 
     def get_pagetitle(self):
@@ -46,7 +63,7 @@ class RelatedStudentMultiselectTarget(create_groups.RelatedStudentMultiselectTar
                              'Replace students')
 
 
-class ManualSelectStudentsView(create_groups.ManualSelectStudentsView):
+class ManualSelectStudentsView(RequireUnpublishedAssignmentMixin, create_groups.ManualSelectStudentsView):
     multiselect_target_class = RelatedStudentMultiselectTarget
     replace_groups = True
 
