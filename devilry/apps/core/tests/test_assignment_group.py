@@ -640,6 +640,113 @@ class TestAssignmentGroup(TestCase):
             [group],
             list(AssignmentGroup.objects.filter_user_is_examiner(user=testuser)))
 
+    def test_annotate_with_number_of_groupcomments_zero(self):
+        mommy.make('core.AssignmentGroup')
+        self.assertEqual(
+            0,
+            AssignmentGroup.objects.annotate_with_number_of_groupcomments()
+            .first().number_of_groupcomments)
+
+    def test_annotate_with_number_of_groupcomments_multiple(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup)
+        self.assertEqual(
+            2,
+            AssignmentGroup.objects.annotate_with_number_of_groupcomments()
+            .first().number_of_groupcomments)
+
+    def test_annotate_with_number_of_imageannotationcomments_zero(self):
+        mommy.make('core.AssignmentGroup')
+        self.assertEqual(
+            0,
+            AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments()
+            .first().number_of_imageannotationcomments)
+
+    def test_annotate_with_number_of_imageannotationcomments_multiple(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set__group=testgroup)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set__group=testgroup)
+        self.assertEqual(
+            2,
+            AssignmentGroup.objects.annotate_with_number_of_imageannotationcomments()
+            .first().number_of_imageannotationcomments)
+
+    def test_annotate_with_number_of_published_feedbacksets_zero(self):
+        mommy.make('core.AssignmentGroup')
+        self.assertEqual(
+            0,
+            AssignmentGroup.objects.annotate_with_number_of_published_feedbacksets()
+            .first().number_of_published_feedbacksets)
+
+    def test_annotate_with_number_of_published_feedbacksets_multiple_feedbacksets(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now())
+        self.assertEqual(
+            3,
+            AssignmentGroup.objects.annotate_with_number_of_published_feedbacksets()
+            .first().number_of_published_feedbacksets)
+
+    def test_annotate_with_number_of_published_feedbacksets_multiple_groups(self):
+        testgroup1 = mommy.make('core.AssignmentGroup')
+        testgroup2 = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup1,
+                   grading_published_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup1,
+                   grading_published_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup2,
+                   grading_published_datetime=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup2,
+                   grading_published_datetime=timezone.now())
+        queryset = AssignmentGroup.objects.annotate_with_number_of_published_feedbacksets()\
+            .order_by('number_of_published_feedbacksets')
+        self.assertEqual(testgroup2, queryset[0])
+        self.assertEqual(1, queryset[0].number_of_published_feedbacksets)
+        self.assertEqual(testgroup1, queryset[1])
+        self.assertEqual(2, queryset[1].number_of_published_feedbacksets)
+
+    def test_filter_with_published_feedback_or_comments(self):
+        testgroup_with_published_feedback = mommy.make('core.AssignmentGroup')
+        testgroup_with_unpublished_feedback = mommy.make('core.AssignmentGroup')
+        testgroup_with_groupcomment = mommy.make('core.AssignmentGroup')
+        testgroup_with_imageannotationcomment = mommy.make('core.AssignmentGroup')
+        mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup_with_published_feedback,
+                   grading_published_datetime=timezone.now())
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup_with_unpublished_feedback,
+                   grading_published_datetime=None)
+        mommy.make('devilry_group.GroupComment',
+                   feedback_set__group=testgroup_with_groupcomment)
+        mommy.make('devilry_group.ImageAnnotationComment',
+                   feedback_set__group=testgroup_with_imageannotationcomment)
+        queryset = AssignmentGroup.objects.filter_with_published_feedback_or_comments()
+        self.assertEqual(
+            {testgroup_with_published_feedback,
+             testgroup_with_groupcomment,
+             testgroup_with_imageannotationcomment},
+            set(queryset))
+
 
 class TestAssignmentGroupCanDelete(TestCase):
     def setUp(self):

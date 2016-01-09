@@ -267,6 +267,63 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
                 ]
             )
 
+    def annotate_with_number_of_groupcomments(self):
+        """
+        Annotate the queryset with ``number_of_groupcomments`` -
+        the number of :class:`devilry.devilry_group.models.GroupComment`
+        within each AssignmentGroup.
+        """
+        return self.annotate(
+            number_of_groupcomments=models.Count(
+                'feedbackset__groupcomment'
+            )
+        )
+
+    def annotate_with_number_of_imageannotationcomments(self):
+        """
+        Annotate the queryset with ``number_of_imageannotationcomments`` -
+        the number of :class:`devilry.devilry_group.models.ImageAnnotationComment`
+        within each AssignmentGroup.
+        """
+        return self.annotate(
+            number_of_imageannotationcomments=models.Count(
+                'feedbackset__imageannotationcomment'
+            )
+        )
+
+    def annotate_with_number_of_published_feedbacksets(self):
+        """
+        Annotate the queryset with ``number_of_published_feedbacksets`` -
+        the number of :class:`devilry.devilry_group.models.FeedbackSet` with
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`
+        set to a non-null value within each AssignmentGroup.
+        """
+        return self.annotate(
+            number_of_published_feedbacksets=models.Count(
+                models.Case(
+                    # When grading_published_datetime, count that as 1 in the Count.
+                    models.When(feedbackset__grading_published_datetime__isnull=False,
+                                then=1)
+                )
+            )
+        )
+
+    def filter_with_published_feedback_or_comments(self):
+        """
+        Filter only :class:`.AssignmentGroup` objects containing
+        :class:`devilry.devilry_group.models.FeedbackSet` with
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`
+        or any comments.
+        """
+        return self.annotate_with_number_of_groupcomments()\
+            .annotate_with_number_of_imageannotationcomments()\
+            .annotate_with_number_of_published_feedbacksets()\
+            .filter(
+                models.Q(number_of_published_feedbacksets__gt=0) |
+                models.Q(number_of_imageannotationcomments__gt=0) |
+                models.Q(number_of_groupcomments__gt=0)
+            )
+
 
 class AssignmentGroupManager(models.Manager):
     def get_queryset(self):
@@ -483,6 +540,30 @@ class AssignmentGroupManager(models.Manager):
         See :meth:`.AssignmentGroupQuerySet.filter_has_passing_grade`.
         """
         return self.get_queryset().filter_has_passing_grade(assignment=assignment)
+
+    def filter_with_published_feedback_or_comments(self):
+        """
+        See :meth:`.AssignmentGroupQuerySet.filter_with_published_feedback_or_comments`.
+        """
+        return self.get_queryset().filter_with_published_feedback_or_comments()
+
+    def annotate_with_number_of_groupcomments(self):
+        """
+        See :meth:`.AssignmentGroupQuerySet.annotate_with_number_of_groupcomments`.
+        """
+        return self.get_queryset().annotate_with_number_of_groupcomments()
+
+    def annotate_with_number_of_published_feedbacksets(self):
+        """
+        See :meth:`.AssignmentGroupQuerySet.annotate_with_number_of_published_feedbacksets`.
+        """
+        return self.get_queryset().annotate_with_number_of_published_feedbacksets()
+
+    def annotate_with_number_of_imageannotationcomments(self):
+        """
+        See :meth:`.AssignmentGroupQuerySet.annotate_with_number_of_imageannotationcomments`.
+        """
+        return self.get_queryset().annotate_with_number_of_imageannotationcomments()
 
 
 # TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
