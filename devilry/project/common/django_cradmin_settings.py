@@ -8,6 +8,8 @@ The django_cradmin settings used by Devilry.
 #:
 #: This does not actually enable an authentication backend, it just changes
 #: the UI to reflect how users are added.
+from devilry.devilry_cradmin import devilry_css_icon_map
+
 DJANGO_CRADMIN_USE_EMAIL_AUTH_BACKEND = True
 
 
@@ -22,3 +24,6 @@ DJANGO_CRADMIN_THEME_PATH = 'devilry_theme3/{}/styles/' \
                             'cradmin_theme_devilry_mainpages/theme.css'.format(DEVILRY_THEME3_VERSION)
 DJANGO_CRADMIN_SUPERUSERUI_THEME_PATH = 'devilry_theme3/{}/styles/' \
                                         'cradmin_theme_devilry_superuserui/theme.css'.format(DEVILRY_THEME3_VERSION)
+
+
+DJANGO_CRADMIN_CSS_ICON_MAP = devilry_css_icon_map.FONT_AWESOME
