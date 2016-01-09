@@ -61,6 +61,8 @@ class Comment(models.Model):
 
 
 def commentfile_directory_path(instance, filename):
+    if instance.id is None:
+        raise ValueError('Can not save a comment file for a comment without an id.')
     return 'devilry_comment/{}/{}'.format(instance.comment.id, instance.id)
 
 
