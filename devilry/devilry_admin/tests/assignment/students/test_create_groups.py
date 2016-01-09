@@ -546,7 +546,7 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(0, AssignmentGroup.objects.count())
         messagesmock.add.assert_called_once_with(
             messages.ERROR,
-            create_groups.ManualSelectStudentsView.form_invalid_message,
+            create_groups.ConfirmView.form_invalid_message,
             '')
 
 

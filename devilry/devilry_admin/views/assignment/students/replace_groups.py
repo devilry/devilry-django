@@ -23,7 +23,7 @@ class ChooseMethod(create_groups.ChooseMethod):
 
 
 class ConfirmView(create_groups.ConfirmView):
-    exclude_students_already_on_assignment = False
+    replace_groups = True
 
     def get_pagetitle(self):
         return pgettext_lazy('admin create_groups',
@@ -48,7 +48,7 @@ class RelatedStudentMultiselectTarget(create_groups.RelatedStudentMultiselectTar
 
 class ManualSelectStudentsView(create_groups.ManualSelectStudentsView):
     multiselect_target_class = RelatedStudentMultiselectTarget
-    exclude_students_already_on_assignment = False
+    replace_groups = True
 
 
 class App(crapp.App):

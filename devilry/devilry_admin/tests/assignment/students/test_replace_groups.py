@@ -485,21 +485,19 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_post_relatedstudent_already_on_assignment(self):
         testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
-                                    user__shortname='userb@example.com',
-                                    period=testperiod)
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',
-                   relatedstudent=relatedstudent,
-                   assignment_group__parentnode=testassignment)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testcandidate = mommy.make('core.Candidate',
+                                   relatedstudent=relatedstudent,
+                                   assignment_group=testgroup)
         self.assertEqual(1, AssignmentGroup.objects.count())
         messagesmock = mock.MagicMock()
-        mockapp = mock.MagicMock()
-        mockapp.reverse_appindexurl.return_value = '/appindex'
-        mockresponse = self.mock_http302_postrequest(
+        mock_cradmin_instance = mock.MagicMock()
+        self.mock_http302_postrequest(
             cradmin_role=testassignment,
             messagesmock=messagesmock,
-            cradmin_app=mockapp,
+            cradmin_instance=mock_cradmin_instance,
             requestkwargs={
                 'data': {
                     'selected_items': [
@@ -508,13 +506,11 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             },
         )
-        mockapp.reverse_appindexurl.assert_called_once_with()
-        self.assertEqual('/appindex', mockresponse.response['Location'])
+        mock_cradmin_instance.appindex_url.assert_called_once_with('studentoverview')
         self.assertEqual(1, AssignmentGroup.objects.count())
-        messagesmock.add.assert_called_once_with(
-            messages.ERROR,
-            replace_groups.ManualSelectStudentsView.form_invalid_message,
-            '')
+        created_group = AssignmentGroup.objects.first()
+        self.assertNotEqual(testgroup, created_group)
+        self.assertNotEqual(testcandidate, created_group.candidates.first())
 
     def test_post_relatedstudent_not_relatedstudent_on_period(self):
         testperiod = mommy.make('core.Period')
@@ -542,7 +538,7 @@ class TestConfirmView(TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(0, AssignmentGroup.objects.count())
         messagesmock.add.assert_called_once_with(
             messages.ERROR,
-            replace_groups.ManualSelectStudentsView.form_invalid_message,
+            replace_groups.ConfirmView.form_invalid_message,
             '')
 
 
@@ -602,7 +598,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
             1,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
 
-    def test_relatedstudent_with_candidate_on_assignment_not_included(self):
+    def test_relatedstudent_with_candidate_on_assignment_is_included(self):
         testperiod = mommy.make('core.Period')
         relatedstudent = mommy.make('core.RelatedStudent',
                                     period=testperiod)
@@ -612,7 +608,7 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                    assignment_group__parentnode=testassignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment)
         self.assertEqual(
-            0,
+            1,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
 
     def test_render_relatedstudent_sanity(self):
@@ -838,21 +834,19 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_post_relatedstudent_already_on_assignment(self):
         testperiod = mommy.make('core.Period')
-        relatedstudent = mommy.make('core.RelatedStudent',
-                                    user__shortname='userb@example.com',
-                                    period=testperiod)
+        relatedstudent = mommy.make('core.RelatedStudent', period=testperiod)
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
-        mommy.make('core.Candidate',
-                   relatedstudent=relatedstudent,
-                   assignment_group__parentnode=testassignment)
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testcandidate = mommy.make('core.Candidate',
+                                   relatedstudent=relatedstudent,
+                                   assignment_group=testgroup)
         self.assertEqual(1, AssignmentGroup.objects.count())
         messagesmock = mock.MagicMock()
-        mockapp = mock.MagicMock()
-        mockapp.reverse_appurl.return_value = '/manual-select'
-        mockresponse = self.mock_http302_postrequest(
+        mock_cradmin_instance = mock.MagicMock()
+        self.mock_http302_postrequest(
             cradmin_role=testassignment,
             messagesmock=messagesmock,
-            cradmin_app=mockapp,
+            cradmin_instance=mock_cradmin_instance,
             requestkwargs={
                 'data': {
                     'selected_items': [
@@ -861,13 +855,11 @@ class TestManualSelectStudentsView(TestCase, cradmin_testhelpers.TestCaseMixin):
                 }
             },
         )
-        mockapp.reverse_appurl.assert_called_once_with('manual-select')
-        self.assertEqual('/manual-select', mockresponse.response['Location'])
+        mock_cradmin_instance.appindex_url.assert_called_once_with('studentoverview')
         self.assertEqual(1, AssignmentGroup.objects.count())
-        messagesmock.add.assert_called_once_with(
-            messages.ERROR,
-            replace_groups.ManualSelectStudentsView.form_invalid_message,
-            '')
+        created_group = AssignmentGroup.objects.first()
+        self.assertNotEqual(testgroup, created_group)
+        self.assertNotEqual(testcandidate, created_group.candidates.first())
 
     def test_post_relatedstudent_not_relatedstudent_on_period(self):
         testperiod = mommy.make('core.Period')

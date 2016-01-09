@@ -89,7 +89,12 @@ class ChooseMethod(TemplateView):
 
 
 class CreateGroupsViewMixin(object):
-    exclude_students_already_on_assignment = True
+    #: If this is ``True``, we remove all AssignmentGroups before
+    #: adding new groups instead of just adding groups for students
+    #: not already on the assignment. If this is ``True``, RelatedStudents
+    #: already on the assignment are note excluded from the valid set
+    #: of students to add to the assignment.
+    replace_groups = False
 
     form_invalid_message = pgettext_lazy(
         'admin create_groups',
@@ -110,7 +115,7 @@ class CreateGroupsViewMixin(object):
     def get_unfiltered_queryset_for_role(self, role):
         queryset = self.period.relatedstudent_set\
             .select_related('user')
-        if self.exclude_students_already_on_assignment:
+        if not self.replace_groups:
             queryset = queryset.exclude(pk__in=self.__get_relatedstudents_in_group_on_assignment())
         return queryset
 
@@ -136,8 +141,14 @@ class CreateGroupsViewMixin(object):
         else:
             return self.form_invalid(form)
 
+    def __remove_all_existing_groups(self):
+        if self.assignment.assignmentgroups.filter_with_published_feedback_or_comments().exists():
+            raise Http404()
+        self.assignment.assignmentgroups.all().delete()
+
     def create_groups_with_candidate_and_feedbackset(self, relatedstudent_queryset):
-        # self.
+        if self.replace_groups:
+            self.__remove_all_existing_groups()
         assignment = self.request.cradmin_role
         return AssignmentGroup.objects.bulk_create_groups(
             created_by_user=self.request.user,
