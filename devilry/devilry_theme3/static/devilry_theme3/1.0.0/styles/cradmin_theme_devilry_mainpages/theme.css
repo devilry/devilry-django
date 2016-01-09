@@ -4572,7 +4572,7 @@ button.close {
   height: 100%;
 }
 body {
-  background: #e6e6e6;
+  background: #f7f7f7;
   color: #666666;
 }
 body.django-cradmin-noscroll {
@@ -4582,7 +4582,7 @@ a {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
 }
 .django-cradmin-container-focus {
-  background: #f3f3f3;
+  background: #fff;
   padding-top: 15px;
   padding-bottom: 15px;
   border-bottom: 1px solid #ccc;
@@ -4905,7 +4905,7 @@ table.table.django-cradmin-table thead tr th {
   border: none;
 }
 table.table.django-cradmin-table tbody {
-  background: #f3f3f3;
+  background: #fff;
   border-bottom: 1px solid #ccc;
 }
 table.table.django-cradmin-table tbody tr {
@@ -5010,8 +5010,8 @@ table.table.django-cradmin-table tbody td:last-child {
   font-size: 12px !important;
 }
 .django-cradmin-page-header-outer {
-  padding: 10px 0 10px 0;
-  background: #f3f3f3;
+  padding: 35px 0 25px 0;
+  background: none;
   color: #333333;
   border: none;
   margin: 0 0 15px 0;
@@ -5028,9 +5028,9 @@ table.table.django-cradmin-table tbody td:last-child {
   margin: 0;
 }
 .django-cradmin-page-header-outer.django-cradmin-page-header-outer-secondary {
-  padding: 10px 0 10px 0;
-  background: #f3f3f3;
-  color: #333333;
+  padding: 20px 0 22px 0;
+  background: #377CA8;
+  color: #fff;
   border: none;
   margin: 30px 0 15px 0;
 }
@@ -5205,7 +5205,7 @@ table.table.django-cradmin-table tbody td:last-child {
   border: none;
 }
 .django-cradmin-floating-fullsize-iframe-wrapper.django-cradmin-modelchoicefield-iframe-wrapper .django-cradmin-floating-fullsize-content {
-  background: #e6e6e6;
+  background: #f7f7f7;
 }
 @media (min-width: 992px) {
   body.django-cradmin-formview-page .django-cradmin-floating-fullsize-iframe-wrapper {
@@ -5526,7 +5526,7 @@ ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat {
   list-style: none;
   margin: 0;
   padding: 0;
-  background: #f3f3f3;
+  background: #fff;
 }
 ul.django-cradmin-roleselect-list.django-cradmin-roleselect-list-flat li {
   margin: 0;
@@ -5573,7 +5573,7 @@ The bulk file upload widget base styles.
   background: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
-  background: #f5f5f5;
+  background: #ffffff;
   color: #666666;
   font-weight: bold;
   font-size: inherit;
@@ -5581,7 +5581,7 @@ The bulk file upload widget base styles.
   height: 100px;
   text-align: center;
   border-style: dashed;
-  border-color: #d7d7d7;
+  border-color: #e0e0e0;
   border-width: 2px;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox .django-cradmin-bulkfileupload-dropbox-invalid-filetype-errormessage {
@@ -6661,7 +6661,7 @@ ol.django-cradmin-listbuilder-list li a.django-cradmin-listbuilder-itemframe-lin
   display: block;
 }
 ol.django-cradmin-listbuilder-list li .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
-  background: #f3f3f3;
+  background: #fff;
   padding: 15px 15px;
 }
 ol.django-cradmin-listfilter-filterlist {
@@ -6756,7 +6756,7 @@ ol.django-cradmin-listfilter-filterlist.django-cradmin-listfilter-filterlist-hor
   padding: 0 0 5px 0;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items {
-  background: #f3f3f3;
+  background: #fff;
   padding: 10px;
 }
 .django-cradmin-multiselect2-target .django-cradmin-multiselect2-target-selected-items .django-cradmin-multiselect2-target-selected-item .django-cradmin-multiselect2-target-selected-item-title {
@@ -6851,8 +6851,20 @@ body.django-cradmin-formview-page ul#django_cradmin_messages {
   margin-left: auto;
   margin-right: auto;
 }
-body {
-  background-image: url('../../media/images/groovepaper.png');
+.django-cradmin-page-header-outer .django-cradmin-page-header-inner h1 {
+  font-size: 26px;
+}
+h2,
+h3,
+h4 {
+  font-weight: bold;
+  color: #333333;
+}
+h2 {
+  font-size: 23px;
+}
+h3 {
+  font-size: 16px;
 }
 .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h2,
 .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h3 {

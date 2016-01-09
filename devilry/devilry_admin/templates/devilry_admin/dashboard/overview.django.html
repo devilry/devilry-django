@@ -23,30 +23,29 @@
         </h2>
 
         {% for group in periods_where_user_is_subjectadmin_or_periodadmin %}
-        <h4>{{ group.0.long_name }}</h4>
-
-        <ul>
-            {% for period in group %}
-            <li>
-                <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='overview' roleid=period.id viewname='INDEX' %}"
-                                    class="devilry-admin-dashboard-overview-period-link">
-                    {{ period.subject.long_name }}
-                </a>
-                <br>{{ period.assignments.count }}
-                {% blocktrans trimmed count counter=period.assignments.count %}
-                    assignment
-                {% plural %}
-                    assignments
-                {% endblocktrans %},
-                {{ period.relatedstudent_set.count }}
-                {% blocktrans trimmed count counter=period.relatedstudent_set.count %}
-                    student
-                {% plural %}
-                    students
-                {% endblocktrans %}.
-            </li>
-            {% endfor %}
-        </ul>
+            <h3>{{ group.0.long_name }}</h3>
+            <ul>
+                {% for period in group %}
+                    <li>
+                        <a href="{% cradmin_url instanceid='devilry_admin_periodadmin' appname='overview' roleid=period.id viewname='INDEX' %}"
+                                            class="devilry-admin-dashboard-overview-period-link">
+                            {{ period.subject.long_name }}
+                        </a>
+                        <br>{{ period.assignments.count }}
+                        {% blocktrans trimmed count counter=period.assignments.count %}
+                            assignment
+                        {% plural %}
+                            assignments
+                        {% endblocktrans %},
+                        {{ period.relatedstudent_set.count }}
+                        {% blocktrans trimmed count counter=period.relatedstudent_set.count %}
+                            student
+                        {% plural %}
+                            students
+                        {% endblocktrans %}.
+                    </li>
+                {% endfor %}
+            </ul>
         {% endfor %}
     </div>
     {% endif %}
