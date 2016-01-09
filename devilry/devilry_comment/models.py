@@ -87,11 +87,12 @@ class CommentFile(models.Model):
 
     mimetype = models.CharField(max_length=42)
 
-    #: The file uploaded to the comment. Note that this is ``null=True`` because the
-    #: comment must first be created with this field set to ``None`` to get an ID
-    #: for :meth:`.commentfile_directory_path`
+    #: The file uploaded to the comment. Note that this is ``blank=True`` because the
+    #: comment must first be created with this field set to ``''`` to get an ID
+    #: for :meth:`.commentfile_directory_path`, then updated with
+    #: a file set to something.
     file = models.FileField(upload_to=commentfile_directory_path, max_length=512,
-                            null=True, blank=True)
+                            null=False, blank=True, default='')
     filename = models.CharField(max_length=MAX_FILENAME_LENGTH)
     filesize = models.PositiveIntegerField()
     comment = models.ForeignKey(Comment)
