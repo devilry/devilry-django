@@ -5,6 +5,17 @@ CELERY_EAGER_PROPAGATES_EXCEPTIONS = True
 CELERY_EAGER_TRANSACTION = True
 BROKER_BACKEND = 'memory'
 
+developfilesdir = 'devilry_testfiles'
+if not exists(developfilesdir):
+    os.mkdir(developfilesdir)
+logdir = join(developfilesdir, 'log')
+if not exists(logdir):
+    os.mkdir(logdir)
+MEDIA_ROOT = join(developfilesdir, "filestore")
+DEVILRY_FSHIERDELIVERYSTORE_ROOT = join(developfilesdir, 'deliverystorehier')
+LOGGING = create_logging_conf(logdir)
+
+
 if 'devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware' in MIDDLEWARE_CLASSES:
     MIDDLEWARE_CLASSES.remove('devilry.utils.logexceptionsmiddleware.TracebackLoggingMiddleware')
 

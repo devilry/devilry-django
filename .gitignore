@@ -21,6 +21,8 @@ dbdev_tempdata/
 /devilry_developfiles/
 /devilry/devilry_developfiles/
 /not_for_deploy/docs/devilry_developfiles/
+/devilry_testfiles/
+/devilry/devilry_testfiles/
 /dist/
 
 .ipynb_checkpoints/
