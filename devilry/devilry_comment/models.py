@@ -61,6 +61,16 @@ class Comment(models.Model):
 
 
 def commentfile_directory_path(instance, filename):
+    """
+    The ``upload_to`` function for :obj:`.CommentFile.file`.
+
+    Args:
+        instance: The :class:`.CommentFile` instance.
+        filename: Not used to generate the ``upload_to`` path.
+
+    Raises:
+        ValidationError: If ``instance.id`` is ``None``.
+    """
     if instance.id is None:
         raise ValueError('Can not save a comment file for a comment without an id.')
     return 'devilry_comment/{}/{}'.format(instance.comment.id, instance.id)
@@ -76,7 +86,12 @@ class CommentFile(models.Model):
     MAX_FILENAME_LENGTH = 255
 
     mimetype = models.CharField(max_length=42)
-    file = models.FileField(upload_to=commentfile_directory_path, max_length=512)
+
+    #: The file uploaded to the comment. Note that this is ``null=True`` because the
+    #: comment must first be created with this field set to ``None`` to get an ID
+    #: for :meth:`.commentfile_directory_path`
+    file = models.FileField(upload_to=commentfile_directory_path, max_length=512,
+                            null=True, blank=True)
     filename = models.CharField(max_length=MAX_FILENAME_LENGTH)
     filesize = models.PositiveIntegerField()
     comment = models.ForeignKey(Comment)
