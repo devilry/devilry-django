@@ -89,6 +89,8 @@ class ChooseMethod(TemplateView):
 
 
 class CreateGroupsViewMixin(object):
+    exclude_students_already_on_assignment = True
+
     form_invalid_message = pgettext_lazy(
         'admin create_groups',
         'Oups! Something went wrong. This may happen if someone edited '
@@ -107,8 +109,9 @@ class CreateGroupsViewMixin(object):
 
     def get_unfiltered_queryset_for_role(self, role):
         queryset = self.period.relatedstudent_set\
-            .select_related('user')\
-            .exclude(pk__in=self.__get_relatedstudents_in_group_on_assignment())
+            .select_related('user')
+        if self.exclude_students_already_on_assignment:
+            queryset = queryset.exclude(pk__in=self.__get_relatedstudents_in_group_on_assignment())
         return queryset
 
     def get_form_class(self):
@@ -134,6 +137,7 @@ class CreateGroupsViewMixin(object):
             return self.form_invalid(form)
 
     def create_groups_with_candidate_and_feedbackset(self, relatedstudent_queryset):
+        # self.
         assignment = self.request.cradmin_role
         return AssignmentGroup.objects.bulk_create_groups(
             created_by_user=self.request.user,
