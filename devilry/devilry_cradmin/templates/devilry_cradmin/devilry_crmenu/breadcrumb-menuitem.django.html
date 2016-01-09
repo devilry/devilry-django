@@ -1,0 +1,8 @@
+{% extends "django_cradmin/menuitem.django.html" %}
+{% load cradmin_icon_tags %}
+
+{% block link-label %}
+    {{ block.super }}
+    <span class='{% cradmin_icon "devilry-breadcrumb-suffix" %} devilry-django-cradmin-menuitem-breadcrumb-icon'
+          aria-hidden="true"></span>
+{% endblock link-label %}

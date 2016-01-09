@@ -1,21 +1,22 @@
-from django_cradmin import crmenu
 from django_cradmin import crinstance
-from django.utils.translation import ugettext_lazy as _
 
 from devilry.apps.core.models import Assignment
+from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_admin.views.assignment import overview
-from devilry.devilry_admin.views.assignment.students import overview as studentoverview
 from devilry.devilry_admin.views.assignment.students import create_groups
+from devilry.devilry_admin.views.assignment.students import overview as studentoverview
 from devilry.devilry_admin.views.assignment.students import replace_groups
 
 
-class Menu(crmenu.Menu):
+class Menu(devilry_crmenu_admin.Menu):
     def build_menu(self):
+        super(Menu, self).build_menu()
         assignment = self.request.cradmin_role
-        self.add_menuitem(
-            label=assignment.short_name,
-            active=self.request.cradmin_app.appname == 'overview',
-            url=self.appindex_url('overview'))
+        self.add_role_menuitem_object()
+        self.add_subject_breadcrumb_item(subject=assignment.subject)
+        self.add_period_breadcrumb_item(period=assignment.period)
+        self.add_assignment_breadcrumb_item(assignment=assignment,
+                                            active=True)
 
 
 class CrAdminInstance(crinstance.BaseCrAdminInstance):

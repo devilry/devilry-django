@@ -3,6 +3,7 @@ from django_cradmin import crmenu
 from django_cradmin import crinstance
 
 from devilry.apps.core.models import Period
+from devilry.devilry_admin.cradminextensions import devilry_crmenu_admin
 from devilry.devilry_admin.views.period import overview
 from devilry.devilry_admin.views.period import students
 from devilry.devilry_admin.views.period import examiners
@@ -11,29 +12,13 @@ from devilry.devilry_admin.views.period import createassignment
 from devilry.devilry_admin.views.period import qualifiedforfinalexams
 
 
-class Menu(crmenu.Menu):
+class Menu(devilry_crmenu_admin.Menu):
     def build_menu(self):
+        super(Menu, self).build_menu()
         period = self.request.cradmin_role
-        self.add_menuitem(
-            label=period.short_name,
-            active=self.request.cradmin_app.appname == 'overview',
-            url=self.appindex_url('overview'))
-        self.add_menuitem(
-            label=_('Students'),
-            active=self.request.cradmin_app.appname == 'students',
-            url=self.appindex_url('students'))
-        self.add_menuitem(
-            label=_('Qualified for final exams'),
-            active=self.request.cradmin_app.appname == 'qualifiedforfinalexams',
-            url=self.appindex_url('qualifiedforfinalexams'))
-        self.add_menuitem(
-            label=_('Examiners'),
-            active=self.request.cradmin_app.appname == 'examiners',
-            url=self.appindex_url('examiners'))
-        self.add_menuitem(
-            label=_('Administrators'),
-            active=self.request.cradmin_app.appname == 'admins',
-            url=self.appindex_url('admins'))
+        self.add_role_menuitem_object()
+        self.add_subject_breadcrumb_item(subject=period.subject)
+        self.add_period_breadcrumb_item(period=period, active=True)
 
 
 class CrAdminInstance(crinstance.BaseCrAdminInstance):
