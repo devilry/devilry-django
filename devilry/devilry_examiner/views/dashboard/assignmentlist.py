@@ -14,7 +14,7 @@ class AssignmentListView(listbuilderview.FilterListMixin,
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
-            crapp.INDEXVIEW_NAME,
+            'filter',
             kwargs={'filters_string': filters_string})
 
     def add_filterlist_items(self, filterlist):
@@ -22,7 +22,14 @@ class AssignmentListView(listbuilderview.FilterListMixin,
             slug='search',
             label=ugettext_lazy('Search'),
             label_is_screenreader_only=True,
-            modelfields=['title']))
+            modelfields=[
+                'long_name',
+                'short_name',
+                'parentnode__long_name',
+                'parentnode__short_name',
+                'parentnode__parentnode__long_name',
+                'parentnode__parentnode__short_name',
+            ]))
 
     def get_unfiltered_queryset_for_role(self, role):
         return coremodels.Assignment.objects.filter_is_examiner(user=self.request.user)
@@ -30,7 +37,10 @@ class AssignmentListView(listbuilderview.FilterListMixin,
 
 class App(crapp.App):
     appurls = [
-        crapp.Url(r'^(?P<filters_string>.+)?$',
+        crapp.Url(r'^$',
                   AssignmentListView.as_view(),
-                  name=crapp.INDEXVIEW_NAME)
+                  name=crapp.INDEXVIEW_NAME),
+        crapp.Url(r'^filter/(?P<filters_string>.+)?$',
+                  AssignmentListView.as_view(),
+                  name='filter'),
     ]
