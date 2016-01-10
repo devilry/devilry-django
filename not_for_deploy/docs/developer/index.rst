@@ -67,6 +67,7 @@ Apps
     devilry_theme
     devilry_elasticsearch_cache
     devilry_account
+    devilry_group
 
 
 ******************************
