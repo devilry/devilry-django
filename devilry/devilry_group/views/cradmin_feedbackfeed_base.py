@@ -115,13 +115,11 @@ class FeedbackFeedBaseView(create.CreateView):
 
         assignment_group = self.request.cradmin_role
         user = self.request.user
-        time = datetime.datetime.now()
 
         object = form.save(commit=False)
         object.user = user
         object.comment_type = 'groupcomment'
         object.feedback_set = assignment_group.feedbackset_set.latest('created_datetime')
-        object.grading_published_datetime = time
 
         return object
 
@@ -144,6 +142,3 @@ class FeedbackFeedBaseView(create.CreateView):
             groupcomment.add_commentfile_from_temporary_file(tempfile=temporaryfile)
 
         return True
-
-
-
