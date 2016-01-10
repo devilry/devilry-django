@@ -39,7 +39,7 @@ class AssignmentListView(listbuilderview.FilterListMixin,
             ]))
 
     def get_unfiltered_queryset_for_role(self, role):
-        return coremodels.Assignment.objects.filter_is_examiner(user=self.request.user)
+        return coremodels.Assignment.objects.filter_examiner_has_access(user=self.request.user)
 
 
 class App(crapp.App):
