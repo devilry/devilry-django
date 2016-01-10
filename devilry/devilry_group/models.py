@@ -13,15 +13,9 @@ class AbstractGroupComment(comment_models.Comment):
     """
     The abstract superclass of all comments related to a delivery and feedback
     """
+
+    #: The related feedbackset. See :class:`.FeedbackSet`.
     feedback_set = models.ForeignKey('FeedbackSet')
-
-    # #: If this is ``True``
-    # instant_publish = models.BooleanField(default=False)
-
-    # #: Is the comment visible for students? This is always ``True`` for
-    # #: comments added by students, but examiners can set this to ``False`` to
-    # #: save a draft.
-    # visible_for_students = models.BooleanField(default=False)
 
     #: If this is ``True``, the comment is published when the feedbackset
     #: is published. This means that this comment is part of the feedback/grading
@@ -30,10 +24,13 @@ class AbstractGroupComment(comment_models.Comment):
     #: this only controls when the comment is published.
     part_of_grading = models.BooleanField(default=False)
 
+    #:
     VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS = 'visible-to-examiner-and-admins'
 
+    #:
     VISIBILITY_VISIBLE_TO_EVERYONE = 'visible-to-everyone'
 
+    #:
     VISIBILITY_CHOICES = [
         (VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS, 'Visible to examiners and admins'),
         (VISIBILITY_VISIBLE_TO_EVERYONE, 'visible-to-everyone'),
@@ -64,6 +61,9 @@ class FeedbackSet(models.Model):
 
     #: The AssignmentGroup that owns this feedbackset.
     group = models.ForeignKey(assignment_group.AssignmentGroup)
+
+    #: Is the last feedbackset for :obj:`~.FeedbackSet.group`? Must be None or True.
+    is_last_in_group = models.NullBooleanField(default=True)
 
     #: The User that created the feedbackset. Only used as metadata
     #: for superusers (for debugging).
@@ -114,6 +114,9 @@ class FeedbackSet(models.Model):
         null=False, blank=True, default=''
     )
 
+    class Meta:
+        unique_together = ('group', 'is_last_in_group')
+
     def __unicode__(self):
         return u"{} - {} - {}".format(self.group.assignment, self.group, self.deadline_datetime)
 
@@ -127,6 +130,10 @@ class FeedbackSet(models.Model):
             raise ValidationError({
                 'grading_published_datetime': ugettext_lazy('An assignment can not be published '
                                                             'without providing "points".'),
+            })
+        if self.is_last_in_group is False:
+            raise ValidationError({
+                'is_last_in_group': 'is_last_in_group can not be false.'
             })
 
     # @property
