@@ -18,29 +18,27 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
                           student.assignment_group.assignment.get_path())
 
     def test_get_feedbackset_student_comment_after_deadline(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = mommy.make('core.Assignment', first_deadline=timezone.now())
         candidate = mommy.make('core.Candidate', assignment_group__parentnode=assignment)
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.student,
                              user_role='student',
                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                              published_datetime=timezone.now() + timezone.timedelta(days=1),
-                             feedback_set__group=candidate.assignment_group,
-                             feedback_set__deadline_datetime=timezone.now())
+                             feedback_set__group=candidate.assignment_group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
                                                           requestuser=comment.user)
         self.assertTrue(mockresponse.selector.exists('.after-deadline-badge'))
 
     def test_get_feedbackset_comment_student_before_deadline(self):
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        assignment = mommy.make('core.Assignment', first_deadline=timezone.now())
         candidate = mommy.make('core.Candidate', assignment_group__parentnode=assignment)
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.student,
                              user_role='student',
                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                              published_datetime=timezone.now() - timezone.timedelta(days=1),
-                             feedback_set__group=candidate.assignment_group,
-                             feedback_set__deadline_datetime=timezone.now())
+                             feedback_set__group=candidate.assignment_group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group,
                                                           requestuser=comment.user)
         self.assertFalse(mockresponse.selector.exists('.after-deadline-badge'))
