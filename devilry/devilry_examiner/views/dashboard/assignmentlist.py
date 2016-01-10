@@ -1,6 +1,6 @@
 from __future__ import unicode_literals
 
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin import crapp
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
@@ -11,6 +11,13 @@ from devilry.apps.core import models as coremodels
 class AssignmentListView(listbuilderview.FilterListMixin,
                          listbuilderview.View):
     model = coremodels.Assignment
+
+    def get_filterlist_template_name(self):
+        return 'devilry_examiner/dashboard/assignmentlist.django.html'
+
+    def get_pagetitle(self):
+        return pgettext_lazy('examiner assignmentlist',
+                             'Examiner dashboard')
 
     def get_filterlist_url(self, filters_string):
         return self.request.cradmin_app.reverse_appurl(
@@ -32,7 +39,7 @@ class AssignmentListView(listbuilderview.FilterListMixin,
             ]))
 
     def get_unfiltered_queryset_for_role(self, role):
-        return coremodels.Assignment.objects.filter_is_examiner(user=self.request.user)
+        return coremodels.Assignment.objects.filter_examiner_has_access(user=self.request.user)
 
 
 class App(crapp.App):
