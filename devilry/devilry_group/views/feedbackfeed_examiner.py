@@ -1,5 +1,7 @@
 # django imports
 import datetime
+
+from django.utils import timezone
 from django_cradmin import crapp
 from django.utils.translation import ugettext_lazy as _
 
@@ -42,14 +44,13 @@ class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         object.user_role = 'examiner'
 
         if form.data.get('examiner_add_comment_for_examiners'):
-            object.instant_publish = True
-            object.visible_for_students = False
+            object.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
+            object.published_datetime = timezone.now()
         elif form.data.get('examiner_add_public_comment'):
-            object.instant_publish = True
-            object.visible_for_students = True
+            object.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+            object.published_datetime = timezone.now()
         elif form.data.get('examiner_add_comment_to_feedback_draft'):
-            object.instant_publish = False
-            object.visible_for_students = False
+            object.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
 
 
         if commit:
