@@ -30,7 +30,6 @@ class AbstractGroupComment(comment_models.Comment):
     #: this only controls when the comment is published.
     part_of_grading = models.BooleanField(default=False)
 
-
     VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS = 'visible-to-examiner-and-admins'
 
     VISIBILITY_VISIBLE_TO_EVERYONE = 'visible-to-everyone'
