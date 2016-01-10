@@ -63,9 +63,9 @@
 <!-- Content -->
     <div class="container">
 
-        {% block sidebar %}
-            {% include "devilry_group/include/sidebar.django.html" %}
-        {% endblock sidebar %}
+{#        {% block sidebar %}#}
+{#            {% include "devilry_group/include/sidebar.django.html" %}#}
+{#        {% endblock sidebar %}#}
 
 
         <div class="row">
@@ -105,7 +105,7 @@
                                                     <p class="comment-published-date-text"> {{ comment.published_datetime }}</p>
                                                 </div>
                                             </div>
-                                            <div class="comment-text">
+                                            <div class="devilry-group-comment-text">
                                                 {% blocktrans with text=comment.text|devilry_group_markdown|safe %} {{text}} {% endblocktrans %}
                                             </div>
                                             {% for file in comment.commentfile_set.all %}
@@ -116,7 +116,10 @@
                                         </div>
 
                                         {% if comment.user_role == "examiner" %}
-                                            {% if  not comment.instant_publish and not comment.feedback_set.grading_published_datetime %}
+                                            <!--
+                                            Mush handle comments that are part of the grading, but have not been published yet!
+                                            -->
+                                            {% if  not comment.instant_publish and not comment.feedback_set.published_datetime %}
                                                 <div class="devilry-group-feedbackfeed-right-badge-field not-published-badge">
                                                     <p class="badge-text">{% trans "Not published" %}</p>
     {#                                                <p class="badge-text-new">{% trans "NOT PUBLISHED" %}</p>#}
