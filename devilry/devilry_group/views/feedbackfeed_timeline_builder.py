@@ -41,20 +41,23 @@ class FeedbackFeedTimelineBuilder(object):
         :return:
         """
         if len(feedbacksets) == 0:
-            return group.assignment.first_deadline, timeline
+            return group.parentnode.first_deadline, timeline
 
         first_feedbackset = feedbacksets[0]
-        last_deadline = first_feedbackset.deadline_datetime
+        # last_deadline = first_feedbackset.deadline_datetime
+        last_deadline = None
 
         for index, feedbackset in enumerate(feedbacksets):
             if index == 0:
-                if group.assignment.first_deadline is not None:
-                    deadline_datetime = group.assignment.first_deadline
+                if group.parentnode.first_deadline is not None:
+                    deadline_datetime = group.parentnode.first_deadline
+                    last_deadline = group.parentnode.first_deadline
                 else:
                     deadline_datetime = feedbackset.deadline_datetime
                 # deadline_datetime = group.assignment.first_deadline
             else:
                 deadline_datetime = feedbackset.deadline_datetime
+                last_deadline = feedbackset.deadline_datetime
             if deadline_datetime not in timeline.keys():
                 timeline[deadline_datetime] = []
 
@@ -73,11 +76,11 @@ class FeedbackFeedTimelineBuilder(object):
             # Add available first_deadline, either assignment.first_deadline(if index is 0)
             # or
             # feedbackset.deadline_datetime
-            if group.assignment.first_deadline is not None and index == 0:
-                if deadline_datetime <= group.assignment.first_deadline:
+            if group.parentnode.first_deadline is not None and index == 0:
+                if deadline_datetime <= group.parentnode.first_deadline:
                     timeline[feedbackset.created_datetime].append({
                         "type": "deadline_created",
-                        "obj": group.assignment.first_deadline,
+                        "obj": group.parentnode.first_deadline,
                         "user": first_feedbackset.created_by
                     })
                     first_feedbackset = feedbackset
