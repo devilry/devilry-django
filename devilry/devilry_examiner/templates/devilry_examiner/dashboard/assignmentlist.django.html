@@ -1,0 +1,9 @@
+{% extends "django_cradmin/viewhelpers/listbuilderview/filterlist-right.django.html" %}
+{% load i18n %}
+
+{% block pageheader-inner %}
+    {{ block.super }}
+    <p class="devilry-page-subheader">
+        {% trans "Dashboard for the examiner role. You use this role to provide feedback to students." %}
+    </p>
+{% endblock pageheader-inner %}

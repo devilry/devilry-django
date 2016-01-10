@@ -11,7 +11,7 @@ from devilry.devilry_examiner.views.dashboard import assignmentlist
 class Menu(devilry_crmenu_examiner.Menu):
     def build_menu(self):
         super(Menu, self).build_menu()
-        self.add_role_menuitem_object()
+        self.add_role_menuitem_object(active=True)
 
 
 class CrAdminInstance(crinstance.BaseCrAdminInstance):
