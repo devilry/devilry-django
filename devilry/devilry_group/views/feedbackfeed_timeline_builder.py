@@ -1,14 +1,15 @@
 import collections
 import datetime
 
+from django.utils import timezone
+
 from devilry.devilry_group import models as group_models
-from devilry.devilry_gradeform.views import grade_form, viewable_gradeform
 
 
-class FeedbackFeedTimelineBuilder():
+class FeedbackFeedTimelineBuilder(object):
 
     def __init__(self, view):
-        self.viewclass=view
+        self.viewclass = view
 
     def get_feedbacksets_for_group(self, group):
         """
@@ -56,9 +57,16 @@ class FeedbackFeedTimelineBuilder():
                 deadline_datetime = feedbackset.deadline_datetime
             if deadline_datetime not in timeline.keys():
                 timeline[deadline_datetime] = []
-            timeline[deadline_datetime].append({
-                "type": "deadline_expired"
-            })
+
+            # timeline[deadline_datetime].append({
+            #     "type": "deadline_expired"
+            # })
+
+            if deadline_datetime is not None and deadline_datetime <= timezone.now():
+                timeline[deadline_datetime].append({
+                    "type": "deadline_expired"
+                })
+
             if feedbackset.created_datetime not in timeline.keys():
                 timeline[feedbackset.created_datetime] = []
 
