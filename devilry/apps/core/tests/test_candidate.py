@@ -13,6 +13,7 @@ class TestCandidateQuerySet(test.TestCase):
                                     passing_grade_min_points=1)
         passingfeecbackset = mommy.make('devilry_group.FeedbackSet',
                                         grading_published_datetime=timezone.now(),
+                                        is_last_in_group=None,
                                         group__parentnode=testassignment,
                                         grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
@@ -43,6 +44,7 @@ class TestCandidateQuerySet(test.TestCase):
         testcandidate = mommy.make('core.Candidate', assignment_group=testgroup)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_published_datetime=timezone.now() - timedelta(days=2),
                    grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
@@ -61,10 +63,12 @@ class TestCandidateQuerySet(test.TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=2),
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_points=0)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now(),
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=3),
@@ -82,10 +86,12 @@ class TestCandidateQuerySet(test.TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=2),
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now(),
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_points=0)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=3),
