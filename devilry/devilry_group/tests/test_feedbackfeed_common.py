@@ -244,6 +244,7 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         group = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
+                   is_last_in_group=None,
                    deadline_datetime=timezone.now() + timezone.timedelta(days=3))
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
@@ -259,6 +260,7 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         group = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
+                   is_last_in_group=None,
                    deadline_datetime=timezone.now() - timezone.timedelta(days=3))
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
@@ -273,7 +275,7 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         # using assignment first_deadline
         group = mommy.make('core.AssignmentGroup',
                            parentnode__first_deadline=timezone.now() + timezone.timedelta(days=3))
-        mommy.make('devilry_group.FeedbackSet', group=group)
+        mommy.make('devilry_group.FeedbackSet', group=group, is_last_in_group=None)
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
                    created_datetime=timezone.now() + timezone.timedelta(days=4),
@@ -287,7 +289,9 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         # using assignment first_deadline
         group = mommy.make('core.AssignmentGroup',
                            parentnode__first_deadline=timezone.now() - timezone.timedelta(days=8))
-        mommy.make('devilry_group.FeedbackSet', group=group)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=group,
+                   is_last_in_group=None)
         mommy.make('devilry_group.FeedbackSet',
                    group=group,
                    created_datetime=timezone.now() - timezone.timedelta(days=6),
