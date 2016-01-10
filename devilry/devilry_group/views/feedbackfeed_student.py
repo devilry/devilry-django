@@ -1,5 +1,7 @@
 # django imports
 import datetime
+
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crapp
 from django.db.models import Q
@@ -38,9 +40,7 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     def save_object(self, form, commit=True):
         object = super(StudentFeedbackFeedView, self).save_object(form)
         object.user_role = 'student'
-        # object.instant_publish = True
-        # object.visible_for_students = True
-        object.visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE
+        object.published_datetime = timezone.now()
 
         if commit:
             if self._convert_temporary_files_to_comment_files(form, object) or len(object.text) > 0:
