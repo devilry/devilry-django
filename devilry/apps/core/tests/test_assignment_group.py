@@ -529,6 +529,7 @@ class TestAssignmentGroup(TestCase):
                                     passing_grade_min_points=1)
         passingfeecbackset = mommy.make('devilry_group.FeedbackSet',
                                         grading_published_datetime=timezone.now(),
+                                        is_last_in_group=None,
                                         group__parentnode=testassignment,
                                         grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
@@ -556,6 +557,7 @@ class TestAssignmentGroup(TestCase):
         testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_published_datetime=timezone.now() - timedelta(days=2),
                    grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
@@ -573,14 +575,17 @@ class TestAssignmentGroup(TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=2),
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_points=0)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now(),
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=3),
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_points=0)
         self.assertEqual(
             [testgroup],
@@ -593,10 +598,12 @@ class TestAssignmentGroup(TestCase):
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=2),
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_points=1)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now(),
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_points=0)
         mommy.make('devilry_group.FeedbackSet',
                    grading_published_datetime=timezone.now() - timedelta(days=3),
@@ -650,7 +657,8 @@ class TestAssignmentGroup(TestCase):
     def test_annotate_with_number_of_groupcomments_multiple(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.GroupComment',
-                   feedback_set__group=testgroup)
+                   feedback_set__group=testgroup,
+                   feedback_set__is_last_in_group=None)
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup)
         self.assertEqual(
@@ -668,7 +676,8 @@ class TestAssignmentGroup(TestCase):
     def test_annotate_with_number_of_imageannotationcomments_multiple(self):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.ImageAnnotationComment',
-                   feedback_set__group=testgroup)
+                   feedback_set__group=testgroup,
+                   feedback_set__is_last_in_group=None,)
         mommy.make('devilry_group.ImageAnnotationComment',
                    feedback_set__group=testgroup)
         self.assertEqual(
@@ -687,12 +696,15 @@ class TestAssignmentGroup(TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_published_datetime=timezone.now())
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_published_datetime=timezone.now())
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
+                   is_last_in_group=None,
                    grading_published_datetime=None)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup,
@@ -707,12 +719,15 @@ class TestAssignmentGroup(TestCase):
         testgroup2 = mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup1,
+                   is_last_in_group=None,
                    grading_published_datetime=timezone.now())
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup1,
+                   is_last_in_group=None,
                    grading_published_datetime=timezone.now())
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup2,
+                   is_last_in_group=None,
                    grading_published_datetime=None)
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup2,
@@ -732,9 +747,11 @@ class TestAssignmentGroup(TestCase):
         mommy.make('core.AssignmentGroup')
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup_with_published_feedback,
+                   is_last_in_group=None,
                    grading_published_datetime=timezone.now())
         mommy.make('devilry_group.FeedbackSet',
                    group=testgroup_with_unpublished_feedback,
+                   is_last_in_group=None,
                    grading_published_datetime=None)
         mommy.make('devilry_group.GroupComment',
                    feedback_set__group=testgroup_with_groupcomment)
