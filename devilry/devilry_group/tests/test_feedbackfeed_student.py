@@ -1,7 +1,5 @@
-from django.test import TestCase, RequestFactory
+from django.test import TestCase
 from django.utils import timezone
-import htmls
-import mock
 from model_mommy import mommy
 
 from devilry.devilry_group.tests import test_feedbackfeed_common
@@ -25,8 +23,6 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.student,
                              user_role='student',
-                             # instant_publish=True,
-                             # visible_for_students=True,
                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                              published_datetime=timezone.now() + timezone.timedelta(days=1),
                              feedback_set__group=candidate.assignment_group,
@@ -41,8 +37,6 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.student,
                              user_role='student',
-                             # instant_publish=True,
-                             # visible_for_students=True,
                              visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                              published_datetime=timezone.now() - timezone.timedelta(days=1),
                              feedback_set__group=candidate.assignment_group,
@@ -56,15 +50,13 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         janedoe = mommy.make('core.Candidate', assignment_group=group, student__fullname='Jane Doe')
         johndoe = mommy.make('core.Candidate', assignment_group=group, student__fullname='John Doe')
-        comment = mommy.make('devilry_group.GroupComment',
-                             user=johndoe.student,
-                             user_role='student',
-                             # instant_publish=True,
-                             # visible_for_students=True,
-                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
-                             published_datetime=timezone.now() - timezone.timedelta(days=1),
-                             feedback_set__group=group,
-                             feedback_set__deadline_datetime=timezone.now())
+        mommy.make('devilry_group.GroupComment',
+                   user=johndoe.student,
+                   user_role='student',
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   published_datetime=timezone.now() - timezone.timedelta(days=1),
+                   feedback_set__group=group,
+                   feedback_set__deadline_datetime=timezone.now())
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=janedoe.assignment_group,
                                                           requestuser=janedoe.student)
         name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
@@ -87,83 +79,57 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
     #                                                       requestuser=candidate.student)
     #     self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
 
-    # def test_get_feedbackfeed_student_can_see_examiner_comment_visible_to_students_true(self):
-    #     janedoe = UserBuilder2(fullname='Jane Doe').user
-    #     examiner = UserBuilder2(fullname='John Doe').user
-    #     time = timezone.now()
-    #     feedbackset_builder = FeedbackSetBuilder.make(
-    #         group__assignment__first_deadline=time,
-    #         deadline_datetime = time
-    #     )
-    #     feedbackset_builder.add_groupcomment(
-    #         user=examiner,
-    #         user_role='examiner',
-    #         instant_publish=True,
-    #         visible_for_students=True,
-    #         text="hello world",
-    #         grading_published_datetime=timezone.now()
-    #     )
-    #     selector, request = self._mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-    #                                                              requestuser=janedoe,
-    #                                                              group=janedoe)
-    #     self.assertTrue(selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
-    #
-    # def test_get_feedbackfeed_student_can_not_see_examiner_comment_visible_to_students_false(self):
-    #     janedoe = UserBuilder2(fullname='Jane Doe').user
-    #     examiner = UserBuilder2(fullname='John Doe').user
-    #     time = timezone.now()
-    #     feedbackset_builder = FeedbackSetBuilder.make(
-    #         group__assignment__first_deadline=time,
-    #         deadline_datetime = time
-    #     )
-    #     feedbackset_builder.add_groupcomment(
-    #         user=examiner,
-    #         user_role='examiner',
-    #         instant_publish=True,
-    #         visible_for_students=False,
-    #         text="hello world",
-    #         grading_published_datetime=timezone.now()
-    #     )
-    #     selector, request = self._mock_http200_getrequest_htmls(role=feedbackset_builder.get_object().group,
-    #                                                              requestuser=janedoe,
-    #                                                              group=janedoe)
-    #     self.assertFalse(selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
-    #
-    # def test_post(self):
-    #     janedoe = UserBuilder2(fullname='Jane Doe').user
-    #     assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
-    #     assignment_group = mommy.make('core.AssignmentGroup')
-    #     response, request = self._mock_postrequest(role=assignment_group, requestuser=janedoe, group=janedoe)
-    #
-    #     self.assertEquals(response.status_code, 200)
+    def test_get_feedbackfeed_student_can_see_examiner_visibility_visible_to_everyone(self):
+        group = mommy.make('core.AssignmentGroup')
+        student = mommy.make('core.Candidate', assignment_group=group)
+        examiner = mommy.make('core.Examiner', assignmentgroup=group, user__fullname='John Doe')
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.user,
+                   user_role='examiner',
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
+                   published_datetime=timezone.now() - timezone.timedelta(days=1),
+                   feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=student.assignment_group,
+                                                          requestuser=student.student)
+        name = mockresponse.selector.one('.devilry-user-verbose-inline-fullname').alltext_normalized
+        self.assertEquals(examiner.user.fullname, name)
 
-    # def test_post_feedbackset_post_comment(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet',
-    #                              group__parentnode__max_points=10,
-    #                              group__parentnode__passing_grade_min_points=5)
-    #     mockresponse = self.mock_http302_postrequest(
-    #         cradmin_role=feedbackset.group,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': 'test',
-    #             }
-    #         })
-    #
-    #     comment = GroupComment.objects.filter(feedback_set__id=feedbackset.id)
-    #     self.assertEquals(1, len(comment))
-    #
-    # def test_post_feedbackset_post_comment_no_text(self):
-    #     feedbackset = mommy.make('devilry_group.FeedbackSet',
-    #                              group__parentnode__max_points=10,
-    #                              group__parentnode__passing_grade_min_points=5)
-    #     mockresponse = self.mock_http302_postrequest(
-    #         cradmin_role=feedbackset.group,
-    #         viewkwargs={'pk': feedbackset.group.id},
-    #         requestkwargs={
-    #             'data': {
-    #                 'text': '',
-    #             }
-    #         })
-    #     comments = GroupComment.objects.all()
-    #     self.assertEquals(0, len(comments))
+    def test_get_feedbackfeed_student_can_not_see_examiner_comment_visibility_visible_to_examiner_and_admins(self):
+        group = mommy.make('core.AssignmentGroup')
+        student = mommy.make('core.Candidate', assignment_group=group, student__fullname='Jane Doe')
+        examiner = mommy.make('core.Examiner', assignmentgroup=group, user__fullname='John Doe')
+        mommy.make('devilry_group.GroupComment',
+                   user=examiner.user,
+                   user_role='examiner',
+                   visibility=GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS,
+                   published_datetime=timezone.now() - timezone.timedelta(days=1),
+                   feedback_set__group=group)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=student.assignment_group,
+                                                          requestuser=student.student)
+        self.assertFalse(mockresponse.selector.exists('.devilry-group-comment-created-by-role'))
+
+    def test_post_feedbackset_comment_with_text(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet')
+        student = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        self.mock_http302_postrequest(
+            cradmin_role=student.assignment_group,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'test',
+                }
+            })
+        self.assertEquals(1, len(GroupComment.objects.all()))
+
+    def test_post_feedbackset_post_comment_without_text(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet')
+        student = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        self.mock_http302_postrequest(
+            cradmin_role=student.assignment_group,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': '',
+                }
+            })
+        self.assertEquals(0, len(GroupComment.objects.all()))
