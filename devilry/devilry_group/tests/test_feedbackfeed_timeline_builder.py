@@ -20,6 +20,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
     def test_student_timelinebuilder_two_feedbacksets_last_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+                                  is_last_in_group=None,
                                   group__parentnode=assignment)
         feedbackset2 = mommy.make('devilry_group.FeedbackSet',
                                   group=feedbackset1.group,
@@ -38,6 +39,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
     def test_examiner_timelinebuilder_two_feedbacksets_last_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+                                  is_last_in_group=None,
                                   group__parentnode=assignment)
         feedbackset2 = mommy.make('devilry_group.FeedbackSet',
                                   group=feedbackset1.group,
@@ -56,6 +58,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
     def test_admin_timelinebuilder_two_feedbacksets_last_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
+                                  is_last_in_group=None,
                                   group__parentnode=assignment)
         feedbackset2 = mommy.make('devilry_group.FeedbackSet',
                                   group=feedbackset1.group,
@@ -68,10 +71,10 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
     def test_get_feedbacksets_for_group(self):
         timelinebuilder = FeedbackFeedTimelineBuilder(None)
         assignment_group = mommy.make('core.AssignmentGroup')
-        mommy.make('devilry_group.FeedbackSet', group=assignment_group)
-        mommy.make('devilry_group.FeedbackSet', group=assignment_group)
-        mommy.make('devilry_group.FeedbackSet', group=assignment_group)
-        mommy.make('devilry_group.FeedbackSet', group=assignment_group)
+        mommy.make('devilry_group.FeedbackSet', group=assignment_group, is_last_in_group=None,)
+        mommy.make('devilry_group.FeedbackSet', group=assignment_group, is_last_in_group=None,)
+        mommy.make('devilry_group.FeedbackSet', group=assignment_group, is_last_in_group=None,)
+        mommy.make('devilry_group.FeedbackSet', group=assignment_group, is_last_in_group=None,)
         mommy.make('devilry_group.FeedbackSet', group=assignment_group)
 
         self.assertEquals(5, len(timelinebuilder.get_feedbacksets_for_group(assignment_group)))
