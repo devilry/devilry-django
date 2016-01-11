@@ -33,10 +33,28 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.student,
                              user_role='student',
-                             visibility=GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
                              published_datetime=timezone.now() + timezone.timedelta(days=1),
                              feedback_set__group=candidate.assignment_group)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
+        self.assertTrue(mockresponse.selector.exists('.after-deadline-badge'))
+
+    def test_get_feedbackset_student_comment_after_deadline_with_new_feedbackset(self):
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        candidate = mommy.make('core.Candidate', assignment_group=group)
+        feedbackset1 = mommy.make('devilry_group.FeedbackSet', group=group, is_last_in_group=False)
+        feedbackset2 = mommy.make('devilry_group.FeedbackSet', group=group, deadline_datetime=timezone.now()+timezone.timedelta(days=1))
+        mommy.make('devilry_group.GroupComment',
+                             user=candidate.student,
+                             user_role='student',
+                             published_datetime=timezone.now(),
+                             feedback_set=feedbackset1)
+        mommy.make('devilry_group.GroupComment',
+                             user=candidate.student,
+                             user_role='student',
+                             published_datetime=timezone.now(),
+                             feedback_set=feedbackset2)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         self.assertTrue(mockresponse.selector.exists('.after-deadline-badge'))
 
     def test_get_feedbackset_comment_student_before_deadline(self):

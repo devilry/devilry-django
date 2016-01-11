@@ -124,7 +124,10 @@
                                                 </div>
                                             {% endif %}
                                         {% elif comment.user_role == "student" %}
-                                            {% if comment.published_datetime > last_deadline %}
+                                            <!--
+                                            Check if comment is posted after the its related deadline
+                                            -->
+                                            {% if comment.published_datetime > event.related_deadline %}
                                                 <div class="devilry-group-feedbackfeed-right-badge-field after-deadline-badge">
                                                     <p class="devilry-group-feedbackfeed-badge-text">{% trans "Not part of delivery" %}</p>
 {#                                                    <p class="badge-text-new">{% trans "NOT PART OF DELIVERY" %}</p>#}
