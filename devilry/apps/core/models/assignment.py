@@ -32,16 +32,6 @@ class AssignmentHasGroupsError(Exception):
 
 class AssignmentQuerySet(models.query.QuerySet):
 
-    def not_in_use_filter_is_examiner(self, user):
-        """
-        Returns a queryset with all Assignments  where the given ``user`` is examiner.
-
-        WARNING: You should normally not use this directly because it gives the
-        examiner information from expired periods (which in most cases are not necessary
-        to get). Use :meth:`.filter_examiner_has_access` instead.
-        """
-        return self.filter(assignmentgroups__examiners__user=user).distinct()
-
     def filter_user_is_examiner(self, user):
         """
         Filter all :class:`.Assignment` objects where the given user is examiner.
@@ -50,16 +40,6 @@ class AssignmentQuerySet(models.query.QuerySet):
             user: A :class:`devilry.devilry_account.models.User` object.
         """
         return self.filter(assignmentgroups__examiners__relatedexaminer__user=user).distinct()
-
-    def not_in_use_filter_is_candidate(self, user):
-        """
-        Returns a queryset with all Assignments  where the given ``user`` is candidate.
-
-        WARNING: You should normally not use this directly because it gives the
-        candidate information from expired periods (which in most cases are not necessary
-        to get). Use :meth:`.filter_student_has_access` instead.
-        """
-        return self.filter(assignmentgroups__candidates__student=user).distinct()
 
     def filter_user_is_candidate(self, user):
         """
