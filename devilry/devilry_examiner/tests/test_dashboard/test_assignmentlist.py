@@ -4,12 +4,12 @@ import htmls
 from django import test
 from django.conf import settings
 from django_cradmin import cradmin_testhelpers
+from django_cradmin import crapp
 from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
 from devilry.devilry_examiner.views.dashboard import assignmentlist
-from libs.django_cradmin.django_cradmin import crapp
 
 
 class TestAssignmentItemValue(test.TestCase):
@@ -136,7 +136,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             reverse_cradmin_url(
                 instanceid='devilry_examiner_assignment',
                 appname='grouplist',
-                roleid=self.assignment.id,
+                roleid=testassignment.id,
                 viewname=crapp.INDEXVIEW_NAME,
             ),
             mockresponse.selector.one('a.django-cradmin-listbuilder-itemframe')['href'])
