@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.template import defaultfilters
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy, ugettext_lazy
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
@@ -179,10 +179,22 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         A django.db.models.DateTimeField_ representing the publishing time of
         the assignment.
 
-    .. attribute:: anonymous
+    .. attribute:: anonymizationmode
 
-        A models.BooleanField specifying if the assignment should be
-        anonymously for correcters.
+        A choicefield that specifies how the assignment is anonymized (or not).
+
+        Choices:
+
+        - ``"off"``: Normal assignment where semester and course admins can see everything,
+          and examiners and students can see each others names and contact information.
+        - ``"semi_anonymous"``: Students and examiners
+          can not see information about each other. Semester admins can not view the
+          assignment at all. Course admins have the same permissions as for ``"off"``.
+        - ``"fully_anonymous"``: Students and examiners
+          can not see information about each other. Course admins can not view results
+          (or AssignmentGroup.id). Hidden from semester admins. Can not be changed unless
+          you are member of a group with ``grouptype="departmentadmin"`` and has access to
+          the assignment. Course admins can not edit examiners after the first feedback is provided.
 
     .. attribute:: admins
 
@@ -324,6 +336,44 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             'personal information about the students. '
             'This means that anonymous assignments is perfect for exams, and for assignments '
             'where you do not want prior experiences with a student to affect results.'))
+
+    ANONYMIZATIONMODE_OFF = 'off'
+    ANONYMIZATIONMODE_SEMI_ANONYMOUS = 'semi_anonymous'
+    ANONYMIZATIONMODE_FULLY_ANONYMOUS = 'fully_anonymous'
+    ANONYMIZATIONMODE_CHOICES = [
+        (
+            ANONYMIZATIONMODE_OFF,
+            pgettext_lazy('assignment anonymizationmode',
+                          'OFF. Normal assignment where semester and course admins can see everything, '
+                          'and examiners and students can see each others names and contact information.')
+        ),
+        (
+            ANONYMIZATIONMODE_SEMI_ANONYMOUS,
+            pgettext_lazy('assignment anonymizationmode',
+                          'SEMI ANONYMOUS. Students and examiners can not see information about each other. '
+                          'Semester admins do not have access to the assignment in the admin UI. Course admins '
+                          'have the same permissions as for "OFF".')
+        ),
+        (
+            ANONYMIZATIONMODE_FULLY_ANONYMOUS,
+            pgettext_lazy('assignment anonymizationmode',
+                          'FULLY ANONYMIZED. Intended for exams where course admins are examiners. '
+                          'Students and examiners can not see information about each other. Hidden '
+                          'from semester admins. Course admins can not view grading details. Only '
+                          'departmentadmins and superusers can change this back to another "anoymization mode" '
+                          'when feedback has been added to the assignment. Course admins can not edit '
+                          'examiners after the first feedback is provided.')
+        ),
+    ]
+
+    anonymizationmode = models.CharField(
+        verbose_name=ugettext_lazy('Anonymization mode'),
+        max_length=15,
+        choices=ANONYMIZATIONMODE_CHOICES,
+        default=ANONYMIZATIONMODE_OFF,
+        db_index=True
+    )
+
     students_can_see_points = models.BooleanField(
         default=True,
         verbose_name="Students can see points")
