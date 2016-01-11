@@ -22,14 +22,14 @@ class Menu(devilry_crmenu.Menu):
             active=active
         ))
 
-    # def add_assignment_breadcrumb_item(self, assignment, active=False):
-    #     self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
-    #         label=assignment.short_name,
-    #         url=reverse_cradmin_url(
-    #             instanceid='devilry_admin_assignmentadmin',
-    #             appname='overview',
-    #             roleid=self.request.user.id,
-    #             viewname=crapp.INDEXVIEW_NAME,
-    #         ),
-    #         active=active
-    #     ))
+    def add_assignment_breadcrumb_item(self, assignment, active=False):
+        self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
+            label=assignment.get_path(),
+            url=reverse_cradmin_url(
+                instanceid='devilry_examiner_assignment',
+                appname='grouplist',
+                roleid=assignment.id,
+                viewname=crapp.INDEXVIEW_NAME,
+            ),
+            active=active
+        ))

@@ -4573,7 +4573,7 @@ button.close {
 }
 body {
   background: #f7f7f7;
-  color: #666666;
+  color: #333333;
 }
 body.django-cradmin-noscroll {
   overflow: hidden;
@@ -5574,7 +5574,7 @@ The bulk file upload widget base styles.
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-dropbox {
   background: #ffffff;
-  color: #666666;
+  color: #333333;
   font-weight: bold;
   font-size: inherit;
   padding: 5px 30px 5px 30px;
@@ -5676,7 +5676,7 @@ The bulk file upload widget base styles.
   background: #fff;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item {
-  color: #666666;
+  color: #333333;
 }
 .django-cradmin-bulkfileupload .django-cradmin-bulkfileupload-content .django-cradmin-bulkfileupload-progress p.django-cradmin-bulkfileupload-progress-item .django-cradmin-progressbar {
   display: inline-block;
@@ -6660,13 +6660,17 @@ ol.django-cradmin-listbuilder-list:first-child.django-cradmin-listbuilder-rowlis
 ol.django-cradmin-listbuilder-list li a.django-cradmin-listbuilder-itemframe-link {
   display: block;
 }
-ol.django-cradmin-listbuilder-list li .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
-  background: #fff;
-  padding: 15px 15px;
-}
 a.django-cradmin-listbuilder-itemframe-link {
   color: #333333;
   text-decoration: none;
+}
+a.django-cradmin-listbuilder-itemframe-link:hover {
+  color: #333333;
+  text-decoration: none;
+}
+ol.django-cradmin-listbuilder-list li .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+  background: #fff;
+  padding: 15px 15px;
 }
 a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
   border-bottom: 3px solid transparent;
@@ -6684,10 +6688,6 @@ a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalu
 }
 a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
   color: #377CA8;
-}
-a.django-cradmin-listbuilder-itemframe-link:hover {
-  color: #333333;
-  text-decoration: none;
 }
 a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
   border-color: #377CA8;
@@ -6890,7 +6890,6 @@ h2,
 h3,
 h4 {
   font-weight: bold;
-  color: #333333;
 }
 h2 {
   font-size: 23px;

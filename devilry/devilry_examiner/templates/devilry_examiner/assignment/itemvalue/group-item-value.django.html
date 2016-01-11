@@ -1,0 +1,6 @@
+{% extends "django_cradmin/viewhelpers/listbuilder/itemvalue/titledescription.django.html" %}
+{% load devilry_theme3_tags %}
+
+{% block title-content %}
+    {% devilry_users_verbose_inline me.get_candidate_users %}
+{% endblock title-content %}
