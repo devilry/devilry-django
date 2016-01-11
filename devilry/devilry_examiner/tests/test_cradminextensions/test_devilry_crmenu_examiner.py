@@ -42,7 +42,7 @@ class TestMenu(test.TestCase):
         testgroup = mommy.make('core.AssignmentGroup')
         mommy.make('core.Candidate',
                    assignment_group=testgroup,
-                   relatedstudent__user__shortname='testuserx',
+                   relatedstudent__user__shortname='testusera',
                    relatedstudent__user__fullname='A Test User')
         mommy.make('core.Candidate',
                    assignment_group=testgroup,
@@ -51,5 +51,5 @@ class TestMenu(test.TestCase):
         mock_cradmin_instance = mock.MagicMock()
         menu = devilry_crmenu_examiner.Menu(cradmin_instance=mock_cradmin_instance)
         self.assertEqual(
-            'A Test User, testuserb',
-            menu.get_group_label(group=testgroup))
+            {'A Test User', 'testuserb'},
+            set(menu.get_group_label(group=testgroup).split(', ')))
