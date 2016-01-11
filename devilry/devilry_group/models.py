@@ -68,7 +68,7 @@ class FeedbackSet(models.Model):
     #: This status means this feedbackset is basically the first feedbackset.
     GRADING_STATUS_FIRST_TRY = 'grading_status_first_try'
 
-    #: Is not the first delivery, but is the nth try.
+    #: Is not the first feedbackset, but a new try.
     GRADING_STATUS_NEW_TRY = 'grading_status_new_try'
 
     #: Something went wrong on grading, with this option, a new
