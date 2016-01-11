@@ -543,7 +543,7 @@ class TestDeliveryDetailsView(TestCase):
             'Test Examiner')
 
     def test_delivery_metadata_feedback_written_by_anonymous(self):
-        self.assignmentbuilder.update(anonymous=True)
+        self.assignmentbuilder.update(anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         self.groupbuilder.add_students(self.testuser)
         testexaminer = UserBuilder('testexaminer', full_name='Test Examiner').user
         self.groupbuilder.add_examiners(testexaminer)
@@ -610,7 +610,7 @@ class TestDeliveryDetailsView(TestCase):
         self.assertTrue(selector.exists('#devilry_student_group_deliverydetails_deadline'))
 
     def test_anonymous_sanity(self):
-        self.assignmentbuilder.update(anonymous=True)
+        self.assignmentbuilder.update(anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         self.groupbuilder.add_students(self.testuser)
         testexaminer1 = UserBuilder('testexaminer1').user
         self.groupbuilder.add_examiners(

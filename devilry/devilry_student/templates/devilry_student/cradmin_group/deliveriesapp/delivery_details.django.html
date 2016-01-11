@@ -93,7 +93,7 @@
             {% endif %}
 
             {% if delivery.last_feedback %}
-                {% if not group.assignment.anonymous %}
+                {% if not group.assignment.is_anonymous %}
                     <dt>{% trans "Feedback written by" %}:</dt>
                     <dd id="devilry_student_group_deliverydetails_feedback_written_by">
                         {{ delivery.last_feedback.saved_by|devilry_user_displayname }}
