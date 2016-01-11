@@ -6664,6 +6664,38 @@ ol.django-cradmin-listbuilder-list li .django-cradmin-listbuilder-itemvalue.djan
   background: #fff;
   padding: 15px 15px;
 }
+a.django-cradmin-listbuilder-itemframe-link {
+  color: #333333;
+  text-decoration: none;
+}
+a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+  border-bottom: 3px solid transparent;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.5);
+}
+@media (min-width: 768px) {
+  a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+    -webkit-transition: all 0.15s ease-in-out;
+    -moz-transition: all 0.15s ease-in-out;
+    transition: all 0.15s ease-in-out;
+  }
+}
+a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription {
+  color: #333333;
+}
+a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+  color: #377CA8;
+}
+a.django-cradmin-listbuilder-itemframe-link:hover {
+  color: #333333;
+  text-decoration: none;
+}
+a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+  border-color: #377CA8;
+}
+a.django-cradmin-listbuilder-itemframe-link:hover .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox .django-cradmin-listbuilder-itemvalue-titledescription .django-cradmin-listbuilder-itemvalue-titledescription-title {
+  color: #24516e;
+  text-decoration: underline;
+}
 ol.django-cradmin-listfilter-filterlist {
   list-style: none;
   margin: 0;
@@ -6869,6 +6901,14 @@ h3 {
 .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h2,
 .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-lg h3 {
   font-size: 22px;
+}
+a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description,
+.django-cradmin-listbuilder-itemvalue-titledescription-description.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-warning .django-cradmin-listbuilder-itemvalue-titledescription-description {
+  color: #8a6d3b;
+}
+a.django-cradmin-listbuilder-itemframe-link .django-cradmin-listbuilder-itemvalue-titledescription.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted .django-cradmin-listbuilder-itemvalue-titledescription-description,
+.django-cradmin-listbuilder-itemvalue-titledescription-description.devilry-django-cradmin-listbuilder-itemvalue-titledescription-description-muted .django-cradmin-listbuilder-itemvalue-titledescription-description {
+  color: #999999;
 }
 .django-cradmin-form-wrapper.devilry-django-cradmin-form-wrapper-top-bottom-spacing {
   padding-top: 15px;
