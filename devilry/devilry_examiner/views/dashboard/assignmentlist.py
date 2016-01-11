@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 
 from django.utils.translation import ugettext_lazy, pgettext_lazy
 from django_cradmin import crapp
+from django_cradmin.crinstance import reverse_cradmin_url
 from django_cradmin.viewhelpers import listbuilder
 from django_cradmin.viewhelpers import listbuilderview
 from django_cradmin.viewhelpers import listfilter
@@ -34,8 +35,15 @@ class AssignmentItemValue(listbuilder.itemvalue.TitleDescription):
 
 
 class AssignmentItemFrame(listbuilder.itemframe.Link):
+    valuealias = 'assignment'
+
     def get_url(self):
-        return '#'
+        return reverse_cradmin_url(
+            instanceid='devilry_examiner_assignment',
+            appname='grouplist',
+            roleid=self.assignment.id,
+            viewname=crapp.INDEXVIEW_NAME,
+        )
 
 
 class AssignmentListView(listbuilderview.FilterListMixin,

@@ -4,10 +4,12 @@ import htmls
 from django import test
 from django.conf import settings
 from django_cradmin import cradmin_testhelpers
+from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
 from devilry.apps.core.mommy_recipes import ACTIVE_PERIOD_START
 from devilry.devilry_examiner.views.dashboard import assignmentlist
+from libs.django_cradmin.django_cradmin import crapp
 
 
 class TestAssignmentItemValue(test.TestCase):
@@ -79,7 +81,7 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
 
     def test_not_assignments_where_not_examiner(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
-        # mommy.make('core.Examiner', relatedexaminer__user=testuser, user=testuser)
+        mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser,
                                                           requestuser=testuser)
         self.assertEqual(
@@ -122,6 +124,22 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             1,
             mockresponse.selector.count('.django-cradmin-listbuilder-itemvalue'))
+
+    def test_assignment_url(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        mommy.make('core.Examiner', relatedexaminer__user=testuser, user=testuser,
+                   assignmentgroup__parentnode=testassignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testuser,
+                                                          requestuser=testuser)
+        self.assertEqual(
+            reverse_cradmin_url(
+                instanceid='devilry_examiner_assignment',
+                appname='grouplist',
+                roleid=self.assignment.id,
+                viewname=crapp.INDEXVIEW_NAME,
+            ),
+            mockresponse.selector.one('a.django-cradmin-listbuilder-itemframe')['href'])
 
     def test_render_search_nomatch(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
