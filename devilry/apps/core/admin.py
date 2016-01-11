@@ -103,7 +103,7 @@ class AssignmentAdmin(BaseNodeAdmin):
         'first_deadline',
     ]
     list_filter = [
-        'anonymous',
+        'anonymizationmode',
         'publishing_time',
         'first_deadline',
     ]
