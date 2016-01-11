@@ -25,9 +25,16 @@ class FeedbackFeedTimelineBuilder(object):
         for comment in comments:
             if comment.published_datetime not in timeline.keys():
                 timeline[comment.published_datetime] = []
+
+            if comment.feedback_set.feedbackset_type == group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY:
+                comment_related_deadline = comment.feedback_set.group.assignment.first_deadline
+            else:
+                comment_related_deadline = comment.feedback_set.deadline_datetime
+
             timeline[comment.published_datetime].append({
                 "type": "comment",
-                "obj": comment
+                "obj": comment,
+                "related_deadline": comment_related_deadline
             })
         return timeline
 
