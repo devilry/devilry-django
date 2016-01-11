@@ -3,7 +3,7 @@ from django.http import Http404
 from django.utils.translation import ugettext_lazy as _
 from django_cradmin import crmenu
 
-from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import AssignmentGroup, Assignment
 from devilry.devilry_student.cradminextensions import studentcrinstance
 from devilry.devilry_student.cradmin_group import overviewapp
 from devilry.devilry_student.cradmin_group import deliveriesapp
@@ -26,7 +26,7 @@ class Menu(crmenu.Menu):
             label=_('Deliveries'), url=self.appindex_url('deliveries'),
             active=self.request.cradmin_app.appname == 'deliveries')
 
-        if not group.assignment.anonymous:
+        if not group.assignment.anonymizationmode != Assignment.ANONYMIZATIONMODE_OFF:
             self.add(
                 label=_('Contact examiner'), url=self.appindex_url('contact'),
                 active=self.request.cradmin_app.appname == 'contact')

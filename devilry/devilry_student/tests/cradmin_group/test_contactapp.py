@@ -1,6 +1,8 @@
 from django.test import TestCase, RequestFactory
 from django_cradmin.crinstance import reverse_cradmin_url
 import htmls
+
+from devilry.apps.core.models import Assignment
 from devilry.project.develop.testhelpers.corebuilder import UserBuilder, PeriodBuilder
 
 
@@ -68,6 +70,6 @@ class TestContactApp(TestCase):
             'mailto:testexaminer@example.com?subject=duck1010.active.testassignment%20-%20testuser')
 
     def test_404_if_anonymous_assignment(self):
-        self.assignmentbuilder.update(anonymous=True)
+        self.assignmentbuilder.update(anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
         response = self._get_as('testuser')
         self.assertEquals(response.status_code, 404)

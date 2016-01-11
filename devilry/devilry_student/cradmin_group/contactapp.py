@@ -3,6 +3,8 @@ from django.http import Http404
 from django.views.generic import TemplateView
 from django_cradmin import crapp
 
+from devilry.apps.core.models import Assignment
+
 
 class ContactView(TemplateView):
     template_name = 'devilry_student/cradmin_group/contactapp/contact.django.html'
@@ -10,7 +12,7 @@ class ContactView(TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         group = request.cradmin_role
-        if group.assignment.anonymous:
+        if group.assignment.anonymizationmode != Assignment.ANONYMIZATIONMODE_OFF:
             raise Http404()
         else:
             return super(ContactView, self).dispatch(request, *args, **kwargs)
