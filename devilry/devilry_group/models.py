@@ -24,19 +24,21 @@ class AbstractGroupComment(comment_models.Comment):
     #: this only controls when the comment is published.
     part_of_grading = models.BooleanField(default=False)
 
-    #:
+    #: Comment should only be visible to examiners and admins that has
+    #: access to the :obj:`~.AbstractGroupComment.feedback_set`.
     VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS = 'visible-to-examiner-and-admins'
 
-    #:
+    #: Comment should be visible to everyone that has
+    #: access to the :obj:`~.AbstractGroupComment.feedback_set`.
     VISIBILITY_VISIBLE_TO_EVERYONE = 'visible-to-everyone'
 
-    #:
+    #: Choice list.
     VISIBILITY_CHOICES = [
         (VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS, 'Visible to examiners and admins'),
         (VISIBILITY_VISIBLE_TO_EVERYONE, 'visible-to-everyone'),
     ]
 
-    ## Replaces instant_publish and visible_for_students
+    #: Sets the visibility choise of the comment.
     visibility = models.CharField(
         max_length=50,
         db_index=True,
@@ -90,8 +92,6 @@ class FeedbackSet(models.Model):
         choices=GRADING_STATUS_CHOICES,
         default=GRADING_STATUS_FIRST_TRY,
     )
-
-
 
     #: The User that created the feedbackset. Only used as metadata
     #: for superusers (for debugging).
