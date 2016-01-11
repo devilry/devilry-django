@@ -2,10 +2,10 @@ from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
 
+from devilry.devilry_group.timeline_builder.feedbackfeed_timeline_builder import FeedbackFeedTimelineBuilder
 from devilry.devilry_group.views.feedbackfeed_admin import AdminFeedbackFeedView
 from devilry.devilry_group.views.feedbackfeed_examiner import ExaminerFeedbackFeedView
 from devilry.devilry_group.views.feedbackfeed_student import StudentFeedbackFeedView
-from devilry.devilry_group.views.feedbackfeed_timeline_builder import FeedbackFeedTimelineBuilder
 
 
 class TestFeedbackFeedTimelineBuilder(TestCase, object):
