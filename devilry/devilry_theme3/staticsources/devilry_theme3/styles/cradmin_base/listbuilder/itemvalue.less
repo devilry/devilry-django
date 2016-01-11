@@ -6,3 +6,38 @@ ol.django-cradmin-listbuilder-list {
     }
   }
 }
+
+
+a.django-cradmin-listbuilder-itemframe-link {
+  color: @text-color;
+  text-decoration: none;
+
+  .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+    border-bottom: 3px solid transparent;
+    -webkit-tap-highlight-color: @cradmin-btn-tap-highlight-color;
+    @media (min-width: @screen-sm-min) {
+      .css3-transition(all @cradmin-btn-transition-duration ease-in-out);
+    }
+    .django-cradmin-listbuilder-itemvalue-titledescription {
+      color: @text-color;
+      .django-cradmin-listbuilder-itemvalue-titledescription-title {
+        color: @link-color;
+      }
+    }
+  }
+
+  &:hover {
+    color: @text-color;
+    text-decoration: none;
+
+    .django-cradmin-listbuilder-itemvalue.django-cradmin-listbuilder-itemvalue-focusbox {
+      border-color: @link-color;
+      .django-cradmin-listbuilder-itemvalue-titledescription {
+        .django-cradmin-listbuilder-itemvalue-titledescription-title {
+          color: @link-hover-color;
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
