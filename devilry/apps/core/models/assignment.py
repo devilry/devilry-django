@@ -86,6 +86,15 @@ class AssignmentQuerySet(models.query.QuerySet):
             return self.filter(Assignment.q_is_admin(user)).distinct()
 
     def annotate_with_waiting_for_feedback_count(self):
+        """
+        Annotate the queryset with ``waiting_for_feedback_count`` - the number
+        of AssignmentGroups within the assignment that is waiting for feedback.
+
+        Groups waiting for feedback is all groups where
+        The deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
         from devilry.devilry_group.models import FeedbackSet
         now = timezone.now()
         whenquery = models.Q(
