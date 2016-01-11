@@ -1,11 +1,10 @@
 import re
 
-from django.contrib.auth import get_user_model
 from django_cradmin import crinstance
 
-from devilry.devilry_account.models import User
+from devilry.apps.core.models import Assignment
 from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
-from devilry.devilry_examiner.views.dashboard import assignmentlist
+from devilry.devilry_examiner.views.assignment import grouplist
 
 
 class Menu(devilry_crmenu_examiner.Menu):
@@ -16,25 +15,25 @@ class Menu(devilry_crmenu_examiner.Menu):
 
 class CrAdminInstance(crinstance.BaseCrAdminInstance):
     menuclass = Menu
-    roleclass = User
+    roleclass = Assignment
     apps = [
-        ('assignmentlist', assignmentlist.App),
+        ('grouplist', grouplist.App),
     ]
-    id = 'devilry_examiner'
-    rolefrontpage_appname = 'assignmentlist'
+    id = 'devilry_examiner_assignment'
+    rolefrontpage_appname = 'grouplist'
     flatten_rolefrontpage_url = True
 
     def get_rolequeryset(self):
-        return get_user_model().objects.filter(id=self.request.user.id)
+        return Assignment.objects.filter_examiner_has_access(self.request.user)
 
     def get_titletext_for_role(self, role):
         """
         Get a short title briefly describing the given ``role``.
         Remember that the role is a User.
         """
-        return str(role.id)
+        assignment = role
+        return assignment.get_path()
 
     @classmethod
     def matches_urlpath(cls, urlpath):
-        return re.match('^/devilry_examiner/(\d+.*/)?$', urlpath) or \
-            re.match('^/devilry_examiner/\d+/filter/.*$', urlpath)
+        return re.match('^/devilry_examiner/assignment/.*$', urlpath)

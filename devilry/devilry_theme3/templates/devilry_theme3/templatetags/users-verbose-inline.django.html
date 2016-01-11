@@ -1,0 +1,5 @@
+{% load devilry_theme3_tags %}
+
+{% for user in users %}
+    {% devilry_user_verbose_inline user %}{% if not forloop.last %}, {% endif %}
+{% endfor %}
