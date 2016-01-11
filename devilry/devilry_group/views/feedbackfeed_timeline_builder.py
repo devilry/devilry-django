@@ -54,16 +54,12 @@ class FeedbackFeedTimelineBuilder(object):
                     last_deadline = group.parentnode.first_deadline
                 else:
                     deadline_datetime = feedbackset.deadline_datetime
-                # deadline_datetime = group.assignment.first_deadline
             else:
                 deadline_datetime = feedbackset.deadline_datetime
                 last_deadline = feedbackset.deadline_datetime
+
             if deadline_datetime not in timeline.keys():
                 timeline[deadline_datetime] = []
-
-            # timeline[deadline_datetime].append({
-            #     "type": "deadline_expired"
-            # })
 
             if deadline_datetime is not None and deadline_datetime <= timezone.now():
                 timeline[deadline_datetime].append({
@@ -115,6 +111,7 @@ class FeedbackFeedTimelineBuilder(object):
                 #         feedbackset.group.parentnode,
                 #         feedbackset)
                 })
+            # print last_deadline
         return last_deadline, timeline
 
     def sort_timeline(self, timeline):
