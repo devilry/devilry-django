@@ -68,7 +68,7 @@ class AssignmentQuerySet(models.query.QuerySet):
         Args:
             user: A :class:`devilry.devilry_account.models.User` object.
         """
-        return self.filter(assignmentgroups_candidates__relatedstudent__user=user).distinct()
+        return self.filter(assignmentgroups__candidates__relatedstudent__user=user).distinct()
 
     def filter_is_published(self):
         """
