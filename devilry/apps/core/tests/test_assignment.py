@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.utils import timezone
 
 from mock import patch
 from django.test import TestCase
@@ -606,6 +607,104 @@ class TestAssignmentCanDelete(TestCase, TestHelper):
         self.assertTrue(assignment.can_delete(self.uniadm))
         self.add_delivery("sub.p1.a1.g1", self.goodFile)
         self.assertFalse(assignment.can_delete(self.uniadm))
+
+
+class TestAssignmentQuerySet(TestCase):
+    def test_annotate_with_waiting_for_feedback_count_nomatch_deadline_not_expired(self):
+        mommy.make('devilry_group.FeedbackSet',
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() + timedelta(days=1),
+                   is_last_in_group=True)
+        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
+        self.assertEqual(0, queryset.first().waiting_for_feedback_count)
+
+    def test_annotate_with_waiting_for_feedback_count_nomatch_deadline_not_expired_first_feedbackset(self):
+        mommy.make('devilry_group.FeedbackSet',
+                   group__parentnode__first_deadline=timezone.now() + timedelta(days=1),
+                   grading_published_datetime=None,
+                   deadline_datetime=None,
+                   is_last_in_group=True)
+        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
+        self.assertEqual(0, queryset.first().waiting_for_feedback_count)
+
+    def test_annotate_with_waiting_for_feedback_count_nomatch_is_not_last_in_group(self):
+        mommy.make('devilry_group.FeedbackSet',
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=1),
+                   is_last_in_group=None)
+        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
+        self.assertEqual(0, queryset.first().waiting_for_feedback_count)
+
+    def test_annotate_with_waiting_for_feedback_count_nomatch_grading_published(self):
+        mommy.make('devilry_group.FeedbackSet',
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   is_last_in_group=True)
+        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
+        self.assertEqual(0, queryset.first().waiting_for_feedback_count)
+
+    def test_annotate_with_waiting_for_feedback_count_match_multiple_in_same_group(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   is_last_in_group=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group=testgroup,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=1),
+                   is_last_in_group=True)
+        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
+        self.assertEqual(1, queryset.first().waiting_for_feedback_count)
+
+    def test_annotate_with_waiting_for_feedback_count_match_multiple_groups(self):
+        testassignment = mommy.make('core.Assignment')
+        mommy.make('devilry_group.FeedbackSet',
+                   group__parentnode=testassignment,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   is_last_in_group=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group__parentnode=testassignment,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=1),
+                   is_last_in_group=True)
+        mommy.make('devilry_group.FeedbackSet',
+                   group__parentnode=testassignment,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=1),
+                   is_last_in_group=True)
+        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
+        self.assertEqual(2, queryset.first().waiting_for_feedback_count)
+
+    def test_annotate_with_waiting_for_feedback_count_match_multiple_assignments(self):
+        testassignment1 = mommy.make('core.Assignment')
+        testassignment2 = mommy.make('core.Assignment')
+        mommy.make('devilry_group.FeedbackSet',
+                   group__parentnode=testassignment1,
+                   grading_published_datetime=timezone.now() - timedelta(days=1),
+                   deadline_datetime=timezone.now() - timedelta(days=2),
+                   is_last_in_group=None)
+        mommy.make('devilry_group.FeedbackSet',
+                   group__parentnode=testassignment1,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=1),
+                   is_last_in_group=True)
+        mommy.make('devilry_group.FeedbackSet',
+                   group__parentnode=testassignment2,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=1),
+                   is_last_in_group=True)
+        mommy.make('devilry_group.FeedbackSet',
+                   group__parentnode=testassignment2,
+                   grading_published_datetime=None,
+                   deadline_datetime=timezone.now() - timedelta(days=1),
+                   is_last_in_group=True)
+        queryset = Assignment.objects.all().annotate_with_waiting_for_feedback_count()
+        self.assertEqual(2, queryset.count())
+        self.assertEqual(1, queryset.get(pk=testassignment1.pk).waiting_for_feedback_count)
+        self.assertEqual(2, queryset.get(pk=testassignment2.pk).waiting_for_feedback_count)
 
 
 class TestAssignmentManager(TestCase):
