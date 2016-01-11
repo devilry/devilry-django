@@ -2,6 +2,8 @@ import htmls
 from django import test
 from django.conf import settings
 from django_cradmin import cradmin_testhelpers
+from django_cradmin import crapp
+from django_cradmin.crinstance import reverse_cradmin_url
 from model_mommy import mommy
 
 from devilry.devilry_examiner.views.assignment import grouplist
@@ -133,6 +135,23 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
             'A user(userc) , usera , userb',
             mockresponse.selector.one(
                 '.django-cradmin-listbuilder-itemvalue-titledescription-title').alltext_normalized)
+
+    def test_group_render_group_url(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        testgroup = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Examiner', relatedexaminer__user=testuser, user=testuser,
+                   assignmentgroup=testgroup)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=testassignment,
+                                                          requestuser=testuser)
+        self.assertEqual(
+            reverse_cradmin_url(
+                instanceid='devilry_group_examiner',
+                appname='feedbackfeed',
+                roleid=testgroup.id,
+                viewname=crapp.INDEXVIEW_NAME,
+            ),
+            mockresponse.selector.one('a.django-cradmin-listbuilder-itemframe')['href'])
 
     # def test_render_search_nomatch(self):
     #     testuser = mommy.make(settings.AUTH_USER_MODEL)
