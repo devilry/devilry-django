@@ -852,44 +852,14 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         .. seealso:: https://github.com/devilry/devilry-django/issues/498
         """
-        if self.assignment.anonymous:
+        assignment = self.assignment
+        if assignment.anonymizationmode != assignment.ANONYMIZATIONMODE_OFF:
             out = self._get_candidateids()
         elif self.name:
             out = self.name
         else:
             out = self.get_students()
         if not out:
-            return unicode(self.id)
-        else:
-            return out
-
-    @property
-    def long_displayname(self):
-        """
-        A long displayname for the group. If the assignment is anonymous,
-        we list the candidate IDs.
-
-        If the assignment is not anonymous, we use a comma separated list of
-        the displaynames (full names with fallback to shortname) of the
-        students. If the group has a name, we use the groupname with the names
-        of the students in parenthesis.
-
-        .. seealso:: https://github.com/devilry/devilry-django/issues/499
-        """
-        if self.assignment.anonymous:
-            out = self._get_candidateids()
-        else:
-            candidates = self.candidates.select_related('student')
-            names = [candidate.student.get_full_name() for candidate in candidates]
-            names.sort()
-            out = u', '.join(names)
-            if self.name:
-                if out:
-                    out = u'{} ({})'.format(self.name, out)
-                else:
-                    out = self.name
-
-        if out == '':
             return unicode(self.id)
         else:
             return out

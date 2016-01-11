@@ -128,7 +128,7 @@ class AssignmentGroupAdmin(admin.ModelAdmin):
         'get_subject',
         'get_period',
         'get_assignment',
-        'long_displayname',
+        'short_displayname',
         'created_datetime',
     ]
     search_fields = [
