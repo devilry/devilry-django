@@ -1,17 +1,27 @@
-from django.utils.translation import ugettext_lazy as _
-from django_cradmin import crmenu
+from django.db import models
+from django.db.models.functions import Lower, Concat
 from django_cradmin import crinstance
+from django_cradmin import crmenu
 
-from devilry.apps.core.models import AssignmentGroup
+from devilry.apps.core.models import AssignmentGroup, Candidate
+from devilry.devilry_examiner.cradminextensions import devilry_crmenu_examiner
 from devilry.devilry_group.views import feedbackfeed_examiner
 
 
-class Menu(crmenu.Menu):
+# class Menu(crmenu.Menu):
+#     def build_menu(self):
+#         group = self.request.cradmin_role
+#         self.add_headeritem(
+#             label=group.subject.long_name,
+#             url=self.appindex_url('feedbackfeed'))
+
+class Menu(devilry_crmenu_examiner.Menu):
     def build_menu(self):
+        super(Menu, self).build_menu()
         group = self.request.cradmin_role
-        self.add_headeritem(
-            label=group.subject.long_name,
-            url=self.appindex_url('feedbackfeed'))
+        self.add_role_menuitem_object()
+        self.add_assignment_breadcrumb_item(assignment=group.assignment)
+        self.add_group_breadcrumb_item(group=group, active=True)
 
 
 class ExaminerCrInstance(crinstance.BaseCrAdminInstance):
@@ -24,9 +34,19 @@ class ExaminerCrInstance(crinstance.BaseCrAdminInstance):
     rolefrontpage_appname = 'feedbackfeed'
 
     def get_rolequeryset(self):
+        candidatequeryset = Candidate.objects\
+            .select_related('relatedstudent')\
+            .order_by(
+                Lower(Concat('relatedstudent__user__fullname',
+                             'relatedstudent__user__shortname')))
         return AssignmentGroup.objects\
             .filter_examiner_has_access(self.request.user)\
-            .select_related('parentnode')
+            .select_related('parentnode',
+                            'parentnode__parentnode',
+                            'parentnode__parentnode__parentnode')\
+            .prefetch_related(
+                models.Prefetch('candidates',
+                                queryset=candidatequeryset))
 
     def get_titletext_for_role(self, role):
         """
