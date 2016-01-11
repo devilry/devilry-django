@@ -19,7 +19,6 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     def _get_comments_for_group(self, group):
         return models.GroupComment.objects.filter(
             Q(feedback_set__grading_published_datetime__isnull=False) | Q(visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE),
-            # visible_for_students=True,
             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
             feedback_set__group=group
         )
@@ -45,8 +44,6 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
         if commit:
             if self._convert_temporary_files_to_comment_files(form, object) or len(object.text) > 0:
                 object.save()
-            # object.save()
-            # self._convert_temporary_files_to_comment_files(form, object)
 
         return object
 

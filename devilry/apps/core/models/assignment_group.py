@@ -895,7 +895,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
             return out
 
     def __unicode__(self):
-        return self.short_displayname
+        return u'{} - {}'.format(self.short_displayname, self.parentnode.get_path())
 
     def get_students(self):
         """ Get a string containing all students in the group separated by

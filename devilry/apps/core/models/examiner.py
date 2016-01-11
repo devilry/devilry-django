@@ -60,3 +60,8 @@ class Examiner(models.Model, AbstractIsAdmin):
             return self.automatic_anonymous_id or _('Anonymous ID missing')
         else:
             return ''
+
+    def __unicode__(self):
+        return u'Examiner {} for {}'.format(
+            self.user, self.assignmentgroup
+        )

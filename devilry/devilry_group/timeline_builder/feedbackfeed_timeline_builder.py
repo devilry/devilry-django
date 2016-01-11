@@ -25,9 +25,16 @@ class FeedbackFeedTimelineBuilder(object):
         for comment in comments:
             if comment.published_datetime not in timeline.keys():
                 timeline[comment.published_datetime] = []
+
+            if comment.feedback_set.feedbackset_type == group_models.FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY:
+                comment_related_deadline = comment.feedback_set.group.assignment.first_deadline
+            else:
+                comment_related_deadline = comment.feedback_set.deadline_datetime
+
             timeline[comment.published_datetime].append({
                 "type": "comment",
-                "obj": comment
+                "obj": comment,
+                "related_deadline": comment_related_deadline
             })
         return timeline
 
@@ -44,7 +51,6 @@ class FeedbackFeedTimelineBuilder(object):
             return group.parentnode.first_deadline, timeline
 
         first_feedbackset = feedbacksets[0]
-        # last_deadline = first_feedbackset.deadline_datetime
         last_deadline = None
 
         for index, feedbackset in enumerate(feedbacksets):
@@ -54,16 +60,12 @@ class FeedbackFeedTimelineBuilder(object):
                     last_deadline = group.parentnode.first_deadline
                 else:
                     deadline_datetime = feedbackset.deadline_datetime
-                # deadline_datetime = group.assignment.first_deadline
             else:
                 deadline_datetime = feedbackset.deadline_datetime
                 last_deadline = feedbackset.deadline_datetime
+
             if deadline_datetime not in timeline.keys():
                 timeline[deadline_datetime] = []
-
-            # timeline[deadline_datetime].append({
-            #     "type": "deadline_expired"
-            # })
 
             if deadline_datetime is not None and deadline_datetime <= timezone.now():
                 timeline[deadline_datetime].append({
@@ -109,11 +111,7 @@ class FeedbackFeedTimelineBuilder(object):
                     timeline[feedbackset.grading_published_datetime] = []
                 timeline[feedbackset.grading_published_datetime].append({
                     "type": "grade",
-                    "obj": feedbackset.grading_points,
-                #     "gradeform": grade_form.AdvancedGradeForm.render_viewable(
-                #         grade_form.AdvancedGradeForm(),
-                #         feedbackset.group.parentnode,
-                #         feedbackset)
+                    "obj": feedbackset.grading_points
                 })
         return last_deadline, timeline
 

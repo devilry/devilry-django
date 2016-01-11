@@ -1,15 +1,12 @@
 # Django imports
-from django.core.exceptions import PermissionDenied
+from django import forms
+from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
-from django import http
-from django.core.urlresolvers import reverse
-from django import forms
 
 # Python imports
 import json
 import datetime
-import collections
 
 # Devilry/cradmin imports
 from django_cradmin.apps.cradmin_temporaryfileuploadstore.models import TemporaryFileCollection
@@ -21,7 +18,7 @@ from crispy_forms import layout
 from django_cradmin.acemarkdown.widgets import AceMarkdownWidget
 from django_cradmin.viewhelpers import create
 from xml.sax.saxutils import quoteattr
-from devilry.devilry_group.views import feedbackfeed_timeline_builder
+from devilry.devilry_group.timeline_builder import feedbackfeed_timeline_builder
 
 
 class FeedbackFeedBaseView(create.CreateView):

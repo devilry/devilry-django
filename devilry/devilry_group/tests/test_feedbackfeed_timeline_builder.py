@@ -2,10 +2,10 @@ from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
 
+from devilry.devilry_group.timeline_builder.feedbackfeed_timeline_builder import FeedbackFeedTimelineBuilder
 from devilry.devilry_group.views.feedbackfeed_admin import AdminFeedbackFeedView
 from devilry.devilry_group.views.feedbackfeed_examiner import ExaminerFeedbackFeedView
 from devilry.devilry_group.views.feedbackfeed_student import StudentFeedbackFeedView
-from devilry.devilry_group.views.feedbackfeed_timeline_builder import FeedbackFeedTimelineBuilder
 
 
 class TestFeedbackFeedTimelineBuilder(TestCase, object):
@@ -57,6 +57,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
 
     def test_admin_timelinebuilder_two_feedbacksets_last_deadline(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        print(assignment.first_deadline)
         feedbackset1 = mommy.make('devilry_group.FeedbackSet',
                                   is_last_in_group=None,
                                   group__parentnode=assignment)
@@ -66,6 +67,7 @@ class TestFeedbackFeedTimelineBuilder(TestCase, object):
         timeline_builder = FeedbackFeedTimelineBuilder(AdminFeedbackFeedView())
         timeline = timeline_builder.build_timeline(feedbackset1.group, [feedbackset1, feedbackset2])
         self.assertEquals(timeline[0], feedbackset2.deadline_datetime)
+
 
 
     def test_get_feedbacksets_for_group(self):

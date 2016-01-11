@@ -1,6 +1,7 @@
 from django.utils import timezone
 from model_mommy import mommy
 
+from django.utils import formats
 from django_cradmin import cradmin_testhelpers
 
 from devilry.devilry_group import models
@@ -16,7 +17,7 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
                          group.assignment.get_path())
 
     def test_get_feedbackset(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset = mommy.make('devilry_group.FeedbackSet',
                                  group__parentnode=assignment,
                                  deadline_datetime=timezone.now())
@@ -50,34 +51,60 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(period_name, group.assignment.period.long_name)
 
     def test_get_feedbackfeed_header_without_assignment_first_deadline(self):
-        group = mommy.make('core.AssignmentGroup', parentnode__first_deadline=None)
+        group = mommy.make('core.AssignmentGroup')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
 
     def test_get_feedbackfeed_header_with_assignment_first_deadline(self):
-        group = mommy.make('core.AssignmentGroup', parentnode__first_deadline=timezone.now())
+        group = mommy.make('core.AssignmentGroup',
+                           parentnode=mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end'))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
 
     def test_get_feedbackfeed_header_without_feedbackset_deadline_datetime(self):
         # tests that current-deadline-heading does not exist in view when feedbackset
-        # has deadline_datetime set as none (no deadline)
+        # has deadline_datetime set as none (no deadline) and assignment has no deadline.
         feedbackset = mommy.make('devilry_group.FeedbackSet')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
 
     def test_get_feedbackfeed_header_with_feedbackset_deadline_datetime(self):
         # tests that current-deadline-heading exists in view when feedbackset
-        # has deadline_datetime set as a date
+        # has deadline_datetime set as a date.
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
 
+    def test_get_feedbackfeed_header_date_with_feedbackset_deadline_datetime(self):
+        # tests that current-deadline-heading exists in view when feedbackset
+        # has deadline_datetime set as a date.
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group__parentnode=assignment)
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
+        self.assertEquals(
+                mockresponse.selector.one('.devilry-group-feedbackfeed-current-deadline-datetime').alltext_normalized,
+                formats.date_format(assignment.first_deadline, 'SHORT_DATETIME_FORMAT')
+        )
+
+    def test_get_feedbackfeed_header_date_with_multiple_feedbacksets(self):
+        # test that the last deadline is shown as current deadline in view.
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
+        group = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        mommy.make('devilry_group.FeedbackSet', group=group, is_last_in_group=None)
+        feedbackset = mommy.make('devilry_group.FeedbackSet', group=group, deadline_datetime=timezone.now())
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=feedbackset.group)
+        self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-heading'))
+        self.assertEquals(
+                mockresponse.selector.one('.devilry-group-feedbackfeed-current-deadline-datetime').alltext_normalized,
+                formats.date_format(feedbackset.deadline_datetime, 'SHORT_DATETIME_FORMAT')
+        )
+
     def test_get_feedbackfeed_header_with_assignment_first_deadline_not_expired(self):
         # tests that current-deadline-expired does not exist in header in view and is
         # not expired with Assignment.first_deadline set
-        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_middle')
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=group)
         self.assertFalse(mockresponse.selector.exists('.devilry-group-feedbackfeed-current-deadline-expired'))
@@ -113,8 +140,6 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
     def test_get_feedbackfeed_comment_student(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='student',
-                             # instant_publish=True,
-                             # visible_for_students=True
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-student'))
@@ -122,8 +147,6 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
     def test_get_feedbackfeed_comment_examiner(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='examiner',
-                             # instant_publish=True,
-                             # visible_for_students=True
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-examiner'))
@@ -131,8 +154,6 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
     def test_get_feedbackfeed_comment_admin(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='admin',
-                             # instant_publish=True,
-                             # visible_for_students=True
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(mockresponse.selector.exists('.devilry-group-feedbackfeed-comment-admin'))
@@ -142,8 +163,6 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.student,
                              user_role='student',
-                             # instant_publish=True,
-                             # visible_for_students=True
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(comment.user.fullname, mockresponse.selector.one('.devilry-user-verbose-inline-fullname'))
@@ -153,8 +172,6 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
         comment = mommy.make('devilry_group.GroupComment',
                              user=candidate.student,
                              user_role='student',
-                             # instant_publish=True,
-                             # visible_for_students=True
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         self.assertTrue(comment.user.shortname, mockresponse.selector.one('.devilry-user-verbose-inline-shortname'))
@@ -162,8 +179,6 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
     def test_get_feedbackfeed_comment_student_user_role(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='student',
-                             # instant_publish=True,
-                             # visible_for_students=True
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized
@@ -172,8 +187,6 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
     def test_get_feedbackfeed_comment_examiner_user_role(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='examiner',
-                             # instant_publish=True,
-                             # visible_for_students=True
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized
@@ -182,8 +195,6 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
     def test_get_feedbackfeed_comment_admin_user_role(self):
         comment = mommy.make('devilry_group.GroupComment',
                              user_role='admin',
-                             # instant_publish=True,
-                             # visible_for_students=True
                              visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=comment.feedback_set.group)
         role = mockresponse.selector.one('.comment-created-by-role-text').alltext_normalized

@@ -2,6 +2,7 @@ import warnings
 from datetime import datetime
 
 from django.template import defaultfilters
+from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -102,6 +103,37 @@ class AssignmentQuerySet(models.query.QuerySet):
             return self.all()
         else:
             return self.filter(Assignment.q_is_admin(user)).distinct()
+
+    def annotate_with_waiting_for_feedback_count(self):
+        """
+        Annotate the queryset with ``waiting_for_feedback_count`` - the number
+        of AssignmentGroups within the assignment that is waiting for feedback.
+
+        Groups waiting for feedback is all groups where
+        The deadline of the last feedbackset (or :attr:`.Assignment.first_deadline` and only one feedbackset)
+        has expired, and the feedbackset does not have a
+        :obj:`~devilry.devilry_group.models.FeedbackSet.grading_published_datetime`.
+        """
+        from devilry.devilry_group.models import FeedbackSet
+        now = timezone.now()
+        whenquery = models.Q(
+            assignmentgroups__feedbackset__is_last_in_group=True,
+            assignmentgroups__feedbackset__grading_published_datetime__isnull=True
+        ) & (
+            models.Q(assignmentgroups__feedbackset__deadline_datetime__lt=now) |
+            models.Q(
+                assignmentgroups__feedbackset__feedbackset_type=FeedbackSet.FEEDBACKSET_TYPE_FIRST_TRY,
+                first_deadline__lt=now
+            )
+        )
+
+        return self.annotate(
+            waiting_for_feedback_count=models.Count(
+                models.Case(
+                    models.When(whenquery, then=1)
+                )
+            )
+        )
 
 
 class AssignmentManager(models.Manager):
