@@ -106,11 +106,21 @@ We have recipes for creating a period spanning each of these time periods:
 - :obj:`devilry.apps.core.mommy_recipes.period_active`
 - :obj:`devilry.apps.core.mommy_recipes.period_future`
 
-And we have recipes for creating assignments at the beginning, middle and end of the *active* time period:
+And we have recipes for creating assignments at the beginning, middle and end of the
+these time periods:
 
-- :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_start`
-- :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_middle`
-- :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_end`
+Old:
+    - :obj:`devilry.apps.core.mommy_recipes.assignment_oldperiod_start`
+    - :obj:`devilry.apps.core.mommy_recipes.assignment_oldperiod_middle`
+    - :obj:`devilry.apps.core.mommy_recipes.assignment_oldperiod_end`
+Active:
+    - :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_start`
+    - :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_middle`
+    - :obj:`devilry.apps.core.mommy_recipes.assignment_activeperiod_end`
+Future:
+    - :obj:`devilry.apps.core.mommy_recipes.assignment_futureperiod_start`
+    - :obj:`devilry.apps.core.mommy_recipes.assignment_futureperiod_middle`
+    - :obj:`devilry.apps.core.mommy_recipes.assignment_futureperiod_end`
 
 Furthermore, we have defined a set of variables that define the
 bounds of the old, active and future time periods. These are very useful
