@@ -17,7 +17,7 @@ class TestFeedbackFeedMixin(cradmin_testhelpers.TestCaseMixin):
                          group.assignment.get_path())
 
     def test_get_feedbackset(self):
-        assignment = mommy.make('core.Assignment')
+        assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start')
         feedbackset = mommy.make('devilry_group.FeedbackSet',
                                  group__parentnode=assignment,
                                  deadline_datetime=timezone.now())
