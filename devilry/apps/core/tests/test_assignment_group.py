@@ -55,6 +55,36 @@ class TestAssignmentGroup(TestCase):
             .add_group(name='My group')
         self.assertEquals(group1builder.group.short_displayname, 'My group')
 
+    def test_long_displayname_empty(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group()
+        self.assertEquals(group1builder.group.long_displayname, unicode(group1builder.group.id))
+
+    def test_long_displayname_students(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group().add_students(
+                UserBuilder('student1', full_name=u'Student One \u00E5').user,
+                UserBuilder('student2').user)
+        self.assertEquals(group1builder.group.long_displayname, u'Student One \u00E5, student2')
+
+    def test_long_displayname_anonymous_candidates(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)\
+            .add_group().add_candidates(
+                Candidate(student=UserBuilder('student1').user, candidate_id="aa"),
+                Candidate(student=UserBuilder('student2').user, candidate_id="bb"))
+        self.assertEquals(group1builder.group.long_displayname, 'aa, bb')
+
+    def test_long_displayname_named(self):
+        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
+            .add_assignment('assignment1')\
+            .add_group(name='My group').add_students(
+                UserBuilder('student1', full_name=u'Student One \u00E5').user,
+                UserBuilder('student2').user)
+        self.assertEquals(group1builder.group.long_displayname, u'My group (Student One \u00E5, student2)')
+
     def test_close_groups(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\
             .add_assignment('assignment1')
