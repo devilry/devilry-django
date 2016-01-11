@@ -326,16 +326,14 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
     publishing_time = models.DateTimeField(
         verbose_name=_("Publishing time"),
         help_text=_('The time when the assignment is to be published (visible to students and examiners).'))
-    anonymous = models.BooleanField(
+
+    #: Deprecated anonymous field.
+    #: Will be removed in 3.1.
+    deprecated_field_anonymous = models.BooleanField(
         default=False,
-        verbose_name=_("Anonymous?"),
-        help_text=_(
-            'On anonymous assignments, examiners and students can NOT see each other and '
-            'they can NOT communicate. '
-            'If an assignment is anonymous, examiners see candidate-id instead of any '
-            'personal information about the students. '
-            'This means that anonymous assignments is perfect for exams, and for assignments '
-            'where you do not want prior experiences with a student to affect results.'))
+        verbose_name="Anonymous? (deprectated field)",
+        editable=False,
+        help_text='Deprecated anonymous field. Will be removed in 3.1.')
 
     ANONYMIZATIONMODE_OFF = 'off'
     ANONYMIZATIONMODE_SEMI_ANONYMOUS = 'semi_anonymous'
