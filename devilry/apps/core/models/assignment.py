@@ -466,6 +466,13 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         return self.parentnode
 
     @property
+    def is_anonymous(self):
+        """
+        Returns ``True`` if ``anonymizationmode != "off"``.
+        """
+        return self.anonymizationmode != self.ANONYMIZATIONMODE_OFF
+
+    @property
     def students_can_create_groups_now(self):
         """
         Return ``True`` if :attr:`students_can_create_groups` is ``True``, and
