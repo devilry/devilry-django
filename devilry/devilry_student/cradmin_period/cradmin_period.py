@@ -35,7 +35,7 @@ class CrAdminInstance(studentcrinstance.BaseStudentCrAdminInstance):
     ]
 
     def get_rolequeryset(self):
-        return Period.objects.filter_is_candidate_or_relatedstudent(user=self.request.user)
+        return Period.objects.filter_user_is_relatedstudent(user=self.request.user)
 
     def get_titletext_for_role(self, role):
         """

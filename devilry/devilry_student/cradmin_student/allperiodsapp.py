@@ -58,7 +58,7 @@ class AllPeriodsListView(studentobjecttable.StudentObjectTableView):
 
     def get_queryset_for_role(self, period):
         return Period.objects\
-            .filter_is_candidate_or_relatedstudent(user=self.request.user)\
+            .filter_user_is_relatedstudent(user=self.request.user)\
             .annotate_with_user_qualifies_for_final_exam(user=self.request.user)\
             .select_related('parentnode')\
             .order_by('-start_time', 'parentnode__long_name')

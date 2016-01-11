@@ -24,19 +24,11 @@ class PeriodQuerySet(models.query.QuerySet):
     QuerySet for :class:`.PeriodManager`.
     """
 
-    def filter_is_candidate_or_relatedstudent(self, user):
+    def filter_user_is_relatedstudent(self, user):
         """
-        See :meth:`.PeriodManager.filter_is_candidate_or_relatedstudent`.
+        See :meth:`.PeriodManager.filter_user_is_relatedstudent`.
         """
-        from devilry.apps.core.models import Candidate
-        periods_where_is_candidate_queryset = Candidate.objects \
-            .filter(student=user) \
-            .values_list('assignment_group__parentnode__parentnode_id', flat=True) \
-            .distinct()
-        queryset = self.filter(
-                Q(relatedstudent__user=user) |
-                Q(id__in=periods_where_is_candidate_queryset)
-        )
+        queryset = self.filter(relatedstudent__user=user)
         return queryset.distinct()
 
     def filter_active(self):
@@ -117,14 +109,11 @@ class PeriodManager(models.Manager):
         """
         return self.get_queryset().filter_is_admin(user)
 
-    def filter_is_candidate_or_relatedstudent(self, user):
+    def filter_user_is_relatedstudent(self, user):
         """
-        Filter only periods where the given ``user`` is one of:
-
-        - :class:`devilry.apps.core.models.RelatedUser`
-        - :class:`devilry.apps.core.models.Candidate`
+        Filter only periods where the given ``user`` is :class:`devilry.apps.core.models.RelatedUser`.
         """
-        return self.get_queryset().filter_is_candidate_or_relatedstudent(user)
+        return self.get_queryset().filter_user_is_relatedstudent(user)
 
     def annotate_with_user_qualifies_for_final_exam(self, user):
         """
@@ -132,7 +121,7 @@ class PeriodManager(models.Manager):
         :obj:`devilry.devilry_qualifiesforexam.models.QualifiesForFinalExam.qualifies`
         value for the given ``user``.
 
-        Should be used with :meth:`.filter_is_candidate_or_relatedstudent`.
+        Should be used with :meth:`.filter_user_is_relatedstudent`.
         """
         return self.get_queryset().annotate_with_user_qualifies_for_final_exam(user)
 
