@@ -51,7 +51,6 @@ class FeedbackFeedTimelineBuilder(object):
             return group.parentnode.first_deadline, timeline
 
         first_feedbackset = feedbacksets[0]
-        # last_deadline = first_feedbackset.deadline_datetime
         last_deadline = None
 
         for index, feedbackset in enumerate(feedbacksets):
@@ -112,13 +111,8 @@ class FeedbackFeedTimelineBuilder(object):
                     timeline[feedbackset.grading_published_datetime] = []
                 timeline[feedbackset.grading_published_datetime].append({
                     "type": "grade",
-                    "obj": feedbackset.grading_points,
-                #     "gradeform": grade_form.AdvancedGradeForm.render_viewable(
-                #         grade_form.AdvancedGradeForm(),
-                #         feedbackset.group.parentnode,
-                #         feedbackset)
+                    "obj": feedbackset.grading_points
                 })
-            # print last_deadline
         return last_deadline, timeline
 
     def sort_timeline(self, timeline):
