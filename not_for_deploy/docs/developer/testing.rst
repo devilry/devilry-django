@@ -13,21 +13,24 @@ Run **all** test::
 
     $ DJANGOENV=test python manage.py test devilry
 
-Skip the *selenium* tests using::
+Run only some tests::
 
-    $ SKIP_SELENIUMTESTS=1 DJANGOENV=test python manage.py test
-
-Specify a browser for the selenium tests using (example uses Firefox)::
-
-    $ SELENIUM_BROWSER=Firefox DJANGOENV=test python manage.py test
-
-*Chrome* is the default browser (configured in ``devilry.project.develop.settings.base``).
+    $ DJANGOENV=test python manange.py test devilry.devilry_examiner.tests
 
 
-.. note::
+.. warning::
     We use ``DJANGOENV=test python manage.py`` to run tests, because that makes
     ``manage.py`` use ``devilry.project.develop.settings.test``,
-    which does not load Haystack, Celery or migrations.
+    which does not load Haystack or Celery.
+
+    If you are using PyCharm or another IDE, make sure it runs tests with
+    this environment variable set. In PyCharm, you do this by going to:
+
+    - ``Run -> Edit configurations``
+    - Expand "Django tests", and remove all the faded out tests below "Django tests"
+      (if you do not do this the new environment variable will not be applied to those tests).
+    - Expand "Defaults", select "Django tests", and add ``DJANGOENV=test`` to the
+      environment setting.
 
 
 *************
@@ -44,7 +47,7 @@ Testhelpers
 Devilry has several generations of helpers that helps with
 building the devilry data structures:
 
-- `Model mommy recipes <modelmommyrecipes>`_. **This should be used for all new tests**.
+- :ref:`Model mommy recipes <modelmommyrecipes>`. **This should be used for all new tests**.
 - :doc:`devilry.project.develop.teshelpers.corebuilder <devilry.project.develop.teshelpers.corebuilder>`.
   Used in a large percentage of our tests.
   *Should not be used for new tests*.
