@@ -25,7 +25,9 @@ class TestAssignmentGroupListView(TestCase):
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 0)
 
     def test_is_candidate_on_group(self):
-        self.periodbuilder.add_assignment('testassignment')\
+        self.periodbuilder\
+            .add_relatedstudents(self.testuser)\
+            .add_assignment(short_name='testassignment')\
             .add_group(students=[self.testuser])
         response = self._get_as('testuser')
         self.assertEquals(response.status_code, 200)
@@ -34,6 +36,7 @@ class TestAssignmentGroupListView(TestCase):
 
     def test_render(self):
         groupbuilder = self.periodbuilder\
+            .add_relatedstudents(self.testuser)\
             .add_assignment(short_name='testassignment', long_name='Test Assignment')\
             .add_group(students=[self.testuser])
         deadline = groupbuilder.add_deadline_in_x_weeks(weeks=1).deadline
@@ -57,6 +60,7 @@ class TestAssignmentGroupListView(TestCase):
 
     def test_no_deadlines(self):
         self.periodbuilder\
+            .add_relatedstudents(self.testuser)\
             .add_assignment(short_name='testassignment')\
             .add_group(students=[self.testuser])
         response = self._get_as('testuser')
@@ -72,6 +76,7 @@ class TestAssignmentGroupListView(TestCase):
 
     def test_waiting_for_deliveries_no_deliveries(self):
         self.periodbuilder\
+            .add_relatedstudents(self.testuser)\
             .add_assignment(short_name='testassignment')\
             .add_group(students=[self.testuser])\
             .add_deadline_in_x_weeks(weeks=1)
@@ -86,6 +91,7 @@ class TestAssignmentGroupListView(TestCase):
 
     def test_waiting_for_feedback_no_deliveries(self):
         self.periodbuilder\
+            .add_relatedstudents(self.testuser)\
             .add_assignment(short_name='testassignment')\
             .add_group(students=[self.testuser])\
             .add_deadline_x_weeks_ago(weeks=1)
@@ -100,6 +106,7 @@ class TestAssignmentGroupListView(TestCase):
 
     def test_corrected_passed(self):
         self.periodbuilder\
+            .add_relatedstudents(self.testuser)\
             .add_assignment(short_name='testassignment')\
             .add_group(students=[self.testuser])\
             .add_deadline_x_weeks_ago(weeks=1)\
@@ -120,6 +127,7 @@ class TestAssignmentGroupListView(TestCase):
 
     def test_corrected_failed(self):
         self.periodbuilder\
+            .add_relatedstudents(self.testuser)\
             .add_assignment(short_name='testassignment')\
             .add_group(students=[self.testuser])\
             .add_deadline_x_weeks_ago(weeks=1)\

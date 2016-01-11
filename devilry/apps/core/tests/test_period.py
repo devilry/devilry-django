@@ -27,24 +27,6 @@ class TestPeriodManager(TestCase):
             list(Period.objects.filter_active()),
             [active])
 
-    def test_filter_is_candidate_or_relatedstudent(self):
-        subjectbuilder = SubjectBuilder.quickadd_ducku_duck1010()
-        testuser = UserBuilder('testuser').user
-
-        period_a_builder = subjectbuilder \
-            .add_6month_active_period(short_name='periodA') \
-            .add_relatedstudents(testuser)
-        period_b_builder = subjectbuilder \
-            .add_6month_active_period(short_name='periodB')
-        period_b_builder \
-            .add_assignment('week1') \
-            .add_group(students=[testuser])
-        subjectbuilder.add_6month_active_period(short_name='periodC')
-
-        self.assertEquals(
-            set(Period.objects.filter_is_candidate_or_relatedstudent(testuser)),
-            {period_a_builder.period, period_b_builder.period})
-
 
 class TestPeriodManagerQualifiesForExam(TestCase):
     def setUp(self):

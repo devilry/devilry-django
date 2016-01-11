@@ -32,13 +32,6 @@ class TestAllPeriods(TestCase):
         selector = htmls.S(response.content)
         self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
 
-    def test_is_not_relatedstudent_but_registered_on_group(self):
-        AssignmentGroupBuilder.quickadd_ducku_duck1010_active_assignment1_group(studentuser=self.testuser)
-        response = self._get_as('testuser')
-        self.assertEquals(response.status_code, 200)
-        selector = htmls.S(response.content)
-        self.assertEquals(selector.count('#objecttableview-table tbody tr'), 1)
-
     def test_render(self):
         periodbuilder = NodeBuilder.quickadd_ducku()\
             .add_subject(short_name='atestcourse', long_name='A Test Course')\
