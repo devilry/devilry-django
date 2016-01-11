@@ -67,30 +67,30 @@ class FeedbackSet(models.Model):
     #: Is the last feedbackset for :obj:`~.FeedbackSet.group`? Must be None or True.
     is_last_in_group = models.NullBooleanField(default=True)
 
-    #: This status means this feedbackset is basically the first feedbackset.
-    GRADING_STATUS_FIRST_TRY = 'grading_status_first_try'
+    #: This means the feedbackset is basically the first feedbackset.
+    FEEDBACKSET_TYPE_FIRST_TRY = 'feedbackset_type_first_try'
 
     #: Is not the first feedbackset, but a new try.
-    GRADING_STATUS_NEW_TRY = 'grading_status_new_try'
+    FEEDBACKSET_TYPE_NEW_TRY = 'feedbackset_type_new_try'
 
     #: Something went wrong on grading, with this option, a new
     #: deadline should not be given to student. Student should just
     #: get notified that a new feedback was given.
-    GRADING_STATUS_RE_EDIT = 'grading_status_re_edit'
+    FEEDBACKSET_TYPE_RE_EDIT = 'feedbackset_type_re_edit'
 
     #: Grading status choises.
-    GRADING_STATUS_CHOICES = [
-        (GRADING_STATUS_FIRST_TRY, 'grading_status_first_try'),
-        (GRADING_STATUS_NEW_TRY,'grading_status_new_try'),
-        (GRADING_STATUS_RE_EDIT, 'grading_status_re_edit'),
+    FEEDBACKSET_TYPE_CHOICES = [
+        (FEEDBACKSET_TYPE_FIRST_TRY, 'feedbackset_type_first_try'),
+        (FEEDBACKSET_TYPE_NEW_TRY,'feedbackset_type_new_try'),
+        (FEEDBACKSET_TYPE_RE_EDIT, 'feedbackset_type_re_edit'),
     ]
 
     #: Sets data for grading status.
-    grading_status = models.CharField(
+    feedbackset_type = models.CharField(
         max_length=50,
         db_index=True,
-        choices=GRADING_STATUS_CHOICES,
-        default=GRADING_STATUS_FIRST_TRY,
+        choices=FEEDBACKSET_TYPE_CHOICES,
+        default=FEEDBACKSET_TYPE_FIRST_TRY,
     )
 
     #: The User that created the feedbackset. Only used as metadata
