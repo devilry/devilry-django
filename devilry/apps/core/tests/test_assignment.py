@@ -658,7 +658,7 @@ class TestAssignmentManager(TestCase):
         # Add another group to make sure we do not get false positives
         week1builder.add_group().add_examiners(UserBuilder('examiner2').user)
 
-        qry = Assignment.objects.filter_is_examiner(examiner1)
+        qry = Assignment.objects.filter_user_is_examiner(examiner1)
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], week1builder.assignment)
 
@@ -695,3 +695,24 @@ class TestAssignmentManager(TestCase):
         # make sure we are not getting false positives
         self.assertEquals(Assignment.objects.filter_is_examiner(examiner1).count(), 3)
         self.assertEquals(Assignment.objects.filter_is_examiner(otherexaminer).count(), 1)
+
+    def test_filter_user_is_examiner(self):
+        user = mommy.make(settings.AUTH_USER_MODEL)
+        assignment = mommy.make('core.Assignment')
+        assignmentgroup = mommy.make('core.AssignmentGroup', parentnode=assignment)
+        relatedexaminer = mommy.make('core.RelatedExaminer', user=user, assignmentgroup=assignmentgroup)
+        examiner = mommy.make('core.Examiner', relatedexaminer=relatedexaminer)
+        mommy.make('core.AssignmentGroup', examiners=[examiner])
+        queryset = Assignment.objects.filter_user_is_examiner(user)
+        self.assertEquals(queryset.count(), 1)
+        returned_assignment = queryset.first()
+        self.assertTrue(assignment.id, returned_assignment.id)
+
+    def test_filter_user_is_not_examiner(self):
+        user_not_set_as_examiner = mommy.make(settings.AUTH_USER_MODEL)
+        relatedexaminer = mommy.make('core.RelatedExaminer')
+        examiner = mommy.make('core.Examiner', relatedexaminer=relatedexaminer)
+        mommy.make('core.AssignmentGroup', examiners=[examiner])
+        queryset = Assignment.objects.filter_user_is_examiner(user_not_set_as_examiner)
+        self.assertEquals(queryset.count(), 0)
+
