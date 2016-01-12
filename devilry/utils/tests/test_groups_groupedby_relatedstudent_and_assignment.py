@@ -1,8 +1,10 @@
+import unittest
+
 from django.test import TestCase
 from devilry.apps.core.testhelper import TestHelper
 from devilry.utils.groups_groupedby_relatedstudent_and_assignment import GroupsGroupedByRelatedStudentAndAssignment
 
-
+@unittest.skip('Tests must be rewritten with mommy.')
 class GroupsGroupedByRelatedStudentAndAssignmentTest(TestCase):
     def setUp(self):
         self.testhelper = TestHelper()

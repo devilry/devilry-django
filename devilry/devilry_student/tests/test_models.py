@@ -29,7 +29,7 @@ class TestUploadedDeliveryFile(TestCase):
         self.assertIsNotNone(delivery.id)
         self.assertEquals(delivery.deadline, deadline)
         self.assertEquals(delivery.delivered_by, deadline.assignment_group.candidates.all()[0])
-        self.assertEquals(delivery.delivered_by.student, self.testuser)
+        self.assertEquals(delivery.delivered_by.relatedstudent.user, self.testuser)
         self.assertEquals(delivery.filemetas.count(), 1)
         filemeta = delivery.filemetas.all()[0]
         self.assertEquals(filemeta.filename, 'testing.txt')

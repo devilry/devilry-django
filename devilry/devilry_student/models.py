@@ -65,7 +65,7 @@ class UploadedDeliveryFileManager(models.Manager):
         if not queryset.exists():
             raise UploadedDeliveryFile.DoesNotExist('No UploadedDeliveryFile with the given deadline and user exists.')
 
-        candidate = deadline.assignment_group.candidates.filter(student=user).get()
+        candidate = deadline.assignment_group.candidates.filter(relatedstudent__user=user).get()
         delivery = Delivery(
             deadline=deadline,
             delivered_by=candidate,

@@ -229,8 +229,6 @@ class TestAssignment(TestCase):
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
         testassignment.create_groups_from_relatedstudents_on_period()
         candidatesqueryset = Candidate.objects.filter(assignment_group__parentnode=testassignment)
-        self.assertTrue(candidatesqueryset.filter(student__shortname='student1').exists())
-        self.assertTrue(candidatesqueryset.filter(student__shortname='student2').exists())
         self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student1').exists())
         self.assertTrue(candidatesqueryset.filter(relatedstudent__user__shortname='student2').exists())
 
@@ -711,48 +709,12 @@ class TestAssignmentOld(TestCase, TestHelper):
         self.assertRaises(ValidationError, assignment1.clean)
 
     def test_get_path(self):
-        self.assertEquals(self.inf1100_looong_assignment1.get_path(), 'inf1100.looong.assignment1')
-
-    def test_is_empty(self):
-        self.add(nodes="uio.ifi",
-                 subjects=['duck9000'],
-                 periods=['someperiod:begins(-2)'],
-                 assignments=['a1'])
-        self.assertTrue(self.duck9000_someperiod_a1.is_empty())
-        self.add_to_path('uni.ifi;duck9000.someperiod.a1.g1:candidate(stud1).d1:ends(5)')
-        self.add_delivery("duck9000.someperiod.a1.g1", {"good.py": "print awesome"})
-        self.assertFalse(self.duck9000_someperiod_a1.is_empty())
-
-
-class TestAssignmentCanDelete(TestCase, TestHelper):
-    def setUp(self):
-        self.goodFile = {"good.py": "print awesome"}
-
-    def test_can_delete_superuser(self):
-        self.add_to_path('uni;sub.p1:begins(-2).a1.g1:candidate(stud1).d1:ends(5)')
-        self.add_delivery("sub.p1.a1.g1", self.goodFile)
-        superuser = self.create_superuser('superuser')
-        assignment = Assignment.objects.get(id=self.sub_p1_a1.id)
-        self.assertTrue(assignment.can_delete(superuser))
-
-    def test_can_delete_assignmentadmin(self):
-        self.add_to_path('uni;sub.p1:begins(-2).a1:admin(a1admin)')
-        assignment = Assignment.objects.get(id=self.sub_p1_a1.id)
-        self.assertFalse(assignment.can_delete(self.a1admin))
-
-    def test_can_delete_periodadmin(self):
-        self.add_to_path('uni;sub.p1:begins(-2):admin(p1admin).a1.g1:candidate(stud1).d1:ends(5)')
-        assignment = Assignment.objects.get(id=self.sub_p1_a1.id)
-        self.assertTrue(assignment.can_delete(self.p1admin))
-        self.add_delivery("sub.p1.a1.g1", self.goodFile)
-        self.assertFalse(assignment.can_delete(self.p1admin))
-
-    def test_can_delete_nodeadmin(self):
-        self.add_to_path('uni:admin(uniadm);sub.p1:begins(-2).a1.g1:candidate(stud1).d1:ends(5)')
-        assignment = Assignment.objects.get(id=self.sub_p1_a1.id)
-        self.assertTrue(assignment.can_delete(self.uniadm))
-        self.add_delivery("sub.p1.a1.g1", self.goodFile)
-        self.assertFalse(assignment.can_delete(self.uniadm))
+        testassignment = mommy.make(
+            'core.Assignment',
+             parentnode__parentnode__short_name='testsubject',
+             parentnode__short_name='testperiod',
+             short_name='testassignment')
+        self.assertEqual('testsubject.testperiod.testassignment', testassignment.get_path())
 
 
 class TestAssignmentQuerySet(TestCase):

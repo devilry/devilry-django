@@ -1,3 +1,4 @@
+import unittest
 from datetime import datetime, timedelta
 from django.contrib.auth import get_user_model
 
@@ -8,6 +9,7 @@ from ..models import Node, Subject, Period, Assignment, AssignmentGroup, Deadlin
 from ..testhelper import TestHelper
 
 
+@unittest.skip('Testhelper for old tests - will be removed.')
 class TestTestHelper(TestCase):
     def setUp(self):
         self.ti = TestHelper()

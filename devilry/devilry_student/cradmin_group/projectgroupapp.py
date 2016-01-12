@@ -109,7 +109,7 @@ class ProjectGroupOverviewView(TemplateView):
 
         context['groupmemberusers'] = list(
             get_user_model().objects
-            .filter(id__in=group.candidates.values_list('student_id', flat=True))
+            .filter(id__in=group.candidates.values_list('relatedstudent__user_id', flat=True))
             .prefetch_related_primary_email()
             .prefetch_related_primary_username())
         return context
