@@ -843,7 +843,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         candidateids = []
         for candidate in self.candidates.all():
-            candidateids.append(candidate.get_anonymous_name(assignment=assignment))
+            candidateids.append(unicode(candidate.get_anonymous_name(assignment=assignment)))
         if candidateids:
             return u', '.join(candidateids)
         else:
