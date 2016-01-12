@@ -27,63 +27,103 @@ class TestAssignmentGroup(TestCase):
     """
     Test AssignmentGroup using the next generation less coupled testing frameworks.
     """
+    def test_anonymous_displayname_empty(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        self.assertEquals(
+            u'no students in group'.format(testgroup.id),
+            testgroup.get_anonymous_displayname())
+
+    def test_anonymous_displayname(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent__candidate_id='test')
+        self.assertEquals(
+            u'test'.format(testgroup.id),
+            testgroup.get_anonymous_displayname())
+
     def test_short_displayname_empty(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        self.assertEquals(group1builder.group.short_displayname, unicode(group1builder.group.id))
+        testgroup = mommy.make('core.AssignmentGroup')
+        self.assertEquals(
+            u'group#{} - no students in group'.format(testgroup.id),
+            testgroup.short_displayname)
+
+    def test_short_displayname_empty_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertEquals(
+            u'no students in group'.format(testgroup.id),
+            testgroup.short_displayname)
 
     def test_short_displayname_students(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group().add_students(
-                UserBuilder('student1').user,
-                UserBuilder('student2').user)
-        self.assertEquals(group1builder.group.short_displayname, 'student1, student2')
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent__user__shortname='studenta')
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent__user__shortname='studentb')
+        self.assertEquals({'studenta', 'studentb'}, set(testgroup.short_displayname.split(', ')))
 
     def test_short_displayname_anonymous_candidates(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)\
-            .add_group().add_candidates(
-                Candidate(student=UserBuilder('student1').user, candidate_id="aa"),
-                Candidate(student=UserBuilder('student2').user, candidate_id="bb"))
-        self.assertEquals(group1builder.group.short_displayname, 'aa, bb')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent__candidate_id='aa')
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent__candidate_id='bb',)
+        self.assertEquals({'aa', 'bb'}, set(testgroup.short_displayname.split(', ')))
 
     def test_short_displayname_named(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group(name='My group')
-        self.assertEquals(group1builder.group.short_displayname, 'My group')
+        testgroup = mommy.make('core.AssignmentGroup', name='My group')
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent__user__shortname='ignored')
+        self.assertEquals('My group', testgroup.short_displayname)
+
+    def test_short_displayname_named_empty(self):
+        testgroup = mommy.make('core.AssignmentGroup', name='My group')
+        self.assertEquals(
+            u'group#{} - no students in group'.format(testgroup.id),
+            testgroup.short_displayname)
 
     def test_long_displayname_empty(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group()
-        self.assertEquals(group1builder.group.long_displayname, unicode(group1builder.group.id))
+        testgroup = mommy.make('core.AssignmentGroup')
+        self.assertEquals(
+            u'group#{} - no students in group'.format(testgroup.id),
+            testgroup.long_displayname)
 
-    def test_long_displayname_students(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group().add_students(
-                UserBuilder('student1', full_name=u'Student One \u00E5').user,
-                UserBuilder('student2').user)
-        self.assertEquals(group1builder.group.long_displayname, u'Student One \u00E5, student2')
+    def test_long_displayname_empty_anonymous(self):
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertEquals(
+            u'no students in group',
+            testgroup.long_displayname)
+
+    def test_long_displayname_candidates(self):
+        testgroup = mommy.make('core.AssignmentGroup')
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent__user__fullname=u'Student \u00E5')
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent__user__shortname='studentb')
+        self.assertEquals({u'Student \u00E5', u'studentb'}, set(testgroup.long_displayname.split(u', ')))
 
     def test_long_displayname_anonymous_candidates(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1', anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)\
-            .add_group().add_candidates(
-                Candidate(student=UserBuilder('student1').user, candidate_id="aa"),
-                Candidate(student=UserBuilder('student2').user, candidate_id="bb"))
-        self.assertEquals(group1builder.group.long_displayname, 'aa, bb')
+        testgroup = mommy.make('core.AssignmentGroup',
+                               parentnode__anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent__candidate_id='aa')
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent__candidate_id='bb',)
+        self.assertEquals({'aa', 'bb'}, set(testgroup.long_displayname.split(', ')))
 
     def test_long_displayname_named(self):
-        group1builder = PeriodBuilder.quickadd_ducku_duck1010_active()\
-            .add_assignment('assignment1')\
-            .add_group(name='My group').add_students(
-                UserBuilder('student1', full_name=u'Student One \u00E5').user,
-                UserBuilder('student2').user)
-        self.assertEquals(group1builder.group.long_displayname, u'My group (Student One \u00E5, student2)')
+        testgroup = mommy.make('core.AssignmentGroup', name='My group')
+        mommy.make('core.Candidate', assignment_group=testgroup,
+                   relatedstudent__user__fullname=u'Student \u00E5')
+        self.assertEquals(u'My group (Student \u00E5)', testgroup.long_displayname)
+
+    def test_long_displayname_named_empty(self):
+        testgroup = mommy.make('core.AssignmentGroup', name='My group')
+        self.assertEquals(
+            u'My group (group#{} - no students in group)'.format(testgroup.id),
+            testgroup.long_displayname)
 
     def test_close_groups(self):
         assignmentbuilder = PeriodBuilder.quickadd_ducku_duck1010_active()\

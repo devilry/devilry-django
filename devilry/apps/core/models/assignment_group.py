@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.db import models
 from django.db import transaction
 from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy
 from ievv_opensource.ievv_batchframework.models import BatchOperation
 
 from .node import Node
@@ -828,19 +828,33 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         """
         return self.parentnode
 
-    def _get_candidateids(self):
+    def get_anonymous_displayname(self, assignment=None):
+        """
+        Get the anonymous displayname for this group.
+
+        Args:
+            assignment: An optional :class:`devilry.apps.core.models.assignment.Assignment`.
+                if this is provided, we use this instead of looking up
+                ``parentnode``. This is essential for views
+                that list many groups since it avoid extra database lookups.
+        """
+        if assignment is None:
+            assignment = self.assignment
+
         candidateids = []
-        candidates = list(self.candidates.all())
-        for candidate in candidates:
-            if candidate.candidate_id:
-                candidateids.append(candidate.candidate_id)
-            else:
-                candidateids.append('candidate-id missing')
-        if candidateids and len(candidateids) == len(candidates):
-            candidateids.sort()
+        for candidate in self.candidates.all():
+            candidateids.append(candidate.get_anonymous_name(assignment=assignment))
+        if candidateids:
             return u', '.join(candidateids)
         else:
-            return ''
+            return pgettext_lazy('core assignmentgroup',
+                                 'no students in group')
+
+    def __get_no_candidates_nonanonymous_displayname(self):
+        return pgettext_lazy('core assignmentgroup',
+                             'group#%(groupid)s - no students in group') % {
+            'groupid': self.id
+        }
 
     @property
     def short_displayname(self):
@@ -853,16 +867,19 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         .. seealso:: https://github.com/devilry/devilry-django/issues/498
         """
         assignment = self.assignment
-        if assignment.anonymizationmode != assignment.ANONYMIZATIONMODE_OFF:
-            out = self._get_candidateids()
-        elif self.name:
-            out = self.name
+        if assignment.is_anonymous:
+            return self.get_anonymous_displayname()
         else:
-            out = self.get_students()
-        if not out:
-            return unicode(self.id)
-        else:
-            return out
+            candidates = self.candidates.all()
+            names = [candidate.relatedstudent.user.shortname for candidate in candidates]
+            out = u', '.join(names)
+            if out:
+                if self.name:
+                    return self.name
+                else:
+                    return out
+            else:
+                return self.__get_no_candidates_nonanonymous_displayname()
 
     @property
     def long_displayname(self):
@@ -878,23 +895,17 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         .. seealso:: https://github.com/devilry/devilry-django/issues/499
         """
         assignment = self.assignment
-        if assignment.anonymizationmode != assignment.ANONYMIZATIONMODE_OFF:
-            out = self._get_candidateids()
+        if assignment.is_anonymous:
+            out = self.get_anonymous_displayname()
         else:
-            candidates = self.candidates.select_related('student')
-            names = [candidate.student.get_full_name() for candidate in candidates]
-            names.sort()
+            candidates = self.candidates.all()
+            names = [candidate.relatedstudent.user.get_full_name() for candidate in candidates]
             out = u', '.join(names)
+            if not out:
+                out = self.__get_no_candidates_nonanonymous_displayname()
             if self.name:
-                if out:
-                    out = u'{} ({})'.format(self.name, out)
-                else:
-                    out = self.name
-
-        if out == '':
-            return unicode(self.id)
-        else:
-            return out
+                out = u'{} ({})'.format(self.name, out)
+        return out
 
     def __unicode__(self):
         return u'{} - {}'.format(self.short_displayname, self.parentnode.get_path())
