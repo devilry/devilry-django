@@ -74,7 +74,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                     '#devilry_admin_assignment_overview_settings_first_deadline a').alltext_normalized,
                 "First deadline")
 
-    def test_settings_row_first_deadline(self):
+    def test_settings_row_first_deadline_description(self):
         assignment = mommy.make('core.Assignment', first_deadline=datetime(2000, 1, 1))
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertEqual(
