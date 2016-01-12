@@ -47,20 +47,10 @@ class CandidateQuerySet(models.QuerySet):
 
 class Candidate(models.Model):
     """
-    .. attribute:: assignment_group
+    A student within an AssignmentGroup.
 
-        The `AssignmentGroup`_ where this groups belongs.
-
-    .. attribute:: student
-
-        A student (a foreign key to a User).
-
-    .. attribute:: candidate_id
-
-        A optional candidate id. This can be anything as long as it is not
-        more than 30 characters. When the assignment is anonymous, this is
-        the "name" shown to examiners instead of the username of the
-        student.
+    A candidate is a many-to-many between :class:`devilry.apps.core.models.AssignmentGroup`
+    and a user.
     """
     objects = CandidateQuerySet.as_manager()
 

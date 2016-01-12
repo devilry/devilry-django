@@ -303,13 +303,8 @@ class RelatedStudentManager(AbstractRelatedUserManager):
 
 
 class RelatedStudent(RelatedUserBase):
-    """ Related student.
-
-    .. attribute:: candidate_id
-
-        If a candidate has the same Candidate ID for all or many assignments in
-        a semester, this field can be set to simplify setting candidate IDs on
-        each assignment.
+    """
+    Related student.
     """
     objects = RelatedStudentManager()
 

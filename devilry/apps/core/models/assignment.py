@@ -335,6 +335,19 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         editable=False,
         help_text='Deprecated anonymous field. Will be removed in 3.1.')
 
+    #: If this is set to ``True``, the assignment manages its own set of candidate IDs,
+    #: and candidate IDs from the semester is ignored. Candidate IDs for an assignment
+    #: using ``uses_custom_candate_ids=True`` is stored in
+    #: :obj:`devilry.apps.core.models.candidate.Candidate.candidate_id`.
+    # Candidate IDs for an assignment using ``uses_custom_candate_ids=False`` (the default)
+    # is stored in :obj:`devilry.apps.core.models.relateduser.RelatedStudent.candidate_id`.
+    uses_custom_candidate_ids = models.BooleanField(
+        default=False,
+        help_text='If this is enabled, the assignment does not inherit candidate IDs '
+                  'from the semester, and instead have their own set of candidate IDs '
+                  'only for this assignment.'
+    )
+
     ANONYMIZATIONMODE_OFF = 'off'
     ANONYMIZATIONMODE_SEMI_ANONYMOUS = 'semi_anonymous'
     ANONYMIZATIONMODE_FULLY_ANONYMOUS = 'fully_anonymous'
