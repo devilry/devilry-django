@@ -1,8 +1,35 @@
 {% load i18n %}
 {% load humanize %}
 <div class="col-sm-8">
-    <div id="devilry_admin_assignment_settings">
+    <div id="devilry_admin_assignment_overview_settings">
         <h2>{% trans "Settings" %}</h2>
+        <div id="devilry_admin_assignment_overview_settings_links"
+             class="devilry-admin-assignment-overview-settings-links">
+            <ul>
+                <li id="devilry_admin_assignment_overview_settings_first_deadline">
+                    <h3>
+                        <a href="#">{% trans "First deadline" %}</a>
+                    </h3>
+                    <p>
+                        {% blocktrans with deadline=assignment.first_deadline %}
+                            The first deadline is {{ deadline }}. This deadline is common for all students
+                            unless a new deadline have been provided to a group.
+                        {% endblocktrans %}
+                    </p>
+                </li>
+                <li id="devilry_admin_assignment_overview_settings_anonymization">
+                    <h3>
+                        <a href="#">Anonymization</a>
+                    </h3>
+                    <p>
+                        {% blocktrans with deadline=assignment.first_deadline %}
+                            Anonymization disabled. Students and examiners can see each others names and other
+                            identifying information.
+                        {% endblocktrans %}
+                    </p>
+                </li>
+            </ul>
+        </div>
     </div>
 </div>
 <div class="col-sm-4">

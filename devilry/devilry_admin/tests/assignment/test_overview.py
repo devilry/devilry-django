@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.test import TestCase
 from django_cradmin import cradmin_testhelpers
 from model_mommy import mommy
@@ -33,14 +34,14 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertTrue(
                 mockresponse.selector.one('#devilry_admin_assignment_meta p').alltext_normalized.startswith(
-                    '2 students'))
+                        '2 students'))
 
     def test_assignment_meta_has_no_students(self):
         assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertTrue(
                 mockresponse.selector.one('#devilry_admin_assignment_meta p').alltext_normalized.startswith(
-                    '0 students'))
+                        '0 students'))
 
     def test_assignment_meta_one_examiner_configured(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
@@ -57,3 +58,27 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertFalse(
                 mockresponse.selector.exists('.devilry-admin-assignment-examiners-exists'))
+
+    def test_settings_row(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one('#devilry_admin_assignment_overview_settings h2').alltext_normalized,
+                "Settings")
+
+    def test_settings_row_first_deadline(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                    '#devilry_admin_assignment_overview_settings_first_deadline a').alltext_normalized,
+                "First deadline")
+
+    def test_settings_row_first_deadline(self):
+        assignment = mommy.make('core.Assignment', first_deadline=datetime(2000, 1, 1))
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                    '#devilry_admin_assignment_overview_settings_first_deadline p').alltext_normalized,
+                "The first deadline is Saturday January 1, 2000, 00:00. This deadline is common for all "
+                "students unless a new deadline have been provided to a group.")
