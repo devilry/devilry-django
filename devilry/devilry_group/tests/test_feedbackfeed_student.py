@@ -158,7 +158,9 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
 
     def test_post_feedbackset_comment_with_text(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
-        student = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        student = mommy.make('core.Candidate', assignment_group=feedbackset.group,
+                             # NOTE: The line blow can be removed when relatedstudent field is migrated to null=False
+                             relatedstudent=mommy.make('core.RelatedStudent'))
         self.mock_http302_postrequest(
             cradmin_role=student.assignment_group,
             viewkwargs={'pk': feedbackset.group.id},
@@ -171,7 +173,9 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
 
     def test_post_feedbackset_post_comment_without_text(self):
         feedbackset = mommy.make('devilry_group.FeedbackSet')
-        student = mommy.make('core.Candidate', assignment_group=feedbackset.group)
+        student = mommy.make('core.Candidate', assignment_group=feedbackset.group,
+                             # NOTE: The line blow can be removed when relatedstudent field is migrated to null=False
+                             relatedstudent=mommy.make('core.RelatedStudent'))
         self.mock_http302_postrequest(
             cradmin_role=student.assignment_group,
             viewkwargs={'pk': feedbackset.group.id},
