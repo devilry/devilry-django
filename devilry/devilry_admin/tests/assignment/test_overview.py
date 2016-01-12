@@ -53,7 +53,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                         '1 examiner'))
 
     def test_assignment_meta_no_examiner_configured(self):
-        assignment = mommy.make('core.Assignment') #mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
+        assignment = mommy.make('core.Assignment')
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertFalse(
                 mockresponse.selector.exists('.devilry-admin-assignment-examiners-exists'))
