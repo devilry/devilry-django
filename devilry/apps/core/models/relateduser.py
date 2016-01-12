@@ -232,8 +232,6 @@ class RelatedUserBase(models.Model, AbstractIsAdmin):
     tags_patt = re.compile('^(?:[a-z0-9_-]+,)*[a-z0-9_-]+$')
 
     #: Automatic anonymous ID for a student/examiner for the entire semester.
-    #: Only used if the ``DEVILRY_CANDIDATE_ID_HANDLING`` is set to
-    #: ``per-period``.
     automatic_anonymous_id = models.CharField(max_length=255,
                                               blank=True, null=False, default='',
                                               editable=False)
@@ -274,13 +272,6 @@ class RelatedExaminer(RelatedUserBase):
     Adds no fields to RelatedUserBase.
     """
     objects = RelatedExaminerManager()
-
-    def get_anonymous_displayname(self):
-        if settings.DEVILRY_CANDIDATE_ID_HANDLING == 'per-period':
-            return self.automatic_anonymous_id \
-                   or ugettext_lazy('Anonymous ID missing')
-        else:
-            return ''
 
 
 class RelatedStudentQueryset(models.QuerySet):
@@ -327,16 +318,7 @@ class RelatedStudent(RelatedUserBase):
     active = models.BooleanField(default=True)
 
     #: A candidate ID that follows the student through the entire period.
-    #: Only used if the ``DEVILRY_CANDIDATE_ID_HANDLING`` is set to
-    #: ``per-period``.
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
-
-    def get_anonymous_displayname(self):
-        if settings.DEVILRY_CANDIDATE_ID_HANDLING == 'per-period':
-            return self.candidate_id or self.automatic_anonymous_id \
-                   or ugettext_lazy('Anonymous ID missing')
-        else:
-            return ''
 
 
 class RelatedUserSyncSystemTag(models.Model):

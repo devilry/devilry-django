@@ -46,7 +46,6 @@ class Value(listbuilder.base.ItemValueRenderer):
         return {
             'fullname': candidate.relatedstudent.user.fullname,
             'shortname': candidate.relatedstudent.user.shortname,
-            # 'anonymous_displayname': candidate.relatedstudent.get_anonymous_displayname()
         }
 
     def __get_candidateinfo_list(self):
@@ -57,7 +56,6 @@ class Value(listbuilder.base.ItemValueRenderer):
         return {
             'fullname': examiner.relatedexaminer.user.fullname,
             'shortname': examiner.relatedexaminer.user.shortname,
-            # 'anonymous_displayname': examiner.relatedexaminer.get_anonymous_displayname()
         }
 
     def __get_examinerinfo_list(self):

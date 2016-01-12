@@ -53,14 +53,6 @@ class Examiner(models.Model, AbstractIsAdmin):
             Q(assignmentgroup__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(
                 user_obj))
 
-    def get_anonymous_displayname(self):
-        if settings.DEVILRY_CANDIDATE_ID_HANDLING == 'per-period':
-            return self.relatedexaminer.get_anonymous_displayname()
-        elif settings.DEVILRY_CANDIDATE_ID_HANDLING == 'per-assignment':
-            return self.automatic_anonymous_id or _('Anonymous ID missing')
-        else:
-            return ''
-
     def __unicode__(self):
         return u'Examiner {} for {}'.format(
             self.user, self.assignmentgroup

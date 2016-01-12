@@ -82,8 +82,7 @@ class Candidate(models.Model):
         related_name='candidates')
 
     #: A candidate ID imported from a third party system.
-    #: Only used if the ``DEVILRY_CANDIDATE_ID_HANDLING`` is set to
-    #: ``per-assignment``.
+    #: Only used if ``uses_custom_candidate_ids==True`` on the assignment.
     candidate_id = models.CharField(
         max_length=30, blank=True, null=True,
         help_text='An optional candidate id. This can be anything as long as it '
@@ -101,11 +100,3 @@ class Candidate(models.Model):
             id=self.id,
             student=self.student,
             group=self.assignment_group)
-
-    def get_anonymous_displayname(self):
-        if settings.DEVILRY_CANDIDATE_ID_HANDLING == 'per-period':
-            return self.relatedstudent.get_anonymous_displayname()
-        elif settings.DEVILRY_CANDIDATE_ID_HANDLING == 'per-assignment':
-            return self.candidate_id or self.automatic_anonymous_id or _('Anonymous ID missing')
-        else:
-            return ''

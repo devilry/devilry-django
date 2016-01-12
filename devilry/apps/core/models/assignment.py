@@ -739,8 +739,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         Copies:
 
         - The name of the group.
-        - The Candidate objects, but does not copy ``candidate_id`` unless
-          the ``DEVILRY_CANDIDATE_ID_HANDLING`` setting is set to ``"per-period"``.
         """
         from devilry.apps.core.models import AssignmentGroup
         from devilry.apps.core.models import Candidate
