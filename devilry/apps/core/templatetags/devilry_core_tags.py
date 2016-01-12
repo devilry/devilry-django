@@ -66,3 +66,22 @@ def devilry_single_candidate_long_displayname(assignment, candidate):
         'assignment': assignment,
         'candidate': candidate,
     }
+
+
+@register.inclusion_tag('devilry_core/templatetags/single-candidate-short-displayname.django.html')
+def devilry_single_candidate_short_displayname(assignment, candidate):
+    """
+    Returns the candidate wrapped in HTML formatting tags perfect for showing
+    the user inline.
+
+    Handles anonymization based on ``assignment.anonymizationmode``.
+
+    Args:
+        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+            The ``assignment`` should be the assignment where the candidate belongs.
+        candidate: A :class:`devilry.apps.core.models.candidate.Candidate` object.
+    """
+    return {
+        'assignment': assignment,
+        'candidate': candidate,
+    }

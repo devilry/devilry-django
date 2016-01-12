@@ -71,3 +71,69 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
                 devilry_core_tags.devilry_single_candidate_long_displayname(assignment, candidate)))
         self.assertEqual('MyAnonymousId',
                          selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
+
+
+class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
+    def test_nonanonymous_cssclass(self):
+        assignment = mommy.make('core.Assignment')
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment,
+                               relatedstudent__user__shortname='testuser')
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/single-candidate-short-displayname.django.html',
+                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate)))
+        self.assertTrue(selector.exists('.devilry-core-candidate-shortname'))
+        self.assertFalse(selector.exists('.devilry-core-candidate-anonymous-name'))
+
+    def test_nonanonymous_without_fullname(self):
+        assignment = mommy.make('core.Assignment')
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment,
+                               relatedstudent__user__shortname='testuser')
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/single-candidate-short-displayname.django.html',
+                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate)))
+        self.assertEqual('testuser',
+                         selector.one('.devilry-core-candidate-shortname').alltext_normalized)
+
+    def test_nonanonymous_with_fullname(self):
+        assignment = mommy.make('core.Assignment')
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment,
+                               relatedstudent__user__shortname='testuser',
+                               relatedstudent__user__fullname='Test User')
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/single-candidate-short-displayname.django.html',
+                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate)))
+        self.assertEqual('testuser',
+                         selector.one('.devilry-core-candidate-shortname').alltext_normalized)
+
+    def test_anonymous_cssclass(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment,
+                               relatedstudent__user__shortname='testuser')
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/single-candidate-short-displayname.django.html',
+                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate)))
+        self.assertFalse(selector.exists('.devilry-core-candidate-shortname'))
+        self.assertTrue(selector.exists('.devilry-core-candidate-anonymous-name'))
+
+    def test_anonymous(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode=assignment,
+                               relatedstudent__automatic_anonymous_id='MyAnonymousId',
+                               relatedstudent__user__shortname='testuser')
+        selector = htmls.S(
+            render_to_string(
+                'devilry_core/templatetags/single-candidate-short-displayname.django.html',
+                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate)))
+        self.assertEqual('MyAnonymousId',
+                         selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
