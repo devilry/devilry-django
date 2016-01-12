@@ -509,10 +509,12 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                   if the assignment is anonymous.
                 - If devilryrole is ``"examiner"``, candidates need to be anonymized if the assignment
                   is anonymous.
-                - If devilryrole is ``"period"``, candidates need to be anonymized if the assignment
+                - If devilryrole is ``"periodadmin"``, candidates need to be anonymized if the assignment
                   is anonymous.
                 - If devilryrole is ``"courseadmin"``, candidates need to be
                   anonymized if the assignment is anonymized with ``anonymizationmode="fully_anonymous"``.
+                - If devilryrole is ``"departmentadmin"``, candidates do not need to be anonymized even
+                  if the assignment is anonymous.
 
         Returns:
             bool: ``True`` if the candidates must be anonymized for the given role.
@@ -521,6 +523,41 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
             return False
         elif devilryrole == 'examiner':
             return self.is_anonymous
+        elif devilryrole == 'periodadmin':
+            return self.is_anonymous
+        elif devilryrole == 'courseadmin':
+            return self.anonymizationmode == self.ANONYMIZATIONMODE_FULLY_ANONYMOUS
+        elif devilryrole == 'departmentadmin':
+            return False
+        else:
+            raise ValueError('{} is an invalid value for devilryrole.'.format(devilryrole))
+
+    def examiners_must_be_anonymized_for_devilryrole(self, devilryrole):
+        """
+        Check if examiners must be anonymized for the given ``devilryrole``.
+
+        Args:
+            devilryrole: Must be one of ``"student"``, ``"examiner"``, ``"courseadmin"``,
+                ``"periodadmin"`` or ``"departmentadmin"``.
+                This is used to determine if examiners needs to be anonymized or not
+                using the following rules:
+
+                - If devilryrole is ``"student"``, examiners need to be anonymized if the assignment
+                  is anonymous.
+                - If devilryrole is ``"examiner"``, examiners do not need to be anonymized even
+                  if the assignment is anonymous.
+                - If devilryrole is ``"periodadmin"``, examiners need to be anonymized if the assignment
+                  is anonymous.
+                - If devilryrole is ``"courseadmin"``, examiners need to be
+                  anonymized if the assignment is anonymized with ``anonymizationmode="fully_anonymous"``.
+
+        Returns:
+            bool: ``True`` if the examiners must be anonymized for the given role.
+        """
+        if devilryrole == 'student':
+            return self.is_anonymous
+        elif devilryrole == 'examiner':
+            return False
         elif devilryrole == 'periodadmin':
             return self.is_anonymous
         elif devilryrole == 'courseadmin':
