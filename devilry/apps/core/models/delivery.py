@@ -17,10 +17,10 @@ class DeliveryQuerySet(models.query.QuerySet):
     """
 
     def filter_is_examiner(self, user):
-        return self.filter(deadline__assignment_group__examiners__user=user).distinct()
+        return self.filter(deadline__assignment_group__examiners__relateduser__user=user).distinct()
 
     def filter_is_candidate(self, user):
-        return self.filter(deadline__assignment_group__candidates__student=user).distinct()
+        return self.filter(deadline__assignment_group__candidates__relatedstudent__user=user).distinct()
 
     def filter_is_active(self):
         now = datetime.now()

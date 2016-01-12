@@ -182,7 +182,7 @@ class AddDeliveryView(formbase.FormView):
 
     def __get_canidate(self):
         try:
-            return self.group.candidates.get(student=self.request.user)
+            return self.group.candidates.get(relatedstudent__user=self.request.user)
         except Candidate.DoesNotExist:
             return None
 

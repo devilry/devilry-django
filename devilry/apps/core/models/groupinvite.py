@@ -6,6 +6,8 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _
+
+from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User
 
 from devilry.utils.devilry_email import send_templated_message
@@ -98,7 +100,7 @@ class GroupInvite(models.Model):
         - Students with an unanswered invite to the group.
         - Students already in the group.
         """
-        students_in_group = [c.student.id for c in group.candidates.all()]
+        students_in_group = [c.relatedstudent.user.id for c in group.candidates.all()]
         students_invited_to_group = [invite.sent_to.id
                                      for invite in GroupInvite.objects.filter_unanswered_sent_invites(group)]
         users = get_user_model().objects.filter(relatedstudent__period=group.period) \
@@ -111,15 +113,15 @@ class GroupInvite(models.Model):
         """
         Returns a queryset matching all groups where the ``sent_to`` user is a candidate.
         """
-        return AssignmentGroup.objects.filter_is_candidate(self.sent_to).filter(
+        return AssignmentGroup.objects.filter_user_is_candidate(self.sent_to).filter(
             parentnode=self.group.parentnode)
 
     def clean(self):
         if self.accepted and not self.responded_datetime:
             self.responded_datetime = datetime.now()
-        if self.sent_by and not self.group.candidates.filter(student=self.sent_by).exists():
+        if self.sent_by and not self.group.candidates.filter(relatedstudent__user=self.sent_by).exists():
             raise ValidationError('The user sending an invite must be a Candiate on the group.')
-        if self.sent_to and self.group.candidates.filter(student=self.sent_to).exists():
+        if self.sent_to and self.group.candidates.filter(relatedstudent__user=self.sent_to).exists():
             raise ValidationError(_(u'The student is already a member of the group.'))
         if GroupInvite.objects.filter_no_response() \
                 .filter(group=self.group, sent_to=self.sent_to) \
@@ -177,7 +179,10 @@ class GroupInvite(models.Model):
         try:
             existing_group = self.get_sent_to_groups_queryset().get()
         except AssignmentGroup.DoesNotExist:
-            self.group.candidates.create(student=self.sent_to)
+            relatedstudent = RelatedStudent.objects.get(
+                    user=self.sent_to,
+                    period=self.group.parentnode.parentnode)
+            self.group.candidates.create(relatedstudent=relatedstudent)
         else:
             existing_group.merge_into(self.group)
 

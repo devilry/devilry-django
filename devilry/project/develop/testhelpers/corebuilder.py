@@ -399,8 +399,7 @@ class AssignmentGroupBuilder(CoreBuilderBase):
             period = self.group.period
             relatedstudent = RelatedStudent.objects.get_or_create(user=user,
                                                                   period=period)[0]
-            self.group.candidates.create(student=user,
-                                         relatedstudent=relatedstudent)
+            self.group.candidates.create(relatedstudent=relatedstudent)
         return self
 
     def add_candidates(self, *candidates):

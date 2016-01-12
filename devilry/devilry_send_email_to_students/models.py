@@ -24,7 +24,7 @@ def on_new_staticfeedback(sender, **kwargs):
     period = assignment.parentnode
     subject = period.parentnode
 
-    user_list = [candidate.student \
+    user_list = [candidate.relatedstudent.user \
             for candidate in assignment_group.candidates.all()]
 
     url = create_absolute_show_delivery_url(delivery)

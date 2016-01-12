@@ -125,16 +125,6 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             .annotate(deliverycount_for_no_deliveries_exclude=models.Count('deadlines__deliveries'))\
             .filter(deliverycount_for_no_deliveries_exclude=0)
 
-    def filter_is_examiner(self, user):
-        warnings.warn('AssignmentGroupQuerySet.filter_is_examiner is deprecated in 3.0 - '
-                      'use filter_user_is_examiner', DeprecationWarning)
-        return self.filter(examiners__user=user).distinct()
-
-    def filter_is_candidate(self, user):
-        warnings.warn('AssignmentGroupQuerySet.filter_is_candidate is deprecated in 3.0 - '
-                      'use filter_user_is_candidate', DeprecationWarning)
-        return self.filter(candidates__student=user).distinct()
-
     def filter_user_is_examiner(self, user):
         """
         Filter all :class:`.AssignmentGroup` objects where the given
@@ -165,10 +155,10 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             parentnode__parentnode__end_time__gt=now)
 
     def filter_examiner_has_access(self, user):
-        return self.filter_is_active().filter_is_examiner(user)
+        return self.filter_is_active().filter_user_is_examiner(user)
 
     def filter_student_has_access(self, user):
-        return self.filter_is_published().filter_is_candidate(user)
+        return self.filter_is_published().filter_user_is_candidate(user)
 
     def filter_by_status(self, status):
         return self.filter(delivery_status=status)
@@ -377,12 +367,6 @@ class AssignmentGroupManager(models.Manager):
         """
         return self.get_queryset().exclude_groups_with_deliveries()
 
-    def filter_is_examiner(self, user):
-        return self.get_queryset().filter_is_examiner(user)
-
-    def filter_is_candidate(self, user):
-        return self.get_queryset().filter_is_candidate(user)
-
     def filter_user_is_examiner(self, user):
         """
         Returns a queryset with all AssignmentGroups where the given ``user`` is examiner.
@@ -479,7 +463,6 @@ class AssignmentGroupManager(models.Manager):
         candidates = []
         for group, relatedstudent in zip(group_list, relatedstudents):
             candidate = Candidate(
-                student=relatedstudent.user,
                 relatedstudent=relatedstudent,
                 assignment_group=group)
             candidates.append(candidate)
@@ -717,7 +700,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
         Returns a django.models.Q object matching AssignmentGroups where
         the given student is candidate.
         """
-        return Q(candidates__student=user_obj)
+        return Q(candidates__relatedstudent__user=user_obj)
 
     @classmethod
     def where_is_candidate(cls, user_obj):
