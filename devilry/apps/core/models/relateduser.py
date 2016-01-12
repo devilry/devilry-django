@@ -273,6 +273,21 @@ class RelatedExaminer(RelatedUserBase):
     """
     objects = RelatedExaminerManager()
 
+    def get_anonymous_name(self):
+        """
+        Get the anonymous name for this RelatedExaminer.
+
+        If :obj:`~.RelatedUser.automatic_anonymous_id` is set,
+        falling back on ``"Anonymous ID missing"``.
+
+        Returns:
+            str: A unicode string with the anonymous name.
+        """
+        if self.automatic_anonymous_id:
+            return self.automatic_anonymous_id
+        else:
+            return ugettext_lazy('Anonymous ID missing')
+
 
 class RelatedStudentQueryset(models.QuerySet):
     """
@@ -314,6 +329,24 @@ class RelatedStudent(RelatedUserBase):
 
     #: A candidate ID that follows the student through the entire period.
     candidate_id = models.CharField(max_length=30, blank=True, null=True)
+
+    def get_anonymous_name(self):
+        """
+        Get the anonymous name for this RelatedStudent.
+
+        If :obj:`~.RelatedStudent.candidate_id` is set, we use use that,
+        falling back on :obj:`~.RelatedUser.automatic_anonymous_id`, and
+        then falling back on ``"Anonymous ID missing"``.
+
+        Returns:
+            str: A unicode string with the anonymous name.
+        """
+        if self.candidate_id:
+            return self.candidate_id
+        elif self.automatic_anonymous_id:
+            return self.automatic_anonymous_id
+        else:
+            return ugettext_lazy('Anonymous ID missing')
 
 
 class RelatedUserSyncSystemTag(models.Model):

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import IntegrityError
 from django.test import TestCase
 from model_mommy import mommy
@@ -10,19 +11,48 @@ from devilry.project.develop.testhelpers.corebuilder import UserBuilder2
 class TestRelatedStudentModel(TestCase):
     def test_unique_in_period(self):
         testperiod = mommy.make('core.Period')
-        testuser = UserBuilder2().user
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
         with self.assertRaises(IntegrityError):
             mommy.make('core.RelatedStudent', period=testperiod, user=testuser)
+
+    def test_get_anonymous_name_missing_both_anonymous_id_and_candidate_id(self):
+        relatedstudent = mommy.make('core.RelatedStudent')
+        self.assertEqual('Anonymous ID missing', relatedstudent.get_anonymous_name())
+
+    def test_get_anonymous_name_has_anonymous_id_but_not_candidate_id(self):
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    automatic_anonymous_id='MyAutomaticID')
+        self.assertEqual('MyAutomaticID', relatedstudent.get_anonymous_name())
+
+    def test_get_anonymous_name_has_anonymous_id_and_candidate_id(self):
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    automatic_anonymous_id='MyAutomaticID',
+                                    candidate_id='MyCandidateID')
+        self.assertEqual('MyCandidateID', relatedstudent.get_anonymous_name())
+
+    def test_get_anonymous_name_no_anonymous_id_but_has_candidate_id(self):
+        relatedstudent = mommy.make('core.RelatedStudent',
+                                    candidate_id='MyCandidateID')
+        self.assertEqual('MyCandidateID', relatedstudent.get_anonymous_name())
 
 
 class TestRelatedExaminerModel(TestCase):
     def test_unique_in_period(self):
         testperiod = mommy.make('core.Period')
-        testuser = UserBuilder2().user
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.RelatedExaminer', period=testperiod, user=testuser)
         with self.assertRaises(IntegrityError):
             mommy.make('core.RelatedExaminer', period=testperiod, user=testuser)
+
+    def test_get_anonymous_name_missing_anonymous_id(self):
+        relatedexaminer = mommy.make('core.RelatedExaminer')
+        self.assertEqual('Anonymous ID missing', relatedexaminer.get_anonymous_name())
+
+    def test_get_anonymous_name_has_anonymous_id(self):
+        relatedexaminer = mommy.make('core.RelatedExaminer',
+                                    automatic_anonymous_id='MyAutomaticID')
+        self.assertEqual('MyAutomaticID', relatedexaminer.get_anonymous_name())
 
 
 class TestRelatedExaminerManager(TestCase):
