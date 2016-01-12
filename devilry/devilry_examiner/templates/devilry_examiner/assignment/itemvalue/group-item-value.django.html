@@ -2,5 +2,5 @@
 {% load devilry_account_tags %}
 
 {% block title-content %}
-    {% devilry_users_verbose_inline me.get_candidate_users %}
+    {% devilry_multiple_users_verbose_inline me.get_candidate_users %}
 {% endblock title-content %}
