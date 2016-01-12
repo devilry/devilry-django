@@ -299,8 +299,8 @@ assignment_activeperiod_end = recipe.Recipe(
 #: See also :obj:`.assignment_futureperiod_middle` :obj:`.assignment_futureperiod_end`
 assignment_futureperiod_start = recipe.Recipe(
     Assignment,
-    publishing_time=ACTIVE_PERIOD_START,
-    first_deadline=ASSIGNMENT_ACTIVEPERIOD_START_FIRST_DEADLINE,
+    publishing_time=FUTURE_PERIOD_START,
+    first_deadline=ASSIGNMENT_FUTUREPERIOD_START_FIRST_DEADLINE,
     parentnode=recipe.foreign_key(period_future)
 )
 
@@ -320,8 +320,8 @@ assignment_futureperiod_start = recipe.Recipe(
 #: See also :obj:`.assignment_futureperiod_start` :obj:`.assignment_futureperiod_end`
 assignment_futureperiod_middle = recipe.Recipe(
     Assignment,
-    publishing_time=ASSIGNMENT_ACTIVEPERIOD_MIDDLE_PUBLISHING_TIME,
-    first_deadline=ASSIGNMENT_ACTIVEPERIOD_MIDDLE_FIRST_DEADLINE,
+    publishing_time=ASSIGNMENT_FUTUREPERIOD_MIDDLE_PUBLISHING_TIME,
+    first_deadline=ASSIGNMENT_FUTUREPERIOD_MIDDLE_FIRST_DEADLINE,
     parentnode=recipe.foreign_key(period_future)
 )
 
@@ -344,7 +344,7 @@ assignment_futureperiod_middle = recipe.Recipe(
 #: See also :obj:`.assignment_futureperiod_start` :obj:`.assignment_futureperiod_middle`
 assignment_futureperiod_end = recipe.Recipe(
     Assignment,
-    publishing_time=ASSIGNMENT_ACTIVEPERIOD_END_PUBLISHING_TIME,
-    first_deadline=ACTIVE_PERIOD_END,
+    publishing_time=ASSIGNMENT_FUTUREPERIOD_END_PUBLISHING_TIME,
+    first_deadline=FUTURE_PERIOD_END,
     parentnode=recipe.foreign_key(period_future)
 )
