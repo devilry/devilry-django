@@ -843,7 +843,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
         candidateids = []
         for candidate in self.candidates.all():
-            candidateids.append(candidate.get_anonymous_name(assignment=assignment))
+            candidateids.append(unicode(candidate.get_anonymous_name(assignment=assignment)))
         if candidateids:
             return u', '.join(candidateids)
         else:
@@ -909,17 +909,6 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
 
     def __unicode__(self):
         return u'{} - {}'.format(self.short_displayname, self.parentnode.get_path())
-
-    def get_students(self):
-        """ Get a string containing all students in the group separated by
-        comma and a space, like: ``superman, spiderman, batman``.
-
-        **WARNING:** You should never use this method when the user is not
-        an administrator.
-        """
-        students = [c.student.shortname for c in self.candidates.select_related('student')]
-        students.sort()
-        return u', '.join(students)
 
     def get_examiners(self, separator=u', '):
         """

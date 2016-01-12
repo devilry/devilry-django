@@ -1,0 +1,9 @@
+{% load devilry_account_tags %}
+
+{% if assignment.is_anonymous %}
+    <span class="devilry-core-examiner-anonymous-name">
+        {{ examiner.get_anonymous_name  }}
+    </span>
+{% else %}
+    {% devilry_user_verbose_inline examiner.relatedexaminer.user %}
+{% endif %}

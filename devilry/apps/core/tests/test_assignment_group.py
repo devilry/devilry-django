@@ -1567,11 +1567,6 @@ class TestAssignmentGroupOld(TestCase, TestHelper):
         self.assertEquals(4, AssignmentGroup.old_where_is_examiner(self.examiner1).count())
         self.assertEquals(3, AssignmentGroup.old_where_is_examiner(self.examiner3).count())
 
-    def test_get_students(self):
-        self.assertEquals('student1', self.inf1100_looong_assignment1_g1.get_students())
-        self.assertEquals({'student2', 'student3'},
-                          set(self.inf1100_looong_assignment1_g3.get_students().split(', ')))
-
     def test_get_examiners(self):
         self.assertEquals('examiner1, examiner2, examiner3', self.inf1100_looong_assignment1_g3.get_examiners())
 

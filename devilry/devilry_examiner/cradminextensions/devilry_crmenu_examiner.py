@@ -34,27 +34,12 @@ class Menu(devilry_crmenu.Menu):
             active=active
         ))
 
-    def __get_candidate_names(self, group):
-        assignment = group.assignment
-        if assignment.is_anonymous:
-            return [
-
-            ]
-        else:
-            return [
-                candidate.relatedstudent.user.get_full_name()
-                for candidate in group.candidates.all()]
-
     def get_group_label(self, group):
-        names = self.__get_candidate_names(group=group)
-        if names:
-            return u', '.join(names)
-        else:
-            return u'#{}'.format(group.id)
+        return group.short_displayname
 
     def add_group_breadcrumb_item(self, group, active=False):
         self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
-            label=defaultfilters.truncatechars(self.get_group_label(group=group), 25),
+            label=defaultfilters.truncatechars(self.get_group_label(), 25),
             url=reverse_cradmin_url(
                 instanceid='devilry_group_examiner',
                 appname='feedbackfeed',
