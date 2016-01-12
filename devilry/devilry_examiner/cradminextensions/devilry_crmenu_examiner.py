@@ -35,11 +35,15 @@ class Menu(devilry_crmenu.Menu):
         ))
 
     def __get_candidate_names(self, group):
-        # assignment = group.assignment
-        # TODO: If assignment.anynymizationmode ....
-        return [
-            candidate.relatedstudent.user.get_full_name()
-            for candidate in group.candidates.all()]
+        assignment = group.assignment
+        if assignment.is_anonymous:
+            return [
+
+            ]
+        else:
+            return [
+                candidate.relatedstudent.user.get_full_name()
+                for candidate in group.candidates.all()]
 
     def get_group_label(self, group):
         names = self.__get_candidate_names(group=group)

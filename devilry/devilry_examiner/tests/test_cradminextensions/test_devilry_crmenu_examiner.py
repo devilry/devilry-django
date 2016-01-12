@@ -53,3 +53,15 @@ class TestMenu(test.TestCase):
         self.assertEqual(
             {'A Test User', 'testuserb'},
             set(menu.get_group_label(group=testgroup).split(', ')))
+
+    # def test_get_group_label_anonymous(self):
+    #     testgroup = mommy.make('core.AssignmentGroup')
+    #     mommy.make('core.Candidate',
+    #                assignment_group=testgroup,
+    #                relatedstudent__user__shortname='testuser',
+    #                relatedstudent__user__fullname='Test User')
+    #     mock_cradmin_instance = mock.MagicMock()
+    #     menu = devilry_crmenu_examiner.Menu(cradmin_instance=mock_cradmin_instance)
+    #     self.assertEqual(
+    #         'Test User',
+    #         menu.get_group_label(group=testgroup))
