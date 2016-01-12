@@ -46,6 +46,12 @@ class Examiner(models.Model, AbstractIsAdmin):
             Q(assignmentgroup__parentnode__parentnode__parentnode__parentnode__pk__in=Node._get_nodepks_where_isadmin(
                 user_obj))
 
+    def get_anonymous_name(self):
+        """
+        Get the anonymous name of this examiner.
+        """
+        return self.relatedexaminer.get_anonymous_name()
+
     def __unicode__(self):
         return u'Examiner {} for {}'.format(
             self.user, self.assignmentgroup

@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext_lazy
 
 from devilry.apps.core.models import RelatedStudent
 from devilry.devilry_account.models import User
@@ -77,6 +77,26 @@ class Candidate(models.Model):
         max_length=30, blank=True, null=True,
         help_text='An optional candidate id. This can be anything as long as it '
                   'is less than 30 characters. Used to show the user on anonymous assignmens.')
+
+    def get_anonymous_name(self, assignment=None):
+        """
+        Get the anonymous name of this candidate.
+
+        Args:
+            assignment: An optional :class:`devilry.apps.core.models.assignment.Assignment`.
+                if this is provided, we use this instead of looking up
+                ``assignment_group.parentnode``. This is essential for views
+                that list many candidates since it avoid extra database lookups.
+        """
+        if assignment is None:
+            assignment = self.assignment_group.parentnode
+        if assignment.uses_custom_candidate_ids:
+            if self.candidate_id:
+                return self.candidate_id
+            else:
+                return ugettext_lazy('Candidate ID missing')
+        else:
+            return self.relatedstudent.get_anonymous_name()
 
     def __unicode__(self):
         return 'Candiate id={id}, student={student}, group={group}'.format(

@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+import mock
 from django import test
 from django.utils import timezone
 from model_mommy import mommy
@@ -113,3 +114,49 @@ class TestCandidateQuerySet(test.TestCase):
         self.assertEqual(
             [],
             list(Candidate.objects.filter_has_passing_grade(assignment=testassignment)))
+
+
+class TestCandidateModel(test.TestCase):
+    def test_get_anonymous_name_uses_custom_candidate_ids_true_no_candidate_id(self):
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode__uses_custom_candidate_ids=True)
+        self.assertEqual('Candidate ID missing', candidate.get_anonymous_name())
+
+    def test_get_anonymous_name_assignment_argument(self):
+        candidate = mommy.make('core.Candidate')
+        mockassignment = mock.MagicMock()
+        mock_uses_custom_candidate_ids = mock.PropertyMock(return_value=True)
+        type(mockassignment).uses_custom_candidate_ids = mock_uses_custom_candidate_ids
+        candidate.get_anonymous_name(assignment=mockassignment)
+        mock_uses_custom_candidate_ids.assert_called_once_with()
+
+    def test_get_anonymous_name_uses_custom_candidate_ids_true_with_candidate_id(self):
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode__uses_custom_candidate_ids=True,
+                               candidate_id='MyCandidateId')
+        self.assertEqual('MyCandidateId', candidate.get_anonymous_name())
+
+    def test_get_anonymous_name_uses_custom_candidate_ids_false_with_candidate_id(self):
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode__uses_custom_candidate_ids=False,
+                               relatedstudent__candidate_id='MyCandidateId')
+        self.assertEqual('MyCandidateId', candidate.get_anonymous_name())
+
+    def test_get_anonymous_name_uses_custom_candidate_ids_false_ignores_candidate_candidate_id(self):
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode__uses_custom_candidate_ids=False,
+                               candidate_id='ignored',
+                               relatedstudent__candidate_id='MyCandidateId')
+        self.assertEqual('MyCandidateId', candidate.get_anonymous_name())
+
+    def test_get_anonymous_name_uses_custom_candidate_ids_false_with_anonymous_id(self):
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode__uses_custom_candidate_ids=False,
+                               relatedstudent__automatic_anonymous_id='MyAutomaticID')
+        self.assertEqual('MyAutomaticID', candidate.get_anonymous_name())
+
+    def test_get_anonymous_name_uses_custom_candidate_ids_false_no_anonymous_id(self):
+        candidate = mommy.make('core.Candidate',
+                               assignment_group__parentnode__uses_custom_candidate_ids=False,
+                               relatedstudent__automatic_anonymous_id='')
+        self.assertEqual('Anonymous ID missing', candidate.get_anonymous_name())
