@@ -47,3 +47,22 @@ def devilry_isoformat_datetime(datetimeobject):
     Isoformat the given ``datetimeobject`` as ``YYYY-MM-DD hh:mm``.
     """
     return datetimeutils.isoformat_noseconds(datetimeobject)
+
+
+@register.inclusion_tag('devilry_core/templatetags/single-candidate-long-displayname.django.html')
+def devilry_single_candidate_long_displayname(assignment, candidate):
+    """
+    Returns the candidate wrapped in HTML formatting tags perfect for showing
+    the user inline.
+
+    Handles anonymization based on ``assignment.anonymizationmode``.
+
+    Args:
+        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+            The ``assignment`` should be the assignment where the candidate belongs.
+        candidate: A :class:`devilry.apps.core.models.candidate.Candidate` object.
+    """
+    return {
+        'assignment': assignment,
+        'candidate': candidate,
+    }
