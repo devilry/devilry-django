@@ -85,3 +85,41 @@ def devilry_single_candidate_short_displayname(assignment, candidate):
         'assignment': assignment,
         'candidate': candidate,
     }
+
+
+@register.inclusion_tag('devilry_core/templatetags/single-examiner-long-displayname.django.html')
+def devilry_single_examiner_long_displayname(assignment, examiner):
+    """
+    Returns the examiner wrapped in HTML formatting tags perfect for showing
+    the user inline.
+
+    Handles anonymization based on ``assignment.anonymizationmode``.
+
+    Args:
+        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+            The ``assignment`` should be the assignment where the examiner belongs.
+        examiner: A :class:`devilry.apps.core.models.examiner.Examiner` object.
+    """
+    return {
+        'assignment': assignment,
+        'examiner': examiner,
+    }
+
+
+@register.inclusion_tag('devilry_core/templatetags/single-examiner-short-displayname.django.html')
+def devilry_single_examiner_short_displayname(assignment, examiner):
+    """
+    Returns the examiner wrapped in HTML formatting tags perfect for showing
+    the user inline.
+
+    Handles anonymization based on ``assignment.anonymizationmode``.
+
+    Args:
+        assignment: A :class:`devilry.apps.core.models.assignment.Assignment` object.
+            The ``assignment`` should be the assignment where the examiner belongs.
+        examiner: A :class:`devilry.apps.core.models.examiner.Examiner` object.
+    """
+    return {
+        'assignment': assignment,
+        'examiner': examiner,
+    }
