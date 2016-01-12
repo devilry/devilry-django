@@ -1528,6 +1528,6 @@ class TestAssignmentGroupOld(TestCase, TestHelper):
             obj.etag_update(e.etag)
         obj2 = AssignmentGroup.objects.get(id=obj.id)
         self.assertFalse(obj2.is_open)
-        # The next two lines needs to be fixed and added!
+        # The next two lines needs to be fixed and added!g
         # self.assertEquals(AssignmentGroup.objects.filter_user_is_examiner(examiner1).count(), 3)
         # self.assertEquals(AssignmentGroup.objects.filter_user_is_examiner(otherexaminer).count(), 1)
