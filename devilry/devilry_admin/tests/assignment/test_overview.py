@@ -46,7 +46,7 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
     def test_assignment_meta_one_examiner_configured(self):
         assignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_end')
         examiner1 = mommy.make('core.Examiner')
-        assignment_group = mommy.make('core.AssignmentGroup', parentnode=assignment, examiners=examiner1)
+        assignment_group = mommy.make('core.AssignmentGroup', parentnode=assignment)
         assignment_group.examiners.add(examiner1)
         mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
         self.assertTrue(
@@ -82,3 +82,20 @@ class TestOverviewApp(TestCase, cradmin_testhelpers.TestCaseMixin):
                     '#devilry_admin_assignment_overview_settings_first_deadline p').alltext_normalized,
                 "The first deadline is Saturday January 1, 2000, 00:00. This deadline is common for all "
                 "students unless a new deadline have been provided to a group.")
+
+    def test_settings_row_anonymization(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                    '#devilry_admin_assignment_overview_settings_anonymization a').alltext_normalized,
+                "Anonymization")
+
+    def test_settings_row_anonymization_description(self):
+        assignment = mommy.make('core.Assignment')
+        mockresponse = self.mock_http200_getrequest_htmls(cradmin_role=assignment)
+        self.assertEqual(
+                mockresponse.selector.one(
+                    '#devilry_admin_assignment_overview_settings_anonymization p').alltext_normalized,
+                "Anonymization disabled. Students and examiners can see "
+                "each others names and other identifying information.")

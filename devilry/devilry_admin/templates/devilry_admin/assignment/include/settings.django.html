@@ -11,7 +11,7 @@
                         <a href="#">{% trans "First deadline" %}</a>
                     </h3>
                     <p>
-                        {% blocktrans with deadline=assignment.first_deadline %}
+                        {% blocktrans with deadline=assignment.first_deadline context "first_deadline description"%}
                             The first deadline is {{ deadline }}. This deadline is common for all students
                             unless a new deadline have been provided to a group.
                         {% endblocktrans %}
@@ -22,7 +22,7 @@
                         <a href="#">Anonymization</a>
                     </h3>
                     <p>
-                        {% blocktrans with deadline=assignment.first_deadline %}
+                        {% blocktrans with anonymous=assignment.anonymous context "anonymization description" %}
                             Anonymization disabled. Students and examiners can see each others names and other
                             identifying information.
                         {% endblocktrans %}
