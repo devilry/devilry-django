@@ -396,7 +396,11 @@ class AssignmentGroupBuilder(CoreBuilderBase):
 
     def add_students(self, *users):
         for user in users:
-            self.group.candidates.create(student=user)
+            period = self.group.period
+            relatedstudent = RelatedStudent.objects.get_or_create(user=user,
+                                                                  period=period)[0]
+            self.group.candidates.create(student=user,
+                                         relatedstudent=relatedstudent)
         return self
 
     def add_candidates(self, *candidates):
@@ -406,7 +410,11 @@ class AssignmentGroupBuilder(CoreBuilderBase):
 
     def add_examiners(self, *users):
         for user in users:
-            self.group.examiners.create(user=user)
+            period = self.group.period
+            relatedexaminer = RelatedExaminer.objects.get_or_create(user=user,
+                                                                    period=period)[0]
+            self.group.examiners.create(user=user,
+                                        relatedexaminer=relatedexaminer)
         return self
 
     def add_deadline(self, **kwargs):
