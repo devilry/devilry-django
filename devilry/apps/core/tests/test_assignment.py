@@ -402,6 +402,81 @@ class TestAssignment(TestCase):
             testassignment.setup_examiners_by_relateduser_syncsystem_tags()
         self.assertEqual(460, Examiner.objects.count())
 
+    def test_students_must_be_anonymized_for_devilryrole_student_nonanonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='student'))
+
+    def test_students_must_be_anonymized_for_devilryrole_student_semi_anonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='student'))
+
+    def test_students_must_be_anonymized_for_devilryrole_student_fully_anonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='student'))
+
+    def test_students_must_be_anonymized_for_devilryrole_examiner_nonanonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='examiner'))
+
+    def test_students_must_be_anonymized_for_devilryrole_examiner_semi_anonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='examiner'))
+
+    def test_students_must_be_anonymized_for_devilryrole_examiner_fully_anonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='examiner'))
+
+    def test_students_must_be_anonymized_for_devilryrole_periodadmin_nonanonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='periodadmin'))
+
+    def test_students_must_be_anonymized_for_devilryrole_periodadmin_semi_anonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='periodadmin'))
+
+    def test_students_must_be_anonymized_for_devilryrole_periodadmin_fully_anonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='periodadmin'))
+
+    def test_students_must_be_anonymized_for_devilryrole_courseadmin_nonanonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='courseadmin'))
+
+    def test_students_must_be_anonymized_for_devilryrole_courseadmin_semi_anonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='courseadmin'))
+
+    def test_students_must_be_anonymized_for_devilryrole_courseadmin_fully_anonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertTrue(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='courseadmin'))
+
+    def test_students_must_be_anonymized_for_devilryrole_departmentadmin_nonanonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_OFF)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='departmentadmin'))
+
+    def test_students_must_be_anonymized_for_devilryrole_departmentadmin_semi_anonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='departmentadmin'))
+
+    def test_students_must_be_anonymized_for_devilryrole_departmentadmin_fully_anonymous_assignment(self):
+        assignment = mommy.make('core.Assignment',
+                                anonymizationmode=Assignment.ANONYMIZATIONMODE_FULLY_ANONYMOUS)
+        self.assertFalse(assignment.students_must_be_anonymized_for_devilryrole(devilryrole='departmentadmin'))
+
 
 class TestAssignmentOld(TestCase, TestHelper):
     """
