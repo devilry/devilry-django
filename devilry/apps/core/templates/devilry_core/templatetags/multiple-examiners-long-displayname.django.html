@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% for examiner in examiners %}
-    {% devilry_single_examiner_long_displayname assignment examiner %}{% if not forloop.last %},{% endif %}
+    {% devilry_single_examiner_long_displayname assignment examiner devilryrole %}{% if not forloop.last %},{% endif %}
 {% empty %}
     <span class="devilry-core-no-examiners-for-group text-muted">
         {% trans "no examiner(s)" context "core assignmentgroup" %}

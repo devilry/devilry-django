@@ -1,6 +1,6 @@
 {% load devilry_account_tags %}
 
-{% if assignment.is_anonymous %}
+{% if anonymous %}
     <span class="devilry-core-candidate-anonymous-name">
         {{ candidate.get_anonymous_name  }}
     </span>

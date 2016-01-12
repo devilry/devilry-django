@@ -16,7 +16,7 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-candidate-long-displayname.django.html',
-                devilry_core_tags.devilry_single_candidate_long_displayname(assignment, candidate)))
+                devilry_core_tags.devilry_single_candidate_long_displayname(assignment, candidate, 'student')))
         self.assertTrue(selector.exists('.devilry-user-verbose-inline'))
         self.assertFalse(selector.exists('.devilry-core-candidate-anonymous-name'))
 
@@ -28,7 +28,7 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-candidate-long-displayname.django.html',
-                devilry_core_tags.devilry_single_candidate_long_displayname(assignment, candidate)))
+                devilry_core_tags.devilry_single_candidate_long_displayname(assignment, candidate, 'student')))
         self.assertEqual('testuser',
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
@@ -41,7 +41,7 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-candidate-long-displayname.django.html',
-                devilry_core_tags.devilry_single_candidate_long_displayname(assignment, candidate)))
+                devilry_core_tags.devilry_single_candidate_long_displayname(assignment, candidate, 'student')))
         self.assertEqual('Test User(testuser)',
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
@@ -54,7 +54,7 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-candidate-long-displayname.django.html',
-                devilry_core_tags.devilry_single_candidate_long_displayname(assignment, candidate)))
+                devilry_core_tags.devilry_single_candidate_long_displayname(assignment, candidate, 'examiner')))
         self.assertFalse(selector.exists('.devilry-user-verbose-inline'))
         self.assertTrue(selector.exists('.devilry-core-candidate-anonymous-name'))
 
@@ -68,7 +68,7 @@ class TestDevilrySingleCandidateLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-candidate-long-displayname.django.html',
-                devilry_core_tags.devilry_single_candidate_long_displayname(assignment, candidate)))
+                devilry_core_tags.devilry_single_candidate_long_displayname(assignment, candidate, 'examiner')))
         self.assertEqual('MyAnonymousId',
                          selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
 
@@ -82,7 +82,7 @@ class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-candidate-short-displayname.django.html',
-                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate)))
+                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate, 'student')))
         self.assertTrue(selector.exists('.devilry-core-candidate-shortname'))
         self.assertFalse(selector.exists('.devilry-core-candidate-anonymous-name'))
 
@@ -94,7 +94,7 @@ class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-candidate-short-displayname.django.html',
-                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate)))
+                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate, 'student')))
         self.assertEqual('testuser',
                          selector.one('.devilry-core-candidate-shortname').alltext_normalized)
 
@@ -107,7 +107,7 @@ class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-candidate-short-displayname.django.html',
-                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate)))
+                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate, 'student')))
         self.assertEqual('testuser',
                          selector.one('.devilry-core-candidate-shortname').alltext_normalized)
 
@@ -120,7 +120,7 @@ class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-candidate-short-displayname.django.html',
-                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate)))
+                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate, 'examiner')))
         self.assertFalse(selector.exists('.devilry-core-candidate-shortname'))
         self.assertTrue(selector.exists('.devilry-core-candidate-anonymous-name'))
 
@@ -134,7 +134,7 @@ class TestDevilrySingleCandidateShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-candidate-short-displayname.django.html',
-                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate)))
+                devilry_core_tags.devilry_single_candidate_short_displayname(assignment, candidate, 'examiner')))
         self.assertEqual('MyAnonymousId',
                          selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
 
@@ -148,7 +148,7 @@ class TestDevilrySingleExaminerLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-examiner-long-displayname.django.html',
-                devilry_core_tags.devilry_single_examiner_long_displayname(assignment, examiner)))
+                devilry_core_tags.devilry_single_examiner_long_displayname(assignment, examiner, 'examiner')))
         self.assertTrue(selector.exists('.devilry-user-verbose-inline'))
         self.assertFalse(selector.exists('.devilry-core-examiner-anonymous-name'))
 
@@ -160,7 +160,7 @@ class TestDevilrySingleExaminerLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-examiner-long-displayname.django.html',
-                devilry_core_tags.devilry_single_examiner_long_displayname(assignment, examiner)))
+                devilry_core_tags.devilry_single_examiner_long_displayname(assignment, examiner, 'examiner')))
         self.assertEqual('testuser',
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
@@ -173,7 +173,7 @@ class TestDevilrySingleExaminerLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-examiner-long-displayname.django.html',
-                devilry_core_tags.devilry_single_examiner_long_displayname(assignment, examiner)))
+                devilry_core_tags.devilry_single_examiner_long_displayname(assignment, examiner, 'examiner')))
         self.assertEqual('Test User(testuser)',
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
@@ -186,7 +186,7 @@ class TestDevilrySingleExaminerLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-examiner-long-displayname.django.html',
-                devilry_core_tags.devilry_single_examiner_long_displayname(assignment, examiner)))
+                devilry_core_tags.devilry_single_examiner_long_displayname(assignment, examiner, 'student')))
         self.assertFalse(selector.exists('.devilry-user-verbose-inline'))
         self.assertTrue(selector.exists('.devilry-core-examiner-anonymous-name'))
 
@@ -200,7 +200,7 @@ class TestDevilrySingleExaminerLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-examiner-long-displayname.django.html',
-                devilry_core_tags.devilry_single_examiner_long_displayname(assignment, examiner)))
+                devilry_core_tags.devilry_single_examiner_long_displayname(assignment, examiner, 'student')))
         self.assertEqual('MyAnonymousId',
                          selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
 
@@ -214,7 +214,7 @@ class TestDevilrySingleExaminerShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-examiner-short-displayname.django.html',
-                devilry_core_tags.devilry_single_examiner_short_displayname(assignment, examiner)))
+                devilry_core_tags.devilry_single_examiner_short_displayname(assignment, examiner, 'examiner')))
         self.assertTrue(selector.exists('.devilry-core-examiner-shortname'))
         self.assertFalse(selector.exists('.devilry-core-examiner-anonymous-name'))
 
@@ -226,7 +226,7 @@ class TestDevilrySingleExaminerShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-examiner-short-displayname.django.html',
-                devilry_core_tags.devilry_single_examiner_short_displayname(assignment, examiner)))
+                devilry_core_tags.devilry_single_examiner_short_displayname(assignment, examiner, 'examiner')))
         self.assertEqual('testuser',
                          selector.one('.devilry-core-examiner-shortname').alltext_normalized)
 
@@ -239,7 +239,7 @@ class TestDevilrySingleExaminerShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-examiner-short-displayname.django.html',
-                devilry_core_tags.devilry_single_examiner_short_displayname(assignment, examiner)))
+                devilry_core_tags.devilry_single_examiner_short_displayname(assignment, examiner, 'examiner')))
         self.assertEqual('testuser',
                          selector.one('.devilry-core-examiner-shortname').alltext_normalized)
 
@@ -252,7 +252,7 @@ class TestDevilrySingleExaminerShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-examiner-short-displayname.django.html',
-                devilry_core_tags.devilry_single_examiner_short_displayname(assignment, examiner)))
+                devilry_core_tags.devilry_single_examiner_short_displayname(assignment, examiner, 'student')))
         self.assertFalse(selector.exists('.devilry-core-examiner-shortname'))
         self.assertTrue(selector.exists('.devilry-core-examiner-anonymous-name'))
 
@@ -266,7 +266,7 @@ class TestDevilrySingleExaminerShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/single-examiner-short-displayname.django.html',
-                devilry_core_tags.devilry_single_examiner_short_displayname(assignment, examiner)))
+                devilry_core_tags.devilry_single_examiner_short_displayname(assignment, examiner, 'student')))
         self.assertEqual('MyAnonymousId',
                          selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
 
@@ -280,7 +280,7 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [candidate])))
+                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [candidate], 'student')))
         self.assertTrue(selector.exists('.devilry-user-verbose-inline'))
         self.assertFalse(selector.exists('.devilry-core-candidate-anonymous-name'))
 
@@ -289,7 +289,7 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [])))
+                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [], 'student')))
         self.assertEqual(
             'no students in group',
             selector.one('.devilry-core-no-candidates-in-group').alltext_normalized)
@@ -304,7 +304,7 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [candidate])))
+                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [candidate], 'student')))
         self.assertEqual('testuser',
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
@@ -317,7 +317,7 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [candidate])))
+                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [candidate], 'student')))
         self.assertEqual('Test User(testuser)',
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
@@ -334,7 +334,7 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-long-displayname.django.html',
                 devilry_core_tags.devilry_multiple_candidates_long_displayname(
-                    assignment, [candidate1, candidate2])))
+                    assignment, [candidate1, candidate2], 'student')))
         names = [element.alltext_normalized
                  for element in selector.list('.devilry-user-verbose-inline')]
         self.assertEqual(['testuser1', 'Test User 2(testuser2)'], names)
@@ -348,7 +348,7 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [candidate])))
+                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [candidate], 'examiner')))
         self.assertFalse(selector.exists('.devilry-user-verbose-inline'))
         self.assertTrue(selector.exists('.devilry-core-candidate-anonymous-name'))
 
@@ -362,7 +362,7 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [candidate])))
+                devilry_core_tags.devilry_multiple_candidates_long_displayname(assignment, [candidate], 'examiner')))
         self.assertEqual('MyAnonymousId',
                          selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
 
@@ -381,7 +381,7 @@ class TestDevilryMultipleCandidatesLongDisplayname(test.TestCase):
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-long-displayname.django.html',
                 devilry_core_tags.devilry_multiple_candidates_long_displayname(
-                    assignment, [candidate1, candidate2])))
+                    assignment, [candidate1, candidate2], 'examiner')))
         names = [element.alltext_normalized
                  for element in selector.list('.devilry-core-candidate-anonymous-name')]
         self.assertEqual(['MyAnonymousId1', 'MyAnonymousId2'], names)
@@ -396,7 +396,7 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [candidate])))
+                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [candidate], 'student')))
         self.assertTrue(selector.exists('.devilry-core-candidate-shortname'))
         self.assertFalse(selector.exists('.devilry-core-candidate-anonymous-name'))
 
@@ -405,7 +405,7 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [])))
+                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [], 'student')))
         self.assertEqual(
             'no students in group',
             selector.one('.devilry-core-no-candidates-in-group').alltext_normalized)
@@ -420,7 +420,7 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [candidate])))
+                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [candidate], 'student')))
         self.assertEqual('testuser',
                          selector.one('.devilry-core-candidate-shortname').alltext_normalized)
 
@@ -433,7 +433,7 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [candidate])))
+                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [candidate], 'student')))
         self.assertEqual('testuser',
                          selector.one('.devilry-core-candidate-shortname').alltext_normalized)
 
@@ -450,7 +450,7 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-short-displayname.django.html',
                 devilry_core_tags.devilry_multiple_candidates_short_displayname(
-                    assignment, [candidate1, candidate2])))
+                    assignment, [candidate1, candidate2], 'student')))
         names = [element.alltext_normalized
                  for element in selector.list('.devilry-core-candidate-shortname')]
         self.assertEqual(['testuser1', 'testuser2'], names)
@@ -464,7 +464,7 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [candidate])))
+                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [candidate], 'examiner')))
         self.assertFalse(selector.exists('.devilry-core-candidate-shortname'))
         self.assertTrue(selector.exists('.devilry-core-candidate-anonymous-name'))
 
@@ -478,7 +478,7 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [candidate])))
+                devilry_core_tags.devilry_multiple_candidates_short_displayname(assignment, [candidate], 'examiner')))
         self.assertEqual('MyAnonymousId',
                          selector.one('.devilry-core-candidate-anonymous-name').alltext_normalized)
 
@@ -497,7 +497,7 @@ class TestDevilryMultipleCandidatesShortDisplayname(test.TestCase):
             render_to_string(
                 'devilry_core/templatetags/multiple-candidates-short-displayname.django.html',
                 devilry_core_tags.devilry_multiple_candidates_short_displayname(
-                    assignment, [candidate1, candidate2])))
+                    assignment, [candidate1, candidate2], 'examiner')))
         names = [element.alltext_normalized
                  for element in selector.list('.devilry-core-candidate-anonymous-name')]
         self.assertEqual(['MyAnonymousId1', 'MyAnonymousId2'], names)
@@ -512,7 +512,7 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [examiner])))
+                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [examiner], 'examiner')))
         self.assertTrue(selector.exists('.devilry-user-verbose-inline'))
         self.assertFalse(selector.exists('.devilry-core-examiner-anonymous-name'))
 
@@ -521,7 +521,7 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [])))
+                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [], 'examiner')))
         self.assertEqual(
             'no examiner(s)',
             selector.one('.devilry-core-no-examiners-for-group').alltext_normalized)
@@ -536,7 +536,7 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [examiner])))
+                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [examiner], 'examiner')))
         self.assertEqual('testuser',
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
@@ -553,7 +553,7 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-long-displayname.django.html',
                 devilry_core_tags.devilry_multiple_examiners_long_displayname(
-                    assignment, [examiner1, examiner2])))
+                    assignment, [examiner1, examiner2], 'examiner')))
         names = [element.alltext_normalized
                  for element in selector.list('.devilry-user-verbose-inline')]
         self.assertEqual(['testuser1', 'Test User 2(testuser2)'], names)
@@ -567,7 +567,7 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [examiner])))
+                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [examiner], 'examiner')))
         self.assertEqual('Test User(testuser)',
                          selector.one('.devilry-user-verbose-inline').alltext_normalized)
 
@@ -580,7 +580,7 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [examiner])))
+                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [examiner], 'student')))
         self.assertFalse(selector.exists('.devilry-user-verbose-inline'))
         self.assertTrue(selector.exists('.devilry-core-examiner-anonymous-name'))
 
@@ -594,7 +594,7 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-long-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [examiner])))
+                devilry_core_tags.devilry_multiple_examiners_long_displayname(assignment, [examiner], 'student')))
         self.assertEqual('MyAnonymousId',
                          selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
 
@@ -613,7 +613,7 @@ class TestDevilryMultipleExaminersLongDisplayname(test.TestCase):
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-long-displayname.django.html',
                 devilry_core_tags.devilry_multiple_examiners_long_displayname(
-                    assignment, [examiner1, examiner2])))
+                    assignment, [examiner1, examiner2], 'student')))
         names = [element.alltext_normalized
                  for element in selector.list('.devilry-core-examiner-anonymous-name')]
         self.assertEqual(['MyAnonymousId1', 'MyAnonymousId2'], names)
@@ -628,7 +628,7 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [examiner])))
+                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [examiner], 'examiner')))
         self.assertTrue(selector.exists('.devilry-core-examiner-shortname'))
         self.assertFalse(selector.exists('.devilry-core-examiner-anonymous-name'))
 
@@ -637,7 +637,7 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [])))
+                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [], 'examiner')))
         self.assertEqual(
             'no examiner(s)',
             selector.one('.devilry-core-no-examiners-for-group').alltext_normalized)
@@ -652,7 +652,7 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [examiner])))
+                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [examiner], 'examiner')))
         self.assertEqual('testuser',
                          selector.one('.devilry-core-examiner-shortname').alltext_normalized)
 
@@ -665,7 +665,7 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [examiner])))
+                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [examiner], 'examiner')))
         self.assertEqual('testuser',
                          selector.one('.devilry-core-examiner-shortname').alltext_normalized)
 
@@ -682,7 +682,7 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-short-displayname.django.html',
                 devilry_core_tags.devilry_multiple_examiners_short_displayname(
-                    assignment, [examiner1, examiner2])))
+                    assignment, [examiner1, examiner2], 'examiner')))
         names = [element.alltext_normalized
                  for element in selector.list('.devilry-core-examiner-shortname')]
         self.assertEqual(['testuser1', 'testuser2'], names)
@@ -696,7 +696,7 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [examiner])))
+                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [examiner], 'student')))
         self.assertFalse(selector.exists('.devilry-core-examiner-shortname'))
         self.assertTrue(selector.exists('.devilry-core-examiner-anonymous-name'))
 
@@ -710,7 +710,7 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
         selector = htmls.S(
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-short-displayname.django.html',
-                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [examiner])))
+                devilry_core_tags.devilry_multiple_examiners_short_displayname(assignment, [examiner], 'student')))
         self.assertEqual('MyAnonymousId',
                          selector.one('.devilry-core-examiner-anonymous-name').alltext_normalized)
 
@@ -729,7 +729,7 @@ class TestDevilryMultipleExaminersShortDisplayname(test.TestCase):
             render_to_string(
                 'devilry_core/templatetags/multiple-examiners-short-displayname.django.html',
                 devilry_core_tags.devilry_multiple_examiners_short_displayname(
-                    assignment, [examiner1, examiner2])))
+                    assignment, [examiner1, examiner2], 'student')))
         names = [element.alltext_normalized
                  for element in selector.list('.devilry-core-examiner-anonymous-name')]
         self.assertEqual(['MyAnonymousId1', 'MyAnonymousId2'], names)

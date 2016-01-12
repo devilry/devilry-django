@@ -2,7 +2,7 @@
 {% load i18n %}
 
 {% for candidate in candidates %}
-    {% devilry_single_candidate_long_displayname assignment candidate %}{% if not forloop.last %},{% endif %}
+    {% devilry_single_candidate_long_displayname assignment candidate devilryrole %}{% if not forloop.last %},{% endif %}
 {% empty %}
     <span class="devilry-core-no-candidates-in-group text-warning">
         {% trans "no students in group" context "core assignmentgroup" %}
