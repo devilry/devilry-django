@@ -179,23 +179,6 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         A django.db.models.DateTimeField_ representing the publishing time of
         the assignment.
 
-    .. attribute:: anonymizationmode
-
-        A choicefield that specifies how the assignment is anonymized (or not).
-
-        Choices:
-
-        - ``"off"``: Normal assignment where semester and course admins can see everything,
-          and examiners and students can see each others names and contact information.
-        - ``"semi_anonymous"``: Students and examiners
-          can not see information about each other. Semester admins can not view the
-          assignment at all. Course admins have the same permissions as for ``"off"``.
-        - ``"fully_anonymous"``: Students and examiners
-          can not see information about each other. Course admins can not view results
-          (or AssignmentGroup.id). Hidden from semester admins. Can not be changed unless
-          you are member of a group with ``grouptype="departmentadmin"`` and has access to
-          the assignment. Course admins can not edit examiners after the first feedback is provided.
-
     .. attribute:: admins
 
         A django.db.models.ManyToManyField_ that holds all the admins of the
@@ -348,9 +331,16 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
                   'only for this assignment.'
     )
 
+    #: Constant for the :obj:`~.Assignment.anonymizationmode` "off" choice.
     ANONYMIZATIONMODE_OFF = 'off'
+
+    #: Constant for the :obj:`~.Assignment.anonymizationmode` "semi_anonymous" choice.
     ANONYMIZATIONMODE_SEMI_ANONYMOUS = 'semi_anonymous'
+
+    #: Constant for the :obj:`~.Assignment.anonymizationmode` "fully_anonymous" choice.
     ANONYMIZATIONMODE_FULLY_ANONYMOUS = 'fully_anonymous'
+
+    #: Choices for :obj:`~.Assignment.anonymizationmode`.
     ANONYMIZATIONMODE_CHOICES = [
         (
             ANONYMIZATIONMODE_OFF,
@@ -377,6 +367,20 @@ class Assignment(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate
         ),
     ]
 
+    #: A choicefield that specifies how the assignment is anonymized (or not).
+    #:
+    #: Choices:
+    #:
+    #: - ``"off"``: Normal assignment where semester and course admins can see everything,
+    #:   and examiners and students can see each others names and contact information.
+    #: - ``"semi_anonymous"``: Students and examiners
+    #:   can not see information about each other. Semester admins can not view the
+    #:   assignment at all. Course admins have the same permissions as for ``"off"``.
+    #: - ``"fully_anonymous"``: Students and examiners
+    #:   can not see information about each other. Course admins can not view results
+    #:   (or AssignmentGroup.id). Hidden from semester admins. Can not be changed unless
+    #:   you are member of a group with ``grouptype="departmentadmin"`` and has access to
+    #:   the assignment. Course admins can not edit examiners after the first feedback is provided.
     anonymizationmode = models.CharField(
         verbose_name=ugettext_lazy('Anonymization mode'),
         max_length=15,

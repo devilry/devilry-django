@@ -34,7 +34,7 @@ API and utilities
     :maxdepth: 1
 
     core.models
-    core.tags
+    devilry_core_tags
     core.deliverystore
     devilry.utils
 
@@ -51,6 +51,7 @@ Most developers will not need to bother with these topics.
     plugins
     i18n
     javascript
+    developing_for_anonymous_assignments
 
 
 ****
@@ -65,7 +66,6 @@ Apps
     devilry_gradingsystem
     devilry_search
     devilry_theme
-    devilry_elasticsearch_cache
     devilry_account
     devilry_group
 
