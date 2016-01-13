@@ -42,12 +42,6 @@ class TestSubject(TestCase, TestHelper):
         obj2 = Subject.objects.get(id=obj.id)
         self.assertEquals(obj2.long_name, "Test")
 
-    def test_where_is_admin(self):
-        uioadmin = get_user_model().objects.get(shortname='uioadmin')
-        teacher1 = get_user_model().objects.get(shortname='teacher1')
-        self.assertEquals(Subject.where_is_admin(teacher1).count(), 1)
-        self.assertEquals(Subject.where_is_admin(uioadmin).count(), 2)
-
     def test_get_path(self):
         self.assertEquals(self.inf1100.get_path(), 'inf1100')
 

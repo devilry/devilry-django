@@ -19,7 +19,7 @@ class InheritedAdmin(object):
         self.basenode = basenode
 
 
-class BaseNode(AbstractIsAdmin, SaveInterface):
+class BaseNode(SaveInterface):
     """
     The base class of the Devilry hierarchy. Implements basic functionality
     used by the other Node classes. This is an abstract datamodel, so it
