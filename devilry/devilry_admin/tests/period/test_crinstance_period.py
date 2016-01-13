@@ -1,47 +1,38 @@
+from django.conf import settings
 from django.test import TestCase, RequestFactory
+from model_mommy import mommy
 
-from devilry.apps.core.models import Period
 from devilry.devilry_admin.views.period import crinstance_period
-from devilry.project.develop.testhelpers.corebuilder import UserBuilder, NodeBuilder
 
 
 class TestCrAdminInstance(TestCase):
-    def setUp(self):
-        self.testuser = UserBuilder('testuser').user
-        self.nodebuilder = NodeBuilder.quickadd_ducku()
-        self.subjectbuilder = self.nodebuilder.add_subject('duck1010')
-        self.periodbuilder = self.subjectbuilder.add_6month_active_period()
-
-    def test_error_if_not_admin(self):
+    def test_get_rolequeryset_not_admin(self):
         request = RequestFactory().get('/test')
-        request.user = self.testuser
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        request.user = testuser
         instance = crinstance_period.CrAdminInstance(request=request)
-        with self.assertRaises(Period.DoesNotExist):
-            instance.get_role_from_rolequeryset(role=self.testuser)
+        self.assertEqual(0, instance.get_rolequeryset().count())
 
-    def test_admin_on_period(self):
-        self.periodbuilder.add_admins(self.testuser)
+    def test_get_rolequeryset_admin_on_period(self):
+        testperiod = mommy.make('core.Period')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testperiod)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         request = RequestFactory().get('/test')
-        request.user = self.testuser
+        request.user = testuser
         instance = crinstance_period.CrAdminInstance(request=request)
-        self.assertEqual(
-            instance.get_role_from_rolequeryset(role=self.periodbuilder.period),
-            self.periodbuilder.period)
+        self.assertEqual([testperiod], list(instance.get_rolequeryset()))
 
-    def test_admin_on_subject(self):
-        self.subjectbuilder.add_admins(self.testuser)
+    def test_get_rolequeryset_admin_on_subject(self):
+        testperiod = mommy.make('core.Period')
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testperiod.subject)
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
         request = RequestFactory().get('/test')
-        request.user = self.testuser
+        request.user = testuser
         instance = crinstance_period.CrAdminInstance(request=request)
-        self.assertEqual(
-            instance.get_role_from_rolequeryset(role=self.periodbuilder.period),
-            self.periodbuilder.period)
-
-    def test_admin_on_node(self):
-        self.nodebuilder.add_admins(self.testuser)
-        request = RequestFactory().get('/test')
-        request.user = self.testuser
-        instance = crinstance_period.CrAdminInstance(request=request)
-        self.assertEqual(
-            instance.get_role_from_rolequeryset(role=self.periodbuilder.period),
-            self.periodbuilder.period)
+        self.assertEqual([testperiod], list(instance.get_rolequeryset()))

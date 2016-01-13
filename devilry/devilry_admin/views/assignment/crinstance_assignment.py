@@ -33,7 +33,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     rolefrontpage_appname = 'overview'
 
     def get_rolequeryset(self):
-        return Assignment.where_is_admin_or_superadmin(self.request.user)\
+        return Assignment.objects.filter_user_is_admin(user=self.request.user)\
             .select_related('parentnode', 'parentnode__parentnode')\
             .order_by('-publishing_time')
 

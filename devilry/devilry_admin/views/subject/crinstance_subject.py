@@ -27,7 +27,7 @@ class CrAdminInstance(crinstance.BaseCrAdminInstance):
     rolefrontpage_appname = 'overview'
 
     def get_rolequeryset(self):
-        return Subject.where_is_admin_or_superadmin(self.request.user)
+        return Subject.objects.filter_user_is_admin(user=self.request.user)
 
     def get_titletext_for_role(self, role):
         """
