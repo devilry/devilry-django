@@ -1452,8 +1452,8 @@ class TestAssignmentGroupQuerySet(TestCase):
                    relatedstudent__user__shortname='usery',
                    assignment_group=testgroup2)
         groups = list(AssignmentGroup.objects.extra_order_by_fullname_of_first_candidate())
-        self.assertEqual('usera', groups[0].fullname_of_first_candidate)
-        self.assertEqual('userx', groups[1].fullname_of_first_candidate)
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
 
     def test_extra_order_by_fullname_of_first_candidate_descending_shortnames(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
@@ -1471,8 +1471,8 @@ class TestAssignmentGroupQuerySet(TestCase):
                    relatedstudent__user__shortname='usery',
                    assignment_group=testgroup2)
         groups = list(AssignmentGroup.objects.extra_order_by_fullname_of_first_candidate(descending=True))
-        self.assertEqual('userx', groups[0].fullname_of_first_candidate)
-        self.assertEqual('usera', groups[1].fullname_of_first_candidate)
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
 
     def test_extra_order_by_fullname_of_first_candidate_ascending_fullnames(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
@@ -1492,8 +1492,8 @@ class TestAssignmentGroupQuerySet(TestCase):
                    relatedstudent__user__fullname='AUser4',
                    assignment_group=testgroup2)
         groups = list(AssignmentGroup.objects.extra_order_by_fullname_of_first_candidate())
-        self.assertEqual('auser4user4', groups[0].fullname_of_first_candidate)
-        self.assertEqual('buser1user1', groups[1].fullname_of_first_candidate)
+        self.assertEqual(testgroup2, groups[0])
+        self.assertEqual(testgroup1, groups[1])
 
     def test_extra_order_by_fullname_of_first_candidate_descending_fullnames(self):
         testgroup1 = mommy.make('core.AssignmentGroup')
@@ -1513,8 +1513,8 @@ class TestAssignmentGroupQuerySet(TestCase):
                    relatedstudent__user__fullname='AUser4',
                    assignment_group=testgroup2)
         groups = list(AssignmentGroup.objects.extra_order_by_fullname_of_first_candidate(descending=True))
-        self.assertEqual('buser1user1', groups[0].fullname_of_first_candidate)
-        self.assertEqual('auser4user4', groups[1].fullname_of_first_candidate)
+        self.assertEqual(testgroup1, groups[0])
+        self.assertEqual(testgroup2, groups[1])
 
     def test_extra_annotate_with_relatedstudents_anonymous_id_of_first_candidate_anonymousid(self):
         testgroup = mommy.make('core.AssignmentGroup')
