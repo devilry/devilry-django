@@ -1,4 +1,5 @@
 from __future__ import print_function
+
 from datetime import datetime
 
 from django.db import models
@@ -16,6 +17,13 @@ from node import Node
 
 class SubjectQuerySet(models.QuerySet):
     def filter_is_admin(self, user):
+        """
+        Filter the queryset to only include :class:`.Subject` objects where the
+        given ``user`` is in a :class:`.devilry.devilry_account.models.SubjectPermissionGroup`.
+
+        Args:
+            user: A User object.
+        """
         subjectids_where_is_admin_queryset = SubjectPermissionGroup.objects \
             .filter(permissiongroup__users=user).values_list('subject_id', flat=True)
         return self.filter(id__in=subjectids_where_is_admin_queryset)

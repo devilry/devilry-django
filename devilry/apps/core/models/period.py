@@ -39,6 +39,14 @@ class PeriodQuerySet(models.query.QuerySet):
         return self.filter(start_time__lt=now, end_time__gt=now)
 
     def filter_is_admin(self, user):
+        """
+        Filter the queryset to only include :class:`.Period` objects where the
+        given ``user`` is in a :class:`.devilry.devilry_account.models.SubjectPermissionGroup`
+        or in a :class:`.devilry.devilry_account.models.PeriodPermissionGroup`.
+
+        Args:
+            user: A User object.
+        """
         subjectids_where_is_admin_queryset = Subject.objects\
             .filter_is_admin(user=user)\
             .values_list('id', flat=True)
@@ -89,43 +97,6 @@ class PeriodQuerySet(models.query.QuerySet):
         )
 
 
-class PeriodManager(models.Manager):
-    """
-    Manager for :class:`.Period`.
-    """
-
-    def get_queryset(self):
-        return PeriodQuerySet(self.model, using=self._db)
-
-    def filter_active(self):
-        """
-        Filter only active periods.
-        """
-        return self.get_queryset().filter_active()
-
-    def filter_is_admin(self, user):
-        """
-        Filter only periods where user is admin.
-        """
-        return self.get_queryset().filter_is_admin(user)
-
-    def filter_user_is_relatedstudent(self, user):
-        """
-        Filter only periods where the given ``user`` is :class:`devilry.apps.core.models.RelatedUser`.
-        """
-        return self.get_queryset().filter_user_is_relatedstudent(user)
-
-    def annotate_with_user_qualifies_for_final_exam(self, user):
-        """
-        Annotate the queryset with the
-        :obj:`devilry.devilry_qualifiesforexam.models.QualifiesForFinalExam.qualifies`
-        value for the given ``user``.
-
-        Should be used with :meth:`.filter_user_is_relatedstudent`.
-        """
-        return self.get_queryset().annotate_with_user_qualifies_for_final_exam(user)
-
-
 class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Etag):
     """
     A Period represents a period of time, for example a half-year term
@@ -169,7 +140,7 @@ class Period(models.Model, BaseNode, AbstractIsExaminer, AbstractIsCandidate, Et
        A DateTimeField containing the etag for this object.
 
     """
-    objects = PeriodManager()
+    objects = PeriodQuerySet.as_manager()
 
     class Meta:
         app_label = 'core'

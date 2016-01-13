@@ -2,14 +2,13 @@ from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 from django.db import IntegrityError
-
-from devilry.devilry_account.models import SubjectPermissionGroup
-from ..models import Node, Subject
-from ..testhelper import TestHelper
-from ..models.model_utils import EtagMismatchException
+from django.test import TestCase
 from model_mommy import mommy
+
+from ..models import Node, Subject
+from ..models.model_utils import EtagMismatchException
+from ..testhelper import TestHelper
 
 
 class TestSubject(TestCase, TestHelper):
@@ -100,6 +99,14 @@ class TestSubjectQuerySetPermission(TestCase):
         mommy.make('core.Subject')
         self.assertFalse(Subject.objects.filter_is_admin(user=testuser).exists())
 
+    def test_is_admin_ignore_subjects_where_not_in_group(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        mommy.make('core.Subject')
+        mommy.make('devilry_account.SubjectPermissionGroup',
+                   subject=testsubject)
+        self.assertFalse(Subject.objects.filter_is_admin(user=testuser).exists())
+
     def test_is_admin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
@@ -108,17 +115,20 @@ class TestSubjectQuerySetPermission(TestCase):
         mommy.make('devilry_account.PermissionGroupUser',
                    user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
         self.assertEqual(
-                {testsubject},
-                set(Subject.objects.filter_is_admin(user=testuser)))
+            {testsubject},
+            set(Subject.objects.filter_is_admin(user=testuser)))
 
-    def test_is_admin_ignore_subjects_where_not_admin(self):
+    def test_is_admin_distinct(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
-        mommy.make('core.Subject')
-        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
-                                            subject=testsubject)
+        subjectpermissiongroup1 = mommy.make('devilry_account.SubjectPermissionGroup',
+                                             subject=testsubject)
+        subjectpermissiongroup2 = mommy.make('devilry_account.SubjectPermissionGroup',
+                                             subject=testsubject)
         mommy.make('devilry_account.PermissionGroupUser',
-                   user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
+                   user=testuser, permissiongroup=subjectpermissiongroup1.permissiongroup)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=subjectpermissiongroup2.permissiongroup)
         self.assertEqual(
-                {testsubject},
-                set(Subject.objects.filter_is_admin(user=testuser)))
+            {testsubject},
+            set(Subject.objects.filter_is_admin(user=testuser)))
