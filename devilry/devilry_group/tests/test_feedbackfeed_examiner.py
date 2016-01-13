@@ -72,6 +72,74 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
             })
         self.assertEquals(1, len(models.GroupComment.objects.all()))
 
+    def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet', )
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=feedbackset.group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        self.mock_http302_postrequest(
+            cradmin_role=examiner.assignmentgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a comment',
+                    'examiner_add_public_comment': 'unused value'
+                }
+            })
+        self.assertIsNotNone(models.GroupComment.objects.all()[0].published_datetime)
+
+    def test_post_feedbackset_comment_with_text_published_datetime_is_not_set(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet', )
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=feedbackset.group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        self.mock_http302_postrequest(
+            cradmin_role=examiner.assignmentgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a comment',
+                    'examiner_add_comment_to_feedback_draft': 'unused value'
+                }
+            })
+        self.assertIsNone(models.GroupComment.objects.all()[0].published_datetime)
+
+    def test_post_feedbackset_comment_visible_to_everyone(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet', )
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=feedbackset.group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        self.mock_http302_postrequest(
+            cradmin_role=examiner.assignmentgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a comment',
+                    'examiner_add_public_comment': 'unused value'
+                }
+            })
+        self.assertEquals('visible-to-everyone', models.GroupComment.objects.all()[0].visibility)
+
+    def test_post_feedbackset_comment_visible_to_examiner_and_admins(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet', )
+        examiner = mommy.make('core.Examiner',
+                              assignmentgroup=feedbackset.group,
+                              relatedexaminer=mommy.make('core.RelatedExaminer'))
+        self.mock_http302_postrequest(
+            cradmin_role=examiner.assignmentgroup,
+            requestuser=examiner.relatedexaminer.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'This is a comment',
+                    'examiner_add_comment_for_examiners': 'unused value'
+                }
+            })
+        self.assertEquals('visible-to-examiner-and-admins', models.GroupComment.objects.all()[0].visibility)
+
     # def test_post_feedbackset_comment_without_text(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')
     #     examiner = mommy.make('core.Examiner', assignmentgroup=feedbackset.group)
