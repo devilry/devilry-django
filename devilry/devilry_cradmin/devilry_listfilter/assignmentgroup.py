@@ -12,7 +12,7 @@ class AbstractSearch(listfilter.django.single.textinput.Search):
         )
 
     def filter(self, queryobject):
-        return super(AbstractSearch, self).filter(queryobject=queryobject).distinct()
+        return super(AbstractSearch, self).filter(queryobject=queryobject)
 
 
 class SearchNotAnonymous(AbstractSearch):
@@ -82,8 +82,8 @@ class OrderByNotAnonymous(AbstractOrderBy):
     def filter(self, queryobject):
         cleaned_value = self.get_cleaned_value() or ''
         if cleaned_value == '':
-            return queryobject.order_by_name_of_first_candidate()
+            return queryobject.extra_order_by_fullname_of_first_candidate()
         elif cleaned_value == 'name_descending':
-            return queryobject.order_by_name_of_first_candidate(descending=True)
+            return queryobject.extra_order_by_fullname_of_first_candidate(descending=True)
         else:
             return super(OrderByNotAnonymous, self).filter(queryobject=queryobject)

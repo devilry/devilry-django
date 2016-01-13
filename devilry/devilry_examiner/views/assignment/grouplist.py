@@ -74,7 +74,7 @@ class GroupListView(listbuilderview.FilterListMixin,
 
     def __add_filterlist_items_not_anonymous(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())
-        # filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByNotAnonymous())
 
     def add_filterlist_items(self, filterlist):
         if self.assignment.is_anonymous:
