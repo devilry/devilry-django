@@ -125,7 +125,7 @@ class PointToGradeMap(models.Model):
         return u'Point to grade map for {}'.format(self.assignment.get_path())
 
 
-class PointRangeToGradeMapQueryset(models.query.QuerySet):
+class PointRangeToGradeMapQueryset(models.QuerySet):
     def filter_overlapping_ranges(self, start, end):
         return self.filter(
             Q(minimum_points__lte=start, maximum_points__gte=start) |

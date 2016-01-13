@@ -394,7 +394,7 @@ class AssignmentGroupManager(models.Manager):
                 ``bulk_create_groups(relatedstudents=list(relatedstudent_queryset))``.
 
         Returns:
-            django.db.models.query.QuerySet: A queryset with the created groups.
+            django.db.models.QuerySet: A queryset with the created groups.
         """
         batchoperation = BatchOperation.objects.create_syncronous(
             context_object=assignment,

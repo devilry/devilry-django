@@ -30,7 +30,7 @@ class AssignmentHasGroupsError(Exception):
     """
 
 
-class AssignmentQuerySet(models.query.QuerySet):
+class AssignmentQuerySet(models.QuerySet):
     """
     QuerySet for :class:`.Assignment`.
     """

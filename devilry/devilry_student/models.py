@@ -14,7 +14,7 @@ def uploaded_deliveryfile_path(uploaded_deliveryfile, filename):
     return 'devilry_student/incomplete_deliveries/{id}'.format(id=uploaded_deliveryfile.id)
 
 
-class UploadedDeliveryFileQuerySet(models.query.QuerySet):
+class UploadedDeliveryFileQuerySet(models.QuerySet):
     """
     QuerySet for :class:`.UploadedDeliveryFileManager`.
     """

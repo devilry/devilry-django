@@ -14,7 +14,7 @@ from devilry.utils.devilry_email import send_templated_message
 from .assignment_group import AssignmentGroup
 
 
-class GroupInviteQuerySet(models.query.QuerySet):
+class GroupInviteQuerySet(models.QuerySet):
     def filter_accepted(self):
         return self.filter(accepted=True)
 

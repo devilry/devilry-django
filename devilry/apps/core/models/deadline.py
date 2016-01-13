@@ -21,7 +21,7 @@ class NewerDeadlineExistsError(Exception):
     """
 
 
-class DeadlineQuerySet(models.query.QuerySet):
+class DeadlineQuerySet(models.QuerySet):
     def smart_create(self, groupqueryset, deadline_datetime, text=None,
                      why_created=None, added_by=None,
                      query_created_deadlines=False):

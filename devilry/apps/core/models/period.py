@@ -19,7 +19,7 @@ from node import Node
 from subject import Subject
 
 
-class PeriodQuerySet(models.query.QuerySet):
+class PeriodQuerySet(models.QuerySet):
     """
     QuerySet for :class:`.PeriodManager`.
     """

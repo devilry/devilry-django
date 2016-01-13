@@ -11,7 +11,7 @@ from . import AbstractIsAdmin, AbstractIsExaminer, AbstractIsCandidate, Node
 import deliverytypes
 
 
-class DeliveryQuerySet(models.query.QuerySet):
+class DeliveryQuerySet(models.QuerySet):
     """
     Returns a queryset with all Deliveries where the given ``user`` is examiner.
     """

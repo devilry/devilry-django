@@ -45,7 +45,7 @@ class AbstractIsExaminer(object):
         :param user_obj: :meth:`q_is_examiner`.
         :param old: :meth:`q_published`.
         :param active: :meth:`q_published`.
-        :return: A django.db.models.query.QuerySet with duplicate
+        :return: A django.db.models.QuerySet with duplicate
             assignments eliminated.
         """
         return cls.objects.filter(
