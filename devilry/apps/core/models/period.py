@@ -38,7 +38,7 @@ class PeriodQuerySet(models.query.QuerySet):
         now = datetime.now()
         return self.filter(start_time__lt=now, end_time__gt=now)
 
-    def filter_is_admin(self, user):
+    def filter_user_is_admin(self, user):
         """
         Filter the queryset to only include :class:`.Period` objects where the
         given ``user`` is in a :class:`.devilry.devilry_account.models.SubjectPermissionGroup`
@@ -48,7 +48,7 @@ class PeriodQuerySet(models.query.QuerySet):
             user: A User object.
         """
         subjectids_where_is_admin_queryset = Subject.objects\
-            .filter_is_admin(user=user)\
+            .filter_user_is_admin(user=user)\
             .values_list('id', flat=True)
         periodids_where_is_admin_queryset = PeriodPermissionGroup.objects \
             .filter(models.Q(permissiongroup__users=user))\

@@ -12,13 +12,13 @@ class Overview(TemplateView):
     template_name = 'devilry_admin/dashboard/overview.django.html'
 
     def __get_all_subjects_where_user_is_subjectadmin(self):
-        return Subject.objects.filter_is_admin(user=self.request.user)\
+        return Subject.objects.filter_user_is_admin(user=self.request.user)\
             .order_by('long_name')\
             .distinct()
 
     def __get_all_periods_where_user_is_subjectadmin_or_periodadmin(self):
         groups = []
-        periods = Period.objects.filter_is_admin(user=self.request.user)\
+        periods = Period.objects.filter_user_is_admin(user=self.request.user)\
             .select_related('parentnode')\
             .order_by('short_name', 'parentnode__long_name')\
             .distinct()

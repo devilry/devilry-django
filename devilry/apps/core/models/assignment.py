@@ -31,7 +31,7 @@ class AssignmentHasGroupsError(Exception):
 
 
 class AssignmentQuerySet(models.query.QuerySet):
-    def filter_is_admin(self, user):
+    def filter_user_is_admin(self, user):
         """
         Filter the queryset to only include :class:`.Assignment` objects where the
         given ``user`` is in a :class:`.devilry.devilry_account.models.SubjectPermissionGroup`
@@ -41,7 +41,7 @@ class AssignmentQuerySet(models.query.QuerySet):
             user: A User object.
         """
         periodids_where_is_admin_queryset = Period.objects\
-            .filter_is_admin(user=user)\
+            .filter_user_is_admin(user=user)\
             .values_list('id', flat=True)
         return self.filter(parentnode_id__in=periodids_where_is_admin_queryset)
 

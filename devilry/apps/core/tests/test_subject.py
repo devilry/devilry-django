@@ -97,7 +97,7 @@ class TestSubjectQuerySetPermission(TestCase):
     def test_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Subject')
-        self.assertFalse(Subject.objects.filter_is_admin(user=testuser).exists())
+        self.assertFalse(Subject.objects.filter_user_is_admin(user=testuser).exists())
 
     def test_is_admin_ignore_subjects_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -105,7 +105,7 @@ class TestSubjectQuerySetPermission(TestCase):
         mommy.make('core.Subject')
         mommy.make('devilry_account.SubjectPermissionGroup',
                    subject=testsubject)
-        self.assertFalse(Subject.objects.filter_is_admin(user=testuser).exists())
+        self.assertFalse(Subject.objects.filter_user_is_admin(user=testuser).exists())
 
     def test_is_admin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -116,7 +116,7 @@ class TestSubjectQuerySetPermission(TestCase):
                    user=testuser, permissiongroup=subjectpermissiongroup.permissiongroup)
         self.assertEqual(
             {testsubject},
-            set(Subject.objects.filter_is_admin(user=testuser)))
+            set(Subject.objects.filter_user_is_admin(user=testuser)))
 
     def test_is_admin_distinct(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -131,4 +131,4 @@ class TestSubjectQuerySetPermission(TestCase):
                    user=testuser, permissiongroup=subjectpermissiongroup2.permissiongroup)
         self.assertEqual(
             {testsubject},
-            set(Subject.objects.filter_is_admin(user=testuser)))
+            set(Subject.objects.filter_user_is_admin(user=testuser)))

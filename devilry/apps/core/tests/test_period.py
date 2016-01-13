@@ -113,7 +113,7 @@ class TestPeriodQuerySetPermission(TestCase):
     def test_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Period')
-        self.assertFalse(Period.objects.filter_is_admin(user=testuser).exists())
+        self.assertFalse(Period.objects.filter_user_is_admin(user=testuser).exists())
 
     def test_is_admin_ignore_periods_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -125,7 +125,7 @@ class TestPeriodQuerySetPermission(TestCase):
                    user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         self.assertEqual(
                 {testperiod},
-                set(Period.objects.filter_is_admin(user=testuser)))
+                set(Period.objects.filter_user_is_admin(user=testuser)))
 
     def test_is_admin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -136,7 +136,7 @@ class TestPeriodQuerySetPermission(TestCase):
                    user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         self.assertEqual(
                 {testperiod},
-                set(Period.objects.filter_is_admin(user=testuser)))
+                set(Period.objects.filter_user_is_admin(user=testuser)))
 
     def test_is_admin_on_subject(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -149,7 +149,7 @@ class TestPeriodQuerySetPermission(TestCase):
                    permissiongroup=subjectpermissiongroup.permissiongroup)
         self.assertEqual(
                 {testperiod},
-                set(Period.objects.filter_is_admin(user=testuser)))
+                set(Period.objects.filter_user_is_admin(user=testuser)))
 
     def test_is_admin_distinct(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -177,7 +177,7 @@ class TestPeriodQuerySetPermission(TestCase):
                    permissiongroup=periodpermissiongroup2.permissiongroup)
         self.assertEqual(
                 {testperiod},
-                set(Period.objects.filter_is_admin(user=testuser)))
+                set(Period.objects.filter_user_is_admin(user=testuser)))
 
 
 class TestPeriodOld(TestCase, TestHelper):

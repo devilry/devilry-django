@@ -16,7 +16,7 @@ from node import Node
 
 
 class SubjectQuerySet(models.QuerySet):
-    def filter_is_admin(self, user):
+    def filter_user_is_admin(self, user):
         """
         Filter the queryset to only include :class:`.Subject` objects where the
         given ``user`` is in a :class:`.devilry.devilry_account.models.SubjectPermissionGroup`.

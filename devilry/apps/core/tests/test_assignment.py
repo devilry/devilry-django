@@ -751,7 +751,7 @@ class TestAssignmentQuerySetPermission(TestCase):
     def test_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Assignment')
-        self.assertFalse(Assignment.objects.filter_is_admin(user=testuser).exists())
+        self.assertFalse(Assignment.objects.filter_user_is_admin(user=testuser).exists())
 
     def test_is_admin_ignore_assignments_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -763,7 +763,7 @@ class TestAssignmentQuerySetPermission(TestCase):
                    user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         self.assertEqual(
                 {testassignment},
-                set(Assignment.objects.filter_is_admin(user=testuser)))
+                set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
     def test_is_admin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -774,7 +774,7 @@ class TestAssignmentQuerySetPermission(TestCase):
                    user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
         self.assertEqual(
                 {testassignment},
-                set(Assignment.objects.filter_is_admin(user=testuser)))
+                set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
     def test_is_admin_on_period(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -787,7 +787,7 @@ class TestAssignmentQuerySetPermission(TestCase):
                    permissiongroup=periodpermissiongroup.permissiongroup)
         self.assertEqual(
                 {testassignment},
-                set(Assignment.objects.filter_is_admin(user=testuser)))
+                set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
     def test_is_admin_on_subject(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -800,7 +800,7 @@ class TestAssignmentQuerySetPermission(TestCase):
                    permissiongroup=subjectpermissiongroup.permissiongroup)
         self.assertEqual(
                 {testassignment},
-                set(Assignment.objects.filter_is_admin(user=testuser)))
+                set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
     def test_is_admin_distinct(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
@@ -829,4 +829,4 @@ class TestAssignmentQuerySetPermission(TestCase):
                    permissiongroup=periodpermissiongroup2.permissiongroup)
         self.assertEqual(
                 {testassignment},
-                set(Assignment.objects.filter_is_admin(user=testuser)))
+                set(Assignment.objects.filter_user_is_admin(user=testuser)))
