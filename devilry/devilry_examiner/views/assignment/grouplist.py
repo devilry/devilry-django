@@ -68,9 +68,11 @@ class GroupListView(listbuilderview.FilterListMixin,
 
     def __add_filterlist_items_anonymous_uses_custom_candidate_ids(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymousUsesCustomCandidateIds())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymousUsesCustomCandidateIds())
 
     def __add_filterlist_items_anonymous(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchAnonymous())
+        filterlist.append(devilry_listfilter.assignmentgroup.OrderByAnonymous())
 
     def __add_filterlist_items_not_anonymous(self, filterlist):
         filterlist.append(devilry_listfilter.assignmentgroup.SearchNotAnonymous())

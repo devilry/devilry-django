@@ -538,3 +538,109 @@ class TestAssignmentListView(test.TestCase, cradmin_testhelpers.TestCaseMixin):
         self.assertEqual(
             ['B(a)', 'A(b)'],
             self.__get_titles(mockresponse.selector))
+
+    def test_render_orderby_default_anonymous(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   relatedstudent__automatic_anonymous_id='c')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   relatedstudent__automatic_anonymous_id='b',
+                   relatedstudent__candidate_id='A')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser)
+        self.assertEqual(
+            ['A', 'c'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_render_orderby_name_descending_anonymous(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   relatedstudent__automatic_anonymous_id='c')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   relatedstudent__automatic_anonymous_id='b',
+                   relatedstudent__candidate_id='A')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-name_descending'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['c', 'A'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_render_orderby_default_anonymous_uses_custom_candidate_ids(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           uses_custom_candidate_ids=True,
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   candidate_id='b')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   candidate_id='a')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            requestuser=testuser)
+        self.assertEqual(
+            ['a', 'b'],
+            self.__get_titles(mockresponse.selector))
+
+    def test_render_orderby_name_descending_anonymous_uses_custom_candidate_ids(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make_recipe('devilry.apps.core.assignment_activeperiod_start',
+                                           uses_custom_candidate_ids=True,
+                                           anonymizationmode=Assignment.ANONYMIZATIONMODE_SEMI_ANONYMOUS)
+        testgroup1 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        testgroup2 = mommy.make('core.AssignmentGroup', parentnode=testassignment)
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup1,
+                   candidate_id='b')
+        mommy.make('core.Candidate',
+                   assignment_group=testgroup2,
+                   candidate_id='a')
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup1)
+        mommy.make('core.Examiner',
+                   relatedexaminer__user=testuser,
+                   assignmentgroup=testgroup2)
+        mockresponse = self.mock_http200_getrequest_htmls(
+            cradmin_role=testassignment,
+            viewkwargs={'filters_string': 'orderby-name_descending'},
+            requestuser=testuser)
+        self.assertEqual(
+            ['b', 'a'],
+            self.__get_titles(mockresponse.selector))

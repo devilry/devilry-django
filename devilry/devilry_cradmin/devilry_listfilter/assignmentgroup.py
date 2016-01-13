@@ -61,22 +61,6 @@ class OrderByNotAnonymous(AbstractOrderBy):
                 'label': ugettext_lazy('Name (reverse order)'),
                 'order_by': [],  # Handled with custom query in filter()
             }),
-            # ('publishing_time_descending', {
-            #     'label': ugettext_lazy('Publishing time (oldest first)'),
-            #     'order_by': ['publishing_time'],
-            # }),
-            # ('name_ascending', {
-            #     'label': ugettext_lazy('Name'),
-            #     'order_by': [Lower(Concat('parentnode__parentnode__short_name',
-            #                               'parentnode__short_name',
-            #                               'long_name'))],
-            # }),
-            # ('name_descending', {
-            #     'label': ugettext_lazy('Name (reverse order)'),
-            #     'order_by': [Lower(Concat('parentnode__parentnode__short_name',
-            #                               'parentnode__short_name',
-            #                               'long_name')).desc()],
-            # }),
         ]
 
     def filter(self, queryobject):
@@ -87,3 +71,49 @@ class OrderByNotAnonymous(AbstractOrderBy):
             return queryobject.extra_order_by_fullname_of_first_candidate(descending=True)
         else:
             return super(OrderByNotAnonymous, self).filter(queryobject=queryobject)
+
+
+class OrderByAnonymous(AbstractOrderBy):
+    def get_ordering_options(self):
+        return [
+            ('', {
+                'label': ugettext_lazy('Anonymous ID'),
+                'order_by': [],  # Handled with custom query in filter()
+            }),
+            ('name_descending', {
+                'label': ugettext_lazy('Anonymous ID (reverse order)'),
+                'order_by': [],  # Handled with custom query in filter()
+            }),
+        ]
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value() or ''
+        if cleaned_value == '':
+            return queryobject.extra_order_by_relatedstudents_anonymous_id_of_first_candidate()
+        elif cleaned_value == 'name_descending':
+            return queryobject.extra_order_by_relatedstudents_anonymous_id_of_first_candidate(descending=True)
+        else:
+            return super(OrderByAnonymous, self).filter(queryobject=queryobject)
+
+
+class OrderByAnonymousUsesCustomCandidateIds(AbstractOrderBy):
+    def get_ordering_options(self):
+        return [
+            ('', {
+                'label': ugettext_lazy('Candidate ID'),
+                'order_by': [],  # Handled with custom query in filter()
+            }),
+            ('name_descending', {
+                'label': ugettext_lazy('Candidate ID (reverse order)'),
+                'order_by': [],  # Handled with custom query in filter()
+            }),
+        ]
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value() or ''
+        if cleaned_value == '':
+            return queryobject.extra_order_by_candidates_candidate_id_of_first_candidate()
+        elif cleaned_value == 'name_descending':
+            return queryobject.extra_order_by_candidates_candidate_id_of_first_candidate(descending=True)
+        else:
+            return super(OrderByAnonymousUsesCustomCandidateIds, self).filter(queryobject=queryobject)
