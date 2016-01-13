@@ -1,3 +1,4 @@
+from django.core.files.base import ContentFile
 from django.utils import timezone
 from django.test import TestCase
 from model_mommy import mommy
@@ -6,6 +7,7 @@ from devilry.devilry_group import models
 from devilry.devilry_group.models import GroupComment
 from devilry.devilry_group.tests import test_feedbackfeed_common
 from devilry.devilry_group.views import feedbackfeed_examiner
+from devilry.devilry_comment import models as comment_models
 
 
 class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFeedMixin):
@@ -140,15 +142,25 @@ class TestFeedbackfeedExaminer(TestCase, test_feedbackfeed_common.TestFeedbackFe
             })
         self.assertEquals('visible-to-examiner-and-admins', models.GroupComment.objects.all()[0].visibility)
 
-    # def test_post_feedbackset_comment_without_text(self):
+    # def test_post_comment_file(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')
-    #     examiner = mommy.make('core.Examiner', assignmentgroup=feedbackset.group)
+    #     filecollection = mommy.make(
+    #         'cradmin_temporaryfileuploadstore.TemporaryFileCollection',
+    #     )
+    #     test_file = mommy.make(
+    #         'cradmin_temporaryfileuploadstore.TemporaryFile',
+    #         filename='test.txt',
+    #         collection=filecollection
+    #     )
+    #     test_file.file.save('test.txt', ContentFile('test'))
     #     self.mock_http302_postrequest(
-    #         cradmin_role=examiner.assignmentgroup,
+    #         cradmin_role=feedbackset.group,
     #         viewkwargs={'pk': feedbackset.group.id},
     #         requestkwargs={
     #             'data': {
-    #                 'text': '',
+    #                 'text': 'This is a comment',
+    #                 'temporary_file_collection_id': filecollection.id,
     #             }
     #         })
-    #     self.assertEquals(0, len(models.GroupComment.objects.all()))
+    #     comment_files = comment_models.CommentFile.objects.all()
+    #     self.assertEquals(1, len(comment_files))

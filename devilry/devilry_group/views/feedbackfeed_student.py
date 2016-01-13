@@ -44,6 +44,7 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
 
     def save_object(self, form, commit=True):
         obj = super(StudentFeedbackFeedView, self).save_object(form)
+        self._convert_temporary_files_to_comment_files(form, obj)
         return obj
 
 
