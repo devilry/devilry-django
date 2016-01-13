@@ -18,7 +18,8 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
 
     def _get_comments_for_group(self, group):
         return models.GroupComment.objects.filter(
-            Q(feedback_set__grading_published_datetime__isnull=False) | Q(visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE),
+            Q(feedback_set__grading_published_datetime__isnull=False) |
+            Q(visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE),
             visibility=models.GroupComment.VISIBILITY_VISIBLE_TO_EVERYONE,
             feedback_set__group=group
         )
@@ -36,14 +37,21 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
                 css_class='btn btn-success')
         ]
 
-    def save_object(self, form, commit=True):
-        object = super(StudentFeedbackFeedView, self).save_object(form)
-        object.user_role = 'student'
-        object.published_datetime = timezone.now()
+    def set_automatic_attributes(self, obj):
+        super(StudentFeedbackFeedView, self).set_automatic_attributes(obj)
+        obj.user_role = 'student'
+        obj.published_datetime = timezone.now()
 
-        if commit:
-            if self._convert_temporary_files_to_comment_files(form, object) or len(object.text) > 0:
-                object.save()
+    def save_object(self, form, commit=True):
+        obj = super(StudentFeedbackFeedView, self).save_object(form)
+        # object.user_role = 'student'
+        # object.published_datetime = timezone.now()
+
+        # if self._convert_temporary_files_to_comment_files(form, object) or len(object.text) > 0:
+        #     object.save()
+        # object.save()
+        # self._convert_temporary_files_to_comment_files(form, obj)
+        # obj.save()
 
         return object
 

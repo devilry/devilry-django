@@ -106,17 +106,25 @@ class FeedbackFeedBaseView(create.CreateView):
         form.fields['temporary_file_collection_id'] = forms.IntegerField(required=False)
         return form
 
+    def set_automatic_attributes(self, obj):
+        super(FeedbackFeedBaseView, self).set_automatic_attributes(obj)
+        obj.user = self.request.user
+        obj.comment_type = 'groupcomment'
+        obj.feedback_set = self.request.cradmin_role.feedbackset_set.latest('created_datetime')
+
     def save_object(self, form, commit=False):
         if commit:
             raise NotImplementedError('Must be implemented by subclass!')
 
-        assignment_group = self.request.cradmin_role
-        user = self.request.user
+        # assignment_group = self.request.cradmin_role
+        # user = self.request.user
 
-        object = form.save(commit=False)
-        object.user = user
-        object.comment_type = 'groupcomment'
-        object.feedback_set = assignment_group.feedbackset_set.latest('created_datetime')
+        obj = super(FeedbackFeedBaseView, self,).save_object(form, True)
+        self._convert_temporary_files_to_comment_files(form, obj)
+        # object = form.save(commit=False)
+        # object.user = user
+        # object.comment_type = 'groupcomment'
+        # object.feedback_set = assignment_group.feedbackset_set.latest('created_datetime')
 
         return object
 
