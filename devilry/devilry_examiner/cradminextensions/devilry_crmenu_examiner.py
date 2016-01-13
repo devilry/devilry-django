@@ -39,7 +39,7 @@ class Menu(devilry_crmenu.Menu):
 
     def add_group_breadcrumb_item(self, group, active=False):
         self.add_headeritem_object(devilry_crmenu.BreadcrumbMenuItem(
-            label=defaultfilters.truncatechars(self.get_group_label(), 25),
+            label=defaultfilters.truncatechars(self.get_group_label(group), 25),
             url=reverse_cradmin_url(
                 instanceid='devilry_group_examiner',
                 appname='feedbackfeed',
