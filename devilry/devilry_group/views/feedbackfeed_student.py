@@ -44,16 +44,7 @@ class StudentFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
 
     def save_object(self, form, commit=True):
         obj = super(StudentFeedbackFeedView, self).save_object(form)
-        # object.user_role = 'student'
-        # object.published_datetime = timezone.now()
-
-        # if self._convert_temporary_files_to_comment_files(form, object) or len(object.text) > 0:
-        #     object.save()
-        # object.save()
-        # self._convert_temporary_files_to_comment_files(form, obj)
-        # obj.save()
-
-        return object
+        return obj
 
 
 class App(crapp.App):

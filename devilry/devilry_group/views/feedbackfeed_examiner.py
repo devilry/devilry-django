@@ -43,12 +43,9 @@ class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
     def set_automatic_attributes(self, obj):
         super(ExaminerFeedbackFeedView, self).set_automatic_attributes(obj)
         obj.user_role = 'examiner'
-        return obj
 
     def save_object(self, form, commit=True):
         obj = super(ExaminerFeedbackFeedView, self).save_object(form)
-        # object.user_role = 'examiner'
-
         if form.data.get('examiner_add_comment_for_examiners'):
             obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
             obj.published_datetime = timezone.now()
@@ -57,11 +54,7 @@ class ExaminerFeedbackFeedView(cradmin_feedbackfeed_base.FeedbackFeedBaseView):
             obj.published_datetime = timezone.now()
         elif form.data.get('examiner_add_comment_to_feedback_draft'):
             obj.visibility = models.GroupComment.VISIBILITY_VISIBLE_TO_EXAMINER_AND_ADMINS
-
-        # if self._convert_temporary_files_to_comment_files(form, object) or len(object.text) > 0:
-        #     object.save()
-        # self._convert_temporary_files_to_comment_files(form, obj)
-        # obj.save()
+        obj = super(ExaminerFeedbackFeedView, self).save_object(form)
         return obj
 
 

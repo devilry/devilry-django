@@ -203,9 +203,27 @@ class TestFeedbackfeedStudent(TestCase, test_feedbackfeed_common.TestFeedbackFee
             requestkwargs={
                 'data': {
                     'text': 'test',
+                    'student_add_comment': 'unused value',
                 }
             })
         self.assertEquals(1, len(GroupComment.objects.all()))
+
+    def test_post_feedbackset_comment_with_text_published_datetime_is_set(self):
+        feedbackset = mommy.make('devilry_group.FeedbackSet')
+        candidate = mommy.make('core.Candidate', assignment_group=feedbackset.group,
+                             # NOTE: The line blow can be removed when relatedstudent field is migrated to null=False
+                             relatedstudent=mommy.make('core.RelatedStudent'))
+        self.mock_http302_postrequest(
+            cradmin_role=candidate.assignment_group,
+            requestuser=candidate.relatedstudent.user,
+            viewkwargs={'pk': feedbackset.group.id},
+            requestkwargs={
+                'data': {
+                    'text': 'test',
+                    'student_add_comment': 'unused value',
+                }
+            })
+        self.assertIsNotNone(GroupComment.objects.all()[0].published_datetime)
 
     # def test_post_feedbackset_post_comment_without_text(self):
     #     feedbackset = mommy.make('devilry_group.FeedbackSet')
