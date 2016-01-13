@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
 from django.test import TestCase
 from django.utils import timezone
 from ievv_opensource.ievv_batchframework.models import BatchOperation
@@ -15,7 +14,6 @@ from devilry.apps.core.models import Delivery
 from devilry.apps.core.models import deliverytypes, Assignment, RelatedStudent
 from devilry.apps.core.models.assignment_group import GroupPopNotCandiateError
 from devilry.apps.core.models.assignment_group import GroupPopToFewCandiatesError
-from devilry.apps.core.models.model_utils import EtagMismatchException
 from devilry.apps.core.testhelper import TestHelper
 from devilry.devilry_group.models import FeedbackSet
 from devilry.project.develop.testhelpers.corebuilder import PeriodBuilder
