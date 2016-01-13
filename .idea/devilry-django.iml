@@ -13,6 +13,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/developfiles" />
+      <excludeFolder url="file://$MODULE_DIR$/libs" />
       <excludeFolder url="file://$MODULE_DIR$/not_for_deploy/docs/_build" />
       <excludeFolder url="file://$MODULE_DIR$/static" />
     </content>
