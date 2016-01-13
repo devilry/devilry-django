@@ -1,25 +1,25 @@
 import warnings
 from datetime import datetime
 
-from django.template import defaultfilters
-from django.utils import timezone
-from django.utils.translation import ugettext_lazy as _, pgettext_lazy, ugettext_lazy
+from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import Q
-from django.core.exceptions import ObjectDoesNotExist
-from django.conf import settings
+from django.template import defaultfilters
+from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _, pgettext_lazy, ugettext_lazy
 
+from abstract_is_candidate import AbstractIsCandidate
+from abstract_is_examiner import AbstractIsExaminer
+from basenode import BaseNode
+from custom_db_fields import ShortNameField, LongNameField
 from devilry.apps.core.models.relateduser import RelatedStudentSyncSystemTag, RelatedExaminerSyncSystemTag
 from devilry.devilry_account.models import User
 from devilry.devilry_gradingsystem.pluginregistry import gradingsystempluginregistry
-from basenode import BaseNode
 from node import Node
 from period import Period
-from abstract_is_examiner import AbstractIsExaminer
-from abstract_is_candidate import AbstractIsCandidate
-from custom_db_fields import ShortNameField, LongNameField
-from . import deliverytypes, Subject
+from . import deliverytypes
 
 
 class AssignmentHasGroupsError(Exception):
