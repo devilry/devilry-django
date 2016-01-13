@@ -55,13 +55,11 @@ class OrderByNotAnonymous(AbstractOrderBy):
         return [
             ('', {
                 'label': ugettext_lazy('Name'),
-                'order_by': [Lower(Concat('candidates__relatedstudent__user__fullname',
-                                          'candidates__relatedstudent__user__shortname'))],
+                'order_by': [],  # Handled with custom query in filter()
             }),
             ('name_descending', {
                 'label': ugettext_lazy('Name (reverse order)'),
-                'order_by': [Lower(Concat('candidates__relatedstudent__user__fullname',
-                                          'candidates__relatedstudent__user__shortname')).desc()],
+                'order_by': [],  # Handled with custom query in filter()
             }),
             # ('publishing_time_descending', {
             #     'label': ugettext_lazy('Publishing time (oldest first)'),
@@ -80,3 +78,12 @@ class OrderByNotAnonymous(AbstractOrderBy):
             #                               'long_name')).desc()],
             # }),
         ]
+
+    def filter(self, queryobject):
+        cleaned_value = self.get_cleaned_value() or ''
+        if cleaned_value == '':
+            return queryobject.order_by_name_of_first_candidate()
+        elif cleaned_value == 'name_descending':
+            return queryobject.order_by_name_of_first_candidate(descending=True)
+        else:
+            return super(OrderByNotAnonymous, self).filter(queryobject=queryobject)

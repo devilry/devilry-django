@@ -339,6 +339,48 @@ class AssignmentGroupQuerySet(models.QuerySet):
                 models.Q(number_of_groupcomments__gt=0)
             )
 
+    def extra_annotate_with_fullname_of_first_candidate(self):
+        # Not ment to be used directly - this is used by the
+        # order_by_fullname_of_first_candidate() method.
+        return self.extra(
+            select={
+                "fullname_of_first_candidate": """
+                    SELECT
+                        LOWER(CONCAT(devilry_account_user.fullname, devilry_account_user.shortname))
+                    FROM core_candidate
+                    INNER JOIN core_relatedstudent
+                        ON (core_relatedstudent.id = core_candidate.relatedstudent_id)
+                    INNER JOIN devilry_account_user
+                        ON (devilry_account_user.id = core_relatedstudent.user_id)
+                    WHERE
+                        core_candidate.assignment_group_id = core_assignmentgroup.id
+                    ORDER BY LOWER(CONCAT(devilry_account_user.fullname, devilry_account_user.shortname)) ASC
+                    LIMIT 1
+                """
+            },
+        )
+
+    def extra_order_by_fullname_of_first_candidate(self, descending=False):
+        """
+        Order by fullname of the first candidate (ordered by fullname) in each group.
+
+        If the user does not have a fullname, we order by their shortname.
+        All ordering is performed in lowercase.
+
+        As the ``extra_`` prefix implies, this uses a fairly expensive custom SQL query
+        added using the ``extra()``-method of the QuerySet.
+
+        Args:
+            descending: Set this to ``True`` to order descending.
+        """
+        if descending:
+            order_by = ['-fullname_of_first_candidate']
+        else:
+            order_by = ['fullname_of_first_candidate']
+        return self.extra_annotate_with_fullname_of_first_candidate().extra(
+            order_by=order_by
+        )
+
 
 class AssignmentGroupManager(models.Manager):
     """
