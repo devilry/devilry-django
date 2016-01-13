@@ -89,10 +89,10 @@ class GroupListView(listbuilderview.FilterListMixin,
         return coremodels.AssignmentGroup.objects\
             .filter_examiner_has_access(user=self.request.user)\
             .filter(parentnode=assignment)\
+            .select_related('parentnode')\
             .prefetch_related(
                 models.Prefetch('candidates',
                                 queryset=candidatequeryset))
-            #.annotate_with_waiting_for_feedback_count()
 
 
 class App(crapp.App):
