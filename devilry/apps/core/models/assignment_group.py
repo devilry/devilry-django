@@ -36,19 +36,13 @@ class GroupPopNotCandiateError(GroupPopValueError):
     """
 
 
-class AssignmentGroupQuerySet(models.query.QuerySet):
+class AssignmentGroupQuerySet(models.QuerySet):
     """
-    Returns a queryset with all AssignmentGroups where the given ``user`` is examiner.
-
-    WARNING: You should normally not use this directly because it gives the
-    examiner information from expired periods (which in most cases are not necessary
-    to get). Use :meth:`.active` instead.
+    QuerySet for :class:`.AssignmentGroup`
     """
 
     def annotate_with_last_deadline_pk(self):
-        """
-        See :meth:`.AssignmentGroupManager.annotate_with_last_deadline_pk`.
-        """
+        warnings.warn("deprecated", DeprecationWarning)
         return self.extra(
             select={
                 'last_deadline_pk': """
@@ -62,9 +56,7 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         )
 
     def annotate_with_last_deadline_datetime(self):
-        """
-        See :meth:`.AssignmentGroupManager.annotate_with_last_deadline_datetime`.
-        """
+        warnings.warn("deprecated", DeprecationWarning)
         return self.extra(
             select={
                 'last_deadline_datetime': """
@@ -78,9 +70,7 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         )
 
     def annotate_with_last_delivery_id(self):
-        """
-        See :meth:`.AssignmentGroupManager.annotate_with_last_delivery_id`.
-        """
+        warnings.warn("deprecated", DeprecationWarning)
         return self.extra(
             select={
                 'last_delivery_id': """
@@ -95,9 +85,7 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         )
 
     def annotate_with_last_delivery_time_of_delivery(self):
-        """
-        See :meth:`.AssignmentGroupManager.annotate_with_last_delivery_id`.
-        """
+        warnings.warn("deprecated", DeprecationWarning)
         return self.extra(
             select={
                 'last_delivery_time_of_delivery': """
@@ -112,58 +100,22 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
         )
 
     def annotate_with_number_of_deliveries(self):
-        """
-        See :meth:`.AssignmentGroupManager.annotate_with_number_of_deliveries`.
-        """
+        warnings.warn("deprecated", DeprecationWarning)
         return self.annotate(number_of_deliveries=models.Count('deadlines__deliveries'))
 
     def exclude_groups_with_deliveries(self):
-        """
-        See :meth:`.AssignmentGroupManager.exclude_groups_with_deliveries`.
-        """
+        warnings.warn("deprecated", DeprecationWarning)
         return self\
             .annotate(deliverycount_for_no_deliveries_exclude=models.Count('deadlines__deliveries'))\
             .filter(deliverycount_for_no_deliveries_exclude=0)
 
-    def filter_user_is_examiner(self, user):
-        """
-        Filter all :class:`.AssignmentGroup` objects where the given
-        user is examiner.
-
-        Args:
-            user: A :class:`devilry.devilry_account.models.User` object.
-        """
-        return self.filter(examiners__relatedexaminer__user=user).distinct()
-
-    def filter_user_is_candidate(self, user):
-        """
-        Filter all :class:`.AssignmentGroup` objects where the given
-        user is candidate.
-
-        Args:
-            user: A :class:`devilry.devilry_account.models.User` object.
-        """
-        return self.filter(candidates__relatedstudent__user=user).distinct()
-
-    def filter_is_published(self):
-        return self.filter(parentnode__publishing_time__lt=datetime.now())
-
-    def filter_is_active(self):
-        now = datetime.now()
-        return self.filter_is_published().filter(
-            parentnode__parentnode__start_time__lt=now,
-            parentnode__parentnode__end_time__gt=now)
-
-    def filter_examiner_has_access(self, user):
-        return self.filter_is_active().filter_user_is_examiner(user)
-
-    def filter_student_has_access(self, user):
-        return self.filter_is_published().filter_user_is_candidate(user)
 
     def filter_by_status(self, status):
+        warnings.warn("deprecated", DeprecationWarning)
         return self.filter(delivery_status=status)
 
     def filter_waiting_for_feedback(self):
+        warnings.warn("deprecated", DeprecationWarning)
         now = datetime.now()
         return self.filter(
             Q(parentnode__delivery_types=deliverytypes.NON_ELECTRONIC,
@@ -173,6 +125,7 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
               last_deadline__deadline__lte=now))
 
     def filter_waiting_for_deliveries(self):
+        warnings.warn("deprecated", DeprecationWarning)
         now = datetime.now()
         return self.filter(
             parentnode__delivery_types=deliverytypes.ELECTRONIC,
@@ -180,6 +133,7 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             last_deadline__deadline__gt=now)
 
     def filter_can_add_deliveries(self):
+        warnings.warn("deprecated", DeprecationWarning)
         now = datetime.now()
         return self\
             .filter(parentnode__delivery_types=deliverytypes.ELECTRONIC,
@@ -203,12 +157,14 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             )
 
     def close_groups(self):
+        warnings.warn("deprecated", DeprecationWarning)
         return self.update(
             is_open=False,
             delivery_status='closed-without-feedback'
         )
 
     def add_nonelectronic_delivery(self):
+        warnings.warn("deprecated", DeprecationWarning)
         from devilry.apps.core.models import Delivery
         for group in self.all():
             deadline = group.last_deadline
@@ -219,6 +175,58 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
             delivery.set_number()
             delivery.full_clean()
             delivery.save()
+
+    def filter_user_is_examiner(self, user):
+        """
+        Filter all :class:`.AssignmentGroup` objects where the given
+        user is examiner.
+
+        Args:
+            user: A :class:`devilry.devilry_account.models.User` object.
+        """
+        return self.filter(examiners__relatedexaminer__user=user).distinct()
+
+    def filter_user_is_candidate(self, user):
+        """
+        Filter all :class:`.AssignmentGroup` objects where the given
+        user is candidate.
+
+        Args:
+            user: A :class:`devilry.devilry_account.models.User` object.
+        """
+        return self.filter(candidates__relatedstudent__user=user).distinct()
+
+    def filter_is_published(self):
+        """
+        Filter all :class:`.AssignmentGroup` objects within a published
+        :class:`devilry.apps.core.models.Assignment`.
+        """
+        return self.filter(parentnode__publishing_time__lt=datetime.now())
+
+    def filter_is_active(self):
+        """
+        Filter all :class:`.AssignmentGroup` objects within a published
+        :class:`devilry.apps.core.models.Assignment` within an
+        active :class:`devilry.apps.core.models.Period`.
+        """
+        now = datetime.now()
+        return self.filter_is_published().filter(
+            parentnode__parentnode__start_time__lt=now,
+            parentnode__parentnode__end_time__gt=now)
+
+    def filter_examiner_has_access(self, user):
+        """
+        Filter all :class:`.AssignmentGroup` objects where the given
+        ``user`` has access as examiner.
+        """
+        return self.filter_is_active().filter_user_is_examiner(user)
+
+    def filter_student_has_access(self, user):
+        """
+        Filter all :class:`.AssignmentGroup` objects where the given
+        ``user`` has access as student.
+        """
+        return self.filter_is_published().filter_user_is_candidate(user)
 
     def filter_has_passing_grade(self, assignment):
         """
@@ -316,137 +324,9 @@ class AssignmentGroupQuerySet(models.query.QuerySet):
 
 
 class AssignmentGroupManager(models.Manager):
-    def get_queryset(self):
-        return AssignmentGroupQuerySet(self.model, using=self._db)
-
-    def filter(self, *args, **kwargs):
-        return self.get_queryset().filter(*args, **kwargs)
-
-    def annotate_with_last_deadline_pk(self):
-        """
-        Annotate the queryset with the datetime of the last deadline stored
-        as the ``last_deadline_id`` attribute.
-        """
-        return self.get_queryset().annotate_with_last_deadline_pk()
-
-    def annotate_with_last_deadline_datetime(self):
-        """
-        Annotate the queryset with the datetime of the last deadline stored
-        as the ``last_deadline_datetime`` attribute.
-        """
-        return self.get_queryset().annotate_with_last_deadline_datetime()
-
-    def annotate_with_last_delivery_time_of_delivery(self):
-        """
-        Annotate the queryset with the time of delivery of the last delivery stored
-        as the ``last_delivery_time_of_delivery`` attribute.
-        """
-        return self.get_queryset().annotate_with_last_delivery_time_of_delivery()
-
-    def annotate_with_last_delivery_id(self):
-        """
-        Annotate the queryset with the ID of the last delivery stored
-        as the ``last_delivery_id`` attribute.
-        """
-        return self.get_queryset().annotate_with_last_delivery_id()
-
-    def annotate_with_number_of_deliveries(self):
-        """
-        Annotate the queryset with the number of deliveries
-        as the ``number_of_deliveries`` attribute.
-        """
-        return self.get_queryset().annotate_with_number_of_deliveries()
-
-    def exclude_groups_with_deliveries(self):
-        """
-        Filter out all groups with deliveries.
-
-        Example::
-
-            groups_with_no_deliveries = AssignmentGroup.objects.exclude_groups_with_deliveries()
-        """
-        return self.get_queryset().exclude_groups_with_deliveries()
-
-    def filter_user_is_examiner(self, user):
-        """
-        Returns a queryset with all AssignmentGroups where the given ``user`` is examiner.
-
-        See :meth:`.AssignmentGroupQuerySet.filter_user_is_examiner`.
-
-        WARNING: You should normally not use this directly because it gives the
-        examiner information from expired periods (which they are not supposed
-        to get). Use :meth:`.filter_examiner_has_access` instead.
-        """
-        return self.get_queryset().filter_user_is_examiner(user)
-
-    def filter_user_is_candidate(self, user):
-        """
-        Returns a queryset with all AssignmentGroups where the given ``user`` is candidate.
-
-        See :meth:`.AssignmentGroupQuerySet.filter_user_is_candidate`.
-
-        WARNING: You should normally not use this directly because it gives the
-        student information from unpublished assignments (which they are not supposed
-        to get). Use :meth:`.filter_student_has_access` instead.
-        """
-        return self.get_queryset().filter_user_is_candidate(user)
-
-    def filter_is_published(self):
-        """
-        Returns a queryset with all AssignmentGroups on published Assignments.
-        """
-        return self.get_queryset().filter_is_published()
-
-    def filter_is_active(self):
-        """
-        Returns a queryset with all AssignmentGroups on active Assignments.
-        """
-        return self.get_queryset().filter_is_active()
-
-    def filter_examiner_has_access(self, user):
-        """
-        Returns a queryset with all AssignmentGroups on active Assignments
-        where the given ``user`` is examiner.
-
-        NOTE: This returns all groups that the given ``user`` has examiner-rights for.
-        """
-        return self.get_queryset().filter_examiner_has_access(user)
-
-    def filter_student_has_access(self, user):
-        """
-        Returns a queryset with all AssignmentGroups on published Assignments
-        where the given ``user`` is a candidate.
-
-        NOTE: This returns all groups that the given ``user`` has student-rights for.
-        """
-        return self.get_queryset().filter_student_has_access(user)
-
-    def filter_by_status(self, status):
-        return self.get_queryset().filter_by_status(status)
-
-    def filter_waiting_for_feedback(self):
-        return self.get_queryset().filter_waiting_for_feedback()
-
-    def filter_waiting_for_deliveries(self):
-        return self.get_queryset().filter_waiting_for_deliveries()
-
-    def filter_can_add_deliveries(self):
-        return self.get_queryset().filter_can_add_deliveries()
-
-    def close_groups(self):
-        """
-        Performs an efficient update of all the groups in the queryset
-        setting ``is_open=False`` and ``delivery_status="closed-without-feedback"``.
-        """
-        return self.get_queryset().close_groups()
-
-    def add_nonelectronic_delivery(self):
-        """
-        Add non-electronic delivery to all the groups in the queryset.
-
-        Assumes that all the groups has ``last_deadline`` set.
-        """
-        return self.get_queryset().add_nonelectronic_delivery()
+    """
+    Manager for :class:`.AssignmentGroup`.
+    """
 
     def __bulk_create_groups(self, assignment, batchoperation, relatedstudents):
         groups = []
@@ -518,38 +398,7 @@ class AssignmentGroupManager(models.Manager):
         batchoperation.finish()
         return group_queryset
 
-    def filter_has_passing_grade(self, assignment):
-        """
-        See :meth:`.AssignmentGroupQuerySet.filter_has_passing_grade`.
-        """
-        return self.get_queryset().filter_has_passing_grade(assignment=assignment)
 
-    def filter_with_published_feedback_or_comments(self):
-        """
-        See :meth:`.AssignmentGroupQuerySet.filter_with_published_feedback_or_comments`.
-        """
-        return self.get_queryset().filter_with_published_feedback_or_comments()
-
-    def annotate_with_number_of_groupcomments(self):
-        """
-        See :meth:`.AssignmentGroupQuerySet.annotate_with_number_of_groupcomments`.
-        """
-        return self.get_queryset().annotate_with_number_of_groupcomments()
-
-    def annotate_with_number_of_published_feedbacksets(self):
-        """
-        See :meth:`.AssignmentGroupQuerySet.annotate_with_number_of_published_feedbacksets`.
-        """
-        return self.get_queryset().annotate_with_number_of_published_feedbacksets()
-
-    def annotate_with_number_of_imageannotationcomments(self):
-        """
-        See :meth:`.AssignmentGroupQuerySet.annotate_with_number_of_imageannotationcomments`.
-        """
-        return self.get_queryset().annotate_with_number_of_imageannotationcomments()
-
-
-# TODO: Constraint: cannot be examiner and student on the same assignmentgroup as an option.
 class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
     """
     Represents a student or a group of students.
@@ -612,7 +461,7 @@ class AssignmentGroup(models.Model, AbstractIsAdmin, AbstractIsExaminer, Etag):
            * "waiting-for-something"
     """
 
-    objects = AssignmentGroupManager()
+    objects = AssignmentGroupManager.from_queryset(AssignmentGroupQuerySet)()
 
     parentnode = models.ForeignKey(Assignment, related_name='assignmentgroups')
     name = models.CharField(

@@ -1392,3 +1392,88 @@ class TestAssignmentGroupManager(TestCase):
         qry = AssignmentGroup.objects.filter_examiner_has_access(examiner1)
         self.assertEquals(qry.count(), 1)
         self.assertEquals(qry[0], currentgroupbuilder.group)
+
+
+class TestAssignmentGroupQuerySetPermission(TestCase):
+    def test_filter_user_is_admin_is_not_admin_on_anything(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        mommy.make('core.Assignment')
+        self.assertFalse(Assignment.objects.filter_user_is_admin(user=testuser).exists())
+
+    def test_filter_user_is_admin_ignore_assignments_where_not_in_group(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make('core.Assignment')
+        mommy.make('core.Assignment')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testassignment.period)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testassignment},
+                set(Assignment.objects.filter_user_is_admin(user=testuser)))
+
+    def test_filter_user_is_admin(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testassignment = mommy.make('core.Assignment')
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                           period=testassignment.period)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser, permissiongroup=periodpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testassignment},
+                set(Assignment.objects.filter_user_is_admin(user=testuser)))
+
+    def test_filter_user_is_admin_on_period(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testperiod = mommy.make('core.Period')
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=periodpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testassignment},
+                set(Assignment.objects.filter_user_is_admin(user=testuser)))
+
+    def test_filter_user_is_admin_on_subject(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        testassignment = mommy.make('core.Assignment', parentnode__parentnode=testsubject)
+        subjectpermissiongroup = mommy.make('devilry_account.SubjectPermissionGroup',
+                                            subject=testsubject)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=subjectpermissiongroup.permissiongroup)
+        self.assertEqual(
+                {testassignment},
+                set(Assignment.objects.filter_user_is_admin(user=testuser)))
+
+    def test_filter_user_is_admin_distinct(self):
+        testuser = mommy.make(settings.AUTH_USER_MODEL)
+        testsubject = mommy.make('core.Subject')
+        testperiod = mommy.make('core.Period', parentnode=testsubject)
+        testassignment = mommy.make('core.Assignment', parentnode=testperiod)
+        subjectpermissiongroup1 = mommy.make('devilry_account.SubjectPermissionGroup',
+                                             subject=testsubject)
+        subjectpermissiongroup2 = mommy.make('devilry_account.SubjectPermissionGroup',
+                                             subject=testsubject)
+        periodpermissiongroup1 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            period=testperiod)
+        periodpermissiongroup2 = mommy.make('devilry_account.PeriodPermissionGroup',
+                                            period=testperiod)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=subjectpermissiongroup1.permissiongroup)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=subjectpermissiongroup2.permissiongroup)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=periodpermissiongroup1.permissiongroup)
+        mommy.make('devilry_account.PermissionGroupUser',
+                   user=testuser,
+                   permissiongroup=periodpermissiongroup2.permissiongroup)
+        self.assertEqual(
+                {testassignment},
+                set(Assignment.objects.filter_user_is_admin(user=testuser)))
