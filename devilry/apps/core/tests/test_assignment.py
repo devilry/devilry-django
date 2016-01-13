@@ -748,12 +748,12 @@ class TestAssignmentQuerySet(TestCase):
 
 
 class TestAssignmentQuerySetPermission(TestCase):
-    def test_is_not_admin_on_anything(self):
+    def test_filter_user_is_admin_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Assignment')
         self.assertFalse(Assignment.objects.filter_user_is_admin(user=testuser).exists())
 
-    def test_is_admin_ignore_assignments_where_not_in_group(self):
+    def test_filter_user_is_admin_ignore_assignments_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make('core.Assignment')
         mommy.make('core.Assignment')
@@ -765,7 +765,7 @@ class TestAssignmentQuerySetPermission(TestCase):
                 {testassignment},
                 set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
-    def test_is_admin(self):
+    def test_filter_user_is_admin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testassignment = mommy.make('core.Assignment')
         periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
@@ -776,7 +776,7 @@ class TestAssignmentQuerySetPermission(TestCase):
                 {testassignment},
                 set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
-    def test_is_admin_on_period(self):
+    def test_filter_user_is_admin_on_period(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testperiod = mommy.make('core.Period')
         testassignment = mommy.make('core.Assignment', parentnode=testperiod)
@@ -789,7 +789,7 @@ class TestAssignmentQuerySetPermission(TestCase):
                 {testassignment},
                 set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
-    def test_is_admin_on_subject(self):
+    def test_filter_user_is_admin_on_subject(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
         testassignment = mommy.make('core.Assignment', parentnode__parentnode=testsubject)
@@ -802,7 +802,7 @@ class TestAssignmentQuerySetPermission(TestCase):
                 {testassignment},
                 set(Assignment.objects.filter_user_is_admin(user=testuser)))
 
-    def test_is_admin_distinct(self):
+    def test_filter_user_is_admin_distinct(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
         testperiod = mommy.make('core.Period', parentnode=testsubject)

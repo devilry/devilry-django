@@ -110,12 +110,12 @@ class TestPeriodManagerQualifiesForExam(TestCase):
 
 
 class TestPeriodQuerySetPermission(TestCase):
-    def test_is_not_admin_on_anything(self):
+    def test_filter_user_is_admin_is_not_admin_on_anything(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         mommy.make('core.Period')
         self.assertFalse(Period.objects.filter_user_is_admin(user=testuser).exists())
 
-    def test_is_admin_ignore_periods_where_not_in_group(self):
+    def test_filter_user_is_admin_ignore_periods_where_not_in_group(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testperiod = mommy.make('core.Period')
         mommy.make('core.Period')
@@ -127,7 +127,7 @@ class TestPeriodQuerySetPermission(TestCase):
                 {testperiod},
                 set(Period.objects.filter_user_is_admin(user=testuser)))
 
-    def test_is_admin(self):
+    def test_filter_user_is_admin(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testperiod = mommy.make('core.Period')
         periodpermissiongroup = mommy.make('devilry_account.PeriodPermissionGroup',
@@ -138,7 +138,7 @@ class TestPeriodQuerySetPermission(TestCase):
                 {testperiod},
                 set(Period.objects.filter_user_is_admin(user=testuser)))
 
-    def test_is_admin_on_subject(self):
+    def test_filter_user_is_admin_on_subject(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
         testperiod = mommy.make('core.Period', parentnode=testsubject)
@@ -151,7 +151,7 @@ class TestPeriodQuerySetPermission(TestCase):
                 {testperiod},
                 set(Period.objects.filter_user_is_admin(user=testuser)))
 
-    def test_is_admin_distinct(self):
+    def test_filter_user_is_admin_distinct(self):
         testuser = mommy.make(settings.AUTH_USER_MODEL)
         testsubject = mommy.make('core.Subject')
         testperiod = mommy.make('core.Period', parentnode=testsubject)
